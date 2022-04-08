@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update stable && rustup default stable
-    - run: find . -type f -name '*.rs' -print0 | xargs -I {} -0 rustfmt "{}"
+    - run: find . -type f -name '*.rs' -print0 | xargs -I {} -0 rustfmt --check "{}"
 
   build:
     strategy:
