@@ -10,7 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update stable && rustup default stable
-    - run: "rustfmt **/*.rs"
+    - shell: zsh
+      run: rustfmt **/*.rs
 
   build:
     strategy:
