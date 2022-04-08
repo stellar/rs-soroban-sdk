@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use super::host_fns;
+use super::host;
 use super::object::ObjType;
 use super::val::ValType;
 use super::{object::OBJ_MAP, status, Object, Status, Val, Vec};
@@ -57,37 +57,37 @@ impl<K: ValType, V: ValType> ObjType for Map<K, V> {
 impl<K: ValType, V: ValType> Map<K, V> {
     #[inline(always)]
     pub fn new() -> Map<K, V> {
-        unsafe { Self::unchecked_from_obj(host_fns::map_new()) }
+        unsafe { Self::unchecked_from_obj(host::map::new()) }
     }
 
     #[inline(always)]
     pub fn has(&self, k: K) -> bool {
-        unsafe { <bool as ValType>::unchecked_from_val(host_fns::map_has(self.0.into(), k.into())) }
+        unsafe { <bool as ValType>::unchecked_from_val(host::map::has(self.0.into(), k.into())) }
     }
 
     #[inline(always)]
     pub fn get(&self, k: K) -> V {
-        unsafe { <V as ValType>::unchecked_from_val(host_fns::map_get(self.0.into(), k.into())) }
+        unsafe { <V as ValType>::unchecked_from_val(host::map::get(self.0.into(), k.into())) }
     }
 
     #[inline(always)]
     pub fn put(&self, k: K, v: V) -> Map<K, V> {
-        unsafe { Self::unchecked_from_obj(host_fns::map_put(self.0.into(), k.into(), v.into())) }
+        unsafe { Self::unchecked_from_obj(host::map::put(self.0.into(), k.into(), v.into())) }
     }
 
     #[inline(always)]
     pub fn del(&self, k: K) -> Map<K, V> {
-        unsafe { Self::unchecked_from_obj(host_fns::map_del(self.0.into(), k.into())) }
+        unsafe { Self::unchecked_from_obj(host::map::del(self.0.into(), k.into())) }
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        let m: Val = unsafe { host_fns::map_len(self.0.into()) };
+        let m: Val = unsafe { host::map::len(self.0.into()) };
         m.as_u32()
     }
 
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
-        unsafe { <Vec<K> as ObjType>::unchecked_from_obj(host_fns::map_keys(self.0.into())) }
+        unsafe { <Vec<K> as ObjType>::unchecked_from_obj(host::map::keys(self.0.into())) }
     }
 }

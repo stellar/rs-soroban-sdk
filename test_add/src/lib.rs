@@ -11,3 +11,10 @@ pub fn add(a: Val, b: Val) -> Val {
 
     return c.try_into().or_abort();
 }
+
+
+#[test]
+fn test_add()
+{
+
+}

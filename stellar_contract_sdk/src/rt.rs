@@ -1,26 +1,17 @@
 // provide bits of rust's runtime interface: allocator, panic handling, etc.
 
-#[cfg(target_arch = "x86_64")]
-use core::arch::asm;
-
-#[cfg(target_arch = "x86_64")]
-use core::hint::unreachable_unchecked;
-
-#[cfg(target_arch = "wasm32")]
+#[cfg(target_family = "wasm")]
 #[inline(always)]
 pub fn trap() -> ! {
     core::arch::wasm32::unreachable()
 }
 
-#[cfg(target_arch = "x86_64")]
+#[cfg(not(target_family = "wasm"))]
 pub fn trap() -> ! {
-    unsafe {
-        asm!("ud2");
-        unreachable_unchecked()
-    }
+    panic!()
 }
 
-#[cfg(not(test))]
+#[cfg(target_family = "wasm")]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     trap();
