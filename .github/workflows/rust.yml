@@ -1,0 +1,35 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update stable && rustup default stable
+    - run: rustfmt **/*.rs
+
+  build:
+    strategy:
+      matrix:
+        target:
+        - wasm32-unknown-unknown
+        - aarch64-unknown-linux-gnu
+        - x86_64-unknown-linux-gnu
+        - x86_64-apple-darwin
+        - aarch64-apple-darwin
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update stable && rustup default stable
+    - run: cargo build --verbose --target ${{ matrix.target }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update stable && rustup default stable
+    - run: cargo test --verbose
