@@ -13,10 +13,10 @@ const KEY: Symbol = Symbol::from_str("key");
 pub fn invoke(k: Val, v: Val) -> Val {
     let k: Symbol = k.try_into().or_abort();
 
-    sdk::put_contract_data(KEY.into(), v);
-    sdk::put_contract_data(KEY.into(), v);
-    sdk::put_contract_data(KEY.into(), v);
-    log_value(sdk::has_contract_data(KEY.into()).into());
+    sdk::ledger::put_contract_data(KEY.into(), v);
+    sdk::ledger::put_contract_data(KEY.into(), v);
+    sdk::ledger::put_contract_data(KEY.into(), v);
+    log_value(sdk::ledger::has_contract_data(KEY.into()).into());
 
     log_value(STEP1.into());
 
@@ -31,7 +31,7 @@ pub fn invoke(k: Val, v: Val) -> Val {
     log_value(STEP4.into());
 
     log_value(KEY.into());
-    log_value(sdk::get_contract_data(KEY.into()));
+    log_value(sdk::ledger::get_contract_data(KEY.into()));
 
     let r: u32 = m.get(k);
     (r + r).into()

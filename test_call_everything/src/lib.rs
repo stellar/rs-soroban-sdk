@@ -13,7 +13,7 @@ pub fn call_everything() -> Val {
     let _ = sdk::call3(v, S, v, v, v);
     let _ = sdk::call4(v, S, v, v, v, v);
 
-    let _ = sdk::get_current_ledger_num();
+    let _ = sdk::ledger::get_current_ledger_num();
     let _ = sdk::get_last_operation_result();
     let _ = sdk::log_value(v);
 

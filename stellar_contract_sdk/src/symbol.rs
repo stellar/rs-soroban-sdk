@@ -32,7 +32,7 @@ mod test {
     #[test]
     fn test_from_static_str() {
         const HELLO: Symbol = Symbol::from_str("hello");
-        let s: String = HELLO.collect();
+        //let s: String = HELLO.collect();
         //dbg!(s);
     }
 }
