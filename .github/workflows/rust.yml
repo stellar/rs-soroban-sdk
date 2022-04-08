@@ -25,13 +25,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update stable && rustup default stable
+    - run: rustup target add ${{ matrix.target }}
     - run: cargo build --verbose --target ${{ matrix.target }}
 
   test:
     strategy:
       matrix:
         target:
-        - wasm32-unknown-unknown
         - aarch64-unknown-linux-gnu
         - x86_64-unknown-linux-gnu
         - x86_64-apple-darwin
@@ -40,4 +40,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update stable && rustup default stable
+    - run: rustup target add ${{ matrix.target }}
     - run: cargo test --verbose
