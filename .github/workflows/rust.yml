@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update stable && rustup default stable
-    - run: rustfmt **/*.rs
+    - run: "rustfmt **/*.rs"
 
   build:
     strategy:
@@ -28,6 +28,14 @@ jobs:
     - run: cargo build --verbose --target ${{ matrix.target }}
 
   test:
+    strategy:
+      matrix:
+        target:
+        - wasm32-unknown-unknown
+        - aarch64-unknown-linux-gnu
+        - x86_64-unknown-linux-gnu
+        - x86_64-apple-darwin
+        - aarch64-apple-darwin
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
