@@ -168,10 +168,7 @@ impl Eq for BigNum {}
 impl Ord for BigNum {
     fn cmp(&self, other: &Self) -> Ordering {
         let i = unsafe {
-            <i32 as ValType>::unchecked_from_val(host::bignum::cmp(
-                (*self).into(),
-                (*other).into(),
-            ))
+            <i32 as ValType>::unchecked_from_val(host::bignum::cmp((*self).into(), (*other).into()))
         };
         if i < 0 {
             Ordering::Less

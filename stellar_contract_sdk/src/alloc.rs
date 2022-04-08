@@ -1,6 +1,6 @@
 // This code is adapted from https://github.com/wenyuzhao/bump-allocator-rs
 
-use core::alloc::{Layout, GlobalAlloc};
+use core::alloc::{GlobalAlloc, Layout};
 
 pub static mut LOCAL_ALLOCATOR: BumpPointerLocal = BumpPointerLocal::new();
 
@@ -14,7 +14,10 @@ impl BumpPointerLocal {
     const PAGE_SIZE: usize = 1 << Self::LOG_PAGE_SIZE; // 64KB
 
     pub const fn new() -> Self {
-        Self { cursor: 0 as _, limit: 0 as _ }
+        Self {
+            cursor: 0 as _,
+            limit: 0 as _,
+        }
     }
 
     #[inline(always)]
@@ -50,7 +53,6 @@ impl BumpPointerLocal {
         self.alloc_slow_inline(bytes, align)
     }
 }
-
 
 pub struct BumpPointer;
 

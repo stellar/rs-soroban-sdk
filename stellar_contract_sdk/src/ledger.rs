@@ -1,4 +1,4 @@
-use crate::{Val,val::ValType,host};
+use crate::{host, val::ValType, Val};
 
 #[inline(always)]
 pub fn get_current_ledger_num() -> u32 {
