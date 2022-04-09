@@ -2,11 +2,11 @@
 use sdk::{Symbol, Val};
 use stellar_contract_sdk as sdk;
 
-const dataPoolAssetCirculatingKey: Val = Symbol::from_str("hello").into();
+const DATA_POOL_ASSET_CIRCULATING: Val = Val::from_symbol(Symbol::from_str("hello"));
 
 #[no_mangle]
 pub fn init(acc_id: Val, pool_asset: Val, asset_a: Val, asset_b: Val) -> Val {
-    sdk::ledger::put_contract_data(dataPoolAssetCirculatingKey, Val::from_u63(0));
+    sdk::ledger::put_contract_data(DATA_POOL_ASSET_CIRCULATING, Val::from_u63(0));
     todo!()
 }
 
