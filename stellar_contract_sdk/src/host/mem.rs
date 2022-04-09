@@ -157,7 +157,7 @@ impl MockHost for MemHost {
         let lk = self.current_contract_data_key(k);
         match self.ledger.get(&lk).expect("missing ledger key") {
             MemLedgerVal::ContractData(v) => v.clone(),
-            _ => panic!("wrong ledger key type")
+            _ => panic!("wrong ledger key type"),
         }
     }
 
