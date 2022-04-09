@@ -23,6 +23,17 @@ const SST_INVOKE_CONTRACT_RESULT: u32 = 5;
 pub const UNKNOWN_ERROR: Status =
     Status(unsafe { Val::from_body_and_tag(compose_status(SST_UNKNOWN, 0), TAG_STATUS) });
 
+#[cfg(not(target_family = "wasm"))]
+impl core::fmt::Debug for Status {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let (ty, code) = decompose_status(self.0.get_body());
+        f.debug_struct("Status")
+            .field("type", &ty)
+            .field("code", &code)
+            .finish()
+    }
+}
+
 impl ValType for Status {
     #[inline(always)]
     fn is_val_type(v: Val) -> bool {

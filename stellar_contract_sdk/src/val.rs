@@ -14,7 +14,7 @@ const STATIC_TRUE: u32 = 1;
 const STATIC_FALSE: u32 = 2;
 
 #[repr(transparent)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Val(u64);
 
 pub trait ValType: Into<Val> {
@@ -142,13 +142,6 @@ impl Val {
     #[inline(always)]
     fn is_u63(&self) -> bool {
         let is = (self.0 & 1) == 0;
-        /*
-        if is {
-            super::log_value(Symbol::from_str("is_u63").into());
-        } else {
-            super::log_value(Symbol::from_str("is_not_u63").into());
-        }
-        */
         is
     }
 

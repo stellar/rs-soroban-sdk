@@ -53,6 +53,29 @@ pub(crate) const OBJ_BIGNUM: u8 = 12;
 
 impl Object {
     #[inline(always)]
+    #[cfg(not(target_pointer_width = "64"))]
+    pub fn get_idx(&self) -> usize {
+        let body = self.0.get_body() >> 12;
+        (body <= usize::MAX as u64).or_abort();
+        body as usize
+    }
+
+    #[inline(always)]
+    #[cfg(target_pointer_width = "64")]
+    pub fn get_idx(&self) -> usize {
+        let body = self.0.get_body() >> 12;
+        body as usize
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    pub(crate) fn from_idx(idx: usize) -> Object {
+        let body = (idx as u64) << 12;
+        (((body >> 12) as usize) == idx).or_abort();
+        let v = unsafe { Val::from_body_and_tag(body, TAG_OBJECT) };
+        Object(v)
+    }
+
+    #[inline(always)]
     pub fn get_type(&self) -> u8 {
         (self.0.get_body() & 0xf) as u8
     }
