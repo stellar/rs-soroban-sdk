@@ -49,6 +49,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_liq_pool"
+version = "0.0.1"
+dependencies = [
+ "stellar_contract_sdk",
+]
+
+[[package]]
 name = "test_pay"
 version = "0.0.1"
 dependencies = [
