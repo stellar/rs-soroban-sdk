@@ -1,4 +1,3 @@
-
 #![cfg_attr(target_family = "wasm", no_std)]
 #![allow(dead_code)]
 
@@ -9,10 +8,11 @@
 mod bignum;
 mod bitset;
 
-#[cfg_attr(target_family = "wasm", path="host/wasm.rs")]
-#[cfg_attr(not(target_family = "wasm"), path="host/mock.rs")]
+#[cfg_attr(target_family = "wasm", path = "host/wasm.rs")]
+#[cfg_attr(not(target_family = "wasm"), path = "host/mock.rs")]
 mod host;
 
+pub mod ledger;
 mod map;
 mod object;
 mod or_abort;
@@ -20,7 +20,6 @@ mod result;
 mod rt;
 mod status;
 mod vec;
-pub mod ledger;
 
 mod symbol;
 mod val;
@@ -78,4 +77,3 @@ pub fn call4(contract: Val, func: Symbol, a: Val, b: Val, c: Val, d: Val) -> Val
 pub fn get_last_operation_result() -> OpResult {
     unsafe { OpResult::unchecked_from_obj(host::context::get_last_operation_result()) }
 }
-

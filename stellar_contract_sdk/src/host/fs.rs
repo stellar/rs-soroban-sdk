@@ -1,4 +1,3 @@
-
 use super::MockHost;
 
 pub struct FsHost {}

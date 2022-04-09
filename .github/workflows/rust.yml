@@ -1,0 +1,37 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update stable && rustup default stable
+    - run: find . -type f -name '*.rs' -print0 | xargs -I {} -0 rustfmt --check "{}"
+
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: wasm32-unknown-unknown
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update stable && rustup default stable
+    - run: rustup target add ${{ matrix.target }}
+    - run: cargo build --verbose --target ${{ matrix.target }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update stable && rustup default stable
+    - run: cargo test --verbose
