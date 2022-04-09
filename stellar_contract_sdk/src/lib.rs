@@ -12,6 +12,9 @@ mod bitset;
 #[cfg_attr(not(target_family = "wasm"), path = "host/mock.rs")]
 mod host;
 
+#[cfg(not(target_family = "wasm"))]
+pub use host::{swap_mock_host, MockHost};
+
 pub mod ledger;
 mod map;
 mod object;
