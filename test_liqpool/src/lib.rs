@@ -22,6 +22,7 @@ pub fn trade_fixed_in(src_acc_id: Val, asset_in: Val, amount_in: Val, asset_out:
     todo!()
 }
 
+#[no_mangle]
 pub fn trade_fixed_out(src_acc_id: Val, asset_in: Val, max_amount_in: Val, asset_out: Val, amount_out: Val) -> Val {
     todo!()
 }
