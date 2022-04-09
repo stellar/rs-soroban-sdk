@@ -27,12 +27,27 @@ pub fn invoke(k: Val, v: Val) -> Val {
     let m: Map<Symbol, u32> = Map::new();
     log_value(STEP3.into());
 
-    let m = m.put(k, v);
+    let m2 = m.put(k, v);
     log_value(STEP4.into());
 
     log_value(KEY.into());
     log_value(sdk::ledger::get_contract_data(KEY.into()));
 
-    let r: u32 = m.get(k);
+    let r: u32 = m2.get(k);
     (r + r).into()
+}
+
+#[cfg(test)]
+mod test {
+    use super::invoke;
+    use sdk::{Symbol, Val};
+    use stellar_contract_sdk as sdk;
+
+    #[test]
+    fn test() {
+        let sym: Symbol = Symbol::from_str("hello");
+        let val: Val = Val::from_u32(12);
+        let res: Val = invoke(sym.into(), val);
+        assert!(res == Val::from_u32(24))
+    }
 }
