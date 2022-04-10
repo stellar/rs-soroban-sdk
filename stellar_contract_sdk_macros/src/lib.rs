@@ -5,10 +5,7 @@ use core::panic;
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{
-    parse_macro_input, punctuated::Punctuated, token::Comma, FnArg, ItemFn, Pat, PatType,
-    ReturnType, Type,
-};
+use syn::{parse_macro_input, FnArg, ItemFn, Pat, PatType, ReturnType, Type};
 
 #[proc_macro_attribute]
 pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
@@ -41,18 +38,16 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         ),
     };
 
-    let param_idents= args
-        .iter()
-        .map(|f| {
-            if let &FnArg::Typed(pat_type) = &f {
-                if let Pat::Ident(pat_ident) = &*pat_type.pat {
-                    let i = &pat_ident.ident;
-                    let ts: TokenStream2 = quote! { #i.try_into().or_abort() }.into();
-                    return ts;
-                }
+    let param_idents = args.iter().map(|f| {
+        if let &FnArg::Typed(pat_type) = &f {
+            if let Pat::Ident(pat_ident) = &*pat_type.pat {
+                let i = &pat_ident.ident;
+                let ts: TokenStream2 = quote! { #i.try_into().or_abort() }.into();
+                return ts;
             }
-            panic!("This macro only accepts functions without a receiver.")
-        });
+        }
+        panic!("This macro only accepts functions without a receiver.")
+    });
 
     // TODO: Don't include the Val::from for () return types.
     let ts: TokenStream = quote! {
