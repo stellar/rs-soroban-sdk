@@ -32,9 +32,6 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         panic!("This macro only accepts functions without a receiver.")
     });
-    // TODO: Replace the manual punctuation with quote! #_,* syntax.
-    let mut wrap_args_punctuated: Punctuated<FnArg, Comma> = Punctuated::new();
-    wrap_args.for_each(|f| wrap_args_punctuated.push(f));
 
     let wrap_ret = match ret {
         ReturnType::Default => ret.clone(),
@@ -44,26 +41,25 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         ),
     };
 
-    let param_idents = args.iter().map(|f| {
-        if let &FnArg::Typed(pat_type) = &f {
-            if let Pat::Ident(pat_ident) = &*pat_type.pat {
-                let i = &pat_ident.ident;
-                // TODO: Add `.intro()` functions to types that or_abort().
-                return quote! { #i.try_into().or_abort() };
+    let param_idents= args
+        .iter()
+        .map(|f| {
+            if let &FnArg::Typed(pat_type) = &f {
+                if let Pat::Ident(pat_ident) = &*pat_type.pat {
+                    let i = &pat_ident.ident;
+                    let ts: TokenStream2 = quote! { #i.try_into().or_abort() }.into();
+                    return ts;
+                }
             }
-        }
-        panic!("This macro only accepts functions without a receiver.")
-    });
-    // TODO: Replace the manual punctuation with quote! #_,* syntax.
-    let mut params_punctuated: Punctuated<TokenStream2, Comma> = Punctuated::new();
-    param_idents.for_each(|i| params_punctuated.push(i.into()));
+            panic!("This macro only accepts functions without a receiver.")
+        });
 
     // TODO: Don't include the Val::from for () return types.
     let ts: TokenStream = quote! {
         #func
         #[no_mangle]
-        fn #wrap_ident(#wrap_args_punctuated) #wrap_ret {
-            return Val::from(#ident(#params_punctuated));
+        fn #wrap_ident(#(#wrap_args),*) #wrap_ret {
+            return Val::from(#ident(#(#param_idents),*));
         }
     }
     .into();
