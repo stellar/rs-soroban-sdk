@@ -36,7 +36,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     let wrap_ret = match ret {
         ReturnType::Default => ret.clone(),
-        ReturnType::Type(ra, ty) => ReturnType::Type(
+        ReturnType::Type(ra, _) => ReturnType::Type(
             *ra,
             Box::new(Type::Verbatim(TokenStream::from(quote! {Val}).into()).clone()),
         ),
@@ -46,7 +46,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         if let &FnArg::Typed(pat_type) = &f {
             if let Pat::Ident(pat_ident) = &*pat_type.pat {
                 let i = &pat_ident.ident;
-                return quote! { #i.into() };
+                return quote! { #i.try_into().or_abort() };
             }
         }
         // TODO: Make this work with functions with a receiver? Probably no value.
@@ -58,7 +58,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ts: TokenStream = quote! {
         #func
         fn #wrap_ident(#wrap_args_punctuated) #wrap_ret {
-            return Val.from(#ident(#params_punctuated));
+            return Val::from(#ident(#params_punctuated));
         }
     }
     .into();
