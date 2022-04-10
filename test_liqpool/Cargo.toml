@@ -1,5 +1,5 @@
 [package]
-name = "test_liq_pool"
+name = "test_liqpool"
 version = "0.0.1"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -10,3 +10,4 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 stellar_contract_sdk = {path = "../stellar_contract_sdk"}
+stellar_contract_sdk_macros = {path = "../stellar_contract_sdk_macros"}
