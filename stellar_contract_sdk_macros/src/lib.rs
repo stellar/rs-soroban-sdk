@@ -61,10 +61,13 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     // TODO: Don't include the Val::from for () return types.
     let ts: TokenStream = quote! {
         #func
+        #[no_mangle]
         fn #wrap_ident(#wrap_args_punctuated) #wrap_ret {
             return Val::from(#ident(#params_punctuated));
         }
     }
     .into();
+    // TODO: Remove before merge.
+    println!("{}", ts);
     ts
 }

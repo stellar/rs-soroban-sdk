@@ -3,7 +3,6 @@ use sdk::{OrAbort, Val};
 use stellar_contract_sdk as sdk;
 use stellar_contract_sdk_macros as sdkmacros;
 
-#[no_mangle]
 #[sdkmacros::contractfn]
 pub fn add(a: i32, b: i32) -> i32 {
     return a + b;
