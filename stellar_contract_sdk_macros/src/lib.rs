@@ -31,6 +31,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         // TODO: Make this work with functions with a receiver? Probably no value.
         panic!("wrapfn can only be used with fns not belonging to types")
     });
+    // TODO: Replace the manual punctuation with quote! #_,* syntax.
     let mut wrap_args_punctuated: Punctuated<FnArg, Comma> = Punctuated::new();
     wrap_args.for_each(|f| wrap_args_punctuated.push(f));
 
@@ -46,15 +47,18 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         if let &FnArg::Typed(pat_type) = &f {
             if let Pat::Ident(pat_ident) = &*pat_type.pat {
                 let i = &pat_ident.ident;
+                // TODO: Add `.intro()` functions to types that or_abort().
                 return quote! { #i.try_into().or_abort() };
             }
         }
         // TODO: Make this work with functions with a receiver? Probably no value.
         panic!("wrapfn can only be used with fns not belonging to types")
     });
+    // TODO: Replace the manual punctuation with quote! #_,* syntax.
     let mut params_punctuated: Punctuated<TokenStream2, Comma> = Punctuated::new();
     param_idents.for_each(|i| params_punctuated.push(i.into()));
 
+    // TODO: Don't include the Val::from for () return types.
     let ts: TokenStream = quote! {
         #func
         fn #wrap_ident(#wrap_args_punctuated) #wrap_ret {
