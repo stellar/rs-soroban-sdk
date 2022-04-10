@@ -59,6 +59,6 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
     .into();
     // TODO: Remove before merge.
-    println!("{}", ts);
+    // println!("{}", ts);
     ts
 }
