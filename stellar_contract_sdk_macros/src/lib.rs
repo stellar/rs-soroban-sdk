@@ -28,8 +28,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
                 ty: Box::new(Type::Verbatim(TokenStream::from(quote! {Val}).into()).clone()),
             });
         }
-        // TODO: Make this work with functions with a receiver? Probably no value.
-        panic!("wrapfn can only be used with fns not belonging to types")
+        panic!("This macro only accepts functions without a receiver.")
     });
     // TODO: Replace the manual punctuation with quote! #_,* syntax.
     let mut wrap_args_punctuated: Punctuated<FnArg, Comma> = Punctuated::new();
@@ -51,8 +50,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
                 return quote! { #i.try_into().or_abort() };
             }
         }
-        // TODO: Make this work with functions with a receiver? Probably no value.
-        panic!("wrapfn can only be used with fns not belonging to types")
+        panic!("This macro only accepts functions without a receiver.")
     });
     // TODO: Replace the manual punctuation with quote! #_,* syntax.
     let mut params_punctuated: Punctuated<TokenStream2, Comma> = Punctuated::new();
