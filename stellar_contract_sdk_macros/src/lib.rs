@@ -18,6 +18,8 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = &sig.inputs;
     let ret = &sig.output;
 
+    // TODO: Figure out a shorter safe prefix. I tried a dollar-sign prefix, but
+    // it didn't work on imports in tests. Ask @graydon.
     let wrap_ident = format_ident!("__cf_{}", ident);
     let wrap_args = args.iter().map(|f| {
         if let &FnArg::Typed(pat_type) = &f {
