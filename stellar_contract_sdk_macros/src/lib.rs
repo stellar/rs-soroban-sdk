@@ -58,7 +58,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ts: TokenStream = quote! {
         #func
         fn #wrap_ident(#wrap_args_punctuated) #wrap_ret {
-            return #ident(#params_punctuated);
+            return Val.from(#ident(#params_punctuated));
         }
     }
     .into();

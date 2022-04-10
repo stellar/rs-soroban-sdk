@@ -5,9 +5,9 @@ use stellar_contract_sdk_macros as sdkmacros;
 
 #[no_mangle]
 #[sdkmacros::contractfn]
-pub fn add(a: i64, b: i64) -> i64 {
-    let a: i64 = a.try_into().or_abort();
-    let b: i64 = b.try_into().or_abort();
+pub fn add(a: i32, b: i32) -> i32 {
+    let a: i32 = a.try_into().or_abort();
+    let b: i32 = b.try_into().or_abort();
 
     let c = a + b;
 
@@ -24,9 +24,9 @@ mod test {
     #[test]
     fn test_add() {
         assert_eq!(add(10, 12), 22);
-        let x: Val = Val::from_u63(10);
-        let y: Val = Val::from_u63(12);
-        let r: Val = Val::from_u63(22);
+        let x: Val = Val::from_i32(10);
+        let y: Val = Val::from_i32(12);
+        let r: Val = Val::from_i32(22);
         assert_eq!(__cf_add(x, y), r);
     }
 }
