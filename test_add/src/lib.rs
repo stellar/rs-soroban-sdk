@@ -6,12 +6,7 @@ use stellar_contract_sdk_macros as sdkmacros;
 #[no_mangle]
 #[sdkmacros::contractfn]
 pub fn add(a: i32, b: i32) -> i32 {
-    let a: i32 = a.try_into().or_abort();
-    let b: i32 = b.try_into().or_abort();
-
-    let c = a + b;
-
-    return c.try_into().or_abort();
+    return a + b;
 }
 
 #[cfg(test)]

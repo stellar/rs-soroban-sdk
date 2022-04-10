@@ -66,6 +66,5 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
     }
     .into();
-    println!("{}", ts);
     ts
 }
