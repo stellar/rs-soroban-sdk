@@ -47,6 +47,8 @@ pub trait MockHost {
     fn vec_insert(&mut self, v: Object, i: Val, n: Val) -> Object;
     fn vec_append(&mut self, v1: Object, v2: Object) -> Object;
 
+    fn pay(&mut self, src: Val, dst: Val, asset: Val, amount: Val) -> Val;
+    fn account_balance(&mut self, acc: Val, asset: Val) -> Val;
     fn get_contract_data(&mut self, k: Val) -> Val;
     fn put_contract_data(&mut self, k: Val, v: Val) -> Val;
     fn has_contract_data(&mut self, k: Val) -> Val;
@@ -180,11 +182,11 @@ pub(crate) mod ledger {
     // get_last_operation_result.
 
     pub(crate) unsafe fn pay(src: Val, dst: Val, asset: Val, amount: Val) -> Val {
-        todo!()
+        MOCK_HOST.with(|h| h.borrow_mut().pay(src, dst, asset, amount))
     }
 
-    pub(crate) unsafe fn account_balance(acc_id: Val, asset: Val) -> Val {
-        todo!()
+    pub(crate) unsafe fn account_balance(acc: Val, asset: Val) -> Val {
+        MOCK_HOST.with(|h| h.borrow_mut().account_balance(acc, asset))
     }
 
     pub(crate) unsafe fn put_contract_data(key: Val, val: Val) -> Val {

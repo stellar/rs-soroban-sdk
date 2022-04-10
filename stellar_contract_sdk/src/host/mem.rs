@@ -153,6 +153,14 @@ impl MockHost for MemHost {
         self.read_map_with(m, |mm| mm.contains_key(&k).into())
     }
 
+    fn pay(&mut self, src: Val, dst: Val, asset: Val, amount: Val) -> Val {
+        todo!()
+    }
+
+    fn account_balance(&mut self, acc: Val, asset: Val) -> Val {
+        todo!()
+    }
+
     fn get_contract_data(&mut self, k: Val) -> Val {
         let lk = self.current_contract_data_key(k);
         match self.ledger.get(&lk).expect("missing ledger key") {

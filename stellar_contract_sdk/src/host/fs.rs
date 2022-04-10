@@ -40,6 +40,14 @@ impl MockHost for FsHost {
         todo!()
     }
 
+    fn pay(&mut self, src: Val, dst: Val, asset: Val, amount: Val) -> Val {
+        todo!()
+    }
+
+    fn account_balance(&mut self, acc: Val, asset: Val) -> Val {
+        todo!()
+    }
+
     fn get_contract_data(&mut self, k: Val) -> Val {
         todo!()
     }

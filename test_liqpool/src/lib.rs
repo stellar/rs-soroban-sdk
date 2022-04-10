@@ -117,7 +117,10 @@ pub fn trade_fixed_out(
 
 #[cfg(test)]
 mod test {
-    use super::init;
+    use super::{
+        deposit, init, DATA_KEY_ACC_ID, DATA_KEY_ASSET_A, DATA_KEY_ASSET_B, DATA_KEY_ASSET_POOL,
+        DATA_KEY_ASSET_POOL_CIRCULATING,
+    };
     use sdk::{Symbol, Val};
     use stellar_contract_sdk as sdk;
 
@@ -128,7 +131,33 @@ mod test {
         let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
         let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
         let asset_b = Val::from_symbol(Symbol::from_str(&"assetB"));
-        let init_res = init(acc_id, pool_asset, asset_a, asset_b);
-        assert_eq!(init_res, Val::from_bool(true));
+        assert_eq!(
+            init(acc_id, pool_asset, asset_a, asset_b),
+            Val::from_bool(true)
+        );
+        assert_eq!(acc_id, sdk::ledger::get_contract_data(DATA_KEY_ACC_ID));
+        assert_eq!(
+            pool_asset,
+            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL)
+        );
+        assert_eq!(asset_a, sdk::ledger::get_contract_data(DATA_KEY_ASSET_A));
+        assert_eq!(asset_b, sdk::ledger::get_contract_data(DATA_KEY_ASSET_B));
+        assert_eq!(
+            Val::from_u63(0),
+            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING)
+        );
+    }
+
+    #[test]
+    fn test_deposit() {
+        // TODO: Figure out how to create AccountIds and Assets.
+        let acc_id = Val::from_symbol(Symbol::from_str(&"accP"));
+        let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
+        let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
+        let asset_b = Val::from_symbol(Symbol::from_str(&"assetB"));
+        assert_eq!(
+            init(acc_id, pool_asset, asset_a, asset_b),
+            Val::from_bool(true)
+        );
     }
 }
