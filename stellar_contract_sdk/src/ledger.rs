@@ -11,6 +11,11 @@ pub fn pay(src: Val, dst: Val, asset: Val, amount: Val) -> Val {
 }
 
 #[inline(always)]
+pub fn account_balance(acc_id: Val, asset: Val) -> Val {
+    unsafe { host::ledger::account_balance(acc_id, asset) }
+}
+
+#[inline(always)]
 pub fn put_contract_data(k: Val, v: Val) {
     unsafe { host::ledger::put_contract_data(k, v) };
 }
