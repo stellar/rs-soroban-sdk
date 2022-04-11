@@ -54,7 +54,10 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             #[no_mangle]
             #[link_name = #wrap_link_name]
             fn #wrap_ident(#(#wrap_inputs),*) -> Val {
-                Val::from(#ident(#(#wrap_call_inputs),*))
+                // TODO: Optimize this so that it is `try_from` for types that
+                // need it, and simply `from` for types that don't. It would
+                // remove the or_abort on most conversions.
+                Val::try_from(#ident(#(#wrap_call_inputs),*)).or_abort()
             }
         }
         .into(),

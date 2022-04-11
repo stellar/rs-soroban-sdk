@@ -24,6 +24,11 @@ fn typed_fn_val(v: Val, b: i32) -> Val {
 }
 
 #[sdkmacros::contractfn]
+fn typed_fn_try(a: i64) -> i64 {
+    return a;
+}
+
+#[sdkmacros::contractfn]
 fn default_fn() {}
 
 #[sdkmacros::contractfn]
@@ -40,8 +45,9 @@ mod test {
     use super::{
         contractfn_default_fn, contractfn_default_fn_one, contractfn_default_fn_two,
         contractfn_default_fn_val, contractfn_typed_fn, contractfn_typed_fn_one,
-        contractfn_typed_fn_two, contractfn_typed_fn_val, default_fn, default_fn_one,
-        default_fn_two, default_fn_val, typed_fn, typed_fn_one, typed_fn_two, typed_fn_val,
+        contractfn_typed_fn_try, contractfn_typed_fn_two, contractfn_typed_fn_val, default_fn,
+        default_fn_one, default_fn_two, default_fn_val, typed_fn, typed_fn_one, typed_fn_try,
+        typed_fn_two, typed_fn_val,
     };
     use sdk::Val;
     use stellar_contract_sdk as sdk;
@@ -74,6 +80,12 @@ mod test {
             contractfn_typed_fn_val(Val::from_i32(2), Val::from_i32(4)),
             Val::from_i32(6)
         );
+    }
+
+    #[test]
+    fn test_typed_fn_try() {
+        assert_eq!(typed_fn_try(2), 2);
+        assert_eq!(contractfn_typed_fn_try(Val::from_u63(2)), Val::from_u63(2));
     }
 
     #[test]
