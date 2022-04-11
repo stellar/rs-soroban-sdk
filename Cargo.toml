@@ -2,8 +2,6 @@
 
 members = [
     "stellar_contract_sdk",
-    "stellar_contract_sdk_macros",
-    "test_macros",
     "test_add",
     "test_bignum",
     "test_call_helper",
