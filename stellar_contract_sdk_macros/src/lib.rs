@@ -39,6 +39,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         panic!("This macro only accepts functions without a receiver.")
     });
+
     let ts: TokenStream = match output {
         ReturnType::Default => quote! {
             #func
@@ -58,7 +59,5 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         .into(),
     };
-    // TODO: Remove before merge.
-    // println!("{}", ts);
     ts
 }
