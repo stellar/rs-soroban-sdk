@@ -1,7 +1,6 @@
 #![no_std]
-use sdk::{OrAbort, Symbol, Val, Vec};
+use sdk::{OrAbort, Symbol, Val};
 use stellar_contract_sdk as sdk;
-use stellar_contract_sdk_macros as sdkmacros;
 
 // This contract is a WIP port of:
 // https://github.com/leighmcculloch/sjc-liqpool
@@ -14,21 +13,19 @@ const DATA_KEY_ASSET_A: Val = Val::from_symbol(Symbol::from_str("asseta"));
 const DATA_KEY_ASSET_B: Val = Val::from_symbol(Symbol::from_str("assetb"));
 
 // TODO: Define types for AccountId, and Asset.
-#[sdkmacros::contractfn]
-pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
+fn _init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> bool {
     // TODO: Wrap the config data values into a type.
     sdk::ledger::put_contract_data(DATA_KEY_ACC_ID, acc_id);
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL, asset_pool);
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING, Val::from_u63(0));
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_A, asset_a);
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_B, asset_b);
-    Val::from_bool(true)
+    true
 }
 
-#[sdkmacros::contractfn]
-pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
-    if amount_a == 0 || amount_b == 0 {
-        panic!("amounts must not be zero")
+fn _deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
+    if amount_a <= 0 || amount_b <= 0 {
+        panic!("amounts must be greater than zero")
     }
 
     let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
@@ -91,10 +88,9 @@ pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
     amount_pool
 }
 
-#[sdkmacros::contractfn]
-pub fn withdraw(src_acc_id: Val, amount_pool: i64) -> bool /* TODO: Vec<i64>*/ {
-    if amount_pool == 0 {
-        panic!("amount must not be zero")
+fn _withdraw(src_acc_id: Val, amount_pool: i64) -> bool {
+    if amount_pool <= 0 {
+        panic!("amount must be greater than zero")
     }
 
     let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
@@ -128,24 +124,25 @@ pub fn withdraw(src_acc_id: Val, amount_pool: i64) -> bool /* TODO: Vec<i64>*/ {
     sdk::ledger::pay(acc_id, src_acc_id, asset_a, amount_a.try_into().or_abort());
     sdk::ledger::pay(acc_id, src_acc_id, asset_b, amount_b.try_into().or_abort());
 
-    // TODO: Find out why i64 is not supported in Vec, but i32 is.
     // let res: Vec<i64> = Vec::new();
     // res.push(amount_a);
     // res.push(amount_b);
-    // res
+    // res.into()
     true
 }
 
-#[sdkmacros::contractfn]
-pub fn trade_fixed_in(
+fn _trade_fixed_in(
     src_acc_id: Val,
     asset_in: Val,
     amount_in: i64,
     asset_out: Val,
     min_amount_out: i64,
 ) -> i64 {
-    if amount_in == 0 {
-        panic!("amount in must not be zero")
+    if amount_in <= 0 {
+        panic!("amount in must be greater than zero")
+    }
+    if min_amount_out <= 0 {
+        panic!("min amount out must be zero or greater")
     }
 
     let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
@@ -191,8 +188,7 @@ pub fn trade_fixed_in(
     amount_out
 }
 
-#[sdkmacros::contractfn]
-pub fn trade_fixed_out(
+fn _trade_fixed_out(
     src_acc_id: Val,
     asset_in: Val,
     max_amount_in: i64,
@@ -249,7 +245,7 @@ pub fn trade_fixed_out(
 #[cfg(test)]
 mod test {
     use super::{
-        deposit, init, DATA_KEY_ACC_ID, DATA_KEY_ASSET_A, DATA_KEY_ASSET_B, DATA_KEY_ASSET_POOL,
+        _deposit, _init, DATA_KEY_ACC_ID, DATA_KEY_ASSET_A, DATA_KEY_ASSET_B, DATA_KEY_ASSET_POOL,
         DATA_KEY_ASSET_POOL_CIRCULATING,
     };
     use sdk::{Symbol, Val};
@@ -262,10 +258,7 @@ mod test {
         let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
         let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
         let asset_b = Val::from_symbol(Symbol::from_str(&"assetB"));
-        assert_eq!(
-            init(acc_id, pool_asset, asset_a, asset_b),
-            Val::from_bool(true)
-        );
+        assert_eq!(_init(acc_id, pool_asset, asset_a, asset_b), true);
         assert_eq!(acc_id, sdk::ledger::get_contract_data(DATA_KEY_ACC_ID));
         assert_eq!(
             pool_asset,
@@ -285,10 +278,62 @@ mod test {
         let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
         let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
         let asset_b = Val::from_symbol(Symbol::from_str(&"assetB"));
-        assert_eq!(
-            init(acc_id, pool_asset, asset_a, asset_b),
-            Val::from_bool(true)
-        );
-        assert_eq!(deposit(acc_id, 1000, 100), 30);
+        assert_eq!(_init(acc_id, pool_asset, asset_a, asset_b), true);
+        assert_eq!(_deposit(acc_id, 1000, 100), 30);
     }
+}
+
+#[no_mangle]
+pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
+    _init(acc_id, asset_pool, asset_a, asset_b).into()
+}
+#[no_mangle]
+pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
+    _deposit(
+        src_acc_id,
+        amount_a.try_into().or_abort(),
+        amount_b.try_into().or_abort(),
+    )
+    .try_into()
+    .or_abort()
+}
+#[no_mangle]
+pub fn withdraw(src_acc_id: Val, amount_pool: Val) -> Val {
+    _withdraw(src_acc_id, amount_pool.try_into().or_abort()).into()
+}
+#[no_mangle]
+pub fn trade_fixed_in(
+    src_acc_id: Val,
+    asset_in: Val,
+    amount_in: Val,
+    asset_out: Val,
+    min_amount_out: Val,
+) -> Val {
+    _trade_fixed_in(
+        src_acc_id,
+        asset_in,
+        amount_in.try_into().or_abort(),
+        asset_out,
+        min_amount_out.try_into().or_abort(),
+    )
+    .try_into()
+    .or_abort()
+}
+#[no_mangle]
+pub fn trade_fixed_out(
+    src_acc_id: Val,
+    asset_in: Val,
+    max_amount_in: Val,
+    asset_out: Val,
+    amount_out: Val,
+) -> Val {
+    _trade_fixed_out(
+        src_acc_id,
+        asset_in,
+        max_amount_in.try_into().or_abort(),
+        asset_out,
+        amount_out.try_into().or_abort(),
+    )
+    .try_into()
+    .or_abort()
 }
