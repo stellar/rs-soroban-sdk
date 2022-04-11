@@ -60,7 +60,7 @@ mod test {
 
     #[test]
     fn test_default_fn() {
-        assert_eq!(typed_fn(), ());
+        assert_eq!(default_fn(), ());
         assert_eq!(__cf_default_fn(), Val::from_void());
     }
 

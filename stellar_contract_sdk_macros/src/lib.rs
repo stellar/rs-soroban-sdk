@@ -29,16 +29,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         panic!("This macro only accepts functions without a receiver.")
     });
-
-    let wrap_output = match output {
-        ReturnType::Default => output.clone(),
-        ReturnType::Type(ra, _) => ReturnType::Type(
-            *ra,
-            Box::new(Type::Verbatim(TokenStream::from(quote! {Val}).into()).clone()),
-        ),
-    };
-
-    let param_idents = inputs.iter().map(|f| {
+    let wrap_call_inputs = inputs.iter().map(|f| {
         if let &FnArg::Typed(pat_type) = &f {
             if let Pat::Ident(pat_ident) = &*pat_type.pat {
                 let i = &pat_ident.ident;
@@ -48,16 +39,25 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         panic!("This macro only accepts functions without a receiver.")
     });
-
-    // TODO: Don't include the Val::from for () return types.
-    let ts: TokenStream = quote! {
-        #func
-        #[no_mangle]
-        fn #wrap_ident(#(#wrap_inputs),*) #wrap_output {
-            return Val::from(#ident(#(#param_idents),*));
+    let ts: TokenStream = match output {
+        ReturnType::Default => quote! {
+            #func
+            #[no_mangle]
+            fn #wrap_ident(#(#wrap_inputs),*) -> Val {
+                #ident(#(#wrap_call_inputs),*);
+                Val::from_void()
+            }
         }
-    }
-    .into();
+        .into(),
+        ReturnType::Type(_, _) => quote! {
+            #func
+            #[no_mangle]
+            fn #wrap_ident(#(#wrap_inputs),*) -> Val {
+                Val::from(#ident(#(#wrap_call_inputs),*))
+            }
+        }
+        .into(),
+    };
     // TODO: Remove before merge.
     // println!("{}", ts);
     ts
