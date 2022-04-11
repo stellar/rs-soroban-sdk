@@ -150,7 +150,6 @@ mod test {
 
     #[test]
     fn test_deposit() {
-        // TODO: Figure out how to create AccountIds and Assets.
         let acc_id = Val::from_symbol(Symbol::from_str(&"accP"));
         let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
         let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
@@ -159,5 +158,6 @@ mod test {
             init(acc_id, pool_asset, asset_a, asset_b),
             Val::from_bool(true)
         );
+        assert_eq!(deposit(acc_id, 1000, 100), Val::from_bool(true));
     }
 }
