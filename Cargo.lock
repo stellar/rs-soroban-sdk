@@ -137,7 +137,6 @@ name = "test_add"
 version = "0.0.1"
 dependencies = [
  "stellar_contract_sdk",
- "stellar_contract_sdk_macros",
 ]
 
 [[package]]
