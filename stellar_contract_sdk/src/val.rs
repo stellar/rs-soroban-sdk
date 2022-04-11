@@ -146,7 +146,7 @@ impl Val {
     }
 
     #[inline(always)]
-    pub fn as_u63(&self) -> i64 {
+    fn as_u63(&self) -> i64 {
         (self.0 >> 1) as i64
     }
 
