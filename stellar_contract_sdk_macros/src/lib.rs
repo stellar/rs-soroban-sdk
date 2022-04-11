@@ -22,7 +22,15 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
                 attrs: pat_type.attrs.clone(),
                 pat: pat_type.pat.clone(),
                 colon_token: pat_type.colon_token,
-                ty: Box::new(Type::Verbatim(TokenStream::from(quote! {Val}).into()).clone()),
+                ty: Box::new(
+                    Type::Verbatim(
+                        TokenStream::from(quote! {
+                            stellar_contract_sdk::Val
+                        })
+                        .into(),
+                    )
+                    .clone(),
+                ),
             });
         }
         panic!("This macro only accepts functions without a receiver.")
@@ -43,9 +51,9 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             #func
             #[no_mangle]
             #[link_name = #wrap_link_name]
-            fn #wrap_ident(#(#wrap_inputs),*) -> Val {
+            fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::Val {
                 #ident(#(#wrap_call_inputs),*);
-                Val::from_void()
+                stellar_contract_sdk::Val::from_void()
             }
         }
         .into(),
@@ -53,11 +61,11 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             #func
             #[no_mangle]
             #[link_name = #wrap_link_name]
-            fn #wrap_ident(#(#wrap_inputs),*) -> Val {
+            fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::Val {
                 // TODO: Optimize this so that it is `try_from` for types that
                 // need it, and simply `from` for types that don't. It would
                 // remove the or_abort on most conversions.
-                Val::try_from(#ident(#(#wrap_call_inputs),*)).or_abort()
+                stellar_contract_sdk::Val::try_from(#ident(#(#wrap_call_inputs),*)).or_abort()
             }
         }
         .into(),
