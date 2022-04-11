@@ -39,7 +39,10 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         if let &FnArg::Typed(pat_type) = &f {
             if let Pat::Ident(pat_ident) = &*pat_type.pat {
                 let i = &pat_ident.ident;
-                let ts: TokenStream2 = quote! { #i.try_into().or_abort() }.into();
+                let ts: TokenStream2 = quote! {
+                    <_ as stellar_contract_sdk::OrAbort>::or_abort(#i.try_into())
+                }
+                .into();
                 return ts;
             }
         }
@@ -65,7 +68,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
                 // TODO: Optimize this so that it is `try_from` for types that
                 // need it, and simply `from` for types that don't. It would
                 // remove the or_abort on most conversions.
-                stellar_contract_sdk::Val::try_from(#ident(#(#wrap_call_inputs),*)).or_abort()
+                <_ as stellar_contract_sdk::OrAbort>::or_abort(stellar_contract_sdk::Val::try_from(#ident(#(#wrap_call_inputs),*)))
             }
         }
         .into(),
