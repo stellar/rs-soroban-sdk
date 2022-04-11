@@ -1,5 +1,5 @@
 #![no_std]
-use sdk::{OrAbort, Val};
+use sdk::Val;
 use stellar_contract_sdk as sdk;
 use stellar_contract_sdk_macros as sdkmacros;
 
