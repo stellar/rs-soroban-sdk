@@ -3,6 +3,9 @@ use sdk::{OrAbort, Symbol, Val, Vec};
 use stellar_contract_sdk as sdk;
 use stellar_contract_sdk_macros as sdkmacros;
 
+// This contract is a WIP port of:
+// https://github.com/leighmcculloch/sjc-liqpool
+
 const DATA_KEY_ACC_ID: Val = Val::from_symbol(Symbol::from_str("accid"));
 const DATA_KEY_ASSET_POOL: Val = Val::from_symbol(Symbol::from_str("assetpool"));
 const DATA_KEY_ASSET_POOL_CIRCULATING: Val =
@@ -23,7 +26,7 @@ pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
 }
 
 #[sdkmacros::contractfn]
-pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> bool /* TODO: i64 */ {
+pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
     if amount_a == 0 || amount_b == 0 {
         panic!("amounts must not be zero")
     }
@@ -72,7 +75,7 @@ pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> bool /* TODO: i
 
     sdk::ledger::put_contract_data(
         DATA_KEY_ASSET_POOL_CIRCULATING,
-        amount_pool.try_into().or_abort(),
+        (asset_pool_circulating + amount_pool).try_into().or_abort(),
     );
 
     // TODO: Change pay to accept more specific types and native types.
@@ -135,24 +138,112 @@ pub fn withdraw(src_acc_id: Val, amount_pool: i64) -> bool /* TODO: Vec<i64>*/ {
 
 #[sdkmacros::contractfn]
 pub fn trade_fixed_in(
-    _src_acc_id: Val,
-    _asset_in: Val,
-    _amount_in: Val,
-    _asset_out: Val,
-    _min_amount_out: Val,
-) -> Val {
-    todo!()
+    src_acc_id: Val,
+    asset_in: Val,
+    amount_in: i64,
+    asset_out: Val,
+    min_amount_out: i64,
+) -> i64 {
+    if amount_in == 0 {
+        panic!("amount in must not be zero")
+    }
+
+    let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
+    let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
+    let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
+
+    if !((asset_in == asset_a && asset_out == asset_b)
+        || (asset_in == asset_b && asset_out == asset_a))
+    {
+        panic!("assets do not match pool")
+    }
+
+    let reserve_in: i64 = sdk::ledger::account_balance(acc_id, asset_in)
+        .try_into()
+        .or_abort();
+    let reserve_out: i64 = sdk::ledger::account_balance(acc_id, asset_out)
+        .try_into()
+        .or_abort();
+
+    // Calculate amount out to preserve current price.
+    //   (x+a)*(y-b)=x*y
+    //   b = (a*y)/(x+a)
+    // TODO: Fees.
+    let amount_out = (amount_in * reserve_out) / (reserve_in + amount_in);
+    if amount_out < min_amount_out {
+        panic!("min amount not met")
+    }
+
+    // TODO: Change pay to accept more specific types and native types.
+    // TODO: Handle return values and errors from pay?
+    sdk::ledger::pay(
+        src_acc_id,
+        acc_id,
+        asset_in,
+        amount_in.try_into().or_abort(),
+    );
+    sdk::ledger::pay(
+        acc_id,
+        src_acc_id,
+        asset_out,
+        amount_out.try_into().or_abort(),
+    );
+    amount_out
 }
 
 #[sdkmacros::contractfn]
 pub fn trade_fixed_out(
-    _src_acc_id: Val,
-    _asset_in: Val,
-    _max_amount_in: Val,
-    _asset_out: Val,
-    _amount_out: Val,
-) -> Val {
-    todo!()
+    src_acc_id: Val,
+    asset_in: Val,
+    max_amount_in: i64,
+    asset_out: Val,
+    amount_out: i64,
+) -> i64 {
+    if amount_out == 0 {
+        panic!("amount in must not be zero")
+    }
+
+    let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
+    let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
+    let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
+
+    if !((asset_in == asset_a && asset_out == asset_b)
+        || (asset_in == asset_b && asset_out == asset_a))
+    {
+        panic!("assets do not match pool")
+    }
+
+    let reserve_in: i64 = sdk::ledger::account_balance(acc_id, asset_in)
+        .try_into()
+        .or_abort();
+    let reserve_out: i64 = sdk::ledger::account_balance(acc_id, asset_out)
+        .try_into()
+        .or_abort();
+
+    // Calculate amount out to preserve current price.
+    //   (x+a)*(y-b)=x*y
+    //   a = (b*x)/(y-b)
+    // TODO: Fees.
+    let amount_in = (amount_out * reserve_in) / (reserve_out + amount_out);
+    if amount_in > max_amount_in {
+        panic!("max amount exceeded")
+    }
+
+    // TODO: Change pay to accept more specific types and native types.
+    // TODO: Handle return values and errors from pay?
+    sdk::ledger::pay(
+        src_acc_id,
+        acc_id,
+        asset_in,
+        amount_in.try_into().or_abort(),
+    );
+    sdk::ledger::pay(
+        acc_id,
+        src_acc_id,
+        asset_out,
+        amount_out.try_into().or_abort(),
+    );
+    amount_in
 }
 
 #[cfg(test)]
@@ -198,6 +289,6 @@ mod test {
             init(acc_id, pool_asset, asset_a, asset_b),
             Val::from_bool(true)
         );
-        assert_eq!(deposit(acc_id, 1000, 100), Val::from_bool(true));
+        assert_eq!(deposit(acc_id, 1000, 100), 30);
     }
 }
