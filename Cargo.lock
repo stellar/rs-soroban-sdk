@@ -137,7 +137,6 @@ name = "test_add"
 version = "0.0.1"
 dependencies = [
  "stellar_contract_sdk",
- "stellar_contract_sdk_macros",
 ]
 
 [[package]]
@@ -177,6 +176,14 @@ dependencies = [
 
 [[package]]
 name = "test_liqpool"
+version = "0.0.1"
+dependencies = [
+ "stellar_contract_sdk",
+ "stellar_contract_sdk_macros",
+]
+
+[[package]]
+name = "test_macros"
 version = "0.0.1"
 dependencies = [
  "stellar_contract_sdk",
