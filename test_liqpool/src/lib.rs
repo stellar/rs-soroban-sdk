@@ -1,5 +1,5 @@
 #![no_std]
-use sdk::{OrAbort, Symbol, Val};
+use sdk::{OrAbort, Symbol, Val, Vec};
 use stellar_contract_sdk as sdk;
 use stellar_contract_sdk_macros as sdkmacros;
 
@@ -23,7 +23,7 @@ pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
 }
 
 #[sdkmacros::contractfn]
-pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> Val {
+pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> bool /* TODO: i64 */ {
     if amount_a == 0 || amount_b == 0 {
         panic!("amounts must not be zero")
     }
@@ -76,7 +76,7 @@ pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> Val {
     );
 
     // TODO: Change pay to accept more specific types and native types.
-    // TODO: Handle return values from pay?
+    // TODO: Handle return values and errors from pay?
     sdk::ledger::pay(src_acc_id, acc_id, asset_a, amount_a.try_into().or_abort());
     sdk::ledger::pay(src_acc_id, acc_id, asset_b, amount_b.try_into().or_abort());
     sdk::ledger::pay(
@@ -85,12 +85,52 @@ pub fn deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> Val {
         asset_pool,
         amount_pool.try_into().or_abort(),
     );
-    Val::from_bool(true)
+    amount_pool
 }
 
 #[sdkmacros::contractfn]
-pub fn withdraw(_src_acc_id: Val, _pool_amount: Val) -> Val {
-    todo!()
+pub fn withdraw(src_acc_id: Val, amount_pool: i64) -> bool /* TODO: Vec<i64>*/ {
+    if amount_pool == 0 {
+        panic!("amount must not be zero")
+    }
+
+    let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
+    let asset_pool = sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL);
+    let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
+    let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
+
+    let asset_pool_circulating: i64 =
+        sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING)
+            .try_into()
+            .or_abort();
+    if asset_pool_circulating == 0 {
+        panic!("none of pool asset issued")
+    }
+    let reserve_a: i64 = sdk::ledger::account_balance(acc_id, asset_a)
+        .try_into()
+        .or_abort();
+    let reserve_b: i64 = sdk::ledger::account_balance(acc_id, asset_b)
+        .try_into()
+        .or_abort();
+
+    let amount_a = amount_pool * reserve_a / asset_pool_circulating;
+    let amount_b = amount_pool * reserve_b / asset_pool_circulating;
+
+    sdk::ledger::pay(
+        src_acc_id,
+        acc_id,
+        asset_pool,
+        amount_pool.try_into().or_abort(),
+    );
+    sdk::ledger::pay(acc_id, src_acc_id, asset_a, amount_a.try_into().or_abort());
+    sdk::ledger::pay(acc_id, src_acc_id, asset_b, amount_b.try_into().or_abort());
+
+    // TODO: Find out why i64 is not supported in Vec, but i32 is.
+    // let res: Vec<i64> = Vec::new();
+    // res.push(amount_a);
+    // res.push(amount_b);
+    // res
+    true
 }
 
 #[sdkmacros::contractfn]
