@@ -8,12 +8,12 @@
 mod bignum;
 mod bitset;
 
-#[cfg_attr(target_family = "wasm", path = "host/wasm.rs")]
-#[cfg_attr(not(target_family = "wasm"), path = "host/mock.rs")]
+#[cfg_attr(target_family = "wasm", path = "host.rs")]
+#[cfg_attr(not(target_family = "wasm"), path = "testing/host/mod.rs")]
 mod host;
 
-#[cfg(not(target_family = "wasm"))]
-pub use host::{swap_mock_host, MockHost};
+#[cfg_attr(not(target_family = "wasm"), path = "testing/mod.rs")]
+pub mod testing;
 
 pub mod ledger;
 mod map;
