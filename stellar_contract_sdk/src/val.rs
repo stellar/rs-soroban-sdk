@@ -89,8 +89,8 @@ impl TryFrom<i64> for Val {
 
     #[inline(always)]
     fn try_from(i: i64) -> Result<Self, Self::Error> {
-        if i > 0 {
-            Ok(Val::from_u63(i))
+        if i >= 0 {
+            Ok(Val((i as u64) << 1))
         } else {
             Err(status::UNKNOWN_ERROR)
         }
@@ -102,11 +102,10 @@ impl TryFrom<Val> for i64 {
 
     #[inline(always)]
     fn try_from(value: Val) -> Result<Self, Self::Error> {
-        if value.is_u63() {
-            Ok(value.as_u63())
-        } else {
-            Err(status::UNKNOWN_ERROR)
-        }
+        value
+            .is_u63()
+            .then(|| (value.raw() >> 1) as i64)
+            .ok_or(status::UNKNOWN_ERROR)
     }
 }
 
@@ -140,14 +139,19 @@ impl From<i32> for Val {
 
 impl Val {
     #[inline(always)]
-    fn is_u63(&self) -> bool {
+    fn raw(&self) -> u64 {
+        self.0
+    }
+
+    #[inline(always)]
+    pub fn is_u63(&self) -> bool {
         let is = (self.0 & 1) == 0;
         is
     }
 
     #[inline(always)]
-    fn as_u63(&self) -> i64 {
-        (self.0 >> 1) as i64
+    pub fn as_u63(&self) -> i64 {
+        (*self).try_into().or_abort()
     }
 
     #[inline(always)]
@@ -247,8 +251,7 @@ impl Val {
 
     #[inline(always)]
     pub fn from_u63(i: i64) -> Val {
-        (i >= 0).or_abort();
-        Val((i as u64) << 1)
+        i.try_into().or_abort()
     }
 
     #[inline(always)]
