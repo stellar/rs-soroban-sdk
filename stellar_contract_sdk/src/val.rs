@@ -42,7 +42,6 @@ declare_tryfrom!(());
 declare_tryfrom!(bool);
 declare_tryfrom!(i32);
 declare_tryfrom!(u32);
-declare_tryfrom!(i64);
 declare_tryfrom!(Object);
 declare_tryfrom!(Symbol);
 declare_tryfrom!(BitSet);
@@ -85,15 +84,6 @@ impl ValType for i32 {
     }
 }
 
-impl ValType for i64 {
-    fn is_val_type(v: Val) -> bool {
-        v.is_u63()
-    }
-    unsafe fn unchecked_from_val(v: Val) -> Self {
-        v.as_u63()
-    }
-}
-
 impl TryFrom<i64> for Val {
     type Error = Status;
 
@@ -101,6 +91,19 @@ impl TryFrom<i64> for Val {
     fn try_from(i: i64) -> Result<Self, Self::Error> {
         if i > 0 {
             Ok(Val::from_u63(i))
+        } else {
+            Err(status::UNKNOWN_ERROR)
+        }
+    }
+}
+
+impl TryFrom<Val> for i64 {
+    type Error = Status;
+
+    #[inline(always)]
+    fn try_from(value: Val) -> Result<Self, Self::Error> {
+        if value.is_u63() {
+            Ok(value.as_u63())
         } else {
             Err(status::UNKNOWN_ERROR)
         }
