@@ -229,6 +229,10 @@ pub(crate) mod bignum {
         todo!()
     }
 
+    pub(crate) unsafe fn from_i64(x: i64) -> Object {
+        todo!()
+    }
+
     pub(crate) unsafe fn add(lhs: Object, rhs: Object) -> Object {
         todo!()
     }
@@ -302,6 +306,18 @@ pub(crate) mod bignum {
     }
 
     pub(crate) unsafe fn sqrt(x: Object) -> Object {
+        todo!()
+    }
+
+    pub(crate) unsafe fn bits(x: Object) -> u64 {
+        todo!()
+    }
+
+    pub(crate) unsafe fn to_u64(x: Object) -> u64 {
+        todo!()
+    }
+
+    pub(crate) unsafe fn to_i64(x: Object) -> i64 {
         todo!()
     }
 }
