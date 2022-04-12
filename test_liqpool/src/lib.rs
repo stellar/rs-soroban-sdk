@@ -1,5 +1,5 @@
 #![no_std]
-use sdk::{OrAbort, Symbol, Val};
+use sdk::{BigNum, OrAbort, Symbol, Val};
 use stellar_contract_sdk as sdk;
 
 // This contract is a WIP port of:
@@ -47,7 +47,12 @@ fn _deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
     let amount_pool: i64 = match asset_pool_circulating {
         0 => {
             // TODO: Use BigNum instead of f64.sqrt().
-            (amount_a as f64 * amount_b as f64).sqrt() as i64
+            let u: u64 = (BigNum::from(amount_a as u64) * BigNum::from(amount_b as u64))
+                .sqrt()
+                .try_into()
+                .or_abort();
+            u as i64
+            //(amount_a as f64 * amount_b as f64).sqrt() as i64
         }
         _ => {
             let amount_pool_a = match reserve_a {
@@ -287,6 +292,7 @@ mod test {
 pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
     _init(acc_id, asset_pool, asset_a, asset_b).into()
 }
+
 #[no_mangle]
 pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
     _deposit(
@@ -297,10 +303,12 @@ pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
     .try_into()
     .or_abort()
 }
+
 #[no_mangle]
 pub fn withdraw(src_acc_id: Val, amount_pool: Val) -> Val {
     _withdraw(src_acc_id, amount_pool.try_into().or_abort()).into()
 }
+
 #[no_mangle]
 pub fn trade_fixed_in(
     src_acc_id: Val,
@@ -319,6 +327,7 @@ pub fn trade_fixed_in(
     .try_into()
     .or_abort()
 }
+
 #[no_mangle]
 pub fn trade_fixed_out(
     src_acc_id: Val,

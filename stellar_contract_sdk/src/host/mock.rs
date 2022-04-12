@@ -310,4 +310,8 @@ pub(crate) mod bignum {
     pub(crate) unsafe fn sqrt(x: Object) -> Object {
         todo!()
     }
+
+    pub(crate) unsafe fn as_u64(x: Object) -> u64 {
+        todo!()
+    }
 }

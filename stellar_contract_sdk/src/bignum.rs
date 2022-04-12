@@ -68,6 +68,15 @@ impl From<u64> for BigNum {
     }
 }
 
+impl TryFrom<BigNum> for u64 {
+    type Error = Status;
+
+    fn try_from(b: BigNum) -> Result<Self, Self::Error> {
+        // TODO: How to detect that it is too big for u64?
+        unsafe { Ok(host::bignum::as_u64(b.into())) }
+    }
+}
+
 impl Add for BigNum {
     type Output = BigNum;
     fn add(self, rhs: Self) -> Self::Output {

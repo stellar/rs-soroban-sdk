@@ -201,5 +201,7 @@ pub(crate) mod bignum {
         pub(crate) fn pow_mod(p: Object, q: Object, m: Object) -> Object;
         #[link_name = "$I"]
         pub(crate) fn sqrt(x: Object) -> Object;
+        #[link_name = "$J"]
+        pub(crate) fn as_u63(x: Object) -> u64;
     }
 }
