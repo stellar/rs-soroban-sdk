@@ -1,7 +1,7 @@
 use core::panic;
 
 use super::MockHost;
-use crate::{Object, OrAbort, Val};
+use crate::{status, Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
@@ -230,7 +230,7 @@ impl MockHost for MemHost {
             self.put_ledger_value(dst_tlk.clone(), MemLedgerVal::TrustLine(dst_new_bal));
         }
 
-        Val::from_bool(true)
+        status::OK.into()
     }
 
     fn account_balance(&mut self, acc: Object) -> Val {
