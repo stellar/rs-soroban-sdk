@@ -7,9 +7,9 @@ use num_bigint::BigInt;
 pub struct Address(pub Vec<u8>);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub struct Asset {
-    pub code: String,
-    pub issuer: Address,
+pub enum Asset {
+    Native,
+    Credit { code: String, issuer: Address },
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
@@ -163,11 +163,28 @@ impl MockHost for MemHost {
         self.read_map_with(m, |mm| mm.contains_key(&k).into())
     }
 
-    fn pay(&mut self, src: Val, dst: Val, asset: Val, amount: Val) -> Val {
+    fn pay(&mut self, src: Object, dst: Object, asset: Object, amount: Val) -> Val {
+        // TODO: get trustline for src,asset
+        // TODO: get trustline for dst,asset
+        // TODO: check amounts
+        // TODO: move the monies
         todo!()
     }
 
-    fn account_balance(&mut self, acc: Val, asset: Val) -> Val {
+    fn account_balance(&mut self, acc: Object) -> Val {
+        // TODO: get account for acc
+        // TODO: return bal
+        todo!()
+    }
+
+    fn account_trust_line(&mut self, acc: Object, asset: Object) -> Object {
+        // TODO: construct a mem ledger key and return it
+        todo!()
+    }
+
+    fn trust_line_balance(&mut self, tl: Object) -> Val {
+        // TODO: get trustline for src,asset
+        // TODO: return bal
         todo!()
     }
 

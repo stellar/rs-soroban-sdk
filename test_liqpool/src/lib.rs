@@ -108,10 +108,10 @@ fn _deposit(src_acc_id: Object, amount_a: i64, amount_b: i64) -> i64 {
         sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING)
             .try_into()
             .or_abort();
-    let reserve_a: i64 = sdk::ledger::account_balance(acc_id.into(), asset_a)
+    let reserve_a: i64 = sdk::ledger::trust_line_balance(acc_id.into(), asset_a)
         .try_into()
         .or_abort();
-    let reserve_b: i64 = sdk::ledger::account_balance(acc_id.into(), asset_b)
+    let reserve_b: i64 = sdk::ledger::trust_line_balance(acc_id.into(), asset_b)
         .try_into()
         .or_abort();
 
