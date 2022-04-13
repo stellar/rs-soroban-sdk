@@ -8,12 +8,13 @@
 mod bignum;
 mod bitset;
 
-#[cfg_attr(target_family = "wasm", path = "host.rs")]
-#[cfg_attr(not(target_family = "wasm"), path = "testing/host/mod.rs")]
+#[cfg(target_family = "wasm")]
 mod host;
 
-#[cfg_attr(not(target_family = "wasm"), path = "testing/mod.rs")]
+#[cfg(not(target_family = "wasm"))]
 pub mod testing;
+#[cfg(not(target_family = "wasm"))]
+use testing::host;
 
 pub mod ledger;
 mod map;
