@@ -1,3 +1,5 @@
+use core::panic;
+
 use super::MockHost;
 use crate::{Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
@@ -172,14 +174,21 @@ impl MockHost for MemHost {
             MemObj::LedgerKey(MemLedgerKey::Account(a)) => a.clone(),
             _ => panic!("wrong object type"),
         };
-        let asset = match self.get_obj(asset).expect("missing asset") {
-            MemObj::LedgerVal(MemLedgerVal::Asset(asset)) => asset.clone(),
+        let (asset_code, asset_issuer) = match self.get_obj(asset).expect("missing asset") {
+            MemObj::LedgerVal(MemLedgerVal::Asset(Asset::Credit { code, issuer })) => {
+                (code.clone(), issuer.clone())
+            }
+            MemObj::LedgerVal(MemLedgerVal::Asset(_)) => todo!(),
             _ => panic!("wrong object type"),
+        };
+        let asset = Asset::Credit {
+            code: asset_code.clone(),
+            issuer: asset_issuer.clone(),
         };
         let amount: i64 = amount.try_into().or_abort();
 
         let src_tlk = MemLedgerKey::TrustLine {
-            account: src_addr,
+            account: src_addr.clone(),
             asset: asset.clone(),
         };
         let dst_tlk = MemLedgerKey::TrustLine {
@@ -187,11 +196,15 @@ impl MockHost for MemHost {
             asset: asset.clone(),
         };
 
-        let src_bal = match self
-            .get_ledger_value(src_tlk.clone())
-            .expect("src does not have trust line")
-        {
-            MemLedgerVal::TrustLine(b) => b,
+        let src_bal = match self.get_ledger_value(src_tlk.clone()) {
+            Some(MemLedgerVal::TrustLine(b)) => Some(b),
+            None => {
+                if src_addr == asset_issuer {
+                    None
+                } else {
+                    panic!("src does not have trust line")
+                }
+            }
             _ => panic!("src wrong ledger entry type"),
         };
         let dst_bal = match self
@@ -202,17 +215,16 @@ impl MockHost for MemHost {
             _ => panic!("dst wrong ledger entry type"),
         };
 
-        if src_bal < amount {
-            panic!("src balance insufficient")
+        if let Some(src_bal) = src_bal {
+            assert!(src_bal >= amount, "src balance insufficient");
+            let src_new_bal = src_bal - amount;
+            self.put_ledger_value(src_tlk.clone(), MemLedgerVal::TrustLine(src_new_bal));
         }
 
-        let src_new_bal = src_bal - amount;
         let dst_new_bal = dst_bal.checked_add(amount).expect("dst balance overflow");
-
-        self.put_ledger_value(src_tlk.clone(), MemLedgerVal::TrustLine(src_new_bal));
         self.put_ledger_value(dst_tlk.clone(), MemLedgerVal::TrustLine(dst_new_bal));
 
-        todo!()
+        Val::from_bool(true)
     }
 
     fn account_balance(&mut self, acc: Object) -> Val {

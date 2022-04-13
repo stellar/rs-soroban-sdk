@@ -106,7 +106,7 @@ pub(crate) mod vec {
 
 // Ledger functions live in the wasm 'l' module
 pub(crate) mod ledger {
-    use crate::Val;
+    use crate::{Object, Val};
     #[link(wasm_import_module = "l")]
     extern "C" {
         #[link_name = "$_"]
