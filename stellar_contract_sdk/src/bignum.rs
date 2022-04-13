@@ -68,6 +68,40 @@ impl From<u64> for BigNum {
     }
 }
 
+impl From<BigNum> for u64 {
+    fn from(b: BigNum) -> Self {
+        unsafe { host::bignum::to_u64(b.into()) }
+    }
+}
+
+impl From<i64> for BigNum {
+    fn from(x: i64) -> Self {
+        unsafe { Self::unchecked_new(host::bignum::from_i64(x)) }
+    }
+}
+
+impl From<BigNum> for i64 {
+    fn from(b: BigNum) -> Self {
+        unsafe { host::bignum::to_i64(b.into()) }
+    }
+}
+
+impl From<u32> for BigNum {
+    fn from(x: u32) -> Self {
+        unsafe { Self::unchecked_new(host::bignum::from_u64(x.into())) }
+    }
+}
+
+// TODO: impl From<BigNum> for u32
+
+impl From<i32> for BigNum {
+    fn from(x: i32) -> Self {
+        unsafe { Self::unchecked_new(host::bignum::from_i64(x.into())) }
+    }
+}
+
+// TODO: impl From<BigNum> for i32
+
 impl Add for BigNum {
     type Output = BigNum;
     fn add(self, rhs: Self) -> Self::Output {
@@ -207,5 +241,9 @@ impl BigNum {
 
     pub fn is_zero(&self) -> bool {
         unsafe { <bool as ValType>::unchecked_from_val(host::bignum::is_zero((*self).into())) }
+    }
+
+    pub fn bits(&self) -> u64 {
+        unsafe { host::bignum::bits((*self).into()) }
     }
 }
