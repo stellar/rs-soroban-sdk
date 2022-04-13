@@ -363,15 +363,15 @@ mod test {
         let addr_u1 = Address("GU1".as_bytes().to_vec());
         let addr_u2 = Address("GU2".as_bytes().to_vec());
 
-        let asset_p = Asset {
+        let asset_p = Asset::Credit {
             code: "P".to_string(),
             issuer: addr_p.clone(),
         };
-        let asset_a = Asset {
+        let asset_a = Asset::Credit  {
             code: "A".to_string(),
             issuer: addr_a.clone(),
         };
-        let asset_b = Asset {
+        let asset_b = Asset::Credit  {
             code: "B".to_string(),
             issuer: addr_b.clone(),
         };
