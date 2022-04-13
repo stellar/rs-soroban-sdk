@@ -197,6 +197,10 @@ pub(crate) mod ledger {
         MOCK_HOST.with(|h| h.borrow_mut().account_balance(acc))
     }
 
+    pub(crate) unsafe fn account_trust_line(acc: Object, asset: Object) -> Object {
+        MOCK_HOST.with(|h| h.borrow_mut().account_trust_line(acc, asset))
+    }
+
     pub(crate) unsafe fn trust_line_balance(trust_line: Object) -> Val {
         MOCK_HOST.with(|h| h.borrow_mut().trust_line_balance(trust_line))
     }

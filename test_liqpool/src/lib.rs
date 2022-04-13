@@ -6,9 +6,9 @@ use stellar_contract_sdk as sdk;
 // https://github.com/leighmcculloch/sjc-liqpool
 
 #[no_mangle]
-pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
+pub fn init(acc: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
     _init(
-        acc_id.try_into().or_abort(),
+        acc.try_into().or_abort(),
         asset_pool.try_into().or_abort(),
         asset_a.try_into().or_abort(),
         asset_b.try_into().or_abort(),
@@ -17,9 +17,9 @@ pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
 }
 
 #[no_mangle]
-pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
+pub fn deposit(src_acc: Val, amount_a: Val, amount_b: Val) -> Val {
     _deposit(
-        src_acc_id.try_into().or_abort(),
+        src_acc.try_into().or_abort(),
         amount_a.try_into().or_abort(),
         amount_b.try_into().or_abort(),
     )
@@ -28,9 +28,9 @@ pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
 }
 
 #[no_mangle]
-pub fn withdraw(src_acc_id: Val, amount_pool: Val) -> Val {
+pub fn withdraw(src_acc: Val, amount_pool: Val) -> Val {
     _withdraw(
-        src_acc_id.try_into().or_abort(),
+        src_acc.try_into().or_abort(),
         amount_pool.try_into().or_abort(),
     )
     .into()
@@ -38,17 +38,17 @@ pub fn withdraw(src_acc_id: Val, amount_pool: Val) -> Val {
 
 #[no_mangle]
 pub fn trade_fixed_in(
-    src_acc_id: Val,
+    src_acc: Val,
     asset_in: Val,
     amount_in: Val,
     asset_out: Val,
     min_amount_out: Val,
 ) -> Val {
     _trade_fixed_in(
-        src_acc_id.try_into().or_abort(),
-        asset_in,
+        src_acc.try_into().or_abort(),
+        asset_in.try_into().or_abort(),
         amount_in.try_into().or_abort(),
-        asset_out,
+        asset_out.try_into().or_abort(),
         min_amount_out.try_into().or_abort(),
     )
     .try_into()
@@ -65,16 +65,16 @@ pub fn trade_fixed_out(
 ) -> Val {
     _trade_fixed_out(
         src_acc_id.try_into().or_abort(),
-        asset_in,
+        asset_in.try_into().or_abort(),
         max_amount_in.try_into().or_abort(),
-        asset_out,
+        asset_out.try_into().or_abort(),
         amount_out.try_into().or_abort(),
     )
     .try_into()
     .or_abort()
 }
 
-const DATA_KEY_ACC_ID: Val = Val::from_symbol(Symbol::from_str("accid"));
+const DATA_KEY_ACCOUNT: Val = Val::from_symbol(Symbol::from_str("accid"));
 const DATA_KEY_ASSET_POOL: Val = Val::from_symbol(Symbol::from_str("assetpool"));
 const DATA_KEY_ASSET_POOL_CIRCULATING: Val =
     Val::from_symbol(Symbol::from_str("assetpoolcirculating")); // TODO: This symbol seems too long, why does creating it not fail?
@@ -82,38 +82,46 @@ const DATA_KEY_ASSET_A: Val = Val::from_symbol(Symbol::from_str("asseta"));
 const DATA_KEY_ASSET_B: Val = Val::from_symbol(Symbol::from_str("assetb"));
 
 // TODO: Define types for AccountId, and Asset.
-fn _init(acc_id: Object, asset_pool: Object, asset_a: Object, asset_b: Object) -> bool {
+fn _init(acc: Object, asset_p: Object, asset_a: Object, asset_b: Object) -> bool {
     // TODO: Wrap the config data values into a type.
-    sdk::ledger::put_contract_data(DATA_KEY_ACC_ID, acc_id.into());
-    sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL, asset_pool.into());
+    sdk::ledger::put_contract_data(DATA_KEY_ACCOUNT, acc.into());
+    sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL, asset_p.into());
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING, Val::from_u63(0));
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_A, asset_a.into());
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_B, asset_b.into());
     true
 }
 
-fn _deposit(src_acc_id: Object, amount_a: i64, amount_b: i64) -> i64 {
+fn _deposit(src_acc: Object, amount_a: i64, amount_b: i64) -> i64 {
     if amount_a <= 0 || amount_b <= 0 {
         panic!("amounts must be greater than zero")
     }
 
-    let acc_id: Object = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID)
+    let acc: Object = sdk::ledger::get_contract_data(DATA_KEY_ACCOUNT)
         .try_into()
         .or_abort();
-    let asset_pool = sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL);
-    let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
-    let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
+    let asset_pool: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL)
+        .try_into()
+        .or_abort();
+    let asset_a: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A)
+        .try_into()
+        .or_abort();
+    let asset_b: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B)
+        .try_into()
+        .or_abort();
 
     let asset_pool_circulating: i64 =
         sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING)
             .try_into()
             .or_abort();
-    let reserve_a: i64 = sdk::ledger::trust_line_balance(acc_id.into(), asset_a)
-        .try_into()
-        .or_abort();
-    let reserve_b: i64 = sdk::ledger::trust_line_balance(acc_id.into(), asset_b)
-        .try_into()
-        .or_abort();
+    let reserve_a: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_a))
+            .try_into()
+            .or_abort();
+    let reserve_b: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_b))
+            .try_into()
+            .or_abort();
 
     let amount_pool: i64 = match asset_pool_circulating {
         0 => {
@@ -154,37 +162,43 @@ fn _deposit(src_acc_id: Object, amount_a: i64, amount_b: i64) -> i64 {
     // TODO: Change pay to accept more specific types and native types.
     // TODO: Handle return values and errors from pay?
     sdk::ledger::pay(
-        src_acc_id.into(),
-        acc_id.into(),
+        src_acc.into(),
+        acc.into(),
         asset_a,
         amount_a.try_into().or_abort(),
     );
     sdk::ledger::pay(
-        src_acc_id.into(),
-        acc_id.into(),
+        src_acc.into(),
+        acc.into(),
         asset_b,
         amount_b.try_into().or_abort(),
     );
     sdk::ledger::pay(
-        acc_id.into(),
-        src_acc_id.into(),
+        acc.into(),
+        src_acc.into(),
         asset_pool,
         amount_pool.try_into().or_abort(),
     );
     amount_pool
 }
 
-fn _withdraw(src_acc_id: Object, amount_pool: i64) -> bool {
+fn _withdraw(src_acc: Object, amount_pool: i64) -> bool {
     if amount_pool <= 0 {
         panic!("amount must be greater than zero")
     }
 
-    let acc_id: Object = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID)
+    let acc: Object = sdk::ledger::get_contract_data(DATA_KEY_ACCOUNT)
         .try_into()
         .or_abort();
-    let asset_pool = sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL);
-    let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
-    let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
+    let asset_pool: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL)
+        .try_into()
+        .or_abort();
+    let asset_a: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A)
+        .try_into()
+        .or_abort();
+    let asset_b: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B)
+        .try_into()
+        .or_abort();
 
     let asset_pool_circulating: i64 =
         sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING)
@@ -193,31 +207,33 @@ fn _withdraw(src_acc_id: Object, amount_pool: i64) -> bool {
     if asset_pool_circulating == 0 {
         panic!("none of pool asset issued")
     }
-    let reserve_a: i64 = sdk::ledger::account_balance(acc_id.into(), asset_a)
-        .try_into()
-        .or_abort();
-    let reserve_b: i64 = sdk::ledger::account_balance(acc_id.into(), asset_b)
-        .try_into()
-        .or_abort();
+    let reserve_a: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_a))
+            .try_into()
+            .or_abort();
+    let reserve_b: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_b))
+            .try_into()
+            .or_abort();
 
     let amount_a = amount_pool * reserve_a / asset_pool_circulating;
     let amount_b = amount_pool * reserve_b / asset_pool_circulating;
 
     sdk::ledger::pay(
-        src_acc_id.into(),
-        acc_id.into(),
+        src_acc.into(),
+        acc.into(),
         asset_pool,
         amount_pool.try_into().or_abort(),
     );
     sdk::ledger::pay(
-        acc_id.into(),
-        src_acc_id.into(),
+        acc.into(),
+        src_acc.into(),
         asset_a,
         amount_a.try_into().or_abort(),
     );
     sdk::ledger::pay(
-        acc_id.into(),
-        src_acc_id.into(),
+        acc.into(),
+        src_acc.into(),
         asset_b,
         amount_b.try_into().or_abort(),
     );
@@ -230,10 +246,10 @@ fn _withdraw(src_acc_id: Object, amount_pool: i64) -> bool {
 }
 
 fn _trade_fixed_in(
-    src_acc_id: Object,
-    asset_in: Val,
+    src_acc: Object,
+    asset_in: Object,
     amount_in: i64,
-    asset_out: Val,
+    asset_out: Object,
     min_amount_out: i64,
 ) -> i64 {
     if amount_in <= 0 {
@@ -243,9 +259,15 @@ fn _trade_fixed_in(
         panic!("min amount out must be zero or greater")
     }
 
-    let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
-    let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
-    let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
+    let acc: Object = sdk::ledger::get_contract_data(DATA_KEY_ACCOUNT)
+        .try_into()
+        .or_abort();
+    let asset_a: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A)
+        .try_into()
+        .or_abort();
+    let asset_b: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B)
+        .try_into()
+        .or_abort();
 
     if !((asset_in == asset_a && asset_out == asset_b)
         || (asset_in == asset_b && asset_out == asset_a))
@@ -253,12 +275,14 @@ fn _trade_fixed_in(
         panic!("assets do not match pool")
     }
 
-    let reserve_in: i64 = sdk::ledger::account_balance(acc_id, asset_in)
-        .try_into()
-        .or_abort();
-    let reserve_out: i64 = sdk::ledger::account_balance(acc_id, asset_out)
-        .try_into()
-        .or_abort();
+    let reserve_in: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_in))
+            .try_into()
+            .or_abort();
+    let reserve_out: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_out))
+            .try_into()
+            .or_abort();
 
     // Calculate amount out to preserve current price.
     //   (x+a)*(y-b)=x*y
@@ -272,14 +296,14 @@ fn _trade_fixed_in(
     // TODO: Change pay to accept more specific types and native types.
     // TODO: Handle return values and errors from pay?
     sdk::ledger::pay(
-        src_acc_id.into(),
-        acc_id.into(),
+        src_acc.into(),
+        acc.into(),
         asset_in,
         amount_in.try_into().or_abort(),
     );
     sdk::ledger::pay(
-        acc_id.into(),
-        src_acc_id.into(),
+        acc.into(),
+        src_acc.into(),
         asset_out,
         amount_out.try_into().or_abort(),
     );
@@ -287,21 +311,25 @@ fn _trade_fixed_in(
 }
 
 fn _trade_fixed_out(
-    src_acc_id: Object,
-    asset_in: Val,
+    src_acc: Object,
+    asset_in: Object,
     max_amount_in: i64,
-    asset_out: Val,
+    asset_out: Object,
     amount_out: i64,
 ) -> i64 {
     if amount_out == 0 {
         panic!("amount in must not be zero")
     }
 
-    let acc_id: Object = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID)
+    let acc: Object = sdk::ledger::get_contract_data(DATA_KEY_ACCOUNT)
         .try_into()
         .or_abort();
-    let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
-    let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
+    let asset_a: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A)
+        .try_into()
+        .or_abort();
+    let asset_b: Object = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B)
+        .try_into()
+        .or_abort();
 
     if !((asset_in == asset_a && asset_out == asset_b)
         || (asset_in == asset_b && asset_out == asset_a))
@@ -309,12 +337,14 @@ fn _trade_fixed_out(
         panic!("assets do not match pool")
     }
 
-    let reserve_in: i64 = sdk::ledger::account_balance(acc_id.into(), asset_in)
-        .try_into()
-        .or_abort();
-    let reserve_out: i64 = sdk::ledger::account_balance(acc_id.into(), asset_out)
-        .try_into()
-        .or_abort();
+    let reserve_in: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_in))
+            .try_into()
+            .or_abort();
+    let reserve_out: i64 =
+        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(acc, asset_out))
+            .try_into()
+            .or_abort();
 
     // Calculate amount out to preserve current price.
     //   (x+a)*(y-b)=x*y
@@ -327,18 +357,8 @@ fn _trade_fixed_out(
 
     // TODO: Change pay to accept more specific types and native types.
     // TODO: Handle return values and errors from pay?
-    sdk::ledger::pay(
-        src_acc_id.into(),
-        acc_id.into(),
-        asset_in,
-        amount_in.try_into().or_abort(),
-    );
-    sdk::ledger::pay(
-        acc_id.into(),
-        src_acc_id.into(),
-        asset_out,
-        amount_out.try_into().or_abort(),
-    );
+    sdk::ledger::pay(src_acc, acc, asset_in, amount_in.try_into().or_abort());
+    sdk::ledger::pay(acc, src_acc, asset_out, amount_out.try_into().or_abort());
     amount_in
 }
 
@@ -367,11 +387,11 @@ mod test {
             code: "P".to_string(),
             issuer: addr_p.clone(),
         };
-        let asset_a = Asset::Credit  {
+        let asset_a = Asset::Credit {
             code: "A".to_string(),
             issuer: addr_a.clone(),
         };
-        let asset_b = Asset::Credit  {
+        let asset_b = Asset::Credit {
             code: "B".to_string(),
             issuer: addr_b.clone(),
         };

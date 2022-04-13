@@ -16,6 +16,11 @@ pub fn account_balance(acc: Object) -> Val {
 }
 
 #[inline(always)]
+pub fn account_trust_line(acc: Object, asset: Object) -> Object {
+    unsafe { host::ledger::account_trust_line(acc, asset) }
+}
+
+#[inline(always)]
 pub fn trust_line_balance(trust_line: Object) -> Val {
     unsafe { host::ledger::trust_line_balance(trust_line) }
 }

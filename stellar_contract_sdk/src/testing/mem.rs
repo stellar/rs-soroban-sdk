@@ -1,5 +1,5 @@
 use super::MockHost;
-use crate::{Object, Val};
+use crate::{Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
@@ -172,20 +172,34 @@ impl MockHost for MemHost {
     }
 
     fn account_balance(&mut self, acc: Object) -> Val {
-        // TODO: get account for acc
-        // TODO: return bal
         todo!()
     }
 
     fn account_trust_line(&mut self, acc: Object, asset: Object) -> Object {
-        // TODO: construct a mem ledger key and return it
-        todo!()
+        let acc_addr = match self.get_obj(acc).expect("missing account") {
+            MemObj::LedgerKey(MemLedgerKey::Account(addr)) => addr.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let asset = match self.get_obj(asset).expect("missing asset") {
+            MemObj::LedgerVal(MemLedgerVal::Asset(asset)) => asset.clone(),
+            _ => panic!("wrong object type"),
+        };
+        self.put_obj(MemObj::LedgerKey(MemLedgerKey::TrustLine {
+            account: acc_addr,
+            asset: asset,
+        }))
     }
 
     fn trust_line_balance(&mut self, tl: Object) -> Val {
-        // TODO: get trustline for src,asset
-        // TODO: return bal
-        todo!()
+        let lk = match self.get_obj(tl).expect("missing trust line") {
+            MemObj::LedgerKey(lk) => lk.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let bal = match self.ledger.get(&lk).expect("missing ledger key") {
+            MemLedgerVal::TrustLine(bal) => *bal,
+            _ => panic!("wrong ledger key type"),
+        };
+        bal.try_into().or_abort()
     }
 
     fn get_contract_data(&mut self, k: Val) -> Val {
