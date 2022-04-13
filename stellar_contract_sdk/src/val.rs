@@ -160,7 +160,7 @@ impl Val {
     }
 
     #[inline(always)]
-    pub(crate) fn get_body(&self) -> u64 {
+    pub(crate) const fn get_body(&self) -> u64 {
         self.0 >> 4
     }
 
