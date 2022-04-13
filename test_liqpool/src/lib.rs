@@ -336,25 +336,54 @@ mod test {
     #[test]
     fn test_deposit() {
         let mut host = MemHost::new();
-        let acc_id = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Account(Address(
-            "GP".as_bytes().to_vec(),
-        ))));
-        let asset_pool = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
-            "P".to_string(),
-            Address("GP".as_bytes().to_vec()),
-        ))));
-        let asset_a = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
-            "A".to_string(),
-            Address("GA".as_bytes().to_vec()),
-        ))));
-        let asset_b = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
-            "B".to_string(),
-            Address("GB".as_bytes().to_vec()),
-        ))));
+
+        let addr_p = Address("GP".as_bytes().to_vec());
+        let addr_a = Address("GA".as_bytes().to_vec());
+        let addr_b = Address("GB".as_bytes().to_vec());
+        let addr_u1 = Address("GU1".as_bytes().to_vec());
+        let addr_u2 = Address("GU2".as_bytes().to_vec());
+
+        let acc_p_key = MemLedgerKey::Account(addr_p.clone());
+        host.put_ledger_value(acc_p_key, MemLedgerVal::Account(0));
+        let acc_p_tl_a_key = MemLedgerKey::TrustLine {
+            account: addr_p.clone(),
+            code: "A".to_string(),
+            issuer: addr_a.clone(),
+        };
+        host.put_ledger_value(acc_p_tl_a_key, MemLedgerVal::TrustLine(0));
+        let acc_p_tl_b_key = MemLedgerKey::TrustLine {
+            account: addr_p.clone(),
+            code: "B".to_string(),
+            issuer: addr_b.clone(),
+        };
+        host.put_ledger_value(acc_p_tl_b_key, MemLedgerVal::TrustLine(0));
+
+        let acc_u1_key = MemLedgerKey::Account(addr_u1.clone());
+        host.put_ledger_value(acc_u1_key, MemLedgerVal::Account(0));
+        let acc_u1_tl_a_key = MemLedgerKey::TrustLine {
+            account: addr_u1.clone(),
+            code: "A".to_string(),
+            issuer: addr_a.clone(),
+        };
+        host.put_ledger_value(acc_u1_tl_a_key, MemLedgerVal::TrustLine(0));
+        let acc_u1_tl_b_key = MemLedgerKey::TrustLine {
+            account: addr_u1.clone(),
+            code: "B".to_string(),
+            issuer: addr_b.clone(),
+        };
+        host.put_ledger_value(acc_u1_tl_b_key, MemLedgerVal::TrustLine(0));
+
+        let acc_id_obj = host.put_obj(MemObj::LedgerKey(acc_p_key));
+        let asset_p_obj = host.put_obj(MemObj::LedgerKey(asset_p));
+        let asset_a_obj = host.put_obj(MemObj::LedgerKey(asset_a));
+        let asset_b_obj = host.put_obj(MemObj::LedgerKey(asset_b));
         let og_host = swap_mock_host(Box::new(host));
 
-        assert_eq!(_init(acc_id, asset_pool, asset_a, asset_b), true);
-        assert_eq!(_deposit(acc_id, 1000, 100), 30);
+        assert_eq!(
+            _init(acc_id_obj, asset_p_obj, asset_a_obj, asset_b_obj),
+            true
+        );
+        assert_eq!(_deposit(acc_id_obj, 1000, 100), 30);
 
         swap_mock_host(og_host);
     }

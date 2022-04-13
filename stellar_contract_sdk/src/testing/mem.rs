@@ -14,7 +14,11 @@ pub struct ContractKey(Address, ContractID);
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerKey {
     Account(Address),
-    Asset((String, Address)),
+    TrustLine {
+        account: Address,
+        code: String,
+        issuer: Address,
+    },
     ContractCode(ContractKey),
     ContractData(ContractKey, Val),
 }
@@ -22,6 +26,7 @@ pub enum MemLedgerKey {
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerVal {
     Account(i64),
+    TrustLine(i64),
     ContractData(Val),
 }
 
@@ -292,5 +297,13 @@ impl MemHost {
         } else {
             None
         }
+    }
+
+    pub fn put_ledger_value(&mut self, k: MemLedgerKey, v: MemLedgerVal) {
+        self.ledger.insert(k, v);
+    }
+
+    pub fn get_ledger_value(&mut self, k: MemLedgerKey) -> Option<MemLedgerVal> {
+        self.ledger.get(&k).map(|v| v.clone())
     }
 }
