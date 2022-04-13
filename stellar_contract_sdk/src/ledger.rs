@@ -1,4 +1,4 @@
-use crate::{host, val::ValType, Val};
+use crate::{host, val::ValType, Object, Val};
 
 #[inline(always)]
 pub fn get_current_ledger_num() -> u32 {
@@ -6,8 +6,23 @@ pub fn get_current_ledger_num() -> u32 {
 }
 
 #[inline(always)]
-pub fn pay(src: Val, dst: Val, asset: Val, amount: Val) -> Val {
+pub fn pay(src: Object, dst: Object, asset: Object, amount: Val) -> Val {
     unsafe { host::ledger::pay(src, dst, asset, amount) }
+}
+
+#[inline(always)]
+pub fn account_balance(acc: Object) -> Val {
+    unsafe { host::ledger::account_balance(acc) }
+}
+
+#[inline(always)]
+pub fn account_trust_line(acc: Object, asset: Object) -> Object {
+    unsafe { host::ledger::account_trust_line(acc, asset) }
+}
+
+#[inline(always)]
+pub fn trust_line_balance(trust_line: Object) -> Val {
+    unsafe { host::ledger::trust_line_balance(trust_line) }
 }
 
 #[inline(always)]

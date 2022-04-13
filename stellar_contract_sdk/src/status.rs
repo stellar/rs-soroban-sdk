@@ -18,6 +18,8 @@ const SST_INVOKE_CONTRACT_RESULT: u32 = 5;
 
 pub const UNKNOWN_ERROR: Status =
     Status(unsafe { Val::from_body_and_tag(compose_status(SST_UNKNOWN, 0), TAG_STATUS) });
+pub const OK: Status =
+    Status(unsafe { Val::from_body_and_tag(compose_status(SST_OK, 0), TAG_STATUS) });
 
 impl ValType for Status {
     #[inline(always)]

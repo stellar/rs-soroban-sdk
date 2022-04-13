@@ -1,5 +1,7 @@
+use core::panic;
+
 use super::MockHost;
-use crate::{Object, Val};
+use crate::{Object, OrAbort, Status, Val, status};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
@@ -7,9 +9,9 @@ use num_bigint::BigInt;
 pub struct Address(pub Vec<u8>);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub struct Asset {
-    pub code: String,
-    pub issuer: Address,
+pub enum Asset {
+    Native,
+    Credit { code: String, issuer: Address },
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
@@ -161,6 +163,105 @@ impl MockHost for MemHost {
 
     fn map_has(&mut self, m: Object, k: Val) -> Val {
         self.read_map_with(m, |mm| mm.contains_key(&k).into())
+    }
+
+    fn pay(&mut self, src: Object, dst: Object, asset: Object, amount: Val) -> Val {
+        let src_addr = match self.get_obj(src).expect("missing account") {
+            MemObj::LedgerKey(MemLedgerKey::Account(a)) => a.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let dst_addr = match self.get_obj(dst).expect("missing account") {
+            MemObj::LedgerKey(MemLedgerKey::Account(a)) => a.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let (asset_code, asset_issuer) = match self.get_obj(asset).expect("missing asset") {
+            MemObj::LedgerVal(MemLedgerVal::Asset(Asset::Credit { code, issuer })) => {
+                (code.clone(), issuer.clone())
+            }
+            MemObj::LedgerVal(MemLedgerVal::Asset(_)) => todo!(),
+            _ => panic!("wrong object type"),
+        };
+        let asset = Asset::Credit {
+            code: asset_code.clone(),
+            issuer: asset_issuer.clone(),
+        };
+        let amount: i64 = amount.try_into().or_abort();
+
+        let src_tlk = MemLedgerKey::TrustLine {
+            account: src_addr.clone(),
+            asset: asset.clone(),
+        };
+        let dst_tlk = MemLedgerKey::TrustLine {
+            account: dst_addr.clone(),
+            asset: asset.clone(),
+        };
+
+        let src_bal = match self.get_ledger_value(src_tlk.clone()) {
+            Some(MemLedgerVal::TrustLine(b)) => Some(b),
+            None => {
+                if src_addr == asset_issuer {
+                    None
+                } else {
+                    panic!("src does not have trust line")
+                }
+            }
+            _ => panic!("src wrong ledger entry type"),
+        };
+        let dst_bal = match self.get_ledger_value(dst_tlk.clone()) {
+            Some(MemLedgerVal::TrustLine(b)) => Some(b),
+            None => {
+                if dst_addr == asset_issuer {
+                    None
+                } else {
+                    panic!("dst does not have trust line")
+                }
+            }
+            _ => panic!("dst wrong ledger entry type"),
+        };
+
+        if let Some(src_bal) = src_bal {
+            assert!(src_bal >= amount, "src balance insufficient");
+            let src_new_bal = src_bal - amount;
+            self.put_ledger_value(src_tlk.clone(), MemLedgerVal::TrustLine(src_new_bal));
+        }
+
+        if let Some(dst_bal) = dst_bal {
+            let dst_new_bal = dst_bal.checked_add(amount).expect("dst balance overflow");
+            self.put_ledger_value(dst_tlk.clone(), MemLedgerVal::TrustLine(dst_new_bal));
+        }
+
+        status::OK.into()
+    }
+
+    fn account_balance(&mut self, acc: Object) -> Val {
+        todo!()
+    }
+
+    fn account_trust_line(&mut self, acc: Object, asset: Object) -> Object {
+        let acc_addr = match self.get_obj(acc).expect("missing account") {
+            MemObj::LedgerKey(MemLedgerKey::Account(addr)) => addr.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let asset = match self.get_obj(asset).expect("missing asset") {
+            MemObj::LedgerVal(MemLedgerVal::Asset(asset)) => asset.clone(),
+            _ => panic!("wrong object type"),
+        };
+        self.put_obj(MemObj::LedgerKey(MemLedgerKey::TrustLine {
+            account: acc_addr,
+            asset: asset,
+        }))
+    }
+
+    fn trust_line_balance(&mut self, tl: Object) -> Val {
+        let lk = match self.get_obj(tl).expect("missing trust line") {
+            MemObj::LedgerKey(lk) => lk.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let bal = match self.ledger.get(&lk).expect("missing ledger key") {
+            MemLedgerVal::TrustLine(bal) => *bal,
+            _ => panic!("wrong ledger key type"),
+        };
+        bal.try_into().or_abort()
     }
 
     fn get_contract_data(&mut self, k: Val) -> Val {
