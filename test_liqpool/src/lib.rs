@@ -78,9 +78,7 @@ const DATA_KEY_ASSET_POOL_CIRCULATING: Val =
 const DATA_KEY_ASSET_A: Val = Val::from_symbol(Symbol::from_str("asseta"));
 const DATA_KEY_ASSET_B: Val = Val::from_symbol(Symbol::from_str("assetb"));
 
-// TODO: Define types for AccountId, and Asset.
 fn _init(acc: Object, asset_p: Object, asset_a: Object, asset_b: Object) -> bool {
-    // TODO: Wrap the config data values into a type.
     sdk::ledger::put_contract_data(DATA_KEY_ACCOUNT, acc.into());
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL, asset_p.into());
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING, Val::from_u63(0));
@@ -174,8 +172,6 @@ fn _deposit(src_acc: Object, amount_a: i64, amount_b: i64) -> i64 {
         (asset_pool_circulating + amount_pool).try_into().or_abort(),
     );
 
-    // TODO: Change pay to accept more specific types and native types.
-    // TODO: Handle return values and errors from pay?
     sdk::ledger::pay(
         src_acc.into(),
         acc.into(),
@@ -194,6 +190,7 @@ fn _deposit(src_acc: Object, amount_a: i64, amount_b: i64) -> i64 {
         asset_pool,
         amount_pool.try_into().or_abort(),
     );
+
     amount_pool
 }
 
