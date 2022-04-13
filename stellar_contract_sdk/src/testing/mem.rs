@@ -1,7 +1,7 @@
 use core::panic;
 
 use super::MockHost;
-use crate::{Object, OrAbort, Status, Val, status};
+use crate::{status, Object, OrAbort, Status, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
