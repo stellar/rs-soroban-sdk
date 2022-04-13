@@ -2,9 +2,6 @@
 use sdk::{Object, OrAbort, Symbol, Val};
 use stellar_contract_sdk as sdk;
 
-// This contract is a WIP port of:
-// https://github.com/leighmcculloch/sjc-liqpool
-
 #[no_mangle]
 pub fn init(acc: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
     _init(
