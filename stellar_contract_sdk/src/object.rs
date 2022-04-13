@@ -2,7 +2,7 @@ use super::val::{ValType, TAG_OBJECT};
 use super::{OrAbort, Val};
 
 #[repr(transparent)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Object(Val);
 
 impl ValType for Object {

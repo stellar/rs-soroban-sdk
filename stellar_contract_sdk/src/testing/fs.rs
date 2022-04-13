@@ -40,6 +40,22 @@ impl MockHost for FsHost {
         todo!()
     }
 
+    fn pay(&mut self, src: Object, dst: Object, asset: Object, amount: Val) -> Val {
+        todo!()
+    }
+
+    fn account_balance(&mut self, acc: Object) -> Val {
+        todo!()
+    }
+
+    fn account_trust_line(&mut self, acc: Object, asset: Object) -> Object {
+        todo!()
+    }
+
+    fn trust_line_balance(&mut self, tl: Object) -> Val {
+        todo!()
+    }
+
     fn get_contract_data(&mut self, k: Val) -> Val {
         todo!()
     }

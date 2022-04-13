@@ -106,7 +106,7 @@ pub(crate) mod vec {
 
 // Ledger functions live in the wasm 'l' module
 pub(crate) mod ledger {
-    use crate::Val;
+    use crate::{Object, Val};
     #[link(wasm_import_module = "l")]
     extern "C" {
         #[link_name = "$_"]
@@ -119,7 +119,7 @@ pub(crate) mod ledger {
         // NB: returns a Status; details can be fetched with
         // get_last_operation_result.
         #[link_name = "$1"]
-        pub(crate) fn pay(src: Val, dst: Val, asset: Val, amount: Val) -> Val;
+        pub(crate) fn pay(src: Object, dst: Object, asset: Object, amount: Val) -> Val;
 
         #[link_name = "$2"]
         pub(crate) fn put_contract_data(key: Val, val: Val) -> Val;
@@ -129,6 +129,15 @@ pub(crate) mod ledger {
         pub(crate) fn get_contract_data(key: Val) -> Val;
         #[link_name = "$5"]
         pub(crate) fn del_contract_data(key: Val) -> Val;
+
+        #[link_name = "$6"]
+        pub(crate) fn account_balance(acc: Object) -> Val;
+
+        #[link_name = "$7"]
+        pub(crate) fn account_trust_line(acc: Object, asset: Object) -> Object;
+
+        #[link_name = "$8"]
+        pub(crate) fn trust_line_balance(tl: Object) -> Val;
     }
 }
 

@@ -53,6 +53,10 @@ pub trait MockHost {
     fn vec_insert(&mut self, v: Object, i: Val, n: Val) -> Object;
     fn vec_append(&mut self, v1: Object, v2: Object) -> Object;
 
+    fn pay(&mut self, src: Object, dst: Object, asset: Object, amount: Val) -> Val;
+    fn account_balance(&mut self, acc: Object) -> Val;
+    fn account_trust_line(&mut self, acc: Object, asset: Object) -> Object;
+    fn trust_line_balance(&mut self, tl: Object) -> Val;
     fn get_contract_data(&mut self, k: Val) -> Val;
     fn put_contract_data(&mut self, k: Val, v: Val) -> Val;
     fn has_contract_data(&mut self, k: Val) -> Val;
@@ -171,7 +175,7 @@ pub(crate) mod vec {
 
 pub(crate) mod ledger {
     use super::MOCK_HOST;
-    use crate::Val;
+    use crate::{Object, Val};
     pub(crate) unsafe fn get_current_ledger_num() -> Val {
         todo!()
     }
@@ -185,8 +189,20 @@ pub(crate) mod ledger {
     // NB: returns a Status; details can be fetched with
     // get_last_operation_result.
 
-    pub(crate) unsafe fn pay(src: Val, dst: Val, asset: Val, amount: Val) -> Val {
-        todo!()
+    pub(crate) unsafe fn pay(src: Object, dst: Object, asset: Object, amount: Val) -> Val {
+        MOCK_HOST.with(|h| h.borrow_mut().pay(src, dst, asset, amount))
+    }
+
+    pub(crate) unsafe fn account_balance(acc: Object) -> Val {
+        MOCK_HOST.with(|h| h.borrow_mut().account_balance(acc))
+    }
+
+    pub(crate) unsafe fn account_trust_line(acc: Object, asset: Object) -> Object {
+        MOCK_HOST.with(|h| h.borrow_mut().account_trust_line(acc, asset))
+    }
+
+    pub(crate) unsafe fn trust_line_balance(trust_line: Object) -> Val {
+        MOCK_HOST.with(|h| h.borrow_mut().trust_line_balance(trust_line))
     }
 
     pub(crate) unsafe fn put_contract_data(key: Val, val: Val) -> Val {
