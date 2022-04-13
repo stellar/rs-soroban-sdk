@@ -1,5 +1,5 @@
 #![no_std]
-use sdk::{BigNum, Object, OrAbort, Symbol, Val};
+use sdk::{Object, OrAbort, Symbol, Val};
 use stellar_contract_sdk as sdk;
 
 // This contract is a WIP port of:
@@ -126,12 +126,12 @@ fn _deposit(src_acc: Object, amount_a: i64, amount_b: i64) -> i64 {
     let amount_pool: i64 = match asset_pool_circulating {
         0 => {
             // TODO: Use BigNum instead of f64.sqrt().
-            let u: u64 = (BigNum::from(amount_a as u64) * BigNum::from(amount_b as u64))
-                .sqrt()
-                .try_into()
-                .or_abort();
-            u as i64
-            //(amount_a as f64 * amount_b as f64).sqrt() as i64
+            // let u: u64 = (BigNum::from(amount_a as u64) * BigNum::from(amount_b as u64))
+            //     .sqrt()
+            //     .try_into()
+            //     .or_abort();
+            // u as i64
+            (amount_a as f64 * amount_b as f64).sqrt() as i64
         }
         _ => {
             let amount_pool_a = match reserve_a {

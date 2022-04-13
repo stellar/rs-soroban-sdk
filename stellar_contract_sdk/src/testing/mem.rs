@@ -164,10 +164,54 @@ impl MockHost for MemHost {
     }
 
     fn pay(&mut self, src: Object, dst: Object, asset: Object, amount: Val) -> Val {
-        // TODO: get trustline for src,asset
-        // TODO: get trustline for dst,asset
-        // TODO: check amounts
-        // TODO: move the monies
+        let src_addr = match self.get_obj(src).expect("missing account") {
+            MemObj::LedgerKey(MemLedgerKey::Account(a)) => a.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let dst_addr = match self.get_obj(dst).expect("missing account") {
+            MemObj::LedgerKey(MemLedgerKey::Account(a)) => a.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let asset = match self.get_obj(asset).expect("missing asset") {
+            MemObj::LedgerVal(MemLedgerVal::Asset(asset)) => asset.clone(),
+            _ => panic!("wrong object type"),
+        };
+        let amount: i64 = amount.try_into().or_abort();
+
+        let src_tlk = MemLedgerKey::TrustLine {
+            account: src_addr,
+            asset: asset.clone(),
+        };
+        let dst_tlk = MemLedgerKey::TrustLine {
+            account: dst_addr,
+            asset: asset.clone(),
+        };
+
+        let src_bal = match self
+            .get_ledger_value(src_tlk.clone())
+            .expect("src does not have trust line")
+        {
+            MemLedgerVal::TrustLine(b) => b,
+            _ => panic!("src wrong ledger entry type"),
+        };
+        let dst_bal = match self
+            .get_ledger_value(dst_tlk.clone())
+            .expect("dst does not have trust line")
+        {
+            MemLedgerVal::TrustLine(b) => b,
+            _ => panic!("dst wrong ledger entry type"),
+        };
+
+        if src_bal < amount {
+            panic!("src balance insufficient")
+        }
+
+        let src_new_bal = src_bal - amount;
+        let dst_new_bal = dst_bal.checked_add(amount).expect("dst balance overflow");
+
+        self.put_ledger_value(src_tlk.clone(), MemLedgerVal::TrustLine(src_new_bal));
+        self.put_ledger_value(dst_tlk.clone(), MemLedgerVal::TrustLine(dst_new_bal));
+
         todo!()
     }
 
