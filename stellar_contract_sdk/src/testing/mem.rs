@@ -5,6 +5,13 @@ use num_bigint::BigInt;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct Address(pub Vec<u8>);
+
+#[derive(Clone, PartialEq, Eq, Hash)]
+pub struct Asset {
+    pub code: String,
+    pub issuer: Address,
+}
+
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct ContractID(u64);
 
@@ -14,11 +21,7 @@ pub struct ContractKey(Address, ContractID);
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerKey {
     Account(Address),
-    TrustLine {
-        account: Address,
-        code: String,
-        issuer: Address,
-    },
+    TrustLine { account: Address, asset: Asset },
     ContractCode(ContractKey),
     ContractData(ContractKey, Val),
 }
@@ -26,6 +29,7 @@ pub enum MemLedgerKey {
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerVal {
     Account(i64),
+    Asset(Asset),
     TrustLine(i64),
     ContractData(Val),
 }

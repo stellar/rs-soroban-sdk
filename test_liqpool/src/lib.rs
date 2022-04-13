@@ -5,6 +5,75 @@ use stellar_contract_sdk as sdk;
 // This contract is a WIP port of:
 // https://github.com/leighmcculloch/sjc-liqpool
 
+#[no_mangle]
+pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
+    _init(
+        acc_id.try_into().or_abort(),
+        asset_pool.try_into().or_abort(),
+        asset_a.try_into().or_abort(),
+        asset_b.try_into().or_abort(),
+    )
+    .into()
+}
+
+#[no_mangle]
+pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
+    _deposit(
+        src_acc_id.try_into().or_abort(),
+        amount_a.try_into().or_abort(),
+        amount_b.try_into().or_abort(),
+    )
+    .try_into()
+    .or_abort()
+}
+
+#[no_mangle]
+pub fn withdraw(src_acc_id: Val, amount_pool: Val) -> Val {
+    _withdraw(
+        src_acc_id.try_into().or_abort(),
+        amount_pool.try_into().or_abort(),
+    )
+    .into()
+}
+
+#[no_mangle]
+pub fn trade_fixed_in(
+    src_acc_id: Val,
+    asset_in: Val,
+    amount_in: Val,
+    asset_out: Val,
+    min_amount_out: Val,
+) -> Val {
+    _trade_fixed_in(
+        src_acc_id.try_into().or_abort(),
+        asset_in,
+        amount_in.try_into().or_abort(),
+        asset_out,
+        min_amount_out.try_into().or_abort(),
+    )
+    .try_into()
+    .or_abort()
+}
+
+#[no_mangle]
+pub fn trade_fixed_out(
+    src_acc_id: Val,
+    asset_in: Val,
+    max_amount_in: Val,
+    asset_out: Val,
+    amount_out: Val,
+) -> Val {
+    _trade_fixed_out(
+        src_acc_id.try_into().or_abort(),
+        asset_in,
+        max_amount_in.try_into().or_abort(),
+        asset_out,
+        amount_out.try_into().or_abort(),
+    )
+    .try_into()
+    .or_abort()
+}
+
 const DATA_KEY_ACC_ID: Val = Val::from_symbol(Symbol::from_str("accid"));
 const DATA_KEY_ASSET_POOL: Val = Val::from_symbol(Symbol::from_str("assetpool"));
 const DATA_KEY_ASSET_POOL_CIRCULATING: Val =
@@ -275,66 +344,17 @@ fn _trade_fixed_out(
 
 #[cfg(test)]
 mod test {
-    use super::{
-        _deposit, _init, DATA_KEY_ACC_ID, DATA_KEY_ASSET_A, DATA_KEY_ASSET_B, DATA_KEY_ASSET_POOL,
-        DATA_KEY_ASSET_POOL_CIRCULATING,
-    };
+    use super::{_deposit, _init};
     use alloc::string::ToString;
-    use sdk::testing::mem::{Address, MemHost, MemLedgerKey, MemLedgerVal, MemObj};
+    use sdk::testing::mem::{Address, Asset, MemHost, MemLedgerKey, MemLedgerVal, MemObj};
     use sdk::testing::swap_mock_host;
-    use sdk::Val;
     use stellar_contract_sdk as sdk;
     extern crate alloc;
     extern crate std;
     use std::boxed::Box;
 
     #[test]
-    fn test_init() {
-        let mut host = MemHost::new();
-        let acc_id = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Account(Address(
-            "GP".as_bytes().to_vec(),
-        ))));
-        let asset_pool = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
-            "P".to_string(),
-            Address("GP".as_bytes().to_vec()),
-        ))));
-        let asset_a = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
-            "A".to_string(),
-            Address("GA".as_bytes().to_vec()),
-        ))));
-        let asset_b = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
-            "B".to_string(),
-            Address("GB".as_bytes().to_vec()),
-        ))));
-        let og_host = swap_mock_host(Box::new(host));
-
-        assert_eq!(_init(acc_id, asset_pool, asset_a, asset_b), true);
-        assert_eq!(
-            sdk::ledger::get_contract_data(DATA_KEY_ACC_ID),
-            acc_id.into(),
-        );
-        assert_eq!(
-            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL),
-            asset_pool.into(),
-        );
-        assert_eq!(
-            sdk::ledger::get_contract_data(DATA_KEY_ASSET_A),
-            asset_a.into()
-        );
-        assert_eq!(
-            sdk::ledger::get_contract_data(DATA_KEY_ASSET_B),
-            asset_b.into()
-        );
-        assert_eq!(
-            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING),
-            Val::from_u63(0),
-        );
-
-        swap_mock_host(og_host);
-    }
-
-    #[test]
-    fn test_deposit() {
+    fn test() {
         let mut host = MemHost::new();
 
         let addr_p = Address("GP".as_bytes().to_vec());
@@ -343,40 +363,67 @@ mod test {
         let addr_u1 = Address("GU1".as_bytes().to_vec());
         let addr_u2 = Address("GU2".as_bytes().to_vec());
 
+        let asset_p = Asset {
+            code: "P".to_string(),
+            issuer: addr_p.clone(),
+        };
+        let asset_a = Asset {
+            code: "A".to_string(),
+            issuer: addr_a.clone(),
+        };
+        let asset_b = Asset {
+            code: "B".to_string(),
+            issuer: addr_b.clone(),
+        };
+
+        let asset_p_key = MemLedgerVal::Asset(asset_p.clone());
+        let asset_a_key = MemLedgerVal::Asset(asset_a.clone());
+        let asset_b_key = MemLedgerVal::Asset(asset_b.clone());
+
         let acc_p_key = MemLedgerKey::Account(addr_p.clone());
-        host.put_ledger_value(acc_p_key, MemLedgerVal::Account(0));
         let acc_p_tl_a_key = MemLedgerKey::TrustLine {
             account: addr_p.clone(),
-            code: "A".to_string(),
-            issuer: addr_a.clone(),
+            asset: asset_a.clone(),
         };
-        host.put_ledger_value(acc_p_tl_a_key, MemLedgerVal::TrustLine(0));
         let acc_p_tl_b_key = MemLedgerKey::TrustLine {
             account: addr_p.clone(),
-            code: "B".to_string(),
-            issuer: addr_b.clone(),
+            asset: asset_b.clone(),
         };
-        host.put_ledger_value(acc_p_tl_b_key, MemLedgerVal::TrustLine(0));
+        host.put_ledger_value(acc_p_key.clone(), MemLedgerVal::Account(0));
+        host.put_ledger_value(acc_p_tl_a_key.clone(), MemLedgerVal::TrustLine(0));
+        host.put_ledger_value(acc_p_tl_b_key.clone(), MemLedgerVal::TrustLine(0));
 
         let acc_u1_key = MemLedgerKey::Account(addr_u1.clone());
-        host.put_ledger_value(acc_u1_key, MemLedgerVal::Account(0));
         let acc_u1_tl_a_key = MemLedgerKey::TrustLine {
             account: addr_u1.clone(),
-            code: "A".to_string(),
-            issuer: addr_a.clone(),
+            asset: asset_a.clone(),
         };
-        host.put_ledger_value(acc_u1_tl_a_key, MemLedgerVal::TrustLine(0));
         let acc_u1_tl_b_key = MemLedgerKey::TrustLine {
             account: addr_u1.clone(),
-            code: "B".to_string(),
-            issuer: addr_b.clone(),
+            asset: asset_b.clone(),
         };
-        host.put_ledger_value(acc_u1_tl_b_key, MemLedgerVal::TrustLine(0));
+        host.put_ledger_value(acc_u1_key.clone(), MemLedgerVal::Account(0));
+        host.put_ledger_value(acc_u1_tl_a_key.clone(), MemLedgerVal::TrustLine(1000));
+        host.put_ledger_value(acc_u1_tl_b_key.clone(), MemLedgerVal::TrustLine(1000));
+
+        let acc_u2_key = MemLedgerKey::Account(addr_u2.clone());
+        let acc_u2_tl_a_key = MemLedgerKey::TrustLine {
+            account: addr_u2.clone(),
+            asset: asset_a.clone(),
+        };
+        let acc_u2_tl_b_key = MemLedgerKey::TrustLine {
+            account: addr_u2.clone(),
+            asset: asset_b.clone(),
+        };
+        host.put_ledger_value(acc_u2_key, MemLedgerVal::Account(0));
+        host.put_ledger_value(acc_u2_tl_a_key, MemLedgerVal::TrustLine(1000));
+        host.put_ledger_value(acc_u2_tl_b_key, MemLedgerVal::TrustLine(1000));
 
         let acc_id_obj = host.put_obj(MemObj::LedgerKey(acc_p_key));
-        let asset_p_obj = host.put_obj(MemObj::LedgerKey(asset_p));
-        let asset_a_obj = host.put_obj(MemObj::LedgerKey(asset_a));
-        let asset_b_obj = host.put_obj(MemObj::LedgerKey(asset_b));
+        let asset_p_obj = host.put_obj(MemObj::LedgerVal(asset_p_key));
+        let asset_a_obj = host.put_obj(MemObj::LedgerVal(asset_a_key));
+        let asset_b_obj = host.put_obj(MemObj::LedgerVal(asset_b_key));
+
         let og_host = swap_mock_host(Box::new(host));
 
         assert_eq!(
@@ -387,73 +434,4 @@ mod test {
 
         swap_mock_host(og_host);
     }
-}
-
-#[no_mangle]
-pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
-    _init(
-        acc_id.try_into().or_abort(),
-        asset_pool.try_into().or_abort(),
-        asset_a.try_into().or_abort(),
-        asset_b.try_into().or_abort(),
-    )
-    .into()
-}
-
-#[no_mangle]
-pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
-    _deposit(
-        src_acc_id.try_into().or_abort(),
-        amount_a.try_into().or_abort(),
-        amount_b.try_into().or_abort(),
-    )
-    .try_into()
-    .or_abort()
-}
-
-#[no_mangle]
-pub fn withdraw(src_acc_id: Val, amount_pool: Val) -> Val {
-    _withdraw(
-        src_acc_id.try_into().or_abort(),
-        amount_pool.try_into().or_abort(),
-    )
-    .into()
-}
-
-#[no_mangle]
-pub fn trade_fixed_in(
-    src_acc_id: Val,
-    asset_in: Val,
-    amount_in: Val,
-    asset_out: Val,
-    min_amount_out: Val,
-) -> Val {
-    _trade_fixed_in(
-        src_acc_id.try_into().or_abort(),
-        asset_in,
-        amount_in.try_into().or_abort(),
-        asset_out,
-        min_amount_out.try_into().or_abort(),
-    )
-    .try_into()
-    .or_abort()
-}
-
-#[no_mangle]
-pub fn trade_fixed_out(
-    src_acc_id: Val,
-    asset_in: Val,
-    max_amount_in: Val,
-    asset_out: Val,
-    amount_out: Val,
-) -> Val {
-    _trade_fixed_out(
-        src_acc_id.try_into().or_abort(),
-        asset_in,
-        max_amount_in.try_into().or_abort(),
-        asset_out,
-        amount_out.try_into().or_abort(),
-    )
-    .try_into()
-    .or_abort()
 }
