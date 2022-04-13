@@ -9,6 +9,7 @@ members = [
     "test_host_objects",
     "test_pay",
     "test_call_everything",
+    "test_liqpool",
 ]
 
 [profile.dev]
