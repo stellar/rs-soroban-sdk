@@ -4,7 +4,7 @@ use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub struct Address(Vec<u8>);
+pub struct Address(pub Vec<u8>);
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct ContractID(u64);
 
@@ -265,7 +265,7 @@ impl MockHost for MemHost {
 
 impl MemHost {
     pub fn new() -> Self {
-        let contract = ContractKey(Address(&""), ContractID(0));
+        let contract = ContractKey(Address(Vec::new()), ContractID(0));
         let mut context = Vec::new();
         context.push(contract);
         let objs = Vec::new();

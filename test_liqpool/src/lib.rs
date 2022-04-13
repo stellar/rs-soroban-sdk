@@ -1,5 +1,5 @@
 #![no_std]
-use sdk::{BigNum, OrAbort, Symbol, Val};
+use sdk::{BigNum, Object, OrAbort, Symbol, Val};
 use stellar_contract_sdk as sdk;
 
 // This contract is a WIP port of:
@@ -13,22 +13,24 @@ const DATA_KEY_ASSET_A: Val = Val::from_symbol(Symbol::from_str("asseta"));
 const DATA_KEY_ASSET_B: Val = Val::from_symbol(Symbol::from_str("assetb"));
 
 // TODO: Define types for AccountId, and Asset.
-fn _init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> bool {
+fn _init(acc_id: Object, asset_pool: Object, asset_a: Object, asset_b: Object) -> bool {
     // TODO: Wrap the config data values into a type.
-    sdk::ledger::put_contract_data(DATA_KEY_ACC_ID, acc_id);
-    sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL, asset_pool);
+    sdk::ledger::put_contract_data(DATA_KEY_ACC_ID, acc_id.into());
+    sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL, asset_pool.into());
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING, Val::from_u63(0));
-    sdk::ledger::put_contract_data(DATA_KEY_ASSET_A, asset_a);
-    sdk::ledger::put_contract_data(DATA_KEY_ASSET_B, asset_b);
+    sdk::ledger::put_contract_data(DATA_KEY_ASSET_A, asset_a.into());
+    sdk::ledger::put_contract_data(DATA_KEY_ASSET_B, asset_b.into());
     true
 }
 
-fn _deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
+fn _deposit(src_acc_id: Object, amount_a: i64, amount_b: i64) -> i64 {
     if amount_a <= 0 || amount_b <= 0 {
         panic!("amounts must be greater than zero")
     }
 
-    let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
+    let acc_id: Object = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID)
+        .try_into()
+        .or_abort();
     let asset_pool = sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL);
     let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
     let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
@@ -37,10 +39,10 @@ fn _deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
         sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING)
             .try_into()
             .or_abort();
-    let reserve_a: i64 = sdk::ledger::account_balance(acc_id, asset_a)
+    let reserve_a: i64 = sdk::ledger::account_balance(acc_id.into(), asset_a)
         .try_into()
         .or_abort();
-    let reserve_b: i64 = sdk::ledger::account_balance(acc_id, asset_b)
+    let reserve_b: i64 = sdk::ledger::account_balance(acc_id.into(), asset_b)
         .try_into()
         .or_abort();
 
@@ -82,23 +84,35 @@ fn _deposit(src_acc_id: Val, amount_a: i64, amount_b: i64) -> i64 {
 
     // TODO: Change pay to accept more specific types and native types.
     // TODO: Handle return values and errors from pay?
-    sdk::ledger::pay(src_acc_id, acc_id, asset_a, amount_a.try_into().or_abort());
-    sdk::ledger::pay(src_acc_id, acc_id, asset_b, amount_b.try_into().or_abort());
     sdk::ledger::pay(
-        acc_id,
-        src_acc_id,
+        src_acc_id.into(),
+        acc_id.into(),
+        asset_a,
+        amount_a.try_into().or_abort(),
+    );
+    sdk::ledger::pay(
+        src_acc_id.into(),
+        acc_id.into(),
+        asset_b,
+        amount_b.try_into().or_abort(),
+    );
+    sdk::ledger::pay(
+        acc_id.into(),
+        src_acc_id.into(),
         asset_pool,
         amount_pool.try_into().or_abort(),
     );
     amount_pool
 }
 
-fn _withdraw(src_acc_id: Val, amount_pool: i64) -> bool {
+fn _withdraw(src_acc_id: Object, amount_pool: i64) -> bool {
     if amount_pool <= 0 {
         panic!("amount must be greater than zero")
     }
 
-    let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
+    let acc_id: Object = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID)
+        .try_into()
+        .or_abort();
     let asset_pool = sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL);
     let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
     let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
@@ -110,10 +124,10 @@ fn _withdraw(src_acc_id: Val, amount_pool: i64) -> bool {
     if asset_pool_circulating == 0 {
         panic!("none of pool asset issued")
     }
-    let reserve_a: i64 = sdk::ledger::account_balance(acc_id, asset_a)
+    let reserve_a: i64 = sdk::ledger::account_balance(acc_id.into(), asset_a)
         .try_into()
         .or_abort();
-    let reserve_b: i64 = sdk::ledger::account_balance(acc_id, asset_b)
+    let reserve_b: i64 = sdk::ledger::account_balance(acc_id.into(), asset_b)
         .try_into()
         .or_abort();
 
@@ -121,13 +135,23 @@ fn _withdraw(src_acc_id: Val, amount_pool: i64) -> bool {
     let amount_b = amount_pool * reserve_b / asset_pool_circulating;
 
     sdk::ledger::pay(
-        src_acc_id,
-        acc_id,
+        src_acc_id.into(),
+        acc_id.into(),
         asset_pool,
         amount_pool.try_into().or_abort(),
     );
-    sdk::ledger::pay(acc_id, src_acc_id, asset_a, amount_a.try_into().or_abort());
-    sdk::ledger::pay(acc_id, src_acc_id, asset_b, amount_b.try_into().or_abort());
+    sdk::ledger::pay(
+        acc_id.into(),
+        src_acc_id.into(),
+        asset_a,
+        amount_a.try_into().or_abort(),
+    );
+    sdk::ledger::pay(
+        acc_id.into(),
+        src_acc_id.into(),
+        asset_b,
+        amount_b.try_into().or_abort(),
+    );
 
     // let res: Vec<i64> = Vec::new();
     // res.push(amount_a);
@@ -137,7 +161,7 @@ fn _withdraw(src_acc_id: Val, amount_pool: i64) -> bool {
 }
 
 fn _trade_fixed_in(
-    src_acc_id: Val,
+    src_acc_id: Object,
     asset_in: Val,
     amount_in: i64,
     asset_out: Val,
@@ -179,14 +203,14 @@ fn _trade_fixed_in(
     // TODO: Change pay to accept more specific types and native types.
     // TODO: Handle return values and errors from pay?
     sdk::ledger::pay(
-        src_acc_id,
-        acc_id,
+        src_acc_id.into(),
+        acc_id.into(),
         asset_in,
         amount_in.try_into().or_abort(),
     );
     sdk::ledger::pay(
-        acc_id,
-        src_acc_id,
+        acc_id.into(),
+        src_acc_id.into(),
         asset_out,
         amount_out.try_into().or_abort(),
     );
@@ -194,7 +218,7 @@ fn _trade_fixed_in(
 }
 
 fn _trade_fixed_out(
-    src_acc_id: Val,
+    src_acc_id: Object,
     asset_in: Val,
     max_amount_in: i64,
     asset_out: Val,
@@ -204,7 +228,9 @@ fn _trade_fixed_out(
         panic!("amount in must not be zero")
     }
 
-    let acc_id = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID);
+    let acc_id: Object = sdk::ledger::get_contract_data(DATA_KEY_ACC_ID)
+        .try_into()
+        .or_abort();
     let asset_a = sdk::ledger::get_contract_data(DATA_KEY_ASSET_A);
     let asset_b = sdk::ledger::get_contract_data(DATA_KEY_ASSET_B);
 
@@ -214,10 +240,10 @@ fn _trade_fixed_out(
         panic!("assets do not match pool")
     }
 
-    let reserve_in: i64 = sdk::ledger::account_balance(acc_id, asset_in)
+    let reserve_in: i64 = sdk::ledger::account_balance(acc_id.into(), asset_in)
         .try_into()
         .or_abort();
-    let reserve_out: i64 = sdk::ledger::account_balance(acc_id, asset_out)
+    let reserve_out: i64 = sdk::ledger::account_balance(acc_id.into(), asset_out)
         .try_into()
         .or_abort();
 
@@ -233,14 +259,14 @@ fn _trade_fixed_out(
     // TODO: Change pay to accept more specific types and native types.
     // TODO: Handle return values and errors from pay?
     sdk::ledger::pay(
-        src_acc_id,
-        acc_id,
+        src_acc_id.into(),
+        acc_id.into(),
         asset_in,
         amount_in.try_into().or_abort(),
     );
     sdk::ledger::pay(
-        acc_id,
-        src_acc_id,
+        acc_id.into(),
+        src_acc_id.into(),
         asset_out,
         amount_out.try_into().or_abort(),
     );
@@ -253,53 +279,102 @@ mod test {
         _deposit, _init, DATA_KEY_ACC_ID, DATA_KEY_ASSET_A, DATA_KEY_ASSET_B, DATA_KEY_ASSET_POOL,
         DATA_KEY_ASSET_POOL_CIRCULATING,
     };
-    use sdk::{Symbol, Val, testing::host::MockHost};
+    use alloc::string::ToString;
+    use sdk::testing::mem::{Address, MemHost, MemLedgerKey, MemLedgerVal, MemObj};
+    use sdk::testing::swap_mock_host;
+    use sdk::Val;
     use stellar_contract_sdk as sdk;
+    extern crate alloc;
+    extern crate std;
+    use std::boxed::Box;
 
     #[test]
     fn test_init() {
-        // TODO: Figure out how to create AccountIds and Assets.
-        let acc_id = Val::from_symbol(Symbol::from_str(&"accP"));
-        let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
-        let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
-        let asset_b = Val::from_symbol(Symbol::from_str(&"assetB"));
-        assert_eq!(_init(acc_id, pool_asset, asset_a, asset_b), true);
-        assert_eq!(acc_id, sdk::ledger::get_contract_data(DATA_KEY_ACC_ID));
+        let mut host = MemHost::new();
+        let acc_id = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Account(Address(
+            "GP".as_bytes().to_vec(),
+        ))));
+        let asset_pool = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
+            "P".to_string(),
+            Address("GP".as_bytes().to_vec()),
+        ))));
+        let asset_a = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
+            "A".to_string(),
+            Address("GA".as_bytes().to_vec()),
+        ))));
+        let asset_b = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
+            "B".to_string(),
+            Address("GB".as_bytes().to_vec()),
+        ))));
+        let og_host = swap_mock_host(Box::new(host));
+
+        assert_eq!(_init(acc_id, asset_pool, asset_a, asset_b), true);
         assert_eq!(
-            pool_asset,
-            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL)
+            sdk::ledger::get_contract_data(DATA_KEY_ACC_ID),
+            acc_id.into(),
         );
-        assert_eq!(asset_a, sdk::ledger::get_contract_data(DATA_KEY_ASSET_A));
-        assert_eq!(asset_b, sdk::ledger::get_contract_data(DATA_KEY_ASSET_B));
         assert_eq!(
+            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL),
+            asset_pool.into(),
+        );
+        assert_eq!(
+            sdk::ledger::get_contract_data(DATA_KEY_ASSET_A),
+            asset_a.into()
+        );
+        assert_eq!(
+            sdk::ledger::get_contract_data(DATA_KEY_ASSET_B),
+            asset_b.into()
+        );
+        assert_eq!(
+            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING),
             Val::from_u63(0),
-            sdk::ledger::get_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING)
         );
+
+        swap_mock_host(og_host);
     }
 
     #[test]
     fn test_deposit() {
-        let mut host = sdk::testing::host::mem::MemHost::new();
-        let obj = host.put_obj(sdk::testing::host::mem::MemObj::LedgerKey(0));
+        let mut host = MemHost::new();
+        let acc_id = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Account(Address(
+            "GP".as_bytes().to_vec(),
+        ))));
+        let asset_pool = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
+            "P".to_string(),
+            Address("GP".as_bytes().to_vec()),
+        ))));
+        let asset_a = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
+            "A".to_string(),
+            Address("GA".as_bytes().to_vec()),
+        ))));
+        let asset_b = host.put_obj(MemObj::LedgerKey(MemLedgerKey::Asset((
+            "B".to_string(),
+            Address("GB".as_bytes().to_vec()),
+        ))));
+        let og_host = swap_mock_host(Box::new(host));
 
-        let acc_id = Val::from_symbol(Symbol::from_str(&"accP"));
-        let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
-        let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
-        let asset_b = Val::from_symbol(Symbol::from_str(&"assetB"));
-        assert_eq!(_init(acc_id, pool_asset, asset_a, asset_b), true);
+        assert_eq!(_init(acc_id, asset_pool, asset_a, asset_b), true);
         assert_eq!(_deposit(acc_id, 1000, 100), 30);
+
+        swap_mock_host(og_host);
     }
 }
 
 #[no_mangle]
 pub fn init(acc_id: Val, asset_pool: Val, asset_a: Val, asset_b: Val) -> Val {
-    _init(acc_id, asset_pool, asset_a, asset_b).into()
+    _init(
+        acc_id.try_into().or_abort(),
+        asset_pool.try_into().or_abort(),
+        asset_a.try_into().or_abort(),
+        asset_b.try_into().or_abort(),
+    )
+    .into()
 }
 
 #[no_mangle]
 pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
     _deposit(
-        src_acc_id,
+        src_acc_id.try_into().or_abort(),
         amount_a.try_into().or_abort(),
         amount_b.try_into().or_abort(),
     )
@@ -309,7 +384,11 @@ pub fn deposit(src_acc_id: Val, amount_a: Val, amount_b: Val) -> Val {
 
 #[no_mangle]
 pub fn withdraw(src_acc_id: Val, amount_pool: Val) -> Val {
-    _withdraw(src_acc_id, amount_pool.try_into().or_abort()).into()
+    _withdraw(
+        src_acc_id.try_into().or_abort(),
+        amount_pool.try_into().or_abort(),
+    )
+    .into()
 }
 
 #[no_mangle]
@@ -321,7 +400,7 @@ pub fn trade_fixed_in(
     min_amount_out: Val,
 ) -> Val {
     _trade_fixed_in(
-        src_acc_id,
+        src_acc_id.try_into().or_abort(),
         asset_in,
         amount_in.try_into().or_abort(),
         asset_out,
@@ -340,7 +419,7 @@ pub fn trade_fixed_out(
     amount_out: Val,
 ) -> Val {
     _trade_fixed_out(
-        src_acc_id,
+        src_acc_id.try_into().or_abort(),
         asset_in,
         max_amount_in.try_into().or_abort(),
         asset_out,
