@@ -253,7 +253,7 @@ mod test {
         _deposit, _init, DATA_KEY_ACC_ID, DATA_KEY_ASSET_A, DATA_KEY_ASSET_B, DATA_KEY_ASSET_POOL,
         DATA_KEY_ASSET_POOL_CIRCULATING,
     };
-    use sdk::{Symbol, Val};
+    use sdk::{Symbol, Val, testing::host::MockHost};
     use stellar_contract_sdk as sdk;
 
     #[test]
@@ -279,6 +279,9 @@ mod test {
 
     #[test]
     fn test_deposit() {
+        let mut host = sdk::testing::host::mem::MemHost::new();
+        let obj = host.put_obj(sdk::testing::host::mem::MemObj::LedgerKey(0));
+
         let acc_id = Val::from_symbol(Symbol::from_str(&"accP"));
         let pool_asset = Val::from_symbol(Symbol::from_str(&"assetP"));
         let asset_a = Val::from_symbol(Symbol::from_str(&"assetA"));
