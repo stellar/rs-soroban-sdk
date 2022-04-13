@@ -4,7 +4,14 @@ use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub struct Address(Vec<u8>);
+pub struct Address(pub Vec<u8>);
+
+#[derive(Clone, PartialEq, Eq, Hash)]
+pub struct Asset {
+    pub code: String,
+    pub issuer: Address,
+}
+
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct ContractID(u64);
 
@@ -14,6 +21,7 @@ pub struct ContractKey(Address, ContractID);
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerKey {
     Account(Address),
+    TrustLine { account: Address, asset: Asset },
     ContractCode(ContractKey),
     ContractData(ContractKey, Val),
 }
@@ -21,6 +29,8 @@ pub enum MemLedgerKey {
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerVal {
     Account(i64),
+    Asset(Asset),
+    TrustLine(i64),
     ContractData(Val),
 }
 
@@ -283,5 +293,13 @@ impl MemHost {
         } else {
             None
         }
+    }
+
+    pub fn put_ledger_value(&mut self, k: MemLedgerKey, v: MemLedgerVal) {
+        self.ledger.insert(k, v);
+    }
+
+    pub fn get_ledger_value(&mut self, k: MemLedgerKey) -> Option<MemLedgerVal> {
+        self.ledger.get(&k).map(|v| v.clone())
     }
 }
