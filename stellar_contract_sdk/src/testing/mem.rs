@@ -4,11 +4,7 @@ use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-<<<<<<<< HEAD:stellar_contract_sdk/src/testing/host/mem.rs
-pub struct Address(String);
-========
 pub struct Address(Vec<u8>);
->>>>>>>> @{-1}:stellar_contract_sdk/src/testing/mem.rs
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct ContractID(u64);
 

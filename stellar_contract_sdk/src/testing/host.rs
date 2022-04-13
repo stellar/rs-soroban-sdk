@@ -6,12 +6,6 @@
 
 use crate::{Object, Status, Val};
 
-<<<<<<<< HEAD:stellar_contract_sdk/src/testing/host/mod.rs
-pub mod fs;
-pub mod mem;
-
-use crate::{Object, Val};
-========
 use core::fmt::Debug;
 
 impl Debug for Val {
@@ -32,7 +26,6 @@ impl core::fmt::Debug for Status {
             .finish()
     }
 }
->>>>>>>> @{-1}:stellar_contract_sdk/src/testing/host.rs
 
 pub trait MockHost {
     fn log_value(&mut self, v: Val) -> Val;
