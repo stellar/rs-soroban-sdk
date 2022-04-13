@@ -192,7 +192,7 @@ impl MockHost for MemHost {
             asset: asset.clone(),
         };
         let dst_tlk = MemLedgerKey::TrustLine {
-            account: dst_addr,
+            account: dst_addr.clone(),
             asset: asset.clone(),
         };
 
@@ -207,11 +207,15 @@ impl MockHost for MemHost {
             }
             _ => panic!("src wrong ledger entry type"),
         };
-        let dst_bal = match self
-            .get_ledger_value(dst_tlk.clone())
-            .expect("dst does not have trust line")
-        {
-            MemLedgerVal::TrustLine(b) => b,
+        let dst_bal = match self.get_ledger_value(dst_tlk.clone()) {
+            Some(MemLedgerVal::TrustLine(b)) => Some(b),
+            None => {
+                if dst_addr == asset_issuer {
+                    None
+                } else {
+                    panic!("dst does not have trust line")
+                }
+            }
             _ => panic!("dst wrong ledger entry type"),
         };
 
@@ -221,8 +225,10 @@ impl MockHost for MemHost {
             self.put_ledger_value(src_tlk.clone(), MemLedgerVal::TrustLine(src_new_bal));
         }
 
-        let dst_new_bal = dst_bal.checked_add(amount).expect("dst balance overflow");
-        self.put_ledger_value(dst_tlk.clone(), MemLedgerVal::TrustLine(dst_new_bal));
+        if let Some(dst_bal) = dst_bal {
+            let dst_new_bal = dst_bal.checked_add(amount).expect("dst balance overflow");
+            self.put_ledger_value(dst_tlk.clone(), MemLedgerVal::TrustLine(dst_new_bal));
+        }
 
         Val::from_bool(true)
     }
