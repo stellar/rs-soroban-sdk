@@ -4,41 +4,41 @@ use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-struct Address(Vec<u8>);
+pub struct Address(Vec<u8>);
 #[derive(Clone, PartialEq, Eq, Hash)]
-struct ContractID(u64);
+pub struct ContractID(u64);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-struct ContractKey(Address, ContractID);
+pub struct ContractKey(Address, ContractID);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-enum MemLedgerKey {
+pub enum MemLedgerKey {
     Account(Address),
     ContractCode(ContractKey),
     ContractData(ContractKey, Val),
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-enum MemLedgerVal {
+pub enum MemLedgerVal {
     Account(i64),
     ContractData(Val),
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-enum MemOperation {}
+pub enum MemOperation {}
 #[derive(Clone, PartialEq, Eq, Hash)]
-enum MemOperationResult {
+pub enum MemOperationResult {
     Ok,
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-enum MemTransaction {}
+pub enum MemTransaction {}
 
 type HostMap = HashMap<Val, Val>;
 type HostVec = Vector<Val>;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-enum MemObj {
+pub enum MemObj {
     Box(Val),
     Map(HostMap),
     Vec(HostVec),
@@ -270,13 +270,13 @@ impl MemHost {
         }
     }
 
-    fn put_obj(&mut self, ob: MemObj) -> Object {
+    pub fn put_obj(&mut self, ob: MemObj) -> Object {
         let idx = self.objs.len();
         self.objs.push(ob);
         Object::from_idx(idx)
     }
 
-    fn get_obj(&self, ob: Object) -> Option<&MemObj> {
+    pub fn get_obj(&self, ob: Object) -> Option<&MemObj> {
         let idx = ob.get_idx();
         if idx < self.objs.len() {
             Some(&self.objs[idx])

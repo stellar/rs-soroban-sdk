@@ -4,10 +4,6 @@ use super::val::{Val, ValType, TAG_STATUS};
 #[derive(Copy, Clone)]
 pub struct Status(Val);
 
-const fn decompose_status(body: u64) -> (u32, u32) {
-    ((body as u32) >> 4, (body >> 32) as u32)
-}
-
 const fn compose_status(ty: u32, code: u32) -> u64 {
     (ty << 4) as u64 | (code as u64) << 32
 }
@@ -22,17 +18,6 @@ const SST_INVOKE_CONTRACT_RESULT: u32 = 5;
 
 pub const UNKNOWN_ERROR: Status =
     Status(unsafe { Val::from_body_and_tag(compose_status(SST_UNKNOWN, 0), TAG_STATUS) });
-
-#[cfg(not(target_family = "wasm"))]
-impl core::fmt::Debug for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let (ty, code) = decompose_status(self.0.get_body());
-        f.debug_struct("Status")
-            .field("type", &ty)
-            .field("code", &code)
-            .finish()
-    }
-}
 
 impl ValType for Status {
     #[inline(always)]
@@ -54,8 +39,12 @@ impl From<Status> for Val {
 }
 
 impl Status {
+    pub(crate) const fn decompose_status(&self) -> (u32, u32) {
+        let body = self.0.get_body();
+        ((body as u32) >> 4, (body >> 32) as u32)
+    }
     fn is_type(&self, ty: u32) -> bool {
-        let (t, _) = decompose_status(self.0.get_body());
+        let (t, _) = self.decompose_status();
         ty == t
     }
     pub fn is_ok(&self) -> bool {
