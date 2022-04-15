@@ -24,8 +24,8 @@ mod test {
     use std::boxed::Box;
 
     #[test]
-    fn test_add_implicitly_using_objs() {
-        let x: Val = Val::from_u63(10);
+    fn test_add() {
+        let x: Val = Val::from(10 as i64);
         let y: Val = Val::from(-7 as i64);
         let z: Val = add(x, y);
         let z: i64 = z.try_into().unwrap();
@@ -33,7 +33,7 @@ mod test {
     }
 
     #[test]
-    fn test_add_explicitly_using_objs() {
+    fn test_add_explicitly_using_u63_and_objs() {
         let mut host = Box::new(MemHost::new());
         let seven = host.put_obj(MemObj::I64(-7));
         swap_mock_host(host);
