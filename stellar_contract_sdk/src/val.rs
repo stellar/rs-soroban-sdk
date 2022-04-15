@@ -141,12 +141,12 @@ impl From<i32> for Val {
 
 impl Val {
     #[inline(always)]
-    const fn is_u63(&self) -> bool {
+    pub(crate) const fn is_u63(&self) -> bool {
         (self.0 & 1) == 0
     }
 
     #[inline(always)]
-    const fn as_u63(&self) -> i64 {
+    pub(crate) const fn as_u63(&self) -> i64 {
         (self.0 >> 1) as i64
     }
 
@@ -246,7 +246,7 @@ impl Val {
     }
 
     #[inline(always)]
-    pub fn from_u63(i: i64) -> Val {
+    pub(crate) fn from_u63(i: i64) -> Val {
         i.try_into().or_abort()
     }
 

@@ -20,8 +20,8 @@ mod test {
 
     #[test]
     fn test_add() {
-        let x: Val = Val::from_u63(10);
-        let y: Val = Val::from_u63(12);
+        let x: Val = Val::from(10 as i64);
+        let y: Val = Val::from(12 as i64);
         let z: Val = add(x, y);
         let z: i64 = z.try_into().unwrap();
         assert!(z == 22);

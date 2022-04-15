@@ -4,12 +4,17 @@ use stellar_contract_sdk as sdk;
 
 #[no_mangle]
 pub fn add(a: Val, b: Val) -> Val {
+    sdk::log_value(a);
     let a: i64 = a.try_into().or_abort();
+
+    sdk::log_value(b);
     let b: i64 = b.try_into().or_abort();
 
     let c = a + b;
+    let d: Val = c.try_into().or_abort();
+    sdk::log_value(d);
 
-    return c.try_into().or_abort();
+    d
 }
 
 #[cfg(test)]
@@ -38,7 +43,7 @@ mod test {
         let seven = host.put_obj(MemObj::I64(-7));
         swap_mock_host(host);
 
-        let x: Val = Val::from_u63(10);
+        let x: Val = Val::from(10 as i64);
         let y: Val = seven.into();
         let z: Val = add(x, y);
         let z: i64 = z.try_into().unwrap();
