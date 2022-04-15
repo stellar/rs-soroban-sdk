@@ -220,6 +220,17 @@ impl Val {
     }
 
     #[inline(always)]
+    pub fn is_i64(&self) -> bool {
+        // TODO: Add object type check, when object type checks are supported.
+        self.is_u63() || self.is_object()
+    }
+
+    #[inline(always)]
+    pub fn as_i64(&self) -> i64 {
+        (*self).try_into().or_abort()
+    }
+
+    #[inline(always)]
     pub fn is_symbol(&self) -> bool {
         self.has_tag(TAG_SYMBOL)
     }
@@ -285,6 +296,11 @@ impl Val {
     #[inline(always)]
     pub const fn from_i32(i: i32) -> Val {
         unsafe { Val::from_body_and_tag((i as u32) as u64, TAG_I32) }
+    }
+
+    #[inline(always)]
+    pub fn from_i64(i: i64) -> Val {
+        i.into()
     }
 
     #[inline(always)]
