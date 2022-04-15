@@ -38,6 +38,15 @@ mod test {
     }
 
     #[test]
+    fn test_add_explicitly_using_from() {
+        let x: Val = Val::from_i64(10);
+        let y: Val = Val::from_i64(-7);
+        let z: Val = add(x, y);
+        let z: i64 = z.try_into().unwrap();
+        assert!(z == 3);
+    }
+
+    #[test]
     fn test_add_explicitly_using_u63_and_objs() {
         let mut host = Box::new(MemHost::new());
         let seven = host.put_obj(MemObj::I64(-7));
