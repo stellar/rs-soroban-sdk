@@ -12,6 +12,14 @@ impl MockHost for FsHost {
         todo!()
     }
 
+    fn i64_from_i64(&mut self, i: i64) -> Object {
+        todo!()
+    }
+
+    fn i64_to_i64(&mut self, i: Object) -> i64 {
+        todo!()
+    }
+
     fn map_new(&mut self) -> Object {
         todo!()
     }

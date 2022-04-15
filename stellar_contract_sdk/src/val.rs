@@ -1,5 +1,5 @@
 use super::OrAbort;
-use super::{status, BitSet, Object, Status, Symbol};
+use super::{host, status, BitSet, Object, Status, Symbol};
 
 pub(crate) const TAG_U32: u8 = 0;
 pub(crate) const TAG_I32: u8 = 1;
@@ -84,15 +84,13 @@ impl ValType for i32 {
     }
 }
 
-impl TryFrom<i64> for Val {
-    type Error = Status;
-
+impl From<i64> for Val {
     #[inline(always)]
-    fn try_from(i: i64) -> Result<Self, Self::Error> {
+    fn from(i: i64) -> Self {
         if i >= 0 {
-            Ok(Val((i as u64) << 1))
+            Val((i as u64) << 1)
         } else {
-            Err(status::UNKNOWN_ERROR)
+            unsafe { host::i64::from_i64(i).into() }
         }
     }
 }
@@ -102,10 +100,14 @@ impl TryFrom<Val> for i64 {
 
     #[inline(always)]
     fn try_from(value: Val) -> Result<Self, Self::Error> {
-        value
-            .is_u63()
-            .then(|| (value.raw() >> 1) as i64)
-            .ok_or(status::UNKNOWN_ERROR)
+        if value.is_u63() {
+            return Ok(value.as_u63());
+        }
+        if value.is_object() {
+            let o = value.as_object();
+            return Ok(unsafe { host::i64::to_i64(o) });
+        }
+        Err(status::UNKNOWN_ERROR)
     }
 }
 
@@ -139,19 +141,13 @@ impl From<i32> for Val {
 
 impl Val {
     #[inline(always)]
-    fn raw(&self) -> u64 {
-        self.0
+    const fn is_u63(&self) -> bool {
+        (self.0 & 1) == 0
     }
 
     #[inline(always)]
-    pub fn is_u63(&self) -> bool {
-        let is = (self.0 & 1) == 0;
-        is
-    }
-
-    #[inline(always)]
-    pub fn as_u63(&self) -> i64 {
-        (*self).try_into().or_abort()
+    const fn as_u63(&self) -> i64 {
+        (self.0 >> 1) as i64
     }
 
     #[inline(always)]
