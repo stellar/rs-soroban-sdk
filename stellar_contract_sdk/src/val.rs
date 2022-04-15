@@ -42,6 +42,7 @@ declare_tryfrom!(());
 declare_tryfrom!(bool);
 declare_tryfrom!(i32);
 declare_tryfrom!(u32);
+declare_tryfrom!(i64);
 declare_tryfrom!(Object);
 declare_tryfrom!(Symbol);
 declare_tryfrom!(BitSet);
@@ -84,30 +85,22 @@ impl ValType for i32 {
     }
 }
 
-impl From<i64> for Val {
-    #[inline(always)]
-    fn from(i: i64) -> Self {
-        if i >= 0 {
-            Val((i as u64) << 1)
-        } else {
-            unsafe { host::i64::from_i64(i).into() }
-        }
+impl ValType for i64 {
+    // TODO: The ValType trait is not particularly efficient for i64 because it
+    // has to perform its checks twice. It might be more efficient if the
+    // ValType's first function returns an Optional<T> where T is a transform
+    // function.
+    fn is_val_type(v: Val) -> bool {
+        // TODO: Add object type check, when object type checks are supported.
+        v.is_u63() || v.is_object()
     }
-}
-
-impl TryFrom<Val> for i64 {
-    type Error = Status;
-
-    #[inline(always)]
-    fn try_from(value: Val) -> Result<Self, Self::Error> {
-        if value.is_u63() {
-            return Ok(value.as_u63());
+    unsafe fn unchecked_from_val(v: Val) -> Self {
+        if v.is_u63() {
+            v.as_u63()
+        } else {
+            let o = v.as_object();
+            host::i64::to_i64(o)
         }
-        if value.is_object() {
-            let o = value.as_object();
-            return Ok(unsafe { host::i64::to_i64(o) });
-        }
-        Err(status::UNKNOWN_ERROR)
     }
 }
 
@@ -136,6 +129,17 @@ impl From<i32> for Val {
     #[inline(always)]
     fn from(i: i32) -> Self {
         Val::from_i32(i)
+    }
+}
+
+impl From<i64> for Val {
+    #[inline(always)]
+    fn from(i: i64) -> Self {
+        if i >= 0 {
+            Val((i as u64) << 1)
+        } else {
+            unsafe { host::i64::from_i64(i).into() }
+        }
     }
 }
 
