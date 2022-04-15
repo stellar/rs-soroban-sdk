@@ -81,7 +81,7 @@ const DATA_KEY_ASSET_B: Val = Val::from_symbol(Symbol::from_str("assetb"));
 fn _init(acc: Object, asset_p: Object, asset_a: Object, asset_b: Object) -> bool {
     sdk::ledger::put_contract_data(DATA_KEY_ACCOUNT, acc.into());
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL, asset_p.into());
-    sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING, Val::from(0 as i64));
+    sdk::ledger::put_contract_data(DATA_KEY_ASSET_POOL_CIRCULATING, Val::from_i64(0));
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_A, asset_a.into());
     sdk::ledger::put_contract_data(DATA_KEY_ASSET_B, asset_b.into());
     true
