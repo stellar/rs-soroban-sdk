@@ -33,8 +33,9 @@ mod test {
         let x: Val = Val::from(10 as u64);
         let y: Val = Val::from((1u64 << 63) as u64);
         let z: Val = add(x, y);
-        let z: i64 = z.try_into().unwrap();
-        assert!(z == 3);
+        let z: u64 = z.try_into().unwrap();
+        let expect: u64 = (1u64 << 63) + 10;
+        assert_eq!(z, expect);
     }
 
     #[test]
@@ -42,20 +43,21 @@ mod test {
         let x: Val = Val::from_u64(10);
         let y: Val = Val::from_u64(1 << 63);
         let z: Val = add(x, y);
-        let z: i64 = z.try_into().unwrap();
-        assert!(z == 3);
+        let z: u64 = z.try_into().unwrap();
+        let expect: u64 = (1u64 << 63) + 10;
+        assert_eq!(z, expect);
     }
 
     #[test]
     fn test_add_explicitly_using_u63_and_objs() {
         let mut host = Box::new(MemHost::new());
-        let seven = host.put_obj(MemObj::U64(1));
+        let one = host.put_obj(MemObj::U64(1));
         swap_mock_host(host);
 
         let x: Val = Val::from(10 as u64);
-        let y: Val = seven.into();
+        let y: Val = one.into();
         let z: Val = add(x, y);
-        let z: i64 = z.try_into().unwrap();
-        assert!(z == 3);
+        let z: u64 = z.try_into().unwrap();
+        assert_eq!(z, 11);
     }
 }
