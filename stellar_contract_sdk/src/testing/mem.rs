@@ -1,6 +1,7 @@
 use core::panic;
 
 use super::MockHost;
+use crate::object::*;
 use crate::{status, Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
@@ -65,6 +66,26 @@ pub enum MemObj {
     Transaction(MemTransaction),
     BigNum(BigInt),
     // ...
+}
+
+impl MemObj {
+    fn object_type(&self) -> u8 {
+        match self {
+            MemObj::Box(_) => OBJ_BOX,
+            MemObj::Map(_) => OBJ_MAP,
+            MemObj::Vec(_) => OBJ_VEC,
+            MemObj::U64(_) => OBJ_U64,
+            MemObj::I64(_) => OBJ_I64,
+            MemObj::Str(_) => OBJ_STRING,
+            MemObj::Blob(_) => OBJ_BINARY,
+            MemObj::LedgerKey(_) => OBJ_LEDGERKEY,
+            MemObj::LedgerVal(_) => OBJ_LEDGERVAL,
+            MemObj::Operation(_) => OBJ_OPERATION,
+            MemObj::OperationResult(_) => OBJ_OPERATION_RESULT,
+            MemObj::Transaction(_) => OBJ_TRANSACTION,
+            MemObj::BigNum(_) => OBJ_BIGNUM,
+        }
+    }
 }
 
 pub struct MemHost {
@@ -395,8 +416,9 @@ impl MemHost {
 
     pub fn put_obj(&mut self, ob: MemObj) -> Object {
         let idx = self.objs.len();
+        let ty = ob.object_type();
         self.objs.push(ob);
-        Object::from_idx(idx)
+        Object::from_type_and_idx(ty, idx)
     }
 
     pub fn get_obj(&self, ob: Object) -> Option<&MemObj> {
