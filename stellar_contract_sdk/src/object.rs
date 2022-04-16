@@ -68,9 +68,10 @@ impl Object {
     }
 
     #[cfg(not(target_family = "wasm"))]
-    pub(crate) fn from_idx(idx: usize) -> Object {
-        let body = (idx as u64) << 12;
-        (((body >> 12) as usize) == idx).or_abort();
+    pub(crate) fn from_type_and_idx(ty: u8, idx: usize) -> Object {
+        let body_idx = (idx as u64) << 12;
+        (((body_idx >> 12) as usize) == idx).or_abort();
+        let body = ty as u64 | body_idx;
         let v = unsafe { Val::from_body_and_tag(body, TAG_OBJECT) };
         Object(v)
     }
