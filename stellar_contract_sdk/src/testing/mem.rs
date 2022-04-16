@@ -154,6 +154,18 @@ impl MockHost for MemHost {
         self.put_obj(ob)
     }
 
+    fn i64_from_i64(&mut self, i: i64) -> Object {
+        let ob = MemObj::I64(i);
+        self.put_obj(ob)
+    }
+
+    fn i64_to_i64(&mut self, i: Object) -> i64 {
+        match self.get_obj(i).expect("missing object") {
+            MemObj::I64(v) => *v,
+            _ => panic!("wrong object type"),
+        }
+    }
+
     fn map_new(&mut self) -> Object {
         let ob = MemObj::Map(HashMap::new());
         self.put_obj(ob)

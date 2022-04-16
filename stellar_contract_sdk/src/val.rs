@@ -1,5 +1,7 @@
+use crate::object::OBJ_I64;
+
 use super::OrAbort;
-use super::{status, BitSet, Object, Status, Symbol};
+use super::{host, status, BitSet, Object, Status, Symbol};
 
 pub(crate) const TAG_U32: u8 = 0;
 pub(crate) const TAG_I32: u8 = 1;
@@ -42,6 +44,7 @@ declare_tryfrom!(());
 declare_tryfrom!(bool);
 declare_tryfrom!(i32);
 declare_tryfrom!(u32);
+declare_tryfrom!(i64);
 declare_tryfrom!(Object);
 declare_tryfrom!(Symbol);
 declare_tryfrom!(BitSet);
@@ -84,28 +87,21 @@ impl ValType for i32 {
     }
 }
 
-impl TryFrom<i64> for Val {
-    type Error = Status;
-
-    #[inline(always)]
-    fn try_from(i: i64) -> Result<Self, Self::Error> {
-        if i >= 0 {
-            Ok(Val((i as u64) << 1))
-        } else {
-            Err(status::UNKNOWN_ERROR)
-        }
+impl ValType for i64 {
+    // TODO: The ValType trait is not particularly efficient for i64 because it
+    // has to perform its checks twice. It might be more efficient if the
+    // ValType's first function returns an Optional<T> where T is a transform
+    // function.
+    fn is_val_type(v: Val) -> bool {
+        v.is_u63() || (v.is_object() && v.as_object().is_type(OBJ_I64))
     }
-}
-
-impl TryFrom<Val> for i64 {
-    type Error = Status;
-
-    #[inline(always)]
-    fn try_from(value: Val) -> Result<Self, Self::Error> {
-        value
-            .is_u63()
-            .then(|| (value.raw() >> 1) as i64)
-            .ok_or(status::UNKNOWN_ERROR)
+    unsafe fn unchecked_from_val(v: Val) -> Self {
+        if v.is_u63() {
+            v.as_u63()
+        } else {
+            let o = v.as_object();
+            host::i64::to_i64(o)
+        }
     }
 }
 
@@ -137,21 +133,26 @@ impl From<i32> for Val {
     }
 }
 
+impl From<i64> for Val {
+    #[inline(always)]
+    fn from(i: i64) -> Self {
+        if i >= 0 {
+            Val((i as u64) << 1)
+        } else {
+            unsafe { host::i64::from_i64(i).into() }
+        }
+    }
+}
+
 impl Val {
     #[inline(always)]
-    fn raw(&self) -> u64 {
-        self.0
+    pub(crate) const fn is_u63(&self) -> bool {
+        (self.0 & 1) == 0
     }
 
     #[inline(always)]
-    pub fn is_u63(&self) -> bool {
-        let is = (self.0 & 1) == 0;
-        is
-    }
-
-    #[inline(always)]
-    pub fn as_u63(&self) -> i64 {
-        (*self).try_into().or_abort()
+    pub(crate) const fn as_u63(&self) -> i64 {
+        (self.0 >> 1) as i64
     }
 
     #[inline(always)]
@@ -220,6 +221,16 @@ impl Val {
     }
 
     #[inline(always)]
+    pub fn is_i64(&self) -> bool {
+        self.is_u63() || (self.is_object() && self.as_object().is_type(OBJ_I64))
+    }
+
+    #[inline(always)]
+    pub fn as_i64(&self) -> i64 {
+        (*self).try_into().or_abort()
+    }
+
+    #[inline(always)]
     pub fn is_symbol(&self) -> bool {
         self.has_tag(TAG_SYMBOL)
     }
@@ -250,7 +261,7 @@ impl Val {
     }
 
     #[inline(always)]
-    pub fn from_u63(i: i64) -> Val {
+    pub(crate) fn from_u63(i: i64) -> Val {
         i.try_into().or_abort()
     }
 
@@ -285,6 +296,11 @@ impl Val {
     #[inline(always)]
     pub const fn from_i32(i: i32) -> Val {
         unsafe { Val::from_body_and_tag((i as u32) as u64, TAG_I32) }
+    }
+
+    #[inline(always)]
+    pub fn from_i64(i: i64) -> Val {
+        i.into()
     }
 
     #[inline(always)]

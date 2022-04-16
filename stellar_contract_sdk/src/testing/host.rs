@@ -31,6 +31,9 @@ pub trait MockHost {
     fn log_value(&mut self, v: Val) -> Val;
     fn get_last_operation_result(&mut self) -> Object;
 
+    fn i64_from_i64(&mut self, i: i64) -> Object;
+    fn i64_to_i64(&mut self, i: Object) -> i64;
+
     fn map_new(&mut self) -> Object;
     fn map_put(&mut self, m: Object, k: Val, v: Val) -> Object;
     fn map_get(&mut self, m: Object, k: Val) -> Val;
@@ -86,6 +89,19 @@ pub(crate) mod context {
         MOCK_HOST.with(|h| h.borrow_mut().get_last_operation_result())
     }
 }
+
+pub(crate) mod i64 {
+    use super::MOCK_HOST;
+    use crate::Object;
+    pub(crate) unsafe fn from_i64(i: i64) -> Object {
+        MOCK_HOST.with(|h| h.borrow_mut().i64_from_i64(i))
+    }
+
+    pub(crate) unsafe fn to_i64(i: Object) -> i64 {
+        MOCK_HOST.with(|h| h.borrow_mut().i64_to_i64(i))
+    }
+}
+
 pub(crate) mod map {
     use super::MOCK_HOST;
     use crate::{Object, Val};
