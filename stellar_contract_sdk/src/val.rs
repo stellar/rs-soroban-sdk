@@ -1,3 +1,5 @@
+use crate::object::OBJ_I64;
+
 use super::OrAbort;
 use super::{host, status, BitSet, Object, Status, Symbol};
 
@@ -91,8 +93,7 @@ impl ValType for i64 {
     // ValType's first function returns an Optional<T> where T is a transform
     // function.
     fn is_val_type(v: Val) -> bool {
-        // TODO: Add object type check, when object type checks are supported.
-        v.is_u63() || v.is_object()
+        v.is_u63() || (v.is_object() && v.as_object().is_type(OBJ_I64))
     }
     unsafe fn unchecked_from_val(v: Val) -> Self {
         if v.is_u63() {
@@ -221,8 +222,7 @@ impl Val {
 
     #[inline(always)]
     pub fn is_i64(&self) -> bool {
-        // TODO: Add object type check, when object type checks are supported.
-        self.is_u63() || self.is_object()
+        self.is_u63() || (self.is_object() && self.as_object().is_type(OBJ_I64))
     }
 
     #[inline(always)]
