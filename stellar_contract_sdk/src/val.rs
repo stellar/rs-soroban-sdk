@@ -89,20 +89,12 @@ impl ValType for i32 {
 }
 
 impl ValType for u64 {
-    // TODO: The ValType trait is not particularly efficient for i64 because it
-    // has to perform its checks twice. It might be more efficient if the
-    // ValType's first function returns an Optional<T> where T is a transform
-    // function.
     fn is_val_type(v: Val) -> bool {
-        v.is_u63() || (v.is_object() && v.as_object().is_type(OBJ_U64))
+        v.is_object() && v.as_object().is_type(OBJ_U64)
     }
     unsafe fn unchecked_from_val(v: Val) -> Self {
-        if v.is_u63() {
-            v.as_u63() as u64
-        } else {
-            let o = v.as_object();
-            host::u64::to_u64(o)
-        }
+        let o = v.as_object();
+        host::u64::to_u64(o)
     }
 }
 
@@ -166,11 +158,7 @@ impl From<i64> for Val {
 impl From<u64> for Val {
     #[inline(always)]
     fn from(u: u64) -> Self {
-        if u < (1 << 63) {
-            Val((u as u64) << 1)
-        } else {
-            unsafe { host::u64::from_u64(u).into() }
-        }
+        unsafe { host::u64::from_u64(u).into() }
     }
 }
 
