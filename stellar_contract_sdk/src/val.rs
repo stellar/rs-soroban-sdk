@@ -1,4 +1,4 @@
-use crate::object::OBJ_I64;
+use crate::object::{OBJ_I64, OBJ_U64};
 
 use super::OrAbort;
 use super::{host, status, BitSet, Object, Status, Symbol};
@@ -42,8 +42,9 @@ macro_rules! declare_tryfrom {
 
 declare_tryfrom!(());
 declare_tryfrom!(bool);
-declare_tryfrom!(i32);
 declare_tryfrom!(u32);
+declare_tryfrom!(i32);
+declare_tryfrom!(u64);
 declare_tryfrom!(i64);
 declare_tryfrom!(Object);
 declare_tryfrom!(Symbol);
@@ -84,6 +85,24 @@ impl ValType for i32 {
     }
     unsafe fn unchecked_from_val(v: Val) -> Self {
         v.get_body() as i32
+    }
+}
+
+impl ValType for u64 {
+    // TODO: The ValType trait is not particularly efficient for i64 because it
+    // has to perform its checks twice. It might be more efficient if the
+    // ValType's first function returns an Optional<T> where T is a transform
+    // function.
+    fn is_val_type(v: Val) -> bool {
+        v.is_u63() || (v.is_object() && v.as_object().is_type(OBJ_U64))
+    }
+    unsafe fn unchecked_from_val(v: Val) -> Self {
+        if v.is_u63() {
+            v.as_u63() as u64
+        } else {
+            let o = v.as_object();
+            host::u64::to_u64(o)
+        }
     }
 }
 
@@ -140,6 +159,17 @@ impl From<i64> for Val {
             Val((i as u64) << 1)
         } else {
             unsafe { host::i64::from_i64(i).into() }
+        }
+    }
+}
+
+impl From<u64> for Val {
+    #[inline(always)]
+    fn from(u: u64) -> Self {
+        if u < (1 << 63) {
+            Val((u as u64) << 1)
+        } else {
+            unsafe { host::u64::from_u64(u).into() }
         }
     }
 }
@@ -231,6 +261,16 @@ impl Val {
     }
 
     #[inline(always)]
+    pub fn is_u64(&self) -> bool {
+        self.is_u63() || (self.is_object() && self.as_object().is_type(OBJ_U64))
+    }
+
+    #[inline(always)]
+    pub fn as_u64(&self) -> u64 {
+        (*self).try_into().or_abort()
+    }
+
+    #[inline(always)]
     pub fn is_symbol(&self) -> bool {
         self.has_tag(TAG_SYMBOL)
     }
@@ -301,6 +341,11 @@ impl Val {
     #[inline(always)]
     pub fn from_i64(i: i64) -> Val {
         i.into()
+    }
+
+    #[inline(always)]
+    pub fn from_u64(u: u64) -> Val {
+        u.into()
     }
 
     #[inline(always)]
