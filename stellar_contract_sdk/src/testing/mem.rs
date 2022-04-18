@@ -1,6 +1,7 @@
 use core::panic;
 
 use super::MockHost;
+use crate::object::*;
 use crate::{status, Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
@@ -67,6 +68,26 @@ pub enum MemObj {
     // ...
 }
 
+impl MemObj {
+    fn object_type(&self) -> u8 {
+        match self {
+            MemObj::Box(_) => OBJ_BOX,
+            MemObj::Map(_) => OBJ_MAP,
+            MemObj::Vec(_) => OBJ_VEC,
+            MemObj::U64(_) => OBJ_U64,
+            MemObj::I64(_) => OBJ_I64,
+            MemObj::Str(_) => OBJ_STRING,
+            MemObj::Blob(_) => OBJ_BINARY,
+            MemObj::LedgerKey(_) => OBJ_LEDGERKEY,
+            MemObj::LedgerVal(_) => OBJ_LEDGERVAL,
+            MemObj::Operation(_) => OBJ_OPERATION,
+            MemObj::OperationResult(_) => OBJ_OPERATION_RESULT,
+            MemObj::Transaction(_) => OBJ_TRANSACTION,
+            MemObj::BigNum(_) => OBJ_BIGNUM,
+        }
+    }
+}
+
 pub struct MemHost {
     context: Vec<ContractKey>,
     objs: Vec<MemObj>,
@@ -131,6 +152,30 @@ impl MockHost for MemHost {
     fn get_last_operation_result(&mut self) -> Object {
         let ob = MemObj::OperationResult(self.last_op_result.clone());
         self.put_obj(ob)
+    }
+
+    fn u64_from_u64(&mut self, u: u64) -> Object {
+        let ob = MemObj::U64(u);
+        self.put_obj(ob)
+    }
+
+    fn u64_to_u64(&mut self, u: Object) -> u64 {
+        match self.get_obj(u).expect("missing object") {
+            MemObj::U64(v) => *v,
+            _ => panic!("wrong object type"),
+        }
+    }
+
+    fn i64_from_i64(&mut self, i: i64) -> Object {
+        let ob = MemObj::I64(i);
+        self.put_obj(ob)
+    }
+
+    fn i64_to_i64(&mut self, i: Object) -> i64 {
+        match self.get_obj(i).expect("missing object") {
+            MemObj::I64(v) => *v,
+            _ => panic!("wrong object type"),
+        }
     }
 
     fn map_new(&mut self) -> Object {
@@ -383,8 +428,9 @@ impl MemHost {
 
     pub fn put_obj(&mut self, ob: MemObj) -> Object {
         let idx = self.objs.len();
+        let ty = ob.object_type();
         self.objs.push(ob);
-        Object::from_idx(idx)
+        Object::from_type_and_idx(ty, idx)
     }
 
     pub fn get_obj(&self, ob: Object) -> Option<&MemObj> {

@@ -9,6 +9,8 @@ members = [
     "test_host_objects",
     "test_pay",
     "test_call_everything",
+    "test_i64",
+    "test_u64",
     "test_liqpool",
     "test_token",
 ]

@@ -47,6 +47,30 @@ pub(crate) mod context {
     }
 }
 
+// U64 functions live in the wasm 'u' module
+pub(crate) mod u64 {
+    use crate::Object;
+    #[link(wasm_import_module = "u")]
+    extern "C" {
+        #[link_name = "$_"]
+        pub(crate) fn from_u64(x: u64) -> Object;
+        #[link_name = "$0"]
+        pub(crate) fn to_u64(x: Object) -> u64;
+    }
+}
+
+// I64 functions live in the wasm 'i' module
+pub(crate) mod i64 {
+    use crate::Object;
+    #[link(wasm_import_module = "i")]
+    extern "C" {
+        #[link_name = "$_"]
+        pub(crate) fn from_i64(x: i64) -> Object;
+        #[link_name = "$0"]
+        pub(crate) fn to_i64(x: Object) -> i64;
+    }
+}
+
 // Map functions live in the wasm 'm' module
 pub(crate) mod map {
     use crate::{Object, Val};

@@ -137,6 +137,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_i64"
+version = "0.0.1"
+dependencies = [
+ "stellar_contract_sdk",
+]
+
+[[package]]
 name = "test_liqpool"
 version = "0.0.1"
 dependencies = [
@@ -152,6 +159,13 @@ dependencies = [
 
 [[package]]
 name = "test_token"
+version = "0.0.1"
+dependencies = [
+ "stellar_contract_sdk",
+]
+
+[[package]]
+name = "test_u64"
 version = "0.0.1"
 dependencies = [
  "stellar_contract_sdk",
