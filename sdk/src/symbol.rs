@@ -25,18 +25,6 @@ impl ValType for Symbol {
 
 const MAX_CHARS: usize = 10;
 
-#[cfg(test)]
-mod test {
-    use super::super::Symbol;
-
-    #[test]
-    fn test_from_static_str() {
-        const HELLO: Symbol = Symbol::from_str("hello");
-        //let s: String = HELLO.collect();
-        //dbg!(s);
-    }
-}
-
 impl Symbol {
     pub const fn from_str(s: &'static str) -> Symbol {
         let mut n = 0;
@@ -78,7 +66,7 @@ impl Iterator for SymbolIter {
 
     fn next(&mut self) -> Option<Self::Item> {
         while self.0 != 0 {
-            let res = match ((self.0 >> (MAX_CHARS - 6)) & 63) as u8 {
+            let res = match ((self.0 >> (MAX_CHARS * 6 - 6)) & 63) as u8 {
                 1 => b'_',
                 n @ (2..=11) => (b'0' + n - 2),
                 n @ (12..=37) => (b'A' + n - 12),
@@ -113,5 +101,35 @@ impl FromIterator<char> for Symbol {
         }
         let v = unsafe { Val::from_body_and_tag(accum, super::val::TAG_SYMBOL) };
         Symbol(v)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::Symbol;
+    extern crate std;
+
+    #[test]
+    fn test_roundtrip() {
+        let input = "stellar";
+        let sym = Symbol::from_str(input);
+        let s: String = sym.into_iter().collect();
+        assert_eq!(input, &s);
+    }
+
+    #[test]
+    fn test_roundtrip_zero() {
+        let input = "";
+        let sym = Symbol::from_str(input);
+        let s: String = sym.into_iter().collect();
+        assert_eq!(input, &s);
+    }
+
+    #[test]
+    fn test_roundtrip_ten() {
+        let input = "0123456789";
+        let sym = Symbol::from_str(input);
+        let s: String = sym.into_iter().collect();
+        assert_eq!(input, &s);
     }
 }
