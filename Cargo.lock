@@ -18,6 +18,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "example_add"
+version = "0.0.1"
+dependencies = [
+ "stellar_contract_sdk",
+]
+
+[[package]]
+name = "example_liqpool"
+version = "0.0.1"
+dependencies = [
+ "stellar_contract_sdk",
+]
+
+[[package]]
+name = "example_token"
+version = "0.0.1"
+dependencies = [
+ "stellar_contract_sdk",
+]
+
+[[package]]
 name = "im-rc"
 version = "15.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -95,13 +116,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_add"
-version = "0.0.1"
-dependencies = [
- "stellar_contract_sdk",
-]
-
-[[package]]
 name = "test_bignum"
 version = "0.0.1"
 dependencies = [
@@ -144,21 +158,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_liqpool"
-version = "0.0.1"
-dependencies = [
- "stellar_contract_sdk",
-]
-
-[[package]]
 name = "test_pay"
-version = "0.0.1"
-dependencies = [
- "stellar_contract_sdk",
-]
-
-[[package]]
-name = "test_token"
 version = "0.0.1"
 dependencies = [
  "stellar_contract_sdk",

@@ -1,5 +1,5 @@
 [package]
-name = "test_helper"
+name = "test_call_helper"
 version = "0.0.1"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -9,4 +9,4 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stellar_contract_sdk = {path = "../stellar_contract_sdk"}
+stellar_contract_sdk = {path = "../../sdk"}
