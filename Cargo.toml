@@ -12,6 +12,7 @@ members = [
     "test_i64",
     "test_u64",
     "test_liqpool",
+    "test_token",
 ]
 
 [profile.dev]
