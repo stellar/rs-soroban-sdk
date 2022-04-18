@@ -1,18 +1,18 @@
 [workspace]
 
 members = [
-    "stellar_contract_sdk",
-    "test_add",
-    "test_bignum",
-    "test_call_helper",
-    "test_helper",
-    "test_host_objects",
-    "test_pay",
-    "test_call_everything",
-    "test_i64",
-    "test_u64",
-    "test_liqpool",
-    "test_token",
+    "sdk",
+    "examples/add",
+    "examples/liqpool",
+    "examples/token",
+    "tests/bignum",
+    "tests/call_helper",
+    "tests/helper",
+    "tests/host_objects",
+    "tests/pay",
+    "tests/call_everything",
+    "tests/i64",
+    "tests/u64",
 ]
 
 [profile.dev]
