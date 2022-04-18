@@ -13,6 +13,7 @@ members = [
     "tests/call_everything",
     "tests/i64",
     "tests/u64",
+    "tests/log",
 ]
 
 [profile.dev]

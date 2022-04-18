@@ -1,7 +1,9 @@
 #![allow(unused_variables)]
 
-pub mod fs;
+pub(crate) mod debug;
 pub(crate) mod host;
+
+pub mod fs;
 pub mod mem;
 
 pub use host::swap_mock_host;
