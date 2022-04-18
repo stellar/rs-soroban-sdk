@@ -36,7 +36,6 @@ impl Debug for Object {
         f.debug_struct("Object")
             .field("type", &self.get_type())
             .field("idx", &self.get_idx())
-            .field("0", &self.get_idx())
             .finish()
     }
 }
