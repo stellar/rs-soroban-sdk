@@ -6,22 +6,22 @@ use crate::{status, Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct AccountID(pub Vec<u8>);
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum Asset {
     Native,
     Credit { code: String, issuer: AccountID },
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct ContractID(u64);
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct ContractKey(AccountID, ContractID);
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemLedgerKey {
     Account(AccountID),
     TrustLine { account: AccountID, asset: Asset },
@@ -29,7 +29,7 @@ pub enum MemLedgerKey {
     ContractData(ContractKey, Val),
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemLedgerVal {
     AccountID(AccountID),
     Account(i64),
@@ -38,20 +38,20 @@ pub enum MemLedgerVal {
     ContractData(Val),
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemOperation {}
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemOperationResult {
     Ok,
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemTransaction {}
 
 type HostMap = HashMap<Val, Val>;
 type HostVec = Vector<Val>;
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemObj {
     Box(Val),
     Map(HostMap),
@@ -408,6 +408,10 @@ impl MockHost for MemHost {
             vv.append(v2);
             vv
         })
+    }
+
+    fn as_mut_any(&mut self) -> &mut dyn std::any::Any {
+        self
     }
 }
 
