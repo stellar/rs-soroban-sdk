@@ -20,13 +20,10 @@ pub fn add(a: Val, b: Val) -> Val {
 #[cfg(test)]
 mod test {
     use super::add;
-    use sdk::testing::mem::{MemHost, MemObj};
-    use sdk::testing::swap_mock_host;
     use sdk::Val;
     use stellar_contract_sdk as sdk;
     extern crate alloc;
     extern crate std;
-    use std::boxed::Box;
 
     #[test]
     fn test_add() {
@@ -46,18 +43,5 @@ mod test {
         let z: u64 = z.try_into().unwrap();
         let expect: u64 = (1u64 << 63) + 10;
         assert_eq!(z, expect);
-    }
-
-    #[test]
-    fn test_add_explicitly_using_u63_and_objs() {
-        let mut host = Box::new(MemHost::new());
-        let one = host.put_obj(MemObj::U64(1));
-        swap_mock_host(host);
-
-        let x: Val = Val::from(10 as u64);
-        let y: Val = one.into();
-        let z: Val = add(x, y);
-        let z: u64 = z.try_into().unwrap();
-        assert_eq!(z, 11);
     }
 }
