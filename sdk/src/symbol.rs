@@ -44,9 +44,7 @@ impl Symbol {
         let b: &[u8] = s.as_bytes();
         while n < b.len() {
             let ch = b[n] as char;
-            if n >= MAX_CHARS {
-                break;
-            }
+            require(n < MAX_CHARS);
             n += 1;
             accum <<= 6;
             let v = match ch {

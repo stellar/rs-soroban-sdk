@@ -41,8 +41,10 @@ pub use val::Val;
 pub use vec::Vec;
 
 #[inline(always)]
-pub fn require(b: bool) {
-    b.or_abort();
+pub const fn require(b: bool) {
+    if !b {
+        panic!();
+    }
 }
 
 #[inline(always)]

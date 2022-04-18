@@ -74,7 +74,7 @@ pub fn trade_fixed_out(
 const DATA_KEY_ACCOUNT: Val = Val::from_symbol(Symbol::from_str("accid"));
 const DATA_KEY_ASSET_POOL: Val = Val::from_symbol(Symbol::from_str("assetpool"));
 const DATA_KEY_ASSET_POOL_CIRCULATING: Val =
-    Val::from_symbol(Symbol::from_str("assetpoolcirculating")); // TODO: This symbol seems too long, why does creating it not fail?
+    Val::from_symbol(Symbol::from_str("assetpoolc")); // TODO: This symbol seems too long, why does creating it not fail?
 const DATA_KEY_ASSET_A: Val = Val::from_symbol(Symbol::from_str("asseta"));
 const DATA_KEY_ASSET_B: Val = Val::from_symbol(Symbol::from_str("assetb"));
 
