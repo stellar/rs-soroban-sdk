@@ -459,9 +459,9 @@ mod test {
             asset: asset_p.clone(),
         };
         host.put_ledger_value(acc_u2_key.clone(), MemLedgerVal::Account(0));
-        host.put_ledger_value(acc_u2_tl_a_key, MemLedgerVal::TrustLine(100_000));
-        host.put_ledger_value(acc_u2_tl_b_key, MemLedgerVal::TrustLine(100_000));
-        host.put_ledger_value(acc_u2_tl_p_key, MemLedgerVal::TrustLine(0));
+        host.put_ledger_value(acc_u2_tl_a_key.clone(), MemLedgerVal::TrustLine(100_000));
+        host.put_ledger_value(acc_u2_tl_b_key.clone(), MemLedgerVal::TrustLine(100_000));
+        host.put_ledger_value(acc_u2_tl_p_key.clone(), MemLedgerVal::TrustLine(0));
 
         let acc_p_obj = host.put_obj(MemObj::LedgerKey(acc_p_key.clone()));
         let acc_u1_obj = host.put_obj(MemObj::LedgerKey(acc_u1_key.clone()));
@@ -470,18 +470,34 @@ mod test {
         let asset_a_obj = host.put_obj(MemObj::LedgerVal(asset_a_key.clone()));
         let asset_b_obj = host.put_obj(MemObj::LedgerVal(asset_b_key.clone()));
 
-        swap_mock_host(host);
+        let og_host = swap_mock_host(host);
 
         assert_eq!(
             _init(acc_p_obj, asset_p_obj, asset_a_obj, asset_b_obj),
             true
         );
-        assert_eq!(_deposit(acc_u1_obj, 100_000, 10_000), 31622);
 
+        assert_eq!(_deposit(acc_u1_obj, 100_000, 10_000), 31622);
         with_mock_host(|host: &mut MemHost| {
             assert_eq!(
-                host.get_ledger_value(acc_u1_tl_p_key),
+                host.get_ledger_value(acc_p_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(100_000))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_p_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(10_000))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_p_key.clone()),
                 Some(MemLedgerVal::TrustLine(31622))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(0))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(90_000))
             );
         });
 
@@ -489,6 +505,101 @@ mod test {
             _trade_fixed_in(acc_u2_obj, asset_a_obj, 100, asset_b_obj, 1),
             9
         );
+        with_mock_host(|host: &mut MemHost| {
+            assert_eq!(
+                host.get_ledger_value(acc_p_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(100_100))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_p_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(9_991))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_p_key.clone()),
+                Some(MemLedgerVal::TrustLine(31622))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(99_900))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(100_009))
+            );
+        });
+
+        assert_eq!(_deposit(acc_u2_obj, 100, 1), 3);
+        with_mock_host(|host: &mut MemHost| {
+            assert_eq!(
+                host.get_ledger_value(acc_p_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(100_200))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_p_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(9_992))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_p_key.clone()),
+                Some(MemLedgerVal::TrustLine(31622))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(0))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(90_000))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_p_key.clone()),
+                Some(MemLedgerVal::TrustLine(3))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(99_800))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(100_008))
+            );
+        });
+
         assert_eq!(_withdraw(acc_u1_obj, 31622), true);
+        with_mock_host(|host: &mut MemHost| {
+            assert_eq!(
+                host.get_ledger_value(acc_p_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(10))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_p_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(1))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_p_key.clone()),
+                Some(MemLedgerVal::TrustLine(0))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(100_190))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(99_991))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_p_key.clone()),
+                Some(MemLedgerVal::TrustLine(3))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_a_key.clone()),
+                Some(MemLedgerVal::TrustLine(99_800))
+            );
+            assert_eq!(
+                host.get_ledger_value(acc_u2_tl_b_key.clone()),
+                Some(MemLedgerVal::TrustLine(100_008))
+            );
+        });
+
+        swap_mock_host(og_host);
     }
 }
