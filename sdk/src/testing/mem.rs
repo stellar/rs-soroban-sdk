@@ -7,30 +7,31 @@ use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub struct Address(pub Vec<u8>);
+pub struct AccountID(pub Vec<u8>);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum Asset {
     Native,
-    Credit { code: String, issuer: Address },
+    Credit { code: String, issuer: AccountID },
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct ContractID(u64);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub struct ContractKey(Address, ContractID);
+pub struct ContractKey(AccountID, ContractID);
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerKey {
-    Account(Address),
-    TrustLine { account: Address, asset: Asset },
+    Account(AccountID),
+    TrustLine { account: AccountID, asset: Asset },
     ContractCode(ContractKey),
     ContractData(ContractKey, Val),
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum MemLedgerVal {
+    AccountID(AccountID),
     Account(i64),
     Asset(Asset),
     TrustLine(i64),
@@ -412,7 +413,7 @@ impl MockHost for MemHost {
 
 impl MemHost {
     pub fn new() -> Self {
-        let contract = ContractKey(Address(Vec::new()), ContractID(0));
+        let contract = ContractKey(AccountID(Vec::new()), ContractID(0));
         let mut context = Vec::new();
         context.push(contract);
         let objs = Vec::new();

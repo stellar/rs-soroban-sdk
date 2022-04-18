@@ -380,7 +380,7 @@ mod test {
 
     use super::{_deposit, _init, _withdraw};
     use alloc::string::ToString;
-    use sdk::testing::mem::{Address, Asset, MemHost, MemLedgerKey, MemLedgerVal, MemObj};
+    use sdk::testing::mem::{AccountID, Asset, MemHost, MemLedgerKey, MemLedgerVal, MemObj};
     use sdk::testing::swap_mock_host;
     use stellar_contract_sdk as sdk;
     extern crate alloc;
@@ -391,11 +391,11 @@ mod test {
     fn test() {
         let mut host = Box::new(MemHost::new());
 
-        let addr_p = Address("GP".as_bytes().to_vec());
-        let addr_a = Address("GA".as_bytes().to_vec());
-        let addr_b = Address("GB".as_bytes().to_vec());
-        let addr_u1 = Address("GU1".as_bytes().to_vec());
-        let addr_u2 = Address("GU2".as_bytes().to_vec());
+        let addr_p = AccountID("GP".as_bytes().to_vec());
+        let addr_a = AccountID("GA".as_bytes().to_vec());
+        let addr_b = AccountID("GB".as_bytes().to_vec());
+        let addr_u1 = AccountID("GU1".as_bytes().to_vec());
+        let addr_u2 = AccountID("GU2".as_bytes().to_vec());
 
         let asset_p = Asset::Credit {
             code: "P".to_string(),
