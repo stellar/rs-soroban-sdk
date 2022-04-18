@@ -380,7 +380,7 @@ mod test {
     use super::{_deposit, _init, _withdraw};
     use alloc::string::ToString;
     use sdk::testing::mem::{AccountID, Asset, MemHost, MemLedgerKey, MemLedgerVal, MemObj};
-    use sdk::testing::swap_mock_host;
+    use sdk::testing::{swap_mock_host, with_mock_host};
     use stellar_contract_sdk as sdk;
     extern crate alloc;
     extern crate std;
@@ -442,7 +442,7 @@ mod test {
         host.put_ledger_value(acc_u1_key.clone(), MemLedgerVal::Account(0));
         host.put_ledger_value(acc_u1_tl_a_key.clone(), MemLedgerVal::TrustLine(100_000));
         host.put_ledger_value(acc_u1_tl_b_key.clone(), MemLedgerVal::TrustLine(100_000));
-        host.put_ledger_value(acc_u1_tl_p_key, MemLedgerVal::TrustLine(0));
+        host.put_ledger_value(acc_u1_tl_p_key.clone(), MemLedgerVal::TrustLine(0));
 
         let acc_u2_key = MemLedgerKey::Account(addr_u2.clone());
         let acc_u2_tl_a_key = MemLedgerKey::TrustLine {
@@ -476,6 +476,14 @@ mod test {
             true
         );
         assert_eq!(_deposit(acc_u1_obj, 100_000, 10_000), 31622);
+
+        with_mock_host(|host: &mut MemHost| {
+            assert_eq!(
+                host.get_ledger_value(acc_u1_tl_p_key),
+                Some(MemLedgerVal::TrustLine(31622))
+            );
+        });
+
         assert_eq!(
             _trade_fixed_in(acc_u2_obj, asset_a_obj, 100, asset_b_obj, 1),
             9

@@ -135,6 +135,10 @@ impl MockHost for FsHost {
     fn vec_append(&mut self, v1: Object, v2: Object) -> Object {
         todo!()
     }
+
+    fn as_mut_any(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
 }
 
 impl FsHost {

@@ -28,6 +28,8 @@ impl core::fmt::Debug for Status {
 }
 
 pub trait MockHost {
+    fn as_mut_any(&mut self) -> &mut dyn any::Any;
+
     fn log_value(&mut self, v: Val) -> Val;
     fn get_last_operation_result(&mut self) -> Object;
 
@@ -69,6 +71,7 @@ pub trait MockHost {
 }
 
 use core::cell::RefCell;
+use std::any;
 thread_local! {
     // The default mock host is a memory-backed one, but the user can replace it if they like.
     pub static MOCK_HOST: RefCell<Box<dyn MockHost>> = RefCell::new(Box::new(super::mem::MemHost::new()));
@@ -79,6 +82,15 @@ thread_local! {
 pub fn swap_mock_host(mut mock: Box<dyn MockHost>) -> Box<dyn MockHost> {
     MOCK_HOST.with(|h| core::mem::swap(&mut *h.borrow_mut(), &mut mock));
     mock
+}
+
+pub fn with_mock_host<H: MockHost + 'static, F: FnOnce(&mut H)>(f: F) {
+    MOCK_HOST.with(|h| {
+        f(h.borrow_mut()
+            .as_mut_any()
+            .downcast_mut::<H>()
+            .expect("wrong MockHost type"))
+    })
 }
 
 pub(crate) mod context {
