@@ -22,7 +22,7 @@ pub trait ObjType: Into<Val> {
 
 impl<OB: ObjType> ValType for OB {
     fn is_val_type(v: Val) -> bool {
-        v.is_object() && <Self as ObjType>::is_obj_type(v.as_object())
+        v.is_object() && <Self as ObjType>::is_obj_type(Object(v))
     }
 
     unsafe fn unchecked_from_val(v: Val) -> Self {
@@ -74,6 +74,12 @@ impl Object {
         let body = ty as u64 | body_idx;
         let v = unsafe { Val::from_body_and_tag(body, TAG_OBJECT) };
         Object(v)
+    }
+
+    // This is just an optimized 2-checks-in-one check.
+    #[inline(always)]
+    pub fn val_is_obj_type(v: Val, ty: u8) -> bool {
+        v.is_object() && Object(v).is_type(ty)
     }
 
     #[inline(always)]
