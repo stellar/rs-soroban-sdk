@@ -23,16 +23,15 @@ pub trait ValType: Into<Val> {
     fn is_val_type(v: Val) -> bool;
     unsafe fn unchecked_from_val(v: Val) -> Self;
 
-    // Try_convert has a default implementation that is
-    // test-and-unchecked-convert, but also allows us to customize its
-    // implementation for types in which that would produce an undesirable
-    // replication of tests.
+    // Try_from has a default implementation that is test-and-unchecked, but
+    // also allows us to customize the try_from implementation for types in
+    // which that would produce an undesirable replication of tests.
     #[inline(always)]
-    fn try_convert(v: Val) -> Option<Self> {
+    fn try_from(v: Val) -> Result<Self, Status> {
         if Self::is_val_type(v) {
-            Some(unsafe { Self::unchecked_from_val(v) })
+            Ok(unsafe { Self::unchecked_from_val(v) })
         } else {
-            None
+            Err(status::UNKNOWN_ERROR)
         }
     }
 }
@@ -44,11 +43,7 @@ macro_rules! declare_tryfrom {
             type Error = Status;
             #[inline(always)]
             fn try_from(v: Val) -> Result<Self, Self::Error> {
-                if let Some(c) = <Self as ValType>::try_convert(v) {
-                    Ok(c)
-                } else {
-                    Err(status::UNKNOWN_ERROR)
-                }
+                <Self as ValType>::try_from(v)
             }
         }
     };
@@ -87,17 +82,17 @@ impl ValType for bool {
         v.get_body() == STATIC_TRUE as u64
     }
     #[inline(always)]
-    fn try_convert(v: Val) -> Option<Self> {
+    fn try_from(v: Val) -> Result<Self, Status> {
         if v.has_tag(TAG_STATIC) {
             if v.get_body() == STATIC_TRUE as u64 {
-                Some(true)
+                Ok(true)
             } else if v.get_body() == STATIC_FALSE as u64 {
-                Some(false)
+                Ok(false)
             } else {
-                None
+                Err(status::UNKNOWN_ERROR)
             }
         } else {
-            None
+            Err(status::UNKNOWN_ERROR)
         }
     }
 }
@@ -137,10 +132,6 @@ impl ValType for u64 {
 }
 
 impl ValType for i64 {
-    // TODO: The ValType trait is not particularly efficient for i64 because it
-    // has to perform its checks twice. It might be more efficient if the
-    // ValType's first function returns an Optional<T> where T is a transform
-    // function.
     #[inline(always)]
     fn is_val_type(v: Val) -> bool {
         v.is_u63() || Object::val_is_obj_type(v, OBJ_I64)
@@ -155,16 +146,16 @@ impl ValType for i64 {
         }
     }
     #[inline(always)]
-    fn try_convert(v: Val) -> Option<Self> {
+    fn try_from(v: Val) -> Result<Self, Status> {
         if v.is_u63() {
-            Some(v.as_u63())
+            Ok(v.as_u63())
         } else if Object::val_is_obj_type(v, OBJ_I64) {
             unsafe {
                 let o = <Object as ValType>::unchecked_from_val(v);
-                Some(host::i64::to_i64(o))
+                Ok(host::i64::to_i64(o))
             }
         } else {
-            None
+            Err(status::UNKNOWN_ERROR)
         }
     }
 }
