@@ -5,7 +5,7 @@ all:
 	cd target/wasm32-unknown-unknown/release/ && \
 	for i in *.wasm ; do \
 		wasm-opt -Oz "$$i" -o "$$i.tmp" && mv "$$i.tmp" "$$i"; \
-		ls -lh "$$i"; \
+		ls -l "$$i"; \
 	done
 
 clean:
