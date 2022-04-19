@@ -28,15 +28,11 @@ pub trait ValType: Into<Val> {
     // implementation for types in which that would produce an undesirable
     // replication of tests.
     #[inline(always)]
-    fn try_convert<T, OK, BAD>(v: Val, ok: OK, bad: BAD) -> T
-    where
-        OK: FnOnce(Self) -> T,
-        BAD: FnOnce() -> T,
-    {
+    fn try_convert(v: Val) -> Option<Self> {
         if Self::is_val_type(v) {
-            ok(unsafe { Self::unchecked_from_val(v) })
+            Some(unsafe { Self::unchecked_from_val(v) })
         } else {
-            bad()
+            None
         }
     }
 }
@@ -48,7 +44,11 @@ macro_rules! declare_tryfrom {
             type Error = Status;
             #[inline(always)]
             fn try_from(v: Val) -> Result<Self, Self::Error> {
-                <Self as ValType>::try_convert(v, |c| Ok(c), || Err(status::UNKNOWN_ERROR))
+                if let Some(c) = <Self as ValType>::try_convert(v) {
+                    Ok(c)
+                } else {
+                    Err(status::UNKNOWN_ERROR)
+                }
             }
         }
     };
@@ -87,21 +87,17 @@ impl ValType for bool {
         v.get_body() == STATIC_TRUE as u64
     }
     #[inline(always)]
-    fn try_convert<T, OK, BAD>(v: Val, ok: OK, bad: BAD) -> T
-    where
-        OK: FnOnce(Self) -> T,
-        BAD: FnOnce() -> T,
-    {
+    fn try_convert(v: Val) -> Option<Self> {
         if v.has_tag(TAG_STATIC) {
             if v.get_body() == STATIC_TRUE as u64 {
-                ok(true)
+                Some(true)
             } else if v.get_body() == STATIC_FALSE as u64 {
-                ok(false)
+                Some(false)
             } else {
-                bad()
+                None
             }
         } else {
-            bad()
+            None
         }
     }
 }
@@ -159,20 +155,16 @@ impl ValType for i64 {
         }
     }
     #[inline(always)]
-    fn try_convert<T, OK, BAD>(v: Val, ok: OK, bad: BAD) -> T
-    where
-        OK: FnOnce(Self) -> T,
-        BAD: FnOnce() -> T,
-    {
+    fn try_convert(v: Val) -> Option<Self> {
         if v.is_u63() {
-            ok(v.as_u63())
+            Some(v.as_u63())
         } else if Object::val_is_obj_type(v, OBJ_I64) {
             unsafe {
                 let o = <Object as ValType>::unchecked_from_val(v);
-                ok(host::i64::to_i64(o))
+                Some(host::i64::to_i64(o))
             }
         } else {
-            bad()
+            None
         }
     }
 }
