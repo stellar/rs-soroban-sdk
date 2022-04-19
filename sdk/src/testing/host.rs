@@ -63,7 +63,7 @@ pub fn swap_mock_host(mut mock: Box<dyn MockHost>) -> Box<dyn MockHost> {
     mock
 }
 
-pub fn with_mock_host<H: MockHost + 'static, F: FnOnce(&mut H)>(f: F) {
+pub fn with_mock_host<H: MockHost + 'static, U, F: FnOnce(&mut H) -> U>(f: F) -> U {
     MOCK_HOST.with(|h| {
         f(h.borrow_mut()
             .as_mut_any()

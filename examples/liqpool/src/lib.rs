@@ -563,6 +563,8 @@ mod test {
             );
         });
 
+        let _obj: sdk::Object = with_mock_host(|host: &mut MemHost| host.put_obj(MemObj::I64(5)));
+
         assert_eq!(_withdraw(acc_u1_obj, 31622), true);
         with_mock_host(|host: &mut MemHost| {
             assert_eq!(
