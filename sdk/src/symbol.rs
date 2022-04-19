@@ -57,6 +57,7 @@ impl IntoIterator for Symbol {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct SymbolIter(u64);
 
 impl Iterator for SymbolIter {
