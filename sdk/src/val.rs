@@ -22,6 +22,23 @@ pub struct Val(u64);
 pub trait ValType: Into<Val> {
     fn is_val_type(v: Val) -> bool;
     unsafe fn unchecked_from_val(v: Val) -> Self;
+
+    // Try_convert has a default implementation that is
+    // test-and-unchecked-convert, but also allows us to customize its
+    // implementation for types in which that would produce an undesirable
+    // replication of tests.
+    #[inline(always)]
+    fn try_convert<T, OK, BAD>(v: Val, ok: OK, bad: BAD) -> T
+    where
+        OK: FnOnce(Self) -> T,
+        BAD: FnOnce() -> T,
+    {
+        if Self::is_val_type(v) {
+            ok(unsafe { Self::unchecked_from_val(v) })
+        } else {
+            bad()
+        }
+    }
 }
 
 // Orphan rules mean we have to macro these, can't blanket-impl on V:Valtype.
@@ -29,12 +46,9 @@ macro_rules! declare_tryfrom {
     ($T:ty) => {
         impl TryFrom<Val> for $T {
             type Error = Status;
+            #[inline(always)]
             fn try_from(v: Val) -> Result<Self, Self::Error> {
-                if <Self as ValType>::is_val_type(v) {
-                    Ok(unsafe { <Self as ValType>::unchecked_from_val(v) })
-                } else {
-                    Err(status::UNKNOWN_ERROR)
-                }
+                <Self as ValType>::try_convert(v, |c| Ok(c), || Err(status::UNKNOWN_ERROR))
             }
         }
     };
@@ -52,48 +66,76 @@ declare_tryfrom!(BitSet);
 declare_tryfrom!(Status);
 
 impl ValType for () {
+    #[inline(always)]
     fn is_val_type(v: Val) -> bool {
         v.has_tag(TAG_STATIC) && v.get_body() == STATIC_VOID as u64
     }
+    #[inline(always)]
     unsafe fn unchecked_from_val(_v: Val) -> Self {
         ()
     }
 }
 
 impl ValType for bool {
+    #[inline(always)]
     fn is_val_type(v: Val) -> bool {
         v.has_tag(TAG_STATIC)
             && (v.get_body() == STATIC_TRUE as u64 || v.get_body() == STATIC_FALSE as u64)
     }
+    #[inline(always)]
     unsafe fn unchecked_from_val(v: Val) -> Self {
         v.get_body() == STATIC_TRUE as u64
+    }
+    #[inline(always)]
+    fn try_convert<T, OK, BAD>(v: Val, ok: OK, bad: BAD) -> T
+    where
+        OK: FnOnce(Self) -> T,
+        BAD: FnOnce() -> T,
+    {
+        if v.has_tag(TAG_STATIC) {
+            if v.get_body() == STATIC_TRUE as u64 {
+                ok(true)
+            } else if v.get_body() == STATIC_FALSE as u64 {
+                ok(false)
+            } else {
+                bad()
+            }
+        } else {
+            bad()
+        }
     }
 }
 
 impl ValType for u32 {
+    #[inline(always)]
     fn is_val_type(v: Val) -> bool {
         v.has_tag(TAG_U32)
     }
+    #[inline(always)]
     unsafe fn unchecked_from_val(v: Val) -> Self {
         v.get_body() as u32
     }
 }
 
 impl ValType for i32 {
+    #[inline(always)]
     fn is_val_type(v: Val) -> bool {
         v.has_tag(TAG_I32)
     }
+    #[inline(always)]
     unsafe fn unchecked_from_val(v: Val) -> Self {
         v.get_body() as i32
     }
 }
 
 impl ValType for u64 {
+    #[inline(always)]
     fn is_val_type(v: Val) -> bool {
-        v.is_object() && v.as_object().is_type(OBJ_U64)
+        Object::val_is_obj_type(v, OBJ_U64)
     }
+    #[inline(always)]
     unsafe fn unchecked_from_val(v: Val) -> Self {
-        let o = v.as_object();
+        let o = <Object as ValType>::unchecked_from_val(v);
         host::u64::to_u64(o)
     }
 }
@@ -103,15 +145,34 @@ impl ValType for i64 {
     // has to perform its checks twice. It might be more efficient if the
     // ValType's first function returns an Optional<T> where T is a transform
     // function.
+    #[inline(always)]
     fn is_val_type(v: Val) -> bool {
-        v.is_u63() || (v.is_object() && v.as_object().is_type(OBJ_I64))
+        v.is_u63() || Object::val_is_obj_type(v, OBJ_I64)
     }
+    #[inline(always)]
     unsafe fn unchecked_from_val(v: Val) -> Self {
         if v.is_u63() {
             v.as_u63()
         } else {
-            let o = v.as_object();
+            let o = <Object as ValType>::unchecked_from_val(v);
             host::i64::to_i64(o)
+        }
+    }
+    #[inline(always)]
+    fn try_convert<T, OK, BAD>(v: Val, ok: OK, bad: BAD) -> T
+    where
+        OK: FnOnce(Self) -> T,
+        BAD: FnOnce() -> T,
+    {
+        if v.is_u63() {
+            ok(v.as_u63())
+        } else if Object::val_is_obj_type(v, OBJ_I64) {
+            unsafe {
+                let o = <Object as ValType>::unchecked_from_val(v);
+                ok(host::i64::to_i64(o))
+            }
+        } else {
+            bad()
         }
     }
 }
