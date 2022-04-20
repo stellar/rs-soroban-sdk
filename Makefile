@@ -8,6 +8,8 @@ all:
 		ls -l "$$i"; \
 	done
 
+fmt:
+	rustfmt --check $$(find . -type f -name '*.rs' -print)
+
 clean:
 	cargo clean
-
