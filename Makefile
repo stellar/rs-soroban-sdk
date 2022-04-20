@@ -9,7 +9,7 @@ all:
 	done
 
 fmt:
-	rustfmt --check $$(find . -type f -name '*.rs' -print)
+	rustfmt $$(find . -type f -name '*.rs' -print)
 
 clean:
 	cargo clean
