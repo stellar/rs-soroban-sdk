@@ -3,6 +3,7 @@ use stellar_contract_sdk::{Object, OrAbort};
 
 use crate::datakeys::*;
 
+#[derive(Clone, Copy)]
 pub struct Config {
     pub acc: Object,
     pub asset_p: Object,

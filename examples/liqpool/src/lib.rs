@@ -4,8 +4,10 @@ use stellar_contract_sdk::{Object, OrAbort, Val};
 
 mod config;
 mod datakeys;
+mod reserves;
 mod state;
 use config::Config;
+use reserves::Reserves;
 use state::State;
 
 #[no_mangle]
@@ -117,19 +119,7 @@ fn _deposit(src_acc: Object, amount_a: i64, amount_b: i64) -> i64 {
 
     let config = Config::load();
     let state = State::load();
-
-    let reserve_a: i64 = sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(
-        config.acc,
-        config.asset_a,
-    ))
-    .try_into()
-    .or_abort();
-    let reserve_b: i64 = sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(
-        config.acc,
-        config.asset_b,
-    ))
-    .try_into()
-    .or_abort();
+    let reserves = Reserves::load(&config);
 
     let amount_pool: i64 = match state.asset_p_circulating {
         0 => {
@@ -142,19 +132,19 @@ fn _deposit(src_acc: Object, amount_a: i64, amount_b: i64) -> i64 {
             mul_sqrt(amount_a, amount_b)
         }
         _ => {
-            let amount_pool_a = match reserve_a {
+            let amount_pool_a = match reserves.a {
                 0 => 0,
-                _ => state.asset_p_circulating * amount_a / reserve_a,
+                _ => state.asset_p_circulating * amount_a / reserves.a,
             };
-            let amount_pool_b = match reserve_b {
+            let amount_pool_b = match reserves.b {
                 0 => 0,
-                _ => state.asset_p_circulating * amount_b / reserve_b,
+                _ => state.asset_p_circulating * amount_b / reserves.b,
             };
-            if reserve_a > 0 && reserve_b > 0 {
+            if reserves.a > 0 && reserves.b > 0 {
                 amount_pool_a.min(amount_pool_b)
-            } else if reserve_a > 0 {
+            } else if reserves.a > 0 {
                 amount_pool_a
-            } else if reserve_b > 0 {
+            } else if reserves.b > 0 {
                 amount_pool_b
             } else {
                 unreachable!()
@@ -196,26 +186,14 @@ fn _withdraw(src_acc: Object, amount_pool: i64) -> bool {
 
     let config = Config::load();
     let state = State::load();
+    let reserves = Reserves::load(&config);
 
     if state.asset_p_circulating == 0 {
         panic!("none of pool asset issued")
     }
 
-    let reserve_a: i64 = sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(
-        config.acc,
-        config.asset_a,
-    ))
-    .try_into()
-    .or_abort();
-    let reserve_b: i64 = sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(
-        config.acc,
-        config.asset_b,
-    ))
-    .try_into()
-    .or_abort();
-
-    let amount_a = amount_pool * reserve_a / state.asset_p_circulating;
-    let amount_b = amount_pool * reserve_b / state.asset_p_circulating;
+    let amount_a = amount_pool * reserves.a / state.asset_p_circulating;
+    let amount_b = amount_pool * reserves.b / state.asset_p_circulating;
 
     sdk::ledger::pay(
         src_acc.into(),
@@ -265,14 +243,9 @@ fn _trade_fixed_in(
         panic!("assets do not match pool")
     }
 
-    let reserve_in: i64 =
-        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(config.acc, asset_in))
-            .try_into()
-            .or_abort();
-    let reserve_out: i64 =
-        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(config.acc, asset_out))
-            .try_into()
-            .or_abort();
+    let reserves = Reserves::load(&config);
+    let reserve_in: i64 = reserves.for_asset(asset_in);
+    let reserve_out: i64 = reserves.for_asset(asset_out);
 
     // Calculate amount out to preserve current price.
     //   (x+a)*(y-b)=x*y
@@ -319,14 +292,9 @@ fn _trade_fixed_out(
         panic!("assets do not match pool")
     }
 
-    let reserve_in: i64 =
-        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(config.acc, asset_in))
-            .try_into()
-            .or_abort();
-    let reserve_out: i64 =
-        sdk::ledger::trust_line_balance(sdk::ledger::account_trust_line(config.acc, asset_out))
-            .try_into()
-            .or_abort();
+    let reserves = Reserves::load(&config);
+    let reserve_in: i64 = reserves.for_asset(asset_in);
+    let reserve_out: i64 = reserves.for_asset(asset_out);
 
     // Calculate amount out to preserve current price.
     //   (x+a)*(y-b)=x*y
