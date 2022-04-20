@@ -339,23 +339,32 @@ fn _trade_fixed_out(
 
     // TODO: Change pay to accept more specific types and native types.
     // TODO: Handle return values and errors from pay?
-    sdk::ledger::pay(src_acc, config.acc, asset_in, amount_in.try_into().or_abort());
-    sdk::ledger::pay(config.acc, src_acc, asset_out, amount_out.try_into().or_abort());
+    sdk::ledger::pay(
+        src_acc,
+        config.acc,
+        asset_in,
+        amount_in.try_into().or_abort(),
+    );
+    sdk::ledger::pay(
+        config.acc,
+        src_acc,
+        asset_out,
+        amount_out.try_into().or_abort(),
+    );
     amount_in
 }
 
 #[cfg(test)]
 mod test {
-    use crate::_trade_fixed_in;
-
-    use super::{_deposit, _init, _withdraw};
+    use super::{_deposit, _init, _trade_fixed_in, _withdraw};
     use alloc::string::ToString;
-    use sdk::testing::mem::{AccountID, Asset, MemHost, MemLedgerKey, MemLedgerVal, MemObj};
-    use sdk::testing::{swap_mock_host, with_mock_host};
-    use stellar_contract_sdk as sdk;
+    use stellar_contract_sdk::testing::mem::{
+        AccountID, Asset, MemHost, MemLedgerKey, MemLedgerVal, MemObj,
+    };
+    use stellar_contract_sdk::testing::{swap_mock_host, with_mock_host};
+    use stellar_contract_sdk::Object;
     extern crate alloc;
     extern crate std;
-    use sdk::Object;
     use std::boxed::Box;
 
     #[test]
