@@ -6,7 +6,7 @@ use crate::{status, Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
-use stellar_xdr::{AccountId, PublicKey, Uint256, Asset, AlphaNum4};
+use stellar_xdr::{AccountId, AlphaNum4, Asset, PublicKey, Uint256};
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct ContractID(u64);
@@ -214,9 +214,9 @@ impl MockHost for MemHost {
             _ => panic!("wrong object type"),
         };
         let (asset_code, asset_issuer) = match self.get_obj(asset).expect("missing asset") {
-            MemObj::LedgerVal(MemLedgerVal::Asset(Asset::AssetTypeCreditAlphanum4(AlphaNum4 { asset_code, issuer }))) => {
-                (asset_code.clone(), issuer.clone())
-            }
+            MemObj::LedgerVal(MemLedgerVal::Asset(Asset::AssetTypeCreditAlphanum4(
+                AlphaNum4 { asset_code, issuer },
+            ))) => (asset_code.clone(), issuer.clone()),
             MemObj::LedgerVal(MemLedgerVal::Asset(_)) => todo!(),
             _ => panic!("wrong object type"),
         };
@@ -410,7 +410,10 @@ impl MockHost for MemHost {
 
 impl MemHost {
     pub fn new() -> Self {
-        let contract = ContractKey(AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([0u8; 32]))), ContractID(0));
+        let contract = ContractKey(
+            AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([0u8; 32]))),
+            ContractID(0),
+        );
         let mut context = Vec::new();
         context.push(contract);
         let objs = Vec::new();
