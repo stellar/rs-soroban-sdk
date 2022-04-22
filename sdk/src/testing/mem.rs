@@ -6,32 +6,25 @@ use crate::{status, Object, OrAbort, Val};
 use im_rc::{HashMap, Vector};
 use num_bigint::BigInt;
 
-#[derive(Clone, PartialEq, Eq, Hash, Debug)]
-pub struct AccountID(pub Vec<u8>);
-
-#[derive(Clone, PartialEq, Eq, Hash, Debug)]
-pub enum Asset {
-    Native,
-    Credit { code: String, issuer: AccountID },
-}
+use stellar_xdr::{AccountId, PublicKey, Uint256, Asset, AlphaNum4};
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct ContractID(u64);
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
-pub struct ContractKey(AccountID, ContractID);
+pub struct ContractKey(AccountId, ContractID);
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemLedgerKey {
-    Account(AccountID),
-    TrustLine { account: AccountID, asset: Asset },
+    Account(AccountId),
+    TrustLine { account: AccountId, asset: Asset },
     ContractCode(ContractKey),
     ContractData(ContractKey, Val),
 }
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum MemLedgerVal {
-    AccountID(AccountID),
+    AccountID(AccountId),
     Account(i64),
     Asset(Asset),
     TrustLine(i64),
@@ -221,16 +214,16 @@ impl MockHost for MemHost {
             _ => panic!("wrong object type"),
         };
         let (asset_code, asset_issuer) = match self.get_obj(asset).expect("missing asset") {
-            MemObj::LedgerVal(MemLedgerVal::Asset(Asset::Credit { code, issuer })) => {
-                (code.clone(), issuer.clone())
+            MemObj::LedgerVal(MemLedgerVal::Asset(Asset::AssetTypeCreditAlphanum4(AlphaNum4 { asset_code, issuer }))) => {
+                (asset_code.clone(), issuer.clone())
             }
             MemObj::LedgerVal(MemLedgerVal::Asset(_)) => todo!(),
             _ => panic!("wrong object type"),
         };
-        let asset = Asset::Credit {
-            code: asset_code.clone(),
+        let asset = Asset::AssetTypeCreditAlphanum4(AlphaNum4 {
+            asset_code: asset_code.clone(),
             issuer: asset_issuer.clone(),
-        };
+        });
         let amount: i64 = amount.try_into().or_abort();
 
         let src_tlk = MemLedgerKey::TrustLine {
@@ -417,7 +410,7 @@ impl MockHost for MemHost {
 
 impl MemHost {
     pub fn new() -> Self {
-        let contract = ContractKey(AccountID(Vec::new()), ContractID(0));
+        let contract = ContractKey(AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([0u8; 32]))), ContractID(0));
         let mut context = Vec::new();
         context.push(contract);
         let objs = Vec::new();

@@ -325,12 +325,10 @@ fn _trade_fixed_out(
 #[cfg(test)]
 mod test {
     use super::{_deposit, _init, _trade_fixed_in, _withdraw};
-    use alloc::string::ToString;
-    use stellar_contract_sdk::testing::mem::{
-        AccountID, Asset, MemHost, MemLedgerKey, MemLedgerVal, MemObj,
-    };
+    use stellar_contract_sdk::testing::mem::{MemHost, MemLedgerKey, MemLedgerVal, MemObj};
     use stellar_contract_sdk::testing::{swap_mock_host, with_mock_host};
     use stellar_contract_sdk::Object;
+    use stellar_xdr::{AccountId, AlphaNum4, Asset, AssetCode4, PublicKey, Uint256};
     extern crate alloc;
     extern crate std;
     use std::boxed::Box;
@@ -340,24 +338,24 @@ mod test {
         let host = Box::new(MemHost::new());
         let og_host = swap_mock_host(host);
 
-        let addr_p = AccountID("GP".as_bytes().to_vec());
-        let addr_a = AccountID("GA".as_bytes().to_vec());
-        let addr_b = AccountID("GB".as_bytes().to_vec());
-        let addr_u1 = AccountID("GU1".as_bytes().to_vec());
-        let addr_u2 = AccountID("GU2".as_bytes().to_vec());
+        let addr_p = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([b'P'; 32])));
+        let addr_a = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([b'A'; 32])));
+        let addr_b = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([b'B'; 32])));
+        let addr_u1 = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([b'1'; 32])));
+        let addr_u2 = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([b'2'; 32])));
 
-        let asset_p = Asset::Credit {
-            code: "P".to_string(),
+        let asset_p = Asset::AssetTypeCreditAlphanum4(AlphaNum4 {
+            asset_code: AssetCode4([b'P'; 4]),
             issuer: addr_p.clone(),
-        };
-        let asset_a = Asset::Credit {
-            code: "A".to_string(),
+        });
+        let asset_a = Asset::AssetTypeCreditAlphanum4(AlphaNum4 {
+            asset_code: AssetCode4([b'A'; 4]),
             issuer: addr_a.clone(),
-        };
-        let asset_b = Asset::Credit {
-            code: "B".to_string(),
+        });
+        let asset_b = Asset::AssetTypeCreditAlphanum4(AlphaNum4 {
+            asset_code: AssetCode4([b'B'; 4]),
             issuer: addr_b.clone(),
-        };
+        });
 
         let asset_p_key = MemLedgerVal::Asset(asset_p.clone());
         let asset_a_key = MemLedgerVal::Asset(asset_a.clone());
