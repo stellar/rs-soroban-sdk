@@ -9,7 +9,7 @@ This SDK is in early development. The API is unstable, experimental, and breakin
 
 The Stellar-Core Jump Cannon prototype and this SDK are not 100% compatible. Both are still in development and some features may be present in one and not the other. This may cause some example contracts to fail to run on the prototype. However, all examples and tests in this repo should function on the mock host implementation built into the SDK, which is what all tests within the SDK use.
 
-## Prerequisites
+### Prerequisites
 1. Install wasm  - If building from source, make sure binaries are available in your PATH
    * Install binaryen - https://github.com/WebAssembly/binaryen#building
    * Install wabt - https://github.com/WebAssembly/wabt#cloning
