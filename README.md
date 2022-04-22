@@ -5,7 +5,9 @@ This SDK is in early development. The API is unstable, experimental, and breakin
 
 [Stellar Jump Cannon]: https://stellar.org/blog/smart-contracts-on-stellar-why-now
 
-# Run a contract
+## Run a contract on the Stellar-Core Jump Cannon prototype
+
+The Stellar-Core Jump Cannon prototype and this SDK are not 100% compatible. Both are still in development and some features may be present in one and not the other. This may cause some example contracts to fail to run on the prototype. However, all examples and tests in this repo should function on the mock host implementation built into the SDK, which is what all tests within the SDK use.
 
 ## Prerequisites
 1. Install wasm  - If building from source, make sure binaries are available in your PATH
