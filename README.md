@@ -21,6 +21,6 @@ The Stellar-Core Jump Cannon prototype and this SDK are not 100% compatible. Bot
    * make all
 
 
-## Contract call
+### Contract call
 Pass one of the built wasm files from rs-stellar-contract-sdk into the stellar-core wasm-prototype
 Ex. `stellar-core --conf stellar.conf invoke-contract rs-stellar-contract-sdk/target/wasm32-unknown-unknown/release/test_add.wasm add --arg u63:5 --arg u63:11`
