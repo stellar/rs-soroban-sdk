@@ -13,7 +13,7 @@ The Stellar-Core Jump Cannon prototype and this SDK are not 100% compatible. Bot
 1. Install wasm  - If building from source, make sure binaries are available in your PATH
    * Install binaryen - https://github.com/WebAssembly/binaryen#building
    * Install wabt - https://github.com/WebAssembly/wabt#cloning
-     * This is optional. It contains wasm-objdump, which you can use to dump the contents of a contract. Ex. `wasm-objdump -xh ~/stellar/rs-stellar-contract-sdk/target/wasm32-unknown-unknown/release/test_add.wasm`
+     * This is optional. It contains wasm-objdump, which you can use to dump the contents of a contract. Ex. `wasm-objdump -xh ~/stellar/rs-stellar-contract-sdk/target/wasm32-unknown-unknown/release/example_add.wasm`
 2. Install Rust - https://www.rust-lang.org/learn/get-started
 3. Checkout and build stellar-core wasm-prototype - https://github.com/graydon/stellar-core/tree/wasm-prototype
 4. Build - https://github.com/stellar/rs-stellar-contract-sdk
@@ -23,4 +23,4 @@ The Stellar-Core Jump Cannon prototype and this SDK are not 100% compatible. Bot
 
 ### Contract call
 Pass one of the built wasm files from rs-stellar-contract-sdk into the stellar-core wasm-prototype
-Ex. `stellar-core --conf stellar.conf invoke-contract rs-stellar-contract-sdk/target/wasm32-unknown-unknown/release/test_add.wasm add --arg u63:5 --arg u63:11`
+Ex. `stellar-core --conf stellar.conf invoke-contract rs-stellar-contract-sdk/target/wasm32-unknown-unknown/release/example_add.wasm add --arg u63:5 --arg u63:11`
