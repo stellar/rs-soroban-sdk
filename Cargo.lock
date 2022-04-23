@@ -31,24 +31,24 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "example_add"
-version = "0.0.1"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
 name = "example_liqpool"
-version = "0.0.1"
+version = "0.0.0"
 dependencies = [
+ "stellar-contract-sdk",
  "stellar-xdr",
- "stellar_contract_sdk",
 ]
 
 [[package]]
 name = "example_token"
-version = "0.0.1"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
@@ -121,17 +121,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar-xdr"
-version = "0.1.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr#1985adaa89de0dbca4f1df37b9ef280cceef2c61"
-dependencies = [
- "base64",
- "byteorder",
-]
-
-[[package]]
-name = "stellar_contract_sdk"
-version = "0.0.1"
+name = "stellar-contract-sdk"
+version = "0.0.0"
 dependencies = [
  "im-rc",
  "num-bigint",
@@ -139,66 +130,75 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_bignum"
-version = "0.0.1"
+name = "stellar-xdr"
+version = "0.0.0"
+source = "git+https://github.com/stellar/rs-stellar-xdr#5cb081cb8bffdf0dc82b923ec13d2bda0d85a107"
 dependencies = [
- "stellar_contract_sdk",
+ "base64",
+ "byteorder",
 ]
 
 [[package]]
-name = "test_call_everything"
-version = "0.0.1"
+name = "test-bignum"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_call_helper"
-version = "0.0.1"
+name = "test-call-everything"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_helper"
-version = "0.0.1"
+name = "test-call-helper"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_host_objects"
-version = "0.0.1"
+name = "test-helper"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_i64"
-version = "0.0.1"
+name = "test-host-objects"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_log"
-version = "0.0.1"
+name = "test-i64"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_pay"
-version = "0.0.1"
+name = "test-log"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_u64"
-version = "0.0.1"
+name = "test-pay"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
+]
+
+[[package]]
+name = "test-u64"
+version = "0.0.0"
+dependencies = [
+ "stellar-contract-sdk",
 ]
 
 [[package]]
