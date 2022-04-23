@@ -19,23 +19,23 @@ dependencies = [
 
 [[package]]
 name = "example_add"
-version = "0.0.1"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
 name = "example_liqpool"
-version = "0.0.1"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
 name = "example_token"
-version = "0.0.1"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
@@ -108,74 +108,74 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar_contract_sdk"
-version = "0.0.1"
+name = "stellar-contract-sdk"
+version = "0.0.0"
 dependencies = [
  "im-rc",
  "num-bigint",
 ]
 
 [[package]]
-name = "test_bignum"
-version = "0.0.1"
+name = "test-bignum"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_call_everything"
-version = "0.0.1"
+name = "test-call-everything"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_call_helper"
-version = "0.0.1"
+name = "test-call-helper"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_helper"
-version = "0.0.1"
+name = "test-helper"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_host_objects"
-version = "0.0.1"
+name = "test-host-objects"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_i64"
-version = "0.0.1"
+name = "test-i64"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_log"
-version = "0.0.1"
+name = "test-log"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_pay"
-version = "0.0.1"
+name = "test-pay"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
-name = "test_u64"
-version = "0.0.1"
+name = "test-u64"
+version = "0.0.0"
 dependencies = [
- "stellar_contract_sdk",
+ "stellar-contract-sdk",
 ]
 
 [[package]]
