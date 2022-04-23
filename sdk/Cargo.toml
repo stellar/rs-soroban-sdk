@@ -11,4 +11,4 @@ crate-type = ["cdylib", "rlib"]
 [target.'cfg(not(target_family="wasm"))'.dependencies]
 im-rc = "15.0.0"
 num-bigint = "0.4"
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", branch = "update-with-hash" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr" }
