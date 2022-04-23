@@ -21,20 +21,36 @@ jobs:
         include:
           - os: ubuntu-latest
             target: wasm32-unknown-unknown
+            profile: release
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+            profile: debug
           - os: macos-latest
             target: x86_64-apple-darwin
+            profile: debug
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - run: rustup update stable && rustup default stable
     - run: rustup target add ${{ matrix.target }}
-    - run: cargo build --verbose --target ${{ matrix.target }}
+    - run: cargo build --verbose --profile ${{ matrix.profile }} --target ${{ matrix.target }}
 
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: wasm32-unknown-unknown
+            profile: release
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            profile: debug
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            profile: debug
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - run: rustup update stable && rustup default stable
-    - run: cargo test --verbose
+    - run: rustup target add ${{ matrix.target }}
+    - run: cargo test --verbose --profile ${{ matrix.profile }} --target ${{ matrix.target }}
