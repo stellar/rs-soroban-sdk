@@ -148,7 +148,7 @@ impl ValType for i64 {
     #[inline(always)]
     unsafe fn unchecked_from_val(v: Val) -> Self {
         if v.is_u63() {
-            v.as_u63()
+            v.unchecked_as_u63()
         } else {
             let o = <Object as ValType>::unchecked_from_val(v);
             host::i64::to_i64(o)
@@ -157,7 +157,7 @@ impl ValType for i64 {
     #[inline(always)]
     fn try_convert(v: Val) -> Option<Self> {
         if v.is_u63() {
-            Some(v.as_u63())
+            Some(v.unchecked_as_u63())
         } else if Object::val_is_obj_type(v, OBJ_I64) {
             unsafe {
                 let o = <Object as ValType>::unchecked_from_val(v);
@@ -222,7 +222,7 @@ impl Val {
     }
 
     #[inline(always)]
-    pub(crate) const fn as_u63(&self) -> i64 {
+    pub(crate) const fn unchecked_as_u63(&self) -> i64 {
         (self.0 >> 1) as i64
     }
 

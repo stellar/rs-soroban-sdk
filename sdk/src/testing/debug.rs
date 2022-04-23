@@ -5,7 +5,9 @@ use crate::{Object, Status, Symbol, Val};
 impl Debug for Val {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.is_u63() {
-            f.debug_struct("Val").field("u63", &self.as_u63()).finish()
+            f.debug_struct("Val")
+                .field("u63", &self.unchecked_as_u63())
+                .finish()
         } else if self.is_u32() {
             f.debug_struct("Val").field("u32", &self.as_u32()).finish()
         } else if self.is_i32() {
