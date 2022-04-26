@@ -9,6 +9,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
+name = "base32"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23ce669cd6c8588f79e15cf450314f9638f967fc5770ff1c7c1deb0925ea7cfa"
+
+[[package]]
 name = "base64"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -41,6 +47,7 @@ name = "example_liqpool"
 version = "0.0.0"
 dependencies = [
  "stellar-contract-sdk",
+ "stellar-strkey",
  "stellar-xdr",
 ]
 
@@ -130,9 +137,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "stellar-strkey"
+version = "0.0.0"
+source = "git+https://github.com/stellar/rs-stellar-strkey#e9bca80eb2dff582e49b2db452ece083dc8ed5ff"
+dependencies = [
+ "base32",
+]
+
+[[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr#fb4cedc79aa830667360123bab06853ba848f20b"
+source = "git+https://github.com/stellar/rs-stellar-xdr#a2ff409ba70fbe5315391a4bbae8bc784e05ee01"
 dependencies = [
  "base64",
  "byteorder",
