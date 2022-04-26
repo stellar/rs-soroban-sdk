@@ -1,7 +1,7 @@
 # rs-stellar-contract-sdk
 Rust SDK for writing contracts for [Stellar Jump Cannon].
 
-**This repository contains code that is in early development, not tested, and not recommended for use. The API is unstable, experimental, and is receiving breaking changes frequently.**
+**This repository contains code that is in early development, incomplete, not tested, and not recommended for use. The API is unstable, experimental, and is receiving breaking changes frequently.**
 
 [Stellar Jump Cannon]: https://stellar.org/blog/smart-contracts-on-stellar-why-now
 
