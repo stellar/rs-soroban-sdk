@@ -20,7 +20,6 @@ strip = "symbols"
 debug-assertions = false
 panic = "abort"
 
-
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr" }

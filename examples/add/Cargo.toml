@@ -8,9 +8,6 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[dependencies]
-stellar-contract-sdk = {path = "../../sdk"}
-
 [profile.dev]
 overflow-checks = true
 panic = "abort"
@@ -22,3 +19,6 @@ debug = 0
 strip = "symbols"
 debug-assertions = false
 panic = "abort"
+
+[dependencies]
+stellar-contract-sdk = {path = "../../sdk"}
