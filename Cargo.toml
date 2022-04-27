@@ -22,7 +22,7 @@ panic = "abort"
 
 [profile.release]
 opt-level = "z"
-overflow-checks = false
+overflow-checks = true
 debug = 0
 strip = "symbols"
 debug-assertions = false
