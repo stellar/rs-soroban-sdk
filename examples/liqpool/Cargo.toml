@@ -8,6 +8,19 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[profile.dev]
+overflow-checks = true
+panic = "abort"
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+
+
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr" }

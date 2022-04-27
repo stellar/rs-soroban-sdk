@@ -10,3 +10,15 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
+
+[profile.dev]
+overflow-checks = true
+panic = "abort"
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
