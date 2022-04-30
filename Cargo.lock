@@ -139,7 +139,7 @@ dependencies = [
 [[package]]
 name = "stellar-strkey"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-strkey#e9bca80eb2dff582e49b2db452ece083dc8ed5ff"
+source = "git+https://github.com/stellar/rs-stellar-strkey#4bbd2e2cffd407a5f702bfbc31ed67a38076944d"
 dependencies = [
  "base32",
 ]
