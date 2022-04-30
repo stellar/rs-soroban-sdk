@@ -328,7 +328,7 @@ mod test {
     use stellar_contract_sdk::testing::mem::{MemHost, MemLedgerKey, MemLedgerVal, MemObj};
     use stellar_contract_sdk::testing::{swap_mock_host, with_mock_host};
     use stellar_contract_sdk::Object;
-    use stellar_strkey::PublicKeyEd25519;
+    use stellar_strkey::PublicKey as StrkeyPublicKey;
     use stellar_xdr::{AccountId, AlphaNum4, Asset, AssetCode4, PublicKey, Uint256};
     extern crate alloc;
     extern crate std;
@@ -340,35 +340,35 @@ mod test {
         let og_host = swap_mock_host(host);
 
         let addr_p = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
-            PublicKeyEd25519::from_string(
+            StrkeyPublicKey::from_string(
                 "GB7MK2PAD7E3WVXB5NAS7BBFUJOFS7VDWNSUYBIFMLYCOUJACMZM3A2W",
             )
             .unwrap()
             .0,
         )));
         let addr_a = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
-            PublicKeyEd25519::from_string(
+            StrkeyPublicKey::from_string(
                 "GB334SNZ6CYBT4KMSKHXUJNSJMC24AKMXMJP43VSINNZTWFDQVGAKFHR",
             )
             .unwrap()
             .0,
         )));
         let addr_b = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
-            PublicKeyEd25519::from_string(
+            StrkeyPublicKey::from_string(
                 "GBPOZPUZOKLT7DYXRHIJSNN4WCMNHUGA3HK6CZIFVBUSKFZBALLOFDHN",
             )
             .unwrap()
             .0,
         )));
         let addr_u1 = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
-            PublicKeyEd25519::from_string(
+            StrkeyPublicKey::from_string(
                 "GCZBDF6P5U7V43REXPDV5PKP5BZ6UZ7BTSYLXNZPMTKBWHB2MDWPQBTH",
             )
             .unwrap()
             .0,
         )));
         let addr_u2 = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
-            PublicKeyEd25519::from_string(
+            StrkeyPublicKey::from_string(
                 "GATZZAXUDODMHD3SCPAFX7YS5X66L4PPJ732L5LJRA2BAMR7K5O7UBLY",
             )
             .unwrap()
