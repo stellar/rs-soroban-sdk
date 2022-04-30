@@ -12,3 +12,4 @@ crate-type = ["cdylib", "rlib"]
 im-rc = "15.0.0"
 num-bigint = "0.4"
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr" }
+stellar-contract-host = { git = "https://github.com/stellar/rs-stellar-contract-host", branch = "update-xdr" }
