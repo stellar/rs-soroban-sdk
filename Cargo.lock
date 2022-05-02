@@ -30,12 +30,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "byteorder"
-version = "1.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
-
-[[package]]
 name = "example_add"
 version = "0.0.0"
 dependencies = [
@@ -48,7 +42,7 @@ version = "0.0.0"
 dependencies = [
  "stellar-contract-sdk",
  "stellar-strkey",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr)",
+ "stellar-xdr",
 ]
 
 [[package]]
@@ -154,7 +148,7 @@ dependencies = [
  "num-bigint",
  "num-rational",
  "static_assertions",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=dd016cd906ddd1efbe7e0b81d7bac9c07510200c)",
+ "stellar-xdr",
 ]
 
 [[package]]
@@ -164,7 +158,7 @@ dependencies = [
  "im-rc",
  "num-bigint",
  "stellar-contract-host",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr)",
+ "stellar-xdr",
 ]
 
 [[package]]
@@ -181,15 +175,6 @@ version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-xdr?rev=dd016cd906ddd1efbe7e0b81d7bac9c07510200c#dd016cd906ddd1efbe7e0b81d7bac9c07510200c"
 dependencies = [
  "base64",
-]
-
-[[package]]
-name = "stellar-xdr"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr#a2ff409ba70fbe5315391a4bbae8bc784e05ee01"
-dependencies = [
- "base64",
- "byteorder",
 ]
 
 [[package]]

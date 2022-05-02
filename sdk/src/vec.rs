@@ -1,11 +1,8 @@
 use core::marker::PhantomData;
 
-use super::object::ObjType;
-
 use super::host;
-use super::val::ValType;
-use super::OrAbort;
-use super::{object::OBJ_VEC, status, Object, Status, Val};
+use stellar_contract_host::{ObjType, Object, Status, Val, ValType, UNKNOWN_ERROR};
+use stellar_xdr::ScObjectType;
 
 #[derive(Copy, Clone)]
 #[repr(transparent)]
@@ -15,10 +12,10 @@ impl<V: ValType> TryFrom<Object> for Vec<V> {
     type Error = Status;
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_type(OBJ_VEC) {
+        if obj.is_type(ScObjectType::ScoVec) {
             Ok(Vec(obj, PhantomData))
         } else {
-            Err(status::UNKNOWN_ERROR)
+            Err(UNKNOWN_ERROR)
         }
     }
 }
@@ -48,7 +45,7 @@ impl<T: ValType> From<Vec<T>> for Val {
 
 impl<V: ValType> ObjType for Vec<V> {
     fn is_obj_type(obj: Object) -> bool {
-        obj.is_type(OBJ_VEC)
+        obj.is_type(ScObjectType::ScoVec)
     }
 
     unsafe fn unchecked_from_obj(obj: Object) -> Self {

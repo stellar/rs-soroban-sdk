@@ -1,4 +1,5 @@
-use crate::{host, val::ValType, Object, Val};
+use crate::host;
+use stellar_contract_host::{Object, Val, ValType};
 
 #[inline(always)]
 pub fn get_current_ledger_num() -> u32 {

@@ -3,13 +3,9 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{
-    host,
-    object::{ObjType, OBJ_BIGNUM},
-    status,
-    val::ValType,
-    Object, Status, Val,
-};
+use super::host;
+use stellar_contract_host::{ObjType, Object, Status, Val, ValType, UNKNOWN_ERROR};
+use stellar_xdr::ScObjectType;
 
 #[repr(transparent)]
 #[derive(Copy, Clone)]
@@ -19,10 +15,10 @@ impl TryFrom<Object> for BigNum {
     type Error = Status;
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_type(OBJ_BIGNUM) {
+        if obj.is_type(ScObjectType::ScoBigint) {
             Ok(BigNum(obj))
         } else {
-            Err(status::UNKNOWN_ERROR)
+            Err(UNKNOWN_ERROR)
         }
     }
 }
@@ -32,10 +28,10 @@ impl TryFrom<Val> for BigNum {
 
     fn try_from(val: Val) -> Result<Self, Self::Error> {
         let obj: Object = val.try_into()?;
-        if obj.is_type(OBJ_BIGNUM) {
+        if obj.is_type(ScObjectType::ScoBigint) {
             Ok(BigNum(obj))
         } else {
-            Err(status::UNKNOWN_ERROR)
+            Err(UNKNOWN_ERROR)
         }
     }
 }
@@ -54,7 +50,7 @@ impl From<BigNum> for Val {
 
 impl ObjType for BigNum {
     fn is_obj_type(obj: Object) -> bool {
-        obj.is_type(OBJ_BIGNUM)
+        obj.is_type(ScObjectType::ScoBigint)
     }
 
     unsafe fn unchecked_from_obj(obj: Object) -> Self {

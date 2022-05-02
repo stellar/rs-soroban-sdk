@@ -1,9 +1,8 @@
 use core::marker::PhantomData;
 
 use super::host;
-use super::object::ObjType;
-use super::val::ValType;
-use super::{object::OBJ_MAP, status, Object, Status, Val, Vec};
+use stellar_contract_host::{ObjType, Object, Status, Val, ValType, UNKNOWN_ERROR};
+use stellar_xdr::ScObjectType;
 
 #[repr(transparent)]
 #[derive(Copy, Clone)]
@@ -13,10 +12,10 @@ impl<K: ValType, V: ValType> TryFrom<Object> for Map<K, V> {
     type Error = Status;
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_type(OBJ_MAP) {
+        if obj.is_type(ScObjectType::ScoMap) {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
-            Err(status::UNKNOWN_ERROR)
+            Err(UNKNOWN_ERROR)
         }
     }
 }
@@ -46,7 +45,7 @@ impl<K: ValType, V: ValType> From<Map<K, V>> for Val {
 
 impl<K: ValType, V: ValType> ObjType for Map<K, V> {
     fn is_obj_type(obj: Object) -> bool {
-        obj.is_type(OBJ_MAP)
+        obj.is_type(ScObjectType::ScoMap)
     }
 
     unsafe fn unchecked_from_obj(obj: Object) -> Self {
