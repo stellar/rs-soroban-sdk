@@ -120,7 +120,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-host?branch=update-xdr#c0f9fdc13c51c9f2445828b7bf81993aa58960be"
+source = "git+https://github.com/stellar/rs-stellar-contract-host?rev=129747a982bfbf61eef5443e0e35d2b7ba829e78#129747a982bfbf61eef5443e0e35d2b7ba829e78"
 dependencies = [
  "im-rc",
  "num-bigint",

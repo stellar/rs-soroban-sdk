@@ -2,7 +2,7 @@ use core::marker::PhantomData;
 
 use crate::OrAbort;
 
-use super::Host;
+use super::host;
 use stellar_contract_host::{ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 

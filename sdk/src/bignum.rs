@@ -3,12 +3,11 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::Host;
+use crate::host;
 use stellar_contract_host::{ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 
-#[repr(transparent)]
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct BigNum(Object);
 
 impl TryFrom<Object> for BigNum {
@@ -60,7 +59,7 @@ impl ObjType for BigNum {
 
 impl From<u64> for BigNum {
     fn from(x: u64) -> Self {
-        unsafe { Self::unchecked_new(host::bignum::from_u64(x)) }
+        unsafe { Self::unchecked_new(host::object_from_u64(x)) }
     }
 }
 

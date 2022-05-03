@@ -14,20 +14,18 @@ pub use stellar_contract_host::Val;
 
 #[cfg(target_family = "wasm")]
 mod host;
-#[cfg(target_family = "wasm")]
-mod host_fns;
-#[cfg(target_family = "wasm")]
-pub use host::Host;
 #[cfg(not(target_family = "wasm"))]
-pub use stellar_contract_host::Host;
+mod testing;
+#[cfg(not(target_family = "wasm"))]
+use testing::host;
+
+mod or_abort;
+mod rt;
+pub use or_abort::OrAbort;
 
 mod bignum;
 mod map;
-mod or_abort;
-mod rt;
 mod vec;
-
 pub use bignum::BigNum;
 pub use map::Map;
-pub use or_abort::OrAbort;
 pub use vec::Vec;

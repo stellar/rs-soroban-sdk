@@ -1,10 +1,10 @@
 #![no_std]
 use sdk::{OrAbort, Val};
 use stellar_contract_host::HostContext;
-use stellar_contract_sdk as sdk;
+use stellar_contract_sdk::Host;
 
 #[no_mangle]
-pub fn add(h: impl host::Host, a: Val, b: Val) -> Val {
+pub fn add(h: Host, a: Val, b: Val) -> Val {
     let a: i64 = a.try_into().or_abort();
     let b: i64 = b.try_into().or_abort();
 
@@ -16,8 +16,7 @@ pub fn add(h: impl host::Host, a: Val, b: Val) -> Val {
 #[cfg(test)]
 mod test {
     use super::add;
-    use sdk::Val;
-    use stellar_contract_sdk as sdk;
+    use stellar_contract_sdk::Val;
 
     #[test]
     fn test_add() {

@@ -1,8 +1,10 @@
-use crate::{host_fns, OrAbort};
+use crate::OrAbort;
 use core::any::Any;
+use std::rc::Rc;
 use stellar_contract_host::{HostConvertable, Object, Val};
 
-pub struct Host;
+// TODO: Make stellar_contract_host::Host object safe so it can be used here?
+pub struct Host(pub Rc<stellar_contract_host::HostContext>);
 
 impl Host {
     fn new() {
@@ -16,135 +18,135 @@ impl stellar_contract_host::Host for Host {
     }
 
     fn log_value(&mut self, v: Val) -> Val {
-        unsafe { host_fns::context::log_value(v) }
+        self.0.log_value(v)
     }
 
     fn get_last_operation_result(&mut self) -> Object {
-        unsafe { host_fns::context::get_last_operation_result() }
+        self.0.get_last_operation_result()
     }
 
     fn obj_from_u64(&mut self, u: u64) -> Object {
-        unsafe { host_fns::u64::from_u64(u) }
+        self.0.obj_from_u64(u)
     }
 
     fn obj_to_u64(&mut self, u: Object) -> u64 {
-        unsafe { host_fns::u64::to_u64(u) }
+        self.0.obj_to_u64(u)
     }
 
     fn obj_from_i64(&mut self, i: i64) -> Object {
-        unsafe { host_fns::i64::from_i64(i) }
+        self.0.obj_from_i64(i)
     }
 
     fn obj_to_i64(&mut self, i: Object) -> i64 {
-        unsafe { host_fns::i64::to_i64(i) }
+        self.0.obj_to_i64(i)
     }
 
     fn map_new(&mut self) -> Object {
-        unsafe { host_fns::map::new() }
+        self.0.map_new()
     }
 
     fn map_put(&mut self, m: Object, k: Val, v: Val) -> Object {
-        unsafe { host_fns::map::put(m, k, v) }
+        self.0.map_put(m, k, v)
     }
 
     fn map_get(&mut self, m: Object, k: Val) -> Val {
-        unsafe { host_fns::map::get(m, k) }
+        self.0.map_get(m, k)
     }
 
     fn map_del(&mut self, m: Object, k: Val) -> Object {
-        unsafe { host_fns::map::del(m, k) }
+        self.0.map_del(m, k)
     }
 
     fn map_len(&mut self, m: Object) -> Val {
-        unsafe { host_fns::map::len(m) }
+        self.0.map_len(m)
     }
 
     fn map_keys(&mut self, m: Object) -> Object {
-        unsafe { host_fns::map::keys(m) }
+        self.0.map_keys(m)
     }
 
     fn map_has(&mut self, m: Object, k: Val) -> Val {
-        unsafe { host_fns::map::has(m, k) }
+        self.0.map_has(m, k)
     }
 
     fn vec_new(&mut self) -> Object {
-        unsafe { host_fns::vec::new() }
+        self.0.vec_new()
     }
 
     fn vec_put(&mut self, v: Object, i: Val, x: Val) -> Object {
-        unsafe { host_fns::vec::put(v, i, x) }
+        self.0.vec_put(v, i, x)
     }
 
     fn vec_get(&mut self, v: Object, i: Val) -> Val {
-        unsafe { host_fns::vec::get(v, i) }
+        self.0.vec_get(v, i)
     }
 
     fn vec_del(&mut self, v: Object, i: Val) -> Object {
-        unsafe { host_fns::vec::del(v, i) }
+        self.0.vec_del(v, i)
     }
 
     fn vec_len(&mut self, v: Object) -> Val {
-        unsafe { host_fns::vec::len(v) }
+        self.0.vec_len(v)
     }
 
     fn vec_push(&mut self, v: Object, x: Val) -> Object {
-        unsafe { host_fns::vec::push(v, x) }
+        self.0.vec_push(v, x)
     }
 
     fn vec_pop(&mut self, v: Object) -> Object {
-        unsafe { host_fns::vec::pop(v) }
+        self.0.vec_pop(v)
     }
 
     fn vec_take(&mut self, v: Object, n: Val) -> Object {
-        unsafe { host_fns::vec::take(v, n) }
+        self.0.vec_take(v, n)
     }
 
     fn vec_drop(&mut self, v: Object, n: Val) -> Object {
-        unsafe { host_fns::vec::drop(v, n) }
+        self.0.vec_drop(v, n)
     }
 
     fn vec_front(&mut self, v: Object) -> Val {
-        unsafe { host_fns::vec::front(v) }
+        self.0.vec_front(v)
     }
 
     fn vec_back(&mut self, v: Object) -> Val {
-        unsafe { host_fns::vec::back(v) }
+        self.0.vec_back(v)
     }
 
     fn vec_insert(&mut self, v: Object, i: Val, n: Val) -> Object {
-        unsafe { host_fns::vec::insert(v, i, n) }
+        self.0.vec_insert(v, i, n)
     }
 
     fn vec_append(&mut self, v1: Object, v2: Object) -> Object {
-        unsafe { host_fns::vec::append(v1, v2) }
+        self.0.vec_append(v1, v2)
     }
 
     fn pay(&mut self, src: Object, dst: Object, asset: Object, amount: Val) -> Val {
-        unsafe { host_fns::ledger::pay(src, dst, asset, amount) }
+        self.0.pay(src, dst, asset, amount)
     }
 
     fn account_balance(&mut self, acc: Object) -> Val {
-        unsafe { host_fns::ledger::account_balance(acc) }
+        self.0.account_balance(acc)
     }
 
     fn account_trust_line(&mut self, acc: Object, asset: Object) -> Object {
-        unsafe { host_fns::ledger::account_trust_line(acc, asset) }
+        self.0.account_trust_line(acc, asset)
     }
 
     fn trust_line_balance(&mut self, tl: Object) -> Val {
-        unsafe { host_fns::ledger::trust_line_balance(tl) }
+        self.0.trust_line_balance(tl)
     }
 
     fn get_contract_data(&mut self, k: Val) -> Val {
-        unsafe { host_fns::ledger::get_contract_data(k) }
+        self.0.get_contract_data(k)
     }
 
     fn put_contract_data(&mut self, k: Val, v: Val) -> Val {
-        unsafe { host_fns::ledger::put_contract_data(k, v) }
+        self.0.put_contract_data(k, v)
     }
 
     fn has_contract_data(&mut self, k: Val) -> Val {
-        unsafe { host_fns::ledger::has_contract_data(k) }
+        self.0.has_contract_data(k)
     }
 
     fn val_from<HC: HostConvertable>(&mut self, v: HC) -> Val {

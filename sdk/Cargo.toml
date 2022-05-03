@@ -8,8 +8,10 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[dependencies]
+stellar-contract-host = { git = "https://github.com/stellar/rs-stellar-contract-host", rev = "129747a982bfbf61eef5443e0e35d2b7ba829e78" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "dd016cd906ddd1efbe7e0b81d7bac9c07510200c" }
+
 [target.'cfg(not(target_family="wasm"))'.dependencies]
 im-rc = "15.0.0"
 num-bigint = "0.4"
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "dd016cd906ddd1efbe7e0b81d7bac9c07510200c" }
-stellar-contract-host = { git = "https://github.com/stellar/rs-stellar-contract-host", branch = "update-xdr" }
