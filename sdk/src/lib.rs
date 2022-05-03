@@ -11,6 +11,7 @@ pub use stellar_contract_host::Object;
 pub use stellar_contract_host::Status;
 pub use stellar_contract_host::Symbol;
 pub use stellar_contract_host::Val;
+pub use stellar_contract_host::ValType;
 
 #[cfg(target_family = "wasm")]
 mod host;

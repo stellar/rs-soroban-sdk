@@ -3,11 +3,11 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use crate::host;
-use stellar_contract_host::{ObjType, Object, Val, ValType};
+use super::{host, ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 
-#[derive(Clone, Copy)]
+#[repr(transparent)]
+#[derive(Copy, Clone)]
 pub struct BigNum(Object);
 
 impl TryFrom<Object> for BigNum {
