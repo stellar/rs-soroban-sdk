@@ -20,11 +20,11 @@ mod test {
 
     #[test]
     fn test_add() {
-        let x: Val = HOST.with(|h| 10i64.val_from(h.borrow_mut().deref_mut().as_mut()));
-        let y: Val = HOST.with(|h| 12i64.val_from(h.borrow_mut().deref_mut().as_mut()));
+        let x: Val = HOST.with(|h| 10i64.into_val(h.borrow_mut().deref_mut().as_mut()));
+        let y: Val = HOST.with(|h| 12i64.into_val(h.borrow_mut().deref_mut().as_mut()));
         let z: Val = add(x, y);
         let z: i64 =
-            HOST.with(|h| i64::try_val_into(z, h.borrow_mut().deref_mut().as_mut()).unwrap());
+            HOST.with(|h| i64::try_from_val(z, h.borrow_mut().deref_mut().as_mut()).unwrap());
         assert!(z == 22);
     }
 }
