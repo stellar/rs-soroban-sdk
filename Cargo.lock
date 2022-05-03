@@ -9,12 +9,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
-name = "base32"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23ce669cd6c8588f79e15cf450314f9638f967fc5770ff1c7c1deb0925ea7cfa"
-
-[[package]]
 name = "base64"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -31,22 +25,6 @@ dependencies = [
 
 [[package]]
 name = "example_add"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "example_liqpool"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
- "stellar-strkey",
- "stellar-xdr",
-]
-
-[[package]]
-name = "example_token"
 version = "0.0.0"
 dependencies = [
  "stellar-contract-sdk",
@@ -162,82 +140,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar-strkey"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-strkey#4bbd2e2cffd407a5f702bfbc31ed67a38076944d"
-dependencies = [
- "base32",
-]
-
-[[package]]
 name = "stellar-xdr"
 version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-xdr?rev=dd016cd906ddd1efbe7e0b81d7bac9c07510200c#dd016cd906ddd1efbe7e0b81d7bac9c07510200c"
 dependencies = [
  "base64",
-]
-
-[[package]]
-name = "test-bignum"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-call-everything"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-call-helper"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-helper"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-host-objects"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-i64"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-log"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-pay"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
-name = "test-u64"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
 ]
 
 [[package]]

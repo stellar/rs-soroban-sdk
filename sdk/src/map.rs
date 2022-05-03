@@ -1,7 +1,9 @@
 use core::marker::PhantomData;
 
-use super::host;
-use stellar_contract_host::{ObjType, Object, Status, Val, ValType, UNKNOWN_ERROR};
+use crate::OrAbort;
+
+use super::Host;
+use stellar_contract_host::{ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 
 #[repr(transparent)]
@@ -9,19 +11,19 @@ use stellar_xdr::ScObjectType;
 pub struct Map<K, V>(Object, PhantomData<K>, PhantomData<V>);
 
 impl<K: ValType, V: ValType> TryFrom<Object> for Map<K, V> {
-    type Error = Status;
+    type Error = ();
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
         if obj.is_type(ScObjectType::ScoMap) {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
-            Err(UNKNOWN_ERROR)
+            Err(())
         }
     }
 }
 
 impl<K: ValType, V: ValType> TryFrom<Val> for Map<K, V> {
-    type Error = Status;
+    type Error = ();
 
     fn try_from(val: Val) -> Result<Self, Self::Error> {
         let obj: Object = val.try_into()?;
@@ -82,11 +84,12 @@ impl<K: ValType, V: ValType> Map<K, V> {
     #[inline(always)]
     pub fn len(&self) -> u32 {
         let m: Val = unsafe { host::map::len(self.0.into()) };
-        m.as_u32()
+        m.try_into().or_abort()
     }
 
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
-        unsafe { <Vec<K> as ObjType>::unchecked_from_obj(host::map::keys(self.0.into())) }
+        let v: Object = unsafe { host::map::keys(self.0.into()) };
+        unsafe { <Vec<K> as ObjType>::unchecked_from_obj(v) }
     }
 }

@@ -3,17 +3,17 @@
 members = [
     "sdk",
     "examples/add",
-    "examples/liqpool",
-    "examples/token",
-    "tests/bignum",
-    "tests/call_helper",
-    "tests/helper",
-    "tests/host_objects",
-    "tests/pay",
-    "tests/call_everything",
-    "tests/i64",
-    "tests/u64",
-    "tests/log",
+    # "examples/liqpool",
+    # "examples/token",
+    # "tests/bignum",
+    # "tests/call_helper",
+    # "tests/helper",
+    # "tests/host_objects",
+    # "tests/pay",
+    # "tests/call_everything",
+    # "tests/i64",
+    # "tests/u64",
+    # "tests/log",
 ]
 
 [profile.dev]

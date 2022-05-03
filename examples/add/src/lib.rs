@@ -1,6 +1,6 @@
 #![no_std]
 use sdk::{OrAbort, Val};
-use stellar_contract_host as host;
+use stellar_contract_host::HostContext;
 use stellar_contract_sdk as sdk;
 
 #[no_mangle]
@@ -21,7 +21,7 @@ mod test {
 
     #[test]
     fn test_add() {
-        let h: Host = host::HostContext {};
+        let h: Host = HostContext::default();
         let x: Val = Val::from_i64(10);
         let y: Val = Val::from_i64(12);
         let z: Val = add(h, x, y);

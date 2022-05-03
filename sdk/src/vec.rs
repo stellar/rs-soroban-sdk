@@ -1,7 +1,7 @@
 use core::marker::PhantomData;
 
-use super::host;
-use stellar_contract_host::{ObjType, Object, Status, Val, ValType, UNKNOWN_ERROR};
+use super::Host;
+use stellar_contract_host::{ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 
 #[derive(Copy, Clone)]
@@ -9,19 +9,19 @@ use stellar_xdr::ScObjectType;
 pub struct Vec<T>(Object, PhantomData<T>);
 
 impl<V: ValType> TryFrom<Object> for Vec<V> {
-    type Error = Status;
+    type Error = ();
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
         if obj.is_type(ScObjectType::ScoVec) {
             Ok(Vec(obj, PhantomData))
         } else {
-            Err(UNKNOWN_ERROR)
+            Err(())
         }
     }
 }
 
 impl<V: ValType> TryFrom<Val> for Vec<V> {
-    type Error = Status;
+    type Error = ();
 
     fn try_from(val: Val) -> Result<Self, Self::Error> {
         let obj: Object = val.try_into()?;

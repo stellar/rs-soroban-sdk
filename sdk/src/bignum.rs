@@ -3,8 +3,8 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::host;
-use stellar_contract_host::{ObjType, Object, Status, Val, ValType, UNKNOWN_ERROR};
+use super::Host;
+use stellar_contract_host::{ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 
 #[repr(transparent)]
@@ -12,26 +12,26 @@ use stellar_xdr::ScObjectType;
 pub struct BigNum(Object);
 
 impl TryFrom<Object> for BigNum {
-    type Error = Status;
+    type Error = ();
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
         if obj.is_type(ScObjectType::ScoBigint) {
             Ok(BigNum(obj))
         } else {
-            Err(UNKNOWN_ERROR)
+            Err(())
         }
     }
 }
 
 impl TryFrom<Val> for BigNum {
-    type Error = Status;
+    type Error = ();
 
     fn try_from(val: Val) -> Result<Self, Self::Error> {
         let obj: Object = val.try_into()?;
         if obj.is_type(ScObjectType::ScoBigint) {
             Ok(BigNum(obj))
         } else {
-            Err(UNKNOWN_ERROR)
+            Err(())
         }
     }
 }

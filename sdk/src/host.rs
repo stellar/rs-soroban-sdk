@@ -27,7 +27,7 @@ impl stellar_contract_host::Host for Host {
     }
 
     fn obj_from_i64(&mut self, i: i64) -> Object {
-        unsafe { host_fns::i64::from_i64(u) }
+        unsafe { host_fns::i64::from_i64(i) }
     }
 
     fn obj_to_i64(&mut self, i: Object) -> i64 {
