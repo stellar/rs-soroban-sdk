@@ -13,16 +13,18 @@ pub fn add(a: Val, b: Val) -> Val {
 
 #[cfg(test)]
 mod test {
+    use core::ops::DerefMut;
+
     use super::add;
-    use stellar_contract_host::Host;
     use stellar_contract_sdk::{HostConvertable, Val, HOST};
 
     #[test]
     fn test_add() {
-        let x: Val = HOST.with(|h| 10i64.val_from(&mut h.borrow_mut()));
-        let y: Val = 12i64.val_from(&mut HOST);
+        let x: Val = HOST.with(|h| 10i64.val_from(h.borrow_mut().deref_mut().as_mut()));
+        let y: Val = HOST.with(|h| 12i64.val_from(h.borrow_mut().deref_mut().as_mut()));
         let z: Val = add(x, y);
-        let z: i64 = z.try_into().unwrap();
+        let z: i64 =
+            HOST.with(|h| i64::try_val_into(z, h.borrow_mut().deref_mut().as_mut()).unwrap());
         assert!(z == 22);
     }
 }
