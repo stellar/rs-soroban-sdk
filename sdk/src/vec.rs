@@ -1,6 +1,7 @@
 use core::marker::PhantomData;
 
 use super::host;
+use super::OrAbort;
 use stellar_contract_host::{ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 
@@ -81,7 +82,7 @@ impl<T: ValType> Vec<T> {
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        unsafe { host::vec::len(self.0.into()).as_u32() }
+        unsafe { host::vec::len(self.0.into()).try_into().or_abort() }
     }
 
     #[inline(always)]

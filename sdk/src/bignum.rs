@@ -7,7 +7,7 @@ use crate::host;
 use stellar_contract_host::{ObjType, Object, Val, ValType};
 use stellar_xdr::ScObjectType;
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct BigNum(Object);
 
 impl TryFrom<Object> for BigNum {
@@ -59,7 +59,7 @@ impl ObjType for BigNum {
 
 impl From<u64> for BigNum {
     fn from(x: u64) -> Self {
-        unsafe { Self::unchecked_new(host::object_from_u64(x)) }
+        unsafe { Self::unchecked_new(host::bignum::from_u64(x)) }
     }
 }
 
