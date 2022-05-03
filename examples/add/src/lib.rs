@@ -14,12 +14,12 @@ pub fn add(a: Val, b: Val) -> Val {
 #[cfg(test)]
 mod test {
     use super::add;
-    use stellar_contract_sdk::Val;
+    use stellar_contract_sdk::{Val, HostConvertable};
 
     #[test]
     fn test_add() {
-        let x: Val = Val::from_i64(10);
-        let y: Val = Val::from_i64(12);
+        let x: Val = 10i64.val_from(&mut host);
+        let y: Val = 12i64.val_from(&mut host);
         let z: Val = add(x, y);
         let z: i64 = z.try_into().unwrap();
         assert!(z == 22);

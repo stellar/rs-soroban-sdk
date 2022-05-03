@@ -6,6 +6,7 @@
 //mod alloc;
 
 pub use stellar_contract_host::BitSet;
+pub use stellar_contract_host::HostConvertable;
 pub use stellar_contract_host::ObjType;
 pub use stellar_contract_host::Object;
 pub use stellar_contract_host::Status;
