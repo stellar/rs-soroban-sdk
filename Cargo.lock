@@ -27,6 +27,7 @@ dependencies = [
 name = "example_add"
 version = "0.0.0"
 dependencies = [
+ "stellar-contract-host",
  "stellar-contract-sdk",
 ]
 

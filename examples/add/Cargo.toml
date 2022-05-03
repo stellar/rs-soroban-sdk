@@ -9,4 +9,5 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+stellar-contract-host = { git = "https://github.com/stellar/rs-stellar-contract-host", rev = "129747a982bfbf61eef5443e0e35d2b7ba829e78" }
 stellar-contract-sdk = {path = "../../sdk"}

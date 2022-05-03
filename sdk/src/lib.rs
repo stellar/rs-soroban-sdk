@@ -20,6 +20,8 @@ mod host;
 mod testing;
 #[cfg(not(target_family = "wasm"))]
 use testing::host;
+#[cfg(not(target_family = "wasm"))]
+pub use testing::host::HOST;
 
 mod or_abort;
 mod rt;
