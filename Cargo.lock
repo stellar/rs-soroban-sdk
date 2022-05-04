@@ -121,7 +121,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#c02484b7f31df4d691afbe9015b58b4d229875e7"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#a064ebc49d12c17126aa18eb0107187b596c0887"
 dependencies = [
  "stellar-contract-env-host",
 ]
@@ -129,7 +129,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#c02484b7f31df4d691afbe9015b58b4d229875e7"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#a064ebc49d12c17126aa18eb0107187b596c0887"
 dependencies = [
  "static_assertions",
  "stellar-xdr",
@@ -138,7 +138,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#c02484b7f31df4d691afbe9015b58b4d229875e7"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#a064ebc49d12c17126aa18eb0107187b596c0887"
 dependencies = [
  "im-rc",
  "num-bigint",

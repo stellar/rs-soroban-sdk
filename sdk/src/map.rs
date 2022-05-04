@@ -1,9 +1,6 @@
 use core::marker::PhantomData;
 
-use crate::{env_obj_type::EnvObjType, OrAbort};
-
 use super::{Ctx, Object, Val, ValType, Vec};
-use stellar_contract_env::{Env, EnvObj};
 use stellar_xdr::ScObjectType;
 
 #[repr(transparent)]
@@ -26,8 +23,9 @@ impl<K: ValType, V: ValType> TryFrom<Val> for Map<K, V> {
     type Error = ();
 
     fn try_from(val: Val) -> Result<Self, Self::Error> {
-        let obj: Object = val.try_into()?;
-        obj.try_into()
+        // let obj: Object = val.try_into()?;
+        // obj.try_into()
+        todo!()
     }
 }
 
@@ -45,20 +43,21 @@ impl<K: ValType, V: ValType> From<Map<K, V>> for Val {
     }
 }
 
-impl<E: Env, K: ValType, V: ValType> EnvObjType<E> for Map<K, V> {
-    fn is_obj_type(obj: EnvObj<E>) -> bool {
-        obj.is_type(ScObjectType::ScoMap)
-    }
+// impl<E: Env, K: ValType, V: ValType> ObjectType<E> for Map<K, V> {
+//     fn is_obj_type(obj: EnvObj<E>) -> bool {
+//         obj.is_type(ScObjectType::ScoMap)
+//     }
 
-    unsafe fn unchecked_from_obj(obj: EnvObj<E>) -> Self {
-        Map(obj, PhantomData, PhantomData)
-    }
-}
+//     unsafe fn unchecked_from_obj(obj: EnvObj<E>) -> Self {
+//         Map(obj, PhantomData, PhantomData)
+//     }
+// }
 
 impl<K: ValType, V: ValType> Map<K, V> {
     #[inline(always)]
     pub fn new(c: Ctx) -> Map<K, V> {
-        unsafe { Self::unchecked_from_obj(c.map_new().try_into().or_abort()) }
+        // unsafe { Self::unchecked_from_obj(c.map_new().try_into().or_abort()) }
+        todo!()
     }
 
     #[inline(always)]

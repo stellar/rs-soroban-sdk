@@ -1,7 +1,7 @@
 #[derive(Clone)]
 pub struct Ctx(
     #[cfg(target_family = "wasm")] stellar_contract_env::Guest,
-    #[cfg(not(target_family = "wasm"))] stellar_contract_env::HostEnv,
+    #[cfg(not(target_family = "wasm"))] stellar_contract_env::WeakHost,
 );
 
 impl stellar_contract_env::Env for Ctx {
@@ -10,7 +10,7 @@ impl stellar_contract_env::Env for Ctx {
     }
 
     fn check_same_env(&self, other: &Self) {
-        self.0.as_mut().check_same_env(self.env_impl)
+        self.0.check_same_env(&self.0)
     }
 
     fn obj_cmp(&self, a: stellar_contract_env::Val, b: stellar_contract_env::Val) -> i64 {
@@ -59,7 +59,7 @@ impl stellar_contract_env::Env for Ctx {
         m: stellar_contract_env::Val,
         k: stellar_contract_env::Val,
     ) -> stellar_contract_env::Val {
-        self.0.map_put(m, k)
+        self.0.map_get(m, k)
     }
 
     fn map_del(
@@ -96,7 +96,7 @@ impl stellar_contract_env::Env for Ctx {
         i: stellar_contract_env::Val,
         x: stellar_contract_env::Val,
     ) -> stellar_contract_env::Val {
-        self.0.vec_new(v, i, x)
+        self.0.vec_put(v, i, x)
     }
 
     fn vec_get(
@@ -104,7 +104,7 @@ impl stellar_contract_env::Env for Ctx {
         v: stellar_contract_env::Val,
         i: stellar_contract_env::Val,
     ) -> stellar_contract_env::Val {
-        self.0.vec_new(v, i)
+        self.0.vec_get(v, i)
     }
 
     fn vec_del(

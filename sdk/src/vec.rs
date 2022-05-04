@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use crate::env_obj_type::EnvObjType;
+use crate::object_type::ObjectType;
 
 use super::{Object, Val, ValType};
 use stellar_contract_env::Env;
@@ -22,14 +22,14 @@ impl<V: ValType> TryFrom<Object> for Vec<V> {
     }
 }
 
-impl<V: ValType> TryFrom<Val> for Vec<V> {
-    type Error = ();
+// impl<V: ValType> TryFrom<Val> for Vec<V> {
+//     type Error = ();
 
-    fn try_from(val: Val) -> Result<Self, Self::Error> {
-        let obj: Object = val.try_into()?;
-        obj.try_into()
-    }
-}
+//     fn try_from(val: Val) -> Result<Self, Self::Error> {
+//         let obj: Object = val.try_into()?;
+//         obj.try_into()
+//     }
+// }
 
 impl<T: ValType> From<Vec<T>> for Object {
     #[inline(always)]
@@ -45,7 +45,7 @@ impl<T: ValType> From<Vec<T>> for Val {
     }
 }
 
-impl<E: Env, V: ValType> EnvObjType<E> for Vec<V> {
+impl<E: Env, V: ValType> ObjectType<E> for Vec<V> {
     fn is_obj_type(obj: Object) -> bool {
         obj.is_type(ScObjectType::ScoVec)
     }

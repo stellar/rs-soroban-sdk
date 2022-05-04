@@ -22,18 +22,18 @@ impl TryFrom<Object> for BigNum {
     }
 }
 
-impl TryFrom<Val> for BigNum {
-    type Error = ();
+// impl TryFrom<Val> for BigNum {
+//     type Error = ();
 
-    fn try_from(val: Val) -> Result<Self, Self::Error> {
-        let obj: Object = val.try_into()?;
-        if obj.is_type(ScObjectType::ScoBigint) {
-            Ok(BigNum(obj))
-        } else {
-            Err(())
-        }
-    }
-}
+//     fn try_from(val: Val) -> Result<Self, Self::Error> {
+//         let obj: Object = val.try_into()?;
+//         if obj.is_type(ScObjectType::ScoBigint) {
+//             Ok(BigNum(obj))
+//         } else {
+//             Err(())
+//         }
+//     }
+// }
 
 impl From<BigNum> for Object {
     fn from(b: BigNum) -> Self {
@@ -214,17 +214,17 @@ impl PartialOrd for BigNum {
 impl Eq for BigNum {}
 impl Ord for BigNum {
     fn cmp(&self, other: &Self) -> Ordering {
-        let i = unsafe {
-            // <i32 as ValType>::unchecked_from_val(host::bignum::cmp((*self).into(), (*other).into()))
-            todo!()
-        };
-        if i < 0 {
-            Ordering::Less
-        } else if i > 0 {
-            Ordering::Greater
-        } else {
-            Ordering::Equal
-        }
+        // let i = unsafe {
+        //     <i32 as ValType>::unchecked_from_val(host::bignum::cmp((*self).into(), (*other).into()))
+        todo!()
+        // };
+        // if i < 0 {
+        //     Ordering::Less
+        // } else if i > 0 {
+        //     Ordering::Greater
+        // } else {
+        //     Ordering::Equal
+        // }
     }
 }
 

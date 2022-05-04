@@ -7,7 +7,6 @@
 
 // TODO: Make most of these not pub and shift their uses to appropriate places.
 pub use stellar_contract_env::BitSet;
-use stellar_contract_env::EnvObj;
 pub use stellar_contract_env::EnvVal;
 pub use stellar_contract_env::EnvValType;
 pub use stellar_contract_env::HasEnv;
@@ -18,7 +17,7 @@ pub use stellar_contract_env::Val;
 pub use stellar_contract_env::ValType;
 
 mod env;
-mod env_obj_type;
+mod object_type;
 pub use env::Ctx;
 
 mod or_abort;
