@@ -30,12 +30,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "byteorder"
-version = "1.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
-
-[[package]]
 name = "example_add"
 version = "0.0.0"
 dependencies = [
@@ -147,10 +141,9 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr#a2ff409ba70fbe5315391a4bbae8bc784e05ee01"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=1fa7c3ebdefd6c78719ede6b294aa64e13077d2a#1fa7c3ebdefd6c78719ede6b294aa64e13077d2a"
 dependencies = [
  "base64",
- "byteorder",
 ]
 
 [[package]]
