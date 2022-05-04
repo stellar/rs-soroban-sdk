@@ -5,23 +5,21 @@
 //#![feature(alloc)]
 //mod alloc;
 
-pub use stellar_contract_host::BitSet;
-pub use stellar_contract_host::HostConvertable;
-pub use stellar_contract_host::ObjType;
-pub use stellar_contract_host::Object;
-pub use stellar_contract_host::Status;
-pub use stellar_contract_host::Symbol;
-pub use stellar_contract_host::Val;
-pub use stellar_contract_host::ValType;
+// TODO: Make most of these not pub and shift their uses to appropriate places.
+pub use stellar_contract_env::BitSet;
+use stellar_contract_env::EnvObj;
+pub use stellar_contract_env::EnvVal;
+pub use stellar_contract_env::EnvValType;
+pub use stellar_contract_env::HasEnv;
+pub use stellar_contract_env::Object;
+pub use stellar_contract_env::Status;
+pub use stellar_contract_env::Symbol;
+pub use stellar_contract_env::Val;
+pub use stellar_contract_env::ValType;
 
-#[cfg(target_family = "wasm")]
-mod host;
-#[cfg(not(target_family = "wasm"))]
-mod testing;
-#[cfg(not(target_family = "wasm"))]
-use testing::host;
-#[cfg(not(target_family = "wasm"))]
-pub use testing::host::HOST;
+mod env;
+mod env_obj_type;
+pub use env::Ctx;
 
 mod or_abort;
 mod rt;
@@ -39,36 +37,4 @@ pub const fn require(b: bool) {
     if !b {
         panic!();
     }
-}
-
-#[inline(always)]
-pub fn log_value(v: Val) {
-    unsafe {
-        host::context::log_value(v);
-    }
-}
-
-#[inline(always)]
-pub fn call0(contract: Val, func: Symbol) -> Val {
-    unsafe { host::call::call0(contract, func.into()) }
-}
-
-#[inline(always)]
-pub fn call1(contract: Val, func: Symbol, a: Val) -> Val {
-    unsafe { host::call::call1(contract, func.into(), a) }
-}
-
-#[inline(always)]
-pub fn call2(contract: Val, func: Symbol, a: Val, b: Val) -> Val {
-    unsafe { host::call::call2(contract, func.into(), a, b) }
-}
-
-#[inline(always)]
-pub fn call3(contract: Val, func: Symbol, a: Val, b: Val, c: Val) -> Val {
-    unsafe { host::call::call3(contract, func.into(), a, b, c) }
-}
-
-#[inline(always)]
-pub fn call4(contract: Val, func: Symbol, a: Val, b: Val, c: Val, d: Val) -> Val {
-    unsafe { host::call::call4(contract, func.into(), a, b, c, d) }
 }
