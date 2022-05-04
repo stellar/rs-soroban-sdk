@@ -27,15 +27,15 @@ dependencies = [
 name = "example_add"
 version = "0.0.0"
 dependencies = [
- "stellar-contract-host",
+ "stellar-contract-host 0.0.0 (git+https://github.com/stellar/rs-stellar-contract-host?rev=c2be04d0e672d853b7a5426ce3c9172719415d12)",
  "stellar-contract-sdk",
 ]
 
 [[package]]
 name = "im-rc"
-version = "15.0.0"
+version = "15.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ca8957e71f04a205cb162508f9326aea04676c8dfd0711220190d6b83664f3f"
+checksum = "af1955a75fa080c677d3972822ec4bad316169ab1cfc6c257a942c2265dbe5fe"
 dependencies = [
  "bitmaps",
  "rand_core",
@@ -58,9 +58,9 @@ dependencies = [
 
 [[package]]
 name = "num-integer"
-version = "0.1.44"
+version = "0.1.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2cc698a63b549a70bc047073d2949cce27cd1c7b0a4a862d08a8031bc2801db"
+checksum = "225d3389fb3509a24c93f5c29eb6bde2586b98d9f016636dff58d7c6f7569cd9"
 dependencies = [
  "autocfg",
  "num-traits",
@@ -80,24 +80,24 @@ dependencies = [
 
 [[package]]
 name = "num-traits"
-version = "0.2.14"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9a64b1ec5cda2586e284722486d802acf1f7dbdc623e2bfc57e65ca1cd099290"
+checksum = "578ede34cf02f8924ab9447f50c28075b4d3e5b269972345e7e0372b38c6cdcd"
 dependencies = [
  "autocfg",
 ]
 
 [[package]]
 name = "rand_core"
-version = "0.5.1"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90bde5296fc891b0cef12a6d03ddccc162ce7b2aff54160af9338f8d40df6d19"
+checksum = "d34f1408f55294453790c48b2f1ebbb1c5b4b7563eb1f418bcfcfdbb06ebb4e7"
 
 [[package]]
 name = "rand_xoshiro"
-version = "0.4.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9fcdd2e881d02f1d9390ae47ad8e5696a9e4be7b547a1da2afbc61973217004"
+checksum = "6f97cdb2a36ed4183de61b2f824cc45c9f1037f28afe0a322e9fff4c108b5aaa"
 dependencies = [
  "rand_core",
 ]
@@ -121,13 +121,25 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-host"
 version = "0.0.0"
+source = "git+https://github.com/stellar/rs-stellar-contract-host?rev=b2b90a588b0f13c3c675a877095e695584d5b8bb#b2b90a588b0f13c3c675a877095e695584d5b8bb"
+dependencies = [
+ "im-rc",
+ "num-bigint",
+ "num-rational",
+ "static_assertions",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=1fa7c3ebdefd6c78719ede6b294aa64e13077d2a)",
+]
+
+[[package]]
+name = "stellar-contract-host"
+version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-contract-host?rev=c2be04d0e672d853b7a5426ce3c9172719415d12#c2be04d0e672d853b7a5426ce3c9172719415d12"
 dependencies = [
  "im-rc",
  "num-bigint",
  "num-rational",
  "static_assertions",
- "stellar-xdr",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=dd016cd906ddd1efbe7e0b81d7bac9c07510200c)",
 ]
 
 [[package]]
@@ -136,8 +148,16 @@ version = "0.0.0"
 dependencies = [
  "im-rc",
  "num-bigint",
- "stellar-contract-host",
- "stellar-xdr",
+ "stellar-contract-host 0.0.0 (git+https://github.com/stellar/rs-stellar-contract-host?rev=b2b90a588b0f13c3c675a877095e695584d5b8bb)",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=1fa7c3ebdefd6c78719ede6b294aa64e13077d2a)",
+]
+
+[[package]]
+name = "stellar-xdr"
+version = "0.0.0"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=1fa7c3ebdefd6c78719ede6b294aa64e13077d2a#1fa7c3ebdefd6c78719ede6b294aa64e13077d2a"
+dependencies = [
+ "base64",
 ]
 
 [[package]]

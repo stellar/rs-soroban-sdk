@@ -10,5 +10,5 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "dd016cd906ddd1efbe7e0b81d7bac9c07510200c" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "1fa7c3ebdefd6c78719ede6b294aa64e13077d2a", default-features = false }
 stellar-strkey = { git = "https://github.com/stellar/rs-stellar-strkey" }
