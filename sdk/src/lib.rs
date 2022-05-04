@@ -16,9 +16,14 @@ pub use stellar_contract_env::Symbol;
 pub use stellar_contract_env::Val;
 pub use stellar_contract_env::ValType;
 
-mod env;
+// mod env;
 mod object_type;
-pub use env::Ctx;
+// pub use env::Ctx;
+
+#[cfg(target_family = "wasm")]
+pub use stellar_contract_env::Guest as Env;
+#[cfg(not(target_family = "wasm"))]
+pub use stellar_contract_env::WeakHost as Env;
 
 mod or_abort;
 mod rt;

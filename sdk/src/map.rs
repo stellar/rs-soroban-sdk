@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use super::{Ctx, Object, Val, ValType, Vec};
+use super::{Env, Object, Val, ValType, Vec};
 use stellar_xdr::ScObjectType;
 
 #[repr(transparent)]
@@ -55,7 +55,7 @@ impl<K: ValType, V: ValType> From<Map<K, V>> for Val {
 
 impl<K: ValType, V: ValType> Map<K, V> {
     #[inline(always)]
-    pub fn new(c: Ctx) -> Map<K, V> {
+    pub fn new() -> Map<K, V> {
         // unsafe { Self::unchecked_from_obj(c.map_new().try_into().or_abort()) }
         todo!()
     }
