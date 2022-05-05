@@ -3,8 +3,7 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{Object, Val};
-use stellar_xdr::ScObjectType;
+use super::{xdr::ScObjectType, Object, Val};
 
 #[repr(transparent)]
 #[derive(Clone)]

@@ -9,9 +9,12 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stellar-contract-env = { git = "https://github.com/stellar/rs-stellar-contract-env", branch = "host-guest-env-reorg", features = ["host"] }
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "1fa7c3ebdefd6c78719ede6b294aa64e13077d2a", default-features = false }
+
+[target.'cfg(target_family="wasm")'.dependencies]
+stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "0d724b15e34d92c1d2827ce655d76a1732067d31" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
+stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "0d724b15e34d92c1d2827ce655d76a1732067d31" }
 im-rc = "15.0.0"
 num-bigint = "0.4"
+

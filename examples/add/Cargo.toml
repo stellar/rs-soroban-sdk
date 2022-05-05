@@ -9,5 +9,4 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stellar-contract-env = { git = "https://github.com/stellar/rs-stellar-contract-env", branch = "host-guest-env-reorg", features = ["host"] }
 stellar-contract-sdk = {path = "../../sdk"}

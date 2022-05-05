@@ -1,6 +1,5 @@
 #![no_std]
-use stellar_contract_env::EnvValType;
-use stellar_contract_sdk::{Env, OrAbort, Val};
+use stellar_contract_sdk::{Env, EnvValType, OrAbort, Val};
 
 #[no_mangle]
 pub fn add(e: Env, a: Val, b: Val) -> Val {
@@ -9,15 +8,13 @@ pub fn add(e: Env, a: Val, b: Val) -> Val {
 
     let c = a + b;
 
-    return c.into_env_val(e).val;
+    return c.into_val(e);
 }
 
 #[cfg(test)]
 mod test {
     use super::add;
-    extern crate alloc;
-    use stellar_contract_env::{EnvValType};
-    use stellar_contract_sdk::{Env, Val, OrAbort, Host};
+    use stellar_contract_sdk::{Env, EnvValType, Host, OrAbort, Val};
 
     #[test]
     fn test_add() {

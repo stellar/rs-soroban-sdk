@@ -2,9 +2,7 @@ use core::marker::PhantomData;
 
 use crate::object_type::ObjectType;
 
-use super::{Object, Val, ValType};
-use stellar_contract_env::Env;
-use stellar_xdr::ScObjectType;
+use super::{xdr::ScObjectType, Env, Object, Val, ValType};
 
 #[derive(Clone)]
 #[repr(transparent)]
@@ -45,7 +43,7 @@ impl<T: ValType> From<Vec<T>> for Val {
     }
 }
 
-impl<E: Env, V: ValType> ObjectType<E> for Vec<V> {
+impl<V: ValType> ObjectType for Vec<V> {
     fn is_obj_type(obj: Object) -> bool {
         obj.is_type(ScObjectType::ScoVec)
     }

@@ -1,7 +1,6 @@
 use core::marker::PhantomData;
 
-use super::{Env, Object, Val, ValType, Vec};
-use stellar_xdr::ScObjectType;
+use super::{xdr::ScObjectType, Env, Object, Val, ValType, Vec};
 
 #[repr(transparent)]
 #[derive(Clone)]

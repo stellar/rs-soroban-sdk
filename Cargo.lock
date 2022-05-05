@@ -27,7 +27,6 @@ dependencies = [
 name = "example_add"
 version = "0.0.0"
 dependencies = [
- "stellar-contract-env",
  "stellar-contract-sdk",
 ]
 
@@ -119,26 +118,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
-name = "stellar-contract-env"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#7ec299811491179d61373ce2738a69431061b2aa"
-dependencies = [
- "stellar-contract-env-host",
-]
-
-[[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#7ec299811491179d61373ce2738a69431061b2aa"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=0d724b15e34d92c1d2827ce655d76a1732067d31#0d724b15e34d92c1d2827ce655d76a1732067d31"
 dependencies = [
  "static_assertions",
  "stellar-xdr",
 ]
 
 [[package]]
+name = "stellar-contract-env-guest"
+version = "0.0.0"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=0d724b15e34d92c1d2827ce655d76a1732067d31#0d724b15e34d92c1d2827ce655d76a1732067d31"
+dependencies = [
+ "stellar-contract-env-common",
+]
+
+[[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?branch=host-guest-env-reorg#7ec299811491179d61373ce2738a69431061b2aa"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=0d724b15e34d92c1d2827ce655d76a1732067d31#0d724b15e34d92c1d2827ce655d76a1732067d31"
 dependencies = [
  "im-rc",
  "num-bigint",
@@ -153,8 +152,8 @@ version = "0.0.0"
 dependencies = [
  "im-rc",
  "num-bigint",
- "stellar-contract-env",
- "stellar-xdr",
+ "stellar-contract-env-guest",
+ "stellar-contract-env-host",
 ]
 
 [[package]]
