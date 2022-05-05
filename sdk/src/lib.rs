@@ -21,7 +21,7 @@ mod object_type;
 // pub use env::Ctx;
 
 #[cfg(target_family = "wasm")]
-pub use stellar_contract_env::Guest as Env;
+pub use stellar_contract_env::GuestEnv as Env;
 #[cfg(not(target_family = "wasm"))]
 pub use stellar_contract_env::WeakHost as Env;
 
