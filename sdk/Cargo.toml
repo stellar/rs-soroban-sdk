@@ -11,10 +11,10 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 
 [target.'cfg(target_family="wasm")'.dependencies]
-stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "0d724b15e34d92c1d2827ce655d76a1732067d31" }
+stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", branch = "disablestdonguest", feature ="panic_handler" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "0d724b15e34d92c1d2827ce655d76a1732067d31" }
+stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "0de60ce4ec718b3d58c2ceb10dd8cad9ccb3e72a" }
 im-rc = "15.0.0"
 num-bigint = "0.4"
 

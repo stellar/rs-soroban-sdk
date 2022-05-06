@@ -1,16 +1,16 @@
 use core::marker::PhantomData;
 
-use super::{xdr::ScObjectType, Env, Object, Val, ValType, Vec};
+use super::{xdr::ScObjectType, Env, Object, RawVal, RawValType, Vec};
 
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct Map<K, V>(Object, PhantomData<K>, PhantomData<V>);
 
-impl<K: ValType, V: ValType> TryFrom<Object> for Map<K, V> {
+impl<K: RawValType, V: RawValType> TryFrom<Object> for Map<K, V> {
     type Error = ();
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_type(ScObjectType::ScoMap) {
+        if obj.is_obj_type(ScObjectType::ScoMap) {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
             Err(())
@@ -18,31 +18,31 @@ impl<K: ValType, V: ValType> TryFrom<Object> for Map<K, V> {
     }
 }
 
-impl<K: ValType, V: ValType> TryFrom<Val> for Map<K, V> {
+impl<K: RawValType, V: RawValType> TryFrom<RawVal> for Map<K, V> {
     type Error = ();
 
-    fn try_from(val: Val) -> Result<Self, Self::Error> {
+    fn try_from(val: RawVal) -> Result<Self, Self::Error> {
         // let obj: Object = val.try_into()?;
         // obj.try_into()
         todo!()
     }
 }
 
-impl<K: ValType, V: ValType> From<Map<K, V>> for Object {
+impl<K: RawValType, V: RawValType> From<Map<K, V>> for Object {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0
     }
 }
 
-impl<K: ValType, V: ValType> From<Map<K, V>> for Val {
+impl<K: RawValType, V: RawValType> From<Map<K, V>> for RawVal {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0.into()
     }
 }
 
-// impl<E: Env, K: ValType, V: ValType> ObjectType<E> for Map<K, V> {
+// impl<E: Env, K: RawValType, V: RawValType> ObjectType<E> for Map<K, V> {
 //     fn is_obj_type(obj: EnvObj<E>) -> bool {
 //         obj.is_type(ScObjectType::ScoMap)
 //     }
@@ -52,7 +52,7 @@ impl<K: ValType, V: ValType> From<Map<K, V>> for Val {
 //     }
 // }
 
-impl<K: ValType, V: ValType> Map<K, V> {
+impl<K: RawValType, V: RawValType> Map<K, V> {
     #[inline(always)]
     pub fn new() -> Map<K, V> {
         // unsafe { Self::unchecked_from_obj(c.map_new().try_into().or_abort()) }
@@ -61,13 +61,13 @@ impl<K: ValType, V: ValType> Map<K, V> {
 
     #[inline(always)]
     pub fn has(&self, k: K) -> bool {
-        // unsafe { <bool as ValType>::unchecked_from_val(host::map::has(self.0.into(), k.into())) }
+        // unsafe { <bool as RawValType>::unchecked_from_val(host::map::has(self.0.into(), k.into())) }
         todo!()
     }
 
     #[inline(always)]
     pub fn get(&self, k: K) -> V {
-        // unsafe { <V as ValType>::unchecked_from_val(host::map::get(self.0.into(), k.into())) }
+        // unsafe { <V as RawValType>::unchecked_from_val(host::map::get(self.0.into(), k.into())) }
         todo!()
     }
 
@@ -85,7 +85,7 @@ impl<K: ValType, V: ValType> Map<K, V> {
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        // let m: Val = unsafe { host::map::len(self.0.into()) };
+        // let m: RawVal = unsafe { host::map::len(self.0.into()) };
         // m.try_into().or_abort()
         todo!()
     }

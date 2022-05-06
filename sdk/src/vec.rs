@@ -2,17 +2,17 @@ use core::marker::PhantomData;
 
 use crate::object_type::ObjectType;
 
-use super::{xdr::ScObjectType, Env, Object, Val, ValType};
+use super::{xdr::ScObjectType, Env, Object, RawVal, RawValType};
 
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(Object, PhantomData<T>);
 
-impl<V: ValType> TryFrom<Object> for Vec<V> {
+impl<V: RawValType> TryFrom<Object> for Vec<V> {
     type Error = ();
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_type(ScObjectType::ScoVec) {
+        if obj.is_obj_type(ScObjectType::ScoVec) {
             Ok(Vec(obj, PhantomData))
         } else {
             Err(())
@@ -20,32 +20,32 @@ impl<V: ValType> TryFrom<Object> for Vec<V> {
     }
 }
 
-// impl<V: ValType> TryFrom<Val> for Vec<V> {
+// impl<V: RawValType> TryFrom<RawVal> for Vec<V> {
 //     type Error = ();
 
-//     fn try_from(val: Val) -> Result<Self, Self::Error> {
+//     fn try_from(val: RawVal) -> Result<Self, Self::Error> {
 //         let obj: Object = val.try_into()?;
 //         obj.try_into()
 //     }
 // }
 
-impl<T: ValType> From<Vec<T>> for Object {
+impl<T: RawValType> From<Vec<T>> for Object {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
     }
 }
 
-impl<T: ValType> From<Vec<T>> for Val {
+impl<T: RawValType> From<Vec<T>> for RawVal {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<V: ValType> ObjectType for Vec<V> {
+impl<V: RawValType> ObjectType for Vec<V> {
     fn is_obj_type(obj: Object) -> bool {
-        obj.is_type(ScObjectType::ScoVec)
+        obj.is_obj_type(ScObjectType::ScoVec)
     }
 
     unsafe fn unchecked_from_obj(obj: Object) -> Self {
@@ -53,7 +53,7 @@ impl<V: ValType> ObjectType for Vec<V> {
     }
 }
 
-impl<T: ValType> Vec<T> {
+impl<T: RawValType> Vec<T> {
     unsafe fn unchecked_new(obj: Object) -> Self {
         Self(obj, PhantomData)
     }
@@ -66,8 +66,8 @@ impl<T: ValType> Vec<T> {
 
     #[inline(always)]
     pub fn get(&self, i: u32) -> T {
-        // let i: Val = i.into();
-        // unsafe { <T as ValType>::unchecked_from_val(host::vec::get(self.0.into(), i)) }
+        // let i: RawVal = i.into();
+        // unsafe { <T as RawValType>::unchecked_from_val(host::vec::get(self.0.into(), i)) }
         todo!()
     }
 
@@ -115,13 +115,13 @@ impl<T: ValType> Vec<T> {
 
     #[inline(always)]
     pub fn front(&self) -> T {
-        // unsafe { <T as ValType>::unchecked_from_val(host::vec::front(self.0.into())) }
+        // unsafe { <T as RawValType>::unchecked_from_val(host::vec::front(self.0.into())) }
         todo!()
     }
 
     #[inline(always)]
     pub fn back(&self) -> T {
-        // unsafe { <T as ValType>::unchecked_from_val(host::vec::back(self.0.into())) }
+        // unsafe { <T as RawValType>::unchecked_from_val(host::vec::back(self.0.into())) }
         todo!()
     }
 

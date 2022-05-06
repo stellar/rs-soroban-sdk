@@ -3,7 +3,7 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{xdr::ScObjectType, Object, Val};
+use super::{xdr::ScObjectType, Object, RawVal};
 
 #[repr(transparent)]
 #[derive(Clone)]
@@ -13,7 +13,7 @@ impl TryFrom<Object> for BigNum {
     type Error = ();
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_type(ScObjectType::ScoBigint) {
+        if obj.is_obj_type(ScObjectType::ScoBigint) {
             Ok(BigNum(obj))
         } else {
             Err(())
@@ -21,10 +21,10 @@ impl TryFrom<Object> for BigNum {
     }
 }
 
-// impl TryFrom<Val> for BigNum {
+// impl TryFrom<RawVal> for BigNum {
 //     type Error = ();
 
-//     fn try_from(val: Val) -> Result<Self, Self::Error> {
+//     fn try_from(val: RawVal) -> Result<Self, Self::Error> {
 //         let obj: Object = val.try_into()?;
 //         if obj.is_type(ScObjectType::ScoBigint) {
 //             Ok(BigNum(obj))
@@ -40,7 +40,7 @@ impl From<BigNum> for Object {
     }
 }
 
-impl From<BigNum> for Val {
+impl From<BigNum> for RawVal {
     fn from(b: BigNum) -> Self {
         b.0.into()
     }
@@ -214,7 +214,7 @@ impl Eq for BigNum {}
 impl Ord for BigNum {
     fn cmp(&self, other: &Self) -> Ordering {
         // let i = unsafe {
-        //     <i32 as ValType>::unchecked_from_val(host::bignum::cmp((*self).into(), (*other).into()))
+        //     <i32 as RawValType>::unchecked_from_val(host::bignum::cmp((*self).into(), (*other).into()))
         todo!()
         // };
         // if i < 0 {
@@ -258,7 +258,7 @@ impl BigNum {
     }
 
     pub fn is_zero(&self) -> bool {
-        // unsafe { <bool as ValType>::unchecked_from_val(host::bignum::is_zero((*self).into())) }
+        // unsafe { <bool as RawValType>::unchecked_from_val(host::bignum::is_zero((*self).into())) }
         todo!()
     }
 
