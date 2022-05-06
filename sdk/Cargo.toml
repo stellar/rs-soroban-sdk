@@ -17,4 +17,3 @@ stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-cont
 stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "20f72f0ef2b11d079729f8c883095e65853e311f" }
 im-rc = "15.0.0"
 num-bigint = "0.4"
-
