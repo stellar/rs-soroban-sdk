@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use super::{xdr::ScObjectType, Env, Object, RawVal, RawValType, Vec};
+use super::{xdr::ScObjectType, Object, RawVal, RawValType, Vec};
 
 #[repr(transparent)]
 #[derive(Clone)]
@@ -21,7 +21,7 @@ impl<K: RawValType, V: RawValType> TryFrom<Object> for Map<K, V> {
 impl<K: RawValType, V: RawValType> TryFrom<RawVal> for Map<K, V> {
     type Error = ();
 
-    fn try_from(val: RawVal) -> Result<Self, Self::Error> {
+    fn try_from(_val: RawVal) -> Result<Self, Self::Error> {
         // let obj: Object = val.try_into()?;
         // obj.try_into()
         todo!()
@@ -60,25 +60,25 @@ impl<K: RawValType, V: RawValType> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn has(&self, k: K) -> bool {
+    pub fn has(&self, _k: K) -> bool {
         // unsafe { <bool as RawValType>::unchecked_from_val(host::map::has(self.0.into(), k.into())) }
         todo!()
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> V {
+    pub fn get(&self, _k: K) -> V {
         // unsafe { <V as RawValType>::unchecked_from_val(host::map::get(self.0.into(), k.into())) }
         todo!()
     }
 
     #[inline(always)]
-    pub fn put(&self, k: K, v: V) -> Map<K, V> {
+    pub fn put(&self, _k: K, _v: V) -> Map<K, V> {
         // unsafe { Self::unchecked_from_obj(host::map::put(self.0.into(), k.into(), v.into())) }
         todo!()
     }
 
     #[inline(always)]
-    pub fn del(&self, k: K) -> Map<K, V> {
+    pub fn del(&self, _k: K) -> Map<K, V> {
         // unsafe { Self::unchecked_from_obj(host::map::del(self.0.into(), k.into())) }
         todo!()
     }
