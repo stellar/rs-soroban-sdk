@@ -14,15 +14,15 @@ pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
 #[cfg(test)]
 mod test {
     use super::add;
-    use stellar_contract_sdk::{Env, EnvValType, OrAbort, RawVal};
+    use stellar_contract_sdk::{Env, EnvValType, OrAbort};
 
     #[test]
     fn test_add() {
-        let e = &Env::default();
-        let x: RawVal = 10i64.into_raw_val(e.clone());
-        let y: RawVal = 12i64.into_raw_val(e.clone());
-        let z: RawVal = add(e.clone(), x, y);
-        let z: i64 = i64::try_from_raw_val(e.clone(), z).or_abort();
+        let e = Env::default();
+        let x = 10i64.into_raw_val(e.clone());
+        let y = 12i64.into_raw_val(e.clone());
+        let z = add(e.clone(), x, y);
+        let z = i64::try_from_raw_val(e.clone(), z).or_abort();
         assert!(z == 22);
     }
 }
