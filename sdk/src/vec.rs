@@ -37,17 +37,20 @@ impl<T: EnvValType + RawValType> Vec<T> {
         Self(obj, PhantomData)
     }
 
+    fn env(&self) -> &Env {
+        &self.0.env()
+    }
+
     #[inline(always)]
-    pub fn new(e: &Env) -> Vec<T> {
-        let mut env = e.clone();
+    pub fn new(env: &Env) -> Vec<T> {
         let val = env.vec_new();
-        let obj: Object = val.in_env(&env).try_into().or_abort();
+        let obj: Object = val.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(obj) }
     }
 
     #[inline(always)]
     pub fn get(&self, i: u32) -> T {
-        let mut env = self.0.env().clone();
+        let env = self.env();
         let val = env.vec_get(self.0.as_ref().val, i.into());
         T::try_from_raw_val(env, val).or_abort()
     }
@@ -57,84 +60,84 @@ impl<T: EnvValType + RawValType> Vec<T> {
 
     #[inline(always)]
     pub fn put(&self, i: u32, v: T) -> Vec<T> {
-        let mut env = self.0.env().clone();
-        let vec = env.vec_put(self.0.as_ref().val, i.into(), v.into_raw_val(env.clone()));
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let env = self.env();
+        let vec = env.vec_put(self.0.as_ref().val, i.into(), v.into_raw_val(env));
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 
     #[inline(always)]
     pub fn del(&self, i: u32) -> Vec<T> {
-        let mut env = self.0.env().clone();
+        let env = self.env();
         let vec = env.vec_del(self.0.as_ref().val, i.into());
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        let mut env = self.0.env().clone();
+        let env = self.env();
         let val = env.vec_len(self.0.as_ref().val);
         u32::try_from(val).or_abort()
     }
 
     #[inline(always)]
     pub fn push(&self, x: T) -> Vec<T> {
-        let mut env = self.0.env().clone();
-        let vec = env.vec_push(self.0.as_ref().val, x.into_raw_val(env.clone()));
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let env = self.env();
+        let vec = env.vec_push(self.0.as_ref().val, x.into_raw_val(env));
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 
     #[inline(always)]
     pub fn pop(&self) -> Vec<T> {
-        let mut env = self.0.env().clone();
+        let env = self.env();
         let vec = env.vec_pop(self.0.as_ref().val);
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 
     #[inline(always)]
     pub fn take(&self, n: u32) -> Vec<T> {
-        let mut env = self.0.env().clone();
+        let env = self.env();
         let vec = env.vec_take(self.0.as_ref().val, n.into());
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 
     #[inline(always)]
     pub fn drop(&self, n: u32) -> Vec<T> {
-        let mut env = self.0.env().clone();
+        let env = self.0.env();
         let vec = env.vec_drop(self.0.as_ref().val, n.into());
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 
     #[inline(always)]
     pub fn front(&self) -> T {
-        let mut env = self.0.env().clone();
+        let env = self.0.env();
         let val = env.vec_front(self.0.as_ref().val);
         T::try_from_raw_val(env, val).or_abort()
     }
 
     #[inline(always)]
     pub fn back(&self) -> T {
-        let mut env = self.0.env().clone();
+        let env = self.env();
         let val = env.vec_back(self.0.as_ref().val);
         T::try_from_raw_val(env, val).or_abort()
     }
 
     #[inline(always)]
     pub fn insert(&self, i: u32, x: T) -> Vec<T> {
-        let mut env = self.0.env().clone();
-        let vec = env.vec_put(self.0.as_ref().val, i.into(), x.into_raw_val(env.clone()));
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let env = self.env();
+        let vec = env.vec_put(self.0.as_ref().val, i.into(), x.into_raw_val(env));
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 
     #[inline(always)]
     pub fn append(&self, other: Vec<T>) -> Vec<T> {
-        let env = self.0.env();
+        let env = self.env();
         let vec = env.vec_append(self.0.as_ref().val, other.0.as_ref().val);
         let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
