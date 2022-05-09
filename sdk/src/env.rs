@@ -10,7 +10,6 @@ mod guest {
     pub use stellar_contract_env_guest::EnvObj;
     pub use stellar_contract_env_guest::EnvVal;
     pub use stellar_contract_env_guest::EnvValType;
-    pub use stellar_contract_env_guest::HasEnv;
     pub use stellar_contract_env_guest::OrAbort;
     pub use stellar_contract_env_guest::RawVal;
     pub use stellar_contract_env_guest::RawValType;
@@ -33,7 +32,6 @@ mod host {
     pub use stellar_contract_env_host::EnvObj;
     pub use stellar_contract_env_host::EnvVal;
     pub use stellar_contract_env_host::EnvValType;
-    pub use stellar_contract_env_host::HasEnv;
     pub use stellar_contract_env_host::OrAbort;
     pub use stellar_contract_env_host::RawVal;
     pub use stellar_contract_env_host::RawValType;

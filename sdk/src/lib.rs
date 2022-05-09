@@ -11,7 +11,6 @@ pub use env::Env;
 pub use env::EnvObj;
 pub use env::EnvVal;
 pub use env::EnvValType;
-pub use env::HasEnv;
 pub use env::OrAbort;
 pub use env::RawVal;
 pub use env::RawValType;

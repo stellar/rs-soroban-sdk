@@ -1,7 +1,7 @@
 use core::marker::PhantomData;
 
 use super::{
-    xdr::ScObjectType, Env, EnvI, EnvValType, HasEnv, Object, OrAbort, RawVal, RawValType,
+    xdr::ScObjectType, Env, EnvI, EnvValType, Object, OrAbort, RawVal, RawValType,
 };
 
 #[derive(Clone)]
@@ -136,10 +136,9 @@ impl<T: EnvValType + RawValType> Vec<T> {
 
     #[inline(always)]
     pub fn append(&self, other: Vec<T>) -> Vec<T> {
-        let mut env = self.0.env().clone();
-        env.check_same_env(&other.0.as_ref().env);
+        let env = self.0.env();
         let vec = env.vec_append(self.0.as_ref().val, other.0.as_ref().val);
-        let vec: Object = vec.in_env(&env).try_into().or_abort();
+        let vec: Object = vec.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(vec) }
     }
 }
