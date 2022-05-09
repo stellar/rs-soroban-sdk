@@ -1,29 +1,28 @@
 #![no_std]
-use sdk::{OrAbort, Val};
-use stellar_contract_sdk as sdk;
+use stellar_contract_sdk::{Env, EnvValType, OrAbort, RawVal};
 
 #[no_mangle]
-pub fn add(a: Val, b: Val) -> Val {
-    let a: i64 = a.try_into().or_abort();
-    let b: i64 = b.try_into().or_abort();
+pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
+    let a: i64 = i64::try_from_raw_val(e.clone(), a).or_abort();
+    let b: i64 = i64::try_from_raw_val(e.clone(), b).or_abort();
 
     let c = a + b;
 
-    return c.try_into().or_abort();
+    return c.into_raw_val(e);
 }
 
 #[cfg(test)]
 mod test {
     use super::add;
-    use sdk::Val;
-    use stellar_contract_sdk as sdk;
+    use stellar_contract_sdk::{Env, EnvValType, OrAbort};
 
     #[test]
     fn test_add() {
-        let x: Val = Val::from_i64(10);
-        let y: Val = Val::from_i64(12);
-        let z: Val = add(x, y);
-        let z: i64 = z.try_into().unwrap();
+        let e = Env::default();
+        let x = 10i64.into_raw_val(e.clone());
+        let y = 12i64.into_raw_val(e.clone());
+        let z = add(e.clone(), x, y);
+        let z = i64::try_from_raw_val(e.clone(), z).or_abort();
         assert!(z == 22);
     }
 }
