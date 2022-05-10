@@ -1,15 +1,15 @@
 use core::marker::PhantomData;
 
-use super::{xdr::ScObjectType, Env, EnvI, EnvValType, Object, OrAbort, RawVal};
+use super::{xdr::ScObjectType, Env, EnvI, EnvObj, EnvValType, OrAbort, RawVal};
 
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Vec<T>(Object, PhantomData<T>);
+pub struct Vec<T>(EnvObj, PhantomData<T>);
 
-impl<V: EnvValType> TryFrom<Object> for Vec<V> {
+impl<V: EnvValType> TryFrom<EnvObj> for Vec<V> {
     type Error = ();
 
-    fn try_from(obj: Object) -> Result<Self, Self::Error> {
+    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.is_obj_type(ScObjectType::ScoVec) {
             Ok(Vec(obj, PhantomData))
         } else {
@@ -18,7 +18,7 @@ impl<V: EnvValType> TryFrom<Object> for Vec<V> {
     }
 }
 
-impl<T: EnvValType> From<Vec<T>> for Object {
+impl<T: EnvValType> From<Vec<T>> for EnvObj {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
@@ -33,7 +33,7 @@ impl<T: EnvValType> From<Vec<T>> for RawVal {
 }
 
 impl<T: EnvValType> Vec<T> {
-    unsafe fn unchecked_new(obj: Object) -> Self {
+    unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData)
     }
 
@@ -44,7 +44,7 @@ impl<T: EnvValType> Vec<T> {
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
         let val = env.vec_new();
-        let obj: Object = val.in_env(env).try_into().or_abort();
+        let obj: EnvObj = val.in_env(env).try_into().or_abort();
         unsafe { Self::unchecked_new(obj) }
     }
 

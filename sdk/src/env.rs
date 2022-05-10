@@ -7,8 +7,6 @@ mod guest {
 
     pub use stellar_contract_env_guest::BitSet;
     pub use stellar_contract_env_guest::Env as EnvI;
-    pub use stellar_contract_env_guest::EnvObj;
-    pub use stellar_contract_env_guest::EnvVal;
     pub use stellar_contract_env_guest::EnvValType;
     pub use stellar_contract_env_guest::OrAbort;
     pub use stellar_contract_env_guest::RawVal;
@@ -17,7 +15,8 @@ mod guest {
     pub use stellar_contract_env_guest::Symbol;
 
     pub type Env = stellar_contract_env_guest::Guest;
-    pub type Object = stellar_contract_env_guest::EnvObj<Env>;
+    pub type EnvObj = stellar_contract_env_guest::EnvObj<Env>;
+    pub type EnvVal = stellar_contract_env_guest::EnvVal<Env>;
 }
 
 #[cfg(not(target_family = "wasm"))]
@@ -29,8 +28,6 @@ mod host {
 
     pub use stellar_contract_env_host::BitSet;
     pub use stellar_contract_env_host::Env as EnvI;
-    pub use stellar_contract_env_host::EnvObj;
-    pub use stellar_contract_env_host::EnvVal;
     pub use stellar_contract_env_host::EnvValType;
     pub use stellar_contract_env_host::OrAbort;
     pub use stellar_contract_env_host::RawVal;
@@ -39,5 +36,6 @@ mod host {
     pub use stellar_contract_env_host::Symbol;
 
     pub type Env = stellar_contract_env_host::Host;
-    pub type Object = EnvObj<Env>;
+    pub type EnvObj = stellar_contract_env_host::EnvObj<Env>;
+    pub type EnvVal = stellar_contract_env_host::EnvVal<Env>;
 }
