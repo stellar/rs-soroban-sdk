@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use super::{xdr::ScObjectType, Env, EnvObj, EnvTrait, EnvValType, OrAbort, RawVal};
+use super::{xdr::ScObjectType, Env, EnvVal, EnvObj, EnvTrait, EnvValType, OrAbort, RawVal};
 
 #[derive(Clone)]
 #[repr(transparent)]
@@ -22,6 +22,13 @@ impl<T: EnvValType> From<Vec<T>> for EnvObj {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
+    }
+}
+
+impl<T: EnvValType> From<Vec<T>> for EnvVal {
+    #[inline(always)]
+    fn from(v: Vec<T>) -> Self {
+        v.0.into()
     }
 }
 
