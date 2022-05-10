@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use super::{xdr::ScObjectType, Env, EnvVal, EnvObj, EnvTrait, EnvValType, OrAbort, RawVal};
+use super::{xdr::ScObjectType, Env, EnvObj, EnvTrait, EnvVal, EnvValType, OrAbort, RawVal};
 
 #[derive(Clone)]
 #[repr(transparent)]
