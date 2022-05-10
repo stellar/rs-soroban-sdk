@@ -62,14 +62,14 @@ impl<T: EnvValType + RawValType> Vec<T> {
     pub fn put(&mut self, i: u32, v: T) {
         let env = self.env();
         let vec = env.vec_put(self.0.as_ref().val, i.into(), v.into_raw_val(env));
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn del(&mut self, i: u32) {
         let env = self.env();
         let vec = env.vec_del(self.0.as_ref().val, i.into());
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
@@ -83,28 +83,28 @@ impl<T: EnvValType + RawValType> Vec<T> {
     pub fn push(&mut self, x: T) {
         let env = self.env();
         let vec = env.vec_push(self.0.as_ref().val, x.into_raw_val(env));
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn pop(&mut self) {
         let env = self.env();
         let vec = env.vec_pop(self.0.as_ref().val);
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn take(&mut self, n: u32) {
         let env = self.env();
         let vec = env.vec_take(self.0.as_ref().val, n.into());
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn drop(&mut self, n: u32) {
         let env = self.0.env();
         let vec = env.vec_drop(self.0.as_ref().val, n.into());
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
@@ -125,14 +125,14 @@ impl<T: EnvValType + RawValType> Vec<T> {
     pub fn insert(&mut self, i: u32, x: T) {
         let env = self.env();
         let vec = env.vec_put(self.0.as_ref().val, i.into(), x.into_raw_val(env));
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn append(&mut self, other: Vec<T>) {
         let env = self.env();
         let vec = env.vec_append(self.0.as_ref().val, other.0.as_ref().val);
-        self.0 = vec.in_env(env).try_into().or_abort();
+        self.0 = vec.in_env(env);
     }
 }
 
