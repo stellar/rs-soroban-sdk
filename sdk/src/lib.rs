@@ -16,9 +16,9 @@ pub use env::Status;
 pub use env::Symbol;
 use env::*;
 
-mod bignum;
+mod bigint;
 mod map;
 mod vec;
-pub use bignum::BigNum;
+pub use bigint::BigInt;
 pub use map::Map;
 pub use vec::Vec;
