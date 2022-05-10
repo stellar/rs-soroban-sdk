@@ -17,8 +17,8 @@ mod guest {
     pub use stellar_contract_env_guest::Symbol;
 
     pub type Env = stellar_contract_env_guest::Guest;
-    pub type EnvVal = stellar_contract_env_guest::EnvVal<Env>;
     pub type EnvObj = stellar_contract_env_guest::EnvObj<Env>;
+    pub type EnvVal = stellar_contract_env_guest::EnvVal<Env>;
 }
 
 #[cfg(not(target_family = "wasm"))]
@@ -40,6 +40,6 @@ mod host {
     pub use stellar_contract_env_host::Symbol;
 
     pub type Env = stellar_contract_env_host::Host;
-    pub type EnvVal = stellar_contract_env_host::EnvVal<Env>;
     pub type EnvObj = stellar_contract_env_host::EnvObj<Env>;
+    pub type EnvVal = stellar_contract_env_host::EnvVal<Env>;
 }
