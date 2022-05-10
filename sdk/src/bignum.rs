@@ -3,16 +3,16 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{xdr::ScObjectType, Object, RawVal};
+use super::{xdr::ScObjectType, EnvObj, RawVal};
 
 #[repr(transparent)]
 #[derive(Clone)]
-pub struct BigNum(Object);
+pub struct BigNum(EnvObj);
 
-impl TryFrom<Object> for BigNum {
+impl TryFrom<EnvObj> for BigNum {
     type Error = ();
 
-    fn try_from(obj: Object) -> Result<Self, Self::Error> {
+    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.is_obj_type(ScObjectType::ScoBigint) {
             Ok(BigNum(obj))
         } else {
@@ -34,7 +34,7 @@ impl TryFrom<Object> for BigNum {
 //     }
 // }
 
-impl From<BigNum> for Object {
+impl From<BigNum> for EnvObj {
     fn from(b: BigNum) -> Self {
         b.0
     }
@@ -218,7 +218,7 @@ impl Ord for BigNum {
 }
 
 impl BigNum {
-    unsafe fn unchecked_new(obj: Object) -> Self {
+    unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj)
     }
 
