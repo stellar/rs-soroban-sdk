@@ -8,7 +8,6 @@
 mod env;
 pub use env::BitSet;
 pub use env::Env;
-pub use env::EnvVal;
 pub use env::EnvValType;
 pub use env::OrAbort;
 pub use env::RawVal;
