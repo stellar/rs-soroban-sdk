@@ -59,19 +59,17 @@ impl<T: EnvValType + RawValType> Vec<T> {
     // values of T? T values may be objects containing an Env?
 
     #[inline(always)]
-    pub fn put(&self, i: u32, v: T) -> Vec<T> {
+    pub fn put(&mut self, i: u32, v: T) {
         let env = self.env();
         let vec = env.vec_put(self.0.as_ref().val, i.into(), v.into_raw_val(env));
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 
     #[inline(always)]
-    pub fn del(&self, i: u32) -> Vec<T> {
+    pub fn del(&mut self, i: u32) {
         let env = self.env();
         let vec = env.vec_del(self.0.as_ref().val, i.into());
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 
     #[inline(always)]
@@ -82,35 +80,31 @@ impl<T: EnvValType + RawValType> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn push(&self, x: T) -> Vec<T> {
+    pub fn push(&mut self, x: T) {
         let env = self.env();
         let vec = env.vec_push(self.0.as_ref().val, x.into_raw_val(env));
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 
     #[inline(always)]
-    pub fn pop(&self) -> Vec<T> {
+    pub fn pop(&mut self) {
         let env = self.env();
         let vec = env.vec_pop(self.0.as_ref().val);
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 
     #[inline(always)]
-    pub fn take(&self, n: u32) -> Vec<T> {
+    pub fn take(&mut self, n: u32) {
         let env = self.env();
         let vec = env.vec_take(self.0.as_ref().val, n.into());
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 
     #[inline(always)]
-    pub fn drop(&self, n: u32) -> Vec<T> {
+    pub fn drop(&mut self, n: u32) {
         let env = self.0.env();
         let vec = env.vec_drop(self.0.as_ref().val, n.into());
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 
     #[inline(always)]
@@ -128,19 +122,17 @@ impl<T: EnvValType + RawValType> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn insert(&self, i: u32, x: T) -> Vec<T> {
+    pub fn insert(&mut self, i: u32, x: T) {
         let env = self.env();
         let vec = env.vec_put(self.0.as_ref().val, i.into(), x.into_raw_val(env));
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 
     #[inline(always)]
-    pub fn append(&self, other: Vec<T>) -> Vec<T> {
+    pub fn append(&mut self, other: Vec<T>) {
         let env = self.env();
         let vec = env.vec_append(self.0.as_ref().val, other.0.as_ref().val);
-        let vec: Object = vec.in_env(env).try_into().or_abort();
-        unsafe { Self::unchecked_new(vec) }
+        self.0 = vec.in_env(env).try_into().or_abort();
     }
 }
 
@@ -151,18 +143,26 @@ mod test {
     #[test]
     fn test_vec_raw_val_type() {
         let env = Env::default();
+
         let mut vec = Vec::<u32>::new(&env);
         assert_eq!(vec.len(), 0);
-        vec = vec.push(10);
+        vec.push(10);
         assert_eq!(vec.len(), 1);
-        vec = vec.push(20);
+        vec.push(20);
         assert_eq!(vec.len(), 2);
-        vec = vec.push(30);
+        vec.push(30);
         assert_eq!(vec.len(), 3);
-        // TODO: Add test assertions once Vec fns are filled out.
-        // assert_eq!(vec.front(), 10);
-        // assert_eq!(vec.get(1), 20);
-        // assert_eq!(vec.back(), 30);
+
+        let vec_ref = &vec;
+        assert_eq!(vec_ref.len(), 3);
+
+        let mut vec_copy = vec.clone();
+        assert_eq!(vec_copy.len(), 3);
+        vec_copy.push(40);
+        assert_eq!(vec_copy.len(), 4);
+
+        assert_eq!(vec.len(), 3);
+        assert_eq!(vec_ref.len(), 3);
     }
 
     #[test]
