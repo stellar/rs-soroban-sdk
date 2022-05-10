@@ -72,13 +72,13 @@ impl<K: RawValType, V: RawValType> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn put(&self, _k: K, _v: V) -> Map<K, V> {
+    pub fn put(&mut self, _k: K, _v: V) {
         // unsafe { Self::unchecked_from_obj(host::map::put(self.0.into(), k.into(), v.into())) }
         todo!()
     }
 
     #[inline(always)]
-    pub fn del(&self, _k: K) -> Map<K, V> {
+    pub fn del(&mut self, _k: K) {
         // unsafe { Self::unchecked_from_obj(host::map::del(self.0.into(), k.into())) }
         todo!()
     }
