@@ -43,15 +43,14 @@ impl<T: EnvValType> Vec<T> {
 
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
-        let val = env.vec_new();
-        let obj: EnvObj = val.in_env(env).try_into().or_abort();
+        let obj = env.vec_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 
     #[inline(always)]
     pub fn get(&self, i: u32) -> T {
         let env = self.env();
-        let val = env.vec_get(self.0.as_ref().val, i.into());
+        let val = env.vec_get(self.0.as_raw_obj(), i.into());
         T::try_from_raw_val(env, val).or_abort()
     }
 
@@ -61,77 +60,77 @@ impl<T: EnvValType> Vec<T> {
     #[inline(always)]
     pub fn put(&mut self, i: u32, v: T) {
         let env = self.env();
-        let vec = env.vec_put(self.0.as_ref().val, i.into(), v.into_raw_val(env));
+        let vec = env.vec_put(self.0.as_raw_obj(), i.into(), v.into_raw_val(env));
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn del(&mut self, i: u32) {
         let env = self.env();
-        let vec = env.vec_del(self.0.as_ref().val, i.into());
+        let vec = env.vec_del(self.0.as_raw_obj(), i.into());
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
         let env = self.env();
-        let val = env.vec_len(self.0.as_ref().val);
+        let val = env.vec_len(self.0.as_raw_obj());
         u32::try_from(val).or_abort()
     }
 
     #[inline(always)]
     pub fn push(&mut self, x: T) {
         let env = self.env();
-        let vec = env.vec_push(self.0.as_ref().val, x.into_raw_val(env));
+        let vec = env.vec_push(self.0.as_raw_obj(), x.into_raw_val(env));
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn pop(&mut self) {
         let env = self.env();
-        let vec = env.vec_pop(self.0.as_ref().val);
+        let vec = env.vec_pop(self.0.as_raw_obj());
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn take(&mut self, n: u32) {
         let env = self.env();
-        let vec = env.vec_take(self.0.as_ref().val, n.into());
+        let vec = env.vec_take(self.0.as_raw_obj(), n.into());
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn drop(&mut self, n: u32) {
         let env = self.0.env();
-        let vec = env.vec_drop(self.0.as_ref().val, n.into());
+        let vec = env.vec_drop(self.0.as_raw_obj(), n.into());
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn front(&self) -> T {
         let env = self.0.env();
-        let val = env.vec_front(self.0.as_ref().val);
+        let val = env.vec_front(self.0.as_raw_obj());
         T::try_from_raw_val(env, val).or_abort()
     }
 
     #[inline(always)]
     pub fn back(&self) -> T {
         let env = self.env();
-        let val = env.vec_back(self.0.as_ref().val);
+        let val = env.vec_back(self.0.as_raw_obj());
         T::try_from_raw_val(env, val).or_abort()
     }
 
     #[inline(always)]
     pub fn insert(&mut self, i: u32, x: T) {
         let env = self.env();
-        let vec = env.vec_put(self.0.as_ref().val, i.into(), x.into_raw_val(env));
+        let vec = env.vec_put(self.0.as_raw_obj(), i.into(), x.into_raw_val(env));
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn append(&mut self, other: Vec<T>) {
         let env = self.env();
-        let vec = env.vec_append(self.0.as_ref().val, other.0.as_ref().val);
+        let vec = env.vec_append(self.0.as_raw_obj(), other.0.as_raw_obj());
         self.0 = vec.in_env(env);
     }
 }
