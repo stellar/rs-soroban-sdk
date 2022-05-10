@@ -73,8 +73,7 @@ impl<T: EnvValType<Env>> Vec<T> {
 
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
-        let val = env.vec_new();
-        let obj: EnvObj = val.in_env(env);
+        let obj = env.vec_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 
@@ -161,7 +160,7 @@ impl<T: EnvValType<Env>> Vec<T> {
     #[inline(always)]
     pub fn append(&mut self, other: Vec<T>) {
         let env = self.env();
-        let vec = env.vec_append(self.0.as_raw_obj(), other.0.into());
+        let vec = env.vec_append(self.0.as_raw_obj(), other.0.as_raw_obj());
         self.0 = vec.in_env(env);
     }
 }
