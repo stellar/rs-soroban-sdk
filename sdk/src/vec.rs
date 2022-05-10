@@ -1,12 +1,12 @@
 use core::marker::PhantomData;
 
-use super::{xdr::ScObjectType, Env, EnvI, EnvValType, Object, OrAbort, RawVal, RawValType};
+use super::{xdr::ScObjectType, Env, EnvI, EnvValType, Object, OrAbort, RawVal};
 
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(Object, PhantomData<T>);
 
-impl<V: EnvValType + RawValType> TryFrom<Object> for Vec<V> {
+impl<V: EnvValType> TryFrom<Object> for Vec<V> {
     type Error = ();
 
     fn try_from(obj: Object) -> Result<Self, Self::Error> {
@@ -18,21 +18,21 @@ impl<V: EnvValType + RawValType> TryFrom<Object> for Vec<V> {
     }
 }
 
-impl<T: EnvValType + RawValType> From<Vec<T>> for Object {
+impl<T: EnvValType> From<Vec<T>> for Object {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
     }
 }
 
-impl<T: EnvValType + RawValType> From<Vec<T>> for RawVal {
+impl<T: EnvValType> From<Vec<T>> for RawVal {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<T: EnvValType + RawValType> Vec<T> {
+impl<T: EnvValType> Vec<T> {
     unsafe fn unchecked_new(obj: Object) -> Self {
         Self(obj, PhantomData)
     }
@@ -167,7 +167,26 @@ mod test {
 
     #[test]
     fn test_vec_env_val_type() {
-        // TODO: Add test using a type that is not a RawValType, such as i64 or
-        // u64.
+        let env = Env::default();
+
+        let mut vec = Vec::<i64>::new(&env);
+        assert_eq!(vec.len(), 0);
+        vec.push(-10);
+        assert_eq!(vec.len(), 1);
+        vec.push(20);
+        assert_eq!(vec.len(), 2);
+        vec.push(-30);
+        assert_eq!(vec.len(), 3);
+
+        let vec_ref = &vec;
+        assert_eq!(vec_ref.len(), 3);
+
+        let mut vec_copy = vec.clone();
+        assert_eq!(vec_copy.len(), 3);
+        vec_copy.push(40);
+        assert_eq!(vec_copy.len(), 4);
+
+        assert_eq!(vec.len(), 3);
+        assert_eq!(vec_ref.len(), 3);
     }
 }
