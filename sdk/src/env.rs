@@ -6,7 +6,7 @@ mod guest {
     pub use stellar_contract_env_guest::xdr;
 
     pub use stellar_contract_env_guest::BitSet;
-    pub use stellar_contract_env_guest::Env as EnvI;
+    pub use stellar_contract_env_guest::Env as EnvTrait;
     pub use stellar_contract_env_guest::EnvValType;
     pub use stellar_contract_env_guest::OrAbort;
     pub use stellar_contract_env_guest::RawVal;
@@ -27,7 +27,7 @@ mod host {
     pub use stellar_contract_env_host::xdr;
 
     pub use stellar_contract_env_host::BitSet;
-    pub use stellar_contract_env_host::Env as EnvI;
+    pub use stellar_contract_env_host::Env as EnvTrait;
     pub use stellar_contract_env_host::EnvValType;
     pub use stellar_contract_env_host::OrAbort;
     pub use stellar_contract_env_host::RawVal;
