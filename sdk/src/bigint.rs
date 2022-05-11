@@ -13,7 +13,7 @@ impl TryFrom<EnvObj> for BigInt {
     type Error = ();
 
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.is_obj_type(ScObjectType::ScoBigint) {
+        if obj.as_tagged().is_obj_type(ScObjectType::ScoBigint) {
             Ok(BigInt(obj))
         } else {
             Err(())

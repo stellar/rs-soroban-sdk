@@ -8,10 +8,9 @@
 mod env;
 pub use env::BitSet;
 pub use env::Env;
-pub use env::EnvValType;
+pub use env::EnvValConvertible;
 pub use env::OrAbort;
 pub use env::RawVal;
-pub use env::RawValType;
 pub use env::Status;
 pub use env::Symbol;
 use env::*;
