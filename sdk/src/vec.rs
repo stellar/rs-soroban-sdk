@@ -1,17 +1,15 @@
 use core::marker::PhantomData;
 
 use super::{
-    xdr::ScObjectType, Env, EnvBase, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal,
-    EnvValConvertible, OrAbort, RawVal,
+    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, OrAbort, RawVal,
 };
 
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
 
-impl<T: EnvRawValConvertible> EnvValConvertible<Env, RawVal> for Vec<T> {
-    fn into_env_val(self, env: &Env) -> EnvVal<RawVal> {
-        self.env().check_same_env(env);
+impl<T: EnvRawValConvertible> Into<EnvVal<RawVal>> for Vec<T> {
+    fn into(self) -> EnvVal<RawVal> {
         self.0.into()
     }
 }
@@ -70,7 +68,7 @@ impl<T: EnvRawValConvertible> Vec<T> {
     pub fn get(&self, i: u32) -> T {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, &val).or_abort()
+        T::try_from_val(env, val).or_abort()
     }
 
     // TODO: Do we need to check_same_env for the env potentially stored in
@@ -129,14 +127,14 @@ impl<T: EnvRawValConvertible> Vec<T> {
     pub fn front(&self) -> T {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
-        T::try_from_val(env, &val).or_abort()
+        T::try_from_val(env, val).or_abort()
     }
 
     #[inline(always)]
     pub fn back(&self) -> T {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, &val).or_abort()
+        T::try_from_val(env, val).or_abort()
     }
 
     #[inline(always)]
