@@ -15,6 +15,7 @@ pub use env::BitSet;
 pub use env::Env;
 pub use env::EnvTrait;
 pub use env::EnvValConvertible;
+pub use env::IntoEnvVal;
 pub use env::OrAbort;
 pub use env::RawVal;
 pub use env::Status;

@@ -1,27 +1,31 @@
 use core::marker::PhantomData;
 
-use super::{xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, OrAbort, RawVal};
+use super::{
+    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, OrAbort, RawVal,
+};
 
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
+
+impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
+    type Error = ();
+
+    fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
+        let obj: EnvObj = ev.clone().try_into()?;
+        obj.try_into()
+    }
+}
 
 impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
     type Error = ();
 
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::ScoVec) {
-            Ok(Vec(obj, PhantomData))
+            Ok(unsafe { Vec::<T>::unchecked_new(obj) })
         } else {
             Err(())
         }
-    }
-}
-
-impl<T: EnvRawValConvertible> From<Vec<T>> for EnvObj {
-    #[inline(always)]
-    fn from(v: Vec<T>) -> Self {
-        v.0
     }
 }
 
@@ -29,6 +33,19 @@ impl<T: EnvRawValConvertible> From<Vec<T>> for RawVal {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0.into()
+    }
+}
+
+impl<T: EnvRawValConvertible> From<Vec<T>> for EnvVal<RawVal> {
+    fn from(v: Vec<T>) -> Self {
+        v.0.into()
+    }
+}
+
+impl<T: EnvRawValConvertible> From<Vec<T>> for EnvObj {
+    #[inline(always)]
+    fn from(v: Vec<T>) -> Self {
+        v.0
     }
 }
 
@@ -51,7 +68,7 @@ impl<T: EnvRawValConvertible> Vec<T> {
     pub fn get(&self, i: u32) -> T {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, &val).or_abort()
+        T::try_from_val(env, val).or_abort()
     }
 
     // TODO: Do we need to check_same_env for the env potentially stored in
@@ -110,14 +127,14 @@ impl<T: EnvRawValConvertible> Vec<T> {
     pub fn front(&self) -> T {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
-        T::try_from_val(env, &val).or_abort()
+        T::try_from_val(env, val).or_abort()
     }
 
     #[inline(always)]
     pub fn back(&self) -> T {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, &val).or_abort()
+        T::try_from_val(env, val).or_abort()
     }
 
     #[inline(always)]
@@ -187,5 +204,18 @@ mod test {
 
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
+    }
+
+    #[test]
+    fn test_vec_recursive() {
+        let env = Env::default();
+
+        let mut vec_inner = Vec::<i64>::new(&env);
+        vec_inner.push(-10);
+        assert_eq!(vec_inner.len(), 1);
+
+        let mut vec_outer = Vec::<Vec<i64>>::new(&env);
+        vec_outer.push(vec_inner);
+        assert_eq!(vec_outer.len(), 1);
     }
 }

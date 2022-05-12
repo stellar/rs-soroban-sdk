@@ -3,8 +3,8 @@ use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort, RawVal};
 
 #[no_mangle]
 pub fn add(e: &Env, a: RawVal, b: RawVal) -> RawVal {
-    let a: i64 = i64::try_from_val(e, &a).or_abort();
-    let b: i64 = i64::try_from_val(e, &b).or_abort();
+    let a: i64 = i64::try_from_val(e, a).or_abort();
+    let b: i64 = i64::try_from_val(e, b).or_abort();
 
     let c = a + b;
 
@@ -22,7 +22,7 @@ mod test {
         let x = 10i64.into_val(e);
         let y = 12i64.into_val(e);
         let z = add(e, x, y);
-        let z = i64::try_from_val(e, &z).or_abort();
+        let z = i64::try_from_val(e, z).or_abort();
         assert!(z == 22);
     }
 }
