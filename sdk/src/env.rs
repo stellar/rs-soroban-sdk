@@ -13,7 +13,6 @@ mod env {
 pub use env::xdr;
 pub use env::BitSet;
 pub use env::Env;
-pub use env::EnvBase;
 pub use env::EnvTrait;
 pub use env::EnvValConvertible;
 pub use env::IntoEnvVal;
