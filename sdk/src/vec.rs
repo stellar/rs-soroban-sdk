@@ -8,12 +8,6 @@ use super::{
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
 
-impl<T: EnvRawValConvertible> Into<EnvVal<RawVal>> for Vec<T> {
-    fn into(self) -> EnvVal<RawVal> {
-        self.0.into()
-    }
-}
-
 impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
     type Error = ();
 
@@ -35,17 +29,23 @@ impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
     }
 }
 
-impl<T: EnvRawValConvertible> From<Vec<T>> for EnvObj {
-    #[inline(always)]
-    fn from(v: Vec<T>) -> Self {
-        v.0
-    }
-}
-
 impl<T: EnvRawValConvertible> From<Vec<T>> for RawVal {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0.into()
+    }
+}
+
+impl<T: EnvRawValConvertible> From<Vec<T>> for EnvVal<RawVal> {
+    fn from(v: Vec<T>) -> Self {
+        v.0.into()
+    }
+}
+
+impl<T: EnvRawValConvertible> From<Vec<T>> for EnvObj {
+    #[inline(always)]
+    fn from(v: Vec<T>) -> Self {
+        v.0
     }
 }
 
