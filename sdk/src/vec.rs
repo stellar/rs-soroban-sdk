@@ -11,6 +11,7 @@ pub struct Vec<T>(EnvObj, PhantomData<T>);
 impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
     type Error = ();
 
+    #[inline(always)]
     fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.clone().try_into()?;
         obj.try_into()
@@ -20,6 +21,7 @@ impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
 impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
     type Error = ();
 
+    #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::ScoVec) {
             Ok(unsafe { Vec::<T>::unchecked_new(obj) })
@@ -50,10 +52,12 @@ impl<T: EnvRawValConvertible> From<Vec<T>> for EnvObj {
 }
 
 impl<T: EnvRawValConvertible> Vec<T> {
+    #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData)
     }
 
+    #[inline(always)]
     fn env(&self) -> &Env {
         &self.0.env()
     }
