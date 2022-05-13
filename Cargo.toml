@@ -3,7 +3,8 @@ resolver = "2"
 
 members = [
     "sdk",
-    "examples/add",
+    "examples/add_i32",
+    "examples/add_i64",
     # "examples/liqpool",
     # "examples/token",
     # "tests/bignum",
@@ -28,3 +29,5 @@ debug = 0
 strip = "symbols"
 debug-assertions = false
 panic = "abort"
+codegen-units = 1
+lto = true
