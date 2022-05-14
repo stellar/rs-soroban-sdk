@@ -55,7 +55,7 @@ impl TryFrom<BigInt> for u64 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= u64::BITS {
-            Ok(b.to_u64())
+            Ok(unsafe { b.to_u64() })
         } else {
             Err(())
         }
@@ -67,7 +67,7 @@ impl TryFrom<BigInt> for i64 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= i64::BITS {
-            Ok(b.to_i64())
+            Ok(unsafe { b.to_i64() })
         } else {
             Err(())
         }
@@ -79,7 +79,7 @@ impl TryFrom<BigInt> for u32 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= u32::BITS {
-            Ok(b.to_u32())
+            Ok(unsafe { b.to_u32() })
         } else {
             Err(())
         }
@@ -91,7 +91,7 @@ impl TryFrom<BigInt> for i32 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= i32::BITS {
-            Ok(b.to_i32())
+            Ok(unsafe { b.to_i32() })
         } else {
             Err(())
         }
@@ -257,7 +257,7 @@ impl BigInt {
         unsafe { Self::unchecked_new(obj) }
     }
 
-    pub fn to_u64(&self) -> u64 {
+    unsafe fn to_u64(&self) -> u64 {
         let env = self.env();
         env.bigint_to_u64(self.0.to_tagged())
     }
@@ -267,7 +267,7 @@ impl BigInt {
         unsafe { Self::unchecked_new(obj) }
     }
 
-    pub fn to_i64(&self) -> i64 {
+    unsafe fn to_i64(&self) -> i64 {
         let env = self.env();
         env.bigint_to_i64(self.0.to_tagged())
     }
@@ -277,7 +277,7 @@ impl BigInt {
         unsafe { Self::unchecked_new(obj) }
     }
 
-    pub fn to_u32(&self) -> u32 {
+    unsafe fn to_u32(&self) -> u32 {
         let env = self.env();
         let u = env.bigint_to_u64(self.0.to_tagged());
         u.try_into().or_abort()
@@ -288,7 +288,7 @@ impl BigInt {
         unsafe { Self::unchecked_new(obj) }
     }
 
-    pub fn to_i32(&self) -> i32 {
+    unsafe fn to_i32(&self) -> i32 {
         let env = self.env();
         let i = env.bigint_to_i64(self.0.to_tagged());
         i.try_into().or_abort()
