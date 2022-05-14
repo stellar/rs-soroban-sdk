@@ -336,14 +336,3 @@ impl BigInt {
         u32::try_from(bits).or_abort()
     }
 }
-
-#[cfg(test)]
-mod test {
-    use crate::{Env, BigInt, Vec};
-    #[test]
-    pub fn bigint_inside_vec() {
-        let env = Env::default();
-        let mut vec = Vec::<BigInt>::new(&env);
-        vec.push(BigInt::from_u64(&env, 1));
-    }
-}
