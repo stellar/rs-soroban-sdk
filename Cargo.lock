@@ -176,8 +176,6 @@ dependencies = [
 name = "stellar-contract-sdk"
 version = "0.0.0"
 dependencies = [
- "im-rc",
- "num-bigint",
  "stellar-contract-env-guest",
  "stellar-contract-env-host",
 ]
