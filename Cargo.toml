@@ -2,7 +2,9 @@
 resolver = "2"
 
 members = [
+    "cli",
     "sdk",
+    "examples/helloworld",
     "examples/add_i32",
     "examples/add_i64",
     # "examples/liqpool",
