@@ -17,5 +17,3 @@ stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-cont
 [target.'cfg(not(target_family="wasm"))'.dependencies]
 stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "dee50def" }
 # stellar-contract-env-host = { path = "../../rs-stellar-contract-env/stellar-contract-env-host" }
-im-rc = "15.0.0"
-num-bigint = "0.4"
