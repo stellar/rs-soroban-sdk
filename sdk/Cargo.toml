@@ -11,9 +11,9 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 
 [target.'cfg(target_family="wasm")'.dependencies]
-stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "f4bdb5628814ea5e4f6e9e1d135593f43cd6acfc", features = ["panic_handler"] }
+stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "f4bdb562", features = ["panic_handler"] }
 # stellar-contract-env-guest = { path = "../../rs-stellar-contract-env/stellar-contract-env-guest" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "f4bdb5628814ea5e4f6e9e1d135593f43cd6acfc" }
+stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "f4bdb562" }
 # stellar-contract-env-host = { path = "../../rs-stellar-contract-env/stellar-contract-env-host" }
