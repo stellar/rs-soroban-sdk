@@ -10,3 +10,4 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
+proptest = "1.0.0"
