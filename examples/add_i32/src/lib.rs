@@ -40,8 +40,8 @@ mod test {
 #[cfg(test)]
 mod proptest {
     extern crate std;
-    use std::{format, panic};
     use proptest::prelude::*;
+    use std::{format, panic};
 
     use super::add;
     use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort};
