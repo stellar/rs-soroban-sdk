@@ -68,7 +68,6 @@ dependencies = [
 name = "example_add_i64"
 version = "0.0.0"
 dependencies = [
- "proptest",
  "stellar-contract-sdk",
 ]
 
