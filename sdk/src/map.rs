@@ -24,7 +24,7 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvObj> for Map<K
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::ScoMap) {
+        if obj.as_tagged().is_obj_type(ScObjectType::Map) {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
             Err(())

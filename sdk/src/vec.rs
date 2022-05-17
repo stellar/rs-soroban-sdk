@@ -23,7 +23,7 @@ impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::ScoVec) {
+        if obj.as_tagged().is_obj_type(ScObjectType::Vec) {
             Ok(unsafe { Vec::<T>::unchecked_new(obj) })
         } else {
             Err(())
