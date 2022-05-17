@@ -95,11 +95,11 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.38"
+version = "1.0.39"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9027b48e9d4c9175fa2218adf3557f91c1137021739951d4932f5f8268ac48aa"
+checksum = "c54b25569025b7fc9651de43004ae593a75ad88543b17178aa5e1b9c4f15f56f"
 dependencies = [
- "unicode-xid",
+ "unicode-ident",
 ]
 
 [[package]]
@@ -145,7 +145,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dee50def#dee50def2f514288a5d6d2d1f5634232477371e3"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=f4bdb562#f4bdb5628814ea5e4f6e9e1d135593f43cd6acfc"
 dependencies = [
  "static_assertions",
  "stellar-xdr",
@@ -154,7 +154,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dee50def#dee50def2f514288a5d6d2d1f5634232477371e3"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=f4bdb562#f4bdb5628814ea5e4f6e9e1d135593f43cd6acfc"
 dependencies = [
  "stellar-contract-env-common",
 ]
@@ -162,7 +162,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dee50def#dee50def2f514288a5d6d2d1f5634232477371e3"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=f4bdb562#f4bdb5628814ea5e4f6e9e1d135593f43cd6acfc"
 dependencies = [
  "im-rc",
  "num-bigint",
@@ -183,20 +183,20 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=a714d4ad#a714d4ad94a53270d9af1667632fc89f8849faea"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=a7505093#a750509373b857bb44e4d8d15e660370dc1c64a9"
 dependencies = [
  "base64",
 ]
 
 [[package]]
 name = "syn"
-version = "1.0.94"
+version = "1.0.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a07e33e919ebcd69113d5be0e4d70c5707004ff45188910106854f38b960df4a"
+checksum = "fbaf6116ab8924f39d52792136fb74fd60a80194cf1b1c6ffa6453eef1c3f942"
 dependencies = [
  "proc-macro2",
  "quote",
- "unicode-xid",
+ "unicode-ident",
 ]
 
 [[package]]
@@ -226,10 +226,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 
 [[package]]
-name = "unicode-xid"
-version = "0.2.3"
+name = "unicode-ident"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "957e51f3646910546462e67d5f7599b9e4fb8acdd304b087a6494730f9eebf04"
+checksum = "d22af068fba1eb5edcb4aea19d382b2a3deb4c8f9d475c589b6ada9e0fd493ee"
 
 [[package]]
 name = "version_check"
