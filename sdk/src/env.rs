@@ -17,7 +17,6 @@ pub use env::EnvBase;
 pub use env::EnvTrait;
 pub use env::IntoEnvVal;
 pub use env::IntoVal;
-pub use env::OrAbort;
 pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
