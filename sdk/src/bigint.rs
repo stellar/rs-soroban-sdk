@@ -4,7 +4,7 @@ use core::{
 };
 
 use super::{
-    xdr::ScObjectType, Env, EnvBase, EnvObj, EnvTrait, EnvVal, EnvValConvertible, OrAbort, RawVal,
+    xdr::ScObjectType, Env, EnvBase, EnvObj, EnvTrait, EnvVal, OrAbort, RawVal, TryFromVal,
 };
 
 #[repr(transparent)]

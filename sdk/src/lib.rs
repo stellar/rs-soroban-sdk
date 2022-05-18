@@ -8,11 +8,12 @@
 mod env;
 pub use env::BitSet;
 pub use env::Env;
-pub use env::EnvValConvertible;
+pub use env::IntoVal;
 pub use env::OrAbort;
 pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
+pub use env::TryFromVal;
 use env::*;
 
 mod bigint;

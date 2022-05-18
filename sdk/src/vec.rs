@@ -1,14 +1,12 @@
 use core::marker::PhantomData;
 
-use super::{
-    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, OrAbort, RawVal,
-};
+use super::{xdr::ScObjectType, Env, EnvObj, EnvTrait, EnvVal, IntoTryFromRawVal, OrAbort, RawVal};
 
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
 
-impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
+impl<T: IntoTryFromRawVal> TryFrom<EnvVal<RawVal>> for Vec<T> {
     type Error = ();
 
     #[inline(always)]
@@ -18,7 +16,7 @@ impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
     }
 }
 
-impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
+impl<T: IntoTryFromRawVal> TryFrom<EnvObj> for Vec<T> {
     type Error = ();
 
     #[inline(always)]
@@ -31,27 +29,27 @@ impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
     }
 }
 
-impl<T: EnvRawValConvertible> From<Vec<T>> for RawVal {
+impl<T: IntoTryFromRawVal> From<Vec<T>> for RawVal {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<T: EnvRawValConvertible> From<Vec<T>> for EnvVal<RawVal> {
+impl<T: IntoTryFromRawVal> From<Vec<T>> for EnvVal<RawVal> {
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<T: EnvRawValConvertible> From<Vec<T>> for EnvObj {
+impl<T: IntoTryFromRawVal> From<Vec<T>> for EnvObj {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
     }
 }
 
-impl<T: EnvRawValConvertible> Vec<T> {
+impl<T: IntoTryFromRawVal> Vec<T> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData)

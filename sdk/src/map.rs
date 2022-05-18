@@ -1,15 +1,15 @@
 use core::marker::PhantomData;
 
 use super::{
-    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, EnvValConvertible,
-    OrAbort, RawVal, Vec,
+    xdr::ScObjectType, Env, EnvObj, EnvTrait, EnvVal, IntoTryFromRawVal, OrAbort, RawVal,
+    TryFromVal, Vec,
 };
 
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct Map<K, V>(EnvObj, PhantomData<K>, PhantomData<V>);
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Map<K, V> {
+impl<K: IntoTryFromRawVal, V: IntoTryFromRawVal> TryFrom<EnvVal<RawVal>> for Map<K, V> {
     type Error = ();
 
     #[inline(always)]
@@ -19,7 +19,7 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> f
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvObj> for Map<K, V> {
+impl<K: IntoTryFromRawVal, V: IntoTryFromRawVal> TryFrom<EnvObj> for Map<K, V> {
     type Error = ();
 
     #[inline(always)]
@@ -32,28 +32,28 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvObj> for Map<K
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> From<Map<K, V>> for RawVal {
+impl<K: IntoTryFromRawVal, V: IntoTryFromRawVal> From<Map<K, V>> for RawVal {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0.into()
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> From<Map<K, V>> for EnvVal<RawVal> {
+impl<K: IntoTryFromRawVal, V: IntoTryFromRawVal> From<Map<K, V>> for EnvVal<RawVal> {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0.into()
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> From<Map<K, V>> for EnvObj {
+impl<K: IntoTryFromRawVal, V: IntoTryFromRawVal> From<Map<K, V>> for EnvObj {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
+impl<K: IntoTryFromRawVal, V: IntoTryFromRawVal> Map<K, V> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData, PhantomData)
