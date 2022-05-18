@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort, RawVal};
+use stellar_contract_sdk::{Env, IntoVal, OrAbort, RawVal, TryFromVal};
 
 #[no_mangle]
 pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
@@ -17,7 +17,7 @@ mod test {
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
     use super::add;
-    use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort};
+    use stellar_contract_sdk::{Env, IntoVal, OrAbort, TryFromVal};
 
     #[test]
     fn test_add() {
@@ -49,7 +49,7 @@ mod proptest {
     use std::{format, panic};
 
     use super::add;
-    use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort};
+    use stellar_contract_sdk::{Env, IntoVal, OrAbort, TryFromVal};
 
     proptest! {
         #[test]

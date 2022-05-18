@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort, RawVal};
+use stellar_contract_sdk::{Env, IntoVal, OrAbort, RawVal, TryFromVal};
 
 #[no_mangle]
 pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
@@ -14,7 +14,7 @@ pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
 #[cfg(test)]
 mod test {
     use super::add;
-    use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort};
+    use stellar_contract_sdk::{Env, IntoVal, OrAbort, TryFromVal};
 
     #[test]
     fn test_add() {
