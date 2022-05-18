@@ -3,9 +3,7 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{
-    xdr::ScObjectType, Env, EnvBase, EnvObj, EnvTrait, EnvVal, RawVal, TryFromVal,
-};
+use super::{xdr::ScObjectType, Env, EnvBase, EnvObj, EnvTrait, EnvVal, RawVal, TryFromVal};
 
 #[repr(transparent)]
 #[derive(Clone)]
