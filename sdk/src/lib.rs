@@ -5,14 +5,17 @@
 //#![feature(alloc)]
 //mod alloc;
 
+#[cfg(target_family = "wasm")]
+use stellar_contract_env_panic_handler_wasm32_unreachable as _;
+
 mod env;
 pub use env::BitSet;
 pub use env::Env;
-pub use env::EnvValConvertible;
-pub use env::OrAbort;
+pub use env::IntoVal;
 pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
+pub use env::TryFromVal;
 use env::*;
 
 mod bigint;

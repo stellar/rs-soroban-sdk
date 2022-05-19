@@ -1,8 +1,6 @@
 use core::marker::PhantomData;
 
-use super::{
-    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, OrAbort, RawVal,
-};
+use super::{xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, RawVal};
 
 #[derive(Clone)]
 #[repr(transparent)]
@@ -72,7 +70,7 @@ impl<T: EnvRawValConvertible> Vec<T> {
     pub fn get(&self, i: u32) -> T {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, val).or_abort()
+        T::try_from_val(env, val).ok().unwrap()
     }
 
     // TODO: Do we need to check_same_env for the env potentially stored in
@@ -96,7 +94,7 @@ impl<T: EnvRawValConvertible> Vec<T> {
     pub fn len(&self) -> u32 {
         let env = self.env();
         let val = env.vec_len(self.0.to_tagged());
-        u32::try_from(val).or_abort()
+        u32::try_from(val).unwrap()
     }
 
     #[inline(always)]
@@ -131,14 +129,14 @@ impl<T: EnvRawValConvertible> Vec<T> {
     pub fn front(&self) -> T {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
-        T::try_from_val(env, val).or_abort()
+        T::try_from_val(env, val).ok().unwrap()
     }
 
     #[inline(always)]
     pub fn back(&self) -> T {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, val).or_abort()
+        T::try_from_val(env, val).ok().unwrap()
     }
 
     #[inline(always)]

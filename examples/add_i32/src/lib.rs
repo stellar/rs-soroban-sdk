@@ -1,10 +1,10 @@
 #![no_std]
-use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort, RawVal};
+use stellar_contract_sdk::{Env, IntoVal, RawVal, TryFromVal};
 
 #[no_mangle]
 pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
-    let a: i32 = i32::try_from_val(&e, a).or_abort();
-    let b: i32 = i32::try_from_val(&e, b).or_abort();
+    let a: i32 = i32::try_from_val(&e, a).unwrap();
+    let b: i32 = i32::try_from_val(&e, b).unwrap();
 
     let c = a + b;
 
@@ -17,7 +17,7 @@ mod test {
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
     use super::add;
-    use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort};
+    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add() {
@@ -25,7 +25,7 @@ mod test {
         let x = 10i32.into_val(&e);
         let y = 12i32.into_val(&e);
         let z = add(e.clone(), x, y);
-        let z = i32::try_from_val(&e, z).or_abort();
+        let z = i32::try_from_val(&e, z).unwrap();
         assert!(z == 22);
     }
 
@@ -49,7 +49,7 @@ mod proptest {
     use std::{format, panic};
 
     use super::add;
-    use stellar_contract_sdk::{Env, EnvValConvertible, OrAbort};
+    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     proptest! {
         #[test]
@@ -68,7 +68,7 @@ mod proptest {
                 // returns the sum of a and b.
                 Some(expected_sum) => {
                     let vsum = add(e.clone(), a.into_val(&e), b.into_val(&e));
-                    let sum = i32::try_from_val(&e, vsum).or_abort();
+                    let sum = i32::try_from_val(&e, vsum).unwrap();
                     prop_assert_eq!(sum, expected_sum);
                 },
             }

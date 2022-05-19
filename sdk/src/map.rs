@@ -1,8 +1,7 @@
 use core::marker::PhantomData;
 
 use super::{
-    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, EnvValConvertible,
-    OrAbort, RawVal, Vec,
+    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, RawVal, TryFromVal, Vec,
 };
 
 #[repr(transparent)]
@@ -74,14 +73,14 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
     pub fn has(&self, k: K) -> bool {
         let env = self.env();
         let has = env.map_has(self.0.to_tagged(), k.into_val(env));
-        bool::try_from_val(env, has).or_abort()
+        bool::try_from_val(env, has).unwrap()
     }
 
     #[inline(always)]
     pub fn get(&self, k: K) -> V {
         let env = self.env();
         let v = env.map_get(self.0.to_tagged(), k.into_val(env));
-        V::try_from_val(env, v).or_abort()
+        V::try_from_val(env, v).ok().unwrap()
     }
 
     #[inline(always)]
@@ -102,13 +101,13 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
     pub fn len(&self) -> u32 {
         let env = self.env();
         let len = env.map_len(self.0.to_tagged());
-        u32::try_from_val(env, len).or_abort()
+        u32::try_from_val(env, len).unwrap()
     }
 
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
         let vec = env.map_keys(self.0.to_tagged());
-        Vec::<K>::try_from_val(env, vec).or_abort()
+        Vec::<K>::try_from_val(env, vec).unwrap()
     }
 }
