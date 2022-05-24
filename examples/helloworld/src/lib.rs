@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{Env, EnvValConvertible, RawVal};
+use stellar_contract_sdk::{Env, IntoVal, RawVal};
 
 #[no_mangle]
 pub fn hello(e: Env) -> RawVal {

@@ -1,4 +1,4 @@
-use std::{error::Error, fs, fmt::Display};
+use std::{error::Error, fmt::Debug, fmt::Display, fs};
 
 use clap::Parser;
 use stellar_contract_env_host::{
@@ -10,10 +10,11 @@ use stellar_contract_env_host::{
 pub struct Invoke {
     #[clap(long, parse(from_os_str))]
     file: std::path::PathBuf,
-    #[clap(long)]
-    func: String,
+    #[clap(long = "fn")]
+    function: String,
 }
 
+#[derive(Debug)]
 pub enum InvokeError {
     Error(Box<dyn Error>),
     XdrError(XdrError),
@@ -21,13 +22,20 @@ pub enum InvokeError {
 
 impl Error for InvokeError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
-        None
+        match self {
+            Self::Error(e) => e.source(),
+            Self::XdrError(e) => e.source(),
+        }
     }
 }
 
 impl Display for InvokeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
+        write!(f, "invoke error: ", ());
+        Ok(match self {
+            Self::Error(e) => std::fmt::Display::fmt(&e, f)?,
+            Self::XdrError(e) => std::fmt::Display::fmt(&e, f)?,
+        })
     }
 }
 
@@ -49,7 +57,7 @@ impl Invoke {
         let mut h = Host::default();
         let vm = Vm::new(&h, &contents).unwrap();
         let params = Vec::<ScVal>::new();
-        let res = vm.invoke_function(&mut h, &self.func, &ScVec(params.try_into()?))?;
+        let res = vm.invoke_function(&mut h, &self.function, &ScVec(params.try_into()?))?;
         println!("{:?}", res);
         Ok(())
     }

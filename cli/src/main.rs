@@ -20,5 +20,8 @@ fn main() {
     let res = match root.cmd {
         Cmd::Invoke(args) => args.run(),
     };
-    match res {}
+    match res {
+        Ok(_) => println!("ok"),
+        Err(e) => println!("error: {}", e),
+    }
 }
