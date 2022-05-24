@@ -31,7 +31,7 @@ impl Error for InvokeError {
 
 impl Display for InvokeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "invoke error: ", ());
+        write!(f, "invoke error: ")?;
         Ok(match self {
             Self::Error(e) => std::fmt::Display::fmt(&e, f)?,
             Self::XdrError(e) => std::fmt::Display::fmt(&e, f)?,

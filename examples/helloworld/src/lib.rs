@@ -1,6 +1,14 @@
 #![no_std]
 use stellar_contract_sdk::{Env, IntoVal, RawVal};
 
+pub struct Abc;
+
+impl Abc {
+    pub fn abc(e: Env) -> RawVal {
+        return (b'w' as u32).into_val(&e);
+    }
+}
+
 #[no_mangle]
 pub fn hello(e: Env) -> RawVal {
     return (b'w' as u32).into_val(&e);

@@ -1,5 +1,7 @@
 use clap::{Parser, Subcommand};
 
+mod strval;
+
 mod invoke;
 use invoke::Invoke;
 
