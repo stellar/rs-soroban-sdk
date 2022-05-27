@@ -1,0 +1,20 @@
+[package]
+name = "stellar-contract-sdk"
+version = "0.0.0"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+
+[target.'cfg(target_family="wasm")'.dependencies]
+stellar-contract-env-panic-handler-wasm32-unreachable = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "b17ef082" }
+stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "b17ef082" }
+# stellar-contract-env-guest = { path = "../../rs-stellar-contract-env/stellar-contract-env-guest" }
+
+[target.'cfg(not(target_family="wasm"))'.dependencies]
+stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "b17ef082" }
+# stellar-contract-env-host = { path = "../../rs-stellar-contract-env/stellar-contract-env-host" }

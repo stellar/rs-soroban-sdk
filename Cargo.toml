@@ -1,16 +1,10 @@
 [workspace]
+resolver = "2"
 
 members = [
-    "stellar_contract_sdk",
-    "stellar_contract_sdk_macros",
-    "test_macros",
-    "test_add",
-    "test_bignum",
-    "test_call_helper",
-    "test_helper",
-    "test_host_objects",
-    "test_pay",
-    "test_call_everything",
+    "sdk",
+    "examples/add_i32",
+    "examples/add_i64",
 ]
 
 [profile.dev]
@@ -19,8 +13,10 @@ panic = "abort"
 
 [profile.release]
 opt-level = "z"
-overflow-checks = false
+overflow-checks = true
 debug = 0
 strip = "symbols"
 debug-assertions = false
 panic = "abort"
+codegen-units = 1
+lto = true
