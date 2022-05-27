@@ -1,6 +1,6 @@
 [package]
-name = "stellar_contract_sdk_macros"
-version = "0.0.1"
+name = "stellar-contract-macros"
+version = "0.0.0"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"

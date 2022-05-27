@@ -366,12 +366,22 @@ version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=b17ef082#b17ef082fc4960bb21cb1cc2d1c43b4b512dd770"
 
 [[package]]
+name = "stellar-contract-macros"
+version = "0.0.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "stellar-contract-sdk"
 version = "0.0.0"
 dependencies = [
  "stellar-contract-env-guest",
  "stellar-contract-env-host",
  "stellar-contract-env-panic-handler-wasm32-unreachable",
+ "stellar-contract-macros",
 ]
 
 [[package]]

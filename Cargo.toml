@@ -3,6 +3,7 @@ resolver = "2"
 
 members = [
     "sdk",
+    "macros",
     "examples/add_i32",
     "examples/add_i64",
 ]
