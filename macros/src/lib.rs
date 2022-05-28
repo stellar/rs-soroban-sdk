@@ -51,15 +51,9 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         if let &FnArg::Typed(pat_type) = &f {
             if let Pat::Ident(pat_ident) = &*pat_type.pat {
                 let ident = &pat_ident.ident;
-                let ts: TokenStream2 = /*if i == 0 {
-                    quote! {
-                        #ident
-                    }
-                } else {*/
-                    quote! {
-                        <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(&#wrap_inputs_env_ident, #ident).unwrap()
-                    }
-                /*}*/;
+                let ts: TokenStream2 = quote! {
+                    <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(&#wrap_inputs_env_ident, #ident).unwrap()
+                };
                 return ts;
             }
         }
