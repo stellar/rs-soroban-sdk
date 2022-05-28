@@ -16,17 +16,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let inputs = &sig.inputs;
     let output = &sig.output;
 
-    let wrap_link_name = format!("${}", ident);
-    let wrap_ident = format_ident!("__{}", ident);
-    // let wrap_input_env = inputs
-    //     .first()
-    //     .and_then(|f| {
-    //         if let &FnArg::Typed(pat_type) = &f {
-    //             return Some(f.clone());
-    //         }
-    //         None
-    //     })
-    //     .expect("only accepts functions with first parameter as the Env type");
+    let wrap_ident = format_ident!("_{}", ident);
     let wrap_inputs_env_ident = inputs
         .first()
         .and_then(|f| {
@@ -80,7 +70,6 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         ReturnType::Default => quote! {
             #func
             #[no_mangle]
-            #[link_name = #wrap_link_name]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
                 #ident(#(#wrap_call_inputs),*);
                 stellar_contract_sdk::RawVal::from_void()
@@ -90,7 +79,6 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         ReturnType::Type(_, _) => quote! {
             #func
             #[no_mangle]
-            #[link_name = #wrap_link_name]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
                 <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(#ident(#wrap_inputs_env_ident.clone(), #(#wrap_call_inputs),*), &#wrap_inputs_env_ident)
             }
