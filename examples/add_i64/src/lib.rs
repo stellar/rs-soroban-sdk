@@ -2,24 +2,14 @@
 use stellar_contract_sdk::contractfn;
 use stellar_contract_sdk::Env;
 
-// #[no_mangle]
-// pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
-//     let a: i64 = i64::try_from_val(&e, a).unwrap();
-//     let b: i64 = i64::try_from_val(&e, b).unwrap();
-
-//     let c = a + b;
-
-//     return c.into_val(&e);
-// }
-
 #[contractfn]
-pub fn add(e: Env, a: i64, b: i64) -> i64 {
+pub fn add(_e: Env, a: i64, b: i64) -> i64 {
     a + b
 }
 
 #[cfg(test)]
 mod test {
-    use super::add;
+    use super::__add;
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]

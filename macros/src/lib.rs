@@ -18,6 +18,15 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     let wrap_link_name = format!("${}", ident);
     let wrap_ident = format_ident!("__{}", ident);
+    // let wrap_input_env = inputs
+    //     .first()
+    //     .and_then(|f| {
+    //         if let &FnArg::Typed(pat_type) = &f {
+    //             return Some(f.clone());
+    //         }
+    //         None
+    //     })
+    //     .expect("only accepts functions with first parameter as the Env type");
     let wrap_inputs_env_ident = inputs
         .first()
         .and_then(|f| {
@@ -48,19 +57,19 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         panic!("only accepts functions without a self argument")
     });
-    let wrap_call_inputs = inputs.iter().enumerate().map(|(i, f)| {
+    let wrap_call_inputs = inputs.iter().skip(1)/*.enumerate()*/.map(|/*(i, */f/*)*/| {
         if let &FnArg::Typed(pat_type) = &f {
             if let Pat::Ident(pat_ident) = &*pat_type.pat {
                 let ident = &pat_ident.ident;
-                let ts: TokenStream2 = if i == 0 {
+                let ts: TokenStream2 = /*if i == 0 {
                     quote! {
                         #ident
                     }
-                } else {
+                } else {*/
                     quote! {
                         <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(&#wrap_inputs_env_ident, #ident).unwrap()
                     }
-                };
+                /*}*/;
                 return ts;
             }
         }
@@ -83,7 +92,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             #[no_mangle]
             #[link_name = #wrap_link_name]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
-                <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(#ident(#(#wrap_call_inputs),*), &#wrap_inputs_env_ident)
+                <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(#ident(#wrap_inputs_env_ident.clone(), #(#wrap_call_inputs),*), &#wrap_inputs_env_ident)
             }
         }
         .into(),
