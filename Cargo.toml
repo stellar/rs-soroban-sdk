@@ -5,6 +5,7 @@ members = [
     "sdk",
     "examples/add_i32",
     "examples/add_i64",
+    "examples/pixel_nft",
 ]
 
 [profile.dev]
