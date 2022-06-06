@@ -3,7 +3,7 @@ use stellar_contract_sdk::{Env, IntoVal, RawVal, Symbol};
 
 #[no_mangle]
 pub fn pixel(e: Env) -> RawVal {
-    0x957dad00u32.into_val(&e)
+    0x957dadffu32.into_val(&e)
 }
 
 #[no_mangle]
@@ -20,7 +20,7 @@ mod test {
         let e = Env::default();
         let rgba = super::pixel(e.clone());
         let rgba = u32::try_from_val(&e, rgba).unwrap();
-        assert_eq!(rgba, 0x957dad00);
+        assert_eq!(rgba, 0x957dadff);
     }
 
     #[test]
