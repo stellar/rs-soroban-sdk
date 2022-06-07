@@ -2,8 +2,8 @@
 use stellar_contract_sdk::{Env, IntoVal, RawVal, TryFromVal};
 
 #[cfg(target_family = "wasm")]
-#[link_section = "scv1"]
-pub static SCV1: [u8; 10] = [1, 2, 3, 4, 5, 5, 4, 3, 2, 1];
+#[link_section = "jcv1"]
+pub static SCV1: [u8; 10] = *b"abcdefghij";
 
 #[no_mangle]
 pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
