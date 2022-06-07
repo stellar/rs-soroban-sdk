@@ -36,7 +36,7 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> f
 
     #[inline(always)]
     fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.clone().try_into()?;
+        let obj: EnvObj = ev.try_into()?;
         obj.try_into()
     }
 }
@@ -83,7 +83,7 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
 
     #[inline(always)]
     fn env(&self) -> &Env {
-        &self.0.env()
+        self.0.env()
     }
 
     #[inline(always)]

@@ -34,7 +34,7 @@ impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
 
     #[inline(always)]
     fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.clone().try_into()?;
+        let obj: EnvObj = ev.try_into()?;
         obj.try_into()
     }
 }
@@ -80,7 +80,7 @@ impl<T: EnvRawValConvertible> Vec<T> {
 
     #[inline(always)]
     fn env(&self) -> &Env {
-        &self.0.env()
+        self.0.env()
     }
 
     #[inline(always)]
