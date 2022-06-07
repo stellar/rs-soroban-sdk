@@ -1,4 +1,4 @@
-use core::marker::PhantomData;
+use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{
     xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, RawVal, TryFromVal, Vec,
@@ -8,12 +8,35 @@ use super::{
 #[derive(Clone)]
 pub struct Map<K, V>(EnvObj, PhantomData<K>, PhantomData<V>);
 
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Eq for Map<K, V> {}
+
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> PartialEq for Map<K, V> {
+    fn eq(&self, other: &Self) -> bool {
+        self.partial_cmp(other) == Some(Ordering::Equal)
+    }
+}
+
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> PartialOrd for Map<K, V> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(Ord::cmp(self, other))
+    }
+}
+
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Ord for Map<K, V> {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        let env = self.env();
+        let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
+        let i = i32::try_from(v).unwrap();
+        i.cmp(&0)
+    }
+}
+
 impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Map<K, V> {
     type Error = ();
 
     #[inline(always)]
     fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.clone().try_into()?;
+        let obj: EnvObj = ev.try_into()?;
         obj.try_into()
     }
 }
@@ -60,7 +83,7 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
 
     #[inline(always)]
     fn env(&self) -> &Env {
-        &self.0.env()
+        self.0.env()
     }
 
     #[inline(always)]
@@ -95,6 +118,11 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
         let env = self.env();
         let map = env.map_del(self.0.to_tagged(), k.into_val(env));
         self.0 = map.in_env(env);
+    }
+
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     #[inline(always)]

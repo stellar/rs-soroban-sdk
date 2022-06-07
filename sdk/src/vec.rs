@@ -1,4 +1,4 @@
-use core::marker::PhantomData;
+use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, RawVal};
 
@@ -6,12 +6,35 @@ use super::{xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvV
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
 
+impl<T: EnvRawValConvertible> Eq for Vec<T> {}
+
+impl<T: EnvRawValConvertible> PartialEq for Vec<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.partial_cmp(other) == Some(Ordering::Equal)
+    }
+}
+
+impl<T: EnvRawValConvertible> PartialOrd for Vec<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(Ord::cmp(self, other))
+    }
+}
+
+impl<T: EnvRawValConvertible> Ord for Vec<T> {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        let env = self.env();
+        let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
+        let i = i32::try_from(v).unwrap();
+        i.cmp(&0)
+    }
+}
+
 impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
     type Error = ();
 
     #[inline(always)]
     fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.clone().try_into()?;
+        let obj: EnvObj = ev.try_into()?;
         obj.try_into()
     }
 }
@@ -57,7 +80,7 @@ impl<T: EnvRawValConvertible> Vec<T> {
 
     #[inline(always)]
     fn env(&self) -> &Env {
-        &self.0.env()
+        self.0.env()
     }
 
     #[inline(always)]
@@ -88,6 +111,11 @@ impl<T: EnvRawValConvertible> Vec<T> {
         let env = self.env();
         let vec = env.vec_del(self.0.to_tagged(), i.into());
         self.0 = vec.in_env(env);
+    }
+
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     #[inline(always)]
@@ -175,12 +203,17 @@ mod test {
         assert_eq!(vec_ref.len(), 3);
 
         let mut vec_copy = vec.clone();
+        assert!(vec == vec_copy);
         assert_eq!(vec_copy.len(), 3);
         vec_copy.push(40);
         assert_eq!(vec_copy.len(), 4);
+        assert!(vec != vec_copy);
 
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
+
+        vec_copy.pop();
+        assert!(vec == vec_copy);
     }
 
     #[test]
@@ -200,12 +233,17 @@ mod test {
         assert_eq!(vec_ref.len(), 3);
 
         let mut vec_copy = vec.clone();
+        assert!(vec == vec_copy);
         assert_eq!(vec_copy.len(), 3);
         vec_copy.push(40);
         assert_eq!(vec_copy.len(), 4);
+        assert!(vec != vec_copy);
 
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
+
+        vec_copy.pop();
+        assert!(vec == vec_copy);
     }
 
     #[test]
