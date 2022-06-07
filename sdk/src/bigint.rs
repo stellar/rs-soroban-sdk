@@ -231,13 +231,7 @@ impl Ord for BigInt {
         let env = self.env();
         let v = env.bigint_cmp(self.0.to_tagged(), other.0.to_tagged());
         let i = i32::try_from(v).unwrap();
-        if i < 0 {
-            Ordering::Less
-        } else if i > 0 {
-            Ordering::Greater
-        } else {
-            Ordering::Equal
-        }
+        i.cmp(&0)
     }
 }
 
