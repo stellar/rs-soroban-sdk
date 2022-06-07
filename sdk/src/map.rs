@@ -1,4 +1,4 @@
-use core::marker::PhantomData;
+use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{
     xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, RawVal, TryFromVal, Vec,
@@ -7,6 +7,29 @@ use super::{
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct Map<K, V>(EnvObj, PhantomData<K>, PhantomData<V>);
+
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Eq for Map<K, V> {}
+
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> PartialEq for Map<K, V> {
+    fn eq(&self, other: &Self) -> bool {
+        self.partial_cmp(other) == Some(Ordering::Equal)
+    }
+}
+
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> PartialOrd for Map<K, V> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(Ord::cmp(self, other))
+    }
+}
+
+impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Ord for Map<K, V> {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        let env = self.env();
+        let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
+        let i = i32::try_from(v).unwrap();
+        i.cmp(&0)
+    }
+}
 
 impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Map<K, V> {
     type Error = ();
