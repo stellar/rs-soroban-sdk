@@ -114,6 +114,11 @@ impl<T: EnvRawValConvertible> Vec<T> {
     }
 
     #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    #[inline(always)]
     pub fn len(&self) -> u32 {
         let env = self.env();
         let val = env.vec_len(self.0.to_tagged());

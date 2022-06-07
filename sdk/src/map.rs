@@ -121,6 +121,11 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
     }
 
     #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    #[inline(always)]
     pub fn len(&self) -> u32 {
         let env = self.env();
         let len = env.map_len(self.0.to_tagged());
