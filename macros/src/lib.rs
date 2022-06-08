@@ -5,32 +5,47 @@ use core::panic;
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, FnArg, ImplItem, ItemFn, ItemImpl, Pat, PatType, ReturnType, Type};
+use syn::{
+    parse_macro_input, punctuated::Punctuated, token::Comma, FnArg, Ident, ImplItem, ItemFn,
+    ItemImpl, Pat, PatType, ReturnType, Type,
+};
 
 #[proc_macro_attribute]
 #[allow(clippy::missing_panics_doc)]
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
-    let methods = imp.items.iter().filter_map(|i| match i {
-        ImplItem::Method(method) => Some(method),
-        _ => None,
-    });
-    for m in methods {
-        let _ident = &m.sig.ident;
-        let _inputs = &m.sig.inputs;
-        let _output = &m.sig.output;
+    let wass = imp
+        .items
+        .iter()
+        .filter_map(|i| match i {
+            ImplItem::Method(m) => Some(m),
+            _ => None,
+        })
+        .map(|m| wrap_and_spec(&m.sig.ident, &m.sig.inputs, &m.sig.output));
+    quote! {
+        #imp
+        #(#wass)*
     }
-    quote! {}.into()
+    .into()
 }
 
 #[proc_macro_attribute]
 #[allow(clippy::missing_panics_doc)]
 pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let func = parse_macro_input!(input as ItemFn);
-    let ident = &func.sig.ident;
-    let inputs = &func.sig.inputs;
-    let output = &func.sig.output;
+    let was = wrap_and_spec(&func.sig.ident, &func.sig.inputs, &func.sig.output);
+    quote! {
+        #func
+        #was
+    }
+    .into()
+}
 
+fn wrap_and_spec(
+    ident: &Ident,
+    inputs: &Punctuated<FnArg, Comma>,
+    output: &ReturnType,
+) -> TokenStream2 {
     // Prepare the spec parameters.
     let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
 
@@ -82,7 +97,6 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     // Output.
     match output {
         ReturnType::Default => quote! {
-            #func
             #[no_mangle]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
                 #ident(#(#wrap_call_inputs),*);
@@ -91,10 +105,8 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             #[cfg(target_family = "wasm")]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; 10] = *b"abcdefghij";
-        }
-        .into(),
+        },
         ReturnType::Type(_, _) => quote! {
-            #func
             #[no_mangle]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
                 <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
@@ -107,7 +119,6 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             }
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; 10] = *b"abcdefghij";
-        }
-        .into(),
+        },
     }
 }
