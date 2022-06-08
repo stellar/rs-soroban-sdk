@@ -21,6 +21,8 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             ImplItem::Method(m) => Some(m),
             _ => None,
         })
+        // TODO: Pass the ident as the instantiation of a struct and then the
+        // calling of that struct's fn.
         .map(|m| wrap_and_spec(&m.sig.ident, &m.sig.inputs, &m.sig.output));
     quote! {
         #imp
