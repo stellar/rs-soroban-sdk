@@ -11,8 +11,11 @@ pub struct Add2;
 
 #[contractimpl]
 impl Add2 {
-    fn add2(_e: Env, a: i64, b: i64) -> i64 {
+    fn addimpl(a: i64, b: i64) -> i64 {
         a + b
+    }
+    pub fn add2(_e: Env, a: i64, b: i64) -> i64 {
+        Self::addimpl(a, b)
     }
 }
 

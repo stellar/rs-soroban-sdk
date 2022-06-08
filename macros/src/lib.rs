@@ -7,7 +7,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote, ToTokens};
 use syn::{
     parse_macro_input, punctuated::Punctuated, token::Comma, FnArg, Ident, ImplItem, ItemFn,
-    ItemImpl, Pat, PatType, ReturnType, Type,
+    ItemImpl, Pat, PatType, ReturnType, Type, Visibility,
 };
 
 // TODO: Investigate how to make the multiple spec statics be joined into a
@@ -35,6 +35,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 #[allow(clippy::missing_panics_doc)]
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
+    let is_trait = imp.trait_.is_some();
     let self_ty = &imp.self_ty;
     let wrap_and_specs = imp
         .items
@@ -43,6 +44,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             ImplItem::Method(m) => Some(m),
             _ => None,
         })
+        .filter(|m| is_trait || matches!(m.vis, Visibility::Public(_)))
         .map(|m| {
             let ident = &m.sig.ident;
             wrap_and_spec(
