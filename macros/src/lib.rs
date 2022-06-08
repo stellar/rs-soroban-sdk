@@ -16,6 +16,10 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let inputs = &sig.inputs;
     let output = &sig.output;
 
+    // Prepare the spec parameters.
+    let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
+
+    // Prepare the wrap parameters.
     let wrap_ident = format_ident!("_{}", ident);
     let wrap_inputs_env_ident = inputs
         .first()
@@ -47,7 +51,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         panic!("only accepts functions without a self argument")
     });
-    let wrap_call_inputs = inputs.iter().skip(1)/*.enumerate()*/.map(|/*(i, */f/*)*/| {
+    let wrap_call_inputs = inputs.iter().skip(1).map(|f| {
         if let &FnArg::Typed(pat_type) = &f {
             if let Pat::Ident(pat_ident) = &*pat_type.pat {
                 let ident = &pat_ident.ident;
@@ -60,6 +64,7 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         panic!("only accepts functions without a self argument")
     });
 
+    // Output.
     let ts: TokenStream = match output {
         ReturnType::Default => quote! {
             #func
@@ -68,14 +73,25 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #ident(#(#wrap_call_inputs),*);
                 stellar_contract_sdk::RawVal::from_void()
             }
+            #[cfg(target_family = "wasm")]
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
         }
         .into(),
         ReturnType::Type(_, _) => quote! {
             #func
             #[no_mangle]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
-                <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(#ident(#wrap_inputs_env_ident.clone(), #(#wrap_call_inputs),*), &#wrap_inputs_env_ident)
+                <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
+                    #ident(
+                        #wrap_inputs_env_ident.clone(),
+                        #(#wrap_call_inputs),*
+                    ),
+                    &#wrap_inputs_env_ident
+                )
             }
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
         }
         .into(),
     };
