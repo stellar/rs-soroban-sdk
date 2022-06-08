@@ -65,7 +65,7 @@ fn wrap_and_spec(
     output: &ReturnType,
 ) -> TokenStream2 {
     // Prepare the spec parameters.
-    // let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
+    let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
 
     // Prepare the wrap parameters.
     let wrap_ident = format_ident!("_{}", ident);
@@ -121,8 +121,8 @@ fn wrap_and_spec(
                 stellar_contract_sdk::RawVal::from_void()
             }
             #[cfg(target_family = "wasm")]
-            // #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            // pub static #spec_ident: [u8; 10] = *b"abcdefghij";
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
         },
         ReturnType::Type(_, _) => quote! {
             #[no_mangle]
@@ -135,8 +135,8 @@ fn wrap_and_spec(
                     &#wrap_inputs_env_ident
                 )
             }
-            // #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            // pub static #spec_ident: [u8; 10] = *b"abcdefghij";
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
         },
     }
 }
