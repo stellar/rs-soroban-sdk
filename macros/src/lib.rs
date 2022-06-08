@@ -22,8 +22,6 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             ImplItem::Method(m) => Some(m),
             _ => None,
         })
-        // TODO: Pass the ident as the instantiation of a struct and then the
-        // calling of that struct's fn.
         .map(|m| {
             let ident = &m.sig.ident;
             wrap_and_spec(
@@ -65,7 +63,7 @@ fn wrap_and_spec(
     output: &ReturnType,
 ) -> TokenStream2 {
     // Prepare the spec parameters.
-    let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
+    let spec_ident = format_ident!("__SPEC_{}", ident.to_string().to_uppercase());
     let spec_inputs = format!(
         "{:?}",
         inputs
@@ -86,7 +84,8 @@ fn wrap_and_spec(
     let spec_inputs_literal_size = spec_inputs.len();
 
     // Prepare the wrap parameters.
-    let wrap_ident = format_ident!("_{}", ident);
+    let wrap_export_name = format!("{}", ident);
+    let wrap_ident = format_ident!("__{}", ident);
     let wrap_inputs_env_ident = inputs
         .first()
         .and_then(|f| {
@@ -133,7 +132,7 @@ fn wrap_and_spec(
     // Output.
     match output {
         ReturnType::Default => quote! {
-            #[no_mangle]
+            #[export_name = #wrap_export_name]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
                 #call(#(#wrap_call_inputs),*);
                 stellar_contract_sdk::RawVal::from_void()
@@ -143,7 +142,7 @@ fn wrap_and_spec(
             pub static #spec_ident: [u8; #spec_inputs_literal_size] = *#spec_inputs_literal;
         },
         ReturnType::Type(_, _) => quote! {
-            #[no_mangle]
+            #[export_name = #wrap_export_name]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
                 <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                     #call(

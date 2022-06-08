@@ -31,12 +31,12 @@ impl Add3Trait for Add3 {
 
 #[cfg(test)]
 mod test {
-    use super::{_add, _add2, _add3};
+    use super::{__add, __add2, __add3};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add() {
-        [_add, _add2, _add3].iter().for_each(|f| {
+        [__add, __add2, __add3].iter().for_each(|f| {
             let e = Env::default();
             let x = 10i64.into_val(&e);
             let y = 12i64.into_val(&e);
