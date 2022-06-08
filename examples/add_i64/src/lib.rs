@@ -34,18 +34,35 @@ impl Add3Trait for Add3 {
 
 #[cfg(test)]
 mod test {
+    use super::{add, Add2, Add3, Add3Trait};
+    use stellar_contract_sdk::Env;
+
+    #[test]
+    fn test_add() {
+        [add, Add2::add2, Add3::add3].iter().for_each(|f| {
+            let e = Env::default();
+            let x = 10i64;
+            let y = 12i64;
+            let z = f(e, x, y);
+            assert_eq!(z, 22);
+        });
+    }
+}
+
+#[cfg(test)]
+mod test_via_val {
     use super::{__add, __add2, __add3};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
-    fn test_add() {
+    fn test_add_val() {
         [__add, __add2, __add3].iter().for_each(|f| {
             let e = Env::default();
             let x = 10i64.into_val(&e);
             let y = 12i64.into_val(&e);
             let z = f(e.clone(), x, y);
             let z = i64::try_from_val(&e, z).unwrap();
-            assert!(z == 22);
+            assert_eq!(z, 22);
         });
     }
 }
