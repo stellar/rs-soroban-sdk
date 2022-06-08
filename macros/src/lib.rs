@@ -4,7 +4,7 @@ use core::panic;
 
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, ToTokens};
 use syn::{
     parse_macro_input, punctuated::Punctuated, token::Comma, FnArg, Ident, ImplItem, ItemFn,
     ItemImpl, Pat, PatType, ReturnType, Type,
@@ -66,6 +66,24 @@ fn wrap_and_spec(
 ) -> TokenStream2 {
     // Prepare the spec parameters.
     let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
+    let spec_inputs = format!(
+        "{:?}",
+        inputs
+            .iter()
+            .skip(1)
+            .map(|f| {
+                if let &FnArg::Typed(pat_type) = &f {
+                    return match &*pat_type.ty {
+                        Type::Path(p) => p.into_token_stream(),
+                        _ => todo!(),
+                    };
+                }
+                panic!("only accepts functions without a self argument")
+            })
+            .reduce(|a, b| quote! { #a #b })
+    );
+    let spec_inputs_literal = proc_macro2::Literal::byte_string(spec_inputs.as_bytes());
+    let spec_inputs_literal_size = spec_inputs.len();
 
     // Prepare the wrap parameters.
     let wrap_ident = format_ident!("_{}", ident);
@@ -122,7 +140,7 @@ fn wrap_and_spec(
             }
             #[cfg(target_family = "wasm")]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
+            pub static #spec_ident: [u8; #spec_inputs_literal_size] = *#spec_inputs_literal;
         },
         ReturnType::Type(_, _) => quote! {
             #[no_mangle]
@@ -136,7 +154,7 @@ fn wrap_and_spec(
                 )
             }
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
+            pub static #spec_ident: [u8; #spec_inputs_literal_size] = *#spec_inputs_literal;
         },
     }
 }
