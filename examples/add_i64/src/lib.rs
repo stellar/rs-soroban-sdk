@@ -7,37 +7,42 @@ pub fn add(_e: Env, a: i64, b: i64) -> i64 {
     a + b
 }
 
-pub struct Add;
+pub struct Add2;
 
 #[contractimpl]
-impl Add {
+impl Add2 {
     fn add2(_e: Env, a: i64, b: i64) -> i64 {
+        a + b
+    }
+}
+
+pub trait Add3Trait {
+    fn add3(e: Env, a: i64, b: i64) -> i64;
+}
+
+pub struct Add3;
+
+#[contractimpl]
+impl Add3Trait for Add3 {
+    fn add3(_e: Env, a: i64, b: i64) -> i64 {
         a + b
     }
 }
 
 #[cfg(test)]
 mod test {
-    use super::{_add, _add2};
+    use super::{_add, _add2, _add3};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add() {
-        let e = Env::default();
-        let x = 10i64.into_val(&e);
-        let y = 12i64.into_val(&e);
-        let z = _add(e.clone(), x, y);
-        let z = i64::try_from_val(&e, z).unwrap();
-        assert!(z == 22);
-    }
-
-    #[test]
-    fn test_add2() {
-        let e = Env::default();
-        let x = 10i64.into_val(&e);
-        let y = 12i64.into_val(&e);
-        let z = _add2(e.clone(), x, y);
-        let z = i64::try_from_val(&e, z).unwrap();
-        assert!(z == 22);
+        [_add, _add2, _add3].iter().for_each(|f| {
+            let e = Env::default();
+            let x = 10i64.into_val(&e);
+            let y = 12i64.into_val(&e);
+            let z = f(e.clone(), x, y);
+            let z = i64::try_from_val(&e, z).unwrap();
+            assert!(z == 22);
+        });
     }
 }

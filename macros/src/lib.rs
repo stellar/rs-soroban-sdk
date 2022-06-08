@@ -14,6 +14,7 @@ use syn::{
 #[allow(clippy::missing_panics_doc)]
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
+    let self_ty = &imp.self_ty;
     let wass = imp
         .items
         .iter()
@@ -23,7 +24,15 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         })
         // TODO: Pass the ident as the instantiation of a struct and then the
         // calling of that struct's fn.
-        .map(|m| wrap_and_spec(&m.sig.ident, &m.sig.inputs, &m.sig.output));
+        .map(|m| {
+            let ident = &m.sig.ident;
+            wrap_and_spec(
+                &quote! { <#self_ty>::#ident },
+                ident,
+                &m.sig.inputs,
+                &m.sig.output,
+            )
+        });
     quote! {
         #imp
         #(#wass)*
@@ -35,7 +44,13 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 #[allow(clippy::missing_panics_doc)]
 pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let func = parse_macro_input!(input as ItemFn);
-    let was = wrap_and_spec(&func.sig.ident, &func.sig.inputs, &func.sig.output);
+    let ident = &func.sig.ident;
+    let was = wrap_and_spec(
+        &quote! { #ident },
+        ident,
+        &func.sig.inputs,
+        &func.sig.output,
+    );
     quote! {
         #func
         #was
@@ -44,12 +59,13 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 fn wrap_and_spec(
+    call: &TokenStream2,
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
 ) -> TokenStream2 {
     // Prepare the spec parameters.
-    let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
+    // let spec_ident = format_ident!("_SPEC_{}", ident.to_string().to_uppercase());
 
     // Prepare the wrap parameters.
     let wrap_ident = format_ident!("_{}", ident);
@@ -101,26 +117,26 @@ fn wrap_and_spec(
         ReturnType::Default => quote! {
             #[no_mangle]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
-                #ident(#(#wrap_call_inputs),*);
+                #call(#(#wrap_call_inputs),*);
                 stellar_contract_sdk::RawVal::from_void()
             }
             #[cfg(target_family = "wasm")]
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
+            // #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            // pub static #spec_ident: [u8; 10] = *b"abcdefghij";
         },
         ReturnType::Type(_, _) => quote! {
             #[no_mangle]
             fn #wrap_ident(#(#wrap_inputs),*) -> stellar_contract_sdk::RawVal {
                 <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
-                    #ident(
+                    #call(
                         #wrap_inputs_env_ident.clone(),
                         #(#wrap_call_inputs),*
                     ),
                     &#wrap_inputs_env_ident
                 )
             }
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; 10] = *b"abcdefghij";
+            // #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            // pub static #spec_ident: [u8; 10] = *b"abcdefghij";
         },
     }
 }
