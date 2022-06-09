@@ -3,7 +3,7 @@ use stellar_contract_sdk::Env;
 use stellar_contract_sdk::{contractfn, contractimpl};
 
 #[contractfn]
-pub fn add(_e: Env, a: i64, b: i64) -> i64 {
+pub fn add(a: i64, b: [u8; 1]) -> i64 {
     a + b
 }
 

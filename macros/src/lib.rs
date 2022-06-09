@@ -6,8 +6,8 @@ use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote, ToTokens};
 use syn::{
-    parse_macro_input, punctuated::Punctuated, token::Comma, FnArg, Ident, ImplItem, ItemFn,
-    ItemImpl, Pat, PatType, ReturnType, Type, Visibility,
+    parse_macro_input, punctuated::Punctuated, spanned::Spanned, token::Comma, FnArg, Ident,
+    ImplItem, ItemFn, ItemImpl, Pat, PatType, ReturnType, Type, TypePath, Visibility,
 };
 
 // TODO: Investigate how to make the multiple spec statics be joined into a
@@ -61,12 +61,56 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     .into()
 }
 
+#[allow(clippy::too_many_lines)]
 fn wrap_and_spec(
     call: &TokenStream2,
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
 ) -> TokenStream2 {
+    // Collect errors as we go and emit them at the end.
+    let mut errors = Vec::<TokenStream2>::new();
+    errors.extend(inputs.first().and_then(|f| {
+        match &f {
+            FnArg::Typed(pat_type) => match &*pat_type.ty {
+                Type::Path(TypePath {
+                    path: syn::Path { segments, .. },
+                    ..
+                }) => {
+                    if segments.last().map_or(false, |s| s.ident == "Env") {
+                        None
+                    } else {
+                        Some(
+                            syn::Error::new(segments.span(), "first argument must be of type Env")
+                                .to_compile_error(),
+                        )
+                    }
+                }
+                _ => Some(
+                    syn::Error::new(pat_type.ty.span(), "first argument must be of type Env")
+                        .to_compile_error(),
+                ),
+            },
+            FnArg::Receiver(r) => Some(
+                syn::Error::new(r.span(), "first argument must be of type Env").to_compile_error(),
+            ),
+        }
+    }));
+    errors.extend(inputs.iter().skip(1).filter_map(|f| match &f {
+        FnArg::Typed(pat_type) => match &*pat_type.ty {
+            Type::Path(_) => None,
+            _ => Some(
+                syn::Error::new(pat_type.ty.span(), "argument type unsupported").to_compile_error(),
+            ),
+        },
+        FnArg::Receiver(r) => {
+            Some(syn::Error::new(r.span(), "argument type unsupported").to_compile_error())
+        }
+    }));
+    if !errors.is_empty() {
+        return quote! { #(#errors)* };
+    }
+
     // Prepare the spec parameters.
     let spec_ident = format_ident!("__SPEC_{}", ident.to_string().to_uppercase());
     let spec_inputs = format!(
