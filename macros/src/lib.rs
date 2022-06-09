@@ -7,7 +7,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote, ToTokens};
 use syn::{
     parse_macro_input, punctuated::Punctuated, spanned::Spanned, token::Comma, Error, FnArg, Ident,
-    ImplItem, ItemFn, ItemImpl, Pat, PatType, Type, TypePath, Visibility,
+    ImplItem, ItemFn, ItemImpl, PatType, Type, TypePath, Visibility,
 };
 
 // TODO: Investigate how to make the multiple spec statics be joined into a
@@ -62,7 +62,28 @@ fn wrap_and_spec(
     // Collect errors as we go and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
-    // Prepare the inputs.
+    // Prepare the spec parameters.
+    let spec_ident = format_ident!("__SPEC_{}", ident.to_string().to_uppercase());
+    let spec_inputs = format!(
+        "{:?}",
+        inputs
+            .iter()
+            .skip(1)
+            .map(|f| {
+                if let &FnArg::Typed(pat_type) = &f {
+                    return match &*pat_type.ty {
+                        Type::Path(p) => p.into_token_stream(),
+                        _ => todo!(),
+                    };
+                }
+                panic!("only accepts functions without a self argument")
+            })
+            .reduce(|a, b| quote! { #a #b })
+    );
+    let spec_inputs_literal = proc_macro2::Literal::byte_string(spec_inputs.as_bytes());
+    let spec_inputs_literal_size = spec_inputs.len();
+
+    // Prepare the env input.
     let env_input = inputs.first();
     if let Some(env_input) = env_input {
         match &env_input {
@@ -94,99 +115,36 @@ fn wrap_and_spec(
             }
         };
     }
-    // inputs.iter().skip(1).map(|a| {
-    //     if let &FnArg::Typed(pat_type) = &a {
-    //         let ty = &*pat_type.ty;
-    //         match ty {
-    //             Type::Path(_) => {}
-    //             Type::Array(_)
-    //             | Type::BareFn(_)
-    //             | Type::Group(_)
-    //             | Type::ImplTrait(_)
-    //             | Type::Infer(_)
-    //             | Type::Macro(_)
-    //             | Type::Never(_)
-    //             | Type::Paren(_)
-    //             | Type::Ptr(_)
-    //             | Type::Reference(_)
-    //             | Type::Slice(_)
-    //             | Type::TraitObject(_)
-    //             | Type::Tuple(_)
-    //             | Type::Verbatim(_)
-    //             | _ => {
-    //                 errors.push(syn::Error::new(
-    //                     a.span(),
-    //                     "self argument not supported first argument must be of type Env",
-    //                 ));
-    //             }
-    //         };
-    //     } else {
-    //         errors.push(syn::Error::new(a.span(), "self argument not supported"));
-    //     }
-    // });
 
-    // Prepare the spec parameters.
-    let spec_ident = format_ident!("__SPEC_{}", ident.to_string().to_uppercase());
-    let spec_inputs = format!(
-        "{:?}",
-        inputs
-            .iter()
-            .skip(1)
-            .map(|f| {
-                if let &FnArg::Typed(pat_type) = &f {
-                    return match &*pat_type.ty {
-                        Type::Path(p) => p.into_token_stream(),
-                        _ => todo!(),
-                    };
-                }
-                panic!("only accepts functions without a self argument")
-            })
-            .reduce(|a, b| quote! { #a #b })
-    );
-    let spec_inputs_literal = proc_macro2::Literal::byte_string(spec_inputs.as_bytes());
-    let spec_inputs_literal_size = spec_inputs.len();
-
-    // Prepare the wrap parameters.
-    let wrap_export_name = format!("{}", ident);
-    let wrap_ident = format_ident!("__{}", ident);
-    let wrap_inputs_env_ident = env_input
-        .and_then(|f| {
-            if let &FnArg::Typed(pat_type) = &f {
-                if let Pat::Ident(pat_ident) = &*pat_type.pat {
-                    return Some(pat_ident.ident.clone());
-                }
-            }
-            None
-        })
-        .unwrap();
-    let wrap_arg_inputs = inputs.iter().skip(1).map(|f| {
-        if let &FnArg::Typed(pat_type) = &f {
-            return FnArg::Typed(PatType {
-                attrs: pat_type.attrs.clone(),
-                pat: pat_type.pat.clone(),
-                colon_token: pat_type.colon_token,
-                ty: Box::new(Type::Verbatim(
-                    TokenStream::from(quote! {
-                        stellar_contract_sdk::RawVal
-                    })
-                    .into(),
-                )),
-            });
-        }
-        panic!("only accepts functions without a self argument")
-    });
-    let wrap_call_inputs = inputs.iter().skip(1).map(|f| {
-        if let &FnArg::Typed(pat_type) = &f {
-            if let Pat::Ident(pat_ident) = &*pat_type.pat {
-                let ident = &pat_ident.ident;
-                let ts: TokenStream2 = quote! {
-                    <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(&#wrap_inputs_env_ident, #ident).unwrap()
+    // Prepare the argument inputs.
+    let (wrap_args, wrap_calls): (Vec<_>, Vec<_>) = inputs
+        .iter()
+        .skip(if env_input.is_some() { 1 } else { 0 })
+        .map(|a| {
+            if let &FnArg::Typed(pat_type) = &a {
+                let pat = pat_type.pat.clone();
+                let arg = FnArg::Typed(PatType {
+                    attrs: Vec::new(),
+                    pat: pat_type.pat.clone(),
+                    colon_token: pat_type.colon_token,
+                    ty: Box::new(Type::Verbatim(quote! { stellar_contract_sdk::RawVal })),
+                });
+                let call = quote! {
+                    <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(
+                        &__e,
+                        #pat
+                    ).unwrap()
                 };
-                return ts;
+                (arg, call)
+            } else {
+                errors.push(syn::Error::new(
+                    a.span(),
+                    "argument not supported",
+                ));
+                (a.clone(), quote! { })
             }
-        }
-        panic!("only accepts functions without a self argument")
-    });
+        })
+        .unzip();
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
@@ -195,15 +153,17 @@ fn wrap_and_spec(
     }
 
     // Output.
+    let wrap_export_name = format!("{}", ident);
+    let wrap_ident = format_ident!("__{}", ident);
     quote! {
         #[export_name = #wrap_export_name]
-        fn #wrap_ident(#wrap_inputs_env_ident: stellar_contract_sdk::Env, #(#wrap_arg_inputs),*) -> stellar_contract_sdk::RawVal {
+        fn #wrap_ident(__e: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
             <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                 #call(
-                    #wrap_inputs_env_ident.clone(),
-                    #(#wrap_call_inputs),*
+                    __e.clone(),
+                    #(#wrap_calls),*
                 ),
-                &#wrap_inputs_env_ident
+                &__e
             )
         }
         #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
