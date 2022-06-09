@@ -132,6 +132,11 @@ fn wrap_and_spec(
     // Output.
     let wrap_export_name = format!("{}", ident);
     let wrap_ident = format_ident!("__{}", ident);
+    let env_call = if env_input.is_some() {
+        quote! { __e.clone(), }
+    } else {
+        quote! {}
+    };
     let spec_ident = format_ident!("__SPEC_{}", ident.to_string().to_uppercase());
     let spec_args_str = format!(
         // TODO: Produce XDR instead.
@@ -151,7 +156,7 @@ fn wrap_and_spec(
         fn #wrap_ident(__e: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
             <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                 #call(
-                    __e.clone(),
+                    #env_call
                     #(#wrap_calls),*
                 ),
                 &__e

@@ -39,7 +39,13 @@ mod test {
 
     #[test]
     fn test_add() {
-        [add, Add2::add2, Add3::add3].iter().for_each(|f| {
+        [add, Add2::add2].iter().for_each(|f| {
+            let x = 10i64;
+            let y = 12i64;
+            let z = f(x, y);
+            assert_eq!(z, 22);
+        });
+        [Add3::add3].iter().for_each(|f| {
             let e = Env::default();
             let x = 10i64;
             let y = 12i64;
