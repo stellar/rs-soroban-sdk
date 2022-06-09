@@ -3,7 +3,7 @@ use stellar_contract_sdk::Env;
 use stellar_contract_sdk::{contractfn, contractimpl};
 
 #[contractfn]
-pub fn add(_e: Env, a: i64, b: i64) -> i64 {
+pub fn add(a: i64, b: i64) -> i64 {
     a + b
 }
 
@@ -14,7 +14,7 @@ impl Add2 {
     fn addimpl(a: i64, b: i64) -> i64 {
         a + b
     }
-    pub fn add2(_e: Env, a: i64, b: i64) -> i64 {
+    pub fn add2(a: i64, b: i64) -> i64 {
         Self::addimpl(a, b)
     }
 }
