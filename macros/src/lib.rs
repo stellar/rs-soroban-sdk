@@ -63,32 +63,24 @@ fn wrap_and_spec(
     let mut errors = Vec::<Error>::new();
 
     // Prepare the env input.
-    let env_input = inputs.first().and_then(|a| {
-        match a {
-            FnArg::Typed(pat_type) => {
-                let ty = &*pat_type.ty;
-                if let Type::Path(TypePath {
-                    path: syn::Path { segments, .. },
-                    ..
-                }) = ty
-                {
-                    if segments.last().map_or(false, |s| s.ident == "Env") {
-                        Some(a)
-                    } else {
-                        None
-                    }
+    let env_input = inputs.first().and_then(|a| match a {
+        FnArg::Typed(pat_type) => {
+            let ty = &*pat_type.ty;
+            if let Type::Path(TypePath {
+                path: syn::Path { segments, .. },
+                ..
+            }) = ty
+            {
+                if segments.last().map_or(false, |s| s.ident == "Env") {
+                    Some(a)
                 } else {
                     None
                 }
-            }
-            FnArg::Receiver(r) => {
-                errors.push(syn::Error::new(
-                    r.span(),
-                    "self argument not supported first argument must be of type Env",
-                ));
+            } else {
                 None
             }
         }
+        FnArg::Receiver(_) => None,
     });
 
     // Prepare the argument inputs.
