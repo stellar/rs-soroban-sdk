@@ -3,7 +3,7 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{xdr::ScObjectType, Env, EnvBase, EnvObj, EnvTrait, EnvVal, RawVal, TryFromVal};
+use super::{Env, EnvBase, EnvObj, EnvTrait, EnvVal, RawVal, TryFromVal};
 
 #[repr(transparent)]
 #[derive(Clone)]
@@ -21,12 +21,13 @@ impl TryFrom<EnvVal<RawVal>> for BigInt {
 impl TryFrom<EnvObj> for BigInt {
     type Error = ();
 
-    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::Bigint) {
-            Ok(BigInt(obj))
-        } else {
-            Err(())
-        }
+    fn try_from(_obj: EnvObj) -> Result<Self, Self::Error> {
+        todo!()
+        // if obj.as_tagged().is_obj_type(ScObjectType::Bigint) {
+        //     Ok(BigInt(obj))
+        // } else {
+        //     Err(())
+        // }
     }
 }
 
