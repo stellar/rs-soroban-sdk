@@ -78,6 +78,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "example_contract_data"
+version = "0.0.0"
+dependencies = [
+ "stellar-contract-sdk",
+]
+
+[[package]]
 name = "example_udt"
 version = "0.0.0"
 dependencies = [
