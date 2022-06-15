@@ -1,5 +1,3 @@
-use core::ops::Deref;
-
 #[cfg(target_family = "wasm")]
 pub mod internal {
     pub use stellar_contract_env_guest::*;
@@ -21,7 +19,6 @@ use internal::Object;
 pub use internal::RawVal;
 pub use internal::Status;
 pub use internal::Symbol;
-pub use internal::TagObject;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::Val;
@@ -38,21 +35,13 @@ pub struct Env {
     env_impl: internal::EnvImpl,
 }
 
-impl Deref for Env {
-    type Target = internal::EnvImpl;
-
-    fn deref(&self) -> &Self::Target {
-        &self.env_impl
-    }
-}
-
 impl internal::EnvBase for Env {
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
         self
     }
 
     fn check_same_env(&self, other: &Self) {
-        self.env_impl.check_same_env(other);
+        self.env_impl.check_same_env(&other.env_impl);
     }
 
     fn deep_clone(&self) -> Self {
