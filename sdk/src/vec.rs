@@ -1,6 +1,8 @@
 use core::{cmp::Ordering, marker::PhantomData};
 
-use super::{xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, RawVal};
+use super::{
+    env::internal::Env as _, xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvVal, RawVal,
+};
 
 #[derive(Clone)]
 #[repr(transparent)]

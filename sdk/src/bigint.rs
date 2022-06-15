@@ -3,7 +3,7 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{Env, EnvBase, EnvObj, EnvTrait, EnvVal, RawVal, TryFromVal};
+use super::{env::internal::Env as _, Env, EnvBase, EnvObj, EnvVal, RawVal, TryFromVal};
 
 #[repr(transparent)]
 #[derive(Clone)]
