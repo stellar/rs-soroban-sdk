@@ -140,20 +140,6 @@ impl<T: EnvRawValConvertible> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn take(&mut self, n: u32) {
-        let env = self.env();
-        let vec = env.vec_take(self.0.to_tagged(), n.into());
-        self.0 = vec.in_env(env);
-    }
-
-    #[inline(always)]
-    pub fn drop(&mut self, n: u32) {
-        let env = self.0.env();
-        let vec = env.vec_drop(self.0.to_tagged(), n.into());
-        self.0 = vec.in_env(env);
-    }
-
-    #[inline(always)]
     pub fn front(&self) -> T {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
