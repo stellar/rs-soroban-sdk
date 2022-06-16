@@ -16,7 +16,7 @@ pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
 pub use env::TryFromVal;
-use env::*;
+pub use env::*;
 
 mod bigint;
 mod map;

@@ -5,6 +5,8 @@ members = [
     "sdk",
     "examples/add_i32",
     "examples/add_i64",
+    "examples/vec",
+    "examples/call",
 ]
 
 [profile.dev]
