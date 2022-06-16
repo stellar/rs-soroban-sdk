@@ -35,6 +35,14 @@ pub struct Env {
     env_impl: internal::EnvImpl,
 }
 
+impl Env {
+    // TODO: Implement methods on Env that are intended for use by contract
+    // developers and that otherwise don't belong into an object like Vec, Map,
+    // BigInt, etc. If there is any host fn we expect a developer to use, it
+    // should be plumbed through this type with this type doing all RawVal
+    // conversion.
+}
+
 impl internal::EnvBase for Env {
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
         self
