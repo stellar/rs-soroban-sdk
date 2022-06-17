@@ -11,6 +11,8 @@ use stellar_contract_env_panic_handler_wasm32_unreachable as _;
 mod env;
 pub use env::BitSet;
 pub use env::Env;
+pub use env::EnvVal;
+pub use env::IntoEnvVal;
 pub use env::IntoVal;
 pub use env::RawVal;
 pub use env::Status;

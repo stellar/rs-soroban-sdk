@@ -1,28 +1,28 @@
 use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvVal, RawVal,
+    env::internal::Env as _, xdr::ScObjectType, Env, EnvObj, EnvVal, IntoTryFromVal, RawVal,
 };
 
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
 
-impl<T: EnvRawValConvertible> Eq for Vec<T> {}
+impl<T: IntoTryFromVal> Eq for Vec<T> {}
 
-impl<T: EnvRawValConvertible> PartialEq for Vec<T> {
+impl<T: IntoTryFromVal> PartialEq for Vec<T> {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<T: EnvRawValConvertible> PartialOrd for Vec<T> {
+impl<T: IntoTryFromVal> PartialOrd for Vec<T> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<T: EnvRawValConvertible> Ord for Vec<T> {
+impl<T: IntoTryFromVal> Ord for Vec<T> {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         let env = self.env();
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
@@ -31,17 +31,17 @@ impl<T: EnvRawValConvertible> Ord for Vec<T> {
     }
 }
 
-impl<T: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Vec<T> {
+impl<T: IntoTryFromVal> TryFrom<EnvVal> for Vec<T> {
     type Error = ();
 
     #[inline(always)]
-    fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
+    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.try_into()?;
         obj.try_into()
     }
 }
 
-impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
+impl<T: IntoTryFromVal> TryFrom<EnvObj> for Vec<T> {
     type Error = ();
 
     #[inline(always)]
@@ -54,27 +54,27 @@ impl<T: EnvRawValConvertible> TryFrom<EnvObj> for Vec<T> {
     }
 }
 
-impl<T: EnvRawValConvertible> From<Vec<T>> for RawVal {
+impl<T: IntoTryFromVal> From<Vec<T>> for RawVal {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<T: EnvRawValConvertible> From<Vec<T>> for EnvVal<RawVal> {
+impl<T: IntoTryFromVal> From<Vec<T>> for EnvVal {
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<T: EnvRawValConvertible> From<Vec<T>> for EnvObj {
+impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
     }
 }
 
-impl<T: EnvRawValConvertible> Vec<T> {
+impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData)
