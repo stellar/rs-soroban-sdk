@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{Env, EnvVal, IntoEnvVal, RawVal, contractfn};
+use stellar_contract_sdk::{contractfn, Env, EnvVal, IntoEnvVal, RawVal};
 
 pub struct Udt {
     pub a: i64,
@@ -32,7 +32,7 @@ pub fn add(udt: Udt) -> i64 {
 
 #[cfg(test)]
 mod test {
-    use super::{__add, Udt};
+    use super::{Udt, __add};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
