@@ -13,6 +13,8 @@ pub use stellar_contract_macros::{contractfn, contractimpl};
 mod env;
 pub use env::BitSet;
 pub use env::Env;
+pub use env::EnvVal;
+pub use env::IntoEnvVal;
 pub use env::IntoVal;
 pub use env::RawVal;
 pub use env::Status;

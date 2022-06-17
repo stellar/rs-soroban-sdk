@@ -1,28 +1,29 @@
 use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{
-    xdr::ScObjectType, Env, EnvObj, EnvRawValConvertible, EnvTrait, EnvVal, RawVal, TryFromVal, Vec,
+    env::internal::Env as _, xdr::ScObjectType, Env, EnvObj, EnvVal, IntoTryFromVal, RawVal,
+    TryFromVal, Vec,
 };
 
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct Map<K, V>(EnvObj, PhantomData<K>, PhantomData<V>);
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Eq for Map<K, V> {}
+impl<K: IntoTryFromVal, V: IntoTryFromVal> Eq for Map<K, V> {}
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> PartialEq for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialEq for Map<K, V> {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> PartialOrd for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialOrd for Map<K, V> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Ord for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> Ord for Map<K, V> {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         let env = self.env();
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
@@ -31,17 +32,17 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Ord for Map<K, V> {
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvVal<RawVal>> for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V> {
     type Error = ();
 
     #[inline(always)]
-    fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
+    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.try_into()?;
         obj.try_into()
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvObj> for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
     type Error = ();
 
     #[inline(always)]
@@ -54,28 +55,28 @@ impl<K: EnvRawValConvertible, V: EnvRawValConvertible> TryFrom<EnvObj> for Map<K
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> From<Map<K, V>> for RawVal {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for RawVal {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0.into()
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> From<Map<K, V>> for EnvVal<RawVal> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvVal {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0.into()
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> From<Map<K, V>> for EnvObj {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0
     }
 }
 
-impl<K: EnvRawValConvertible, V: EnvRawValConvertible> Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData, PhantomData)

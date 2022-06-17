@@ -78,6 +78,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "example_udt"
+version = "0.0.0"
+dependencies = [
+ "stellar-contract-sdk",
+]
+
+[[package]]
 name = "fastrand"
 version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -348,7 +355,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=6b36fd5e#6b36fd5e23d2ed600df333b5a12196a17f856984"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=049ae2bd#049ae2bdaab46160be74f3d72d623ba54e0b2983"
 dependencies = [
  "static_assertions",
  "stellar-xdr",
@@ -357,7 +364,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=6b36fd5e#6b36fd5e23d2ed600df333b5a12196a17f856984"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=049ae2bd#049ae2bdaab46160be74f3d72d623ba54e0b2983"
 dependencies = [
  "stellar-contract-env-common",
 ]
@@ -365,7 +372,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=6b36fd5e#6b36fd5e23d2ed600df333b5a12196a17f856984"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=049ae2bd#049ae2bdaab46160be74f3d72d623ba54e0b2983"
 dependencies = [
  "im-rc",
  "num-bigint",
@@ -378,7 +385,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-panic-handler-wasm32-unreachable"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=6b36fd5e#6b36fd5e23d2ed600df333b5a12196a17f856984"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=049ae2bd#049ae2bdaab46160be74f3d72d623ba54e0b2983"
 
 [[package]]
 name = "stellar-contract-macros"
@@ -403,7 +410,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=d1dc8ce0#d1dc8ce045378ad664fe5f06b087d008016b6f3c"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=2a8b24c2978303612c49afcf005c1d35c592c97c#2a8b24c2978303612c49afcf005c1d35c592c97c"
 dependencies = [
  "base64",
 ]

@@ -6,6 +6,7 @@ members = [
     "macros",
     "examples/add_i32",
     "examples/add_i64",
+    "examples/udt",
 ]
 
 [profile.dev]
