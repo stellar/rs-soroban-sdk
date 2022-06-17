@@ -6,6 +6,10 @@ pub struct Udt {
     pub b: i64,
 }
 
+// TODO: These trait implementations will be hidden behind a macro, and probably
+// be implemented using a Map rather than a tuple to provide for better data
+// migration.
+
 impl TryFrom<EnvVal> for Udt {
     type Error = ();
 
