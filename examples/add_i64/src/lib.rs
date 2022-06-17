@@ -2,10 +2,16 @@
 use stellar_contract_sdk::Env;
 use stellar_contract_sdk::{contractfn, contractimpl};
 
+// There are three ways to export contract fns:
+
+// 1. Using the `contractfn` macro on a module fn.
+
 #[contractfn]
 pub fn add(a: i64, b: i64) -> i64 {
     a + b
 }
+
+// 2. Using the `contractimpl` macro on a struct impl.
 
 pub struct Add2;
 
@@ -18,6 +24,8 @@ impl Add2 {
         Self::addimpl(a, b)
     }
 }
+
+// 3. Using the `contractimpl` macro on a trait impl.
 
 pub trait Add3Trait {
     fn add3(e: Env, a: i64, b: i64) -> i64;
