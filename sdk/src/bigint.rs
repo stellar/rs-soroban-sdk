@@ -9,10 +9,10 @@ use super::{env::internal::Env as _, Env, EnvBase, EnvObj, EnvVal, RawVal, TryFr
 #[derive(Clone)]
 pub struct BigInt(EnvObj);
 
-impl TryFrom<EnvVal<RawVal>> for BigInt {
+impl TryFrom<EnvVal> for BigInt {
     type Error = ();
 
-    fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
+    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.clone().try_into()?;
         obj.try_into()
     }
@@ -37,7 +37,7 @@ impl From<BigInt> for RawVal {
     }
 }
 
-impl From<BigInt> for EnvVal<RawVal> {
+impl From<BigInt> for EnvVal {
     fn from(b: BigInt) -> Self {
         b.0.into()
     }

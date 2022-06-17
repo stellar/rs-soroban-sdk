@@ -23,12 +23,11 @@ pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::Val;
 
-pub type EnvVal<V> = internal::EnvVal<Env, V>;
+pub type EnvVal = internal::EnvVal<Env, RawVal>;
+pub type EnvObj = internal::EnvVal<Env, Object>;
 
-pub type EnvObj = EnvVal<Object>;
-
-pub trait EnvRawValConvertible: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
-impl<C> EnvRawValConvertible for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+pub trait IntoTryFromVal: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
 #[derive(Clone, Default)]
 pub struct Env {
