@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal};
+use stellar_contract_sdk::{contractfn, Env, EnvVal, IntoEnvVal, RawVal};
 
 pub struct Udt {
     pub a: i64,
@@ -25,25 +25,21 @@ impl IntoEnvVal<Env, RawVal> for Udt {
     }
 }
 
-#[no_mangle]
-pub fn add(e: Env, udt: RawVal) -> RawVal {
-    let udt: Udt = Udt::try_from_val(&e, udt).unwrap();
-
-    let c = udt.a + udt.b;
-
-    return c.into_val(&e);
+#[contractfn]
+pub fn add(udt: Udt) -> i64 {
+    udt.a + udt.b
 }
 
 #[cfg(test)]
 mod test {
-    use super::{add, Udt};
+    use super::{Udt, __add};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add() {
         let e = Env::default();
         let udt = Udt { a: 10, b: 12 }.into_val(&e);
-        let z = add(e.clone(), udt);
+        let z = __add(e.clone(), udt);
         let z = i64::try_from_val(&e, z).unwrap();
         assert!(z == 22);
     }

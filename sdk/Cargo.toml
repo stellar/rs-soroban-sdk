@@ -9,6 +9,7 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+stellar-contract-macros = { path = "../macros" }
 
 [target.'cfg(target_family="wasm")'.dependencies]
 stellar-contract-env-panic-handler-wasm32-unreachable = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "930df7af" }
