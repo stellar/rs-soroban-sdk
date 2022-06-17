@@ -40,6 +40,14 @@ impl Env {
     // BigInt, etc. If there is any host fn we expect a developer to use, it
     // should be plumbed through this type with this type doing all RawVal
     // conversion.
+
+    pub fn put_contract_data<K: IntoTryFromVal, V: IntoTryFromVal>(&self, key: K, val: V) {
+        internal::Env::put_contract_data(self, key.into_val(self), val.into_val(self));
+    }
+
+    pub fn del_contract_data<K: IntoTryFromVal>(&self, key: K) {
+        internal::Env::del_contract_data(self, key.into_val(self));
+    }
 }
 
 impl internal::EnvBase for Env {
