@@ -72,6 +72,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "example_udt"
+version = "0.0.0"
+dependencies = [
+ "stellar-contract-sdk",
+]
+
+[[package]]
 name = "fastrand"
 version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
