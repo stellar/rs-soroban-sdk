@@ -362,16 +362,16 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=3e1b8fd4#3e1b8fd4a7f0630e41955e9a41d35e85791505eb"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=b5b0304d#b5b0304d471a42e933c9717da0ed24f2e896483c"
 dependencies = [
  "static_assertions",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=9305173c)",
+ "stellar-xdr",
 ]
 
 [[package]]
 name = "stellar-contract-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=3e1b8fd4#3e1b8fd4a7f0630e41955e9a41d35e85791505eb"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=b5b0304d#b5b0304d471a42e933c9717da0ed24f2e896483c"
 dependencies = [
  "stellar-contract-env-common",
 ]
@@ -379,7 +379,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=3e1b8fd4#3e1b8fd4a7f0630e41955e9a41d35e85791505eb"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=b5b0304d#b5b0304d471a42e933c9717da0ed24f2e896483c"
 dependencies = [
  "im-rc",
  "num-bigint",
@@ -392,7 +392,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-panic-handler-wasm32-unreachable"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=3e1b8fd4#3e1b8fd4a7f0630e41955e9a41d35e85791505eb"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=b5b0304d#b5b0304d471a42e933c9717da0ed24f2e896483c"
 
 [[package]]
 name = "stellar-contract-macros"
@@ -401,7 +401,6 @@ dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec)",
  "syn",
 ]
 
@@ -418,15 +417,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec#70fa23e1ba306ba323d0895c565e318880660a54"
-dependencies = [
- "base64",
-]
-
-[[package]]
-name = "stellar-xdr"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=9305173c#9305173ccaa4aac78fe33ba74e09ec32c9bbb908"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=462efdd1#462efdd1a53dd244529bb99112cf2a33dc5d9e28"
 dependencies = [
  "base64",
 ]
