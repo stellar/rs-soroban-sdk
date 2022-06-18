@@ -8,6 +8,7 @@ pub fn type_def_from_str(s: impl AsRef<str>) -> SpecTypeDef {
         "i32" => SpecTypeDef::I32,
         "i64" => SpecTypeDef::I64,
         "Symbol" => SpecTypeDef::Symbol,
+        // TODO: Other types.
         _ => SpecTypeDef::Unit, // TODO: Treat as a opaque named user-defined type.
     }
 }
