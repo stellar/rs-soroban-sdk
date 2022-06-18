@@ -4,7 +4,7 @@ use itertools::MultiUnzip;
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote, ToTokens};
-use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0};
+use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, WriteXdr};
 use syn::{
     parse_macro_input, punctuated::Punctuated, spanned::Spanned, token::Comma, Error, FnArg, Ident,
     ImplItem, ItemFn, ItemImpl, PatType, ReturnType, Type, TypePath, Visibility,
@@ -85,7 +85,7 @@ fn wrap_and_spec(
     });
 
     // Prepare the argument inputs.
-    let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
+    let (_spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .map(|a| {
@@ -118,7 +118,7 @@ fn wrap_and_spec(
         }).multiunzip();
 
     // Prepare the output.
-    let spec_result = match output {
+    let _spec_result = match output {
         // TODO: Map types to SCType.
         ReturnType::Default => "()".to_string(),
         ReturnType::Type(_, ty) => ty.to_token_stream().to_string(),
@@ -146,15 +146,15 @@ fn wrap_and_spec(
         output_types: [].try_into().unwrap(),
     };
     let spec_entry = SpecEntry::Function(SpecEntryFunction::V0(spec_entry_fn));
-    let spec_entry_xdr = spec_entry.to_xdr();
-    let spec_entry_xdr_lit = proc_macro2::Literal::byte_string(spec_args_xdr.as_bytes());
-    let spec_entry_xdr_len = spec_args_xdr.len();
+    let spec_xdr = spec_entry.to_xdr().unwrap();
+    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
+    let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
 
     // Generated code.
     quote! {
         #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-        pub static #spec_ident: [u8; #spec_entry_xdr_len] = *#spec_args_xdr_lit;
+        pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
         #[export_name = #wrap_export_name]
         fn #wrap_ident(__e: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
