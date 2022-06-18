@@ -1,6 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote, ToTokens};
+use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr};
 use syn::{
     punctuated::Punctuated, spanned::Spanned, token::Comma, Error, FnArg, Ident, PatType,
     ReturnType, Type, TypePath,
@@ -38,7 +39,7 @@ pub fn wrap_and_spec_fn(
     });
 
     // Prepare the argument inputs.
-    let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
+    let (_spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .map(|a| {
@@ -72,9 +73,8 @@ pub fn wrap_and_spec_fn(
 
     // Prepare the output.
     let spec_result = match output {
-        // TODO: Map types to SCType.
-        ReturnType::Default => "()".to_string(),
         ReturnType::Type(_, ty) => ty.to_token_stream().to_string(),
+        ReturnType::Default => "()".to_string(),
     };
 
     // If errors have occurred, render them instead.
@@ -83,7 +83,7 @@ pub fn wrap_and_spec_fn(
         return quote! { #(#compile_errors)* };
     }
 
-    // Output.
+    // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
     let wrap_ident = format_ident!("__{}", ident);
     let env_call = if env_input.is_some() {
@@ -91,20 +91,23 @@ pub fn wrap_and_spec_fn(
     } else {
         quote! {}
     };
-    let spec_ident = format_ident!("__SPEC_{}", ident.to_string().to_uppercase());
-    let spec_args_str = format!(
-        // TODO: Produce XDR instead.
-        "[{}({}):{}]",
-        wrap_export_name,
-        spec_args.join(","),
-        spec_result,
-    );
-    let spec_args_bytes = spec_args_str.as_bytes();
-    let spec_args_literal = proc_macro2::Literal::byte_string(spec_args_bytes);
-    let spec_args_literal_size = spec_args_bytes.len();
+
+    // Generated code spec.
+    let spec_entry_fn = SpecEntryFunctionV0 {
+        name: wrap_export_name.clone().try_into().unwrap(),
+        input_types: [].try_into().unwrap(),
+        output_types: [].try_into().unwrap(),
+    };
+    let spec_entry = SpecEntry::Function(SpecEntryFunction::V0(spec_entry_fn));
+    let spec_xdr = spec_entry.to_xdr().unwrap();
+    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
+    let spec_xdr_len = spec_xdr.len();
+    let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
+
+    // Generated code.
     quote! {
         #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-        pub static #spec_ident: [u8; #spec_args_literal_size] = *#spec_args_literal;
+        pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
         #[export_name = #wrap_export_name]
         fn #wrap_ident(__e: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
