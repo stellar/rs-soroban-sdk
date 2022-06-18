@@ -48,7 +48,7 @@ pub fn wrap_and_spec_fn(
             match a {
                 FnArg::Typed(pat_type) => {
                     let pat = pat_type.pat.clone();
-                    let spec = type_def_from_str(pat_type.ty.to_token_stream().to_string());
+                    let spec = type_def_from_str(pat_type.ty);
                     let arg = FnArg::Typed(PatType {
                         attrs: Vec::new(),
                         pat: pat_type.pat.clone(),
@@ -68,14 +68,14 @@ pub fn wrap_and_spec_fn(
                         a.span(),
                         "self argument not supported",
                     ));
-                    (SpecTypeDef::Unit, a.clone(), quote! { })
+                    (SpecTypeDef::I32, a.clone(), quote! { })
                 }
             }
         }).multiunzip();
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![type_def_from_str(ty.to_token_stream().to_string())],
+        ReturnType::Type(_, ty) => vec![type_def_from_str(ty)],
         ReturnType::Default => vec![],
     };
 
