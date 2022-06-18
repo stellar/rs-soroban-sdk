@@ -108,9 +108,9 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "getrandom"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9be70c98951c83b8d2f8f60d7065fa6d5146873094452a1008da8c2f1e4205ad"
+checksum = "4eb1a864a501629691edf6c15a593b7a51eebaa1e8468e9ddc623de7c9b58ec6"
 dependencies = [
  "cfg-if",
  "libc",
@@ -318,9 +318,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.25"
+version = "0.6.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
+checksum = "49b3de9ec5dc0a3417da371aab17d729997c15010e7fd24ff707773a33bddb64"
 
 [[package]]
 name = "remove_dir_all"
@@ -365,7 +365,7 @@ version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=3e1b8fd4#3e1b8fd4a7f0630e41955e9a41d35e85791505eb"
 dependencies = [
  "static_assertions",
- "stellar-xdr",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=9305173c)",
 ]
 
 [[package]]
@@ -401,6 +401,7 @@ dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec)",
  "syn",
 ]
 
@@ -417,6 +418,14 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
+source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec#70fa23e1ba306ba323d0895c565e318880660a54"
+dependencies = [
+ "base64",
+]
+
+[[package]]
+name = "stellar-xdr"
+version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-xdr?rev=9305173c#9305173ccaa4aac78fe33ba74e09ec32c9bbb908"
 dependencies = [
  "base64",
@@ -424,9 +433,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.95"
+version = "1.0.96"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbaf6116ab8924f39d52792136fb74fd60a80194cf1b1c6ffa6453eef1c3f942"
+checksum = "0748dd251e24453cb8717f0354206b91557e4ec8703673a4b30208f2abaf1ebf"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -475,9 +484,9 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d22af068fba1eb5edcb4aea19d382b2a3deb4c8f9d475c589b6ada9e0fd493ee"
+checksum = "5bd2fe26506023ed7b5e1e315add59d6f584c621d037f9368fea9cfb988f368c"
 
 [[package]]
 name = "version_check"
@@ -496,9 +505,9 @@ dependencies = [
 
 [[package]]
 name = "wasi"
-version = "0.10.2+wasi-snapshot-preview1"
+version = "0.11.0+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
+checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 
 [[package]]
 name = "winapi"
