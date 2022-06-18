@@ -1,11 +1,15 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote, ToTokens};
-use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr};
+use stellar_xdr::{
+    SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecType, SpecTypeDef, WriteXdr,
+};
 use syn::{
     punctuated::Punctuated, spanned::Spanned, token::Comma, Error, FnArg, Ident, PatType,
     ReturnType, Type, TypePath,
 };
+
+use crate::type_def_from_str::type_def_from_str;
 
 #[allow(clippy::too_many_lines)]
 pub fn wrap_and_spec_fn(
@@ -39,14 +43,14 @@ pub fn wrap_and_spec_fn(
     });
 
     // Prepare the argument inputs.
-    let (_spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
+    let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .map(|a| {
             match a {
                 FnArg::Typed(pat_type) => {
                     let pat = pat_type.pat.clone();
-                    let spec = pat_type.ty.to_token_stream().to_string(); // TODO: Map types to SCType for spec.
+                    let spec = type_def_from_str(pat_type.ty.to_token_stream().to_string());
                     let arg = FnArg::Typed(PatType {
                         attrs: Vec::new(),
                         pat: pat_type.pat.clone(),
@@ -66,15 +70,15 @@ pub fn wrap_and_spec_fn(
                         a.span(),
                         "self argument not supported",
                     ));
-                    ("".to_string(), a.clone(), quote! { })
+                    (SpecTypeDef::Unit, a.clone(), quote! { })
                 }
             }
         }).multiunzip();
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => ty.to_token_stream().to_string(),
-        ReturnType::Default => "()".to_string(),
+        ReturnType::Type(_, ty) => vec![type_def_from_str(ty.to_token_stream().to_string())],
+        ReturnType::Default => vec![],
     };
 
     // If errors have occurred, render them instead.
@@ -95,8 +99,8 @@ pub fn wrap_and_spec_fn(
     // Generated code spec.
     let spec_entry_fn = SpecEntryFunctionV0 {
         name: wrap_export_name.clone().try_into().unwrap(),
-        input_types: [].try_into().unwrap(),
-        output_types: [].try_into().unwrap(),
+        input_types: spec_args.try_into().unwrap(),
+        output_types: spec_result.try_into().unwrap(),
     };
     let spec_entry = SpecEntry::Function(SpecEntryFunction::V0(spec_entry_fn));
     let spec_xdr = spec_entry.to_xdr().unwrap();

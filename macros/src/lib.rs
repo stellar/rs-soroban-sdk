@@ -1,6 +1,8 @@
 extern crate proc_macro;
 
+mod type_def_from_str;
 mod wrap_and_spec_fn;
+
 use wrap_and_spec_fn::wrap_and_spec_fn;
 
 use proc_macro::TokenStream;
