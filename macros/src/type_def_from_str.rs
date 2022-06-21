@@ -5,10 +5,7 @@ use syn::{Type, TypePath, TypeTuple, Path, PathArguments, PathSegment};
 
 pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
     match t {
-        Type::Path(TypePath { qself: None, path: Path { segments { ident, arguments: PathArguments::None }, .. } }) => match path.segments.last() {
-            Some()
-            None => unimplemented!(),
-        }
+        Type::Path(TypePath { qself: None, path: Path { segments, .. } }) => ,
         Type::Tuple(TypeTuple { elems, .. }) => SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
             value_types: elems
                 .iter()
