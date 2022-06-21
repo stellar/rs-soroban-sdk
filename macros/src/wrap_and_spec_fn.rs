@@ -1,6 +1,6 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote, ToTokens};
+use quote::{format_ident, quote};
 use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr};
 use syn::{
     punctuated::Punctuated, spanned::Spanned, token::Comma, Error, FnArg, Ident, PatType,
@@ -48,7 +48,7 @@ pub fn wrap_and_spec_fn(
             match a {
                 FnArg::Typed(pat_type) => {
                     let pat = pat_type.pat.clone();
-                    let spec = type_def_from_str(pat_type.ty);
+                    let spec = type_def_from_str(&pat_type.ty);
                     let arg = FnArg::Typed(PatType {
                         attrs: Vec::new(),
                         pat: pat_type.pat.clone(),
