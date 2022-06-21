@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractfn, Env, EnvVal, IntoEnvVal, RawVal};
+use stellar_contract_sdk::{contractfn, Env, EnvVal, IntoEnvVal, Map, RawVal, Symbol, Vec};
 
 pub struct Udt {
     pub a: i64,
@@ -26,8 +26,8 @@ impl IntoEnvVal<Env, RawVal> for Udt {
 }
 
 #[contractfn]
-pub fn add(udt: Udt) -> i64 {
-    udt.a + udt.b
+pub fn da_func(_udt: Map<Symbol, Vec<i64>>) -> i64 {
+    todo!()
 }
 
 #[cfg(test)]

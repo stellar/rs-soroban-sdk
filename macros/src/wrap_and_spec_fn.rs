@@ -9,6 +9,8 @@ use syn::{
 
 use crate::map_type::map_type;
 
+// TODO: Write some tests that assert on the generated XDR.
+
 #[allow(clippy::too_many_lines)]
 pub fn wrap_and_spec_fn(
     call: &TokenStream2,

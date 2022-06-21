@@ -3,7 +3,7 @@ use stellar_xdr::{
 };
 use syn::{GenericArgument, Path, PathArguments, PathSegment, Type, TypePath, TypeTuple};
 
-// TODO: Remove user-defined types from SpecTypeDef and treat separately.
+// TODO: Return a Result<_, Compiler Error> instead of panicking.
 
 pub fn map_type(t: &Type) -> SpecTypeDef {
     match t {
@@ -64,7 +64,7 @@ pub fn map_type(t: &Type) -> SpecTypeDef {
                                 element_type: Box::new(map_type(t)),
                             }))
                         }
-                        "Map<K, V>" => {
+                        "Map" => {
                             let (k, v) = match args.as_slice() {
                                 [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
                                 [..] => unimplemented!(), // TODO: Write compiler error.

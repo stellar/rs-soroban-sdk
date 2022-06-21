@@ -9,8 +9,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, ImplItem, ItemFn, ItemImpl, Visibility};
 
-// TODO: Investigate how to make the multiple spec statics be joined into a
-// variable length XDR array instead of being a stream of XDR values.
+// TODO: Try separating out host types from SDK types (suggestion from @graydon).
 
 #[proc_macro_attribute]
 #[allow(clippy::missing_panics_doc)]
