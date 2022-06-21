@@ -7,7 +7,7 @@ use syn::{
     ReturnType, Type, TypePath,
 };
 
-use crate::type_def_from_str::type_def_from_str;
+use crate::map_type::map_type;
 
 #[allow(clippy::too_many_lines)]
 pub fn wrap_and_spec_fn(
@@ -48,7 +48,7 @@ pub fn wrap_and_spec_fn(
             match a {
                 FnArg::Typed(pat_type) => {
                     let pat = pat_type.pat.clone();
-                    let spec = type_def_from_str(&pat_type.ty);
+                    let spec = map_type(&pat_type.ty);
                     let arg = FnArg::Typed(PatType {
                         attrs: Vec::new(),
                         pat: pat_type.pat.clone(),
@@ -75,7 +75,7 @@ pub fn wrap_and_spec_fn(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![type_def_from_str(ty)],
+        ReturnType::Type(_, ty) => vec![map_type(ty)],
         ReturnType::Default => vec![],
     };
 

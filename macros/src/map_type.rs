@@ -5,7 +5,7 @@ use syn::{GenericArgument, Path, PathArguments, PathSegment, Type, TypePath, Typ
 
 // TODO: Remove user-defined types from SpecTypeDef and treat separately.
 
-pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
+pub fn map_type(t: &Type) -> SpecTypeDef {
     match t {
         Type::Path(TypePath {
             qself: None,
@@ -16,7 +16,6 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
                     ident,
                     arguments: PathArguments::None,
                 }) => {
-                    #[allow(clippy::match_same_arms)]
                     match &ident.to_string()[..] {
                         "u64" => SpecTypeDef::U64,
                         "i64" => SpecTypeDef::I64,
@@ -36,8 +35,7 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
                     ident,
                     arguments: PathArguments::AngleBracketed(args),
                 }) => {
-                    let args = args.args.iter().collect::<Vec<&GenericArgument>>();
-                    #[allow(clippy::match_same_arms)]
+                    let args = args.args.iter().collect::<Vec<_>>();
                     match &ident.to_string()[..] {
                         "Option" => {
                             let t = match args.as_slice() {
@@ -45,7 +43,7 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
                             SpecTypeDef::Option(Box::new(SpecTypeOption {
-                                value_type: Box::new(type_def_from_str(t)),
+                                value_type: Box::new(map_type(t)),
                             }))
                         }
                         "Vec" => {
@@ -54,7 +52,7 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
                             SpecTypeDef::Vec(Box::new(SpecTypeVec {
-                                element_type: Box::new(type_def_from_str(t)),
+                                element_type: Box::new(map_type(t)),
                             }))
                         }
                         "Set" => {
@@ -63,7 +61,7 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
                             SpecTypeDef::Set(Box::new(SpecTypeSet {
-                                element_type: Box::new(type_def_from_str(t)),
+                                element_type: Box::new(map_type(t)),
                             }))
                         }
                         "Map<K, V>" => {
@@ -72,8 +70,8 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
                             SpecTypeDef::Map(Box::new(SpecTypeMap {
-                                key_type: Box::new(type_def_from_str(k)),
-                                value_type: Box::new(type_def_from_str(v)),
+                                key_type: Box::new(map_type(k)),
+                                value_type: Box::new(map_type(v)),
                             }))
                         }
                         _ => unimplemented!(),
@@ -85,7 +83,7 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
         Type::Tuple(TypeTuple { elems, .. }) => SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
             value_types: elems
                 .iter()
-                .map(type_def_from_str)
+                .map(map_type)
                 .collect::<Vec<SpecTypeDef>>() // TODO: Implement conversion to VecM from iters to omit this collect.
                 .try_into()
                 .unwrap(),
