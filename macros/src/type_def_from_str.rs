@@ -1,5 +1,7 @@
-use stellar_xdr::{SpecTypeDef, SpecTypeTuple, SpecTypeUdt};
-use syn::{Path, PathArguments, PathSegment, Type, TypePath, TypeTuple};
+use stellar_xdr::{
+    SpecTypeDef, SpecTypeMap, SpecTypeOption, SpecTypeSet, SpecTypeTuple, SpecTypeUdt, SpecTypeVec,
+};
+use syn::{GenericArgument, Path, PathArguments, PathSegment, Type, TypePath, TypeTuple};
 
 // TODO: Remove user-defined types from SpecTypeDef and treat separately.
 
@@ -24,15 +26,57 @@ pub fn type_def_from_str(t: &Type) -> SpecTypeDef {
                         "Symbol" => SpecTypeDef::Symbol,
                         "Bitset" => SpecTypeDef::Bitset,
                         "Status" => SpecTypeDef::Status,
-                        "Binary" => SpecTypeDef::Binary, // TODO: Would this be a Vec<u8>?
-                        "Option<T>" => SpecTypeDef::Binary, // TODO: How do we piece apart the generics? Can we get more than a str? I think so!
-                        "Vec<T>" => SpecTypeDef::Binary, // TODO: How do we piece apart the generics? Can we get more than a str? I think so!
-                        "Map<K, V>" => SpecTypeDef::Binary, // TODO: How do we piece apart the generics? Can we get more than a str? I think so!
-                        "Set<T>" => SpecTypeDef::Binary, // TODO: How do we piece apart the generics? Can we get more than a str? I think so!
-                        "(...)" => SpecTypeDef::Binary, // TODO: How do we piece apart the generics? Can we get more than a str? I think so!
+                        "Binary" => SpecTypeDef::Binary,
                         s => SpecTypeDef::Udt(SpecTypeUdt {
-                            name: s.try_into().unwrap(), // TODO: Handle error.
+                            name: s.try_into().unwrap(), // TODO: Write compiler error.
                         }),
+                    }
+                }
+                Some(PathSegment {
+                    ident,
+                    arguments: PathArguments::AngleBracketed(args),
+                }) => {
+                    let args = args.args.iter().collect::<Vec<&GenericArgument>>();
+                    #[allow(clippy::match_same_arms)]
+                    match &ident.to_string()[..] {
+                        "Option" => {
+                            let t = match args.as_slice() {
+                                [GenericArgument::Type(t)] => t,
+                                [..] => unimplemented!(), // TODO: Write compiler error.
+                            };
+                            SpecTypeDef::Option(Box::new(SpecTypeOption {
+                                value_type: Box::new(type_def_from_str(t)),
+                            }))
+                        }
+                        "Vec" => {
+                            let t = match args.as_slice() {
+                                [GenericArgument::Type(t)] => t,
+                                [..] => unimplemented!(), // TODO: Write compiler error.
+                            };
+                            SpecTypeDef::Vec(Box::new(SpecTypeVec {
+                                element_type: Box::new(type_def_from_str(t)),
+                            }))
+                        }
+                        "Set" => {
+                            let t = match args.as_slice() {
+                                [GenericArgument::Type(t)] => t,
+                                [..] => unimplemented!(), // TODO: Write compiler error.
+                            };
+                            SpecTypeDef::Set(Box::new(SpecTypeSet {
+                                element_type: Box::new(type_def_from_str(t)),
+                            }))
+                        }
+                        "Map<K, V>" => {
+                            let (k, v) = match args.as_slice() {
+                                [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
+                                [..] => unimplemented!(), // TODO: Write compiler error.
+                            };
+                            SpecTypeDef::Map(Box::new(SpecTypeMap {
+                                key_type: Box::new(type_def_from_str(k)),
+                                value_type: Box::new(type_def_from_str(v)),
+                            }))
+                        }
+                        _ => unimplemented!(),
                     }
                 }
                 _ => unimplemented!(),
