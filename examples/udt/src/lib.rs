@@ -30,10 +30,21 @@ pub fn add(udt: Udt) -> i64 {
     udt.a + udt.b
 }
 
+#[contractfn]
+pub fn add2(udt: (Udt, Udt)) -> (Udt, Vec<bool>) {
+    (
+        Udt {
+            a: udt.0.a + udt.1.a,
+            b: udt.0.b + udt.1.b,
+        },
+        Vec::new,
+    )
+}
+
 #[cfg(test)]
 mod test {
-    use super::{Udt, __add};
-    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
+    use super::{Udt, __add, __add2};
+    use stellar_contract_sdk::{Env, IntoVal, TryFromVal, Vec};
 
     #[test]
     fn test_add() {
@@ -41,6 +52,17 @@ mod test {
         let udt = Udt { a: 10, b: 12 }.into_val(&e);
         let z = __add(e.clone(), udt);
         let z = i64::try_from_val(&e, z).unwrap();
-        assert!(z == 22);
+        assert_eq!(z, 22);
+    }
+
+    #[test]
+    fn test_add2() {
+        let e = Env::default();
+        let udt = (Udt { a: 10, b: 12 }, Udt { a: 5, b: 6 }).into_val(&e);
+        let z = __add2(e.clone(), udt);
+        let z = <(Udt, Vec<bool>)>::try_from_val(&e, z).unwrap();
+        assert_eq!(z.0.a, 15);
+        assert_eq!(z.0.b, 18);
+        assert_eq!(z.1, true);
     }
 }
