@@ -23,8 +23,10 @@ pub use env::TryFromVal;
 use env::*;
 
 mod bigint;
+mod binary;
 mod map;
 mod vec;
 pub use bigint::BigInt;
+pub use binary::{Binary, FixedLengthBinary};
 pub use map::Map;
 pub use vec::Vec;
