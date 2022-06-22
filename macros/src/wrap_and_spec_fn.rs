@@ -50,7 +50,12 @@ pub fn wrap_and_spec_fn(
             match a {
                 FnArg::Typed(pat_type) => {
                     let pat = pat_type.pat.clone();
-                    let spec = map_type(&pat_type.ty);
+                    let spec = match map_type(&pat_type.ty) {
+                        Ok(spec) => spec,
+                        Err(e) => {
+                    errors.push(e);
+SpecTypeDef::I32}
+                    };
                     let arg = FnArg::Typed(PatType {
                         attrs: Vec::new(),
                         pat: pat_type.pat.clone(),
@@ -66,7 +71,7 @@ pub fn wrap_and_spec_fn(
                     (spec, arg, call)
                 }
                 FnArg::Receiver(_) => {
-                    errors.push(syn::Error::new(
+                    errors.push(Error::new(
                         a.span(),
                         "self argument not supported",
                     ));
@@ -77,13 +82,19 @@ pub fn wrap_and_spec_fn(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![map_type(ty)],
+        ReturnType::Type(_, ty) => vec![match map_type(ty) {
+            Ok(spec) => spec,
+            Err(e) => {
+                errors.push(e);
+                SpecTypeDef::I32
+            }
+        }],
         ReturnType::Default => vec![],
     };
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
-        let compile_errors = errors.iter().map(syn::Error::to_compile_error);
+        let compile_errors = errors.iter().map(Error::to_compile_error);
         return quote! { #(#compile_errors)* };
     }
 

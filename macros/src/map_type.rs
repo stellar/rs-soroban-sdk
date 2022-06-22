@@ -1,11 +1,12 @@
 use stellar_xdr::{
     SpecTypeDef, SpecTypeMap, SpecTypeOption, SpecTypeSet, SpecTypeTuple, SpecTypeUdt, SpecTypeVec,
 };
-use syn::{GenericArgument, Path, PathArguments, PathSegment, Type, TypePath, TypeTuple};
+use syn::{
+    spanned::Spanned, Error, GenericArgument, Path, PathArguments, PathSegment, Type, TypePath,
+    TypeTuple,
+};
 
-// TODO: Return a Result<_, Compiler Error> instead of panicking.
-
-pub fn map_type(t: &Type) -> SpecTypeDef {
+pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
     match t {
         Type::Path(TypePath {
             qself: None,
@@ -15,22 +16,25 @@ pub fn map_type(t: &Type) -> SpecTypeDef {
                 Some(PathSegment {
                     ident,
                     arguments: PathArguments::None,
-                }) => {
-                    match &ident.to_string()[..] {
-                        "u64" => SpecTypeDef::U64,
-                        "i64" => SpecTypeDef::I64,
-                        "u32" => SpecTypeDef::U32,
-                        "i32" => SpecTypeDef::I32,
-                        "bool" => SpecTypeDef::Bool,
-                        "Symbol" => SpecTypeDef::Symbol,
-                        "Bitset" => SpecTypeDef::Bitset,
-                        "Status" => SpecTypeDef::Status,
-                        "Binary" => SpecTypeDef::Binary,
-                        s => SpecTypeDef::Udt(SpecTypeUdt {
-                            name: s.try_into().unwrap(), // TODO: Write compiler error.
-                        }),
-                    }
-                }
+                }) => match &ident.to_string()[..] {
+                    "u64" => Ok(SpecTypeDef::U64),
+                    "i64" => Ok(SpecTypeDef::I64),
+                    "u32" => Ok(SpecTypeDef::U32),
+                    "i32" => Ok(SpecTypeDef::I32),
+                    "bool" => Ok(SpecTypeDef::Bool),
+                    "Symbol" => Ok(SpecTypeDef::Symbol),
+                    "Bitset" => Ok(SpecTypeDef::Bitset),
+                    "Status" => Ok(SpecTypeDef::Status),
+                    "Binary" => Ok(SpecTypeDef::Binary),
+                    s => Ok(SpecTypeDef::Udt(SpecTypeUdt {
+                        name: s.try_into().map_err(|e| {
+                            Error::new(
+                                t.span(),
+                                format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
+                            )
+                        })?,
+                    })),
+                },
                 Some(PathSegment {
                     ident,
                     arguments: PathArguments::AngleBracketed(args),
@@ -42,37 +46,37 @@ pub fn map_type(t: &Type) -> SpecTypeDef {
                                 [GenericArgument::Type(t)] => t,
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
-                            SpecTypeDef::Option(Box::new(SpecTypeOption {
-                                value_type: Box::new(map_type(t)),
-                            }))
+                            Ok(SpecTypeDef::Option(Box::new(SpecTypeOption {
+                                value_type: Box::new(map_type(t)?),
+                            })))
                         }
                         "Vec" => {
                             let t = match args.as_slice() {
                                 [GenericArgument::Type(t)] => t,
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
-                            SpecTypeDef::Vec(Box::new(SpecTypeVec {
-                                element_type: Box::new(map_type(t)),
-                            }))
+                            Ok(SpecTypeDef::Vec(Box::new(SpecTypeVec {
+                                element_type: Box::new(map_type(t)?),
+                            })))
                         }
                         "Set" => {
                             let t = match args.as_slice() {
                                 [GenericArgument::Type(t)] => t,
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
-                            SpecTypeDef::Set(Box::new(SpecTypeSet {
-                                element_type: Box::new(map_type(t)),
-                            }))
+                            Ok(SpecTypeDef::Set(Box::new(SpecTypeSet {
+                                element_type: Box::new(map_type(t)?),
+                            })))
                         }
                         "Map" => {
                             let (k, v) = match args.as_slice() {
                                 [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
                                 [..] => unimplemented!(), // TODO: Write compiler error.
                             };
-                            SpecTypeDef::Map(Box::new(SpecTypeMap {
-                                key_type: Box::new(map_type(k)),
-                                value_type: Box::new(map_type(v)),
-                            }))
+                            Ok(SpecTypeDef::Map(Box::new(SpecTypeMap {
+                                key_type: Box::new(map_type(k)?),
+                                value_type: Box::new(map_type(v)?),
+                            })))
                         }
                         _ => unimplemented!(),
                     }
@@ -80,14 +84,19 @@ pub fn map_type(t: &Type) -> SpecTypeDef {
                 _ => unimplemented!(),
             }
         }
-        Type::Tuple(TypeTuple { elems, .. }) => SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
+        Type::Tuple(TypeTuple { elems, .. }) => Ok(SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
             value_types: elems
                 .iter()
-                .map(map_type)
-                .collect::<Vec<SpecTypeDef>>() // TODO: Implement conversion to VecM from iters to omit this collect.
+                .map(|v| map_type(v))
+                .collect::<Result<Vec<SpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
                 .try_into()
-                .unwrap(),
-        })),
+                .map_err(|e| {
+                    Error::new(
+                        t.span(),
+                        format!("tuple values cannot be used in XDR spec: {}", e),
+                    )
+                })?,
+        }))),
         _ => unimplemented!(),
     }
 }
