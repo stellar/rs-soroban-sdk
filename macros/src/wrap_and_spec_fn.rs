@@ -3,8 +3,10 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr};
 use syn::{
-    punctuated::Punctuated, spanned::Spanned, token::Comma, Error, FnArg, Ident, PatType,
-    ReturnType, Type, TypePath,
+    punctuated::Punctuated,
+    spanned::Spanned,
+    token::{Colon, Comma},
+    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
 use crate::map_type::map_type;
@@ -46,26 +48,28 @@ pub fn wrap_and_spec_fn(
     let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
-        .map(|a| {
+        .enumerate()
+        .map(|(i, a)| {
             match a {
                 FnArg::Typed(pat_type) => {
-                    let pat = pat_type.pat.clone();
                     let spec = match map_type(&pat_type.ty) {
                         Ok(spec) => spec,
                         Err(e) => {
-                    errors.push(e);
-SpecTypeDef::I32}
+                            errors.push(e);
+                            SpecTypeDef::I32
+                        }
                     };
+                    let ident = format_ident!("__{}", i);
                     let arg = FnArg::Typed(PatType {
-                        attrs: Vec::new(),
-                        pat: pat_type.pat.clone(),
-                        colon_token: pat_type.colon_token,
+                        attrs: vec![],
+                        pat: Box::new(Pat::Ident(PatIdent{ ident: ident.clone(), attrs: vec![], by_ref: None, mutability: None, subpat: None })),
+                        colon_token: Colon::default(),
                         ty: Box::new(Type::Verbatim(quote! { stellar_contract_sdk::RawVal })),
                     });
                     let call = quote! {
                         <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(
                             &__e,
-                            #pat
+                            #ident
                         ).unwrap()
                     };
                     (spec, arg, call)
