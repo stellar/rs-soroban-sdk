@@ -59,7 +59,7 @@ pub fn wrap_and_spec_fn(
                             SpecTypeDef::I32
                         }
                     };
-                    let ident = format_ident!("__{}", i);
+                    let ident = format_ident!("arg_{}", i);
                     let arg = FnArg::Typed(PatType {
                         attrs: vec![],
                         pat: Box::new(Pat::Ident(PatIdent{ ident: ident.clone(), attrs: vec![], by_ref: None, mutability: None, subpat: None })),
@@ -68,7 +68,7 @@ pub fn wrap_and_spec_fn(
                     });
                     let call = quote! {
                         <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(
-                            &__e,
+                            &env,
                             #ident
                         ).unwrap()
                     };
@@ -106,7 +106,7 @@ pub fn wrap_and_spec_fn(
     let wrap_export_name = format!("{}", ident);
     let wrap_ident = format_ident!("__{}", ident);
     let env_call = if env_input.is_some() {
-        quote! { __e.clone(), }
+        quote! { env.clone(), }
     } else {
         quote! {}
     };
@@ -129,13 +129,13 @@ pub fn wrap_and_spec_fn(
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
         #[export_name = #wrap_export_name]
-        fn #wrap_ident(__e: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+        fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
             <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                 #call(
                     #env_call
                     #(#wrap_calls),*
                 ),
-                &__e
+                &env
             )
         }
     }
