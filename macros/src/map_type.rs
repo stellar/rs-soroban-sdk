@@ -6,84 +6,95 @@ use syn::{
     TypeTuple,
 };
 
+#[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
     match t {
         Type::Path(TypePath {
             qself: None,
             path: Path { segments, .. },
-        }) => {
-            match segments.last() {
-                Some(PathSegment {
-                    ident,
-                    arguments: PathArguments::None,
-                }) => match &ident.to_string()[..] {
-                    "u64" => Ok(SpecTypeDef::U64),
-                    "i64" => Ok(SpecTypeDef::I64),
-                    "u32" => Ok(SpecTypeDef::U32),
-                    "i32" => Ok(SpecTypeDef::I32),
-                    "bool" => Ok(SpecTypeDef::Bool),
-                    "Symbol" => Ok(SpecTypeDef::Symbol),
-                    "Bitset" => Ok(SpecTypeDef::Bitset),
-                    "Status" => Ok(SpecTypeDef::Status),
-                    "Binary" => Ok(SpecTypeDef::Binary),
-                    s => Ok(SpecTypeDef::Udt(SpecTypeUdt {
-                        name: s.try_into().map_err(|e| {
-                            Error::new(
+        }) => match segments.last() {
+            Some(PathSegment {
+                ident,
+                arguments: PathArguments::None,
+            }) => match &ident.to_string()[..] {
+                "u64" => Ok(SpecTypeDef::U64),
+                "i64" => Ok(SpecTypeDef::I64),
+                "u32" => Ok(SpecTypeDef::U32),
+                "i32" => Ok(SpecTypeDef::I32),
+                "bool" => Ok(SpecTypeDef::Bool),
+                "Symbol" => Ok(SpecTypeDef::Symbol),
+                "Bitset" => Ok(SpecTypeDef::Bitset),
+                "Status" => Ok(SpecTypeDef::Status),
+                "Binary" => Ok(SpecTypeDef::Binary),
+                s => Ok(SpecTypeDef::Udt(SpecTypeUdt {
+                    name: s.try_into().map_err(|e| {
+                        Error::new(
+                            t.span(),
+                            format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
+                        )
+                    })?,
+                })),
+            },
+            Some(PathSegment {
+                ident,
+                arguments: PathArguments::AngleBracketed(args),
+            }) => {
+                let args = args.args.iter().collect::<Vec<_>>();
+                match &ident.to_string()[..] {
+                    "Option" => {
+                        let t = match args.as_slice() {
+                            [GenericArgument::Type(t)] => t,
+                            [..] => Err(Error::new(
                                 t.span(),
-                                format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
-                            )
-                        })?,
-                    })),
-                },
-                Some(PathSegment {
-                    ident,
-                    arguments: PathArguments::AngleBracketed(args),
-                }) => {
-                    let args = args.args.iter().collect::<Vec<_>>();
-                    match &ident.to_string()[..] {
-                        "Option" => {
-                            let t = match args.as_slice() {
-                                [GenericArgument::Type(t)] => t,
-                                [..] => unimplemented!(), // TODO: Write compiler error.
-                            };
-                            Ok(SpecTypeDef::Option(Box::new(SpecTypeOption {
-                                value_type: Box::new(map_type(t)?),
-                            })))
-                        }
-                        "Vec" => {
-                            let t = match args.as_slice() {
-                                [GenericArgument::Type(t)] => t,
-                                [..] => unimplemented!(), // TODO: Write compiler error.
-                            };
-                            Ok(SpecTypeDef::Vec(Box::new(SpecTypeVec {
-                                element_type: Box::new(map_type(t)?),
-                            })))
-                        }
-                        "Set" => {
-                            let t = match args.as_slice() {
-                                [GenericArgument::Type(t)] => t,
-                                [..] => unimplemented!(), // TODO: Write compiler error.
-                            };
-                            Ok(SpecTypeDef::Set(Box::new(SpecTypeSet {
-                                element_type: Box::new(map_type(t)?),
-                            })))
-                        }
-                        "Map" => {
-                            let (k, v) = match args.as_slice() {
-                                [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
-                                [..] => unimplemented!(), // TODO: Write compiler error.
-                            };
-                            Ok(SpecTypeDef::Map(Box::new(SpecTypeMap {
-                                key_type: Box::new(map_type(k)?),
-                                value_type: Box::new(map_type(v)?),
-                            })))
-                        }
-                        _ => unimplemented!(),
+                                "incorrect number of generic arguments",
+                            ))?,
+                        };
+                        Ok(SpecTypeDef::Option(Box::new(SpecTypeOption {
+                            value_type: Box::new(map_type(t)?),
+                        })))
                     }
+                    "Vec" => {
+                        let t = match args.as_slice() {
+                            [GenericArgument::Type(t)] => t,
+                            [..] => Err(Error::new(
+                                t.span(),
+                                "incorrect number of generic arguments",
+                            ))?,
+                        };
+                        Ok(SpecTypeDef::Vec(Box::new(SpecTypeVec {
+                            element_type: Box::new(map_type(t)?),
+                        })))
+                    }
+                    "Set" => {
+                        let t = match args.as_slice() {
+                            [GenericArgument::Type(t)] => t,
+                            [..] => Err(Error::new(
+                                t.span(),
+                                "incorrect number of generic arguments",
+                            ))?,
+                        };
+                        Ok(SpecTypeDef::Set(Box::new(SpecTypeSet {
+                            element_type: Box::new(map_type(t)?),
+                        })))
+                    }
+                    "Map" => {
+                        let (k, v) = match args.as_slice() {
+                            [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
+                            [..] => Err(Error::new(
+                                t.span(),
+                                "incorrect number of generic arguments",
+                            ))?,
+                        };
+                        Ok(SpecTypeDef::Map(Box::new(SpecTypeMap {
+                            key_type: Box::new(map_type(k)?),
+                            value_type: Box::new(map_type(v)?),
+                        })))
+                    }
+                    _ => Err(Error::new(t.span(), "unsupported type, only stellar-contract-sdk types support generics in contract functions"))?,
                 }
-                _ => unimplemented!(),
             }
-        }
+            _ => Err(Error::new(t.span(), "unsupported type"))?,
+        },
         Type::Tuple(TypeTuple { elems, .. }) => Ok(SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
             value_types: elems
                 .iter()
@@ -97,6 +108,6 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                     )
                 })?,
         }))),
-        _ => unimplemented!(),
+        _ => Err(Error::new(t.span(), "unsupported type"))?,
     }
 }
