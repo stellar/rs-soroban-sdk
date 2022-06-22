@@ -41,11 +41,16 @@ impl Env {
     // should be plumbed through this type with this type doing all RawVal
     // conversion.
 
-    pub fn put_contract_data<K: IntoTryFromVal, V: IntoTryFromVal>(&self, key: K, val: V) {
+    pub fn get_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K) -> V {
+        let rv = internal::Env::get_contract_data(self, key.into_val(self));
+        V::try_from_val(&self, rv).map_err(|_| ()).unwrap()
+    }
+
+    pub fn put_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K, val: V) {
         internal::Env::put_contract_data(self, key.into_val(self), val.into_val(self));
     }
 
-    pub fn del_contract_data<K: IntoTryFromVal>(&self, key: K) {
+    pub fn del_contract_data<K: IntoVal<Env, RawVal>>(&self, key: K) {
         internal::Env::del_contract_data(self, key.into_val(self));
     }
 }
