@@ -87,7 +87,7 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
         Type::Tuple(TypeTuple { elems, .. }) => Ok(SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
             value_types: elems
                 .iter()
-                .map(|v| map_type(v))
+                .map(map_type)
                 .collect::<Result<Vec<SpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
                 .try_into()
                 .map_err(|e| {
