@@ -37,9 +37,9 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
             },
             Some(PathSegment {
                 ident,
-                arguments: PathArguments::AngleBracketed(args),
+                arguments: PathArguments::AngleBracketed(angle_bracketed),
             }) => {
-                let args = args.args.iter().collect::<Vec<_>>();
+                let args = angle_bracketed.args.iter().collect::<Vec<_>>();
                 match &ident.to_string()[..] {
                     "Option" => {
                         let t = match args.as_slice() {
@@ -90,7 +90,7 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                             value_type: Box::new(map_type(v)?),
                         })))
                     }
-                    _ => Err(Error::new(t.span(), "unsupported type, only stellar-contract-sdk types support generics in contract functions"))?,
+                    _ => Err(Error::new(angle_bracketed.span(), "generics unsupported on user-defined types in contract functions"))?,
                 }
             }
             _ => Err(Error::new(t.span(), "unsupported type"))?,
