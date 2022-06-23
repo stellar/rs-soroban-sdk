@@ -23,6 +23,11 @@ pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::Val;
 
+#[cfg(feature = "testutils")]
+pub use internal::FrameGuard;
+#[cfg(feature = "testutils")]
+use std::rc::Rc;
+
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
@@ -40,6 +45,40 @@ impl Env {
     // BigInt, etc. If there is any host fn we expect a developer to use, it
     // should be plumbed through this type with this type doing all RawVal
     // conversion.
+
+    #[cfg(feature = "testutils")]
+    pub fn with_empty_recording_storage() -> Env {
+        struct EmptySnapshotSource();
+
+        impl internal::storage::SnapshotSource for EmptySnapshotSource {
+            fn get(
+                &self,
+                _key: &xdr::LedgerKey,
+            ) -> Result<xdr::LedgerEntry, stellar_contract_env_host::HostError> {
+                Err(internal::HostError::General("not found"))
+            }
+
+            fn has(
+                &self,
+                _key: &xdr::LedgerKey,
+            ) -> Result<bool, stellar_contract_env_host::HostError> {
+                Ok(false)
+            }
+        }
+
+        let rf = Rc::new(EmptySnapshotSource());
+        let storage = internal::storage::Storage::with_recording_footprint(rf);
+        Env {
+            env_impl: internal::EnvImpl::with_storage(storage),
+        }
+    }
+
+    #[cfg(feature = "testutils")]
+    pub fn push_test_frame(&self, contract_id: FixedLengthBinary<32>) -> FrameGuard {
+        self.env_impl
+            .push_test_frame(contract_id.into_val(self))
+            .unwrap()
+    }
 
     pub fn put_contract_data<K: IntoTryFromVal, V: IntoTryFromVal>(&self, key: K, val: V) {
         internal::Env::put_contract_data(self, key.into_val(self), val.into_val(self));
