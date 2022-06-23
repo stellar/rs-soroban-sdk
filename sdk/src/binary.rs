@@ -242,3 +242,42 @@ impl<const N: u32> From<FixedLengthBinary<N>> for Binary {
         v.0
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_bin() {
+        let env = Env::default();
+
+        let mut bin = Binary::new(&env);
+        assert_eq!(bin.len(), 0);
+        bin.push(10);
+        assert_eq!(bin.len(), 1);
+        bin.push(20);
+        assert_eq!(bin.len(), 2);
+        bin.push(30);
+        assert_eq!(bin.len(), 3);
+
+        let bin_ref = &bin;
+        assert_eq!(bin_ref.len(), 3);
+
+        let mut bin_copy = bin.clone();
+        assert!(bin == bin_copy);
+        assert_eq!(bin_copy.len(), 3);
+        bin_copy.push(40);
+        assert_eq!(bin_copy.len(), 4);
+        assert!(bin != bin_copy);
+
+        assert_eq!(bin.len(), 3);
+        assert_eq!(bin_ref.len(), 3);
+
+        bin_copy.pop();
+        assert!(bin == bin_copy);
+
+        let bad_fixed: Result<FixedLengthBinary<4>, ()> = bin.try_into();
+        assert!(!bad_fixed.is_ok());
+        let _fixed: FixedLengthBinary<3> = bin_copy.try_into().unwrap();
+    }
+}
