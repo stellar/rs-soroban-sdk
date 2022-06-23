@@ -413,12 +413,13 @@ dependencies = [
  "stellar-contract-env-host",
  "stellar-contract-env-panic-handler-wasm32-unreachable",
  "stellar-contract-macros",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec)",
 ]
 
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec#2070b51d8ff5a2b4e2d048f4fb125cdebccce1f4"
+source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec#9ed7ee499114c803b20aae207befa4bd8c693b18"
 dependencies = [
  "base64",
 ]

@@ -9,6 +9,7 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", branch = "add-spec", features = ["next", "std"] }
 stellar-contract-macros = { path = "../macros" }
 
 [target.'cfg(target_family="wasm")'.dependencies]
