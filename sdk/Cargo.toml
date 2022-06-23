@@ -20,3 +20,6 @@ stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-cont
 [target.'cfg(not(target_family="wasm"))'.dependencies]
 stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "b5b0304d" }
 # stellar-contract-env-host = { path = "../../rs-stellar-contract-env/stellar-contract-env-host" }
+
+[dev-dependencies]
+trybuild = "1.0.63"
