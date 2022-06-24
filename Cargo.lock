@@ -613,7 +613,7 @@ version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=5e6bd28f#5e6bd28f2e153c5a144ede013baefa4d0e34202e"
 dependencies = [
  "static_assertions",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=36f3dba2)",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=cca41237)",
 ]
 
 [[package]]
@@ -671,7 +671,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec#dad2a6beecb7cab35b0cb77ac932b49bf7b7d7ef"
+source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec#5e80a0daae8d48293273affd18b549afb88367a4"
 dependencies = [
  "base64",
 ]

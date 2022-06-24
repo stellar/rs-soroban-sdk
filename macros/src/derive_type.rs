@@ -5,7 +5,7 @@ use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
     SpecEntry, SpecEntryUdt, SpecEntryUdtV0, SpecTypeDef, SpecUdtDef, SpecUdtStruct,
-    SpecUdtStructField, SpecUdtUnion, SpecUdtUnionCase, WriteXdr,
+    SpecUdtStructField, SpecUdtUnion, SpecUdtUnionCase, VecM, WriteXdr,
 };
 
 use crate::map_type::map_type;
@@ -33,7 +33,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             let spec_field = SpecUdtStructField {
                 name: name.clone().try_into().unwrap_or_else(|_| {
                     errors.push(Error::new(ident.span(), "struct field name too long"));
-                    vec![].try_into().unwrap()
+                    VecM::default()
                 }),
                 type_: Box::new(match map_type(&f.ty) {
                     Ok(t) => t,
@@ -125,9 +125,9 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
             let field = v.fields.iter().next();
             if let Some(f) = field {
                 let spec_case = SpecUdtUnionCase {
-                    name: name.clone().try_into().unwrap_or_else(|_| {
+                    name: name.try_into().unwrap_or_else(|_| {
                         errors.push(Error::new(ident.span(), "union case name too long"));
-                        vec![].try_into().unwrap()
+                        VecM::default()
                     }),
                     type_: Some(Box::new(match map_type(&f.ty) {
                         Ok(t) => t,
@@ -142,9 +142,9 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                 (spec_case, try_from, into)
             } else {
                 let spec_case = SpecUdtUnionCase {
-                    name: name.clone().try_into().unwrap_or_else(|_| {
+                    name: name.try_into().unwrap_or_else(|_| {
                         errors.push(Error::new(ident.span(), "union case name too long"));
-                        vec![].try_into().unwrap()
+                        VecM::default()
                     }),
                     type_: None,
                 };
