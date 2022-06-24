@@ -11,6 +11,14 @@ use stellar_contract_env_panic_handler_wasm32_unreachable as _;
 pub use stellar_contract_macros::{contractfn, contractimpl, contracttype, ContractType};
 
 mod env;
+
+// XDR is not exposed because it causes the std feature of stellar-xdr to be
+// included in the SDK because the SDK is dependent on the macros crate and the
+// macros crate uses the std feature of stellar-xdr. If we don't expose the xdr
+// in the SDK then non of the XDR functionality gets built into the resulting
+// WASM.
+// pub use env::xdr;
+
 pub use env::BitSet;
 pub use env::Env;
 pub use env::EnvVal;

@@ -9,17 +9,17 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", branch = "add-spec", features = ["next", "std"] }
 stellar-contract-macros = { path = "../macros" }
 
 [target.'cfg(target_family="wasm")'.dependencies]
-stellar-contract-env-panic-handler-wasm32-unreachable = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "5e6bd28f" }
-stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "5e6bd28f" }
+stellar-contract-env-panic-handler-wasm32-unreachable = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "42fc83ac" }
+stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "42fc83ac" }
 # stellar-contract-env-guest = { path = "../../rs-stellar-contract-env/stellar-contract-env-guest" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "5e6bd28f" }
+stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "42fc83ac" }
 # stellar-contract-env-host = { path = "../../rs-stellar-contract-env/stellar-contract-env-host" }
 
 [dev-dependencies]
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "277d41c3", features = ["std", "next"] }
 trybuild = "1.0.63"

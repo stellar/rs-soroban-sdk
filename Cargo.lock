@@ -610,16 +610,16 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=5e6bd28f#5e6bd28f2e153c5a144ede013baefa4d0e34202e"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
 dependencies = [
  "static_assertions",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=cca41237)",
+ "stellar-xdr",
 ]
 
 [[package]]
 name = "stellar-contract-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=5e6bd28f#5e6bd28f2e153c5a144ede013baefa4d0e34202e"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
 dependencies = [
  "stellar-contract-env-common",
 ]
@@ -627,7 +627,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=5e6bd28f#5e6bd28f2e153c5a144ede013baefa4d0e34202e"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
 dependencies = [
  "ed25519-dalek",
  "hex",
@@ -643,7 +643,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-panic-handler-wasm32-unreachable"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=5e6bd28f#5e6bd28f2e153c5a144ede013baefa4d0e34202e"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
 
 [[package]]
 name = "stellar-contract-macros"
@@ -652,7 +652,7 @@ dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec)",
+ "stellar-xdr",
  "syn",
 ]
 
@@ -664,22 +664,14 @@ dependencies = [
  "stellar-contract-env-host",
  "stellar-contract-env-panic-handler-wasm32-unreachable",
  "stellar-contract-macros",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec)",
+ "stellar-xdr",
  "trybuild",
 ]
 
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-spec#5e80a0daae8d48293273affd18b549afb88367a4"
-dependencies = [
- "base64",
-]
-
-[[package]]
-name = "stellar-xdr"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=cca41237#cca412374f098c9ff3960032f5a9117c1cad183b"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=277d41c3#277d41c3c1e1ebd5ad91ff3c190cdb1fe42954c7"
 dependencies = [
  "base64",
 ]
