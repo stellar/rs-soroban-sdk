@@ -12,7 +12,7 @@ use syn::{
 use crate::map_type::map_type;
 
 #[allow(clippy::too_many_lines)]
-pub fn derive_and_spec_fn(
+pub fn derive_fn(
     call: &TokenStream2,
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,

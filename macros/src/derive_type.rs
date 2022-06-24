@@ -1,17 +1,18 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{DataEnum, DataStruct, Ident};
+use syn::{DataEnum, DataStruct, Ident, Visibility};
 
-// TODO: Replace use of vecs with maps.
-// TODO: Replace use of index integers with symbols specified on fields.
+// TODO: In enums replace use of index integers with symbols.
 // TODO: Add field attribute for including/excluding fields in types.
+// TODO: Better handling of partial types and types without all their fields and
+// types with private fields.
 
 pub fn derive_type_struct(ident: &Ident, data: &DataStruct) -> TokenStream2 {
     let fields = &data.fields;
     let (try_froms, intos): (Vec<_>, Vec<_>) = fields
         .iter()
-        // .filter(|f| matches!(f.vis, Visibility::Public(_))
+        .filter(|f| matches!(f.vis, Visibility::Public(_)))
         .enumerate()
         .map(|(i, f)| {
             let ident = f

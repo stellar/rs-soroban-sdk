@@ -1,10 +1,10 @@
 extern crate proc_macro;
 
-mod derive_and_spec_fn;
+mod derive_fn;
 mod derive_type;
 mod map_type;
 
-use derive_and_spec_fn::derive_and_spec_fn;
+use derive_fn::derive_fn;
 use derive_type::{derive_type_enum, derive_type_struct};
 
 use proc_macro::TokenStream;
@@ -22,12 +22,12 @@ pub fn contractfn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
     let ident = &func.sig.ident;
     let call = quote! { #ident };
-    let derive_and_spec = derive_and_spec_fn(&call, ident, &func.sig.inputs, &func.sig.output);
+    let derived = derive_fn(&call, ident, &func.sig.inputs, &func.sig.output);
     let compile_errors = errors.iter().map(Error::to_compile_error);
     quote! {
         #func
         #(#compile_errors)*
-        #derive_and_spec
+        #derived
     }
     .into()
 }
@@ -37,7 +37,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let is_trait = imp.trait_.is_some();
     let ty = &imp.self_ty;
-    let derive_and_specs = imp
+    let derived = imp
         .items
         .iter()
         .filter_map(|i| match i {
@@ -48,40 +48,37 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         .map(|m| {
             let ident = &m.sig.ident;
             let call = quote! { <#ty>::#ident };
-            derive_and_spec_fn(&call, ident, &m.sig.inputs, &m.sig.output)
+            derive_fn(&call, ident, &m.sig.inputs, &m.sig.output)
         });
     quote! {
         #imp
-        #(#derive_and_specs)*
+        #(#derived)*
     }
     .into()
 }
 
 #[proc_macro_attribute]
 pub fn contracttype(_metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let struct_or_enum = parse_macro_input!(input as DeriveInput);
-    // let spec = if matches!(strct.vis, Visibility::Public(_)) {
-    //     let spec = spec_type(&strct.ident, &strct.fields);
-    //     Some(spec)
-    // } else {
-    //     None
-    // };
+    let input = parse_macro_input!(input as DeriveInput);
     quote! {
-        #[derive(stellar_contract_sdk::IntoTryFromVal)]
-        #struct_or_enum
-        // #spec
+        #[derive(stellar_contract_sdk::ContractType)]
+        #input
     }
     .into()
 }
 
-#[proc_macro_derive(IntoTryFromVal)]
-pub fn derive_into_try_from_val(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(ContractType)]
+pub fn derive_contract_type(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let derived = match &input.data {
         syn::Data::Struct(s) => derive_type_struct(ident, s),
         syn::Data::Enum(e) => derive_type_enum(ident, e),
-        syn::Data::Union(_) => unimplemented!(),
+        syn::Data::Union(u) => Error::new(
+            u.union_token.span(),
+            "unions are unsupported as contract types",
+        )
+        .to_compile_error(),
     };
     quote! { #derived }.into()
 }
