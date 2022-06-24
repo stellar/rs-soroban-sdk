@@ -26,14 +26,15 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                 "Bitset" => Ok(SpecTypeDef::Bitset),
                 "Status" => Ok(SpecTypeDef::Status),
                 "Binary" => Ok(SpecTypeDef::Binary),
-                s => Ok(SpecTypeDef::Udt(SpecTypeUdt {
+                s => Ok(SpecTypeDef::Udt(Box::new(SpecTypeUdt {
                     name: s.try_into().map_err(|e| {
                         Error::new(
                             t.span(),
                             format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
                         )
                     })?,
-                })),
+                    udt_def: None,
+                }))),
             },
             Some(PathSegment {
                 ident,
@@ -90,7 +91,10 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                             value_type: Box::new(map_type(v)?),
                         })))
                     }
-                    _ => Err(Error::new(angle_bracketed.span(), "generics unsupported on user-defined types in contract functions"))?,
+                    _ => Err(Error::new(
+                        angle_bracketed.span(),
+                        "generics unsupported on user-defined types in contract functions",
+                    ))?,
                 }
             }
             _ => Err(Error::new(t.span(), "unsupported type"))?,

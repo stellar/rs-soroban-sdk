@@ -71,9 +71,10 @@ pub fn contracttype(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 pub fn derive_contract_type(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
+    let gen_spec = matches!(input.vis, Visibility::Public(_));
     let derived = match &input.data {
-        syn::Data::Struct(s) => derive_type_struct(ident, s),
-        syn::Data::Enum(e) => derive_type_enum(ident, e),
+        syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec),
+        syn::Data::Enum(e) => derive_type_enum(ident, e, gen_spec),
         syn::Data::Union(u) => Error::new(
             u.union_token.span(),
             "unions are unsupported as contract types",
