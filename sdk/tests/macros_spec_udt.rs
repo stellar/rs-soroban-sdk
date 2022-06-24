@@ -48,23 +48,27 @@ fn test_spec() {
     let expect = SpecEntry::Function(SpecEntryFunction::V0(SpecEntryFunctionV0 {
         name: "add".try_into().unwrap(),
         input_types: vec![
-            SpecTypeDef::Udt(SpecTypeUdt {
+            SpecTypeDef::Udt(Box::new(SpecTypeUdt {
                 name: "Udt".try_into().unwrap(),
-            }),
-            SpecTypeDef::Udt(SpecTypeUdt {
+                udt_def: None,
+            })),
+            SpecTypeDef::Udt(Box::new(SpecTypeUdt {
                 name: "Udt".try_into().unwrap(),
-            }),
+                udt_def: None,
+            })),
         ]
         .try_into()
         .unwrap(),
         output_types: vec![SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
             value_types: vec![
-                SpecTypeDef::Udt(SpecTypeUdt {
+                SpecTypeDef::Udt(Box::new(SpecTypeUdt {
                     name: "Udt".try_into().unwrap(),
-                }),
-                SpecTypeDef::Udt(SpecTypeUdt {
+                    udt_def: None,
+                })),
+                SpecTypeDef::Udt(Box::new(SpecTypeUdt {
                     name: "Udt".try_into().unwrap(),
-                }),
+                    udt_def: None,
+                })),
             ]
             .try_into()
             .unwrap(),
