@@ -1,4 +1,4 @@
-use stellar_xdr_with_std::{
+use stellar_xdr::{
     SpecTypeDef, SpecTypeMap, SpecTypeOption, SpecTypeSet, SpecTypeTuple, SpecTypeUdt, SpecTypeVec,
 };
 use syn::{

@@ -613,7 +613,7 @@ version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
 dependencies = [
  "static_assertions",
- "stellar-xdr",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=277d41c3)",
 ]
 
 [[package]]
@@ -652,7 +652,7 @@ dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
- "stellar-xdr",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=0b8fe26)",
  "syn",
 ]
 
@@ -664,8 +664,16 @@ dependencies = [
  "stellar-contract-env-host",
  "stellar-contract-env-panic-handler-wasm32-unreachable",
  "stellar-contract-macros",
- "stellar-xdr",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=0b8fe26)",
  "trybuild",
+]
+
+[[package]]
+name = "stellar-xdr"
+version = "0.0.0"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=0b8fe26#0b8fe269f5468625294e110d496e7a24804bb9b8"
+dependencies = [
+ "base64",
 ]
 
 [[package]]

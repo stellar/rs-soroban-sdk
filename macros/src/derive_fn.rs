@@ -1,9 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr_with_std::{
-    SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr,
-};
+use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
