@@ -3,11 +3,9 @@ extern crate proc_macro;
 mod derive_and_spec_fn;
 mod derive_type;
 mod map_type;
-mod spec_type;
 
 use derive_and_spec_fn::derive_and_spec_fn;
 use derive_type::{derive_type_enum, derive_type_struct};
-use spec_type::spec_type;
 
 use proc_macro::TokenStream;
 use quote::quote;

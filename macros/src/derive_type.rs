@@ -1,14 +1,49 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::quote;
+use quote::{format_ident, quote};
 use syn::{DataEnum, DataStruct, Ident};
 
 // TODO: Replace use of vecs with maps.
 // TODO: Replace use of index integers with symbols specified on fields.
 // TODO: Add field attribute for including/excluding fields in types.
 
-pub fn derive_type_struct(_ident: &Ident, _data: &DataStruct) -> TokenStream2 {
-    todo!()
+pub fn derive_type_struct(ident: &Ident, data: &DataStruct) -> TokenStream2 {
+    let fields = &data.fields;
+    let (try_froms, intos): (Vec<_>, Vec<_>) = fields
+        .iter()
+        // .filter(|f| matches!(f.vis, Visibility::Public(_))
+        .enumerate()
+        .map(|(i, f)| {
+            let ident = f
+                .ident
+                .as_ref()
+                .map_or_else(|| format_ident!("{}", i), Ident::clone);
+            let key = ident.to_string();
+            let try_from = quote! { #ident: map.get(stellar_contract_sdk::Symbol::from_str(#key)).try_into()? };
+            let into = quote! { map.put(stellar_contract_sdk::Symbol::from_str(#key), self.#ident.into_env_val(env)) };
+            (try_from, into)
+        })
+        .multiunzip();
+    quote! {
+        impl TryFrom<EnvVal> for #ident {
+            type Error = ();
+            #[inline(always)]
+            fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
+                let map: stellar_contract_sdk::Map<stellar_contract_sdk::Symbol, EnvVal> = ev.try_into()?;
+                Ok(Self{
+                    #(#try_froms,)*
+                })
+            }
+        }
+        impl IntoEnvVal<Env, RawVal> for #ident {
+            #[inline(always)]
+            fn into_env_val(self, env: &Env) -> EnvVal {
+                let mut map = stellar_contract_sdk::Map::<stellar_contract_sdk::Symbol, EnvVal>::new(env);
+                #(#intos;)*
+                map.into()
+            }
+        }
+    }
 }
 
 pub fn derive_type_enum(ident: &Ident, data: &DataEnum) -> TokenStream2 {
