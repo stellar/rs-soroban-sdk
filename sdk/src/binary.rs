@@ -2,6 +2,30 @@ use core::cmp::Ordering;
 
 use super::{env::internal::Env as _, xdr::ScObjectType, Env, EnvObj, EnvVal, RawVal};
 
+pub trait FixedLengthBinary {
+    fn put(&mut self, i: u32, v: u8);
+
+    fn get(&self, i: u32) -> u8;
+
+    fn len(&self) -> u32;
+
+    fn front(&self) -> u8;
+
+    fn back(&self) -> u8;
+}
+
+pub trait VariableLengthBinary: FixedLengthBinary {
+    fn del(&mut self, i: u32);
+
+    fn push(&mut self, x: u8);
+
+    fn pop(&mut self);
+
+    fn insert(&mut self, i: u32, x: u8);
+
+    fn append(&mut self, other: &Binary);
+}
+
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Binary(EnvObj);
@@ -73,6 +97,96 @@ impl From<Binary> for EnvObj {
     }
 }
 
+impl FixedLengthBinary for Binary {
+    #[inline(always)]
+    fn put(&mut self, i: u32, v: u8) {
+        let v32: u32 = v.into();
+        self.0 = self
+            .env()
+            .binary_put(self.0.to_tagged(), i.into(), v32.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    fn get(&self, i: u32) -> u8 {
+        let res32: u32 = self
+            .env()
+            .binary_get(self.0.to_tagged(), i.into())
+            .try_into()
+            .unwrap();
+        res32.try_into().unwrap()
+    }
+
+    #[inline(always)]
+    fn len(&self) -> u32 {
+        self.env()
+            .binary_len(self.0.to_tagged())
+            .try_into()
+            .unwrap()
+    }
+
+    #[inline(always)]
+    fn front(&self) -> u8 {
+        let res32: u32 = self
+            .env()
+            .binary_front(self.0.to_tagged())
+            .try_into()
+            .unwrap();
+        res32.try_into().unwrap()
+    }
+
+    #[inline(always)]
+    fn back(&self) -> u8 {
+        let res32: u32 = self
+            .env()
+            .binary_back(self.0.to_tagged())
+            .try_into()
+            .unwrap();
+        res32.try_into().unwrap()
+    }
+}
+
+impl VariableLengthBinary for Binary {
+    #[inline(always)]
+    fn del(&mut self, i: u32) {
+        self.0 = self
+            .env()
+            .binary_del(self.0.to_tagged(), i.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    fn push(&mut self, x: u8) {
+        let x32: u32 = x.into();
+        self.0 = self
+            .env()
+            .binary_push(self.0.to_tagged(), x32.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    fn pop(&mut self) {
+        self.0 = self.env().binary_pop(self.0.to_tagged()).in_env(self.env());
+    }
+
+    #[inline(always)]
+    fn insert(&mut self, i: u32, x: u8) {
+        let x32: u32 = x.into();
+        self.0 = self
+            .env()
+            .binary_insert(self.0.to_tagged(), i.into(), x32.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    fn append(&mut self, other: &Binary) {
+        self.0 = self
+            .env()
+            .binary_append(self.0.to_tagged(), other.0.to_tagged())
+            .in_env(self.env());
+    }
+}
+
 impl Binary {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -85,97 +199,44 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn new(env: &Env) -> Binary {
+    fn new(env: &Env) -> Binary {
         let obj = env.binary_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
-    }
-
-    #[inline(always)]
-    pub fn put(&mut self, i: u32, v: u8) {
-        let v32: u32 = v.into();
-        self.0 = self
-            .env()
-            .binary_put(self.0.to_tagged(), i.into(), v32.into())
-            .in_env(self.env());
-    }
-
-    #[inline(always)]
-    pub fn get(&self, i: u32) -> u8 {
-        let res32: u32 = self
-            .env()
-            .binary_get(self.0.to_tagged(), i.into())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
-    }
-
-    #[inline(always)]
-    pub fn del(&mut self, i: u32) {
-        self.0 = self
-            .env()
-            .binary_del(self.0.to_tagged(), i.into())
-            .in_env(self.env());
-    }
-
-    #[inline(always)]
-    pub fn len(&self) -> u32 {
-        self.env()
-            .binary_len(self.0.to_tagged())
-            .try_into()
-            .unwrap()
-    }
-
-    pub fn push(&mut self, x: u8) {
-        let x32: u32 = x.into();
-        self.0 = self
-            .env()
-            .binary_push(self.0.to_tagged(), x32.into())
-            .in_env(self.env());
-    }
-
-    pub fn pop(&mut self) {
-        self.0 = self.env().binary_pop(self.0.to_tagged()).in_env(self.env());
-    }
-
-    pub fn front(&self) -> u8 {
-        let res32: u32 = self
-            .env()
-            .binary_front(self.0.to_tagged())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
-    }
-
-    pub fn back(&self) -> u8 {
-        let res32: u32 = self
-            .env()
-            .binary_back(self.0.to_tagged())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
-    }
-
-    pub fn insert(&mut self, i: u32, x: u8) {
-        let x32: u32 = x.into();
-        self.0 = self
-            .env()
-            .binary_insert(self.0.to_tagged(), i.into(), x32.into())
-            .in_env(self.env());
-    }
-
-    pub fn append(&mut self, other: &Binary) {
-        self.0 = self
-            .env()
-            .binary_append(self.0.to_tagged(), other.0.to_tagged())
-            .in_env(self.env());
     }
 }
 
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct FixedLengthBinary<const N: u32>(Binary);
+pub struct ArrayBinary<const N: u32>(Binary);
 
-impl<const N: u32> TryFrom<EnvVal> for FixedLengthBinary<N> {
+impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
+    #[inline(always)]
+    fn put(&mut self, i: u32, v: u8) {
+        self.0.put(i, v);
+    }
+
+    #[inline(always)]
+    fn get(&self, i: u32) -> u8 {
+        self.0.get(i)
+    }
+
+    #[inline(always)]
+    fn len(&self) -> u32 {
+        self.0.len()
+    }
+
+    #[inline(always)]
+    fn front(&self) -> u8 {
+        self.0.front()
+    }
+
+    #[inline(always)]
+    fn back(&self) -> u8 {
+        self.0.back()
+    }
+}
+
+impl<const N: u32> TryFrom<EnvVal> for ArrayBinary<N> {
     type Error = ();
 
     #[inline(always)]
@@ -185,7 +246,7 @@ impl<const N: u32> TryFrom<EnvVal> for FixedLengthBinary<N> {
     }
 }
 
-impl<const N: u32> TryFrom<EnvObj> for FixedLengthBinary<N> {
+impl<const N: u32> TryFrom<EnvObj> for ArrayBinary<N> {
     type Error = ();
 
     #[inline(always)]
@@ -195,7 +256,7 @@ impl<const N: u32> TryFrom<EnvObj> for FixedLengthBinary<N> {
     }
 }
 
-impl<const N: u32> TryFrom<Binary> for FixedLengthBinary<N> {
+impl<const N: u32> TryFrom<Binary> for ArrayBinary<N> {
     type Error = ();
 
     #[inline(always)]
@@ -208,37 +269,30 @@ impl<const N: u32> TryFrom<Binary> for FixedLengthBinary<N> {
     }
 }
 
-impl<const N: u32> AsRef<Binary> for FixedLengthBinary<N> {
+impl<const N: u32> From<ArrayBinary<N>> for RawVal {
     #[inline(always)]
-    fn as_ref(&self) -> &Binary {
-        &self.0
-    }
-}
-
-impl<const N: u32> From<FixedLengthBinary<N>> for RawVal {
-    #[inline(always)]
-    fn from(v: FixedLengthBinary<N>) -> Self {
+    fn from(v: ArrayBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<FixedLengthBinary<N>> for EnvVal {
+impl<const N: u32> From<ArrayBinary<N>> for EnvVal {
     #[inline(always)]
-    fn from(v: FixedLengthBinary<N>) -> Self {
+    fn from(v: ArrayBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<FixedLengthBinary<N>> for EnvObj {
+impl<const N: u32> From<ArrayBinary<N>> for EnvObj {
     #[inline(always)]
-    fn from(v: FixedLengthBinary<N>) -> Self {
+    fn from(v: ArrayBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<FixedLengthBinary<N>> for Binary {
+impl<const N: u32> From<ArrayBinary<N>> for Binary {
     #[inline(always)]
-    fn from(v: FixedLengthBinary<N>) -> Self {
+    fn from(v: ArrayBinary<N>) -> Self {
         v.0
     }
 }
@@ -276,8 +330,8 @@ mod test {
         bin_copy.pop();
         assert!(bin == bin_copy);
 
-        let bad_fixed: Result<FixedLengthBinary<4>, ()> = bin.try_into();
+        let bad_fixed: Result<ArrayBinary<4>, ()> = bin.try_into();
         assert!(!bad_fixed.is_ok());
-        let _fixed: FixedLengthBinary<3> = bin_copy.try_into().unwrap();
+        let _fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
     }
 }
