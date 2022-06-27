@@ -315,9 +315,9 @@ dependencies = [
 
 [[package]]
 name = "num-rational"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d41702bd167c2df5520b384281bc111a4b5efcf7fbc4c9c222c815b07e0a6a6a"
+checksum = "0638a1c9d0a3c0914158145bc76cff373a75a627e6ecbfb71cbe6f453a5a19b0"
 dependencies = [
  "autocfg",
  "num-bigint",
@@ -354,9 +354,9 @@ checksum = "eb9f9e6e233e5c4a35559a617bf40a4ec447db2e84c20b55a6f83167b7e57872"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.39"
+version = "1.0.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c54b25569025b7fc9651de43004ae593a75ad88543b17178aa5e1b9c4f15f56f"
+checksum = "dd96a1e8ed2596c337f8eae5f24924ec83f5ad5ab21ea8e455d3566c69fbcaf7"
 dependencies = [
  "unicode-ident",
 ]
@@ -395,9 +395,9 @@ checksum = "a993555f31e5a609f617c12db6250dedcac1b0a85076912c436e6fc9b2c8e6a3"
 
 [[package]]
 name = "quote"
-version = "1.0.18"
+version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1feb54ed693b93a84e14094943b84b7c4eae204c512b7ccb95ab0c66d278ad1"
+checksum = "3bcdf212e9776fbcb2d23ab029360416bb1706b1aea2d1a5ba002727cbcab804"
 dependencies = [
  "proc-macro2",
 ]
@@ -610,16 +610,16 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=0d6ace7#0d6ace7a2629b55211e64043236831fbd9986b69"
 dependencies = [
  "static_assertions",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=277d41c3)",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=0b8fe26)",
 ]
 
 [[package]]
 name = "stellar-contract-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=0d6ace7#0d6ace7a2629b55211e64043236831fbd9986b69"
 dependencies = [
  "stellar-contract-env-common",
 ]
@@ -627,7 +627,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=0d6ace7#0d6ace7a2629b55211e64043236831fbd9986b69"
 dependencies = [
  "ed25519-dalek",
  "hex",
@@ -643,7 +643,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-panic-handler-wasm32-unreachable"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=42fc83ac#42fc83acacc8d155a92d3b3aca8d917296c58704"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=0d6ace7#0d6ace7a2629b55211e64043236831fbd9986b69"
 
 [[package]]
 name = "stellar-contract-macros"
@@ -652,7 +652,7 @@ dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=0b8fe26)",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=277d41c)",
  "syn",
 ]
 
@@ -679,7 +679,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=277d41c3#277d41c3c1e1ebd5ad91ff3c190cdb1fe42954c7"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=277d41c#277d41c3c1e1ebd5ad91ff3c190cdb1fe42954c7"
 dependencies = [
  "base64",
 ]
@@ -692,9 +692,9 @@ checksum = "6bdef32e8150c2a081110b42772ffe7d7c9032b606bc226c8260fd97e0976601"
 
 [[package]]
 name = "syn"
-version = "1.0.96"
+version = "1.0.98"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0748dd251e24453cb8717f0354206b91557e4ec8703673a4b30208f2abaf1ebf"
+checksum = "c50aef8a904de4c23c788f104b7dddc7d6f79c647c7c8ce4cc8f73eb0ca773dd"
 dependencies = [
  "proc-macro2",
  "quote",

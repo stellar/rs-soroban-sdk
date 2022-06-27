@@ -9,7 +9,26 @@ edition = "2021"
 proc-macro = true
 
 [dependencies]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "0b8fe26", features = ["next", "std"] }
+
+# NB: For the time being (until we find a better solution, or abandon `no-std`
+# in the guest) we need to specify the stellar-xdr dependency for the the env
+# crate (pulled in transitively from the SDK crate) and the macros (this crate)
+# with _different versions_ of the stellar-xdr crate.
+#
+# To repeat (this is weird): ensure the rev="..." specified in this file is a
+# _different_ rev than the one specified in
+# https://github.com/stellar/rs-stellar-contract-env/blob/main/stellar-contract-env-common/Cargo.toml
+#
+# This is because the macros activate the `std` feature (as visible here) and
+# the guest crate when compiled to wasm requires _not_ activating the `std`
+# feature, to include a custom panic handler.
+#
+# If cargo resolves both dependencies to a single version of stellar-xdr, it
+# will enable the `std` feature in that "shared" version. If on the other hand
+# (as a total hack) we depend on two _different_ versions of stellar-xdr, we can
+# configure them with separate features. Which is what we're doing (for now).
+
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "277d41c", features = ["next", "std"] }
 syn = {version="1.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"

@@ -10,6 +10,7 @@ pub mod internal {
     pub type EnvImpl = Host;
 }
 
+pub use crate::binary::{ArrayBinary, Binary};
 pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::EnvBase;
@@ -40,6 +41,12 @@ impl Env {
     // BigInt, etc. If there is any host fn we expect a developer to use, it
     // should be plumbed through this type with this type doing all RawVal
     // conversion.
+
+    pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
+        let rv = internal::Env::get_invoking_contract(self).to_raw();
+        let bin = Binary::try_from_val(self, rv).map_err(|_| ()).unwrap();
+        bin.try_into().unwrap()
+    }
 
     pub fn has_contract_data<K: IntoVal<Env, RawVal>>(&self, key: K) -> bool {
         let rv = internal::Env::has_contract_data(self, key.into_val(self));
