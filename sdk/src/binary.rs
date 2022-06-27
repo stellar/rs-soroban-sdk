@@ -44,7 +44,7 @@ impl TryFrom<EnvObj> for Binary {
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::Vec) {
+        if obj.as_tagged().is_obj_type(ScObjectType::Binary) {
             Ok(unsafe { Binary::unchecked_new(obj) })
         } else {
             Err(())
