@@ -1,13 +1,18 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote, ToTokens};
+use quote::{format_ident, quote};
+use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr};
 use syn::{
-    punctuated::Punctuated, spanned::Spanned, token::Comma, Error, FnArg, Ident, PatType,
-    ReturnType, Type, TypePath,
+    punctuated::Punctuated,
+    spanned::Spanned,
+    token::{Colon, Comma},
+    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
+use crate::map_type::map_type;
+
 #[allow(clippy::too_many_lines)]
-pub fn wrap_and_spec_fn(
+pub fn derive_fn(
     call: &TokenStream2,
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
@@ -41,79 +46,94 @@ pub fn wrap_and_spec_fn(
     let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
-        .map(|a| {
+        .enumerate()
+        .map(|(i, a)| {
             match a {
                 FnArg::Typed(pat_type) => {
-                    let pat = pat_type.pat.clone();
-                    let spec = pat_type.ty.to_token_stream().to_string(); // TODO: Map types to SCType for spec.
+                    let spec = match map_type(&pat_type.ty) {
+                        Ok(spec) => spec,
+                        Err(e) => {
+                            errors.push(e);
+                            SpecTypeDef::I32
+                        }
+                    };
+                    let ident = format_ident!("arg_{}", i);
                     let arg = FnArg::Typed(PatType {
-                        attrs: Vec::new(),
-                        pat: pat_type.pat.clone(),
-                        colon_token: pat_type.colon_token,
+                        attrs: vec![],
+                        pat: Box::new(Pat::Ident(PatIdent{ ident: ident.clone(), attrs: vec![], by_ref: None, mutability: None, subpat: None })),
+                        colon_token: Colon::default(),
                         ty: Box::new(Type::Verbatim(quote! { stellar_contract_sdk::RawVal })),
                     });
                     let call = quote! {
                         <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(
-                            &__e,
-                            #pat
+                            &env,
+                            #ident
                         ).unwrap()
                     };
                     (spec, arg, call)
                 }
                 FnArg::Receiver(_) => {
-                    errors.push(syn::Error::new(
+                    errors.push(Error::new(
                         a.span(),
                         "self argument not supported",
                     ));
-                    ("".to_string(), a.clone(), quote! { })
+                    (SpecTypeDef::I32, a.clone(), quote! { })
                 }
             }
         }).multiunzip();
 
     // Prepare the output.
     let spec_result = match output {
-        // TODO: Map types to SCType.
-        ReturnType::Default => "()".to_string(),
-        ReturnType::Type(_, ty) => ty.to_token_stream().to_string(),
+        ReturnType::Type(_, ty) => vec![match map_type(ty) {
+            Ok(spec) => spec,
+            Err(e) => {
+                errors.push(e);
+                SpecTypeDef::I32
+            }
+        }],
+        ReturnType::Default => vec![],
     };
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
-        let compile_errors = errors.iter().map(syn::Error::to_compile_error);
+        let compile_errors = errors.iter().map(Error::to_compile_error);
         return quote! { #(#compile_errors)* };
     }
 
-    // Output.
+    // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
     let wrap_ident = format_ident!("__{}", ident);
     let env_call = if env_input.is_some() {
-        quote! { __e.clone(), }
+        quote! { env.clone(), }
     } else {
         quote! {}
     };
-    let spec_ident = format_ident!("__SPEC_{}", ident.to_string().to_uppercase());
-    let spec_args_str = format!(
-        // TODO: Produce XDR instead.
-        "[{}({}):{}]",
-        wrap_export_name,
-        spec_args.join(","),
-        spec_result,
-    );
-    let spec_args_bytes = spec_args_str.as_bytes();
-    let spec_args_literal = proc_macro2::Literal::byte_string(spec_args_bytes);
-    let spec_args_literal_size = spec_args_bytes.len();
+
+    // Generated code spec.
+    let spec_entry_fn = SpecEntryFunctionV0 {
+        name: wrap_export_name.clone().try_into().unwrap(),
+        input_types: spec_args.try_into().unwrap(),
+        output_types: spec_result.try_into().unwrap(),
+    };
+    let spec_entry = SpecEntry::Function(SpecEntryFunction::V0(spec_entry_fn));
+    let spec_xdr = spec_entry.to_xdr().unwrap();
+    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
+    let spec_xdr_len = spec_xdr.len();
+    let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
+
+    // Generated code.
     quote! {
         #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-        pub static #spec_ident: [u8; #spec_args_literal_size] = *#spec_args_literal;
+        pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
         #[export_name = #wrap_export_name]
-        fn #wrap_ident(__e: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+        fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
             <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                 #call(
                     #env_call
                     #(#wrap_calls),*
                 ),
-                &__e
+                &env
             )
         }
     }

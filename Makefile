@@ -23,7 +23,7 @@ build:
 
 check:
 	cargo check --all-targets
-	cargo check --target wasm32-unknown-unknown
+	cargo check --release --target wasm32-unknown-unknown
 
 watch:
 	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
