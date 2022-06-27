@@ -46,9 +46,14 @@ impl Env {
         rv.try_into().unwrap()
     }
 
-    pub fn get_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K) -> V {
+    pub fn get_contract_data<K, V>(&self, key: K) -> V
+    where
+        K: IntoVal<Env, RawVal>,
+        V: IntoTryFromVal,
+        <V as TryFrom<EnvVal>>::Error: std::fmt::Debug,
+    {
         let rv = internal::Env::get_contract_data(self, key.into_val(self));
-        V::try_from_val(&self, rv).map_err(|_| ()).unwrap()
+        V::try_from_val(&self, rv).unwrap()
     }
 
     pub fn put_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K, val: V) {
