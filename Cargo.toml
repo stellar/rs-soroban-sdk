@@ -8,6 +8,7 @@ members = [
     "examples/add_i64",
     "examples/udt",
     "examples/contract_data",
+    "examples/create_contract",
 ]
 
 [profile.dev]

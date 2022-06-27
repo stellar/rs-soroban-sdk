@@ -16,7 +16,7 @@ pub use internal::BitSet;
 pub use internal::EnvBase;
 pub use internal::IntoEnvVal;
 pub use internal::IntoVal;
-use internal::Object;
+pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::Status;
 pub use internal::Symbol;
@@ -160,6 +160,10 @@ impl Env {
         internal::Env::account_get_signer_weight(self, acc_obj, signer_obj)
             .try_into()
             .unwrap()
+    }
+    
+    pub fn create_contract_using_parent_id(&self, contract: Object, salt: Object) {
+        internal::Env::create_contract_using_parent_id(self, contract, salt);
     }
 }
 
