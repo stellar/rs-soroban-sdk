@@ -222,7 +222,7 @@ impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
 
     #[inline(always)]
     fn len(&self) -> u32 {
-        self.0.len()
+        N
     }
 
     #[inline(always)]
