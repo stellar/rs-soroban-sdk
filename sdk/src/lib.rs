@@ -28,6 +28,6 @@ mod binary;
 mod map;
 mod vec;
 pub use bigint::BigInt;
-pub use binary::{Binary, FixedLengthBinary};
+pub use binary::{ArrayBinary, Binary, FixedLengthBinary, VariableLengthBinary};
 pub use map::Map;
 pub use vec::Vec;
