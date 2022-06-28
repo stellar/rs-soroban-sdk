@@ -199,7 +199,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    fn new(env: &Env) -> Binary {
+    pub fn new(env: &Env) -> Binary {
         let obj = env.binary_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
