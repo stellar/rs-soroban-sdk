@@ -132,6 +132,35 @@ impl Env {
             .try_into()
             .unwrap()
     }
+
+    pub fn account_get_low_threshold(&self, acc: Binary) -> u32 {
+        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
+        internal::Env::account_get_low_threshold(self, acc_obj)
+            .try_into()
+            .unwrap()
+    }
+
+    pub fn account_get_medium_threshold(&self, acc: Binary) -> u32 {
+        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
+        internal::Env::account_get_medium_threshold(self, acc_obj)
+            .try_into()
+            .unwrap()
+    }
+
+    pub fn account_get_high_threshold(&self, acc: Binary) -> u32 {
+        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
+        internal::Env::account_get_high_threshold(self, acc_obj)
+            .try_into()
+            .unwrap()
+    }
+
+    pub fn account_get_signer_weight(&self, acc: Binary, signer: Binary) -> u32 {
+        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
+        let signer_obj: Object = RawVal::from(signer).try_into().unwrap();
+        internal::Env::account_get_signer_weight(self, acc_obj, signer_obj)
+            .try_into()
+            .unwrap()
+    }
 }
 
 impl internal::EnvBase for Env {
