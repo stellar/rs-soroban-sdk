@@ -10,7 +10,7 @@ pub mod internal {
     pub type EnvImpl = Host;
 }
 
-pub use crate::binary::{ArrayBinary, Binary};
+pub use crate::binary::{ArrayBinary, Binary, FixedLengthBinary};
 pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::EnvBase;
@@ -103,6 +103,34 @@ impl Env {
 
     pub fn del_contract_data<K: IntoVal<Env, RawVal>>(&self, key: K) {
         internal::Env::del_contract_data(self, key.into_val(self));
+    }
+
+    pub fn serialize_to_binary<V: IntoTryFromVal>(&self, val: V) -> Binary {
+        let val_obj: Object = val.into_val(self).try_into().unwrap();
+        let bin_obj = internal::Env::serialize_to_binary(self, val_obj);
+        bin_obj.in_env(self).try_into().unwrap()
+    }
+
+    pub fn deserialize_from_binary<V: IntoTryFromVal>(&self, bin: Binary) -> V {
+        let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
+        let val_obj = internal::Env::deserialize_from_binary(self, bin_obj);
+        V::try_from_val(&self, val_obj.into_val(self))
+            .map_err(|_| ())
+            .unwrap()
+    }
+
+    pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
+        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into_val(self));
+        bin_obj.in_env(self).try_into().unwrap()
+    }
+
+    pub fn verify_sig_ed25519(&self, sig: Binary, pk: Binary, msg: Binary) -> bool {
+        let sig_obj: Object = RawVal::from(sig).try_into().unwrap();
+        let pk_obj: Object = RawVal::from(pk).try_into().unwrap();
+        let msg_obj: Object = RawVal::from(msg).try_into().unwrap();
+        internal::Env::verify_sig_ed25519(self, msg_obj, pk_obj, sig_obj)
+            .try_into()
+            .unwrap()
     }
 }
 
