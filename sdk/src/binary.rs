@@ -199,7 +199,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    fn new(env: &Env) -> Binary {
+    pub fn new(env: &Env) -> Binary {
         let obj = env.binary_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
@@ -208,6 +208,26 @@ impl Binary {
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct ArrayBinary<const N: u32>(Binary);
+
+impl<const N: u32> Eq for ArrayBinary<N> {}
+
+impl<const N: u32> PartialEq for ArrayBinary<N> {
+    fn eq(&self, other: &Self) -> bool {
+        self.partial_cmp(other) == Some(Ordering::Equal)
+    }
+}
+
+impl<const N: u32> PartialOrd for ArrayBinary<N> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(Ord::cmp(self, other))
+    }
+}
+
+impl<const N: u32> Ord for ArrayBinary<N> {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        self.0.cmp(&other.0)
+    }
+}
 
 impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
     #[inline(always)]
