@@ -1,7 +1,8 @@
 use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, Env, EnvObj, EnvVal, IntoTryFromVal, RawVal,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
+    IntoTryFromVal, RawVal,
 };
 
 #[derive(Clone)]
@@ -32,7 +33,7 @@ impl<T: IntoTryFromVal> Ord for Vec<T> {
 }
 
 impl<T: IntoTryFromVal> TryFrom<EnvVal> for Vec<T> {
-    type Error = ();
+    type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
@@ -42,14 +43,14 @@ impl<T: IntoTryFromVal> TryFrom<EnvVal> for Vec<T> {
 }
 
 impl<T: IntoTryFromVal> TryFrom<EnvObj> for Vec<T> {
-    type Error = ();
+    type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::Vec) {
             Ok(unsafe { Vec::<T>::unchecked_new(obj) })
         } else {
-            Err(())
+            Err(ConversionError {})
         }
     }
 }
