@@ -75,7 +75,7 @@ impl Env {
     }
 
     #[cfg(feature = "testutils")]
-    pub fn push_test_frame(&self, contract_id: FixedLengthBinary<32>) -> FrameGuard {
+    pub fn push_test_frame(&self, contract_id: ArrayBinary<32>) -> FrameGuard {
         self.env_impl
             .push_test_frame(contract_id.into_val(self))
             .unwrap()
