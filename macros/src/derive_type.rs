@@ -82,7 +82,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         #spec_gen
 
         impl TryFrom<EnvVal> for #ident {
-            type Error = ();
+            type Error = ConversionError;
             #[inline(always)]
             fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
                 let map: stellar_contract_sdk::Map<stellar_contract_sdk::Symbol, EnvVal> = ev.try_into()?;
@@ -187,13 +187,13 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
         #spec_gen
 
         impl TryFrom<EnvVal> for #ident {
-            type Error = ();
+            type Error = ConversionError;
             #[inline(always)]
             fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
                 let (discriminant, value): (u32, EnvVal) = ev.try_into()?;
                 let v = match discriminant {
                     #(#try_froms,)*
-                    _ => Err(())?
+                    _ => Err(ConversionError{})?
                 };
                 Ok(v)
             }

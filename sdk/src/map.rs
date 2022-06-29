@@ -1,8 +1,8 @@
 use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, Env, EnvObj, EnvVal, IntoTryFromVal, RawVal,
-    TryFromVal, Vec,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
+    IntoTryFromVal, RawVal, TryFromVal, Vec,
 };
 
 #[repr(transparent)]
@@ -33,7 +33,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Ord for Map<K, V> {
 }
 
 impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V> {
-    type Error = ();
+    type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
@@ -43,14 +43,14 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V> {
 }
 
 impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
-    type Error = ();
+    type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::Map) {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
-            Err(())
+            Err(ConversionError {})
         }
     }
 }
