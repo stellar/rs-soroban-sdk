@@ -3,14 +3,17 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{env::internal::Env as _, Env, EnvBase, EnvObj, EnvVal, RawVal, TryFromVal};
+use super::{
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvBase, EnvObj, EnvVal,
+    RawVal, TryFromVal,
+};
 
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct BigInt(EnvObj);
 
 impl TryFrom<EnvVal> for BigInt {
-    type Error = ();
+    type Error = ConversionError;
 
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.clone().try_into()?;
@@ -19,15 +22,14 @@ impl TryFrom<EnvVal> for BigInt {
 }
 
 impl TryFrom<EnvObj> for BigInt {
-    type Error = ();
+    type Error = ConversionError;
 
-    fn try_from(_obj: EnvObj) -> Result<Self, Self::Error> {
-        todo!()
-        // if obj.as_tagged().is_obj_type(ScObjectType::Bigint) {
-        //     Ok(BigInt(obj))
-        // } else {
-        //     Err(())
-        // }
+    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
+        if obj.as_tagged().is_obj_type(ScObjectType::BigInt) {
+            Ok(BigInt(obj))
+        } else {
+            Err(ConversionError {})
+        }
     }
 }
 

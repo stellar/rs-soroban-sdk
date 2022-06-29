@@ -1,6 +1,8 @@
 use std::io::Cursor;
 
-use stellar_contract_sdk::{contractfn, Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal};
+use stellar_contract_sdk::{
+    contractfn, ConversionError, Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal,
+};
 use stellar_xdr::{
     ReadXdr, SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, SpecTypeTuple,
     SpecTypeUdt,
@@ -13,7 +15,7 @@ pub struct Udt {
 }
 
 impl TryFrom<EnvVal> for Udt {
-    type Error = ();
+    type Error = ConversionError;
 
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let (a, b): (i32, i32) = ev.try_into()?;
