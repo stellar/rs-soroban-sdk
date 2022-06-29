@@ -5,5 +5,8 @@ use stellar_contract_sdk::{contractfn, Env, Object};
 // this could be frontrun and the same salt taken.
 #[contractfn]
 pub fn create(e: Env, c: Object, s: Object) {
-    e.create_contract_using_parent_id(c, s)
+    e.create_contract_using_parent_id(
+        c.in_env(&e).try_into().unwrap(),
+        s.in_env(&e).try_into().unwrap(),
+    )
 }

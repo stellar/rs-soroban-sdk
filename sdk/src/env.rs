@@ -161,9 +161,11 @@ impl Env {
             .try_into()
             .unwrap()
     }
-    
-    pub fn create_contract_using_parent_id(&self, contract: Object, salt: Object) {
-        internal::Env::create_contract_using_parent_id(self, contract, salt);
+
+    pub fn create_contract_using_parent_id(&self, contract: Binary, salt: Binary) {
+        let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
+        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
+        internal::Env::create_contract_using_parent_id(self, contract_obj, salt_obj);
     }
 }
 
