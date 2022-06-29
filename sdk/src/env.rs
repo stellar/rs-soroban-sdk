@@ -125,7 +125,7 @@ impl Env {
         bin_obj.in_env(self).try_into().unwrap()
     }
 
-    pub fn verify_sig_ed25519(&self, sig: Binary, pk: Binary, msg: Binary) -> bool {
+    pub fn verify_sig_ed25519(&self, sig: Binary, pk: Binary, msg: Binary) {
         let sig_obj: Object = RawVal::from(sig).try_into().unwrap();
         let pk_obj: Object = RawVal::from(pk).try_into().unwrap();
         let msg_obj: Object = RawVal::from(msg).try_into().unwrap();
