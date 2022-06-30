@@ -17,7 +17,7 @@ pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::IntoEnvVal;
 pub use internal::IntoVal;
-use internal::Object;
+pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::Status;
 pub use internal::Symbol;
@@ -161,6 +161,12 @@ impl Env {
         internal::Env::account_get_signer_weight(self, acc_obj, signer_obj)
             .try_into()
             .unwrap()
+    }
+
+    pub fn create_contract_using_parent_id(&self, contract: Binary, salt: Binary) {
+        let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
+        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
+        internal::Env::create_contract_using_parent_id(self, contract_obj, salt_obj);
     }
 }
 
