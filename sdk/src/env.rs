@@ -86,7 +86,7 @@ impl Env {
 
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
-        let bin = Binary::try_from_val(self, rv).map_err(|_| ()).unwrap();
+        let bin = Binary::try_from_val(self, rv).unwrap();
         bin.try_into().unwrap()
     }
 
@@ -117,12 +117,13 @@ impl Env {
         bin_obj.in_env(self).try_into().unwrap()
     }
 
-    pub fn deserialize_from_binary<V: IntoTryFromVal>(&self, bin: Binary) -> V {
+    pub fn deserialize_from_binary<V: IntoTryFromVal>(&self, bin: Binary) -> V
+    where
+        V::Error: Debug,
+    {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
         let val_obj = internal::Env::deserialize_from_binary(self, bin_obj);
-        V::try_from_val(self, val_obj.into_val(self))
-            .map_err(|_| ())
-            .unwrap()
+        V::try_from_val(self, val_obj.into_val(self)).unwrap()
     }
 
     pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
