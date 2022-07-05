@@ -28,7 +28,7 @@ proc-macro = true
 # (as a total hack) we depend on two _different_ versions of stellar-xdr, we can
 # configure them with separate features. Which is what we're doing (for now).
 
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "277d41c", features = ["next", "std"] }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "0b8fe26", features = ["next", "std"] }
 syn = {version="1.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
