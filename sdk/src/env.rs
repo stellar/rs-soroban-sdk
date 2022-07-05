@@ -1,3 +1,5 @@
+use core::fmt::Debug;
+
 #[cfg(target_family = "wasm")]
 pub mod internal {
     pub use stellar_contract_env_guest::*;
@@ -93,9 +95,12 @@ impl Env {
         rv.try_into().unwrap()
     }
 
-    pub fn get_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K) -> V {
+    pub fn get_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K) -> V
+    where
+        V::Error: Debug,
+    {
         let rv = internal::Env::get_contract_data(self, key.into_val(self));
-        V::try_from_val(&self, rv).map_err(|_| ()).unwrap()
+        V::try_from_val(self, rv).unwrap()
     }
 
     pub fn put_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K, val: V) {
@@ -115,7 +120,7 @@ impl Env {
     pub fn deserialize_from_binary<V: IntoTryFromVal>(&self, bin: Binary) -> V {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
         let val_obj = internal::Env::deserialize_from_binary(self, bin_obj);
-        V::try_from_val(&self, val_obj.into_val(self))
+        V::try_from_val(self, val_obj.into_val(self))
             .map_err(|_| ())
             .unwrap()
     }
