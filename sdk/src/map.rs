@@ -134,9 +134,9 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn keys(&self) -> Vec<K> {
+    pub fn keys(&self) -> Vec {
         let env = self.env();
         let vec = env.map_keys(self.0.to_tagged());
-        Vec::<K>::try_from_val(env, vec).unwrap()
+        Vec::try_from_val(env, vec).unwrap()
     }
 }
