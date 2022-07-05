@@ -197,20 +197,20 @@ impl Not for BigInt {
     }
 }
 
-impl Shl<i32> for BigInt {
+impl Shl<BigInt> for BigInt {
     type Output = BigInt;
-    fn shl(self, rhs: i32) -> Self::Output {
+    fn shl(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_shl(self.0.to_tagged(), BigInt::from_i32(env, rhs).0.to_tagged());
+        let b = env.bigint_shl(self.0.to_tagged(), rhs.0.to_tagged());
         Self::try_from_val(env, b).unwrap()
     }
 }
 
-impl Shr<i32> for BigInt {
+impl Shr<BigInt> for BigInt {
     type Output = BigInt;
-    fn shr(self, rhs: i32) -> Self::Output {
+    fn shr(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_shl(self.0.to_tagged(), BigInt::from_i32(env, rhs).0.to_tagged());
+        let b = env.bigint_shl(self.0.to_tagged(), rhs.0.to_tagged());
         Self::try_from_val(env, b).unwrap()
     }
 }
