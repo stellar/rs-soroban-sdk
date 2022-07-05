@@ -44,7 +44,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 }),
             };
             let map_key = quote! { stellar_contract_sdk::Symbol::from_str(#name) }; // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
-            let try_from = quote! { #ident: map.get(#map_key).try_into()? };
+            let try_from = quote! { #ident: map.get::<_, EnvVal>(#map_key).try_into()? };
             let into = quote! { map.put(#map_key, self.#ident.into_env_val(env)) };
             (spec_field, try_from, into)
         })
@@ -85,7 +85,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             type Error = ConversionError;
             #[inline(always)]
             fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-                let map: stellar_contract_sdk::Map<stellar_contract_sdk::Symbol, EnvVal> = ev.try_into()?;
+                let map: stellar_contract_sdk::Map = ev.try_into()?;
                 Ok(Self{
                     #(#try_froms,)*
                 })
@@ -95,7 +95,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         impl IntoEnvVal<Env, RawVal> for #ident {
             #[inline(always)]
             fn into_env_val(self, env: &Env) -> EnvVal {
-                let mut map = stellar_contract_sdk::Map::<stellar_contract_sdk::Symbol, EnvVal>::new(env);
+                let mut map = stellar_contract_sdk::Map::new(env);
                 #(#intos;)*
                 map.into()
             }

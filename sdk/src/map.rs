@@ -1,29 +1,29 @@
-use core::{cmp::Ordering, marker::PhantomData};
+use core::cmp::Ordering;
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    IntoTryFromVal, RawVal, TryFromVal, Vec,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, IntoVal,
+    RawVal, TryFromVal, Vec,
 };
 
 #[repr(transparent)]
 #[derive(Clone)]
-pub struct Map<K, V>(EnvObj, PhantomData<K>, PhantomData<V>);
+pub struct Map(EnvObj);
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> Eq for Map<K, V> {}
+impl Eq for Map {}
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialEq for Map<K, V> {
+impl PartialEq for Map {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialOrd for Map<K, V> {
+impl PartialOrd for Map {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> Ord for Map<K, V> {
+impl Ord for Map {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         let env = self.env();
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
@@ -32,7 +32,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Ord for Map<K, V> {
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V> {
+impl TryFrom<EnvVal> for Map {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -42,44 +42,44 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V> {
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
+impl TryFrom<EnvObj> for Map {
     type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::Map) {
-            Ok(Map(obj, PhantomData, PhantomData))
+            Ok(Map(obj))
         } else {
             Err(ConversionError {})
         }
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for RawVal {
+impl From<Map> for RawVal {
     #[inline(always)]
-    fn from(m: Map<K, V>) -> Self {
+    fn from(m: Map) -> Self {
         m.0.into()
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvVal {
+impl From<Map> for EnvVal {
     #[inline(always)]
-    fn from(m: Map<K, V>) -> Self {
+    fn from(m: Map) -> Self {
         m.0.into()
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
+impl From<Map> for EnvObj {
     #[inline(always)]
-    fn from(m: Map<K, V>) -> Self {
+    fn from(m: Map) -> Self {
         m.0
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
+impl Map {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
-        Self(obj, PhantomData, PhantomData)
+        Self(obj)
     }
 
     #[inline(always)]
@@ -88,34 +88,34 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn new(env: &Env) -> Map<K, V> {
+    pub fn new(env: &Env) -> Map {
         let obj = env.map_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 
     #[inline(always)]
-    pub fn has(&self, k: K) -> bool {
+    pub fn has<K: IntoVal<Env, RawVal>>(&self, k: K) -> bool {
         let env = self.env();
         let has = env.map_has(self.0.to_tagged(), k.into_val(env));
         bool::try_from_val(env, has).unwrap()
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> V {
+    pub fn get<K: IntoVal<Env, RawVal>, V: TryFromVal<Env, RawVal>>(&self, k: K) -> V {
         let env = self.env();
         let v = env.map_get(self.0.to_tagged(), k.into_val(env));
         V::try_from_val(env, v).ok().unwrap()
     }
 
     #[inline(always)]
-    pub fn put(&mut self, k: K, v: V) {
+    pub fn put<K: IntoVal<Env, RawVal>, V: IntoVal<Env, RawVal>>(&mut self, k: K, v: V) {
         let env = self.env();
         let map = env.map_put(self.0.to_tagged(), k.into_val(env), v.into_val(env));
         self.0 = map.in_env(env);
     }
 
     #[inline(always)]
-    pub fn del(&mut self, k: K) {
+    pub fn del<K: IntoVal<Env, RawVal>>(&mut self, k: K) {
         let env = self.env();
         let map = env.map_del(self.0.to_tagged(), k.into_val(env));
         self.0 = map.in_env(env);
