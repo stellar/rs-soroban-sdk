@@ -9,6 +9,7 @@ members = [
     "examples/udt",
     "examples/contract_data",
     "examples/create_contract",
+    "examples/memcpy",
 ]
 
 [profile.dev]
