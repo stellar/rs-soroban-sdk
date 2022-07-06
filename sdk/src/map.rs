@@ -1,8 +1,8 @@
 use core::{cmp::Ordering, fmt::Debug};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, IntoVal,
-    RawVal, TryFromVal, Vec,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
+    IntoTryFromVal, IntoVal, RawVal, TryFromVal, Vec,
 };
 
 #[repr(transparent)]
@@ -137,7 +137,7 @@ impl Map {
     }
 
     #[inline(always)]
-    pub fn keys(&self) -> Vec {
+    pub fn keys<K: IntoTryFromVal>(&self) -> Vec<K> {
         let env = self.env();
         let vec = env.map_keys(self.0.to_tagged());
         Vec::try_from_val(env, vec).unwrap()
