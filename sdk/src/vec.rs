@@ -1,4 +1,4 @@
-use core::{cmp::Ordering, marker::PhantomData};
+use core::{cmp::Ordering, fmt::Debug, marker::PhantomData};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -93,10 +93,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> T {
+    pub fn get(&self, i: u32) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, val).ok().unwrap()
+        T::try_from_val(env, val).unwrap()
     }
 
     // TODO: Do we need to check_same_env for the env potentially stored in
@@ -143,17 +146,23 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn front(&self) -> T {
+    pub fn front(&self) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
-        T::try_from_val(env, val).ok().unwrap()
+        T::try_from_val(env, val).unwrap()
     }
 
     #[inline(always)]
-    pub fn back(&self) -> T {
+    pub fn back(&self) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, val).ok().unwrap()
+        T::try_from_val(env, val).unwrap()
     }
 
     #[inline(always)]
