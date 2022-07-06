@@ -175,19 +175,19 @@ impl Env {
         internal::Env::create_contract_using_parent_id(self, contract_obj, salt_obj);
     }
 
-    pub fn binary_new_from_linear_memory(&self, ptr: u32, l: u32) -> Binary {
-        let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), l.into());
+    pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Binary {
+        let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
-    pub fn binary_copy_to_linear_memory(&self, bin: Binary, i: u32, j: u32, l: u32) {
+    pub fn binary_copy_to_linear_memory(&self, bin: Binary, offset_ho: u32, pos_lm: u32, len: u32) {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        internal::Env::binary_copy_to_linear_memory(self, bin_obj, i.into(), j.into(), l.into());
+        internal::Env::binary_copy_to_linear_memory(self, bin_obj, offset_ho.into(), pos_lm.into(), len.into());
     }
 
-    pub fn binary_copy_from_linear_memory(&self, bin: Binary, i: u32, j: u32, l: u32) -> Binary {
+    pub fn binary_copy_from_linear_memory(&self, bin: Binary, offset_ho: u32, pos_lm: u32, len: u32) -> Binary {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        let new_obj = internal::Env::binary_copy_from_linear_memory(self, bin_obj, i.into(), j.into(), l.into());
+        let new_obj = internal::Env::binary_copy_from_linear_memory(self, bin_obj, offset_ho.into(), pos_lm.into(), len.into());
         new_obj.in_env(self).try_into().unwrap()
     }
 }
