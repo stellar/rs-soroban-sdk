@@ -40,7 +40,7 @@ impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, Raw
 
 #[derive(Clone, Default)]
 pub struct Env {
-    pub env_impl: internal::EnvImpl,
+    env_impl: internal::EnvImpl,
 }
 
 impl Env {
