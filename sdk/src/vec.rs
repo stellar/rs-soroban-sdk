@@ -1,4 +1,4 @@
-use core::cmp::Ordering;
+use core::{cmp::Ordering, fmt::Debug};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, IntoVal,
@@ -93,10 +93,13 @@ impl Vec {
     }
 
     #[inline(always)]
-    pub fn get<T: TryFromVal<Env, RawVal>>(&self, i: u32) -> T {
+    pub fn get<T: TryFromVal<Env, RawVal>>(&self, i: u32) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, val).ok().unwrap()
+        T::try_from_val(env, val).unwrap()
     }
 
     // TODO: Do we need to check_same_env for the env potentially stored in
@@ -143,17 +146,23 @@ impl Vec {
     }
 
     #[inline(always)]
-    pub fn front<T: TryFromVal<Env, RawVal>>(&self) -> T {
+    pub fn front<T: TryFromVal<Env, RawVal>>(&self) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
-        T::try_from_val(env, val).ok().unwrap()
+        T::try_from_val(env, val).unwrap()
     }
 
     #[inline(always)]
-    pub fn back<T: TryFromVal<Env, RawVal>>(&self) -> T {
+    pub fn back<T: TryFromVal<Env, RawVal>>(&self) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, val).ok().unwrap()
+        T::try_from_val(env, val).unwrap()
     }
 
     #[inline(always)]

@@ -1,4 +1,4 @@
-use core::cmp::Ordering;
+use core::{cmp::Ordering, fmt::Debug};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, IntoVal,
@@ -101,10 +101,13 @@ impl Map {
     }
 
     #[inline(always)]
-    pub fn get<K: IntoVal<Env, RawVal>, V: TryFromVal<Env, RawVal>>(&self, k: K) -> V {
+    pub fn get<K: IntoVal<Env, RawVal>, V: TryFromVal<Env, RawVal>>(&self, k: K) -> V
+    where
+        V::Error: Debug,
+    {
         let env = self.env();
         let v = env.map_get(self.0.to_tagged(), k.into_val(env));
-        V::try_from_val(env, v).ok().unwrap()
+        V::try_from_val(env, v).unwrap()
     }
 
     #[inline(always)]
