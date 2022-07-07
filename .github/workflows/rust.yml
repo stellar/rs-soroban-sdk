@@ -59,4 +59,6 @@ jobs:
       run: cargo check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --bins --tests --examples --benches
     - run: cargo build --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}
     - if: matrix.sys.test
+      run: cargo check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --features testutils
+      run: cargo test --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --features testutils
       run: cargo test --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}

@@ -1,9 +1,24 @@
-use core::{cmp::Ordering, fmt::Debug, marker::PhantomData};
+use core::{
+    cmp::Ordering,
+    fmt::Debug,
+    marker::PhantomData,
+    ops::{Bound, RangeBounds},
+};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
     IntoTryFromVal, RawVal,
 };
+
+#[macro_export]
+macro_rules! vec {
+    ($env:expr) => {
+        $crate::Vec::new($env)
+    };
+    ($env:expr, $($x:expr),+) => {
+        $crate::Vec::from_array($env, [$($x),+])
+    };
+}
 
 #[derive(Clone)]
 #[repr(transparent)]
@@ -29,6 +44,17 @@ impl<T: IntoTryFromVal> Ord for Vec<T> {
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
         let i = i32::try_from(v).unwrap();
         i.cmp(&0)
+    }
+}
+
+#[cfg(any(feature = "std", test, feature = "testutils"))]
+impl<T> Debug for Vec<T>
+where
+    T: IntoTryFromVal + Debug + Clone,
+    T::Error: Debug,
+{
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Vec({:?})", self.iter().collect::<std::vec::Vec<_>>())
     }
 }
 
@@ -90,6 +116,29 @@ impl<T: IntoTryFromVal> Vec<T> {
     pub fn new(env: &Env) -> Vec<T> {
         let obj = env.vec_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
+    }
+
+    #[inline(always)]
+    pub fn from_array<const N: usize>(env: &Env, elements: [T; N]) -> Vec<T> {
+        let obj = env.vec_new().in_env(env);
+        let mut vec = unsafe { Self::unchecked_new(obj) };
+        for e in elements {
+            vec.push(e);
+        }
+        vec
+    }
+
+    #[inline(always)]
+    pub fn from_slice(env: &Env, elements: &[T]) -> Vec<T>
+    where
+        T: Clone,
+    {
+        let obj = env.vec_new().in_env(env);
+        let mut vec = unsafe { Self::unchecked_new(obj) };
+        for e in elements {
+            vec.push(e.clone());
+        }
+        vec
     }
 
     #[inline(always)]
@@ -178,6 +227,64 @@ impl<T: IntoTryFromVal> Vec<T> {
         let vec = env.vec_append(self.0.to_tagged(), other.0.to_tagged());
         self.0 = vec.in_env(env);
     }
+
+    #[must_use]
+    pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
+        let start_bound = match r.start_bound() {
+            Bound::Included(s) => *s,
+            Bound::Excluded(s) => *s + 1,
+            Bound::Unbounded => 0,
+        };
+        let end_bound = match r.end_bound() {
+            Bound::Included(s) => *s + 1,
+            Bound::Excluded(s) => *s,
+            Bound::Unbounded => self.len(),
+        };
+        let env = self.env();
+        let vec = env.vec_slice(self.0.to_tagged(), start_bound.into(), end_bound.into());
+        let vec = vec.in_env(env);
+        unsafe { Self::unchecked_new(vec) }
+    }
+
+    pub fn iter(&self) -> VecIter<T>
+    where
+        T: Clone,
+    {
+        VecIter(self.clone())
+    }
+
+    pub fn into_iter(self) -> VecIter<T>
+    where
+        T: Clone,
+    {
+        VecIter(self)
+    }
+}
+
+pub struct VecIter<T>(Vec<T>);
+
+impl<T> VecIter<T> {
+    fn into_vec(self) -> Vec<T> {
+        self.0
+    }
+}
+
+impl<T> Iterator for VecIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.0.is_empty() {
+            None
+        } else {
+            let item = self.0.get(0);
+            self.0 = self.0.slice(1..);
+            Some(item)
+        }
+    }
 }
 
 #[cfg(test)]
@@ -255,5 +362,42 @@ mod test {
         let mut vec_outer = Vec::<Vec<i64>>::new(&env);
         vec_outer.push(vec_inner);
         assert_eq!(vec_outer.len(), 1);
+    }
+
+    #[test]
+    fn test_vec_slice() {
+        let env = Env::default();
+
+        let mut vec = Vec::<i64>::new(&env);
+        vec.push(0);
+        vec.push(1);
+        vec.push(2);
+        vec.push(3);
+        vec.push(4);
+        assert_eq!(vec.len(), 5);
+
+        let slice = vec.slice(..);
+        assert_eq!(slice, vec![&env, 0, 1, 2, 3, 4]);
+
+        let slice = vec.slice(0..5);
+        assert_eq!(slice, vec![&env, 0, 1, 2, 3, 4]);
+
+        let slice = vec.slice(0..=4);
+        assert_eq!(slice, vec![&env, 0, 1, 2, 3, 4]);
+
+        let slice = vec.slice(1..);
+        assert_eq!(slice, vec![&env, 1, 2, 3, 4]);
+
+        let slice = vec.slice(..4);
+        assert_eq!(slice, vec![&env, 0, 1, 2, 3]);
+
+        let slice = vec.slice(..=3);
+        assert_eq!(slice, vec![&env, 0, 1, 2, 3]);
+
+        let slice = vec.slice(1..4);
+        assert_eq!(slice, vec![&env, 1, 2, 3]);
+
+        let slice = vec.slice(1..=3);
+        assert_eq!(slice, vec![&env, 1, 2, 3]);
     }
 }
