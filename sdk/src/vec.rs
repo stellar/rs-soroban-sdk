@@ -412,6 +412,14 @@ mod test {
 
         let slice = vec.slice(1..=3);
         assert_eq!(slice, vec![&env, 1, 2, 3]);
+
+        // An exclusive start is technically possible due to the lack of
+        // constraints in the RangeBounds trait, however this is unlikely to
+        // happen since no syntax shorthand exists for it.
+        let slice = vec.slice((Bound::Excluded(0), Bound::Included(3)));
+        assert_eq!(slice, vec![&env, 1, 2, 3]);
+        let slice = vec.slice((Bound::Excluded(0), Bound::Excluded(3)));
+        assert_eq!(slice, vec![&env, 1, 2]);
     }
 
     #[test]
