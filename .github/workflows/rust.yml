@@ -60,4 +60,4 @@ jobs:
       run: cargo hack --feature-powerset check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --bins --tests --examples --benches
     - run: cargo build --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}
     - if: matrix.sys.test
-      run: cargo test --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}
+      run: cargo hack --feature-powerset test --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}
