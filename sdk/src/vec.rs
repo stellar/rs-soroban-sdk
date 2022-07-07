@@ -299,7 +299,7 @@ where
             None
         } else {
             let item = self.0.back();
-            self.0 = self.0.slice(..len-1);
+            self.0 = self.0.slice(..len - 1);
             Some(item)
         }
     }
