@@ -277,11 +277,29 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.0.is_empty() {
+        let len = self.0.len();
+        if len == 0 {
             None
         } else {
-            let item = self.0.get(0);
+            let item = self.0.front();
             self.0 = self.0.slice(1..);
+            Some(item)
+        }
+    }
+}
+
+impl<T> DoubleEndedIterator for VecIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let len = self.0.len();
+        if len == 0 {
+            None
+        } else {
+            let item = self.0.back();
+            self.0 = self.0.slice(..len-1);
             Some(item)
         }
     }
@@ -368,12 +386,7 @@ mod test {
     fn test_vec_slice() {
         let env = Env::default();
 
-        let mut vec = Vec::<i64>::new(&env);
-        vec.push(0);
-        vec.push(1);
-        vec.push(2);
-        vec.push(3);
-        vec.push(4);
+        let vec = vec![&env, 0, 1, 2, 3, 4];
         assert_eq!(vec.len(), 5);
 
         let slice = vec.slice(..);
@@ -399,5 +412,49 @@ mod test {
 
         let slice = vec.slice(1..=3);
         assert_eq!(slice, vec![&env, 1, 2, 3]);
+    }
+
+    #[test]
+    fn test_vec_iter() {
+        let env = Env::default();
+
+        let vec: Vec<()> = vec![&env];
+        let mut iter = vec.iter();
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+        let mut iter = vec.iter();
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+        let mut iter = vec.iter();
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.next_back(), Some(4));
+        assert_eq!(iter.next_back(), Some(3));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+        let mut iter = vec.iter().rev();
+        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next_back(), Some(0));
+        assert_eq!(iter.next_back(), Some(1));
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
     }
 }
