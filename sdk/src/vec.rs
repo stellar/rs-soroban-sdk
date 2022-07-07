@@ -47,14 +47,22 @@ impl<T: IntoTryFromVal> Ord for Vec<T> {
     }
 }
 
-#[cfg(any(feature = "std", test, feature = "testutils"))]
 impl<T> Debug for Vec<T>
 where
     T: IntoTryFromVal + Debug + Clone,
     T::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Vec({:?})", self.iter().collect::<std::vec::Vec<_>>())
+        write!(f, "Vec(")?;
+        let mut iter = self.iter();
+        if let Some(x) = iter.next() {
+            write!(f, "{:?}", x)?;
+        }
+        for x in iter {
+            write!(f, ", {:?}", x)?;
+        }
+        write!(f, ")")?;
+        Ok(())
     }
 }
 
@@ -248,15 +256,23 @@ impl<T: IntoTryFromVal> Vec<T> {
 
     pub fn iter(&self) -> VecIter<T>
     where
-        T: Clone,
+        T: IntoTryFromVal + Clone,
+        T::Error: Debug,
     {
         VecIter(self.clone())
     }
+}
 
-    pub fn into_iter(self) -> VecIter<T>
-    where
-        T: Clone,
-    {
+impl<T> IntoIterator for Vec<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+    type Item = T;
+
+    type IntoIter = VecIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
         VecIter(self)
     }
 }
