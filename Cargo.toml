@@ -8,7 +8,7 @@ members = [
     "examples/udt",
     "examples/contract_data",
     "examples/create_contract",
-    "examples/memcpy",
+    "examples/linear_memory",
 ]
 
 # Exclude proc-macro crates from the workspace so that when building the

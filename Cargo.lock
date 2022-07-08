@@ -184,7 +184,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "example_mempcy"
+name = "example_linear_memory"
 version = "0.0.0"
 dependencies = [
  "stellar-contract-sdk",
