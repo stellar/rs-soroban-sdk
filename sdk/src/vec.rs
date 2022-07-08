@@ -145,7 +145,19 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> T
+    pub fn get(&self, i: u32) -> Option<T>
+    where
+        T::Error: Debug,
+    {
+        if i < self.len() {
+            Some(self.get_unchecked(i))
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_unchecked(&self, i: u32) -> T
     where
         T::Error: Debug,
     {
@@ -188,14 +200,43 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) {
-        let env = self.env();
-        let vec = env.vec_pop(self.0.to_tagged());
-        self.0 = vec.in_env(env);
+    pub fn pop(&mut self) -> Option<T>
+    where
+        T::Error: Debug,
+    {
+        if self.is_empty() {
+            None
+        } else {
+            Some(self.pop_unchecked())
+        }
     }
 
     #[inline(always)]
-    pub fn first(&self) -> T
+    pub fn pop_unchecked(&mut self) -> T
+    where
+        T::Error: Debug,
+    {
+        let env = self.env();
+        let last = self.last_unchecked();
+        let vec = env.vec_pop(self.0.to_tagged());
+        self.0 = vec.in_env(env);
+        last
+    }
+
+    #[inline(always)]
+    pub fn first(&self) -> Option<T>
+    where
+        T::Error: Debug,
+    {
+        if self.is_empty() {
+            None
+        } else {
+            Some(self.first_unchecked())
+        }
+    }
+
+    #[inline(always)]
+    pub fn first_unchecked(&self) -> T
     where
         T::Error: Debug,
     {
@@ -205,7 +246,19 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn last(&self) -> T
+    pub fn last(&self) -> Option<T>
+    where
+        T::Error: Debug,
+    {
+        if self.is_empty() {
+            None
+        } else {
+            Some(self.last_unchecked())
+        }
+    }
+
+    #[inline(always)]
+    pub fn last_unchecked(&self) -> T
     where
         T::Error: Debug,
     {
@@ -306,7 +359,7 @@ where
         if len == 0 {
             None
         } else {
-            let item = self.0.first();
+            let item = self.0.first_unchecked();
             self.0 = self.0.slice(1..);
             Some(item)
         }
@@ -331,7 +384,7 @@ where
         if len == 0 {
             None
         } else {
-            let item = self.0.last();
+            let item = self.0.last_unchecked();
             self.0 = self.0.slice(..len - 1);
             Some(item)
         }
@@ -388,7 +441,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        vec_copy.pop();
+        vec_copy.pop_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -418,7 +471,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        vec_copy.pop();
+        vec_copy.pop_unchecked();
         assert!(vec == vec_copy);
     }
 
