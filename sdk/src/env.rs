@@ -113,7 +113,7 @@ impl Env {
 
     pub fn serialize_to_binary<V: IntoTryFromVal>(&self, val: V) -> Binary {
         let val_obj: Object = val.into_val(self).try_into().unwrap();
-        let bin_obj = internal::Env::serialize_to_binary(self, val_obj);
+        let bin_obj = internal::Env::serialize_to_binary(self, val_obj.to_raw());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
@@ -123,7 +123,7 @@ impl Env {
     {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
         let val_obj = internal::Env::deserialize_from_binary(self, bin_obj);
-        V::try_from_val(self, val_obj.into_val(self)).unwrap()
+        V::try_from_val(self, val_obj).unwrap()
     }
 
     pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
