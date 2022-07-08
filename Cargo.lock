@@ -693,14 +693,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar-xdr"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=db2ca71#db2ca7176740fbd66f9684a1d6a55dfb53a225a5"
-dependencies = [
- "base64",
-]
-
-[[package]]
 name = "subtle"
 version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
