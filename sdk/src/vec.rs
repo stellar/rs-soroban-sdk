@@ -129,22 +129,17 @@ impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
         let mut vec = Vec::<T>::new(env);
-        for item in items {
-            vec.push(item);
-        }
+        vec.extend_from_array(items);
         vec
     }
 
     #[inline(always)]
-    pub fn from_slice(env: &Env, elements: &[T]) -> Vec<T>
+    pub fn from_slice(env: &Env, items: &[T]) -> Vec<T>
     where
         T: Clone,
     {
-        let obj = env.vec_new().in_env(env);
-        let mut vec = unsafe { Self::unchecked_new(obj) };
-        for e in elements {
-            vec.push(e.clone());
-        }
+        let mut vec = Vec::<T>::new(env);
+        vec.extend_from_slice(items);
         vec
     }
 
@@ -157,9 +152,6 @@ impl<T: IntoTryFromVal> Vec<T> {
         let val = env.vec_get(self.0.to_tagged(), i.into());
         T::try_from_val(env, val).unwrap()
     }
-
-    // TODO: Do we need to check_same_env for the env potentially stored in
-    // values of T? T values may be objects containing an Env?
 
     #[inline(always)]
     pub fn put(&mut self, i: u32, v: T) {
@@ -233,6 +225,23 @@ impl<T: IntoTryFromVal> Vec<T> {
         let env = self.env();
         let vec = env.vec_append(self.0.to_tagged(), other.0.to_tagged());
         self.0 = vec.in_env(env);
+    }
+
+    #[inline(always)]
+    pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
+        for item in items {
+            self.push(item);
+        }
+    }
+
+    #[inline(always)]
+    pub fn extend_from_slice(&mut self, items: &[T])
+    where
+        T: Clone,
+    {
+        for item in items {
+            self.push(item.clone());
+        }
     }
 
     #[must_use]
