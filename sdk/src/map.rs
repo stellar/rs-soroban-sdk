@@ -134,7 +134,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn has(&self, k: K) -> bool {
+    pub fn contains_key(&self, k: K) -> bool {
         let env = self.env();
         let has = env.map_has(self.0.to_tagged(), k.into_val(env));
         bool::try_from_val(env, has).unwrap()
