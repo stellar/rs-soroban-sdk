@@ -212,6 +212,13 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
         Vec::<K>::try_from_val(env, vec).unwrap()
     }
 
+    #[inline(always)]
+    pub fn values(&self) -> Vec<V> {
+        let env = self.env();
+        let vec = env.map_values(self.0.to_tagged());
+        Vec::<V>::try_from_val(env, vec).unwrap()
+    }
+
     pub fn iter(&self) -> MapIter<K, V>
     where
         K: Clone,
