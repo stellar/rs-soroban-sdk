@@ -229,11 +229,10 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         let env = &self.0 .0.env;
-        let result = env.map_min_key(self.0 .0.to_object());
-        let key = match Status::try_from(result) {
-            Ok(_) => return None,
-            Err(ConversionError) => result,
-        };
+        let key = env.map_min_key(self.0 .0.to_object());
+        if Status::try_from(key).is_ok() {
+            return None;
+        }
         let value = env.map_get(self.0 .0.to_tagged(), key);
         self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
         Some((
@@ -252,11 +251,10 @@ where
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = &self.0 .0.env;
-        let result = env.map_max_key(self.0 .0.to_object());
-        let key = match Status::try_from(result) {
-            Ok(_) => return None,
-            Err(ConversionError) => result,
-        };
+        let key = env.map_max_key(self.0 .0.to_object());
+        if Status::try_from(key).is_ok() {
+            return None;
+        }
         let value = env.map_get(self.0 .0.to_tagged(), key);
         self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
         Some((
