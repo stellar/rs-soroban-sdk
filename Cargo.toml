@@ -3,13 +3,29 @@ resolver = "2"
 
 members = [
     "sdk",
-    "macros",
     "examples/add_i32",
     "examples/add_i64",
     "examples/udt",
     "examples/contract_data",
     "examples/create_contract",
     "examples/memcpy",
+]
+
+# Exclude proc-macro crates from the workspace so that when building the
+# workspace their dependencies do not pollute the feature selection of other
+# crates. Ordinarily when you build a proc-macro crate as a dependency of
+# another crate, the proc-macro crate's dependencies are decoupled from the
+# dependencies of other crates. This has an important side-effect of not
+# unifiying the features selected in shared dependencies. When a proc-macro
+# crate is part of a workspace and the workspace as a whole is built the
+# proc-macro is seen as a first-class crate and its dependencies, including
+# their feature selection, affects the overall dependency graph used to build
+# all crates. This has an unfortunate side-effect for proc-macro crates, like
+# 'macros', that depend on std features when other crates, like 'sdk',
+# explicitly must not depend on std. Hopefully one day this will be fixed in:
+# https://github.com/rust-lang/cargo/issues/10827
+exclude = [
+    "macros"
 ]
 
 [profile.dev]
