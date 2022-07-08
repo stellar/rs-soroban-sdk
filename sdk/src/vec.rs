@@ -128,7 +128,7 @@ impl<T: IntoTryFromVal> Vec<T> {
 
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
-        let mut vec = Vec::<T>::new(env);
+        let mut vec = Vec::new(env);
         vec.extend_from_array(items);
         vec
     }
@@ -138,7 +138,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     where
         T: Clone,
     {
-        let mut vec = Vec::<T>::new(env);
+        let mut vec = Vec::new(env);
         vec.extend_from_slice(items);
         vec
     }
