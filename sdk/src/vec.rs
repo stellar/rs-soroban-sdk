@@ -202,7 +202,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn front(&self) -> T
+    pub fn first(&self) -> T
     where
         T::Error: Debug,
     {
@@ -212,7 +212,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn back(&self) -> T
+    pub fn last(&self) -> T
     where
         T::Error: Debug,
     {
@@ -296,7 +296,7 @@ where
         if len == 0 {
             None
         } else {
-            let item = self.0.front();
+            let item = self.0.first();
             self.0 = self.0.slice(1..);
             Some(item)
         }
@@ -313,7 +313,7 @@ where
         if len == 0 {
             None
         } else {
-            let item = self.0.back();
+            let item = self.0.last();
             self.0 = self.0.slice(..len - 1);
             Some(item)
         }
