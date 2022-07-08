@@ -1,6 +1,7 @@
 use core::{
     cmp::Ordering,
     fmt::Debug,
+    iter::FusedIterator,
     marker::PhantomData,
     ops::{Bound, RangeBounds},
 };
@@ -310,6 +311,14 @@ where
             Some(item)
         }
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len() as usize;
+        (len, Some(len))
+    }
+
+    // TODO: Implement other functions as optimizations since the iterator is
+    // backed by an indexable collection.
 }
 
 impl<T> DoubleEndedIterator for VecIter<T>
@@ -326,6 +335,26 @@ where
             self.0 = self.0.slice(..len - 1);
             Some(item)
         }
+    }
+
+    // TODO: Implement other functions as optimizations since the iterator is
+    // backed by an indexable collection.
+}
+
+impl<T> FusedIterator for VecIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+}
+
+impl<T> ExactSizeIterator for VecIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+    fn len(&self) -> usize {
+        self.0.len() as usize
     }
 }
 

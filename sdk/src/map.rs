@@ -1,4 +1,4 @@
-use core::{cmp::Ordering, fmt::Debug, marker::PhantomData};
+use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -240,6 +240,13 @@ where
             V::try_from_val(env, value).unwrap(),
         ))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len() as usize;
+        (len, Some(len))
+    }
+
+    // TODO: Implement other functions as optimizations.
 }
 
 impl<K, V> DoubleEndedIterator for MapIter<K, V>
@@ -261,6 +268,29 @@ where
             K::try_from_val(env, key).unwrap(),
             V::try_from_val(env, value).unwrap(),
         ))
+    }
+
+    // TODO: Implement other functions as optimizations.
+}
+
+impl<K, V> FusedIterator for MapIter<K, V>
+where
+    K: IntoTryFromVal,
+    K::Error: Debug,
+    V: IntoTryFromVal,
+    V::Error: Debug,
+{
+}
+
+impl<K, V> ExactSizeIterator for MapIter<K, V>
+where
+    K: IntoTryFromVal,
+    K::Error: Debug,
+    V: IntoTryFromVal,
+    V::Error: Debug,
+{
+    fn len(&self) -> usize {
+        self.0.len() as usize
     }
 }
 
