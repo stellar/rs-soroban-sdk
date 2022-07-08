@@ -128,7 +128,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     pub fn from_array<const N: usize>(env: &Env, items: [(K, V); N]) -> Map<K, V> {
         let mut map = Map::<K, V>::new(env);
         for (k, v) in items {
-            map.put(k, v);
+            map.insert(k, v);
         }
         map
     }
@@ -151,14 +151,14 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn put(&mut self, k: K, v: V) {
+    pub fn insert(&mut self, k: K, v: V) {
         let env = self.env();
         let map = env.map_put(self.0.to_tagged(), k.into_val(env), v.into_val(env));
         self.0 = map.in_env(env);
     }
 
     #[inline(always)]
-    pub fn del(&mut self, k: K) {
+    pub fn remove(&mut self, k: K) {
         let env = self.env();
         let map = env.map_del(self.0.to_tagged(), k.into_val(env));
         self.0 = map.in_env(env);
