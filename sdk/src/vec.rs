@@ -162,7 +162,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn del(&mut self, i: u32) {
+    pub fn remove(&mut self, i: u32) {
         let env = self.env();
         let vec = env.vec_del(self.0.to_tagged(), i.into());
         self.0 = vec.in_env(env);
