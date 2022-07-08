@@ -141,7 +141,23 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> V
+    pub fn get(&self, k: K) -> Option<V>
+    where
+        V::Error: Debug,
+    {
+        let env = self.env();
+        let k = k.into_val(env);
+        let has = env.map_has(self.0.to_tagged(), k);
+        if bool::try_from(has).unwrap() {
+            let v = env.map_get(self.0.to_tagged(), k);
+            Some(V::try_from_val(env, v).unwrap())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_unchecked(&self, k: K) -> V
     where
         V::Error: Debug,
     {
@@ -158,7 +174,20 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, k: K) {
+    pub fn remove(&mut self, k: K) -> Option<()> {
+        let env = self.env();
+        let k = k.into_val(env);
+        let has = env.map_has(self.0.to_tagged(), k);
+        if !bool::try_from(has).unwrap() {
+            return None;
+        }
+        let map = env.map_del(self.0.to_tagged(), k);
+        self.0 = map.in_env(env);
+        Some(())
+    }
+
+    #[inline(always)]
+    pub fn remove_unchecked(&mut self, k: K) {
         let env = self.env();
         let map = env.map_del(self.0.to_tagged(), k.into_val(env));
         self.0 = map.in_env(env);
@@ -312,8 +341,8 @@ mod test {
 
         let map: Map<u32, bool> = map![&env, (1, true), (2, false)];
         assert_eq!(map.len(), 2);
-        assert!(map.get(1));
-        assert!(!map.get(2));
+        assert!(map.get_unchecked(1));
+        assert!(!map.get_unchecked(2));
     }
 
     #[test]
