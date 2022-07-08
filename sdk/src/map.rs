@@ -2,8 +2,18 @@ use core::{cmp::Ordering, fmt::Debug, marker::PhantomData};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    IntoTryFromVal, RawVal, TryFromVal, Vec,
+    IntoTryFromVal, RawVal, Status, TryFromVal, Vec,
 };
+
+#[macro_export]
+macro_rules! map {
+    ($env:expr) => {
+        $crate::Map::new($env)
+    };
+    ($env:expr, $(($k:expr, $v:expr)),+) => {
+        $crate::Map::from_array($env, [$(($k, $v)),+])
+    };
+}
 
 #[repr(transparent)]
 #[derive(Clone)]
@@ -29,6 +39,27 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Ord for Map<K, V> {
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
         let i = i32::try_from(v).unwrap();
         i.cmp(&0)
+    }
+}
+
+impl<K, V> Debug for Map<K, V>
+where
+    K: IntoTryFromVal + Debug + Clone,
+    K::Error: Debug,
+    V: IntoTryFromVal + Debug + Clone,
+    V::Error: Debug,
+{
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Map(")?;
+        let mut iter = self.iter();
+        if let Some(x) = iter.next() {
+            write!(f, "{:?}", x)?;
+        }
+        for x in iter {
+            write!(f, ", {:?}", x)?;
+        }
+        write!(f, ")")?;
+        Ok(())
     }
 }
 
@@ -94,6 +125,15 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
+    pub fn from_array<const N: usize>(env: &Env, items: [(K, V); N]) -> Map<K, V> {
+        let mut map = Map::<K, V>::new(env);
+        for (k, v) in items {
+            map.put(k, v);
+        }
+        map
+    }
+
+    #[inline(always)]
     pub fn has(&self, k: K) -> bool {
         let env = self.env();
         let has = env.map_has(self.0.to_tagged(), k.into_val(env));
@@ -141,5 +181,153 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
         let env = self.env();
         let vec = env.map_keys(self.0.to_tagged());
         Vec::<K>::try_from_val(env, vec).unwrap()
+    }
+
+    pub fn iter(&self) -> MapIter<K, V>
+    where
+        K: Clone,
+        K::Error: Debug,
+        V: Clone,
+        V::Error: Debug,
+    {
+        self.clone().into_iter()
+    }
+}
+
+impl<K, V> IntoIterator for Map<K, V>
+where
+    K: IntoTryFromVal,
+    K::Error: Debug,
+    V: IntoTryFromVal,
+    V::Error: Debug,
+{
+    type Item = (K, V);
+    type IntoIter = MapIter<K, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        MapIter(self)
+    }
+}
+
+#[derive(Clone)]
+pub struct MapIter<K, V>(Map<K, V>);
+
+impl<K, V> MapIter<K, V> {
+    fn into_map(self) -> Map<K, V> {
+        self.0
+    }
+}
+
+impl<K, V> Iterator for MapIter<K, V>
+where
+    K: IntoTryFromVal,
+    K::Error: Debug,
+    V: IntoTryFromVal,
+    V::Error: Debug,
+{
+    type Item = (K, V);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let env = &self.0 .0.env;
+        let result = env.map_min_key(self.0 .0.to_object());
+        let key = match Status::try_from(result) {
+            Ok(_) => return None,
+            Err(ConversionError) => result,
+        };
+        let value = env.map_get(self.0 .0.to_tagged(), key);
+        self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
+        Some((
+            K::try_from_val(env, key).unwrap(),
+            V::try_from_val(env, value).unwrap(),
+        ))
+    }
+}
+
+impl<K, V> DoubleEndedIterator for MapIter<K, V>
+where
+    K: IntoTryFromVal,
+    K::Error: Debug,
+    V: IntoTryFromVal,
+    V::Error: Debug,
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let env = &self.0 .0.env;
+        let result = env.map_max_key(self.0 .0.to_object());
+        let key = match Status::try_from(result) {
+            Ok(_) => return None,
+            Err(ConversionError) => result,
+        };
+        let value = env.map_get(self.0 .0.to_tagged(), key);
+        self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
+        Some((
+            K::try_from_val(env, key).unwrap(),
+            V::try_from_val(env, value).unwrap(),
+        ))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_empty() {
+        let env = Env::default();
+
+        let map: Map<(), ()> = map![&env];
+        assert_eq!(map.len(), 0);
+    }
+
+    #[test]
+    fn test_raw_vals() {
+        let env = Env::default();
+
+        let map: Map<u32, bool> = map![&env, (1, true), (2, false)];
+        assert_eq!(map.len(), 2);
+        assert!(map.get(1));
+        assert!(!map.get(2));
+    }
+
+    #[test]
+    fn test_iter() {
+        let env = Env::default();
+
+        let map: Map<(), ()> = map![&env];
+        let mut iter = map.iter();
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let map = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+
+        let mut iter = map.iter();
+        assert_eq!(iter.next(), Some((0, 0)));
+        assert_eq!(iter.next(), Some((1, 10)));
+        assert_eq!(iter.next(), Some((2, 20)));
+        assert_eq!(iter.next(), Some((3, 30)));
+        assert_eq!(iter.next(), Some((4, 40)));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let mut iter = map.iter();
+        assert_eq!(iter.next(), Some((0, 0)));
+        assert_eq!(iter.next_back(), Some((4, 40)));
+        assert_eq!(iter.next_back(), Some((3, 30)));
+        assert_eq!(iter.next(), Some((1, 10)));
+        assert_eq!(iter.next(), Some((2, 20)));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let mut iter = map.iter().rev();
+        assert_eq!(iter.next(), Some((4, 40)));
+        assert_eq!(iter.next_back(), Some((0, 0)));
+        assert_eq!(iter.next_back(), Some((1, 10)));
+        assert_eq!(iter.next(), Some((3, 30)));
+        assert_eq!(iter.next(), Some((2, 20)));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
     }
 }

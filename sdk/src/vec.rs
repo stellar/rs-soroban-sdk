@@ -127,11 +127,10 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn from_array<const N: usize>(env: &Env, elements: [T; N]) -> Vec<T> {
-        let obj = env.vec_new().in_env(env);
-        let mut vec = unsafe { Self::unchecked_new(obj) };
-        for e in elements {
-            vec.push(e);
+    pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
+        let mut vec = Vec::<T>::new(env);
+        for item in items {
+            vec.push(item);
         }
         vec
     }
@@ -259,7 +258,7 @@ impl<T: IntoTryFromVal> Vec<T> {
         T: IntoTryFromVal + Clone,
         T::Error: Debug,
     {
-        VecIter(self.clone())
+        self.clone().into_iter()
     }
 }
 
@@ -269,7 +268,6 @@ where
     T::Error: Debug,
 {
     type Item = T;
-
     type IntoIter = VecIter<T>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -277,6 +275,7 @@ where
     }
 }
 
+#[derive(Clone)]
 pub struct VecIter<T>(Vec<T>);
 
 impl<T> VecIter<T> {
@@ -448,6 +447,7 @@ mod test {
         assert_eq!(iter.next(), None);
 
         let vec = vec![&env, 0, 1, 2, 3, 4];
+
         let mut iter = vec.iter();
         assert_eq!(iter.next(), Some(0));
         assert_eq!(iter.next(), Some(1));
@@ -457,7 +457,6 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
-        let vec = vec![&env, 0, 1, 2, 3, 4];
         let mut iter = vec.iter();
         assert_eq!(iter.next(), Some(0));
         assert_eq!(iter.next_back(), Some(4));
@@ -469,7 +468,6 @@ mod test {
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
 
-        let vec = vec![&env, 0, 1, 2, 3, 4];
         let mut iter = vec.iter().rev();
         assert_eq!(iter.next(), Some(4));
         assert_eq!(iter.next_back(), Some(0));
