@@ -182,12 +182,30 @@ impl Env {
 
     pub fn binary_copy_to_linear_memory(&self, bin: Binary, b_pos: u32, lm_pos: u32, len: u32) {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        internal::Env::binary_copy_to_linear_memory(self, bin_obj, b_pos.into(), lm_pos.into(), len.into());
+        internal::Env::binary_copy_to_linear_memory(
+            self,
+            bin_obj,
+            b_pos.into(),
+            lm_pos.into(),
+            len.into(),
+        );
     }
 
-    pub fn binary_copy_from_linear_memory(&self, bin: Binary, b_pos: u32, lm_pos: u32, len: u32) -> Binary {
+    pub fn binary_copy_from_linear_memory(
+        &self,
+        bin: Binary,
+        b_pos: u32,
+        lm_pos: u32,
+        len: u32,
+    ) -> Binary {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        let new_obj = internal::Env::binary_copy_from_linear_memory(self, bin_obj, b_pos.into(), lm_pos.into(), len.into());
+        let new_obj = internal::Env::binary_copy_from_linear_memory(
+            self,
+            bin_obj,
+            b_pos.into(),
+            lm_pos.into(),
+            len.into(),
+        );
         new_obj.in_env(self).try_into().unwrap()
     }
 }
