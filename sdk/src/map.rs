@@ -192,47 +192,6 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     {
         self.clone().into_iter()
     }
-
-    fn get_val(&self, k: RawVal) -> RawVal {
-        let env = self.env();
-        env.map_get(self.0.to_tagged(), k)
-    }
-
-    fn min_key_val(&self) -> Option<RawVal> {
-        let env = self.env();
-        let result = env.map_min_key(self.0.to_object());
-        match Status::try_from(result) {
-            Ok(_) => None,
-            Err(ConversionError) => Some(result),
-        }
-    }
-
-    fn max_key_val(&self) -> Option<RawVal> {
-        let env = self.env();
-        let result = env.map_max_key(self.0.to_object());
-        match Status::try_from(result) {
-            Ok(_) => None,
-            Err(ConversionError) => Some(result),
-        }
-    }
-
-    fn next_key_val(&self, k: RawVal) -> Option<RawVal> {
-        let env = self.env();
-        let result = env.map_next_key(self.0.to_object(), k);
-        match Status::try_from(result) {
-            Ok(_) => None,
-            Err(ConversionError) => Some(result),
-        }
-    }
-
-    fn prev_key_val(&self, k: RawVal) -> Option<RawVal> {
-        let env = self.env();
-        let result = env.map_prev_key(self.0.to_object(), k);
-        match Status::try_from(result) {
-            Ok(_) => None,
-            Err(ConversionError) => Some(result),
-        }
-    }
 }
 
 impl<K, V> IntoIterator for Map<K, V>
@@ -246,24 +205,16 @@ where
     type IntoIter = MapIter<K, V>;
 
     fn into_iter(self) -> Self::IntoIter {
-        MapIter {
-            next_key: self.min_key_val(),
-            next_back_key: self.max_key_val(),
-            map: self,
-        }
+        MapIter(self)
     }
 }
 
 #[derive(Clone)]
-pub struct MapIter<K, V> {
-    map: Map<K, V>,
-    next_key: Option<RawVal>,
-    next_back_key: Option<RawVal>,
-}
+pub struct MapIter<K, V>(Map<K, V>);
 
 impl<K, V> MapIter<K, V> {
     fn into_map(self) -> Map<K, V> {
-        self.map
+        self.0
     }
 }
 
@@ -277,15 +228,18 @@ where
     type Item = (K, V);
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.next_key.map(|next_key| {
-            let env = self.map.env();
-            let next_value = self.map.get_val(next_key);
-            self.next_key = self.map.next_key_val(next_key);
-            (
-                K::try_from_val(env, next_key).unwrap(),
-                V::try_from_val(env, next_value).unwrap(),
-            )
-        })
+        let env = &self.0 .0.env;
+        let result = env.map_min_key(self.0 .0.to_object());
+        let key = match Status::try_from(result) {
+            Ok(_) => return None,
+            Err(ConversionError) => result,
+        };
+        let value = env.map_get(self.0 .0.to_tagged(), key);
+        self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
+        Some((
+            K::try_from_val(env, key).unwrap(),
+            V::try_from_val(env, value).unwrap(),
+        ))
     }
 }
 
@@ -297,15 +251,18 @@ where
     V::Error: Debug,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        self.next_back_key.map(|next_back_key| {
-            let env = self.map.env();
-            let next_back_value = self.map.get_val(next_back_key);
-            self.next_back_key = self.map.prev_key_val(next_back_key);
-            (
-                K::try_from_val(env, next_back_key).unwrap(),
-                V::try_from_val(env, next_back_value).unwrap(),
-            )
-        })
+        let env = &self.0 .0.env;
+        let result = env.map_max_key(self.0 .0.to_object());
+        let key = match Status::try_from(result) {
+            Ok(_) => return None,
+            Err(ConversionError) => result,
+        };
+        let value = env.map_get(self.0 .0.to_tagged(), key);
+        self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
+        Some((
+            K::try_from_val(env, key).unwrap(),
+            V::try_from_val(env, value).unwrap(),
+        ))
     }
 }
 
