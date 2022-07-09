@@ -145,10 +145,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>>
-    where
-        T::Error: Debug,
-    {
+    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
         if i < self.len() {
             Some(self.get_unchecked(i))
         } else {
@@ -157,10 +154,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error>
-    where
-        T::Error: Debug,
-    {
+    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
         T::try_from_val(env, val)
@@ -210,10 +204,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) -> Option<Result<T, T::Error>>
-    where
-        T::Error: Debug,
-    {
+    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
         if self.is_empty() {
             None
         } else {
@@ -222,10 +213,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> Result<T, T::Error>
-    where
-        T::Error: Debug,
-    {
+    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
         let env = self.env();
         let last = self.last_unchecked()?;
         let vec = env.vec_pop(self.0.to_tagged());
@@ -234,10 +222,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn first(&self) -> Option<Result<T, T::Error>>
-    where
-        T::Error: Debug,
-    {
+    pub fn first(&self) -> Option<Result<T, T::Error>> {
         if self.is_empty() {
             None
         } else {
@@ -246,20 +231,14 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn first_unchecked(&self) -> Result<T, T::Error>
-    where
-        T::Error: Debug,
-    {
+    pub fn first_unchecked(&self) -> Result<T, T::Error> {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
         T::try_from_val(env, val)
     }
 
     #[inline(always)]
-    pub fn last(&self) -> Option<Result<T, T::Error>>
-    where
-        T::Error: Debug,
-    {
+    pub fn last(&self) -> Option<Result<T, T::Error>> {
         if self.is_empty() {
             None
         } else {
@@ -268,10 +247,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn last_unchecked(&self) -> Result<T, T::Error>
-    where
-        T::Error: Debug,
-    {
+    pub fn last_unchecked(&self) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
         T::try_from_val(env, val)
@@ -329,7 +305,6 @@ impl<T: IntoTryFromVal> Vec<T> {
     pub fn iter(&self) -> VecIter<T>
     where
         T: IntoTryFromVal + Clone,
-        T::Error: Debug,
     {
         self.clone().into_iter()
     }
@@ -338,7 +313,6 @@ impl<T: IntoTryFromVal> Vec<T> {
 impl<T> IntoIterator for Vec<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
     type Item = Result<T, T::Error>;
     type IntoIter = VecIter<T>;
@@ -360,7 +334,6 @@ impl<T> VecIter<T> {
 impl<T> Iterator for VecIter<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
     type Item = Result<T, T::Error>;
 
@@ -387,7 +360,6 @@ where
 impl<T> DoubleEndedIterator for VecIter<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let len = self.0.len();
@@ -404,17 +376,11 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> FusedIterator for VecIter<T>
-where
-    T: IntoTryFromVal,
-    T::Error: Debug,
-{
-}
+impl<T> FusedIterator for VecIter<T> where T: IntoTryFromVal {}
 
 impl<T> ExactSizeIterator for VecIter<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
     fn len(&self) -> usize {
         self.0.len() as usize
