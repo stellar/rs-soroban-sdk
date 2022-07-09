@@ -48,6 +48,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 #ident: map
                     .get(#map_key)
                     .ok_or(ConversionError)? // TODO: Change this ConversionError into an error that indicates that the field is missing in the map.
+                    .map_err(|_| ConversionError)?
                     .try_into()?
             };
             let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
