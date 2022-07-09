@@ -107,6 +107,15 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
     }
 }
 
+#[derive(Debug, Eq, PartialEq)]
+pub enum MapGetError<V>
+where
+    V: IntoTryFromVal,
+{
+    KeyNotFound,
+    ConversionError(V::Error),
+}
+
 impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -141,15 +150,15 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> Option<Result<V, V::Error>> {
+    pub fn get(&self, k: K) -> Result<V, MapGetError<V>> {
         let env = self.env();
         let k = k.into_val(env);
         let has = env.map_has(self.0.to_tagged(), k);
         if bool::try_from(has).unwrap() {
             let v = env.map_get(self.0.to_tagged(), k);
-            Some(V::try_from_val(env, v))
+            V::try_from_val(env, v).map_err(|e| MapGetError::ConversionError(e))
         } else {
-            None
+            Err(MapGetError::KeyNotFound)
         }
     }
 
@@ -342,8 +351,9 @@ mod test {
 
         let map: Map<u32, bool> = map![&env, (1, true), (2, false)];
         assert_eq!(map.len(), 2);
-        assert_eq!(map.get(1), Some(Ok(true)));
-        assert_eq!(map.get(2), Some(Ok(false)));
+        assert_eq!(map.get(1), Ok(true));
+        assert_eq!(map.get(2), Ok(false));
+        assert_eq!(map.get(3), Err(MapGetError::KeyNotFound));
     }
 
     #[test]
