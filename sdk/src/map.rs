@@ -1,4 +1,4 @@
-use core::{cmp::Ordering, fmt::Debug, marker::PhantomData};
+use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -128,20 +128,36 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     pub fn from_array<const N: usize>(env: &Env, items: [(K, V); N]) -> Map<K, V> {
         let mut map = Map::<K, V>::new(env);
         for (k, v) in items {
-            map.put(k, v);
+            map.insert(k, v);
         }
         map
     }
 
     #[inline(always)]
-    pub fn has(&self, k: K) -> bool {
+    pub fn contains_key(&self, k: K) -> bool {
         let env = self.env();
         let has = env.map_has(self.0.to_tagged(), k.into_val(env));
         bool::try_from_val(env, has).unwrap()
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> V
+    pub fn get(&self, k: K) -> Option<V>
+    where
+        V::Error: Debug,
+    {
+        let env = self.env();
+        let k = k.into_val(env);
+        let has = env.map_has(self.0.to_tagged(), k);
+        if bool::try_from(has).unwrap() {
+            let v = env.map_get(self.0.to_tagged(), k);
+            Some(V::try_from_val(env, v).unwrap())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_unchecked(&self, k: K) -> V
     where
         V::Error: Debug,
     {
@@ -151,14 +167,27 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn put(&mut self, k: K, v: V) {
+    pub fn insert(&mut self, k: K, v: V) {
         let env = self.env();
         let map = env.map_put(self.0.to_tagged(), k.into_val(env), v.into_val(env));
         self.0 = map.in_env(env);
     }
 
     #[inline(always)]
-    pub fn del(&mut self, k: K) {
+    pub fn remove(&mut self, k: K) -> Option<()> {
+        let env = self.env();
+        let k = k.into_val(env);
+        let has = env.map_has(self.0.to_tagged(), k);
+        if !bool::try_from(has).unwrap() {
+            return None;
+        }
+        let map = env.map_del(self.0.to_tagged(), k);
+        self.0 = map.in_env(env);
+        Some(())
+    }
+
+    #[inline(always)]
+    pub fn remove_unchecked(&mut self, k: K) {
         let env = self.env();
         let map = env.map_del(self.0.to_tagged(), k.into_val(env));
         self.0 = map.in_env(env);
@@ -181,6 +210,13 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
         let env = self.env();
         let vec = env.map_keys(self.0.to_tagged());
         Vec::<K>::try_from_val(env, vec).unwrap()
+    }
+
+    #[inline(always)]
+    pub fn values(&self) -> Vec<V> {
+        let env = self.env();
+        let vec = env.map_values(self.0.to_tagged());
+        Vec::<V>::try_from_val(env, vec).unwrap()
     }
 
     pub fn iter(&self) -> MapIter<K, V>
@@ -240,6 +276,13 @@ where
             V::try_from_val(env, value).unwrap(),
         ))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len() as usize;
+        (len, Some(len))
+    }
+
+    // TODO: Implement other functions as optimizations.
 }
 
 impl<K, V> DoubleEndedIterator for MapIter<K, V>
@@ -262,6 +305,29 @@ where
             V::try_from_val(env, value).unwrap(),
         ))
     }
+
+    // TODO: Implement other functions as optimizations.
+}
+
+impl<K, V> FusedIterator for MapIter<K, V>
+where
+    K: IntoTryFromVal,
+    K::Error: Debug,
+    V: IntoTryFromVal,
+    V::Error: Debug,
+{
+}
+
+impl<K, V> ExactSizeIterator for MapIter<K, V>
+where
+    K: IntoTryFromVal,
+    K::Error: Debug,
+    V: IntoTryFromVal,
+    V::Error: Debug,
+{
+    fn len(&self) -> usize {
+        self.0.len() as usize
+    }
 }
 
 #[cfg(test)]
@@ -282,8 +348,8 @@ mod test {
 
         let map: Map<u32, bool> = map![&env, (1, true), (2, false)];
         assert_eq!(map.len(), 2);
-        assert!(map.get(1));
-        assert!(!map.get(2));
+        assert!(map.get_unchecked(1));
+        assert!(!map.get_unchecked(2));
     }
 
     #[test]

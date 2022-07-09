@@ -44,8 +44,13 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 }),
             };
             let map_key = quote! { { const k: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name); k } }; // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
-            let try_from = quote! { #ident: map.get(#map_key).try_into()? };
-            let into = quote! { map.put(#map_key, self.#ident.into_env_val(env)) };
+            let try_from = quote! {
+                #ident: map
+                    .get(#map_key)
+                    .ok_or(ConversionError)? // TODO: Change this ConversionError into an error that indicates that the field is missing in the map.
+                    .try_into()?
+            };
+            let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
             (spec_field, try_from, into)
         })
         .multiunzip();
