@@ -76,23 +76,23 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V>
 where
     K::Error: Debug,
 {
-    type Error = ConversionError<EnvVal, Map<K, V>>;
+    type Error = ConversionError<Map<K, V>>;
 
     #[inline(always)]
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into().map_err(|_| Self::Error {
-            from: PhantomData,
+        let obj: EnvObj = ev.clone().try_into().map_err(|_| Self::Error {
+            from: ev.to_raw(),
             to: PhantomData,
         })?;
-        obj.try_into().map_err(|_| Self::Error {
-            from: PhantomData,
+        obj.clone().try_into().map_err(|_| Self::Error {
+            from: obj.to_raw(),
             to: PhantomData,
         })
     }
 }
 
 impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
-    type Error = ConversionError<EnvObj, Map<K, V>>;
+    type Error = ConversionError<Map<K, V>>;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
@@ -100,7 +100,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
             Err(Self::Error {
-                from: PhantomData,
+                from: obj.to_raw(),
                 to: PhantomData,
             })
         }

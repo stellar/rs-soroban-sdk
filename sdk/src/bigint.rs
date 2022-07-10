@@ -14,29 +14,29 @@ use super::{
 pub struct BigInt(EnvObj);
 
 impl TryFrom<EnvVal> for BigInt {
-    type Error = ConversionError<EnvVal, BigInt>;
+    type Error = ConversionError<BigInt>;
 
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.clone().try_into().map_err(|_| Self::Error {
-            from: PhantomData,
+            from: ev.to_raw(),
             to: PhantomData,
         })?;
-        obj.try_into().map_err(|_| Self::Error {
-            from: PhantomData,
+        obj.clone().try_into().map_err(|_| Self::Error {
+            from: obj.to_raw(),
             to: PhantomData,
         })
     }
 }
 
 impl TryFrom<EnvObj> for BigInt {
-    type Error = ConversionError<EnvObj, BigInt>;
+    type Error = ConversionError<BigInt>;
 
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::BigInt) {
             Ok(BigInt(obj))
         } else {
             Err(Self::Error {
-                from: PhantomData,
+                from: obj.to_raw(),
                 to: PhantomData,
             })
         }

@@ -1,4 +1,4 @@
-use std::io::Cursor;
+use std::{io::Cursor, marker::PhantomData};
 
 use stellar_contract_sdk::{
     contractfn, ConversionError, Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal,
@@ -15,10 +15,13 @@ pub struct Udt {
 }
 
 impl TryFrom<EnvVal> for Udt {
-    type Error = ConversionError;
+    type Error = ConversionError<Udt>;
 
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let (a, b): (i32, i32) = ev.try_into()?;
+        let (a, b): (i32, i32) = ev.clone().try_into().map_err(|_| Self::Error {
+            from: ev.to_raw(),
+            to: PhantomData,
+        })?;
         Ok(Udt { a, b })
     }
 }
