@@ -68,24 +68,33 @@ where
 }
 
 impl<T: IntoTryFromVal> TryFrom<EnvVal> for Vec<T> {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvVal, Vec<T>>;
 
     #[inline(always)]
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
+        let obj: EnvObj = ev.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })?;
+        obj.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })
     }
 }
 
 impl<T: IntoTryFromVal> TryFrom<EnvObj> for Vec<T> {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvObj, Vec<T>>;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::Vec) {
             Ok(unsafe { Vec::<T>::unchecked_new(obj) })
         } else {
-            Err(ConversionError {})
+            Err(Self::Error {
+                from: PhantomData,
+                to: PhantomData,
+            })
         }
     }
 }

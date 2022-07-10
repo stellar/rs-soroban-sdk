@@ -1,5 +1,6 @@
 use core::{
     cmp::Ordering,
+    marker::PhantomData,
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
@@ -9,26 +10,35 @@ use super::{
 };
 
 #[repr(transparent)]
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct BigInt(EnvObj);
 
 impl TryFrom<EnvVal> for BigInt {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvVal, BigInt>;
 
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.clone().try_into()?;
-        obj.try_into()
+        let obj: EnvObj = ev.clone().try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })?;
+        obj.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })
     }
 }
 
 impl TryFrom<EnvObj> for BigInt {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvObj, BigInt>;
 
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::BigInt) {
             Ok(BigInt(obj))
         } else {
-            Err(ConversionError {})
+            Err(Self::Error {
+                from: PhantomData,
+                to: PhantomData,
+            })
         }
     }
 }

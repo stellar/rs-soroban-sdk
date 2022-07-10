@@ -19,21 +19,30 @@ macro_rules! map {
 #[derive(Clone)]
 pub struct Map<K, V>(EnvObj, PhantomData<K>, PhantomData<V>);
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> Eq for Map<K, V> {}
+impl<K: IntoTryFromVal, V: IntoTryFromVal> Eq for Map<K, V> where K::Error: Debug {}
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialEq for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialEq for Map<K, V>
+where
+    K::Error: Debug,
+{
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialOrd for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> PartialOrd for Map<K, V>
+where
+    K::Error: Debug,
+{
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> Ord for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> Ord for Map<K, V>
+where
+    K::Error: Debug,
+{
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         let env = self.env();
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
@@ -63,25 +72,37 @@ where
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V> {
-    type Error = ConversionError;
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V>
+where
+    K::Error: Debug,
+{
+    type Error = ConversionError<EnvVal, Map<K, V>>;
 
     #[inline(always)]
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
+        let obj: EnvObj = ev.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })?;
+        obj.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })
     }
 }
 
 impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvObj, Map<K, V>>;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::Map) {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
-            Err(ConversionError {})
+            Err(Self::Error {
+                from: PhantomData,
+                to: PhantomData,
+            })
         }
     }
 }
@@ -206,14 +227,22 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn keys(&self) -> Vec<K> {
+    pub fn keys(&self) -> Vec<K>
+    where
+        K: Clone + Debug,
+        K::Error: Debug,
+    {
         let env = self.env();
         let vec = env.map_keys(self.0.to_tagged());
         Vec::<K>::try_from_val(env, vec).unwrap()
     }
 
     #[inline(always)]
-    pub fn values(&self) -> Vec<V> {
+    pub fn values(&self) -> Vec<V>
+    where
+        V: Clone + Debug,
+        V::Error: Debug,
+    {
         let env = self.env();
         let vec = env.map_values(self.0.to_tagged());
         Vec::<V>::try_from_val(env, vec).unwrap()

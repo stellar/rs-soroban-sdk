@@ -38,7 +38,7 @@ pub type EnvObj = internal::EnvVal<Env, Object>;
 pub trait IntoTryFromVal: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct Env {
     env_impl: internal::EnvImpl,
 }

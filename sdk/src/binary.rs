@@ -1,4 +1,4 @@
-use core::cmp::Ordering;
+use core::{cmp::Ordering, marker::PhantomData};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,
@@ -28,7 +28,7 @@ pub trait VariableLengthBinary: FixedLengthBinary {
     fn append(&mut self, other: &Binary);
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 #[repr(transparent)]
 pub struct Binary(EnvObj);
 
@@ -56,24 +56,33 @@ impl Ord for Binary {
 }
 
 impl TryFrom<EnvVal> for Binary {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvVal, Binary>;
 
     #[inline(always)]
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
+        let obj: EnvObj = ev.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })?;
+        obj.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })
     }
 }
 
 impl TryFrom<EnvObj> for Binary {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvObj, Binary>;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_tagged().is_obj_type(ScObjectType::Binary) {
             Ok(unsafe { Binary::unchecked_new(obj) })
         } else {
-            Err(ConversionError {})
+            Err(Self::Error {
+                from: PhantomData,
+                to: PhantomData,
+            })
         }
     }
 }
@@ -207,7 +216,7 @@ impl Binary {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 #[repr(transparent)]
 pub struct ArrayBinary<const N: u32>(Binary);
 
@@ -259,34 +268,49 @@ impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
 }
 
 impl<const N: u32> TryFrom<EnvVal> for ArrayBinary<N> {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvVal, ArrayBinary<N>>;
 
     #[inline(always)]
     fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
+        let obj: EnvObj = ev.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })?;
+        obj.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })
     }
 }
 
 impl<const N: u32> TryFrom<EnvObj> for ArrayBinary<N> {
-    type Error = ConversionError;
+    type Error = ConversionError<EnvObj, ArrayBinary<N>>;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        let bin: Binary = obj.try_into()?;
-        bin.try_into()
+        let bin: Binary = obj.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })?;
+        bin.try_into().map_err(|_| Self::Error {
+            from: PhantomData,
+            to: PhantomData,
+        })
     }
 }
 
 impl<const N: u32> TryFrom<Binary> for ArrayBinary<N> {
-    type Error = ConversionError;
+    type Error = ConversionError<Binary, ArrayBinary<N>>;
 
     #[inline(always)]
     fn try_from(bin: Binary) -> Result<Self, Self::Error> {
         if bin.len() == N {
             Ok(Self(bin))
         } else {
-            Err(ConversionError {})
+            Err(Self::Error {
+                from: PhantomData,
+                to: PhantomData,
+            })
         }
     }
 }
@@ -352,7 +376,8 @@ mod test {
         bin_copy.pop();
         assert!(bin == bin_copy);
 
-        let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();
+        let bad_fixed: Result<ArrayBinary<4>, ConversionError<Binary, ArrayBinary<4>>> =
+            bin.try_into();
         assert!(!bad_fixed.is_ok());
         let _fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
     }
