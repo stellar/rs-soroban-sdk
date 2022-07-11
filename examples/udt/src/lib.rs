@@ -16,7 +16,7 @@ pub struct UdtStruct {
 }
 
 #[contractfn]
-pub fn add(e: Env, a: UdtEnum, b: UdtEnum) -> i64 {
+pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
     let a = match a {
         UdtEnum::UdtA => 0,
         UdtEnum::UdtB(udt) => udt.a + udt.b,
