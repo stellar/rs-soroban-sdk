@@ -25,7 +25,7 @@ pub fn add(e: Env, a: UdtEnum, b: UdtEnum) -> i64 {
         UdtEnum::UdtA => 0,
         UdtEnum::UdtB(udt) => udt.a + udt.b,
     };
-    s = a + b;
+    a + b
 }
 
 #[cfg(test)]
