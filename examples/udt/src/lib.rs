@@ -1,6 +1,6 @@
 #![no_std]
 use stellar_contract_sdk::{
-    contractfn, contracttype, ConversionError, Env, EnvVal, IntoEnvVal, RawVal,
+    contractfn, contracttype, vec, ConversionError, Env, EnvVal, IntoEnvVal, RawVal,
 };
 
 #[contracttype]
@@ -16,7 +16,7 @@ pub struct UdtStruct {
 }
 
 #[contractfn]
-pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
+pub fn add(e: Env, a: UdtEnum, b: UdtEnum) -> i64 {
     let a = match a {
         UdtEnum::UdtA => 0,
         UdtEnum::UdtB(udt) => udt.a + udt.b,
@@ -25,7 +25,12 @@ pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
         UdtEnum::UdtA => 0,
         UdtEnum::UdtB(udt) => udt.a + udt.b,
     };
-    a + b
+    let mut s = a + b;
+    let v = vec![&e, 0i64, 1, 2, 3, 4, 5];
+    for i in v {
+        s += i.unwrap();
+    }
+    s
 }
 
 #[cfg(test)]
