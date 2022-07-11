@@ -174,6 +174,40 @@ impl Env {
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         internal::Env::create_contract_using_parent_id(self, contract_obj, salt_obj);
     }
+
+    pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Binary {
+        let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
+        bin_obj.in_env(self).try_into().unwrap()
+    }
+
+    pub fn binary_copy_to_linear_memory(&self, bin: Binary, b_pos: u32, lm_pos: u32, len: u32) {
+        let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
+        internal::Env::binary_copy_to_linear_memory(
+            self,
+            bin_obj,
+            b_pos.into(),
+            lm_pos.into(),
+            len.into(),
+        );
+    }
+
+    pub fn binary_copy_from_linear_memory(
+        &self,
+        bin: Binary,
+        b_pos: u32,
+        lm_pos: u32,
+        len: u32,
+    ) -> Binary {
+        let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
+        let new_obj = internal::Env::binary_copy_from_linear_memory(
+            self,
+            bin_obj,
+            b_pos.into(),
+            lm_pos.into(),
+            len.into(),
+        );
+        new_obj.in_env(self).try_into().unwrap()
+    }
 }
 
 impl internal::EnvBase for Env {
