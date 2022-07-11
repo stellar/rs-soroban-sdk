@@ -111,37 +111,20 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub enum VecGetError<T>
+pub enum VecError1<T>
+where
+    T: IntoTryFromVal,
+{
+    Empty,
+    ConversionError(T::Error),
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum VecError2<T>
 where
     T: IntoTryFromVal,
 {
     OutOfBounds,
-    ConversionError(T::Error),
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub enum VecFirstError<T>
-where
-    T: IntoTryFromVal,
-{
-    Empty,
-    ConversionError(T::Error),
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub enum VecLastError<T>
-where
-    T: IntoTryFromVal,
-{
-    Empty,
-    ConversionError(T::Error),
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub enum VecPopError<T>
-where
-    T: IntoTryFromVal,
-{
     Empty,
     ConversionError(T::Error),
 }
@@ -181,13 +164,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Result<T, VecGetError<T>> {
+    pub fn get(&self, i: u32) -> Result<T, VecError2<T>> {
         if i < self.len() {
             let env = self.env();
             let val = env.vec_get(self.0.to_tagged(), i.into());
-            T::try_from_val(env, val).map_err(|e| VecGetError::ConversionError(e))
+            T::try_from_val(env, val).map_err(|e| VecError2::ConversionError(e))
         } else {
-            Err(VecGetError::OutOfBounds)
+            Err(VecError2::OutOfBounds)
         }
     }
 
@@ -209,12 +192,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, i: u32) -> Option<()> {
+    pub fn remove(&mut self, i: u32) -> Result<(), VecError2<T>> {
         if i < self.len() {
             self.remove_unchecked(i);
-            Some(())
+            Ok(())
         } else {
-            None
+            Err(VecError2::OutOfBounds)
         }
     }
 
@@ -245,41 +228,34 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) -> Result<T, VecPopError<T>> {
-        if self.is_empty() {
-            Err(VecPopError::Empty)
-        } else {
-            let env = self.env();
-            let last = self.last().map_err(|e| match e {
-                VecLastError::Empty => VecPopError::Empty,
-                VecLastError::ConversionError(e) => VecPopError::ConversionError(e),
-            })?;
-            let vec = env.vec_pop(self.0.to_tagged());
-            self.0 = vec.in_env(env);
-            Ok(last)
-        }
+    pub fn pop_back(&mut self) -> Result<T, VecError1<T>> {
+        let last = self.last()?;
+        let env = self.env();
+        let vec = env.vec_pop(self.0.to_tagged());
+        self.0 = vec.in_env(env);
+        Ok(last)
     }
 
     #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> T
+    pub fn pop_back_unchecked(&mut self) -> T
     where
         T::Error: Debug,
     {
-        let env = self.env();
         let last = self.last_unchecked();
+        let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
         self.0 = vec.in_env(env);
         last
     }
 
     #[inline(always)]
-    pub fn first(&self) -> Result<T, VecFirstError<T>> {
+    pub fn first(&self) -> Result<T, VecError1<T>> {
         if self.is_empty() {
-            Err(VecFirstError::Empty)
+            Err(VecError1::Empty)
         } else {
             let env = self.0.env();
             let val = env.vec_front(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecFirstError::ConversionError(e))
+            T::try_from_val(env, val).map_err(|e| VecError1::ConversionError(e))
         }
     }
 
@@ -291,13 +267,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn last(&self) -> Result<T, VecLastError<T>> {
+    pub fn last(&self) -> Result<T, VecError1<T>> {
         if self.is_empty() {
-            Err(VecLastError::Empty)
+            Err(VecError1::Empty)
         } else {
             let env = self.env();
             let val = env.vec_back(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecLastError::ConversionError(e))
+            T::try_from_val(env, val).map_err(|e| VecError1::ConversionError(e))
         }
     }
 
