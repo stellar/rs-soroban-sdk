@@ -451,7 +451,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_unchecked();
+        _ = vec_copy.pop_back_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -481,7 +481,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_unchecked();
+        _ = vec_copy.pop_back_unchecked();
         assert!(vec == vec_copy);
     }
 
