@@ -110,6 +110,25 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
     }
 }
 
+#[derive(Debug, Eq, PartialEq)]
+pub enum VecError1<T>
+where
+    T: IntoTryFromVal,
+{
+    Empty,
+    ConversionError(T::Error),
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum VecError2<T>
+where
+    T: IntoTryFromVal,
+{
+    OutOfBounds,
+    Empty,
+    ConversionError(T::Error),
+}
+
 impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -145,14 +164,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Option<T>
-    where
-        T::Error: Debug,
-    {
+    pub fn get(&self, i: u32) -> Result<T, VecError2<T>> {
         if i < self.len() {
-            Some(self.get_unchecked(i))
+            let env = self.env();
+            let val = env.vec_get(self.0.to_tagged(), i.into());
+            T::try_from_val(env, val).map_err(|e| VecError2::ConversionError(e))
         } else {
-            None
+            Err(VecError2::OutOfBounds)
         }
     }
 
@@ -174,12 +192,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, i: u32) -> Option<()> {
+    pub fn remove(&mut self, i: u32) -> Result<(), VecError2<T>> {
         if i < self.len() {
             self.remove_unchecked(i);
-            Some(())
+            Ok(())
         } else {
-            None
+            Err(VecError2::OutOfBounds)
         }
     }
 
@@ -210,60 +228,52 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) -> Option<T>
-    where
-        T::Error: Debug,
-    {
-        if self.is_empty() {
-            None
-        } else {
-            Some(self.pop_unchecked())
-        }
+    pub fn pop_back(&mut self) -> Result<T, VecError1<T>> {
+        let last = self.last()?;
+        let env = self.env();
+        let vec = env.vec_pop(self.0.to_tagged());
+        self.0 = vec.in_env(env);
+        Ok(last)
     }
 
     #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> T
+    pub fn pop_back_unchecked(&mut self) -> T
     where
         T::Error: Debug,
     {
-        let env = self.env();
         let last = self.last_unchecked();
+        let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
         self.0 = vec.in_env(env);
         last
     }
 
     #[inline(always)]
-    pub fn first(&self) -> Option<T>
-    where
-        T::Error: Debug,
-    {
+    pub fn first(&self) -> Result<T, VecError1<T>> {
         if self.is_empty() {
-            None
+            Err(VecError1::Empty)
         } else {
-            Some(self.first_unchecked())
+            let env = self.0.env();
+            let val = env.vec_front(self.0.to_tagged());
+            T::try_from_val(env, val).map_err(|e| VecError1::ConversionError(e))
         }
     }
 
     #[inline(always)]
-    pub fn first_unchecked(&self) -> T
-    where
-        T::Error: Debug,
-    {
+    pub fn first_unchecked(&self) -> Result<T, T::Error> {
         let env = self.0.env();
         let val = env.vec_front(self.0.to_tagged());
-        T::try_from_val(env, val).unwrap()
+        T::try_from_val(env, val)
     }
 
     #[inline(always)]
-    pub fn last(&self) -> Option<T>
-    where
-        T::Error: Debug,
-    {
+    pub fn last(&self) -> Result<T, VecError1<T>> {
         if self.is_empty() {
-            None
+            Err(VecError1::Empty)
         } else {
-            Some(self.last_unchecked())
+            let env = self.env();
+            let val = env.vec_back(self.0.to_tagged());
+            T::try_from_val(env, val).map_err(|e| VecError1::ConversionError(e))
         }
     }
 
@@ -329,7 +339,6 @@ impl<T: IntoTryFromVal> Vec<T> {
     pub fn iter(&self) -> VecIter<T>
     where
         T: IntoTryFromVal + Clone,
-        T::Error: Debug,
     {
         self.clone().into_iter()
     }
@@ -338,9 +347,8 @@ impl<T: IntoTryFromVal> Vec<T> {
 impl<T> IntoIterator for Vec<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
-    type Item = T;
+    type Item = Result<T, T::Error>;
     type IntoIter = VecIter<T>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -360,18 +368,17 @@ impl<T> VecIter<T> {
 impl<T> Iterator for VecIter<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
-    type Item = T;
+    type Item = Result<T, T::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let len = self.0.len();
         if len == 0 {
             None
         } else {
-            let item = self.0.first_unchecked();
+            let val = self.0.env().vec_front(self.0 .0.to_object());
             self.0 = self.0.slice(1..);
-            Some(item)
+            Some(T::try_from_val(self.0.env(), val))
         }
     }
 
@@ -387,16 +394,15 @@ where
 impl<T> DoubleEndedIterator for VecIter<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let len = self.0.len();
         if len == 0 {
             None
         } else {
-            let item = self.0.last_unchecked();
+            let val = self.0.env().vec_back(self.0 .0.to_object());
             self.0 = self.0.slice(..len - 1);
-            Some(item)
+            Some(T::try_from_val(self.0.env(), val))
         }
     }
 
@@ -404,17 +410,11 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> FusedIterator for VecIter<T>
-where
-    T: IntoTryFromVal,
-    T::Error: Debug,
-{
-}
+impl<T> FusedIterator for VecIter<T> where T: IntoTryFromVal {}
 
 impl<T> ExactSizeIterator for VecIter<T>
 where
     T: IntoTryFromVal,
-    T::Error: Debug,
 {
     fn len(&self) -> usize {
         self.0.len() as usize
@@ -451,7 +451,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        vec_copy.pop_unchecked();
+        _ = vec_copy.pop_back_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -481,7 +481,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        vec_copy.pop_unchecked();
+        _ = vec_copy.pop_back_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -550,31 +550,31 @@ mod test {
         let vec = vec![&env, 0, 1, 2, 3, 4];
 
         let mut iter = vec.iter();
-        assert_eq!(iter.next(), Some(0));
-        assert_eq!(iter.next(), Some(1));
-        assert_eq!(iter.next(), Some(2));
-        assert_eq!(iter.next(), Some(3));
-        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(4)));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let mut iter = vec.iter();
-        assert_eq!(iter.next(), Some(0));
-        assert_eq!(iter.next_back(), Some(4));
-        assert_eq!(iter.next_back(), Some(3));
-        assert_eq!(iter.next(), Some(1));
-        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.next_back(), Some(Ok(4)));
+        assert_eq!(iter.next_back(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Ok(2)));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
 
         let mut iter = vec.iter().rev();
-        assert_eq!(iter.next(), Some(4));
-        assert_eq!(iter.next_back(), Some(0));
-        assert_eq!(iter.next_back(), Some(1));
-        assert_eq!(iter.next(), Some(3));
-        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(Ok(4)));
+        assert_eq!(iter.next_back(), Some(Ok(0)));
+        assert_eq!(iter.next_back(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(2)));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);

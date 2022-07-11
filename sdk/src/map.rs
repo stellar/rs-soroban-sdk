@@ -107,6 +107,15 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
     }
 }
 
+#[derive(Debug, Eq, PartialEq)]
+pub enum MapGetError<V>
+where
+    V: IntoTryFromVal,
+{
+    KeyNotFound,
+    ConversionError(V::Error),
+}
+
 impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -141,18 +150,15 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> Option<V>
-    where
-        V::Error: Debug,
-    {
+    pub fn get(&self, k: K) -> Result<V, MapGetError<V>> {
         let env = self.env();
         let k = k.into_val(env);
         let has = env.map_has(self.0.to_tagged(), k);
         if bool::try_from(has).unwrap() {
             let v = env.map_get(self.0.to_tagged(), k);
-            Some(V::try_from_val(env, v).unwrap())
+            V::try_from_val(env, v).map_err(|e| MapGetError::ConversionError(e))
         } else {
-            None
+            Err(MapGetError::KeyNotFound)
         }
     }
 
@@ -222,9 +228,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     pub fn iter(&self) -> MapIter<K, V>
     where
         K: Clone,
-        K::Error: Debug,
         V: Clone,
-        V::Error: Debug,
     {
         self.clone().into_iter()
     }
@@ -233,11 +237,9 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
 impl<K, V> IntoIterator for Map<K, V>
 where
     K: IntoTryFromVal,
-    K::Error: Debug,
     V: IntoTryFromVal,
-    V::Error: Debug,
 {
-    type Item = (K, V);
+    type Item = Result<(K, V), ConversionError>;
     type IntoIter = MapIter<K, V>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -257,11 +259,9 @@ impl<K, V> MapIter<K, V> {
 impl<K, V> Iterator for MapIter<K, V>
 where
     K: IntoTryFromVal,
-    K::Error: Debug,
     V: IntoTryFromVal,
-    V::Error: Debug,
 {
-    type Item = (K, V);
+    type Item = Result<(K, V), ConversionError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let env = &self.0 .0.env;
@@ -271,10 +271,16 @@ where
         }
         let value = env.map_get(self.0 .0.to_tagged(), key);
         self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
-        Some((
-            K::try_from_val(env, key).unwrap(),
-            V::try_from_val(env, value).unwrap(),
-        ))
+        Some(Ok((
+            match K::try_from_val(env, key) {
+                Ok(k) => k,
+                Err(_) => return Some(Err(ConversionError)),
+            },
+            match V::try_from_val(env, value) {
+                Ok(v) => v,
+                Err(_) => return Some(Err(ConversionError)),
+            },
+        )))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -288,9 +294,7 @@ where
 impl<K, V> DoubleEndedIterator for MapIter<K, V>
 where
     K: IntoTryFromVal,
-    K::Error: Debug,
     V: IntoTryFromVal,
-    V::Error: Debug,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = &self.0 .0.env;
@@ -300,10 +304,16 @@ where
         }
         let value = env.map_get(self.0 .0.to_tagged(), key);
         self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
-        Some((
-            K::try_from_val(env, key).unwrap(),
-            V::try_from_val(env, value).unwrap(),
-        ))
+        Some(Ok((
+            match K::try_from_val(env, key) {
+                Ok(k) => k,
+                Err(_) => return Some(Err(ConversionError)),
+            },
+            match V::try_from_val(env, value) {
+                Ok(v) => v,
+                Err(_) => return Some(Err(ConversionError)),
+            },
+        )))
     }
 
     // TODO: Implement other functions as optimizations.
@@ -312,18 +322,14 @@ where
 impl<K, V> FusedIterator for MapIter<K, V>
 where
     K: IntoTryFromVal,
-    K::Error: Debug,
     V: IntoTryFromVal,
-    V::Error: Debug,
 {
 }
 
 impl<K, V> ExactSizeIterator for MapIter<K, V>
 where
     K: IntoTryFromVal,
-    K::Error: Debug,
     V: IntoTryFromVal,
-    V::Error: Debug,
 {
     fn len(&self) -> usize {
         self.0.len() as usize
@@ -348,8 +354,9 @@ mod test {
 
         let map: Map<u32, bool> = map![&env, (1, true), (2, false)];
         assert_eq!(map.len(), 2);
-        assert!(map.get_unchecked(1));
-        assert!(!map.get_unchecked(2));
+        assert_eq!(map.get(1), Ok(true));
+        assert_eq!(map.get(2), Ok(false));
+        assert_eq!(map.get(3), Err(MapGetError::KeyNotFound));
     }
 
     #[test]
@@ -364,31 +371,31 @@ mod test {
         let map = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
 
         let mut iter = map.iter();
-        assert_eq!(iter.next(), Some((0, 0)));
-        assert_eq!(iter.next(), Some((1, 10)));
-        assert_eq!(iter.next(), Some((2, 20)));
-        assert_eq!(iter.next(), Some((3, 30)));
-        assert_eq!(iter.next(), Some((4, 40)));
+        assert_eq!(iter.next(), Some(Ok((0, 0))));
+        assert_eq!(iter.next(), Some(Ok((1, 10))));
+        assert_eq!(iter.next(), Some(Ok((2, 20))));
+        assert_eq!(iter.next(), Some(Ok((3, 30))));
+        assert_eq!(iter.next(), Some(Ok((4, 40))));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let mut iter = map.iter();
-        assert_eq!(iter.next(), Some((0, 0)));
-        assert_eq!(iter.next_back(), Some((4, 40)));
-        assert_eq!(iter.next_back(), Some((3, 30)));
-        assert_eq!(iter.next(), Some((1, 10)));
-        assert_eq!(iter.next(), Some((2, 20)));
+        assert_eq!(iter.next(), Some(Ok((0, 0))));
+        assert_eq!(iter.next_back(), Some(Ok((4, 40))));
+        assert_eq!(iter.next_back(), Some(Ok((3, 30))));
+        assert_eq!(iter.next(), Some(Ok((1, 10))));
+        assert_eq!(iter.next(), Some(Ok((2, 20))));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
 
         let mut iter = map.iter().rev();
-        assert_eq!(iter.next(), Some((4, 40)));
-        assert_eq!(iter.next_back(), Some((0, 0)));
-        assert_eq!(iter.next_back(), Some((1, 10)));
-        assert_eq!(iter.next(), Some((3, 30)));
-        assert_eq!(iter.next(), Some((2, 20)));
+        assert_eq!(iter.next(), Some(Ok((4, 40))));
+        assert_eq!(iter.next_back(), Some(Ok((0, 0))));
+        assert_eq!(iter.next_back(), Some(Ok((1, 10))));
+        assert_eq!(iter.next(), Some(Ok((3, 30))));
+        assert_eq!(iter.next(), Some(Ok((2, 20))));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
