@@ -183,18 +183,22 @@ impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     pub fn get(&self, i: u32) -> Result<T, VecGetError<T>> {
         if i < self.len() {
-            self.get_unchecked(i)
-                .map_err(|e| VecGetError::ConversionError(e))
+            let env = self.env();
+            let val = env.vec_get(self.0.to_tagged(), i.into());
+            T::try_from_val(env, val).map_err(|e| VecGetError::ConversionError(e))
         } else {
             Err(VecGetError::OutOfBounds)
         }
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error> {
+    pub fn get_unchecked(&self, i: u32) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, val)
+        T::try_from_val(env, val).unwrap()
     }
 
     #[inline(always)]
@@ -245,18 +249,27 @@ impl<T: IntoTryFromVal> Vec<T> {
         if self.is_empty() {
             Err(VecPopError::Empty)
         } else {
-            self.pop_unchecked()
-                .map_err(|e| VecPopError::ConversionError(e))
+            let env = self.env();
+            let last = self.last().map_err(|e| match e {
+                VecLastError::Empty => VecPopError::Empty,
+                VecLastError::ConversionError(e) => VecPopError::ConversionError(e),
+            })?;
+            let vec = env.vec_pop(self.0.to_tagged());
+            self.0 = vec.in_env(env);
+            Ok(last)
         }
     }
 
     #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
+    pub fn pop_unchecked(&mut self) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.env();
-        let last = self.last_unchecked()?;
+        let last = self.last_unchecked();
         let vec = env.vec_pop(self.0.to_tagged());
         self.0 = vec.in_env(env);
-        Ok(last)
+        last
     }
 
     #[inline(always)]
@@ -264,8 +277,9 @@ impl<T: IntoTryFromVal> Vec<T> {
         if self.is_empty() {
             Err(VecFirstError::Empty)
         } else {
-            self.first_unchecked()
-                .map_err(|e| VecFirstError::ConversionError(e))
+            let env = self.0.env();
+            let val = env.vec_front(self.0.to_tagged());
+            T::try_from_val(env, val).map_err(|e| VecFirstError::ConversionError(e))
         }
     }
 
@@ -281,16 +295,20 @@ impl<T: IntoTryFromVal> Vec<T> {
         if self.is_empty() {
             Err(VecLastError::Empty)
         } else {
-            self.last_unchecked()
-                .map_err(|e| VecLastError::ConversionError(e))
+            let env = self.env();
+            let val = env.vec_back(self.0.to_tagged());
+            T::try_from_val(env, val).map_err(|e| VecLastError::ConversionError(e))
         }
     }
 
     #[inline(always)]
-    pub fn last_unchecked(&self) -> Result<T, T::Error> {
+    pub fn last_unchecked(&self) -> T
+    where
+        T::Error: Debug,
+    {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, val)
+        T::try_from_val(env, val).unwrap()
     }
 
     #[inline(always)]
@@ -382,9 +400,9 @@ where
         if len == 0 {
             None
         } else {
-            let item = self.0.first_unchecked();
+            let val = self.0.env().vec_front(self.0 .0.to_object());
             self.0 = self.0.slice(1..);
-            Some(item)
+            Some(T::try_from_val(self.0.env(), val))
         }
     }
 
@@ -406,9 +424,9 @@ where
         if len == 0 {
             None
         } else {
-            let item = self.0.last_unchecked();
+            let val = self.0.env().vec_back(self.0 .0.to_object());
             self.0 = self.0.slice(..len - 1);
-            Some(item)
+            Some(T::try_from_val(self.0.env(), val))
         }
     }
 

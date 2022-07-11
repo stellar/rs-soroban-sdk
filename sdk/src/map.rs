@@ -163,10 +163,13 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, k: K) -> Result<V, V::Error> {
+    pub fn get_unchecked(&self, k: K) -> V
+    where
+        V::Error: Debug,
+    {
         let env = self.env();
         let v = env.map_get(self.0.to_tagged(), k.into_val(env));
-        V::try_from_val(env, v)
+        V::try_from_val(env, v).unwrap()
     }
 
     #[inline(always)]
