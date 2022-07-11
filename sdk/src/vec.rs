@@ -110,6 +110,42 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
     }
 }
 
+#[derive(Debug, Eq, PartialEq)]
+pub enum VecGetError<T>
+where
+    T: IntoTryFromVal,
+{
+    OutOfBounds,
+    ConversionError(T::Error),
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum VecFirstError<T>
+where
+    T: IntoTryFromVal,
+{
+    Empty,
+    ConversionError(T::Error),
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum VecLastError<T>
+where
+    T: IntoTryFromVal,
+{
+    Empty,
+    ConversionError(T::Error),
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum VecPopError<T>
+where
+    T: IntoTryFromVal,
+{
+    Empty,
+    ConversionError(T::Error),
+}
+
 impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -145,11 +181,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
+    pub fn get(&self, i: u32) -> Result<T, VecGetError<T>> {
         if i < self.len() {
-            Some(self.get_unchecked(i))
+            self.get_unchecked(i)
+                .map_err(|e| VecGetError::ConversionError(e))
         } else {
-            None
+            Err(VecGetError::OutOfBounds)
         }
     }
 
@@ -204,11 +241,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
+    pub fn pop(&mut self) -> Result<T, VecPopError<T>> {
         if self.is_empty() {
-            None
+            Err(VecPopError::Empty)
         } else {
-            Some(self.pop_unchecked())
+            self.pop_unchecked()
+                .map_err(|e| VecPopError::ConversionError(e))
         }
     }
 
@@ -222,11 +260,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn first(&self) -> Option<Result<T, T::Error>> {
+    pub fn first(&self) -> Result<T, VecFirstError<T>> {
         if self.is_empty() {
-            None
+            Err(VecFirstError::Empty)
         } else {
-            Some(self.first_unchecked())
+            self.first_unchecked()
+                .map_err(|e| VecFirstError::ConversionError(e))
         }
     }
 
@@ -238,11 +277,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn last(&self) -> Option<Result<T, T::Error>> {
+    pub fn last(&self) -> Result<T, VecLastError<T>> {
         if self.is_empty() {
-            None
+            Err(VecLastError::Empty)
         } else {
-            Some(self.last_unchecked())
+            self.last_unchecked()
+                .map_err(|e| VecLastError::ConversionError(e))
         }
     }
 
