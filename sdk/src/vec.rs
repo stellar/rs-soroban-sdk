@@ -210,7 +210,9 @@ impl<T: IntoTryFromVal> Vec<T> {
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.len() == 0
+        let env = self.env();
+        let val = env.vec_len(self.0.to_tagged());
+        val.is_u32_zero()
     }
 
     #[inline(always)]

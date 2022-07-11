@@ -146,7 +146,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     pub fn contains_key(&self, k: K) -> bool {
         let env = self.env();
         let has = env.map_has(self.0.to_tagged(), k.into_val(env));
-        bool::try_from_val(env, has).unwrap()
+        has.is_true()
     }
 
     #[inline(always)]
@@ -154,7 +154,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
         let env = self.env();
         let k = k.into_val(env);
         let has = env.map_has(self.0.to_tagged(), k);
-        if bool::try_from(has).unwrap() {
+        if has.is_true() {
             let v = env.map_get(self.0.to_tagged(), k);
             V::try_from_val(env, v).map_err(|e| MapGetError::ConversionError(e))
         } else {
@@ -184,7 +184,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
         let env = self.env();
         let k = k.into_val(env);
         let has = env.map_has(self.0.to_tagged(), k);
-        if !bool::try_from(has).unwrap() {
+        if has.is_true() {
             return None;
         }
         let map = env.map_del(self.0.to_tagged(), k);
@@ -201,7 +201,9 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.len() == 0
+        let env = self.env();
+        let len = env.map_len(self.0.to_tagged());
+        len.is_u32_zero()
     }
 
     #[inline(always)]
