@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractfn, contracttype, ConversionError, IntoEnvVal};
+use stellar_contract_sdk::{contractimpl, contracttype, ConversionError, IntoEnvVal};
 
 #[contracttype]
 pub enum UdtEnum {
@@ -13,17 +13,21 @@ pub struct UdtStruct {
     pub b: i64,
 }
 
-#[contractfn]
-pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
-    let a = match a {
-        UdtEnum::UdtA => 0,
-        UdtEnum::UdtB(udt) => udt.a + udt.b,
-    };
-    let b = match b {
-        UdtEnum::UdtA => 0,
-        UdtEnum::UdtB(udt) => udt.a + udt.b,
-    };
-    a + b
+pub struct Contract;
+
+#[contractimpl]
+impl Contract {
+    pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
+        let a = match a {
+            UdtEnum::UdtA => 0,
+            UdtEnum::UdtB(udt) => udt.a + udt.b,
+        };
+        let b = match b {
+            UdtEnum::UdtA => 0,
+            UdtEnum::UdtB(udt) => udt.a + udt.b,
+        };
+        a + b
+    }
 }
 
 #[cfg(test)]

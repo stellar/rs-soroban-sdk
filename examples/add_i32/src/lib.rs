@@ -1,9 +1,13 @@
 #![no_std]
-use stellar_contract_sdk::contractfn;
+use stellar_contract_sdk::contractimpl;
 
-#[contractfn]
-pub fn add(a: i32, b: i32) -> i32 {
-    a + b
+pub struct Contract;
+
+#[contractimpl]
+impl Contract {
+    pub fn add(a: i32, b: i32) -> i32 {
+        a + b
+    }
 }
 
 #[cfg(test)]

@@ -1,5 +1,0 @@
-error: contract functions must be public
- --> tests/macros_fails/macros_spec_non_pub_fn.rs:4:1
-  |
-4 | fn add(a: i32, b: i32) -> i32 {
-  | ^^

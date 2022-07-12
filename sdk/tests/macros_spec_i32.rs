@@ -1,11 +1,15 @@
 use std::io::Cursor;
 
-use stellar_contract_sdk::{contractfn, Env, IntoVal, TryFromVal};
+use stellar_contract_sdk::{contractimpl, Env, IntoVal, TryFromVal};
 use stellar_xdr::{ReadXdr, SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef};
 
-#[contractfn]
-pub fn add(a: i32, b: i32) -> i32 {
-    a + b
+pub struct Contract;
+
+#[contractimpl]
+impl Contract {
+    pub fn add(a: i32, b: i32) -> i32 {
+        a + b
+    }
 }
 
 #[test]
