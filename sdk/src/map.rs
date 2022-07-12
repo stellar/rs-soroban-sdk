@@ -108,7 +108,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub enum MapGetError<V>
+pub enum MapLookupError<V>
 where
     V: IntoTryFromVal,
 {
@@ -150,15 +150,15 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> Result<V, MapGetError<V>> {
+    pub fn get(&self, k: K) -> Result<V, MapLookupError<V>> {
         let env = self.env();
         let k = k.into_val(env);
         let has = env.map_has(self.0.to_tagged(), k);
         if has.is_true() {
             let v = env.map_get(self.0.to_tagged(), k);
-            V::try_from_val(env, v).map_err(|e| MapGetError::ConversionError(e))
+            V::try_from_val(env, v).map_err(|e| MapLookupError::ConversionError(e))
         } else {
-            Err(MapGetError::KeyNotFound)
+            Err(MapLookupError::KeyNotFound)
         }
     }
 
@@ -359,7 +359,7 @@ mod test {
         assert_eq!(map.len(), 2);
         assert_eq!(map.get(1), Ok(true));
         assert_eq!(map.get(2), Ok(false));
-        assert_eq!(map.get(3), Err(MapGetError::KeyNotFound));
+        assert_eq!(map.get(3), Err(MapLookupError::KeyNotFound));
     }
 
     #[test]
