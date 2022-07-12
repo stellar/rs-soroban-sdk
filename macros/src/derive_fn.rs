@@ -127,7 +127,7 @@ pub fn derive_fn(
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
         #[export_name = #wrap_export_name]
-        fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+        pub fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
             <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                 #call(
                     #env_call
