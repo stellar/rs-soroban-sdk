@@ -346,7 +346,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     pub fn into_iter_unchecked(self) -> VecUncheckedIter<T> {
-        VecUncheckedIter(self.into_iter())
+        VecUncheckedIter(self)
     }
 
     pub fn iter_unchecked(&self) -> VecUncheckedIter<T>
@@ -435,11 +435,11 @@ where
 }
 
 #[derive(Clone)]
-pub struct VecUncheckedIter<T>(VecIter<T>);
+pub struct VecUncheckedIter<T>(Vec<T>);
 
 impl<T> VecUncheckedIter<T> {
     fn into_vec(self) -> Vec<T> {
-        self.0.into_vec()
+        self.0
     }
 }
 
@@ -451,11 +451,19 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.0.next().map(Result::unwrap)
+        let len = self.0.len();
+        if len == 0 {
+            None
+        } else {
+            let val = self.0.env().vec_front(self.0 .0.to_object());
+            self.0 = self.0.slice(1..);
+            Some(T::try_from_val(self.0.env(), val).unwrap())
+        }
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        self.0.size_hint()
+        let len = self.0.len() as usize;
+        (len, Some(len))
     }
 
     // TODO: Implement other functions as optimizations since the iterator is
@@ -468,7 +476,14 @@ where
     T::Error: Debug,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        self.0.next_back().map(Result::unwrap)
+        let len = self.0.len();
+        if len == 0 {
+            None
+        } else {
+            let val = self.0.env().vec_back(self.0 .0.to_object());
+            self.0 = self.0.slice(..len - 1);
+            Some(T::try_from_val(self.0.env(), val).unwrap())
+        }
     }
 
     // TODO: Implement other functions as optimizations since the iterator is
@@ -488,7 +503,7 @@ where
     T::Error: Debug,
 {
     fn len(&self) -> usize {
-        self.0.len()
+        self.0.len() as usize
     }
 }
 
