@@ -345,10 +345,12 @@ impl<T: IntoTryFromVal> Vec<T> {
         self.clone().into_iter()
     }
 
+    #[inline(always)]
     pub fn into_iter_unchecked(self) -> VecUncheckedIter<T> {
-        VecUncheckedIter(self)
+        VecUncheckedIter(self.into_iter())
     }
 
+    #[inline(always)]
     pub fn iter_unchecked(&self) -> VecUncheckedIter<T>
     where
         T: IntoTryFromVal + Clone,
@@ -435,11 +437,11 @@ where
 }
 
 #[derive(Clone)]
-pub struct VecUncheckedIter<T>(Vec<T>);
+pub struct VecUncheckedIter<T>(VecIter<T>);
 
 impl<T> VecUncheckedIter<T> {
     fn into_vec(self) -> Vec<T> {
-        self.0
+        self.0.into_vec()
     }
 }
 
@@ -450,20 +452,14 @@ where
 {
     type Item = T;
 
+    #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
-        if len == 0 {
-            None
-        } else {
-            let val = self.0.env().vec_front(self.0 .0.to_object());
-            self.0 = self.0.slice(1..);
-            Some(T::try_from_val(self.0.env(), val).unwrap())
-        }
+        self.0.next().map(Result::unwrap)
     }
 
+    #[inline(always)]
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
-        (len, Some(len))
+        self.0.size_hint()
     }
 
     // TODO: Implement other functions as optimizations since the iterator is
@@ -475,15 +471,9 @@ where
     T: IntoTryFromVal,
     T::Error: Debug,
 {
+    #[inline(always)]
     fn next_back(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
-        if len == 0 {
-            None
-        } else {
-            let val = self.0.env().vec_back(self.0 .0.to_object());
-            self.0 = self.0.slice(..len - 1);
-            Some(T::try_from_val(self.0.env(), val).unwrap())
-        }
+        self.0.next_back().map(Result::unwrap)
     }
 
     // TODO: Implement other functions as optimizations since the iterator is
@@ -502,8 +492,9 @@ where
     T: IntoTryFromVal,
     T::Error: Debug,
 {
+    #[inline(always)]
     fn len(&self) -> usize {
-        self.0.len() as usize
+        self.0.len()
     }
 }
 
