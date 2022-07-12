@@ -2,73 +2,74 @@ use core::fmt::Debug;
 use core::iter::FusedIterator;
 use core::marker::PhantomData;
 
-use crate::env::IntoTryFromVal;
-
-pub trait UncheckedEnumerable<I, T> {
-    fn unchecked(self) -> UncheckedIter<I, T>;
+pub trait UncheckedEnumerable<I, T, E> {
+    fn unchecked(self) -> UncheckedIter<I, T, E>;
 }
 
-impl<I, T> UncheckedEnumerable<I, T> for I
+impl<I, T, E> UncheckedEnumerable<I, T, E> for I
 where
-    I: Iterator<Item = Result<T, T::Error>>,
-    T: IntoTryFromVal,
-    T::Error: Debug,
+    I: Iterator<Item = Result<T, E>>,
+    E: Debug,
 {
-    fn unchecked(self) -> UncheckedIter<I, T> {
-        UncheckedIter(self, PhantomData)
+    fn unchecked(self) -> UncheckedIter<I, T, E> {
+        UncheckedIter {
+            iter: self,
+            item_type: PhantomData,
+            error_type: PhantomData,
+        }
     }
 }
 
 #[derive(Clone)]
-pub struct UncheckedIter<I, T>(I, PhantomData<T>);
+pub struct UncheckedIter<I, T, E> {
+    iter: I,
+    item_type: PhantomData<T>,
+    error_type: PhantomData<E>,
+}
 
-impl<I, T> Iterator for UncheckedIter<I, T>
+impl<I, T, E> Iterator for UncheckedIter<I, T, E>
 where
-    I: Iterator<Item = Result<T, T::Error>>,
-    T: IntoTryFromVal,
-    T::Error: Debug,
+    I: Iterator<Item = Result<T, E>>,
+    E: Debug,
 {
     type Item = T;
 
     #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
-        self.0.next().map(Result::unwrap)
+        self.iter.next().map(Result::unwrap)
     }
 
     #[inline(always)]
     fn size_hint(&self) -> (usize, Option<usize>) {
-        self.0.size_hint()
+        self.iter.size_hint()
     }
 }
 
-impl<I, T> DoubleEndedIterator for UncheckedIter<I, T>
+impl<I, T, E> DoubleEndedIterator for UncheckedIter<I, T, E>
 where
-    I: Iterator<Item = Result<T, T::Error>> + DoubleEndedIterator,
-    T: IntoTryFromVal,
-    T::Error: Debug,
+    I: Iterator<Item = Result<T, E>> + DoubleEndedIterator,
+    E: Debug,
 {
     #[inline(always)]
     fn next_back(&mut self) -> Option<Self::Item> {
-        self.0.next_back().map(Result::unwrap)
+        self.iter.next_back().map(Result::unwrap)
     }
 }
 
-impl<I, T> FusedIterator for UncheckedIter<I, T>
+impl<I, T, E> FusedIterator for UncheckedIter<I, T, E>
 where
-    I: Iterator<Item = Result<T, T::Error>> + FusedIterator,
-    T: IntoTryFromVal,
-    T::Error: Debug,
+    I: Iterator<Item = Result<T, E>> + FusedIterator,
+    E: Debug,
 {
 }
 
-impl<I, T> ExactSizeIterator for UncheckedIter<I, T>
+impl<I, T, E> ExactSizeIterator for UncheckedIter<I, T, E>
 where
-    I: Iterator<Item = Result<T, T::Error>> + ExactSizeIterator,
-    T: IntoTryFromVal,
-    T::Error: Debug,
+    I: Iterator<Item = Result<T, E>> + ExactSizeIterator,
+    E: Debug,
 {
     #[inline(always)]
     fn len(&self) -> usize {
-        self.0.len()
+        self.iter.len()
     }
 }

@@ -348,7 +348,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn iter_unchecked(&self) -> UncheckedIter<VecIter<T>, T>
+    pub fn iter_unchecked(&self) -> UncheckedIter<VecIter<T>, T, T::Error>
     where
         T: IntoTryFromVal + Clone,
         T::Error: Debug,
@@ -357,7 +357,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn into_iter_unchecked(self) -> UncheckedIter<VecIter<T>, T>
+    pub fn into_iter_unchecked(self) -> UncheckedIter<VecIter<T>, T, T::Error>
     where
         T: IntoTryFromVal + Clone,
         T::Error: Debug,
