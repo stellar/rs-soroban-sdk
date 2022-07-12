@@ -43,7 +43,9 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     }
                 }),
             };
-            let map_key = quote! { { const k: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name); k } }; // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
+            let map_key = quote! { // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
+                { const k: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name); k }
+            };
             let try_from = quote! {
                 #ident: map
                     .get(#map_key)
@@ -86,21 +88,21 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     quote! {
         #spec_gen
 
-        impl TryFrom<EnvVal> for #ident {
-            type Error = ConversionError;
+        impl TryFrom<stellar_contract_sdk::EnvVal> for #ident {
+            type Error = stellar_contract_sdk::ConversionError;
             #[inline(always)]
-            fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-                let map: stellar_contract_sdk::Map<stellar_contract_sdk::Symbol, EnvVal> = ev.try_into()?;
+            fn try_from(ev: stellar_contract_sdk::EnvVal) -> Result<Self, Self::Error> {
+                let map: stellar_contract_sdk::Map<stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal> = ev.try_into()?;
                 Ok(Self{
                     #(#try_froms,)*
                 })
             }
         }
 
-        impl IntoEnvVal<Env, RawVal> for #ident {
+        impl IntoEnvVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal> for #ident {
             #[inline(always)]
-            fn into_env_val(self, env: &Env) -> EnvVal {
-                let mut map = stellar_contract_sdk::Map::<stellar_contract_sdk::Symbol, EnvVal>::new(env);
+            fn into_env_val(self, env: &stellar_contract_sdk::Env) -> stellar_contract_sdk::EnvVal {
+                let mut map = stellar_contract_sdk::Map::<stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal>::new(env);
                 #(#intos;)*
                 map.into()
             }
@@ -113,11 +115,9 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
     let mut errors = Vec::<Error>::new();
 
     let variants = &data.variants;
-    let (spec_cases, try_froms, intos): (Vec<_>, Vec<_>, Vec<_>) = variants
+    let (spec_cases, discriminant_consts, try_froms, intos): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
-        .enumerate()
-        .map(|(i, v)| {
-            let i: u32 = i.try_into().unwrap();
+        .map(|v| {
             // TODO: Choose discriminant type based on repr type of enum.
             // TODO: Should we use variants explicit discriminant? Probably not.
             // Should have a separate derive for those types of enums that maps
@@ -125,9 +125,14 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
             // TODO: Use attributes tagged on variant to control whether field is included.
             // TODO: Support multi-field enum variants.
             // TODO: Or, error on multi-field enum variants.
+            // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
             let ident = &v.ident;
             let name = ident.to_string();
             let field = v.fields.iter().next();
+            let discriminant_const_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
+            let discriminant_const = quote! {
+                const #discriminant_const_ident: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name);
+            };
             if let Some(f) = field {
                 let spec_case = SpecUdtUnionCase {
                     name: name.try_into().unwrap_or_else(|_| {
@@ -142,9 +147,9 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                         }
                     })),
                 };
-                let try_from = quote! { #i => Self::#ident(value.try_into()?) };
-                let into = quote! { Self::#ident(value) => (#i, value).into_env_val(env) };
-                (spec_case, try_from, into)
+                let try_from = quote! { if discriminant == #discriminant_const_ident { Self::#ident(value.try_into()?) } };
+                let into = quote! { Self::#ident(value) => (#discriminant_const_ident, value).into_env_val(env) };
+                (spec_case, discriminant_const, try_from, into)
             } else {
                 let spec_case = SpecUdtUnionCase {
                     name: name.try_into().unwrap_or_else(|_| {
@@ -153,9 +158,9 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                     }),
                     type_: None,
                 };
-                let try_from = quote! { #i => Self::#ident };
-                let into = quote! { Self::#ident => (#i, ()).into_env_val(env) };
-                (spec_case, try_from, into)
+                let try_from = quote! { if discriminant == #discriminant_const_ident { Self::#ident } };
+                let into = quote! { Self::#ident => (#discriminant_const_ident, ()).into_env_val(env) };
+                (spec_case, discriminant_const, try_from, into)
             }
         })
         .multiunzip();
@@ -191,22 +196,22 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
     quote! {
         #spec_gen
 
-        impl TryFrom<EnvVal> for #ident {
-            type Error = ConversionError;
+        impl TryFrom<stellar_contract_sdk::EnvVal> for #ident {
+            type Error = stellar_contract_sdk::ConversionError;
             #[inline(always)]
-            fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-                let (discriminant, value): (u32, EnvVal) = ev.try_into()?;
-                let v = match discriminant {
-                    #(#try_froms,)*
-                    _ => Err(ConversionError{})?
-                };
-                Ok(v)
+            fn try_from(ev: stellar_contract_sdk::EnvVal) -> Result<Self, Self::Error> {
+                #(#discriminant_consts)*
+                let (discriminant, value): (stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal) = ev.try_into()?;
+                Ok(#(#try_froms)else* else {
+                    return Err(stellar_contract_sdk::ConversionError{});
+                })
             }
         }
 
-        impl IntoEnvVal<Env, RawVal> for #ident {
+        impl stellar_contract_sdk::IntoEnvVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal> for #ident {
             #[inline(always)]
-            fn into_env_val(self, env: &Env) -> EnvVal {
+            fn into_env_val(self, env: &stellar_contract_sdk::Env) -> stellar_contract_sdk::EnvVal {
+                #(#discriminant_consts)*
                 match self {
                     #(#intos,)*
                 }
