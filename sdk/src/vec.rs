@@ -111,7 +111,7 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub enum VecError1<T>
+pub enum VecAccessError<T>
 where
     T: IntoTryFromVal,
 {
@@ -120,7 +120,7 @@ where
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub enum VecError2<T>
+pub enum VecIndexedError<T>
 where
     T: IntoTryFromVal,
 {
@@ -164,13 +164,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Result<T, VecError2<T>> {
+    pub fn get(&self, i: u32) -> Result<T, VecIndexedError<T>> {
         if i < self.len() {
             let env = self.env();
             let val = env.vec_get(self.0.to_tagged(), i.into());
-            T::try_from_val(env, val).map_err(|e| VecError2::ConversionError(e))
+            T::try_from_val(env, val).map_err(|e| VecIndexedError::ConversionError(e))
         } else {
-            Err(VecError2::OutOfBounds)
+            Err(VecIndexedError::OutOfBounds)
         }
     }
 
@@ -192,12 +192,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, i: u32) -> Result<(), VecError2<T>> {
+    pub fn remove(&mut self, i: u32) -> Result<(), VecIndexedError<T>> {
         if i < self.len() {
             self.remove_unchecked(i);
             Ok(())
         } else {
-            Err(VecError2::OutOfBounds)
+            Err(VecIndexedError::OutOfBounds)
         }
     }
 
@@ -230,7 +230,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop_back(&mut self) -> Result<T, VecError1<T>> {
+    pub fn pop_back(&mut self) -> Result<T, VecAccessError<T>> {
         let last = self.last()?;
         let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
@@ -251,13 +251,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn first(&self) -> Result<T, VecError1<T>> {
+    pub fn first(&self) -> Result<T, VecAccessError<T>> {
         if self.is_empty() {
-            Err(VecError1::Empty)
+            Err(VecAccessError::Empty)
         } else {
             let env = self.0.env();
             let val = env.vec_front(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecError1::ConversionError(e))
+            T::try_from_val(env, val).map_err(|e| VecAccessError::ConversionError(e))
         }
     }
 
@@ -269,13 +269,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn last(&self) -> Result<T, VecError1<T>> {
+    pub fn last(&self) -> Result<T, VecAccessError<T>> {
         if self.is_empty() {
-            Err(VecError1::Empty)
+            Err(VecAccessError::Empty)
         } else {
             let env = self.env();
             let val = env.vec_back(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecError1::ConversionError(e))
+            T::try_from_val(env, val).map_err(|e| VecAccessError::ConversionError(e))
         }
     }
 
