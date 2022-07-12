@@ -29,7 +29,7 @@ watch:
 	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
 
 fmt:
-	rustfmt $$(find . -type f -name '*.rs' -print)
+	cargo fmt --all
 
 clean:
 	cargo clean
