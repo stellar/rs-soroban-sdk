@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - run: rustup update stable && rustup default stable
+    - run: rustup update
     - run: find . -type f -name '*.rs' -print0 | xargs -I {} -0 rustfmt --check "{}"
 
   build-and-test:
@@ -52,7 +52,7 @@ jobs:
     runs-on: ${{ matrix.sys.os }}
     steps:
     - uses: actions/checkout@v3
-    - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+    - run: rustup update
     - run: cargo install --locked --version 0.5.14 cargo-hack
     - run: cargo check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --lib
     - if: matrix.sys.test
