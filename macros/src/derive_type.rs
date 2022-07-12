@@ -129,9 +129,17 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
             let ident = &v.ident;
             let name = ident.to_string();
             let field = v.fields.iter().next();
-            let discriminant_const_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
+            let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
+            let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
+            let discriminant_const_sym = quote! {
+                const #discriminant_const_sym_ident: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name);
+            };
+            let discriminant_const_u64 = quote! {
+                const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();
+            };
             let discriminant_const = quote! {
-                const #discriminant_const_ident: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name);
+                #discriminant_const_sym
+                #discriminant_const_u64
             };
             if let Some(f) = field {
                 let spec_case = SpecUdtUnionCase {
@@ -147,8 +155,8 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                         }
                     })),
                 };
-                let try_from = quote! { if discriminant == #discriminant_const_ident { Self::#ident(value.try_into()?) } };
-                let into = quote! { Self::#ident(value) => (#discriminant_const_ident, value).into_env_val(env) };
+                let try_from = quote! { #discriminant_const_u64_ident => Self::#ident(value.try_into()?) };
+                let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_env_val(env) };
                 (spec_case, discriminant_const, try_from, into)
             } else {
                 let spec_case = SpecUdtUnionCase {
@@ -158,8 +166,8 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                     }),
                     type_: None,
                 };
-                let try_from = quote! { if discriminant == #discriminant_const_ident { Self::#ident } };
-                let into = quote! { Self::#ident => (#discriminant_const_ident, ()).into_env_val(env) };
+                let try_from = quote! { #discriminant_const_u64_ident => Self::#ident };
+                let into = quote! { Self::#ident => (#discriminant_const_sym_ident, ()).into_env_val(env) };
                 (spec_case, discriminant_const, try_from, into)
             }
         })
@@ -202,8 +210,9 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
             fn try_from(ev: stellar_contract_sdk::EnvVal) -> Result<Self, Self::Error> {
                 #(#discriminant_consts)*
                 let (discriminant, value): (stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal) = ev.try_into()?;
-                Ok(#(#try_froms)else* else {
-                    return Err(stellar_contract_sdk::ConversionError{});
+                Ok(match discriminant.to_raw().get_payload() {
+                    #(#try_froms,)*
+                    _ => Err(stellar_contract_sdk::ConversionError{})?,
                 })
             }
         }
