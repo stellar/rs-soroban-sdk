@@ -23,7 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update
-    - run: find . -type f -name '*.rs' -print0 | xargs -I {} -0 rustfmt --check "{}"
+    - run: cargo fmt --all --check
 
   build-and-test:
     strategy:
