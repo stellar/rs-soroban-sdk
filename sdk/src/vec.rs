@@ -6,6 +6,8 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
+use crate::{UncheckedEnumerable, UncheckedIter};
+
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
     IntoTryFromVal, RawVal,
@@ -346,16 +348,21 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn into_iter_unchecked(self) -> VecUncheckedIter<T> {
-        VecUncheckedIter(self.into_iter())
+    pub fn iter_unchecked(&self) -> UncheckedIter<VecIter<T>, T>
+    where
+        T: IntoTryFromVal + Clone,
+        T::Error: Debug,
+    {
+        self.iter().unchecked()
     }
 
     #[inline(always)]
-    pub fn iter_unchecked(&self) -> VecUncheckedIter<T>
+    pub fn into_iter_unchecked(self) -> UncheckedIter<VecIter<T>, T>
     where
         T: IntoTryFromVal + Clone,
+        T::Error: Debug,
     {
-        self.clone().into_iter_unchecked()
+        self.into_iter().unchecked()
     }
 }
 
@@ -433,68 +440,6 @@ where
 {
     fn len(&self) -> usize {
         self.0.len() as usize
-    }
-}
-
-#[derive(Clone)]
-pub struct VecUncheckedIter<T>(VecIter<T>);
-
-impl<T> VecUncheckedIter<T> {
-    fn into_vec(self) -> Vec<T> {
-        self.0.into_vec()
-    }
-}
-
-impl<T> Iterator for VecUncheckedIter<T>
-where
-    T: IntoTryFromVal,
-    T::Error: Debug,
-{
-    type Item = T;
-
-    #[inline(always)]
-    fn next(&mut self) -> Option<Self::Item> {
-        self.0.next().map(Result::unwrap)
-    }
-
-    #[inline(always)]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        self.0.size_hint()
-    }
-
-    // TODO: Implement other functions as optimizations since the iterator is
-    // backed by an indexable collection.
-}
-
-impl<T> DoubleEndedIterator for VecUncheckedIter<T>
-where
-    T: IntoTryFromVal,
-    T::Error: Debug,
-{
-    #[inline(always)]
-    fn next_back(&mut self) -> Option<Self::Item> {
-        self.0.next_back().map(Result::unwrap)
-    }
-
-    // TODO: Implement other functions as optimizations since the iterator is
-    // backed by an indexable collection.
-}
-
-impl<T> FusedIterator for VecUncheckedIter<T>
-where
-    T: IntoTryFromVal,
-    T::Error: Debug,
-{
-}
-
-impl<T> ExactSizeIterator for VecUncheckedIter<T>
-where
-    T: IntoTryFromVal,
-    T::Error: Debug,
-{
-    #[inline(always)]
-    fn len(&self) -> usize {
-        self.0.len()
     }
 }
 
