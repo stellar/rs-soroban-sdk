@@ -6,6 +6,8 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
+use crate::{UncheckedEnumerable, UncheckedIter};
+
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
     IntoTryFromVal, RawVal,
@@ -343,6 +345,24 @@ impl<T: IntoTryFromVal> Vec<T> {
         T: IntoTryFromVal + Clone,
     {
         self.clone().into_iter()
+    }
+
+    #[inline(always)]
+    pub fn iter_unchecked(&self) -> UncheckedIter<VecIter<T>, T, T::Error>
+    where
+        T: IntoTryFromVal + Clone,
+        T::Error: Debug,
+    {
+        self.iter().unchecked()
+    }
+
+    #[inline(always)]
+    pub fn into_iter_unchecked(self) -> UncheckedIter<VecIter<T>, T, T::Error>
+    where
+        T: IntoTryFromVal + Clone,
+        T::Error: Debug,
+    {
+        self.into_iter().unchecked()
     }
 }
 

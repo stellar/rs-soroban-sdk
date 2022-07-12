@@ -1,5 +1,7 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
+use crate::{UncheckedEnumerable, UncheckedIter};
+
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
     IntoTryFromVal, RawVal, Status, TryFromVal, Vec,
@@ -234,6 +236,28 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
         V: Clone,
     {
         self.clone().into_iter()
+    }
+
+    #[inline(always)]
+    pub fn iter_unchecked(&self) -> UncheckedIter<MapIter<K, V>, (K, V), ConversionError>
+    where
+        K: IntoTryFromVal + Clone,
+        K::Error: Debug,
+        V: IntoTryFromVal + Clone,
+        V::Error: Debug,
+    {
+        self.iter().unchecked()
+    }
+
+    #[inline(always)]
+    pub fn into_iter_unchecked(self) -> UncheckedIter<MapIter<K, V>, (K, V), ConversionError>
+    where
+        K: IntoTryFromVal + Clone,
+        K::Error: Debug,
+        V: IntoTryFromVal + Clone,
+        V::Error: Debug,
+    {
+        self.into_iter().unchecked()
     }
 }
 
