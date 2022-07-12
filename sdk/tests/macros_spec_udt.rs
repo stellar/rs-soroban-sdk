@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use stellar_contract_sdk::{
-    contractfn, ConversionError, Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal,
+    contractimpl, ConversionError, Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal,
 };
 use stellar_xdr::{
     ReadXdr, SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, SpecTypeTuple,
@@ -29,9 +29,13 @@ impl IntoEnvVal<Env, RawVal> for Udt {
     }
 }
 
-#[contractfn]
-pub fn add(a: Udt, b: Udt) -> (Udt, Udt) {
-    (a, b)
+pub struct Contract;
+
+#[contractimpl]
+impl Contract {
+    pub fn add(a: Udt, b: Udt) -> (Udt, Udt) {
+        (a, b)
+    }
 }
 
 #[test]
