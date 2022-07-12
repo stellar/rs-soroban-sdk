@@ -344,6 +344,17 @@ impl<T: IntoTryFromVal> Vec<T> {
     {
         self.clone().into_iter()
     }
+
+    pub fn into_iter_unchecked(self) -> VecUncheckedIter<T> {
+        VecUncheckedIter(self.into_iter())
+    }
+
+    pub fn iter_unchecked(&self) -> VecUncheckedIter<T>
+    where
+        T: IntoTryFromVal + Clone,
+    {
+        self.clone().into_iter_unchecked()
+    }
 }
 
 impl<T> IntoIterator for Vec<T>
@@ -420,6 +431,64 @@ where
 {
     fn len(&self) -> usize {
         self.0.len() as usize
+    }
+}
+
+#[derive(Clone)]
+pub struct VecUncheckedIter<T>(VecIter<T>);
+
+impl<T> VecUncheckedIter<T> {
+    fn into_vec(self) -> Vec<T> {
+        self.0.into_vec()
+    }
+}
+
+impl<T> Iterator for VecUncheckedIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(Result::unwrap)
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.0.size_hint()
+    }
+
+    // TODO: Implement other functions as optimizations since the iterator is
+    // backed by an indexable collection.
+}
+
+impl<T> DoubleEndedIterator for VecUncheckedIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        self.0.next_back().map(Result::unwrap)
+    }
+
+    // TODO: Implement other functions as optimizations since the iterator is
+    // backed by an indexable collection.
+}
+
+impl<T> FusedIterator for VecUncheckedIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+}
+
+impl<T> ExactSizeIterator for VecUncheckedIter<T>
+where
+    T: IntoTryFromVal,
+    T::Error: Debug,
+{
+    fn len(&self) -> usize {
+        self.0.len()
     }
 }
 

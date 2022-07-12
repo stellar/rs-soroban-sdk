@@ -6,6 +6,7 @@ members = [
     "examples/add_i32",
     "examples/add_i64",
     "examples/udt",
+    "examples/vec_iter",
     "examples/contract_data",
     "examples/create_contract",
     "examples/linear_memory",
