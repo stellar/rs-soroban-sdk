@@ -185,11 +185,12 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
         let k = k.into_val(env);
         let has = env.map_has(self.0.to_tagged(), k);
         if has.is_true() {
-            return None;
+            let map = env.map_del(self.0.to_tagged(), k);
+            self.0 = map.in_env(env);
+            Some(())
+        } else {
+            None
         }
-        let map = env.map_del(self.0.to_tagged(), k);
-        self.0 = map.in_env(env);
-        Some(())
     }
 
     #[inline(always)]
