@@ -76,6 +76,11 @@ impl Env {
         }
     }
 
+    #[cfg(feature = "testutils")]
+    pub fn invoke_function(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
+        self.env_impl.invoke_function(hf, args).unwrap()
+    }
+
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Binary::try_from_val(self, rv).unwrap();
