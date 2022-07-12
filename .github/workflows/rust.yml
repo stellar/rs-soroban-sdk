@@ -53,8 +53,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
-      with:
-        default: true
     - run: cargo install --locked --version 0.5.14 cargo-hack
     - run: cargo check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --lib
     - if: matrix.sys.test
