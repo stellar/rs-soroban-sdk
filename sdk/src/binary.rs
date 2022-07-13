@@ -250,6 +250,11 @@ impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
     }
 
     #[inline(always)]
+    fn is_empty(&self) -> bool {
+        false
+    }
+
+    #[inline(always)]
     fn len(&self) -> u32 {
         N
     }
@@ -360,7 +365,7 @@ mod test {
         assert!(bin == bin_copy);
 
         let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();
-        assert!(!bad_fixed.is_ok());
+        assert!(bad_fixed.is_err());
         let _fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
     }
 }
