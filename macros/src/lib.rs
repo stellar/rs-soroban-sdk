@@ -14,7 +14,7 @@ use syn::{
 };
 
 #[proc_macro]
-pub fn contract(_metadata: TokenStream, _input: TokenStream) -> TokenStream {
+pub fn contract(_input: TokenStream) -> TokenStream {
     quote! {
         #[link_name = "EIV"]
         pub static mut __CONTRACT_ENV_INTERFACE_VERSION: u64 = 123;
