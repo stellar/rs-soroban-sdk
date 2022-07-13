@@ -26,6 +26,7 @@ pub use internal::Symbol;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::Val;
+pub use internal::INTERFACE_VERSION;
 
 #[cfg(feature = "testutils")]
 pub use internal::FrameGuard;
