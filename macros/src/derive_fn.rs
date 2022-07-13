@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::{SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, WriteXdr};
+use stellar_xdr::{SpecEntry, SpecFunctionV0, SpecTypeDef, WriteXdr};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
@@ -110,12 +110,11 @@ pub fn derive_fn(
     };
 
     // Generated code spec.
-    let spec_entry_fn = SpecEntryFunctionV0 {
+    let spec_entry = SpecEntry::FunctionV0(SpecFunctionV0 {
         name: wrap_export_name.clone().try_into().unwrap(),
         input_types: spec_args.try_into().unwrap(),
         output_types: spec_result.try_into().unwrap(),
-    };
-    let spec_entry = SpecEntry::Function(SpecEntryFunction::V0(spec_entry_fn));
+    });
     let spec_xdr = spec_entry.to_xdr().unwrap();
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
     let spec_xdr_len = spec_xdr.len();

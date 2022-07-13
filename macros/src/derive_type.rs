@@ -4,8 +4,8 @@ use quote::{format_ident, quote};
 use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
-    SpecEntry, SpecEntryUdt, SpecEntryUdtV0, SpecTypeDef, SpecUdtDef, SpecUdtStruct,
-    SpecUdtStructField, SpecUdtUnion, SpecUdtUnionCase, VecM, WriteXdr,
+    SpecEntry, SpecTypeDef, SpecUdtStructFieldV0, SpecUdtStructV0, SpecUdtUnionCaseV0,
+    SpecUdtUnionV0, VecM, WriteXdr,
 };
 
 use crate::map_type::map_type;
@@ -30,18 +30,18 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 .as_ref()
                 .map_or_else(|| format_ident!("{}", i), Ident::clone);
             let name = ident.to_string();
-            let spec_field = SpecUdtStructField {
+            let spec_field = SpecUdtStructFieldV0 {
                 name: name.clone().try_into().unwrap_or_else(|_| {
                     errors.push(Error::new(ident.span(), "struct field name too long"));
                     VecM::default()
                 }),
-                type_: Box::new(match map_type(&f.ty) {
+                type_: match map_type(&f.ty) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);
                         SpecTypeDef::I32
                     }
-                }),
+                },
             };
             let map_key = quote! { // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
                 { const k: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name); k }
@@ -65,13 +65,10 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
 
     // Generated code spec.
     let spec_gen = if spec {
-        let spec_entry_udt = SpecEntryUdtV0 {
+        let spec_entry = SpecEntry::UdtStructV0(SpecUdtStructV0 {
             name: ident.to_string().try_into().unwrap(),
-            typ: SpecUdtDef::Struct(Box::new(SpecUdtStruct {
-                fields: spec_fields.try_into().unwrap(),
-            })),
-        };
-        let spec_entry = SpecEntry::Udt(SpecEntryUdt::V0(spec_entry_udt));
+            fields: spec_fields.try_into().unwrap(),
+        });
         let spec_xdr = spec_entry.to_xdr().unwrap();
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
@@ -142,24 +139,24 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                 #discriminant_const_u64
             };
             if let Some(f) = field {
-                let spec_case = SpecUdtUnionCase {
+                let spec_case = SpecUdtUnionCaseV0 {
                     name: name.try_into().unwrap_or_else(|_| {
                         errors.push(Error::new(ident.span(), "union case name too long"));
                         VecM::default()
                     }),
-                    type_: Some(Box::new(match map_type(&f.ty) {
+                    type_: Some(match map_type(&f.ty) {
                         Ok(t) => t,
                         Err(e) => {
                             errors.push(e);
                             SpecTypeDef::I32
                         }
-                    })),
+                    }),
                 };
                 let try_from = quote! { #discriminant_const_u64_ident => Self::#ident(value.try_into()?) };
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_env_val(env) };
                 (spec_case, discriminant_const, try_from, into)
             } else {
-                let spec_case = SpecUdtUnionCase {
+                let spec_case = SpecUdtUnionCaseV0 {
                     name: name.try_into().unwrap_or_else(|_| {
                         errors.push(Error::new(ident.span(), "union case name too long"));
                         VecM::default()
@@ -181,13 +178,10 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
 
     // Generated code spec.
     let spec_gen = if spec {
-        let spec_entry_udt = SpecEntryUdtV0 {
+        let spec_entry = SpecEntry::UdtUnionV0(SpecUdtUnionV0 {
             name: ident.to_string().try_into().unwrap(),
-            typ: SpecUdtDef::Union(Box::new(SpecUdtUnion {
-                cases: spec_cases.try_into().unwrap(),
-            })),
-        };
-        let spec_entry = SpecEntry::Udt(SpecEntryUdt::V0(spec_entry_udt));
+            cases: spec_cases.try_into().unwrap(),
+        });
         let spec_xdr = spec_entry.to_xdr().unwrap();
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
