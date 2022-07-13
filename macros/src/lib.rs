@@ -17,7 +17,7 @@ use syn::{
 pub fn contract(_input: TokenStream) -> TokenStream {
     quote! {
         #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
-        pub static __ENV_META: [u8; 12] = stellar_contract_sdk::META;
+        pub static __ENV_META: [u8; stellar_contract_sdk::META.len()] = stellar_contract_sdk::META;
     }
     .into()
 }
