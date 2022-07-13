@@ -13,6 +13,15 @@ use syn::{
     parse_macro_input, spanned::Spanned, DeriveInput, Error, ImplItem, ItemImpl, Visibility,
 };
 
+#[proc_macro]
+pub fn contract(_metadata: TokenStream, _input: TokenStream) -> TokenStream {
+    quote! {
+        #[link_name = "EIV"]
+        pub static mut __CONTRACT_ENV_INTERFACE_VERSION: u64 = 123;
+    }
+    .into()
+}
+
 #[proc_macro_attribute]
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
