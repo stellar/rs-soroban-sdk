@@ -123,9 +123,7 @@ impl FixedLengthBinary for Binary {
 
     #[inline(always)]
     fn is_empty(&self) -> bool {
-        self.env()
-            .binary_len(self.0.to_tagged())
-            .is_u32_zero()
+        self.env().binary_len(self.0.to_tagged()).is_u32_zero()
     }
 
     #[inline(always)]
