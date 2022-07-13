@@ -3,10 +3,7 @@ use std::io::Cursor;
 use stellar_contract_sdk::{
     contractimpl, ConversionError, Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal,
 };
-use stellar_xdr::{
-    ReadXdr, SpecEntry, SpecEntryFunction, SpecEntryFunctionV0, SpecTypeDef, SpecTypeTuple,
-    SpecTypeUdt,
-};
+use stellar_xdr::{ReadXdr, SpecEntry, SpecFunctionV0, SpecTypeDef, SpecTypeTuple, SpecTypeUdt};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Udt {
@@ -51,36 +48,32 @@ fn test_functional() {
 #[test]
 fn test_spec() {
     let entries = SpecEntry::read_xdr(&mut Cursor::new(&__SPEC_XDR_ADD)).unwrap();
-    let expect = SpecEntry::Function(SpecEntryFunction::V0(SpecEntryFunctionV0 {
+    let expect = SpecEntry::FunctionV0(SpecFunctionV0 {
         name: "add".try_into().unwrap(),
         input_types: vec![
-            SpecTypeDef::Udt(Box::new(SpecTypeUdt {
+            SpecTypeDef::Udt(SpecTypeUdt {
                 name: "Udt".try_into().unwrap(),
-                udt_def: None,
-            })),
-            SpecTypeDef::Udt(Box::new(SpecTypeUdt {
+            }),
+            SpecTypeDef::Udt(SpecTypeUdt {
                 name: "Udt".try_into().unwrap(),
-                udt_def: None,
-            })),
+            }),
         ]
         .try_into()
         .unwrap(),
         output_types: vec![SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
             value_types: vec![
-                SpecTypeDef::Udt(Box::new(SpecTypeUdt {
+                SpecTypeDef::Udt(SpecTypeUdt {
                     name: "Udt".try_into().unwrap(),
-                    udt_def: None,
-                })),
-                SpecTypeDef::Udt(Box::new(SpecTypeUdt {
+                }),
+                SpecTypeDef::Udt(SpecTypeUdt {
                     name: "Udt".try_into().unwrap(),
-                    udt_def: None,
-                })),
+                }),
             ]
             .try_into()
             .unwrap(),
         }))]
         .try_into()
         .unwrap(),
-    }));
+    });
     assert_eq!(entries, expect);
 }

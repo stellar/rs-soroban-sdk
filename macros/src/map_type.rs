@@ -26,15 +26,14 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                 "Bitset" => Ok(SpecTypeDef::Bitset),
                 "Status" => Ok(SpecTypeDef::Status),
                 "Binary" => Ok(SpecTypeDef::Binary),
-                s => Ok(SpecTypeDef::Udt(Box::new(SpecTypeUdt {
+                s => Ok(SpecTypeDef::Udt(SpecTypeUdt {
                     name: s.try_into().map_err(|e| {
                         Error::new(
                             t.span(),
                             format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
                         )
                     })?,
-                    udt_def: None,
-                }))),
+                })),
             },
             Some(PathSegment {
                 ident,

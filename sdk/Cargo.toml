@@ -24,5 +24,5 @@ stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contr
 # stellar-contract-env-host = { path = "../../rs-stellar-contract-env/stellar-contract-env-host" }
 
 [dev-dependencies]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "db2ca71", features = ["next", "std"] }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "5b51e6fc", features = ["next", "std"] }
 trybuild = "1.0.63"
