@@ -4,8 +4,8 @@ use quote::{format_ident, quote};
 use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
-    SpecEntry, SpecUdtUnionV0, SpecUdtStructV0, SpecTypeDef,
-    SpecUdtStructFieldV0, SpecUdtUnionCaseV0, VecM, WriteXdr,
+    SpecEntry, SpecTypeDef, SpecUdtStructFieldV0, SpecUdtStructV0, SpecUdtUnionCaseV0,
+    SpecUdtUnionV0, VecM, WriteXdr,
 };
 
 use crate::map_type::map_type;
