@@ -16,7 +16,7 @@ use syn::{
 #[proc_macro]
 pub fn contract(_input: TokenStream) -> TokenStream {
     quote! {
-        #[link_name = "EIV"]
+        #[export_name = "EIV"]
         pub static mut __CONTRACT_ENV_INTERFACE_VERSION: u64 = stellar_contract_sdk::INTERFACE_VERSION;
     }
     .into()
