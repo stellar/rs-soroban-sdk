@@ -9,6 +9,8 @@ pub trait FixedLengthBinary {
 
     fn get(&self, i: u32) -> u8;
 
+    fn is_empty(&self) -> bool;
+
     fn len(&self) -> u32;
 
     fn front(&self) -> u8;
@@ -117,6 +119,13 @@ impl FixedLengthBinary for Binary {
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
+    }
+
+    #[inline(always)]
+    fn is_empty(&self) -> bool {
+        self.env()
+            .binary_len(self.0.to_tagged())
+            .is_u32_zero()
     }
 
     #[inline(always)]
