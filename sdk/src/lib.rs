@@ -23,7 +23,7 @@ pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
 pub use env::TryFromVal;
-pub use env::INTERFACE_VERSION;
+pub use env::META;
 use env::*;
 
 mod bigint;
