@@ -36,3 +36,7 @@ pub use binary::{ArrayBinary, Binary, FixedLengthBinary, VariableLengthBinary};
 pub use iter::{UncheckedEnumerable, UncheckedIter};
 pub use map::Map;
 pub use vec::Vec;
+
+mod test_contract;
+#[cfg(feature = "testutils")]
+pub use test_contract::TestContract;

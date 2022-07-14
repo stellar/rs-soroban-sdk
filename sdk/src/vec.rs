@@ -144,7 +144,7 @@ impl<T: IntoTryFromVal> Vec<T> {
 
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
-        let obj = env.vec_new().in_env(env);
+        let obj = env.vec_new(().into()).in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 

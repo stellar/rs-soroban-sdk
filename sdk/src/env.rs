@@ -39,7 +39,7 @@ impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, Raw
 
 #[derive(Clone, Default)]
 pub struct Env {
-    env_impl: internal::EnvImpl,
+    pub(crate) env_impl: internal::EnvImpl,
 }
 
 impl Env {
@@ -74,6 +74,11 @@ impl Env {
         Env {
             env_impl: internal::EnvImpl::with_storage(storage),
         }
+    }
+
+    #[cfg(feature = "testutils")]
+    pub fn invoke_function(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
+        self.env_impl.invoke_function(hf, args).unwrap()
     }
 
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
