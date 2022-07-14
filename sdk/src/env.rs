@@ -13,6 +13,7 @@ pub mod internal {
 }
 
 pub use crate::binary::{ArrayBinary, Binary, FixedLengthBinary};
+pub use internal::meta;
 pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::ConversionError;
@@ -26,10 +27,7 @@ pub use internal::Symbol;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::Val;
-pub use internal::META;
 
-#[cfg(feature = "testutils")]
-pub use internal::FrameGuard;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 
@@ -78,12 +76,13 @@ impl Env {
         }
     }
 
-    #[cfg(feature = "testutils")]
-    pub fn push_test_frame(&self, contract_id: ArrayBinary<32>) -> FrameGuard {
-        self.env_impl
-            .push_test_frame(contract_id.into_val(self))
-            .unwrap()
-    }
+    // TODO: push_test_frame is no longer a pub method, and this needs updating.
+    // #[cfg(feature = "testutils")]
+    // pub fn push_test_frame(&self, contract_id: ArrayBinary<32>) -> FrameGuard {
+    //     self.env_impl
+    //         .push_test_frame(contract_id.into_val(self))
+    //         .unwrap()
+    // }
 
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();

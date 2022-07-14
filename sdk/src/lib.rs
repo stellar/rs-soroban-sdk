@@ -11,6 +11,7 @@ use stellar_contract_env_panic_handler_wasm32_unreachable as _;
 pub use stellar_contract_macros::{contract, contractimpl, contracttype, ContractType};
 
 mod env;
+pub use env::meta;
 pub use env::xdr;
 pub use env::BitSet;
 pub use env::ConversionError;
@@ -23,7 +24,6 @@ pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
 pub use env::TryFromVal;
-pub use env::META;
 use env::*;
 
 mod bigint;
