@@ -13,6 +13,15 @@ use syn::{
     parse_macro_input, spanned::Spanned, DeriveInput, Error, ImplItem, ItemImpl, Visibility,
 };
 
+#[proc_macro]
+pub fn contract(_input: TokenStream) -> TokenStream {
+    quote! {
+        #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
+        pub static __ENV_META_XDR: [u8; stellar_contract_sdk::meta::XDR.len()] = stellar_contract_sdk::meta::XDR;
+    }
+    .into()
+}
+
 #[proc_macro_attribute]
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);

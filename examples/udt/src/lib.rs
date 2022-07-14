@@ -1,5 +1,7 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, contracttype, ConversionError, IntoEnvVal};
+use stellar_contract_sdk::{contract, contractimpl, contracttype, ConversionError, IntoEnvVal};
+
+contract!();
 
 #[contracttype]
 pub enum UdtEnum {
