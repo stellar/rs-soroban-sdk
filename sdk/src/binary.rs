@@ -9,6 +9,8 @@ pub trait FixedLengthBinary {
 
     fn get(&self, i: u32) -> u8;
 
+    fn is_empty(&self) -> bool;
+
     fn len(&self) -> u32;
 
     fn front(&self) -> u8;
@@ -117,6 +119,11 @@ impl FixedLengthBinary for Binary {
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
+    }
+
+    #[inline(always)]
+    fn is_empty(&self) -> bool {
+        self.env().binary_len(self.0.to_tagged()).is_u32_zero()
     }
 
     #[inline(always)]
@@ -243,6 +250,11 @@ impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
     }
 
     #[inline(always)]
+    fn is_empty(&self) -> bool {
+        false
+    }
+
+    #[inline(always)]
     fn len(&self) -> u32 {
         N
     }
@@ -353,7 +365,7 @@ mod test {
         assert!(bin == bin_copy);
 
         let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();
-        assert!(!bad_fixed.is_ok());
+        assert!(bad_fixed.is_err());
         let _fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
     }
 }
