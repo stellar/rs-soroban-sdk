@@ -15,7 +15,7 @@ testutils = ["stellar-contract-env-host/testutils"]
 stellar-contract-macros = { path = "../macros" }
 
 [target.'cfg(target_family="wasm")'.dependencies]
-stellar-contract-env-panic-handler-wasm32-unreachable = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "d75fc66" }
+stellar-contract-env-panic-handler-wasm32-unreachable = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "edb522b" }
 stellar-contract-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "edb522b" }
 # stellar-contract-env-guest = { path = "../../rs-stellar-contract-env/stellar-contract-env-guest" }
 
@@ -24,5 +24,5 @@ stellar-contract-env-host = { git = "https://github.com/stellar/rs-stellar-contr
 # stellar-contract-env-host = { path = "../../rs-stellar-contract-env/stellar-contract-env-host" }
 
 [dev-dependencies]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "0edf9326", features = ["next", "std"] }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "540ed24", features = ["next", "std"] }
 trybuild = "1.0.63"

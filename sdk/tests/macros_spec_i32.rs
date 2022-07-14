@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use stellar_contract_sdk::{contractimpl, Env, IntoVal, TryFromVal};
-use stellar_xdr::{ReadXdr, SpecEntry, SpecFunctionV0, SpecTypeDef};
+use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;
 
@@ -24,11 +24,13 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = SpecEntry::read_xdr(&mut Cursor::new(&__SPEC_XDR_ADD)).unwrap();
-    let expect = SpecEntry::FunctionV0(SpecFunctionV0 {
+    let entries = ScSpecEntry::read_xdr(&mut Cursor::new(&__SPEC_XDR_ADD)).unwrap();
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add".try_into().unwrap(),
-        input_types: vec![SpecTypeDef::I32, SpecTypeDef::I32].try_into().unwrap(),
-        output_types: vec![SpecTypeDef::I32].try_into().unwrap(),
+        input_types: vec![ScSpecTypeDef::I32, ScSpecTypeDef::I32]
+            .try_into()
+            .unwrap(),
+        output_types: vec![ScSpecTypeDef::I32].try_into().unwrap(),
     });
     assert_eq!(entries, expect);
 }
