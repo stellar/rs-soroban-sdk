@@ -8,9 +8,10 @@
 #[cfg(target_family = "wasm")]
 use stellar_contract_env_panic_handler_wasm32_unreachable as _;
 
-pub use stellar_contract_macros::{contractimpl, contracttype, ContractType};
+pub use stellar_contract_macros::{contract, contractimpl, contracttype, ContractType};
 
 mod env;
+pub use env::meta;
 pub use env::xdr;
 pub use env::BitSet;
 pub use env::ConversionError;
