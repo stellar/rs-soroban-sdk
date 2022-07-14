@@ -702,7 +702,7 @@ dependencies = [
  "stellar-contract-env-host",
  "stellar-contract-env-panic-handler-wasm32-unreachable",
  "stellar-contract-macros",
- "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=540ed24)",
+ "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=0edf9326)",
  "trybuild",
 ]
 
