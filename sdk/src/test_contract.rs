@@ -21,6 +21,7 @@ impl TestContract {
 impl ContractFunctionSet for TestContract {
     fn call(&self, func: &Symbol, env_impl: &EnvImpl, args: &[RawVal]) -> Option<RawVal> {
         let f = self.0.get(func)?;
-        Some(f(Env::with_impl(env_impl.clone()), args))
+        let env = Env::with_impl(env_impl.clone());
+        Some(f(env, args))
     }
 }
