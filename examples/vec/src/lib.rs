@@ -1,9 +1,14 @@
 #![no_std]
-use stellar_contract_sdk::{Env, EnvTrait, RawVal};
+use stellar_contract_sdk::{contractimpl, Env, Vec};
 
-#[no_mangle]
-pub fn vec_err(e: Env, x: RawVal) -> RawVal {
-    let v1 = e.vec_new();
-    let v2 = e.vec_insert(v1, 5_u32.into(), x); // out of bound
-    v2.to_raw()
+pub struct Contract;
+
+#[contractimpl]
+impl Contract {
+    /// This function will generate an out-of-bound error on any inputs passed in
+    pub fn vec_err(e: Env, pos: u32, val: u32) -> Vec<u32> {
+        let mut v = Vec::new(&e);
+        v.insert(pos, val);
+        v
+    }
 }
