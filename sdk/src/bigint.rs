@@ -3,31 +3,33 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use super::{Env, EnvBase, EnvObj, EnvTrait, EnvVal, RawVal, TryFromVal};
+use super::{
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvBase, EnvObj, EnvVal,
+    RawVal, TryFromVal,
+};
 
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct BigInt(EnvObj);
 
-impl TryFrom<EnvVal<RawVal>> for BigInt {
-    type Error = ();
+impl TryFrom<EnvVal> for BigInt {
+    type Error = ConversionError;
 
-    fn try_from(ev: EnvVal<RawVal>) -> Result<Self, Self::Error> {
+    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.clone().try_into()?;
         obj.try_into()
     }
 }
 
 impl TryFrom<EnvObj> for BigInt {
-    type Error = ();
+    type Error = ConversionError;
 
-    fn try_from(_obj: EnvObj) -> Result<Self, Self::Error> {
-        todo!()
-        // if obj.as_tagged().is_obj_type(ScObjectType::Bigint) {
-        //     Ok(BigInt(obj))
-        // } else {
-        //     Err(())
-        // }
+    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
+        if obj.as_tagged().is_obj_type(ScObjectType::BigInt) {
+            Ok(BigInt(obj))
+        } else {
+            Err(ConversionError {})
+        }
     }
 }
 
@@ -37,7 +39,7 @@ impl From<BigInt> for RawVal {
     }
 }
 
-impl From<BigInt> for EnvVal<RawVal> {
+impl From<BigInt> for EnvVal {
     fn from(b: BigInt) -> Self {
         b.0.into()
     }
@@ -195,20 +197,20 @@ impl Not for BigInt {
     }
 }
 
-impl Shl<i32> for BigInt {
+impl Shl<BigInt> for BigInt {
     type Output = BigInt;
-    fn shl(self, rhs: i32) -> Self::Output {
+    fn shl(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_shl(self.0.to_tagged(), rhs.into());
+        let b = env.bigint_shl(self.0.to_tagged(), rhs.0.to_tagged());
         Self::try_from_val(env, b).unwrap()
     }
 }
 
-impl Shr<i32> for BigInt {
+impl Shr<BigInt> for BigInt {
     type Output = BigInt;
-    fn shr(self, rhs: i32) -> Self::Output {
+    fn shr(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_shl(self.0.to_tagged(), rhs.into());
+        let b = env.bigint_shl(self.0.to_tagged(), rhs.0.to_tagged());
         Self::try_from_val(env, b).unwrap()
     }
 }

@@ -1,0 +1,16 @@
+[package]
+name = "stellar-contract-macros"
+version = "0.0.0"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "0edf9326", features = ["next", "std"] }
+syn = {version="1.0",features=["full"]}
+quote = "1.0"
+proc-macro2 = "1.0"
+itertools = "0.10.3"

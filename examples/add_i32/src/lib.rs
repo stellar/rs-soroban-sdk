@@ -1,14 +1,13 @@
 #![no_std]
-use stellar_contract_sdk::{Env, IntoVal, RawVal, TryFromVal};
+use stellar_contract_sdk::contractimpl;
 
-#[no_mangle]
-pub fn add(e: Env, a: RawVal, b: RawVal) -> RawVal {
-    let a: i32 = i32::try_from_val(&e, a).unwrap();
-    let b: i32 = i32::try_from_val(&e, b).unwrap();
+pub struct Contract;
 
-    let c = a + b;
-
-    return c.into_val(&e);
+#[contractimpl]
+impl Contract {
+    pub fn add(a: i32, b: i32) -> i32 {
+        a + b
+    }
 }
 
 #[cfg(test)]
@@ -16,7 +15,7 @@ mod test {
     extern crate std;
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
-    use super::add;
+    use super::__add;
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
@@ -24,7 +23,7 @@ mod test {
         let e = Env::default();
         let x = 10i32.into_val(&e);
         let y = 12i32.into_val(&e);
-        let z = add(e.clone(), x, y);
+        let z = __add(e.clone(), x, y);
         let z = i32::try_from_val(&e, z).unwrap();
         assert!(z == 22);
     }
@@ -35,7 +34,7 @@ mod test {
         let x = (-241823608i32).into_val(&e);
         let y = (-1905660041i32).into_val(&e);
         let res = catch_unwind(AssertUnwindSafe(|| {
-            add(e, x, y);
+            __add(e, x, y);
         }));
         assert!(res.is_err());
     }
@@ -48,7 +47,7 @@ mod proptest {
     use proptest::prelude::*;
     use std::{format, panic};
 
-    use super::add;
+    use super::__add;
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     proptest! {
@@ -60,14 +59,14 @@ mod proptest {
                 // will panic.
                 None => {
                     let res = panic::catch_unwind(AssertUnwindSafe(move || {
-                        add(e.clone(), a.into_val(&e), b.into_val(&e));
+                        __add(e.clone(), a.into_val(&e), b.into_val(&e));
                     }));
                     prop_assert!(res.is_err());
                 },
                 // If a + b would not result in overflow, assert that the add fn
                 // returns the sum of a and b.
                 Some(expected_sum) => {
-                    let vsum = add(e.clone(), a.into_val(&e), b.into_val(&e));
+                    let vsum = __add(e.clone(), a.into_val(&e), b.into_val(&e));
                     let sum = i32::try_from_val(&e, vsum).unwrap();
                     prop_assert_eq!(sum, expected_sum);
                 },

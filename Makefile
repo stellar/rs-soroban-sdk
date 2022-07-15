@@ -22,14 +22,14 @@ build:
 		done
 
 check:
-	cargo check --all-targets
-	cargo check --target wasm32-unknown-unknown
+	cargo hack --feature-powerset check --all-targets
+	cargo check --release --target wasm32-unknown-unknown
 
 watch:
 	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
 
 fmt:
-	rustfmt $$(find . -type f -name '*.rs' -print)
+	cargo fmt --all
 
 clean:
 	cargo clean
