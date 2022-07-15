@@ -51,6 +51,28 @@ impl Env {
     // should be plumbed through this type with this type doing all RawVal
     // conversion.
 
+    pub fn call<T: TryFromVal<Env, RawVal>>(
+        &self,
+        contract_id: Binary,
+        func: Symbol,
+        args: crate::vec::Vec<EnvVal>,
+    ) -> T {
+        let rv = internal::Env::call(
+            self,
+            RawVal::from(contract_id).try_into().unwrap(),
+            func,
+            RawVal::from(args).try_into().unwrap(),
+        );
+        T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
+    }
+
+    pub fn get_current_contract(&self) -> ArrayBinary<32> {
+        internal::Env::get_current_contract(self)
+            .in_env(self)
+            .try_into()
+            .unwrap()
+    }
+
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Binary::try_from_val(self, rv).unwrap();
