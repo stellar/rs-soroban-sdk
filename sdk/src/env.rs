@@ -136,10 +136,11 @@ impl Env {
             .unwrap()
     }
 
-    pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) {
+    pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) -> ArrayBinary<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
-        internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
+        let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
+        id_obj.in_env(self).try_into().unwrap()
     }
 
     pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Binary {
