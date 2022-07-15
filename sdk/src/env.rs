@@ -12,7 +12,6 @@ pub mod internal {
     pub type EnvImpl = Host;
 }
 
-pub use crate::binary::{ArrayBinary, Binary, FixedLengthBinary};
 pub use internal::meta;
 pub use internal::xdr;
 pub use internal::BitSet;
@@ -28,58 +27,29 @@ pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::Val;
 
-#[cfg(feature = "testutils")]
-use std::rc::Rc;
-
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 pub trait IntoTryFromVal: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
+use crate::binary::{ArrayBinary, Binary};
+
 #[derive(Clone, Default)]
 pub struct Env {
-    pub(crate) env_impl: internal::EnvImpl,
+    env_impl: internal::EnvImpl,
 }
 
 impl Env {
+    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
+        Env { env_impl }
+    }
+
     // TODO: Implement methods on Env that are intended for use by contract
     // developers and that otherwise don't belong into an object like Vec, Map,
     // BigInt, etc. If there is any host fn we expect a developer to use, it
     // should be plumbed through this type with this type doing all RawVal
     // conversion.
-
-    #[cfg(feature = "testutils")]
-    pub fn with_empty_recording_storage() -> Env {
-        struct EmptySnapshotSource();
-
-        impl internal::storage::SnapshotSource for EmptySnapshotSource {
-            fn get(
-                &self,
-                _key: &xdr::LedgerKey,
-            ) -> Result<xdr::LedgerEntry, stellar_contract_env_host::HostError> {
-                Err(internal::HostError::General("not found"))
-            }
-
-            fn has(
-                &self,
-                _key: &xdr::LedgerKey,
-            ) -> Result<bool, stellar_contract_env_host::HostError> {
-                Ok(false)
-            }
-        }
-
-        let rf = Rc::new(EmptySnapshotSource());
-        let storage = internal::storage::Storage::with_recording_footprint(rf);
-        Env {
-            env_impl: internal::EnvImpl::with_storage(storage),
-        }
-    }
-
-    #[cfg(feature = "testutils")]
-    pub fn invoke_function(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
-        self.env_impl.invoke_function(hf, args).unwrap()
-    }
 
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
@@ -204,6 +174,50 @@ impl Env {
             len.into(),
         );
         new_obj.in_env(self).try_into().unwrap()
+    }
+}
+
+#[cfg(feature = "testutils")]
+use crate::TestContract;
+#[cfg(feature = "testutils")]
+use std::rc::Rc;
+#[cfg(feature = "testutils")]
+impl Env {
+    pub fn with_empty_recording_storage() -> Env {
+        struct EmptySnapshotSource();
+
+        impl internal::storage::SnapshotSource for EmptySnapshotSource {
+            fn get(
+                &self,
+                _key: &xdr::LedgerKey,
+            ) -> Result<xdr::LedgerEntry, stellar_contract_env_host::HostError> {
+                Err(internal::HostError::General("not found"))
+            }
+
+            fn has(
+                &self,
+                _key: &xdr::LedgerKey,
+            ) -> Result<bool, stellar_contract_env_host::HostError> {
+                Ok(false)
+            }
+        }
+
+        let rf = Rc::new(EmptySnapshotSource());
+        let storage = internal::storage::Storage::with_recording_footprint(rf);
+        Env {
+            env_impl: internal::EnvImpl::with_storage(storage),
+        }
+    }
+
+    pub fn register_contract(self, contract_id: RawVal, contract: TestContract) {
+        let id_obj: Object = contract_id.try_into().unwrap();
+        self.env_impl
+            .register_test_contract(id_obj, Rc::new(contract))
+            .unwrap();
+    }
+
+    pub fn invoke_contract(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
+        self.env_impl.invoke_function(hf, args).unwrap()
     }
 }
 
