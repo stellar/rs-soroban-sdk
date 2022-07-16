@@ -14,6 +14,7 @@ pub mod internal {
 
 pub use crate::binary::{ArrayBinary, Binary, FixedLengthBinary};
 pub use internal::meta;
+pub use internal::require;
 pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::ConversionError;
