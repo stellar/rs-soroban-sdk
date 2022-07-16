@@ -1,18 +1,17 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, Env, Symbol, Vec};
+use stellar_contract_sdk::{contract, contractimpl, Env, Symbol, Vec};
+
+contract!();
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn delegate(e: Env, val: u32) -> Vec<u32> {
-        let mut obj = e.binary_new();
-        for _i in 0..32 {
-            obj = e.binary_push(obj, 1_u32.into());
-        }
+    pub fn delegate(e: Env, val: u32) {
+        let buff = [1u8; 32];
+        let cid = e.binary_new_from_linear_memory(buff.as_ptr() as u32, 32);
         let fun = Symbol::from_str("vec_err");
-        let args = e.vec_new();
-        let args = e.vec_push(args, x);
-        e.call(obj, fun.into(), args)
+        let args = Vec::from_array(&e, [val; 1]);
+        e.call(cid, fun.into(), args.into());
     }
 }
