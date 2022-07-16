@@ -1,5 +1,7 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, Env};
+use stellar_contract_sdk::{contract, contractimpl, Env};
+
+contract!();
 
 // There are two ways to export contract fns:
 

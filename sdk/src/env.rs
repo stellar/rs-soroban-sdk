@@ -180,6 +180,10 @@ impl Env {
         let contract_bin: Object = RawVal::from(contract).try_into().unwrap();
         internal::Env::call(self, contract_bin, func, args)
     }
+
+    pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
+        internal::Env::log_value(self, v.into_val(self));
+    }
 }
 
 #[cfg(feature = "testutils")]
