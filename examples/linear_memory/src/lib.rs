@@ -1,5 +1,7 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, Binary, Env, FixedLengthBinary};
+use stellar_contract_sdk::{contract, contractimpl, Binary, Env, FixedLengthBinary};
+
+contract!();
 
 pub struct Contract;
 
@@ -23,7 +25,7 @@ impl Contract {
         let lm_pos: u32 = unsafe { buf.as_ptr().add(lm_pos as usize) as u32 };
         e.binary_copy_to_linear_memory(b.clone(), b_pos, lm_pos, len);
         for idx in lm_pos..buf.len() as u32 {
-            assert_eq!(buf[idx as usize], b.get(b_pos + idx));
+            assert!(buf[idx as usize] == b.get(b_pos + idx));
         }
     }
 }
