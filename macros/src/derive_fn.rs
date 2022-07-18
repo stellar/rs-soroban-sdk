@@ -6,7 +6,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
+    Error, FnArg, Ident, LitStr, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
 use crate::map_type::map_type;
@@ -17,6 +17,7 @@ pub fn derive_fn(
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
+    feature: &Option<LitStr>,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -108,6 +109,17 @@ pub fn derive_fn(
     } else {
         quote! {}
     };
+    let wrap_function = quote! {
+        pub fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+            <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
+                #call(
+                    #env_call
+                    #(#wrap_calls),*
+                ),
+                &env
+            )
+        }
+    };
 
     // Generated code spec.
     let spec_entry = SpecEntry::FunctionV0(SpecFunctionV0 {
@@ -121,19 +133,25 @@ pub fn derive_fn(
     let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
 
     // Generated code.
-    quote! {
-        #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-        pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
+    if let Some(cfg_feature) = feature {
+        quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
-        #[export_name = #wrap_export_name]
-        pub fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
-            <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
-                #call(
-                    #env_call
-                    #(#wrap_calls),*
-                ),
-                &env
-            )
+            #[cfg(feature = #cfg_feature)]
+            #[export_name = #wrap_export_name]
+            #wrap_function
+
+            #[cfg(not(feature = #cfg_feature))]
+            #wrap_function
+        }
+    } else {
+        quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
+
+            #[export_name = #wrap_export_name]
+            #wrap_function
         }
     }
 }
