@@ -24,7 +24,7 @@ pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
 pub use env::TryFromVal;
-pub use env::*;
+use env::*;
 
 mod bigint;
 mod binary;
