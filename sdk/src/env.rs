@@ -200,7 +200,10 @@ impl Env {
                 &self,
                 _key: &xdr::LedgerKey,
             ) -> Result<xdr::LedgerEntry, stellar_contract_env_host::HostError> {
-                Err(internal::HostError::General("not found"))
+                use xdr::{ScHostStorageErrorCode, ScStatus};
+                let status: internal::Status =
+                    ScStatus::HostStorageError(ScHostStorageErrorCode::UnknownError).into();
+                Err(status.into())
             }
 
             fn has(
