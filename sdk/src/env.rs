@@ -216,7 +216,7 @@ impl Env {
         }
     }
 
-    pub fn register_contract(self, contract_id: RawVal, contract: TestContract) {
+    pub fn register_contract(&self, contract_id: RawVal, contract: TestContract) {
         let id_obj: Object = contract_id.try_into().unwrap();
         self.env_impl
             .register_test_contract(id_obj, Rc::new(contract))
