@@ -88,11 +88,11 @@ pub mod ed25519 {
                 secret: sk,
                 public: pk,
             };
-            let sig = kp.sign(128u64).unwrap();
+            let sig = kp.sign(128i64).unwrap();
             assert_eq!(
-                sig,
-                // Verified with https://go.dev/play/p/UimGhCOj231.
-                hex::decode("d69f462c8b8a283abc5e0060fd89b93f1741a8c1b0507866a41cea95f753a71ba0dec93dce822703401134758400ed20d75b655fe5098bfbf4b6c41687d40c0e").unwrap().as_slice()
+                hex::encode(sig),
+                // Verified with https://go.dev/play/p/BYht__ahx7y.
+                "082f78fb1864f6914de4c3c4e3e0c6e7c63a6a866aa81bda8042f74155cb95e7d29958061a11568f03db137cbf17c8b7bbf6193b2901af9888bbdf150c7be00a",
             );
         }
     }
