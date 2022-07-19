@@ -10,3 +10,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
+
+[features]
+default = ["export"]
+export = []
