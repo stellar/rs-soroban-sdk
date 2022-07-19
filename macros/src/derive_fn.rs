@@ -109,16 +109,10 @@ pub fn derive_fn(
     } else {
         quote! {}
     };
-    let wrap_function = quote! {
-        pub fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
-            <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
-                #call(
-                    #env_call
-                    #(#wrap_calls),*
-                ),
-                &env
-            )
-        }
+    let export_name = if let Some(cfg_feature) = feature {
+        quote! { #[cfg_attr(feature = #cfg_feature, export_name = #wrap_export_name)] }
+    } else {
+        quote! { #[export_name = #wrap_export_name] }
     };
 
     // Generated code spec.
@@ -131,27 +125,26 @@ pub fn derive_fn(
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
     let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
+    let link_section = if let Some(cfg_feature) = feature {
+        quote! { #[cfg_attr(all(target_family = "wasm", feature = #cfg_feature), link_section = "contractspecv0")] }
+    } else {
+        quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] }
+    };
 
     // Generated code.
-    if let Some(cfg_feature) = feature {
-        quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
+    quote! {
+        #link_section
+        pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
-            #[cfg(feature = #cfg_feature)]
-            #[export_name = #wrap_export_name]
-            #wrap_function
-
-            #[cfg(not(feature = #cfg_feature))]
-            #wrap_function
-        }
-    } else {
-        quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
-
-            #[export_name = #wrap_export_name]
-            #wrap_function
+        #export_name
+        pub fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+            <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
+                #call(
+                    #env_call
+                    #(#wrap_calls),*
+                ),
+                &env
+            )
         }
     }
 }
