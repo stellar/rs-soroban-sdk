@@ -1,5 +1,6 @@
 use stellar_xdr::{
-    ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
+    ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt,
+    ScSpecTypeVec,
 };
 use syn::{
     spanned::Spanned, Error, GenericArgument, Path, PathArguments, PathSegment, Type, TypePath,
@@ -98,19 +99,21 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
             }
             _ => Err(Error::new(t.span(), "unsupported type"))?,
         },
-        Type::Tuple(TypeTuple { elems, .. }) => Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
-            value_types: elems
-                .iter()
-                .map(map_type)
-                .collect::<Result<Vec<ScSpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
-                .try_into()
-                .map_err(|e| {
-                    Error::new(
-                        t.span(),
-                        format!("tuple values cannot be used in XDR spec: {}", e),
-                    )
-                })?,
-        }))),
+        Type::Tuple(TypeTuple { elems, .. }) => {
+            Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                value_types: elems
+                    .iter()
+                    .map(map_type)
+                    .collect::<Result<Vec<ScSpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
+                    .try_into()
+                    .map_err(|e| {
+                        Error::new(
+                            t.span(),
+                            format!("tuple values cannot be used in XDR spec: {}", e),
+                        )
+                    })?,
+            })))
+        }
         _ => Err(Error::new(t.span(), "unsupported type"))?,
     }
 }
