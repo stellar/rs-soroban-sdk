@@ -14,6 +14,9 @@ pub trait Sign {
     fn sign<M: Into<ScVal>>(&self, m: M) -> Result<Self::Signature, Self::Error>;
 }
 
+// TODO: Add a Verify interface and ed25519 implementation to counter the Sign
+// interface.
+
 pub mod ed25519 {
     use xdr::WriteXdr;
 
