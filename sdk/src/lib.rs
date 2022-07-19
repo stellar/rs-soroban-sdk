@@ -38,5 +38,8 @@ pub use map::Map;
 pub use vec::Vec;
 
 mod test_contract;
+mod test_sign;
 #[cfg(feature = "testutils")]
 pub use test_contract::TestContract;
+#[cfg(feature = "testutils")]
+pub use test_sign::{ed25519, Sign};
