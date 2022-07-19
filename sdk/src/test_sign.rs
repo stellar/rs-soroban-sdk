@@ -62,7 +62,7 @@ pub mod ed25519 {
     {
         type Error = Error;
         type Signature = [u8; 64];
-        fn sign<M: Into<xdr::ScVal>>(&self, m: M) -> Result<Self::Signature, Self::Error> {
+        fn sign<MESSAGE: Into<xdr::ScVal>>(&self, m: MESSAGE) -> Result<Self::Signature, Self::Error> {
             let mut buf = Vec::<u8>::new();
             let val: xdr::ScVal = m.into();
             val.write_xdr(&mut buf)?;
