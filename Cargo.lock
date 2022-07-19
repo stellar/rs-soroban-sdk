@@ -787,11 +787,6 @@ version = "0.0.0"
 source = "git+https://github.com/stellar/rs-stellar-xdr?rev=a79301db#a79301db2be52118ad23ea30056fd665843ef3a9"
 
 [[package]]
-name = "stellar-xdr"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=a79301db#a79301db2be52118ad23ea30056fd665843ef3a9"
-
-[[package]]
 name = "subtle"
 version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
