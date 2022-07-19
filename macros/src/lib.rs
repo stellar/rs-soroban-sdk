@@ -25,9 +25,9 @@ pub fn contract(_input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let meta = parse_macro_input!(metadata as AttributeArgs);
-    let feature = args::get_str(&meta, "feature");
+pub fn contractimpl(args: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(args as AttributeArgs);
+    let feature = args::get_str(&args, "feature");
     let imp = parse_macro_input!(input as ItemImpl);
     let is_trait = imp.trait_.is_some();
     let ty = &imp.self_ty;
