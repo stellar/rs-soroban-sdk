@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::{SpecEntry, SpecFunctionV0, SpecTypeDef, WriteXdr};
+use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, WriteXdr};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
@@ -55,7 +55,7 @@ pub fn derive_fn(
                         Ok(spec) => spec,
                         Err(e) => {
                             errors.push(e);
-                            SpecTypeDef::I32
+                            ScSpecTypeDef::I32
                         }
                     };
                     let ident = format_ident!("arg_{}", i);
@@ -78,7 +78,7 @@ pub fn derive_fn(
                         a.span(),
                         "self argument not supported",
                     ));
-                    (SpecTypeDef::I32, a.clone(), quote! { })
+                    (ScSpecTypeDef::I32, a.clone(), quote! { })
                 }
             }
         }).multiunzip();
@@ -89,7 +89,7 @@ pub fn derive_fn(
             Ok(spec) => spec,
             Err(e) => {
                 errors.push(e);
-                SpecTypeDef::I32
+                ScSpecTypeDef::I32
             }
         }],
         ReturnType::Default => vec![],
@@ -116,7 +116,7 @@ pub fn derive_fn(
     };
 
     // Generated code spec.
-    let spec_entry = SpecEntry::FunctionV0(SpecFunctionV0 {
+    let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: wrap_export_name.clone().try_into().unwrap(),
         input_types: spec_args.try_into().unwrap(),
         output_types: spec_result.try_into().unwrap(),

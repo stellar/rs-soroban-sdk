@@ -1,5 +1,6 @@
 use stellar_xdr::{
-    SpecTypeDef, SpecTypeMap, SpecTypeOption, SpecTypeSet, SpecTypeTuple, SpecTypeUdt, SpecTypeVec,
+    ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt,
+    ScSpecTypeVec,
 };
 use syn::{
     spanned::Spanned, Error, GenericArgument, Path, PathArguments, PathSegment, Type, TypePath,
@@ -7,7 +8,7 @@ use syn::{
 };
 
 #[allow(clippy::too_many_lines)]
-pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
+pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
     match t {
         Type::Path(TypePath {
             qself: None,
@@ -17,16 +18,16 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                 ident,
                 arguments: PathArguments::None,
             }) => match &ident.to_string()[..] {
-                "u64" => Ok(SpecTypeDef::U64),
-                "i64" => Ok(SpecTypeDef::I64),
-                "u32" => Ok(SpecTypeDef::U32),
-                "i32" => Ok(SpecTypeDef::I32),
-                "bool" => Ok(SpecTypeDef::Bool),
-                "Symbol" => Ok(SpecTypeDef::Symbol),
-                "Bitset" => Ok(SpecTypeDef::Bitset),
-                "Status" => Ok(SpecTypeDef::Status),
-                "Binary" => Ok(SpecTypeDef::Binary),
-                s => Ok(SpecTypeDef::Udt(SpecTypeUdt {
+                "u64" => Ok(ScSpecTypeDef::U64),
+                "i64" => Ok(ScSpecTypeDef::I64),
+                "u32" => Ok(ScSpecTypeDef::U32),
+                "i32" => Ok(ScSpecTypeDef::I32),
+                "bool" => Ok(ScSpecTypeDef::Bool),
+                "Symbol" => Ok(ScSpecTypeDef::Symbol),
+                "Bitset" => Ok(ScSpecTypeDef::Bitset),
+                "Status" => Ok(ScSpecTypeDef::Status),
+                "Binary" => Ok(ScSpecTypeDef::Binary),
+                s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     name: s.try_into().map_err(|e| {
                         Error::new(
                             t.span(),
@@ -49,7 +50,7 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                                 "incorrect number of generic arguments",
                             ))?,
                         };
-                        Ok(SpecTypeDef::Option(Box::new(SpecTypeOption {
+                        Ok(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
                             value_type: Box::new(map_type(t)?),
                         })))
                     }
@@ -61,7 +62,7 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                                 "incorrect number of generic arguments",
                             ))?,
                         };
-                        Ok(SpecTypeDef::Vec(Box::new(SpecTypeVec {
+                        Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
                             element_type: Box::new(map_type(t)?),
                         })))
                     }
@@ -73,7 +74,7 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                                 "incorrect number of generic arguments",
                             ))?,
                         };
-                        Ok(SpecTypeDef::Set(Box::new(SpecTypeSet {
+                        Ok(ScSpecTypeDef::Set(Box::new(ScSpecTypeSet {
                             element_type: Box::new(map_type(t)?),
                         })))
                     }
@@ -85,7 +86,7 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
                                 "incorrect number of generic arguments",
                             ))?,
                         };
-                        Ok(SpecTypeDef::Map(Box::new(SpecTypeMap {
+                        Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
                             key_type: Box::new(map_type(k)?),
                             value_type: Box::new(map_type(v)?),
                         })))
@@ -98,19 +99,21 @@ pub fn map_type(t: &Type) -> Result<SpecTypeDef, Error> {
             }
             _ => Err(Error::new(t.span(), "unsupported type"))?,
         },
-        Type::Tuple(TypeTuple { elems, .. }) => Ok(SpecTypeDef::Tuple(Box::new(SpecTypeTuple {
-            value_types: elems
-                .iter()
-                .map(map_type)
-                .collect::<Result<Vec<SpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
-                .try_into()
-                .map_err(|e| {
-                    Error::new(
-                        t.span(),
-                        format!("tuple values cannot be used in XDR spec: {}", e),
-                    )
-                })?,
-        }))),
+        Type::Tuple(TypeTuple { elems, .. }) => {
+            Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                value_types: elems
+                    .iter()
+                    .map(map_type)
+                    .collect::<Result<Vec<ScSpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
+                    .try_into()
+                    .map_err(|e| {
+                        Error::new(
+                            t.span(),
+                            format!("tuple values cannot be used in XDR spec: {}", e),
+                        )
+                    })?,
+            })))
+        }
         _ => Err(Error::new(t.span(), "unsupported type"))?,
     }
 }
