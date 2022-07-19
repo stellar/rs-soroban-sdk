@@ -762,6 +762,8 @@ dependencies = [
 name = "stellar-contract-sdk"
 version = "0.0.0"
 dependencies = [
+ "ed25519-dalek",
+ "hex",
  "stellar-contract-env-guest",
  "stellar-contract-env-host",
  "stellar-contract-env-panic-handler-wasm32-unreachable",
