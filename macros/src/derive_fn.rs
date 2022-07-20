@@ -166,3 +166,24 @@ pub fn derive_fn(
         }
     }
 }
+
+#[allow(clippy::too_many_lines)]
+pub fn derive_add_functions<'a>(
+    ty: &Box<Type>,
+    methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
+) -> TokenStream2 {
+    let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
+        .map(|m| {
+            let ident = format!("{}", m.sig.ident);
+            let wrap_ident = format_ident!("__{}", m.sig.ident);
+            (ident, wrap_ident)
+        })
+        .multiunzip();
+    quote! {
+        impl stellar_contract_sdk::AddFunctions for #ty {
+            fn add_functions(tc: &mut stellar_contract_sdk::TestContract) {
+                #(tc.add_function(#idents, &#wrap_idents::call_slice));*
+            }
+        }
+    }
+}

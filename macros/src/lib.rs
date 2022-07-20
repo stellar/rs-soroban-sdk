@@ -4,15 +4,15 @@ mod derive_fn;
 mod derive_type;
 mod map_type;
 
-use derive_fn::derive_fn;
+use derive_fn::{derive_add_functions, derive_fn};
 use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
-    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ImplItem, ItemImpl,
-    Visibility,
+    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ImplItem,
+    ImplItemMethod, ItemImpl, Visibility,
 };
 
 #[proc_macro]
@@ -30,6 +30,13 @@ struct ContractImplArgs {
     feature: Option<String>,
 }
 
+fn get_methods(imp: &ItemImpl) -> impl Iterator<Item = &ImplItemMethod> {
+    imp.items.iter().filter_map(|i| match i {
+        ImplItem::Method(m) => Some(m),
+        _ => None,
+    })
+}
+
 #[proc_macro_attribute]
 pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -40,13 +47,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let is_trait = imp.trait_.is_some();
     let ty = &imp.self_ty;
-    let derived = imp
-        .items
-        .iter()
-        .filter_map(|i| match i {
-            ImplItem::Method(m) => Some(m),
-            _ => None,
-        })
+    let derived = get_methods(&imp)
         .filter(|m| is_trait || matches!(m.vis, Visibility::Public(_)))
         .map(|m| {
             let ident = &m.sig.ident;
@@ -61,9 +62,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 &trait_ident,
             )
         });
+    let add_functions = derive_add_functions(ty, get_methods(&imp));
     quote! {
         #imp
         #(#derived)*
+        #add_functions
     }
     .into()
 }
