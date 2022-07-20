@@ -10,7 +10,6 @@ use stellar_xdr::{
 
 use crate::map_type::map_type;
 
-// TODO: In enums replace use of index integers with symbols.
 // TODO: Add field attribute for including/excluding fields in types.
 // TODO: Better handling of partial types and types without all their fields and
 // types with private fields.
