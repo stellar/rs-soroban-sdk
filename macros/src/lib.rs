@@ -1,5 +1,6 @@
 extern crate proc_macro;
 
+mod args;
 mod derive_fn;
 mod derive_type;
 mod map_type;
@@ -10,7 +11,8 @@ use derive_type::{derive_type_enum, derive_type_struct};
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
-    parse_macro_input, spanned::Spanned, DeriveInput, Error, ImplItem, ItemImpl, Visibility,
+    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ImplItem, ItemImpl,
+    Visibility,
 };
 
 #[proc_macro]
@@ -23,7 +25,9 @@ pub fn contract(_input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
+pub fn contractimpl(args: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(args as AttributeArgs);
+    let feature = args::get_str(&args, "feature");
     let imp = parse_macro_input!(input as ItemImpl);
     let is_trait = imp.trait_.is_some();
     let ty = &imp.self_ty;
@@ -38,7 +42,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         .map(|m| {
             let ident = &m.sig.ident;
             let call = quote! { <#ty>::#ident };
-            derive_fn(&call, ident, &m.sig.inputs, &m.sig.output)
+            derive_fn(&call, ident, &m.sig.inputs, &m.sig.output, &feature)
         });
     quote! {
         #imp
