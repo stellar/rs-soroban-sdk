@@ -5,7 +5,7 @@ contract!();
 
 pub struct Contract;
 
-#[contractimpl]
+#[contractimpl(tests_if = "testutils")]
 impl Contract {
     pub fn add(a: i32, b: i32) -> i32 {
         a + b
@@ -17,7 +17,7 @@ mod test {
     extern crate std;
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
-    use super::__add;
+    use super::__add::call as add;
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
@@ -25,7 +25,7 @@ mod test {
         let e = Env::default();
         let x = 10i32.into_val(&e);
         let y = 12i32.into_val(&e);
-        let z = __add(e.clone(), x, y);
+        let z = add(e.clone(), x, y);
         let z = i32::try_from_val(&e, z).unwrap();
         assert!(z == 22);
     }
@@ -36,7 +36,7 @@ mod test {
         let x = (-241823608i32).into_val(&e);
         let y = (-1905660041i32).into_val(&e);
         let res = catch_unwind(AssertUnwindSafe(|| {
-            __add(e, x, y);
+            add(e, x, y);
         }));
         assert!(res.is_err());
     }
@@ -49,7 +49,7 @@ mod proptest {
     use proptest::prelude::*;
     use std::{format, panic};
 
-    use super::__add;
+    use super::__add::call as add;
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     proptest! {
@@ -61,14 +61,14 @@ mod proptest {
                 // will panic.
                 None => {
                     let res = panic::catch_unwind(AssertUnwindSafe(move || {
-                        __add(e.clone(), a.into_val(&e), b.into_val(&e));
+                        add(e.clone(), a.into_val(&e), b.into_val(&e));
                     }));
                     prop_assert!(res.is_err());
                 },
                 // If a + b would not result in overflow, assert that the add fn
                 // returns the sum of a and b.
                 Some(expected_sum) => {
-                    let vsum = __add(e.clone(), a.into_val(&e), b.into_val(&e));
+                    let vsum = add(e.clone(), a.into_val(&e), b.into_val(&e));
                     let sum = i32::try_from_val(&e, vsum).unwrap();
                     prop_assert_eq!(sum, expected_sum);
                 },
