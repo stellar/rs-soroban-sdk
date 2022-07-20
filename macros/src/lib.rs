@@ -27,7 +27,8 @@ pub fn contract(_input: TokenStream) -> TokenStream {
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
     #[darling(default)]
-    feature: Option<String>,
+    export_if: Option<String>,
+    tests_if: Option<String>,
 }
 
 fn get_methods(imp: &ItemImpl) -> impl Iterator<Item = &ImplItemMethod> {
@@ -58,11 +59,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 ident,
                 &m.sig.inputs,
                 &m.sig.output,
-                &args.feature,
+                &args.export_if,
                 &trait_ident,
             )
         });
-    let add_functions = derive_add_functions(ty, get_methods(&imp));
+    let add_functions = derive_add_functions(ty, get_methods(&imp), &args.tests_if);
     quote! {
         #imp
         #(#derived)*
