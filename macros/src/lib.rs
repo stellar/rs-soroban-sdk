@@ -50,8 +50,16 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         .filter(|m| is_trait || matches!(m.vis, Visibility::Public(_)))
         .map(|m| {
             let ident = &m.sig.ident;
-            let call = quote! { <#ty>::#ident };
-            derive_fn(&call, ident, &m.sig.inputs, &m.sig.output, &args.feature)
+            let call = quote! { <super::#ty>::#ident };
+            let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
+            derive_fn(
+                &call,
+                ident,
+                &m.sig.inputs,
+                &m.sig.output,
+                &args.feature,
+                &trait_ident,
+            )
         });
     quote! {
         #imp

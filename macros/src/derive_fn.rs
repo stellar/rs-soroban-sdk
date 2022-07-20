@@ -18,6 +18,7 @@ pub fn derive_fn(
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
     feature: &Option<String>,
+    trait_ident: &Option<&Ident>,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -48,40 +49,42 @@ pub fn derive_fn(
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
-        .map(|(i, a)| {
-            match a {
-                FnArg::Typed(pat_type) => {
-                    let spec = match map_type(&pat_type.ty) {
-                        Ok(spec) => spec,
-                        Err(e) => {
-                            errors.push(e);
-                            ScSpecTypeDef::I32
-                        }
-                    };
-                    let ident = format_ident!("arg_{}", i);
-                    let arg = FnArg::Typed(PatType {
+        .map(|(i, a)| match a {
+            FnArg::Typed(pat_type) => {
+                let spec = match map_type(&pat_type.ty) {
+                    Ok(spec) => spec,
+                    Err(e) => {
+                        errors.push(e);
+                        ScSpecTypeDef::I32
+                    }
+                };
+                let ident = format_ident!("arg_{}", i);
+                let arg = FnArg::Typed(PatType {
+                    attrs: vec![],
+                    pat: Box::new(Pat::Ident(PatIdent {
+                        ident: ident.clone(),
                         attrs: vec![],
-                        pat: Box::new(Pat::Ident(PatIdent{ ident: ident.clone(), attrs: vec![], by_ref: None, mutability: None, subpat: None })),
-                        colon_token: Colon::default(),
-                        ty: Box::new(Type::Verbatim(quote! { stellar_contract_sdk::RawVal })),
-                    });
-                    let call = quote! {
-                        <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(
-                            &env,
-                            #ident
-                        ).unwrap()
-                    };
-                    (spec, arg, call)
-                }
-                FnArg::Receiver(_) => {
-                    errors.push(Error::new(
-                        a.span(),
-                        "self argument not supported",
-                    ));
-                    (ScSpecTypeDef::I32, a.clone(), quote! { })
-                }
+                        by_ref: None,
+                        mutability: None,
+                        subpat: None,
+                    })),
+                    colon_token: Colon::default(),
+                    ty: Box::new(Type::Verbatim(quote! { stellar_contract_sdk::RawVal })),
+                });
+                let call = quote! {
+                    <_ as TryFromVal<Env, RawVal>>::try_from_val(
+                        &env,
+                        #ident
+                    ).unwrap()
+                };
+                (spec, arg, call)
             }
-        }).multiunzip();
+            FnArg::Receiver(_) => {
+                errors.push(Error::new(a.span(), "self argument not supported"));
+                (ScSpecTypeDef::I32, a.clone(), quote! {})
+            }
+        })
+        .multiunzip();
 
     // Prepare the output.
     let spec_result = match output {
@@ -103,7 +106,7 @@ pub fn derive_fn(
 
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
-    let wrap_ident = format_ident!("__{}", ident);
+    let mod_ident = format_ident!("__{}", ident);
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
     } else {
@@ -113,6 +116,12 @@ pub fn derive_fn(
         quote! { #[cfg_attr(feature = #cfg_feature, export_name = #wrap_export_name)] }
     } else {
         quote! { #[export_name = #wrap_export_name] }
+    };
+    let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
+    let use_trait = if let Some(t) = trait_ident {
+        quote! { use super::#t }
+    } else {
+        quote! {}
     };
 
     // Generated code spec.
@@ -136,15 +145,24 @@ pub fn derive_fn(
         #link_section
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
-        #export_name
-        pub fn #wrap_ident(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
-            <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
-                #call(
-                    #env_call
-                    #(#wrap_calls),*
-                ),
-                &env
-            )
+        pub mod #mod_ident {
+            #use_trait;
+            use stellar_contract_sdk::{Env, IntoVal, RawVal, TryFromVal};
+
+            #export_name
+            pub fn call(env: Env, #(#wrap_args),*) -> RawVal {
+                <_ as IntoVal<Env, RawVal>>::into_val(
+                    #call(
+                        #env_call
+                        #(#wrap_calls),*
+                    ),
+                    &env
+                )
+            }
+
+            pub fn call_slice(env: Env, args: &[RawVal]) -> RawVal {
+                call(env, #(#slice_args),*)
+            }
         }
     }
 }
