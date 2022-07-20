@@ -25,3 +25,7 @@ impl ContractFunctionSet for TestContract {
         Some(f(env, args))
     }
 }
+
+pub trait AddFunctions {
+    fn add_functions(tc: &mut TestContract);
+}
