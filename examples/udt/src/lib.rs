@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contract, contractimpl, contracttype, ConversionError, IntoEnvVal};
+use stellar_contract_sdk::{contract, contractimpl, contracttype, IntoEnvVal};
 
 contract!();
 
