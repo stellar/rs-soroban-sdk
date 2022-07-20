@@ -4,8 +4,8 @@ use quote::{format_ident, quote};
 use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
-    SpecEntry, SpecTypeDef, SpecUdtStructFieldV0, SpecUdtStructV0, SpecUdtUnionCaseV0,
-    SpecUdtUnionV0, VecM, WriteXdr,
+    ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0,
+    ScSpecUdtUnionV0, VecM, WriteXdr,
 };
 
 use crate::map_type::map_type;
@@ -30,7 +30,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 .as_ref()
                 .map_or_else(|| format_ident!("{}", i), Ident::clone);
             let name = ident.to_string();
-            let spec_field = SpecUdtStructFieldV0 {
+            let spec_field = ScSpecUdtStructFieldV0 {
                 name: name.clone().try_into().unwrap_or_else(|_| {
                     errors.push(Error::new(ident.span(), "struct field name too long"));
                     VecM::default()
@@ -39,7 +39,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);
-                        SpecTypeDef::I32
+                        ScSpecTypeDef::I32
                     }
                 },
             };
@@ -65,7 +65,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
 
     // Generated code spec.
     let spec_gen = if spec {
-        let spec_entry = SpecEntry::UdtStructV0(SpecUdtStructV0 {
+        let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             name: ident.to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
         });
@@ -139,7 +139,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                 #discriminant_const_u64
             };
             if let Some(f) = field {
-                let spec_case = SpecUdtUnionCaseV0 {
+                let spec_case = ScSpecUdtUnionCaseV0 {
                     name: name.try_into().unwrap_or_else(|_| {
                         errors.push(Error::new(ident.span(), "union case name too long"));
                         VecM::default()
@@ -148,7 +148,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                         Ok(t) => t,
                         Err(e) => {
                             errors.push(e);
-                            SpecTypeDef::I32
+                            ScSpecTypeDef::I32
                         }
                     }),
                 };
@@ -156,7 +156,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_env_val(env) };
                 (spec_case, discriminant_const, try_from, into)
             } else {
-                let spec_case = SpecUdtUnionCaseV0 {
+                let spec_case = ScSpecUdtUnionCaseV0 {
                     name: name.try_into().unwrap_or_else(|_| {
                         errors.push(Error::new(ident.span(), "union case name too long"));
                         VecM::default()
@@ -178,7 +178,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
 
     // Generated code spec.
     let spec_gen = if spec {
-        let spec_entry = SpecEntry::UdtUnionV0(SpecUdtUnionV0 {
+        let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             name: ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
