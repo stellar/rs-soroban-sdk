@@ -46,39 +46,19 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 { const k: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name); k }
             };
             let try_from = quote! {
-                #ident: map
-                    .get(#map_key)
-                    .map_err(|_| stellar_contract_sdk::ConversionError)?
-                    .try_into()?
+                #ident: map.get(#map_key).map_err(|_| stellar_contract_sdk::ConversionError)?.try_into()?
             };
             let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
-                    let key: &stellar_contract_sdk::xdr::ScVal =
-                        &#name
-                        .try_into()
-                        .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
-                    let idx = map
-                        // A binary search can be used because the map will be
-                        // validated to be sorted.
-                        .binary_search_by_key(key, |entry| entry.key.clone())
-                        // TODO: Use an error specific to indicate missing key.
-                        .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
-                    map[idx].val
-                        .clone()
-                        .try_into()
-                        .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
+                    let key = &#name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+                    let idx = map.binary_search_by_key(key, |entry| entry.key.clone()).map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+                    map[idx].val.clone().try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
                 }
             };
             let into_xdr = quote! {
                 stellar_contract_sdk::xdr::ScMapEntry {
-                    key: {
-                        let key: stellar_contract_sdk::xdr::ScVal =
-                            #name
-                            .try_into()
-                            .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
-                        key
-                    },
+                    key: #name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
                     val: self.#ident.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
                 }
             };
