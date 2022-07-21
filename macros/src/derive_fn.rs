@@ -19,7 +19,7 @@ pub fn derive_fn(
     output: &ReturnType,
     feature: &Option<String>,
     trait_ident: &Option<&Ident>,
-) -> TokenStream2 {
+) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
@@ -101,7 +101,7 @@ pub fn derive_fn(
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
         let compile_errors = errors.iter().map(Error::to_compile_error);
-        return quote! { #(#compile_errors)* };
+        return Err(quote! { #(#compile_errors)* });
     }
 
     // Generated code parameters.
@@ -141,7 +141,7 @@ pub fn derive_fn(
     };
 
     // Generated code.
-    quote! {
+    Ok(quote! {
         #link_section
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
@@ -165,7 +165,7 @@ pub fn derive_fn(
                 call(env, #(#slice_args),*)
             }
         }
-    }
+    })
 }
 
 #[allow(clippy::too_many_lines)]

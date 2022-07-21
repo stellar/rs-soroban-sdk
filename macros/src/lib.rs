@@ -48,7 +48,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let is_trait = imp.trait_.is_some();
     let ty = &imp.self_ty;
-    let derived = get_methods(&imp)
+    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = get_methods(&imp)
         .filter(|m| is_trait || matches!(m.vis, Visibility::Public(_)))
         .map(|m| {
             let ident = &m.sig.ident;
@@ -62,14 +62,27 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 &args.export_if,
                 &trait_ident,
             )
-        });
-    let add_functions = derive_add_functions(ty, get_methods(&imp), &args.tests_if);
-    quote! {
-        #imp
-        #(#derived)*
-        #add_functions
+        })
+        .collect();
+
+    match derived {
+        Ok(derived_ok) => {
+            let add_functions = derive_add_functions(ty, get_methods(&imp), &args.tests_if);
+            quote! {
+                #imp
+                #derived_ok
+                #add_functions
+            }
+            .into()
+        }
+        Err(derived_err) => {
+            quote! {
+                #imp
+                #derived_err
+            }
+            .into()
+        }
     }
-    .into()
 }
 
 #[proc_macro_attribute]
