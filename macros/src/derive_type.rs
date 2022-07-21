@@ -19,7 +19,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     let mut errors = Vec::<Error>::new();
 
     let fields = &data.fields;
-    let (spec_fields, try_froms, intos): (Vec<_>, Vec<_>, Vec<_>) = fields
+    let (spec_fields, try_froms, intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .filter(|f| matches!(f.vis, Visibility::Public(_)))
         .enumerate()
@@ -52,7 +52,20 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     .try_into()?
             };
             let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
-            (spec_field, try_from, into)
+            let try_from_xdr = quote! {
+                #ident: map
+                    // A binary search can be used because the map will be
+                    // validated to be sorted.
+                    .binary_search_by(|entry| entry.key == #map_key)
+                    .try_into()?
+            };
+            let into_xdr = quote! {
+                stellar_contract_sdk::xdr::ScMapEntry {
+                    key: #map_key.into(),
+                    val: self.#ident.try_into()?,
+                }
+            };
+            (spec_field, try_from, into, try_from_xdr, into_xdr)
         })
         .multiunzip();
 
@@ -101,6 +114,31 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 let mut map = stellar_contract_sdk::Map::<stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal>::new(env);
                 #(#intos;)*
                 map.into()
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryFrom<stellar_contract_sdk::xdr::ScMap> for #ident {
+            type Error = stellar_contract_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from(map: stellar_contract_sdk::xdr::ScMap) -> Result<Self, Self::Error> {
+                use stellar_contract_sdk::xdr::Validate;
+                map.validate()?;
+                Ok(Self{
+                    #(#try_from_xdrs,)*
+                })
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScMap> for #ident {
+            type Error = stellar_contract_sdk::ConversionError;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScMap, Self::Error> {
+                extern crate alloc;
+                Ok(stellar_contract_sdk::xdr::ScMap(alloc::vec![
+                    #(#into_xdrs,)*
+                ].try_into()?))
             }
         }
     }
