@@ -188,9 +188,22 @@ pub fn derive_add_functions<'a>(
     };
     quote! {
         #cfg
-        impl stellar_contract_sdk::AddFunctions for #ty {
-            fn add_functions(tc: &mut stellar_contract_sdk::TestContract) {
-                #(tc.add_function(#idents, &#wrap_idents::call_raw_slice));*
+        impl stellar_contract_sdk::ContractFunctionSet for #ty {
+            fn call(
+                &self,
+                func: &stellar_contract_sdk::Symbol,
+                env: stellar_contract_sdk::Env,
+                args: &[stellar_contract_sdk::RawVal],
+            ) -> Option<stellar_contract_sdk::RawVal> {
+                use crate::std::string::ToString;
+                match func.to_string().as_str() {
+                    #(#idents => {
+                        Some(#wrap_idents::call_raw_slice(env, args))
+                    })*
+                    _ => {
+                        None
+                    }
+                }
             }
         }
     }

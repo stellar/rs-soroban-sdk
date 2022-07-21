@@ -75,13 +75,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             }
             .into()
         }
-        Err(derived_err) => {
-            quote! {
-                #imp
-                #derived_err
-            }
-            .into()
+        Err(derived_err) => quote! {
+            #imp
+            #derived_err
         }
+        .into(),
     }
 }
 
