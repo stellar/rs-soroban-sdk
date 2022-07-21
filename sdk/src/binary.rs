@@ -4,10 +4,8 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use stellar_contract_env_host::RawValConvertible;
-
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,RawValConvertible
 };
 
 pub trait FixedLengthBinary {
