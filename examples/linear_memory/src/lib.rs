@@ -5,7 +5,7 @@ contract!();
 
 pub struct Contract;
 
-#[contractimpl]
+#[contractimpl(tests_if = "testutils")]
 impl Contract {
     pub fn bin_new(e: Env, len: u32) -> Binary {
         let buf: [u8; 4] = [0, 1, 2, 3];

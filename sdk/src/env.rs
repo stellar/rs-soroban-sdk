@@ -205,7 +205,7 @@ impl Env {
 }
 
 #[cfg(feature = "testutils")]
-use crate::TestContract;
+use crate::test_contract::{ContractFunctionSet, InternalContractFunctionSet};
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
@@ -239,10 +239,14 @@ impl Env {
         }
     }
 
-    pub fn register_contract(&self, contract_id: RawVal, contract: TestContract) {
+    pub fn register_contract<T: ContractFunctionSet + 'static>(
+        &self,
+        contract_id: RawVal,
+        contract: T,
+    ) {
         let id_obj: Object = contract_id.try_into().unwrap();
         self.env_impl
-            .register_test_contract(id_obj, Rc::new(contract))
+            .register_test_contract(id_obj, Rc::new(InternalContractFunctionSet(contract)))
             .unwrap();
     }
 

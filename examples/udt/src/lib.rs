@@ -17,7 +17,7 @@ pub struct UdtStruct {
 
 pub struct Contract;
 
-#[contractimpl(feature = "export")]
+#[contractimpl(export_if = "export", tests_if = "testutils")]
 impl Contract {
     pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
         let a = match a {
@@ -41,7 +41,7 @@ mod test {
     fn test_add() {
         let e = Env::default();
         let udt = UdtStruct { a: 10, b: 12 };
-        let z = __add(
+        let z = __add::call_raw(
             e.clone(),
             UdtEnum::UdtA.into_val(&e),
             UdtEnum::UdtB(udt).into_val(&e),
