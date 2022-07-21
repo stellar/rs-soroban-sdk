@@ -54,18 +54,32 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
-                    let key: &stellar_contract_sdk::xdr::ScVal = &#name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
-                    map
-                    // A binary search can be used because the map will be
-                    // validated to be sorted.
-                    .binary_search_by(|entry| entry.key.cmp(key))
-                    .try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
+                    let key: &stellar_contract_sdk::xdr::ScVal =
+                        &#name
+                        .try_into()
+                        .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+                    let idx = map
+                        // A binary search can be used because the map will be
+                        // validated to be sorted.
+                        .binary_search_by_key(key, |entry| entry.key.clone())
+                        // TODO: Use an error specific to indicate missing key.
+                        .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+                    map[idx].val
+                        .clone()
+                        .try_into()
+                        .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
                 }
             };
             let into_xdr = quote! {
                 stellar_contract_sdk::xdr::ScMapEntry {
-                    key: #map_key.into(),
-                    val: self.#ident.try_into()?,
+                    key: {
+                        let key: stellar_contract_sdk::xdr::ScVal =
+                            #name
+                            .try_into()
+                            .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+                        key
+                    },
+                    val: self.#ident.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
                 }
             };
             (spec_field, try_from, into, try_from_xdr, into_xdr)
@@ -134,6 +148,32 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         }
 
         #[cfg(any(test, feature = "testutils"))]
+        impl TryFrom<stellar_contract_sdk::xdr::ScObject> for #ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(obj: stellar_contract_sdk::xdr::ScObject) -> Result<Self, Self::Error> {
+                if let stellar_contract_sdk::xdr::ScObject::Map(map) = obj {
+                    map.try_into()
+                } else {
+                    Err(stellar_contract_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryFrom<stellar_contract_sdk::xdr::ScVal> for #ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_from(val: stellar_contract_sdk::xdr::ScVal) -> Result<Self, Self::Error> {
+                if let stellar_contract_sdk::xdr::ScVal::Object(Some(obj)) = val {
+                    obj.try_into()
+                } else {
+                    Err(stellar_contract_sdk::xdr::Error::Invalid)
+                }
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
         impl TryInto<stellar_contract_sdk::xdr::ScMap> for #ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
@@ -142,6 +182,24 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 Ok(stellar_contract_sdk::xdr::ScMap(alloc::vec![
                     #(#into_xdrs,)*
                 ].try_into()?))
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScObject> for #ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
+                Ok(stellar_contract_sdk::xdr::ScObject::Map(self.try_into()?))
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScVal> for #ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
+                Ok(stellar_contract_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
             }
         }
     }
