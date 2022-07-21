@@ -241,10 +241,10 @@ impl Env {
 
     pub fn register_contract<T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: RawVal,
+        contract_id: Binary,
         contract: T,
     ) {
-        let id_obj: Object = contract_id.try_into().unwrap();
+        let id_obj: Object = RawVal::from(contract_id).try_into().unwrap();
         self.env_impl
             .register_test_contract(id_obj, Rc::new(InternalContractFunctionSet(contract)))
             .unwrap();
