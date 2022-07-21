@@ -21,12 +21,12 @@ pub use internal::IntoEnvVal;
 pub use internal::IntoVal;
 pub use internal::Object;
 pub use internal::RawVal;
+pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::Val;
-pub use internal::RawValConvertible;
 
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;

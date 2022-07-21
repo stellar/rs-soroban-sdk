@@ -5,7 +5,8 @@ use core::{
 };
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,RawValConvertible
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,
+    RawValConvertible,
 };
 
 pub trait FixedLengthBinary {
