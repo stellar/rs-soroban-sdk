@@ -9,7 +9,7 @@ contract!();
 
 pub struct Add1;
 
-#[contractimpl]
+#[contractimpl(tests_if = "testutils")]
 impl Add1 {
     fn addimpl(a: i64, b: i64) -> i64 {
         a + b
@@ -27,7 +27,7 @@ pub trait Add2Trait {
 
 pub struct Add2;
 
-#[contractimpl]
+#[contractimpl(tests_if = "testutils")]
 impl Add2Trait for Add2 {
     fn add2(_e: Env, a: i64, b: i64) -> i64 {
         a + b
@@ -54,12 +54,12 @@ mod test {
 
 #[cfg(test)]
 mod test_via_val {
-    use super::{__add1, __add2};
+    use super::{__add1::call_raw as add1, __add2::call_raw as add2};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add_val() {
-        for f in [__add1, __add2] {
+        for f in [add1, add2] {
             let e = Env::default();
             let x = 10i64.into_val(&e);
             let y = 12i64.into_val(&e);
