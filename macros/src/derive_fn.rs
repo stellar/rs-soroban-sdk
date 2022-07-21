@@ -169,7 +169,7 @@ pub fn derive_fn(
 }
 
 #[allow(clippy::too_many_lines)]
-pub fn derive_add_functions<'a>(
+pub fn derive_contract_function_set<'a>(
     ty: &Box<Type>,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
     feature: &Option<String>,

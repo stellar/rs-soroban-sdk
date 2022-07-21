@@ -4,7 +4,7 @@ mod derive_fn;
 mod derive_type;
 mod map_type;
 
-use derive_fn::{derive_add_functions, derive_fn};
+use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
@@ -67,11 +67,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let add_functions = derive_add_functions(ty, get_methods(&imp), &args.tests_if);
+            let cfs = derive_contract_function_set(ty, get_methods(&imp), &args.tests_if);
             quote! {
                 #imp
                 #derived_ok
-                #add_functions
+                #cfs
             }
             .into()
         }
