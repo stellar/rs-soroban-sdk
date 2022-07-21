@@ -1,27 +1,15 @@
 #![cfg(feature = "testutils")]
 
-use crate::env::{
-    internal::{ContractFunctionSet, EnvImpl},
-    Env, RawVal, Symbol,
-};
-use std::collections::HashMap;
+use crate::env::{internal, Env, RawVal, Symbol};
 
-pub struct TestContract(HashMap<Symbol, &'static dyn Fn(Env, &[RawVal]) -> RawVal>);
-
-impl TestContract {
-    pub fn new() -> TestContract {
-        TestContract(HashMap::new())
-    }
-
-    pub fn add_function(&mut self, name: &str, f: &'static dyn Fn(Env, &[RawVal]) -> RawVal) {
-        self.0.insert(Symbol::from_str(name), f);
-    }
+pub trait ContractFunctionSet {
+    fn call(&self, func: &Symbol, env: Env, args: &[RawVal]) -> Option<RawVal>;
 }
 
-impl ContractFunctionSet for TestContract {
-    fn call(&self, func: &Symbol, env_impl: &EnvImpl, args: &[RawVal]) -> Option<RawVal> {
-        let f = self.0.get(func)?;
-        let env = Env::with_impl(env_impl.clone());
-        Some(f(env, args))
+pub(crate) struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+
+impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+    fn call(&self, func: &Symbol, env_impl: &internal::EnvImpl, args: &[RawVal]) -> Option<RawVal> {
+        self.0.call(func, Env::with_impl(env_impl.clone()), args)
     }
 }

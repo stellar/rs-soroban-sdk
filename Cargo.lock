@@ -265,6 +265,7 @@ dependencies = [
 name = "example_udt"
 version = "0.0.0"
 dependencies = [
+ "example_udt",
  "stellar-contract-sdk",
 ]
 

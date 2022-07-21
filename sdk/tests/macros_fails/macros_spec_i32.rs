@@ -4,7 +4,7 @@ pub struct MyType<A>(pub A);
 
 pub struct Contract;
 
-#[contractimpl]
+#[contractimpl(tests_if = "testutils")]
 impl Contract {
     pub fn add(a: MyType<i32>, b: MyType<i32>) -> i8 {
         unimplemented!()
