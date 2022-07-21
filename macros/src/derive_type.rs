@@ -10,7 +10,6 @@ use stellar_xdr::{
 
 use crate::map_type::map_type;
 
-// TODO: In enums replace use of index integers with symbols.
 // TODO: Add field attribute for including/excluding fields in types.
 // TODO: Better handling of partial types and types without all their fields and
 // types with private fields.
@@ -49,7 +48,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             let try_from = quote! {
                 #ident: map
                     .get(#map_key)
-                    .map_err(|_| ConversionError)?
+                    .map_err(|_| stellar_contract_sdk::ConversionError)?
                     .try_into()?
             };
             let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
