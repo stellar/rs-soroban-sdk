@@ -17,7 +17,7 @@ mod test {
     extern crate std;
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
-    use super::__add::call as add;
+    use super::__add::call_raw as add;
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
@@ -49,7 +49,7 @@ mod proptest {
     use proptest::prelude::*;
     use std::{format, panic};
 
-    use super::__add::call as add;
+    use super::__add::call_raw as add;
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     proptest! {

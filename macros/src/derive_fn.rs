@@ -147,7 +147,7 @@ pub fn derive_fn(
 
         pub mod #mod_ident {
             #export_name
-            pub fn call(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+            pub fn call_raw(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
                 #use_trait;
                 <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                     #call(
@@ -158,11 +158,11 @@ pub fn derive_fn(
                 )
             }
 
-            pub fn call_slice(
+            pub fn call_raw_slice(
                 env: stellar_contract_sdk::Env,
                 args: &[stellar_contract_sdk::RawVal],
             ) -> stellar_contract_sdk::RawVal {
-                call(env, #(#slice_args),*)
+                call_raw(env, #(#slice_args),*)
             }
         }
     })
@@ -190,7 +190,7 @@ pub fn derive_add_functions<'a>(
         #cfg
         impl stellar_contract_sdk::AddFunctions for #ty {
             fn add_functions(tc: &mut stellar_contract_sdk::TestContract) {
-                #(tc.add_function(#idents, &#wrap_idents::call_slice));*
+                #(tc.add_function(#idents, &#wrap_idents::call_raw_slice));*
             }
         }
     }

@@ -41,7 +41,7 @@ mod test {
     fn test_add() {
         let e = Env::default();
         let udt = UdtStruct { a: 10, b: 12 };
-        let z = __add::call(
+        let z = __add::call_raw(
             e.clone(),
             UdtEnum::UdtA.into_val(&e),
             UdtEnum::UdtB(udt).into_val(&e),
