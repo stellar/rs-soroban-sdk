@@ -158,7 +158,10 @@ pub fn derive_fn(
                 )
             }
 
-            pub fn call_slice(env: stellar_contract_sdk::Env, args: &[stellar_contract_sdk::RawVal]) -> stellar_contract_sdk::RawVal {
+            pub fn call_slice(
+                env: stellar_contract_sdk::Env,
+                args: &[stellar_contract_sdk::RawVal],
+            ) -> stellar_contract_sdk::RawVal {
                 call(env, #(#slice_args),*)
             }
         }
