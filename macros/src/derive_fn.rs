@@ -195,8 +195,7 @@ pub fn derive_add_functions<'a>(
                 env: stellar_contract_sdk::Env,
                 args: &[stellar_contract_sdk::RawVal],
             ) -> Option<stellar_contract_sdk::RawVal> {
-                use crate::std::string::ToString;
-                match func.to_string().as_str() {
+                match func.to_str().as_ref() {
                     #(#idents => {
                         Some(#wrap_idents::call_raw_slice(env, args))
                     })*
