@@ -53,11 +53,14 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             };
             let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
             let try_from_xdr = quote! {
-                #ident: map
+                #ident: {
+                    let key: &stellar_contract_sdk::xdr::ScVal = &#name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+                    map
                     // A binary search can be used because the map will be
                     // validated to be sorted.
-                    .binary_search_by(|entry| entry.key == #map_key)
-                    .try_into()?
+                    .binary_search_by(|entry| entry.key.cmp(key))
+                    .try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
+                }
             };
             let into_xdr = quote! {
                 stellar_contract_sdk::xdr::ScMapEntry {
@@ -119,7 +122,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
 
         #[cfg(any(test, feature = "testutils"))]
         impl TryFrom<stellar_contract_sdk::xdr::ScMap> for #ident {
-            type Error = stellar_contract_sdk::ConversionError;
+            type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_from(map: stellar_contract_sdk::xdr::ScMap) -> Result<Self, Self::Error> {
                 use stellar_contract_sdk::xdr::Validate;
@@ -132,7 +135,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
 
         #[cfg(any(test, feature = "testutils"))]
         impl TryInto<stellar_contract_sdk::xdr::ScMap> for #ident {
-            type Error = stellar_contract_sdk::ConversionError;
+            type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScMap, Self::Error> {
                 extern crate alloc;

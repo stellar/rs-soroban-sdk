@@ -9,6 +9,7 @@ pub enum UdtEnum {
     UdtB(UdtStruct),
 }
 
+#[derive(Clone)]
 #[contracttype]
 pub struct UdtStruct {
     pub a: i64,
@@ -35,12 +36,13 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::{UdtEnum, UdtStruct, __add};
-    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
+    use stellar_contract_sdk::{xdr::ScVal, Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add() {
         let e = Env::default();
         let udt = UdtStruct { a: 10, b: 12 };
+        let val: ScVal = udt.clone().try_into().unwrap();
         let z = __add(
             e.clone(),
             UdtEnum::UdtA.into_val(&e),
