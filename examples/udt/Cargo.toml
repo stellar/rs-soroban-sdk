@@ -11,6 +11,11 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
 
+[dev-dependencies]
+stellar-contract-sdk = {path = "../../sdk", features = ["testutils"]}
+example_udt = {path = ".", features = ["testutils"]}
+
 [features]
 default = ["export"]
 export = []
+testutils = ["stellar-contract-sdk/testutils"]

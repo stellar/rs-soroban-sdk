@@ -3,7 +3,7 @@ all: check build test
 export RUSTFLAGS=-Dwarnings
 
 test:
-	cargo test
+	cargo hack --feature-powerset test
 
 build:
 	cargo build --target wasm32-unknown-unknown --release

@@ -4,12 +4,14 @@ use stellar_contract_sdk::{contract, contractimpl, contracttype, IntoEnvVal};
 contract!();
 
 #[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
 }
 
 #[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UdtStruct {
     pub a: i64,
     pub b: i64,
@@ -35,7 +37,7 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::{UdtEnum, UdtStruct, __add};
-    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
+    use stellar_contract_sdk::{xdr::ScVal, Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add() {
@@ -48,5 +50,13 @@ mod test {
         );
         let z = i64::try_from_val(&e, z).unwrap();
         assert_eq!(z, 22);
+    }
+
+    #[test]
+    fn test_scval_accessibility_from_udt_types() {
+        let udt = UdtStruct { a: 10, b: 12 };
+        let val: ScVal = udt.clone().try_into().unwrap();
+        let roundtrip: UdtStruct = val.try_into().unwrap();
+        assert_eq!(udt, roundtrip);
     }
 }
