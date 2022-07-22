@@ -16,7 +16,7 @@ pub use env::xdr;
 pub use env::BitSet;
 pub use env::ConversionError;
 pub use env::Env;
-pub use env::EnvRaw;
+pub use env::EnvType;
 pub use env::EnvVal;
 pub use env::IntoEnvVal;
 pub use env::IntoVal;

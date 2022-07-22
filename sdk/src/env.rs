@@ -40,9 +40,9 @@ pub use internal::TryIntoEnvVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
-pub type EnvVal<V> = internal::EnvVal<Env, V>;
-pub type EnvRaw = EnvVal<RawVal>;
-pub type EnvObj = EnvVal<Object>;
+pub type EnvType<V> = internal::EnvVal<Env, V>;
+pub type EnvVal = internal::EnvVal<Env, RawVal>;
+pub type EnvObj = internal::EnvVal<Env, Object>;
 
 pub trait IntoTryFromVal: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
@@ -69,7 +69,7 @@ impl Env {
         &self,
         contract_id: Binary,
         func: Symbol,
-        args: crate::vec::Vec<EnvRaw>,
+        args: crate::vec::Vec<EnvVal>,
     ) -> T {
         let rv = internal::Env::call(
             self,

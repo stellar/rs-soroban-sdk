@@ -3,7 +3,7 @@ use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 use crate::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvRaw,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
     IntoTryFromVal, RawVal, Status, TryFromVal, Vec,
 };
 
@@ -65,11 +65,11 @@ where
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvRaw> for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal> for Map<K, V> {
     type Error = ConversionError;
 
     #[inline(always)]
-    fn try_from(ev: EnvRaw) -> Result<Self, Self::Error> {
+    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.try_into()?;
         obj.try_into()
     }
@@ -95,7 +95,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for RawVal {
     }
 }
 
-impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvRaw {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvVal {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
         m.0.into()
@@ -111,7 +111,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
 
 #[cfg(not(target_family = "wasm"))]
 use super::{
-    env::{EnvVal, TryIntoEnvVal},
+    env::{EnvType, TryIntoEnvVal},
     xdr::ScVal,
 };
 
@@ -124,9 +124,9 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvVal<ScVal>> for Map<K, V> {
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Map<K, V> {
     type Error = ConversionError;
-    fn try_from(v: EnvVal<ScVal>) -> Result<Self, Self::Error> {
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
         v.val
             .try_into_env_val(&v.env)
             .map_err(|_| ConversionError)?
