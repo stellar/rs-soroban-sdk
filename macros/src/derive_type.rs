@@ -324,9 +324,11 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                 use stellar_contract_sdk::xdr::Validate;
                 use stellar_contract_sdk::EnvType;
                 use stellar_contract_sdk::TryIntoEnvVal;
-                let (discriminant, value): (stellar_contract_sdk::xdr::ScSymbol, stellar_contract_sdk::xdr::ScVal) = ev.try_into()?;
-                Ok(match discriminant.to_string() {
+                let (discriminant, value): (stellar_contract_sdk::xdr::ScSymbol, stellar_contract_sdk::xdr::ScVal) = ev.val.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+                let discriminant_name: &str = &discriminant.to_string()?;
+                Ok(match discriminant_name {
                     #(#try_from_xdrs,)*
+                    _ => Err(stellar_contract_sdk::xdr::Error::Invalid)?,
                 })
             }
         }
