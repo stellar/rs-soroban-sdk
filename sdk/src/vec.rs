@@ -6,9 +6,6 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-#[cfg(not(target_family = "wasm"))]
-use crate::internal::TryConvert;
-
 use crate::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
@@ -124,9 +121,8 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
         Ok(ScVal::Object(Some(
-            v.0.env.convert(v.0.val).map_err(|_| ConversionError)?,
+            v.0.try_into().map_err(|_| ConversionError)?
         )))
-        // v.0.try_into().map_err(|_| ConversionError)
     }
 }
 
