@@ -21,6 +21,7 @@ pub use internal::IntoEnvVal;
 pub use internal::IntoVal;
 pub use internal::Object;
 pub use internal::RawVal;
+pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TaggedVal;

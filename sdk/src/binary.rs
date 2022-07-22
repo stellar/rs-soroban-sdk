@@ -1,7 +1,13 @@
-use core::cmp::Ordering;
+use core::{
+    cmp::Ordering,
+    fmt::Debug,
+    iter::FusedIterator,
+    ops::{Bound, RangeBounds},
+};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,
+    RawValConvertible,
 };
 
 pub trait FixedLengthBinary {
@@ -196,6 +202,21 @@ impl VariableLengthBinary for Binary {
     }
 }
 
+impl Debug for Binary {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Binary(")?;
+        let mut iter = self.iter();
+        if let Some(x) = iter.next() {
+            write!(f, "{:?}", x)?;
+        }
+        for x in iter {
+            write!(f, ", {:?}", x)?;
+        }
+        write!(f, ")")?;
+        Ok(())
+    }
+}
+
 impl Binary {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -211,6 +232,87 @@ impl Binary {
     pub fn new(env: &Env) -> Binary {
         let obj = env.binary_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
+    }
+
+    #[must_use]
+    pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
+        let start_bound = match r.start_bound() {
+            Bound::Included(s) => *s,
+            Bound::Excluded(s) => *s + 1,
+            Bound::Unbounded => 0,
+        };
+        let end_bound = match r.end_bound() {
+            Bound::Included(s) => *s + 1,
+            Bound::Excluded(s) => *s,
+            Bound::Unbounded => self.len(),
+        };
+        let env = self.env();
+        let bin = env.binary_slice(self.0.to_tagged(), start_bound.into(), end_bound.into());
+        unsafe { Self::unchecked_new(bin.in_env(env)) }
+    }
+
+    pub fn iter(&self) -> BinIter {
+        self.clone().into_iter()
+    }
+}
+
+impl IntoIterator for Binary {
+    type Item = u8;
+    type IntoIter = BinIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        BinIter(self)
+    }
+}
+
+#[derive(Clone)]
+pub struct BinIter(Binary);
+
+impl BinIter {
+    fn into_bin(self) -> Binary {
+        self.0
+    }
+}
+
+impl Iterator for BinIter {
+    type Item = u8;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.0.len() == 0 {
+            None
+        } else {
+            let val = self.0.env().binary_front(self.0 .0.to_object());
+            self.0 = self.0.slice(1..);
+            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
+            Some(val)
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len() as usize;
+        (len, Some(len))
+    }
+}
+
+impl DoubleEndedIterator for BinIter {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let len = self.0.len();
+        if len == 0 {
+            None
+        } else {
+            let val = self.0.env().binary_back(self.0 .0.to_object());
+            self.0 = self.0.slice(..len - 1);
+            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
+            Some(val)
+        }
+    }
+}
+
+impl FusedIterator for BinIter {}
+
+impl ExactSizeIterator for BinIter {
+    fn len(&self) -> usize {
+        self.0.len() as usize
     }
 }
 
@@ -331,6 +433,30 @@ impl<const N: u32> From<ArrayBinary<N>> for Binary {
     }
 }
 
+impl<const N: u32> Debug for ArrayBinary<N> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "ArrayBinary{{length = {}, ", N)?;
+        write!(f, "{:?}}}", self.0)?;
+        Ok(())
+    }
+}
+
+impl<const N: u32> ArrayBinary<N> {
+    pub fn iter(&self) -> BinIter {
+        self.clone().into_iter()
+    }
+}
+
+impl<const N: u32> IntoIterator for ArrayBinary<N> {
+    type Item = u8;
+
+    type IntoIter = BinIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        BinIter(self.0)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -347,6 +473,7 @@ mod test {
         assert_eq!(bin.len(), 2);
         bin.push(30);
         assert_eq!(bin.len(), 3);
+        println!("{:?}", bin);
 
         let bin_ref = &bin;
         assert_eq!(bin_ref.len(), 3);
@@ -366,6 +493,42 @@ mod test {
 
         let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();
         assert!(bad_fixed.is_err());
-        let _fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
+        let fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
+        println!("{:?}", fixed);
+    }
+
+    #[test]
+    fn test_bin_iter() {
+        let env = Env::default();
+        let mut bin = Binary::new(&env);
+        bin.push(10);
+        bin.push(20);
+        bin.push(30);
+        let mut iter = bin.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next(), Some(20));
+        assert_eq!(iter.next(), Some(30));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        let mut iter = bin.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next_back(), Some(30));
+        assert_eq!(iter.next_back(), Some(20));
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let fixed: ArrayBinary<3> = bin.try_into().unwrap();
+        let mut iter = fixed.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next(), Some(20));
+        assert_eq!(iter.next(), Some(30));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        let mut iter = fixed.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next_back(), Some(30));
+        assert_eq!(iter.next_back(), Some(20));
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
     }
 }
