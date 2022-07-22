@@ -3,12 +3,12 @@ resolver = "2"
 
 members = [
     "sdk",
-    "examples/add_i32",
-    "examples/add_i64",
-    "examples/udt",
-    "examples/contract_data",
-    "examples/create_contract",
-    "examples/linear_memory",
+    "tests/add_i32",
+    "tests/add_i64",
+    "tests/udt",
+    "tests/contract_data",
+    "tests/create_contract",
+    "tests/linear_memory",
 ]
 
 # Exclude proc-macro crates from the workspace so that when building the
