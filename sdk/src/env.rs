@@ -270,6 +270,34 @@ impl internal::EnvBase for Env {
             env_impl: self.env_impl.deep_clone(),
         }
     }
+
+    fn binary_copy_from_slice(&self, _: Object, _: RawVal, _: &[u8]) -> Object {
+        unimplemented!()
+    }
+
+    fn binary_copy_to_slice(&self, _: Object, _: RawVal, _: &mut [u8]) {
+        unimplemented!()
+    }
+
+    fn binary_new_from_slice(&self, _: &[u8]) -> Object {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_val(&self, _: &'static str, _: RawVal) {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_static_str(&self, _: &'static str, _: &'static str) {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_val_static_str(&self, _: &'static str, _: RawVal, _: &'static str) {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_general(&self, _: &'static str, _: &[RawVal], _: &[&'static str]) {
+        unimplemented!()
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
