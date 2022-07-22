@@ -16,6 +16,7 @@ pub use env::xdr;
 pub use env::BitSet;
 pub use env::ConversionError;
 pub use env::Env;
+pub use env::EnvType;
 pub use env::EnvVal;
 pub use env::IntoEnvVal;
 pub use env::IntoVal;
@@ -24,6 +25,8 @@ pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
 pub use env::TryFromVal;
+pub use env::TryIntoEnvVal;
+pub use env::TryIntoVal;
 use env::*;
 
 mod bigint;

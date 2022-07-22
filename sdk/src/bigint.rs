@@ -99,6 +99,31 @@ impl TryFrom<BigInt> for i32 {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<BigInt> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: BigInt) -> Result<Self, Self::Error> {
+        v.0.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<EnvType<ScVal>> for BigInt {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        v.val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?
+            .try_into()
+    }
+}
+
 impl Add for BigInt {
     type Output = BigInt;
     fn add(self, rhs: Self) -> Self::Output {

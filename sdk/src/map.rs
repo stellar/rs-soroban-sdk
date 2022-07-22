@@ -109,6 +109,31 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
+
+#[cfg(not(target_family = "wasm"))]
+impl<K, V> TryFrom<Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: Map<K, V>) -> Result<Self, Self::Error> {
+        v.0.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Map<K, V> {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        v.val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?
+            .try_into()
+    }
+}
+
 #[derive(Debug, Eq, PartialEq)]
 pub enum MapLookupError<V>
 where

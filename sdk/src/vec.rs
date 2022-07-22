@@ -112,6 +112,31 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
+
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFrom<Vec<T>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
+        v.0.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        v.val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?
+            .try_into()
+    }
+}
+
 #[derive(Debug, Eq, PartialEq)]
 pub enum VecAccessError<T>
 where
@@ -601,5 +626,16 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    #[test]
+    fn test_scval_accessibility_from_udt_types() {
+        use crate::TryFromVal;
+        let env = Env::default();
+        let v = vec![&env, 1];
+        let val: ScVal = v.clone().try_into().unwrap();
+        let roundtrip = Vec::<i64>::try_from_val(&env, val).unwrap();
+        assert_eq!(v, roundtrip);
     }
 }

@@ -10,6 +10,16 @@ pub mod internal {
 pub mod internal {
     pub use stellar_contract_env_host::*;
     pub type EnvImpl = Host;
+
+    impl<F, T> TryConvert<F, T> for super::Env
+    where
+        EnvImpl: TryConvert<F, T>,
+    {
+        type Error = <EnvImpl as TryConvert<F, T>>::Error;
+        fn convert(&self, f: F) -> Result<T, Self::Error> {
+            self.env_impl.convert(f)
+        }
+    }
 }
 
 pub use internal::meta;
@@ -26,8 +36,11 @@ pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
+pub use internal::TryIntoEnvVal;
+pub use internal::TryIntoVal;
 pub use internal::Val;
 
+pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 

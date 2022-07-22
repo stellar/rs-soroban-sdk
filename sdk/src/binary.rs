@@ -107,6 +107,31 @@ impl From<Binary> for EnvObj {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Binary> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: Binary) -> Result<Self, Self::Error> {
+        v.0.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<EnvType<ScVal>> for Binary {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        v.val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?
+            .try_into()
+    }
+}
+
 impl FixedLengthBinary for Binary {
     #[inline(always)]
     fn put(&mut self, i: u32, v: u8) {
@@ -430,6 +455,22 @@ impl<const N: u32> From<ArrayBinary<N>> for Binary {
     #[inline(always)]
     fn from(v: ArrayBinary<N>) -> Self {
         v.0
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<const N: u32> TryFrom<ArrayBinary<N>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: ArrayBinary<N>) -> Result<Self, Self::Error> {
+        v.0.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<const N: u32> TryFrom<EnvType<ScVal>> for ArrayBinary<N> {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        v.try_into()
     }
 }
 
