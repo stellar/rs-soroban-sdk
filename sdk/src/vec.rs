@@ -136,7 +136,7 @@ impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
             .val
             .try_into_env_val(&v.env)
             .map_err(|_| ConversionError)?;
-        Ok(unsafe { Vec::unchecked_new(obj) })
+        obj.try_into()
     }
 }
 
