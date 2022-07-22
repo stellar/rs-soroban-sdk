@@ -10,6 +10,16 @@ pub mod internal {
 pub mod internal {
     pub use stellar_contract_env_host::*;
     pub type EnvImpl = Host;
+
+    impl<F, T> TryConvert<F, T> for super::Env
+    where
+        EnvImpl: TryConvert<F, T>,
+    {
+        type Error = <EnvImpl as TryConvert<F, T>>::Error;
+        fn convert(&self, f: F) -> Result<T, Self::Error> {
+            self.env_impl.convert(f)
+        }
+    }
 }
 
 pub use internal::meta;

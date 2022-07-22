@@ -6,10 +6,10 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use crate::{UncheckedEnumerable, UncheckedIter};
+#[cfg(not(target_family = "wasm"))]
+use crate::internal::TryConvert;
 
-// #[cfg(feature = "testutils")]
-// use super::xdr::ScVal;
+use crate::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -115,23 +115,30 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
     }
 }
 
-// #[cfg(feature = "testutils")]
-// impl<T> TryFrom<Vec<T>> for ScVal {
-//     type Error = ConversionError;
+#[cfg(not(target_family = "wasm"))]
+use super::xdr::ScVal;
 
-//     fn try_from(_v: Vec<T>) -> Result<Self, Self::Error> {
-//         // _v.0
-//     }
-// }
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFrom<Vec<T>> for ScVal {
+    type Error = ConversionError;
 
-// #[cfg(feature = "testutils")]
-// impl<T> TryFrom<ScVal> for Vec<T> {
-//     type Error = ConversionError;
+    fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
+        Ok(ScVal::Object(Some(
+            v.0.env.convert(v.0.val).map_err(|_| ConversionError)?,
+        )))
+        // v.0.try_into().map_err(|_| ConversionError)
+    }
+}
 
-//     fn try_from(_v: ScVal) -> Result<Self, Self::Error> {
-//         todo!()
-//     }
-// }
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFrom<ScVal> for Vec<T> {
+    type Error = ConversionError;
+
+    fn try_from(_: ScVal) -> Result<Self, Self::Error> {
+        // TODO: Not possible. Need to rethink the TryIntoEnvVal trait.
+        todo!()
+    }
+}
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum VecAccessError<T>
