@@ -1,6 +1,7 @@
 use core::{
     cmp::Ordering,
     fmt::Debug,
+    iter::FusedIterator,
     ops::{Bound, RangeBounds},
 };
 
@@ -216,29 +217,6 @@ impl Debug for Binary {
     }
 }
 
-#[derive(Clone)]
-pub struct BinIter(Binary);
-
-impl Iterator for BinIter {
-    type Item = u8;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.0.len() == 0 {
-            None
-        } else {
-            let val = self.0.env().binary_front(self.0 .0.to_object());
-            self.0 = self.0.slice(1..);
-            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
-            Some(val)
-        }
-    }
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
-        (len, Some(len))
-    }
-}
-
 impl Binary {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -284,6 +262,57 @@ impl IntoIterator for Binary {
 
     fn into_iter(self) -> Self::IntoIter {
         BinIter(self)
+    }
+}
+
+#[derive(Clone)]
+pub struct BinIter(Binary);
+
+impl BinIter {
+    fn into_bin(self) -> Binary {
+        self.0
+    }
+}
+
+impl Iterator for BinIter {
+    type Item = u8;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.0.len() == 0 {
+            None
+        } else {
+            let val = self.0.env().binary_front(self.0 .0.to_object());
+            self.0 = self.0.slice(1..);
+            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
+            Some(val)
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len() as usize;
+        (len, Some(len))
+    }
+}
+
+impl DoubleEndedIterator for BinIter {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let len = self.0.len();
+        if len == 0 {
+            None
+        } else {
+            let val = self.0.env().binary_back(self.0 .0.to_object());
+            self.0 = self.0.slice(..len - 1);
+            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
+            Some(val)
+        }
+    }
+}
+
+impl FusedIterator for BinIter {}
+
+impl ExactSizeIterator for BinIter {
+    fn len(&self) -> usize {
+        self.0.len() as usize
     }
 }
 
