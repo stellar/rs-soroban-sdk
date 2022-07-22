@@ -627,4 +627,15 @@ mod test {
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
     }
+
+    #[cfg(not(target_family = "wasm"))]
+    #[test]
+    fn test_scval_accessibility_from_udt_types() {
+        use crate::TryFromVal;
+        let env = Env::default();
+        let v = vec![&env, 1];
+        let val: ScVal = v.clone().try_into().unwrap();
+        let roundtrip = Vec::<i64>::try_from_val(&env, val).unwrap();
+        assert_eq!(v, roundtrip);
+    }
 }

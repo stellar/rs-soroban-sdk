@@ -38,7 +38,7 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::{UdtEnum, UdtStruct, __add};
-    use stellar_contract_sdk::{vec, xdr::ScVal, Env, IntoVal, TryFromVal};
+    use stellar_contract_sdk::{vec, xdr::ScVal, Env, IntoVal, TryFromVal, Vec};
 
     #[test]
     fn test_add() {
