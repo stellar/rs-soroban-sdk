@@ -8,6 +8,9 @@ use core::{
 
 use crate::{UncheckedEnumerable, UncheckedIter};
 
+// #[cfg(feature = "testutils")]
+// use super::xdr::ScVal;
+
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
     IntoTryFromVal, RawVal,
@@ -26,6 +29,24 @@ macro_rules! vec {
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
+
+// #[cfg(feature = "testutils")]
+// impl<T> TryFrom<Vec<T>> for ScVal {
+//     type Error = ConversionError;
+
+//     fn try_from(_v: Vec<T>) -> Result<Self, Self::Error> {
+//         todo!()
+//     }
+// }
+
+// #[cfg(feature = "testutils")]
+// impl<T> TryFrom<ScVal> for Vec<T> {
+//     type Error = ConversionError;
+
+//     fn try_from(_v: ScVal) -> Result<Self, Self::Error> {
+//         todo!()
+//     }
+// }
 
 impl<T: IntoTryFromVal> Eq for Vec<T> {}
 
