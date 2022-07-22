@@ -120,9 +120,7 @@ impl<T> TryFrom<Vec<T>> for ScVal {
     type Error = ConversionError;
 
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
-        Ok(ScVal::Object(Some(
-            v.0.try_into().map_err(|_| ConversionError)?
-        )))
+        Ok(v.0.try_into().map_err(|_| ConversionError)?)
     }
 }
 
@@ -132,6 +130,12 @@ impl<T> TryFrom<ScVal> for Vec<T> {
 
     fn try_from(_: ScVal) -> Result<Self, Self::Error> {
         // TODO: Not possible. Need to rethink the TryIntoEnvVal trait.
+        // TODO: Create new type EnvType<T> which is a T with an Env.
+        // TODO: Create new trait TryIntoEnvType<E: Env, T> that is a conversion
+        // system that allows for attaching an Env to a type.
+        // TODO: Consider, would we merge EnvVal into EnvType? Probably not, but
+        // at least worth considering. If seriously consider that, maybe talk to
+        // @graydon.
         todo!()
     }
 }
