@@ -132,11 +132,10 @@ impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
     type Error = ConversionError;
 
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let obj: EnvObj = v
-            .val
+        v.val
             .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?;
-        obj.try_into()
+            .map_err(|_| ConversionError)?
+            .try_into()
     }
 }
 
