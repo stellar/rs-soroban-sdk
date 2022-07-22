@@ -121,7 +121,6 @@ use super::{
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<Vec<T>> for ScVal {
     type Error = ConversionError;
-
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
         v.0.try_into().map_err(|_| ConversionError)
     }
@@ -130,7 +129,6 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
     type Error = ConversionError;
-
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
         v.val
             .try_into_env_val(&v.env)
