@@ -113,7 +113,10 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::xdr::ScVal;
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
 
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<Vec<T>> for ScVal {
@@ -125,18 +128,15 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<ScVal> for Vec<T> {
+impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
     type Error = ConversionError;
 
-    fn try_from(_: ScVal) -> Result<Self, Self::Error> {
-        // TODO: Not possible. Need to rethink the TryIntoEnvVal trait.
-        // TODO: Create new type EnvType<T> which is a T with an Env.
-        // TODO: Create new trait TryIntoEnvType<E: Env, T> that is a conversion
-        // system that allows for attaching an Env to a type.
-        // TODO: Consider, would we merge EnvVal into EnvType? Probably not, but
-        // at least worth considering. If seriously consider that, maybe talk to
-        // @graydon.
-        todo!()
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        let obj: EnvObj = v
+            .val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?;
+        Ok(unsafe { Vec::unchecked_new(obj) })
     }
 }
 

@@ -36,8 +36,11 @@ pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
+pub use internal::TryIntoEnvVal;
+pub use internal::TryIntoVal;
 pub use internal::Val;
 
+pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
