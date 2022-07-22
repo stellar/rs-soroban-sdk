@@ -441,6 +441,22 @@ impl<const N: u32> Debug for ArrayBinary<N> {
     }
 }
 
+impl<const N: u32> ArrayBinary<N> {
+    pub fn iter(&self) -> BinIter {
+        self.clone().into_iter()
+    }
+}
+
+impl<const N: u32> IntoIterator for ArrayBinary<N> {
+    type Item = u8;
+
+    type IntoIter = BinIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        BinIter(self.0)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -479,5 +495,40 @@ mod test {
         assert!(bad_fixed.is_err());
         let fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
         println!("{:?}", fixed);
+    }
+
+    #[test]
+    fn test_bin_iter() {
+        let env = Env::default();
+        let mut bin = Binary::new(&env);
+        bin.push(10);
+        bin.push(20);
+        bin.push(30);
+        let mut iter = bin.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next(), Some(20));
+        assert_eq!(iter.next(), Some(30));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        let mut iter = bin.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next_back(), Some(30));
+        assert_eq!(iter.next_back(), Some(20));
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let fixed: ArrayBinary<3> = bin.try_into().unwrap();
+        let mut iter = fixed.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next(), Some(20));
+        assert_eq!(iter.next(), Some(30));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        let mut iter = fixed.iter();
+        assert_eq!(iter.next(), Some(10));
+        assert_eq!(iter.next_back(), Some(30));
+        assert_eq!(iter.next_back(), Some(20));
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
     }
 }
