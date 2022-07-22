@@ -4,7 +4,7 @@ use core::{
 };
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvBase, EnvObj, EnvVal,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvBase, EnvObj, EnvRaw,
     RawVal, TryFromVal,
 };
 
@@ -12,10 +12,10 @@ use super::{
 #[derive(Clone)]
 pub struct BigInt(EnvObj);
 
-impl TryFrom<EnvVal> for BigInt {
+impl TryFrom<EnvRaw> for BigInt {
     type Error = ConversionError;
 
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
+    fn try_from(ev: EnvRaw) -> Result<Self, Self::Error> {
         let obj: EnvObj = ev.clone().try_into()?;
         obj.try_into()
     }
@@ -39,7 +39,7 @@ impl From<BigInt> for RawVal {
     }
 }
 
-impl From<BigInt> for EnvVal {
+impl From<BigInt> for EnvRaw {
     fn from(b: BigInt) -> Self {
         b.0.into()
     }
@@ -101,7 +101,7 @@ impl TryFrom<BigInt> for i32 {
 
 #[cfg(not(target_family = "wasm"))]
 use super::{
-    env::{EnvType, TryIntoEnvVal},
+    env::{EnvVal, TryIntoEnvVal},
     xdr::ScVal,
 };
 
@@ -114,9 +114,9 @@ impl TryFrom<BigInt> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<EnvType<ScVal>> for BigInt {
+impl TryFrom<EnvVal<ScVal>> for BigInt {
     type Error = ConversionError;
-    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+    fn try_from(v: EnvVal<ScVal>) -> Result<Self, Self::Error> {
         v.val
             .try_into_env_val(&v.env)
             .map_err(|_| ConversionError)?
