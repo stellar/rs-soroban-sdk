@@ -27,6 +27,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                 "Bitset" => Ok(ScSpecTypeDef::Bitset),
                 "Status" => Ok(ScSpecTypeDef::Status),
                 "Binary" => Ok(ScSpecTypeDef::Binary),
+                "BigInt" => Ok(ScSpecTypeDef::BigInt),
                 s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     name: s.try_into().map_err(|e| {
                         Error::new(

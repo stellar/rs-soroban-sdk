@@ -31,6 +31,7 @@ pub use internal::IntoEnvVal;
 pub use internal::IntoVal;
 pub use internal::Object;
 pub use internal::RawVal;
+pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TaggedVal;
@@ -278,6 +279,34 @@ impl internal::EnvBase for Env {
         Env {
             env_impl: self.env_impl.deep_clone(),
         }
+    }
+
+    fn binary_copy_from_slice(&self, _: Object, _: RawVal, _: &[u8]) -> Object {
+        unimplemented!()
+    }
+
+    fn binary_copy_to_slice(&self, _: Object, _: RawVal, _: &mut [u8]) {
+        unimplemented!()
+    }
+
+    fn binary_new_from_slice(&self, _: &[u8]) -> Object {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_val(&self, _: &'static str, _: RawVal) {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_static_str(&self, _: &'static str, _: &'static str) {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_val_static_str(&self, _: &'static str, _: RawVal, _: &'static str) {
+        unimplemented!()
+    }
+
+    fn log_static_fmt_general(&self, _: &'static str, _: &[RawVal], _: &[&'static str]) {
+        unimplemented!()
     }
 }
 
