@@ -120,7 +120,7 @@ impl<T> TryFrom<Vec<T>> for ScVal {
     type Error = ConversionError;
 
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
-        Ok(v.0.try_into().map_err(|_| ConversionError)?)
+        v.0.try_into().map_err(|_| ConversionError)
     }
 }
 
