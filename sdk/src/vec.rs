@@ -30,24 +30,6 @@ macro_rules! vec {
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
 
-// #[cfg(feature = "testutils")]
-// impl<T> TryFrom<Vec<T>> for ScVal {
-//     type Error = ConversionError;
-
-//     fn try_from(_v: Vec<T>) -> Result<Self, Self::Error> {
-//         todo!()
-//     }
-// }
-
-// #[cfg(feature = "testutils")]
-// impl<T> TryFrom<ScVal> for Vec<T> {
-//     type Error = ConversionError;
-
-//     fn try_from(_v: ScVal) -> Result<Self, Self::Error> {
-//         todo!()
-//     }
-// }
-
 impl<T: IntoTryFromVal> Eq for Vec<T> {}
 
 impl<T: IntoTryFromVal> PartialEq for Vec<T> {
@@ -132,6 +114,24 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
         v.0
     }
 }
+
+// #[cfg(feature = "testutils")]
+// impl<T> TryFrom<Vec<T>> for ScVal {
+//     type Error = ConversionError;
+
+//     fn try_from(_v: Vec<T>) -> Result<Self, Self::Error> {
+//         // _v.0
+//     }
+// }
+
+// #[cfg(feature = "testutils")]
+// impl<T> TryFrom<ScVal> for Vec<T> {
+//     type Error = ConversionError;
+
+//     fn try_from(_v: ScVal) -> Result<Self, Self::Error> {
+//         todo!()
+//     }
+// }
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum VecAccessError<T>
