@@ -441,7 +441,7 @@ impl<const N: u32> Debug for ArrayBinary<N> {
     }
 }
 
-impl <const N: u32> ArrayBinary<N> {
+impl<const N: u32> ArrayBinary<N> {
     pub fn iter(&self) -> BinIter {
         self.clone().into_iter()
     }
@@ -509,7 +509,7 @@ mod test {
         assert_eq!(iter.next(), Some(20));
         assert_eq!(iter.next(), Some(30));
         assert_eq!(iter.next(), None);
-        assert_eq!(iter.next(), None);        
+        assert_eq!(iter.next(), None);
         let mut iter = bin.iter();
         assert_eq!(iter.next(), Some(10));
         assert_eq!(iter.next_back(), Some(30));
@@ -523,13 +523,12 @@ mod test {
         assert_eq!(iter.next(), Some(20));
         assert_eq!(iter.next(), Some(30));
         assert_eq!(iter.next(), None);
-        assert_eq!(iter.next(), None);      
+        assert_eq!(iter.next(), None);
         let mut iter = fixed.iter();
         assert_eq!(iter.next(), Some(10));
         assert_eq!(iter.next_back(), Some(30));
         assert_eq!(iter.next_back(), Some(20));
         assert_eq!(iter.next_back(), None);
-        assert_eq!(iter.next_back(), None);          
+        assert_eq!(iter.next_back(), None);
     }
-
 }
