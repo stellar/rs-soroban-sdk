@@ -11,6 +11,7 @@ use stellar_contract_env_panic_handler_wasm32_unreachable as _;
 pub use stellar_contract_macros::{contract, contractimpl, contracttype, ContractType};
 
 mod env;
+#[doc(hidden)]
 pub use env::meta;
 pub use env::xdr;
 pub use env::BitSet;
