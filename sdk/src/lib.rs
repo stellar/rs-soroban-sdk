@@ -19,15 +19,19 @@ pub mod xdr {
 pub use env::BitSet;
 pub use env::ConversionError;
 pub use env::Env;
+#[doc(hidden)]
 pub use env::EnvType;
 pub use env::EnvVal;
+#[doc(hidden)]
 pub use env::IntoEnvVal;
 pub use env::IntoVal;
+#[doc(hidden)]
 pub use env::Object;
 pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
 pub use env::TryFromVal;
+#[doc(hidden)]
 pub use env::TryIntoEnvVal;
 pub use env::TryIntoVal;
 use env::*;
