@@ -5,7 +5,7 @@ contract!();
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn put(e: Env, key: Symbol, val: Symbol) {
         e.put_contract_data(key, val)

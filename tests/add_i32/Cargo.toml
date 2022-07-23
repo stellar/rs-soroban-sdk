@@ -13,3 +13,8 @@ stellar-contract-sdk = {path = "../../sdk"}
 
 [dev-dependencies]
 proptest = "1.0.0"
+stellar-contract-sdk = {path = "../../sdk", features = ["testutils"]}
+example_add_i32 = {path = ".", features = ["testutils"]}
+
+[features]
+testutils = ["stellar-contract-sdk/testutils"]

@@ -5,7 +5,7 @@ contract!();
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     // Note that anyone can create a contract here with any salt, so a users call to
     // this could be frontrun and the same salt taken.

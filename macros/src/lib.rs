@@ -28,7 +28,6 @@ pub fn contract(_input: TokenStream) -> TokenStream {
 struct ContractImplArgs {
     #[darling(default)]
     export_if: Option<String>,
-    tests_if: Option<String>,
 }
 
 fn get_methods(imp: &ItemImpl) -> impl Iterator<Item = &ImplItemMethod> {
@@ -70,7 +69,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let cfs = derive_contract_function_set(ty, pub_methods.into_iter(), &args.tests_if);
+            let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
             quote! {
                 #imp
                 #derived_ok

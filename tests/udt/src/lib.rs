@@ -20,7 +20,7 @@ pub struct UdtStruct {
 
 pub struct Contract;
 
-#[contractimpl(export_if = "export", tests_if = "testutils")]
+#[contractimpl(export_if = "export")]
 impl Contract {
     pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
         let a = match a {

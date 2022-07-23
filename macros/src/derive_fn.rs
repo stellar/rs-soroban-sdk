@@ -172,7 +172,6 @@ pub fn derive_fn(
 pub fn derive_contract_function_set<'a>(
     ty: &Box<Type>,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
-    feature: &Option<String>,
 ) -> TokenStream2 {
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
@@ -181,13 +180,8 @@ pub fn derive_contract_function_set<'a>(
             (ident, wrap_ident)
         })
         .multiunzip();
-    let cfg = if let Some(cfg_feature) = feature {
-        quote! { #[cfg(feature = #cfg_feature)] }
-    } else {
-        quote! {}
-    };
     quote! {
-        #cfg
+        #[cfg(any(test, feature = "testutils"))]
         impl stellar_contract_sdk::ContractFunctionSet for #ty {
             fn call(
                 &self,

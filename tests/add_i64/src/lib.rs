@@ -9,7 +9,7 @@ contract!();
 
 pub struct Add1;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Add1 {
     fn addimpl(a: i64, b: i64) -> i64 {
         a + b
@@ -27,7 +27,7 @@ pub trait Add2Trait {
 
 pub struct Add2;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Add2Trait for Add2 {
     fn add2(_e: Env, a: i64, b: i64) -> i64 {
         a + b
