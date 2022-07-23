@@ -60,7 +60,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             let into_xdr = quote! {
                 stellar_contract_sdk::xdr::ScMapEntry {
                     key: #name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
-                    val: self.#ident.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
+                    val: (&self.#ident).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
                 }
             };
             (spec_field, try_from, into, try_from_xdr, into_xdr)
@@ -158,7 +158,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScMap> for #ident {
+        impl TryInto<stellar_contract_sdk::xdr::ScMap> for &#ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScMap, Self::Error> {
@@ -170,7 +170,16 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScObject> for #ident {
+        impl TryInto<stellar_contract_sdk::xdr::ScMap> for #ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScMap, Self::Error> {
+                (&self).try_into()
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScObject> for &#ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
@@ -179,17 +188,35 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVal> for #ident {
+        impl TryInto<stellar_contract_sdk::xdr::ScObject> for #ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
+                (&self).try_into()
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScVal> for &#ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
                 Ok(stellar_contract_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
             }
         }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScVal> for #ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
+                (&self).try_into()
+            }
+        }
     }
 }
 
-pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStream2 {
+pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
@@ -246,7 +273,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                         .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
                     )
                 };
-                let into_xdr = quote! { Self::#ident(value) => (#name, value).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)? };
+                let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             } else {
                 let spec_case = ScSpecUdtUnionCaseV0 {
@@ -259,7 +286,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
                 let try_from = quote! { #discriminant_const_u64_ident => Self::#ident };
                 let into = quote! { Self::#ident => (#discriminant_const_sym_ident, ()).into_env_val(env) };
                 let try_from_xdr = quote! { #name => Self::#ident };
-                let into_xdr = quote! { Self::#ident => (#name, ()).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)? };
+                let into_xdr = quote! { #enum_ident::#ident => (#name, ()).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             }
         })
@@ -274,13 +301,13 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
-            name: ident.to_string().try_into().unwrap(),
+            name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
         let spec_xdr = spec_entry.to_xdr().unwrap();
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
+        let spec_ident = format_ident!("__SPEC_XDR_{}", enum_ident.to_string().to_uppercase());
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
@@ -293,7 +320,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
     quote! {
         #spec_gen
 
-        impl TryFrom<stellar_contract_sdk::EnvVal> for #ident {
+        impl TryFrom<stellar_contract_sdk::EnvVal> for #enum_ident {
             type Error = stellar_contract_sdk::ConversionError;
             #[inline(always)]
             fn try_from(ev: stellar_contract_sdk::EnvVal) -> Result<Self, Self::Error> {
@@ -306,7 +333,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
             }
         }
 
-        impl stellar_contract_sdk::IntoEnvVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal> for #ident {
+        impl stellar_contract_sdk::IntoEnvVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal> for #enum_ident {
             #[inline(always)]
             fn into_env_val(self, env: &stellar_contract_sdk::Env) -> stellar_contract_sdk::EnvVal {
                 #(#discriminant_consts)*
@@ -317,7 +344,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVec>> for #ident {
+        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVec>> for #enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVec>) -> Result<Self, Self::Error> {
@@ -334,7 +361,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>> for #ident {
+        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>> for #enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>) -> Result<Self, Self::Error> {
@@ -347,7 +374,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>> for #ident {
+        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>> for #enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>) -> Result<Self, Self::Error> {
@@ -360,7 +387,7 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVec> for #ident {
+        impl TryInto<stellar_contract_sdk::xdr::ScVec> for &#enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVec, Self::Error> {
@@ -372,7 +399,16 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScObject> for #ident {
+        impl TryInto<stellar_contract_sdk::xdr::ScVec> for #enum_ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVec, Self::Error> {
+                (&self).try_into()
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScObject> for &#enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
@@ -381,11 +417,29 @@ pub fn derive_type_enum(ident: &Ident, data: &DataEnum, spec: bool) -> TokenStre
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVal> for #ident {
+        impl TryInto<stellar_contract_sdk::xdr::ScObject> for #enum_ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
+                (&self).try_into()
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScVal> for &#enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
                 Ok(stellar_contract_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl TryInto<stellar_contract_sdk::xdr::ScVal> for #enum_ident {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
+                (&self).try_into()
             }
         }
     }
