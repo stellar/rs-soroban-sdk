@@ -116,10 +116,18 @@ use super::{
 };
 
 #[cfg(not(target_family = "wasm"))]
+impl<K, V> TryFrom<&Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: &Map<K, V>) -> Result<Self, Self::Error> {
+        (&v.0).try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFrom<Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Map<K, V>) -> Result<Self, Self::Error> {
-        v.0.try_into().map_err(|_| ConversionError)
+        (&v).try_into()
     }
 }
 

@@ -114,10 +114,18 @@ use super::{
 };
 
 #[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Binary> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: &Binary) -> Result<Self, Self::Error> {
+        (&v.0).try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryFrom<Binary> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Binary) -> Result<Self, Self::Error> {
-        v.0.try_into().map_err(|_| ConversionError)
+        (&v).try_into()
     }
 }
 
@@ -459,10 +467,18 @@ impl<const N: u32> From<ArrayBinary<N>> for Binary {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<const N: u32> TryFrom<&ArrayBinary<N>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: &ArrayBinary<N>) -> Result<Self, Self::Error> {
+        (&v.0).try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<const N: u32> TryFrom<ArrayBinary<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: ArrayBinary<N>) -> Result<Self, Self::Error> {
-        v.0.try_into().map_err(|_| ConversionError)
+        (&v).try_into()
     }
 }
 
