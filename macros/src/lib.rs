@@ -15,15 +15,6 @@ use syn::{
     ImplItemMethod, ItemImpl, Visibility,
 };
 
-#[proc_macro]
-pub fn contract(_input: TokenStream) -> TokenStream {
-    quote! {
-        #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
-        pub static __ENV_META_XDR: [u8; stellar_contract_sdk::meta::XDR.len()] = stellar_contract_sdk::meta::XDR;
-    }
-    .into()
-}
-
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
     #[darling(default)]
