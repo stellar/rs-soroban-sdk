@@ -38,12 +38,11 @@ use env::*;
 
 mod bigint;
 mod binary;
-mod iter;
+pub mod iter;
 mod map;
 mod vec;
 pub use bigint::BigInt;
 pub use binary::{ArrayBinary, Binary, FixedLengthBinary, VariableLengthBinary};
-pub use iter::{UncheckedEnumerable, UncheckedIter};
 pub use map::Map;
 pub use vec::Vec;
 
