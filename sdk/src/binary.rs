@@ -6,12 +6,12 @@ use core::{
 };
 
 use super::{
-    env::internal::Env as _, env::EnvType, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    RawVal, RawValConvertible,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,
+    RawValConvertible,
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{env::TryIntoEnvVal, xdr::ScVal};
+use super::{env::EnvType, env::TryIntoEnvVal, xdr::ScVal};
 
 pub trait FixedLengthBinary {
     fn put(&mut self, i: u32, v: u8);
