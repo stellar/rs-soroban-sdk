@@ -235,6 +235,7 @@ checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 name = "example_add_i32"
 version = "0.0.0"
 dependencies = [
+ "example_add_i32",
  "proptest",
  "stellar-contract-sdk",
 ]
@@ -243,6 +244,7 @@ dependencies = [
 name = "example_add_i64"
 version = "0.0.0"
 dependencies = [
+ "example_add_i64",
  "stellar-contract-sdk",
 ]
 
@@ -250,6 +252,7 @@ dependencies = [
 name = "example_contract_data"
 version = "0.0.0"
 dependencies = [
+ "example_contract_data",
  "stellar-contract-sdk",
 ]
 
@@ -257,6 +260,7 @@ dependencies = [
 name = "example_create_contract"
 version = "0.0.0"
 dependencies = [
+ "example_create_contract",
  "stellar-contract-sdk",
 ]
 
@@ -264,6 +268,7 @@ dependencies = [
 name = "example_linear_memory"
 version = "0.0.0"
 dependencies = [
+ "example_linear_memory",
  "stellar-contract-sdk",
 ]
 

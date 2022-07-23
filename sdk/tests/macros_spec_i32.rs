@@ -1,3 +1,5 @@
+#![cfg(feature = "testutils")]
+
 use std::io::Cursor;
 
 use stellar_contract_sdk::{contractimpl, Env, IntoVal, TryFromVal};
@@ -5,7 +7,7 @@ use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn add(a: i32, b: i32) -> i32 {
         a + b

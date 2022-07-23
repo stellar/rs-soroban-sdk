@@ -28,7 +28,6 @@ pub fn contract(_input: TokenStream) -> TokenStream {
 struct ContractImplArgs {
     #[darling(default)]
     export_if: Option<String>,
-    tests_if: Option<String>,
 }
 
 fn get_methods(imp: &ItemImpl) -> impl Iterator<Item = &ImplItemMethod> {
