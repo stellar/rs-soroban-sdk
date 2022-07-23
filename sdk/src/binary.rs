@@ -6,9 +6,12 @@ use core::{
 };
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal, RawVal,
-    RawValConvertible,
+    env::internal::Env as _, env::EnvType, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
+    RawVal, RawValConvertible,
 };
+
+#[cfg(not(target_family = "wasm"))]
+use super::{env::TryIntoEnvVal, xdr::ScVal};
 
 pub trait FixedLengthBinary {
     fn put(&mut self, i: u32, v: u8);
@@ -108,12 +111,6 @@ impl From<Binary> for EnvObj {
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::{
-    env::{EnvType, TryIntoEnvVal},
-    xdr::ScVal,
-};
-
-#[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Binary> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Binary) -> Result<Self, Self::Error> {
@@ -133,10 +130,11 @@ impl TryFrom<Binary> for ScVal {
 impl TryFrom<EnvType<ScVal>> for Binary {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        v.val
+        let ev: EnvObj = v
+            .val
             .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?
-            .try_into()
+            .map_err(|_| ConversionError)?;
+        ev.try_into()
     }
 }
 
