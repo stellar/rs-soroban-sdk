@@ -70,7 +70,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
+            let cfs = derive_contract_function_set(ty, pub_methods.into_iter(), &args.tests_if);
             quote! {
                 #imp
                 #derived_ok
