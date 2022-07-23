@@ -403,6 +403,25 @@ impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
     }
 }
 
+impl<const N: usize, const M: u32> TryFrom<EnvType<[u8; N]>> for ArrayBinary<M> {
+    type Error = ConversionError;
+
+    fn try_from(ev: EnvType<[u8; N]>) -> Result<Self, Self::Error> {
+        // TODO: Reconsider u32 as the length type of ArrayBinary (and other
+        // types like Vec too). The size cannot be guaranteed at compile time
+        // because of the usize / u32 type difference of the size of arrays and
+        // the const generic on the type.
+        if M as usize != N {
+            return Err(ConversionError);
+        }
+        let mut bin = Binary::new(&ev.env);
+        for b in ev.val {
+            bin.push(b);
+        }
+        bin.try_into()
+    }
+}
+
 impl<const N: u32> TryFrom<EnvVal> for ArrayBinary<N> {
     type Error = ConversionError;
 
