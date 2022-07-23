@@ -12,6 +12,7 @@ pub trait Sign<MSG> {
 // TODO: Add a Verify interface and ed25519 implementation to counter the Sign
 // interface.
 
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 pub mod ed25519 {
     use xdr::WriteXdr;
 
@@ -53,6 +54,8 @@ pub mod ed25519 {
             Error::Ed25519SignatureError(e)
         }
     }
+
+    pub use super::Sign;
 
     impl<S, M> super::Sign<M> for S
     where

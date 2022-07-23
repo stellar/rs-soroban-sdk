@@ -2,6 +2,11 @@ all: check build test
 
 export RUSTFLAGS=-Dwarnings
 
+doc:
+	cargo +nightly doc --open --no-deps \
+		--package stellar-contract-sdk \
+		--features docs,testutils
+
 test:
 	cargo hack --feature-powerset test
 

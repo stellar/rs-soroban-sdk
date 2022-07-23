@@ -1,4 +1,5 @@
 #![cfg_attr(target_family = "wasm", no_std)]
+#![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
 // This requires running on unstable.
@@ -54,5 +55,4 @@ mod test_contract;
 mod test_sign;
 #[cfg(feature = "testutils")]
 pub use test_contract::ContractFunctionSet;
-#[cfg(feature = "testutils")]
-pub use test_sign::{ed25519, Sign};
+pub use test_sign::ed25519;

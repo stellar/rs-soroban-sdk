@@ -220,6 +220,7 @@ use crate::test_contract::{ContractFunctionSet, InternalContractFunctionSet};
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     pub fn with_empty_recording_storage() -> Env {
         struct EmptySnapshotSource();

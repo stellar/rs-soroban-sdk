@@ -28,3 +28,4 @@ hex = "0.4.3"
 
 [features]
 testutils = ["stellar-contract-env-host/testutils", "dep:ed25519-dalek"]
+docs = []
