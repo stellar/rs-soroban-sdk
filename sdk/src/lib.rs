@@ -13,7 +13,9 @@ pub use stellar_contract_macros::{contract, contractimpl, contracttype, Contract
 mod env;
 #[doc(hidden)]
 pub use env::meta;
-pub use env::xdr;
+pub mod xdr {
+    pub use super::env::xdr::*;
+}
 pub use env::BitSet;
 pub use env::ConversionError;
 pub use env::Env;
