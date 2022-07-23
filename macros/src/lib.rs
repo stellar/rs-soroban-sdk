@@ -95,6 +95,7 @@ pub fn contracttype(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     .into()
 }
 
+#[doc(hidden)]
 #[proc_macro_derive(ContractType)]
 pub fn derive_contract_type(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
