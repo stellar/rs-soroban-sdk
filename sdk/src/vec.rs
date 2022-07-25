@@ -487,7 +487,7 @@ mod test {
     #[test]
     fn test_vec_macro() {
         let env = Env::default();
-        assert_eq!(vec![&env], Vec::new(&env));
+        assert_eq!(vec![&env], Vec::<i32>::new(&env));
         assert_eq!(vec![&env, 1], {
             let mut v = Vec::new(&env);
             v.push(1);
