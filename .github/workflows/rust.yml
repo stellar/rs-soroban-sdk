@@ -33,10 +33,12 @@ jobs:
           target: wasm32-unknown-unknown
           profile: release
           test: false
+          docs: false
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           profile: test
           test: true
+          docs: true
         # TODO: Re-enable if we see value in doing so.
         # - os: macos-latest
         #   target: x86_64-apple-darwin
@@ -58,7 +60,9 @@ jobs:
     - run: cargo install --locked --version 0.5.14 cargo-hack
     - run: cargo check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --lib
     - if: matrix.sys.test
-      run: cargo hack --feature-powerset check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --bins --tests --examples --benches
+      run: cargo hack --feature-powerset check --exclude-features docs --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --bins --tests --examples --benches
     - run: cargo build --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}
     - if: matrix.sys.test
-      run: cargo hack --feature-powerset test --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}
+      run: cargo hack --feature-powerset test --exclude-features docs --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }}
+    - if: matrix.sys.docs
+      run: make doc
