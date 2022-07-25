@@ -45,7 +45,6 @@ mod map;
 mod vec;
 pub use bigint::BigInt;
 pub use binary::{ArrayBinary, Binary};
-pub use iter::{UncheckedEnumerable, UncheckedIter};
 pub use map::Map;
 pub use vec::Vec;
 
