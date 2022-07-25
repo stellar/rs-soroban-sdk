@@ -50,9 +50,23 @@ impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, Raw
 
 use crate::binary::{ArrayBinary, Binary};
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
+}
+
+impl Default for Env {
+    #[cfg(not(feature = "testutils"))]
+    fn default() -> Self {
+        Self {
+            env_impl: Default::default(),
+        }
+    }
+
+    #[cfg(feature = "testutils")]
+    fn default() -> Self {
+        Self::with_empty_recording_storage()
+    }
 }
 
 impl Env {
@@ -216,7 +230,7 @@ use std::rc::Rc;
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    pub fn with_empty_recording_storage() -> Env {
+    fn with_empty_recording_storage() -> Env {
         struct EmptySnapshotSource();
 
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
