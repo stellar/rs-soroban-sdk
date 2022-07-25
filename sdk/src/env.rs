@@ -111,21 +111,6 @@ impl Env {
         internal::Env::del_contract_data(self, key.into_val(self));
     }
 
-    pub fn serialize_to_binary<V: IntoTryFromVal>(&self, val: V) -> Binary {
-        let val_obj: Object = val.into_val(self).try_into().unwrap();
-        let bin_obj = internal::Env::serialize_to_binary(self, val_obj.to_raw());
-        bin_obj.in_env(self).try_into().unwrap()
-    }
-
-    pub fn deserialize_from_binary<V: IntoTryFromVal>(&self, bin: Binary) -> V
-    where
-        V::Error: Debug,
-    {
-        let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        let val_obj = internal::Env::deserialize_from_binary(self, bin_obj);
-        V::try_from_val(self, val_obj).unwrap()
-    }
-
     pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
         let bin_obj = internal::Env::compute_hash_sha256(self, msg.into_val(self));
         bin_obj.in_env(self).try_into().unwrap()
@@ -225,7 +210,7 @@ impl Env {
 }
 
 #[cfg(feature = "testutils")]
-use crate::test_contract::{ContractFunctionSet, InternalContractFunctionSet};
+use crate::testutils::ContractFunctionSet;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
@@ -265,6 +250,18 @@ impl Env {
         contract_id: Binary,
         contract: T,
     ) {
+        struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+        impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+            fn call(
+                &self,
+                func: &Symbol,
+                env_impl: &internal::EnvImpl,
+                args: &[RawVal],
+            ) -> Option<RawVal> {
+                self.0.call(func, Env::with_impl(env_impl.clone()), args)
+            }
+        }
+
         let id_obj: Object = RawVal::from(contract_id).try_into().unwrap();
         self.env_impl
             .register_test_contract(id_obj, Rc::new(InternalContractFunctionSet(contract)))
@@ -273,6 +270,89 @@ impl Env {
 
     pub fn invoke_contract(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
         self.env_impl.invoke_function(hf, args).unwrap()
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    fn clone_self_and_catch_panic<F, T>(&self, f: F) -> (Env, std::thread::Result<T>)
+    where
+        F: FnOnce(Env) -> T,
+    {
+        let hook = std::panic::take_hook();
+        std::panic::set_hook(Box::new(|_| ()));
+        let deep_clone = self.deep_clone();
+        let res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(deep_clone.clone())));
+        std::panic::set_hook(hook);
+        (deep_clone, res)
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    pub fn assert_panic_with_string<F, T: Debug>(&self, s: &str, f: F)
+    where
+        F: FnOnce(Env) -> T,
+    {
+        match self.clone_self_and_catch_panic(f) {
+            (_, Ok(v)) => panic!("inner function expected to panic, but returned {:?}", v),
+            (_, Err(e)) => match e.downcast_ref::<String>() {
+                None => match e.downcast_ref::<&str>() {
+                    Some(ps) => assert_eq!(*ps, s),
+                    None => panic!(
+                        "inner function panicked with unknown type when \"{}\" expected",
+                        s
+                    ),
+                },
+                Some(ps) => assert_eq!(*ps, s),
+            },
+        }
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    pub fn assert_panic_with_status<F, T: Debug>(&self, status: Status, f: F)
+    where
+        F: FnOnce(Env) -> T,
+    {
+        use stellar_contract_env_host::events::{DebugArg, HostEvent};
+
+        match self.clone_self_and_catch_panic(f) {
+            (_, Ok(v)) => panic!("inner function expected to panic, but returned {:?}", v),
+            (clone, Err(e)) => {
+                // Allow if there was a panic literally _carrying_ the status requested.
+                if let Some(st) = e.downcast_ref::<Status>() {
+                    assert_eq!(*st, status);
+                    return;
+                }
+                // Allow if the last debug log entry contains the status of requested.
+                if let Some(HostEvent::Debug(dbg)) = clone.env_impl.get_events().0.last() {
+                    for arg in dbg.args.iter() {
+                        if let DebugArg::Val(v) = arg {
+                            if let Ok(st) = TryInto::<Status>::try_into(*v) {
+                                if st == status {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Otherwise we're going to fail but we'll try to produce a useful diagnostic if
+                // the panic was a string, which many are.
+                if let Some(s) = e.downcast_ref::<String>() {
+                    panic!(
+                        "inner function panicked with \"{}\" when status {:?} expected",
+                        s, status
+                    );
+                }
+                if let Some(s) = e.downcast_ref::<&str>() {
+                    panic!(
+                        "inner function panicked with \"{}\" when status {:?} expected",
+                        s, status
+                    );
+                }
+                panic!(
+                    "inner function panicked with unknown type when status {:?} expected",
+                    status
+                );
+            }
+        }
     }
 }
 

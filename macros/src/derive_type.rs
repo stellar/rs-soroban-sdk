@@ -46,9 +46,13 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 { const k: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name); k }
             };
             let try_from = quote! {
-                #ident: map.get(#map_key).map_err(|_| stellar_contract_sdk::ConversionError)?.try_into()?
+                #ident: if let Some(Ok(val)) = map.get(#map_key) {
+                    val.try_into()?
+                } else {
+                    Err(stellar_contract_sdk::ConversionError)?
+                }
             };
-            let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
+            let into = quote! { map.set(#map_key, self.#ident.into_env_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
                     let key = &#name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;

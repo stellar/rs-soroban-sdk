@@ -8,7 +8,7 @@ use core::{
 
 use super::{
     env::internal::Env as _, env::EnvType, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    RawVal, RawValConvertible,
+    Object, RawVal, RawValConvertible,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -100,6 +100,20 @@ impl From<Binary> for EnvObj {
     }
 }
 
+impl From<Binary> for Object {
+    #[inline(always)]
+    fn from(v: Binary) -> Self {
+        v.0.val
+    }
+}
+
+impl From<&Binary> for Object {
+    #[inline(always)]
+    fn from(v: &Binary) -> Self {
+        v.0.val
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Binary> for ScVal {
     type Error = ConversionError;
@@ -130,7 +144,7 @@ impl TryFrom<EnvType<ScVal>> for Binary {
 
 impl Binary {
     #[inline(always)]
-    unsafe fn unchecked_new(obj: EnvObj) -> Self {
+    pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj)
     }
 
@@ -160,7 +174,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn put(&mut self, i: u32, v: u8) {
+    pub fn set(&mut self, i: u32, v: u8) {
         let v32: u32 = v.into();
         self.0 = self
             .env()
@@ -264,7 +278,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn pop_back(&mut self) -> Option<u8> {
+    pub fn pop(&mut self) -> Option<u8> {
         let last = self.last()?;
         let env = self.env();
         let bin = env.binary_pop(self.0.to_tagged());
@@ -273,7 +287,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn pop_back_unchecked(&mut self) -> u8 {
+    pub fn pop_unchecked(&mut self) -> u8 {
         let last = self.last_unchecked();
         let env = self.env();
         self.0 = env.binary_pop(self.0.to_tagged()).in_env(env);
@@ -558,8 +572,8 @@ impl<const N: u32> ArrayBinary<N> {
     }
 
     #[inline(always)]
-    pub fn put(&mut self, i: u32, v: u8) {
-        self.0.put(i, v);
+    pub fn set(&mut self, i: u32, v: u8) {
+        self.0.set(i, v);
     }
 
     #[inline(always)]
@@ -648,7 +662,7 @@ mod test {
         assert_eq!(bin.len(), 3);
         assert_eq!(bin_ref.len(), 3);
 
-        bin_copy.pop_back();
+        bin_copy.pop();
         assert!(bin == bin_copy);
 
         let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();
