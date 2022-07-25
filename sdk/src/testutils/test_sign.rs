@@ -70,7 +70,6 @@ pub mod ed25519 {
         fn sign(&self, m: M) -> Result<Self::Signature, Self::Error> {
             let mut buf = Vec::<u8>::new();
             let val: xdr::ScVal = m.try_into().map_err(|e| Self::Error::ConversionError(e))?;
-            println!("{:#?}", val);
             val.write_xdr(&mut buf)?;
             Ok(self.try_sign(&buf)?.to_bytes())
         }
