@@ -247,7 +247,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop_back(&mut self) -> Option<Result<T, T::Error>> {
+    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
         let last = self.last()?;
         let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
@@ -256,7 +256,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop_back_unchecked(&mut self) -> Result<T, T::Error> {
+    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
         let last = self.last_unchecked();
         let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
@@ -505,7 +505,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_back_unchecked();
+        _ = vec_copy.pop_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -535,7 +535,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_back_unchecked();
+        _ = vec_copy.pop_unchecked();
         assert!(vec == vec_copy);
     }
 
