@@ -90,7 +90,8 @@ pub fn derive_fn(
                     colon_token: Colon::default(),
                     ty: Box::new(Type::Verbatim(quote! { super::#pat_ty })),
                 });
-                (spec, arg, call, invoke_arg, quote! { #ident })
+                let invoke_call = quote! { #ident };
+                (spec, arg, call, invoke_arg, invoke_call)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
