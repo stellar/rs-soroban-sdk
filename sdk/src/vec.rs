@@ -18,10 +18,7 @@ macro_rules! vec {
     ($env:expr) => {
         $crate::Vec::new($env)
     };
-    ($env:expr, $($x:expr),+) => {
-        $crate::Vec::from_array($env, [$($x),+])
-    };
-    ($env:expr, $($x:expr),+,) => {
+    ($env:expr, $($x:expr),+ $(,)?) => {
         $crate::Vec::from_array($env, [$($x),+])
     };
 }
