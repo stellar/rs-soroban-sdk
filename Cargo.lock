@@ -235,6 +235,7 @@ checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 name = "example_add_i32"
 version = "0.0.0"
 dependencies = [
+ "example_add_i32",
  "proptest",
  "stellar-contract-sdk",
 ]
@@ -243,6 +244,7 @@ dependencies = [
 name = "example_add_i64"
 version = "0.0.0"
 dependencies = [
+ "example_add_i64",
  "stellar-contract-sdk",
 ]
 
@@ -250,6 +252,7 @@ dependencies = [
 name = "example_contract_data"
 version = "0.0.0"
 dependencies = [
+ "example_contract_data",
  "stellar-contract-sdk",
 ]
 
@@ -257,6 +260,7 @@ dependencies = [
 name = "example_create_contract"
 version = "0.0.0"
 dependencies = [
+ "example_create_contract",
  "stellar-contract-sdk",
 ]
 
@@ -264,6 +268,7 @@ dependencies = [
 name = "example_linear_memory"
 version = "0.0.0"
 dependencies = [
+ "example_linear_memory",
  "stellar-contract-sdk",
 ]
 
@@ -744,7 +749,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=52344714#523447140c52857f310043a0b9fb5c8c678a9999"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=d3fd06d7#d3fd06d71af82bdcedea3d0d42e27b48534e80cf"
 dependencies = [
  "static_assertions",
  "stellar-contract-env-macros",
@@ -754,7 +759,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=52344714#523447140c52857f310043a0b9fb5c8c678a9999"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=d3fd06d7#d3fd06d71af82bdcedea3d0d42e27b48534e80cf"
 dependencies = [
  "static_assertions",
  "stellar-contract-env-common",
@@ -763,7 +768,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=52344714#523447140c52857f310043a0b9fb5c8c678a9999"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=d3fd06d7#d3fd06d71af82bdcedea3d0d42e27b48534e80cf"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -784,7 +789,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-macros"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=52344714#523447140c52857f310043a0b9fb5c8c678a9999"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=d3fd06d7#d3fd06d71af82bdcedea3d0d42e27b48534e80cf"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -795,7 +800,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-panic-handler-wasm32-unreachable"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=52344714#523447140c52857f310043a0b9fb5c8c678a9999"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=d3fd06d7#d3fd06d71af82bdcedea3d0d42e27b48534e80cf"
 
 [[package]]
 name = "stellar-contract-macros"

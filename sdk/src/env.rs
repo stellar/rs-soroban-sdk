@@ -10,6 +10,17 @@ pub mod internal {
 pub mod internal {
     pub use stellar_contract_env_host::*;
     pub type EnvImpl = Host;
+
+    #[doc(hidden)]
+    impl<F, T> TryConvert<F, T> for super::Env
+    where
+        EnvImpl: TryConvert<F, T>,
+    {
+        type Error = <EnvImpl as TryConvert<F, T>>::Error;
+        fn convert(&self, f: F) -> Result<T, Self::Error> {
+            self.env_impl.convert(f)
+        }
+    }
 }
 
 pub use internal::meta;
@@ -26,8 +37,11 @@ pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
+pub use internal::TryIntoEnvVal;
+pub use internal::TryIntoVal;
 pub use internal::Val;
 
+pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
@@ -42,10 +56,6 @@ pub struct Env {
 }
 
 impl Env {
-    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
-        Env { env_impl }
-    }
-
     // TODO: Implement methods on Env that are intended for use by contract
     // developers and that otherwise don't belong into an object like Vec, Map,
     // BigInt, etc. If there is any host fn we expect a developer to use, it
@@ -210,6 +220,7 @@ use crate::test_contract::{ContractFunctionSet, InternalContractFunctionSet};
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     pub fn with_empty_recording_storage() -> Env {
         struct EmptySnapshotSource();
@@ -339,6 +350,14 @@ impl Env {
     }
 }
 
+#[doc(hidden)]
+impl Env {
+    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
+        Env { env_impl }
+    }
+}
+
+#[doc(hidden)]
 impl internal::EnvBase for Env {
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
         self
@@ -437,6 +456,7 @@ macro_rules! impl_env_for_sdk {
     {
         // This macro expands to a single item: the implementation of Env for
         // the SDK's Env struct used by client contract code running in a WASM VM.
+        #[doc(hidden)]
         impl internal::Env for Env
         {
             $(

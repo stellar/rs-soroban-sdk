@@ -10,3 +10,10 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 stellar-contract-sdk = {path = "../../sdk"}
+
+[dev-dependencies]
+stellar-contract-sdk = {path = "../../sdk", features = ["testutils"]}
+example_contract_data = {path = ".", features = ["testutils"]}
+
+[features]
+testutils = ["stellar-contract-sdk/testutils"]

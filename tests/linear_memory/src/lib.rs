@@ -1,11 +1,9 @@
 #![no_std]
-use stellar_contract_sdk::{contract, contractimpl, Binary, Env, FixedLengthBinary};
-
-contract!();
+use stellar_contract_sdk::{contractimpl, Binary, Env};
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn bin_new(e: Env, len: u32) -> Binary {
         let buf: [u8; 4] = [0, 1, 2, 3];

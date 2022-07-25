@@ -1,3 +1,5 @@
+#![cfg(feature = "testutils")]
+
 use std::io::Cursor;
 
 use stellar_contract_sdk::{
@@ -30,7 +32,7 @@ impl IntoEnvVal<Env, RawVal> for Udt {
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn add(a: Udt, b: Udt) -> (Udt, Udt) {
         (a, b)

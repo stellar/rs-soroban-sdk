@@ -15,20 +15,10 @@ use syn::{
     ImplItemMethod, ItemImpl, Visibility,
 };
 
-#[proc_macro]
-pub fn contract(_input: TokenStream) -> TokenStream {
-    quote! {
-        #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
-        pub static __ENV_META_XDR: [u8; stellar_contract_sdk::meta::XDR.len()] = stellar_contract_sdk::meta::XDR;
-    }
-    .into()
-}
-
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
     #[darling(default)]
     export_if: Option<String>,
-    tests_if: Option<String>,
 }
 
 fn get_methods(imp: &ItemImpl) -> impl Iterator<Item = &ImplItemMethod> {
@@ -48,8 +38,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let is_trait = imp.trait_.is_some();
     let ty = &imp.self_ty;
-    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = get_methods(&imp)
+    let pub_methods: Vec<_> = get_methods(&imp)
         .filter(|m| is_trait || matches!(m.vis, Visibility::Public(_)))
+        .collect();
+    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
+        .iter()
         .map(|m| {
             let ident = &m.sig.ident;
             let call = quote! { <super::#ty>::#ident };
@@ -67,7 +60,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let cfs = derive_contract_function_set(ty, get_methods(&imp), &args.tests_if);
+            let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
             quote! {
                 #imp
                 #derived_ok
@@ -93,6 +86,7 @@ pub fn contracttype(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     .into()
 }
 
+#[doc(hidden)]
 #[proc_macro_derive(ContractType)]
 pub fn derive_contract_type(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
