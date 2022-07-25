@@ -6,7 +6,7 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use crate::{UncheckedEnumerable, UncheckedIter};
+use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
