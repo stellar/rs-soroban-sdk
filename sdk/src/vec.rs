@@ -164,7 +164,6 @@ where
     T: IntoTryFromVal,
 {
     OutOfBounds,
-    Empty,
     ConversionError(T::Error),
 }
 
