@@ -16,7 +16,7 @@ pub struct BigInt(EnvObj);
 impl Debug for BigInt {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "BigInt(")?;
-        Display::fmt(&self, f)?;        
+        Display::fmt(&self, f)?;
         write!(f, ")")?;
         Ok(())
     }
@@ -36,7 +36,7 @@ impl Display for BigInt {
                 write!(f, "{:?}", x)?;
             }
         }
-        Ok(())        
+        Ok(())
     }
 }
 
