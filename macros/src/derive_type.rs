@@ -167,9 +167,9 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             #[inline(always)]
             fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScMap, Self::Error> {
                 extern crate alloc;
-                Ok(stellar_contract_sdk::xdr::ScMap(alloc::vec![
+                Ok(stellar_contract_sdk::xdr::ScMap::sorted_from(alloc::vec![
                     #(#into_xdrs,)*
-                ].try_into()?))
+                ])?)
             }
         }
 
