@@ -52,7 +52,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     Err(stellar_contract_sdk::ConversionError)?
                 }
             };
-            let into = quote! { map.insert(#map_key, self.#ident.into_env_val(env)) };
+            let into = quote! { map.set(#map_key, self.#ident.into_env_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
                     let key = &#name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;

@@ -160,7 +160,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn put(&mut self, i: u32, v: u8) {
+    pub fn set(&mut self, i: u32, v: u8) {
         let v32: u32 = v.into();
         self.0 = self
             .env()
@@ -558,8 +558,8 @@ impl<const N: u32> ArrayBinary<N> {
     }
 
     #[inline(always)]
-    pub fn put(&mut self, i: u32, v: u8) {
-        self.0.put(i, v);
+    pub fn set(&mut self, i: u32, v: u8) {
+        self.0.set(i, v);
     }
 
     #[inline(always)]
