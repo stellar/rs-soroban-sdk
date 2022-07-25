@@ -21,6 +21,9 @@ macro_rules! vec {
     ($env:expr, $($x:expr),+) => {
         $crate::Vec::from_array($env, [$($x),+])
     };
+    ($env:expr, $($x:expr),+,) => {
+        $crate::Vec::from_array($env, [$($x),+])
+    };
 }
 
 #[derive(Clone)]
@@ -480,6 +483,29 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_vec_macro() {
+        let env = Env::default();
+        assert_eq!(vec![&env], Vec::<i32>::new(&env));
+        assert_eq!(vec![&env, 1], {
+            let mut v = Vec::new(&env);
+            v.push(1);
+            v
+        });
+        assert_eq!(vec![&env, 1,], {
+            let mut v = Vec::new(&env);
+            v.push(1);
+            v
+        });
+        assert_eq!(vec![&env, 3, 2, 1,], {
+            let mut v = Vec::new(&env);
+            v.push(3);
+            v.push(2);
+            v.push(1);
+            v
+        });
+    }
 
     #[test]
     fn test_vec_raw_val_type() {
