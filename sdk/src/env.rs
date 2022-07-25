@@ -225,7 +225,7 @@ impl Env {
 }
 
 #[cfg(feature = "testutils")]
-use crate::test_contract::{ContractFunctionSet, InternalContractFunctionSet};
+use crate::testutils::ContractFunctionSet;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
@@ -265,6 +265,18 @@ impl Env {
         contract_id: Binary,
         contract: T,
     ) {
+        struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+        impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+            fn call(
+                &self,
+                func: &Symbol,
+                env_impl: &internal::EnvImpl,
+                args: &[RawVal],
+            ) -> Option<RawVal> {
+                self.0.call(func, Env::with_impl(env_impl.clone()), args)
+            }
+        }
+
         let id_obj: Object = RawVal::from(contract_id).try_into().unwrap();
         self.env_impl
             .register_test_contract(id_obj, Rc::new(InternalContractFunctionSet(contract)))

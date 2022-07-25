@@ -12,7 +12,6 @@ pub trait Sign<MSG> {
 // TODO: Add a Verify interface and ed25519 implementation to counter the Sign
 // interface.
 
-#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 pub mod ed25519 {
     use xdr::WriteXdr;
 
