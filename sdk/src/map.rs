@@ -12,7 +12,7 @@ macro_rules! map {
     ($env:expr) => {
         $crate::Map::new($env)
     };
-    ($env:expr, $(($k:expr, $v:expr)),+) => {
+    ($env:expr, $(($k:expr, $v:expr $(,)?)),+ $(,)?) => {
         $crate::Map::from_array($env, [$(($k, $v)),+])
     };
 }
@@ -400,6 +400,36 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_map_macro() {
+        let env = Env::default();
+        assert_eq!(map![&env], Map::<i32, i32>::new(&env));
+        assert_eq!(map![&env, (1, 10)], {
+            let mut v = Map::new(&env);
+            v.insert(1, 10);
+            v
+        });
+        assert_eq!(map![&env, (1, 10),], {
+            let mut v = Map::new(&env);
+            v.insert(1, 10);
+            v
+        });
+        assert_eq!(map![&env, (3, 30), (2, 20), (1, 10),], {
+            let mut v = Map::new(&env);
+            v.insert(3, 30);
+            v.insert(2, 20);
+            v.insert(1, 10);
+            v
+        });
+        assert_eq!(map![&env, (3, 30,), (2, 20,), (1, 10,),], {
+            let mut v = Map::new(&env);
+            v.insert(3, 30);
+            v.insert(2, 20);
+            v.insert(1, 10);
+            v
+        });
+    }
 
     #[test]
     fn test_empty() {
