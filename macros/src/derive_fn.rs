@@ -182,7 +182,7 @@ pub fn derive_contract_function_set<'a>(
         .multiunzip();
     quote! {
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::ContractFunctionSet for #ty {
+        impl stellar_contract_sdk::testutils::ContractFunctionSet for #ty {
             fn call(
                 &self,
                 func: &stellar_contract_sdk::Symbol,

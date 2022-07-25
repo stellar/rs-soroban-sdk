@@ -75,7 +75,7 @@ pub mod ed25519 {
     mod test {
         use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 
-        use crate::test_sign::Sign;
+        use super::Sign;
 
         #[test]
         fn sign() {
