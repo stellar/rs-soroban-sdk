@@ -146,6 +146,20 @@ impl Binary {
     }
 
     #[inline(always)]
+    pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Binary {
+        let mut bin = Binary::new(env);
+        bin.extend_from_array(items);
+        bin
+    }
+
+    #[inline(always)]
+    pub fn from_slice(env: &Env, items: &[u8]) -> Binary {
+        let mut vec = Binary::new(env);
+        vec.extend_from_slice(items);
+        vec
+    }
+
+    #[inline(always)]
     pub fn put(&mut self, i: u32, v: u8) {
         let v32: u32 = v.into();
         self.0 = self
@@ -155,7 +169,16 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> u8 {
+    pub fn get(&self, i: u32) -> Option<u8> {
+        if i < self.len() {
+            Some(self.get_unchecked(i))
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn get_unchecked(&self, i: u32) -> u8 {
         let res32: u32 = self
             .env()
             .binary_get(self.0.to_tagged(), i.into())
@@ -178,7 +201,16 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn front(&self) -> u8 {
+    pub fn first(&self) -> Option<u8> {
+        if !self.is_empty() {
+            Some(self.first_unchecked())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn first_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
             .binary_front(self.0.to_tagged())
@@ -188,7 +220,16 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn back(&self) -> u8 {
+    pub fn last(&self) -> Option<u8> {
+        if !self.is_empty() {
+            Some(self.last_unchecked())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn last_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
             .binary_back(self.0.to_tagged())
@@ -198,42 +239,74 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn del(&mut self, i: u32) {
-        self.0 = self
-            .env()
-            .binary_del(self.0.to_tagged(), i.into())
-            .in_env(self.env());
+    pub fn remove(&mut self, i: u32) -> Option<()> {
+        if i < self.len() {
+            self.remove_unchecked(i);
+            Some(())
+        } else {
+            None
+        }
+    }
+
+    #[inline(always)]
+    pub fn remove_unchecked(&mut self, i: u32) {
+        let env = self.env();
+        let bin = env.binary_del(self.0.to_tagged(), i.into());
+        self.0 = bin.in_env(env);
     }
 
     #[inline(always)]
     pub fn push(&mut self, x: u8) {
         let x32: u32 = x.into();
-        self.0 = self
-            .env()
-            .binary_push(self.0.to_tagged(), x32.into())
-            .in_env(self.env());
+        let env = self.env();
+        let bin = env.binary_push(self.0.to_tagged(), x32.into());
+        self.0 = bin.in_env(env);
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) {
-        self.0 = self.env().binary_pop(self.0.to_tagged()).in_env(self.env());
+    pub fn pop_back(&mut self) -> Option<u8> {
+        let last = self.last()?;
+        let env = self.env();
+        let bin = env.binary_pop(self.0.to_tagged());
+        self.0 = bin.in_env(env);
+        Some(last)
+    }
+
+    #[inline(always)]
+    pub fn pop_back_unchecked(&mut self) -> u8 {
+        let last = self.last_unchecked();
+        let env = self.env();
+        self.0 = env.binary_pop(self.0.to_tagged()).in_env(env);
+        last
     }
 
     #[inline(always)]
     pub fn insert(&mut self, i: u32, x: u8) {
+        let env = self.env();
         let x32: u32 = x.into();
-        self.0 = self
-            .env()
-            .binary_insert(self.0.to_tagged(), i.into(), x32.into())
-            .in_env(self.env());
+        let bin = env.binary_insert(self.0.to_tagged(), i.into(), x32.into());
+        self.0 = bin.in_env(env);
     }
 
     #[inline(always)]
     pub fn append(&mut self, other: &Binary) {
-        self.0 = self
-            .env()
-            .binary_append(self.0.to_tagged(), other.0.to_tagged())
-            .in_env(self.env());
+        let env = self.env();
+        let bin = env.binary_append(self.0.to_tagged(), other.0.to_tagged());
+        self.0 = bin.in_env(env);
+    }
+
+    #[inline(always)]
+    pub fn extend_from_array<const N: usize>(&mut self, items: [u8; N]) {
+        for item in items {
+            self.push(item);
+        }
+    }
+
+    #[inline(always)]
+    pub fn extend_from_slice(&mut self, items: &[u8]) {
+        for item in items {
+            self.push(*item);
+        }
     }
 
     #[must_use]
@@ -480,13 +553,23 @@ impl<const N: u32> TryFrom<EnvType<ScVal>> for ArrayBinary<N> {
 
 impl<const N: u32> ArrayBinary<N> {
     #[inline(always)]
+    pub fn from_array<const M: usize>(env: &Env, items: [u8; M]) -> ArrayBinary<N> {
+        Binary::from_array(env, items).try_into().unwrap()
+    }
+
+    #[inline(always)]
     pub fn put(&mut self, i: u32, v: u8) {
         self.0.put(i, v);
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> u8 {
+    pub fn get(&self, i: u32) -> Option<u8> {
         self.0.get(i)
+    }
+
+    #[inline(always)]
+    pub fn get_unchecked(&self, i: u32) -> u8 {
+        self.0.get_unchecked(i)
     }
 
     #[inline(always)]
@@ -500,13 +583,23 @@ impl<const N: u32> ArrayBinary<N> {
     }
 
     #[inline(always)]
-    pub fn front(&self) -> u8 {
-        self.0.front()
+    pub fn first(&self) -> Option<u8> {
+        self.0.first()
     }
 
     #[inline(always)]
-    pub fn back(&self) -> u8 {
-        self.0.back()
+    pub fn first_unchecked(&self) -> u8 {
+        self.0.first_unchecked()
+    }
+
+    #[inline(always)]
+    pub fn last(&self) -> Option<u8> {
+        self.0.last()
+    }
+
+    #[inline(always)]
+    pub fn last_unchecked(&self) -> u8 {
+        self.0.last_unchecked()
     }
 
     pub fn iter(&self) -> BinIter {
@@ -555,7 +648,7 @@ mod test {
         assert_eq!(bin.len(), 3);
         assert_eq!(bin_ref.len(), 3);
 
-        bin_copy.pop();
+        bin_copy.pop_back();
         assert!(bin == bin_copy);
 
         let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();

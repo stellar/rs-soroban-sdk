@@ -26,7 +26,7 @@ build:
 			ls -l "$$i"; \
 		done
 
-check:
+check: fmt
 	cargo hack --feature-powerset --exclude-features docs check --all-targets
 	cargo check --release --target wasm32-unknown-unknown
 
