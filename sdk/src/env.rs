@@ -50,9 +50,15 @@ impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, Raw
 
 use crate::binary::{ArrayBinary, Binary};
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
+}
+
+impl Default for Env {
+    fn default() -> Self {
+        Self { env_impl: Default::default() }
+    }
 }
 
 impl Env {
