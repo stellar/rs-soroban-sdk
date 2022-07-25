@@ -146,24 +146,6 @@ impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
-pub enum VecAccessError<T>
-where
-    T: IntoTryFromVal,
-{
-    Empty,
-    ConversionError(T::Error),
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub enum VecIndexedError<T>
-where
-    T: IntoTryFromVal,
-{
-    OutOfBounds,
-    ConversionError(T::Error),
-}
-
 impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -199,24 +181,24 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Result<T, VecIndexedError<T>> {
+    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
         if i < self.len() {
             let env = self.env();
             let val = env.vec_get(self.0.to_tagged(), i.into());
-            T::try_from_val(env, val).map_err(|e| VecIndexedError::ConversionError(e))
+            Some(T::try_from_val(env, val))
         } else {
-            Err(VecIndexedError::OutOfBounds)
+            None
         }
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> T
+    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error>
     where
         T::Error: Debug,
     {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, val).unwrap()
+        T::try_from_val(env, val)
     }
 
     #[inline(always)]
@@ -227,12 +209,12 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, i: u32) -> Result<(), VecIndexedError<T>> {
+    pub fn remove(&mut self, i: u32) -> Option<()> {
         if i < self.len() {
             self.remove_unchecked(i);
-            Ok(())
+            Some(())
         } else {
-            Err(VecIndexedError::OutOfBounds)
+            None
         }
     }
 
@@ -265,19 +247,16 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) -> Result<T, VecAccessError<T>> {
+    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
         let last = self.last()?;
         let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
         self.0 = vec.in_env(env);
-        Ok(last)
+        Some(last)
     }
 
     #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> T
-    where
-        T::Error: Debug,
-    {
+    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
         let last = self.last_unchecked();
         let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
@@ -286,13 +265,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn first(&self) -> Result<T, VecAccessError<T>> {
+    pub fn first(&self) -> Option<Result<T, T::Error>> {
         if self.is_empty() {
-            Err(VecAccessError::Empty)
+            None
         } else {
             let env = self.0.env();
             let val = env.vec_front(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecAccessError::ConversionError(e))
+            Some(T::try_from_val(env, val))
         }
     }
 
@@ -304,24 +283,21 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn last(&self) -> Result<T, VecAccessError<T>> {
+    pub fn last(&self) -> Option<Result<T, T::Error>> {
         if self.is_empty() {
-            Err(VecAccessError::Empty)
+            None
         } else {
             let env = self.env();
             let val = env.vec_back(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecAccessError::ConversionError(e))
+            Some(T::try_from_val(env, val))
         }
     }
 
     #[inline(always)]
-    pub fn last_unchecked(&self) -> T
-    where
-        T::Error: Debug,
-    {
+    pub fn last_unchecked(&self) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, val).unwrap()
+        T::try_from_val(env, val)
     }
 
     #[inline(always)]
