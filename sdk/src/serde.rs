@@ -1,7 +1,7 @@
 use crate::{internal::Env as _, Binary, Env, IntoVal, RawVal, TryFromVal};
 
 pub trait Serialize {
-    fn serialize(&self, env: &Env) -> Binary;
+    fn serialize(self, env: &Env) -> Binary;
 }
 
 pub trait Deserialize: Sized {
@@ -11,9 +11,9 @@ pub trait Deserialize: Sized {
 
 impl<T> Serialize for T
 where
-    for<'a> &'a T: IntoVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
 {
-    fn serialize(&self, env: &Env) -> Binary {
+    fn serialize(self, env: &Env) -> Binary {
         let val: RawVal = self.into_val(env);
         let bin = env.serialize_to_binary(val);
         unsafe { Binary::unchecked_new(bin.in_env(env)) }

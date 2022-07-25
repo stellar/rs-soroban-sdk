@@ -36,7 +36,127 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::{UdtEnum, UdtStruct, __add};
-    use stellar_contract_sdk::{vec, xdr::ScVal, Env, IntoVal, TryFromVal};
+    use stellar_contract_sdk::{vec, xdr::ScVal, Binary, Env, IntoVal, TryFromVal};
+
+    #[test]
+    fn test_serializing() {
+        use stellar_contract_sdk::serde::Serialize;
+        let e = Env::default();
+        let udt = UdtStruct {
+            a: 10,
+            b: 12,
+            c: vec![&e, 1],
+        };
+        let bin = udt.serialize(&e);
+        assert_eq!(bin, {
+            let mut bin = Binary::new(&e);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(4);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(3);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(5);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin.push(97);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(10);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(5);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin.push(98);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(12);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(5);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin.push(99);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(4);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(0);
+            bin.push(1);
+            bin
+        })
+    }
 
     #[test]
     fn test_add() {
