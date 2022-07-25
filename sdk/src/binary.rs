@@ -264,7 +264,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn pop_back(&mut self) -> Option<u8> {
+    pub fn pop(&mut self) -> Option<u8> {
         let last = self.last()?;
         let env = self.env();
         let bin = env.binary_pop(self.0.to_tagged());
@@ -273,7 +273,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn pop_back_unchecked(&mut self) -> u8 {
+    pub fn pop_unchecked(&mut self) -> u8 {
         let last = self.last_unchecked();
         let env = self.env();
         self.0 = env.binary_pop(self.0.to_tagged()).in_env(env);
@@ -648,7 +648,7 @@ mod test {
         assert_eq!(bin.len(), 3);
         assert_eq!(bin_ref.len(), 3);
 
-        bin_copy.pop_back();
+        bin_copy.pop();
         assert!(bin == bin_copy);
 
         let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();
