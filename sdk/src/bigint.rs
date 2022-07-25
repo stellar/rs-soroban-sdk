@@ -4,11 +4,9 @@ use core::{
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
-use stellar_contract_env_host::RawValConvertible;
-
 use super::{
     env::internal::Env as _, xdr::ScObjectType, Binary, ConversionError, Env, EnvBase, EnvObj,
-    EnvVal, RawVal, TryFromVal,
+    EnvVal, RawVal, RawValConvertible, TryFromVal,
 };
 
 #[repr(transparent)]
