@@ -1,5 +1,5 @@
 use core::{
-    borrow::{Borrow, BorrowMut},
+    borrow::Borrow,
     cmp::Ordering,
     fmt::Debug,
     iter::FusedIterator,
@@ -429,12 +429,6 @@ impl<const N: u32> Borrow<Binary> for ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> BorrowMut<Binary> for ArrayBinary<N> {
-    fn borrow_mut(&mut self) -> &mut Binary {
-        &mut self.0
-    }
-}
-
 impl<const N: u32> Borrow<Binary> for &ArrayBinary<N> {
     fn borrow(&self) -> &Binary {
         &self.0
@@ -447,21 +441,9 @@ impl<const N: u32> Borrow<Binary> for &mut ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> BorrowMut<Binary> for &mut ArrayBinary<N> {
-    fn borrow_mut(&mut self) -> &mut Binary {
-        &mut self.0
-    }
-}
-
 impl<const N: u32> AsRef<Binary> for ArrayBinary<N> {
     fn as_ref(&self) -> &Binary {
         &self.0
-    }
-}
-
-impl<const N: u32> AsMut<Binary> for ArrayBinary<N> {
-    fn as_mut(&mut self) -> &mut Binary {
-        &mut self.0
     }
 }
 
@@ -730,29 +712,6 @@ mod test {
         assert_eq!(get_len(&bin), 3);
         assert_eq!(get_len(bin), 3);
         assert_eq!(get_len(&arr_bin), 3);
-        assert_eq!(get_len(arr_bin), 3);
-    }
-
-    #[test]
-    fn test_array_binary_borrow_mut() {
-        fn get_len(b: impl BorrowMut<Binary>) -> u32 {
-            let b: &Binary = b.borrow();
-            b.len()
-        }
-
-        let env = Env::default();
-        let mut bin = Binary::new(&env);
-        bin.push(10);
-        bin.push(20);
-        bin.push(30);
-        assert_eq!(bin.len(), 3);
-
-        let mut arr_bin: ArrayBinary<3> = bin.clone().try_into().unwrap();
-        assert_eq!(arr_bin.len(), 3);
-
-        assert_eq!(get_len(&mut bin), 3);
-        assert_eq!(get_len(bin), 3);
-        assert_eq!(get_len(&mut arr_bin), 3);
         assert_eq!(get_len(arr_bin), 3);
     }
 }
