@@ -140,6 +140,7 @@ impl Env {
             .unwrap()
     }
 
+    #[doc(hidden)]
     pub fn account_get_low_threshold(&self, acc: Binary) -> u32 {
         let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
         internal::Env::account_get_low_threshold(self, acc_obj)
@@ -147,6 +148,7 @@ impl Env {
             .unwrap()
     }
 
+    #[doc(hidden)]
     pub fn account_get_medium_threshold(&self, acc: Binary) -> u32 {
         let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
         internal::Env::account_get_medium_threshold(self, acc_obj)
@@ -154,6 +156,7 @@ impl Env {
             .unwrap()
     }
 
+    #[doc(hidden)]
     pub fn account_get_high_threshold(&self, acc: Binary) -> u32 {
         let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
         internal::Env::account_get_high_threshold(self, acc_obj)
@@ -161,6 +164,7 @@ impl Env {
             .unwrap()
     }
 
+    #[doc(hidden)]
     pub fn account_get_signer_weight(&self, acc: Binary, signer: Binary) -> u32 {
         let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
         let signer_obj: Object = RawVal::from(signer).try_into().unwrap();
@@ -169,6 +173,7 @@ impl Env {
             .unwrap()
     }
 
+    #[doc(hidden)]
     pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) -> ArrayBinary<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
@@ -176,11 +181,13 @@ impl Env {
         id_obj.in_env(self).try_into().unwrap()
     }
 
+    #[doc(hidden)]
     pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Binary {
         let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
+    #[doc(hidden)]
     pub fn binary_copy_to_linear_memory(&self, bin: Binary, b_pos: u32, lm_pos: u32, len: u32) {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
         internal::Env::binary_copy_to_linear_memory(
@@ -192,6 +199,7 @@ impl Env {
         );
     }
 
+    #[doc(hidden)]
     pub fn binary_copy_from_linear_memory(
         &self,
         bin: Binary,
@@ -210,6 +218,7 @@ impl Env {
         new_obj.in_env(self).try_into().unwrap()
     }
 
+    #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self));
     }
