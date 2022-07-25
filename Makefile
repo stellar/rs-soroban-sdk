@@ -2,8 +2,13 @@ all: check build test
 
 export RUSTFLAGS=-Dwarnings
 
+doc:
+	cargo +nightly doc --open --no-deps \
+		--package stellar-contract-sdk \
+		--features docs,testutils
+
 test:
-	cargo hack --feature-powerset test
+	cargo hack --feature-powerset --exclude-features docs test
 
 build:
 	cargo build --target wasm32-unknown-unknown --release
@@ -22,7 +27,7 @@ build:
 		done
 
 check:
-	cargo hack --feature-powerset check --all-targets
+	cargo hack --feature-powerset --exclude-features docs check --all-targets
 	cargo check --release --target wasm32-unknown-unknown
 
 watch:

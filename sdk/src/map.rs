@@ -1,6 +1,6 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
-use crate::{UncheckedEnumerable, UncheckedIter};
+use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,

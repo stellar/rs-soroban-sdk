@@ -2,6 +2,7 @@
 
 use crate::env::{internal, Env, RawVal, Symbol};
 
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 pub trait ContractFunctionSet {
     fn call(&self, func: &Symbol, env: Env, args: &[RawVal]) -> Option<RawVal>;
 }
