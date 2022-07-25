@@ -1,4 +1,5 @@
 use core::{
+    borrow::Borrow,
     cmp::Ordering,
     fmt::Debug,
     iter::FusedIterator,
@@ -13,35 +14,24 @@ use super::{
 #[cfg(not(target_family = "wasm"))]
 use super::{env::TryIntoEnvVal, xdr::ScVal};
 
-pub trait FixedLengthBinary {
-    fn put(&mut self, i: u32, v: u8);
-
-    fn get(&self, i: u32) -> u8;
-
-    fn is_empty(&self) -> bool;
-
-    fn len(&self) -> u32;
-
-    fn front(&self) -> u8;
-
-    fn back(&self) -> u8;
-}
-
-pub trait VariableLengthBinary: FixedLengthBinary {
-    fn del(&mut self, i: u32);
-
-    fn push(&mut self, x: u8);
-
-    fn pop(&mut self);
-
-    fn insert(&mut self, i: u32, x: u8);
-
-    fn append(&mut self, other: &Binary);
-}
-
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Binary(EnvObj);
+
+impl Debug for Binary {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Binary(")?;
+        let mut iter = self.iter();
+        if let Some(x) = iter.next() {
+            write!(f, "{:?}", x)?;
+        }
+        for x in iter {
+            write!(f, ", {:?}", x)?;
+        }
+        write!(f, ")")?;
+        Ok(())
+    }
+}
 
 impl Eq for Binary {}
 
@@ -138,116 +128,6 @@ impl TryFrom<EnvType<ScVal>> for Binary {
     }
 }
 
-impl FixedLengthBinary for Binary {
-    #[inline(always)]
-    fn put(&mut self, i: u32, v: u8) {
-        let v32: u32 = v.into();
-        self.0 = self
-            .env()
-            .binary_put(self.0.to_tagged(), i.into(), v32.into())
-            .in_env(self.env());
-    }
-
-    #[inline(always)]
-    fn get(&self, i: u32) -> u8 {
-        let res32: u32 = self
-            .env()
-            .binary_get(self.0.to_tagged(), i.into())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
-    }
-
-    #[inline(always)]
-    fn is_empty(&self) -> bool {
-        self.env().binary_len(self.0.to_tagged()).is_u32_zero()
-    }
-
-    #[inline(always)]
-    fn len(&self) -> u32 {
-        self.env()
-            .binary_len(self.0.to_tagged())
-            .try_into()
-            .unwrap()
-    }
-
-    #[inline(always)]
-    fn front(&self) -> u8 {
-        let res32: u32 = self
-            .env()
-            .binary_front(self.0.to_tagged())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
-    }
-
-    #[inline(always)]
-    fn back(&self) -> u8 {
-        let res32: u32 = self
-            .env()
-            .binary_back(self.0.to_tagged())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
-    }
-}
-
-impl VariableLengthBinary for Binary {
-    #[inline(always)]
-    fn del(&mut self, i: u32) {
-        self.0 = self
-            .env()
-            .binary_del(self.0.to_tagged(), i.into())
-            .in_env(self.env());
-    }
-
-    #[inline(always)]
-    fn push(&mut self, x: u8) {
-        let x32: u32 = x.into();
-        self.0 = self
-            .env()
-            .binary_push(self.0.to_tagged(), x32.into())
-            .in_env(self.env());
-    }
-
-    #[inline(always)]
-    fn pop(&mut self) {
-        self.0 = self.env().binary_pop(self.0.to_tagged()).in_env(self.env());
-    }
-
-    #[inline(always)]
-    fn insert(&mut self, i: u32, x: u8) {
-        let x32: u32 = x.into();
-        self.0 = self
-            .env()
-            .binary_insert(self.0.to_tagged(), i.into(), x32.into())
-            .in_env(self.env());
-    }
-
-    #[inline(always)]
-    fn append(&mut self, other: &Binary) {
-        self.0 = self
-            .env()
-            .binary_append(self.0.to_tagged(), other.0.to_tagged())
-            .in_env(self.env());
-    }
-}
-
-impl Debug for Binary {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Binary(")?;
-        let mut iter = self.iter();
-        if let Some(x) = iter.next() {
-            write!(f, "{:?}", x)?;
-        }
-        for x in iter {
-            write!(f, ", {:?}", x)?;
-        }
-        write!(f, ")")?;
-        Ok(())
-    }
-}
-
 impl Binary {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
@@ -263,6 +143,97 @@ impl Binary {
     pub fn new(env: &Env) -> Binary {
         let obj = env.binary_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
+    }
+
+    #[inline(always)]
+    pub fn put(&mut self, i: u32, v: u8) {
+        let v32: u32 = v.into();
+        self.0 = self
+            .env()
+            .binary_put(self.0.to_tagged(), i.into(), v32.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    pub fn get(&self, i: u32) -> u8 {
+        let res32: u32 = self
+            .env()
+            .binary_get(self.0.to_tagged(), i.into())
+            .try_into()
+            .unwrap();
+        res32.try_into().unwrap()
+    }
+
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.env().binary_len(self.0.to_tagged()).is_u32_zero()
+    }
+
+    #[inline(always)]
+    pub fn len(&self) -> u32 {
+        self.env()
+            .binary_len(self.0.to_tagged())
+            .try_into()
+            .unwrap()
+    }
+
+    #[inline(always)]
+    pub fn front(&self) -> u8 {
+        let res32: u32 = self
+            .env()
+            .binary_front(self.0.to_tagged())
+            .try_into()
+            .unwrap();
+        res32.try_into().unwrap()
+    }
+
+    #[inline(always)]
+    pub fn back(&self) -> u8 {
+        let res32: u32 = self
+            .env()
+            .binary_back(self.0.to_tagged())
+            .try_into()
+            .unwrap();
+        res32.try_into().unwrap()
+    }
+
+    #[inline(always)]
+    pub fn del(&mut self, i: u32) {
+        self.0 = self
+            .env()
+            .binary_del(self.0.to_tagged(), i.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    pub fn push(&mut self, x: u8) {
+        let x32: u32 = x.into();
+        self.0 = self
+            .env()
+            .binary_push(self.0.to_tagged(), x32.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    pub fn pop(&mut self) {
+        self.0 = self.env().binary_pop(self.0.to_tagged()).in_env(self.env());
+    }
+
+    #[inline(always)]
+    pub fn insert(&mut self, i: u32, x: u8) {
+        let x32: u32 = x.into();
+        self.0 = self
+            .env()
+            .binary_insert(self.0.to_tagged(), i.into(), x32.into())
+            .in_env(self.env());
+    }
+
+    #[inline(always)]
+    pub fn append(&mut self, other: &Binary) {
+        self.0 = self
+            .env()
+            .binary_append(self.0.to_tagged(), other.0.to_tagged())
+            .in_env(self.env());
     }
 
     #[must_use]
@@ -351,6 +322,14 @@ impl ExactSizeIterator for BinIter {
 #[repr(transparent)]
 pub struct ArrayBinary<const N: u32>(Binary);
 
+impl<const N: u32> Debug for ArrayBinary<N> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "ArrayBinary{{length = {}, ", N)?;
+        write!(f, "{:?}}}", self.0)?;
+        Ok(())
+    }
+}
+
 impl<const N: u32> Eq for ArrayBinary<N> {}
 
 impl<const N: u32> PartialEq for ArrayBinary<N> {
@@ -371,35 +350,27 @@ impl<const N: u32> Ord for ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> FixedLengthBinary for ArrayBinary<N> {
-    #[inline(always)]
-    fn put(&mut self, i: u32, v: u8) {
-        self.0.put(i, v);
+impl<const N: u32> Borrow<Binary> for ArrayBinary<N> {
+    fn borrow(&self) -> &Binary {
+        &self.0
     }
+}
 
-    #[inline(always)]
-    fn get(&self, i: u32) -> u8 {
-        self.0.get(i)
+impl<const N: u32> Borrow<Binary> for &ArrayBinary<N> {
+    fn borrow(&self) -> &Binary {
+        &self.0
     }
+}
 
-    #[inline(always)]
-    fn is_empty(&self) -> bool {
-        false
+impl<const N: u32> Borrow<Binary> for &mut ArrayBinary<N> {
+    fn borrow(&self) -> &Binary {
+        &self.0
     }
+}
 
-    #[inline(always)]
-    fn len(&self) -> u32 {
-        N
-    }
-
-    #[inline(always)]
-    fn front(&self) -> u8 {
-        self.0.front()
-    }
-
-    #[inline(always)]
-    fn back(&self) -> u8 {
-        self.0.back()
+impl<const N: u32> AsRef<Binary> for ArrayBinary<N> {
+    fn as_ref(&self) -> &Binary {
+        &self.0
     }
 }
 
@@ -507,15 +478,37 @@ impl<const N: u32> TryFrom<EnvType<ScVal>> for ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> Debug for ArrayBinary<N> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "ArrayBinary{{length = {}, ", N)?;
-        write!(f, "{:?}}}", self.0)?;
-        Ok(())
-    }
-}
-
 impl<const N: u32> ArrayBinary<N> {
+    #[inline(always)]
+    pub fn put(&mut self, i: u32, v: u8) {
+        self.0.put(i, v);
+    }
+
+    #[inline(always)]
+    pub fn get(&self, i: u32) -> u8 {
+        self.0.get(i)
+    }
+
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        false
+    }
+
+    #[inline(always)]
+    pub fn len(&self) -> u32 {
+        N
+    }
+
+    #[inline(always)]
+    pub fn front(&self) -> u8 {
+        self.0.front()
+    }
+
+    #[inline(always)]
+    pub fn back(&self) -> u8 {
+        self.0.back()
+    }
+
     pub fn iter(&self) -> BinIter {
         self.clone().into_iter()
     }
@@ -604,5 +597,28 @@ mod test {
         assert_eq!(iter.next_back(), Some(20));
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_array_binary_borrow() {
+        fn get_len(b: impl Borrow<Binary>) -> u32 {
+            let b: &Binary = b.borrow();
+            b.len()
+        }
+
+        let env = Env::default();
+        let mut bin = Binary::new(&env);
+        bin.push(10);
+        bin.push(20);
+        bin.push(30);
+        assert_eq!(bin.len(), 3);
+
+        let arr_bin: ArrayBinary<3> = bin.clone().try_into().unwrap();
+        assert_eq!(arr_bin.len(), 3);
+
+        assert_eq!(get_len(&bin), 3);
+        assert_eq!(get_len(bin), 3);
+        assert_eq!(get_len(&arr_bin), 3);
+        assert_eq!(get_len(arr_bin), 3);
     }
 }

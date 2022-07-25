@@ -44,10 +44,8 @@ pub mod iter;
 mod map;
 mod vec;
 pub use bigint::BigInt;
-// TODO: Remove FixedLengthBinary and VariableLengthBinary because they increase
-// the complexity of the API, when binaries should be the simplest most straight
-// forward thing to work with.
-pub use binary::{ArrayBinary, Binary, FixedLengthBinary, VariableLengthBinary};
+pub use binary::{ArrayBinary, Binary};
+pub use iter::{UncheckedEnumerable, UncheckedIter};
 pub use map::Map;
 pub use vec::Vec;
 

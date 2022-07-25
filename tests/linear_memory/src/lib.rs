@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, Binary, Env, FixedLengthBinary};
+use stellar_contract_sdk::{contractimpl, Binary, Env};
 
 pub struct Contract;
 
