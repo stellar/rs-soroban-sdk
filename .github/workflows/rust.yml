@@ -56,6 +56,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update
+    - if: matrix.sys.docs
+      run: rustup install nightly
     - run: rustup target add ${{ matrix.sys.target }}
     - run: cargo install --locked --version 0.5.14 cargo-hack
     - run: cargo check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --lib
