@@ -173,7 +173,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     pub fn from_array<const N: usize>(env: &Env, items: [(K, V); N]) -> Map<K, V> {
         let mut map = Map::<K, V>::new(env);
         for (k, v) in items {
-            map.insert(k, v);
+            map.set(k, v);
         }
         map
     }
@@ -209,7 +209,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn insert(&mut self, k: K, v: V) {
+    pub fn set(&mut self, k: K, v: V) {
         let env = self.env();
         let map = env.map_put(self.0.to_tagged(), k.into_val(env), v.into_val(env));
         self.0 = map.in_env(env);
@@ -407,26 +407,26 @@ mod test {
         assert_eq!(map![&env], Map::<i32, i32>::new(&env));
         assert_eq!(map![&env, (1, 10)], {
             let mut v = Map::new(&env);
-            v.insert(1, 10);
+            v.set(1, 10);
             v
         });
         assert_eq!(map![&env, (1, 10),], {
             let mut v = Map::new(&env);
-            v.insert(1, 10);
+            v.set(1, 10);
             v
         });
         assert_eq!(map![&env, (3, 30), (2, 20), (1, 10),], {
             let mut v = Map::new(&env);
-            v.insert(3, 30);
-            v.insert(2, 20);
-            v.insert(1, 10);
+            v.set(3, 30);
+            v.set(2, 20);
+            v.set(1, 10);
             v
         });
         assert_eq!(map![&env, (3, 30,), (2, 20,), (1, 10,),], {
             let mut v = Map::new(&env);
-            v.insert(3, 30);
-            v.insert(2, 20);
-            v.insert(1, 10);
+            v.set(3, 30);
+            v.set(2, 20);
+            v.set(1, 10);
             v
         });
     }
