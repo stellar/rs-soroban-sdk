@@ -220,7 +220,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn put(&mut self, i: u32, v: T) {
+    pub fn set(&mut self, i: u32, v: T) {
         let env = self.env();
         let vec = env.vec_put(self.0.to_tagged(), i.into(), v.into_val(env));
         self.0 = vec.in_env(env);
