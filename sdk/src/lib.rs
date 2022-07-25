@@ -48,4 +48,6 @@ pub use binary::{ArrayBinary, Binary};
 pub use map::Map;
 pub use vec::Vec;
 
+pub mod serde;
+
 pub mod testutils;

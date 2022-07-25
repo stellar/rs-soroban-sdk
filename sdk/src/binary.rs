@@ -8,7 +8,7 @@ use core::{
 
 use super::{
     env::internal::Env as _, env::EnvType, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    RawVal, RawValConvertible,
+    Object, RawVal, RawValConvertible,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -100,6 +100,20 @@ impl From<Binary> for EnvObj {
     }
 }
 
+impl From<Binary> for Object {
+    #[inline(always)]
+    fn from(v: Binary) -> Self {
+        v.0.val
+    }
+}
+
+impl From<&Binary> for Object {
+    #[inline(always)]
+    fn from(v: &Binary) -> Self {
+        v.0.val
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Binary> for ScVal {
     type Error = ConversionError;
@@ -130,7 +144,7 @@ impl TryFrom<EnvType<ScVal>> for Binary {
 
 impl Binary {
     #[inline(always)]
-    unsafe fn unchecked_new(obj: EnvObj) -> Self {
+    pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj)
     }
 
