@@ -70,12 +70,6 @@ impl Default for Env {
 }
 
 impl Env {
-    // TODO: Implement methods on Env that are intended for use by contract
-    // developers and that otherwise don't belong into an object like Vec, Map,
-    // BigInt, etc. If there is any host fn we expect a developer to use, it
-    // should be plumbed through this type with this type doing all RawVal
-    // conversion.
-
     pub fn call<T: TryFromVal<Env, RawVal>>(
         &self,
         contract_id: Binary,
