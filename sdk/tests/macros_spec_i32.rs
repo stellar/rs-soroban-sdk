@@ -1,3 +1,5 @@
+#![cfg(feature = "testutils")]
+
 use std::io::Cursor;
 
 use stellar_contract_sdk::{contractimpl, Env, IntoVal, TryFromVal};
@@ -17,7 +19,7 @@ fn test_functional() {
     let e = Env::default();
     let a = 10i32.into_val(&e);
     let b = 12i32.into_val(&e);
-    let c = __add(e.clone(), a, b);
+    let c = __add::call_raw(e.clone(), a, b);
     let c = i32::try_from_val(&e, c).unwrap();
     assert_eq!(c, 22);
 }

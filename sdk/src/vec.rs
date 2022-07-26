@@ -6,7 +6,7 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use crate::{UncheckedEnumerable, UncheckedIter};
+use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -18,7 +18,7 @@ macro_rules! vec {
     ($env:expr) => {
         $crate::Vec::new($env)
     };
-    ($env:expr, $($x:expr),+) => {
+    ($env:expr, $($x:expr),+ $(,)?) => {
         $crate::Vec::from_array($env, [$($x),+])
     };
 }
@@ -112,23 +112,38 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
-pub enum VecAccessError<T>
-where
-    T: IntoTryFromVal,
-{
-    Empty,
-    ConversionError(T::Error),
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
+
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFrom<&Vec<T>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
+        (&v.0).try_into().map_err(|_| ConversionError)
+    }
 }
 
-#[derive(Debug, Eq, PartialEq)]
-pub enum VecIndexedError<T>
-where
-    T: IntoTryFromVal,
-{
-    OutOfBounds,
-    Empty,
-    ConversionError(T::Error),
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFrom<Vec<T>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        let ev: EnvObj = v
+            .val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?;
+        ev.try_into()
+    }
 }
 
 impl<T: IntoTryFromVal> Vec<T> {
@@ -166,40 +181,40 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Result<T, VecIndexedError<T>> {
+    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
         if i < self.len() {
             let env = self.env();
             let val = env.vec_get(self.0.to_tagged(), i.into());
-            T::try_from_val(env, val).map_err(|e| VecIndexedError::ConversionError(e))
+            Some(T::try_from_val(env, val))
         } else {
-            Err(VecIndexedError::OutOfBounds)
+            None
         }
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> T
+    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error>
     where
         T::Error: Debug,
     {
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
-        T::try_from_val(env, val).unwrap()
+        T::try_from_val(env, val)
     }
 
     #[inline(always)]
-    pub fn put(&mut self, i: u32, v: T) {
+    pub fn set(&mut self, i: u32, v: T) {
         let env = self.env();
         let vec = env.vec_put(self.0.to_tagged(), i.into(), v.into_val(env));
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, i: u32) -> Result<(), VecIndexedError<T>> {
+    pub fn remove(&mut self, i: u32) -> Option<()> {
         if i < self.len() {
             self.remove_unchecked(i);
-            Ok(())
+            Some(())
         } else {
-            Err(VecIndexedError::OutOfBounds)
+            None
         }
     }
 
@@ -232,19 +247,16 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn pop_back(&mut self) -> Result<T, VecAccessError<T>> {
+    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
         let last = self.last()?;
         let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
         self.0 = vec.in_env(env);
-        Ok(last)
+        Some(last)
     }
 
     #[inline(always)]
-    pub fn pop_back_unchecked(&mut self) -> T
-    where
-        T::Error: Debug,
-    {
+    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
         let last = self.last_unchecked();
         let env = self.env();
         let vec = env.vec_pop(self.0.to_tagged());
@@ -253,13 +265,13 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn first(&self) -> Result<T, VecAccessError<T>> {
+    pub fn first(&self) -> Option<Result<T, T::Error>> {
         if self.is_empty() {
-            Err(VecAccessError::Empty)
+            None
         } else {
             let env = self.0.env();
             let val = env.vec_front(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecAccessError::ConversionError(e))
+            Some(T::try_from_val(env, val))
         }
     }
 
@@ -271,24 +283,21 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn last(&self) -> Result<T, VecAccessError<T>> {
+    pub fn last(&self) -> Option<Result<T, T::Error>> {
         if self.is_empty() {
-            Err(VecAccessError::Empty)
+            None
         } else {
             let env = self.env();
             let val = env.vec_back(self.0.to_tagged());
-            T::try_from_val(env, val).map_err(|e| VecAccessError::ConversionError(e))
+            Some(T::try_from_val(env, val))
         }
     }
 
     #[inline(always)]
-    pub fn last_unchecked(&self) -> T
-    where
-        T::Error: Debug,
-    {
+    pub fn last_unchecked(&self) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_back(self.0.to_tagged());
-        T::try_from_val(env, val).unwrap()
+        T::try_from_val(env, val)
     }
 
     #[inline(always)]
@@ -448,6 +457,29 @@ mod test {
     use super::*;
 
     #[test]
+    fn test_vec_macro() {
+        let env = Env::default();
+        assert_eq!(vec![&env], Vec::<i32>::new(&env));
+        assert_eq!(vec![&env, 1], {
+            let mut v = Vec::new(&env);
+            v.push(1);
+            v
+        });
+        assert_eq!(vec![&env, 1,], {
+            let mut v = Vec::new(&env);
+            v.push(1);
+            v
+        });
+        assert_eq!(vec![&env, 3, 2, 1,], {
+            let mut v = Vec::new(&env);
+            v.push(3);
+            v.push(2);
+            v.push(1);
+            v
+        });
+    }
+
+    #[test]
     fn test_vec_raw_val_type() {
         let env = Env::default();
 
@@ -473,7 +505,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_back_unchecked();
+        _ = vec_copy.pop_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -503,7 +535,7 @@ mod test {
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_back_unchecked();
+        _ = vec_copy.pop_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -601,5 +633,16 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    #[test]
+    fn test_scval_accessibility_from_udt_types() {
+        use crate::TryFromVal;
+        let env = Env::default();
+        let v = vec![&env, 1];
+        let val: ScVal = v.clone().try_into().unwrap();
+        let roundtrip = Vec::<i64>::try_from_val(&env, val).unwrap();
+        assert_eq!(v, roundtrip);
     }
 }

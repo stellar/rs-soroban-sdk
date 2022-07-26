@@ -18,52 +18,58 @@ pub mod ed25519 {
     use crate::xdr;
 
     #[derive(Debug)]
-    pub enum Error {
+    pub enum Error<E: std::error::Error> {
         XdrError(xdr::Error),
         Ed25519SignatureError(ed25519_dalek::SignatureError),
+        ConversionError(E),
     }
 
-    impl std::error::Error for Error {
+    impl<E: std::error::Error> std::error::Error for Error<E> {
         #[must_use]
         fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
             match self {
                 Self::XdrError(e) => e.source(),
                 Self::Ed25519SignatureError(e) => e.source(),
+                Self::ConversionError(e) => e.source(),
             }
         }
     }
 
-    impl std::fmt::Display for Error {
+    impl<E: std::error::Error> std::fmt::Display for Error<E> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
             match self {
                 Self::XdrError(e) => write!(f, "{}", e),
                 Self::Ed25519SignatureError(e) => write!(f, "{}", e),
+                Self::ConversionError(e) => write!(f, "{}", e),
             }
         }
     }
 
-    impl From<xdr::Error> for Error {
+    impl<E: std::error::Error> From<xdr::Error> for Error<E> {
         fn from(e: xdr::Error) -> Self {
             Error::XdrError(e)
         }
     }
 
-    impl From<ed25519_dalek::SignatureError> for Error {
+    impl<E: std::error::Error> From<ed25519_dalek::SignatureError> for Error<E> {
         fn from(e: ed25519_dalek::SignatureError) -> Self {
             Error::Ed25519SignatureError(e)
         }
     }
 
+    pub use super::Sign;
+
     impl<S, M> super::Sign<M> for S
     where
         S: ed25519_dalek::Signer<ed25519_dalek::Signature>,
-        M: Into<xdr::ScVal>,
+        M: TryInto<xdr::ScVal>,
+        <M as TryInto<xdr::ScVal>>::Error: std::error::Error,
     {
-        type Error = Error;
+        type Error = Error<<M as TryInto<xdr::ScVal>>::Error>;
         type Signature = [u8; 64];
         fn sign(&self, m: M) -> Result<Self::Signature, Self::Error> {
             let mut buf = Vec::<u8>::new();
-            let val: xdr::ScVal = m.into();
+            let val: xdr::ScVal = m.try_into().map_err(|e| Self::Error::ConversionError(e))?;
             val.write_xdr(&mut buf)?;
             Ok(self.try_sign(&buf)?.to_bytes())
         }
@@ -73,7 +79,7 @@ pub mod ed25519 {
     mod test {
         use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 
-        use crate::test_sign::Sign;
+        use super::Sign;
 
         #[test]
         fn sign() {

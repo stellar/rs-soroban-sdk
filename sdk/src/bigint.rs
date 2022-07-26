@@ -1,16 +1,44 @@
 use core::{
     cmp::Ordering,
+    fmt::{Debug, Display},
     ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
 };
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvBase, EnvObj, EnvVal,
-    RawVal, TryFromVal,
+    env::internal::Env as _, xdr::ScObjectType, Binary, ConversionError, Env, EnvBase, EnvObj,
+    EnvVal, RawVal, RawValConvertible, TryFromVal,
 };
 
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct BigInt(EnvObj);
+
+impl Debug for BigInt {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "BigInt(")?;
+        Display::fmt(&self, f)?;
+        write!(f, ")")?;
+        Ok(())
+    }
+}
+
+impl Display for BigInt {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        let env = self.env();
+        let bi = self.0.to_tagged();
+        let obj: EnvObj = env.bigint_to_radix_be(bi, 10u32.into()).in_env(env);
+        if let Ok(bin) = TryInto::<Binary>::try_into(obj) {
+            let sign = env.bigint_cmp(bi, env.bigint_from_u64(0));
+            if let -1 = unsafe { <i32 as RawValConvertible>::unchecked_from_val(sign) } {
+                write!(f, "-")?;
+            }
+            for x in bin.iter() {
+                write!(f, "{:?}", x)?;
+            }
+        }
+        Ok(())
+    }
+}
 
 impl TryFrom<EnvVal> for BigInt {
     type Error = ConversionError;
@@ -96,6 +124,40 @@ impl TryFrom<BigInt> for i32 {
         } else {
             Err(())
         }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<&BigInt> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: &BigInt) -> Result<Self, Self::Error> {
+        (&v.0).try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<BigInt> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: BigInt) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<EnvType<ScVal>> for BigInt {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        let ev: EnvObj = v
+            .val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?;
+        ev.try_into()
     }
 }
 
@@ -330,4 +392,15 @@ impl BigInt {
         let bits = env.bigint_bits(self.0.to_tagged());
         u32::try_from(bits).unwrap()
     }
+}
+
+#[test]
+fn test_bigint() {
+    let env = Env::default();
+    let bi0 = BigInt::from_u64(&env, 237834);
+    println!("{:?}; {}", bi0, bi0);
+    let bi1 = BigInt::from_i64(&env, -3748709);
+    println!("{:?}; {}", bi1, bi1);
+    let bi2 = BigInt::from_i64(&env, 0);
+    println!("{:?}; {}", bi2, bi2);
 }

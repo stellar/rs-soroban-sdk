@@ -1,7 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contract, contractimpl, Env};
-
-contract!();
+use stellar_contract_sdk::{contractimpl, Env};
 
 // There are two ways to export contract fns:
 
@@ -54,12 +52,12 @@ mod test {
 
 #[cfg(test)]
 mod test_via_val {
-    use super::{__add1, __add2};
+    use super::{__add1::call_raw as add1, __add2::call_raw as add2};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add_val() {
-        for f in [__add1, __add2] {
+        for f in [add1, add2] {
             let e = Env::default();
             let x = 10i64.into_val(&e);
             let y = 12i64.into_val(&e);

@@ -1,6 +1,6 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
-use crate::{UncheckedEnumerable, UncheckedIter};
+use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -12,7 +12,7 @@ macro_rules! map {
     ($env:expr) => {
         $crate::Map::new($env)
     };
-    ($env:expr, $(($k:expr, $v:expr)),+) => {
+    ($env:expr, $(($k:expr, $v:expr $(,)?)),+ $(,)?) => {
         $crate::Map::from_array($env, [$(($k, $v)),+])
     };
 }
@@ -109,13 +109,38 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
-pub enum MapLookupError<V>
-where
-    V: IntoTryFromVal,
-{
-    KeyNotFound,
-    ConversionError(V::Error),
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
+};
+
+#[cfg(not(target_family = "wasm"))]
+impl<K, V> TryFrom<&Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: &Map<K, V>) -> Result<Self, Self::Error> {
+        (&v.0).try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<K, V> TryFrom<Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: Map<K, V>) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Map<K, V> {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        let ev: EnvObj = v
+            .val
+            .try_into_env_val(&v.env)
+            .map_err(|_| ConversionError)?;
+        ev.try_into()
+    }
 }
 
 impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
@@ -139,7 +164,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     pub fn from_array<const N: usize>(env: &Env, items: [(K, V); N]) -> Map<K, V> {
         let mut map = Map::<K, V>::new(env);
         for (k, v) in items {
-            map.insert(k, v);
+            map.set(k, v);
         }
         map
     }
@@ -152,30 +177,27 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> Result<V, MapLookupError<V>> {
+    pub fn get(&self, k: K) -> Option<Result<V, V::Error>> {
         let env = self.env();
         let k = k.into_val(env);
         let has = env.map_has(self.0.to_tagged(), k);
         if has.is_true() {
             let v = env.map_get(self.0.to_tagged(), k);
-            V::try_from_val(env, v).map_err(|e| MapLookupError::ConversionError(e))
+            Some(V::try_from_val(env, v))
         } else {
-            Err(MapLookupError::KeyNotFound)
+            None
         }
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, k: K) -> V
-    where
-        V::Error: Debug,
-    {
+    pub fn get_unchecked(&self, k: K) -> Result<V, V::Error> {
         let env = self.env();
         let v = env.map_get(self.0.to_tagged(), k.into_val(env));
-        V::try_from_val(env, v).unwrap()
+        V::try_from_val(env, v)
     }
 
     #[inline(always)]
-    pub fn insert(&mut self, k: K, v: V) {
+    pub fn set(&mut self, k: K, v: V) {
         let env = self.env();
         let map = env.map_put(self.0.to_tagged(), k.into_val(env), v.into_val(env));
         self.0 = map.in_env(env);
@@ -368,6 +390,36 @@ mod test {
     use super::*;
 
     #[test]
+    fn test_map_macro() {
+        let env = Env::default();
+        assert_eq!(map![&env], Map::<i32, i32>::new(&env));
+        assert_eq!(map![&env, (1, 10)], {
+            let mut v = Map::new(&env);
+            v.set(1, 10);
+            v
+        });
+        assert_eq!(map![&env, (1, 10),], {
+            let mut v = Map::new(&env);
+            v.set(1, 10);
+            v
+        });
+        assert_eq!(map![&env, (3, 30), (2, 20), (1, 10),], {
+            let mut v = Map::new(&env);
+            v.set(3, 30);
+            v.set(2, 20);
+            v.set(1, 10);
+            v
+        });
+        assert_eq!(map![&env, (3, 30,), (2, 20,), (1, 10,),], {
+            let mut v = Map::new(&env);
+            v.set(3, 30);
+            v.set(2, 20);
+            v.set(1, 10);
+            v
+        });
+    }
+
+    #[test]
     fn test_empty() {
         let env = Env::default();
 
@@ -381,9 +433,9 @@ mod test {
 
         let map: Map<u32, bool> = map![&env, (1, true), (2, false)];
         assert_eq!(map.len(), 2);
-        assert_eq!(map.get(1), Ok(true));
-        assert_eq!(map.get(2), Ok(false));
-        assert_eq!(map.get(3), Err(MapLookupError::KeyNotFound));
+        assert_eq!(map.get(1), Some(Ok(true)));
+        assert_eq!(map.get(2), Some(Ok(false)));
+        assert_eq!(map.get(3), None);
     }
 
     #[test]
