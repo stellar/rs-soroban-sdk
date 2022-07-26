@@ -48,7 +48,7 @@ pub type EnvObj = internal::EnvVal<Env, Object>;
 pub trait IntoTryFromVal: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
-use crate::binary::{ArrayBinary, Binary};
+use crate::binary::{Binary, FixedBinary};
 
 #[derive(Clone)]
 pub struct Env {
@@ -85,14 +85,14 @@ impl Env {
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
 
-    pub fn get_current_contract(&self) -> ArrayBinary<32> {
+    pub fn get_current_contract(&self) -> FixedBinary<32> {
         internal::Env::get_current_contract(self)
             .in_env(self)
             .try_into()
             .unwrap()
     }
 
-    pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
+    pub fn get_invoking_contract(&self) -> FixedBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Binary::try_from_val(self, rv).unwrap();
         bin.try_into().unwrap()
@@ -167,7 +167,7 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) -> ArrayBinary<32> {
+    pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) -> FixedBinary<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
