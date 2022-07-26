@@ -1,7 +1,5 @@
-use stellar_contract_env_host::RawVal;
-
 use crate::{
-    env::internal::{Env as _, RawValConvertible, TagObject, TaggedVal},
+    env::internal::{Env as _, RawVal, RawValConvertible, TagObject, TaggedVal},
     Env, FixedBinary,
 };
 
