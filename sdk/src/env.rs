@@ -277,7 +277,11 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn invoke_contract_external(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
+    pub fn invoke_contract_external(
+        &mut self,
+        hf: xdr::HostFunction,
+        args: xdr::ScVec,
+    ) -> xdr::ScVal {
         self.env_impl.invoke_function(hf, args).unwrap()
     }
 
