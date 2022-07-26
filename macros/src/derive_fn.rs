@@ -77,7 +77,6 @@ pub fn derive_fn(
                         #ident
                     ).unwrap()
                 };
-                let pat_ty = &pat_type.ty;
                 let invoke_arg = FnArg::Typed(PatType {
                     attrs: vec![],
                     pat: Box::new(Pat::Ident(PatIdent {
@@ -88,7 +87,7 @@ pub fn derive_fn(
                         subpat: None,
                     })),
                     colon_token: Colon::default(),
-                    ty: Box::new(Type::Verbatim(quote! { super::#pat_ty })),
+                    ty: pat_type.ty.clone(),
                 });
                 let invoke_call = quote! { #ident };
                 (spec, arg, call, invoke_arg, invoke_call)
@@ -160,6 +159,8 @@ pub fn derive_fn(
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
         pub mod #mod_ident {
+            use super::*;
+
             #export_name
             pub fn call_raw(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
                 #use_trait;
