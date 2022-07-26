@@ -23,7 +23,9 @@ pub mod xdr {
     pub use super::env::xdr::HostFunction;
 
     // XDR generic types and traits.
-    pub use super::env::xdr::{Error, ReadXdr, ReadXdrIter, Validate, VecM, WriteXdr};
+    #[cfg(not(target_family = "wasm"))]
+    pub use super::env::xdr::ReadXdrIter;
+    pub use super::env::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
 
     // XDR contract specific types.
     pub use super::env::xdr::{
