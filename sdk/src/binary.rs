@@ -175,7 +175,7 @@ impl Binary {
 
     #[inline(always)]
     pub fn set(&mut self, i: usize, v: u8) {
-        let i: u32 = v.try_into().unwrap();
+        let i: u32 = i.try_into().unwrap();
         let v32: u32 = v.into();
         self.0 = self
             .env()
@@ -705,7 +705,7 @@ mod test {
 
     #[test]
     fn test_array_binary_borrow() {
-        fn get_len(b: impl Borrow<Binary>) -> u32 {
+        fn get_len(b: impl Borrow<Binary>) -> usize {
             let b: &Binary = b.borrow();
             b.len()
         }
