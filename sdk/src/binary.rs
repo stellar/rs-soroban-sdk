@@ -407,9 +407,9 @@ impl ExactSizeIterator for BinIter {
 
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct FixedBinary<const N: u32>(Binary);
+pub struct FixedBinary<const N: usize>(Binary);
 
-impl<const N: u32> Debug for FixedBinary<N> {
+impl<const N: usize> Debug for FixedBinary<N> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "ArrayBinary{{length = {}, ", N)?;
         write!(f, "{:?}}}", self.0)?;
@@ -417,70 +417,61 @@ impl<const N: u32> Debug for FixedBinary<N> {
     }
 }
 
-impl<const N: u32> Eq for FixedBinary<N> {}
+impl<const N: usize> Eq for FixedBinary<N> {}
 
-impl<const N: u32> PartialEq for FixedBinary<N> {
+impl<const N: usize> PartialEq for FixedBinary<N> {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<const N: u32> PartialOrd for FixedBinary<N> {
+impl<const N: usize> PartialOrd for FixedBinary<N> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<const N: u32> Ord for FixedBinary<N> {
+impl<const N: usize> Ord for FixedBinary<N> {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.0.cmp(&other.0)
     }
 }
 
-impl<const N: u32> Borrow<Binary> for FixedBinary<N> {
+impl<const N: usize> Borrow<Binary> for FixedBinary<N> {
     fn borrow(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: u32> Borrow<Binary> for &FixedBinary<N> {
+impl<const N: usize> Borrow<Binary> for &FixedBinary<N> {
     fn borrow(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: u32> Borrow<Binary> for &mut FixedBinary<N> {
+impl<const N: usize> Borrow<Binary> for &mut FixedBinary<N> {
     fn borrow(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: u32> AsRef<Binary> for FixedBinary<N> {
+impl<const N: usize> AsRef<Binary> for FixedBinary<N> {
     fn as_ref(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: usize, const M: u32> TryFrom<EnvType<[u8; N]>> for FixedBinary<M> {
-    type Error = ConversionError;
-
-    fn try_from(ev: EnvType<[u8; N]>) -> Result<Self, Self::Error> {
-        // TODO: Reconsider u32 as the length type of ArrayBinary (and other
-        // types like Vec too). The size cannot be guaranteed at compile time
-        // because of the usize / u32 type difference of the size of arrays and
-        // the const generic on the type.
-        if M as usize != N {
-            return Err(ConversionError);
-        }
+impl<const N: usize> From<EnvType<[u8; N]>> for FixedBinary<N> {
+    fn from(ev: EnvType<[u8; N]>) -> Self {
         let mut bin = Binary::new(&ev.env);
         for b in ev.val {
             bin.push(b);
         }
-        bin.try_into()
+        FixedBinary(bin)
     }
 }
 
-impl<const N: u32> TryFrom<EnvVal> for FixedBinary<N> {
+impl<const N: usize> TryFrom<EnvVal> for FixedBinary<N> {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -490,7 +481,7 @@ impl<const N: u32> TryFrom<EnvVal> for FixedBinary<N> {
     }
 }
 
-impl<const N: u32> TryFrom<EnvObj> for FixedBinary<N> {
+impl<const N: usize> TryFrom<EnvObj> for FixedBinary<N> {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -500,12 +491,12 @@ impl<const N: u32> TryFrom<EnvObj> for FixedBinary<N> {
     }
 }
 
-impl<const N: u32> TryFrom<Binary> for FixedBinary<N> {
+impl<const N: usize> TryFrom<Binary> for FixedBinary<N> {
     type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(bin: Binary) -> Result<Self, Self::Error> {
-        if bin.len() == N {
+        if bin.len() == { N as u32 } {
             Ok(Self(bin))
         } else {
             Err(ConversionError {})
@@ -513,28 +504,28 @@ impl<const N: u32> TryFrom<Binary> for FixedBinary<N> {
     }
 }
 
-impl<const N: u32> From<FixedBinary<N>> for RawVal {
+impl<const N: usize> From<FixedBinary<N>> for RawVal {
     #[inline(always)]
     fn from(v: FixedBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<FixedBinary<N>> for EnvVal {
+impl<const N: usize> From<FixedBinary<N>> for EnvVal {
     #[inline(always)]
     fn from(v: FixedBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<FixedBinary<N>> for EnvObj {
+impl<const N: usize> From<FixedBinary<N>> for EnvObj {
     #[inline(always)]
     fn from(v: FixedBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<FixedBinary<N>> for Binary {
+impl<const N: usize> From<FixedBinary<N>> for Binary {
     #[inline(always)]
     fn from(v: FixedBinary<N>) -> Self {
         v.0
@@ -542,7 +533,7 @@ impl<const N: u32> From<FixedBinary<N>> for Binary {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: u32> TryFrom<&FixedBinary<N>> for ScVal {
+impl<const N: usize> TryFrom<&FixedBinary<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &FixedBinary<N>) -> Result<Self, Self::Error> {
         (&v.0).try_into().map_err(|_| ConversionError)
@@ -550,7 +541,7 @@ impl<const N: u32> TryFrom<&FixedBinary<N>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: u32> TryFrom<FixedBinary<N>> for ScVal {
+impl<const N: usize> TryFrom<FixedBinary<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: FixedBinary<N>) -> Result<Self, Self::Error> {
         (&v).try_into()
@@ -558,14 +549,14 @@ impl<const N: u32> TryFrom<FixedBinary<N>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: u32> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
+impl<const N: usize> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
         v.try_into()
     }
 }
 
-impl<const N: u32> FixedBinary<N> {
+impl<const N: usize> FixedBinary<N> {
     #[inline(always)]
     pub fn from_array<const M: usize>(env: &Env, items: [u8; M]) -> FixedBinary<N> {
         Binary::from_array(env, items).try_into().unwrap()
@@ -593,7 +584,7 @@ impl<const N: u32> FixedBinary<N> {
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        N
+        N as u32
     }
 
     #[inline(always)]
@@ -621,7 +612,7 @@ impl<const N: u32> FixedBinary<N> {
     }
 }
 
-impl<const N: u32> IntoIterator for FixedBinary<N> {
+impl<const N: usize> IntoIterator for FixedBinary<N> {
     type Item = u8;
 
     type IntoIter = BinIter;
