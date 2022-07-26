@@ -1,3 +1,4 @@
+#![allow(clippy::cast_possible_truncation)]
 #![no_std]
 use stellar_contract_sdk::{contractimpl, Binary, Env};
 

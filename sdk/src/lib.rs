@@ -9,6 +9,8 @@
 #[cfg(target_family = "wasm")]
 use stellar_contract_env_panic_handler_wasm32_unreachable as _;
 
+mod u32usize;
+
 #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
 static ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 

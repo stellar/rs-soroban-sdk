@@ -6,7 +6,10 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use crate::iter::{UncheckedEnumerable, UncheckedIter};
+use crate::{
+    iter::{UncheckedEnumerable, UncheckedIter},
+    u32usize::{u32_to_usize, usize_to_u32},
+};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -182,9 +185,9 @@ impl<T: IntoTryFromVal> Vec<T> {
 
     #[inline(always)]
     pub fn get(&self, i: usize) -> Option<Result<T, T::Error>> {
-        let i: u32 = i.try_into().ok()?;
-        if (i as usize) < self.len() {
+        if i < self.len() {
             let env = self.env();
+            let i: u32 = usize_to_u32(i)?;
             let val = env.vec_get(self.0.to_tagged(), i.into());
             Some(T::try_from_val(env, val))
         } else {
@@ -197,7 +200,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     where
         T::Error: Debug,
     {
-        let i: u32 = i.try_into().unwrap();
+        let i: u32 = usize_to_u32(i).expect("expected i to be <= u32::MAX");
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
         T::try_from_val(env, val)
@@ -205,7 +208,7 @@ impl<T: IntoTryFromVal> Vec<T> {
 
     #[inline(always)]
     pub fn set(&mut self, i: usize, v: T) {
-        let i: u32 = i.try_into().unwrap();
+        let i: u32 = usize_to_u32(i).expect("expected i to be <= u32::MAX");
         let env = self.env();
         let vec = env.vec_put(self.0.to_tagged(), i.into(), v.into_val(env));
         self.0 = vec.in_env(env);
@@ -240,7 +243,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     pub fn len(&self) -> usize {
         let env = self.env();
         let val = env.vec_len(self.0.to_tagged());
-        u32::try_from(val).unwrap() as usize
+        u32_to_usize(u32::try_from(val).unwrap())
     }
 
     #[inline(always)]

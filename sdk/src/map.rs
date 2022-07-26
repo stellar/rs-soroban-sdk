@@ -1,6 +1,9 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
-use crate::iter::{UncheckedEnumerable, UncheckedIter};
+use crate::{
+    iter::{UncheckedEnumerable, UncheckedIter},
+    u32usize::u32_to_usize,
+};
 
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
@@ -235,7 +238,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     pub fn len(&self) -> usize {
         let env = self.env();
         let len = env.map_len(self.0.to_tagged());
-        u32::try_from_val(env, len).unwrap() as usize
+        u32_to_usize(u32::try_from_val(env, len).unwrap())
     }
 
     #[inline(always)]
@@ -381,7 +384,7 @@ where
     V: IntoTryFromVal,
 {
     fn len(&self) -> usize {
-        self.0.len() as usize
+        self.0.len()
     }
 }
 

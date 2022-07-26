@@ -1,6 +1,6 @@
 all: check build test
 
-export RUSTFLAGS=-Dwarnings
+export RUSTFLAGS=-Dwarnings -A clippy::all -D clippy::cast_possible_truncation -D clippy::cast_possible_wrap -D clippy::cast_precision_loss -D clippy::cast_sign_loss
 
 doc:
 	cargo +nightly doc --open --no-deps \
@@ -27,7 +27,7 @@ build:
 		done
 
 check: fmt
-	cargo hack --feature-powerset --exclude-features docs check --all-targets
+	cargo hack --feature-powerset --exclude-features docs clippy --all-targets
 	cargo check --release --target wasm32-unknown-unknown
 
 watch:

@@ -6,6 +6,8 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
+use crate::u32usize::u32_to_usize;
+
 use super::{
     env::internal::Env as _, env::EnvType, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
     Object, RawVal, RawValConvertible,
@@ -212,7 +214,7 @@ impl Binary {
     pub fn len(&self) -> usize {
         let env = self.env();
         let val = env.binary_len(self.0.to_tagged());
-        u32::try_from(val).unwrap() as usize
+        u32_to_usize(u32::try_from(val).unwrap())
     }
 
     #[inline(always)]
@@ -378,6 +380,7 @@ impl Iterator for BinIter {
         } else {
             let val = self.0.env().binary_front(self.0 .0.to_object());
             self.0 = self.0.slice(1..);
+            #[allow(clippy::cast_possible_truncation)]
             let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
         }
@@ -397,6 +400,7 @@ impl DoubleEndedIterator for BinIter {
         } else {
             let val = self.0.env().binary_back(self.0 .0.to_object());
             self.0 = self.0.slice(..len - 1);
+            #[allow(clippy::cast_possible_truncation)]
             let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
         }
