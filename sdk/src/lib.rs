@@ -32,9 +32,7 @@ pub use env::TryIntoVal;
 #[doc(hidden)]
 mod envhidden {
     pub use super::env::EnvType;
-    pub use super::env::IntoEnvVal;
     pub use super::env::Object;
-    pub use super::env::TryIntoEnvVal;
 }
 pub use envhidden::*;
 

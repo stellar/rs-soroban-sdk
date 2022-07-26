@@ -2,7 +2,7 @@
 
 use std::io::Cursor;
 
-use stellar_contract_sdk::{contractimpl, contracttype, Env, IntoEnvVal, IntoVal, TryFromVal};
+use stellar_contract_sdk::{contractimpl, contracttype, Env, IntoVal, TryFromVal};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple, ScSpecTypeUdt,
 };

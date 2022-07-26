@@ -116,7 +116,7 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
 
 #[cfg(not(target_family = "wasm"))]
 use super::{
-    env::{EnvType, TryIntoEnvVal},
+    env::{EnvType, Object, TryIntoVal},
     xdr::ScVal,
 };
 
@@ -140,11 +140,8 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let ev: EnvObj = v
-            .val
-            .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?;
-        ev.try_into()
+        let o: Object = v.val.try_into_val(&v.env).map_err(|_| ConversionError)?;
+        EnvObj { val: o, env: v.env }.try_into()
     }
 }
 

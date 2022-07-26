@@ -14,7 +14,7 @@ use super::{
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{env::TryIntoEnvVal, xdr::ScVal};
+use super::{env::TryIntoVal, xdr::ScVal};
 
 #[macro_export]
 macro_rules! bin {
@@ -146,11 +146,14 @@ impl TryFrom<Binary> for ScVal {
 impl TryFrom<EnvType<ScVal>> for Binary {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let ev: EnvObj = v
-            .val
-            .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?;
-        ev.try_into()
+        let o: Object = v.val.try_into_val(&v.env).map_err(|_| ConversionError)?;
+        EnvObj { val: o, env: v.env }.try_into()
+    }
+}
+
+impl From<EnvType<&str>> for Binary {
+    fn from(ev: EnvType<&str>) -> Self {
+        Binary::from_slice(&ev.env, ev.val.as_bytes())
     }
 }
 

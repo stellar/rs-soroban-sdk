@@ -131,7 +131,7 @@ impl TryFrom<BigInt> for i32 {
 
 #[cfg(not(target_family = "wasm"))]
 use super::{
-    env::{EnvType, TryIntoEnvVal},
+    env::{EnvType, Object, TryIntoVal},
     xdr::ScVal,
 };
 
@@ -155,11 +155,8 @@ impl TryFrom<BigInt> for ScVal {
 impl TryFrom<EnvType<ScVal>> for BigInt {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let ev: EnvObj = v
-            .val
-            .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?;
-        ev.try_into()
+        let o: Object = v.val.try_into_val(&v.env).map_err(|_| ConversionError)?;
+        EnvObj { val: o, env: v.env }.try_into()
     }
 }
 
