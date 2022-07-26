@@ -23,23 +23,8 @@ pub mod internal {
     }
 }
 
-pub mod xdr {
-    #[cfg(not(target_family = "wasm"))]
-    pub use super::internal::xdr::ReadXdrIter;
-    pub use super::internal::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
-    pub use super::internal::xdr::{
-        ScBigInt, ScEnvMetaEntry, ScEnvMetaKind, ScHash, ScHashType, ScHostContextErrorCode,
-        ScHostFnErrorCode, ScHostObjErrorCode, ScHostStorageErrorCode, ScHostValErrorCode, ScMap,
-        ScMapEntry, ScNumSign, ScObject, ScObjectType, ScSpecEntry, ScSpecEntryKind,
-        ScSpecFunctionV0, ScSpecType, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption,
-        ScSpecTypeResult, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
-        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0,
-        ScStatic, ScStatus, ScStatusType, ScSymbol, ScUnknownErrorCode, ScVal, ScValType, ScVec,
-        ScVmErrorCode,
-    };
-}
-
 pub use internal::meta;
+pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
@@ -245,9 +230,8 @@ impl Env {
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
             fn get(
                 &self,
-                _key: &internal::xdr::LedgerKey,
-            ) -> Result<internal::xdr::LedgerEntry, stellar_contract_env_host::HostError>
-            {
+                _key: &xdr::LedgerKey,
+            ) -> Result<xdr::LedgerEntry, stellar_contract_env_host::HostError> {
                 use xdr::{ScHostStorageErrorCode, ScStatus};
                 let status: internal::Status =
                     ScStatus::HostStorageError(ScHostStorageErrorCode::UnknownError).into();
@@ -256,7 +240,7 @@ impl Env {
 
             fn has(
                 &self,
-                _key: &internal::xdr::LedgerKey,
+                _key: &xdr::LedgerKey,
             ) -> Result<bool, stellar_contract_env_host::HostError> {
                 Ok(false)
             }
@@ -292,11 +276,7 @@ impl Env {
             .unwrap();
     }
 
-    pub fn invoke_contract(
-        &mut self,
-        hf: internal::xdr::HostFunction,
-        args: xdr::ScVec,
-    ) -> xdr::ScVal {
+    pub fn invoke_contract(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
         self.env_impl.invoke_function(hf, args).unwrap()
     }
 
