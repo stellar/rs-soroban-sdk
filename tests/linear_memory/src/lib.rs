@@ -23,7 +23,7 @@ impl Contract {
         let lm_pos: u32 = unsafe { buf.as_ptr().add(buf_off as usize) as u32 };
         e.binary_copy_to_linear_memory(b.clone(), b_pos, lm_pos, len);
         for idx in lm_pos..buf.len() as u32 {
-            assert!(buf[idx as usize] == b.get_unchecked(b_pos + idx));
+            assert!(buf[idx as usize] == b.get_unchecked((b_pos + idx) as usize));
         }
     }
 }
