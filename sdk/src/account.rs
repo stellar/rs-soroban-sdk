@@ -1,9 +1,134 @@
+use core::{borrow::Borrow, cmp::Ordering, fmt::Debug};
+
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible, TagObject, TaggedVal},
-    Env, FixedBinary,
+    env::EnvObj,
+    Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary,
 };
 
+#[derive(Clone)]
 pub struct Account(FixedBinary<32>);
+
+impl Debug for Account {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Account(")?;
+        Debug::fmt(&self.0, f)?;
+        write!(f, ")")?;
+        Ok(())
+    }
+}
+
+impl Eq for Account {}
+
+impl PartialEq for Account {
+    fn eq(&self, other: &Self) -> bool {
+        self.partial_cmp(other) == Some(Ordering::Equal)
+    }
+}
+
+impl PartialOrd for Account {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(Ord::cmp(self, other))
+    }
+}
+
+impl Ord for Account {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        let env = self.env();
+        let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
+        let i = i32::try_from(v).unwrap();
+        i.cmp(&0)
+    }
+}
+
+impl Borrow<Binary> for Account {
+    fn borrow(&self) -> &Binary {
+        self.0.borrow()
+    }
+}
+
+impl Borrow<Binary> for &Account {
+    fn borrow(&self) -> &Binary {
+        self.0.borrow()
+    }
+}
+
+impl Borrow<Binary> for &mut Account {
+    fn borrow(&self) -> &Binary {
+        self.0.borrow()
+    }
+}
+
+impl Borrow<FixedBinary<32>> for Account {
+    fn borrow(&self) -> &FixedBinary<32> {
+        self.0.borrow()
+    }
+}
+
+impl Borrow<FixedBinary<32>> for &Account {
+    fn borrow(&self) -> &FixedBinary<32> {
+        self.0.borrow()
+    }
+}
+
+impl Borrow<FixedBinary<32>> for &mut Account {
+    fn borrow(&self) -> &FixedBinary<32> {
+        self.0.borrow()
+    }
+}
+
+impl AsRef<Binary> for Account {
+    fn as_ref(&self) -> &Binary {
+        self.0.as_ref()
+    }
+}
+
+impl AsRef<FixedBinary<32>> for Account {
+    fn as_ref(&self) -> &FixedBinary<32> {
+        &self.0
+    }
+}
+
+impl From<EnvType<[u8; 32]>> for Account {
+    fn from(ev: EnvType<[u8; 32]>) -> Self {
+        Account(<_ as From<EnvType<[u8; 32]>>>::from(ev))
+    }
+}
+
+impl TryFrom<EnvVal> for Account {
+    type Error = ConversionError;
+
+    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
+        let obj: EnvObj = ev.clone().try_into()?;
+        obj.try_into()
+    }
+}
+
+impl TryFrom<EnvObj> for Account {
+    type Error = ConversionError;
+
+    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
+        Ok(Account(obj.try_into()?))
+    }
+}
+
+impl From<Account> for RawVal {
+    fn from(a: Account) -> Self {
+        a.0.into()
+    }
+}
+
+impl From<Account> for EnvVal {
+    fn from(a: Account) -> Self {
+        a.0.into()
+    }
+}
+
+impl From<Account> for EnvObj {
+    fn from(a: Account) -> Self {
+        a.0.into()
+    }
+}
 
 impl Account {
     pub(crate) fn env(&self) -> &Env {
