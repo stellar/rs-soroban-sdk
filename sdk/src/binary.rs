@@ -6,6 +6,8 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
+use stellar_contract_env_host::{TagObject, TaggedVal};
+
 use super::{
     env::internal::{Env as _, RawValConvertible},
     env::{EnvObj, EnvType},
@@ -161,8 +163,24 @@ impl Binary {
     }
 
     #[inline(always)]
-    fn env(&self) -> &Env {
+    pub(crate) fn env(&self) -> &Env {
         self.0.env()
+    }
+
+    pub(crate) fn as_raw(&self) -> &RawVal {
+        self.0.as_raw()
+    }
+
+    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
+        self.0.as_tagged()
+    }
+
+    pub(crate) fn to_raw(&self) -> RawVal {
+        self.0.to_raw()
+    }
+
+    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
+        self.0.to_tagged()
     }
 
     #[inline(always)]
@@ -567,6 +585,26 @@ impl<const N: usize> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
 }
 
 impl<const N: usize> FixedBinary<N> {
+    pub(crate) fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub(crate) fn as_raw(&self) -> &RawVal {
+        self.0.as_raw()
+    }
+
+    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
+        self.0.as_tagged()
+    }
+
+    pub(crate) fn to_raw(&self) -> RawVal {
+        self.0.to_raw()
+    }
+
+    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
+        self.0.to_tagged()
+    }
+
     #[inline(always)]
     pub fn from_array(env: &Env, items: [u8; N]) -> FixedBinary<N> {
         let mut bin = Binary::new(env);
