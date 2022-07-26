@@ -53,7 +53,7 @@ impl Account {
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 
-    pub fn signer_weight(&self, signer: FixedBinary<32>) -> u32 {
+    pub fn signer_weight(&self, signer: &FixedBinary<32>) -> u32 {
         let env = self.env();
         let val = env.account_get_signer_weight(self.to_tagged(), signer.to_tagged());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
