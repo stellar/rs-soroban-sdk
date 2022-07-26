@@ -1,9 +1,9 @@
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible, TagObject, TaggedVal},
-    Binary, Env, FixedBinary,
+    Env, FixedBinary,
 };
 
-pub struct Account(Binary);
+pub struct Account(FixedBinary<32>);
 
 impl Account {
     pub(crate) fn env(&self) -> &Env {
@@ -26,7 +26,7 @@ impl Account {
         self.0.to_tagged()
     }
 
-    pub fn from_public_key(public_key: &Binary) -> Result<Account, ()> {
+    pub fn from_public_key(public_key: &FixedBinary<32>) -> Result<Account, ()> {
         let acc = Account(public_key.clone());
         // TODO: Fail when account doesn't exist. In the meantime cause a trap
         // at this point by trying to get some information about the account
