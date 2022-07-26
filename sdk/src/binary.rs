@@ -174,7 +174,8 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn set(&mut self, i: u32, v: u8) {
+    pub fn set(&mut self, i: usize, v: u8) {
+        let i: u32 = v.try_into().unwrap();
         let v32: u32 = v.into();
         self.0 = self
             .env()
@@ -183,7 +184,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Option<u8> {
+    pub fn get(&self, i: usize) -> Option<u8> {
         if i < self.len() {
             Some(self.get_unchecked(i))
         } else {
@@ -192,7 +193,8 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> u8 {
+    pub fn get_unchecked(&self, i: usize) -> u8 {
+        let i: u32 = i.try_into().unwrap();
         let res32: u32 = self
             .env()
             .binary_get(self.0.to_tagged(), i.into())
@@ -207,11 +209,10 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn len(&self) -> u32 {
-        self.env()
-            .binary_len(self.0.to_tagged())
-            .try_into()
-            .unwrap()
+    pub fn len(&self) -> usize {
+        let env = self.env();
+        let val = env.binary_len(self.0.to_tagged());
+        u32::try_from(val).unwrap() as usize
     }
 
     #[inline(always)]
@@ -253,7 +254,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, i: u32) -> Option<()> {
+    pub fn remove(&mut self, i: usize) -> Option<()> {
         if i < self.len() {
             self.remove_unchecked(i);
             Some(())
@@ -263,7 +264,8 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn remove_unchecked(&mut self, i: u32) {
+    pub fn remove_unchecked(&mut self, i: usize) {
+        let i: u32 = i.try_into().unwrap();
         let env = self.env();
         let bin = env.binary_del(self.0.to_tagged(), i.into());
         self.0 = bin.in_env(env);
@@ -324,17 +326,21 @@ impl Binary {
     }
 
     #[must_use]
-    pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
-        let start_bound = match r.start_bound() {
+    pub fn slice(&self, r: impl RangeBounds<usize>) -> Self {
+        let start_bound: u32 = match r.start_bound() {
             Bound::Included(s) => *s,
             Bound::Excluded(s) => *s + 1,
             Bound::Unbounded => 0,
-        };
-        let end_bound = match r.end_bound() {
+        }
+        .try_into()
+        .unwrap();
+        let end_bound: u32 = match r.end_bound() {
             Bound::Included(s) => *s + 1,
             Bound::Excluded(s) => *s,
             Bound::Unbounded => self.len(),
-        };
+        }
+        .try_into()
+        .unwrap();
         let env = self.env();
         let bin = env.binary_slice(self.0.to_tagged(), start_bound.into(), end_bound.into());
         unsafe { Self::unchecked_new(bin.in_env(env)) }
@@ -378,7 +384,7 @@ impl Iterator for BinIter {
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
+        let len = self.0.len();
         (len, Some(len))
     }
 }
@@ -401,7 +407,7 @@ impl FusedIterator for BinIter {}
 
 impl ExactSizeIterator for BinIter {
     fn len(&self) -> usize {
-        self.0.len() as usize
+        self.0.len()
     }
 }
 

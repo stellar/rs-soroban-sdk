@@ -181,8 +181,9 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
-        if i < self.len() {
+    pub fn get(&self, i: usize) -> Option<Result<T, T::Error>> {
+        let i: u32 = i.try_into().ok()?;
+        if (i as usize) < self.len() {
             let env = self.env();
             let val = env.vec_get(self.0.to_tagged(), i.into());
             Some(T::try_from_val(env, val))
@@ -192,24 +193,26 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error>
+    pub fn get_unchecked(&self, i: usize) -> Result<T, T::Error>
     where
         T::Error: Debug,
     {
+        let i: u32 = i.try_into().unwrap();
         let env = self.env();
         let val = env.vec_get(self.0.to_tagged(), i.into());
         T::try_from_val(env, val)
     }
 
     #[inline(always)]
-    pub fn set(&mut self, i: u32, v: T) {
+    pub fn set(&mut self, i: usize, v: T) {
+        let i: u32 = i.try_into().unwrap();
         let env = self.env();
         let vec = env.vec_put(self.0.to_tagged(), i.into(), v.into_val(env));
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
-    pub fn remove(&mut self, i: u32) -> Option<()> {
+    pub fn remove(&mut self, i: usize) -> Option<()> {
         if i < self.len() {
             self.remove_unchecked(i);
             Some(())
@@ -219,7 +222,8 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn remove_unchecked(&mut self, i: u32) {
+    pub fn remove_unchecked(&mut self, i: usize) {
+        let i: u32 = i.try_into().unwrap();
         let env = self.env();
         let vec = env.vec_del(self.0.to_tagged(), i.into());
         self.0 = vec.in_env(env);
@@ -233,10 +237,10 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[inline(always)]
-    pub fn len(&self) -> u32 {
+    pub fn len(&self) -> usize {
         let env = self.env();
         let val = env.vec_len(self.0.to_tagged());
-        u32::try_from(val).unwrap()
+        u32::try_from(val).unwrap() as usize
     }
 
     #[inline(always)]
@@ -332,17 +336,21 @@ impl<T: IntoTryFromVal> Vec<T> {
     }
 
     #[must_use]
-    pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
-        let start_bound = match r.start_bound() {
+    pub fn slice(&self, r: impl RangeBounds<usize>) -> Self {
+        let start_bound: u32 = match r.start_bound() {
             Bound::Included(s) => *s,
             Bound::Excluded(s) => *s + 1,
             Bound::Unbounded => 0,
-        };
-        let end_bound = match r.end_bound() {
+        }
+        .try_into()
+        .unwrap();
+        let end_bound: u32 = match r.end_bound() {
             Bound::Included(s) => *s + 1,
             Bound::Excluded(s) => *s,
             Bound::Unbounded => self.len(),
-        };
+        }
+        .try_into()
+        .unwrap();
         let env = self.env();
         let vec = env.vec_slice(self.0.to_tagged(), start_bound.into(), end_bound.into());
         let vec = vec.in_env(env);
@@ -414,7 +422,7 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
+        let len = self.0.len();
         (len, Some(len))
     }
 
@@ -448,7 +456,7 @@ where
     T: IntoTryFromVal,
 {
     fn len(&self) -> usize {
-        self.0.len() as usize
+        self.0.len()
     }
 }
 

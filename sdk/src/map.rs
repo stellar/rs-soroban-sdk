@@ -232,10 +232,10 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn len(&self) -> u32 {
+    pub fn len(&self) -> usize {
         let env = self.env();
         let len = env.map_len(self.0.to_tagged());
-        u32::try_from_val(env, len).unwrap()
+        u32::try_from_val(env, len).unwrap() as usize
     }
 
     #[inline(always)]
@@ -333,7 +333,7 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
+        let len = self.0.len();
         (len, Some(len))
     }
 
