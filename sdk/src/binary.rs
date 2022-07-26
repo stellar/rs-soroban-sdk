@@ -407,9 +407,9 @@ impl ExactSizeIterator for BinIter {
 
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct ArrayBinary<const N: u32>(Binary);
+pub struct FixedBinary<const N: u32>(Binary);
 
-impl<const N: u32> Debug for ArrayBinary<N> {
+impl<const N: u32> Debug for FixedBinary<N> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "ArrayBinary{{length = {}, ", N)?;
         write!(f, "{:?}}}", self.0)?;
@@ -417,51 +417,51 @@ impl<const N: u32> Debug for ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> Eq for ArrayBinary<N> {}
+impl<const N: u32> Eq for FixedBinary<N> {}
 
-impl<const N: u32> PartialEq for ArrayBinary<N> {
+impl<const N: u32> PartialEq for FixedBinary<N> {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<const N: u32> PartialOrd for ArrayBinary<N> {
+impl<const N: u32> PartialOrd for FixedBinary<N> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<const N: u32> Ord for ArrayBinary<N> {
+impl<const N: u32> Ord for FixedBinary<N> {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.0.cmp(&other.0)
     }
 }
 
-impl<const N: u32> Borrow<Binary> for ArrayBinary<N> {
+impl<const N: u32> Borrow<Binary> for FixedBinary<N> {
     fn borrow(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: u32> Borrow<Binary> for &ArrayBinary<N> {
+impl<const N: u32> Borrow<Binary> for &FixedBinary<N> {
     fn borrow(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: u32> Borrow<Binary> for &mut ArrayBinary<N> {
+impl<const N: u32> Borrow<Binary> for &mut FixedBinary<N> {
     fn borrow(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: u32> AsRef<Binary> for ArrayBinary<N> {
+impl<const N: u32> AsRef<Binary> for FixedBinary<N> {
     fn as_ref(&self) -> &Binary {
         &self.0
     }
 }
 
-impl<const N: usize, const M: u32> TryFrom<EnvType<[u8; N]>> for ArrayBinary<M> {
+impl<const N: usize, const M: u32> TryFrom<EnvType<[u8; N]>> for FixedBinary<M> {
     type Error = ConversionError;
 
     fn try_from(ev: EnvType<[u8; N]>) -> Result<Self, Self::Error> {
@@ -480,7 +480,7 @@ impl<const N: usize, const M: u32> TryFrom<EnvType<[u8; N]>> for ArrayBinary<M> 
     }
 }
 
-impl<const N: u32> TryFrom<EnvVal> for ArrayBinary<N> {
+impl<const N: u32> TryFrom<EnvVal> for FixedBinary<N> {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -490,7 +490,7 @@ impl<const N: u32> TryFrom<EnvVal> for ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> TryFrom<EnvObj> for ArrayBinary<N> {
+impl<const N: u32> TryFrom<EnvObj> for FixedBinary<N> {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -500,7 +500,7 @@ impl<const N: u32> TryFrom<EnvObj> for ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> TryFrom<Binary> for ArrayBinary<N> {
+impl<const N: u32> TryFrom<Binary> for FixedBinary<N> {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -513,61 +513,61 @@ impl<const N: u32> TryFrom<Binary> for ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> From<ArrayBinary<N>> for RawVal {
+impl<const N: u32> From<FixedBinary<N>> for RawVal {
     #[inline(always)]
-    fn from(v: ArrayBinary<N>) -> Self {
+    fn from(v: FixedBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<ArrayBinary<N>> for EnvVal {
+impl<const N: u32> From<FixedBinary<N>> for EnvVal {
     #[inline(always)]
-    fn from(v: ArrayBinary<N>) -> Self {
+    fn from(v: FixedBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<ArrayBinary<N>> for EnvObj {
+impl<const N: u32> From<FixedBinary<N>> for EnvObj {
     #[inline(always)]
-    fn from(v: ArrayBinary<N>) -> Self {
+    fn from(v: FixedBinary<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: u32> From<ArrayBinary<N>> for Binary {
+impl<const N: u32> From<FixedBinary<N>> for Binary {
     #[inline(always)]
-    fn from(v: ArrayBinary<N>) -> Self {
+    fn from(v: FixedBinary<N>) -> Self {
         v.0
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: u32> TryFrom<&ArrayBinary<N>> for ScVal {
+impl<const N: u32> TryFrom<&FixedBinary<N>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &ArrayBinary<N>) -> Result<Self, Self::Error> {
+    fn try_from(v: &FixedBinary<N>) -> Result<Self, Self::Error> {
         (&v.0).try_into().map_err(|_| ConversionError)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: u32> TryFrom<ArrayBinary<N>> for ScVal {
+impl<const N: u32> TryFrom<FixedBinary<N>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: ArrayBinary<N>) -> Result<Self, Self::Error> {
+    fn try_from(v: FixedBinary<N>) -> Result<Self, Self::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: u32> TryFrom<EnvType<ScVal>> for ArrayBinary<N> {
+impl<const N: u32> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
         v.try_into()
     }
 }
 
-impl<const N: u32> ArrayBinary<N> {
+impl<const N: u32> FixedBinary<N> {
     #[inline(always)]
-    pub fn from_array<const M: usize>(env: &Env, items: [u8; M]) -> ArrayBinary<N> {
+    pub fn from_array<const M: usize>(env: &Env, items: [u8; M]) -> FixedBinary<N> {
         Binary::from_array(env, items).try_into().unwrap()
     }
 
@@ -621,7 +621,7 @@ impl<const N: u32> ArrayBinary<N> {
     }
 }
 
-impl<const N: u32> IntoIterator for ArrayBinary<N> {
+impl<const N: u32> IntoIterator for FixedBinary<N> {
     type Item = u8;
 
     type IntoIter = BinIter;
@@ -665,9 +665,9 @@ mod test {
         bin_copy.pop();
         assert!(bin == bin_copy);
 
-        let bad_fixed: Result<ArrayBinary<4>, ConversionError> = bin.try_into();
+        let bad_fixed: Result<FixedBinary<4>, ConversionError> = bin.try_into();
         assert!(bad_fixed.is_err());
-        let fixed: ArrayBinary<3> = bin_copy.try_into().unwrap();
+        let fixed: FixedBinary<3> = bin_copy.try_into().unwrap();
         println!("{:?}", fixed);
     }
 
@@ -691,7 +691,7 @@ mod test {
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
 
-        let fixed: ArrayBinary<3> = bin.try_into().unwrap();
+        let fixed: FixedBinary<3> = bin.try_into().unwrap();
         let mut iter = fixed.iter();
         assert_eq!(iter.next(), Some(10));
         assert_eq!(iter.next(), Some(20));
@@ -720,7 +720,7 @@ mod test {
         bin.push(30);
         assert_eq!(bin.len(), 3);
 
-        let arr_bin: ArrayBinary<3> = bin.clone().try_into().unwrap();
+        let arr_bin: FixedBinary<3> = bin.clone().try_into().unwrap();
         assert_eq!(arr_bin.len(), 3);
 
         assert_eq!(get_len(&bin), 3);
