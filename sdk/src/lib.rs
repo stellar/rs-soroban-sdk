@@ -27,16 +27,27 @@ pub mod xdr {
     pub use super::env::xdr::ReadXdrIter;
     pub use super::env::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
 
-    // XDR contract specific types.
+    // XDR contract val types.
     pub use super::env::xdr::{
-        ScBigInt, ScEnvMetaEntry, ScEnvMetaKind, ScHash, ScHashType, ScHostContextErrorCode,
-        ScHostFnErrorCode, ScHostObjErrorCode, ScHostStorageErrorCode, ScHostValErrorCode, ScMap,
-        ScMapEntry, ScNumSign, ScObject, ScObjectType, ScSpecEntry, ScSpecEntryKind,
-        ScSpecFunctionV0, ScSpecType, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption,
-        ScSpecTypeResult, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
-        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0,
-        ScStatic, ScStatus, ScStatusType, ScSymbol, ScUnknownErrorCode, ScVal, ScValType, ScVec,
-        ScVmErrorCode,
+        ScBigInt, ScHash, ScHashType, ScMap, ScMapEntry, ScNumSign, ScObject, ScObjectType,
+        ScStatic, ScStatus, ScStatusType, ScSymbol, ScVal, ScValType, ScVec,
+    };
+
+    // XDR contract error codes.
+    pub use super::env::xdr::{
+        ScHostContextErrorCode, ScHostFnErrorCode, ScHostObjErrorCode, ScHostStorageErrorCode,
+        ScHostValErrorCode, ScUnknownErrorCode, ScVmErrorCode,
+    };
+
+    // XDR contract env meta types.
+    pub use super::env::xdr::{ScEnvMetaEntry, ScEnvMetaKind};
+
+    // XDR contract spec types.
+    pub use super::env::xdr::{
+        ScSpecEntry, ScSpecEntryKind, ScSpecFunctionV0, ScSpecType, ScSpecTypeDef, ScSpecTypeMap,
+        ScSpecTypeOption, ScSpecTypeResult, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt,
+        ScSpecTypeVec, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0,
+        ScSpecUdtUnionV0,
     };
 }
 
