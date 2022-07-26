@@ -18,11 +18,14 @@ mod env;
 
 /// XDR contains types for building and generating XDR values.
 pub mod xdr {
-    // Xdr types and traits.
-    pub use super::env::xdr::{Error, ReadXdr, ReadXdrIter, Validate, VecM, WriteXdr};
-    // Host functions.
+    // XDR types needed by macros.
+    #[doc(hidden)]
     pub use super::env::xdr::HostFunction;
-    // Contract types.
+
+    // XDR generic types and traits.
+    pub use super::env::xdr::{Error, ReadXdr, ReadXdrIter, Validate, VecM, WriteXdr};
+
+    // XDR contract specific types.
     pub use super::env::xdr::{
         ScBigInt, ScEnvMetaEntry, ScEnvMetaKind, ScHash, ScHashType, ScHostContextErrorCode,
         ScHostFnErrorCode, ScHostObjErrorCode, ScHostStorageErrorCode, ScHostValErrorCode, ScMap,
