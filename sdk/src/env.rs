@@ -80,7 +80,7 @@ impl Env {
             self,
             RawVal::from(contract_id).try_into().unwrap(),
             func,
-            RawVal::from(args).try_into().unwrap(),
+            args.to_tagged(),
         );
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
