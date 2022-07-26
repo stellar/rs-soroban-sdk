@@ -15,9 +15,7 @@ static ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 pub use stellar_contract_macros::{contractimpl, contracttype, ContractType};
 
 mod env;
-pub mod xdr {
-    pub use super::env::xdr::*;
-}
+pub use env::xdr;
 pub use env::BitSet;
 pub use env::ConversionError;
 pub use env::Env;
