@@ -6,10 +6,8 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use stellar_contract_env_host::{TagObject, TaggedVal};
-
 use super::{
-    env::internal::{Env as _, RawValConvertible},
+    env::internal::{Env as _, RawValConvertible, TagObject, TaggedVal},
     env::{EnvObj, EnvType},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal,
