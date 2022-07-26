@@ -161,7 +161,9 @@ impl Binary {
 
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Binary {
-        FixedBinary::from_array(env, items).0
+        let mut bin = Binary::new(env);
+        bin.extend_from_array(items);
+        bin
     }
 
     #[inline(always)]
@@ -556,10 +558,8 @@ impl<const N: usize> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
 
 impl<const N: usize> FixedBinary<N> {
     #[inline(always)]
-    pub fn from_array(env: &Env, items: [u8; N]) -> FixedBinary<N> {
-        let mut bin = Binary::new(env);
-        bin.extend_from_array(items);
-        FixedBinary(bin)
+    pub fn from_array<const M: usize>(env: &Env, items: [u8; M]) -> FixedBinary<N> {
+        Binary::from_array(env, items).try_into().unwrap()
     }
 
     #[inline(always)]
