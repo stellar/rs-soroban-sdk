@@ -187,7 +187,7 @@ pub fn derive_fn(
                 contract_id: &stellar_contract_sdk::Binary,
                 #(#invoke_args),*
             ) {
-                e.invoke_contract(
+                e.invoke_contract_external(
                     stellar_contract_sdk::xdr::HostFunction::Call,
                     (contract_id, #wrap_export_name, #(#invoke_idents),*).try_into().unwrap()
                 )
