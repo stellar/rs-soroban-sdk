@@ -7,6 +7,7 @@ edition = "2021"
 
 [lib]
 proc-macro = true
+doctest = false
 
 [dependencies]
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "94e01c7b", features = ["next", "std"] }
