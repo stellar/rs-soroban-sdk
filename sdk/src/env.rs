@@ -70,7 +70,7 @@ impl Default for Env {
 }
 
 impl Env {
-    pub fn call<T: TryFromVal<Env, RawVal>>(
+    pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
         &self,
         contract_id: Binary,
         func: Symbol,
@@ -276,7 +276,12 @@ impl Env {
             .unwrap();
     }
 
-    pub fn invoke_contract(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
+    #[doc(hidden)]
+    pub fn invoke_contract_external(
+        &mut self,
+        hf: xdr::HostFunction,
+        args: xdr::ScVec,
+    ) -> xdr::ScVal {
         self.env_impl.invoke_function(hf, args).unwrap()
     }
 
