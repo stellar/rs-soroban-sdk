@@ -16,10 +16,13 @@ pub use stellar_contract_macros::{contractimpl, contracttype, ContractType};
 
 mod env;
 
+/// XDR contains types for building and generating XDR values.
 pub mod xdr {
-    #[cfg(not(target_family = "wasm"))]
-    pub use super::env::xdr::ReadXdrIter;
-    pub use super::env::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
+    // Xdr types and traits.
+    pub use super::env::xdr::{Error, ReadXdr, ReadXdrIter, Validate, VecM, WriteXdr};
+    // Host functions.
+    pub use super::env::xdr::HostFunction;
+    // Contract types.
     pub use super::env::xdr::{
         ScBigInt, ScEnvMetaEntry, ScEnvMetaKind, ScHash, ScHashType, ScHostContextErrorCode,
         ScHostFnErrorCode, ScHostObjErrorCode, ScHostStorageErrorCode, ScHostValErrorCode, ScMap,
