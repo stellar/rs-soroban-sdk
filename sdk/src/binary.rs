@@ -14,6 +14,16 @@ use super::{
 #[cfg(not(target_family = "wasm"))]
 use super::{env::TryIntoEnvVal, xdr::ScVal};
 
+#[macro_export]
+macro_rules! bin {
+    ($env:expr) => {
+        $crate::Binary::new($env)
+    };
+    ($env:expr, $($x:expr),+ $(,)?) => {
+        $crate::Binary::from_array($env, [$($x),+])
+    };
+}
+
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Binary(EnvObj);
@@ -625,6 +635,29 @@ impl<const N: usize> IntoIterator for FixedBinary<N> {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_bin_macro() {
+        let env = Env::default();
+        assert_eq!(bin![&env], Binary::new(&env));
+        assert_eq!(bin![&env, 1], {
+            let mut b = Binary::new(&env);
+            b.push(1);
+            b
+        });
+        assert_eq!(bin![&env, 1,], {
+            let mut b = Binary::new(&env);
+            b.push(1);
+            b
+        });
+        assert_eq!(bin![&env, 3, 2, 1,], {
+            let mut b = Binary::new(&env);
+            b.push(3);
+            b.push(2);
+            b.push(1);
+            b
+        });
+    }
 
     #[test]
     fn test_bin() {
