@@ -618,7 +618,7 @@ impl<const N: usize> FixedBinary<N> {
     }
 }
 
-impl<const N: u32> IntoIterator for FixedBinary<N> {
+impl<const N: usize> IntoIterator for FixedBinary<N> {
     type Item = u8;
 
     type IntoIter = BinIter;
