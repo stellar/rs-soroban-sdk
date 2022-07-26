@@ -16,21 +16,7 @@ pub use stellar_contract_macros::{contractimpl, contracttype, ContractType};
 
 mod env;
 
-pub mod xdr {
-    #[cfg(not(target_family = "wasm"))]
-    pub use super::env::xdr::ReadXdrIter;
-    pub use super::env::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
-    pub use super::env::xdr::{
-        ScBigInt, ScEnvMetaEntry, ScEnvMetaKind, ScHash, ScHashType, ScHostContextErrorCode,
-        ScHostFnErrorCode, ScHostObjErrorCode, ScHostStorageErrorCode, ScHostValErrorCode, ScMap,
-        ScMapEntry, ScNumSign, ScObject, ScObjectType, ScSpecEntry, ScSpecEntryKind,
-        ScSpecFunctionV0, ScSpecType, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption,
-        ScSpecTypeResult, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
-        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0,
-        ScStatic, ScStatus, ScStatusType, ScSymbol, ScUnknownErrorCode, ScVal, ScValType, ScVec,
-        ScVmErrorCode,
-    };
-}
+pub mod xdr;
 
 pub use env::BitSet;
 pub use env::ConversionError;
