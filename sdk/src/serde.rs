@@ -1,4 +1,4 @@
-use crate::{internal::Env as _, Binary, Env, IntoVal, RawVal, TryFromVal};
+use crate::{env::internal::Env as _, Binary, Env, IntoVal, RawVal, TryFromVal};
 
 pub trait Serialize {
     fn serialize(self, env: &Env) -> Binary;

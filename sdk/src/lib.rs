@@ -21,22 +21,22 @@ pub mod xdr;
 pub use env::BitSet;
 pub use env::ConversionError;
 pub use env::Env;
-#[doc(hidden)]
-pub use env::EnvType;
 pub use env::EnvVal;
-#[doc(hidden)]
-pub use env::IntoEnvVal;
 pub use env::IntoVal;
-#[doc(hidden)]
-pub use env::Object;
 pub use env::RawVal;
 pub use env::Status;
 pub use env::Symbol;
 pub use env::TryFromVal;
-#[doc(hidden)]
-pub use env::TryIntoEnvVal;
 pub use env::TryIntoVal;
-use env::*;
+
+#[doc(hidden)]
+mod envhidden {
+    pub use super::env::EnvType;
+    pub use super::env::IntoEnvVal;
+    pub use super::env::Object;
+    pub use super::env::TryIntoEnvVal;
+}
+pub use envhidden::*;
 
 mod bigint;
 mod binary;

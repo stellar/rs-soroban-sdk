@@ -45,7 +45,7 @@ pub fn derive_fn(
     });
 
     // Prepare the argument inputs.
-    let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
+    let (spec_args, wrap_args, wrap_calls, invoke_args, invoke_idents): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
@@ -77,11 +77,24 @@ pub fn derive_fn(
                         #ident
                     ).unwrap()
                 };
-                (spec, arg, call)
+                let invoke_arg = FnArg::Typed(PatType {
+                    attrs: vec![],
+                    pat: Box::new(Pat::Ident(PatIdent {
+                        ident: ident.clone(),
+                        attrs: vec![],
+                        by_ref: None,
+                        mutability: None,
+                        subpat: None,
+                    })),
+                    colon_token: Colon::default(),
+                    ty: pat_type.ty.clone(),
+                });
+                let invoke_call = quote! { #ident };
+                (spec, arg, call, invoke_arg, invoke_call)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecTypeDef::I32, a.clone(), quote! {})
+                (ScSpecTypeDef::I32, a.clone(), quote! {}, a.clone(), quote! {})
             }
         })
         .multiunzip();
@@ -146,6 +159,8 @@ pub fn derive_fn(
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
         pub mod #mod_ident {
+            use super::*;
+
             #export_name
             pub fn call_raw(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
                 #use_trait;
@@ -163,6 +178,21 @@ pub fn derive_fn(
                 args: &[stellar_contract_sdk::RawVal],
             ) -> stellar_contract_sdk::RawVal {
                 call_raw(env, #(#slice_args),*)
+            }
+
+            #[cfg(feature = "testutils")]
+            #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+            pub fn call_external(
+                e: &mut stellar_contract_sdk::Env,
+                contract_id: &stellar_contract_sdk::Binary,
+                #(#invoke_args),*
+            ) {
+                e.invoke_contract(
+                    stellar_contract_sdk::xdr::HostFunction::Call,
+                    (contract_id, #wrap_export_name, #(#invoke_idents),*).try_into().unwrap()
+                )
+                .try_into()
+                .unwrap()
             }
         }
     })

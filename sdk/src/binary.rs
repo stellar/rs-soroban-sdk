@@ -7,8 +7,10 @@ use core::{
 };
 
 use super::{
-    env::internal::Env as _, env::EnvType, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    Object, RawVal, RawValConvertible,
+    env::internal::{Env as _, RawValConvertible},
+    env::{EnvObj, EnvType},
+    xdr::ScObjectType,
+    ConversionError, Env, EnvVal, Object, RawVal,
 };
 
 #[cfg(not(target_family = "wasm"))]

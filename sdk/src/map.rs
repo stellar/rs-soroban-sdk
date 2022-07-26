@@ -3,8 +3,16 @@ use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    IntoTryFromVal, RawVal, Status, TryFromVal, Vec,
+    env::internal::Env as _,
+    env::{EnvObj, IntoTryFromVal},
+    xdr::ScObjectType,
+    ConversionError, Env, EnvVal, RawVal, Status, TryFromVal, Vec,
+};
+
+#[cfg(not(target_family = "wasm"))]
+use super::{
+    env::{EnvType, TryIntoEnvVal},
+    xdr::ScVal,
 };
 
 #[macro_export]
@@ -108,12 +116,6 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for EnvObj {
         m.0
     }
 }
-
-#[cfg(not(target_family = "wasm"))]
-use super::{
-    env::{EnvType, TryIntoEnvVal},
-    xdr::ScVal,
-};
 
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
