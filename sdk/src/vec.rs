@@ -9,8 +9,10 @@ use core::{
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, EnvObj, EnvVal,
-    IntoTryFromVal, RawVal,
+    env::internal::Env as _,
+    env::{EnvObj, IntoTryFromVal},
+    xdr::ScObjectType,
+    ConversionError, Env, EnvVal, RawVal,
 };
 
 #[macro_export]

@@ -5,8 +5,10 @@ use core::{
 };
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, Binary, ConversionError, Env, EnvBase, EnvObj,
-    EnvVal, RawVal, RawValConvertible, TryFromVal,
+    env::internal::{Env as _, EnvBase, RawValConvertible},
+    env::EnvObj,
+    xdr::ScObjectType,
+    Binary, ConversionError, Env, EnvVal, RawVal, TryFromVal,
 };
 
 #[repr(transparent)]
