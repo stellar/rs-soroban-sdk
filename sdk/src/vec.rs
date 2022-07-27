@@ -9,10 +9,10 @@ use core::{
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::{Env as _, TagObject, TaggedVal},
+    env::internal::Env as _,
     env::{EnvObj, EnvType},
     xdr::ScObjectType,
-    ConversionError, Env, EnvVal, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[macro_export]
@@ -101,7 +101,7 @@ where
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::Vec) {
+        if obj.as_object().is_obj_type(ScObjectType::Vec) {
             Ok(unsafe { Vec::<T>::unchecked_new(obj) })
         } else {
             Err(ConversionError {})
@@ -154,7 +154,7 @@ where
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::{env::Object, xdr::ScVal};
+use super::xdr::ScVal;
 
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<&Vec<T>> for ScVal {
@@ -210,16 +210,16 @@ impl<T> Vec<T> {
         self.0.as_raw()
     }
 
-    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
-        self.0.as_tagged()
+    pub(crate) fn as_object(&self) -> &Object {
+        self.0.as_object()
     }
 
     pub(crate) fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
 
-    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
-        self.0.to_tagged()
+    pub(crate) fn to_object(&self) -> Object {
+        self.0.to_object()
     }
 }
 
@@ -254,7 +254,7 @@ where
     pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
         if i < self.len() {
             let env = self.env();
-            let val = env.vec_get(self.0.to_tagged(), i.into());
+            let val = env.vec_get(self.0.to_object(), i.into());
             Some(T::try_from_val(env, val))
         } else {
             None
@@ -267,14 +267,14 @@ where
         T::Error: Debug,
     {
         let env = self.env();
-        let val = env.vec_get(self.0.to_tagged(), i.into());
+        let val = env.vec_get(self.0.to_object(), i.into());
         T::try_from_val(env, val)
     }
 
     #[inline(always)]
     pub fn set(&mut self, i: u32, v: T) {
         let env = self.env();
-        let vec = env.vec_put(self.0.to_tagged(), i.into(), v.into_val(env));
+        let vec = env.vec_put(self.0.to_object(), i.into(), v.into_val(env));
         self.0 = vec.in_env(env);
     }
 
@@ -291,28 +291,28 @@ where
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
         let env = self.env();
-        let vec = env.vec_del(self.0.to_tagged(), i.into());
+        let vec = env.vec_del(self.0.to_object(), i.into());
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         let env = self.env();
-        let val = env.vec_len(self.0.to_tagged());
+        let val = env.vec_len(self.0.to_object());
         val.is_u32_zero()
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
         let env = self.env();
-        let val = env.vec_len(self.0.to_tagged());
+        let val = env.vec_len(self.0.to_object());
         u32::try_from(val).unwrap()
     }
 
     #[inline(always)]
     pub fn push(&mut self, x: T) {
         let env = self.env();
-        let vec = env.vec_push(self.0.to_tagged(), x.into_val(env));
+        let vec = env.vec_push(self.0.to_object(), x.into_val(env));
         self.0 = vec.in_env(env);
     }
 
@@ -320,7 +320,7 @@ where
     pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
         let last = self.last()?;
         let env = self.env();
-        let vec = env.vec_pop(self.0.to_tagged());
+        let vec = env.vec_pop(self.0.to_object());
         self.0 = vec.in_env(env);
         Some(last)
     }
@@ -329,7 +329,7 @@ where
     pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
         let last = self.last_unchecked();
         let env = self.env();
-        let vec = env.vec_pop(self.0.to_tagged());
+        let vec = env.vec_pop(self.0.to_object());
         self.0 = vec.in_env(env);
         last
     }
@@ -340,7 +340,7 @@ where
             None
         } else {
             let env = self.0.env();
-            let val = env.vec_front(self.0.to_tagged());
+            let val = env.vec_front(self.0.to_object());
             Some(T::try_from_val(env, val))
         }
     }
@@ -348,7 +348,7 @@ where
     #[inline(always)]
     pub fn first_unchecked(&self) -> Result<T, T::Error> {
         let env = self.0.env();
-        let val = env.vec_front(self.0.to_tagged());
+        let val = env.vec_front(self.0.to_object());
         T::try_from_val(env, val)
     }
 
@@ -358,7 +358,7 @@ where
             None
         } else {
             let env = self.env();
-            let val = env.vec_back(self.0.to_tagged());
+            let val = env.vec_back(self.0.to_object());
             Some(T::try_from_val(env, val))
         }
     }
@@ -366,21 +366,21 @@ where
     #[inline(always)]
     pub fn last_unchecked(&self) -> Result<T, T::Error> {
         let env = self.env();
-        let val = env.vec_back(self.0.to_tagged());
+        let val = env.vec_back(self.0.to_object());
         T::try_from_val(env, val)
     }
 
     #[inline(always)]
     pub fn insert(&mut self, i: u32, x: T) {
         let env = self.env();
-        let vec = env.vec_put(self.0.to_tagged(), i.into(), x.into_val(env));
+        let vec = env.vec_put(self.0.to_object(), i.into(), x.into_val(env));
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
     pub fn append(&mut self, other: &Vec<T>) {
         let env = self.env();
-        let vec = env.vec_append(self.0.to_tagged(), other.0.to_tagged());
+        let vec = env.vec_append(self.0.to_object(), other.0.to_object());
         self.0 = vec.in_env(env);
     }
 
@@ -414,7 +414,7 @@ where
             Bound::Unbounded => self.len(),
         };
         let env = self.env();
-        let vec = env.vec_slice(self.0.to_tagged(), start_bound.into(), end_bound.into());
+        let vec = env.vec_slice(self.0.to_object(), start_bound.into(), end_bound.into());
         let vec = vec.in_env(env);
         unsafe { Self::unchecked_new(vec) }
     }
