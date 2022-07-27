@@ -115,6 +115,14 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             }
         }
 
+        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #ident> for stellar_contract_sdk::RawVal {
+            type Error = stellar_contract_sdk::ConversionError;
+            #[inline(always)]
+            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#ident, Self::Error> {
+                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            }
+        }
+
         impl stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal> for #ident {
             #[inline(always)]
             fn into_val(self, env: &stellar_contract_sdk::Env) -> stellar_contract_sdk::RawVal {
