@@ -125,6 +125,7 @@ pub fn derive_fn(
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
     let mod_ident = format_ident!("__{}", ident);
+    let pub_mod_ident = format_ident!("{}", ident);
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
     } else {
@@ -167,7 +168,7 @@ pub fn derive_fn(
             use super::*;
 
             #export_name
-            pub fn call_raw(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+            pub fn invoke_raw(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
                 #use_trait;
                 <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
                     #call(
@@ -178,14 +179,18 @@ pub fn derive_fn(
                 )
             }
 
-            pub fn call_raw_slice(
+            pub fn invoke_raw_slice(
                 env: stellar_contract_sdk::Env,
                 args: &[stellar_contract_sdk::RawVal],
             ) -> stellar_contract_sdk::RawVal {
-                call_raw(env, #(#slice_args),*)
+                invoke_raw(env, #(#slice_args),*)
             }
+        }
 
-            pub fn call_internal(
+        pub mod #pub_mod_ident {
+            use super::*;
+
+            pub fn invoke(
                 e: &stellar_contract_sdk::Env,
                 contract_id: &stellar_contract_sdk::Binary,
                 #(#invoke_args),*
@@ -198,7 +203,7 @@ pub fn derive_fn(
 
             #[cfg(feature = "testutils")]
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-            pub fn call_external(
+            pub fn invoke_xdr(
                 e: &stellar_contract_sdk::Env,
                 contract_id: &stellar_contract_sdk::Binary,
                 #(#invoke_args),*
@@ -238,7 +243,7 @@ pub fn derive_contract_function_set<'a>(
             ) -> Option<stellar_contract_sdk::RawVal> {
                 match func.to_str().as_ref() {
                     #(#idents => {
-                        Some(#wrap_idents::call_raw_slice(env, args))
+                        Some(#wrap_idents::invoke_raw_slice(env, args))
                     })*
                     _ => {
                         None

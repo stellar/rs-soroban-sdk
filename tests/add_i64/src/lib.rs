@@ -52,7 +52,7 @@ mod test {
 
 #[cfg(test)]
 mod test_via_val {
-    use super::{__add1::call_raw as add1, __add2::call_raw as add2};
+    use super::{__add1::invoke_raw as add1, __add2::invoke_raw as add2};
     use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]

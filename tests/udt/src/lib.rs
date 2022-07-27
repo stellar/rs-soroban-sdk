@@ -166,7 +166,7 @@ mod test {
             b: 12,
             c: vec![&e, 1],
         };
-        let z = __add::call_raw(
+        let z = __add::invoke_raw(
             e.clone(),
             UdtEnum::UdtA.into_val(&e),
             UdtEnum::UdtB(udt).into_val(&e),
