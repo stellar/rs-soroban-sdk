@@ -7,7 +7,7 @@ use core::{
 };
 
 use super::{
-    env::internal::{Env as _, RawValConvertible},
+    env::internal::{Env as _, RawValConvertible, TagObject, TaggedVal},
     env::{EnvObj, EnvType, IntoVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal, TryIntoVal,
@@ -191,8 +191,24 @@ impl Binary {
     }
 
     #[inline(always)]
-    fn env(&self) -> &Env {
+    pub(crate) fn env(&self) -> &Env {
         self.0.env()
+    }
+
+    pub(crate) fn as_raw(&self) -> &RawVal {
+        self.0.as_raw()
+    }
+
+    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
+        self.0.as_tagged()
+    }
+
+    pub(crate) fn to_raw(&self) -> RawVal {
+        self.0.to_raw()
+    }
+
+    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
+        self.0.to_tagged()
     }
 
     #[inline(always)]
@@ -501,13 +517,24 @@ impl<const N: usize> AsRef<Binary> for FixedBinary<N> {
     }
 }
 
-impl<const N: usize> IntoVal<Env, FixedBinary<N>> for [u8; N] {
-    fn into_val(self, env: &Env) -> FixedBinary<N> {
-        let mut bin = Binary::new(env);
-        for b in self {
+impl<const N: usize> From<EnvType<[u8; N]>> for FixedBinary<N> {
+    #[inline(always)]
+    fn from(ev: EnvType<[u8; N]>) -> Self {
+        let mut bin = Binary::new(&ev.env);
+        for b in ev.val {
             bin.push(b);
         }
         FixedBinary(bin)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, FixedBinary<N>> for [u8; N] {
+    fn into_val(self, env: &Env) -> FixedBinary<N> {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .into()
     }
 }
 
@@ -619,6 +646,26 @@ impl<const N: usize> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
 }
 
 impl<const N: usize> FixedBinary<N> {
+    pub(crate) fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub(crate) fn as_raw(&self) -> &RawVal {
+        self.0.as_raw()
+    }
+
+    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
+        self.0.as_tagged()
+    }
+
+    pub(crate) fn to_raw(&self) -> RawVal {
+        self.0.to_raw()
+    }
+
+    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
+        self.0.to_tagged()
+    }
+
     #[inline(always)]
     pub fn from_array(env: &Env, items: [u8; N]) -> FixedBinary<N> {
         let mut bin = Binary::new(env);

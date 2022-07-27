@@ -132,39 +132,6 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn account_get_low_threshold(&self, acc: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        internal::Env::account_get_low_threshold(self, acc_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn account_get_medium_threshold(&self, acc: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        internal::Env::account_get_medium_threshold(self, acc_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn account_get_high_threshold(&self, acc: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        internal::Env::account_get_high_threshold(self, acc_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn account_get_signer_weight(&self, acc: Binary, signer: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        let signer_obj: Object = RawVal::from(signer).try_into().unwrap();
-        internal::Env::account_get_signer_weight(self, acc_obj, signer_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    #[doc(hidden)]
     pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) -> FixedBinary<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();

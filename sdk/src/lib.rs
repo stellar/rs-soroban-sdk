@@ -36,11 +36,13 @@ mod envhidden {
 }
 pub use envhidden::*;
 
+mod account;
 mod bigint;
 mod binary;
 pub mod iter;
 mod map;
 mod vec;
+pub use account::Account;
 pub use bigint::BigInt;
 pub use binary::{Binary, FixedBinary};
 pub use map::Map;
