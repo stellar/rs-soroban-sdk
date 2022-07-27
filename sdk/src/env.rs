@@ -99,6 +99,7 @@ impl Env {
         bin.try_into().unwrap()
     }
 
+    #[doc(hidden)]
     #[deprecated(note = "use contract_data().has(key)")]
     pub fn has_contract_data<K>(&self, key: K) -> bool
     where
@@ -107,6 +108,7 @@ impl Env {
         self.contract_data().has(key)
     }
 
+    #[doc(hidden)]
     #[deprecated(note = "use contract_data().get(key)")]
     pub fn get_contract_data<K, V>(&self, key: K) -> V
     where
@@ -117,6 +119,7 @@ impl Env {
         self.contract_data().get(key)
     }
 
+    #[doc(hidden)]
     #[deprecated(note = "use contract_data().set(key)")]
     pub fn put_contract_data<K, V>(&self, key: K, val: V)
     where
@@ -126,6 +129,7 @@ impl Env {
         self.contract_data().set(key, val);
     }
 
+    #[doc(hidden)]
     #[deprecated(note = "use contract_data().remove(key)")]
     pub fn del_contract_data<K>(&self, key: K)
     where
