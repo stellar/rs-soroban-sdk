@@ -9,7 +9,7 @@ use core::{
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _,
+    env::internal::{Env as _, TagObject, TaggedVal},
     env::{EnvObj, IntoTryFromVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, RawVal,
@@ -148,17 +148,34 @@ impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
     }
 }
 
-impl<T: IntoTryFromVal> Vec<T> {
+impl<T> Vec<T> {
     #[inline(always)]
     unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData)
     }
 
-    #[inline(always)]
-    fn env(&self) -> &Env {
+    pub(crate) fn env(&self) -> &Env {
         self.0.env()
     }
 
+    pub(crate) fn as_raw(&self) -> &RawVal {
+        self.0.as_raw()
+    }
+
+    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
+        self.0.as_tagged()
+    }
+
+    pub(crate) fn to_raw(&self) -> RawVal {
+        self.0.to_raw()
+    }
+
+    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
+        self.0.to_tagged()
+    }
+}
+
+impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
         let obj = env.vec_new(().into()).in_env(env);

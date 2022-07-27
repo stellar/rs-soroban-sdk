@@ -5,8 +5,8 @@ use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, WriteXdr};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
-    token::{Colon, Comma},
-    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
+    token::{And, Colon, Comma},
+    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath, TypeReference,
 };
 
 use crate::map_type::map_type;
@@ -87,7 +87,12 @@ pub fn derive_fn(
                         subpat: None,
                     })),
                     colon_token: Colon::default(),
-                    ty: pat_type.ty.clone(),
+                    ty: Box::new(Type::Reference(TypeReference {
+                        and_token: And::default(),
+                        lifetime: None,
+                        mutability: None,
+                        elem: pat_type.ty.clone(),
+                    })),
                 });
                 let invoke_call = quote! { #ident };
                 (spec, arg, call, invoke_arg, invoke_call)
@@ -186,12 +191,13 @@ pub fn derive_fn(
                 e: &mut stellar_contract_sdk::Env,
                 contract_id: &stellar_contract_sdk::Binary,
                 #(#invoke_args),*
-            ) {
-                e.invoke_contract(
+            ) #output {
+                use stellar_contract_sdk::TryIntoVal;
+                e.invoke_contract_external_raw(
                     stellar_contract_sdk::xdr::HostFunction::Call,
                     (contract_id, #wrap_export_name, #(#invoke_idents),*).try_into().unwrap()
                 )
-                .try_into()
+                .try_into_val(e)
                 .unwrap()
             }
         }
