@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, contracttype, IntoEnvVal, Vec};
+use stellar_contract_sdk::{contractimpl, contracttype, Vec};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]

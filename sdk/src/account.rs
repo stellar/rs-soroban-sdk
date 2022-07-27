@@ -3,7 +3,7 @@ use core::{borrow::Borrow, cmp::Ordering, fmt::Debug};
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible, TagObject, TaggedVal},
     env::EnvObj,
-    Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary,
+    Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary, IntoVal,
 };
 
 #[derive(Clone)]
@@ -91,7 +91,17 @@ impl AsRef<FixedBinary<32>> for Account {
 
 impl From<EnvType<[u8; 32]>> for Account {
     fn from(ev: EnvType<[u8; 32]>) -> Self {
-        Account(<_ as From<EnvType<[u8; 32]>>>::from(ev))
+        Account(ev.into())
+    }
+}
+
+impl IntoVal<Env, Account> for [u8; 32] {
+    fn into_val(self, env: &Env) -> Account {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .into()
     }
 }
 

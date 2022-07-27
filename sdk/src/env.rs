@@ -28,7 +28,6 @@ pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::IntoEnvVal;
 pub use internal::IntoVal;
 pub use internal::Object;
 pub use internal::RawVal;
@@ -37,7 +36,6 @@ pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TaggedVal;
 pub use internal::TryFromVal;
-pub use internal::TryIntoEnvVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
@@ -80,7 +78,7 @@ impl Env {
             self,
             RawVal::from(contract_id).try_into().unwrap(),
             func,
-            RawVal::from(args).try_into().unwrap(),
+            args.to_tagged(),
         );
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
@@ -120,7 +118,7 @@ impl Env {
     }
 
     pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
-        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into_val(self));
+        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
@@ -241,6 +239,15 @@ impl Env {
         self.env_impl
             .register_test_contract(id_obj, Rc::new(InternalContractFunctionSet(contract)))
             .unwrap();
+    }
+
+    #[doc(hidden)]
+    pub fn invoke_contract_external_raw(
+        &mut self,
+        hf: xdr::HostFunction,
+        args: xdr::ScVec,
+    ) -> RawVal {
+        self.env_impl.invoke_function_raw(hf, args).unwrap()
     }
 
     #[doc(hidden)]
