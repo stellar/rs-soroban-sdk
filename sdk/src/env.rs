@@ -43,9 +43,6 @@ pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-pub trait IntoTryFromVal: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
-impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
-
 use crate::binary::{Binary, FixedBinary};
 
 #[derive(Clone)]
@@ -96,24 +93,36 @@ impl Env {
         bin.try_into().unwrap()
     }
 
-    pub fn has_contract_data<K: IntoVal<Env, RawVal>>(&self, key: K) -> bool {
+    pub fn has_contract_data<K>(&self, key: K) -> bool
+    where
+        K: IntoVal<Env, RawVal>,
+    {
         let rv = internal::Env::has_contract_data(self, key.into_val(self));
         rv.try_into().unwrap()
     }
 
-    pub fn get_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K) -> V
+    pub fn get_contract_data<K, V>(&self, key: K) -> V
     where
         V::Error: Debug,
+        K: IntoVal<Env, RawVal>,
+        V: TryFromVal<Env, RawVal>,
     {
         let rv = internal::Env::get_contract_data(self, key.into_val(self));
         V::try_from_val(self, rv).unwrap()
     }
 
-    pub fn put_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K, val: V) {
+    pub fn put_contract_data<K, V>(&self, key: K, val: V)
+    where
+        K: IntoVal<Env, RawVal>,
+        V: IntoVal<Env, RawVal>,
+    {
         internal::Env::put_contract_data(self, key.into_val(self), val.into_val(self));
     }
 
-    pub fn del_contract_data<K: IntoVal<Env, RawVal>>(&self, key: K) {
+    pub fn del_contract_data<K>(&self, key: K)
+    where
+        K: IntoVal<Env, RawVal>,
+    {
         internal::Env::del_contract_data(self, key.into_val(self));
     }
 
