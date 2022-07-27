@@ -6,6 +6,9 @@ use crate::{
     Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary, IntoVal, Object,
 };
 
+/// AccountId is a public key for a Stellar account.
+pub type AccountId = FixedBinary<32>;
+
 /// Account references a Stellar account and provides access to information
 /// about the account, such as its thresholds and signers.
 #[derive(Clone)]
