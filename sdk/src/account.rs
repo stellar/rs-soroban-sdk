@@ -6,6 +6,8 @@ use crate::{
     Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary, IntoVal, Object,
 };
 
+/// Account references a Stellar account and provides access to information
+/// about the account, such as its thresholds and signers.
 #[derive(Clone)]
 pub struct Account(FixedBinary<32>);
 
@@ -161,6 +163,9 @@ impl Account {
         self.0.to_object()
     }
 
+    /// Creates an account from a public key.
+    ///
+    /// TODO: Return a `Result` `Err` if the account does not exist. Currently panics if account does not exist.
     pub fn from_public_key(public_key: &FixedBinary<32>) -> Result<Account, ()> {
         let acc = Account(public_key.clone());
         // TODO: Fail when account doesn't exist. In the meantime cause a trap
@@ -170,24 +175,29 @@ impl Account {
         Ok(acc)
     }
 
+    /// Returns the low threshold for the Stellar account.
     pub fn low_threshold(&self) -> u32 {
         let env = self.env();
         let val = env.account_get_low_threshold(self.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 
+    /// Returns the medium threshold for the Stellar account.
     pub fn medium_threshold(&self) -> u32 {
         let env = self.env();
         let val = env.account_get_medium_threshold(self.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 
+    /// Returns the high threshold for the Stellar account.
     pub fn high_threshold(&self) -> u32 {
         let env = self.env();
         let val = env.account_get_high_threshold(self.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 
+    /// Returns the signer weight for the signer for this Stellar account. If
+    /// the signer does not exist for the account, returns zero (`0`).
     pub fn signer_weight(&self, signer: &FixedBinary<32>) -> u32 {
         let env = self.env();
         let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
