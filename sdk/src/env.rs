@@ -250,20 +250,12 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn invoke_contract_external_raw(
-        &self,
-        hf: xdr::HostFunction,
-        args: xdr::ScVec,
-    ) -> RawVal {
+    pub fn invoke_contract_external_raw(&self, hf: xdr::HostFunction, args: xdr::ScVec) -> RawVal {
         self.env_impl.invoke_function_raw(hf, args).unwrap()
     }
 
     #[doc(hidden)]
-    pub fn invoke_contract_external(
-        &self,
-        hf: xdr::HostFunction,
-        args: xdr::ScVec,
-    ) -> xdr::ScVal {
+    pub fn invoke_contract_external(&self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
         self.env_impl.invoke_function(hf, args).unwrap()
     }
 
