@@ -27,7 +27,7 @@ impl Debug for BigInt {
 impl Display for BigInt {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let env = self.env();
-        let bi = self.0.to_tagged();
+        let bi = self.0.to_object();
         let obj: EnvObj = env.bigint_to_radix_be(bi, 10u32.into()).in_env(env);
         if let Ok(bin) = TryInto::<Binary>::try_into(obj) {
             let sign = env.bigint_cmp(bi, env.bigint_from_u64(0));
@@ -55,7 +55,7 @@ impl TryFrom<EnvObj> for BigInt {
     type Error = ConversionError;
 
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::BigInt) {
+        if obj.as_object().is_obj_type(ScObjectType::BigInt) {
             Ok(BigInt(obj))
         } else {
             Err(ConversionError {})
@@ -183,7 +183,7 @@ impl Add for BigInt {
     fn add(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_add(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_add(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -193,7 +193,7 @@ impl Sub for BigInt {
     fn sub(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_sub(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_sub(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -203,7 +203,7 @@ impl Mul for BigInt {
     fn mul(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_mul(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_mul(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -213,7 +213,7 @@ impl Div for BigInt {
     fn div(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_div(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_div(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -223,7 +223,7 @@ impl Rem for BigInt {
     fn rem(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_rem(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_rem(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -233,7 +233,7 @@ impl BitAnd for BigInt {
     fn bitand(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_and(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_and(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -243,7 +243,7 @@ impl BitOr for BigInt {
     fn bitor(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_or(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_or(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -253,7 +253,7 @@ impl BitXor for BigInt {
     fn bitxor(self, rhs: Self) -> Self::Output {
         let env = self.env();
         env.check_same_env(rhs.env());
-        let b = env.bigint_xor(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_xor(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -262,7 +262,7 @@ impl Neg for BigInt {
     type Output = BigInt;
     fn neg(self) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_neg(self.0.to_tagged());
+        let b = env.bigint_neg(self.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -271,7 +271,7 @@ impl Not for BigInt {
     type Output = BigInt;
     fn not(self) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_not(self.0.to_tagged());
+        let b = env.bigint_not(self.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -280,7 +280,7 @@ impl Shl<BigInt> for BigInt {
     type Output = BigInt;
     fn shl(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_shl(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -289,7 +289,7 @@ impl Shr<BigInt> for BigInt {
     type Output = BigInt;
     fn shr(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
-        let b = env.bigint_shl(self.0.to_tagged(), rhs.0.to_tagged());
+        let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 }
@@ -311,7 +311,7 @@ impl Eq for BigInt {}
 impl Ord for BigInt {
     fn cmp(&self, other: &Self) -> Ordering {
         let env = self.env();
-        let v = env.bigint_cmp(self.0.to_tagged(), other.0.to_tagged());
+        let v = env.bigint_cmp(self.0.to_object(), other.0.to_object());
         let i = i32::try_from(v).unwrap();
         i.cmp(&0)
     }
@@ -333,7 +333,7 @@ impl BigInt {
 
     unsafe fn to_u64(&self) -> u64 {
         let env = self.env();
-        env.bigint_to_u64(self.0.to_tagged())
+        env.bigint_to_u64(self.0.to_object())
     }
 
     pub fn from_i64(env: &Env, i: i64) -> BigInt {
@@ -343,7 +343,7 @@ impl BigInt {
 
     unsafe fn to_i64(&self) -> i64 {
         let env = self.env();
-        env.bigint_to_i64(self.0.to_tagged())
+        env.bigint_to_i64(self.0.to_object())
     }
 
     pub fn from_u32(env: &Env, u: u32) -> BigInt {
@@ -353,7 +353,7 @@ impl BigInt {
 
     unsafe fn to_u32(&self) -> u32 {
         let env = self.env();
-        let u = env.bigint_to_u64(self.0.to_tagged());
+        let u = env.bigint_to_u64(self.0.to_object());
         u.try_into().unwrap()
     }
 
@@ -364,49 +364,49 @@ impl BigInt {
 
     unsafe fn to_i32(&self) -> i32 {
         let env = self.env();
-        let i = env.bigint_to_i64(self.0.to_tagged());
+        let i = env.bigint_to_i64(self.0.to_object());
         i.try_into().unwrap()
     }
 
     pub fn gcd(&self, other: BigInt) -> BigInt {
         let env = self.env();
-        let b = env.bigint_gcd(self.0.to_tagged(), other.0.to_tagged());
+        let b = env.bigint_gcd(self.0.to_object(), other.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 
     pub fn lcm(&self, other: BigInt) -> BigInt {
         let env = self.env();
-        let b = env.bigint_lcm(self.0.to_tagged(), other.0.to_tagged());
+        let b = env.bigint_lcm(self.0.to_object(), other.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 
     pub fn pow(&self, k: BigInt) -> BigInt {
         let env = self.env();
-        let b = env.bigint_pow(self.0.to_tagged(), k.0.to_tagged());
+        let b = env.bigint_pow(self.0.to_object(), k.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 
     pub fn pow_mod(&self, q: BigInt, m: BigInt) -> BigInt {
         let env = self.env();
-        let b = env.bigint_pow_mod(self.0.to_tagged(), q.0.to_tagged(), m.0.to_tagged());
+        let b = env.bigint_pow_mod(self.0.to_object(), q.0.to_object(), m.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 
     pub fn sqrt(&self) -> BigInt {
         let env = self.env();
-        let b = env.bigint_sqrt(self.0.to_tagged());
+        let b = env.bigint_sqrt(self.0.to_object());
         Self::try_from_val(env, b).unwrap()
     }
 
     pub fn is_zero(&self) -> bool {
         let env = self.env();
-        let is_zero = env.bigint_is_zero(self.0.to_tagged());
+        let is_zero = env.bigint_is_zero(self.0.to_object());
         bool::try_from(is_zero).unwrap()
     }
 
     pub fn bits(&self) -> u32 {
         let env = self.env();
-        let bits = env.bigint_bits(self.0.to_tagged());
+        let bits = env.bigint_bits(self.0.to_object());
         u32::try_from(bits).unwrap()
     }
 }
