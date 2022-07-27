@@ -17,22 +17,26 @@ mod env;
 
 pub mod xdr;
 
-pub use env::BitSet;
 pub use env::ConversionError;
+
 pub use env::Env;
 pub use env::EnvVal;
-pub use env::IntoVal;
 pub use env::RawVal;
-pub use env::Status;
-pub use env::Symbol;
+
+pub use env::IntoVal;
 pub use env::TryFromVal;
 pub use env::TryIntoVal;
 
-#[doc(hidden)]
+pub use env::BitSet;
+pub use env::Status;
+pub use env::Symbol;
+
 mod envhidden {
     pub use super::env::EnvType;
     pub use super::env::Object;
+    pub use super::env::Status;
 }
+#[doc(hidden)]
 pub use envhidden::*;
 
 mod account;
