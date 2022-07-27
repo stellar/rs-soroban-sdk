@@ -143,11 +143,16 @@ impl TryFrom<Binary> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<EnvType<ScVal>> for Binary {
+impl TryIntoVal<Env, Binary> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let o: Object = v.val.try_into_val(&v.env).map_err(|_| ConversionError)?;
-        EnvObj { val: o, env: v.env }.try_into()
+
+    fn try_into_val(self, env: &Env) -> Result<Binary, Self::Error> {
+        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
+        EnvObj {
+            env: env.clone(),
+            val: o,
+        }
+        .try_into()
     }
 }
 
