@@ -44,7 +44,7 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::binary::{Binary, FixedBinary};
-use crate::Contract;
+use crate::ContractData;
 
 #[derive(Clone)]
 pub struct Env {
@@ -82,8 +82,8 @@ impl Env {
     }
 
     #[inline(always)]
-    pub fn contract_data(&self) -> Contract {
-        Contract::new(self)
+    pub fn contract_data(&self) -> ContractData {
+        ContractData::new(self)
     }
 
     pub fn get_current_contract(&self) -> FixedBinary<32> {
