@@ -814,11 +814,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar-contract-env-panic-handler-wasm32-unreachable"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=3d3adbc7#3d3adbc7ff2cef7811b5269fdf44fdf1d411cc85"
-
-[[package]]
 name = "stellar-contract-macros"
 version = "0.0.0"
 dependencies = [
@@ -838,7 +833,6 @@ dependencies = [
  "hex",
  "stellar-contract-env-guest",
  "stellar-contract-env-host",
- "stellar-contract-env-panic-handler-wasm32-unreachable",
  "stellar-contract-macros",
  "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=94e01c7b)",
  "trybuild",
