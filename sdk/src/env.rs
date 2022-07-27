@@ -251,7 +251,7 @@ impl Env {
 
     #[doc(hidden)]
     pub fn invoke_contract_external_raw(
-        &mut self,
+        &self,
         hf: xdr::HostFunction,
         args: xdr::ScVec,
     ) -> RawVal {
@@ -260,7 +260,7 @@ impl Env {
 
     #[doc(hidden)]
     pub fn invoke_contract_external(
-        &mut self,
+        &self,
         hf: xdr::HostFunction,
         args: xdr::ScVec,
     ) -> xdr::ScVal {
