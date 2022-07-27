@@ -10,9 +10,9 @@ use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::{Env as _, TagObject, TaggedVal},
-    env::{EnvObj, EnvType, IntoTryFromVal},
+    env::{EnvObj, EnvType},
     xdr::ScObjectType,
-    ConversionError, Env, EnvVal, RawVal, TryIntoVal,
+    ConversionError, Env, EnvVal, IntoVal, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[macro_export]
@@ -29,21 +29,30 @@ macro_rules! vec {
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
 
-impl<T: IntoTryFromVal> Eq for Vec<T> {}
+impl<T> Eq for Vec<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
-impl<T: IntoTryFromVal> PartialEq for Vec<T> {
+impl<T> PartialEq for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<T: IntoTryFromVal> PartialOrd for Vec<T> {
+impl<T> PartialOrd for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<T: IntoTryFromVal> Ord for Vec<T> {
+impl<T> Ord for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         let env = self.env();
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
@@ -54,7 +63,7 @@ impl<T: IntoTryFromVal> Ord for Vec<T> {
 
 impl<T> Debug for Vec<T>
 where
-    T: IntoTryFromVal + Debug + Clone,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
     T::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -71,7 +80,10 @@ where
     }
 }
 
-impl<T: IntoTryFromVal> TryFrom<EnvVal> for Vec<T> {
+impl<T> TryFrom<EnvVal> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     type Error = ConversionError;
 
     #[inline(always)]
@@ -81,7 +93,10 @@ impl<T: IntoTryFromVal> TryFrom<EnvVal> for Vec<T> {
     }
 }
 
-impl<T: IntoTryFromVal> TryFrom<EnvObj> for Vec<T> {
+impl<T> TryFrom<EnvObj> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     type Error = ConversionError;
 
     #[inline(always)]
@@ -94,7 +109,10 @@ impl<T: IntoTryFromVal> TryFrom<EnvObj> for Vec<T> {
     }
 }
 
-impl<T: IntoTryFromVal> TryIntoVal<Env, Vec<T>> for RawVal {
+impl<T> TryIntoVal<Env, Vec<T>> for RawVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
@@ -106,20 +124,29 @@ impl<T: IntoTryFromVal> TryIntoVal<Env, Vec<T>> for RawVal {
     }
 }
 
-impl<T: IntoTryFromVal> From<Vec<T>> for RawVal {
+impl<T> From<Vec<T>> for RawVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<T: IntoTryFromVal> From<Vec<T>> for EnvVal {
+impl<T> From<Vec<T>> for EnvVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     fn from(v: Vec<T>) -> Self {
         v.0.into()
     }
 }
 
-impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
+impl<T> From<Vec<T>> for EnvObj
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
@@ -146,7 +173,10 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T: IntoTryFromVal> TryIntoVal<Env, Vec<T>> for ScVal {
+impl<T> TryIntoVal<Env, Vec<T>> for ScVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
         let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
@@ -156,7 +186,10 @@ impl<T: IntoTryFromVal> TryIntoVal<Env, Vec<T>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
+impl<T> TryFrom<EnvType<ScVal>> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
         ScVal::try_into_val(v.val, &v.env)
@@ -190,7 +223,10 @@ impl<T> Vec<T> {
     }
 }
 
-impl<T: IntoTryFromVal> Vec<T> {
+impl<T> Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
         let obj = env.vec_new(().into()).in_env(env);
@@ -385,7 +421,7 @@ impl<T: IntoTryFromVal> Vec<T> {
 
     pub fn iter(&self) -> VecIter<T>
     where
-        T: IntoTryFromVal + Clone,
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
     {
         self.clone().into_iter()
     }
@@ -393,7 +429,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     pub fn iter_unchecked(&self) -> UncheckedIter<VecIter<T>, T, T::Error>
     where
-        T: IntoTryFromVal + Clone,
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
         T::Error: Debug,
     {
         self.iter().unchecked()
@@ -402,7 +438,7 @@ impl<T: IntoTryFromVal> Vec<T> {
     #[inline(always)]
     pub fn into_iter_unchecked(self) -> UncheckedIter<VecIter<T>, T, T::Error>
     where
-        T: IntoTryFromVal + Clone,
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
         T::Error: Debug,
     {
         self.into_iter().unchecked()
@@ -411,7 +447,7 @@ impl<T: IntoTryFromVal> Vec<T> {
 
 impl<T> IntoIterator for Vec<T>
 where
-    T: IntoTryFromVal,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Item = Result<T, T::Error>;
     type IntoIter = VecIter<T>;
@@ -432,7 +468,7 @@ impl<T> VecIter<T> {
 
 impl<T> Iterator for VecIter<T>
 where
-    T: IntoTryFromVal,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Item = Result<T, T::Error>;
 
@@ -458,7 +494,7 @@ where
 
 impl<T> DoubleEndedIterator for VecIter<T>
 where
-    T: IntoTryFromVal,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let len = self.0.len();
@@ -475,11 +511,11 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> FusedIterator for VecIter<T> where T: IntoTryFromVal {}
+impl<T> FusedIterator for VecIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
 impl<T> ExactSizeIterator for VecIter<T>
 where
-    T: IntoTryFromVal,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn len(&self) -> usize {
         self.0.len() as usize
