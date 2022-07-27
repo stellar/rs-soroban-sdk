@@ -37,13 +37,10 @@ impl Contract {
     #[inline(always)]
     pub fn invoking_contract_id(&self) -> FixedBinary<32> {
         let env = self.env();
-        let rv = internal::Env::get_invoking_contract(env).to_raw();
-        let bin = Binary::try_from_val(env, rv).unwrap();
-        bin.try_into().unwrap()
     }
 
     #[inline(always)]
-    pub fn data(&self) -> ContractData {
+    pub fn a(&self) -> ContractData {
         ContractData::new(self.env())
     }
 }

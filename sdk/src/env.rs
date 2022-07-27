@@ -93,7 +93,9 @@ impl Env {
 
     #[deprecated(note = "use contract().invoke_contract_id()")]
     pub fn get_invoking_contract(&self) -> FixedBinary<32> {
-        self.contract().invoking_contract_id()
+        let rv = internal::Env::get_invoking_contract(env).to_raw();
+        let bin = Binary::try_from_val(env, rv).unwrap();
+        bin.try_into().unwrap()
     }
 
     #[deprecated(note = "use contract().data().has(key)")]
