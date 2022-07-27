@@ -10,11 +10,11 @@ use super::{
     env::internal::{Env as _, RawValConvertible},
     env::{EnvObj, EnvType, IntoVal},
     xdr::ScObjectType,
-    ConversionError, Env, EnvVal, Object, RawVal,
+    ConversionError, Env, EnvVal, Object, RawVal, TryIntoVal,
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{env::TryIntoVal, xdr::ScVal};
+use super::xdr::ScVal;
 
 #[macro_export]
 macro_rules! bin {
@@ -88,6 +88,18 @@ impl TryFrom<EnvObj> for Binary {
         } else {
             Err(ConversionError {})
         }
+    }
+}
+
+impl TryIntoVal<Env, Binary> for RawVal {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Binary, Self::Error> {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .try_into()
     }
 }
 
@@ -516,6 +528,18 @@ impl<const N: usize> TryFrom<EnvObj> for FixedBinary<N> {
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         let bin: Binary = obj.try_into()?;
         bin.try_into()
+    }
+}
+
+impl<const N: usize> TryIntoVal<Env, FixedBinary<N>> for RawVal {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<FixedBinary<N>, Self::Error> {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .try_into()
     }
 }
 

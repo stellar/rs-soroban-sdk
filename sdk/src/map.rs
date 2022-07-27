@@ -4,16 +4,13 @@ use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _,
-    env::{EnvObj, IntoTryFromVal},
+    env::{EnvObj, EnvType, IntoTryFromVal},
     xdr::ScObjectType,
-    ConversionError, Env, EnvVal, RawVal, Status, TryFromVal, Vec,
+    ConversionError, Env, EnvVal, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{
-    env::{EnvType, Object, TryIntoVal},
-    xdr::ScVal,
-};
+use super::{env::Object, xdr::ScVal};
 
 #[macro_export]
 macro_rules! map {
@@ -93,6 +90,18 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
         } else {
             Err(ConversionError {})
         }
+    }
+}
+
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryIntoVal<Env, Map<K, V>> for RawVal {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .try_into()
     }
 }
 
