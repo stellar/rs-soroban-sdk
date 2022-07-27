@@ -749,7 +749,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-contract-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dadb9910#dadb9910fa20d047df73a4eba66b10eba7b6a634"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=89140224#8914022467e908a3ff4f5ca90126e6d2f2039aae"
 dependencies = [
  "static_assertions",
  "stellar-contract-env-macros",
@@ -759,7 +759,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dadb9910#dadb9910fa20d047df73a4eba66b10eba7b6a634"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=89140224#8914022467e908a3ff4f5ca90126e6d2f2039aae"
 dependencies = [
  "static_assertions",
  "stellar-contract-env-common",
@@ -768,7 +768,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dadb9910#dadb9910fa20d047df73a4eba66b10eba7b6a634"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=89140224#8914022467e908a3ff4f5ca90126e6d2f2039aae"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -789,7 +789,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-macros"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dadb9910#dadb9910fa20d047df73a4eba66b10eba7b6a634"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=89140224#8914022467e908a3ff4f5ca90126e6d2f2039aae"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -800,7 +800,7 @@ dependencies = [
 [[package]]
 name = "stellar-contract-env-panic-handler-wasm32-unreachable"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=dadb9910#dadb9910fa20d047df73a4eba66b10eba7b6a634"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=89140224#8914022467e908a3ff4f5ca90126e6d2f2039aae"
 
 [[package]]
 name = "stellar-contract-macros"
