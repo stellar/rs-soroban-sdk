@@ -3,7 +3,7 @@ all: check build test
 export RUSTFLAGS=-Dwarnings
 
 doc:
-	cargo +nightly doc --open --no-deps \
+	cargo +nightly doc --no-deps \
 		--package stellar-contract-sdk \
 		--features docs,testutils
 
@@ -32,6 +32,9 @@ check: fmt
 
 watch:
 	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
+
+watch-doc:
+	cargo +nightly watch --clear --watch-when-idle --shell '$(MAKE) doc'
 
 fmt:
 	cargo fmt --all
