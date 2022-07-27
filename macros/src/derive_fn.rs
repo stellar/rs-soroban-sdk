@@ -188,7 +188,7 @@ pub fn derive_fn(
             #[cfg(feature = "testutils")]
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
             pub fn call_external(
-                e: &mut stellar_contract_sdk::Env,
+                e: &stellar_contract_sdk::Env,
                 contract_id: &stellar_contract_sdk::Binary,
                 #(#invoke_args),*
             ) #output {
