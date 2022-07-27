@@ -1,9 +1,9 @@
 use core::{borrow::Borrow, cmp::Ordering, fmt::Debug};
 
 use crate::{
-    env::internal::{Env as _, RawVal, RawValConvertible, TagObject, TaggedVal},
+    env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary, IntoVal,
+    Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary, IntoVal, Object,
 };
 
 #[derive(Clone)]
@@ -149,16 +149,16 @@ impl Account {
         self.0.as_raw()
     }
 
-    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
-        self.0.as_tagged()
+    pub(crate) fn as_object(&self) -> &Object {
+        self.0.as_object()
     }
 
     pub(crate) fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
 
-    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
-        self.0.to_tagged()
+    pub(crate) fn to_object(&self) -> Object {
+        self.0.to_object()
     }
 
     pub fn from_public_key(public_key: &FixedBinary<32>) -> Result<Account, ()> {
@@ -172,25 +172,25 @@ impl Account {
 
     pub fn low_threshold(&self) -> u32 {
         let env = self.env();
-        let val = env.account_get_low_threshold(self.to_tagged());
+        let val = env.account_get_low_threshold(self.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 
     pub fn medium_threshold(&self) -> u32 {
         let env = self.env();
-        let val = env.account_get_medium_threshold(self.to_tagged());
+        let val = env.account_get_medium_threshold(self.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 
     pub fn high_threshold(&self) -> u32 {
         let env = self.env();
-        let val = env.account_get_high_threshold(self.to_tagged());
+        let val = env.account_get_high_threshold(self.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 
     pub fn signer_weight(&self, signer: &FixedBinary<32>) -> u32 {
         let env = self.env();
-        let val = env.account_get_signer_weight(self.to_tagged(), signer.to_tagged());
+        let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
     }
 }

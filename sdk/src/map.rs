@@ -110,7 +110,7 @@ where
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::Map) {
+        if obj.as_object().is_obj_type(ScObjectType::Map) {
             Ok(Map(obj, PhantomData, PhantomData))
         } else {
             Err(ConversionError {})
@@ -242,7 +242,7 @@ where
     #[inline(always)]
     pub fn contains_key(&self, k: K) -> bool {
         let env = self.env();
-        let has = env.map_has(self.0.to_tagged(), k.into_val(env));
+        let has = env.map_has(self.0.to_object(), k.into_val(env));
         has.is_true()
     }
 
@@ -250,9 +250,9 @@ where
     pub fn get(&self, k: K) -> Option<Result<V, V::Error>> {
         let env = self.env();
         let k = k.into_val(env);
-        let has = env.map_has(self.0.to_tagged(), k);
+        let has = env.map_has(self.0.to_object(), k);
         if has.is_true() {
-            let v = env.map_get(self.0.to_tagged(), k);
+            let v = env.map_get(self.0.to_object(), k);
             Some(V::try_from_val(env, v))
         } else {
             None
@@ -262,14 +262,14 @@ where
     #[inline(always)]
     pub fn get_unchecked(&self, k: K) -> Result<V, V::Error> {
         let env = self.env();
-        let v = env.map_get(self.0.to_tagged(), k.into_val(env));
+        let v = env.map_get(self.0.to_object(), k.into_val(env));
         V::try_from_val(env, v)
     }
 
     #[inline(always)]
     pub fn set(&mut self, k: K, v: V) {
         let env = self.env();
-        let map = env.map_put(self.0.to_tagged(), k.into_val(env), v.into_val(env));
+        let map = env.map_put(self.0.to_object(), k.into_val(env), v.into_val(env));
         self.0 = map.in_env(env);
     }
 
@@ -277,9 +277,9 @@ where
     pub fn remove(&mut self, k: K) -> Option<()> {
         let env = self.env();
         let k = k.into_val(env);
-        let has = env.map_has(self.0.to_tagged(), k);
+        let has = env.map_has(self.0.to_object(), k);
         if has.is_true() {
-            let map = env.map_del(self.0.to_tagged(), k);
+            let map = env.map_del(self.0.to_object(), k);
             self.0 = map.in_env(env);
             Some(())
         } else {
@@ -290,35 +290,35 @@ where
     #[inline(always)]
     pub fn remove_unchecked(&mut self, k: K) {
         let env = self.env();
-        let map = env.map_del(self.0.to_tagged(), k.into_val(env));
+        let map = env.map_del(self.0.to_object(), k.into_val(env));
         self.0 = map.in_env(env);
     }
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         let env = self.env();
-        let len = env.map_len(self.0.to_tagged());
+        let len = env.map_len(self.0.to_object());
         len.is_u32_zero()
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
         let env = self.env();
-        let len = env.map_len(self.0.to_tagged());
+        let len = env.map_len(self.0.to_object());
         u32::try_from_val(env, len).unwrap()
     }
 
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
-        let vec = env.map_keys(self.0.to_tagged());
+        let vec = env.map_keys(self.0.to_object());
         Vec::<K>::try_from_val(env, vec).unwrap()
     }
 
     #[inline(always)]
     pub fn values(&self) -> Vec<V> {
         let env = self.env();
-        let vec = env.map_values(self.0.to_tagged());
+        let vec = env.map_values(self.0.to_object());
         Vec::<V>::try_from_val(env, vec).unwrap()
     }
 
@@ -388,8 +388,8 @@ where
         if Status::try_from(key).is_ok() {
             return None;
         }
-        let value = env.map_get(self.0 .0.to_tagged(), key);
-        self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
+        let value = env.map_get(self.0 .0.to_object(), key);
+        self.0 .0.val = env.map_del(self.0 .0.to_object(), key);
         Some(Ok((
             match K::try_from_val(env, key) {
                 Ok(k) => k,
@@ -421,8 +421,8 @@ where
         if Status::try_from(key).is_ok() {
             return None;
         }
-        let value = env.map_get(self.0 .0.to_tagged(), key);
-        self.0 .0.val = env.map_del(self.0 .0.to_tagged(), key);
+        let value = env.map_get(self.0 .0.to_object(), key);
+        self.0 .0.val = env.map_del(self.0 .0.to_object(), key);
         Some(Ok((
             match K::try_from_val(env, key) {
                 Ok(k) => k,

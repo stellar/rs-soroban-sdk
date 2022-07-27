@@ -7,7 +7,7 @@ use core::{
 };
 
 use super::{
-    env::internal::{Env as _, RawValConvertible, TagObject, TaggedVal},
+    env::internal::{Env as _, RawValConvertible},
     env::{EnvObj, EnvType, IntoVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal, TryIntoVal,
@@ -83,7 +83,7 @@ impl TryFrom<EnvObj> for Binary {
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_tagged().is_obj_type(ScObjectType::Binary) {
+        if obj.as_object().is_obj_type(ScObjectType::Binary) {
             Ok(unsafe { Binary::unchecked_new(obj) })
         } else {
             Err(ConversionError {})
@@ -199,16 +199,16 @@ impl Binary {
         self.0.as_raw()
     }
 
-    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
-        self.0.as_tagged()
+    pub(crate) fn as_object(&self) -> &Object {
+        self.0.as_object()
     }
 
     pub(crate) fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
 
-    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
-        self.0.to_tagged()
+    pub(crate) fn to_object(&self) -> Object {
+        self.0.to_object()
     }
 
     #[inline(always)]
@@ -234,7 +234,7 @@ impl Binary {
         let v32: u32 = v.into();
         self.0 = self
             .env()
-            .binary_put(self.0.to_tagged(), i.into(), v32.into())
+            .binary_put(self.0.to_object(), i.into(), v32.into())
             .in_env(self.env());
     }
 
@@ -251,7 +251,7 @@ impl Binary {
     pub fn get_unchecked(&self, i: u32) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_get(self.0.to_tagged(), i.into())
+            .binary_get(self.0.to_object(), i.into())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -259,13 +259,13 @@ impl Binary {
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.env().binary_len(self.0.to_tagged()).is_u32_zero()
+        self.env().binary_len(self.0.to_object()).is_u32_zero()
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
         self.env()
-            .binary_len(self.0.to_tagged())
+            .binary_len(self.0.to_object())
             .try_into()
             .unwrap()
     }
@@ -283,7 +283,7 @@ impl Binary {
     pub fn first_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_front(self.0.to_tagged())
+            .binary_front(self.0.to_object())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -302,7 +302,7 @@ impl Binary {
     pub fn last_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_back(self.0.to_tagged())
+            .binary_back(self.0.to_object())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -321,7 +321,7 @@ impl Binary {
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
         let env = self.env();
-        let bin = env.binary_del(self.0.to_tagged(), i.into());
+        let bin = env.binary_del(self.0.to_object(), i.into());
         self.0 = bin.in_env(env);
     }
 
@@ -329,7 +329,7 @@ impl Binary {
     pub fn push(&mut self, x: u8) {
         let x32: u32 = x.into();
         let env = self.env();
-        let bin = env.binary_push(self.0.to_tagged(), x32.into());
+        let bin = env.binary_push(self.0.to_object(), x32.into());
         self.0 = bin.in_env(env);
     }
 
@@ -337,7 +337,7 @@ impl Binary {
     pub fn pop(&mut self) -> Option<u8> {
         let last = self.last()?;
         let env = self.env();
-        let bin = env.binary_pop(self.0.to_tagged());
+        let bin = env.binary_pop(self.0.to_object());
         self.0 = bin.in_env(env);
         Some(last)
     }
@@ -346,7 +346,7 @@ impl Binary {
     pub fn pop_unchecked(&mut self) -> u8 {
         let last = self.last_unchecked();
         let env = self.env();
-        self.0 = env.binary_pop(self.0.to_tagged()).in_env(env);
+        self.0 = env.binary_pop(self.0.to_object()).in_env(env);
         last
     }
 
@@ -354,14 +354,14 @@ impl Binary {
     pub fn insert(&mut self, i: u32, x: u8) {
         let env = self.env();
         let x32: u32 = x.into();
-        let bin = env.binary_insert(self.0.to_tagged(), i.into(), x32.into());
+        let bin = env.binary_insert(self.0.to_object(), i.into(), x32.into());
         self.0 = bin.in_env(env);
     }
 
     #[inline(always)]
     pub fn append(&mut self, other: &Binary) {
         let env = self.env();
-        let bin = env.binary_append(self.0.to_tagged(), other.0.to_tagged());
+        let bin = env.binary_append(self.0.to_object(), other.0.to_object());
         self.0 = bin.in_env(env);
     }
 
@@ -392,7 +392,7 @@ impl Binary {
             Bound::Unbounded => self.len(),
         };
         let env = self.env();
-        let bin = env.binary_slice(self.0.to_tagged(), start_bound.into(), end_bound.into());
+        let bin = env.binary_slice(self.0.to_object(), start_bound.into(), end_bound.into());
         unsafe { Self::unchecked_new(bin.in_env(env)) }
     }
 
@@ -654,16 +654,16 @@ impl<const N: usize> FixedBinary<N> {
         self.0.as_raw()
     }
 
-    pub(crate) fn as_tagged(&self) -> &TaggedVal<TagObject> {
-        self.0.as_tagged()
+    pub(crate) fn as_object(&self) -> &Object {
+        self.0.as_object()
     }
 
     pub(crate) fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
 
-    pub(crate) fn to_tagged(&self) -> TaggedVal<TagObject> {
-        self.0.to_tagged()
+    pub(crate) fn to_object(&self) -> Object {
+        self.0.to_object()
     }
 
     #[inline(always)]

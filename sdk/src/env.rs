@@ -34,7 +34,6 @@ pub use internal::RawVal;
 pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
-pub use internal::TaggedVal;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
@@ -75,7 +74,7 @@ impl Env {
             self,
             RawVal::from(contract_id).try_into().unwrap(),
             func,
-            args.to_tagged(),
+            args.to_object(),
         );
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
