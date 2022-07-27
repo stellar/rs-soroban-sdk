@@ -134,11 +134,20 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryIntoVal<Env, Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
+        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
+        let env = env.clone();
+        EnvObj { val: o, env }.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Map<K, V> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let o: Object = v.val.try_into_val(&v.env).map_err(|_| ConversionError)?;
-        EnvObj { val: o, env: v.env }.try_into()
+        ScVal::try_into_val(v.val, &v.env)
     }
 }
 
