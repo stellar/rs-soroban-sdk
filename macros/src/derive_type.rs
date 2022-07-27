@@ -399,6 +399,15 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         }
 
         #[cfg(any(test, feature = "testutils"))]
+        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #enum_ident> for stellar_contract_sdk::xdr::ScVec {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
         impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>> for #enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
@@ -412,6 +421,15 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         }
 
         #[cfg(any(test, feature = "testutils"))]
+        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #enum_ident> for stellar_contract_sdk::xdr::ScObject {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
         impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>> for #enum_ident {
             type Error = stellar_contract_sdk::xdr::Error;
             #[inline(always)]
@@ -421,6 +439,15 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 } else {
                     Err(stellar_contract_sdk::xdr::Error::Invalid)
                 }
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #enum_ident> for stellar_contract_sdk::xdr::ScVal {
+            type Error = stellar_contract_sdk::xdr::Error;
+            #[inline(always)]
+            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
