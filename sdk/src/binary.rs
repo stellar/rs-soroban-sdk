@@ -8,7 +8,7 @@ use core::{
 
 use super::{
     env::internal::{Env as _, RawValConvertible},
-    env::{EnvObj, EnvType},
+    env::{EnvObj, EnvType, IntoVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal,
 };
@@ -145,14 +145,24 @@ impl TryFrom<Binary> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl TryIntoVal<Env, Binary> for ScVal {
     type Error = ConversionError;
-
     fn try_into_val(self, env: &Env) -> Result<Binary, Self::Error> {
         let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
-        EnvObj {
-            env: env.clone(),
-            val: o,
-        }
-        .try_into()
+        let env = env.clone();
+        EnvObj { val: o, env }.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<EnvType<ScVal>> for Binary {
+    type Error = ConversionError;
+    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
+        ScVal::try_into_val(v.val, &v.env)
+    }
+}
+
+impl IntoVal<Env, Binary> for &str {
+    fn into_val(self, env: &Env) -> Binary {
+        Binary::from_slice(env, self.as_bytes())
     }
 }
 
@@ -479,10 +489,10 @@ impl<const N: usize> AsRef<Binary> for FixedBinary<N> {
     }
 }
 
-impl<const N: usize> From<EnvType<[u8; N]>> for FixedBinary<N> {
-    fn from(ev: EnvType<[u8; N]>) -> Self {
-        let mut bin = Binary::new(&ev.env);
-        for b in ev.val {
+impl<const N: usize> IntoVal<Env, FixedBinary<N>> for [u8; N] {
+    fn into_val(self, env: &Env) -> FixedBinary<N> {
+        let mut bin = Binary::new(env);
+        for b in self {
             bin.push(b);
         }
         FixedBinary(bin)
@@ -567,10 +577,20 @@ impl<const N: usize> TryFrom<FixedBinary<N>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<const N: usize> TryIntoVal<Env, FixedBinary<N>> for ScVal {
+    type Error = ConversionError;
+    fn try_into_val(self, env: &Env) -> Result<FixedBinary<N>, Self::Error> {
+        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
+        let env = env.clone();
+        EnvObj { val: o, env }.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<const N: usize> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        v.try_into()
+        ScVal::try_into_val(v.val, &v.env)
     }
 }
 
