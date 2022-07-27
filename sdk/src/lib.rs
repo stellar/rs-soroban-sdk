@@ -2,10 +2,6 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
-// This requires running on unstable.
-//#![feature(alloc)]
-//mod alloc;
-
 #[cfg(target_family = "wasm")]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
