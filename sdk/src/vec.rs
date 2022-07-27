@@ -445,6 +445,21 @@ where
     }
 }
 
+impl<T> Vec<Vec<T>>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: Clone,
+{
+    #[inline(always)]
+    pub fn concat(&self) -> Vec<T> {
+        let mut concatenated = vec![self.env()];
+        for vec in self.iter_unchecked() {
+            concatenated.append(&vec);
+        }
+        concatenated
+    }
+}
+
 impl<T> IntoIterator for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -620,6 +635,15 @@ mod test {
         let mut vec_outer = Vec::<Vec<i64>>::new(&env);
         vec_outer.push(vec_inner);
         assert_eq!(vec_outer.len(), 1);
+    }
+
+    #[test]
+    fn test_vec_concat() {
+        let env = Env::default();
+        let vec_1: Vec<i64> = vec![&env, 1, 2, 3];
+        let vec_2: Vec<i64> = vec![&env, 4, 5, 6];
+        let vec = vec![&env, vec_1, vec_2].concat();
+        assert_eq!(vec, vec![&env, 1, 2, 3, 4, 5, 6]);
     }
 
     #[test]
