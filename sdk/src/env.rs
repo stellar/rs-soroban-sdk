@@ -43,6 +43,7 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::binary::{Binary, FixedBinary};
+use crate::ContractData;
 
 #[derive(Clone)]
 pub struct Env {
@@ -79,6 +80,11 @@ impl Env {
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
 
+    #[inline(always)]
+    pub fn contract_data(&self) -> ContractData {
+        ContractData::new(self)
+    }
+
     pub fn get_current_contract(&self) -> FixedBinary<32> {
         internal::Env::get_current_contract(self)
             .in_env(self)
@@ -92,37 +98,43 @@ impl Env {
         bin.try_into().unwrap()
     }
 
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().has(key)")]
     pub fn has_contract_data<K>(&self, key: K) -> bool
     where
         K: IntoVal<Env, RawVal>,
     {
-        let rv = internal::Env::has_contract_data(self, key.into_val(self));
-        rv.try_into().unwrap()
+        self.contract_data().has(key)
     }
 
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().get(key)")]
     pub fn get_contract_data<K, V>(&self, key: K) -> V
     where
         V::Error: Debug,
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::get_contract_data(self, key.into_val(self));
-        V::try_from_val(self, rv).unwrap()
+        self.contract_data().get(key)
     }
 
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().set(key)")]
     pub fn put_contract_data<K, V>(&self, key: K, val: V)
     where
         K: IntoVal<Env, RawVal>,
         V: IntoVal<Env, RawVal>,
     {
-        internal::Env::put_contract_data(self, key.into_val(self), val.into_val(self));
+        self.contract_data().set(key, val);
     }
 
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().remove(key)")]
     pub fn del_contract_data<K>(&self, key: K)
     where
         K: IntoVal<Env, RawVal>,
     {
-        internal::Env::del_contract_data(self, key.into_val(self));
+        self.contract_data().remove(key);
     }
 
     pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
