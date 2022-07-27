@@ -39,12 +39,16 @@ pub use envhidden::*;
 mod account;
 mod bigint;
 mod binary;
+mod contract;
+mod contract_data;
 pub mod iter;
 mod map;
 mod vec;
 pub use account::Account;
 pub use bigint::BigInt;
 pub use binary::{Binary, FixedBinary};
+pub use contract::Contract;
+pub use contract_data::ContractData;
 pub use map::Map;
 pub use vec::Vec;
 

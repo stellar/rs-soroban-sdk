@@ -44,6 +44,7 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::binary::{Binary, FixedBinary};
+use crate::Contract;
 
 #[derive(Clone)]
 pub struct Env {
@@ -80,6 +81,12 @@ impl Env {
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
 
+    #[inline(always)]
+    pub fn contract(&self) -> Contract {
+        Contract::new(self)
+    }
+
+    #[deprecated(note = "use contract().id()")]
     pub fn get_current_contract(&self) -> FixedBinary<32> {
         internal::Env::get_current_contract(self)
             .in_env(self)
@@ -87,43 +94,46 @@ impl Env {
             .unwrap()
     }
 
+    #[deprecated(note = "use contract().invoke_contract_id()")]
     pub fn get_invoking_contract(&self) -> FixedBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Binary::try_from_val(self, rv).unwrap();
         bin.try_into().unwrap()
     }
 
+    #[deprecated(note = "use contract().data().has(key)")]
     pub fn has_contract_data<K>(&self, key: K) -> bool
     where
         K: IntoVal<Env, RawVal>,
     {
-        let rv = internal::Env::has_contract_data(self, key.into_val(self));
-        rv.try_into().unwrap()
+        self.contract().data().has(key)
     }
 
+    #[deprecated(note = "use contract().data().get(key)")]
     pub fn get_contract_data<K, V>(&self, key: K) -> V
     where
         V::Error: Debug,
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::get_contract_data(self, key.into_val(self));
-        V::try_from_val(self, rv).unwrap()
+        self.contract().data().get(key)
     }
 
+    #[deprecated(note = "use contract().data().set(key)")]
     pub fn put_contract_data<K, V>(&self, key: K, val: V)
     where
         K: IntoVal<Env, RawVal>,
         V: IntoVal<Env, RawVal>,
     {
-        internal::Env::put_contract_data(self, key.into_val(self), val.into_val(self));
+        self.contract().data().set(key, val);
     }
 
+    #[deprecated(note = "use contract().data().remove(key)")]
     pub fn del_contract_data<K>(&self, key: K)
     where
         K: IntoVal<Env, RawVal>,
     {
-        internal::Env::del_contract_data(self, key.into_val(self));
+        self.contract().data().remove(key);
     }
 
     pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {

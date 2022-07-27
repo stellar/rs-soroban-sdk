@@ -6,10 +6,10 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn put(e: Env, key: Symbol, val: Symbol) {
-        e.put_contract_data(key, val)
+        e.contract().data().set(key, val)
     }
 
     pub fn del(e: Env, key: Symbol) {
-        e.del_contract_data(key)
+        e.contract().data().remove(key)
     }
 }
