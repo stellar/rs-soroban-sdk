@@ -10,6 +10,6 @@ impl Contract {
         let cid = e.binary_new_from_linear_memory(buff.as_ptr() as u32, 32);
         let fun = Symbol::from_str("vec_err");
         let args = Vec::from_array(&e, [val.into_env_val(&e); 1]);
-        e.call::<Vec<u32>>(cid, fun.into(), args);
+        e.invoke_contract::<Vec<u32>>(cid, fun.into(), args);
     }
 }

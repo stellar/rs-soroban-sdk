@@ -1,5 +1,5 @@
 [package]
-name = "example_vec"
+name = "example_invoke_contract"
 version = "0.0.0"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -14,7 +14,7 @@ stellar-contract-sdk = {path = "../../sdk"}
 
 [dev-dependencies]
 stellar-contract-sdk = {path = "../../sdk", features = ["testutils"]}
-example_vec = {path = ".", features = ["testutils"]}
+example_invoke_contract = {path = ".", features = ["testutils"]}
 
 [features]
 testutils = ["stellar-contract-sdk/testutils"]

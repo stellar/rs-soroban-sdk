@@ -6,7 +6,7 @@ members = [
     "tests/add_i32",
     "tests/add_i64",
     "tests/vec",
-    "tests/call",
+    "tests/invoke_contract",
     "tests/udt",
     "tests/contract_data",
     "tests/create_contract",

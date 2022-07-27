@@ -249,13 +249,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "example_call"
-version = "0.0.0"
-dependencies = [
- "stellar-contract-sdk",
-]
-
-[[package]]
 name = "example_contract_data"
 version = "0.0.0"
 dependencies = [
@@ -268,6 +261,14 @@ name = "example_create_contract"
 version = "0.0.0"
 dependencies = [
  "example_create_contract",
+ "stellar-contract-sdk",
+]
+
+[[package]]
+name = "example_invoke_contract"
+version = "0.0.0"
+dependencies = [
+ "example_invoke_contract",
  "stellar-contract-sdk",
 ]
 
@@ -291,6 +292,7 @@ dependencies = [
 name = "example_vec"
 version = "0.0.0"
 dependencies = [
+ "example_vec",
  "stellar-contract-sdk",
 ]
 
