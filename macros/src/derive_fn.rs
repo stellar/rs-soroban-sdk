@@ -185,6 +185,17 @@ pub fn derive_fn(
                 call_raw(env, #(#slice_args),*)
             }
 
+            pub fn call_internal(
+                e: &stellar_contract_sdk::Env,
+                contract_id: &stellar_contract_sdk::Binary,
+                #(#invoke_args),*
+            ) #output {
+                use stellar_contract_sdk::{EnvVal, IntoVal, Symbol, Vec};
+                let mut args: Vec<EnvVal> = Vec::new(e);
+                #(args.push(#invoke_idents.clone().into_env_val(e));)*
+                e.invoke_contract(contract_id.clone(), Symbol::from_str(#wrap_export_name), args)
+            }
+
             #[cfg(feature = "testutils")]
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
             pub fn call_external(
