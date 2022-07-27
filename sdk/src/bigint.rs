@@ -6,9 +6,9 @@ use core::{
 
 use super::{
     env::internal::{Env as _, EnvBase, RawValConvertible},
-    env::EnvObj,
+    env::{EnvObj, EnvType},
     xdr::ScObjectType,
-    Binary, ConversionError, Env, EnvVal, RawVal, TryFromVal,
+    Binary, ConversionError, Env, EnvVal, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[repr(transparent)]
@@ -60,6 +60,18 @@ impl TryFrom<EnvObj> for BigInt {
         } else {
             Err(ConversionError {})
         }
+    }
+}
+
+impl TryIntoVal<Env, BigInt> for RawVal {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<BigInt, Self::Error> {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .try_into()
     }
 }
 
@@ -130,10 +142,7 @@ impl TryFrom<BigInt> for i32 {
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::{
-    env::{EnvType, TryIntoEnvVal},
-    xdr::ScVal,
-};
+use super::{env::Object, xdr::ScVal};
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&BigInt> for ScVal {
@@ -152,14 +161,20 @@ impl TryFrom<BigInt> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl TryIntoVal<Env, BigInt> for ScVal {
+    type Error = ConversionError;
+    fn try_into_val(self, env: &Env) -> Result<BigInt, Self::Error> {
+        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
+        let env = env.clone();
+        EnvObj { val: o, env }.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryFrom<EnvType<ScVal>> for BigInt {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let ev: EnvObj = v
-            .val
-            .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?;
-        ev.try_into()
+        ScVal::try_into_val(v.val, &v.env)
     }
 }
 

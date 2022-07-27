@@ -10,9 +10,9 @@ use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::{Env as _, TagObject, TaggedVal},
-    env::{EnvObj, IntoTryFromVal},
+    env::{EnvObj, EnvType, IntoTryFromVal},
     xdr::ScObjectType,
-    ConversionError, Env, EnvVal, RawVal,
+    ConversionError, Env, EnvVal, RawVal, TryIntoVal,
 };
 
 #[macro_export]
@@ -94,6 +94,18 @@ impl<T: IntoTryFromVal> TryFrom<EnvObj> for Vec<T> {
     }
 }
 
+impl<T: IntoTryFromVal> TryIntoVal<Env, Vec<T>> for RawVal {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .try_into()
+    }
+}
+
 impl<T: IntoTryFromVal> From<Vec<T>> for RawVal {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
@@ -115,10 +127,7 @@ impl<T: IntoTryFromVal> From<Vec<T>> for EnvObj {
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::{
-    env::{EnvType, TryIntoEnvVal},
-    xdr::ScVal,
-};
+use super::{env::Object, xdr::ScVal};
 
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<&Vec<T>> for ScVal {
@@ -137,14 +146,20 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<T: IntoTryFromVal> TryIntoVal<Env, Vec<T>> for ScVal {
+    type Error = ConversionError;
+    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
+        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
+        let env = env.clone();
+        EnvObj { val: o, env }.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<T: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Vec<T> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let ev: EnvObj = v
-            .val
-            .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?;
-        ev.try_into()
+        ScVal::try_into_val(v.val, &v.env)
     }
 }
 

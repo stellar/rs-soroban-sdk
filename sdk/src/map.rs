@@ -4,16 +4,13 @@ use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _,
-    env::{EnvObj, IntoTryFromVal},
+    env::{EnvObj, EnvType, IntoTryFromVal},
     xdr::ScObjectType,
-    ConversionError, Env, EnvVal, RawVal, Status, TryFromVal, Vec,
+    ConversionError, Env, EnvVal, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{
-    env::{EnvType, TryIntoEnvVal},
-    xdr::ScVal,
-};
+use super::{env::Object, xdr::ScVal};
 
 #[macro_export]
 macro_rules! map {
@@ -96,6 +93,18 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvObj> for Map<K, V> {
     }
 }
 
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryIntoVal<Env, Map<K, V>> for RawVal {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
+        EnvType {
+            env: env.clone(),
+            val: self,
+        }
+        .try_into()
+    }
+}
+
 impl<K: IntoTryFromVal, V: IntoTryFromVal> From<Map<K, V>> for RawVal {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
@@ -134,14 +143,20 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<K: IntoTryFromVal, V: IntoTryFromVal> TryIntoVal<Env, Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
+        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
+        let env = env.clone();
+        EnvObj { val: o, env }.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<K: IntoTryFromVal, V: IntoTryFromVal> TryFrom<EnvType<ScVal>> for Map<K, V> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        let ev: EnvObj = v
-            .val
-            .try_into_env_val(&v.env)
-            .map_err(|_| ConversionError)?;
-        ev.try_into()
+        ScVal::try_into_val(v.val, &v.env)
     }
 }
 
@@ -152,7 +167,7 @@ impl<K: IntoTryFromVal, V: IntoTryFromVal> Map<K, V> {
     }
 
     #[inline(always)]
-    fn env(&self) -> &Env {
+    pub fn env(&self) -> &Env {
         self.0.env()
     }
 
