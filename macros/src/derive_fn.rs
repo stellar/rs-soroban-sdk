@@ -193,7 +193,7 @@ pub fn derive_fn(
                 #(#invoke_args),*
             ) #output {
                 use stellar_contract_sdk::TryIntoVal;
-                e.invoke_contract_external(
+                e.invoke_contract_external_raw(
                     stellar_contract_sdk::xdr::HostFunction::Call,
                     (contract_id, #wrap_export_name, #(#invoke_idents),*).try_into().unwrap()
                 )
