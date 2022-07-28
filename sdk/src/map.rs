@@ -12,6 +12,20 @@ use super::{
 #[cfg(not(target_family = "wasm"))]
 use super::{env::Object, xdr::ScVal};
 
+#[cfg(doc)]
+use crate::ContractData;
+
+/// Create a [Map] with the given key-value pairs.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, Map, map};
+///
+/// let env = Env::default();
+/// let map = map![&env, (1, 10), (2, 20)];
+/// assert_eq!(map.len(), 2);
+/// ```
 #[macro_export]
 macro_rules! map {
     ($env:expr) => {
@@ -22,6 +36,29 @@ macro_rules! map {
     };
 }
 
+/// Map is a key-value dictionary.
+///
+/// The map is stored in the Host and available to the Guest through the
+/// functions defined on Map. Values stored in the Map are transmitted to the
+/// Host as [RawVal]s, and when retrieved from the Map are transmitted back and
+/// converted from [RawVal] back into their type.
+///
+/// The keys and values in a Map are not guaranteed to be of type `K`/`V` and
+/// conversion will fail if they are not. Most functions on Map return a
+/// `Result` due to this.
+///
+/// Map values can be stored as [ContractData], or in other
+/// types like [Vec], [Map], etc.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, Map, map};
+///
+/// let env = Env::default();
+/// let map = map![&env, (1, 10), (2, 20)];
+/// assert_eq!(map.len(), 2);
+/// ```
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct Map<K, V>(EnvObj, PhantomData<K>, PhantomData<V>);
