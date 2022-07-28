@@ -185,11 +185,8 @@ impl Env {
     /// ### TODO
     ///
     /// Return a [Result] instead of panicking.
-    pub fn verify_sig_ed25519(&self, sig: FixedBinary<64>, pk: FixedBinary<32>, msg: Binary) {
-        let sig_obj: Object = RawVal::from(sig).try_into().unwrap();
-        let pk_obj: Object = RawVal::from(pk).try_into().unwrap();
-        let msg_obj: Object = RawVal::from(msg).try_into().unwrap();
-        internal::Env::verify_sig_ed25519(self, msg_obj, pk_obj, sig_obj)
+    pub fn verify_sig_ed25519(&self, pk: FixedBinary<32>, msg: Binary, sig: FixedBinary<64>) {
+        internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
     }
