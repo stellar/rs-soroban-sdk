@@ -298,12 +298,12 @@ impl Env {
     /// # fn main() {
     /// let env = Env::default();
     /// let contract_id = Binary::from_array(&env, [0; 32]);
-    /// env.register_contract(contract_id.clone(), HelloContract);
+    /// env.register_contract(&contract_id, HelloContract);
     /// # }
     /// ```
     pub fn register_contract<T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: Binary,
+        contract_id: &Binary,
         contract: T,
     ) {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
@@ -318,9 +318,11 @@ impl Env {
             }
         }
 
-        let id_obj: Object = RawVal::from(contract_id).try_into().unwrap();
         self.env_impl
-            .register_test_contract(id_obj, Rc::new(InternalContractFunctionSet(contract)))
+            .register_test_contract(
+                contract_id.to_object(),
+                Rc::new(InternalContractFunctionSet(contract)),
+            )
             .unwrap();
     }
 

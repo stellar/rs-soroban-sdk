@@ -124,7 +124,12 @@ pub fn derive_fn(
 
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
-    let mod_ident = format_ident!("__{}", ident);
+    let pub_mod_ident = format_ident!("{}", ident);
+    let hidden_mod_ident = format_ident!("__{}", ident);
+    let deprecated_note = format!(
+        "not intended for use, use {}::invoke instead",
+        &pub_mod_ident
+    );
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
     } else {
@@ -160,16 +165,21 @@ pub fn derive_fn(
 
     // Generated code.
     Ok(quote! {
+        #[doc(hidden)]
         #link_section
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
-        pub mod #mod_ident {
+        #[doc(hidden)]
+        #[deprecated(note = #deprecated_note)]
+        pub mod #hidden_mod_ident {
             use super::*;
 
+            #[deprecated(note = #deprecated_note)]
             #export_name
-            pub fn call_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
+            pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
                 #use_trait;
                 <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
+                    #[allow(deprecated)]
                     #call(
                         #env_call
                         #(#wrap_calls),*
@@ -178,14 +188,22 @@ pub fn derive_fn(
                 )
             }
 
-            pub fn call_raw_slice(
+            #[deprecated(note = #deprecated_note)]
+            pub fn invoke_raw_slice(
                 env: soroban_sdk::Env,
                 args: &[soroban_sdk::RawVal],
             ) -> soroban_sdk::RawVal {
-                call_raw(env, #(#slice_args),*)
+                #[allow(deprecated)]
+                invoke_raw(env, #(#slice_args),*)
             }
 
-            pub fn call_internal(
+            use super::*;
+        }
+
+        pub mod #pub_mod_ident {
+            use super::*;
+
+            pub fn invoke(
                 e: &soroban_sdk::Env,
                 contract_id: &soroban_sdk::Binary,
                 #(#invoke_args),*
@@ -198,7 +216,7 @@ pub fn derive_fn(
 
             #[cfg(feature = "testutils")]
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-            pub fn call_external(
+            pub fn invoke_xdr(
                 e: &soroban_sdk::Env,
                 contract_id: &soroban_sdk::Binary,
                 #(#invoke_args),*
@@ -238,7 +256,8 @@ pub fn derive_contract_function_set<'a>(
             ) -> Option<soroban_sdk::RawVal> {
                 match func.to_str().as_ref() {
                     #(#idents => {
-                        Some(#wrap_idents::call_raw_slice(env, args))
+                        #[allow(deprecated)]
+                        Some(#wrap_idents::invoke_raw_slice(env, args))
                     })*
                     _ => {
                         None
