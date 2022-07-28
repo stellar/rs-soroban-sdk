@@ -379,6 +379,14 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             }
         }
 
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #enum_ident> for soroban_sdk::RawVal {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            }
+        }
+
         impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for #enum_ident {
             #[inline(always)]
             fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
