@@ -1,3 +1,4 @@
+use core::borrow::Borrow;
 use core::fmt::Debug;
 
 #[cfg(target_family = "wasm")]
@@ -90,16 +91,13 @@ impl Env {
     /// Return a [Result] instead of panic.
     pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
         &self,
-        contract_id: Binary,
-        func: Symbol,
+        contract_id: impl Borrow<FixedBinary<32>>,
+        func: impl Borrow<Symbol>,
         args: crate::vec::Vec<EnvVal>,
     ) -> T {
-        let rv = internal::Env::call(
-            self,
-            RawVal::from(contract_id).try_into().unwrap(),
-            func,
-            args.to_object(),
-        );
+        let contract_id = contract_id.borrow();
+        let func = func.borrow();
+        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
 
@@ -197,7 +195,7 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) -> FixedBinary<32> {
+    pub fn create_contract_from_contract(&self, contract: FixedBinary<32>, salt: Binary) -> FixedBinary<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
@@ -284,7 +282,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, Binary, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, FixedBinary, Env, Symbol};
     ///
     /// pub struct HelloContract;
     ///
@@ -297,13 +295,13 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// let contract_id = Binary::from_array(&env, [0; 32]);
+    /// let contract_id = FixedBinary::from_array(&env, [0; 32]);
     /// env.register_contract(&contract_id, HelloContract);
     /// # }
     /// ```
     pub fn register_contract<T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: &Binary,
+        contract_id: &FixedBinary<32>,
         contract: T,
     ) {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
