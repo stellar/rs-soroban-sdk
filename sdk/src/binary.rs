@@ -13,6 +13,9 @@ use super::{
     ConversionError, Env, EnvVal, Object, RawVal, TryIntoVal,
 };
 
+#[cfg(doc)]
+use crate::{ContractData, Map, Vec};
+
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;
 
@@ -26,6 +29,24 @@ macro_rules! bin {
     };
 }
 
+/// Binary is a contiguous growable array type containing `u8`s.
+///
+/// The array is stored in the Host and available to the Guest through the
+/// functions defined on Binary.
+///
+/// Binary values can be stored as [ContractData], or in other
+/// types like [Vec], [Map], etc.
+///
+/// ### Examples
+///
+/// Binary values can be created from slices:
+/// ```
+/// use soroban_sdk::{Binary, Env};
+///
+/// let env = Env::default();
+/// let bin = Binary::from_slice(&env, &[0; 32]);
+/// assert_eq!(bin.len(), 32);
+/// ```
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Binary(EnvObj);
@@ -211,12 +232,14 @@ impl Binary {
         self.0.to_object()
     }
 
+    /// Create an empty Binary.
     #[inline(always)]
     pub fn new(env: &Env) -> Binary {
         let obj = env.binary_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 
+    /// Create a binary from the given `[u8]`.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Binary {
         FixedBinary::from_array(env, items).0
@@ -461,6 +484,34 @@ impl ExactSizeIterator for BinIter {
     }
 }
 
+/// FixedBinary is a contiguous fixed-size array type containing `u8`s.
+///
+/// The array is stored in the Host and available to the Guest through the
+/// functions defined on Binary.
+///
+/// Binary values can be stored as [ContractData], or in other
+/// types like [Vec], [Map], etc.
+///
+/// ### Examples
+///
+/// FixedBinary values can be created from arrays:
+/// ```
+/// use soroban_sdk::{Binary, FixedBinary, Env};
+///
+/// let env = Env::default();
+/// let bin = FixedBinary::from_array(&env, [0; 32]);
+/// assert_eq!(bin.len(), 32);
+/// ```
+///
+/// FixedBinary and Binary values are convertible:
+/// ```
+/// use soroban_sdk::{Binary, FixedBinary, Env};
+///
+/// let env = Env::default();
+/// let bin = Binary::from_slice(&env, &[0; 32]);
+/// let bin: FixedBinary<32> = bin.try_into().expect("bin to have length 32");
+/// assert_eq!(bin.len(), 32);
+/// ```
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct FixedBinary<const N: usize>(Binary);
