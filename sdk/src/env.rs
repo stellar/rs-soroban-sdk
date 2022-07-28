@@ -1,4 +1,3 @@
-use core::borrow::Borrow;
 use core::fmt::Debug;
 
 #[cfg(target_family = "wasm")]
