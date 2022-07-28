@@ -92,6 +92,8 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             value_type: Box::new(map_type(v)?),
                         })))
                     }
+                    // TODO: Add proper support for FixedBinary as a first class spec type.
+                    "FixedBinary" => Ok(ScSpecTypeDef::Binary),
                     _ => Err(Error::new(
                         angle_bracketed.span(),
                         "generics unsupported on user-defined types in contract functions",

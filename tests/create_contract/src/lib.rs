@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Binary, Env};
+use soroban_sdk::{contractimpl, Binary, Env, FixedBinary};
 
 pub struct Contract;
 
@@ -7,7 +7,7 @@ pub struct Contract;
 impl Contract {
     // Note that anyone can create a contract here with any salt, so a users call to
     // this could be frontrun and the same salt taken.
-    pub fn create(e: Env, c: Binary, s: Binary) {
+    pub fn create(e: Env, c: FixedBinary<32>, s: Binary) {
         e.create_contract_from_contract(c, s);
     }
 }
