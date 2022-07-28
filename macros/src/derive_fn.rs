@@ -69,10 +69,10 @@ pub fn derive_fn(
                         subpat: None,
                     })),
                     colon_token: Colon::default(),
-                    ty: Box::new(Type::Verbatim(quote! { stellar_contract_sdk::RawVal })),
+                    ty: Box::new(Type::Verbatim(quote! { soroban_sdk::RawVal })),
                 });
                 let call = quote! {
-                    <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(
+                    <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
                         &env,
                         #ident
                     ).unwrap()
@@ -167,9 +167,9 @@ pub fn derive_fn(
             use super::*;
 
             #export_name
-            pub fn call_raw(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+            pub fn call_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
                 #use_trait;
-                <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
+                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
                     #call(
                         #env_call
                         #(#wrap_calls),*
@@ -179,18 +179,18 @@ pub fn derive_fn(
             }
 
             pub fn call_raw_slice(
-                env: stellar_contract_sdk::Env,
-                args: &[stellar_contract_sdk::RawVal],
-            ) -> stellar_contract_sdk::RawVal {
+                env: soroban_sdk::Env,
+                args: &[soroban_sdk::RawVal],
+            ) -> soroban_sdk::RawVal {
                 call_raw(env, #(#slice_args),*)
             }
 
             pub fn call_internal(
-                e: &stellar_contract_sdk::Env,
-                contract_id: &stellar_contract_sdk::Binary,
+                e: &soroban_sdk::Env,
+                contract_id: &soroban_sdk::Binary,
                 #(#invoke_args),*
             ) #output {
-                use stellar_contract_sdk::{EnvVal, IntoVal, Symbol, Vec};
+                use soroban_sdk::{EnvVal, IntoVal, Symbol, Vec};
                 let mut args: Vec<EnvVal> = Vec::new(e);
                 #(args.push(#invoke_idents.clone().into_env_val(e));)*
                 e.invoke_contract(contract_id.clone(), Symbol::from_str(#wrap_export_name), args)
@@ -199,13 +199,13 @@ pub fn derive_fn(
             #[cfg(feature = "testutils")]
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
             pub fn call_external(
-                e: &stellar_contract_sdk::Env,
-                contract_id: &stellar_contract_sdk::Binary,
+                e: &soroban_sdk::Env,
+                contract_id: &soroban_sdk::Binary,
                 #(#invoke_args),*
             ) #output {
-                use stellar_contract_sdk::TryIntoVal;
+                use soroban_sdk::TryIntoVal;
                 e.invoke_contract_external_raw(
-                    stellar_contract_sdk::xdr::HostFunction::Call,
+                    soroban_sdk::xdr::HostFunction::Call,
                     (contract_id, #wrap_export_name, #(#invoke_idents),*).try_into().unwrap()
                 )
                 .try_into_val(e)
@@ -229,13 +229,13 @@ pub fn derive_contract_function_set<'a>(
         .multiunzip();
     quote! {
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::testutils::ContractFunctionSet for #ty {
+        impl soroban_sdk::testutils::ContractFunctionSet for #ty {
             fn call(
                 &self,
-                func: &stellar_contract_sdk::Symbol,
-                env: stellar_contract_sdk::Env,
-                args: &[stellar_contract_sdk::RawVal],
-            ) -> Option<stellar_contract_sdk::RawVal> {
+                func: &soroban_sdk::Symbol,
+                env: soroban_sdk::Env,
+                args: &[soroban_sdk::RawVal],
+            ) -> Option<soroban_sdk::RawVal> {
                 match func.to_str().as_ref() {
                     #(#idents => {
                         Some(#wrap_idents::call_raw_slice(env, args))

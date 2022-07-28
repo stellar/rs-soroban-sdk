@@ -1,4 +1,4 @@
-use stellar_contract_sdk::contractimpl;
+use soroban_sdk::contractimpl;
 
 pub struct MyType<A>(pub A);
 

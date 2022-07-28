@@ -2,13 +2,13 @@ use core::fmt::Debug;
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
-    pub use stellar_contract_env_guest::*;
+    pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
 }
 
 #[cfg(not(target_family = "wasm"))]
 pub mod internal {
-    pub use stellar_contract_env_host::*;
+    pub use soroban_env_host::*;
     pub type EnvImpl = Host;
 
     #[doc(hidden)]
@@ -261,17 +261,14 @@ impl Env {
             fn get(
                 &self,
                 _key: &xdr::LedgerKey,
-            ) -> Result<xdr::LedgerEntry, stellar_contract_env_host::HostError> {
+            ) -> Result<xdr::LedgerEntry, soroban_env_host::HostError> {
                 use xdr::{ScHostStorageErrorCode, ScStatus};
                 let status: internal::Status =
                     ScStatus::HostStorageError(ScHostStorageErrorCode::UnknownError).into();
                 Err(status.into())
             }
 
-            fn has(
-                &self,
-                _key: &xdr::LedgerKey,
-            ) -> Result<bool, stellar_contract_env_host::HostError> {
+            fn has(&self, _key: &xdr::LedgerKey) -> Result<bool, soroban_env_host::HostError> {
                 Ok(false)
             }
         }
@@ -375,7 +372,7 @@ impl Env {
     where
         F: FnOnce(Env) -> T,
     {
-        use stellar_contract_env_host::events::{DebugArg, HostEvent};
+        use soroban_env_host::events::{DebugArg, HostEvent};
 
         match self.clone_self_and_catch_panic(f) {
             (_, Ok(v)) => panic!("inner function expected to panic, but returned {:?}", v),

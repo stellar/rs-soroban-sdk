@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, contracttype, Vec};
+use soroban_sdk::{contractimpl, contracttype, Vec};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -36,11 +36,11 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::{UdtEnum, UdtStruct, __add};
-    use stellar_contract_sdk::{vec, xdr::ScVal, Binary, Env, IntoVal, TryFromVal};
+    use soroban_sdk::{vec, xdr::ScVal, Binary, Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_serializing() {
-        use stellar_contract_sdk::serde::Serialize;
+        use soroban_sdk::serde::Serialize;
         let e = Env::default();
         let udt = UdtStruct {
             a: 10,

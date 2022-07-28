@@ -43,31 +43,31 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 },
             };
             let map_key = quote! { // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
-                { const k: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name); k }
+                { const k: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#name); k }
             };
             let try_from = quote! {
                 #ident: if let Some(Ok(val)) = map.get(#map_key) {
                     val.try_into_val(env)?
                 } else {
-                    Err(stellar_contract_sdk::ConversionError)?
+                    Err(soroban_sdk::ConversionError)?
                 }
             };
-            let into = quote! { map.set(#map_key, stellar_contract_sdk::EnvVal { env: env.clone(), val: self.#ident.into_val(env) }) };
+            let into = quote! { map.set(#map_key, soroban_sdk::EnvVal { env: env.clone(), val: self.#ident.into_val(env) }) };
             let try_from_xdr = quote! {
                 #ident: {
-                    let key = &#name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
-                    let idx = map.binary_search_by_key(key, |entry| entry.key.clone()).map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
-                    let ev: stellar_contract_sdk::EnvVal = stellar_contract_sdk::EnvVal{
+                    let key = &#name.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let idx = map.binary_search_by_key(key, |entry| entry.key.clone()).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let ev: soroban_sdk::EnvVal = soroban_sdk::EnvVal{
                         env: ev.env.clone(),
-                        val: (&map[idx].val.clone()).try_into_val(&ev.env).map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
+                        val: (&map[idx].val.clone()).try_into_val(&ev.env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?
                     };
-                    ev.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
+                    ev.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?
                 }
             };
             let into_xdr = quote! {
-                stellar_contract_sdk::xdr::ScMapEntry {
-                    key: #name.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
-                    val: (&self.#ident).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
+                soroban_sdk::xdr::ScMapEntry {
+                    key: #name.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    val: (&self.#ident).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 }
             };
             (spec_field, try_from, into, try_from_xdr, into_xdr)
@@ -102,12 +102,12 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     quote! {
         #spec_gen
 
-        impl TryFrom<stellar_contract_sdk::EnvVal> for #ident {
-            type Error = stellar_contract_sdk::ConversionError;
+        impl TryFrom<soroban_sdk::EnvVal> for #ident {
+            type Error = soroban_sdk::ConversionError;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvVal) -> Result<Self, Self::Error> {
-                use stellar_contract_sdk::TryIntoVal;
-                let map: stellar_contract_sdk::Map<stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal> = ev.try_into()?;
+            fn try_from(ev: soroban_sdk::EnvVal) -> Result<Self, Self::Error> {
+                use soroban_sdk::TryIntoVal;
+                let map: soroban_sdk::Map<soroban_sdk::Symbol, soroban_sdk::EnvVal> = ev.try_into()?;
                 let env = map.env();
                 Ok(Self{
                     #(#try_froms,)*
@@ -115,31 +115,31 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             }
         }
 
-        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #ident> for stellar_contract_sdk::RawVal {
-            type Error = stellar_contract_sdk::ConversionError;
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::RawVal {
+            type Error = soroban_sdk::ConversionError;
             #[inline(always)]
-            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#ident, Self::Error> {
-                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
-        impl stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal> for #ident {
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for #ident {
             #[inline(always)]
-            fn into_val(self, env: &stellar_contract_sdk::Env) -> stellar_contract_sdk::RawVal {
-                let mut map = stellar_contract_sdk::Map::<stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal>::new(env);
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
+                let mut map = soroban_sdk::Map::<soroban_sdk::Symbol, soroban_sdk::EnvVal>::new(env);
                 #(#intos;)*
                 map.into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScMap>> for #ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryFrom<soroban_sdk::EnvType<soroban_sdk::xdr::ScMap>> for #ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScMap>) -> Result<Self, Self::Error> {
-                use stellar_contract_sdk::xdr::Validate;
-                use stellar_contract_sdk::EnvType;
-                use stellar_contract_sdk::TryIntoVal;
+            fn try_from(ev: soroban_sdk::EnvType<soroban_sdk::xdr::ScMap>) -> Result<Self, Self::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::EnvType;
+                use soroban_sdk::TryIntoVal;
                 let map = ev.val;
                 map.validate()?;
                 Ok(Self{
@@ -149,111 +149,111 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #ident> for stellar_contract_sdk::xdr::ScMap {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::xdr::ScMap {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#ident, Self::Error> {
-                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>> for #ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryFrom<soroban_sdk::EnvType<soroban_sdk::xdr::ScObject>> for #ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>) -> Result<Self, Self::Error> {
-                if let stellar_contract_sdk::xdr::ScObject::Map(map) = ev.val {
-                    stellar_contract_sdk::EnvType{ env: ev.env, val: map }.try_into()
+            fn try_from(ev: soroban_sdk::EnvType<soroban_sdk::xdr::ScObject>) -> Result<Self, Self::Error> {
+                if let soroban_sdk::xdr::ScObject::Map(map) = ev.val {
+                    soroban_sdk::EnvType{ env: ev.env, val: map }.try_into()
                 } else {
-                    Err(stellar_contract_sdk::xdr::Error::Invalid)
+                    Err(soroban_sdk::xdr::Error::Invalid)
                 }
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #ident> for stellar_contract_sdk::xdr::ScObject {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::xdr::ScObject {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#ident, Self::Error> {
-                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>> for #ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryFrom<soroban_sdk::EnvType<soroban_sdk::xdr::ScVal>> for #ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>) -> Result<Self, Self::Error> {
-                if let stellar_contract_sdk::xdr::ScVal::Object(Some(obj)) = ev.val {
-                    stellar_contract_sdk::EnvType{ env: ev.env, val: obj }.try_into()
+            fn try_from(ev: soroban_sdk::EnvType<soroban_sdk::xdr::ScVal>) -> Result<Self, Self::Error> {
+                if let soroban_sdk::xdr::ScVal::Object(Some(obj)) = ev.val {
+                    soroban_sdk::EnvType{ env: ev.env, val: obj }.try_into()
                 } else {
-                    Err(stellar_contract_sdk::xdr::Error::Invalid)
+                    Err(soroban_sdk::xdr::Error::Invalid)
                 }
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #ident> for stellar_contract_sdk::xdr::ScVal {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#ident, Self::Error> {
-                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScMap> for &#ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScMap> for &#ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScMap, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScMap, Self::Error> {
                 extern crate alloc;
-                stellar_contract_sdk::xdr::ScMap::sorted_from(alloc::vec![
+                soroban_sdk::xdr::ScMap::sorted_from(alloc::vec![
                     #(#into_xdrs,)*
                 ])
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScMap> for #ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScMap> for #ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScMap, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScMap, Self::Error> {
                 (&self).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScObject> for &#ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScObject> for &#ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
-                Ok(stellar_contract_sdk::xdr::ScObject::Map(self.try_into()?))
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScObject, Self::Error> {
+                Ok(soroban_sdk::xdr::ScObject::Map(self.try_into()?))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScObject> for #ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScObject> for #ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScObject, Self::Error> {
                 (&self).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVal> for &#ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScVal> for &#ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
-                Ok(stellar_contract_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScVal, Self::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVal> for #ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScVal> for #ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScVal, Self::Error> {
                 (&self).try_into()
             }
         }
@@ -282,7 +282,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
             let discriminant_const_sym = quote! {
-                const #discriminant_const_sym_ident: stellar_contract_sdk::Symbol = stellar_contract_sdk::Symbol::from_str(#name);
+                const #discriminant_const_sym_ident: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#name);
             };
             let discriminant_const_u64 = quote! {
                 const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();
@@ -309,15 +309,15 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => Self::#ident(
-                        stellar_contract_sdk::EnvVal {
+                        soroban_sdk::EnvVal {
                             env: ev.env.clone(),
-                            val: (&value).try_into_val(&ev.env).map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?,
+                            val: (&value).try_into_val(&ev.env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                         }
                         .try_into()
-                        .map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
                     )
                 };
-                let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)? };
+                let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             } else {
                 let spec_case = ScSpecUdtUnionCaseV0 {
@@ -330,7 +330,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 let try_from = quote! { #discriminant_const_u64_ident => Self::#ident };
                 let into = quote! { Self::#ident => (#discriminant_const_sym_ident, ()).into_val(env) };
                 let try_from_xdr = quote! { #name => Self::#ident };
-                let into_xdr = quote! { #enum_ident::#ident => (#name, ()).try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)? };
+                let into_xdr = quote! { #enum_ident::#ident => (#name, ()).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             }
         })
@@ -364,24 +364,24 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
     quote! {
         #spec_gen
 
-        impl TryFrom<stellar_contract_sdk::EnvVal> for #enum_ident {
-            type Error = stellar_contract_sdk::ConversionError;
+        impl TryFrom<soroban_sdk::EnvVal> for #enum_ident {
+            type Error = soroban_sdk::ConversionError;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvVal) -> Result<Self, Self::Error> {
-                use stellar_contract_sdk::TryIntoVal;
+            fn try_from(ev: soroban_sdk::EnvVal) -> Result<Self, Self::Error> {
+                use soroban_sdk::TryIntoVal;
                 #(#discriminant_consts)*
                 let env = ev.env.clone();
-                let (discriminant, value): (stellar_contract_sdk::Symbol, stellar_contract_sdk::EnvVal) = ev.try_into()?;
+                let (discriminant, value): (soroban_sdk::Symbol, soroban_sdk::EnvVal) = ev.try_into()?;
                 Ok(match discriminant.to_raw().get_payload() {
                     #(#try_froms,)*
-                    _ => Err(stellar_contract_sdk::ConversionError{})?,
+                    _ => Err(soroban_sdk::ConversionError{})?,
                 })
             }
         }
 
-        impl stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal> for #enum_ident {
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for #enum_ident {
             #[inline(always)]
-            fn into_val(self, env: &stellar_contract_sdk::Env) -> stellar_contract_sdk::RawVal {
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
                 #(#discriminant_consts)*
                 match self {
                     #(#intos,)*
@@ -390,80 +390,80 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVec>> for #enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryFrom<soroban_sdk::EnvType<soroban_sdk::xdr::ScVec>> for #enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVec>) -> Result<Self, Self::Error> {
-                use stellar_contract_sdk::xdr::Validate;
-                use stellar_contract_sdk::EnvType;
-                use stellar_contract_sdk::TryIntoVal;
-                let (discriminant, value): (stellar_contract_sdk::xdr::ScSymbol, stellar_contract_sdk::xdr::ScVal) = ev.val.try_into().map_err(|_| stellar_contract_sdk::xdr::Error::Invalid)?;
+            fn try_from(ev: soroban_sdk::EnvType<soroban_sdk::xdr::ScVec>) -> Result<Self, Self::Error> {
+                use soroban_sdk::xdr::Validate;
+                use soroban_sdk::EnvType;
+                use soroban_sdk::TryIntoVal;
+                let (discriminant, value): (soroban_sdk::xdr::ScSymbol, soroban_sdk::xdr::ScVal) = ev.val.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 let discriminant_name: &str = &discriminant.to_string()?;
                 Ok(match discriminant_name {
                     #(#try_from_xdrs,)*
-                    _ => Err(stellar_contract_sdk::xdr::Error::Invalid)?,
+                    _ => Err(soroban_sdk::xdr::Error::Invalid)?,
                 })
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #enum_ident> for stellar_contract_sdk::xdr::ScVec {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #enum_ident> for soroban_sdk::xdr::ScVec {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#enum_ident, Self::Error> {
-                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>> for #enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryFrom<soroban_sdk::EnvType<soroban_sdk::xdr::ScObject>> for #enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScObject>) -> Result<Self, Self::Error> {
-                if let stellar_contract_sdk::xdr::ScObject::Vec(vec) = ev.val {
-                    stellar_contract_sdk::EnvType{ env: ev.env, val: vec }.try_into()
+            fn try_from(ev: soroban_sdk::EnvType<soroban_sdk::xdr::ScObject>) -> Result<Self, Self::Error> {
+                if let soroban_sdk::xdr::ScObject::Vec(vec) = ev.val {
+                    soroban_sdk::EnvType{ env: ev.env, val: vec }.try_into()
                 } else {
-                    Err(stellar_contract_sdk::xdr::Error::Invalid)
+                    Err(soroban_sdk::xdr::Error::Invalid)
                 }
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #enum_ident> for stellar_contract_sdk::xdr::ScObject {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #enum_ident> for soroban_sdk::xdr::ScObject {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#enum_ident, Self::Error> {
-                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>> for #enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryFrom<soroban_sdk::EnvType<soroban_sdk::xdr::ScVal>> for #enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from(ev: stellar_contract_sdk::EnvType<stellar_contract_sdk::xdr::ScVal>) -> Result<Self, Self::Error> {
-                if let stellar_contract_sdk::xdr::ScVal::Object(Some(obj)) = ev.val {
-                    stellar_contract_sdk::EnvType{ env: ev.env, val: obj }.try_into()
+            fn try_from(ev: soroban_sdk::EnvType<soroban_sdk::xdr::ScVal>) -> Result<Self, Self::Error> {
+                if let soroban_sdk::xdr::ScVal::Object(Some(obj)) = ev.val {
+                    soroban_sdk::EnvType{ env: ev.env, val: obj }.try_into()
                 } else {
-                    Err(stellar_contract_sdk::xdr::Error::Invalid)
+                    Err(soroban_sdk::xdr::Error::Invalid)
                 }
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl stellar_contract_sdk::TryIntoVal<stellar_contract_sdk::Env, #enum_ident> for stellar_contract_sdk::xdr::ScVal {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #enum_ident> for soroban_sdk::xdr::ScVal {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &stellar_contract_sdk::Env) -> Result<#enum_ident, Self::Error> {
-                stellar_contract_sdk::EnvType{ env: env.clone(), val: self }.try_into()
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                soroban_sdk::EnvType{ env: env.clone(), val: self }.try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVec> for &#enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScVec> for &#enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVec, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScVec, Self::Error> {
                 extern crate alloc;
                 Ok(match self {
                     #(#into_xdrs,)*
@@ -472,46 +472,46 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVec> for #enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScVec> for #enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVec, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScVec, Self::Error> {
                 (&self).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScObject> for &#enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScObject> for &#enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
-                Ok(stellar_contract_sdk::xdr::ScObject::Vec(self.try_into()?))
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScObject, Self::Error> {
+                Ok(soroban_sdk::xdr::ScObject::Vec(self.try_into()?))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScObject> for #enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScObject> for #enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScObject, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScObject, Self::Error> {
                 (&self).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVal> for &#enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScVal> for &#enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
-                Ok(stellar_contract_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScVal, Self::Error> {
+                Ok(soroban_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<stellar_contract_sdk::xdr::ScVal> for #enum_ident {
-            type Error = stellar_contract_sdk::xdr::Error;
+        impl TryInto<soroban_sdk::xdr::ScVal> for #enum_ident {
+            type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<stellar_contract_sdk::xdr::ScVal, Self::Error> {
+            fn try_into(self) -> Result<soroban_sdk::xdr::ScVal, Self::Error> {
                 (&self).try_into()
             }
         }
