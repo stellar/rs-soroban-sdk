@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, Env, Symbol};
+use soroban_sdk::{contractimpl, Env, Symbol};
 
 pub struct Contract;
 

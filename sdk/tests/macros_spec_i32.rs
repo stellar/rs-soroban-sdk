@@ -2,7 +2,7 @@
 
 use std::io::Cursor;
 
-use stellar_contract_sdk::{contractimpl, Env, IntoVal, TryFromVal};
+use soroban_sdk::{contractimpl, Env, IntoVal, TryFromVal};
 use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;

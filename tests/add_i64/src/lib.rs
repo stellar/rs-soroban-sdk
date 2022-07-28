@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, Env};
+use soroban_sdk::{contractimpl, Env};
 
 // There are two ways to export contract fns:
 
@@ -35,7 +35,7 @@ impl Add2Trait for Add2 {
 #[cfg(test)]
 mod test {
     use super::{Add1, Add2, Add2Trait};
-    use stellar_contract_sdk::Env;
+    use soroban_sdk::Env;
 
     #[test]
     fn test_add() {
@@ -53,7 +53,7 @@ mod test {
 #[cfg(test)]
 mod test_via_val {
     use super::{add1::invoke_raw as add1, add2::invoke_raw as add2};
-    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
+    use soroban_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add_val() {

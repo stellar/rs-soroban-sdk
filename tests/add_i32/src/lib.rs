@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::contractimpl;
+use soroban_sdk::contractimpl;
 
 pub struct Contract;
 
@@ -16,7 +16,7 @@ mod test {
     use std::panic::{catch_unwind, AssertUnwindSafe};
 
     use super::add::invoke_raw as add;
-    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
+    use soroban_sdk::{Env, IntoVal, TryFromVal};
 
     #[test]
     fn test_add() {
@@ -48,7 +48,7 @@ mod proptest {
     use std::{format, panic};
 
     use super::add::invoke_raw as add;
-    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
+    use soroban_sdk::{Env, IntoVal, TryFromVal};
 
     proptest! {
         #[test]

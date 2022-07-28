@@ -80,7 +80,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 pub fn contracttype(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     quote! {
-        #[derive(stellar_contract_sdk::ContractType)]
+        #[derive(soroban_sdk::ContractType)]
         #input
     }
     .into()
