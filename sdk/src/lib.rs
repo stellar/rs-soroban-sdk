@@ -11,7 +11,7 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
 static ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 
-pub use stellar_contract_macros::{contractimpl, contracttype, ContractType};
+pub use soroban_macros::{contractimpl, contracttype, ContractType};
 
 mod env;
 

@@ -10,11 +10,11 @@ crate-type = ["cdylib", "rlib"]
 doctest = false
 
 [dependencies]
-stellar-contract-sdk = {path = "../../sdk"}
+soroban-sdk = {path = "../../sdk"}
 
 [dev-dependencies]
-stellar-contract-sdk = {path = "../../sdk", features = ["testutils"]}
+soroban-sdk = {path = "../../sdk", features = ["testutils"]}
 example_invoke_contract = {path = ".", features = ["testutils"]}
 
 [features]
-testutils = ["stellar-contract-sdk/testutils"]
+testutils = ["soroban-sdk/testutils"]
