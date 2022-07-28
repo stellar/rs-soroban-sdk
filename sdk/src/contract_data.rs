@@ -28,7 +28,7 @@ use crate::{
 /// let key = Symbol::from_str("key");
 /// env.contract_data().set(key, 1);
 /// assert_eq!(contract_data.has(key), true);
-/// assert_eq!(contract_data.get_unchecked::<_, i32>(key), 1);
+/// assert_eq!(contract_data.get::<_, i32>(key), Some(Ok(1)));
 /// #     }
 /// # }
 /// #
