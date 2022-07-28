@@ -768,7 +768,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [u64::MAX].
-    unsafe fn to_u64(&self) -> u64 {
+    pub fn to_u64(&self) -> u64 {
         let env = self.env();
         env.bigint_to_u64(self.0.to_object())
     }
@@ -784,7 +784,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [i64::MAX].
-    unsafe fn to_i64(&self) -> i64 {
+    pub fn to_i64(&self) -> i64 {
         let env = self.env();
         env.bigint_to_i64(self.0.to_object())
     }
@@ -800,7 +800,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [u32::MAX].
-    unsafe fn to_u32(&self) -> u32 {
+    pub fn to_u32(&self) -> u32 {
         let env = self.env();
         let u = env.bigint_to_u64(self.0.to_object());
         u.try_into().unwrap()
@@ -817,7 +817,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [i32::MAX].
-    unsafe fn to_i32(&self) -> i32 {
+    pub fn to_i32(&self) -> i32 {
         let env = self.env();
         let i = env.bigint_to_i64(self.0.to_object());
         i.try_into().unwrap()
