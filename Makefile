@@ -2,10 +2,14 @@ all: check build test
 
 export RUSTFLAGS=-Dwarnings
 
+CARGO_DOC_ARGS?=--open
+
 doc:
-	cargo +nightly doc --no-deps \
+	cargo +nightly doc \
+	    --no-deps \
 		--package soroban-sdk \
-		--features docs,testutils
+		--features docs,testutils \
+		$(CARGO_DOC_ARGS)
 
 test:
 	cargo hack --feature-powerset --exclude-features docs test
@@ -34,7 +38,7 @@ watch:
 	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
 
 watch-doc:
-	cargo +nightly watch --clear --watch-when-idle --shell '$(MAKE) doc'
+	cargo +nightly watch --clear --watch-when-idle --shell '$(MAKE) doc CARGO_DOC_ARGS='
 
 fmt:
 	cargo fmt --all
