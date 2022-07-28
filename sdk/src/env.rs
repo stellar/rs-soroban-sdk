@@ -284,13 +284,13 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use stellar_contract_sdk::{contractimpl, Binary, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, Binary, Env, Symbol};
     ///
     /// pub struct HelloContract;
     ///
     /// #[contractimpl]
     /// impl HelloContract {
-    ///     pub fn hello(env: Env, recipient: stellar_contract_sdk::Symbol) -> stellar_contract_sdk::Symbol {
+    ///     pub fn hello(env: Env, recipient: soroban_sdk::Symbol) -> soroban_sdk::Symbol {
     ///         todo!()
     ///     }
     /// }
