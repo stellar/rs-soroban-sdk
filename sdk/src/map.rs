@@ -13,7 +13,7 @@ use super::{
 use super::{env::Object, xdr::ScVal};
 
 #[cfg(doc)]
-use crate::{ContractData};
+use crate::ContractData;
 
 /// Create a [Map] with the given key-value pairs.
 ///
