@@ -91,12 +91,10 @@ impl Env {
     /// Return a [Result] instead of panic.
     pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
         &self,
-        contract_id: impl Borrow<FixedBinary<32>>,
-        func: impl Borrow<Symbol>,
+        contract_id: &FixedBinary<32>,
+        func: &Symbol,
         args: crate::vec::Vec<EnvVal>,
     ) -> T {
-        let contract_id = contract_id.borrow();
-        let func = func.borrow();
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
