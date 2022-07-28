@@ -14,36 +14,32 @@ use crate::{
 ///
 /// ### Examples
 ///
-#[cfg_attr(
-    feature = "testutils",
-    doc = r##"
-```
-use soroban_sdk::{Env, Symbol};
-
-# use soroban_sdk::{contractimpl, FixedBinary};
-#
-# pub struct Contract;
-#
-# #[contractimpl]
-# impl Contract {
-#     pub fn f(env: Env) {
-let contract_data = env.contract_data();
-let key = Symbol::from_str("key");
-env.contract_data().set(key, 1);
-assert_eq!(contract_data.has(key), true);
-assert_eq!(contract_data.get::<_, i32>(key), Some(Ok(1)));
-#     }
-# }
-#
-# fn main() {
-#     let env = Env::default();
-#     let contract_id = FixedBinary::from_array(&env, [0; 32]);
-#     env.register_contract(&contract_id, Contract);
-#     f::invoke(&env, &contract_id);
-# }
-```
-"##
-)]
+/// ```
+/// #![cfg(feature = "testutils")]
+/// use soroban_sdk::{Env, Symbol};
+///
+/// # use soroban_sdk::{contractimpl, FixedBinary};
+/// #
+/// # pub struct Contract;
+/// #
+/// # #[contractimpl]
+/// # impl Contract {
+/// #     pub fn f(env: Env) {
+/// let contract_data = env.contract_data();
+/// let key = Symbol::from_str("key");
+/// env.contract_data().set(key, 1);
+/// assert_eq!(contract_data.has(key), true);
+/// assert_eq!(contract_data.get::<_, i32>(key), Some(Ok(1)));
+/// #     }
+/// # }
+/// #
+/// # fn main() {
+/// #     let env = Env::default();
+/// #     let contract_id = FixedBinary::from_array(&env, [0; 32]);
+/// #     env.register_contract(&contract_id, Contract);
+/// #     f::invoke(&env, &contract_id);
+/// # }
+/// ```
 #[derive(Clone)]
 pub struct ContractData(Env);
 
