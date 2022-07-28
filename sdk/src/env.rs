@@ -168,7 +168,7 @@ impl Env {
     }
 
     /// Computes a SHA-256 hash.
-    pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
+    pub fn compute_hash_sha256(&self, msg: Binary) -> FixedBinary<32> {
         let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
@@ -185,7 +185,7 @@ impl Env {
     /// ### TODO
     ///
     /// Return a [Result] instead of panicking.
-    pub fn verify_sig_ed25519(&self, sig: Binary, pk: Binary, msg: Binary) {
+    pub fn verify_sig_ed25519(&self, sig: FixedBinary<64>, pk: FixedBinary<32>, msg: Binary) {
         let sig_obj: Object = RawVal::from(sig).try_into().unwrap();
         let pk_obj: Object = RawVal::from(pk).try_into().unwrap();
         let msg_obj: Object = RawVal::from(msg).try_into().unwrap();
