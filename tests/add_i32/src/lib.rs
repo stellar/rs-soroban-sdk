@@ -12,9 +12,9 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{Env, Binary};
+    use soroban_sdk::{Binary, Env};
 
-    use crate::{Contract, add};
+    use crate::{add, Contract};
 
     #[test]
     fn test_add() {

@@ -161,7 +161,7 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
-        let contract_id =Binary::from_array(&e, [0; 32]);
+        let contract_id = Binary::from_array(&e, [0; 32]);
         e.register_contract(&contract_id, Contract);
 
         let udt = UdtStruct {
@@ -169,12 +169,7 @@ mod test {
             b: 12,
             c: vec![&e, 1],
         };
-        let z = add::invoke(
-            &e,
-            &contract_id,
-            &UdtEnum::UdtA,
-            &UdtEnum::UdtB(udt),
-        );
+        let z = add::invoke(&e, &contract_id, &UdtEnum::UdtA, &UdtEnum::UdtB(udt));
         assert_eq!(z, 22);
     }
 

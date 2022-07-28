@@ -2,7 +2,7 @@
 
 use std::io::Cursor;
 
-use soroban_sdk::{contractimpl, Env, Binary};
+use soroban_sdk::{contractimpl, Binary, Env};
 use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;
