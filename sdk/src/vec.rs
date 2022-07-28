@@ -18,6 +18,17 @@ use super::{
 #[cfg(doc)]
 use crate::{Binary, ContractData, Map};
 
+/// Create a [Vec] with the given items.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, vec};
+///
+/// let env = Env::default();
+/// let vec = vec![&env, 0, 1, 2, 3];
+/// assert_eq!(vec.len(), 4);
+/// ```
 #[macro_export]
 macro_rules! vec {
     ($env:expr) => {
@@ -31,7 +42,7 @@ macro_rules! vec {
 /// Vec is a contiguous growable array type.
 ///
 /// The array is stored in the Host and available to the Guest through the
-/// functions defined on Binary. Values stored in the Vec are transmitted to the
+/// functions defined on Vec. Values stored in the Vec are transmitted to the
 /// Host as [RawVal]s, and when retrieved from the Vec are transmitted back and
 /// converted from [RawVal] back into their type.
 ///
@@ -40,7 +51,7 @@ macro_rules! vec {
 ///
 /// To store `u8`s and binary data, use [Binary] instead.
 ///
-/// Binary values can be stored as [ContractData], or in other
+/// Vec values can be stored as [ContractData], or in other
 /// types like [Vec], [Map], etc.
 ///
 /// ### Examples
