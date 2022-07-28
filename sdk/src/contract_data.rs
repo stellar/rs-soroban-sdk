@@ -15,7 +15,6 @@ use crate::{
 /// ### Examples
 ///
 /// ```
-/// #![cfg(feature = "testutils")]
 /// use soroban_sdk::{Env, Symbol};
 ///
 /// # use soroban_sdk::{contractimpl, FixedBinary};
@@ -33,12 +32,15 @@ use crate::{
 /// #     }
 /// # }
 /// #
+/// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
 /// #     let contract_id = FixedBinary::from_array(&env, [0; 32]);
 /// #     env.register_contract(&contract_id, Contract);
 /// #     f::invoke(&env, &contract_id);
 /// # }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
 /// ```
 #[derive(Clone)]
 pub struct ContractData(Env);
