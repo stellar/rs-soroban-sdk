@@ -124,7 +124,12 @@ pub fn derive_fn(
 
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
-    let mod_ident = format_ident!("{}", ident);
+    let pub_mod_ident = format_ident!("{}", ident);
+    let hidden_mod_ident = format_ident!("__{}", ident);
+    let deprecated_note = format!(
+        "not intended for use, use {}::invoke instead",
+        &pub_mod_ident
+    );
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
     } else {
@@ -160,12 +165,17 @@ pub fn derive_fn(
 
     // Generated code.
     Ok(quote! {
+        #[doc(hidden)]
+        #[deprecated(note = "not intended for use")]
         #link_section
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
-        pub mod #mod_ident {
+        #[doc(hidden)]
+        #[deprecated(note = #deprecated_note)]
+        pub mod #hidden_mod_ident {
             use super::*;
 
+            #[deprecated(note = #deprecated_note)]
             #export_name
             pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
                 #use_trait;
@@ -178,6 +188,7 @@ pub fn derive_fn(
                 )
             }
 
+            #[deprecated(note = #deprecated_note)]
             pub fn invoke_raw_slice(
                 env: soroban_sdk::Env,
                 args: &[soroban_sdk::RawVal],
@@ -185,6 +196,10 @@ pub fn derive_fn(
                 invoke_raw(env, #(#slice_args),*)
             }
 
+            use super::*;
+        }
+
+        pub mod #pub_mod_ident {
             use super::*;
 
             pub fn invoke(
@@ -225,7 +240,7 @@ pub fn derive_contract_function_set<'a>(
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
-            let wrap_ident = format_ident!("{}", m.sig.ident);
+            let wrap_ident = format_ident!("__{}", m.sig.ident);
             (ident, wrap_ident)
         })
         .multiunzip();
@@ -240,6 +255,7 @@ pub fn derive_contract_function_set<'a>(
             ) -> Option<soroban_sdk::RawVal> {
                 match func.to_str().as_ref() {
                     #(#idents => {
+                        #[allow(deprecated)]
                         Some(#wrap_idents::invoke_raw_slice(env, args))
                     })*
                     _ => {
