@@ -205,20 +205,20 @@ pub fn derive_fn(
 
             pub fn invoke(
                 e: &soroban_sdk::Env,
-                contract_id: &soroban_sdk::Binary,
+                contract_id: &soroban_sdk::FixedBinary<32>,
                 #(#invoke_args),*
             ) #output {
                 use soroban_sdk::{EnvVal, IntoVal, Symbol, Vec};
                 let mut args: Vec<EnvVal> = Vec::new(e);
                 #(args.push(#invoke_idents.clone().into_env_val(e));)*
-                e.invoke_contract(contract_id.clone(), Symbol::from_str(#wrap_export_name), args)
+                e.invoke_contract(contract_id, Symbol::from_str(#wrap_export_name), args)
             }
 
             #[cfg(feature = "testutils")]
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
             pub fn invoke_xdr(
                 e: &soroban_sdk::Env,
-                contract_id: &soroban_sdk::Binary,
+                contract_id: &soroban_sdk::FixedBinary<32>,
                 #(#invoke_args),*
             ) #output {
                 use soroban_sdk::TryIntoVal;
