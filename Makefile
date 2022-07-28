@@ -4,7 +4,7 @@ export RUSTFLAGS=-Dwarnings
 
 doc:
 	cargo +nightly doc --no-deps \
-		--package stellar-contract-sdk \
+		--package soroban-sdk \
 		--features docs,testutils
 
 test:

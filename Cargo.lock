@@ -237,7 +237,7 @@ version = "0.0.0"
 dependencies = [
  "example_add_i32",
  "proptest",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -245,7 +245,7 @@ name = "example_add_i64"
 version = "0.0.0"
 dependencies = [
  "example_add_i64",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -253,7 +253,7 @@ name = "example_contract_data"
 version = "0.0.0"
 dependencies = [
  "example_contract_data",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -261,7 +261,7 @@ name = "example_create_contract"
 version = "0.0.0"
 dependencies = [
  "example_create_contract",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -269,7 +269,7 @@ name = "example_invoke_contract"
 version = "0.0.0"
 dependencies = [
  "example_invoke_contract",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -277,7 +277,7 @@ name = "example_linear_memory"
 version = "0.0.0"
 dependencies = [
  "example_linear_memory",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -285,7 +285,7 @@ name = "example_udt"
 version = "0.0.0"
 dependencies = [
  "example_udt",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -293,7 +293,7 @@ name = "example_vec"
 version = "0.0.0"
 dependencies = [
  "example_vec",
- "stellar-contract-sdk",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -757,34 +757,28 @@ dependencies = [
 ]
 
 [[package]]
-name = "static_assertions"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
-
-[[package]]
-name = "stellar-contract-env-common"
+name = "soroban-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=79b13dd#79b13dd98968f0cfe8faf36f3ecefab40fbc1920"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
+ "soroban-env-macros",
  "static_assertions",
- "stellar-contract-env-macros",
  "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=94e01c7b)",
 ]
 
 [[package]]
-name = "stellar-contract-env-guest"
+name = "soroban-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=79b13dd#79b13dd98968f0cfe8faf36f3ecefab40fbc1920"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
+ "soroban-env-common",
  "static_assertions",
- "stellar-contract-env-common",
 ]
 
 [[package]]
-name = "stellar-contract-env-host"
+name = "soroban-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=79b13dd#79b13dd98968f0cfe8faf36f3ecefab40fbc1920"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -796,16 +790,16 @@ dependencies = [
  "num-integer",
  "num-traits",
  "sha2 0.10.2",
+ "soroban-env-common",
  "static_assertions",
- "stellar-contract-env-common",
  "thiserror",
  "tinyvec",
 ]
 
 [[package]]
-name = "stellar-contract-env-macros"
+name = "soroban-env-macros"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=79b13dd#79b13dd98968f0cfe8faf36f3ecefab40fbc1920"
+source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -814,7 +808,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar-contract-macros"
+name = "soroban-macros"
 version = "0.0.0"
 dependencies = [
  "darling",
@@ -826,17 +820,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar-contract-sdk"
+name = "soroban-sdk"
 version = "0.0.0"
 dependencies = [
  "ed25519-dalek",
  "hex",
- "stellar-contract-env-guest",
- "stellar-contract-env-host",
- "stellar-contract-macros",
+ "soroban-env-guest",
+ "soroban-env-host",
+ "soroban-macros",
  "stellar-xdr 0.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=94e01c7b)",
  "trybuild",
 ]
+
+[[package]]
+name = "static_assertions"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-xdr"
