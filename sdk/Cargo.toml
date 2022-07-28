@@ -31,4 +31,4 @@ hex = "0.4.3"
 
 [features]
 testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
-docs = []
+docs = ["testutils"]
