@@ -28,7 +28,7 @@ use crate::{
 /// let key = Symbol::from_str("key");
 /// env.contract_data().set(key, 1);
 /// assert_eq!(contract_data.has(key), true);
-/// assert_eq!(contract_data.get::<_, i32>(key), 1);
+/// assert_eq!(contract_data.get_unchecked::<_, i32>(key), 1);
 /// #     }
 /// # }
 /// #
@@ -70,7 +70,7 @@ impl ContractData {
     {
         let env = self.env();
         let rv = internal::Env::has_contract_data(env, key.into_val(env));
-        rv.try_into().unwrap()
+        rv.is_true()
     }
 
     /// Returns the value there is a value stored for the given key in the
@@ -86,7 +86,31 @@ impl ContractData {
     ///
     /// Add safe checked versions of these functions.
     #[inline(always)]
-    pub fn get<K, V>(&self, key: K) -> V
+    pub fn get<K, V>(&self, key: K) -> Option<Result<V, V::Error>>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, RawVal>,
+        V: TryFromVal<Env, RawVal>,
+    {
+        let env = self.env();
+        let key = key.into_val(env);
+        let has = internal::Env::has_contract_data(env, key);
+        if has.is_true() {
+            let rv = internal::Env::get_contract_data(env, key);
+            Some(V::try_from_val(env, rv))
+        } else {
+            None
+        }
+    }
+
+    /// Returns the value there is a value stored for the given key in the
+    /// currently executing contracts data.
+    ///
+    /// ### Panics
+    ///
+    /// When the key does not have a value stored.
+    #[inline(always)]
+    pub fn get_unchecked<K, V>(&self, key: K) -> Result<V, V::Error>
     where
         V::Error: Debug,
         K: IntoVal<Env, RawVal>,
@@ -94,8 +118,7 @@ impl ContractData {
     {
         let env = self.env();
         let rv = internal::Env::get_contract_data(env, key.into_val(env));
-        // TODO: Return Result.
-        V::try_from_val(env, rv).unwrap()
+        V::try_from_val(env, rv)
     }
 
     /// Sets the value for the given key in the currently executing contracts
