@@ -191,8 +191,8 @@ impl Env {
     #[doc(hidden)]
     pub fn create_contract_from_contract(
         &self,
-        contract: FixedBinary<32>,
-        salt: Binary,
+        contract: Binary,
+        salt: FixedBinary<32>,
     ) -> FixedBinary<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
