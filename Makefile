@@ -4,7 +4,7 @@ export RUSTFLAGS=-Dwarnings
 
 CARGO_DOC_ARGS?=--open
 
-doc:
+doc: fmt
 	cargo test --doc --features testutils
 	cargo +nightly doc \
 	    --no-deps \
@@ -12,10 +12,10 @@ doc:
 		--features docs,testutils \
 		$(CARGO_DOC_ARGS)
 
-test:
+test: fmt
 	cargo hack --feature-powerset --exclude-features docs test
 
-build:
+build: fmt
 	cargo build --target wasm32-unknown-unknown --release
 	CARGO_TARGET_DIR=target-tiny cargo +nightly build --target wasm32-unknown-unknown --release \
 		-Z build-std=std,panic_abort \
