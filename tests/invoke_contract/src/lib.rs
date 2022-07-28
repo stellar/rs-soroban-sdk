@@ -11,6 +11,6 @@ impl Contract {
         let cid: FixedBinary<32> = cid.try_into().unwrap();
         let fun = Symbol::from_str("vec_err");
         let args = Vec::from_array(&e, [val.into_env_val(&e); 1]);
-        let _: Vec<u32> = e.invoke_contract(cid, fun, args);
+        let _: Vec<u32> = e.invoke_contract(&cid, &fun, args);
     }
 }
