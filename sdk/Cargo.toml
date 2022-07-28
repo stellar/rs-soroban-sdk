@@ -13,15 +13,11 @@ soroban-macros = { path = "../macros" }
 ed25519-dalek = { version = "1.0.1", optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]
-soroban-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "36a5007" }
-# switch to this once the repos are renamed
-# soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
 # soroban-env-guest = { path = "../../rs-soroban-env/soroban-env-guest" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "36a5007" }
-# switch to this once the repos are renamed
-# soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
 # soroban-env-host = { path = "../../rs-soroban-env/soroban-env-host" }
 
 [dev-dependencies]
