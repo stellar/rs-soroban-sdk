@@ -142,7 +142,7 @@ impl Env {
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
-        self.contract_data().get(key)
+        self.contract_data().get_unchecked(key).unwrap()
     }
 
     #[doc(hidden)]
