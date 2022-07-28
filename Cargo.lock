@@ -759,7 +759,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
  "soroban-env-macros",
  "static_assertions",
@@ -769,7 +769,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -778,7 +778,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -799,7 +799,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-contract-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
 dependencies = [
  "proc-macro2",
  "quote",
