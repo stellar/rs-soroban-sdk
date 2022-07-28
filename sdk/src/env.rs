@@ -45,6 +45,14 @@ pub type EnvObj = internal::EnvVal<Env, Object>;
 use crate::binary::{Binary, FixedBinary};
 use crate::ContractData;
 
+/// The [Env] type provides access to the environment the contract is executing
+/// within.
+///
+/// The [Env] provides access to information about the currently executing
+/// contract, who invoked it, contract data, functions for signing, hashing,
+/// etc.
+///
+/// Most types require access to an [Env] to be constructed or converted.
 #[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
@@ -65,6 +73,21 @@ impl Default for Env {
 }
 
 impl Env {
+    /// Invokes a function of a contract that is registered in the [Env].
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the `contract_id` does not match a registered contract,
+    /// `func` does not match a function of the referenced contract, or the
+    /// number of `args` do not match the argument count of the referenced
+    /// contract function.
+    ///
+    /// Will also panic if the value returned from the contract cannot be
+    /// converted into the type `T`.
+    ///
+    /// ### TODO
+    ///
+    /// Return a [Result] instead of panic.
     pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
         &self,
         contract_id: Binary,
@@ -80,11 +103,14 @@ impl Env {
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
 
+    /// Get a [ContractData] for accessing and update contract data that has
+    /// been stored by the currently executing contract.
     #[inline(always)]
     pub fn contract_data(&self) -> ContractData {
         ContractData::new(self)
     }
 
+    /// Get the 32-byte hash identifier of the current executing contract.
     pub fn get_current_contract(&self) -> FixedBinary<32> {
         internal::Env::get_current_contract(self)
             .in_env(self)
@@ -92,6 +118,12 @@ impl Env {
             .unwrap()
     }
 
+    /// Get the 32-byte hash identifier of the contract that invoked this
+    /// contract.
+    ///
+    /// # Panics
+    ///
+    /// Will panic the contract was not invoked by another contract.
     pub fn get_invoking_contract(&self) -> FixedBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Binary::try_from_val(self, rv).unwrap();
@@ -137,11 +169,24 @@ impl Env {
         self.contract_data().remove(key);
     }
 
+    /// Computes a SHA-256 hash.
     pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
         let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
+    /// Verifies an ed25519 signature.
+    ///
+    /// The ed25519 siganture (`sig`) is verified as a valid signature of the
+    /// message (`msg`) by the ed25519 public key (`pk`).
+    ///
+    /// ### Panics
+    ///
+    /// Will panic if the siganture verification fails.
+    ///
+    /// ### TODO
+    ///
+    /// Return a [Result] instead of panicking.
     pub fn verify_sig_ed25519(&self, sig: Binary, pk: Binary, msg: Binary) {
         let sig_obj: Object = RawVal::from(sig).try_into().unwrap();
         let pk_obj: Object = RawVal::from(pk).try_into().unwrap();
@@ -235,6 +280,27 @@ impl Env {
         }
     }
 
+    /// Register a contract with the [Env] for testing.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, Binary, Env, Symbol};
+    ///
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn hello(env: Env, recipient: soroban_sdk::Symbol) -> soroban_sdk::Symbol {
+    ///         todo!()
+    ///     }
+    /// }
+    ///
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = Binary::from_array(&env, [0; 32]);
+    /// env.register_contract(contract_id.clone(), HelloContract);
+    /// # }
+    /// ```
     pub fn register_contract<T: ContractFunctionSet + 'static>(
         &self,
         contract_id: Binary,
