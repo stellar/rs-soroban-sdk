@@ -27,6 +27,7 @@ pub use env::IntoVal;
 pub use env::TryFromVal;
 pub use env::TryIntoVal;
 
+pub use env::Status;
 pub use env::Symbol;
 
 mod envhidden {
