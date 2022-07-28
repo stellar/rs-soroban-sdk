@@ -789,19 +789,17 @@ impl<const N: usize> TryFrom<Binary> for [u8; N] {
 
     fn try_from(bin: Binary) -> Result<Self, Self::Error> {
         let fixed: FixedBinary<N> = bin.try_into()?;
-        fixed.try_into()
+        Ok(fixed.into())
     }
 }
 
-impl<const N: usize> TryFrom<FixedBinary<N>> for [u8; N] {
-    type Error = ConversionError;
-
-    fn try_from(bin: FixedBinary<N>) -> Result<Self, Self::Error> {
+impl<const N: usize> From<FixedBinary<N>> for [u8; N] {
+    fn from(bin: FixedBinary<N>) -> Self {
         let mut res = [0u8; N];
         for (i, b) in bin.into_iter().enumerate() {
             res[i] = b;
         }
-        Ok(res)
+        res
     }
 }
 
