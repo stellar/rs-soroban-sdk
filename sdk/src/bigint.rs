@@ -113,7 +113,7 @@ impl TryFrom<BigInt> for u64 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= u64::BITS {
-            Ok(unsafe { b.to_u64() })
+            Ok(b.to_u64())
         } else {
             Err(())
         }
@@ -137,7 +137,7 @@ impl TryFrom<BigInt> for i64 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= i64::BITS {
-            Ok(unsafe { b.to_i64() })
+            Ok(b.to_i64())
         } else {
             Err(())
         }
@@ -161,7 +161,7 @@ impl TryFrom<BigInt> for u32 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= u32::BITS {
-            Ok(unsafe { b.to_u32() })
+            Ok(b.to_u32())
         } else {
             Err(())
         }
@@ -185,7 +185,7 @@ impl TryFrom<BigInt> for i32 {
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
         if b.bits() <= i32::BITS {
-            Ok(unsafe { b.to_i32() })
+            Ok(b.to_i32())
         } else {
             Err(())
         }
@@ -768,7 +768,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [u64::MAX].
-    unsafe fn to_u64(&self) -> u64 {
+    pub fn to_u64(&self) -> u64 {
         let env = self.env();
         env.bigint_to_u64(self.0.to_object())
     }
@@ -784,7 +784,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [i64::MAX].
-    unsafe fn to_i64(&self) -> i64 {
+    pub fn to_i64(&self) -> i64 {
         let env = self.env();
         env.bigint_to_i64(self.0.to_object())
     }
@@ -800,7 +800,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [u32::MAX].
-    unsafe fn to_u32(&self) -> u32 {
+    pub fn to_u32(&self) -> u32 {
         let env = self.env();
         let u = env.bigint_to_u64(self.0.to_object());
         u.try_into().unwrap()
@@ -817,7 +817,7 @@ impl BigInt {
     /// ### Panics
     ///
     /// When the [BigInt] is greater than [i32::MAX].
-    unsafe fn to_i32(&self) -> i32 {
+    pub fn to_i32(&self) -> i32 {
         let env = self.env();
         let i = env.bigint_to_i64(self.0.to_object());
         i.try_into().unwrap()
