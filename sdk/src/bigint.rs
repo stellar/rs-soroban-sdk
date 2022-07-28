@@ -757,6 +757,11 @@ impl BigInt {
         self.0.env()
     }
 
+    /// Creates a [BigInt] with the value zero.
+    pub fn zero(env: &Env) -> BigInt {
+        BigInt::from_u32(env, 0)
+    }
+
     /// Creates a [BigInt] with the value of the [u64].
     pub fn from_u64(env: &Env, u: u64) -> BigInt {
         let obj = env.bigint_from_u64(u).in_env(env);
