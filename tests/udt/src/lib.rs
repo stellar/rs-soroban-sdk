@@ -35,8 +35,8 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use super::{add, UdtEnum, UdtStruct};
-    use soroban_sdk::{vec, xdr::ScVal, Binary, Env, IntoVal, TryFromVal};
+    use super::*;
+    use soroban_sdk::{vec, xdr::ScVal, Binary, Env, TryFromVal};
 
     #[test]
     fn test_serializing() {
@@ -161,17 +161,20 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
+        let contract_id =Binary::from_array(&e, [0; 32]);
+        e.register_contract(&contract_id, Contract);
+
         let udt = UdtStruct {
             a: 10,
             b: 12,
             c: vec![&e, 1],
         };
-        let z = add::invoke_raw(
-            e.clone(),
-            UdtEnum::UdtA.into_val(&e),
-            UdtEnum::UdtB(udt).into_val(&e),
+        let z = add::invoke(
+            &e,
+            &contract_id,
+            &UdtEnum::UdtA,
+            &UdtEnum::UdtB(udt),
         );
-        let z = i64::try_from_val(&e, z).unwrap();
         assert_eq!(z, 22);
     }
 

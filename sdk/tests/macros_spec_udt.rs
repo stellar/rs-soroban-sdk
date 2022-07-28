@@ -27,7 +27,7 @@ impl Contract {
 fn test_functional() {
     let e = Env::default();
     let contract_id = Binary::from_array(&e, [0; 32]);
-    e.register_contract(contract_id, Contract);
+    e.register_contract(&contract_id, Contract);
 
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };

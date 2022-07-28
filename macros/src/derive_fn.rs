@@ -166,7 +166,6 @@ pub fn derive_fn(
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
-        #[deprecated(note = "not intended for use")]
         #link_section
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
@@ -180,6 +179,7 @@ pub fn derive_fn(
             pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
                 #use_trait;
                 <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
+                    #[allow(deprecated)]
                     #call(
                         #env_call
                         #(#wrap_calls),*
@@ -193,6 +193,7 @@ pub fn derive_fn(
                 env: soroban_sdk::Env,
                 args: &[soroban_sdk::RawVal],
             ) -> soroban_sdk::RawVal {
+                #[allow(deprecated)]
                 invoke_raw(env, #(#slice_args),*)
             }
 
