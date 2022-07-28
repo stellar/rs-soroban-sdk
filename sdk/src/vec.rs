@@ -15,6 +15,9 @@ use super::{
     ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
+#[cfg(doc)]
+use crate::{Binary, ContractData, Map};
+
 #[macro_export]
 macro_rules! vec {
     ($env:expr) => {
@@ -25,6 +28,30 @@ macro_rules! vec {
     };
 }
 
+/// Vec is a contiguous growable array type.
+///
+/// The array is stored in the Host and available to the Guest through the
+/// functions defined on Binary. Values stored in the Vec are transmitted to the
+/// Host as [RawVal]s, and when retrieved from the Vec are transmitted back and
+/// converted from [RawVal] back into their type.
+///
+/// The values in a Vec are not guaranteed to be of type `T` and conversion will
+/// fail if they are not. Most functions on Vec return a `Result` due to this.
+///
+/// To store `u8`s and binary data, use [Binary] instead.
+///
+/// Binary values can be stored as [ContractData], or in other
+/// types like [Vec], [Map], etc.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Binary, Env, vec};
+///
+/// let env = Env::default();
+/// let vec = vec![&env, 0, 1, 2, 3];
+/// assert_eq!(vec.len(), 4);
+/// ```
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);

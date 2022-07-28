@@ -5,6 +5,7 @@ export RUSTFLAGS=-Dwarnings
 CARGO_DOC_ARGS?=--open
 
 doc:
+	cargo test --doc --features testutils
 	cargo +nightly doc \
 	    --no-deps \
 		--package soroban-sdk \
