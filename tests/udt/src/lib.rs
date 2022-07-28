@@ -35,7 +35,7 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use super::{UdtEnum, UdtStruct, __add};
+    use super::{add, UdtEnum, UdtStruct};
     use stellar_contract_sdk::{vec, xdr::ScVal, Binary, Env, IntoVal, TryFromVal};
 
     #[test]
@@ -166,7 +166,7 @@ mod test {
             b: 12,
             c: vec![&e, 1],
         };
-        let z = __add::invoke_raw(
+        let z = add::invoke_raw(
             e.clone(),
             UdtEnum::UdtA.into_val(&e),
             UdtEnum::UdtB(udt).into_val(&e),

@@ -28,7 +28,7 @@ fn test_functional() {
     let e = Env::default();
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };
-    let c = __add::invoke_raw(e.clone(), a.into_val(&e), b.into_val(&e));
+    let c = add::invoke_raw(e.clone(), a.into_val(&e), b.into_val(&e));
     let c = <(Udt, Udt)>::try_from_val(&e, c).unwrap();
     assert_eq!(c, (a, b));
 }

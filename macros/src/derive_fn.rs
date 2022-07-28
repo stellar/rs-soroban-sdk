@@ -124,8 +124,7 @@ pub fn derive_fn(
 
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
-    let mod_ident = format_ident!("__{}", ident);
-    let pub_mod_ident = format_ident!("{}", ident);
+    let mod_ident = format_ident!("{}", ident);
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
     } else {
@@ -185,9 +184,7 @@ pub fn derive_fn(
             ) -> stellar_contract_sdk::RawVal {
                 invoke_raw(env, #(#slice_args),*)
             }
-        }
 
-        pub mod #pub_mod_ident {
             use super::*;
 
             pub fn invoke(
@@ -228,7 +225,7 @@ pub fn derive_contract_function_set<'a>(
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
-            let wrap_ident = format_ident!("__{}", m.sig.ident);
+            let wrap_ident = format_ident!("{}", m.sig.ident);
             (ident, wrap_ident)
         })
         .multiunzip();
