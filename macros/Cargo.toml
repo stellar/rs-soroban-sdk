@@ -1,8 +1,12 @@
 [package]
-name = "soroban-macros"
-version = "0.0.0"
+name = "soroban-sdk-macros"
+description = "Soroban SDK macros."
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
 license = "Apache-2.0"
+version = "0.0.2"
 edition = "2021"
 
 [lib]
@@ -10,7 +14,7 @@ proc-macro = true
 doctest = false
 
 [dependencies]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "94e01c7b", features = ["next", "std"] }
+stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
 syn = {version="1.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
