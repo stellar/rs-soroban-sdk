@@ -52,7 +52,7 @@ clean:
 # all feature and target combinations.
 publish-dry-run-sdk:
 	cargo +stable hack --feature-powerset publish --locked --dry-run --exclude-features docs --package soroban-sdk
-	cargo +stable hack --feature-powerset publish --locked --dry-run --exclude-features docs --package soroban-sdk --target wasm32-unknown-unknown
+	cargo +stable hack --feature-powerset publish --locked --dry-run --exclude-features docs,testutils --package soroban-sdk --target wasm32-unknown-unknown
 
 publish-dry-run-sdk-macros:
 	cd macros && cargo +stable hack --feature-powerset publish --locked --dry-run --package soroban-sdk-macros
