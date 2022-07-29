@@ -761,8 +761,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "babde8e34ff81a36aafee7aabae314876428d7b9272e34da22b961c255557f75"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=79d72084#79d7208451b7f20de3d7d439b68f498ab8f9814a"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -771,8 +770,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49fde8f0d905735286e1788f2c602877f7eb8d87d1ec2a9d429ca407719f61bf"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=79d72084#79d7208451b7f20de3d7d439b68f498ab8f9814a"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -836,8 +834,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-xdr"
 version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "015594b09942b9f9cbe6972ba8c7de3a05a25c4994bbc7282f5f2fa6d28a81c4"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=28a28dc0#28a28dc04056027a8814872932e84a71261e389a"
 
 [[package]]
 name = "strsim"
@@ -1052,18 +1049,3 @@ dependencies = [
  "syn",
  "synstructure",
 ]
-
-[[patch.unused]]
-name = "soroban-env-guest"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
-
-[[patch.unused]]
-name = "soroban-env-host"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=36a5007#36a5007611ab095f7821bef00d3fae2953c9ad47"
-
-[[patch.unused]]
-name = "stellar-xdr"
-version = "0.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=94e01c7b#94e01c7bbb3622e12907e1ceb95ab85f4e55e085"

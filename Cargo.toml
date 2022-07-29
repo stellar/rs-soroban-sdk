@@ -31,9 +31,9 @@ exclude = ["macros"]
 [patch.crates-io]
 soroban-sdk = { path = "sdk" }
 soroban-sdk-macros = { path = "macros" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "94e01c7b" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "79d72084" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "79d72084" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "28a28dc0" }
 
 [profile.dev]
 overflow-checks = true
