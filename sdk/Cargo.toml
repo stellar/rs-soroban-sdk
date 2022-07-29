@@ -6,21 +6,21 @@ repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
 license = "Apache-2.0"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-soroban-sdk-macros = { version = "0.0.1" }
+soroban-sdk-macros = { version = "0.0.2" }
 ed25519-dalek = { version = "1.0.1", optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]
-soroban-env-guest = { version = "0.0.1" }
+soroban-env-guest = { version = "0.0.2" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { version = "0.0.1" }
+soroban-env-host = { version = "0.0.2" }
 
 [dev-dependencies]
 stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
