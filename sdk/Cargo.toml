@@ -6,14 +6,14 @@ repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
 license = "Apache-2.0"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-soroban-sdk-macros = { version = "0.0.2" }
+soroban-sdk-macros = { version = "0.0.3" }
 ed25519-dalek = { version = "1.0.1", optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]
