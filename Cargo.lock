@@ -749,9 +749,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "0.0.2"
+version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f11f233f755afa1ac6a3c50c31f8b85a59cfbb9a30e025aec8959b7967c004fb"
+checksum = "9f2a07a2f4c8f684b5e0bc1013937339300d6c8112b76c6c46bbefc47bdd5905"
 dependencies = [
  "soroban-env-macros",
  "static_assertions",
@@ -760,9 +760,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "0.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "babde8e34ff81a36aafee7aabae314876428d7b9272e34da22b961c255557f75"
+version = "0.0.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -770,9 +769,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "0.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49fde8f0d905735286e1788f2c602877f7eb8d87d1ec2a9d429ca407719f61bf"
+version = "0.0.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -792,9 +790,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "0.0.2"
+version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "58562bdbd7ae83f46fda8a25a0ba0aa88ebb4bba638851ea32c8a3e4c27207b0"
+checksum = "92e07a8cf5452fce96ce19df1ba6874e6f92b2dc64302c71aa8460349c08cedc"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1051,13 +1049,3 @@ dependencies = [
  "syn",
  "synstructure",
 ]
-
-[[patch.unused]]
-name = "soroban-env-guest"
-version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
-
-[[patch.unused]]
-name = "soroban-env-host"
-version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
