@@ -60,7 +60,7 @@ publish-dry-run-sdk-macros:
 # Publish publishes the crate to crates.io. The dry-run is a dependency because
 # the dry-run target will verify all feature set combinations.
 publish-sdk: publish-dry-run-sdk
-	cargo +stable publish --locked --exclude-features docs --package soroban-sdk
+	cargo +stable publish --locked --package soroban-sdk
 
 publish-sdk-macros: publish-dry-run-sdk-macros
 	cd macros && cargo +stable publish --locked --package soroban-sdk-macros
