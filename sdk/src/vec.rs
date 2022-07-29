@@ -20,6 +20,9 @@ use crate::{Binary, ContractData, Map};
 
 /// Create a [Vec] with the given items.
 ///
+/// The first argument in the list must be a reference to an [Env], then the
+/// items follow.
+///
 /// ### Examples
 ///
 /// ```

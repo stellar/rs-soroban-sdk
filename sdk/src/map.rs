@@ -17,6 +17,9 @@ use crate::ContractData;
 
 /// Create a [Map] with the given key-value pairs.
 ///
+/// The first argument in the list must be a reference to an [Env], then the
+/// key-value pairs follow in a tuple `(key, value)`.
+///
 /// ### Examples
 ///
 /// ```
@@ -46,6 +49,11 @@ macro_rules! map {
 /// The keys and values in a Map are not guaranteed to be of type `K`/`V` and
 /// conversion will fail if they are not. Most functions on Map return a
 /// `Result` due to this.
+///
+/// Maps may have no more than one entry per key. Setting an value for a key in
+/// the map that already has a value for that key replaces the value.
+///
+/// Maps are sorted by their key, and iterating a map is consistent and stable.
 ///
 /// Map values can be stored as [ContractData], or in other
 /// types like [Vec], [Map], etc.
