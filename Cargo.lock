@@ -761,7 +761,8 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.2"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=79d72084#79d7208451b7f20de3d7d439b68f498ab8f9814a"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "babde8e34ff81a36aafee7aabae314876428d7b9272e34da22b961c255557f75"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -770,7 +771,8 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.2"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=79d72084#79d7208451b7f20de3d7d439b68f498ab8f9814a"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49fde8f0d905735286e1788f2c602877f7eb8d87d1ec2a9d429ca407719f61bf"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -1049,3 +1051,13 @@ dependencies = [
  "syn",
  "synstructure",
 ]
+
+[[patch.unused]]
+name = "soroban-env-guest"
+version = "0.0.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
+
+[[patch.unused]]
+name = "soroban-env-host"
+version = "0.0.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
