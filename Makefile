@@ -47,3 +47,14 @@ fmt:
 clean:
 	cargo clean
 	CARGO_TARGET_DIR=target-tiny cargo +nightly clean
+
+# Build all projects as if they are being published to crates.io, and do so for
+# all feature and target combinations.
+publish-dry-run:
+	cargo +stable hack --feature-powerset publish --locked --dry-run
+	cargo +stable hack --feature-powerset publish --locked --dry-run --target wasm32-unknown-unknown
+
+# Publish publishes the crate to crates.io. The dry-run is a dependency because
+# the dry-run target will verify all feature set combinations.
+publish: publish-dry-run
+	cargo +stable publish --locked

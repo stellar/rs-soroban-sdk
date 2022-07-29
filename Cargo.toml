@@ -28,6 +28,13 @@ members = [
 # https://github.com/rust-lang/cargo/issues/10827
 exclude = ["macros"]
 
+[patch.crates-io]
+soroban-sdk = { path = "sdk" }
+soroban-sdk-macros = { path = "macros" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "94e01c7b" }
+
 [profile.dev]
 overflow-checks = true
 panic = "abort"

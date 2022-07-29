@@ -1,30 +1,34 @@
 [package]
 name = "soroban-sdk"
-version = "0.0.0"
+description = "Soroban SDK."
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
+version = "0.0.1"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-soroban-macros = { path = "../macros" }
+soroban-sdk-macros = { version = "0.0.1" }
 ed25519-dalek = { version = "1.0.1", optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
-# soroban-env-guest = { path = "../../rs-soroban-env/soroban-env-guest" }
+soroban-env-guest = { version = "0.0.1" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "36a5007" }
-# soroban-env-host = { path = "../../rs-soroban-env/soroban-env-host" }
+soroban-env-host = { version = "0.0.1" }
 
 [dev-dependencies]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "94e01c7b", features = ["next", "std"] }
+stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
 trybuild = "1.0.63"
 hex = "0.4.3"
 
 [features]
 testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
 docs = []
+
+[package.metadata.docs.rs]
+all-features = true
