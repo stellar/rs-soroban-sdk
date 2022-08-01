@@ -8,8 +8,18 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
 }
 
-#[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
-static ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
+/// Env meta XDR returns the env meta XDR that describes the environment this
+/// SDK is built with. This link section exists inside an exported function
+/// which is imported by each contract function to ensure that the link section
+/// is referenced by every object file that gets built, to ensure the link
+/// section isn't only referenced in an object file that gets discarded.
+/// See https://github.com/stellar/rs-soroban-sdk/issues/383 for more details.
+#[doc(hidden)]
+pub fn __env_meta_xdr() -> &'static [u8] {
+    #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
+    static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
+    &__ENV_META_XDR
+}
 
 pub use soroban_sdk_macros::{contractimpl, contracttype, ContractType};
 
