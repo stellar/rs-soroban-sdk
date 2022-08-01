@@ -11,15 +11,15 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 /// __link_sections returns and does nothing, but it contains link sections that
 /// should be ensured end up in the final build of any contract using the SDK.
 ///
-/// In Rust's build system ections only get included into the final build if the
-/// object file containing those sections are processed by the linker, but as an
-/// optimization step if no code is called in an object file it is discarded.
-/// This has the unfortunate effect of causing anything else in those object
-/// files, such as link sections, to be discarded. Placing anything that must be
-/// included in the build inside an exported function ensures the object files
-/// won't be discarded. wasm-bindgen does a similar thing to this, and so this
-/// seems to be a reasonably accepted way to work around this limitation in the
-/// build system.
+/// In Rust's build system sections only get included into the final build if
+/// the object file containing those sections are processed by the linker, but
+/// as an optimization step if no code is called in an object file it is
+/// discarded.  This has the unfortunate effect of causing anything else in
+/// those object files, such as link sections, to be discarded. Placing anything
+/// that must be included in the build inside an exported function ensures the
+/// object files won't be discarded. wasm-bindgen does a similar thing to this,
+/// and so this seems to be a reasonably accepted way to work around this
+/// limitation in the build system.
 ///
 /// This has an unfortunate side-effect that all contracts will have a function
 /// in the resulting WASM named `_`, however this function won't be rendered in
