@@ -174,6 +174,13 @@ pub fn derive_fn(
         pub mod #hidden_mod_ident {
             use super::*;
 
+            /// Exposing the env meta XDR ensures that the link section in the
+            /// SDK is included in the build for this contract function. See
+            /// [soroban_sdk::__env_meta_xdr] for more details.
+            pub fn env_meta_xdr() -> &'static[u8] {
+                soroban_sdk::__env_meta_xdr()
+            }
+
             #[deprecated(note = #deprecated_note)]
             #export_name
             pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
