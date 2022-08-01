@@ -761,7 +761,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=21bc98a#21bc98a3735aa3bdacba0c4ed04baec2c6b8fce0"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -770,7 +770,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=79e55e4c#79e55e4ca4b1b7a9284b712039d7c9a930b17beb"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=21bc98a#21bc98a3735aa3bdacba0c4ed04baec2c6b8fce0"
 dependencies = [
  "backtrace",
  "dyn-fmt",
