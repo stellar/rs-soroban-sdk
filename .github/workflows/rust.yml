@@ -70,7 +70,7 @@ jobs:
           ${{ github.job }}-target-
     - if: github.ref_protected
       run: rm -fr target
-    - run: cargo install --locked --version 0.5.14 cargo-hack
+    - run: cargo install --locked --version 0.5.16 cargo-hack
     - run: cargo check --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --lib
     - if: matrix.sys.test
       run: cargo hack --feature-powerset check --exclude-features docs --profile ${{ matrix.sys.profile }} --target ${{ matrix.sys.target }} --bins --tests --examples --benches
