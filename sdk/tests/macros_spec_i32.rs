@@ -2,7 +2,7 @@
 
 use std::io::Cursor;
 
-use soroban_sdk::{contractimpl, Env, FixedBinary};
+use soroban_sdk::{contractimpl, BytesN, Env};
 use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;
@@ -17,7 +17,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let e = Env::default();
-    let contract_id = FixedBinary::from_array(&e, [0; 32]);
+    let contract_id = BytesN::from_array(&e, [0; 32]);
     e.register_contract(&contract_id, Contract);
 
     let a = 10i32;

@@ -61,14 +61,16 @@ pub use envhidden::*;
 
 mod account;
 mod bigint;
-mod binary;
+mod bytes;
 mod contract_data;
 pub mod iter;
 mod map;
 mod vec;
 pub use account::Account;
 pub use bigint::BigInt;
-pub use binary::{Binary, FixedBinary};
+#[allow(deprecated)]
+pub use bytes::{Binary, FixedBinary};
+pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
 pub use map::Map;
 pub use vec::Vec;

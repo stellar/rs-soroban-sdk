@@ -12,14 +12,14 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{Env, FixedBinary};
+    use soroban_sdk::{BytesN, Env};
 
     use crate::{add, Contract};
 
     #[test]
     fn test_add() {
         let e = Env::default();
-        let contract_id = FixedBinary::from_array(&e, [0; 32]);
+        let contract_id = BytesN::from_array(&e, [0; 32]);
         e.register_contract(&contract_id, Contract);
 
         let x = 10i32;
