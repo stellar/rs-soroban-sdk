@@ -1,7 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contract, contractimpl, BigInt};
-
-contract!();
+use stellar_contract_sdk::{contractimpl, BigInt};
 
 pub struct Contract;
 
