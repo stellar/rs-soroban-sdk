@@ -11,10 +11,10 @@ crate-type = ["cdylib", "rlib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = {path = "../../sdk"}
+soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
-soroban-sdk = {path = "../../sdk", features = ["testutils"]}
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
 example_udt = {path = ".", features = ["testutils"]}
 
 [features]
