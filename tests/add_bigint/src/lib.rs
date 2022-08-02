@@ -3,7 +3,7 @@ use stellar_contract_sdk::{contractimpl, BigInt};
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn add(a: BigInt, b: BigInt) -> BigInt {
         a + b
