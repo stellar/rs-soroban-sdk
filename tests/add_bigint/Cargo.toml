@@ -9,4 +9,4 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stellar-contract-sdk = {path = "../../sdk"}
+stellar-contract-sdk = {path = "../../soroban-sdk"}
