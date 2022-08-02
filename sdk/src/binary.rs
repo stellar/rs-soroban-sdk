@@ -19,41 +19,47 @@ use crate::{ContractData, Map, Vec};
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;
 
+#[deprecated(note = "use soroban_sdk::Bytes")]
+pub type Binary = Bytes;
+
+#[deprecated(note = "use soroban_sdk::BytesN")]
+pub type FixedBinary<const N: usize> = BytesN<N>;
+
 #[macro_export]
 macro_rules! bin {
     ($env:expr) => {
-        $crate::Binary::new($env)
+        $crate::Bytes::new($env)
     };
     ($env:expr, $($x:expr),+ $(,)?) => {
-        $crate::Binary::from_array($env, [$($x),+])
+        $crate::Bytes::from_array($env, [$($x),+])
     };
 }
 
-/// Binary is a contiguous growable array type containing `u8`s.
+/// Bytes is a contiguous growable array type containing `u8`s.
 ///
 /// The array is stored in the Host and available to the Guest through the
-/// functions defined on Binary.
+/// functions defined on Bytes.
 ///
-/// Binary values can be stored as [ContractData], or in other
+/// Bytes values can be stored as [ContractData], or in other
 /// types like [Vec], [Map], etc.
 ///
 /// ### Examples
 ///
-/// Binary values can be created from slices:
+/// Bytes values can be created from slices:
 /// ```
-/// use soroban_sdk::{Binary, Env};
+/// use soroban_sdk::{Bytes, Env};
 ///
 /// let env = Env::default();
-/// let bin = Binary::from_slice(&env, &[0; 32]);
+/// let bin = Bytes::from_slice(&env, &[0; 32]);
 /// assert_eq!(bin.len(), 32);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Binary(EnvObj);
+pub struct Bytes(EnvObj);
 
-impl Debug for Binary {
+impl Debug for Bytes {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Binary(")?;
+        write!(f, "Bytes(")?;
         let mut iter = self.iter();
         if let Some(x) = iter.next() {
             write!(f, "{:?}", x)?;
@@ -66,21 +72,21 @@ impl Debug for Binary {
     }
 }
 
-impl Eq for Binary {}
+impl Eq for Bytes {}
 
-impl PartialEq for Binary {
+impl PartialEq for Bytes {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl PartialOrd for Binary {
+impl PartialOrd for Bytes {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl Ord for Binary {
+impl Ord for Bytes {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         let env = self.env();
         let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
@@ -89,7 +95,7 @@ impl Ord for Binary {
     }
 }
 
-impl TryFrom<EnvVal> for Binary {
+impl TryFrom<EnvVal> for Bytes {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -99,23 +105,23 @@ impl TryFrom<EnvVal> for Binary {
     }
 }
 
-impl TryFrom<EnvObj> for Binary {
+impl TryFrom<EnvObj> for Bytes {
     type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
         if obj.as_object().is_obj_type(ScObjectType::Binary) {
-            Ok(unsafe { Binary::unchecked_new(obj) })
+            Ok(unsafe { Bytes::unchecked_new(obj) })
         } else {
             Err(ConversionError {})
         }
     }
 }
 
-impl TryIntoVal<Env, Binary> for RawVal {
+impl TryIntoVal<Env, Bytes> for RawVal {
     type Error = ConversionError;
 
-    fn try_into_val(self, env: &Env) -> Result<Binary, Self::Error> {
+    fn try_into_val(self, env: &Env) -> Result<Bytes, Self::Error> {
         EnvType {
             env: env.clone(),
             val: self,
@@ -124,61 +130,61 @@ impl TryIntoVal<Env, Binary> for RawVal {
     }
 }
 
-impl From<Binary> for RawVal {
+impl From<Bytes> for RawVal {
     #[inline(always)]
-    fn from(v: Binary) -> Self {
+    fn from(v: Bytes) -> Self {
         v.0.into()
     }
 }
 
-impl From<Binary> for EnvVal {
+impl From<Bytes> for EnvVal {
     #[inline(always)]
-    fn from(v: Binary) -> Self {
+    fn from(v: Bytes) -> Self {
         v.0.into()
     }
 }
 
-impl From<Binary> for EnvObj {
+impl From<Bytes> for EnvObj {
     #[inline(always)]
-    fn from(v: Binary) -> Self {
+    fn from(v: Bytes) -> Self {
         v.0
     }
 }
 
-impl From<Binary> for Object {
+impl From<Bytes> for Object {
     #[inline(always)]
-    fn from(v: Binary) -> Self {
+    fn from(v: Bytes) -> Self {
         v.0.val
     }
 }
 
-impl From<&Binary> for Object {
+impl From<&Bytes> for Object {
     #[inline(always)]
-    fn from(v: &Binary) -> Self {
+    fn from(v: &Bytes) -> Self {
         v.0.val
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Binary> for ScVal {
+impl TryFrom<&Bytes> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &Binary) -> Result<Self, Self::Error> {
+    fn try_from(v: &Bytes) -> Result<Self, Self::Error> {
         (&v.0).try_into().map_err(|_| ConversionError)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Binary> for ScVal {
+impl TryFrom<Bytes> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: Binary) -> Result<Self, Self::Error> {
+    fn try_from(v: Bytes) -> Result<Self, Self::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryIntoVal<Env, Binary> for ScVal {
+impl TryIntoVal<Env, Bytes> for ScVal {
     type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<Binary, Self::Error> {
+    fn try_into_val(self, env: &Env) -> Result<Bytes, Self::Error> {
         let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
         let env = env.clone();
         EnvObj { val: o, env }.try_into()
@@ -186,26 +192,26 @@ impl TryIntoVal<Env, Binary> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<EnvType<ScVal>> for Binary {
+impl TryFrom<EnvType<ScVal>> for Bytes {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
         ScVal::try_into_val(v.val, &v.env)
     }
 }
 
-impl IntoVal<Env, Binary> for &str {
-    fn into_val(self, env: &Env) -> Binary {
-        Binary::from_slice(env, self.as_bytes())
+impl IntoVal<Env, Bytes> for &str {
+    fn into_val(self, env: &Env) -> Bytes {
+        Bytes::from_slice(env, self.as_bytes())
     }
 }
 
-impl From<EnvType<&str>> for Binary {
+impl From<EnvType<&str>> for Bytes {
     fn from(ev: EnvType<&str>) -> Self {
-        Binary::from_slice(&ev.env, ev.val.as_bytes())
+        Bytes::from_slice(&ev.env, ev.val.as_bytes())
     }
 }
 
-impl Binary {
+impl Bytes {
     #[inline(always)]
     pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj)
@@ -232,22 +238,22 @@ impl Binary {
         self.0.to_object()
     }
 
-    /// Create an empty Binary.
+    /// Create an empty Bytes.
     #[inline(always)]
-    pub fn new(env: &Env) -> Binary {
+    pub fn new(env: &Env) -> Bytes {
         let obj = env.binary_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 
-    /// Create a binary from the given `[u8]`.
+    /// Create a Bytes from the given `[u8]`.
     #[inline(always)]
-    pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Binary {
-        FixedBinary::from_array(env, items).0
+    pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Bytes {
+        BytesN::from_array(env, items).0
     }
 
     #[inline(always)]
-    pub fn from_slice(env: &Env, items: &[u8]) -> Binary {
-        let mut vec = Binary::new(env);
+    pub fn from_slice(env: &Env, items: &[u8]) -> Bytes {
+        let mut vec = Bytes::new(env);
         vec.extend_from_slice(items);
         vec
     }
@@ -382,7 +388,7 @@ impl Binary {
     }
 
     #[inline(always)]
-    pub fn append(&mut self, other: &Binary) {
+    pub fn append(&mut self, other: &Bytes) {
         let env = self.env();
         let bin = env.binary_append(self.0.to_object(), other.0.to_object());
         self.0 = bin.in_env(env);
@@ -424,7 +430,7 @@ impl Binary {
     }
 }
 
-impl IntoIterator for Binary {
+impl IntoIterator for Bytes {
     type Item = u8;
     type IntoIter = BinIter;
 
@@ -434,10 +440,10 @@ impl IntoIterator for Binary {
 }
 
 #[derive(Clone)]
-pub struct BinIter(Binary);
+pub struct BinIter(Bytes);
 
 impl BinIter {
-    fn into_bin(self) -> Binary {
+    fn into_bin(self) -> Bytes {
         self.0
     }
 }
@@ -484,39 +490,39 @@ impl ExactSizeIterator for BinIter {
     }
 }
 
-/// FixedBinary is a contiguous fixed-size array type containing `u8`s.
+/// BytesN is a contiguous fixed-size array type containing `u8`s.
 ///
 /// The array is stored in the Host and available to the Guest through the
-/// functions defined on Binary.
+/// functions defined on Bytes.
 ///
-/// Binary values can be stored as [ContractData], or in other
+/// Bytes values can be stored as [ContractData], or in other
 /// types like [Vec], [Map], etc.
 ///
 /// ### Examples
 ///
-/// FixedBinary values can be created from arrays:
+/// BytesN values can be created from arrays:
 /// ```
-/// use soroban_sdk::{Binary, FixedBinary, Env};
+/// use soroban_sdk::{Bytes, BytesN, Env};
 ///
 /// let env = Env::default();
-/// let bin = FixedBinary::from_array(&env, [0; 32]);
+/// let bin = BytesN::from_array(&env, [0; 32]);
 /// assert_eq!(bin.len(), 32);
 /// ```
 ///
-/// FixedBinary and Binary values are convertible:
+/// BytesN and Bytes values are convertible:
 /// ```
-/// use soroban_sdk::{Binary, FixedBinary, Env};
+/// use soroban_sdk::{Bytes, BytesN, Env};
 ///
 /// let env = Env::default();
-/// let bin = Binary::from_slice(&env, &[0; 32]);
-/// let bin: FixedBinary<32> = bin.try_into().expect("bin to have length 32");
+/// let bin = Bytes::from_slice(&env, &[0; 32]);
+/// let bin: BytesN<32> = bin.try_into().expect("bin to have length 32");
 /// assert_eq!(bin.len(), 32);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct FixedBinary<const N: usize>(Binary);
+pub struct BytesN<const N: usize>(Bytes);
 
-impl<const N: usize> Debug for FixedBinary<N> {
+impl<const N: usize> Debug for BytesN<N> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "ArrayBinary{{length = {}, ", N)?;
         write!(f, "{:?}}}", self.0)?;
@@ -524,63 +530,63 @@ impl<const N: usize> Debug for FixedBinary<N> {
     }
 }
 
-impl<const N: usize> Eq for FixedBinary<N> {}
+impl<const N: usize> Eq for BytesN<N> {}
 
-impl<const N: usize> PartialEq for FixedBinary<N> {
+impl<const N: usize> PartialEq for BytesN<N> {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
 
-impl<const N: usize> PartialOrd for FixedBinary<N> {
+impl<const N: usize> PartialOrd for BytesN<N> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
 
-impl<const N: usize> Ord for FixedBinary<N> {
+impl<const N: usize> Ord for BytesN<N> {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.0.cmp(&other.0)
     }
 }
 
-impl<const N: usize> Borrow<Binary> for FixedBinary<N> {
-    fn borrow(&self) -> &Binary {
+impl<const N: usize> Borrow<Bytes> for BytesN<N> {
+    fn borrow(&self) -> &Bytes {
         &self.0
     }
 }
 
-impl<const N: usize> Borrow<Binary> for &FixedBinary<N> {
-    fn borrow(&self) -> &Binary {
+impl<const N: usize> Borrow<Bytes> for &BytesN<N> {
+    fn borrow(&self) -> &Bytes {
         &self.0
     }
 }
 
-impl<const N: usize> Borrow<Binary> for &mut FixedBinary<N> {
-    fn borrow(&self) -> &Binary {
+impl<const N: usize> Borrow<Bytes> for &mut BytesN<N> {
+    fn borrow(&self) -> &Bytes {
         &self.0
     }
 }
 
-impl<const N: usize> AsRef<Binary> for FixedBinary<N> {
-    fn as_ref(&self) -> &Binary {
+impl<const N: usize> AsRef<Bytes> for BytesN<N> {
+    fn as_ref(&self) -> &Bytes {
         &self.0
     }
 }
 
-impl<const N: usize> From<EnvType<[u8; N]>> for FixedBinary<N> {
+impl<const N: usize> From<EnvType<[u8; N]>> for BytesN<N> {
     #[inline(always)]
     fn from(ev: EnvType<[u8; N]>) -> Self {
-        let mut bin = Binary::new(&ev.env);
+        let mut bin = Bytes::new(&ev.env);
         for b in ev.val {
             bin.push(b);
         }
-        FixedBinary(bin)
+        BytesN(bin)
     }
 }
 
-impl<const N: usize> IntoVal<Env, FixedBinary<N>> for [u8; N] {
-    fn into_val(self, env: &Env) -> FixedBinary<N> {
+impl<const N: usize> IntoVal<Env, BytesN<N>> for [u8; N] {
+    fn into_val(self, env: &Env) -> BytesN<N> {
         EnvType {
             env: env.clone(),
             val: self,
@@ -589,7 +595,7 @@ impl<const N: usize> IntoVal<Env, FixedBinary<N>> for [u8; N] {
     }
 }
 
-impl<const N: usize> TryFrom<EnvVal> for FixedBinary<N> {
+impl<const N: usize> TryFrom<EnvVal> for BytesN<N> {
     type Error = ConversionError;
 
     #[inline(always)]
@@ -599,20 +605,20 @@ impl<const N: usize> TryFrom<EnvVal> for FixedBinary<N> {
     }
 }
 
-impl<const N: usize> TryFrom<EnvObj> for FixedBinary<N> {
+impl<const N: usize> TryFrom<EnvObj> for BytesN<N> {
     type Error = ConversionError;
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        let bin: Binary = obj.try_into()?;
+        let bin: Bytes = obj.try_into()?;
         bin.try_into()
     }
 }
 
-impl<const N: usize> TryIntoVal<Env, FixedBinary<N>> for RawVal {
+impl<const N: usize> TryIntoVal<Env, BytesN<N>> for RawVal {
     type Error = ConversionError;
 
-    fn try_into_val(self, env: &Env) -> Result<FixedBinary<N>, Self::Error> {
+    fn try_into_val(self, env: &Env) -> Result<BytesN<N>, Self::Error> {
         EnvType {
             env: env.clone(),
             val: self,
@@ -621,11 +627,11 @@ impl<const N: usize> TryIntoVal<Env, FixedBinary<N>> for RawVal {
     }
 }
 
-impl<const N: usize> TryFrom<Binary> for FixedBinary<N> {
+impl<const N: usize> TryFrom<Bytes> for BytesN<N> {
     type Error = ConversionError;
 
     #[inline(always)]
-    fn try_from(bin: Binary) -> Result<Self, Self::Error> {
+    fn try_from(bin: Bytes) -> Result<Self, Self::Error> {
         if bin.len() == { N as u32 } {
             Ok(Self(bin))
         } else {
@@ -634,54 +640,54 @@ impl<const N: usize> TryFrom<Binary> for FixedBinary<N> {
     }
 }
 
-impl<const N: usize> From<FixedBinary<N>> for RawVal {
+impl<const N: usize> From<BytesN<N>> for RawVal {
     #[inline(always)]
-    fn from(v: FixedBinary<N>) -> Self {
+    fn from(v: BytesN<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: usize> From<FixedBinary<N>> for EnvVal {
+impl<const N: usize> From<BytesN<N>> for EnvVal {
     #[inline(always)]
-    fn from(v: FixedBinary<N>) -> Self {
+    fn from(v: BytesN<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: usize> From<FixedBinary<N>> for EnvObj {
+impl<const N: usize> From<BytesN<N>> for EnvObj {
     #[inline(always)]
-    fn from(v: FixedBinary<N>) -> Self {
+    fn from(v: BytesN<N>) -> Self {
         v.0.into()
     }
 }
 
-impl<const N: usize> From<FixedBinary<N>> for Binary {
+impl<const N: usize> From<BytesN<N>> for Bytes {
     #[inline(always)]
-    fn from(v: FixedBinary<N>) -> Self {
+    fn from(v: BytesN<N>) -> Self {
         v.0
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<&FixedBinary<N>> for ScVal {
+impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &FixedBinary<N>) -> Result<Self, Self::Error> {
+    fn try_from(v: &BytesN<N>) -> Result<Self, Self::Error> {
         (&v.0).try_into().map_err(|_| ConversionError)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<FixedBinary<N>> for ScVal {
+impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: FixedBinary<N>) -> Result<Self, Self::Error> {
+    fn try_from(v: BytesN<N>) -> Result<Self, Self::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryIntoVal<Env, FixedBinary<N>> for ScVal {
+impl<const N: usize> TryIntoVal<Env, BytesN<N>> for ScVal {
     type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<FixedBinary<N>, Self::Error> {
+    fn try_into_val(self, env: &Env) -> Result<BytesN<N>, Self::Error> {
         let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
         let env = env.clone();
         EnvObj { val: o, env }.try_into()
@@ -689,14 +695,14 @@ impl<const N: usize> TryIntoVal<Env, FixedBinary<N>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<EnvType<ScVal>> for FixedBinary<N> {
+impl<const N: usize> TryFrom<EnvType<ScVal>> for BytesN<N> {
     type Error = ConversionError;
     fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
         ScVal::try_into_val(v.val, &v.env)
     }
 }
 
-impl<const N: usize> FixedBinary<N> {
+impl<const N: usize> BytesN<N> {
     pub(crate) fn env(&self) -> &Env {
         self.0.env()
     }
@@ -718,10 +724,10 @@ impl<const N: usize> FixedBinary<N> {
     }
 
     #[inline(always)]
-    pub fn from_array(env: &Env, items: [u8; N]) -> FixedBinary<N> {
-        let mut bin = Binary::new(env);
+    pub fn from_array(env: &Env, items: [u8; N]) -> BytesN<N> {
+        let mut bin = Bytes::new(env);
         bin.extend_from_array(items);
-        FixedBinary(bin)
+        BytesN(bin)
     }
 
     #[inline(always)]
@@ -774,7 +780,7 @@ impl<const N: usize> FixedBinary<N> {
     }
 }
 
-impl<const N: usize> IntoIterator for FixedBinary<N> {
+impl<const N: usize> IntoIterator for BytesN<N> {
     type Item = u8;
 
     type IntoIter = BinIter;
@@ -784,17 +790,17 @@ impl<const N: usize> IntoIterator for FixedBinary<N> {
     }
 }
 
-impl<const N: usize> TryFrom<Binary> for [u8; N] {
+impl<const N: usize> TryFrom<Bytes> for [u8; N] {
     type Error = ConversionError;
 
-    fn try_from(bin: Binary) -> Result<Self, Self::Error> {
-        let fixed: FixedBinary<N> = bin.try_into()?;
+    fn try_from(bin: Bytes) -> Result<Self, Self::Error> {
+        let fixed: BytesN<N> = bin.try_into()?;
         Ok(fixed.into())
     }
 }
 
-impl<const N: usize> From<FixedBinary<N>> for [u8; N] {
-    fn from(bin: FixedBinary<N>) -> Self {
+impl<const N: usize> From<BytesN<N>> for [u8; N] {
+    fn from(bin: BytesN<N>) -> Self {
         let mut res = [0u8; N];
         for (i, b) in bin.into_iter().enumerate() {
             res[i] = b;
@@ -810,19 +816,19 @@ mod test {
     #[test]
     fn test_bin_macro() {
         let env = Env::default();
-        assert_eq!(bin![&env], Binary::new(&env));
+        assert_eq!(bin![&env], Bytes::new(&env));
         assert_eq!(bin![&env, 1], {
-            let mut b = Binary::new(&env);
+            let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
         assert_eq!(bin![&env, 1,], {
-            let mut b = Binary::new(&env);
+            let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
         assert_eq!(bin![&env, 3, 2, 1,], {
-            let mut b = Binary::new(&env);
+            let mut b = Bytes::new(&env);
             b.push(3);
             b.push(2);
             b.push(1);
@@ -834,7 +840,7 @@ mod test {
     fn test_bin() {
         let env = Env::default();
 
-        let mut bin = Binary::new(&env);
+        let mut bin = Bytes::new(&env);
         assert_eq!(bin.len(), 0);
         bin.push(10);
         assert_eq!(bin.len(), 1);
@@ -860,16 +866,16 @@ mod test {
         bin_copy.pop();
         assert!(bin == bin_copy);
 
-        let bad_fixed: Result<FixedBinary<4>, ConversionError> = bin.try_into();
+        let bad_fixed: Result<BytesN<4>, ConversionError> = bin.try_into();
         assert!(bad_fixed.is_err());
-        let fixed: FixedBinary<3> = bin_copy.try_into().unwrap();
+        let fixed: BytesN<3> = bin_copy.try_into().unwrap();
         println!("{:?}", fixed);
     }
 
     #[test]
     fn test_bin_iter() {
         let env = Env::default();
-        let mut bin = Binary::new(&env);
+        let mut bin = Bytes::new(&env);
         bin.push(10);
         bin.push(20);
         bin.push(30);
@@ -886,7 +892,7 @@ mod test {
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
 
-        let fixed: FixedBinary<3> = bin.try_into().unwrap();
+        let fixed: BytesN<3> = bin.try_into().unwrap();
         let mut iter = fixed.iter();
         assert_eq!(iter.next(), Some(10));
         assert_eq!(iter.next(), Some(20));
@@ -903,19 +909,19 @@ mod test {
 
     #[test]
     fn test_array_binary_borrow() {
-        fn get_len(b: impl Borrow<Binary>) -> u32 {
-            let b: &Binary = b.borrow();
+        fn get_len(b: impl Borrow<Bytes>) -> u32 {
+            let b: &Bytes = b.borrow();
             b.len()
         }
 
         let env = Env::default();
-        let mut bin = Binary::new(&env);
+        let mut bin = Bytes::new(&env);
         bin.push(10);
         bin.push(20);
         bin.push(30);
         assert_eq!(bin.len(), 3);
 
-        let arr_bin: FixedBinary<3> = bin.clone().try_into().unwrap();
+        let arr_bin: BytesN<3> = bin.clone().try_into().unwrap();
         assert_eq!(arr_bin.len(), 3);
 
         assert_eq!(get_len(&bin), 3);

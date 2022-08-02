@@ -26,7 +26,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                 "Symbol" => Ok(ScSpecTypeDef::Symbol),
                 "Bitset" => Ok(ScSpecTypeDef::Bitset),
                 "Status" => Ok(ScSpecTypeDef::Status),
-                "Binary" => Ok(ScSpecTypeDef::Binary),
+                "Bytes" => Ok(ScSpecTypeDef::Binary),
                 "BigInt" => Ok(ScSpecTypeDef::BigInt),
                 s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     name: s.try_into().map_err(|e| {
@@ -92,8 +92,8 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             value_type: Box::new(map_type(v)?),
                         })))
                     }
-                    // TODO: Add proper support for FixedBinary as a first class spec type.
-                    "FixedBinary" => Ok(ScSpecTypeDef::Binary),
+                    // TODO: Add proper support for BytesN as a first class spec type.
+                    "BytesN" => Ok(ScSpecTypeDef::Binary),
                     _ => Err(Error::new(
                         angle_bracketed.span(),
                         "generics unsupported on user-defined types in contract functions",

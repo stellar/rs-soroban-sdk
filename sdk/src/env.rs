@@ -42,7 +42,7 @@ pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::binary::{Binary, FixedBinary};
+use crate::binary::{Bytes, BytesN};
 use crate::ContractData;
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -90,7 +90,7 @@ impl Env {
     /// Return a [Result] instead of panic.
     pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
         &self,
-        contract_id: &FixedBinary<32>,
+        contract_id: &BytesN<32>,
         func: &Symbol,
         args: crate::vec::Vec<EnvVal>,
     ) -> T {
@@ -106,7 +106,7 @@ impl Env {
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
-    pub fn get_current_contract(&self) -> FixedBinary<32> {
+    pub fn get_current_contract(&self) -> BytesN<32> {
         internal::Env::get_current_contract(self)
             .in_env(self)
             .try_into()
@@ -119,9 +119,9 @@ impl Env {
     /// # Panics
     ///
     /// Will panic the contract was not invoked by another contract.
-    pub fn get_invoking_contract(&self) -> FixedBinary<32> {
+    pub fn get_invoking_contract(&self) -> BytesN<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
-        let bin = Binary::try_from_val(self, rv).unwrap();
+        let bin = Bytes::try_from_val(self, rv).unwrap();
         bin.try_into().unwrap()
     }
 
@@ -165,7 +165,7 @@ impl Env {
     }
 
     /// Computes a SHA-256 hash.
-    pub fn compute_hash_sha256(&self, msg: Binary) -> FixedBinary<32> {
+    pub fn compute_hash_sha256(&self, msg: Bytes) -> BytesN<32> {
         let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
@@ -182,18 +182,14 @@ impl Env {
     /// ### TODO
     ///
     /// Return a [Result] instead of panicking.
-    pub fn verify_sig_ed25519(&self, pk: FixedBinary<32>, msg: Binary, sig: FixedBinary<64>) {
+    pub fn verify_sig_ed25519(&self, pk: BytesN<32>, msg: Bytes, sig: BytesN<64>) {
         internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
     }
 
     #[doc(hidden)]
-    pub fn create_contract_from_contract(
-        &self,
-        contract: Binary,
-        salt: FixedBinary<32>,
-    ) -> FixedBinary<32> {
+    pub fn create_contract_from_contract(&self, contract: Bytes, salt: BytesN<32>) -> BytesN<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
@@ -201,13 +197,13 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Binary {
+    pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Bytes {
         let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
     #[doc(hidden)]
-    pub fn binary_copy_to_linear_memory(&self, bin: Binary, b_pos: u32, lm_pos: u32, len: u32) {
+    pub fn binary_copy_to_linear_memory(&self, bin: Bytes, b_pos: u32, lm_pos: u32, len: u32) {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
         internal::Env::binary_copy_to_linear_memory(
             self,
@@ -221,11 +217,11 @@ impl Env {
     #[doc(hidden)]
     pub fn binary_copy_from_linear_memory(
         &self,
-        bin: Binary,
+        bin: Bytes,
         b_pos: u32,
         lm_pos: u32,
         len: u32,
-    ) -> Binary {
+    ) -> Bytes {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
         let new_obj = internal::Env::binary_copy_from_linear_memory(
             self,
@@ -299,7 +295,7 @@ impl Env {
     /// ```
     pub fn register_contract<T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: &FixedBinary<32>,
+        contract_id: &BytesN<32>,
         contract: T,
     ) {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);

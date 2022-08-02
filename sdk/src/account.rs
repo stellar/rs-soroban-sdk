@@ -3,13 +3,13 @@ use core::{borrow::Borrow, cmp::Ordering, fmt::Debug};
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    Binary, ConversionError, Env, EnvType, EnvVal, FixedBinary, IntoVal, Object,
+    Bytes, BytesN, ConversionError, Env, EnvType, EnvVal, IntoVal, Object,
 };
 
 /// Account references a Stellar account and provides access to information
 /// about the account, such as its thresholds and signers.
 #[derive(Clone)]
-pub struct Account(FixedBinary<32>);
+pub struct Account(BytesN<32>);
 
 impl Debug for Account {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -43,50 +43,50 @@ impl Ord for Account {
     }
 }
 
-impl Borrow<Binary> for Account {
-    fn borrow(&self) -> &Binary {
+impl Borrow<Bytes> for Account {
+    fn borrow(&self) -> &Bytes {
         self.0.borrow()
     }
 }
 
-impl Borrow<Binary> for &Account {
-    fn borrow(&self) -> &Binary {
+impl Borrow<Bytes> for &Account {
+    fn borrow(&self) -> &Bytes {
         self.0.borrow()
     }
 }
 
-impl Borrow<Binary> for &mut Account {
-    fn borrow(&self) -> &Binary {
+impl Borrow<Bytes> for &mut Account {
+    fn borrow(&self) -> &Bytes {
         self.0.borrow()
     }
 }
 
-impl Borrow<FixedBinary<32>> for Account {
-    fn borrow(&self) -> &FixedBinary<32> {
+impl Borrow<BytesN<32>> for Account {
+    fn borrow(&self) -> &BytesN<32> {
         self.0.borrow()
     }
 }
 
-impl Borrow<FixedBinary<32>> for &Account {
-    fn borrow(&self) -> &FixedBinary<32> {
+impl Borrow<BytesN<32>> for &Account {
+    fn borrow(&self) -> &BytesN<32> {
         self.0.borrow()
     }
 }
 
-impl Borrow<FixedBinary<32>> for &mut Account {
-    fn borrow(&self) -> &FixedBinary<32> {
+impl Borrow<BytesN<32>> for &mut Account {
+    fn borrow(&self) -> &BytesN<32> {
         self.0.borrow()
     }
 }
 
-impl AsRef<Binary> for Account {
-    fn as_ref(&self) -> &Binary {
+impl AsRef<Bytes> for Account {
+    fn as_ref(&self) -> &Bytes {
         self.0.as_ref()
     }
 }
 
-impl AsRef<FixedBinary<32>> for Account {
-    fn as_ref(&self) -> &FixedBinary<32> {
+impl AsRef<BytesN<32>> for Account {
+    fn as_ref(&self) -> &BytesN<32> {
         &self.0
     }
 }
@@ -166,7 +166,7 @@ impl Account {
     /// Creates an account from a public key.
     ///
     /// TODO: Return a `Result` `Err` if the account does not exist. Currently panics if account does not exist.
-    pub fn from_public_key(public_key: &FixedBinary<32>) -> Result<Account, ()> {
+    pub fn from_public_key(public_key: &BytesN<32>) -> Result<Account, ()> {
         let acc = Account(public_key.clone());
         // TODO: Fail when account doesn't exist. In the meantime cause a trap
         // at this point by trying to get some information about the account
@@ -198,7 +198,7 @@ impl Account {
 
     /// Returns the signer weight for the signer for this Stellar account. If
     /// the signer does not exist for the account, returns zero (`0`).
-    pub fn signer_weight(&self, signer: &FixedBinary<32>) -> u32 {
+    pub fn signer_weight(&self, signer: &BytesN<32>) -> u32 {
         let env = self.env();
         let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }

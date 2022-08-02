@@ -205,7 +205,7 @@ pub fn derive_fn(
 
             pub fn invoke(
                 e: &soroban_sdk::Env,
-                contract_id: &soroban_sdk::FixedBinary<32>,
+                contract_id: &soroban_sdk::BytesN<32>,
                 #(#invoke_args),*
             ) #output {
                 use soroban_sdk::{EnvVal, IntoVal, Symbol, Vec};
@@ -218,7 +218,7 @@ pub fn derive_fn(
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
             pub fn invoke_xdr(
                 e: &soroban_sdk::Env,
-                contract_id: &soroban_sdk::FixedBinary<32>,
+                contract_id: &soroban_sdk::BytesN<32>,
                 #(#invoke_args),*
             ) #output {
                 use soroban_sdk::TryIntoVal;

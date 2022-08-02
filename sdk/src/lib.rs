@@ -68,7 +68,9 @@ mod map;
 mod vec;
 pub use account::Account;
 pub use bigint::BigInt;
+#[allow(deprecated)]
 pub use binary::{Binary, FixedBinary};
+pub use binary::{Bytes, BytesN};
 pub use contract_data::ContractData;
 pub use map::Map;
 pub use vec::Vec;

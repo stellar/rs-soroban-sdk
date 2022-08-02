@@ -8,7 +8,7 @@ use super::{
     env::internal::{Env as _, EnvBase, RawValConvertible},
     env::{EnvObj, EnvType},
     xdr::ScObjectType,
-    Binary, ConversionError, Env, EnvVal, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    Bytes, ConversionError, Env, EnvVal, IntoVal, RawVal, TryFromVal, TryIntoVal,
 };
 
 /// BigInt is an arbitrary sized signed integer.
@@ -44,7 +44,7 @@ impl Display for BigInt {
         let env = self.env();
         let bi = self.0.to_object();
         let obj: EnvObj = env.bigint_to_radix_be(bi, 10u32.into()).in_env(env);
-        if let Ok(bin) = TryInto::<Binary>::try_into(obj) {
+        if let Ok(bin) = TryInto::<Bytes>::try_into(obj) {
             let sign = env.bigint_cmp(bi, env.bigint_from_u64(0));
             if let -1 = unsafe { <i32 as RawValConvertible>::unchecked_from_val(sign) } {
                 write!(f, "-")?;
