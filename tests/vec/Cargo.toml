@@ -1,10 +1,9 @@
 [package]
-name = "example_add_i32"
+name = "example_vec"
 version = "0.0.0"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"
-publish = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -14,9 +13,8 @@ doctest = false
 soroban-sdk = {path = "../../sdk"}
 
 [dev-dependencies]
-proptest = "1.0.0"
 soroban-sdk = {path = "../../sdk", features = ["testutils"]}
-example_add_i32 = {path = ".", features = ["testutils"]}
+example_vec = {path = ".", features = ["testutils"]}
 
 [features]
 testutils = ["soroban-sdk/testutils"]

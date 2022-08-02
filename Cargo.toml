@@ -5,6 +5,8 @@ members = [
     "sdk",
     "tests/add_i32",
     "tests/add_i64",
+    "tests/vec",
+    "tests/invoke_contract",
     "tests/udt",
     "tests/contract_data",
     "tests/create_contract",
@@ -24,9 +26,14 @@ members = [
 # 'macros', that depend on std features when other crates, like 'sdk',
 # explicitly must not depend on std. Hopefully one day this will be fixed in:
 # https://github.com/rust-lang/cargo/issues/10827
-exclude = [
-    "macros"
-]
+exclude = ["macros"]
+
+[patch.crates-io]
+soroban-sdk = { path = "sdk" }
+soroban-sdk-macros = { path = "macros" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "21bc98a" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "21bc98a" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "28a28dc0" }
 
 [profile.dev]
 overflow-checks = true

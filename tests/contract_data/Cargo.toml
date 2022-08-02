@@ -7,6 +7,14 @@ edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
+doctest = false
 
 [dependencies]
-stellar-contract-sdk = {path = "../../sdk"}
+soroban-sdk = {path = "../../sdk"}
+
+[dev-dependencies]
+soroban-sdk = {path = "../../sdk", features = ["testutils"]}
+example_contract_data = {path = ".", features = ["testutils"]}
+
+[features]
+testutils = ["soroban-sdk/testutils"]

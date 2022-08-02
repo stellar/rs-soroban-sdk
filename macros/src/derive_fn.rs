@@ -5,8 +5,8 @@ use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, WriteXdr};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
-    token::{Colon, Comma},
-    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
+    token::{And, Colon, Comma},
+    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath, TypeReference,
 };
 
 use crate::map_type::map_type;
@@ -45,7 +45,7 @@ pub fn derive_fn(
     });
 
     // Prepare the argument inputs.
-    let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
+    let (spec_args, wrap_args, wrap_calls, invoke_args, invoke_idents): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
@@ -69,19 +69,37 @@ pub fn derive_fn(
                         subpat: None,
                     })),
                     colon_token: Colon::default(),
-                    ty: Box::new(Type::Verbatim(quote! { stellar_contract_sdk::RawVal })),
+                    ty: Box::new(Type::Verbatim(quote! { soroban_sdk::RawVal })),
                 });
                 let call = quote! {
-                    <_ as stellar_contract_sdk::TryFromVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::try_from_val(
+                    <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
                         &env,
                         #ident
                     ).unwrap()
                 };
-                (spec, arg, call)
+                let invoke_arg = FnArg::Typed(PatType {
+                    attrs: vec![],
+                    pat: Box::new(Pat::Ident(PatIdent {
+                        ident: ident.clone(),
+                        attrs: vec![],
+                        by_ref: None,
+                        mutability: None,
+                        subpat: None,
+                    })),
+                    colon_token: Colon::default(),
+                    ty: Box::new(Type::Reference(TypeReference {
+                        and_token: And::default(),
+                        lifetime: None,
+                        mutability: None,
+                        elem: pat_type.ty.clone(),
+                    })),
+                });
+                let invoke_call = quote! { #ident };
+                (spec, arg, call, invoke_arg, invoke_call)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecTypeDef::I32, a.clone(), quote! {})
+                (ScSpecTypeDef::I32, a.clone(), quote! {}, a.clone(), quote! {})
             }
         })
         .multiunzip();
@@ -106,7 +124,12 @@ pub fn derive_fn(
 
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
-    let mod_ident = format_ident!("__{}", ident);
+    let pub_mod_ident = format_ident!("{}", ident);
+    let hidden_mod_ident = format_ident!("__{}", ident);
+    let deprecated_note = format!(
+        "not intended for use, use {}::invoke instead",
+        &pub_mod_ident
+    );
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
     } else {
@@ -142,14 +165,21 @@ pub fn derive_fn(
 
     // Generated code.
     Ok(quote! {
+        #[doc(hidden)]
         #link_section
         pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
 
-        pub mod #mod_ident {
+        #[doc(hidden)]
+        #[deprecated(note = #deprecated_note)]
+        pub mod #hidden_mod_ident {
+            use super::*;
+
+            #[deprecated(note = #deprecated_note)]
             #export_name
-            pub fn call_raw(env: stellar_contract_sdk::Env, #(#wrap_args),*) -> stellar_contract_sdk::RawVal {
+            pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
                 #use_trait;
-                <_ as stellar_contract_sdk::IntoVal<stellar_contract_sdk::Env, stellar_contract_sdk::RawVal>>::into_val(
+                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
+                    #[allow(deprecated)]
                     #call(
                         #env_call
                         #(#wrap_calls),*
@@ -158,11 +188,46 @@ pub fn derive_fn(
                 )
             }
 
-            pub fn call_raw_slice(
-                env: stellar_contract_sdk::Env,
-                args: &[stellar_contract_sdk::RawVal],
-            ) -> stellar_contract_sdk::RawVal {
-                call_raw(env, #(#slice_args),*)
+            #[deprecated(note = #deprecated_note)]
+            pub fn invoke_raw_slice(
+                env: soroban_sdk::Env,
+                args: &[soroban_sdk::RawVal],
+            ) -> soroban_sdk::RawVal {
+                #[allow(deprecated)]
+                invoke_raw(env, #(#slice_args),*)
+            }
+
+            use super::*;
+        }
+
+        pub mod #pub_mod_ident {
+            use super::*;
+
+            pub fn invoke(
+                e: &soroban_sdk::Env,
+                contract_id: &soroban_sdk::FixedBinary<32>,
+                #(#invoke_args),*
+            ) #output {
+                use soroban_sdk::{EnvVal, IntoVal, Symbol, Vec};
+                let mut args: Vec<EnvVal> = Vec::new(e);
+                #(args.push(#invoke_idents.clone().into_env_val(e));)*
+                e.invoke_contract(contract_id, &Symbol::from_str(#wrap_export_name), args)
+            }
+
+            #[cfg(feature = "testutils")]
+            #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+            pub fn invoke_xdr(
+                e: &soroban_sdk::Env,
+                contract_id: &soroban_sdk::FixedBinary<32>,
+                #(#invoke_args),*
+            ) #output {
+                use soroban_sdk::TryIntoVal;
+                e.invoke_contract_external_raw(
+                    soroban_sdk::xdr::HostFunction::Call,
+                    (contract_id, #wrap_export_name, #(#invoke_idents),*).try_into().unwrap()
+                )
+                .try_into_val(e)
+                .unwrap()
             }
         }
     })
@@ -172,7 +237,6 @@ pub fn derive_fn(
 pub fn derive_contract_function_set<'a>(
     ty: &Box<Type>,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
-    feature: &Option<String>,
 ) -> TokenStream2 {
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
@@ -181,23 +245,19 @@ pub fn derive_contract_function_set<'a>(
             (ident, wrap_ident)
         })
         .multiunzip();
-    let cfg = if let Some(cfg_feature) = feature {
-        quote! { #[cfg(feature = #cfg_feature)] }
-    } else {
-        quote! {}
-    };
     quote! {
-        #cfg
-        impl stellar_contract_sdk::ContractFunctionSet for #ty {
+        #[cfg(any(test, feature = "testutils"))]
+        impl soroban_sdk::testutils::ContractFunctionSet for #ty {
             fn call(
                 &self,
-                func: &stellar_contract_sdk::Symbol,
-                env: stellar_contract_sdk::Env,
-                args: &[stellar_contract_sdk::RawVal],
-            ) -> Option<stellar_contract_sdk::RawVal> {
+                func: &soroban_sdk::Symbol,
+                env: soroban_sdk::Env,
+                args: &[soroban_sdk::RawVal],
+            ) -> Option<soroban_sdk::RawVal> {
                 match func.to_str().as_ref() {
                     #(#idents => {
-                        Some(#wrap_idents::call_raw_slice(env, args))
+                        #[allow(deprecated)]
+                        Some(#wrap_idents::invoke_raw_slice(env, args))
                     })*
                     _ => {
                         None

@@ -1,7 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contract, contractimpl, Env};
-
-contract!();
+use soroban_sdk::{contractimpl, Env};
 
 // There are two ways to export contract fns:
 
@@ -9,7 +7,7 @@ contract!();
 
 pub struct Add1;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Add1 {
     fn addimpl(a: i64, b: i64) -> i64 {
         a + b
@@ -27,7 +25,7 @@ pub trait Add2Trait {
 
 pub struct Add2;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Add2Trait for Add2 {
     fn add2(_e: Env, a: i64, b: i64) -> i64 {
         a + b
@@ -37,7 +35,7 @@ impl Add2Trait for Add2 {
 #[cfg(test)]
 mod test {
     use super::{Add1, Add2, Add2Trait};
-    use stellar_contract_sdk::Env;
+    use soroban_sdk::Env;
 
     #[test]
     fn test_add() {
@@ -54,18 +52,30 @@ mod test {
 
 #[cfg(test)]
 mod test_via_val {
-    use super::{__add1::call_raw as add1, __add2::call_raw as add2};
-    use stellar_contract_sdk::{Env, IntoVal, TryFromVal};
+    use super::*;
+    use soroban_sdk::{Env, FixedBinary};
 
     #[test]
-    fn test_add_val() {
-        for f in [add1, add2] {
-            let e = Env::default();
-            let x = 10i64.into_val(&e);
-            let y = 12i64.into_val(&e);
-            let z = f(e.clone(), x, y);
-            let z = i64::try_from_val(&e, z).unwrap();
-            assert_eq!(z, 22);
-        }
+    fn test_add_1() {
+        let e = Env::default();
+        let contract_id = FixedBinary::from_array(&e, [0; 32]);
+        e.register_contract(&contract_id, Add1);
+
+        let x = 10i64;
+        let y = 12i64;
+        let z = add1::invoke(&e, &contract_id, &x, &y);
+        assert!(z == 22);
+    }
+
+    #[test]
+    fn test_add_2() {
+        let e = Env::default();
+        let contract_id = FixedBinary::from_array(&e, [0; 32]);
+        e.register_contract(&contract_id, Add2);
+
+        let x = 10i64;
+        let y = 12i64;
+        let z = add2::invoke(&e, &contract_id, &x, &y);
+        assert!(z == 22);
     }
 }

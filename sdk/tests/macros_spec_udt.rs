@@ -1,36 +1,22 @@
+#![cfg(feature = "testutils")]
+
 use std::io::Cursor;
 
-use stellar_contract_sdk::{
-    contractimpl, ConversionError, Env, EnvVal, IntoEnvVal, IntoVal, RawVal, TryFromVal,
-};
+use soroban_sdk::{contractimpl, contracttype, Env, FixedBinary};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple, ScSpecTypeUdt,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[contracttype]
 pub struct Udt {
-    a: i32,
-    b: i32,
-}
-
-impl TryFrom<EnvVal> for Udt {
-    type Error = ConversionError;
-
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let (a, b): (i32, i32) = ev.try_into()?;
-        Ok(Udt { a, b })
-    }
-}
-
-impl IntoEnvVal<Env, RawVal> for Udt {
-    fn into_env_val(self, env: &Env) -> EnvVal {
-        (self.a, self.b).into_env_val(env)
-    }
+    pub a: i32,
+    pub b: i32,
 }
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn add(a: Udt, b: Udt) -> (Udt, Udt) {
         (a, b)
@@ -40,10 +26,12 @@ impl Contract {
 #[test]
 fn test_functional() {
     let e = Env::default();
+    let contract_id = FixedBinary::from_array(&e, [0; 32]);
+    e.register_contract(&contract_id, Contract);
+
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };
-    let c = __add::call_raw(e.clone(), a.into_val(&e), b.into_val(&e));
-    let c = <(Udt, Udt)>::try_from_val(&e, c).unwrap();
+    let c = add::invoke(&e, &contract_id, &a, &b);
     assert_eq!(c, (a, b));
 }
 

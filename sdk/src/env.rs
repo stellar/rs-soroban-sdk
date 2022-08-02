@@ -2,14 +2,25 @@ use core::fmt::Debug;
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
-    pub use stellar_contract_env_guest::*;
+    pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
 }
 
 #[cfg(not(target_family = "wasm"))]
 pub mod internal {
-    pub use stellar_contract_env_host::*;
+    pub use soroban_env_host::*;
     pub type EnvImpl = Host;
+
+    #[doc(hidden)]
+    impl<F, T> TryConvert<F, T> for super::Env
+    where
+        EnvImpl: TryConvert<F, T>,
+    {
+        type Error = <EnvImpl as TryConvert<F, T>>::Error;
+        fn convert(&self, f: F) -> Result<T, Self::Error> {
+            self.env_impl.convert(f)
+        }
+    }
 }
 
 pub use internal::meta;
@@ -17,160 +28,185 @@ pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::IntoEnvVal;
 pub use internal::IntoVal;
 pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
-pub use internal::TaggedVal;
 pub use internal::TryFromVal;
+pub use internal::TryIntoVal;
 pub use internal::Val;
 
+pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-pub trait IntoTryFromVal: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
-impl<C> IntoTryFromVal for C where C: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+use crate::binary::{Binary, FixedBinary};
+use crate::ContractData;
 
-use crate::binary::{ArrayBinary, Binary};
-
-#[derive(Clone, Default)]
+/// The [Env] type provides access to the environment the contract is executing
+/// within.
+///
+/// The [Env] provides access to information about the currently executing
+/// contract, who invoked it, contract data, functions for signing, hashing,
+/// etc.
+///
+/// Most types require access to an [Env] to be constructed or converted.
+#[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
 }
 
-impl Env {
-    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
-        Env { env_impl }
+impl Default for Env {
+    #[cfg(not(feature = "testutils"))]
+    fn default() -> Self {
+        Self {
+            env_impl: Default::default(),
+        }
     }
 
-    // TODO: Implement methods on Env that are intended for use by contract
-    // developers and that otherwise don't belong into an object like Vec, Map,
-    // BigInt, etc. If there is any host fn we expect a developer to use, it
-    // should be plumbed through this type with this type doing all RawVal
-    // conversion.
+    #[cfg(feature = "testutils")]
+    fn default() -> Self {
+        Self::with_empty_recording_storage()
+    }
+}
 
-    pub fn call<T: TryFromVal<Env, RawVal>>(
+impl Env {
+    /// Invokes a function of a contract that is registered in the [Env].
+    ///
+    /// # Panics
+    ///
+    /// Will panic if the `contract_id` does not match a registered contract,
+    /// `func` does not match a function of the referenced contract, or the
+    /// number of `args` do not match the argument count of the referenced
+    /// contract function.
+    ///
+    /// Will also panic if the value returned from the contract cannot be
+    /// converted into the type `T`.
+    ///
+    /// ### TODO
+    ///
+    /// Return a [Result] instead of panic.
+    pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
         &self,
-        contract_id: Binary,
-        func: Symbol,
+        contract_id: &FixedBinary<32>,
+        func: &Symbol,
         args: crate::vec::Vec<EnvVal>,
     ) -> T {
-        let rv = internal::Env::call(
-            self,
-            RawVal::from(contract_id).try_into().unwrap(),
-            func,
-            RawVal::from(args).try_into().unwrap(),
-        );
+        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
         T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
     }
 
-    pub fn get_current_contract(&self) -> ArrayBinary<32> {
+    /// Get a [ContractData] for accessing and update contract data that has
+    /// been stored by the currently executing contract.
+    #[inline(always)]
+    pub fn contract_data(&self) -> ContractData {
+        ContractData::new(self)
+    }
+
+    /// Get the 32-byte hash identifier of the current executing contract.
+    pub fn get_current_contract(&self) -> FixedBinary<32> {
         internal::Env::get_current_contract(self)
             .in_env(self)
             .try_into()
             .unwrap()
     }
 
-    pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
+    /// Get the 32-byte hash identifier of the contract that invoked this
+    /// contract.
+    ///
+    /// # Panics
+    ///
+    /// Will panic the contract was not invoked by another contract.
+    pub fn get_invoking_contract(&self) -> FixedBinary<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Binary::try_from_val(self, rv).unwrap();
         bin.try_into().unwrap()
     }
 
-    pub fn has_contract_data<K: IntoVal<Env, RawVal>>(&self, key: K) -> bool {
-        let rv = internal::Env::has_contract_data(self, key.into_val(self));
-        rv.try_into().unwrap()
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().has(key)")]
+    pub fn has_contract_data<K>(&self, key: K) -> bool
+    where
+        K: IntoVal<Env, RawVal>,
+    {
+        self.contract_data().has(key)
     }
 
-    pub fn get_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K) -> V
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().get(key)")]
+    pub fn get_contract_data<K, V>(&self, key: K) -> V
     where
         V::Error: Debug,
+        K: IntoVal<Env, RawVal>,
+        V: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::get_contract_data(self, key.into_val(self));
-        V::try_from_val(self, rv).unwrap()
+        self.contract_data().get_unchecked(key).unwrap()
     }
 
-    pub fn put_contract_data<K: IntoVal<Env, RawVal>, V: IntoTryFromVal>(&self, key: K, val: V) {
-        internal::Env::put_contract_data(self, key.into_val(self), val.into_val(self));
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().set(key)")]
+    pub fn put_contract_data<K, V>(&self, key: K, val: V)
+    where
+        K: IntoVal<Env, RawVal>,
+        V: IntoVal<Env, RawVal>,
+    {
+        self.contract_data().set(key, val);
     }
 
-    pub fn del_contract_data<K: IntoVal<Env, RawVal>>(&self, key: K) {
-        internal::Env::del_contract_data(self, key.into_val(self));
+    #[doc(hidden)]
+    #[deprecated(note = "use contract_data().remove(key)")]
+    pub fn del_contract_data<K>(&self, key: K)
+    where
+        K: IntoVal<Env, RawVal>,
+    {
+        self.contract_data().remove(key);
     }
 
-    pub fn serialize_to_binary<V: IntoTryFromVal>(&self, val: V) -> Binary {
-        let val_obj: Object = val.into_val(self).try_into().unwrap();
-        let bin_obj = internal::Env::serialize_to_binary(self, val_obj.to_raw());
+    /// Computes a SHA-256 hash.
+    pub fn compute_hash_sha256(&self, msg: Binary) -> FixedBinary<32> {
+        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
-    pub fn deserialize_from_binary<V: IntoTryFromVal>(&self, bin: Binary) -> V
-    where
-        V::Error: Debug,
-    {
-        let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        let val_obj = internal::Env::deserialize_from_binary(self, bin_obj);
-        V::try_from_val(self, val_obj).unwrap()
-    }
-
-    pub fn compute_hash_sha256(&self, msg: Binary) -> Binary {
-        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into_val(self));
-        bin_obj.in_env(self).try_into().unwrap()
-    }
-
-    pub fn verify_sig_ed25519(&self, sig: Binary, pk: Binary, msg: Binary) {
-        let sig_obj: Object = RawVal::from(sig).try_into().unwrap();
-        let pk_obj: Object = RawVal::from(pk).try_into().unwrap();
-        let msg_obj: Object = RawVal::from(msg).try_into().unwrap();
-        internal::Env::verify_sig_ed25519(self, msg_obj, pk_obj, sig_obj)
+    /// Verifies an ed25519 signature.
+    ///
+    /// The ed25519 siganture (`sig`) is verified as a valid signature of the
+    /// message (`msg`) by the ed25519 public key (`pk`).
+    ///
+    /// ### Panics
+    ///
+    /// Will panic if the siganture verification fails.
+    ///
+    /// ### TODO
+    ///
+    /// Return a [Result] instead of panicking.
+    pub fn verify_sig_ed25519(&self, pk: FixedBinary<32>, msg: Binary, sig: FixedBinary<64>) {
+        internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
     }
 
-    pub fn account_get_low_threshold(&self, acc: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        internal::Env::account_get_low_threshold(self, acc_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    pub fn account_get_medium_threshold(&self, acc: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        internal::Env::account_get_medium_threshold(self, acc_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    pub fn account_get_high_threshold(&self, acc: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        internal::Env::account_get_high_threshold(self, acc_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    pub fn account_get_signer_weight(&self, acc: Binary, signer: Binary) -> u32 {
-        let acc_obj: Object = RawVal::from(acc).try_into().unwrap();
-        let signer_obj: Object = RawVal::from(signer).try_into().unwrap();
-        internal::Env::account_get_signer_weight(self, acc_obj, signer_obj)
-            .try_into()
-            .unwrap()
-    }
-
-    pub fn create_contract_from_contract(&self, contract: Binary, salt: Binary) -> ArrayBinary<32> {
+    #[doc(hidden)]
+    pub fn create_contract_from_contract(
+        &self,
+        contract: Binary,
+        salt: FixedBinary<32>,
+    ) -> FixedBinary<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
         id_obj.in_env(self).try_into().unwrap()
     }
 
+    #[doc(hidden)]
     pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Binary {
         let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
         bin_obj.in_env(self).try_into().unwrap()
     }
 
+    #[doc(hidden)]
     pub fn binary_copy_to_linear_memory(&self, bin: Binary, b_pos: u32, lm_pos: u32, len: u32) {
         let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
         internal::Env::binary_copy_to_linear_memory(
@@ -182,6 +218,7 @@ impl Env {
         );
     }
 
+    #[doc(hidden)]
     pub fn binary_copy_from_linear_memory(
         &self,
         bin: Binary,
@@ -200,35 +237,34 @@ impl Env {
         new_obj.in_env(self).try_into().unwrap()
     }
 
+    #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self));
     }
 }
 
 #[cfg(feature = "testutils")]
-use crate::test_contract::{ContractFunctionSet, InternalContractFunctionSet};
+use crate::testutils::ContractFunctionSet;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    pub fn with_empty_recording_storage() -> Env {
+    fn with_empty_recording_storage() -> Env {
         struct EmptySnapshotSource();
 
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
             fn get(
                 &self,
                 _key: &xdr::LedgerKey,
-            ) -> Result<xdr::LedgerEntry, stellar_contract_env_host::HostError> {
+            ) -> Result<xdr::LedgerEntry, soroban_env_host::HostError> {
                 use xdr::{ScHostStorageErrorCode, ScStatus};
                 let status: internal::Status =
                     ScStatus::HostStorageError(ScHostStorageErrorCode::UnknownError).into();
                 Err(status.into())
             }
 
-            fn has(
-                &self,
-                _key: &xdr::LedgerKey,
-            ) -> Result<bool, stellar_contract_env_host::HostError> {
+            fn has(&self, _key: &xdr::LedgerKey) -> Result<bool, soroban_env_host::HostError> {
                 Ok(false)
             }
         }
@@ -240,22 +276,154 @@ impl Env {
         }
     }
 
+    /// Register a contract with the [Env] for testing.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, FixedBinary, Env, Symbol};
+    ///
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn hello(env: Env, recipient: soroban_sdk::Symbol) -> soroban_sdk::Symbol {
+    ///         todo!()
+    ///     }
+    /// }
+    ///
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = FixedBinary::from_array(&env, [0; 32]);
+    /// env.register_contract(&contract_id, HelloContract);
+    /// # }
+    /// ```
     pub fn register_contract<T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: Binary,
+        contract_id: &FixedBinary<32>,
         contract: T,
     ) {
-        let id_obj: Object = RawVal::from(contract_id).try_into().unwrap();
+        struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+        impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+            fn call(
+                &self,
+                func: &Symbol,
+                env_impl: &internal::EnvImpl,
+                args: &[RawVal],
+            ) -> Option<RawVal> {
+                self.0.call(func, Env::with_impl(env_impl.clone()), args)
+            }
+        }
+
         self.env_impl
-            .register_test_contract(id_obj, Rc::new(InternalContractFunctionSet(contract)))
+            .register_test_contract(
+                contract_id.to_object(),
+                Rc::new(InternalContractFunctionSet(contract)),
+            )
             .unwrap();
     }
 
-    pub fn invoke_contract(&mut self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
+    #[doc(hidden)]
+    pub fn invoke_contract_external_raw(&self, hf: xdr::HostFunction, args: xdr::ScVec) -> RawVal {
+        self.env_impl.invoke_function_raw(hf, args).unwrap()
+    }
+
+    #[doc(hidden)]
+    pub fn invoke_contract_external(&self, hf: xdr::HostFunction, args: xdr::ScVec) -> xdr::ScVal {
         self.env_impl.invoke_function(hf, args).unwrap()
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    fn clone_self_and_catch_panic<F, T>(&self, f: F) -> (Env, std::thread::Result<T>)
+    where
+        F: FnOnce(Env) -> T,
+    {
+        let hook = std::panic::take_hook();
+        std::panic::set_hook(Box::new(|_| ()));
+        let deep_clone = self.deep_clone();
+        let res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(deep_clone.clone())));
+        std::panic::set_hook(hook);
+        (deep_clone, res)
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    pub fn assert_panic_with_string<F, T: Debug>(&self, s: &str, f: F)
+    where
+        F: FnOnce(Env) -> T,
+    {
+        match self.clone_self_and_catch_panic(f) {
+            (_, Ok(v)) => panic!("inner function expected to panic, but returned {:?}", v),
+            (_, Err(e)) => match e.downcast_ref::<String>() {
+                None => match e.downcast_ref::<&str>() {
+                    Some(ps) => assert_eq!(*ps, s),
+                    None => panic!(
+                        "inner function panicked with unknown type when \"{}\" expected",
+                        s
+                    ),
+                },
+                Some(ps) => assert_eq!(*ps, s),
+            },
+        }
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    pub fn assert_panic_with_status<F, T: Debug>(&self, status: Status, f: F)
+    where
+        F: FnOnce(Env) -> T,
+    {
+        use soroban_env_host::events::{DebugArg, HostEvent};
+
+        match self.clone_self_and_catch_panic(f) {
+            (_, Ok(v)) => panic!("inner function expected to panic, but returned {:?}", v),
+            (clone, Err(e)) => {
+                // Allow if there was a panic literally _carrying_ the status requested.
+                if let Some(st) = e.downcast_ref::<Status>() {
+                    assert_eq!(*st, status);
+                    return;
+                }
+                // Allow if the last debug log entry contains the status of requested.
+                if let Some(HostEvent::Debug(dbg)) = clone.env_impl.get_events().0.last() {
+                    for arg in dbg.args.iter() {
+                        if let DebugArg::Val(v) = arg {
+                            if let Ok(st) = TryInto::<Status>::try_into(*v) {
+                                if st == status {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Otherwise we're going to fail but we'll try to produce a useful diagnostic if
+                // the panic was a string, which many are.
+                if let Some(s) = e.downcast_ref::<String>() {
+                    panic!(
+                        "inner function panicked with \"{}\" when status {:?} expected",
+                        s, status
+                    );
+                }
+                if let Some(s) = e.downcast_ref::<&str>() {
+                    panic!(
+                        "inner function panicked with \"{}\" when status {:?} expected",
+                        s, status
+                    );
+                }
+                panic!(
+                    "inner function panicked with unknown type when status {:?} expected",
+                    status
+                );
+            }
+        }
     }
 }
 
+#[doc(hidden)]
+impl Env {
+    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
+        Env { env_impl }
+    }
+}
+
+#[doc(hidden)]
 impl internal::EnvBase for Env {
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
         self
@@ -354,6 +522,7 @@ macro_rules! impl_env_for_sdk {
     {
         // This macro expands to a single item: the implementation of Env for
         // the SDK's Env struct used by client contract code running in a WASM VM.
+        #[doc(hidden)]
         impl internal::Env for Env
         {
             $(

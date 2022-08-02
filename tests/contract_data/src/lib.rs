@@ -1,17 +1,15 @@
 #![no_std]
-use stellar_contract_sdk::{contract, contractimpl, Env, Symbol};
-
-contract!();
+use soroban_sdk::{contractimpl, Env, Symbol};
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn put(e: Env, key: Symbol, val: Symbol) {
-        e.put_contract_data(key, val)
+        e.contract_data().set(key, val)
     }
 
     pub fn del(e: Env, key: Symbol) {
-        e.del_contract_data(key)
+        e.contract_data().remove(key)
     }
 }

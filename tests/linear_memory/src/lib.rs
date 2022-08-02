@@ -1,11 +1,9 @@
 #![no_std]
-use stellar_contract_sdk::{contract, contractimpl, Binary, Env, FixedLengthBinary};
-
-contract!();
+use soroban_sdk::{contractimpl, Binary, Env};
 
 pub struct Contract;
 
-#[contractimpl(tests_if = "testutils")]
+#[contractimpl]
 impl Contract {
     pub fn bin_new(e: Env, len: u32) -> Binary {
         let buf: [u8; 4] = [0, 1, 2, 3];
@@ -25,7 +23,7 @@ impl Contract {
         let lm_pos: u32 = unsafe { buf.as_ptr().add(buf_off as usize) as u32 };
         e.binary_copy_to_linear_memory(b.clone(), b_pos, lm_pos, len);
         for idx in lm_pos..buf.len() as u32 {
-            assert!(buf[idx as usize] == b.get(b_pos + idx));
+            assert!(buf[idx as usize] == b.get_unchecked(b_pos + idx));
         }
     }
 }
