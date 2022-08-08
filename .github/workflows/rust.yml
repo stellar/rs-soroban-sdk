@@ -11,10 +11,12 @@ env:
 jobs:
 
   complete:
+    if: always()
     needs: [fmt, build-and-test, docs]
     runs-on: ubuntu-latest
     steps:
-    - run: exit 0
+    - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+      run: exit 1
 
   fmt:
     runs-on: ubuntu-latest
