@@ -146,7 +146,7 @@ pub fn derive_fn(
         name: wrap_export_name.clone().try_into().unwrap_or_else(|_| {
             errors.push(Error::new(
                 ident.span(),
-                "function name too long, must be max length 10 characters",
+                "function name too long, contract functions must be max length 10 characters",
             ));
             Default::default()
         }),

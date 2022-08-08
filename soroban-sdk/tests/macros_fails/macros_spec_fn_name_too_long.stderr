@@ -1,4 +1,4 @@
-error: function name too long, must be max length 10 characters
+error: function name too long, contract functions must be max length 10 characters
  --> tests/macros_fails/macros_spec_fn_name_too_long.rs:7:12
   |
 7 |     pub fn pay_to_destination() {
