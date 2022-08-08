@@ -116,12 +116,6 @@ pub fn derive_fn(
         ReturnType::Default => vec![],
     };
 
-    // If errors have occurred, render them instead.
-    if !errors.is_empty() {
-        let compile_errors = errors.iter().map(Error::to_compile_error);
-        return Err(quote! { #(#compile_errors)* });
-    }
-
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
     let pub_mod_ident = format_ident!("{}", ident);
@@ -149,7 +143,13 @@ pub fn derive_fn(
 
     // Generated code spec.
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        name: wrap_export_name.clone().try_into().unwrap(),
+        name: wrap_export_name.clone().try_into().unwrap_or_else(|_| {
+            errors.push(Error::new(
+                ident.span(),
+                "function name too long, must be max length 10 characters",
+            ));
+            Default::default()
+        }),
         input_types: spec_args.try_into().unwrap(),
         output_types: spec_result.try_into().unwrap(),
     });
@@ -162,6 +162,12 @@ pub fn derive_fn(
     } else {
         quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] }
     };
+
+    // If errors have occurred, render them instead.
+    if !errors.is_empty() {
+        let compile_errors = errors.iter().map(Error::to_compile_error);
+        return Err(quote! { #(#compile_errors)* });
+    }
 
     // Generated code.
     Ok(quote! {
