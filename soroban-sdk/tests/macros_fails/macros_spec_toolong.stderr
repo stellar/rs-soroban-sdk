@@ -1,0 +1,7 @@
+error: custom attribute panicked
+ --> tests/macros_fails/macros_spec_toolong.rs:5:1
+  |
+5 | #[contractimpl]
+  | ^^^^^^^^^^^^^^^
+  |
+  = help: message: called `Result::unwrap()` on an `Err` value: LengthExceedsMax
