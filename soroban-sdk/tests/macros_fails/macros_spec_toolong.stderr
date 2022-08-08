@@ -1,5 +1,5 @@
 error: function name too long, must be max length 10 characters
  --> tests/macros_fails/macros_spec_toolong.rs:7:12
   |
-7 |     pub fn pay_to_destionation() {
+7 |     pub fn pay_to_destination() {
   |            ^^^^^^^^^^^^^^^^^^^
