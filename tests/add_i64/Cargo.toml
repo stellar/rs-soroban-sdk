@@ -15,7 +15,6 @@ soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
-example_add_i64 = {path = ".", features = ["testutils"]}
 
 [features]
 testutils = ["soroban-sdk/testutils"]
