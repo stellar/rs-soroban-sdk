@@ -15,7 +15,6 @@ soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
-example_udt = {path = ".", features = ["testutils"]}
 
 [features]
 default = ["export"]

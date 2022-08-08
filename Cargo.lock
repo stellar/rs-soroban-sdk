@@ -229,7 +229,6 @@ checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 name = "example_add_i32"
 version = "0.0.0"
 dependencies = [
- "example_add_i32",
  "proptest",
  "soroban-sdk",
 ]
@@ -238,7 +237,6 @@ dependencies = [
 name = "example_add_i64"
 version = "0.0.0"
 dependencies = [
- "example_add_i64",
  "soroban-sdk",
 ]
 
@@ -246,7 +244,6 @@ dependencies = [
 name = "example_contract_data"
 version = "0.0.0"
 dependencies = [
- "example_contract_data",
  "soroban-sdk",
 ]
 
@@ -254,7 +251,6 @@ dependencies = [
 name = "example_create_contract"
 version = "0.0.0"
 dependencies = [
- "example_create_contract",
  "soroban-sdk",
 ]
 
@@ -262,7 +258,6 @@ dependencies = [
 name = "example_invoke_contract"
 version = "0.0.0"
 dependencies = [
- "example_invoke_contract",
  "soroban-sdk",
 ]
 
@@ -270,7 +265,6 @@ dependencies = [
 name = "example_linear_memory"
 version = "0.0.0"
 dependencies = [
- "example_linear_memory",
  "soroban-sdk",
 ]
 
@@ -278,7 +272,6 @@ dependencies = [
 name = "example_udt"
 version = "0.0.0"
 dependencies = [
- "example_udt",
  "soroban-sdk",
 ]
 
@@ -286,7 +279,6 @@ dependencies = [
 name = "example_vec"
 version = "0.0.0"
 dependencies = [
- "example_vec",
  "soroban-sdk",
 ]
 

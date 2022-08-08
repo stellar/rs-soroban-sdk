@@ -16,7 +16,6 @@ soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
-example_create_contract = {path = ".", features = ["testutils"]}
 
 [features]
 testutils = ["soroban-sdk/testutils"]
