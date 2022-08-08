@@ -157,7 +157,7 @@ pub fn derive_fn(
         input_types: spec_args.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
             errors.push(Error::new(
-                ident.span(),
+                inputs.iter().nth(MAX as usize).span(),
                 format!(
                     "contract function has too many parameters, max count {} parameters",
                     MAX,
