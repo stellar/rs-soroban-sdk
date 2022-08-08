@@ -1,7 +1,5 @@
-error: custom attribute panicked
- --> tests/macros_fails/macros_spec_fn_name_too_long.rs:5:1
+error: contract function name too long, max length 10 characters
+ --> tests/macros_fails/macros_spec_fn_name_too_long.rs:7:12
   |
-5 | #[contractimpl]
-  | ^^^^^^^^^^^^^^^
-  |
-  = help: message: called `Result::unwrap()` on an `Err` value: LengthExceedsMax
+7 |     pub fn pay_to_destination() {
+  |            ^^^^^^^^^^^^^^^^^^
