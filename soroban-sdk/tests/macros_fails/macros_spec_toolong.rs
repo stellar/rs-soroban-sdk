@@ -4,7 +4,7 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn pay_to_destionation() {
+    pub fn pay_to_destination() {
         unimplemented!()
     }
 }
