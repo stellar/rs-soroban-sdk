@@ -1,5 +1,5 @@
 error: custom attribute panicked
- --> tests/macros_fails/macros_spec_toolong.rs:5:1
+ --> tests/macros_fails/macros_spec_fn_name_too_long.rs:5:1
   |
 5 | #[contractimpl]
   | ^^^^^^^^^^^^^^^
