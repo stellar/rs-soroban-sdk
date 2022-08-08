@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, WriteXdr};
+use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, VecM, WriteXdr};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
@@ -116,12 +116,6 @@ pub fn derive_fn(
         ReturnType::Default => vec![],
     };
 
-    // If errors have occurred, render them instead.
-    if !errors.is_empty() {
-        let compile_errors = errors.iter().map(Error::to_compile_error);
-        return Err(quote! { #(#compile_errors)* });
-    }
-
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
     let pub_mod_ident = format_ident!("{}", ident);
@@ -149,8 +143,28 @@ pub fn derive_fn(
 
     // Generated code spec.
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        name: wrap_export_name.clone().try_into().unwrap(),
-        input_types: spec_args.try_into().unwrap(),
+        name: wrap_export_name.clone().try_into().unwrap_or_else(|_| {
+            const MAX: u32 = 10;
+            errors.push(Error::new(
+                ident.span(),
+                format!(
+                    "contract function name too long, max length {} characters",
+                    MAX,
+                ),
+            ));
+            VecM::<_, MAX>::default()
+        }),
+        input_types: spec_args.try_into().unwrap_or_else(|_| {
+            const MAX: u32 = 10;
+            errors.push(Error::new(
+                inputs.iter().nth(MAX as usize).span(),
+                format!(
+                    "contract function has too many parameters, max count {} parameters",
+                    MAX,
+                ),
+            ));
+            VecM::<_, MAX>::default()
+        }),
         output_types: spec_result.try_into().unwrap(),
     });
     let spec_xdr = spec_entry.to_xdr().unwrap();
@@ -162,6 +176,12 @@ pub fn derive_fn(
     } else {
         quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] }
     };
+
+    // If errors have occurred, render them instead.
+    if !errors.is_empty() {
+        let compile_errors = errors.iter().map(Error::to_compile_error);
+        return Err(quote! { #(#compile_errors)* });
+    }
 
     // Generated code.
     Ok(quote! {
