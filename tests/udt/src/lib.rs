@@ -18,7 +18,8 @@ pub struct UdtStruct {
 
 pub struct Contract;
 
-#[contractimpl(export_if = "export")]
+#[cfg_attr(feature = "export", contractimpl(export = true))]
+#[cfg_attr(not(feature = "export"), contractimpl)]
 impl Contract {
     pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
         let a = match a {

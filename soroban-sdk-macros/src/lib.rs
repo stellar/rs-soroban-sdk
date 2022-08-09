@@ -5,25 +5,33 @@ mod derive_type;
 mod map_type;
 mod syn_ext;
 
-use std::env;
-
 use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_type::{derive_type_enum, derive_type_struct};
 
+use darling::FromMeta;
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, spanned::Spanned, DeriveInput, Error, ItemImpl, Visibility};
+use syn::{
+    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
+};
+
+fn default_export() -> bool {
+    true
+}
+
+#[derive(Debug, FromMeta)]
+struct ContractImplArgs {
+    #[darling(default = "default_export")]
+    export: bool,
+}
 
 #[proc_macro_attribute]
-pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
-    // Export the functions in the wasm and in the contract spec if the package
-    // is being built as the primary package. If the crate is imported to
-    // another package to reuse types, export will be false. We require that any
-    // crate containing a contract must export their types and functions
-    // themselves so that dependency crates do not accidentally export their
-    // contract implementations into a developers contract.
-    let export = env::var("CARGO_PRIMARY_PACKAGE").is_ok();
-
+pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractImplArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
     let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
@@ -38,7 +46,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
                 ident,
                 &m.sig.inputs,
                 &m.sig.output,
-                export,
+                args.export,
                 &trait_ident,
             )
         })
