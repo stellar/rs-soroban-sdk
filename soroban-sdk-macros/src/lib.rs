@@ -5,6 +5,8 @@ mod derive_type;
 mod map_type;
 mod syn_ext;
 
+use std::env;
+
 use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_type::{derive_type_enum, derive_type_struct};
 
@@ -20,7 +22,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     // crate containing a contract must export their types and functions
     // themselves so that dependency crates do not accidentally export their
     // contract implementations into a developers contract.
-    let export = option_env!("CARGO_PRIMARY_PACKAGE").is_some();
+    let export = env::var("CARGO_PRIMARY_PACKAGE").is_ok();
 
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
