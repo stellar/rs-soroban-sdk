@@ -2,6 +2,7 @@ all: check build test
 
 export RUSTFLAGS=-Dwarnings
 
+CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest run || echo test)
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
@@ -13,7 +14,7 @@ doc: fmt
 		$(CARGO_DOC_ARGS)
 
 test: fmt
-	cargo hack --feature-powerset --exclude-features docs test
+	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
 
 build: fmt
 	cargo build --target wasm32-unknown-unknown --release
