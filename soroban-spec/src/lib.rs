@@ -37,9 +37,7 @@ pub fn enum_for_spec(s: ScSpecUdtUnionV0) -> TokenStream {
 // Something in the form:
 //
 // ```
-// mod increment {
-//   contractuse!(client = true, spec = "...");
-// }
+// contractuse!(mod = "increment", client = true, spec = "...");
 // ```
 //
 // A future version will also support a `wasm` option for extracting the spec

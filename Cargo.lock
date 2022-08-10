@@ -813,6 +813,7 @@ dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
+ "soroban-spec",
  "stellar-xdr",
  "syn",
 ]
