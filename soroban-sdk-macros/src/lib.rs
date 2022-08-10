@@ -10,7 +10,8 @@ use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
-use quote::quote;
+use quote::{format_ident, quote};
+use soroban_spec::trait_for_function_specs;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
 };
@@ -30,8 +31,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
-    let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp)
-        .collect();
+    let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
         .iter()
         .map(|m| {
@@ -93,4 +93,37 @@ pub fn derive_contract_type(input: TokenStream) -> TokenStream {
         .to_compile_error(),
     };
     quote! { #derived }.into()
+}
+
+#[derive(Debug, FromMeta)]
+struct ContractUseArgs {
+    r#mod: String,
+    #[darling(default = "contractuse_default_client")]
+    client: bool,
+    spec: String,
+}
+
+fn contractuse_default_client() -> bool {
+    true
+}
+
+#[proc_macro]
+pub fn contractuse(args: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(args as AttributeArgs);
+    let args = match ContractUseArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let mod_ident = format_ident!("{}", args.r#mod);
+    // TODO: Decode and use client.spec for user-defined types.
+    // TODO: Decode and use client.spec for trait functions.
+    let r#trait = trait_for_function_specs("Contract", &[]);
+    quote! {
+        mod #mod_ident {
+            // TODO: Use args.client to determine if client should be derived.
+            #[derive(ContractClient)]
+            #r#trait
+        }
+    }
+    .into()
 }

@@ -9,9 +9,6 @@ license = "Apache-2.0"
 version = "0.0.1"
 edition = "2021"
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
 [dependencies]
 stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
 syn = {version="1.0",features=["full"]}

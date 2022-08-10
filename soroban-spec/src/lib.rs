@@ -4,7 +4,7 @@ use stellar_xdr::{ScSpecFunctionV0, ScSpecUdtStructV0, ScSpecUdtUnionV0};
 
 /// Constructs a token stream containing a single trait that has a function for
 /// every function spec.
-pub fn trait_for_function_specs(name: String, fn_specs: &[ScSpecFunctionV0]) -> TokenStream {
+pub fn trait_for_function_specs(name: &str, fn_specs: &[ScSpecFunctionV0]) -> TokenStream {
     quote! {}
 }
 
@@ -12,8 +12,8 @@ pub fn trait_for_function_specs(name: String, fn_specs: &[ScSpecFunctionV0]) -> 
 /// corresponding implementation, that provides a client for cross-contract
 /// calls to a contract that implements the function spec.
 pub fn client_impl_for_function_specs(
-    name: String,
-    impl_trait: Option<String>,
+    name: &str,
+    impl_trait: Option<&str>,
     fn_specs: &[ScSpecFunctionV0],
 ) -> TokenStream {
     quote! {}
