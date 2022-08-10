@@ -1,16 +1,45 @@
 #![no_std]
-use soroban_sdk::{contractimpl, BytesN, Env, IntoVal, Symbol, Vec};
+use soroban_sdk::{contractimpl, vec, BytesN, Env, IntoVal, Symbol};
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn delegate(e: Env, val: u32) {
-        let buff = [1u8; 32];
-        let cid = e.binary_new_from_linear_memory(buff.as_ptr() as u32, 32);
-        let cid: BytesN<32> = cid.try_into().unwrap();
-        let fun = Symbol::from_str("vec_err");
-        let args = Vec::from_array(&e, [val.into_env_val(&e); 1]);
-        let _: Vec<u32> = e.invoke_contract(&cid, &fun, args);
+    pub fn add_with(env: Env, x: i32, y: i32, contract_id: BytesN<32>) -> i32 {
+        env.invoke_contract(
+            &contract_id,
+            &Symbol::from_str("add"),
+            vec![&env, x.into_env_val(&env), y.into_env_val(&env)],
+        )
+    }
+}
+
+pub struct AddContract;
+
+#[contractimpl]
+impl AddContract {
+    pub fn add(a: i32, b: i32) -> i32 {
+        a + b
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use soroban_sdk::{BytesN, Env};
+
+    use crate::{add_with, AddContract, Contract};
+
+    #[test]
+    fn test_add() {
+        let e = Env::default();
+        let add_contract_id = BytesN::from_array(&e, [0; 32]);
+        e.register_contract(&add_contract_id, AddContract);
+        let contract_id = BytesN::from_array(&e, [1; 32]);
+        e.register_contract(&contract_id, Contract);
+
+        let x = 10i32;
+        let y = 12i32;
+        let z = add_with::invoke(&e, &contract_id, &x, &y, &add_contract_id);
+        assert!(z == 22);
     }
 }
