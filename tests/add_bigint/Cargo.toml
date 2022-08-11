@@ -4,9 +4,19 @@ version = "0.0.0"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"
+publish = false
+rust-version = "1.62"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
+doctest = false
 
 [dependencies]
-stellar-contract-sdk = {path = "../../soroban-sdk"}
+soroban-sdk = {path = "../../soroban-sdk"}
+
+[dev-dependencies]
+proptest = "1.0.0"
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+
+[features]
+testutils = ["soroban-sdk/testutils"]

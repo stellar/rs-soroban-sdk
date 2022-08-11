@@ -5,6 +5,7 @@ members = [
     "soroban-sdk",
     "tests/add_i32",
     "tests/add_i64",
+    "tests/add_bigint",
     "tests/vec",
     "tests/invoke_contract",
     "tests/udt",

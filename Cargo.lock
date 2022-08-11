@@ -226,6 +226,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 
 [[package]]
+name = "example_add_bigint"
+version = "0.0.0"
+dependencies = [
+ "proptest",
+ "soroban-sdk",
+]
+
+[[package]]
 name = "example_add_i32"
 version = "0.0.0"
 dependencies = [
