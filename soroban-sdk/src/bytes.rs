@@ -110,7 +110,7 @@ impl TryFrom<EnvObj> for Bytes {
 
     #[inline(always)]
     fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_object().is_obj_type(ScObjectType::Binary) {
+        if obj.as_object().is_obj_type(ScObjectType::Bytes) {
             Ok(unsafe { Bytes::unchecked_new(obj) })
         } else {
             Err(ConversionError {})
