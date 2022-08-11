@@ -21,13 +21,15 @@ jobs:
     # Check if there is any diff resulting from updating the crates. If there is
     # this step will fail, triggering the following steps.
     - id: diff
-      run: git diff --exit-code
+      run: |
+        git diff --exit-code
+        echo "::set-output name=exitcode::$?"
       continue-on-error: true
 
     # If the diff step failed, create a branch and push it to GitHub.  If the
     # branch already exists with a change the push should fail, and so we
     # shouldn't end up with multiple PRs.
-    - if: steps.diff.conclusion == 'failure'
+    - if: steps.diff.outputs.exitcode == 1
       id: commit
       run: |
         git config --global user.name 'github-actions[bot]'
@@ -38,7 +40,7 @@ jobs:
         git push origin update-rust-version
 
     # If the diff step failed, and the push succeeded, open a PR.
-    - if: steps.diff.conclusion == 'failure'
+    - if: steps.diff.outputs.exitcode == 1
       name: Create Pull Request
       uses: actions/github-script@v6
       with:
