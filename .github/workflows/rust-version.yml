@@ -42,11 +42,15 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
+          const repo = github.rest.repos.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
           await github.rest.pulls.create({
             title: 'Update rust-version',
             owner: context.repo.owner,
             repo: context.repo.repo,
             head: github.ref_name,
-            base: github.event.repository.default_branch,
+            base: repo.default_branch,
             body: '### What\nUpdate rust-version to latest stable.\n\n### Why\nTracking latest stable which receives security updates.'
           });
