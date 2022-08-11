@@ -26,7 +26,7 @@ pub type Binary = Bytes;
 pub type FixedBinary<const N: usize> = BytesN<N>;
 
 #[macro_export]
-macro_rules! bin {
+macro_rules! bytes {
     ($env:expr) => {
         $crate::Bytes::new($env)
     };
@@ -823,18 +823,18 @@ mod test {
     #[test]
     fn test_bin_macro() {
         let env = Env::default();
-        assert_eq!(bin![&env], Bytes::new(&env));
-        assert_eq!(bin![&env, 1], {
+        assert_eq!(bytes![&env], Bytes::new(&env));
+        assert_eq!(bytes![&env, 1], {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bin![&env, 1,], {
+        assert_eq!(bytes![&env, 1,], {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bin![&env, 3, 2, 1,], {
+        assert_eq!(bytes![&env, 3, 2, 1,], {
             let mut b = Bytes::new(&env);
             b.push(3);
             b.push(2);
