@@ -524,8 +524,15 @@ pub struct BytesN<const N: usize>(Bytes);
 
 impl<const N: usize> Debug for BytesN<N> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "ArrayBinary{{length = {}, ", N)?;
-        write!(f, "{:?}}}", self.0)?;
+        write!(f, "BytesN<{}>(", N)?;
+        let mut iter = self.iter();
+        if let Some(x) = iter.next() {
+            write!(f, "{:?}", x)?;
+        }
+        for x in iter {
+            write!(f, ", {:?}", x)?;
+        }
+        write!(f, ")")?;
         Ok(())
     }
 }
@@ -928,5 +935,16 @@ mod test {
         assert_eq!(get_len(bin), 3);
         assert_eq!(get_len(&arr_bin), 3);
         assert_eq!(get_len(arr_bin), 3);
+    }
+
+    #[test]
+    fn bytesn_debug() {
+        let env = Env::default();
+        let mut bin = Bytes::new(&env);
+        bin.push(10);
+        bin.push(20);
+        bin.push(30);
+        let arr_bin: BytesN<3> = bin.clone().try_into().unwrap();
+        assert_eq!(format!("{:?}", arr_bin), "BytesN<3>(10, 20, 30)");
     }
 }
