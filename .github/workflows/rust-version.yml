@@ -22,11 +22,12 @@ jobs:
     # this step will fail, triggering the following steps.
     - id: diff
       run: git diff --exit-code
+      continue-on-error: true
 
     # If the diff step failed, create a branch and push it to GitHub.  If the
     # branch already exists with a change the push should fail, and so we
     # shouldn't end up with multiple PRs.
-    - if: always() && steps.diff.conclusion == 'failure'
+    - if: steps.diff.conclusion == 'failure'
       id: commit
       run: |
         git config --global user.name 'github-actions[bot]'
@@ -37,7 +38,7 @@ jobs:
         git push origin update-rust-version
 
     # If the diff step failed, and the push succeeded, open a PR.
-    - if: always() && steps.diff.conclusion == 'failure' && steps.commit.conclusion == 'success'
+    - if: steps.diff.conclusion == 'failure'
       name: Create Pull Request
       uses: actions/github-script@v6
       with:
