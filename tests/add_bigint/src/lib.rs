@@ -1,5 +1,5 @@
 #![no_std]
-use stellar_contract_sdk::{contractimpl, BigInt};
+use soroban_sdk::{contractimpl, BigInt};
 
 pub struct Contract;
 
