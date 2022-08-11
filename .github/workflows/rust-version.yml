@@ -46,7 +46,7 @@ jobs:
             title: 'Update rust-version',
             owner: context.repo.owner,
             repo: context.repo.repo,
-            head: '${{ github.ref_name }}',
+            head: 'update-rust-version',
             base: 'main',
             body: '### What\nUpdate rust-version to latest stable.\n\n### Why\nTracking latest stable which receives security updates.'
           });
