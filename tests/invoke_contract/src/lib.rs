@@ -11,6 +11,8 @@ impl Contract {
             &Symbol::from_str("add"),
             vec![&env, x.into_env_val(&env), y.into_env_val(&env)],
         )
+
+        // TODO: add_contract::Client::add(&env, &contract_id, x, y)
     }
 }
 
@@ -23,17 +25,26 @@ impl AddContract {
     }
 }
 
+// TODO: contractuse!(name = "add_contract", client = true, spec = [0, 0, 0, 0, 0, 0, 0, 3, 97, 100, 100, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 2]);
+
 #[cfg(test)]
 mod test {
+    extern crate std;
+    use std::println;
+
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{add_with, AddContract, Contract};
+    use crate::{add_with, AddContract, Contract, __SPEC_XDR_ADD};
 
     #[test]
     fn test_add() {
+        println!("AddContract's SPEC: {:?}", __SPEC_XDR_ADD);
+
         let e = Env::default();
+
         let add_contract_id = BytesN::from_array(&e, [0; 32]);
         e.register_contract(&add_contract_id, AddContract);
+
         let contract_id = BytesN::from_array(&e, [1; 32]);
         e.register_contract(&contract_id, Contract);
 
