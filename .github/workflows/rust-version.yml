@@ -26,7 +26,7 @@ jobs:
     # If the diff step failed, create a branch and push it to GitHub.  If the
     # branch already exists with a change the push should fail, and so we
     # shouldn't end up with multiple PRs.
-    - if: steps.diff.conclusion == 'failure'
+    - if: always() && steps.diff.conclusion == 'failure'
       id: commit
       run: |
         git checkout -b update-rust-version
@@ -35,7 +35,7 @@ jobs:
         git push origin update-rust-version
 
     # If the diff step failed, and the push succeeded, open a PR.
-    - if: steps.diff.conclusion == 'failure' && steps.commit.conclusion == 'success'
+    - if: always() && steps.diff.conclusion == 'failure' && steps.commit.conclusion == 'success'
       name: Create Pull Request
       uses: actions/github-script@v6
       with:
