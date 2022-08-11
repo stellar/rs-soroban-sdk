@@ -1,0 +1,50 @@
+name: Rust Version
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 13 * * *'
+
+jobs:
+
+  check-and-update-rust-version:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update
+    - run: cargo install --locked --version 0.2.0 cargo-set-rust-version
+
+    # Update the rust-version in all workspace crates to the latest stable
+    # version.
+    - run: cargo set-rust-version
+
+    # Check if there is any diff resulting from updating the crates. If there is
+    # this step will fail, triggering the following steps.
+    - id: diff
+      run: git diff --exit-code
+
+    # If the diff step failed, create a branch and push it to GitHub.  If the
+    # branch already exists with a change the push should fail, and so we
+    # shouldn't end up with multiple PRs.
+    - if: steps.diff.conclusion == 'failure'
+      id: commit
+      run: |
+        git checkout -b update-rust-version
+        git add .
+        git commit -m 'Update rust-version'
+        git push origin update-rust-version
+
+    # If the diff step failed, and the push succeeded, open a PR.
+    - if: steps.diff.conclusion == 'failure' && steps.commit.conclusion == 'success'
+      name: Create Pull Request
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.pulls.create({
+            title: 'Update rust-version',
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: github.ref_name,
+            base: github.event.repository.default_branch,
+            body: '### What\nUpdate rust-version to latest stable.\n\n### Why\nTracking latest stable which receives security updates.'
+          });
