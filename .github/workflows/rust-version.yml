@@ -19,18 +19,17 @@ jobs:
     - run: cargo set-rust-version
 
     # Check if there is any diff resulting from updating the crates. If there is
-    # this step will fail, triggering the following steps.
+    # set the update=true output for following steps.
     - id: diff
       run: |
-        git diff --exit-code
-        echo "::set-output name=exitcode::$?"
-      continue-on-error: true
+        if ! git diff --exit-code; then
+          echo "::set-output name=update::true"
+        fi
 
-    # If the diff step failed, create a branch and push it to GitHub.  If the
-    # branch already exists with a change the push should fail, and so we
-    # shouldn't end up with multiple PRs.
-    - if: steps.diff.outputs.exitcode == 1
-      id: commit
+    # If the diff step indicates an update is required, create a branch and push
+    # it to GitHub. If the branch already exists with a change the push should
+    # fail, and so we shouldn't end up with multiple PRs.
+    - if: steps.diff.outputs.update == 'true'
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -39,8 +38,8 @@ jobs:
         git commit -m 'Update rust-version'
         git push origin update-rust-version
 
-    # If the diff step failed, and the push succeeded, open a PR.
-    - if: steps.diff.outputs.exitcode == 1
+    # If the diff step indicates an update is required, open a PR.
+    - if: steps.diff.outputs.update == 'true'
       name: Create Pull Request
       uses: actions/github-script@v6
       with:
