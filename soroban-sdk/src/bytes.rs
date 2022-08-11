@@ -26,7 +26,7 @@ pub type Binary = Bytes;
 pub type FixedBinary<const N: usize> = BytesN<N>;
 
 #[macro_export]
-macro_rules! bin {
+macro_rules! bytes {
     ($env:expr) => {
         $crate::Bytes::new($env)
     };
@@ -524,8 +524,15 @@ pub struct BytesN<const N: usize>(Bytes);
 
 impl<const N: usize> Debug for BytesN<N> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "ArrayBinary{{length = {}, ", N)?;
-        write!(f, "{:?}}}", self.0)?;
+        write!(f, "BytesN<{}>(", N)?;
+        let mut iter = self.iter();
+        if let Some(x) = iter.next() {
+            write!(f, "{:?}", x)?;
+        }
+        for x in iter {
+            write!(f, ", {:?}", x)?;
+        }
+        write!(f, ")")?;
         Ok(())
     }
 }
@@ -816,18 +823,18 @@ mod test {
     #[test]
     fn test_bin_macro() {
         let env = Env::default();
-        assert_eq!(bin![&env], Bytes::new(&env));
-        assert_eq!(bin![&env, 1], {
+        assert_eq!(bytes![&env], Bytes::new(&env));
+        assert_eq!(bytes![&env, 1], {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bin![&env, 1,], {
+        assert_eq!(bytes![&env, 1,], {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bin![&env, 3, 2, 1,], {
+        assert_eq!(bytes![&env, 3, 2, 1,], {
             let mut b = Bytes::new(&env);
             b.push(3);
             b.push(2);
@@ -928,5 +935,16 @@ mod test {
         assert_eq!(get_len(bin), 3);
         assert_eq!(get_len(&arr_bin), 3);
         assert_eq!(get_len(arr_bin), 3);
+    }
+
+    #[test]
+    fn bytesn_debug() {
+        let env = Env::default();
+        let mut bin = Bytes::new(&env);
+        bin.push(10);
+        bin.push(20);
+        bin.push(30);
+        let arr_bin: BytesN<3> = bin.clone().try_into().unwrap();
+        assert_eq!(format!("{:?}", arr_bin), "BytesN<3>(10, 20, 30)");
     }
 }
