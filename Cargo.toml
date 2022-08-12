@@ -6,6 +6,7 @@ members = [
     "soroban-spec",
     "tests/add_i32",
     "tests/add_i64",
+    "tests/add_bigint",
     "tests/vec",
     "tests/invoke_contract",
     "tests/udt",
@@ -32,9 +33,12 @@ exclude = ["soroban-sdk-macros"]
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "21bc98a" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "21bc98a" }
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "28a28dc0" }
+soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "556c75f" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "556c75f" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "556c75f" }
+soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "556c75f" }
+soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "556c75f" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "3eca5ce" }
 
 [profile.dev]
 overflow-checks = true
