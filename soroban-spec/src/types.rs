@@ -21,8 +21,8 @@ pub fn generate_types(specs: &[ScSpecEntry], wasm: Option<&Cow<'_, str>>) -> Tok
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
     quote! {
-        #[contractclient]
-        #[contractwasm(wasm = #wasm)]
+        #[::soroban_sdk::contractclient]
+        #[::soroban_sdk::contractwasm(wasm = #wasm)]
         #trait_
         #(#structs)*
         #(#unions)*
@@ -63,7 +63,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
         quote! { pub #f_ident: #f_type }
     });
     quote! {
-        #[contracttype]
+        #[::soroban_sdk::contracttype]
         pub struct #ident { #(#fields,)* }
     }
 }
@@ -83,7 +83,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
         quote! { #v_ident #v_type }
     });
     quote! {
-        #[contracttype]
+        #[::soroban_sdk::contracttype]
         pub enum #ident { #(#variants,)* }
     }
 }
