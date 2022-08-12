@@ -42,11 +42,7 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
                 let type_ident = generate_type_ident(t);
                 quote! { #name: #type_ident }
             });
-            let fn_outputs = s
-                .output_types
-                .iter()
-                .enumerate()
-                .map(|(i, t)| generate_type_ident(t));
+            let fn_outputs = s.output_types.iter().map(|t| generate_type_ident(t));
             quote! {
                 fn #fn_ident(#(#fn_inputs),*) -> (#(#fn_outputs),*)
             }
