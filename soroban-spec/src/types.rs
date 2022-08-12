@@ -1,12 +1,10 @@
-use std::borrow::Cow;
-
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use stellar_xdr::{
+use soroban_env_host::xdr::{
     ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
-pub fn generate_types(specs: &[ScSpecEntry], wasm: Option<&Cow<'_, str>>) -> TokenStream {
+pub fn generate(specs: &[ScSpecEntry], wasm: Option<&str>) -> TokenStream {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
@@ -17,21 +15,25 @@ pub fn generate_types(specs: &[ScSpecEntry], wasm: Option<&Cow<'_, str>>) -> Tok
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
         }
     }
+    let client_attr = quote! { #[::soroban_sdk::contractclient] };
+    let wasm_attr = wasm.map(|wasm| quote! { #[::soroban_sdk::contractwasm(wasm = #wasm)] });
     let trait_ = generate_trait("Contract", &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
     quote! {
-        #[::soroban_sdk::contractclient]
-        #[::soroban_sdk::contractwasm(wasm = #wasm)]
+        #client_attr
+        #wasm_attr
         #trait_
+
         #(#structs)*
+
         #(#unions)*
     }
 }
 
 /// Constructs a token stream containing a single trait that has a function for
 /// every function spec.
-pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
+fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
     let trait_ident = format_ident!("{}", name);
     let fns: Vec<_> = specs
         .iter()
@@ -42,7 +44,7 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
                 let type_ident = generate_type_ident(t);
                 quote! { #name: #type_ident }
             });
-            let fn_outputs = s.output_types.iter().map(|t| generate_type_ident(t));
+            let fn_outputs = s.output_types.iter().map(generate_type_ident);
             quote! {
                 fn #fn_ident(env: ::soroban_sdk::Env, #(#fn_inputs),*) -> (#(#fn_outputs),*)
             }
@@ -55,7 +57,7 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
-pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
+fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_string().unwrap());
     let fields = spec.fields.iter().map(|f| {
         let f_ident = format_ident!("{}", f.name.to_string().unwrap());
@@ -70,16 +72,15 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
 
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec.
-pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
+fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_string().unwrap());
     let variants = spec.cases.iter().map(|c| {
         let v_ident = format_ident!("{}", c.name.to_string().unwrap());
         let v_type = c
             .type_
             .as_ref()
-            .map(|t| generate_type_ident(&t))
-            .map(|t| quote! { (#t) })
-            .unwrap_or_else(|| quote! {});
+            .map(generate_type_ident)
+            .map_or_else(|| quote! {}, |t| quote! { (#t) });
         quote! { #v_ident #v_type }
     });
     quote! {
@@ -88,7 +89,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
     }
 }
 
-pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
+fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
     match spec {
         ScSpecTypeDef::U64 => quote! { u64 },
         ScSpecTypeDef::I64 => quote! { i64 },
@@ -98,7 +99,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Symbol => quote! { ::soroban_sdk::Symbol },
         ScSpecTypeDef::Bitset => quote! { ::soroban_sdk::Bitset },
         ScSpecTypeDef::Status => quote! { ::soroban_sdk::Status },
-        ScSpecTypeDef::Binary => quote! { ::soroban_sdk::Bytes },
+        ScSpecTypeDef::Bytes => quote! { ::soroban_sdk::Bytes },
         ScSpecTypeDef::BigInt => quote! { ::soroban_sdk::BigInt },
         ScSpecTypeDef::Option(o) => {
             let value_ident = generate_type_ident(&o.value_type);

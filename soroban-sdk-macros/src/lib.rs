@@ -10,8 +10,7 @@ use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
-use quote::{format_ident, quote};
-use soroban_spec::trait_for_function_specs;
+use quote::quote;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
 };
@@ -96,34 +95,72 @@ pub fn derive_contract_type(input: TokenStream) -> TokenStream {
 }
 
 #[derive(Debug, FromMeta)]
-struct ContractUseArgs {
-    r#mod: String,
-    #[darling(default = "contractuse_default_client")]
-    client: bool,
-    spec: String,
+struct ContractWasmArgs {
+    #[darling(default)]
+    wasm: String,
 }
 
-fn contractuse_default_client() -> bool {
-    true
-}
-
-#[proc_macro]
-pub fn contractuse(args: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(args as AttributeArgs);
-    let args = match ContractUseArgs::from_list(&args) {
+#[proc_macro_attribute]
+pub fn contractwasm(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractWasmArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let mod_ident = format_ident!("{}", args.r#mod);
-    // TODO: Decode and use client.spec for user-defined types.
-    // TODO: Decode and use client.spec for trait functions.
-    let r#trait = trait_for_function_specs("Contract", &[]);
+    let consts = soroban_spec::wasm::generate_consts(&args.wasm);
+    let input = parse_macro_input!(input as DeriveInput);
     quote! {
-        mod #mod_ident {
-            // TODO: Use args.client to determine if client should be derived.
-            #[derive(ContractClient)]
-            #r#trait
-        }
+        #consts
+        #input
     }
     .into()
+}
+
+#[proc_macro_attribute]
+pub fn contractclient(_metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    // TODO: Implement client.
+    quote! { #input }.into()
+}
+
+#[derive(Debug, FromMeta)]
+struct ContractUseArgs {
+    spec: Option<String>,
+    wasm: String,
+}
+
+#[proc_macro]
+pub fn contractuse(metadata: TokenStream) -> TokenStream {
+    let attr_args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractUseArgs::from_list(&attr_args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let spec = if let Some(spec) = args.spec {
+        match soroban_spec::parse::parse_spec_base64(spec.as_bytes()) {
+            Ok(spec) => spec,
+            Err(e) => {
+                return Error::new(
+                    attr_args.first().unwrap().span(),
+                    format!("{}", e.to_string()),
+                )
+                .into_compile_error()
+                .into()
+            }
+        }
+    } else {
+        match soroban_spec::wasm::get_spec(&args.wasm) {
+            Ok(spec) => spec,
+            Err(e) => {
+                return Error::new(
+                    attr_args.first().unwrap().span(),
+                    format!("{}", e.to_string()),
+                )
+                .into_compile_error()
+                .into()
+            }
+        }
+    };
+    let types = soroban_spec::types::generate(&spec, Some(&args.wasm));
+    quote! { #types }.into()
 }

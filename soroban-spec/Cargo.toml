@@ -10,7 +10,9 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
-stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
+soroban-env-host = { version = "0.0.3", features = ["vm"] }
+base64 = "0.13.0"
+thiserror = "1.0.32"
 syn = {version="1.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"

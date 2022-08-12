@@ -17,8 +17,8 @@ test: fmt
 	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
 
 build: fmt
-	cargo build --target wasm32-unknown-unknown --release
-	CARGO_TARGET_DIR=target-tiny cargo +nightly build --target wasm32-unknown-unknown --release \
+	cargo hack build --target wasm32-unknown-unknown --release
+	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build --target wasm32-unknown-unknown --release \
 		-Z build-std=std,panic_abort \
 		-Z build-std-features=panic_immediate_abort
 	cd target/wasm32-unknown-unknown/release/ && \
@@ -34,7 +34,7 @@ build: fmt
 
 check: fmt
 	cargo hack --feature-powerset --exclude-features docs check --all-targets
-	cargo check --release --target wasm32-unknown-unknown
+	cargo hack check --release --target wasm32-unknown-unknown
 
 watch:
 	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
