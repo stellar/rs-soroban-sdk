@@ -48,29 +48,48 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
                 .enumerate()
                 .map(|(i, t)| generate_type_ident(t));
             quote! {
-                fn #fn_ident(#(#fn_inputs),*) -> (#(#fn_outputs),*);
+                fn #fn_ident(#(#fn_inputs),*) -> (#(#fn_outputs),*)
             }
         })
         .collect();
     quote! {
-        pub trait #trait_ident {
-            #(
-                #fns
-            )*
-        }
+        pub trait #trait_ident { #(#fns;)* }
     }
 }
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
 pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
-    quote! {}
+    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    let fields = spec.fields.iter().map(|f| {
+        let f_ident = format_ident!("{}", f.name.to_string().unwrap());
+        let f_type = generate_type_ident(&f.type_);
+        quote! { pub #f_ident: #f_type }
+    });
+    quote! {
+        #[contracttype]
+        pub struct #ident { #(#fields,)* }
+    }
 }
 
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec.
 pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
-    quote! {}
+    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    let variants = spec.cases.iter().map(|c| {
+        let v_ident = format_ident!("{}", c.name.to_string().unwrap());
+        let v_type = c
+            .type_
+            .as_ref()
+            .map(|t| generate_type_ident(&t))
+            .map(|t| quote! { (#t) })
+            .unwrap_or_else(|| quote! {});
+        quote! { #v_ident #v_type }
+    });
+    quote! {
+        #[contracttype]
+        pub enum #ident { #(#variants,)* }
+    }
 }
 
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
