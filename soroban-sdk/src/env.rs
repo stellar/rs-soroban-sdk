@@ -197,6 +197,13 @@ impl Env {
     }
 
     #[doc(hidden)]
+    pub fn create_token_from_contract(&self, salt: BytesN<32>) -> BytesN<32> {
+        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
+        let id_obj = internal::Env::create_token_from_contract(self, salt_obj);
+        id_obj.in_env(self).try_into().unwrap()
+    }
+
+    #[doc(hidden)]
     pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Bytes {
         let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
         bin_obj.in_env(self).try_into().unwrap()
