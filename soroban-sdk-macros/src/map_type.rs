@@ -26,7 +26,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                 "Symbol" => Ok(ScSpecTypeDef::Symbol),
                 "Bitset" => Ok(ScSpecTypeDef::Bitset),
                 "Status" => Ok(ScSpecTypeDef::Status),
-                "Bytes" => Ok(ScSpecTypeDef::Binary),
+                "Bytes" => Ok(ScSpecTypeDef::Bytes),
                 "BigInt" => Ok(ScSpecTypeDef::BigInt),
                 s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     name: s.try_into().map_err(|e| {
@@ -93,7 +93,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                         })))
                     }
                     // TODO: Add proper support for BytesN as a first class spec type.
-                    "BytesN" => Ok(ScSpecTypeDef::Binary),
+                    "BytesN" => Ok(ScSpecTypeDef::Bytes),
                     _ => Err(Error::new(
                         angle_bracketed.span(),
                         "generics unsupported on user-defined types in contract functions",
