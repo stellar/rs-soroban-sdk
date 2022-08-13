@@ -11,6 +11,7 @@ use derive_type::{derive_type_enum, derive_type_struct};
 use darling::FromMeta;
 use proc_macro::TokenStream;
 use quote::quote;
+use soroban_spec::wasm::GetSpecError;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
 };
@@ -138,12 +139,15 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
     let spec = match soroban_spec::wasm::get_spec(&args.wasm) {
         Ok(spec) => spec,
         Err(e) => {
-            return Error::new(
-                attr_args.first().unwrap().span(),
-                format!("{}", e.to_string()),
-            )
-            .into_compile_error()
-            .into()
+            let err_str = match e {
+                GetSpecError::Read(e) => e.to_string(),
+                GetSpecError::LoadContract(e) => e.to_string(),
+                GetSpecError::Parse(e) => e.to_string(),
+                GetSpecError::NotFound => "spec not found".to_string(),
+            };
+            return Error::new(attr_args.first().unwrap().span(), err_str)
+                .into_compile_error()
+                .into();
         }
     };
     let types = soroban_spec::types::generate(&spec, &args.wasm);

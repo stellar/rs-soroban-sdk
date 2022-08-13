@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, vec, BytesN, Env, IntoVal, Symbol};
+use soroban_sdk::{contractimpl, contractimport, vec, BytesN, Env, IntoVal, Symbol};
 
 pub struct Contract;
 
@@ -14,14 +14,16 @@ impl Contract {
     }
 }
 
+mod addcontract {
+    use super::*;
+    contractimport!(wasm = "target/wasm32-unknown-unknown/release/example_add_i32.wasm");
+}
+
 #[cfg(test)]
 mod test {
     use soroban_sdk::{BytesN, Env};
 
     use crate::{add_with, Contract};
-
-    const ADD_CONTRACT_WASM: &[u8] =
-        include_bytes!("../../../target/wasm32-unknown-unknown/release/example_add_i32.wasm");
 
     #[test]
     fn test_add() {
