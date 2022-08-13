@@ -275,6 +275,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "example_import_contract"
+version = "0.0.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "example_invoke_contract"
 version = "0.0.0"
 dependencies = [
@@ -812,7 +819,6 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=8861a4b5#8861a4b581a247b2799173859d7c9d04565e2046"
 dependencies = [
  "backtrace",
  "dyn-fmt",
