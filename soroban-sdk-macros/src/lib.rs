@@ -30,8 +30,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
-    let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp)
-        .collect();
+    let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
         .iter()
         .map(|m| {
@@ -40,6 +39,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
             derive_fn(
                 &call,
+                ty,
                 ident,
                 &m.sig.inputs,
                 &m.sig.output,

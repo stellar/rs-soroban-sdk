@@ -14,6 +14,7 @@ use crate::map_type::map_type;
 #[allow(clippy::too_many_lines)]
 pub fn derive_fn(
     call: &TokenStream2,
+    ty: &Box<Type>,
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
@@ -171,6 +172,7 @@ pub fn derive_fn(
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
     let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
+    let spec_fn_ident = format_ident!("spec_xdr_{}", ident.to_string());
     let link_section = if let Some(cfg_feature) = feature {
         quote! { #[cfg_attr(all(target_family = "wasm", feature = #cfg_feature), link_section = "contractspecv0")] }
     } else {
@@ -187,7 +189,13 @@ pub fn derive_fn(
     Ok(quote! {
         #[doc(hidden)]
         #link_section
-        pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
+        pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
+
+        impl #ty {
+            pub const fn #spec_fn_ident() -> [u8; #spec_xdr_len] {
+                *#spec_xdr_lit
+            }
+        }
 
         #[doc(hidden)]
         #[deprecated(note = #deprecated_note)]
