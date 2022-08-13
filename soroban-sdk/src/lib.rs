@@ -33,9 +33,7 @@ fn __link_sections() {
     static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 }
 
-pub use soroban_sdk_macros::{
-    contractclient, contractimpl, contracttype, contractuse, contractwasm, ContractType,
-};
+pub use soroban_sdk_macros::{contractimpl, contractimport, contracttype, ContractType};
 
 mod env;
 

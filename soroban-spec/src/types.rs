@@ -4,7 +4,9 @@ use soroban_env_host::xdr::{
     ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
-pub fn generate(specs: &[ScSpecEntry], wasm: Option<&str>) -> TokenStream {
+use crate::{client, wasm};
+
+pub fn generate(specs: &[ScSpecEntry], wasm: &str) -> TokenStream {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
@@ -15,18 +17,16 @@ pub fn generate(specs: &[ScSpecEntry], wasm: Option<&str>) -> TokenStream {
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
         }
     }
-    // let client_attr = quote! { #[::soroban_sdk::contractclient] };
-    // let wasm_attr = wasm.map(|wasm| quote! { #[::soroban_sdk::contractwasm(wasm = #wasm)] });
+    let client = client::generate(&spec_fns);
+    let wasm_consts = wasm::generate_consts(wasm);
     let trait_ = generate_trait("Contract", &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
     quote! {
-        // #client_attr
-        // #wasm_attr
+        #wasm_consts
         #trait_
-
+        #client
         #(#structs)*
-
         #(#unions)*
     }
 }

@@ -9,7 +9,7 @@ use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
-use proc_macro::{Span, TokenStream};
+use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
@@ -124,50 +124,28 @@ pub fn contractclient(_metadata: TokenStream, input: TokenStream) -> TokenStream
 }
 
 #[derive(Debug, FromMeta)]
-struct ContractUseArgs {
-    spec: Option<String>,
-    wasm: Option<String>,
+struct ContractImportArgs {
+    wasm: String,
 }
 
 #[proc_macro]
-pub fn contractuse(metadata: TokenStream) -> TokenStream {
+pub fn contractimport(metadata: TokenStream) -> TokenStream {
     let attr_args = parse_macro_input!(metadata as AttributeArgs);
-    let args = match ContractUseArgs::from_list(&attr_args) {
+    let args = match ContractImportArgs::from_list(&attr_args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let spec = if let Some(spec) = args.spec {
-        match soroban_spec::parse::parse_spec_base64(spec.as_bytes()) {
-            Ok(spec) => spec,
-            Err(e) => {
-                return Error::new(
-                    attr_args.first().unwrap().span(),
-                    format!("{}", e.to_string()),
-                )
-                .into_compile_error()
-                .into()
-            }
+    let spec = match soroban_spec::wasm::get_spec(&args.wasm) {
+        Ok(spec) => spec,
+        Err(e) => {
+            return Error::new(
+                attr_args.first().unwrap().span(),
+                format!("{}", e.to_string()),
+            )
+            .into_compile_error()
+            .into()
         }
-    } else if let Some(wasm) = &args.wasm {
-        match soroban_spec::wasm::get_spec(wasm) {
-            Ok(spec) => spec,
-            Err(e) => {
-                return Error::new(
-                    attr_args.first().unwrap().span(),
-                    format!("{}", e.to_string()),
-                )
-                .into_compile_error()
-                .into()
-            }
-        }
-    } else {
-        return Error::new(
-            Span::call_site().into(),
-            format!("spec or wasm must be provided"),
-        )
-        .into_compile_error()
-        .into();
     };
-    let types = soroban_spec::types::generate(&spec, args.wasm.as_deref());
+    let types = soroban_spec::types::generate(&spec, &args.wasm);
     quote! { #types }.into()
 }

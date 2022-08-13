@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, contractuse, vec, BytesN, Env, IntoVal, Symbol};
+use soroban_sdk::{contractimpl, vec, BytesN, Env, IntoVal, Symbol};
 
 pub struct Contract;
 
@@ -11,8 +11,6 @@ impl Contract {
             &Symbol::from_str("add"),
             vec![&env, x.into_env_val(&env), y.into_env_val(&env)],
         )
-
-        // TODO: add_contract::Client::add(&env, &contract_id, x, y)
     }
 }
 
@@ -25,30 +23,17 @@ impl AddContract {
     }
 }
 
-mod addcontract {
-    use super::*;
-    contractuse!(
-        spec = "AAAAAgAAAAdVZHRFbnVtAAAAAAIAAAAEVWR0QQAAAAAAAAAEVWR0QgAAAAEAAAfQAAAACVVkdFN0cnVjdAAAAAAAAAEAAAAJVWR0U3RydWN0AAAAAAAAAwAAAAFhAAAAAAAABAAAAAFiAAAAAAAABAAAAAFjAAAAAAAD6gAAAAQAAAAAAAAAA2FkZAAAAAACAAAH0AAAAAdVZHRFbnVtAAAAB9AAAAAHVWR0RW51bQAAAAABAAAABA==",
-        wasm = ""
-    );
-}
-
 #[cfg(test)]
 mod test {
-    extern crate std;
-    use std::println;
-
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{add_with, AddContract, Contract, __SPEC_XDR_ADD};
+    use crate::{add_with, AddContract, Contract};
 
     #[test]
     fn test_add() {
         let e = Env::default();
-
         let add_contract_id = BytesN::from_array(&e, [0; 32]);
         e.register_contract(&add_contract_id, AddContract);
-
         let contract_id = BytesN::from_array(&e, [1; 32]);
         e.register_contract(&contract_id, Contract);
 
