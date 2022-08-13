@@ -2,6 +2,8 @@ use std::io::Cursor;
 
 use soroban_env_host::xdr::{self, ReadXdr, ScSpecEntry};
 
+// TODO: Move these functions into stellar_xdr.
+
 #[derive(thiserror::Error, Debug)]
 pub enum ParseSpecBase64Error {
     #[error("parsing contract spec base64")]
