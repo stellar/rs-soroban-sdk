@@ -9,7 +9,7 @@ use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
-use proc_macro::TokenStream;
+use proc_macro::{Span, TokenStream};
 use quote::quote;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
@@ -126,7 +126,7 @@ pub fn contractclient(_metadata: TokenStream, input: TokenStream) -> TokenStream
 #[derive(Debug, FromMeta)]
 struct ContractUseArgs {
     spec: Option<String>,
-    wasm: String,
+    wasm: Option<String>,
 }
 
 #[proc_macro]
@@ -148,8 +148,8 @@ pub fn contractuse(metadata: TokenStream) -> TokenStream {
                 .into()
             }
         }
-    } else {
-        match soroban_spec::wasm::get_spec(&args.wasm) {
+    } else if let Some(wasm) = &args.wasm {
+        match soroban_spec::wasm::get_spec(wasm) {
             Ok(spec) => spec,
             Err(e) => {
                 return Error::new(
@@ -160,7 +160,14 @@ pub fn contractuse(metadata: TokenStream) -> TokenStream {
                 .into()
             }
         }
+    } else {
+        return Error::new(
+            Span::call_site().into(),
+            format!("spec or wasm must be provided"),
+        )
+        .into_compile_error()
+        .into();
     };
-    let types = soroban_spec::types::generate(&spec, Some(&args.wasm));
+    let types = soroban_spec::types::generate(&spec, args.wasm.as_deref());
     quote! { #types }.into()
 }

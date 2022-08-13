@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, vec, BytesN, Env, IntoVal, Symbol};
+use soroban_sdk::{contractimpl, contractuse, vec, BytesN, Env, IntoVal, Symbol};
 
 pub struct Contract;
 
@@ -25,7 +25,13 @@ impl AddContract {
     }
 }
 
-// TODO: contractuse!(name = "add_contract", client = true, spec = [0, 0, 0, 0, 0, 0, 0, 3, 97, 100, 100, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 2]);
+mod addcontract {
+    use super::*;
+    contractuse!(
+        spec = "AAAAAgAAAAdVZHRFbnVtAAAAAAIAAAAEVWR0QQAAAAAAAAAEVWR0QgAAAAEAAAfQAAAACVVkdFN0cnVjdAAAAAAAAAEAAAAJVWR0U3RydWN0AAAAAAAAAwAAAAFhAAAAAAAABAAAAAFiAAAAAAAABAAAAAFjAAAAAAAD6gAAAAQAAAAAAAAAA2FkZAAAAAACAAAH0AAAAAdVZHRFbnVtAAAAB9AAAAAHVWR0RW51bQAAAAABAAAABA==",
+        wasm = ""
+    );
+}
 
 #[cfg(test)]
 mod test {
@@ -38,8 +44,6 @@ mod test {
 
     #[test]
     fn test_add() {
-        println!("AddContract's SPEC: {:?}", __SPEC_XDR_ADD);
-
         let e = Env::default();
 
         let add_contract_id = BytesN::from_array(&e, [0; 32]);
