@@ -21,7 +21,7 @@ ed25519-dalek = { version = "1.0.1", optional = true }
 soroban-env-guest = { version = "0.0.3" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { version = "0.0.3" }
+soroban-env-host = { version = "0.0.3", features = ["vm"] }
 
 [dev-dependencies]
 stellar-xdr = { version = "0.0.1", features = ["next", "std"] }

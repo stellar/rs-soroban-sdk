@@ -7,6 +7,7 @@ members = [
     "tests/add_i64",
     "tests/add_bigint",
     "tests/vec",
+    "tests/import_contract",
     "tests/invoke_contract",
     "tests/udt",
     "tests/contract_data",
@@ -34,7 +35,8 @@ soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
 soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
 soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
+# soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
+soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
 soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
 soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "3eca5ce" }
