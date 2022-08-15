@@ -155,7 +155,6 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(spec) => spec,
         Err(e) => {
             let err_str = match e {
-                GetSpecError::Read(e) => e.to_string(),
                 GetSpecError::LoadContract(e) => e.to_string(),
                 GetSpecError::Parse(e) => e.to_string(),
                 GetSpecError::NotFound => "spec not found".to_string(),
