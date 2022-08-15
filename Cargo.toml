@@ -32,11 +32,11 @@ exclude = ["soroban-sdk-macros"]
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
-soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
-soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "8861a4b5" }
+soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
+soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
+soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "3eca5ce" }
 
 [profile.dev]
