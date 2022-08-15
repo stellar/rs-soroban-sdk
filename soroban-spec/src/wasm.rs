@@ -1,4 +1,4 @@
-use std::{fs, io};
+use std::{fs, io, path::Path};
 
 use proc_macro2::TokenStream;
 use quote::quote;
@@ -21,7 +21,7 @@ pub enum GetSpecError {
     NotFound,
 }
 
-pub fn get_spec(path: &str) -> Result<Vec<ScSpecEntry>, GetSpecError> {
+pub fn get_spec(path: impl AsRef<Path>) -> Result<Vec<ScSpecEntry>, GetSpecError> {
     let contents = fs::read(path).map_err(GetSpecError::Read)?;
     let h = Host::default();
     let vm = Vm::new(&h, [0; 32].into(), &contents).map_err(GetSpecError::LoadContract)?;
@@ -35,6 +35,7 @@ pub fn get_spec(path: &str) -> Result<Vec<ScSpecEntry>, GetSpecError> {
 /// Constructs a token stream containing variables for the WASM file.
 pub fn generate_consts(path: &str) -> TokenStream {
     // TODO: Add variables for contract spec, and env meta.
+    // TODO: Evaluate the need for this.
     quote! {
         const WASM: &[u8] = include_bytes!(#path);
     }

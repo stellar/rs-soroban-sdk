@@ -12,6 +12,7 @@ use darling::FromMeta;
 use proc_macro::TokenStream;
 use quote::quote;
 use soroban_spec::wasm::GetSpecError;
+use std::path::Path;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
 };
@@ -141,7 +142,8 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let spec = match soroban_spec::wasm::get_spec(&args.wasm) {
+    let wasm_path = Path::new(&args.wasm);
+    let spec = match soroban_spec::wasm::get_spec(wasm_path) {
         Ok(spec) => spec,
         Err(e) => {
             let err_str = match e {
