@@ -43,6 +43,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
             derive_fn(
                 &call,
+                ty,
                 ident,
                 &m.sig.inputs,
                 &m.sig.output,
