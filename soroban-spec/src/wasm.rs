@@ -11,8 +11,6 @@ use crate::parse;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetSpecError {
-    #[error("reading contract spec from file")]
-    Read(io::Error),
     #[error("loading contract into vm")]
     LoadContract(HostError),
     #[error("parsing contract spec")]
