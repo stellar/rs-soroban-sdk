@@ -15,10 +15,14 @@ use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
 };
 
+fn default_export() -> bool {
+    true
+}
+
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
-    #[darling(default)]
-    export_if: Option<String>,
+    #[darling(default = "default_export")]
+    export: bool,
 }
 
 #[proc_macro_attribute]
@@ -43,7 +47,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 ident,
                 &m.sig.inputs,
                 &m.sig.output,
-                &args.export_if,
+                args.export,
                 &trait_ident,
             )
         })

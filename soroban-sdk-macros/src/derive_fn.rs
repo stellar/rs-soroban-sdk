@@ -18,7 +18,7 @@ pub fn derive_fn(
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
-    feature: &Option<String>,
+    export: bool,
     trait_ident: &Option<&Ident>,
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
@@ -130,11 +130,7 @@ pub fn derive_fn(
     } else {
         quote! {}
     };
-    let export_name = if let Some(cfg_feature) = feature {
-        quote! { #[cfg_attr(feature = #cfg_feature, export_name = #wrap_export_name)] }
-    } else {
-        quote! { #[export_name = #wrap_export_name] }
-    };
+    let export_name = export.then(|| quote! { #[export_name = #wrap_export_name] });
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let use_trait = if let Some(t) = trait_ident {
         quote! { use super::#t }
@@ -173,11 +169,8 @@ pub fn derive_fn(
     let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
     let spec_fn_ident = format_ident!("spec_xdr_{}", ident.to_string());
-    let link_section = if let Some(cfg_feature) = feature {
-        quote! { #[cfg_attr(all(target_family = "wasm", feature = #cfg_feature), link_section = "contractspecv0")] }
-    } else {
-        quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] }
-    };
+    let link_section = export
+        .then(|| quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] });
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
