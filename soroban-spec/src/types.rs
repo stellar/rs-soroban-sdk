@@ -124,7 +124,7 @@ fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             quote! { ::soroban_sdk::Set<#element_ident> }
         }
         ScSpecTypeDef::Tuple(t) => {
-            let type_idents = t.value_types.iter().map(|vt| generate_type_ident(&vt));
+            let type_idents = t.value_types.iter().map(generate_type_ident);
             quote! { (#(#type_idents,)*) }
         }
         ScSpecTypeDef::Udt(u) => {
