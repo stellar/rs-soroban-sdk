@@ -325,6 +325,26 @@ impl Env {
             .unwrap();
     }
 
+    /// Register a contract in a WASM file with the [Env] for testing.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = BytesN::from_array(&env, [0; 32]);
+    /// env.register_contract_wasm(&contract_id, WASM);
+    /// # }
+    /// ```
+    pub fn register_contract_wasm(&self, contract_id: &BytesN<32>, contract_wasm: &[u8]) {
+        self.env_impl
+            .register_test_contract_wasm(contract_id.to_object(), contract_wasm)
+            .unwrap();
+    }
+
     #[doc(hidden)]
     pub fn invoke_contract_external_raw(&self, hf: xdr::HostFunction, args: xdr::ScVec) -> RawVal {
         self.env_impl.invoke_function_raw(hf, args).unwrap()
