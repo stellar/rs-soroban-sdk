@@ -35,6 +35,6 @@ pub fn get_spec(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, GetSpecError> {
 pub fn generate_consts(wasm: &[u8]) -> TokenStream {
     let contents_lit = Literal::byte_string(wasm);
     quote! {
-        const WASM: &[u8] = #contents_lit;
+        pub const WASM: &[u8] = #contents_lit;
     }
 }
