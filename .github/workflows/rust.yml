@@ -55,8 +55,8 @@ jobs:
     - if: github.ref_protected
       run: rm -fr target
     - run: cargo install --locked --version 0.5.16 cargo-hack
-    - run: cargo hack --feature-powerset --exclude-features docs check --target wasm32-unknown --lib --profile release
-    - run: cargo hack --feature-powerset --exclude-features docs build --target wasm32-unknown --profile release
+    - run: cargo hack --feature-powerset --exclude-features docs check --target wasm32-unknown-unknown --lib --profile release
+    - run: cargo hack --feature-powerset --exclude-features docs build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs check --target ${{ matrix.sys.target }} --lib --tests
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --exclude-features docs test --target ${{ matrix.sys.target }}
