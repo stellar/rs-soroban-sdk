@@ -56,7 +56,8 @@ jobs:
       run: rm -fr target
     - run: cargo install --locked --version 0.5.16 cargo-hack
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
-    - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }} --lib --tests
+    - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }} --lib
+    - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }} --lib --tests -p soroban-sdk
     - run: cargo hack --feature-powerset --exclude-features docs test --target ${{ matrix.sys.target }}
 
   docs:
