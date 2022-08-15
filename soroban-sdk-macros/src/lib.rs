@@ -10,9 +10,10 @@ use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
+use proc_macro2::Span;
 use quote::quote;
 use soroban_spec::wasm::GetSpecError;
-use std::path::Path;
+use std::fs;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
 };
@@ -101,34 +102,34 @@ pub fn derive_contract_type(input: TokenStream) -> TokenStream {
     quote! { #derived }.into()
 }
 
-#[derive(Debug, FromMeta)]
-struct ContractWasmArgs {
-    #[darling(default)]
-    wasm: String,
-}
+// #[derive(Debug, FromMeta)]
+// struct ContractWasmArgs {
+//     #[darling(default)]
+//     wasm: String,
+// }
+//
+// #[proc_macro_attribute]
+// pub fn contractwasm(metadata: TokenStream, input: TokenStream) -> TokenStream {
+//     let args = parse_macro_input!(metadata as AttributeArgs);
+//     let args = match ContractWasmArgs::from_list(&args) {
+//         Ok(v) => v,
+//         Err(e) => return e.write_errors().into(),
+//     };
+//     let consts = soroban_spec::wasm::generate_consts(&args.wasm);
+//     let input = parse_macro_input!(input as DeriveInput);
+//     quote! {
+//         #consts
+//         #input
+//     }
+//     .into()
+// }
 
-#[proc_macro_attribute]
-pub fn contractwasm(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
-    let args = match ContractWasmArgs::from_list(&args) {
-        Ok(v) => v,
-        Err(e) => return e.write_errors().into(),
-    };
-    let consts = soroban_spec::wasm::generate_consts(&args.wasm);
-    let input = parse_macro_input!(input as DeriveInput);
-    quote! {
-        #consts
-        #input
-    }
-    .into()
-}
-
-#[proc_macro_attribute]
-pub fn contractclient(_metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
-    // TODO: Implement client.
-    quote! { #input }.into()
-}
+// #[proc_macro_attribute]
+// pub fn contractclient(_metadata: TokenStream, input: TokenStream) -> TokenStream {
+//     let input = parse_macro_input!(input as DeriveInput);
+//     // TODO: Implement client.
+//     quote! { #input }.into()
+// }
 
 #[derive(Debug, FromMeta)]
 struct ContractImportArgs {
@@ -142,8 +143,15 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let wasm_path = Path::new(&args.wasm);
-    let spec = match soroban_spec::wasm::get_spec(wasm_path) {
+    let wasm = match fs::read(&args.wasm) {
+        Ok(wasm) => wasm,
+        Err(e) => {
+            return Error::new(Span::call_site(), e.to_string())
+                .into_compile_error()
+                .into()
+        }
+    };
+    let spec = match soroban_spec::wasm::get_spec(&wasm) {
         Ok(spec) => spec,
         Err(e) => {
             let err_str = match e {
@@ -152,11 +160,11 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
                 GetSpecError::Parse(e) => e.to_string(),
                 GetSpecError::NotFound => "spec not found".to_string(),
             };
-            return Error::new(attr_args.first().unwrap().span(), err_str)
+            return Error::new(Span::call_site(), err_str)
                 .into_compile_error()
                 .into();
         }
     };
-    let types = soroban_spec::types::generate(&spec, &args.wasm);
+    let types = soroban_spec::types::generate(&spec, &wasm);
     quote! { #types }.into()
 }

@@ -1,6 +1,6 @@
-use std::{fs, io, path::Path};
+use std::io;
 
-use proc_macro2::TokenStream;
+use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use soroban_env_host::{
     xdr::{self, ScSpecEntry},
@@ -21,10 +21,9 @@ pub enum GetSpecError {
     NotFound,
 }
 
-pub fn get_spec(path: impl AsRef<Path>) -> Result<Vec<ScSpecEntry>, GetSpecError> {
-    let contents = fs::read(path).map_err(GetSpecError::Read)?;
+pub fn get_spec(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, GetSpecError> {
     let h = Host::default();
-    let vm = Vm::new(&h, [0; 32].into(), &contents).map_err(GetSpecError::LoadContract)?;
+    let vm = Vm::new(&h, [0; 32].into(), wasm).map_err(GetSpecError::LoadContract)?;
     if let Some(spec) = vm.custom_section("contractspecv0") {
         Ok(parse::parse_spec(spec).map_err(GetSpecError::Parse)?)
     } else {
@@ -33,10 +32,9 @@ pub fn get_spec(path: impl AsRef<Path>) -> Result<Vec<ScSpecEntry>, GetSpecError
 }
 
 /// Constructs a token stream containing variables for the WASM file.
-pub fn generate_consts(path: &str) -> TokenStream {
-    // TODO: Add variables for contract spec, and env meta.
-    // TODO: Evaluate the need for this.
+pub fn generate_consts(wasm: &[u8]) -> TokenStream {
+    let contents_lit = Literal::byte_string(wasm);
     quote! {
-        const WASM: &[u8] = include_bytes!(#path);
+        const WASM: &[u8] = #contents_lit;
     }
 }

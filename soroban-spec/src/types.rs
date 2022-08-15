@@ -6,7 +6,7 @@ use soroban_env_host::xdr::{
 
 use crate::{client, wasm};
 
-pub fn generate(specs: &[ScSpecEntry], wasm: &str) -> TokenStream {
+pub fn generate(specs: &[ScSpecEntry], wasm: &[u8]) -> TokenStream {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();

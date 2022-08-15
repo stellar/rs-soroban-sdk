@@ -29,8 +29,8 @@ mod test {
     fn test_add() {
         let e = Env::default();
 
-        let add_contract_id = BytesN::from_array(&e, [0; 32]);
-        e.register_contract_wasm(&add_contract_id, add_contract::WASM);
+        // let add_contract_id = BytesN::from_array(&e, [0; 32]);
+        // e.register_contract_wasm(&add_contract_id, add_contract::WASM);
 
         let contract_id = BytesN::from_array(&e, [1; 32]);
         e.register_contract(&contract_id, Contract);
