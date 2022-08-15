@@ -13,7 +13,7 @@ doc: fmt
 		--features docs,testutils \
 		$(CARGO_DOC_ARGS)
 
-test: fmt
+test: fmt build
 	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
 
 build: fmt
