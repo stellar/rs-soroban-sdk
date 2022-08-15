@@ -165,6 +165,6 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
                 .into();
         }
     };
-    let types = soroban_spec::types::generate(&spec, &wasm);
+    let types = soroban_spec::generate(&spec, &wasm);
     quote! { #types }.into()
 }

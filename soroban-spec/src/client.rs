@@ -6,8 +6,6 @@ use soroban_env_host::xdr::ScSpecFunctionV0;
 /// corresponding implementation, that provides a client for cross-contract
 /// calls to a contract that implements the function spec.
 #[allow(dead_code)]
-pub fn generate(_specs: &[&ScSpecFunctionV0]) -> TokenStream {
-    quote! {
-        // TODO: Generate client.
-    }
+pub fn generate(_name: &str, _specs: &[&ScSpecFunctionV0]) -> TokenStream {
+    quote! {}
 }
