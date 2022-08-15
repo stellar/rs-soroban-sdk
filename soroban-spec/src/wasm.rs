@@ -1,5 +1,3 @@
-use std::io;
-
 use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use soroban_env_host::{
