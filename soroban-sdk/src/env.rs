@@ -331,7 +331,7 @@ impl Env {
     /// ```
     /// use soroban_sdk::{BytesN, Env};
     ///
-    /// const WASM: &[u8] = include_bytes!("contract.wasm");
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
     ///
     /// # fn main() {
     /// let env = Env::default();

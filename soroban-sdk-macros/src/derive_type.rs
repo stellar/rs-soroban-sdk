@@ -92,7 +92,13 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
         let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
+            pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+
+            impl #ident {
+                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
+                    *#spec_xdr_lit
+                }
+            }
         })
     } else {
         None
@@ -354,7 +360,13 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         let spec_ident = format_ident!("__SPEC_XDR_{}", enum_ident.to_string().to_uppercase());
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = *#spec_xdr_lit;
+            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+
+            impl #enum_ident {
+                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
+                    *#spec_xdr_lit
+                }
+            }
         })
     } else {
         None
