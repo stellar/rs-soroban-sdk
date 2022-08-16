@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use soroban_env_host::xdr::{ScSpecTypeDef, ScSpecUdtStructV0, ScSpecUdtUnionV0};
+use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructV0, ScSpecUdtUnionV0};
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.

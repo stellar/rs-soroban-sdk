@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use soroban_env_host::xdr::ScSpecFunctionV0;
+use stellar_xdr::ScSpecFunctionV0;
 
 use super::types::generate_type_ident;
 

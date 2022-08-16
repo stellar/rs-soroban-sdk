@@ -6,7 +6,7 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use soroban_env_host::xdr::{self, ScSpecEntry};
+use stellar_xdr::{self, ScSpecEntry};
 
 use crate::read::{read_spec, GetSpecError};
 
@@ -19,7 +19,7 @@ pub enum GenerateFromFileError {
     #[error("verify sha256")]
     VerifySha256,
     #[error("parsing contract spec")]
-    Parse(xdr::Error),
+    Parse(stellar_xdr::Error),
     #[error("getting contract spec")]
     GetSpec(GetSpecError),
 }
