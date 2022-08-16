@@ -1,5 +1,10 @@
 #![no_std]
-use soroban_sdk::{contractimpl, contractimport, BytesN, Env};
+use soroban_sdk::{contractimpl, BytesN, Env};
+
+mod addcontract {
+    use soroban_sdk::contractimport;
+    contractimport!(wasm = "target/wasm32-unknown-unknown/release/example_add_i32.wasm");
+}
 
 pub struct Contract;
 
@@ -8,11 +13,6 @@ impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32, contract_id: BytesN<32>) -> i32 {
         addcontract::Client::add(&env, &contract_id, x, y)
     }
-}
-
-mod addcontract {
-    use super::*;
-    contractimport!(wasm = "target/wasm32-unknown-unknown/release/example_add_i32.wasm");
 }
 
 #[cfg(test)]
