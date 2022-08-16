@@ -9,7 +9,7 @@ use soroban_env_host::xdr::ScSpecEntry;
 
 use self::types::{generate_struct, generate_union};
 
-pub fn generate(specs: &[ScSpecEntry], wasm: &[u8]) -> TokenStream {
+pub fn generate(specs: &[ScSpecEntry], file: &str) -> TokenStream {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
@@ -20,12 +20,11 @@ pub fn generate(specs: &[ScSpecEntry], wasm: &[u8]) -> TokenStream {
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
         }
     }
-    let wasm_consts = wasm::generate_consts(wasm);
     let trait_ = r#trait::generate_trait("Contract", &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
     quote! {
-        #wasm_consts
+        #[::soroban_sdk::contractfile(file = #file)]
 
         #[::soroban_sdk::contractclient(name = "Client")]
         #trait_

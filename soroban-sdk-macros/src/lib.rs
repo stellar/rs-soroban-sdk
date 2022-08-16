@@ -104,6 +104,36 @@ pub fn derive_contract_type(input: TokenStream) -> TokenStream {
 }
 
 #[derive(Debug, FromMeta)]
+struct ContractFileArgs {
+    #[darling(default)]
+    file: String,
+}
+
+#[proc_macro_attribute]
+pub fn contractfile(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractFileArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let wasm = match fs::read(&args.file) {
+        Ok(wasm) => wasm,
+        Err(e) => {
+            return Error::new(Span::call_site(), e.to_string())
+                .into_compile_error()
+                .into()
+        }
+    };
+    let consts = soroban_spec::wasm::generate_consts(&wasm);
+    let input: proc_macro2::TokenStream = input.into();
+    quote! {
+        #consts
+        #input
+    }
+    .into()
+}
+
+#[derive(Debug, FromMeta)]
 struct ContractClientArgs {
     name: String,
 }
@@ -191,6 +221,7 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
     // Render the Client.
     let client_ident = format_ident!("{}", args.name);
     quote! {
+        #trait_
         pub struct #client_ident;
         impl #client_ident { #(#methods)* }
     }
@@ -199,7 +230,7 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
 
 #[derive(Debug, FromMeta)]
 struct ContractImportArgs {
-    wasm: String,
+    file: String,
 }
 
 #[proc_macro]
@@ -209,7 +240,7 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let wasm = match fs::read(&args.wasm) {
+    let wasm = match fs::read(&args.file) {
         Ok(wasm) => wasm,
         Err(e) => {
             return Error::new(Span::call_site(), e.to_string())
@@ -230,6 +261,6 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
                 .into();
         }
     };
-    let types = soroban_spec::generate(&spec, &wasm);
+    let types = soroban_spec::generate(&spec, &args.file);
     quote! { #types }.into()
 }
