@@ -1,5 +1,3 @@
-use proc_macro2::{Literal, TokenStream};
-use quote::quote;
 use soroban_env_host::{
     xdr::{self, ScSpecEntry},
     Host, HostError, Vm,
@@ -24,13 +22,5 @@ pub fn get_spec(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, GetSpecError> {
         Ok(parse::parse_spec(spec).map_err(GetSpecError::Parse)?)
     } else {
         Err(GetSpecError::NotFound)
-    }
-}
-
-/// Constructs a token stream containing variables for the WASM file.
-pub fn generate_consts(wasm: &[u8]) -> TokenStream {
-    let contents_lit = Literal::byte_string(wasm);
-    quote! {
-        pub const WASM: &[u8] = #contents_lit;
     }
 }

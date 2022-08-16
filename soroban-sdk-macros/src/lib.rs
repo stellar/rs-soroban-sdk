@@ -10,7 +10,7 @@ use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
-use proc_macro2::Span;
+use proc_macro2::{Literal, Span};
 use quote::{format_ident, quote};
 use soroban_spec::wasm::GetSpecError;
 use std::fs;
@@ -21,11 +21,11 @@ use syn::{
 
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
-    #[darling(default = "contract_impl_args_default_export")]
+    #[darling(default = "contractimpl_args_default_export")]
     export: bool,
 }
 
-fn contract_impl_args_default_export() -> bool {
+fn contractimpl_args_default_export() -> bool {
     true
 }
 
@@ -124,10 +124,10 @@ pub fn contractfile(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .into()
         }
     };
-    let consts = soroban_spec::wasm::generate_consts(&wasm);
+    let contents_lit = Literal::byte_string(&wasm);
     let input: proc_macro2::TokenStream = input.into();
     quote! {
-        #consts
+        pub const WASM: &[u8] = #contents_lit;
         #input
     }
     .into()
