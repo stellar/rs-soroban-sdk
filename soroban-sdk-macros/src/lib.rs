@@ -12,7 +12,7 @@ use darling::FromMeta;
 use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span};
 use quote::{format_ident, quote};
-use soroban_spec::wasm::GetSpecError;
+use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, FnArg, ItemImpl,
@@ -105,8 +105,8 @@ pub fn derive_contract_type(input: TokenStream) -> TokenStream {
 
 #[derive(Debug, FromMeta)]
 struct ContractFileArgs {
-    #[darling(default)]
     file: String,
+    sha256: String,
 }
 
 #[proc_macro_attribute]
@@ -116,6 +116,8 @@ pub fn contractfile(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
+
+    // Read WASM from file.
     let wasm = match fs::read(&args.file) {
         Ok(wasm) => wasm,
         Err(e) => {
@@ -124,6 +126,17 @@ pub fn contractfile(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .into()
         }
     };
+
+    // Verify SHA256 hash.
+    let sha256 = Sha256::digest(&wasm);
+    let sha256 = format!("{:x}", sha256);
+    if args.sha256 != sha256 {
+        return Error::new(Span::call_site(), "sha256 does not match file".to_string())
+            .into_compile_error()
+            .into();
+    }
+
+    // Render bytes.
     let contents_lit = Literal::byte_string(&wasm);
     let input: proc_macro2::TokenStream = input.into();
     quote! {
@@ -240,27 +253,6 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let wasm = match fs::read(&args.file) {
-        Ok(wasm) => wasm,
-        Err(e) => {
-            return Error::new(Span::call_site(), e.to_string())
-                .into_compile_error()
-                .into()
-        }
-    };
-    let spec = match soroban_spec::wasm::get_spec(&wasm) {
-        Ok(spec) => spec,
-        Err(e) => {
-            let err_str = match e {
-                GetSpecError::LoadContract(e) => e.to_string(),
-                GetSpecError::Parse(e) => e.to_string(),
-                GetSpecError::NotFound => "spec not found".to_string(),
-            };
-            return Error::new(Span::call_site(), err_str)
-                .into_compile_error()
-                .into();
-        }
-    };
-    let types = soroban_spec::generate(&spec, &args.file);
-    quote! { #types }.into()
+    let code = soroban_spec::generate_from_file(&args.file);
+    quote! { #code }.into()
 }
