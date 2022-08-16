@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use soroban_env_host::xdr::ScSpecFunctionV0;
 
-use crate::types::generate_type_ident;
+use crate::rust::types::generate_type_ident;
 
 /// Constructs a token stream containing a single trait that has a function for
 /// every function spec.
