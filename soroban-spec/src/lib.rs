@@ -19,19 +19,30 @@ use self::{
 pub enum GenerateFromFileError {
     #[error("loading contract into vm")]
     Io(io::Error),
+    #[error("verify sha256")]
+    VerifySha256,
     #[error("parsing contract spec")]
     Parse(xdr::Error),
     #[error("getting contract spec")]
     GetSpec(GetSpecError),
 }
 
-pub fn generate_from_file(file: &str) -> Result<TokenStream, GenerateFromFileError> {
+pub fn generate_from_file(
+    file: &str,
+    verify_sha256: Option<&str>,
+) -> Result<TokenStream, GenerateFromFileError> {
     // Read file.
     let wasm = fs::read(file).map_err(GenerateFromFileError::Io)?;
 
     // Produce hash for file.
     let sha256 = Sha256::digest(&wasm);
     let sha256 = format!("{:x}", sha256);
+
+    if let Some(verify_sha256) = verify_sha256 {
+        if verify_sha256 != sha256 {
+            return Err(GenerateFromFileError::VerifySha256);
+        }
+    }
 
     // Read spec from file.
     let spec = wasm::get_spec(&wasm).map_err(GenerateFromFileError::GetSpec)?;
