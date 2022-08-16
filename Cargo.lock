@@ -815,7 +815,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=1c5532ef#1c5532ef2e4dfb08bdb586de34535dee65f6a187"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fba7071c#fba7071c55df509f3702b5074f9249749dae9a9b"
 dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
@@ -826,7 +826,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=1c5532ef#1c5532ef2e4dfb08bdb586de34535dee65f6a187"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fba7071c#fba7071c55df509f3702b5074f9249749dae9a9b"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -835,7 +835,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=1c5532ef#1c5532ef2e4dfb08bdb586de34535dee65f6a187"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fba7071c#fba7071c55df509f3702b5074f9249749dae9a9b"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -859,7 +859,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=1c5532ef#1c5532ef2e4dfb08bdb586de34535dee65f6a187"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fba7071c#fba7071c55df509f3702b5074f9249749dae9a9b"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -871,7 +871,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.1"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=1c5532ef#1c5532ef2e4dfb08bdb586de34535dee65f6a187"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fba7071c#fba7071c55df509f3702b5074f9249749dae9a9b"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -964,7 +964,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-xdr"
 version = "0.0.1"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=3eca5ce#3eca5ce2c11091469602a1370c53c24cf989202f"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=66436840#66436840ec4adcb871dac634d78568854b30dddb"
 
 [[package]]
 name = "strsim"

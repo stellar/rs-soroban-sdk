@@ -17,9 +17,13 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
                 let type_ident = generate_type_ident(t);
                 quote! { #name: #type_ident }
             });
-            let fn_outputs = s.output_types.iter().map(generate_type_ident);
+            let fn_output = s
+                .output_types
+                .to_option()
+                .map(|t| generate_type_ident(&t))
+                .map(|t| quote! { -> #t });
             quote! {
-                fn #fn_ident(env: ::soroban_sdk::Env, #(#fn_inputs),*) -> (#(#fn_outputs),*)
+                fn #fn_ident(env: ::soroban_sdk::Env, #(#fn_inputs),*) #fn_output
             }
         })
         .collect();
