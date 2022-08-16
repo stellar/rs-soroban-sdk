@@ -14,13 +14,13 @@ use types::{generate_struct, generate_union};
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
-    #[error("loading contract into vm")]
+    #[error("reading file: {0}")]
     Io(io::Error),
     #[error("verify sha256")]
     VerifySha256,
-    #[error("parsing contract spec")]
+    #[error("parsing contract spec: {0}")]
     Parse(stellar_xdr::Error),
-    #[error("getting contract spec")]
+    #[error("getting contract spec: {0}")]
     GetSpec(GetSpecError),
 }
 

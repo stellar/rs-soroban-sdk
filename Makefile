@@ -6,10 +6,10 @@ CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest 
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
-	cargo test --doc --features testutils
+	cargo test --doc --features testutils -p soroban-sdk -p soroban-sdk-macros
 	cargo +nightly doc \
+		-p soroban-sdk \
 	    --no-deps \
-		--package soroban-sdk \
 		--features docs,testutils \
 		$(CARGO_DOC_ARGS)
 
