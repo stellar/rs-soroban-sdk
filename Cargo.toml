@@ -4,6 +4,8 @@ resolver = "2"
 members = [
     "soroban-sdk",
     "soroban-spec",
+    "tests/empty",
+    "tests/hello",
     "tests/add_i32",
     "tests/add_i64",
     "tests/add_bigint",
