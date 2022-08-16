@@ -1,4 +1,3 @@
-pub mod client;
 pub mod parse;
 pub mod r#trait;
 pub mod types;
@@ -21,15 +20,16 @@ pub fn generate(specs: &[ScSpecEntry], wasm: &[u8]) -> TokenStream {
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
         }
     }
-    // let client = client::generate("Client", &spec_fns);
     let wasm_consts = wasm::generate_consts(wasm);
     let trait_ = r#trait::generate_trait("Contract", &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
     quote! {
         #wasm_consts
+
+        #[::soroban_sdk::contractclient(name = "Client")]
         #trait_
-        // #client
+
         #(#structs)*
         #(#unions)*
     }
