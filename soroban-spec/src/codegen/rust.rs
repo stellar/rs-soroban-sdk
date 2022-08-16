@@ -8,8 +8,9 @@ use quote::quote;
 use sha2::{Digest, Sha256};
 use soroban_env_host::xdr::{self, ScSpecEntry};
 
-use self::types::{generate_struct, generate_union};
-use crate::wasm::{get_spec, GetSpecError};
+use crate::read::{read_spec, GetSpecError};
+
+use types::{generate_struct, generate_union};
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
@@ -41,7 +42,7 @@ pub fn generate_from_file(
     }
 
     // Read spec from file.
-    let spec = get_spec(&wasm).map_err(GenerateFromFileError::GetSpec)?;
+    let spec = read_spec(&wasm).map_err(GenerateFromFileError::GetSpec)?;
 
     // Generate code.
     let code = generate(&spec, file, &sha256);
