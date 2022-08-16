@@ -3,54 +3,42 @@ pub mod r#trait;
 pub mod types;
 pub mod wasm;
 
-use std::fs;
+use std::{fs, io};
 
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use soroban_env_host::xdr::ScSpecEntry;
-use syn::Error;
+use soroban_env_host::xdr::{self, ScSpecEntry};
 
 use self::{
     types::{generate_struct, generate_union},
     wasm::GetSpecError,
 };
 
-// TODO: Return Result's in this crate, not TS.
+#[derive(thiserror::Error, Debug)]
+pub enum GenerateFromFileError {
+    #[error("loading contract into vm")]
+    Io(io::Error),
+    #[error("parsing contract spec")]
+    Parse(xdr::Error),
+    #[error("getting contract spec")]
+    GetSpec(GetSpecError),
+}
 
-// use sha2::{Digest, Sha256, Sha512};
-// let mut hasher = Sha256::new();
-// hasher.update(&wasm);
-// let sha256 = hasher.finalize();
-
-pub fn generate_from_file(file: &str) -> TokenStream {
+pub fn generate_from_file(file: &str) -> Result<TokenStream, GenerateFromFileError> {
     // Read file.
-    let wasm = match fs::read(file) {
-        Ok(wasm) => wasm,
-        Err(e) => {
-            return Error::new(Span::call_site(), e.to_string()).into_compile_error();
-        }
-    };
+    let wasm = fs::read(file).map_err(GenerateFromFileError::Io)?;
 
     // Produce hash for file.
     let sha256 = Sha256::digest(&wasm);
     let sha256 = format!("{:x}", sha256);
 
     // Read spec from file.
-    let spec = match wasm::get_spec(&wasm) {
-        Ok(spec) => spec,
-        Err(e) => {
-            let err_str = match e {
-                GetSpecError::LoadContract(e) => e.to_string(),
-                GetSpecError::Parse(e) => e.to_string(),
-                GetSpecError::NotFound => "spec not found".to_string(),
-            };
-            return Error::new(Span::call_site(), err_str).into_compile_error();
-        }
-    };
+    let spec = wasm::get_spec(&wasm).map_err(GenerateFromFileError::GetSpec)?;
 
     // Generate code.
-    generate(&spec, file, &sha256)
+    let code = generate(&spec, file, &sha256);
+    Ok(code)
 }
 
 pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream {

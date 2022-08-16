@@ -253,6 +253,9 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let code = soroban_spec::generate_from_file(&args.file);
-    quote! { #code }.into()
+    match soroban_spec::generate_from_file(&args.file) {
+        Ok(code) => quote! { #code },
+        Err(e) => Error::new(Span::call_site(), e.to_string()).into_compile_error(),
+    }
+    .into()
 }
