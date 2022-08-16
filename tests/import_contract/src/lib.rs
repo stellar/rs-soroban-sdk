@@ -3,8 +3,9 @@ use soroban_sdk::{contractimpl, BytesN, Env};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
-    use soroban_sdk::contractimport;
-    contractimport!(wasm = "target/wasm32-unknown-unknown/release/example_add_i32.wasm");
+    soroban_sdk::contractimport!(
+        wasm = "target/wasm32-unknown-unknown/release/example_add_i32.wasm"
+    );
 }
 
 pub struct Contract;
