@@ -37,7 +37,7 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = soroban_spec::read::parse_spec(&Contract::spec_xdr_add_with()).unwrap();
+    let entries = soroban_spec::read::parse_raw(&Contract::spec_xdr_add_with()).unwrap();
     let expect = vec![ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add_with".try_into().unwrap(),
         input_types: vec![ScSpecTypeDef::I32, ScSpecTypeDef::I32]
