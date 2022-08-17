@@ -26,6 +26,10 @@ where
     pub fn len(&self) -> u32 {
         self.0.len()
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.len() == 0
+    }
 }
 
 #[cfg(test)]
@@ -62,5 +66,15 @@ mod test {
         assert_eq!(s.contains(3), true);
         assert_eq!(s.contains(4), true);
         assert_eq!(s.contains(5), false);
+    }
+
+    #[test]
+    fn test_is_empty() {
+        let env = Env::default();
+        let mut s = Set::new(&env);
+        assert_eq!(s.is_empty(), true);
+
+        s.insert(3);
+        assert_eq!(s.is_empty(), false);
     }
 }
