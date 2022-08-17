@@ -25,6 +25,7 @@ soroban-env-host = { version = "0.0.3", features = ["vm"] }
 
 [dev-dependencies]
 stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
+soroban-spec = { path = "../soroban-spec" }
 trybuild = "1.0.63"
 hex = "0.4.3"
 

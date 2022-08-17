@@ -904,6 +904,7 @@ dependencies = [
  "soroban-env-guest",
  "soroban-env-host",
  "soroban-sdk-macros",
+ "soroban-spec",
  "stellar-xdr",
  "trybuild",
 ]
