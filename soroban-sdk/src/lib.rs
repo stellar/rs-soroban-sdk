@@ -65,6 +65,7 @@ mod bytes;
 mod contract_data;
 pub mod iter;
 mod map;
+mod set;
 mod vec;
 pub use account::Account;
 pub use bigint::BigInt;
