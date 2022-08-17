@@ -1,0 +1,11 @@
+error: sha256 does not match, expected: 0ef130ce81f57cb03a9e20b0e8b5c9e47bf8c50cf0a811e4b25535ad95b92a7e
+ --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:3:5
+  |
+3 |     sha256 = "0000000000000000000000000000000000000000000000000000000000000000",
+  |     ^^^^^^
+
+error[E0601]: `main` function not found in crate `$CRATE`
+ --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:4:3
+  |
+4 | );
+  |   ^ consider adding a `main` function to `$DIR/tests/macros_fails/contractfile_with_sha256_verify_fail.rs`
