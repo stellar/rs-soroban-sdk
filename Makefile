@@ -9,19 +9,18 @@ doc: fmt
 	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils
 	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
-test: fmt build
+test: fmt build-normal
 	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
 
-build: fmt
+build: build-normal build-optimized
+
+build-normal: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
+
+build-optimized: fmt
 	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build --target wasm32-unknown-unknown --release \
 		-Z build-std=std,panic_abort \
 		-Z build-std-features=panic_immediate_abort
-	cd target/wasm32-unknown-unknown/release/ && \
-		for i in *.wasm ; do \
-			wasm-opt -Oz "$$i" -o "$$i.tmp" && mv "$$i.tmp" "$$i"; \
-			ls -l "$$i"; \
-		done
 	cd target-tiny/wasm32-unknown-unknown/release/ && \
 		for i in *.wasm ; do \
 			wasm-opt -Oz "$$i" -o "$$i.tmp" && mv "$$i.tmp" "$$i"; \
