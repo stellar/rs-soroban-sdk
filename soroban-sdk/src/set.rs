@@ -19,6 +19,10 @@ where
         self.0.set(x, ())
     }
 
+    pub fn remove(&mut self, x: T) -> Option<()> {
+        self.0.remove(x)
+    }
+
     pub fn contains(&self, x: T) -> bool {
         self.0.contains_key(x)
     }
@@ -76,5 +80,25 @@ mod test {
 
         s.insert(3);
         assert_eq!(s.is_empty(), false);
+    }
+
+    #[test]
+    fn test_remove() {
+        let env = Env::default();
+        let mut s = Set::new(&env);
+
+        assert_eq!(s.contains(1), false);
+
+        s.insert(1);
+        s.insert(2);
+        assert_eq!(s.len(), 2);
+
+        assert_eq!(s.contains(1), true);
+        assert_eq!(s.contains(2), true);
+
+        s.remove(1);
+        assert_eq!(s.len(), 1);
+        assert_eq!(s.contains(1), false);
+        assert_eq!(s.contains(2), true);
     }
 }
