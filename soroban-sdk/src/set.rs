@@ -15,8 +15,20 @@ where
         Self(map)
     }
 
+    pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Set<T> {
+        let mut set = Set::new(env);
+        set.extend_from_array(items);
+        set
+    }
+
     pub fn insert(&mut self, x: T) {
         self.0.set(x, ())
+    }
+
+    pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
+        for item in items {
+            self.insert(item);
+        }
     }
 
     pub fn remove(&mut self, x: T) -> Option<()> {
@@ -56,7 +68,7 @@ mod test {
         s3.insert(3);
         s3.insert(4);
 
-        assert_ne!(s1.len(), s3.len());
+        assert_ne!(s2.len(), s3.len());
     }
 
     #[test]
@@ -100,5 +112,16 @@ mod test {
         assert_eq!(s.len(), 1);
         assert_eq!(s.contains(1), false);
         assert_eq!(s.contains(2), true);
+    }
+
+    #[test]
+    fn test_from_array() {
+        let env = Env::default();
+        let s = Set::from_array(&env, [0, 1, 2, 3, 4]);
+
+        assert_eq!(s.contains(0), true);
+        assert_eq!(s.contains(1), true);
+        assert_eq!(s.contains(4), true);
+        assert_eq!(s.contains(5), false);
     }
 }
