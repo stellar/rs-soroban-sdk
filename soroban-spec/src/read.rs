@@ -48,7 +48,7 @@ pub fn raw_from_wasm(wasm: &[u8]) -> Result<Vec<u8>, FromWasmError> {
 
 pub fn base64_from_wasm(wasm: &[u8]) -> Result<String, FromWasmError> {
     let raw = raw_from_wasm(wasm)?;
-    base64::encode(raw)
+    Ok(base64::encode(raw))
 }
 
 pub fn from_wasm(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, FromWasmError> {
