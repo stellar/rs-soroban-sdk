@@ -1,16 +1,28 @@
-error: sha256 does not match file
- --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:1:1
+error[E0423]: expected function, found macro `soroban_sdk::contractfile`
+ --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:1:25
   |
-1 | / #[soroban_sdk::contractfile(
-2 | |     file = "../../../target/wasm32-unknown-unknown/release/example_add_i32.wasm",
-3 | |     sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
-4 | | )]
-  | |__^
+1 | pub const WASM: &[u8] = soroban_sdk::contractfile(
+  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^ not a function
   |
-  = note: this error originates in the attribute macro `soroban_sdk::contractfile` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `!` to invoke the macro
+  |
+1 | pub const WASM: &[u8] = soroban_sdk::contractfile!(
+  |                                                  +
+
+error[E0423]: expected value, found macro `file`
+ --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:2:5
+  |
+2 |     file = "../../../target/wasm32-unknown-unknown/release/example_add_i32.wasm",
+  |     ^^^^ not a value
+
+error[E0425]: cannot find value `sha256` in this scope
+ --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:3:5
+  |
+3 |     sha256 = "0000000000000000000000000000000000000000000000000000000000000000",
+  |     ^^^^^^ not found in this scope
 
 error[E0601]: `main` function not found in crate `$CRATE`
- --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:5:14
+ --> tests/macros_fails/contractfile_with_sha256_verify_fail.rs:4:3
   |
-5 | pub struct X;
-  |              ^ consider adding a `main` function to `$DIR/tests/macros_fails/contractfile_with_sha256_verify_fail.rs`
+4 | );
+  |   ^ consider adding a `main` function to `$DIR/tests/macros_fails/contractfile_with_sha256_verify_fail.rs`

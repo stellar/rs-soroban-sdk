@@ -111,8 +111,8 @@ struct ContractFileArgs {
     sha256: String,
 }
 
-#[proc_macro_attribute]
-pub fn contractfile(metadata: TokenStream, input: TokenStream) -> TokenStream {
+#[proc_macro]
+pub fn contractfile(metadata: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
     let args = match ContractFileArgs::from_list(&args) {
         Ok(v) => v,
@@ -138,19 +138,9 @@ pub fn contractfile(metadata: TokenStream, input: TokenStream) -> TokenStream {
             .into();
     }
 
-    // Echo the input, because at the moment this attribute macro doesn't
-    // actually do anything with the type it is attached to.
-    // TODO: Attach the generated data values to the contract type in some way
-    // so it is more accessible than a free-floating const.
-    let input: proc_macro2::TokenStream = input.into();
-
     // Render bytes.
     let contents_lit = Literal::byte_string(&wasm);
-    quote! {
-        pub const WASM: &[u8] = #contents_lit;
-        #input
-    }
-    .into()
+    quote! { #contents_lit }.into()
 }
 
 #[derive(Debug, FromMeta)]
