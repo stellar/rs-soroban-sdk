@@ -1,5 +1,15 @@
 use super::{Env, IntoVal, Map, RawVal, TryFromVal};
 
+#[macro_export]
+macro_rules! set {
+    ($env:expr) => {
+        $crate::Set::new($env)
+    };
+    ($env:expr, $($x:expr),+ $(,)?) => {
+        $crate::Set::from_array($env, [$($x), +])
+    };
+}
+
 pub struct Set<T>(Map<T, ()>);
 
 impl<T> Set<T>
@@ -55,30 +65,20 @@ mod test {
     #[test]
     fn test_idempotent_insert() {
         let env = Env::default();
-        let mut s1 = Set::new(&env);
-        s1.insert(3);
+        let s1 = set![&env, 3];
 
-        let mut s2 = Set::new(&env);
+        let mut s2 = set![&env, 3];
         s2.insert(3);
-        s2.insert(3);
-
         assert_eq!(s1.len(), s2.len());
 
-        let mut s3 = Set::new(&env);
-        s3.insert(3);
-        s3.insert(4);
-
+        let s3 = set![&env, 3, 4];
         assert_ne!(s2.len(), s3.len());
     }
 
     #[test]
     fn test_contains() {
         let env = Env::default();
-        let mut s = Set::new(&env);
-
-        s.insert(3);
-        s.insert(4);
-
+        let s = set![&env, 3, 4];
         assert_eq!(s.contains(3), true);
         assert_eq!(s.contains(4), true);
         assert_eq!(s.contains(5), false);
@@ -87,7 +87,7 @@ mod test {
     #[test]
     fn test_is_empty() {
         let env = Env::default();
-        let mut s = Set::new(&env);
+        let mut s = set![&env];
         assert_eq!(s.is_empty(), true);
 
         s.insert(3);
@@ -97,7 +97,7 @@ mod test {
     #[test]
     fn test_remove() {
         let env = Env::default();
-        let mut s = Set::new(&env);
+        let mut s = set![&env];
 
         assert_eq!(s.contains(1), false);
 
@@ -123,5 +123,19 @@ mod test {
         assert_eq!(s.contains(1), true);
         assert_eq!(s.contains(4), true);
         assert_eq!(s.contains(5), false);
+    }
+
+    #[test]
+    fn test_from_array_removes_duplicates() {
+        let env = Env::default();
+        let s =set![&env, 1, 1, 2, 3, 3, 3, 4, 5, 5, 5, 5];
+
+        assert_eq!(s.contains(1), true);
+        assert_eq!(s.contains(2), true);
+        assert_eq!(s.contains(3), true);
+        assert_eq!(s.contains(4), true);
+        assert_eq!(s.contains(5), true);
+        assert_eq!(s.contains(5), true);
+        assert_eq!(s.len(), 5);
     }
 }
