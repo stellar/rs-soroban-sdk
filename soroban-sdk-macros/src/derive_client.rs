@@ -35,24 +35,19 @@ pub fn derive_client(name: &str, methods: &[&TraitItemMethod]) -> TokenStream {
             let (fn_input_names, fn_input_types): (Vec<_>, Vec<_>) = m.sig.inputs
                 .iter()
                 .skip(if env_input.is_some() { 1 } else { 0 })
-                .enumerate().map(|(i, t)| {
+                .map(|t| {
                     match t {
                         FnArg::Typed(pat_type) => {
                             if let Pat::Ident(pat_ident) = *pat_type.pat.clone() {
-                                let ident = format_ident!("arg_{}", i);
-                                let mut pat_type = pat_type.clone();
-                                let mut pat_ident = pat_ident.clone();
-                                pat_ident.ident = ident.clone();
-                                pat_type.pat = Box::new(Pat::Ident(pat_ident));
-                                (ident, FnArg::Typed(pat_type))
+                                (pat_ident.ident, t)
                             } else {
                                 errors.push(Error::new(t.span(), "argument not supported"));
-                                (format_ident!(""), t.clone())
+                                (format_ident!(""), t)
                             }
                         }
                         _ => {
                             errors.push(Error::new(t.span(), "argument not supported"));
-                            (format_ident!(""), t.clone())
+                            (format_ident!(""), t)
                         }
                     }
                 })

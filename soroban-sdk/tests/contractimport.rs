@@ -1,7 +1,7 @@
 #![cfg(feature = "testutils")]
 
 use soroban_sdk::{contractimpl, BytesN, Env};
-use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef};
+use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
@@ -40,10 +40,19 @@ fn test_spec() {
     let entries = soroban_spec::read::parse_raw(&Contract::spec_xdr_add_with()).unwrap();
     let expect = vec![ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add_with".try_into().unwrap(),
-        input_types: vec![ScSpecTypeDef::I32, ScSpecTypeDef::I32]
-            .try_into()
-            .unwrap(),
-        output_types: vec![ScSpecTypeDef::I32].try_into().unwrap(),
+        inputs: vec![
+            ScSpecFunctionInputV0 {
+                name: "x".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+            ScSpecFunctionInputV0 {
+                name: "y".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+        ]
+        .try_into()
+        .unwrap(),
+        outputs: vec![ScSpecTypeDef::I32].try_into().unwrap(),
     })];
     assert_eq!(entries, expect);
 }

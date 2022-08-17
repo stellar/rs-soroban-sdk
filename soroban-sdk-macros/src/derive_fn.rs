@@ -1,7 +1,9 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::{ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, VecM, WriteXdr};
+use stellar_xdr::{
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, VecM, WriteXdr,
+};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
@@ -52,11 +54,27 @@ pub fn derive_fn(
         .enumerate()
         .map(|(i, a)| match a {
             FnArg::Typed(pat_type) => {
+                let name = if let Pat::Ident(pat_ident) = *pat_type.pat.clone() {
+                    pat_ident.ident.to_string()
+                } else {
+                    errors.push(Error::new(a.span(), "argument not supported"));
+                    "".to_string()
+                };
                 let spec = match map_type(&pat_type.ty) {
-                    Ok(spec) => spec,
+                    Ok(type_) => {
+                        let name = name.try_into().unwrap_or_else(|_| {
+                            const MAX: u32 = 30;
+                            errors.push(Error::new(ident.span(), format!("argument name too long, max length {} characters", MAX)));
+                            VecM::<_, MAX>::default()
+                        });
+                        ScSpecFunctionInputV0{ name, type_ }
+                    },
                     Err(e) => {
                         errors.push(e);
-                        ScSpecTypeDef::I32
+                        ScSpecFunctionInputV0{
+                            name: "arg".try_into().unwrap(),
+                            type_: ScSpecTypeDef::I32,
+                        }
                     }
                 };
                 let ident = format_ident!("arg_{}", i);
@@ -100,7 +118,7 @@ pub fn derive_fn(
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecTypeDef::I32, a.clone(), quote! {}, a.clone(), quote! {})
+                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {}, a.clone(), quote! {})
             }
         })
         .multiunzip();
@@ -151,7 +169,7 @@ pub fn derive_fn(
             ));
             VecM::<_, MAX>::default()
         }),
-        input_types: spec_args.try_into().unwrap_or_else(|_| {
+        inputs: spec_args.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
             errors.push(Error::new(
                 inputs.iter().nth(MAX as usize).span(),
@@ -162,7 +180,7 @@ pub fn derive_fn(
             ));
             VecM::<_, MAX>::default()
         }),
-        output_types: spec_result.try_into().unwrap(),
+        outputs: spec_result.try_into().unwrap(),
     });
     let spec_xdr = spec_entry.to_xdr().unwrap();
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
