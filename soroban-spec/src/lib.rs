@@ -1,2 +1,2 @@
-pub mod codegen;
+pub mod gen;
 pub mod read;

@@ -15,7 +15,7 @@ use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span};
 use quote::quote;
 use sha2::{Digest, Sha256};
-use soroban_spec::codegen::rust::{generate_from_file, GenerateFromFileError};
+use soroban_spec::gen::rust::{generate_from_file, GenerateFromFileError};
 use std::fs;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, ItemTrait,
