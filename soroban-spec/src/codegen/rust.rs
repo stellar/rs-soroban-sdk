@@ -8,7 +8,7 @@ use quote::quote;
 use sha2::{Digest, Sha256};
 use stellar_xdr::{self, ScSpecEntry};
 
-use crate::read::{read_spec, GetSpecError};
+use crate::read::{from_wasm, FromWasmError};
 
 use types::{generate_struct, generate_union};
 
@@ -21,7 +21,7 @@ pub enum GenerateFromFileError {
     #[error("parsing contract spec: {0}")]
     Parse(stellar_xdr::Error),
     #[error("getting contract spec: {0}")]
-    GetSpec(GetSpecError),
+    GetSpec(FromWasmError),
 }
 
 pub fn generate_from_file(
@@ -44,7 +44,7 @@ pub fn generate_from_file(
     }
 
     // Read spec from file.
-    let spec = read_spec(&wasm).map_err(GenerateFromFileError::GetSpec)?;
+    let spec = from_wasm(&wasm).map_err(GenerateFromFileError::GetSpec)?;
 
     // Generate code.
     let code = generate(&spec, file, &sha256);
