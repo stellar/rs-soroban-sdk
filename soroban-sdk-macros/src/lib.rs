@@ -15,6 +15,7 @@ use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span};
 use quote::quote;
 use sha2::{Digest, Sha256};
+use soroban_spec::codegen::rust::{generate_from_file, GenerateFromFileError};
 use std::fs;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, ItemTrait,
@@ -108,7 +109,7 @@ pub fn derive_contract_type(input: TokenStream) -> TokenStream {
 #[derive(Debug, FromMeta)]
 struct ContractFileArgs {
     file: String,
-    sha256: String,
+    sha256: darling::util::SpannedValue<String>,
 }
 
 #[proc_macro]
@@ -132,10 +133,13 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
     // Verify SHA256 hash.
     let sha256 = Sha256::digest(&wasm);
     let sha256 = format!("{:x}", sha256);
-    if args.sha256 != sha256 {
-        return Error::new(Span::call_site(), "sha256 does not match file".to_string())
-            .into_compile_error()
-            .into();
+    if *args.sha256 != sha256 {
+        return Error::new(
+            args.sha256.span(),
+            format!("sha256 does not match, expected: {}", sha256),
+        )
+        .into_compile_error()
+        .into();
     }
 
     // Render bytes.
@@ -169,7 +173,7 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
 struct ContractImportArgs {
     file: String,
     #[darling(default)]
-    sha256: Option<String>,
+    sha256: darling::util::SpannedValue<Option<String>>,
 }
 
 #[proc_macro]
@@ -179,8 +183,11 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    match soroban_spec::codegen::rust::generate_from_file(&args.file, args.sha256.as_deref()) {
+    match generate_from_file(&args.file, args.sha256.as_deref()) {
         Ok(code) => quote! { #code },
+        Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
+            Error::new(args.sha256.span(), e.to_string()).into_compile_error()
+        }
         Err(e) => Error::new(Span::call_site(), e.to_string()).into_compile_error(),
     }
     .into()
