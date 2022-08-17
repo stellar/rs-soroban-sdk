@@ -1,0 +1,10 @@
+error: verify sha256 failed, got: 58f98f171987ffff001c4c7f15357bb2c2a4870ec9294c28a401d6c0143ed0e5, expected: 0000000000000000000000000000000000000000000000000000000000000000
+ --> tests/macros_fails/contractimport_with_sha256_verify_fail.rs:3:1
+  |
+3 | / soroban_sdk::contractimport!(
+4 | |     file = "../../../target/wasm32-unknown-unknown/release/example_add_i32.wasm",
+5 | |     sha256 = "0000000000000000000000000000000000000000000000000000000000000000",
+6 | | );
+  | |_^
+  |
+  = note: this error originates in the macro `soroban_sdk::contractimport` (in Nightly builds, run with -Z macro-backtrace for more info)

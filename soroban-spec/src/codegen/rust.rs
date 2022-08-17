@@ -16,8 +16,8 @@ use types::{generate_struct, generate_union};
 pub enum GenerateFromFileError {
     #[error("reading file: {0}")]
     Io(io::Error),
-    #[error("verify sha256")]
-    VerifySha256,
+    #[error("verify sha256 failed, got: {got}, expected: {expected}")]
+    VerifySha256 { got: String, expected: String },
     #[error("parsing contract spec: {0}")]
     Parse(stellar_xdr::Error),
     #[error("getting contract spec: {0}")]
@@ -37,7 +37,10 @@ pub fn generate_from_file(
 
     if let Some(verify_sha256) = verify_sha256 {
         if verify_sha256 != sha256 {
-            return Err(GenerateFromFileError::VerifySha256);
+            return Err(GenerateFromFileError::VerifySha256 {
+                got: sha256,
+                expected: verify_sha256.to_string(),
+            });
         }
     }
 
