@@ -12,13 +12,13 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
         .iter()
         .map(|s| {
             let fn_ident = format_ident!("{}", s.name.to_string().unwrap());
-            let fn_inputs = s.input_types.iter().enumerate().map(|(i, t)| {
-                let name = format_ident!("a{}", i);
-                let type_ident = generate_type_ident(t);
+            let fn_inputs = s.inputs.iter().map(|input| {
+                let name = format_ident!("{}", input.name.to_string().unwrap());
+                let type_ident = generate_type_ident(&input.type_);
                 quote! { #name: #type_ident }
             });
             let fn_output = s
-                .output_types
+                .outputs
                 .to_option()
                 .map(|t| generate_type_ident(&t))
                 .map(|t| quote! { -> #t });
