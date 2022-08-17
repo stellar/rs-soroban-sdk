@@ -6,12 +6,8 @@ CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest 
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
-	cargo test --doc --features testutils -p soroban-sdk -p soroban-sdk-macros
-	cargo +nightly doc \
-		-p soroban-sdk \
-	    --no-deps \
-		--features docs,testutils \
-		$(CARGO_DOC_ARGS)
+	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils
+	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 test: fmt build
 	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
