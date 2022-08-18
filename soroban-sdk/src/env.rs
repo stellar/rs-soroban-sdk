@@ -188,16 +188,26 @@ impl Env {
             .unwrap()
     }
 
-    #[doc(hidden)]
-    pub fn create_contract_from_contract(&self, contract: Bytes, salt: BytesN<32>) -> BytesN<32> {
+    /// Deploy contract takes the given contract bytes and stores it on ledger
+    /// with a new contract ID that is generated using a combination of the
+    /// currently executing contract ID and the provided salt.
+    ///
+    /// The given contract bytes must be a valid WASM Soroban contract.
+    ///
+    /// Returns the contract ID of the deployed contract.
+    pub fn deploy_contract(&self, contract: Bytes, salt: BytesN<32>) -> BytesN<32> {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
         id_obj.in_env(self).try_into().unwrap()
     }
 
-    #[doc(hidden)]
-    pub fn create_token_from_contract(&self, salt: BytesN<32>) -> BytesN<32> {
+    /// Deploy token deploys a new instance of the built-in token contract with
+    /// a new contract ID that is generated using a combination of the currently
+    /// executing contract ID and the provided salt.
+    ///
+    /// Returns the contract ID of the deployed token contract.
+    pub fn deploy_token(&self, salt: BytesN<32>) -> BytesN<32> {
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_token_from_contract(self, salt_obj);
         id_obj.in_env(self).try_into().unwrap()
