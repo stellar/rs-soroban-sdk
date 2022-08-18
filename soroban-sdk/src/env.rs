@@ -244,6 +244,28 @@ impl Env {
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self));
     }
+
+    #[doc(hidden)]
+    pub fn get_ledger_version(&self) -> u32 {
+        internal::Env::get_ledger_version(self).try_into().unwrap()
+    }
+
+    #[doc(hidden)]
+    pub fn get_ledger_sequence(&self) -> u32 {
+        internal::Env::get_ledger_sequence(self).try_into().unwrap()
+    }
+
+    #[doc(hidden)]
+    pub fn get_ledger_timestamp(&self) -> u64 {
+        let obj = internal::Env::get_ledger_timestamp(self);
+        internal::Env::obj_to_u64(self, obj)
+    }
+
+    #[doc(hidden)]
+    pub fn get_ledger_network_id(&self) -> Bytes {
+        let bin_obj = internal::Env::get_ledger_network_id(self);
+        bin_obj.in_env(self).try_into().unwrap()
+    }
 }
 
 #[cfg(feature = "testutils")]
