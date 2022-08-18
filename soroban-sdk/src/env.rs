@@ -202,12 +202,12 @@ impl Env {
         id_obj.in_env(self).try_into().unwrap()
     }
 
-    /// Deploy token deploys a new instance of the built-in token contract with
-    /// a new contract ID that is generated using a combination of the currently
-    /// executing contract ID and the provided salt.
+    /// Deploy token contract deploys a new instance of the built-in token
+    /// contract with a new contract ID that is generated using a combination of
+    /// the currently executing contract ID and the provided salt.
     ///
     /// Returns the contract ID of the deployed token contract.
-    pub fn deploy_token(&self, salt: BytesN<32>) -> BytesN<32> {
+    pub fn deploy_token_contract(&self, salt: BytesN<32>) -> BytesN<32> {
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_token_from_contract(self, salt_obj);
         id_obj.in_env(self).try_into().unwrap()
