@@ -37,7 +37,6 @@ pub use internal::Symbol;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
-use soroban_env_host::ledger_info::LedgerInfo;
 
 pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
@@ -256,6 +255,8 @@ impl Env {
 
 #[cfg(feature = "testutils")]
 use crate::testutils::ContractFunctionSet;
+#[cfg(feature = "testutils")]
+use soroban_env_host::ledger_info::LedgerInfo;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
