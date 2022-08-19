@@ -43,6 +43,7 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::bytes::{Bytes, BytesN};
+use crate::ledger::Ledger;
 use crate::ContractData;
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -252,7 +253,6 @@ impl Env {
     }
 }
 
-use crate::ledger::Ledger;
 #[cfg(feature = "testutils")]
 use crate::testutils::ContractFunctionSet;
 #[cfg(feature = "testutils")]
