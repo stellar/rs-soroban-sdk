@@ -1,11 +1,11 @@
 error: generics unsupported on user-defined types in contract functions
- --> tests/macros_fails/macros_spec_i32.rs:9:25
+ --> tests/trybuild/contractimpl_udt_generics.rs:9:25
   |
 9 |     pub fn add(a: MyType<i32>, b: MyType<i32>) -> i8 {
   |                         ^
 
 error: generics unsupported on user-defined types in contract functions
- --> tests/macros_fails/macros_spec_i32.rs:9:41
+ --> tests/trybuild/contractimpl_udt_generics.rs:9:41
   |
 9 |     pub fn add(a: MyType<i32>, b: MyType<i32>) -> i8 {
   |                                         ^
