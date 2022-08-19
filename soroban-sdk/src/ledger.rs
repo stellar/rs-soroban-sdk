@@ -3,6 +3,29 @@ use crate::{
     Bytes, Env,
 };
 
+/// Ledger allows retrieval of ledger information
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::Env;
+///
+/// # use soroban_sdk::{contractimpl};
+/// #
+/// # pub struct Contract;
+/// #
+/// # #[contractimpl]
+/// # impl Contract {
+/// #     pub fn f(env: Env) {
+/// let ledger = env.ledger();
+///
+/// let protocol_version = ledger.protocol_version();
+/// let sequence = ledger.sequence();
+/// let timestamp = ledger.timestamp()
+/// let network_passphrase = ledger.network_passphrase()
+/// #     }
+/// # }
+/// ```
 #[derive(Clone)]
 pub struct Ledger(Env);
 
@@ -45,14 +68,14 @@ impl Ledger {
         internal::Env::obj_to_u64(env, obj)
     }
 
-    /// Returns the network identifier.
+    /// Returns the network passphrase.
     ///
     /// Returns for the Public Network:
     /// > Public Global Stellar Network ; September 2015
     ///
     /// Returns for the Test Network:
     /// > Test SDF Network ; September 2015
-    pub fn network_id(&self) -> Bytes {
+    pub fn network_passphrase(&self) -> Bytes {
         let env = self.env();
         let bin_obj = internal::Env::get_ledger_network_id(env);
         unsafe { Bytes::unchecked_new(bin_obj.in_env(env)) }
