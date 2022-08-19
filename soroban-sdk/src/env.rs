@@ -105,7 +105,7 @@ impl Env {
         ContractData::new(self)
     }
 
-    /// Get a [Ledger] for accessing ledger information
+    /// Get a [Ledger] for accessing the current ledger.
     #[inline(always)]
     pub fn ledger(&self) -> Ledger {
         Ledger::new(self)
