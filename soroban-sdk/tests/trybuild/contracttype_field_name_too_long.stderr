@@ -1,0 +1,5 @@
+error: struct field name symbol too long: length 11, max 10
+ --> tests/trybuild/contracttype_field_name_too_long.rs:6:9
+  |
+6 |     pub f2istoolong: bool,
+  |         ^^^^^^^^^^^
