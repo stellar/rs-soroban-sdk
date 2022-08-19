@@ -1,6 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
+use soroban_env_common::Symbol;
 use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
@@ -29,11 +30,11 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 .as_ref()
                 .map_or_else(|| format_ident!("{}", i), Ident::clone);
             let name = ident.to_string();
+            if let Err(e) = Symbol::try_from_str(&name) {
+                errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
+            }
             let spec_field = ScSpecUdtStructFieldV0 {
-                name: name.clone().try_into().unwrap_or_else(|_| {
-                    errors.push(Error::new(ident.span(), "struct field name too long"));
-                    VecM::default()
-                }),
+                name: name.clone().try_into().unwrap_or_else(|_| { VecM::default() }),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
                     Err(e) => {
