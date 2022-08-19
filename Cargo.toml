@@ -12,7 +12,6 @@ members = [
     "tests/import_contract",
     "tests/invoke_contract",
     "tests/udt",
-    "tests/contract_data",
     "tests/create_contract",
     "tests/linear_memory",
 ]
@@ -42,11 +41,11 @@ exclude = [
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/sisuresh/rs-stellar-contract-env", rev = "2ba5399" }
-soroban-env-guest = { git = "https://github.com/sisuresh/rs-stellar-contract-env", rev = "2ba5399" }
-soroban-env-host = { git = "https://github.com/sisuresh/rs-stellar-contract-env", rev = "2ba5399" }
-soroban-env-macros = { git = "https://github.com/sisuresh/rs-stellar-contract-env", rev = "2ba5399" }
-soroban-native-sdk-macros = { git = "https://github.com/sisuresh/rs-stellar-contract-env", rev = "2ba5399" }
+soroban-env-common = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "bf3837c" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "bf3837c" }
+soroban-env-host = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "bf3837c" }
+soroban-env-macros = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "bf3837c" }
+soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-stellar-contract-env", rev = "bf3837c" }
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "f4fe3091" }
 
 [profile.dev]
