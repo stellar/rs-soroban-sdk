@@ -256,7 +256,7 @@ impl Env {
 #[cfg(feature = "testutils")]
 use crate::testutils::ContractFunctionSet;
 #[cfg(feature = "testutils")]
-use soroban_env_host::ledger_info::LedgerInfo;
+use soroban_env_host::LedgerInfo;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
