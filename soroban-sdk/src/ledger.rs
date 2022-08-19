@@ -24,8 +24,11 @@ impl Ledger {
         unsafe { u32::unchecked_from_val(val) }
     }
 
-    /// returns the last closed ledger number
-    pub fn get_ledger_sequence(&self) -> u32 {
+    /// Returns the sequence number of the ledger.
+    ///
+    /// The sequence number is a unique number for each ledger
+    /// that is sequential, incremented by one for each new ledger.
+    pub fn sequence(&self) -> u32 {
         let env = self.env();
         let val = internal::Env::get_ledger_sequence(env);
         unsafe { u32::unchecked_from_val(val) }
