@@ -34,7 +34,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {
-                name: name.clone().try_into().unwrap_or_else(|_| { VecM::default() }),
+                name: name.clone().try_into().unwrap_or_else(|_| VecM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
                     Err(e) => {
@@ -285,6 +285,9 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
             let ident = &v.ident;
             let name = &ident.to_string();
+            if let Err(e) = Symbol::try_from_str(&name) {
+                errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
+            }
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
@@ -300,10 +303,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             };
             if let Some(f) = field {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    name: name.try_into().unwrap_or_else(|_| {
-                        errors.push(Error::new(ident.span(), "union case name too long"));
-                        VecM::default()
-                    }),
+                    name: name.try_into().unwrap_or_else(|_| VecM::default()),
                     type_: Some(match map_type(&f.ty) {
                         Ok(t) => t,
                         Err(e) => {
@@ -328,10 +328,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             } else {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    name: name.try_into().unwrap_or_else(|_| {
-                        errors.push(Error::new(ident.span(), "union case name too long"));
-                        VecM::default()
-                    }),
+                    name: name.try_into().unwrap_or_else(|_| VecM::default()),
                     type_: None,
                 };
                 let try_from = quote! { #discriminant_const_u64_ident => Self::#ident };
