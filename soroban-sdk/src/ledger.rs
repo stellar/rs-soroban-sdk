@@ -45,8 +45,14 @@ impl Ledger {
         internal::Env::obj_to_u64(env, obj)
     }
 
-    /// returns the network passphrase
-    pub fn get_ledger_network_id(&self) -> Bytes {
+    /// Returns the network identifier.
+    ///
+    /// Returns for the Public Network:
+    /// > Public Global Stellar Network ; September 2015
+    ///
+    /// Returns for the Test Network:
+    /// > Test SDF Network ; September 2015
+    pub fn network_id(&self) -> Bytes {
         let env = self.env();
         let bin_obj = internal::Env::get_ledger_network_id(env);
         unsafe { Bytes::unchecked_new(bin_obj.in_env(env)) }
