@@ -17,8 +17,8 @@ impl Ledger {
         Ledger(env.clone())
     }
 
-    /// returns the current ledger version
-    pub fn get_ledger_version(&self) -> u32 {
+    /// Returns the version of the protocol that the ledger created with.
+    pub fn protocol_version(&self) -> u32 {
         let env = self.env();
         let val = internal::Env::get_ledger_version(env);
         unsafe { u32::unchecked_from_val(val) }
