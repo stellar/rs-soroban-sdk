@@ -105,6 +105,12 @@ impl Env {
         ContractData::new(self)
     }
 
+    /// Get a [Ledger] for accessing ledger information
+    #[inline(always)]
+    pub fn ledger(&self) -> Ledger {
+        Ledger::new(self)
+    }
+
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn get_current_contract(&self) -> BytesN<32> {
         internal::Env::get_current_contract(self)
@@ -244,30 +250,9 @@ impl Env {
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self));
     }
-
-    #[doc(hidden)]
-    pub fn get_ledger_version(&self) -> u32 {
-        internal::Env::get_ledger_version(self).try_into().unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn get_ledger_sequence(&self) -> u32 {
-        internal::Env::get_ledger_sequence(self).try_into().unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn get_ledger_timestamp(&self) -> u64 {
-        let obj = internal::Env::get_ledger_timestamp(self);
-        internal::Env::obj_to_u64(self, obj)
-    }
-
-    #[doc(hidden)]
-    pub fn get_ledger_network_id(&self) -> Bytes {
-        let bin_obj = internal::Env::get_ledger_network_id(self);
-        bin_obj.in_env(self).try_into().unwrap()
-    }
 }
 
+use crate::ledger::Ledger;
 #[cfg(feature = "testutils")]
 use crate::testutils::ContractFunctionSet;
 #[cfg(feature = "testutils")]
