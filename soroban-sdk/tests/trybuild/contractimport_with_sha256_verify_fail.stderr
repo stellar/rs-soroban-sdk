@@ -1,5 +1,5 @@
 error: sha256 does not match, expected: 082f8d7a70e88996451d2fa53844a95f8c6da4e9179f9ce133bd40489194b3ae
- --> tests/macros_fails/contractimport_with_sha256_verify_fail.rs:3:5
+ --> tests/trybuild/contractimport_with_sha256_verify_fail.rs:3:5
   |
 3 |     sha256 = "0000000000000000000000000000000000000000000000000000000000000000",
   |     ^^^^^^
