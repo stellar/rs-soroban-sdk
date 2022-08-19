@@ -34,8 +34,12 @@ impl Ledger {
         unsafe { u32::unchecked_from_val(val) }
     }
 
-    /// returns a unix timestamp of when the netowrk closed the last ledger
-    pub fn get_ledger_timestamp(&self) -> u64 {
+    /// Returns a unix timestamp for when the ledger was closed.
+    ///
+    /// The timestamp is the number of seconds, excluding leap seconds,
+    /// that have elapsed since unix epoch. Unix epoch is January 1st, 1970,
+    /// at 00:00:00 UTC.
+    pub fn timestamp(&self) -> u64 {
         let env = self.env();
         let obj = internal::Env::get_ledger_timestamp(env);
         internal::Env::obj_to_u64(env, obj)
