@@ -262,31 +262,6 @@ use std::rc::Rc;
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    fn with_empty_recording_storage_env_impl() -> internal::EnvImpl {
-        struct EmptySnapshotSource();
-
-        impl internal::storage::SnapshotSource for EmptySnapshotSource {
-            fn get(
-                &self,
-                _key: &xdr::LedgerKey,
-            ) -> Result<xdr::LedgerEntry, soroban_env_host::HostError> {
-                use xdr::{ScHostStorageErrorCode, ScStatus};
-                let status: internal::Status =
-                    ScStatus::HostStorageError(ScHostStorageErrorCode::UnknownError).into();
-                Err(status.into())
-            }
-
-            fn has(&self, _key: &xdr::LedgerKey) -> Result<bool, soroban_env_host::HostError> {
-                Ok(false)
-            }
-        }
-
-        let rf = Rc::new(EmptySnapshotSource());
-        let storage = internal::storage::Storage::with_recording_footprint(rf);
-
-        internal::EnvImpl::with_storage(storage)
-    }
-
     fn with_empty_recording_storage() -> Env {
         struct EmptySnapshotSource();
 
