@@ -10,7 +10,7 @@ use crate::{
 /// ```
 /// use soroban_sdk::Env;
 ///
-/// # use soroban_sdk::{contractimpl};
+/// # use soroban_sdk::{contractimpl, FixedBinary};
 /// #
 /// # pub struct Contract;
 /// #
@@ -21,10 +21,20 @@ use crate::{
 ///
 /// let protocol_version = ledger.protocol_version();
 /// let sequence = ledger.sequence();
-/// let timestamp = ledger.timestamp()
-/// let network_passphrase = ledger.network_passphrase()
+/// let timestamp = ledger.timestamp();
+/// let network_passphrase = ledger.network_passphrase();
 /// #     }
 /// # }
+/// #
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+/// #     let env = Env::default();
+/// #     let contract_id = FixedBinary::from_array(&env, [0; 32]);
+/// #     env.register_contract(&contract_id, Contract);
+/// #     f::invoke(&env, &contract_id);
+/// # }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
 /// ```
 #[derive(Clone)]
 pub struct Ledger(Env);

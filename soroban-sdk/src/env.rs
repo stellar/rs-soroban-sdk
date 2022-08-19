@@ -37,6 +37,7 @@ pub use internal::Symbol;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
+use soroban_env_host::ledger_info::LedgerInfo;
 
 pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
@@ -260,7 +261,7 @@ use std::rc::Rc;
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    fn with_empty_recording_storage() -> Env {
+    fn with_empty_recording_storage_env_impl() -> internal::EnvImpl {
         struct EmptySnapshotSource();
 
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
@@ -281,9 +282,27 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
-        Env {
-            env_impl: internal::EnvImpl::with_storage(storage),
-        }
+
+        internal::EnvImpl::with_storage(storage)
+    }
+
+    fn with_empty_recording_storage() -> Env {
+        let env_impl = Self::with_empty_recording_storage_env_impl();
+        let l = LedgerInfo {
+            protocol_version: 0,
+            sequence_number: 0,
+            timestamp: 0,
+            network_id: vec![0u8],
+        };
+        env_impl.set_ledger_info(l);
+        Env { env_impl }
+    }
+
+    /// Creates an [Env] with empty storage and a user specified [LedgerInfo]
+    pub fn with_empty_recording_storage_and_ledger_info(li: LedgerInfo) -> Env {
+        let env_impl = Self::with_empty_recording_storage_env_impl();
+        env_impl.set_ledger_info(li);
+        Env { env_impl }
     }
 
     /// Register a contract with the [Env] for testing.
