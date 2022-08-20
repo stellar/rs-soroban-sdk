@@ -66,6 +66,7 @@ mod bigint;
 mod bytes;
 mod contract_data;
 pub mod iter;
+mod ledger;
 mod map;
 mod vec;
 pub use account::Account;
@@ -74,6 +75,7 @@ pub use bigint::BigInt;
 pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
+pub use ledger::Ledger;
 pub use map::Map;
 pub use vec::Vec;
 
