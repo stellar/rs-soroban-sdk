@@ -12,6 +12,7 @@ members = [
     "tests/import_contract",
     "tests/invoke_contract",
     "tests/udt",
+    "tests/contract_data",
     "tests/create_contract",
     "tests/linear_memory",
 ]
