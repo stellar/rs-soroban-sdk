@@ -3,7 +3,7 @@ use crate::{
     Bytes, Env,
 };
 
-/// Ledger allows retrieval of ledger information.
+/// Ledger retrieves information about the current ledger.
 ///
 /// ### Examples
 ///
