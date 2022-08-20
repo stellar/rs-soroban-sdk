@@ -294,7 +294,8 @@ impl Env {
         Env { env_impl }
     }
 
-    /// Sets the [LedgerInfo]
+    /// Sets ledger information in the [Env], which will be accessible via
+    /// [Env::ledger].
     pub fn set_ledger(&self, li: LedgerInfo) {
         self.env_impl.set_ledger_info(li)
     }
