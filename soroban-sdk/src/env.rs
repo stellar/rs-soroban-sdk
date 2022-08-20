@@ -42,9 +42,7 @@ pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::bytes::{Bytes, BytesN};
-use crate::ledger::Ledger;
-use crate::ContractData;
+use crate::{Bytes, BytesN, ContractData, Ledger};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
