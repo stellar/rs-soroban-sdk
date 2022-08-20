@@ -4,6 +4,8 @@
 mod test_sign;
 pub use test_sign::ed25519;
 
+pub use crate::env::LedgerInfo;
+
 use crate::{Env, RawVal, Symbol};
 
 #[doc(hidden)]

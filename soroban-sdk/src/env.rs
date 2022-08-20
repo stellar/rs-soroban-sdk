@@ -23,6 +23,9 @@ pub mod internal {
     }
 }
 
+#[cfg(feature = "testutils")]
+pub use internal::LedgerInfo;
+
 pub use internal::meta;
 pub use internal::xdr;
 pub use internal::BitSet;
@@ -253,8 +256,6 @@ impl Env {
 
 #[cfg(feature = "testutils")]
 use crate::testutils::ContractFunctionSet;
-#[cfg(feature = "testutils")]
-use soroban_env_host::LedgerInfo;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
