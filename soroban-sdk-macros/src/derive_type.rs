@@ -316,10 +316,10 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 };
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
-                    #name => Self::#ident(
-                        let rv: soroban_sdk::RawVal =  iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    #name => Self::#ident({
+                        let rv: soroban_sdk::RawVal = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                         rv.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?
-                    )
+                    })
                 };
                 let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
@@ -416,7 +416,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
 
                 let vec = val;
                 let mut iter = vec.iter();
-                let discriminant: soroban_sdk::xdr::ScSymbol = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.clone().try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let discriminant: soroban_sdk::xdr::ScSymbol = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.clone().try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 let discriminant_name: &str = &discriminant.to_string()?;
 
                 Ok(match discriminant_name {
@@ -439,8 +439,8 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScObject> for #enum_ident {
             type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: soroban_sdk::Env, val: soroban_sdk::xdr::ScObject) -> Result<Self, Self::Error> {
-                if let soroban_sdk::xdr::ScObject::Vec(vec) = ev.val {
+            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScObject) -> Result<Self, Self::Error> {
+                if let soroban_sdk::xdr::ScObject::Vec(vec) = val {
                     <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
                 } else {
                     Err(soroban_sdk::xdr::Error::Invalid)
@@ -461,8 +461,8 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for #enum_ident {
             type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
-            fn try_from(env: soroban_sdk::Env, val: soroban_sdk::xdr::ScVal) -> Result<Self, Self::Error> {
-                if let soroban_sdk::xdr::ScVal::Object(Some(obj)) = ev.val {
+            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScVal) -> Result<Self, Self::Error> {
+                if let soroban_sdk::xdr::ScVal::Object(Some(obj)) = val {
                     <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, obj)
                 } else {
                     Err(soroban_sdk::xdr::Error::Invalid)
