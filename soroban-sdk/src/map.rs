@@ -3,10 +3,8 @@ use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _,
-    env::{EnvObj, EnvType},
-    xdr::ScObjectType,
-    ConversionError, Env, EnvVal, IntoVal, RawVal, Status, TryFromVal, TryIntoVal, Vec,
+    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, EnvVal, IntoVal,
+    RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -132,7 +130,7 @@ where
     }
 }
 
-impl<K, V> TryFrom<EnvVal> for Map<K, V>
+impl<K, V> TryFromVal<Env, Object> for Map<K, V>
 where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -140,26 +138,36 @@ where
     type Error = ConversionError;
 
     #[inline(always)]
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
-    }
-}
-
-impl<K, V> TryFrom<EnvObj> for Map<K, V>
-where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-
-    #[inline(always)]
-    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_object().is_obj_type(ScObjectType::Map) {
-            Ok(Map(obj, PhantomData, PhantomData))
+    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
+        if obj.is_obj_type(ScObjectType::Map) {
+            Ok(Map(obj.in_env(env), PhantomData, PhantomData))
         } else {
             Err(ConversionError {})
         }
+    }
+}
+
+impl<K, V> TryFromVal<Env, RawVal> for Map<K, V>
+where
+    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = <Map<K, V> as TryFromVal<Env, Object>>::Error;
+
+    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    }
+}
+
+impl<K, V> TryIntoVal<Env, Map<K, V>> for Object
+where
+    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
     }
 }
 
@@ -171,11 +179,17 @@ where
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .try_into()
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
+impl<K, V> IntoVal<Env, RawVal> for Map<K, V>
+where
+    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
     }
 }
 
@@ -216,7 +230,7 @@ where
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Map<K, V>) -> Result<Self, Self::Error> {
-        (&v.0).try_into().map_err(|_| ConversionError)
+        ScVal::try_from_val(&v.0.env, v.0.val.to_raw())
     }
 }
 
@@ -229,6 +243,21 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<K, V> TryFromVal<Env, ScVal> for Map<K, V>
+where
+    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(
+            env,
+            val.try_into_val(env).map_err(|_| ConversionError)?,
+        )
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<K, V> TryIntoVal<Env, Map<K, V>> for ScVal
 where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -236,21 +265,7 @@ where
 {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
-        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
-        let env = env.clone();
-        EnvObj { val: o, env }.try_into()
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl<K, V> TryFrom<EnvType<ScVal>> for Map<K, V>
-where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        ScVal::try_into_val(v.val, &v.env)
+        Map::try_from_val(env, self)
     }
 }
 

@@ -9,10 +9,8 @@ use core::{
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _,
-    env::{EnvObj, EnvType},
-    xdr::ScObjectType,
-    ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
+    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, EnvVal, IntoVal,
+    Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[cfg(doc)]
@@ -121,32 +119,42 @@ where
     }
 }
 
-impl<T> TryFrom<EnvVal> for Vec<T>
+impl<T> TryFromVal<Env, Object> for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
 
     #[inline(always)]
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
-    }
-}
-
-impl<T> TryFrom<EnvObj> for Vec<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-
-    #[inline(always)]
-    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_object().is_obj_type(ScObjectType::Vec) {
-            Ok(unsafe { Vec::<T>::unchecked_new(obj) })
+    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
+        if obj.is_obj_type(ScObjectType::Vec) {
+            Ok(unsafe { Vec::<T>::unchecked_new(obj.in_env(env)) })
         } else {
             Err(ConversionError {})
         }
+    }
+}
+
+impl<T> TryFromVal<Env, RawVal> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = <Vec<T> as TryFromVal<Env, Object>>::Error;
+
+    #[inline(always)]
+    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    }
+}
+
+impl<T> TryIntoVal<Env, Vec<T>> for Object
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
     }
 }
 
@@ -157,11 +165,16 @@ where
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .try_into()
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
+impl<T> IntoVal<Env, RawVal> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
     }
 }
 
@@ -201,7 +214,7 @@ use super::xdr::ScVal;
 impl<T> TryFrom<&Vec<T>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
-        (&v.0).try_into().map_err(|_| ConversionError)
+        ScVal::try_from_val(&v.0.env, v.0.val.to_raw())
     }
 }
 
@@ -214,26 +227,27 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<T> TryFromVal<Env, ScVal> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(
+            env,
+            val.try_into_val(env).map_err(|_| ConversionError)?,
+        )
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<T> TryIntoVal<Env, Vec<T>> for ScVal
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
-        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
-        let env = env.clone();
-        EnvObj { val: o, env }.try_into()
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<EnvType<ScVal>> for Vec<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        ScVal::try_into_val(v.val, &v.env)
+        Vec::try_from_val(env, self)
     }
 }
 
