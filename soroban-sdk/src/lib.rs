@@ -78,8 +78,8 @@ pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
 pub use ledger::Ledger;
 pub use map::Map;
-pub use vec::Vec;
 pub use set::Set;
+pub use vec::Vec;
 
 pub mod serde;
 
