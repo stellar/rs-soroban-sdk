@@ -33,7 +33,9 @@ fn __link_sections() {
     static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 }
 
-pub use soroban_sdk_macros::{contractimpl, contracttype, ContractType};
+pub use soroban_sdk_macros::{
+    contractclient, contractfile, contractimpl, contractimport, contracttype, ContractType,
+};
 
 mod env;
 
@@ -64,6 +66,7 @@ mod bigint;
 mod bytes;
 mod contract_data;
 pub mod iter;
+mod ledger;
 mod map;
 mod set;
 mod vec;
@@ -73,6 +76,7 @@ pub use bigint::BigInt;
 pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
+pub use ledger::Ledger;
 pub use map::Map;
 pub use vec::Vec;
 pub use set::Set;

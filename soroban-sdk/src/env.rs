@@ -23,6 +23,9 @@ pub mod internal {
     }
 }
 
+#[cfg(feature = "testutils")]
+pub use internal::LedgerInfo;
+
 pub use internal::meta;
 pub use internal::xdr;
 pub use internal::BitSet;
@@ -42,8 +45,7 @@ pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::bytes::{Bytes, BytesN};
-use crate::ContractData;
+use crate::{Bytes, BytesN, ContractData, Ledger};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -103,6 +105,12 @@ impl Env {
     #[inline(always)]
     pub fn contract_data(&self) -> ContractData {
         ContractData::new(self)
+    }
+
+    /// Get a [Ledger] for accessing the current ledger.
+    #[inline(always)]
+    pub fn ledger(&self) -> Ledger {
+        Ledger::new(self)
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
@@ -274,9 +282,22 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
-        Env {
-            env_impl: internal::EnvImpl::with_storage(storage),
-        }
+        let env_impl = internal::EnvImpl::with_storage(storage);
+
+        let l = LedgerInfo {
+            protocol_version: 0,
+            sequence_number: 0,
+            timestamp: 0,
+            network_id: vec![0u8],
+        };
+        env_impl.set_ledger_info(l);
+        Env { env_impl }
+    }
+
+    /// Sets ledger information in the [Env], which will be accessible via
+    /// [Env::ledger].
+    pub fn set_ledger(&self, li: LedgerInfo) {
+        self.env_impl.set_ledger_info(li)
     }
 
     /// Register a contract with the [Env] for testing.

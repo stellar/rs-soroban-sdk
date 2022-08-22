@@ -3,6 +3,8 @@ resolver = "2"
 
 members = [
     "soroban-sdk",
+    "tests/empty",
+    "tests/hello",
     "tests/add_i32",
     "tests/add_i64",
     "tests/add_bigint",
@@ -15,30 +17,42 @@ members = [
     "tests/linear_memory",
 ]
 
-# Exclude proc-macro crates from the workspace so that when building the
-# workspace their dependencies do not pollute the feature selection of other
-# crates. Ordinarily when you build a proc-macro crate as a dependency of
-# another crate, the proc-macro crate's dependencies are decoupled from the
-# dependencies of other crates. This has an important side-effect of not
-# unifiying the features selected in shared dependencies. When a proc-macro
-# crate is part of a workspace and the workspace as a whole is built the
-# proc-macro is seen as a first-class crate and its dependencies, including
-# their feature selection, affects the overall dependency graph used to build
-# all crates. This has an unfortunate side-effect for proc-macro crates, like
-# 'macros', that depend on std features when other crates, like 'sdk',
-# explicitly must not depend on std. Hopefully one day this will be fixed in:
-# https://github.com/rust-lang/cargo/issues/10827
-exclude = ["soroban-sdk-macros"]
+exclude = [
+    # Exclude proc-macro crates from the workspace so that when building the
+    # workspace their dependencies do not pollute the feature selection of other
+    # crates. Ordinarily when you build a proc-macro crate as a dependency of
+    # another crate, the proc-macro crate's dependencies are decoupled from the
+    # dependencies of other crates. This has an important side-effect of not
+    # unifiying the features selected in shared dependencies. When a proc-macro
+    # crate is part of a workspace and the workspace as a whole is built the
+    # proc-macro is seen as a first-class crate and its dependencies, including
+    # their feature selection, affects the overall dependency graph used to build
+    # all crates. This has an unfortunate side-effect for proc-macro crates, like
+    # 'macros', that depend on std features when other crates, like 'sdk',
+    # explicitly must not depend on std. Hopefully one day this will be fixed in:
+    # https://github.com/rust-lang/cargo/issues/10827
+    "soroban-sdk-macros",
+    # Exclude crates that are not intended for building on the wasm32 target, so
+    # that the majority of cargo-hack usage won't trigger builds on these crates
+    # in isolation, but these crates will still be built when the SDK gets built
+    # because they're named as a dependency.
+    "soroban-spec",
+]
 
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
-soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
-soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "1c5532ef" }
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "3eca5ce" }
+soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "4c288ce" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "4c288ce" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "4c288ce" }
+soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "4c288ce" }
+soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "4c288ce" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "61de11d" }
+
+# soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+# soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+# soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
+# soroban-env-macros = { path = "../rs-soroban-env/soroban-env-macros" }
 
 [profile.dev]
 overflow-checks = true

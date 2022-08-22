@@ -4,7 +4,8 @@ use std::io::Cursor;
 
 use soroban_sdk::{contractimpl, contracttype, BytesN, Env};
 use stellar_xdr::{
-    ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple, ScSpecTypeUdt,
+    ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
+    ScSpecTypeUdt,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -40,17 +41,23 @@ fn test_spec() {
     let entries = ScSpecEntry::read_xdr(&mut Cursor::new(&__SPEC_XDR_ADD)).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add".try_into().unwrap(),
-        input_types: vec![
-            ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                name: "Udt".try_into().unwrap(),
-            }),
-            ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                name: "Udt".try_into().unwrap(),
-            }),
+        inputs: vec![
+            ScSpecFunctionInputV0 {
+                name: "a".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "Udt".try_into().unwrap(),
+                }),
+            },
+            ScSpecFunctionInputV0 {
+                name: "b".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "Udt".try_into().unwrap(),
+                }),
+            },
         ]
         .try_into()
         .unwrap(),
-        output_types: vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+        outputs: vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: vec![
                 ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     name: "Udt".try_into().unwrap(),

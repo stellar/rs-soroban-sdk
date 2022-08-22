@@ -1,6 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
+use soroban_env_common::Symbol;
 use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
@@ -29,11 +30,11 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 .as_ref()
                 .map_or_else(|| format_ident!("{}", i), Ident::clone);
             let name = ident.to_string();
+            if let Err(e) = Symbol::try_from_str(&name) {
+                errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
+            }
             let spec_field = ScSpecUdtStructFieldV0 {
-                name: name.clone().try_into().unwrap_or_else(|_| {
-                    errors.push(Error::new(ident.span(), "struct field name too long"));
-                    VecM::default()
-                }),
+                name: name.clone().try_into().unwrap_or_else(|_| VecM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
                     Err(e) => {
@@ -284,6 +285,9 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
             let ident = &v.ident;
             let name = &ident.to_string();
+            if let Err(e) = Symbol::try_from_str(&name) {
+                errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
+            }
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
@@ -299,10 +303,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             };
             if let Some(f) = field {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    name: name.try_into().unwrap_or_else(|_| {
-                        errors.push(Error::new(ident.span(), "union case name too long"));
-                        VecM::default()
-                    }),
+                    name: name.try_into().unwrap_or_else(|_| VecM::default()),
                     type_: Some(match map_type(&f.ty) {
                         Ok(t) => t,
                         Err(e) => {
@@ -311,13 +312,17 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                         }
                     }),
                 };
-                let try_from = quote! { #discriminant_const_u64_ident => Self::#ident(value.try_into_val(&env)?) };
+                let try_from = quote! {
+                    #discriminant_const_u64_ident => Self::#ident(
+                        iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(&env)?
+                    )
+                };
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => Self::#ident(
                         soroban_sdk::EnvVal {
                             env: ev.env.clone(),
-                            val: (&value).try_into_val(&ev.env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            val: iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.try_into_val(&ev.env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                         }
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
@@ -327,16 +332,13 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             } else {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    name: name.try_into().unwrap_or_else(|_| {
-                        errors.push(Error::new(ident.span(), "union case name too long"));
-                        VecM::default()
-                    }),
+                    name: name.try_into().unwrap_or_else(|_| VecM::default()),
                     type_: None,
                 };
                 let try_from = quote! { #discriminant_const_u64_ident => Self::#ident };
-                let into = quote! { Self::#ident => (#discriminant_const_sym_ident, ()).into_val(env) };
+                let into = quote! { Self::#ident => (#discriminant_const_sym_ident,).into_val(env) };
                 let try_from_xdr = quote! { #name => Self::#ident };
-                let into_xdr = quote! { #enum_ident::#ident => (#name, ()).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
+                let into_xdr = quote! { #enum_ident::#ident => (#name,).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             }
         })
@@ -383,8 +385,10 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 use soroban_sdk::TryIntoVal;
                 #(#discriminant_consts)*
                 let env = ev.env.clone();
-                let (discriminant, value): (soroban_sdk::Symbol, soroban_sdk::EnvVal) = ev.try_into()?;
-                Ok(match discriminant.to_raw().get_payload() {
+                let vec: soroban_sdk::Vec<soroban_sdk::RawVal> = ev.try_into()?;
+                let mut iter = vec.iter();
+                let discriminant = iter.next().ok_or(soroban_sdk::ConversionError)??;
+                Ok(match discriminant.get_payload() {
                     #(#try_froms,)*
                     _ => Err(soroban_sdk::ConversionError{})?,
                 })
@@ -417,8 +421,12 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 use soroban_sdk::xdr::Validate;
                 use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
-                let (discriminant, value): (soroban_sdk::xdr::ScSymbol, soroban_sdk::xdr::ScVal) = ev.val.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+
+                let vec = ev.val;
+                let mut iter = vec.iter();
+                let discriminant: soroban_sdk::xdr::ScSymbol = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.clone().try_into_val(&ev.env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 let discriminant_name: &str = &discriminant.to_string()?;
+
                 Ok(match discriminant_name {
                     #(#try_from_xdrs,)*
                     _ => Err(soroban_sdk::xdr::Error::Invalid)?,

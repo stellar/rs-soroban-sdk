@@ -1,0 +1,11 @@
+error: sha256 does not match, expected: 4443da92909ba1b01564d65c74052cd5d39dceec7cc52e41bda38a13fdb6e160
+ --> tests/trybuild/contractfile_with_sha256_verify_fail.rs:3:5
+  |
+3 |     sha256 = "0000000000000000000000000000000000000000000000000000000000000000",
+  |     ^^^^^^
+
+error[E0601]: `main` function not found in crate `$CRATE`
+ --> tests/trybuild/contractfile_with_sha256_verify_fail.rs:4:3
+  |
+4 | );
+  |   ^ consider adding a `main` function to `$DIR/tests/trybuild/contractfile_with_sha256_verify_fail.rs`

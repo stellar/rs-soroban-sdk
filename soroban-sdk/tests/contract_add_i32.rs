@@ -3,7 +3,7 @@
 use std::io::Cursor;
 
 use soroban_sdk::{contractimpl, BytesN, Env};
-use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef};
+use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;
 
@@ -31,10 +31,19 @@ fn test_spec() {
     let entries = ScSpecEntry::read_xdr(&mut Cursor::new(&__SPEC_XDR_ADD)).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add".try_into().unwrap(),
-        input_types: vec![ScSpecTypeDef::I32, ScSpecTypeDef::I32]
-            .try_into()
-            .unwrap(),
-        output_types: vec![ScSpecTypeDef::I32].try_into().unwrap(),
+        inputs: vec![
+            ScSpecFunctionInputV0 {
+                name: "a".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+            ScSpecFunctionInputV0 {
+                name: "b".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+        ]
+        .try_into()
+        .unwrap(),
+        outputs: vec![ScSpecTypeDef::I32].try_into().unwrap(),
     });
     assert_eq!(entries, expect);
 }
