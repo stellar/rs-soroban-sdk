@@ -374,7 +374,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal> for #enum_ident {
             type Error = soroban_sdk::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk: RawVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::RawVal) -> Result<Self, Self::Error> {
                 use soroban_sdk::TryIntoVal;
                 #(#discriminant_consts)*
                 let vec: soroban_sdk::Vec<soroban_sdk::RawVal> = val.try_into_val(env)?;

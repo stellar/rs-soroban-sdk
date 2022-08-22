@@ -8,7 +8,7 @@ use super::{
     env::internal::{Env as _, EnvBase, RawValConvertible},
     env::{EnvObj, EnvType},
     xdr::ScObjectType,
-    Bytes, ConversionError, Env, EnvVal, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    Bytes, ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 /// BigInt is an arbitrary sized signed integer.
@@ -214,7 +214,7 @@ impl IntoVal<Env, BigInt> for i32 {
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::{env::Object, xdr::ScVal};
+use super::xdr::ScVal;
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&BigInt> for ScVal {

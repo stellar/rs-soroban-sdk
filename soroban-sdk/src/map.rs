@@ -4,11 +4,11 @@ use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, EnvVal, IntoVal,
-    RawVal, Status, TryFromVal, TryIntoVal, Vec,
+    Object, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{env::Object, xdr::ScVal};
+use super::xdr::ScVal;
 
 #[cfg(doc)]
 use crate::ContractData;
