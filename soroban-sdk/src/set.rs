@@ -1,3 +1,5 @@
+use core::{cmp::Ordering, fmt::Debug};
+
 use super::{Env, IntoVal, Map, RawVal, TryFromVal};
 
 #[macro_export]
@@ -55,6 +57,54 @@ where
 
     pub fn is_empty(&self) -> bool {
         self.0.len() == 0
+    }
+}
+
+impl<T> Eq for Set<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+
+impl<T> PartialEq for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.partial_cmp(other) == Some(Ordering::Equal)
+    }
+}
+
+impl<T> PartialOrd for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(Ord::cmp(self, other))
+    }
+}
+
+impl<T> Ord for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        self.0.cmp(&other.0)
+    }
+}
+
+impl<T> Debug for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
+    T::Error: Debug,
+{
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "Set(")?;
+        // let mut iter = self.iter();
+        // if let Some(x) = iter.next() {
+        //     write!(f, "{:?}", x)?;
+        // }
+        // for x in iter {
+        //     write!(f, ", {:?}", x)?;
+        // }
+        // write!(f, ")")?;
+        Ok(())
     }
 }
 
@@ -128,7 +178,7 @@ mod test {
     #[test]
     fn test_from_array_removes_duplicates() {
         let env = Env::default();
-        let s =set![&env, 1, 1, 2, 3, 3, 3, 4, 5, 5, 5, 5];
+        let s = set![&env, 1, 1, 2, 3, 3, 3, 4, 5, 5, 5, 5];
 
         assert_eq!(s.contains(1), true);
         assert_eq!(s.contains(2), true);
@@ -137,5 +187,14 @@ mod test {
         assert_eq!(s.contains(5), true);
         assert_eq!(s.contains(5), true);
         assert_eq!(s.len(), 5);
+    }
+
+    #[test]
+    fn test_comparison() {
+        let env = Env::default();
+        let s1 = set![&env, 0, 1, 2, 3, 3, 3, 3, 3, 3, 4];
+
+        assert_eq!(s1, set![&env, 0, 0, 0, 1, 2, 3, 4]);
+        assert_ne!(s1, set![&env, 1, 2, 3, 4]);
     }
 }
