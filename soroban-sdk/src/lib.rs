@@ -69,6 +69,7 @@ mod contract_event;
 pub mod iter;
 mod ledger;
 mod map;
+mod set;
 mod vec;
 pub use account::Account;
 pub use bigint::BigInt;
@@ -79,6 +80,7 @@ pub use contract_data::ContractData;
 pub use contract_event::ContractEvent;
 pub use ledger::Ledger;
 pub use map::Map;
+pub use set::Set;
 pub use vec::Vec;
 
 pub mod serde;
