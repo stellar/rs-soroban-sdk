@@ -64,7 +64,7 @@ where
     }
 
     pub fn new(env: &Env) -> Set<T> {
-        let map = Map::<T, ()>::new(env);
+        let map = Map::new(env);
         Self(map)
     }
 
