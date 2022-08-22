@@ -2,6 +2,21 @@ use core::{cmp::Ordering, fmt::Debug};
 
 use super::{Env, IntoVal, Map, RawVal, TryFromVal};
 
+
+/// Create a [Set] with the given items.
+///
+/// The first argument in the list must be a reference to an [Env], then the
+/// items follow.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, set};
+///
+/// let env = Env::default();
+/// let set = set![&env, 0, 1, 2, 3, 3];
+/// assert_eq!(set.len(), 4);
+/// ```
 #[macro_export]
 macro_rules! set {
     ($env:expr) => {
@@ -12,6 +27,31 @@ macro_rules! set {
     };
 }
 
+/// Set is an ordered, contiguous growable array type composed of unique items.
+///
+/// A Set can be seen as syntactic sugar on top of the soroban-sdk Map
+/// implementation, where all of the Set's items are keys in a (hash) Map.
+/// This forces all items to be unique, and the action of adding an
+/// already-existing item to the Map is an idempotent operation.
+///
+/// The array is stored in the Host and available to the Guest through the
+/// functions defined on Set. Values stored in the Set are transmitted to the
+/// Host as [RawVal]s, and when retrieved from the Set are transmitted back and
+/// converted from [RawVal] back into their type.
+///
+/// The values in a Set are not guaranteed to be of type `T` and conversion will
+/// fail if they are not.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, set};
+///
+/// let env = Env::default();
+/// let mut set = set![&env, 1, 2, 3];
+/// set.insert(3);
+/// assert_eq!(set.len(), 3);
+/// ```
 pub struct Set<T>(Map<T, ()>);
 
 impl<T> Set<T>
@@ -96,14 +136,11 @@ where
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Set(")?;
-        // let mut iter = self.iter();
-        // if let Some(x) = iter.next() {
-        //     write!(f, "{:?}", x)?;
-        // }
-        // for x in iter {
-        //     write!(f, ", {:?}", x)?;
-        // }
-        // write!(f, ")")?;
+        let keys = self.0.keys();
+        for k in keys {
+            write!(f, "{:?}", k)?;
+        }
+        write!(f, ")")?;
         Ok(())
     }
 }
