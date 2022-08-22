@@ -27,12 +27,14 @@ macro_rules! set {
     };
 }
 
-/// Set is an ordered, contiguous growable array type composed of unique items.
+/// Set is a contiguous growable array type composed of unique items.
 ///
 /// A Set can be seen as syntactic sugar on top of the soroban-sdk Map
 /// implementation, where all of the Set's items are keys in a (hash) Map.
 /// This forces all items to be unique, and the action of adding an
 /// already-existing item to the Map is an idempotent operation.
+///
+/// Set imposes a fixed ordering, so Set<1, 2, 3> == Set<2, 3, 1>.
 ///
 /// The array is stored in the Host and available to the Guest through the
 /// functions defined on Set. Values stored in the Set are transmitted to the
@@ -233,5 +235,13 @@ mod test {
 
         assert_eq!(s1, set![&env, 0, 0, 0, 1, 2, 3, 4]);
         assert_ne!(s1, set![&env, 1, 2, 3, 4]);
+    }
+
+    #[test]
+    fn test_fixed_ordering() {
+        let env = Env::default();
+        let s1 = set![&env, 1, 2, 3];
+
+        assert_eq!(s1, set![&env, 2, 3, 1]);
     }
 }
