@@ -26,7 +26,7 @@ macro_rules! set {
     };
 }
 
-/// Set is a contiguous growable array type composed of unique items.
+/// Set is a growable collection composed of unique items.
 ///
 /// A Set can be seen as syntactic sugar on top of the soroban-sdk Map
 /// implementation, where all of the Set's items are keys in a (hash) Map.
