@@ -2,7 +2,6 @@ use core::{cmp::Ordering, fmt::Debug};
 
 use super::{Env, IntoVal, Map, RawVal, TryFromVal};
 
-
 /// Create a [Set] with the given items.
 ///
 /// The first argument in the list must be a reference to an [Env], then the
@@ -75,6 +74,15 @@ where
         set
     }
 
+    pub fn from_slice(env: &Env, items: &[T]) -> Set<T>
+    where
+        T: Clone,
+    {
+        let mut set = Set::new(env);
+        set.extend_from_slice(items);
+        set
+    }
+
     pub fn insert(&mut self, x: T) {
         self.0.set(x, ())
     }
@@ -82,6 +90,15 @@ where
     pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
         for item in items {
             self.insert(item);
+        }
+    }
+
+    pub fn extend_from_slice(&mut self, items: &[T])
+    where
+        T: Clone,
+    {
+        for item in items {
+            self.insert(item.clone());
         }
     }
 
@@ -243,5 +260,17 @@ mod test {
         let s1 = set![&env, 1, 2, 3];
 
         assert_eq!(s1, set![&env, 2, 3, 1]);
+    }
+
+    #[test]
+    fn test_from_slice() {
+        let env = Env::default();
+        let s1 = set![&env, 1, 2, 3];
+        let mut s2 = Set::from_slice(&env, &[1, 2, 3]);
+
+        assert_eq!(s1, s2);
+
+        s2.extend_from_slice(&[4, 5, 6]);
+        assert_eq!(s2, set![&env, 1, 2, 3, 4, 5, 6]);
     }
 }
