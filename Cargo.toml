@@ -42,17 +42,17 @@ exclude = [
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
-soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
+# soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
+# soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
+# soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
+# soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
 soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "8eb3bfcd" }
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "61de11d" }
 
-# soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-# soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-# soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
-# soroban-env-macros = { path = "../rs-soroban-env/soroban-env-macros" }
+soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
+soroban-env-macros = { path = "../rs-soroban-env/soroban-env-macros" }
 
 [profile.dev]
 overflow-checks = true
