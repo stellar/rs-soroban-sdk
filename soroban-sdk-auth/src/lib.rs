@@ -59,7 +59,10 @@ pub fn check_account_auth(
     for sig in sigs.iter().map(Result::unwrap) {
         // Cannot take multiple signatures from the same key
         if let Some(prev) = prev_pk {
-            if prev >= sig.public_key {
+            if prev == sig.public_key {
+                panic!("signature duplicate")
+            }
+            if prev > sig.public_key {
                 panic!("signature out of order")
             }
         }
