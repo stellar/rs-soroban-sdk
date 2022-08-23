@@ -1,6 +1,6 @@
 #![no_std]
 
-use soroban_sdk::{serde::Serialize, Account, BigInt, BytesN, Env, EnvVal, Symbol, TryIntoVal};
+use soroban_sdk::{serde::Serialize, Account, BigInt, BytesN, Env, RawVal, Symbol, Vec};
 
 pub mod public_types;
 use crate::public_types::{
@@ -14,12 +14,17 @@ pub trait NonceAuth {
     fn get_keyed_auth(&self) -> &KeyedAuthorization;
 }
 
-pub fn check_ed25519_auth(env: &Env, auth: &KeyedEd25519Signature, function: Symbol, args: EnvVal) {
+pub fn check_ed25519_auth(
+    env: &Env,
+    auth: &KeyedEd25519Signature,
+    function: Symbol,
+    args: Vec<RawVal>,
+) {
     let msg = MessageV0 {
         function,
         contrct_id: env.get_current_contract(),
         network_id: env.ledger().network_passphrase(),
-        args: args.to_raw().try_into_val(env).unwrap(),
+        args,
     };
     let msg_bin = Message::V0(msg).serialize(env);
 
@@ -34,7 +39,7 @@ pub fn check_account_auth(
     env: &Env,
     auth: &KeyedAccountAuthorization,
     function: Symbol,
-    args: EnvVal,
+    args: Vec<RawVal>,
 ) {
     let acc = Account::from_public_key(&auth.account_id).unwrap();
 
@@ -42,7 +47,7 @@ pub fn check_account_auth(
         function,
         contrct_id: env.get_current_contract(),
         network_id: env.ledger().network_passphrase(),
-        args: args.to_raw().try_into_val(env).unwrap(),
+        args,
     };
     let msg_bytes = Message::V0(msg).serialize(env);
 
@@ -81,7 +86,7 @@ pub fn check_account_auth(
 }
 
 // Note that nonce is not used by KeyedAuthorization::Contract
-pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, args: EnvVal)
+pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, args: Vec<RawVal>)
 where
     T: NonceAuth,
 {

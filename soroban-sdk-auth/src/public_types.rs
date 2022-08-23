@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, Bytes, BytesN, Env, EnvVal, Symbol, Vec};
+use soroban_sdk::{contracttype, Bytes, BytesN, Env, RawVal, Symbol, Vec};
 
 #[derive(Clone)]
 #[contracttype]
@@ -48,7 +48,7 @@ pub struct MessageV0 {
     pub function: Symbol,
     pub contrct_id: BytesN<32>,
     pub network_id: Bytes,
-    pub args: Vec<EnvVal>,
+    pub args: Vec<RawVal>,
 }
 
 #[derive(Clone)]
