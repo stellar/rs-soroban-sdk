@@ -10,7 +10,7 @@ use super::{
     env::internal::{Env as _, RawValConvertible},
     env::{EnvObj, EnvType, IntoVal},
     xdr::ScObjectType,
-    ConversionError, Env, EnvVal, Object, RawVal, TryIntoVal,
+    ConversionError, Env, EnvVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[cfg(doc)]
@@ -95,26 +95,31 @@ impl Ord for Bytes {
     }
 }
 
-impl TryFrom<EnvVal> for Bytes {
+impl TryFromVal<Env, Object> for Bytes {
     type Error = ConversionError;
 
-    #[inline(always)]
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
-    }
-}
-
-impl TryFrom<EnvObj> for Bytes {
-    type Error = ConversionError;
-
-    #[inline(always)]
-    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_object().is_obj_type(ScObjectType::Bytes) {
-            Ok(unsafe { Bytes::unchecked_new(obj) })
+    fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
+        if val.is_obj_type(ScObjectType::Bytes) {
+            Ok(unsafe { Bytes::unchecked_new(val.in_env(env)) })
         } else {
             Err(ConversionError {})
         }
+    }
+}
+
+impl TryFromVal<Env, RawVal> for Bytes {
+    type Error = <Bytes as TryFromVal<Env, Object>>::Error;
+
+    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    }
+}
+
+impl TryIntoVal<Env, Bytes> for Object {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Bytes, Self::Error> {
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
     }
 }
 
@@ -122,11 +127,13 @@ impl TryIntoVal<Env, Bytes> for RawVal {
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<Bytes, Self::Error> {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .try_into()
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
+impl IntoVal<Env, RawVal> for Bytes {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
     }
 }
 
@@ -169,7 +176,7 @@ impl From<&Bytes> for Object {
 impl TryFrom<&Bytes> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Bytes) -> Result<Self, Self::Error> {
-        (&v.0).try_into().map_err(|_| ConversionError)
+        ScVal::try_from_val(&v.0.env, v.0.val.to_raw())
     }
 }
 
@@ -182,20 +189,21 @@ impl TryFrom<Bytes> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryIntoVal<Env, Bytes> for ScVal {
+impl TryFromVal<Env, ScVal> for Bytes {
     type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<Bytes, Self::Error> {
-        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
-        let env = env.clone();
-        EnvObj { val: o, env }.try_into()
+    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(
+            env,
+            val.try_into_val(env).map_err(|_| ConversionError)?,
+        )
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<EnvType<ScVal>> for Bytes {
+impl TryIntoVal<Env, Bytes> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        ScVal::try_into_val(v.val, &v.env)
+    fn try_into_val(self, env: &Env) -> Result<Bytes, Self::Error> {
+        Bytes::try_from_val(env, self)
     }
 }
 
@@ -602,23 +610,27 @@ impl<const N: usize> IntoVal<Env, BytesN<N>> for [u8; N] {
     }
 }
 
-impl<const N: usize> TryFrom<EnvVal> for BytesN<N> {
+impl<const N: usize> TryFromVal<Env, Object> for BytesN<N> {
     type Error = ConversionError;
 
-    #[inline(always)]
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.try_into()?;
-        obj.try_into()
+    fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
+        Bytes::try_from_val(env, val)?.try_into()
     }
 }
 
-impl<const N: usize> TryFrom<EnvObj> for BytesN<N> {
+impl<const N: usize> TryFromVal<Env, RawVal> for BytesN<N> {
     type Error = ConversionError;
 
-    #[inline(always)]
-    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        let bin: Bytes = obj.try_into()?;
-        bin.try_into()
+    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    }
+}
+
+impl<const N: usize> TryIntoVal<Env, BytesN<N>> for Object {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<BytesN<N>, Self::Error> {
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
     }
 }
 
@@ -626,11 +638,13 @@ impl<const N: usize> TryIntoVal<Env, BytesN<N>> for RawVal {
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<BytesN<N>, Self::Error> {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .try_into()
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, RawVal> for BytesN<N> {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
     }
 }
 
@@ -679,7 +693,7 @@ impl<const N: usize> From<BytesN<N>> for Bytes {
 impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &BytesN<N>) -> Result<Self, Self::Error> {
-        (&v.0).try_into().map_err(|_| ConversionError)
+        ScVal::try_from_val(&v.0 .0.env, v.0 .0.val.to_raw())
     }
 }
 
@@ -692,20 +706,21 @@ impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryIntoVal<Env, BytesN<N>> for ScVal {
+impl<const N: usize> TryFromVal<Env, ScVal> for BytesN<N> {
     type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<BytesN<N>, Self::Error> {
-        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
-        let env = env.clone();
-        EnvObj { val: o, env }.try_into()
+    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(
+            env,
+            val.try_into_val(env).map_err(|_| ConversionError)?,
+        )
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<EnvType<ScVal>> for BytesN<N> {
+impl<const N: usize> TryIntoVal<Env, BytesN<N>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        ScVal::try_into_val(v.val, &v.env)
+    fn try_into_val(self, env: &Env) -> Result<BytesN<N>, Self::Error> {
+        BytesN::try_from_val(env, self)
     }
 }
 

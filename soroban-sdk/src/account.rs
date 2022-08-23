@@ -3,7 +3,7 @@ use core::{borrow::Borrow, cmp::Ordering, fmt::Debug};
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    Bytes, BytesN, ConversionError, Env, EnvType, EnvVal, IntoVal, Object,
+    Bytes, BytesN, ConversionError, Env, EnvType, EnvVal, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
 /// Account references a Stellar account and provides access to information
@@ -107,20 +107,19 @@ impl IntoVal<Env, Account> for [u8; 32] {
     }
 }
 
-impl TryFrom<EnvVal> for Account {
+impl TryFromVal<Env, Object> for Account {
     type Error = ConversionError;
 
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.clone().try_into()?;
-        obj.try_into()
+    fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
+        Ok(Account(val.try_into_val(env)?))
     }
 }
 
-impl TryFrom<EnvObj> for Account {
-    type Error = ConversionError;
+impl TryFromVal<Env, RawVal> for Account {
+    type Error = <Account as TryFromVal<Env, Object>>::Error;
 
-    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        Ok(Account(obj.try_into()?))
+    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
     }
 }
 

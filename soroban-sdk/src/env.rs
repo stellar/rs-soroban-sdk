@@ -124,8 +124,7 @@ impl Env {
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn get_current_contract(&self) -> BytesN<32> {
         internal::Env::get_current_contract(self)
-            .in_env(self)
-            .try_into()
+            .try_into_val(self)
             .unwrap()
     }
 
@@ -183,7 +182,7 @@ impl Env {
     /// Computes a SHA-256 hash.
     pub fn compute_hash_sha256(&self, msg: Bytes) -> BytesN<32> {
         let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
-        bin_obj.in_env(self).try_into().unwrap()
+        bin_obj.try_into_val(self).unwrap()
     }
 
     /// Verifies an ed25519 signature.
@@ -209,20 +208,20 @@ impl Env {
         let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
-        id_obj.in_env(self).try_into().unwrap()
+        id_obj.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]
     pub fn create_token_from_contract(&self, salt: BytesN<32>) -> BytesN<32> {
         let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
         let id_obj = internal::Env::create_token_from_contract(self, salt_obj);
-        id_obj.in_env(self).try_into().unwrap()
+        id_obj.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]
     pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Bytes {
         let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
-        bin_obj.in_env(self).try_into().unwrap()
+        bin_obj.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]
@@ -253,7 +252,7 @@ impl Env {
             lm_pos.into(),
             len.into(),
         );
-        new_obj.in_env(self).try_into().unwrap()
+        new_obj.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]

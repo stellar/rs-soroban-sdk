@@ -8,7 +8,7 @@ use super::{
     env::internal::{Env as _, EnvBase, RawValConvertible},
     env::{EnvObj, EnvType},
     xdr::ScObjectType,
-    Bytes, ConversionError, Env, EnvVal, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    Bytes, ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 /// BigInt is an arbitrary sized signed integer.
@@ -43,8 +43,8 @@ impl Display for BigInt {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let env = self.env();
         let bi = self.0.to_object();
-        let obj: EnvObj = env.bigint_to_radix_be(bi, 10u32.into()).in_env(env);
-        if let Ok(bin) = TryInto::<Bytes>::try_into(obj) {
+        let obj: Object = env.bigint_to_radix_be(bi, 10u32.into());
+        if let Ok(bin) = TryIntoVal::<_, Bytes>::try_into_val(obj, &env) {
             let sign = env.bigint_cmp(bi, env.bigint_from_u64(0));
             if let -1 = unsafe { <i32 as RawValConvertible>::unchecked_from_val(sign) } {
                 write!(f, "-")?;
@@ -57,24 +57,31 @@ impl Display for BigInt {
     }
 }
 
-impl TryFrom<EnvVal> for BigInt {
+impl TryFromVal<Env, Object> for BigInt {
     type Error = ConversionError;
 
-    fn try_from(ev: EnvVal) -> Result<Self, Self::Error> {
-        let obj: EnvObj = ev.clone().try_into()?;
-        obj.try_into()
-    }
-}
-
-impl TryFrom<EnvObj> for BigInt {
-    type Error = ConversionError;
-
-    fn try_from(obj: EnvObj) -> Result<Self, Self::Error> {
-        if obj.as_object().is_obj_type(ScObjectType::BigInt) {
-            Ok(BigInt(obj))
+    fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
+        if val.is_obj_type(ScObjectType::BigInt) {
+            Ok(BigInt(val.in_env(env)))
         } else {
             Err(ConversionError {})
         }
+    }
+}
+
+impl TryFromVal<Env, RawVal> for BigInt {
+    type Error = <BigInt as TryFromVal<Env, Object>>::Error;
+
+    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    }
+}
+
+impl TryIntoVal<Env, BigInt> for Object {
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<BigInt, Self::Error> {
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
     }
 }
 
@@ -82,11 +89,13 @@ impl TryIntoVal<Env, BigInt> for RawVal {
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<BigInt, Self::Error> {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .try_into()
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
+impl IntoVal<Env, RawVal> for BigInt {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
     }
 }
 
@@ -205,13 +214,13 @@ impl IntoVal<Env, BigInt> for i32 {
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::{env::Object, xdr::ScVal};
+use super::xdr::ScVal;
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&BigInt> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &BigInt) -> Result<Self, Self::Error> {
-        (&v.0).try_into().map_err(|_| ConversionError)
+        ScVal::try_from_val(&v.0.env, v.0.val.to_raw())
     }
 }
 
@@ -224,20 +233,21 @@ impl TryFrom<BigInt> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryIntoVal<Env, BigInt> for ScVal {
+impl TryFromVal<Env, ScVal> for BigInt {
     type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<BigInt, Self::Error> {
-        let o: Object = self.try_into_val(env).map_err(|_| ConversionError)?;
-        let env = env.clone();
-        EnvObj { val: o, env }.try_into()
+    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(
+            env,
+            val.try_into_val(env).map_err(|_| ConversionError)?,
+        )
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<EnvType<ScVal>> for BigInt {
+impl TryIntoVal<Env, BigInt> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: EnvType<ScVal>) -> Result<Self, Self::Error> {
-        ScVal::try_into_val(v.val, &v.env)
+    fn try_into_val(self, env: &Env) -> Result<BigInt, Self::Error> {
+        BigInt::try_from_val(env, self)
     }
 }
 
