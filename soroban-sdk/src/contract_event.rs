@@ -19,8 +19,10 @@ use crate::{env::internal, vec, Env, IntoVal, RawVal, Vec};
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
 /// let events = env.events();
+/// let sender = [0; 32];
+/// let receiver = [1; 32];
 /// let data = map![&env, (1u32, 2u32)];
-/// events.publish_2((0u32, 1u32), data)
+/// events.publish_2((sender, receiver), data)
 /// #     }
 /// # }
 ///
