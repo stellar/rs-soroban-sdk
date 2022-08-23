@@ -454,7 +454,7 @@ impl Bytes {
     pub fn extend_from_slice(&mut self, slice: &[u8]) {
         let env = self.env();
         self.0 = env
-            .binary_copy_from_slice(self.to_object(), self.len().into_val(env), &slice)
+            .binary_copy_from_slice(self.to_object(), self.len().into(), &slice)
             .in_env(env);
     }
 
