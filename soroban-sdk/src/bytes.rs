@@ -461,16 +461,6 @@ impl Bytes {
             .in_env(env);
     }
 
-    /// Copy the bytes in [Bytes] into the given array.
-    ///
-    /// ### Panics
-    ///
-    /// When the given `array` has a different length to [Bytes].
-    #[inline(always)]
-    pub fn copy_into_array<const N: usize>(&self, array: &mut [u8; N]) {
-        self.copy_into_slice(array)
-    }
-
     /// Copy the bytes in [Bytes] into the given slice.
     ///
     /// ### Panics
@@ -859,6 +849,17 @@ impl<const N: usize> BytesN<N> {
     #[inline(always)]
     pub fn last_unchecked(&self) -> u8 {
         self.0.last_unchecked()
+    }
+
+    /// Copy the bytes in [BytesN] into the given slice.
+    ///
+    /// ### Panics
+    ///
+    /// When the given `slice` has a different length to [BytesN].
+    #[inline(always)]
+    pub fn copy_into_slice(&self, slice: &mut [u8]) {
+        let env = self.env();
+        env.binary_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
     }
 
     pub fn iter(&self) -> BinIter {
