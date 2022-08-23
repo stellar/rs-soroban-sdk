@@ -15,20 +15,20 @@ pub trait NonceAuth {
 }
 
 pub fn check_ed25519_auth(
-    e: &Env,
+    env: &Env,
     auth: &KeyedEd25519Signature,
     function: Symbol,
     parameters: EnvVal,
 ) {
     let msg = MessageV0 {
         function,
-        contrct_id: e.get_current_contract(),
-        network_id: e.ledger().network_passphrase(),
-        parameters: parameters.to_raw().try_into_val(e).unwrap(),
+        contrct_id: env.get_current_contract(),
+        network_id: env.ledger().network_passphrase(),
+        parameters: parameters.to_raw().try_into_val(env).unwrap(),
     };
-    let msg_bin = Message::V0(msg).serialize(e);
+    let msg_bin = Message::V0(msg).serialize(env);
 
-    e.verify_sig_ed25519(
+    env.verify_sig_ed25519(
         auth.public_key.clone().into(),
         msg_bin,
         auth.signature.clone().into(),
@@ -36,7 +36,7 @@ pub fn check_ed25519_auth(
 }
 
 pub fn check_account_auth(
-    e: &Env,
+    env: &Env,
     auth: &KeyedAccountAuthorization,
     function: Symbol,
     parameters: EnvVal,
@@ -45,11 +45,11 @@ pub fn check_account_auth(
 
     let msg = MessageV0 {
         function,
-        contrct_id: e.get_current_contract(),
-        network_id: e.ledger().network_passphrase(),
-        parameters: parameters.to_raw().try_into_val(e).unwrap(),
+        contrct_id: env.get_current_contract(),
+        network_id: env.ledger().network_passphrase(),
+        parameters: parameters.to_raw().try_into_val(env).unwrap(),
     };
-    let msg_bytes = Message::V0(msg).serialize(e);
+    let msg_bytes = Message::V0(msg).serialize(env);
 
     let threshold = acc.medium_threshold();
     let mut weight = 0u32;
@@ -67,9 +67,9 @@ pub fn check_account_auth(
             }
         }
 
-        e.verify_sig_ed25519(
+        env.verify_sig_ed25519(
             sig.public_key.clone().into(),
-            msg_bin.clone(),
+            msg_bytes.clone(),
             sig.signature.into(),
         );
         // TODO: Check for overflow
@@ -84,32 +84,32 @@ pub fn check_account_auth(
 }
 
 // Note that nonce is not used by KeyedAuthorization::Contract
-pub fn check_auth<T>(e: &Env, auth: &T, nonce: BigInt, function: Symbol, parameters: EnvVal)
+pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, parameters: EnvVal)
 where
     T: NonceAuth,
 {
     match auth.get_keyed_auth() {
         KeyedAuthorization::Contract => {
-            if nonce != BigInt::from_i32(e, 0) {
+            if nonce != BigInt::from_i32(env, 0) {
                 panic!("nonce should be zero for Contract")
             }
-            e.get_invoking_contract();
+            env.get_invoking_contract();
         }
         KeyedAuthorization::Ed25519(kea) => {
             let stored_nonce =
-                auth.read_and_increment_nonce(e, Identifier::Ed25519(kea.public_key.clone()));
+                auth.read_and_increment_nonce(env, Identifier::Ed25519(kea.public_key.clone()));
             if nonce != stored_nonce {
                 panic!("incorrect nonce")
             }
-            check_ed25519_auth(e, &kea, function, parameters)
+            check_ed25519_auth(env, &kea, function, parameters)
         }
         KeyedAuthorization::Account(kaa) => {
             let stored_nonce =
-                auth.read_and_increment_nonce(e, Identifier::Account(kaa.public_key.clone()));
+                auth.read_and_increment_nonce(env, Identifier::Account(kaa.public_key.clone()));
             if nonce != stored_nonce {
                 panic!("incorrect nonce")
             }
-            check_account_auth(e, &kaa, function, parameters)
+            check_account_auth(env, &kaa, function, parameters)
         }
     }
 }
