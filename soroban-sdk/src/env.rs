@@ -219,43 +219,6 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn binary_new_from_linear_memory(&self, ptr: u32, len: u32) -> Bytes {
-        let bin_obj = internal::Env::binary_new_from_linear_memory(self, ptr.into(), len.into());
-        bin_obj.try_into_val(self).unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn binary_copy_to_linear_memory(&self, bin: Bytes, b_pos: u32, lm_pos: u32, len: u32) {
-        let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        internal::Env::binary_copy_to_linear_memory(
-            self,
-            bin_obj,
-            b_pos.into(),
-            lm_pos.into(),
-            len.into(),
-        );
-    }
-
-    #[doc(hidden)]
-    pub fn binary_copy_from_linear_memory(
-        &self,
-        bin: Bytes,
-        b_pos: u32,
-        lm_pos: u32,
-        len: u32,
-    ) -> Bytes {
-        let bin_obj: Object = RawVal::from(bin).try_into().unwrap();
-        let new_obj = internal::Env::binary_copy_from_linear_memory(
-            self,
-            bin_obj,
-            b_pos.into(),
-            lm_pos.into(),
-            len.into(),
-        );
-        new_obj.try_into_val(self).unwrap()
-    }
-
-    #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self));
     }

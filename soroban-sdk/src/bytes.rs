@@ -7,7 +7,7 @@ use core::{
 };
 
 use super::{
-    env::internal::{Env as _, RawValConvertible},
+    env::internal::{Env as _, EnvBase as _, RawValConvertible},
     env::{EnvObj, EnvType, IntoVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal, TryFromVal, TryIntoVal,
@@ -256,14 +256,12 @@ impl Bytes {
     /// Create a Bytes from the given `[u8]`.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Bytes {
-        BytesN::from_array(env, items).0
+        Self::from_slice(env, &items)
     }
 
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[u8]) -> Bytes {
-        let mut vec = Bytes::new(env);
-        vec.extend_from_slice(items);
-        vec
+        Bytes(env.binary_new_from_slice(items).in_env(env))
     }
 
     #[inline(always)]
@@ -388,11 +386,50 @@ impl Bytes {
     }
 
     #[inline(always)]
-    pub fn insert(&mut self, i: u32, x: u8) {
+    pub fn insert(&mut self, i: u32, b: u8) {
         let env = self.env();
-        let x32: u32 = x.into();
-        let bin = env.binary_insert(self.0.to_object(), i.into(), x32.into());
+        let b32: u32 = b.into();
+        let bin = env.binary_insert(self.0.to_object(), i.into(), b32.into());
         self.0 = bin.in_env(env);
+    }
+
+    /// Insert the bytes in `bytes` into this [Bytes] starting at position
+    /// indicated by `i`, and growing the size of [Bytes] if necessary.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
+    #[inline(always)]
+    pub fn insert_from_bytes(&mut self, i: u32, bytes: Bytes) {
+        let mut result = self.slice(..i);
+        result.append(&bytes);
+        result.append(&self.slice(i..));
+        *self = result
+    }
+
+    /// Insert the bytes in `array` into this [Bytes] starting at position
+    /// indicated by `i`, and growing the size of [Bytes] if necessary.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
+    #[inline(always)]
+    pub fn insert_from_array<const N: usize>(&mut self, i: u32, array: [u8; N]) {
+        self.insert_from_slice(i, &array)
+    }
+
+    /// Insert the bytes in `slice` into this [Bytes] starting at position
+    /// indicated by `i`, and growing the size of [Bytes] if necessary.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
+    #[inline(always)]
+    pub fn insert_from_slice(&mut self, i: u32, slice: &[u8]) {
+        let env = self.env();
+        self.0 = env
+            .binary_copy_from_slice(self.to_object(), i.into(), &slice)
+            .in_env(env);
     }
 
     #[inline(always)]
@@ -403,17 +440,16 @@ impl Bytes {
     }
 
     #[inline(always)]
-    pub fn extend_from_array<const N: usize>(&mut self, items: [u8; N]) {
-        for item in items {
-            self.push(item);
-        }
+    pub fn extend_from_array<const N: usize>(&mut self, array: [u8; N]) {
+        self.extend_from_slice(&array)
     }
 
     #[inline(always)]
-    pub fn extend_from_slice(&mut self, items: &[u8]) {
-        for item in items {
-            self.push(*item);
-        }
+    pub fn extend_from_slice(&mut self, slice: &[u8]) {
+        let env = self.env();
+        self.0 = env
+            .binary_copy_from_slice(self.to_object(), self.len().into_val(env), &slice)
+            .in_env(env);
     }
 
     #[must_use]
@@ -747,9 +783,7 @@ impl<const N: usize> BytesN<N> {
 
     #[inline(always)]
     pub fn from_array(env: &Env, items: [u8; N]) -> BytesN<N> {
-        let mut bin = Bytes::new(env);
-        bin.extend_from_array(items);
-        BytesN(bin)
+        BytesN(Bytes::from_slice(env, &items))
     }
 
     #[inline(always)]

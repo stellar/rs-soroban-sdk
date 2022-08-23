@@ -305,13 +305,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "example_linear_memory"
-version = "0.0.0"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "example_udt"
 version = "0.0.0"
 dependencies = [
