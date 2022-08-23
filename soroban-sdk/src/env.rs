@@ -274,7 +274,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, FixedBinary, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
     ///
     /// pub struct HelloContract;
     ///
@@ -287,7 +287,7 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// let contract_id = FixedBinary::from_array(&env, [0; 32]);
+    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
     /// env.register_contract(&contract_id, HelloContract);
     /// # }
     /// ```
@@ -326,7 +326,7 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, [0; 32]);
+    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
     /// env.register_contract_wasm(&contract_id, WASM);
     /// # }
     /// ```

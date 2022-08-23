@@ -50,8 +50,11 @@ macro_rules! bytes {
 /// use soroban_sdk::{Bytes, Env};
 ///
 /// let env = Env::default();
-/// let bin = Bytes::from_slice(&env, &[0; 32]);
-/// assert_eq!(bin.len(), 32);
+/// let bytes = Bytes::from_slice(&env, &[1; 32]);
+/// assert_eq!(bytes.len(), 32);
+/// let mut slice = [0u8; 32];
+/// bytes.copy_into_slice(&mut slice);
+/// assert_eq!(slice, [1u8; 32]);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
@@ -577,8 +580,8 @@ impl ExactSizeIterator for BinIter {
 /// use soroban_sdk::{Bytes, BytesN, Env};
 ///
 /// let env = Env::default();
-/// let bin = BytesN::from_array(&env, [0; 32]);
-/// assert_eq!(bin.len(), 32);
+/// let bytes = BytesN::from_array(&env, &[0; 32]);
+/// assert_eq!(bytes.len(), 32);
 /// ```
 ///
 /// BytesN and Bytes values are convertible:
@@ -586,9 +589,9 @@ impl ExactSizeIterator for BinIter {
 /// use soroban_sdk::{Bytes, BytesN, Env};
 ///
 /// let env = Env::default();
-/// let bin = Bytes::from_slice(&env, &[0; 32]);
-/// let bin: BytesN<32> = bin.try_into().expect("bin to have length 32");
-/// assert_eq!(bin.len(), 32);
+/// let bytes = Bytes::from_slice(&env, &[0; 32]);
+/// let bytes: BytesN<32> = bytes.try_into().expect("bytes to have length 32");
+/// assert_eq!(bytes.len(), 32);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
@@ -861,9 +864,8 @@ impl<const N: usize> BytesN<N> {
 
     /// Copy the bytes in [BytesN] into the given slice.
     ///
-    /// ### Panics
-    ///
-    /// When the given `slice` has a different length to [BytesN].
+    /// The minimum number of bytes are copied to either exhaust [BytesN] or
+    /// fill slice.
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
