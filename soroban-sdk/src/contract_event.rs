@@ -20,7 +20,7 @@ use crate::{env::internal, vec, Env, IntoVal, RawVal, Vec};
 /// #     pub fn f(env: Env) {
 /// let events = env.events();
 /// let data = map![&env, (1u32, 2u32)];
-/// events.publish_2(data, (0u32, 1u32))
+/// events.publish_2((0u32, 1u32), data)
 /// #     }
 /// # }
 ///
@@ -56,7 +56,8 @@ impl Events {
 
     /// Publish an event.
     ///
-    /// Event data is specified in `data`.
+    /// Event data is specified in `data`. Data may be any value or
+    /// type, including types defined by contracts using [contracttype].
     ///
     /// One to four event topics can be provided by using:
     /// - [Events::publish_1]
@@ -73,24 +74,32 @@ impl Events {
     }
 }
 
+#[cfg(doc)]
+use crate::{contracttype, Bytes, BytesN, Map};
+
 macro_rules! publish_fn {
     ( $count:literal $($typ:ident $idx:tt)+ ) => {
         paste! {
-            /// Publish an event with $count topics.
+            #[doc = "Publish an event with"]
+            #[doc = stringify!($count)]
+            #[doc = "topics"]
             ///
-            /// Event data is specified in `data`.
+            /// Event data is specified in `data`. Data may be any value or
+            /// type, including types defined by contracts using [contracttype].
             ///
-            /// Event topics must not contain Vecs, Maps, or Bytes/BytesN that
-            /// are longer than 32 bytes.
+            /// Event topics must not contain:
+            /// - [Vec]
+            /// - [Map]
+            /// - [Bytes]/[BytesN] longer than 32 bytes
+            /// - [contracttype]
             ///
             /// ### Panics
             ///
-            /// When topics contains a Vec, Map, or Bytes/BytesN that is longer
-            /// than 32 bytes.
-            pub fn [<publish_ $count>]<D, $($typ),*>(&self, data: D, topics: ($($typ,)*))
+            /// When topics contain the types noted above that are disallowed.
+            pub fn [<publish_ $count>]<$($typ),*, D>(&self, topics: ($($typ,)*), data: D)
             where
+                $($typ: IntoVal<Env, RawVal>,)*
                 D: IntoVal<Env, RawVal>,
-                $($typ: IntoVal<Env, RawVal>),*
             {
                 let env = self.env();
                 let topics = vec![
