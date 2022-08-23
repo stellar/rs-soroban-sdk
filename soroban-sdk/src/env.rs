@@ -114,10 +114,10 @@ impl Env {
         Ledger::new(self)
     }
 
-    /// Get a [Events] for publishing events associated with the
+    /// Get [Events] for publishing events associated with the
     /// currently executing contract.
     #[inline(always)]
-    pub fn contract_event(&self) -> Events {
+    pub fn events(&self) -> Events {
         Events::new(self)
     }
 

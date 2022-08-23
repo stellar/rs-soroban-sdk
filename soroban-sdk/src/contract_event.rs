@@ -1,16 +1,13 @@
 use core::fmt::Debug;
 
-use super::xdr::ScObjectType;
+#[cfg(doc)]
+use crate::{contracttype, Bytes, BytesN, Map};
+use crate::{env::internal, Env, IntoVal, Object, RawVal, TryFromVal, Vec};
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
 const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 
-use crate::{
-    env::{internal, EnvObj},
-    Bytes, Env, IntoVal, Object, RawVal, Vec,
-};
-
-/// ### Examples
+/// Events publishes events for the currently executing contract.
 ///
 /// ```
 /// use soroban_sdk::Env;
@@ -22,10 +19,20 @@ use crate::{
 /// # #[contractimpl]
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
-/// let event = env.contract_event();
-/// let topics = (0u32, 1u32);
+/// let event = env.events();
 /// let data = map![&env, (1u32, 2u32)];
-/// event.publish(topics, data)
+/// let topics0 = ();
+/// let topics1 = (0u32,);
+/// let topics2 = (0u32, 1u32);
+/// let topics3 = (0u32, 1u32, 2u32);
+/// let topics4 = (0u32, 1u32, 2u32, 3u32);
+/// let topics_vec = vec![&env, 4u32, 5u32, 6u32, 7u32];
+/// event.publish(topics0, data.clone());
+/// event.publish(topics1, data.clone());
+/// event.publish(topics2, data.clone());
+/// event.publish(topics3, data.clone());
+/// event.publish(topics4, data.clone());
+/// event.publish(topics_vec, data.clone());
 /// #     }
 /// # }
 ///
@@ -39,6 +46,7 @@ use crate::{
 /// # #[cfg(not(feature = "testutils"))]
 /// # fn main() { }
 /// ```
+
 #[derive(Clone)]
 pub struct Events(Env);
 
@@ -48,53 +56,33 @@ impl Debug for Events {
     }
 }
 
-pub trait IntoTopics {
-    fn into_topics(self, env: &Env) -> Object;
-}
+pub trait Topics: IntoVal<Env, Object> {}
 
-// 0 topics
-impl IntoTopics for () {
-    fn into_topics(self, env: &Env) -> Object {
-        Vec::<RawVal>::new(env).to_object()
-    }
-}
-
-macro_rules! impl_for_tuple {
+macro_rules! impl_topics_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {
-        impl<$($typ),*> IntoTopics for ($($typ,)*)
+        impl<$($typ),*> Topics for ($($typ,)*)
         where
-            $($typ: IntoVal<Env, RawVal> + Clone),*
+            $($typ: IntoVal<Env, RawVal>),*
         {
-            fn into_topics(self, env: &Env) -> Object {
-                $({
-                    let ev = self.$idx.clone().into_env_val(env);
-                    match TryInto::<EnvObj>::try_into(ev) {
-                        Ok(obj) => {
-                            if obj.as_object().is_obj_type(ScObjectType::Vec) {
-                                panic!("topic cannot be a vec")
-                            } else if obj.as_object().is_obj_type(ScObjectType::Map) {
-                                panic!("topic cannot be a map")
-                            } else if obj.as_object().is_obj_type(ScObjectType::Bytes) {
-                                let bytes = unsafe { Bytes::unchecked_new(obj.clone()) };
-                                if bytes.len() > TOPIC_BYTES_LENGTH_LIMIT {
-                                    panic!("topic exceeds bytes length limit")
-                                }
-                            }
-                        }
-                        Err(_) => (),
-                    }
-                })*
-                self.into_val(env)
-            }
         }
     };
 }
 
+impl IntoVal<Env, Object> for () {
+    fn into_val(self, env: &Env) -> Object {
+        Vec::<RawVal>::new(env).to_object()
+    }
+}
+
+// 0 topics
+impl Topics for () {}
 // 1-4 topics
-impl_for_tuple! { T0 0 }
-impl_for_tuple! { T0 0 T1 1 }
-impl_for_tuple! { T0 0 T1 1 T2 2 }
-impl_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
+impl_topics_for_tuple! { T0 0 }
+impl_topics_for_tuple! { T0 0 T1 1 }
+impl_topics_for_tuple! { T0 0 T1 1 T2 2 }
+impl_topics_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
+
+impl<T> Topics for Vec<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
 impl Events {
     #[inline(always)]
@@ -107,16 +95,24 @@ impl Events {
         Events(env.clone())
     }
 
-    /// Publishes `topics` and `data` into a contract event.
-    /// `topics` is expected to have length <= 4 and cannot contain Vecs, Maps,
-    /// or Binaries > 32 bytes
+    /// Publish an event.
+    ///
+    /// Event data is specified in `data`. Data may be any value or
+    /// type, including types defined by contracts using [contracttype].
+    ///
+    /// Event topics must not contain:
+    ///
+    /// - [Vec]
+    /// - [Map]
+    /// - [Bytes]/[BytesN] longer than 32 bytes
+    /// - [contracttype]
     #[inline(always)]
     pub fn publish<T, D>(&self, topics: T, data: D)
     where
-        T: IntoTopics,
+        T: Topics,
         D: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::contract_event(env, topics.into_topics(env), data.into_val(env));
+        internal::Env::contract_event(env, topics.into_val(env), data.into_val(env));
     }
 }
