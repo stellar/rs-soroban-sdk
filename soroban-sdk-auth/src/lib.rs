@@ -67,8 +67,10 @@ pub fn check_account_auth(
             msg_bytes.clone(),
             sig.signature.into(),
         );
-        // TODO: Check for overflow
-        weight += acc.signer_weight(&sig.public_key);
+
+        weight = weight
+            .checked_add(acc.signer_weight(&sig.public_key))
+            .expect("weight overflow");
 
         prev_pk = Some(sig.public_key);
     }
