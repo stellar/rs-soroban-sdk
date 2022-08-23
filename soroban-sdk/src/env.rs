@@ -490,16 +490,16 @@ impl internal::EnvBase for Env {
         }
     }
 
-    fn binary_copy_from_slice(&self, _: Object, _: RawVal, _: &[u8]) -> Object {
-        unimplemented!()
+    fn binary_copy_from_slice(&self, b: Object, b_pos: RawVal, mem: &[u8]) -> Object {
+        self.env_impl.binary_copy_from_slice(b, b_pos, mem)
     }
 
-    fn binary_copy_to_slice(&self, _: Object, _: RawVal, _: &mut [u8]) {
-        unimplemented!()
+    fn binary_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) {
+        self.env_impl.binary_copy_to_slice(b, b_pos, mem)
     }
 
-    fn binary_new_from_slice(&self, _: &[u8]) -> Object {
-        unimplemented!()
+    fn binary_new_from_slice(&self, mem: &[u8]) -> Object {
+        self.env_impl.binary_new_from_slice(mem)
     }
 
     fn log_static_fmt_val(&self, _: &'static str, _: RawVal) {
