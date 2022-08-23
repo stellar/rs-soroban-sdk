@@ -15,7 +15,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
-        addcontract::Client::add(&env, &BytesN::from_array(&env, ADD_CONTRACT_ID), x, y)
+        addcontract::Client::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
     }
 }
 
@@ -23,10 +23,10 @@ impl Contract {
 fn test_functional() {
     let e = Env::default();
 
-    let add_contract_id = BytesN::from_array(&e, ADD_CONTRACT_ID);
+    let add_contract_id = BytesN::from_array(&e, &ADD_CONTRACT_ID);
     e.register_contract_wasm(&add_contract_id, addcontract::WASM);
 
-    let contract_id = BytesN::from_array(&e, [1; 32]);
+    let contract_id = BytesN::from_array(&e, &[1; 32]);
     e.register_contract(&contract_id, Contract);
 
     let x = 10i32;

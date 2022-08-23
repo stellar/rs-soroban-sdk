@@ -7,7 +7,7 @@ use crate::{env::internal, Env, IntoVal, RawVal, Vec};
 /// ```
 /// use soroban_sdk::Env;
 ///
-/// # use soroban_sdk::{contractimpl, vec, map, RawVal, FixedBinary};
+/// # use soroban_sdk::{contractimpl, vec, map, RawVal, BytesN};
 /// #
 /// # pub struct Contract;
 /// #
@@ -24,7 +24,7 @@ use crate::{env::internal, Env, IntoVal, RawVal, Vec};
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = FixedBinary::from_array(&env, [0; 32]);
+/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
 /// #     env.register_contract(&contract_id, Contract);
 /// #     f::invoke(&env, &contract_id);
 /// # }

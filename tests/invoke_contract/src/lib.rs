@@ -32,9 +32,9 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
-        let add_contract_id = BytesN::from_array(&e, [0; 32]);
+        let add_contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&add_contract_id, AddContract);
-        let contract_id = BytesN::from_array(&e, [1; 32]);
+        let contract_id = BytesN::from_array(&e, &[1; 32]);
         e.register_contract(&contract_id, Contract);
 
         let x = 10i32;

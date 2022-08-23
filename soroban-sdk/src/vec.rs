@@ -50,7 +50,7 @@ macro_rules! vec {
 /// The values in a Vec are not guaranteed to be of type `T` and conversion will
 /// fail if they are not. Most functions on Vec return a `Result` due to this.
 ///
-/// To store `u8`s and binary data, use [Binary] instead.
+/// To store `u8`s and binary data, use [Bytes]/[BytesN] instead.
 ///
 /// Vec values can be stored as [ContractData], or in other
 /// types like [Vec], [Map], etc.
