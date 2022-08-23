@@ -36,7 +36,7 @@ pub fn check_account_auth(
     function: Symbol,
     args: EnvVal,
 ) {
-    let acc = Account::from_public_key(&auth.public_key).unwrap();
+    let acc = Account::from_public_key(&auth.account_id).unwrap();
 
     let msg = MessageV0 {
         function,
@@ -102,7 +102,7 @@ where
         }
         KeyedAuthorization::Account(kaa) => {
             let stored_nonce =
-                auth.read_and_increment_nonce(env, Identifier::Account(kaa.public_key.clone()));
+                auth.read_and_increment_nonce(env, Identifier::Account(kaa.account_id.clone()));
             if nonce != stored_nonce {
                 panic!("incorrect nonce")
             }

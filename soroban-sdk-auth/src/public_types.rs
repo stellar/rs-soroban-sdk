@@ -12,7 +12,7 @@ pub type AccountAuthorization = Vec<KeyedEd25519Signature>;
 #[derive(Clone)]
 #[contracttype]
 pub struct KeyedAccountAuthorization {
-    pub public_key: BytesN<32>,
+    pub account_id: BytesN<32>,
     pub signatures: AccountAuthorization,
 }
 
@@ -29,7 +29,7 @@ impl KeyedAuthorization {
         match self {
             KeyedAuthorization::Contract => Identifier::Contract(env.get_invoking_contract()),
             KeyedAuthorization::Ed25519(kea) => Identifier::Ed25519(kea.public_key.clone()),
-            KeyedAuthorization::Account(kaa) => Identifier::Account(kaa.public_key.clone()),
+            KeyedAuthorization::Account(kaa) => Identifier::Account(kaa.account_id.clone()),
         }
     }
 }
