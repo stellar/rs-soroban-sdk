@@ -4,6 +4,8 @@ use paste::paste;
 
 use crate::{env::internal, vec, Env, IntoVal, RawVal, Vec};
 
+/// Events publishes events for the currently executing contract.
+///
 /// ### Examples
 ///
 /// ```
