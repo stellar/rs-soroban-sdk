@@ -49,7 +49,7 @@ pub fn check_account_auth(
         network_id: e.ledger().network_passphrase(),
         parameters: parameters.to_raw().try_into_val(e).unwrap(),
     };
-    let msg_bin = Message::V0(msg).serialize(e);
+    let msg_bytes = Message::V0(msg).serialize(e);
 
     let threshold = acc.medium_threshold();
     let mut weight = 0u32;
