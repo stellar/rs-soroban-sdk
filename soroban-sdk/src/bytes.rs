@@ -435,10 +435,7 @@ impl Bytes {
     /// When `i` is greater than the length of [Bytes].
     #[inline(always)]
     pub fn insert_from_slice(&mut self, i: u32, slice: &[u8]) {
-        let env = self.env();
-        self.0 = env
-            .binary_copy_from_slice(self.to_object(), i.into(), &slice)
-            .in_env(env);
+        self.insert_from_bytes(i, Bytes::from_slice(self.env(), slice))
     }
 
     #[inline(always)]
@@ -461,11 +458,22 @@ impl Bytes {
             .in_env(env);
     }
 
+    /// Copy the bytes from slice into [Bytes].
+    ///
+    /// The full number of bytes in slice are always copied and [Bytes] is grown
+    /// if necessary.
+    #[inline(always)]
+    pub fn copy_from_slice(&mut self, i: u32, slice: &[u8]) {
+        let env = self.env();
+        self.0 = env
+            .binary_copy_from_slice(self.to_object(), i.into(), slice)
+            .in_env(env);
+    }
+
     /// Copy the bytes in [Bytes] into the given slice.
     ///
-    /// ### Panics
-    ///
-    /// When the given `slice` has a different length to [Bytes].
+    /// The minimum number of bytes are copied to either exhaust [Bytes] or fill
+    /// slice.
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
@@ -899,6 +907,27 @@ impl<const N: usize> From<BytesN<N>> for [u8; N] {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn bytes_from_and_to_slices() {
+        let env = Env::default();
+
+        let b = Bytes::from_slice(&env, &[1, 2, 3, 4]);
+        let mut out = [0u8; 4];
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 2, 3, 4], out);
+
+        let mut b = Bytes::from_slice(&env, &[1, 2, 3, 4]);
+        b.extend_from_slice(&[5, 6, 7, 8]);
+        b.insert_from_slice(1, &[9, 10]);
+        b.insert_from_bytes(4, Bytes::from_slice(&env, &[0, 0]));
+        let mut out = [0u8; 12];
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 9, 10, 2, 0, 0, 3, 4, 5, 6, 7, 8], out);
+        b.copy_from_slice(3, &[7, 6, 5]);
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 9, 10, 7, 6, 5, 3, 4, 5, 6, 7, 8], out);
+    }
 
     #[test]
     fn test_bin_macro() {
