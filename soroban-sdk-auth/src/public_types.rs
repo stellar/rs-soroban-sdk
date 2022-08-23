@@ -48,7 +48,7 @@ pub struct MessageV0 {
     pub function: Symbol,
     pub contrct_id: BytesN<32>,
     pub network_id: Bytes,
-    pub parameters: Vec<EnvVal>,
+    pub args: Vec<EnvVal>,
 }
 
 #[derive(Clone)]

@@ -14,17 +14,12 @@ pub trait NonceAuth {
     fn get_keyed_auth(&self) -> &KeyedAuthorization;
 }
 
-pub fn check_ed25519_auth(
-    env: &Env,
-    auth: &KeyedEd25519Signature,
-    function: Symbol,
-    parameters: EnvVal,
-) {
+pub fn check_ed25519_auth(env: &Env, auth: &KeyedEd25519Signature, function: Symbol, args: EnvVal) {
     let msg = MessageV0 {
         function,
         contrct_id: env.get_current_contract(),
         network_id: env.ledger().network_passphrase(),
-        parameters: parameters.to_raw().try_into_val(env).unwrap(),
+        args: args.to_raw().try_into_val(env).unwrap(),
     };
     let msg_bin = Message::V0(msg).serialize(env);
 
@@ -39,7 +34,7 @@ pub fn check_account_auth(
     env: &Env,
     auth: &KeyedAccountAuthorization,
     function: Symbol,
-    parameters: EnvVal,
+    args: EnvVal,
 ) {
     let acc = Account::from_public_key(&auth.public_key).unwrap();
 
@@ -47,7 +42,7 @@ pub fn check_account_auth(
         function,
         contrct_id: env.get_current_contract(),
         network_id: env.ledger().network_passphrase(),
-        parameters: parameters.to_raw().try_into_val(env).unwrap(),
+        args: args.to_raw().try_into_val(env).unwrap(),
     };
     let msg_bytes = Message::V0(msg).serialize(env);
 
@@ -84,7 +79,7 @@ pub fn check_account_auth(
 }
 
 // Note that nonce is not used by KeyedAuthorization::Contract
-pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, parameters: EnvVal)
+pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, args: EnvVal)
 where
     T: NonceAuth,
 {
@@ -101,7 +96,7 @@ where
             if nonce != stored_nonce {
                 panic!("incorrect nonce")
             }
-            check_ed25519_auth(env, &kea, function, parameters)
+            check_ed25519_auth(env, &kea, function, args)
         }
         KeyedAuthorization::Account(kaa) => {
             let stored_nonce =
@@ -109,7 +104,7 @@ where
             if nonce != stored_nonce {
                 panic!("incorrect nonce")
             }
-            check_account_auth(env, &kaa, function, parameters)
+            check_account_auth(env, &kaa, function, args)
         }
     }
 }
