@@ -910,6 +910,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-sdk-auth"
+version = "0.0.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "soroban-sdk-macros"
 version = "0.0.3"
 dependencies = [

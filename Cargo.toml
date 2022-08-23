@@ -3,6 +3,7 @@ resolver = "2"
 
 members = [
     "soroban-sdk",
+    "soroban-sdk-auth",
     "tests/empty",
     "tests/hello",
     "tests/add_i32",
@@ -41,6 +42,7 @@ exclude = [
 
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
+soroban-sdk-auth = { path = "soroban-sdk-auth" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
 soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "09dbeaaa" }
 soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "09dbeaaa" }

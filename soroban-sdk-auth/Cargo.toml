@@ -1,0 +1,16 @@
+[package]
+name = "soroban-sdk-auth"
+description = "Soroban authorization sdk"
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version = "0.0.0"
+edition = "2021"
+
+[features]
+testutils = ["soroban-sdk/testutils"]
+
+[dependencies]
+soroban-sdk = { path = "../soroban-sdk" }
