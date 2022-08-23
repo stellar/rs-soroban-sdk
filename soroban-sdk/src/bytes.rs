@@ -385,6 +385,12 @@ impl Bytes {
         last
     }
 
+    /// Insert the byte into this [Bytes] at position indicated by `i`, and
+    /// growing the size of [Bytes] by 1.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
     #[inline(always)]
     pub fn insert(&mut self, i: u32, b: u8) {
         let env = self.env();
@@ -394,7 +400,8 @@ impl Bytes {
     }
 
     /// Insert the bytes in `bytes` into this [Bytes] starting at position
-    /// indicated by `i`, and growing the size of [Bytes] if necessary.
+    /// indicated by `i`, and growing the size of [Bytes] by the length of
+    /// `bytes.
     ///
     /// ### Panics
     ///
@@ -408,7 +415,8 @@ impl Bytes {
     }
 
     /// Insert the bytes in `array` into this [Bytes] starting at position
-    /// indicated by `i`, and growing the size of [Bytes] if necessary.
+    /// indicated by `i`, and growing the size of [Bytes] by the length of
+    /// `bytes.
     ///
     /// ### Panics
     ///
@@ -419,7 +427,8 @@ impl Bytes {
     }
 
     /// Insert the bytes in `slice` into this [Bytes] starting at position
-    /// indicated by `i`, and growing the size of [Bytes] if necessary.
+    /// indicated by `i`, and growing the size of [Bytes] by the length of
+    /// `bytes.
     ///
     /// ### Panics
     ///
