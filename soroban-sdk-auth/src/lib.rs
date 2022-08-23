@@ -4,14 +4,13 @@ use soroban_sdk::{serde::Serialize, Account, BigInt, BytesN, Env, RawVal, Symbol
 
 pub mod public_types;
 use crate::public_types::{
-    Identifier, KeyedAccountAuthorization, KeyedAuthorization, KeyedEd25519Signature, Message,
-    MessageV0,
+    Identifier, KeyedAccountSignatures, KeyedEd25519Signature, Message, MessageV0, Signature,
 };
 
 pub trait NonceAuth {
     fn read_nonce(e: &Env, id: Identifier) -> BigInt;
     fn read_and_increment_nonce(&self, e: &Env, id: Identifier) -> BigInt;
-    fn get_keyed_auth(&self) -> &KeyedAuthorization;
+    fn get_keyed_auth(&self) -> &Signature;
 }
 
 pub fn check_ed25519_auth(
@@ -37,7 +36,7 @@ pub fn check_ed25519_auth(
 
 pub fn check_account_auth(
     env: &Env,
-    auth: &KeyedAccountAuthorization,
+    auth: &KeyedAccountSignatures,
     function: Symbol,
     args: Vec<RawVal>,
 ) {
@@ -91,13 +90,13 @@ where
     T: NonceAuth,
 {
     match auth.get_keyed_auth() {
-        KeyedAuthorization::Contract => {
+        Signature::Contract => {
             if nonce != BigInt::from_i32(env, 0) {
                 panic!("nonce should be zero for Contract")
             }
             env.get_invoking_contract();
         }
-        KeyedAuthorization::Ed25519(kea) => {
+        Signature::Ed25519(kea) => {
             let stored_nonce =
                 auth.read_and_increment_nonce(env, Identifier::Ed25519(kea.public_key.clone()));
             if nonce != stored_nonce {
@@ -105,7 +104,7 @@ where
             }
             check_ed25519_auth(env, &kea, function, args)
         }
-        KeyedAuthorization::Account(kaa) => {
+        Signature::Account(kaa) => {
             let stored_nonce =
                 auth.read_and_increment_nonce(env, Identifier::Account(kaa.account_id.clone()));
             if nonce != stored_nonce {
