@@ -77,7 +77,7 @@ pub use bigint::BigInt;
 pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
-pub use contract_event::ContractEvent;
+pub use contract_event::Events;
 pub use ledger::Ledger;
 pub use map::Map;
 pub use set::Set;
