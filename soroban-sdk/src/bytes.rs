@@ -31,7 +31,7 @@ macro_rules! bytes {
         $crate::Bytes::new($env)
     };
     ($env:expr, $($x:expr),+ $(,)?) => {
-        $crate::Bytes::from_array($env, [$($x),+])
+        $crate::Bytes::from_array($env, &[$($x),+])
     };
 }
 
@@ -255,8 +255,8 @@ impl Bytes {
 
     /// Create a Bytes from the given `[u8]`.
     #[inline(always)]
-    pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Bytes {
-        Self::from_slice(env, &items)
+    pub fn from_array<const N: usize>(env: &Env, items: &[u8; N]) -> Bytes {
+        Self::from_slice(env, items)
     }
 
     #[inline(always)]
@@ -422,8 +422,8 @@ impl Bytes {
     ///
     /// When `i` is greater than the length of [Bytes].
     #[inline(always)]
-    pub fn insert_from_array<const N: usize>(&mut self, i: u32, array: [u8; N]) {
-        self.insert_from_slice(i, &array)
+    pub fn insert_from_array<const N: usize>(&mut self, i: u32, array: &[u8; N]) {
+        self.insert_from_slice(i, array)
     }
 
     /// Insert the bytes in `slice` into this [Bytes] starting at position
@@ -446,8 +446,8 @@ impl Bytes {
     }
 
     #[inline(always)]
-    pub fn extend_from_array<const N: usize>(&mut self, array: [u8; N]) {
-        self.extend_from_slice(&array)
+    pub fn extend_from_array<const N: usize>(&mut self, array: &[u8; N]) {
+        self.extend_from_slice(array)
     }
 
     #[inline(always)]
@@ -810,8 +810,8 @@ impl<const N: usize> BytesN<N> {
     }
 
     #[inline(always)]
-    pub fn from_array(env: &Env, items: [u8; N]) -> BytesN<N> {
-        BytesN(Bytes::from_slice(env, &items))
+    pub fn from_array(env: &Env, items: &[u8; N]) -> BytesN<N> {
+        BytesN(Bytes::from_slice(env, items))
     }
 
     #[inline(always)]
@@ -927,6 +927,16 @@ mod test {
         b.copy_from_slice(3, &[7, 6, 5]);
         b.copy_into_slice(&mut out);
         assert_eq!([1, 9, 10, 7, 6, 5, 3, 4, 5, 6, 7, 8], out);
+    }
+
+    #[test]
+    fn bytesn_from_and_to_slices() {
+        let env = Env::default();
+
+        let b = BytesN::from_array(&env, &[1, 2, 3, 4]);
+        let mut out = [0u8; 4];
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 2, 3, 4], out);
     }
 
     #[test]
