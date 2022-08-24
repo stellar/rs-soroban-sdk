@@ -7,13 +7,11 @@ pub struct KeyedEd25519Signature {
     pub signature: BytesN<64>,
 }
 
-pub type AccountSignatures = Vec<KeyedEd25519Signature>;
-
 #[derive(Clone)]
 #[contracttype]
 pub struct KeyedAccountSignatures {
     pub account_id: BytesN<32>,
-    pub signatures: AccountSignatures,
+    pub signatures: Vec<KeyedEd25519Signature>,
 }
 
 #[derive(Clone)]
