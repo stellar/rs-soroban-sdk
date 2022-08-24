@@ -45,7 +45,7 @@ pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::ContractEvent;
+use crate::Events;
 use crate::{Bytes, BytesN, ContractData, Ledger};
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -114,11 +114,11 @@ impl Env {
         Ledger::new(self)
     }
 
-    /// Get a [ContractEvent] for publishing events associated with the
+    /// Get [Events] for publishing events associated with the
     /// currently executing contract.
     #[inline(always)]
-    pub fn contract_event(&self) -> ContractEvent {
-        ContractEvent::new(self)
+    pub fn events(&self) -> Events {
+        Events::new(self)
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
