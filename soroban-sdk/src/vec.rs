@@ -32,7 +32,7 @@ use crate::{Bytes, ContractData, Map};
 /// ```
 #[macro_export]
 macro_rules! vec {
-    ($env:expr) => {
+    ($env:expr $(,)?) => {
         $crate::Vec::new($env)
     };
     ($env:expr, $($x:expr),+ $(,)?) => {
@@ -619,6 +619,7 @@ mod test {
     fn test_vec_macro() {
         let env = Env::default();
         assert_eq!(vec![&env], Vec::<i32>::new(&env));
+        assert_eq!(vec![&env,], Vec::<i32>::new(&env));
         assert_eq!(vec![&env, 1], {
             let mut v = Vec::new(&env);
             v.push(1);
