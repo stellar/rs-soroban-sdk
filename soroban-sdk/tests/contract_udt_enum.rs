@@ -1,7 +1,7 @@
 #![cfg(feature = "testutils")]
 
 use soroban_sdk::{
-    contractimpl, contracttype, vec, BytesN, ConversionError, Env, Symbol, TryFromVal, IntoVal,
+    contractimpl, contracttype, vec, BytesN, ConversionError, Env, IntoVal, Symbol, TryFromVal,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -53,7 +53,13 @@ fn test_error_on_partial_decode() {
     let vec = vec![&env, Symbol::from_str("Aaa").into_val(&env), 8.into()].to_raw();
     let udt = Udt::try_from_val(&env, vec);
     assert_eq!(udt, Err(ConversionError));
-    let vec = vec![&env, Symbol::from_str("Bbb").into_val(&env), 8.into(), 9.into()].to_raw();
+    let vec = vec![
+        &env,
+        Symbol::from_str("Bbb").into_val(&env),
+        8.into(),
+        9.into(),
+    ]
+    .to_raw();
     let udt = Udt::try_from_val(&env, vec);
     assert_eq!(udt, Err(ConversionError));
 }
