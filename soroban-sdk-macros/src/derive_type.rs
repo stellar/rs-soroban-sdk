@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
+use syn::{spanned::Spanned, DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0,
@@ -20,6 +20,14 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     let mut errors = Vec::<Error>::new();
 
     let fields = &data.fields;
+    let field_count_usize: usize = fields.len();
+    let field_count_u32: u32 = fields.len().try_into().unwrap_or_else(|_| {
+        errors.push(Error::new(
+            data.struct_token.span(),
+            "struct has too many fields exceeding u32::MAX",
+        ));
+        0
+    });
     let (spec_fields, try_froms, intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .filter(|f| matches!(f.vis, Visibility::Public(_)))
@@ -112,6 +120,9 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::RawVal) -> Result<Self, Self::Error> {
                 use soroban_sdk::TryIntoVal;
                 let map: soroban_sdk::Map<soroban_sdk::Symbol, soroban_sdk::RawVal> = val.try_into_val(env)?;
+                if map.len() != #field_count_u32 {
+                    return Err(soroban_sdk::ConversionError);
+                }
                 Ok(Self{
                     #(#try_froms,)*
                 })
@@ -144,6 +155,9 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
                 let map = val;
+                if map.len() != #field_count_usize {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
                 map.validate()?;
                 Ok(Self{
                     #(#try_from_xdrs,)*
@@ -285,6 +299,9 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             if let Err(e) = Symbol::try_from_str(&name) {
                 errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
             }
+            if v.fields.len() > 1 {
+                errors.push(Error::new(v.fields.span(), "enum variant name {} has too many tuple values, max 1 supported"));
+            }
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
@@ -310,16 +327,22 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                     }),
                 };
                 let try_from = quote! {
-                    #discriminant_const_u64_ident => Self::#ident(
-                        iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(env)?
-                    )
+                    #discriminant_const_u64_ident => {
+                        if iter.len() > 1 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::#ident(iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(env)?)
+                    }
                 };
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
-                    #name => Self::#ident({
+                    #name => {
+                        if iter.len() > 1 {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
                         let rv: soroban_sdk::RawVal = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                        rv.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?
-                    })
+                        Self::#ident(rv.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?)
+                    }
                 };
                 let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
@@ -328,9 +351,23 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                     name: name.try_into().unwrap_or_else(|_| VecM::default()),
                     type_: None,
                 };
-                let try_from = quote! { #discriminant_const_u64_ident => Self::#ident };
+                let try_from = quote! {
+                    #discriminant_const_u64_ident => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::#ident
+                    }
+                };
                 let into = quote! { Self::#ident => (#discriminant_const_sym_ident,).into_val(env) };
-                let try_from_xdr = quote! { #name => Self::#ident };
+                let try_from_xdr = quote! {
+                    #name => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        Self::#ident
+                    }
+                };
                 let into_xdr = quote! { #enum_ident::#ident => (#name,).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             }
