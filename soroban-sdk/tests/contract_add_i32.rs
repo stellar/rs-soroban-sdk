@@ -2,12 +2,13 @@
 
 use std::io::Cursor;
 
-use soroban_sdk::{contractimpl, BytesN, Env};
+use soroban_sdk::{contractclient, contractimpl, BytesN, Env};
 use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;
 
 #[contractimpl]
+#[contractclient(name = "Client")]
 impl Contract {
     pub fn add(a: i32, b: i32) -> i32 {
         a + b
@@ -22,7 +23,7 @@ fn test_functional() {
 
     let a = 10i32;
     let b = 12i32;
-    let c = add::invoke(&e, &contract_id, &a, &b);
+    let c = Client::add(&e, &contract_id, a, b);
     assert_eq!(c, 22);
 }
 

@@ -12,15 +12,16 @@ use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
-use proc_macro2::{Literal, Span};
+use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::quote;
 use sha2::{Digest, Sha256};
 use soroban_spec::gen::rust::{generate_from_file, GenerateFromFileError};
 use std::fs;
 use syn::{
-    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, ItemTrait,
-    Visibility,
+    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
 };
+
+use self::derive_client::ClientItem;
 
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
@@ -159,11 +160,12 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let trait_ = parse_macro_input!(input as ItemTrait);
-    let methods: Vec<_> = syn_ext::trait_methods(&trait_).collect();
+    let input2: TokenStream2 = input.clone().into();
+    let item = parse_macro_input!(input as ClientItem);
+    let methods: Vec<_> = item.fns();
     let client = derive_client(&args.name, &methods);
     quote! {
-        #trait_
+        #input2
         #client
     }
     .into()
