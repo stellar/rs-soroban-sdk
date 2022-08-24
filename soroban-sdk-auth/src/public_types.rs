@@ -2,24 +2,24 @@ use soroban_sdk::{contracttype, Bytes, BytesN, Env, RawVal, Symbol, Vec};
 
 #[derive(Clone)]
 #[contracttype]
-pub struct KeyedEd25519Signature {
+pub struct Ed25519Signature {
     pub public_key: BytesN<32>,
     pub signature: BytesN<64>,
 }
 
 #[derive(Clone)]
 #[contracttype]
-pub struct KeyedAccountSignatures {
+pub struct AccountSignatures {
     pub account_id: BytesN<32>,
-    pub signatures: Vec<KeyedEd25519Signature>,
+    pub signatures: Vec<Ed25519Signature>,
 }
 
 #[derive(Clone)]
 #[contracttype]
 pub enum Signature {
     Contract,
-    Ed25519(KeyedEd25519Signature),
-    Account(KeyedAccountSignatures),
+    Ed25519(Ed25519Signature),
+    Account(AccountSignatures),
 }
 
 impl Signature {

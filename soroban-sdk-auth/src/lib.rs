@@ -4,7 +4,7 @@ use soroban_sdk::{serde::Serialize, Account, BigInt, BytesN, Env, RawVal, Symbol
 
 pub mod public_types;
 use crate::public_types::{
-    Identifier, KeyedAccountSignatures, KeyedEd25519Signature, Message, MessageV0, Signature,
+    AccountSignatures, Ed25519Signature, Identifier, Message, MessageV0, Signature,
 };
 
 pub trait NonceAuth {
@@ -13,12 +13,7 @@ pub trait NonceAuth {
     fn get_keyed_auth(&self) -> &Signature;
 }
 
-pub fn check_ed25519_auth(
-    env: &Env,
-    auth: &KeyedEd25519Signature,
-    function: Symbol,
-    args: Vec<RawVal>,
-) {
+pub fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args: Vec<RawVal>) {
     let msg = MessageV0 {
         function,
         contrct_id: env.get_current_contract(),
@@ -36,7 +31,7 @@ pub fn check_ed25519_auth(
 
 pub fn check_account_auth(
     env: &Env,
-    auth: &KeyedAccountSignatures,
+    auth: &AccountSignatures,
     function: Symbol,
     args: Vec<RawVal>,
 ) {
