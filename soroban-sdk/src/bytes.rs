@@ -7,7 +7,7 @@ use core::{
 };
 
 use super::{
-    env::internal::{Env as _, RawValConvertible},
+    env::internal::{Env as _, EnvBase as _, RawValConvertible},
     env::{EnvObj, EnvType, IntoVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal, TryFromVal, TryIntoVal,
@@ -31,7 +31,7 @@ macro_rules! bytes {
         $crate::Bytes::new($env)
     };
     ($env:expr, $($x:expr),+ $(,)?) => {
-        $crate::Bytes::from_array($env, [$($x),+])
+        $crate::Bytes::from_array($env, &[$($x),+])
     };
 }
 
@@ -50,8 +50,11 @@ macro_rules! bytes {
 /// use soroban_sdk::{Bytes, Env};
 ///
 /// let env = Env::default();
-/// let bin = Bytes::from_slice(&env, &[0; 32]);
-/// assert_eq!(bin.len(), 32);
+/// let bytes = Bytes::from_slice(&env, &[1; 32]);
+/// assert_eq!(bytes.len(), 32);
+/// let mut slice = [0u8; 32];
+/// bytes.copy_into_slice(&mut slice);
+/// assert_eq!(slice, [1u8; 32]);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
@@ -255,15 +258,13 @@ impl Bytes {
 
     /// Create a Bytes from the given `[u8]`.
     #[inline(always)]
-    pub fn from_array<const N: usize>(env: &Env, items: [u8; N]) -> Bytes {
-        BytesN::from_array(env, items).0
+    pub fn from_array<const N: usize>(env: &Env, items: &[u8; N]) -> Bytes {
+        Self::from_slice(env, items)
     }
 
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[u8]) -> Bytes {
-        let mut vec = Bytes::new(env);
-        vec.extend_from_slice(items);
-        vec
+        Bytes(env.binary_new_from_slice(items).in_env(env))
     }
 
     #[inline(always)]
@@ -387,12 +388,57 @@ impl Bytes {
         last
     }
 
+    /// Insert the byte into this [Bytes] at position indicated by `i`, and
+    /// growing the size of [Bytes] by 1.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
     #[inline(always)]
-    pub fn insert(&mut self, i: u32, x: u8) {
+    pub fn insert(&mut self, i: u32, b: u8) {
         let env = self.env();
-        let x32: u32 = x.into();
-        let bin = env.binary_insert(self.0.to_object(), i.into(), x32.into());
+        let b32: u32 = b.into();
+        let bin = env.binary_insert(self.0.to_object(), i.into(), b32.into());
         self.0 = bin.in_env(env);
+    }
+
+    /// Insert the bytes in `bytes` into this [Bytes] starting at position
+    /// indicated by `i`, and growing the size of [Bytes] by the length of
+    /// `bytes.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
+    #[inline(always)]
+    pub fn insert_from_bytes(&mut self, i: u32, bytes: Bytes) {
+        let mut result = self.slice(..i);
+        result.append(&bytes);
+        result.append(&self.slice(i..));
+        *self = result
+    }
+
+    /// Insert the bytes in `array` into this [Bytes] starting at position
+    /// indicated by `i`, and growing the size of [Bytes] by the length of
+    /// `bytes.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
+    #[inline(always)]
+    pub fn insert_from_array<const N: usize>(&mut self, i: u32, array: &[u8; N]) {
+        self.insert_from_slice(i, array)
+    }
+
+    /// Insert the bytes in `slice` into this [Bytes] starting at position
+    /// indicated by `i`, and growing the size of [Bytes] by the length of
+    /// `bytes.
+    ///
+    /// ### Panics
+    ///
+    /// When `i` is greater than the length of [Bytes].
+    #[inline(always)]
+    pub fn insert_from_slice(&mut self, i: u32, slice: &[u8]) {
+        self.insert_from_bytes(i, Bytes::from_slice(self.env(), slice))
     }
 
     #[inline(always)]
@@ -403,17 +449,38 @@ impl Bytes {
     }
 
     #[inline(always)]
-    pub fn extend_from_array<const N: usize>(&mut self, items: [u8; N]) {
-        for item in items {
-            self.push(item);
-        }
+    pub fn extend_from_array<const N: usize>(&mut self, array: &[u8; N]) {
+        self.extend_from_slice(array)
     }
 
     #[inline(always)]
-    pub fn extend_from_slice(&mut self, items: &[u8]) {
-        for item in items {
-            self.push(*item);
-        }
+    pub fn extend_from_slice(&mut self, slice: &[u8]) {
+        let env = self.env();
+        self.0 = env
+            .binary_copy_from_slice(self.to_object(), self.len().into(), &slice)
+            .in_env(env);
+    }
+
+    /// Copy the bytes from slice into [Bytes].
+    ///
+    /// The full number of bytes in slice are always copied and [Bytes] is grown
+    /// if necessary.
+    #[inline(always)]
+    pub fn copy_from_slice(&mut self, i: u32, slice: &[u8]) {
+        let env = self.env();
+        self.0 = env
+            .binary_copy_from_slice(self.to_object(), i.into(), slice)
+            .in_env(env);
+    }
+
+    /// Copy the bytes in [Bytes] into the given slice.
+    ///
+    /// The minimum number of bytes are copied to either exhaust [Bytes] or fill
+    /// slice.
+    #[inline(always)]
+    pub fn copy_into_slice(&self, slice: &mut [u8]) {
+        let env = self.env();
+        env.binary_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
     }
 
     #[must_use]
@@ -513,8 +580,8 @@ impl ExactSizeIterator for BinIter {
 /// use soroban_sdk::{Bytes, BytesN, Env};
 ///
 /// let env = Env::default();
-/// let bin = BytesN::from_array(&env, [0; 32]);
-/// assert_eq!(bin.len(), 32);
+/// let bytes = BytesN::from_array(&env, &[0; 32]);
+/// assert_eq!(bytes.len(), 32);
 /// ```
 ///
 /// BytesN and Bytes values are convertible:
@@ -522,9 +589,9 @@ impl ExactSizeIterator for BinIter {
 /// use soroban_sdk::{Bytes, BytesN, Env};
 ///
 /// let env = Env::default();
-/// let bin = Bytes::from_slice(&env, &[0; 32]);
-/// let bin: BytesN<32> = bin.try_into().expect("bin to have length 32");
-/// assert_eq!(bin.len(), 32);
+/// let bytes = Bytes::from_slice(&env, &[0; 32]);
+/// let bytes: BytesN<32> = bytes.try_into().expect("bytes to have length 32");
+/// assert_eq!(bytes.len(), 32);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
@@ -746,10 +813,8 @@ impl<const N: usize> BytesN<N> {
     }
 
     #[inline(always)]
-    pub fn from_array(env: &Env, items: [u8; N]) -> BytesN<N> {
-        let mut bin = Bytes::new(env);
-        bin.extend_from_array(items);
-        BytesN(bin)
+    pub fn from_array(env: &Env, items: &[u8; N]) -> BytesN<N> {
+        BytesN(Bytes::from_slice(env, items))
     }
 
     #[inline(always)]
@@ -797,6 +862,16 @@ impl<const N: usize> BytesN<N> {
         self.0.last_unchecked()
     }
 
+    /// Copy the bytes in [BytesN] into the given slice.
+    ///
+    /// The minimum number of bytes are copied to either exhaust [BytesN] or
+    /// fill slice.
+    #[inline(always)]
+    pub fn copy_into_slice(&self, slice: &mut [u8]) {
+        let env = self.env();
+        env.binary_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
+    }
+
     pub fn iter(&self) -> BinIter {
         self.clone().into_iter()
     }
@@ -834,6 +909,37 @@ impl<const N: usize> From<BytesN<N>> for [u8; N] {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn bytes_from_and_to_slices() {
+        let env = Env::default();
+
+        let b = Bytes::from_slice(&env, &[1, 2, 3, 4]);
+        let mut out = [0u8; 4];
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 2, 3, 4], out);
+
+        let mut b = Bytes::from_slice(&env, &[1, 2, 3, 4]);
+        b.extend_from_slice(&[5, 6, 7, 8]);
+        b.insert_from_slice(1, &[9, 10]);
+        b.insert_from_bytes(4, Bytes::from_slice(&env, &[0, 0]));
+        let mut out = [0u8; 12];
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 9, 10, 2, 0, 0, 3, 4, 5, 6, 7, 8], out);
+        b.copy_from_slice(3, &[7, 6, 5]);
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 9, 10, 7, 6, 5, 3, 4, 5, 6, 7, 8], out);
+    }
+
+    #[test]
+    fn bytesn_from_and_to_slices() {
+        let env = Env::default();
+
+        let b = BytesN::from_array(&env, &[1, 2, 3, 4]);
+        let mut out = [0u8; 4];
+        b.copy_into_slice(&mut out);
+        assert_eq!([1, 2, 3, 4], out);
+    }
 
     #[test]
     fn test_bin_macro() {

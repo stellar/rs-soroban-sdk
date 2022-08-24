@@ -10,7 +10,7 @@ use crate::{
 /// ```
 /// use soroban_sdk::Env;
 ///
-/// # use soroban_sdk::{contractimpl, FixedBinary};
+/// # use soroban_sdk::{contractimpl, BytesN};
 /// #
 /// # pub struct Contract;
 /// #
@@ -29,7 +29,7 @@ use crate::{
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = FixedBinary::from_array(&env, [0; 32]);
+/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
 /// #     env.register_contract(&contract_id, Contract);
 /// #     f::invoke(&env, &contract_id);
 /// # }

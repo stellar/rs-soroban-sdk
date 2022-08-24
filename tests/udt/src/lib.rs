@@ -162,7 +162,7 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, [0; 32]);
+        let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
 
         let udt = UdtStruct {
