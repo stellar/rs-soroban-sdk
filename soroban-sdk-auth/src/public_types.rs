@@ -1,35 +1,33 @@
-use soroban_sdk::{contracttype, Bytes, BytesN, Env, EnvVal, Symbol, Vec};
+use soroban_sdk::{contracttype, Bytes, BytesN, Env, RawVal, Symbol, Vec};
 
 #[derive(Clone)]
 #[contracttype]
-pub struct KeyedEd25519Signature {
+pub struct Ed25519Signature {
     pub public_key: BytesN<32>,
     pub signature: BytesN<64>,
 }
 
-pub type AccountAuthorization = Vec<KeyedEd25519Signature>;
-
 #[derive(Clone)]
 #[contracttype]
-pub struct KeyedAccountAuthorization {
+pub struct AccountSignatures {
     pub account_id: BytesN<32>,
-    pub signatures: AccountAuthorization,
+    pub signatures: Vec<Ed25519Signature>,
 }
 
 #[derive(Clone)]
 #[contracttype]
-pub enum KeyedAuthorization {
+pub enum Signature {
     Contract,
-    Ed25519(KeyedEd25519Signature),
-    Account(KeyedAccountAuthorization),
+    Ed25519(Ed25519Signature),
+    Account(AccountSignatures),
 }
 
-impl KeyedAuthorization {
+impl Signature {
     pub fn get_identifier(&self, env: &Env) -> Identifier {
         match self {
-            KeyedAuthorization::Contract => Identifier::Contract(env.get_invoking_contract()),
-            KeyedAuthorization::Ed25519(kea) => Identifier::Ed25519(kea.public_key.clone()),
-            KeyedAuthorization::Account(kaa) => Identifier::Account(kaa.account_id.clone()),
+            Signature::Contract => Identifier::Contract(env.get_invoking_contract()),
+            Signature::Ed25519(kea) => Identifier::Ed25519(kea.public_key.clone()),
+            Signature::Account(kaa) => Identifier::Account(kaa.account_id.clone()),
         }
     }
 }
@@ -48,7 +46,7 @@ pub struct MessageV0 {
     pub function: Symbol,
     pub contrct_id: BytesN<32>,
     pub network_id: Bytes,
-    pub args: Vec<EnvVal>,
+    pub args: Vec<RawVal>,
 }
 
 #[derive(Clone)]

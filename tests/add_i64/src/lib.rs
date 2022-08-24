@@ -58,7 +58,7 @@ mod test_via_val {
     #[test]
     fn test_add_1() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, [0; 32]);
+        let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Add1);
 
         let x = 10i64;
@@ -70,7 +70,7 @@ mod test_via_val {
     #[test]
     fn test_add_2() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, [0; 32]);
+        let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Add2);
 
         let x = 10i64;
