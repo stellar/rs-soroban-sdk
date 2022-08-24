@@ -188,6 +188,25 @@ where
     }
 }
 
+impl<T> IntoVal<Env, Object> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> Object {
+        self.into()
+    }
+}
+
+impl<T> From<Vec<T>> for Object
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    #[inline(always)]
+    fn from(v: Vec<T>) -> Self {
+        v.0.into()
+    }
+}
+
 impl<T> From<Vec<T>> for EnvVal
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
