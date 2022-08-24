@@ -299,6 +299,9 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             if let Err(e) = Symbol::try_from_str(&name) {
                 errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
             }
+            if v.fields.len() > 1 {
+                errors.push(Error::new(v.fields.span(), "enum variant name {} has too many tuple values, max 1 supported"));
+            }
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
@@ -324,16 +327,22 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                     }),
                 };
                 let try_from = quote! {
-                    #discriminant_const_u64_ident => Self::#ident(
-                        iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(env)?
-                    )
+                    #discriminant_const_u64_ident => {
+                        if iter.len() > 1 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::#ident(iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(env)?)
+                    }
                 };
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
-                    #name => Self::#ident({
+                    #name => {
+                        if iter.len() > 1 {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
                         let rv: soroban_sdk::RawVal = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                        rv.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?
-                    })
+                        Self::#ident(rv.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?)
+                    }
                 };
                 let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
