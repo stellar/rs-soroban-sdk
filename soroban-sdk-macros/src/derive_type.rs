@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{DataEnum, DataStruct, Error, Ident, Visibility};
+use syn::{spanned::Spanned, DataEnum, DataStruct, Error, Ident, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0,
@@ -20,6 +20,14 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     let mut errors = Vec::<Error>::new();
 
     let fields = &data.fields;
+    let field_count_usize: usize = fields.len();
+    let field_count_u32: u32 = fields.len().try_into().unwrap_or_else(|_| {
+        errors.push(Error::new(
+            data.struct_token.span(),
+            "struct has too many fields exceeding u32::MAX",
+        ));
+        0
+    });
     let (spec_fields, try_froms, intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .filter(|f| matches!(f.vis, Visibility::Public(_)))
@@ -112,6 +120,9 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::RawVal) -> Result<Self, Self::Error> {
                 use soroban_sdk::TryIntoVal;
                 let map: soroban_sdk::Map<soroban_sdk::Symbol, soroban_sdk::RawVal> = val.try_into_val(env)?;
+                if map.len() != #field_count_u32 {
+                    return Err(soroban_sdk::ConversionError);
+                }
                 Ok(Self{
                     #(#try_froms,)*
                 })
@@ -144,6 +155,9 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
                 let map = val;
+                if map.len() != #field_count_usize {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
                 map.validate()?;
                 Ok(Self{
                     #(#try_from_xdrs,)*
