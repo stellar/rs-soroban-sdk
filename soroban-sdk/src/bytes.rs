@@ -229,23 +229,23 @@ impl Bytes {
     }
 
     #[inline(always)]
-    pub(crate) fn env(&self) -> &Env {
+    pub fn env(&self) -> &Env {
         self.0.env()
     }
 
-    pub(crate) fn as_raw(&self) -> &RawVal {
+    pub fn as_raw(&self) -> &RawVal {
         self.0.as_raw()
     }
 
-    pub(crate) fn as_object(&self) -> &Object {
-        self.0.as_object()
-    }
-
-    pub(crate) fn to_raw(&self) -> RawVal {
+    pub fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
 
-    pub(crate) fn to_object(&self) -> Object {
+    pub fn as_object(&self) -> &Object {
+        self.0.as_object()
+    }
+
+    pub fn to_object(&self) -> Object {
         self.0.to_object()
     }
 
@@ -792,23 +792,23 @@ impl<const N: usize> TryIntoVal<Env, BytesN<N>> for ScVal {
 }
 
 impl<const N: usize> BytesN<N> {
-    pub(crate) fn env(&self) -> &Env {
+    pub fn env(&self) -> &Env {
         self.0.env()
     }
 
-    pub(crate) fn as_raw(&self) -> &RawVal {
+    pub fn as_raw(&self) -> &RawVal {
         self.0.as_raw()
     }
 
-    pub(crate) fn as_object(&self) -> &Object {
-        self.0.as_object()
-    }
-
-    pub(crate) fn to_raw(&self) -> RawVal {
+    pub fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
 
-    pub(crate) fn to_object(&self) -> Object {
+    pub fn as_object(&self) -> &Object {
+        self.0.as_object()
+    }
+
+    pub fn to_object(&self) -> Object {
         self.0.to_object()
     }
 

@@ -351,9 +351,23 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                     name: name.try_into().unwrap_or_else(|_| VecM::default()),
                     type_: None,
                 };
-                let try_from = quote! { #discriminant_const_u64_ident => Self::#ident };
+                let try_from = quote! {
+                    #discriminant_const_u64_ident => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::#ident
+                    }
+                };
                 let into = quote! { Self::#ident => (#discriminant_const_sym_ident,).into_val(env) };
-                let try_from_xdr = quote! { #name => Self::#ident };
+                let try_from_xdr = quote! {
+                    #name => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::xdr::Error::Invalid);
+                        }
+                        Self::#ident
+                    }
+                };
                 let into_xdr = quote! { #enum_ident::#ident => (#name,).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             }

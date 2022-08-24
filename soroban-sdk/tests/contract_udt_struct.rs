@@ -2,7 +2,9 @@
 
 use std::io::Cursor;
 
-use soroban_sdk::{contractimpl, contracttype, BytesN, Env};
+use soroban_sdk::{
+    contractimpl, contracttype, map, BytesN, ConversionError, Env, Symbol, TryFromVal,
+};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
     ScSpecTypeUdt,
@@ -26,14 +28,39 @@ impl Contract {
 
 #[test]
 fn test_functional() {
-    let e = Env::default();
-    let contract_id = BytesN::from_array(&e, &[0; 32]);
-    e.register_contract(&contract_id, Contract);
+    let env = Env::default();
+    let contract_id = BytesN::from_array(&env, &[0; 32]);
+    env.register_contract(&contract_id, Contract);
 
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };
-    let c = add::invoke(&e, &contract_id, &a, &b);
+    let c = add::invoke(&env, &contract_id, &a, &b);
     assert_eq!(c, (a, b));
+}
+
+#[test]
+fn test_error_on_partial_decode() {
+    let env = Env::default();
+
+    // Success case, a map will decode to a Udt if the symbol keys match the
+    // fields.
+    let map = map![&env, (Symbol::from_str("a"), 5), (Symbol::from_str("b"), 7)].to_raw();
+    let udt = Udt::try_from_val(&env, map);
+    assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
+
+    // If a struct has fields a, b, and a map is decoded into it where the map
+    // has fields a, b, and c, it is an error. It is an error because decoding
+    // and encoding will not round trip the data, and therefore partial decoding
+    // is relatively difficult to use safely.
+    let map = map![
+        &env,
+        (Symbol::from_str("a"), 5),
+        (Symbol::from_str("b"), 7),
+        (Symbol::from_str("c"), 9)
+    ]
+    .to_raw();
+    let udt = Udt::try_from_val(&env, map);
+    assert_eq!(udt, Err(ConversionError));
 }
 
 #[test]
