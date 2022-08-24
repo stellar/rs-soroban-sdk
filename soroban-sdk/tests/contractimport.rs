@@ -32,7 +32,7 @@ fn test_functional() {
 
     let x = 10i32;
     let y = 12i32;
-    let z = Client::add_with(&e, &contract_id, &x, &y);
+    let z = Client::add_with(&e, &contract_id, x, y);
     assert!(z == 22);
 }
 

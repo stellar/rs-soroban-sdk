@@ -1,19 +1,20 @@
 #![cfg(feature = "testutils")]
 
-use soroban_sdk::{contractimpl, BytesN, Env};
+use soroban_sdk::{contractclient, contractimpl, BytesN, Env};
 use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
     soroban_sdk::contractimport!(
         file = "target/wasm32-unknown-unknown/release/example_add_i32.wasm",
-        sha256 = "6c5a4fe67b30474ff71fe489ac7321d850b91cc2c7db3f36f377fad3d3087d6f",
+        sha256 = "cce96634dca6b60232ee09d750c034804bb36aaadfb714fc0a6128ea4aea42d8",
     );
 }
 
 pub struct Contract;
 
 #[contractimpl]
+#[contractclient(name = "Client")]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
         addcontract::Client::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
@@ -32,7 +33,7 @@ fn test_functional() {
 
     let x = 10i32;
     let y = 12i32;
-    let z = add_with::invoke(&e, &contract_id, &x, &y);
+    let z = Client::add_with(&e, &contract_id, x, y);
     assert!(z == 22);
 }
 

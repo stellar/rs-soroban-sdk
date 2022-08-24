@@ -3,7 +3,8 @@
 use std::io::Cursor;
 
 use soroban_sdk::{
-    contractimpl, contracttype, map, BytesN, ConversionError, Env, Symbol, TryFromVal,
+    contractclient, contractimpl, contracttype, map, BytesN, ConversionError, Env, Symbol,
+    TryFromVal,
 };
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
@@ -20,6 +21,7 @@ pub struct Udt {
 pub struct Contract;
 
 #[contractimpl]
+#[contractclient(name = "Client")]
 impl Contract {
     pub fn add(a: Udt, b: Udt) -> (Udt, Udt) {
         (a, b)
@@ -34,7 +36,7 @@ fn test_functional() {
 
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };
-    let c = add::invoke(&env, &contract_id, &a, &b);
+    let c = Client::add(&env, &contract_id, a, b);
     assert_eq!(c, (a, b));
 }
 
