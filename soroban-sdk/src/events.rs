@@ -37,7 +37,7 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = BytesN::from_array(&env, [0; 32]);
+/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
 /// #     env.register_contract(&contract_id, Contract);
 /// #     f::invoke(&env, &contract_id);
 /// # }
