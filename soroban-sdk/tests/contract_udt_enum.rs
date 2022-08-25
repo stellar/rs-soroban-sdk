@@ -1,7 +1,7 @@
 #![cfg(feature = "testutils")]
 
 use soroban_sdk::{
-    contractclient, contractimpl, contracttype, vec, BytesN, ConversionError, Env, IntoVal, Symbol,
+    contractclient, contractimpl, contracttype, symbol, vec, BytesN, ConversionError, Env, IntoVal,
     TryFromVal,
 };
 

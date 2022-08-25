@@ -3,7 +3,7 @@
 use std::io::Cursor;
 
 use soroban_sdk::{
-    contractclient, contractimpl, contracttype, map, BytesN, ConversionError, Env, Symbol,
+    contractclient, contractimpl, contracttype, map, symbol, BytesN, ConversionError, Env,
     TryFromVal,
 };
 use stellar_xdr::{
