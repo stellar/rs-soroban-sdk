@@ -326,19 +326,19 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 };
                 let try_from = quote! {
                     #discriminant_const_u64_ident => {
-                        if iter.len() > 1 {
+                        if vec.len() > 2 {
                             return Err(soroban_sdk::ConversionError);
                         }
-                        Self::#ident(iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(env)?)
+                        Self::#ident(vec.get_unchecked(1)?.try_into_val(env)?)
                     }
                 };
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => {
-                        if iter.len() > 1 {
+                        if iter.len() > 2 {
                             return Err(soroban_sdk::xdr::Error::Invalid);
                         }
-                        let rv: soroban_sdk::RawVal = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                        let rv: soroban_sdk::RawVal = vec.get_unchecked(1).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                         Self::#ident(rv.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?)
                     }
                 };
@@ -351,7 +351,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 };
                 let try_from = quote! {
                     #discriminant_const_u64_ident => {
-                        if iter.len() > 0 {
+                        if vec.len() > 1 {
                             return Err(soroban_sdk::ConversionError);
                         }
                         Self::#ident
@@ -360,7 +360,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 let into = quote! { Self::#ident => (#discriminant_const_sym_ident,).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => {
-                        if iter.len() > 0 {
+                        if vec.len() > 1 {
                             return Err(soroban_sdk::xdr::Error::Invalid);
                         }
                         Self::#ident
@@ -413,8 +413,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 use soroban_sdk::TryIntoVal;
                 #(#discriminant_consts)*
                 let vec: soroban_sdk::Vec<soroban_sdk::RawVal> = val.try_into_val(env)?;
-                let mut iter = vec.iter();
-                let discriminant = iter.next().ok_or(soroban_sdk::ConversionError)??;
+                let discriminant = vec.first().ok_or(soroban_sdk::ConversionError)??;
                 Ok(match discriminant.get_payload() {
                     #(#try_froms,)*
                     _ => Err(soroban_sdk::ConversionError{})?,
@@ -450,8 +449,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 use soroban_sdk::TryIntoVal;
 
                 let vec = val;
-                let mut iter = vec.iter();
-                let discriminant: soroban_sdk::xdr::ScSymbol = iter.next().ok_or(soroban_sdk::xdr::Error::Invalid)?.clone().try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let discriminant: soroban_sdk::xdr::ScSymbol = vec.first().ok_or(soroban_sdk::xdr::Error::Invalid)?.clone().try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 let discriminant_name: &str = &discriminant.to_string()?;
 
                 Ok(match discriminant_name {
