@@ -335,7 +335,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                 let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => {
-                        if iter.len() > 2 {
+                        if vec.len() > 2 {
                             return Err(soroban_sdk::xdr::Error::Invalid);
                         }
                         let rv: soroban_sdk::RawVal = vec.get_unchecked(1).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
