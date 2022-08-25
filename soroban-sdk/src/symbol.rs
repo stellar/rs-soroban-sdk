@@ -10,14 +10,14 @@ use crate::Symbol;
 /// ```
 /// use soroban_sdk::{sym, Symbol};
 ///
-/// let symbol = sym!("a_str");
+/// let symbol = symbol!("a_str");
 /// assert_eq!(symbol, Symbol::from_str("a_str"));
 /// ```
 ///
 /// ```
 /// use soroban_sdk::{sym, Symbol};
 ///
-/// const symbol: Symbol = sym!("a_str");
+/// const symbol: Symbol = symbol!("a_str");
 /// assert_eq!(symbol, Symbol::from_str("a_str"));
 /// ```
 #[macro_export]

@@ -25,7 +25,7 @@ use crate::{
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
 /// let contract_data = env.contract_data();
-/// let key = sym!("key");
+/// let key = symbol!("key");
 /// env.contract_data().set(key, 1);
 /// assert_eq!(contract_data.has(key), true);
 /// assert_eq!(contract_data.get::<_, i32>(key), Some(Ok(1)));

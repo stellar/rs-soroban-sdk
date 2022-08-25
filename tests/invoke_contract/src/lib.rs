@@ -8,7 +8,7 @@ impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32, contract_id: BytesN<32>) -> i32 {
         env.invoke_contract(
             &contract_id,
-            &sym!("add"),
+            &symbol!("add"),
             vec![&env, x.into_env_val(&env), y.into_env_val(&env)],
         )
     }

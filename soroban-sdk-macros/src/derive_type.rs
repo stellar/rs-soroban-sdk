@@ -51,7 +51,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     }
                 },
             };
-            let map_key = quote! { ::soroban_sdk::sym!(#name) };
+            let map_key = quote! { ::soroban_sdk::symbol!(#name) };
             let try_from = quote! {
                 #ident: if let Some(Ok(val)) = map.get(#map_key) {
                     val.try_into_val(env)?
@@ -304,7 +304,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
             let discriminant_const_sym = quote! {
-                const #discriminant_const_sym_ident: soroban_sdk::Symbol = soroban_sdk::sym!(#name);
+                const #discriminant_const_sym_ident: soroban_sdk::Symbol = soroban_sdk::symbol!(#name);
             };
             let discriminant_const_u64 = quote! {
                 const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();

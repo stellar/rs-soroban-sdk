@@ -6,7 +6,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn hello() -> Symbol {
-        sym!("hello")
+        symbol!("hello")
     }
 }
 
@@ -23,6 +23,6 @@ mod test {
         e.register_contract(&contract_id, Contract);
 
         let h = hello::invoke(&e, &contract_id);
-        assert!(h == sym!("hello"));
+        assert!(h == symbol!("hello"));
     }
 }
