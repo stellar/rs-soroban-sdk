@@ -52,7 +52,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                 },
             };
             let map_key = quote! { // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
-                { const k: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#name); k }
+                ::soroban_sdk::sym!(#name)
             };
             let try_from = quote! {
                 #ident: if let Some(Ok(val)) = map.get(#map_key) {
@@ -306,7 +306,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
             let discriminant_const_sym = quote! {
-                const #discriminant_const_sym_ident: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#name);
+                const #discriminant_const_sym_ident: soroban_sdk::Symbol = soroban_sdk::sym!(#name);
             };
             let discriminant_const_u64 = quote! {
                 const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();

@@ -14,7 +14,7 @@ use super::{
 };
 
 #[cfg(doc)]
-use crate::{Bytes, ContractData, Map};
+use crate::{Bytes, BytesN, ContractData, Map};
 
 /// Create a [Vec] with the given items.
 ///

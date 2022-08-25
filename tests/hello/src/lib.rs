@@ -1,18 +1,18 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Symbol};
+use soroban_sdk::{contractimpl, sym, Symbol};
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
     pub fn hello() -> Symbol {
-        Symbol::from_str("hello")
+        sym!("hello")
     }
 }
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{BytesN, Env, Symbol};
+    use soroban_sdk::{sym, BytesN, Env};
 
     use crate::{hello, Contract};
 
@@ -23,6 +23,6 @@ mod test {
         e.register_contract(&contract_id, Contract);
 
         let h = hello::invoke(&e, &contract_id);
-        assert!(h == Symbol::from_str("hello"));
+        assert!(h == sym!("hello"));
     }
 }
