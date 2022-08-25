@@ -1,4 +1,4 @@
-all: check build test
+all: check test
 
 export RUSTFLAGS=-Dwarnings
 
@@ -9,12 +9,10 @@ doc: fmt
 	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils
 	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
-test: fmt build-normal
+test: fmt build
 	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
 
-build: build-normal build-optimized
-
-build-normal: fmt
+build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
 
 build-optimized: fmt
@@ -27,8 +25,8 @@ build-optimized: fmt
 			ls -l "$$i"; \
 		done
 
-check: fmt
-	cargo hack --feature-powerset --exclude-features docs check --all-targets
+check: build fmt
+	cargo hack --feature-powerset --exclude-features docs check
 	cargo hack check --release --target wasm32-unknown-unknown
 
 watch:

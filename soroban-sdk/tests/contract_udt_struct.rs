@@ -46,7 +46,7 @@ fn test_error_on_partial_decode() {
 
     // Success case, a map will decode to a Udt if the symbol keys match the
     // fields.
-    let map = map![&env, (Symbol::from_str("a"), 5), (Symbol::from_str("b"), 7)].to_raw();
+    let map = map![&env, symbol!("a"), 5), symbol!("b"), 7)].to_raw();
     let udt = Udt::try_from_val(&env, map);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
 
@@ -56,9 +56,9 @@ fn test_error_on_partial_decode() {
     // is relatively difficult to use safely.
     let map = map![
         &env,
-        (Symbol::from_str("a"), 5),
-        (Symbol::from_str("b"), 7),
-        (Symbol::from_str("c"), 9)
+        (symbol!("a"), 5),
+        (symbol!("b"), 7),
+        (symbol!("c"), 9)
     ]
     .to_raw();
     let udt = Udt::try_from_val(&env, map);

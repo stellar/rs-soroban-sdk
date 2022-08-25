@@ -1,5 +1,9 @@
 #![no_std]
+<<<<<<< HEAD
 use soroban_sdk::{contractclient, contractimpl, vec, BytesN, Env, IntoVal, Symbol};
+=======
+use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, IntoVal};
+>>>>>>> main
 
 pub struct Contract;
 
@@ -10,7 +14,7 @@ impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32, _contract_id: BytesN<32>) -> i32 {
         env.invoke_contract(
             &_contract_id,
-            &Symbol::from_str("add"),
+            &symbol!("add"),
             vec![&env, x.into_env_val(&env), y.into_env_val(&env)],
         )
     }
