@@ -51,9 +51,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     }
                 },
             };
-            let map_key = quote! { // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
-                ::soroban_sdk::sym!(#name)
-            };
+            let map_key = quote! { ::soroban_sdk::sym!(#name) };
             let try_from = quote! {
                 #ident: if let Some(Ok(val)) = map.get(#map_key) {
                     val.try_into_val(env)?
