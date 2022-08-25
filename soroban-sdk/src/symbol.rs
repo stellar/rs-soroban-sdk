@@ -8,20 +8,20 @@ use crate::Symbol;
 /// ### Examples
 ///
 /// ```
-/// use soroban_sdk::{sym, Symbol};
+/// use soroban_sdk::{symbol, Symbol};
 ///
 /// let symbol = symbol!("a_str");
 /// assert_eq!(symbol, Symbol::from_str("a_str"));
 /// ```
 ///
 /// ```
-/// use soroban_sdk::{sym, Symbol};
+/// use soroban_sdk::{symbol, Symbol};
 ///
 /// const symbol: Symbol = symbol!("a_str");
 /// assert_eq!(symbol, Symbol::from_str("a_str"));
 /// ```
 #[macro_export]
-macro_rules! sym {
+macro_rules! symbol {
     ($str:literal) => {{
         const symbol: $crate::Symbol = $crate::Symbol::from_str($str);
         symbol

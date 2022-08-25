@@ -2,7 +2,9 @@
 
 use std::io::Cursor;
 
-use soroban_sdk::{contractimpl, contracttype, map, sym, BytesN, ConversionError, Env, TryFromVal};
+use soroban_sdk::{
+    contractimpl, contracttype, map, symbol, BytesN, ConversionError, Env, TryFromVal,
+};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
     ScSpecTypeUdt,

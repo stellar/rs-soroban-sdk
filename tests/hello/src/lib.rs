@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, sym, Symbol};
+use soroban_sdk::{contractimpl, symbol, Symbol};
 
 pub struct Contract;
 
@@ -12,7 +12,7 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{sym, BytesN, Env};
+    use soroban_sdk::{symbol, BytesN, Env};
 
     use crate::{hello, Contract};
 
