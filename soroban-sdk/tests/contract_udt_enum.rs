@@ -1,7 +1,7 @@
 #![cfg(feature = "testutils")]
 
 use soroban_sdk::{
-    contractimpl, contracttype, vec, BytesN, ConversionError, Env, IntoVal, Symbol, TryFromVal,
+    contractimpl, contracttype, symbol, vec, BytesN, ConversionError, Env, IntoVal, TryFromVal,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -39,10 +39,10 @@ fn test_error_on_partial_decode() {
     // Success case, a vec will decode to a Udt if the first element is the
     // variant name as a Symbol, and following elements are tuple-like values
     // for the variant.
-    let vec = vec![&env, Symbol::from_str("Aaa").into_val(&env)].to_raw();
+    let vec = vec![&env, symbol!("Aaa").into_val(&env)].to_raw();
     let udt = Udt::try_from_val(&env, vec);
     assert_eq!(udt, Ok(Udt::Aaa));
-    let vec = vec![&env, Symbol::from_str("Bbb").into_val(&env), 8.into()].to_raw();
+    let vec = vec![&env, symbol!("Bbb").into_val(&env), 8.into()].to_raw();
     let udt = Udt::try_from_val(&env, vec);
     assert_eq!(udt, Ok(Udt::Bbb(8)));
 
@@ -50,16 +50,10 @@ fn test_error_on_partial_decode() {
     // multiple values, it is an error. It is an error because decoding and
     // encoding will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
-    let vec = vec![&env, Symbol::from_str("Aaa").into_val(&env), 8.into()].to_raw();
+    let vec = vec![&env, symbol!("Aaa").into_val(&env), 8.into()].to_raw();
     let udt = Udt::try_from_val(&env, vec);
     assert_eq!(udt, Err(ConversionError));
-    let vec = vec![
-        &env,
-        Symbol::from_str("Bbb").into_val(&env),
-        8.into(),
-        9.into(),
-    ]
-    .to_raw();
+    let vec = vec![&env, symbol!("Bbb").into_val(&env), 8.into(), 9.into()].to_raw();
     let udt = Udt::try_from_val(&env, vec);
     assert_eq!(udt, Err(ConversionError));
 }
