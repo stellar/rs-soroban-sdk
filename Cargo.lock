@@ -758,6 +758,9 @@ name = "serde"
 version = "1.0.140"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc855a42c7967b7c369eb5860f7164ef1f6f81c20c7cc1141f2a604e18723b03"
+dependencies = [
+ "serde_derive",
+]
 
 [[package]]
 name = "serde_derive"
@@ -932,7 +935,11 @@ dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
+ "serde",
+ "serde_derive",
+ "serde_json",
  "sha2 0.10.2",
+ "soroban-env-host",
  "stellar-xdr",
  "syn",
  "thiserror",
@@ -983,6 +990,9 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 name = "stellar-xdr"
 version = "0.0.1"
 source = "git+https://github.com/stellar/rs-stellar-xdr?rev=61de11d#61de11d0ce5eb8a6e722d903af2abfadb5f5bd0e"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "strsim"
