@@ -1,9 +1,5 @@
 #![no_std]
-<<<<<<< HEAD
-use soroban_sdk::{contractclient, contractimpl, vec, BytesN, Env, IntoVal, Symbol};
-=======
-use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, IntoVal};
->>>>>>> main
+use soroban_sdk::{contractclient, contractimpl, symbol, vec, BytesN, Env, IntoVal, Symbol};
 
 pub struct Contract;
 

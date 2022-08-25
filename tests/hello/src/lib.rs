@@ -1,9 +1,5 @@
 #![no_std]
-<<<<<<< HEAD
-use soroban_sdk::{contractclient, contractimpl, Symbol};
-=======
-use soroban_sdk::{contractimpl, symbol, Symbol};
->>>>>>> main
+use soroban_sdk::{contractclient, contractimpl, symbol, Symbol};
 
 pub struct Contract;
 
