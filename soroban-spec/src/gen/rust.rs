@@ -37,17 +37,22 @@ pub fn generate_from_file(
 
     if let Some(verify_sha256) = verify_sha256 {
         if verify_sha256 != sha256 {
-            return Err(GenerateFromFileError::VerifySha256 {
-                expected: sha256.to_string(),
-            });
+            return Err(GenerateFromFileError::VerifySha256 { expected: sha256 });
         }
     }
 
-    // Read spec from file.
-    let spec = from_wasm(&wasm).map_err(GenerateFromFileError::GetSpec)?;
-
     // Generate code.
-    let code = generate(&spec, file, &sha256);
+    let code = generate_from_wasm(&wasm, file, &sha256).map_err(GenerateFromFileError::GetSpec)?;
+    Ok(code)
+}
+
+pub fn generate_from_wasm(
+    wasm: &[u8],
+    file: &str,
+    sha256: &str,
+) -> Result<TokenStream, FromWasmError> {
+    let spec = from_wasm(wasm)?;
+    let code = generate(&spec, file, sha256);
     Ok(code)
 }
 
