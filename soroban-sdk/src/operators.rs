@@ -1,11 +1,16 @@
 /// Implement an operator for a type for all the ref variations.
 ///
-/// Implements:
+/// For operators with a RHS, implements:
 ///  - ref-op-ref
 ///  - val-op-ref
 ///  - ref-op-val
 ///
-/// Assumes that a ref-op-ref variaton already exists.
+/// For operators without a RHS, implements:
+///  - ref-op
+///
+/// Only operators with an Output are supported.
+///
+/// Assumes that a val-op-val variaton already exists and calls it.
 ///
 /// See [crate::BigInt] for example usage.
 macro_rules! impl_ref_op {
