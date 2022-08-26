@@ -34,7 +34,7 @@ fn test_functional() {
 
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };
-    let c = ContractClient::new(&env, &contract_id).add(&env, a, b);
+    let c = ContractClient::new(&env, &contract_id).add(a, b);
     assert_eq!(c, (a, b));
 }
 

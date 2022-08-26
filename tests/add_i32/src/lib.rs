@@ -25,7 +25,7 @@ mod test {
 
         let x = 10i32;
         let y = 12i32;
-        let z = client.add(&e, x, y);
+        let z = client.add(x, y);
         assert!(z == 22);
     }
 }

@@ -119,24 +119,24 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 .unzip();
             let fn_output = f.output;
             quote!{
-                pub fn #fn_ident(&self, env: &::soroban_sdk::Env, #(#fn_input_types),*) #fn_output {
+                pub fn #fn_ident(&self, #(#fn_input_types),*) #fn_output {
                     use ::soroban_sdk::IntoVal;
-                    env.invoke_contract(
+                    self.env.invoke_contract(
                         &self.contract_id,
                         &::soroban_sdk::symbol!(#fn_name),
-                        ::soroban_sdk::vec![env, #(#fn_input_names.into_env_val(&env)),*],
+                        ::soroban_sdk::vec![&self.env, #(#fn_input_names.into_env_val(&self.env)),*],
                     )
                 }
 
                 #[cfg(feature = "testutils")]
                 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-                pub fn #fn_ident_xdr(&self, env: &::soroban_sdk::Env, #(#fn_input_types),*) #fn_output {
+                pub fn #fn_ident_xdr(&self, #(#fn_input_types),*) #fn_output {
                     use ::soroban_sdk::TryIntoVal;
-                    env.invoke_contract_external_raw(
+                    self.env.invoke_contract_external_raw(
                         ::soroban_sdk::xdr::HostFunction::Call,
                         (&self.contract_id, #fn_name, #(#fn_input_names),*).try_into().unwrap()
                     )
-                    .try_into_val(env)
+                    .try_into_val(&self.env)
                     .unwrap()
                 }
             }
@@ -153,11 +153,13 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     let client_ident = format_ident!("{}", name);
     quote! {
         pub struct #client_ident {
+            env: ::soroban_sdk::Env,
             contract_id: ::soroban_sdk::BytesN<32>,
         }
         impl #client_ident {
             pub fn new(env: &::soroban_sdk::Env, contract_id: impl ::soroban_sdk::IntoVal<::soroban_sdk::Env, ::soroban_sdk::BytesN<32>>) -> Self {
                 Self {
+                    env: env.clone(),
                     contract_id: contract_id.into_val(env),
                 }
             }

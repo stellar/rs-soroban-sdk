@@ -6,9 +6,9 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     // TODO: Prevent arg overlap with generated args.
-    pub fn add_with(env: Env, x: i32, y: i32, _contract_id: BytesN<32>) -> i32 {
+    pub fn add_with(env: Env, x: i32, y: i32, contract_id: BytesN<32>) -> i32 {
         env.invoke_contract(
-            &_contract_id,
+            &contract_id,
             &symbol!("add"),
             vec![&env, x.into_env_val(&env), y.into_env_val(&env)],
         )
@@ -43,7 +43,7 @@ mod test {
 
         let x = 10i32;
         let y = 12i32;
-        let z = client.add_with(&e, x, y, add_contract_id);
+        let z = client.add_with(x, y, add_contract_id);
         assert!(z == 22);
     }
 }

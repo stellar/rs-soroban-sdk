@@ -64,7 +64,7 @@ mod test_via_val {
 
         let x = 10i64;
         let y = 12i64;
-        let z = client.add1(&e, x, y);
+        let z = client.add1(x, y);
         assert!(z == 22);
     }
 
@@ -77,7 +77,7 @@ mod test_via_val {
 
         let x = 10i64;
         let y = 12i64;
-        let z = client.add2(&e, x, y);
+        let z = client.add2(x, y);
         assert!(z == 22);
     }
 }

@@ -15,7 +15,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
-        addcontract::ContractClient::new(&env, &ADD_CONTRACT_ID).add(&env, x, y)
+        addcontract::ContractClient::new(&env, &ADD_CONTRACT_ID).add(x, y)
     }
 }
 
@@ -32,7 +32,7 @@ fn test_functional() {
 
     let x = 10i32;
     let y = 12i32;
-    let z = client.add_with(&e, x, y);
+    let z = client.add_with(x, y);
     assert!(z == 22);
 }
 

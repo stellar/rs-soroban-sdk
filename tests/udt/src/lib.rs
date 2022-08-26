@@ -171,7 +171,7 @@ mod test {
             b: 12,
             c: vec![&e, 1],
         };
-        let z = client.add(&e, UdtEnum::UdtA, UdtEnum::UdtB(udt));
+        let z = client.add(UdtEnum::UdtA, UdtEnum::UdtB(udt));
         assert_eq!(z, 22);
     }
 
