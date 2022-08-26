@@ -1,20 +1,20 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Symbol};
+use soroban_sdk::{contractimpl, symbol, Symbol};
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
     pub fn hello() -> Symbol {
-        Symbol::from_str("hello")
+        symbol!("hello")
     }
 }
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{BytesN, Env, Symbol};
+    use soroban_sdk::{symbol, BytesN, Env};
 
-    use crate::{hello, Contract};
+    use crate::{Contract, ContractClient};
 
     #[test]
     fn test_hello() {
@@ -22,7 +22,7 @@ mod test {
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
 
-        let h = hello::invoke(&e, &contract_id);
-        assert!(h == Symbol::from_str("hello"));
+        let h = ContractClient::hello(&e, &contract_id);
+        assert!(h == symbol!("hello"));
     }
 }

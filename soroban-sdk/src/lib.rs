@@ -70,6 +70,7 @@ pub mod iter;
 mod ledger;
 mod map;
 mod set;
+mod symbol;
 mod vec;
 pub use account::Account;
 pub use bigint::BigInt;

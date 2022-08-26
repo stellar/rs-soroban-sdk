@@ -62,13 +62,18 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
         }
     }
-    let trait_ = r#trait::generate_trait("Contract", &spec_fns);
+
+    let trait_name = "Contract";
+    let client_name = format!("{}Client", trait_name);
+
+    let trait_ = r#trait::generate_trait(trait_name, &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
+
     quote! {
         pub const WASM: &[u8] = ::soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
 
-        #[::soroban_sdk::contractclient(name = "Client")]
+        #[::soroban_sdk::contractclient(name = #client_name)]
         #trait_
 
         #(#structs)*

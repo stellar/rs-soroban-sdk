@@ -22,7 +22,7 @@ fn test_functional() {
 
     let a = 10i32;
     let b = 12i32;
-    let c = add::invoke(&e, &contract_id, &a, &b);
+    let c = ContractClient::add(&e, &contract_id, a, b);
     assert_eq!(c, 22);
 }
 

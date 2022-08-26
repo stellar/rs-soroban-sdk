@@ -7,7 +7,7 @@ const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
     soroban_sdk::contractimport!(
         file = "target/wasm32-unknown-unknown/release/example_add_i32.wasm",
-        sha256 = "6c5a4fe67b30474ff71fe489ac7321d850b91cc2c7db3f36f377fad3d3087d6f",
+        sha256 = "58e28b943aeb95f3d0f9f8a87a2049d6f52a41f5dbaaa0b44e00a0e41d40cb68",
     );
 }
 
@@ -16,7 +16,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
-        addcontract::Client::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
+        addcontract::ContractClient::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
     }
 }
 
@@ -32,7 +32,7 @@ fn test_functional() {
 
     let x = 10i32;
     let y = 12i32;
-    let z = add_with::invoke(&e, &contract_id, &x, &y);
+    let z = ContractClient::add_with(&e, &contract_id, x, y);
     assert!(z == 22);
 }
 

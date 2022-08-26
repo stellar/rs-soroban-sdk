@@ -170,7 +170,7 @@ mod test {
             b: 12,
             c: vec![&e, 1],
         };
-        let z = add::invoke(&e, &contract_id, &UdtEnum::UdtA, &UdtEnum::UdtB(udt));
+        let z = ContractClient::add(&e, &contract_id, UdtEnum::UdtA, UdtEnum::UdtB(udt));
         assert_eq!(z, 22);
     }
 

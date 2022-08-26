@@ -12,15 +12,17 @@ use derive_type::{derive_type_enum, derive_type_struct};
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
-use proc_macro2::{Literal, Span};
+use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::quote;
 use sha2::{Digest, Sha256};
 use soroban_spec::gen::rust::{generate_from_file, GenerateFromFileError};
 use std::fs;
 use syn::{
-    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, ItemTrait,
+    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Type,
     Visibility,
 };
+
+use self::derive_client::ClientItem;
 
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
@@ -41,6 +43,19 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
+
+    // TODO: Use imp.trait_ in generating the client ident, to create a unique
+    // client for each trait impl for a contract, to avoid conflicts.
+    let client_ident = if let Type::Path(path) = &**ty {
+        path.path
+            .segments
+            .last()
+            .map(|name| format!("{}Client", name.ident))
+    } else {
+        None
+    }
+    .unwrap_or_else(|| format!("Client"));
+
     let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
         .iter()
@@ -56,6 +71,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 &m.sig.output,
                 args.export,
                 &trait_ident,
+                &client_ident,
             )
         })
         .collect();
@@ -64,6 +80,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Ok(derived_ok) => {
             let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
             quote! {
+                #[::soroban_sdk::contractclient(name = #client_ident)]
                 #imp
                 #derived_ok
                 #cfs
@@ -112,6 +129,7 @@ struct ContractFileArgs {
     sha256: darling::util::SpannedValue<String>,
 }
 
+#[doc(hidden)]
 #[proc_macro]
 pub fn contractfile(metadata: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -152,6 +170,7 @@ struct ContractClientArgs {
     name: String,
 }
 
+#[doc(hidden)]
 #[proc_macro_attribute]
 pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -159,11 +178,12 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    let trait_ = parse_macro_input!(input as ItemTrait);
-    let methods: Vec<_> = syn_ext::trait_methods(&trait_).collect();
+    let input2: TokenStream2 = input.clone().into();
+    let item = parse_macro_input!(input as ClientItem);
+    let methods: Vec<_> = item.fns();
     let client = derive_client(&args.name, &methods);
     quote! {
-        #trait_
+        #input2
         #client
     }
     .into()
