@@ -129,6 +129,7 @@ struct ContractFileArgs {
     sha256: darling::util::SpannedValue<String>,
 }
 
+#[doc(hidden)]
 #[proc_macro]
 pub fn contractfile(metadata: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -169,6 +170,7 @@ struct ContractClientArgs {
     name: String,
 }
 
+#[doc(hidden)]
 #[proc_macro_attribute]
 pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
