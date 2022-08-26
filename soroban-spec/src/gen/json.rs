@@ -15,11 +15,9 @@ impl TryFrom<&ScSpecUdtStructFieldV0> for StructField {
     type Error = Error;
 
     fn try_from(f: &ScSpecUdtStructFieldV0) -> Result<Self, Self::Error> {
-        let name = f.name.to_string()?;
-        let value = SpecType::try_from(&f.type_)?;
         Ok(StructField {
-            name: name,
-            value: value,
+            name: f.name.to_string()?,
+            value: SpecType::try_from(&f.type_)?,
         })
     }
 }
@@ -35,11 +33,9 @@ impl TryFrom<&ScSpecFunctionInputV0> for FunctionInput {
     type Error = Error;
 
     fn try_from(f: &ScSpecFunctionInputV0) -> Result<Self, Self::Error> {
-        let name = f.name.to_string()?;
-        let value = SpecType::try_from(&f.type_)?;
         Ok(FunctionInput {
-            name: name,
-            value: value,
+            name: f.name.to_string()?,
+            value: SpecType::try_from(&f.type_)?,
         })
     }
 }
@@ -55,14 +51,9 @@ impl TryFrom<&ScSpecUdtUnionCaseV0> for UnionCase {
     type Error = Error;
 
     fn try_from(c: &ScSpecUdtUnionCaseV0) -> Result<Self, Self::Error> {
-        let name = c.name.to_string()?;
-        let value = c.type_.as_ref().map(SpecType::try_from);
         Ok(UnionCase {
-            name: name,
-            value: match value {
-                None => None,
-                Some(r) => Some(r?),
-            },
+            name: c.name.to_string()?,
+            value: c.type_.as_ref().map(SpecType::try_from).transpose()?,
         })
     }
 }
@@ -124,49 +115,32 @@ impl TryFrom<&ScSpecTypeDef> for SpecType {
 
     fn try_from(spec: &ScSpecTypeDef) -> Result<Self, Self::Error> {
         match spec {
-            ScSpecTypeDef::Map(inner) => {
-                let key = SpecType::try_from(inner.key_type.as_ref());
-                let value = SpecType::try_from(inner.value_type.as_ref());
-                Ok(SpecType::Map {
-                    key: Box::new(key?),
-                    value: Box::new(value?),
-                })
-            }
-            ScSpecTypeDef::Option(inner) => {
-                let value = SpecType::try_from(inner.value_type.as_ref());
-                Ok(SpecType::Option {
-                    value: Box::new(value?),
-                })
-            }
-            ScSpecTypeDef::Result(inner) => {
-                let value = SpecType::try_from(inner.ok_type.as_ref());
-                let error = SpecType::try_from(inner.error_type.as_ref());
-                Ok(SpecType::Result {
-                    value: Box::new(value?),
-                    error: Box::new(error?),
-                })
-            }
-            ScSpecTypeDef::Set(inner) => {
-                let element = SpecType::try_from(inner.element_type.as_ref());
-                Ok(SpecType::Set {
-                    element: Box::new(element?),
-                })
-            }
-            ScSpecTypeDef::Tuple(inner) => {
-                let elements: Result<Vec<SpecType>, Error> =
-                    inner.value_types.iter().map(SpecType::try_from).collect();
-                Ok(SpecType::Tuple {
-                    elements: elements?,
-                })
-            }
-            ScSpecTypeDef::Vec(inner) => {
-                let element = SpecType::try_from(inner.element_type.as_ref());
-                Ok(SpecType::Vec {
-                    element: Box::new(element?),
-                })
-            }
-            ScSpecTypeDef::Udt(inner) => Ok(SpecType::UserDefined {
-                name: inner.name.to_string()?,
+            ScSpecTypeDef::Map(map) => Ok(SpecType::Map {
+                key: Box::new(SpecType::try_from(map.key_type.as_ref())?),
+                value: Box::new(SpecType::try_from(map.value_type.as_ref())?),
+            }),
+            ScSpecTypeDef::Option(opt) => Ok(SpecType::Option {
+                value: Box::new(SpecType::try_from(opt.value_type.as_ref())?),
+            }),
+            ScSpecTypeDef::Result(res) => Ok(SpecType::Result {
+                value: Box::new(SpecType::try_from(res.ok_type.as_ref())?),
+                error: Box::new(SpecType::try_from(res.error_type.as_ref())?),
+            }),
+            ScSpecTypeDef::Set(set) => Ok(SpecType::Set {
+                element: Box::new(SpecType::try_from(set.element_type.as_ref())?),
+            }),
+            ScSpecTypeDef::Tuple(tuple) => Ok(SpecType::Tuple {
+                elements: tuple
+                    .value_types
+                    .iter()
+                    .map(SpecType::try_from)
+                    .collect::<Result<Vec<_>, Error>>()?,
+            }),
+            ScSpecTypeDef::Vec(vec) => Ok(SpecType::Vec {
+                element: Box::new(SpecType::try_from(vec.element_type.as_ref())?),
+            }),
+            ScSpecTypeDef::Udt(udt) => Ok(SpecType::UserDefined {
+                name: udt.name.to_string()?,
             }),
             ScSpecTypeDef::U64 => Ok(SpecType::U64),
             ScSpecTypeDef::I64 => Ok(SpecType::I64),
@@ -187,36 +161,35 @@ impl TryFrom<&ScSpecEntry> for SpecType {
 
     fn try_from(spec: &ScSpecEntry) -> Result<Self, Self::Error> {
         match spec {
-            ScSpecEntry::FunctionV0(f) => {
-                let name = f.name.to_string()?;
-                let inputs: Result<Vec<FunctionInput>, Error> =
-                    f.inputs.iter().map(FunctionInput::try_from).collect();
-                let outputs: Result<Vec<SpecType>, Error> =
-                    f.outputs.iter().map(SpecType::try_from).collect();
-                Ok(SpecType::Function {
-                    name: name,
-                    inputs: inputs?,
-                    outputs: outputs?,
-                })
-            }
-            ScSpecEntry::UdtStructV0(s) => {
-                let name = s.name.to_string()?;
-                let fields: Result<Vec<StructField>, Error> =
-                    s.fields.iter().map(StructField::try_from).collect();
-                Ok(SpecType::Struct {
-                    name: name,
-                    fields: fields?,
-                })
-            }
-            ScSpecEntry::UdtUnionV0(u) => {
-                let name = u.name.to_string()?;
-                let cases: Result<Vec<UnionCase>, Error> =
-                    u.cases.iter().map(UnionCase::try_from).collect();
-                Ok(SpecType::Union {
-                    name: name,
-                    cases: cases?,
-                })
-            }
+            ScSpecEntry::FunctionV0(f) => Ok(SpecType::Function {
+                name: f.name.to_string()?,
+                inputs: f
+                    .inputs
+                    .iter()
+                    .map(FunctionInput::try_from)
+                    .collect::<Result<Vec<_>, Error>>()?,
+                outputs: f
+                    .outputs
+                    .iter()
+                    .map(SpecType::try_from)
+                    .collect::<Result<Vec<_>, Error>>()?,
+            }),
+            ScSpecEntry::UdtStructV0(s) => Ok(SpecType::Struct {
+                name: s.name.to_string()?,
+                fields: s
+                    .fields
+                    .iter()
+                    .map(StructField::try_from)
+                    .collect::<Result<Vec<_>, Error>>()?,
+            }),
+            ScSpecEntry::UdtUnionV0(u) => Ok(SpecType::Union {
+                name: u.name.to_string()?,
+                cases: u
+                    .cases
+                    .iter()
+                    .map(UnionCase::try_from)
+                    .collect::<Result<Vec<_>, Error>>()?,
+            }),
         }
     }
 }
