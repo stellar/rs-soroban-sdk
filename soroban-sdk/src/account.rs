@@ -3,7 +3,7 @@ use core::{borrow::Borrow, cmp::Ordering, fmt::Debug};
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    Bytes, BytesN, ConversionError, Env, EnvType, EnvVal, IntoVal, Object, TryFromVal, TryIntoVal,
+    Bytes, BytesN, ConversionError, Env, EnvVal, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
 /// Account references a Stellar account and provides access to information
@@ -91,19 +91,9 @@ impl AsRef<BytesN<32>> for Account {
     }
 }
 
-impl From<EnvType<[u8; 32]>> for Account {
-    fn from(ev: EnvType<[u8; 32]>) -> Self {
-        Account(ev.into())
-    }
-}
-
 impl IntoVal<Env, Account> for [u8; 32] {
     fn into_val(self, env: &Env) -> Account {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .into()
+        Account(self.into_val(env))
     }
 }
 

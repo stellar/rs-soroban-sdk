@@ -60,10 +60,11 @@ mod test_via_val {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Add1);
+        let client = Add1Client::new(&e, &contract_id);
 
         let x = 10i64;
         let y = 12i64;
-        let z = Add1Client::add1(&e, &contract_id, x, y);
+        let z = client.add1(x, y);
         assert!(z == 22);
     }
 
@@ -72,10 +73,11 @@ mod test_via_val {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Add2);
+        let client = Add2Client::new(&e, &contract_id);
 
         let x = 10i64;
         let y = 12i64;
-        let z = Add2Client::add2(&e, &contract_id, x, y);
+        let z = client.add2(x, y);
         assert!(z == 22);
     }
 }
