@@ -20,3 +20,10 @@ itertools = "0.10.3"
 darling = "0.14.1"
 sha2 = "0.10.2"
 wasmparser = "0.88.0"
+serde = "1.0.82"
+serde_derive = "1.0.82"
+serde_json = "1.0.82"
+soroban-env-host = { version = "0.0.3", features = ["vm", "serde"] }
+
+[dev_dependencies]
+pretty_assertions = "1.2.1"
