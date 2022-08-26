@@ -21,10 +21,11 @@ mod test {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
+        let client = ContractClient::new(&e, &contract_id);
 
         let x = 10i32;
         let y = 12i32;
-        let z = ContractClient::add(&e, &contract_id, x, y);
+        let z = client.add(&e, x, y);
         assert!(z == 22);
     }
 }

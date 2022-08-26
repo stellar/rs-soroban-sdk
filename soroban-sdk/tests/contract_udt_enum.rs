@@ -25,10 +25,11 @@ fn test_functional() {
     let env = Env::default();
     let contract_id = BytesN::from_array(&env, &[0; 32]);
     env.register_contract(&contract_id, Contract);
+    let client = ContractClient::new(&env, &contract_id);
 
     let a = Udt::Aaa;
     let b = Udt::Bbb(3);
-    let c = ContractClient::add(&env, &contract_id, a, b);
+    let c = client.add(&env, a, b);
     assert_eq!(c, (a, b));
 }
 

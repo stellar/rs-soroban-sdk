@@ -8,7 +8,7 @@ use core::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, RawValConvertible},
-    env::{EnvObj, EnvType, IntoVal},
+    env::{EnvObj, IntoVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
@@ -213,12 +213,6 @@ impl TryIntoVal<Env, Bytes> for ScVal {
 impl IntoVal<Env, Bytes> for &str {
     fn into_val(self, env: &Env) -> Bytes {
         Bytes::from_slice(env, self.as_bytes())
-    }
-}
-
-impl From<EnvType<&str>> for Bytes {
-    fn from(ev: EnvType<&str>) -> Self {
-        Bytes::from_slice(&ev.env, ev.val.as_bytes())
     }
 }
 
@@ -656,24 +650,27 @@ impl<const N: usize> AsRef<Bytes> for BytesN<N> {
     }
 }
 
-impl<const N: usize> From<EnvType<[u8; N]>> for BytesN<N> {
-    #[inline(always)]
-    fn from(ev: EnvType<[u8; N]>) -> Self {
-        let mut bin = Bytes::new(&ev.env);
-        for b in ev.val {
-            bin.push(b);
-        }
-        BytesN(bin)
+impl<const N: usize> IntoVal<Env, BytesN<N>> for BytesN<N> {
+    fn into_val(self, _env: &Env) -> BytesN<N> {
+        self
+    }
+}
+
+impl<const N: usize> IntoVal<Env, BytesN<N>> for &BytesN<N> {
+    fn into_val(self, _env: &Env) -> BytesN<N> {
+        self.clone()
     }
 }
 
 impl<const N: usize> IntoVal<Env, BytesN<N>> for [u8; N] {
     fn into_val(self, env: &Env) -> BytesN<N> {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .into()
+        BytesN::from_array(env, &self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, BytesN<N>> for &[u8; N] {
+    fn into_val(self, env: &Env) -> BytesN<N> {
+        BytesN::from_array(env, self)
     }
 }
 

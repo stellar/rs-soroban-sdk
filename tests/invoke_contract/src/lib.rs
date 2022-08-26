@@ -33,14 +33,17 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
+
         let add_contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&add_contract_id, AddContract);
+
         let contract_id = BytesN::from_array(&e, &[1; 32]);
         e.register_contract(&contract_id, Contract);
+        let client = ContractClient::new(&e, &contract_id);
 
         let x = 10i32;
         let y = 12i32;
-        let z = ContractClient::add_with(&e, &contract_id, x, y, add_contract_id);
+        let z = client.add_with(&e, x, y, add_contract_id);
         assert!(z == 22);
     }
 }

@@ -19,7 +19,8 @@ mod test {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
+        let client = ContractClient::new(&e, &contract_id);
 
-        ContractClient::empty(&e, &contract_id);
+        client.empty(&e);
     }
 }

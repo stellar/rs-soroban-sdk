@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, BytesN, Env};
+use soroban_sdk::{contractimpl, Env};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
@@ -13,7 +13,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
-        addcontract::ContractClient::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
+        addcontract::ContractClient::new(&env, &ADD_CONTRACT_ID).add(&env, x, y)
     }
 }
 
@@ -32,10 +32,11 @@ mod test {
 
         let contract_id = BytesN::from_array(&e, &[1; 32]);
         e.register_contract(&contract_id, Contract);
+        let client = ContractClient::new(&e, &contract_id);
 
         let x = 10i32;
         let y = 12i32;
-        let z = ContractClient::add_with(&e, &contract_id, x, y);
+        let z = client.add_with(&e, x, y);
         assert!(z == 22);
     }
 }
