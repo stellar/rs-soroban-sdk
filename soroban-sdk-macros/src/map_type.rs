@@ -105,7 +105,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     }
                     _ => Err(Error::new(
                         angle_bracketed.span(),
-                        "generics unsupported on user-defined custom types in contract functions",
+                        "generics unsupported on user-defined types in contract functions",
                     ))?,
                 }
                 }
