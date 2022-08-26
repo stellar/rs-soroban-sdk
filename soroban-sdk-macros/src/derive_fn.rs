@@ -140,8 +140,8 @@ pub fn derive_fn(
     let wrap_export_name = format!("{}", ident);
     let pub_mod_ident = format_ident!("{}", ident);
     let hidden_mod_ident = format_ident!("__{}", ident);
-    let deprecated_note = format!("use `{}::{}` instead", client_ident, &ident);
-    let deprecated_note_xdr = format!("use `{}::{}_xdr` instead", client_ident, &ident);
+    let deprecated_note = format!("use `{}::new(&env, &contract_id).{}` instead", client_ident, &ident);
+    let deprecated_note_xdr = format!("use `{}::new(&env, &contract_id).{}_xdr` instead", client_ident, &ident);
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
     } else {

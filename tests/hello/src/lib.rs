@@ -21,8 +21,9 @@ mod test {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
+        let client = ContractClient::new(&e, &contract_id);
 
-        let h = ContractClient::hello(&e, &contract_id);
+        let h = client.hello();
         assert!(h == symbol!("hello"));
     }
 }
