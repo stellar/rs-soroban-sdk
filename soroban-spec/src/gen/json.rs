@@ -78,11 +78,6 @@ pub enum SpecType {
     Status,
     Bytes,
     BigInt,
-    Function {
-        name: String,
-        inputs: Vec<FunctionInput>,
-        outputs: Vec<SpecType>,
-    },
     Map {
         key: Box<SpecType>,
         value: Box<SpecType>,
@@ -103,8 +98,19 @@ pub enum SpecType {
     Tuple {
         elements: Vec<SpecType>,
     },
-    UserDefined {
+    Custom {
         name: String,
+    },
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(tag = "type")]
+#[serde(rename_all = "camelCase")]
+pub enum EntryType {
+    Function {
+        name: String,
+        inputs: Vec<FunctionInput>,
+        outputs: Vec<SpecType>,
     },
     Struct {
         name: String,
@@ -145,7 +151,7 @@ impl TryFrom<&ScSpecTypeDef> for SpecType {
             ScSpecTypeDef::Vec(vec) => Ok(SpecType::Vec {
                 element: Box::new(SpecType::try_from(vec.element_type.as_ref())?),
             }),
-            ScSpecTypeDef::Udt(udt) => Ok(SpecType::UserDefined {
+            ScSpecTypeDef::Udt(udt) => Ok(SpecType::Custom {
                 name: udt.name.to_string()?,
             }),
             ScSpecTypeDef::U64 => Ok(SpecType::U64),
@@ -162,12 +168,12 @@ impl TryFrom<&ScSpecTypeDef> for SpecType {
     }
 }
 
-impl TryFrom<&ScSpecEntry> for SpecType {
+impl TryFrom<&ScSpecEntry> for EntryType {
     type Error = Error;
 
     fn try_from(spec: &ScSpecEntry) -> Result<Self, Self::Error> {
         match spec {
-            ScSpecEntry::FunctionV0(f) => Ok(SpecType::Function {
+            ScSpecEntry::FunctionV0(f) => Ok(EntryType::Function {
                 name: f.name.to_string()?,
                 inputs: f
                     .inputs
@@ -180,7 +186,7 @@ impl TryFrom<&ScSpecEntry> for SpecType {
                     .map(SpecType::try_from)
                     .collect::<Result<Vec<_>, Error>>()?,
             }),
-            ScSpecEntry::UdtStructV0(s) => Ok(SpecType::Struct {
+            ScSpecEntry::UdtStructV0(s) => Ok(EntryType::Struct {
                 name: s.name.to_string()?,
                 fields: s
                     .fields
@@ -188,7 +194,7 @@ impl TryFrom<&ScSpecEntry> for SpecType {
                     .map(StructField::try_from)
                     .collect::<Result<Vec<_>, Error>>()?,
             }),
-            ScSpecEntry::UdtUnionV0(u) => Ok(SpecType::Union {
+            ScSpecEntry::UdtUnionV0(u) => Ok(EntryType::Union {
                 name: u.name.to_string()?,
                 cases: u
                     .cases
@@ -204,7 +210,7 @@ impl TryFrom<&ScSpecEntry> for SpecType {
 mod test {
     use pretty_assertions::assert_eq;
 
-    use super::SpecType;
+    use super::EntryType;
 
     const EXAMPLE_WASM: &[u8] =
         include_bytes!("../../../target/wasm32-unknown-unknown/release/example_udt.wasm");
@@ -214,7 +220,7 @@ mod test {
         let entries = crate::read::from_wasm(EXAMPLE_WASM).unwrap();
         let mut json = "".to_string();
         for entry in &entries {
-            let json_entry: SpecType = entry.try_into().unwrap();
+            let json_entry: EntryType = entry.try_into().unwrap();
             json.push_str(&serde_json::to_string_pretty(&json_entry).unwrap());
         }
         assert_eq!(
@@ -231,7 +237,7 @@ mod test {
       "name": "UdtB",
       "values": [
         {
-          "type": "userDefined",
+          "type": "custom",
           "name": "UdtStruct"
         }
       ]
@@ -270,14 +276,14 @@ mod test {
     {
       "name": "a",
       "value": {
-        "type": "userDefined",
+        "type": "custom",
         "name": "UdtEnum"
       }
     },
     {
       "name": "b",
       "value": {
-        "type": "userDefined",
+        "type": "custom",
         "name": "UdtEnum"
       }
     }
