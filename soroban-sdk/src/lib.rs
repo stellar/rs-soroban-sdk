@@ -61,6 +61,8 @@ mod envhidden {
 #[doc(hidden)]
 pub use envhidden::*;
 
+mod operators;
+
 mod account;
 mod bigint;
 mod bytes;

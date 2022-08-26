@@ -260,6 +260,7 @@ impl Add for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<BigInt>::add);
 
 impl Add<u64> for BigInt {
     type Output = BigInt;
@@ -268,6 +269,7 @@ impl Add<u64> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<u64>::add);
 
 impl Add<i64> for BigInt {
     type Output = BigInt;
@@ -276,6 +278,7 @@ impl Add<i64> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<i64>::add);
 
 impl Add<u32> for BigInt {
     type Output = BigInt;
@@ -284,6 +287,7 @@ impl Add<u32> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<u32>::add);
 
 impl Add<i32> for BigInt {
     type Output = BigInt;
@@ -292,6 +296,7 @@ impl Add<i32> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<i32>::add);
 
 impl Sub for BigInt {
     type Output = BigInt;
@@ -302,6 +307,7 @@ impl Sub for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<BigInt>::sub);
 
 impl Sub<u64> for BigInt {
     type Output = BigInt;
@@ -310,6 +316,7 @@ impl Sub<u64> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<u64>::sub);
 
 impl Sub<i64> for BigInt {
     type Output = BigInt;
@@ -318,6 +325,7 @@ impl Sub<i64> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<i64>::sub);
 
 impl Sub<u32> for BigInt {
     type Output = BigInt;
@@ -326,6 +334,7 @@ impl Sub<u32> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<u32>::sub);
 
 impl Sub<i32> for BigInt {
     type Output = BigInt;
@@ -334,6 +343,7 @@ impl Sub<i32> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<i32>::sub);
 
 impl Mul for BigInt {
     type Output = BigInt;
@@ -344,6 +354,7 @@ impl Mul for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<BigInt>::mul);
 
 impl Mul<u64> for BigInt {
     type Output = BigInt;
@@ -352,6 +363,7 @@ impl Mul<u64> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<u64>::mul);
 
 impl Mul<i64> for BigInt {
     type Output = BigInt;
@@ -360,6 +372,7 @@ impl Mul<i64> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<i64>::mul);
 
 impl Mul<u32> for BigInt {
     type Output = BigInt;
@@ -368,6 +381,7 @@ impl Mul<u32> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<u32>::mul);
 
 impl Mul<i32> for BigInt {
     type Output = BigInt;
@@ -376,6 +390,7 @@ impl Mul<i32> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<i32>::mul);
 
 impl Div for BigInt {
     type Output = BigInt;
@@ -386,6 +401,7 @@ impl Div for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<BigInt>::div);
 
 impl Div<u64> for BigInt {
     type Output = BigInt;
@@ -394,6 +410,7 @@ impl Div<u64> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<u64>::div);
 
 impl Div<i64> for BigInt {
     type Output = BigInt;
@@ -402,6 +419,7 @@ impl Div<i64> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<i64>::div);
 
 impl Div<u32> for BigInt {
     type Output = BigInt;
@@ -410,6 +428,7 @@ impl Div<u32> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<u32>::div);
 
 impl Div<i32> for BigInt {
     type Output = BigInt;
@@ -418,6 +437,7 @@ impl Div<i32> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<i32>::div);
 
 impl Rem for BigInt {
     type Output = BigInt;
@@ -428,6 +448,7 @@ impl Rem for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<BigInt>::rem);
 
 impl Rem<u64> for BigInt {
     type Output = BigInt;
@@ -436,6 +457,7 @@ impl Rem<u64> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<u64>::rem);
 
 impl Rem<i64> for BigInt {
     type Output = BigInt;
@@ -444,6 +466,7 @@ impl Rem<i64> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<i64>::rem);
 
 impl Rem<u32> for BigInt {
     type Output = BigInt;
@@ -452,6 +475,7 @@ impl Rem<u32> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<u32>::rem);
 
 impl Rem<i32> for BigInt {
     type Output = BigInt;
@@ -460,6 +484,7 @@ impl Rem<i32> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<i32>::rem);
 
 impl BitAnd for BigInt {
     type Output = BigInt;
@@ -470,6 +495,7 @@ impl BitAnd for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<BigInt>::bitand);
 
 impl BitAnd<u64> for BigInt {
     type Output = BigInt;
@@ -478,6 +504,7 @@ impl BitAnd<u64> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<u64>::bitand);
 
 impl BitAnd<i64> for BigInt {
     type Output = BigInt;
@@ -486,6 +513,7 @@ impl BitAnd<i64> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<i64>::bitand);
 
 impl BitAnd<u32> for BigInt {
     type Output = BigInt;
@@ -494,6 +522,7 @@ impl BitAnd<u32> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<u32>::bitand);
 
 impl BitAnd<i32> for BigInt {
     type Output = BigInt;
@@ -502,6 +531,7 @@ impl BitAnd<i32> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<i32>::bitand);
 
 impl BitOr for BigInt {
     type Output = BigInt;
@@ -512,6 +542,7 @@ impl BitOr for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<BigInt>::bitor);
 
 impl BitOr<u64> for BigInt {
     type Output = BigInt;
@@ -520,6 +551,7 @@ impl BitOr<u64> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<u64>::bitor);
 
 impl BitOr<i64> for BigInt {
     type Output = BigInt;
@@ -528,6 +560,7 @@ impl BitOr<i64> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<i64>::bitor);
 
 impl BitOr<u32> for BigInt {
     type Output = BigInt;
@@ -536,6 +569,7 @@ impl BitOr<u32> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<u32>::bitor);
 
 impl BitOr<i32> for BigInt {
     type Output = BigInt;
@@ -544,6 +578,7 @@ impl BitOr<i32> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<i32>::bitor);
 
 impl BitXor for BigInt {
     type Output = BigInt;
@@ -554,6 +589,7 @@ impl BitXor for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<BigInt>::bitxor);
 
 impl BitXor<u64> for BigInt {
     type Output = BigInt;
@@ -562,6 +598,7 @@ impl BitXor<u64> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<u64>::bitxor);
 
 impl BitXor<i64> for BigInt {
     type Output = BigInt;
@@ -570,6 +607,7 @@ impl BitXor<i64> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<i64>::bitxor);
 
 impl BitXor<u32> for BigInt {
     type Output = BigInt;
@@ -578,6 +616,7 @@ impl BitXor<u32> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<u32>::bitxor);
 
 impl BitXor<i32> for BigInt {
     type Output = BigInt;
@@ -586,6 +625,7 @@ impl BitXor<i32> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<i32>::bitxor);
 
 impl Neg for BigInt {
     type Output = BigInt;
@@ -595,6 +635,7 @@ impl Neg for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Neg::neg);
 
 impl Not for BigInt {
     type Output = BigInt;
@@ -604,6 +645,7 @@ impl Not for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Not::not);
 
 impl Shl<BigInt> for BigInt {
     type Output = BigInt;
@@ -613,6 +655,7 @@ impl Shl<BigInt> for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<BigInt>::shl);
 
 impl Shl<u64> for BigInt {
     type Output = BigInt;
@@ -621,6 +664,7 @@ impl Shl<u64> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<u64>::shl);
 
 impl Shl<i64> for BigInt {
     type Output = BigInt;
@@ -629,6 +673,7 @@ impl Shl<i64> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<i64>::shl);
 
 impl Shl<u32> for BigInt {
     type Output = BigInt;
@@ -637,6 +682,7 @@ impl Shl<u32> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<u32>::shl);
 
 impl Shl<i32> for BigInt {
     type Output = BigInt;
@@ -645,6 +691,7 @@ impl Shl<i32> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<i32>::shl);
 
 impl Shr<BigInt> for BigInt {
     type Output = BigInt;
@@ -654,6 +701,7 @@ impl Shr<BigInt> for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<BigInt>::shr);
 
 impl Shr<u64> for BigInt {
     type Output = BigInt;
@@ -662,6 +710,7 @@ impl Shr<u64> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<u64>::shr);
 
 impl Shr<i64> for BigInt {
     type Output = BigInt;
@@ -670,6 +719,7 @@ impl Shr<i64> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<i64>::shr);
 
 impl Shr<u32> for BigInt {
     type Output = BigInt;
@@ -678,6 +728,7 @@ impl Shr<u32> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<u32>::shr);
 
 impl Shr<i32> for BigInt {
     type Output = BigInt;
@@ -686,6 +737,7 @@ impl Shr<i32> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<i32>::shr);
 
 impl PartialEq for BigInt {
     fn eq(&self, other: &Self) -> bool {
