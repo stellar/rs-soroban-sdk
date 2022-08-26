@@ -1,10 +1,10 @@
 use stellar_xdr::{
-    ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt,
-    ScSpecTypeVec,
+    ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeSet,
+    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
 use syn::{
-    spanned::Spanned, Error, GenericArgument, Path, PathArguments, PathSegment, Type, TypePath,
-    TypeTuple,
+    spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
+    Type, TypePath, TypeTuple,
 };
 
 #[allow(clippy::too_many_lines)]
@@ -13,42 +13,43 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
         Type::Path(TypePath {
             qself: None,
             path: Path { segments, .. },
-        }) => match segments.last() {
-            Some(PathSegment {
-                ident,
-                arguments: PathArguments::None,
-            }) => match &ident.to_string()[..] {
-                "u64" => Ok(ScSpecTypeDef::U64),
-                "i64" => Ok(ScSpecTypeDef::I64),
-                "u32" => Ok(ScSpecTypeDef::U32),
-                "i32" => Ok(ScSpecTypeDef::I32),
-                "bool" => Ok(ScSpecTypeDef::Bool),
-                "Symbol" => Ok(ScSpecTypeDef::Symbol),
-                "Bitset" => Ok(ScSpecTypeDef::Bitset),
-                "Status" => Ok(ScSpecTypeDef::Status),
-                "Bytes" => Ok(ScSpecTypeDef::Bytes),
-                "BigInt" => Ok(ScSpecTypeDef::BigInt),
-                s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: s.try_into().map_err(|e| {
-                        Error::new(
-                            t.span(),
-                            format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
-                        )
-                    })?,
-                })),
-            },
-            Some(PathSegment {
-                ident,
-                arguments: PathArguments::AngleBracketed(angle_bracketed),
-            }) => {
-                let args = angle_bracketed.args.iter().collect::<Vec<_>>();
-                match &ident.to_string()[..] {
+        }) => {
+            match segments.last() {
+                Some(PathSegment {
+                    ident,
+                    arguments: PathArguments::None,
+                }) => match &ident.to_string()[..] {
+                    "u64" => Ok(ScSpecTypeDef::U64),
+                    "i64" => Ok(ScSpecTypeDef::I64),
+                    "u32" => Ok(ScSpecTypeDef::U32),
+                    "i32" => Ok(ScSpecTypeDef::I32),
+                    "bool" => Ok(ScSpecTypeDef::Bool),
+                    "Symbol" => Ok(ScSpecTypeDef::Symbol),
+                    "Bitset" => Ok(ScSpecTypeDef::Bitset),
+                    "Status" => Ok(ScSpecTypeDef::Status),
+                    "Bytes" => Ok(ScSpecTypeDef::Bytes),
+                    "BigInt" => Ok(ScSpecTypeDef::BigInt),
+                    s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: s.try_into().map_err(|e| {
+                            Error::new(
+                                t.span(),
+                                format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
+                            )
+                        })?,
+                    })),
+                },
+                Some(PathSegment {
+                    ident,
+                    arguments: PathArguments::AngleBracketed(angle_bracketed),
+                }) => {
+                    let args = angle_bracketed.args.iter().collect::<Vec<_>>();
+                    match &ident.to_string()[..] {
                     "Option" => {
                         let t = match args.as_slice() {
                             [GenericArgument::Type(t)] => t,
                             [..] => Err(Error::new(
                                 t.span(),
-                                "incorrect number of generic arguments",
+                                "incorrect number of generic arguments, expect one for Option<T>",
                             ))?,
                         };
                         Ok(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
@@ -60,7 +61,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             [GenericArgument::Type(t)] => t,
                             [..] => Err(Error::new(
                                 t.span(),
-                                "incorrect number of generic arguments",
+                                "incorrect number of generic arguments, expect one for Vec<T>",
                             ))?,
                         };
                         Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
@@ -72,7 +73,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             [GenericArgument::Type(t)] => t,
                             [..] => Err(Error::new(
                                 t.span(),
-                                "incorrect number of generic arguments",
+                                "incorrect number of generic arguments, expect one for Set<T>",
                             ))?,
                         };
                         Ok(ScSpecTypeDef::Set(Box::new(ScSpecTypeSet {
@@ -84,7 +85,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
                             [..] => Err(Error::new(
                                 t.span(),
-                                "incorrect number of generic arguments",
+                                "incorrect number of generic arguments, expect two for Map<K, V>",
                             ))?,
                         };
                         Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
@@ -92,16 +93,25 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             value_type: Box::new(map_type(v)?),
                         })))
                     }
-                    // TODO: Add proper support for BytesN as a first class spec type.
-                    "BytesN" => Ok(ScSpecTypeDef::Bytes),
+                    "BytesN" => {
+                        let n = match args.as_slice() {
+                            [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
+                            [..] => Err(Error::new(
+                                t.span(),
+                                "incorrect number of generic arguments, expect one for BytesN<N>",
+                            ))?,
+                        };
+                        Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: n }))
+                    }
                     _ => Err(Error::new(
                         angle_bracketed.span(),
-                        "generics unsupported on user-defined types in contract functions",
+                        "generics unsupported on user-defined custom types in contract functions",
                     ))?,
                 }
+                }
+                _ => Err(Error::new(t.span(), "unsupported type"))?,
             }
-            _ => Err(Error::new(t.span(), "unsupported type"))?,
-        },
+        }
         Type::Tuple(TypeTuple { elems, .. }) => {
             Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
                 value_types: elems

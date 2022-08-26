@@ -83,6 +83,7 @@ pub enum Type {
     Result { value: Box<Type>, error: Box<Type> },
     Set { element: Box<Type> },
     Vec { element: Box<Type> },
+    BytesN { n: u32 },
     Tuple { elements: Vec<Type> },
     Custom { name: String },
 }
@@ -138,6 +139,7 @@ impl TryFrom<&ScSpecTypeDef> for Type {
             ScSpecTypeDef::Udt(udt) => Ok(Type::Custom {
                 name: udt.name.to_string()?,
             }),
+            ScSpecTypeDef::BytesN(b) => Ok(Type::BytesN { n: b.n }),
             ScSpecTypeDef::U64 => Ok(Type::U64),
             ScSpecTypeDef::I64 => Ok(Type::I64),
             ScSpecTypeDef::U32 => Ok(Type::U32),

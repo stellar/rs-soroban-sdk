@@ -74,6 +74,10 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             let type_idents = t.value_types.iter().map(generate_type_ident);
             quote! { (#(#type_idents,)*) }
         }
+        ScSpecTypeDef::BytesN(b) => {
+            let n = b.n;
+            quote! { ::soroban_sdk::BytesN<#n> }
+        }
         ScSpecTypeDef::Udt(u) => {
             let ident = format_ident!("{}", u.name.to_string().unwrap());
             quote! { #ident }
