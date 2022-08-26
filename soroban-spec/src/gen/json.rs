@@ -44,7 +44,7 @@ impl TryFrom<&ScSpecFunctionInputV0> for FunctionInput {
 #[serde(rename_all = "camelCase")]
 pub struct UnionCase {
     name: String,
-    value: Option<SpecType>,
+    values: Vec<SpecType>,
 }
 
 impl TryFrom<&ScSpecUdtUnionCaseV0> for UnionCase {
@@ -53,7 +53,13 @@ impl TryFrom<&ScSpecUdtUnionCaseV0> for UnionCase {
     fn try_from(c: &ScSpecUdtUnionCaseV0) -> Result<Self, Self::Error> {
         Ok(UnionCase {
             name: c.name.to_string()?,
-            value: c.type_.as_ref().map(SpecType::try_from).transpose()?,
+            values: c
+                .type_
+                .as_ref()
+                .map(SpecType::try_from)
+                .transpose()?
+                .into_iter()
+                .collect(),
         })
     }
 }
@@ -196,6 +202,8 @@ impl TryFrom<&ScSpecEntry> for SpecType {
 
 #[cfg(test)]
 mod test {
+    use pretty_assertions::assert_eq;
+
     use super::SpecType;
 
     const EXAMPLE_WASM: &[u8] =
@@ -217,14 +225,16 @@ mod test {
   "cases": [
     {
       "name": "UdtA",
-      "value": null
+      "values": []
     },
     {
       "name": "UdtB",
-      "value": {
-        "type": "userDefined",
-        "name": "UdtStruct"
-      }
+      "values": [
+        {
+          "type": "userDefined",
+          "name": "UdtStruct"
+        }
+      ]
     }
   ]
 }{
@@ -277,7 +287,7 @@ mod test {
       "type": "i64"
     }
   ]
-}"#
+}"#,
         );
     }
 }
