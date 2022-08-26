@@ -44,6 +44,8 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
 
+    // TODO: Use imp.trait_ in generating the client ident, to create a unique
+    // client for each trait impl for a contract, to avoid conflicts.
     let client_ident = if let Type::Path(path) = &**ty {
         path.path
             .segments
