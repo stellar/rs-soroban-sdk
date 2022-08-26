@@ -220,3 +220,91 @@ impl TryFrom<&ScSpecEntry> for SpecType {
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::SpecType;
+
+    const EXAMPLE_WASM: &[u8] =
+        include_bytes!("../../../target/wasm32-unknown-unknown/release/example_udt.wasm");
+
+    #[test]
+    fn example() {
+        let entries = crate::read::from_wasm(EXAMPLE_WASM).unwrap();
+        let mut json = "".to_string();
+        for entry in &entries {
+            let json_entry: SpecType = entry.try_into().unwrap();
+            json.push_str(&serde_json::to_string_pretty(&json_entry).unwrap());
+        }
+        assert_eq!(
+            json,
+            r#"{
+  "type": "union",
+  "name": "UdtEnum",
+  "cases": [
+    {
+      "name": "UdtA",
+      "value": null
+    },
+    {
+      "name": "UdtB",
+      "value": {
+        "type": "userDefined",
+        "name": "UdtStruct"
+      }
+    }
+  ]
+}{
+  "type": "struct",
+  "name": "UdtStruct",
+  "fields": [
+    {
+      "name": "a",
+      "value": {
+        "type": "i64"
+      }
+    },
+    {
+      "name": "b",
+      "value": {
+        "type": "i64"
+      }
+    },
+    {
+      "name": "c",
+      "value": {
+        "type": "vec",
+        "element": {
+          "type": "i64"
+        }
+      }
+    }
+  ]
+}{
+  "type": "function",
+  "name": "add",
+  "inputs": [
+    {
+      "name": "a",
+      "value": {
+        "type": "userDefined",
+        "name": "UdtEnum"
+      }
+    },
+    {
+      "name": "b",
+      "value": {
+        "type": "userDefined",
+        "name": "UdtEnum"
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "type": "i64"
+    }
+  ]
+}"#
+        );
+    }
+}
