@@ -14,6 +14,7 @@
 ///
 /// See [crate::BigInt] for example usage.
 macro_rules! impl_ref_op {
+    // Operators with a RHS.
     ($ty:ident, $op:ident<$rhs:ident> :: $op_fn:ident) => {
         impl<'a> $op<&'a $rhs> for &'a $ty {
             type Output = $ty;
@@ -39,6 +40,7 @@ macro_rules! impl_ref_op {
             }
         }
     };
+    // Operators without a RHS.
     ($ty:ident, $op:ident :: $op_fn:ident) => {
         impl<'a> $op for &'a $ty {
             type Output = $ty;
