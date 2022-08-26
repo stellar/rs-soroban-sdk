@@ -121,8 +121,11 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
             quote!{
                 pub fn #fn_ident(env: &::soroban_sdk::Env, contract_id: &::soroban_sdk::BytesN<32>, #(#fn_input_types),*) #fn_output {
                     use ::soroban_sdk::IntoVal;
-                    const FN_SYMBOL: ::soroban_sdk::Symbol = ::soroban_sdk::Symbol::from_str(#fn_name);
-                    env.invoke_contract(contract_id, &FN_SYMBOL, ::soroban_sdk::vec![env, #(#fn_input_names.into_env_val(&env)),*])
+                    env.invoke_contract(
+                        contract_id,
+                        &::soroban_sdk::symbol!(#fn_name),
+                        ::soroban_sdk::vec![env, #(#fn_input_names.into_env_val(&env)),*],
+                    )
                 }
 
                 #[cfg(feature = "testutils")]
