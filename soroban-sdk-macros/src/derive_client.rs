@@ -5,7 +5,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::Comma,
-    Error, FnArg, Ident, ItemImpl, ItemTrait, Pat, ReturnType, Token, Type, TypePath,
+    Attribute, Error, FnArg, Ident, ItemImpl, ItemTrait, Pat, ReturnType, Token, Type, TypePath,
 };
 
 use crate::syn_ext;
@@ -38,6 +38,7 @@ impl ClientItem {
 
 impl Parse for ClientItem {
     fn parse(input: ParseStream) -> syn::Result<Self> {
+        _ = input.call(Attribute::parse_outer);
         _ = input.parse::<Token![pub]>();
         let lookahead = input.lookahead1();
         if lookahead.peek(Token![trait]) {
