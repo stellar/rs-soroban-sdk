@@ -257,7 +257,7 @@ impl Add for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_add(self.0.to_object(), rhs.0.to_object());
-        BigInt::try_from_val(env, b).unwrap()
+        Self::try_from_val(env, b).unwrap()
     }
 }
 crate::operators::impl_ref_op!(BigInt, Add<BigInt>::add);
