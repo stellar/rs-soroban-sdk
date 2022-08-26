@@ -63,7 +63,7 @@ mod test_via_val {
 
         let x = 10i64;
         let y = 12i64;
-        let z = add1::invoke(&e, &contract_id, &x, &y);
+        let z = Add1Client::add1(&e, &contract_id, x, y);
         assert!(z == 22);
     }
 
@@ -75,7 +75,7 @@ mod test_via_val {
 
         let x = 10i64;
         let y = 12i64;
-        let z = add2::invoke(&e, &contract_id, &x, &y);
+        let z = Add2Client::add2(&e, &contract_id, x, y);
         assert!(z == 22);
     }
 }

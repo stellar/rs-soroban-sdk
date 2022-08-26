@@ -12,7 +12,7 @@ impl Contract {
 mod test {
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{empty, Contract};
+    use crate::{Contract, ContractClient};
 
     #[test]
     fn test_hello() {
@@ -20,6 +20,6 @@ mod test {
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
 
-        empty::invoke(&e, &contract_id);
+        ContractClient::empty(&e, &contract_id);
     }
 }

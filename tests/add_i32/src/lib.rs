@@ -14,7 +14,7 @@ impl Contract {
 mod test {
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{add, Contract};
+    use crate::{Contract, ContractClient};
 
     #[test]
     fn test_add() {
@@ -24,7 +24,7 @@ mod test {
 
         let x = 10i32;
         let y = 12i32;
-        let z = add::invoke(&e, &contract_id, &x, &y);
+        let z = ContractClient::add(&e, &contract_id, x, y);
         assert!(z == 22);
     }
 }

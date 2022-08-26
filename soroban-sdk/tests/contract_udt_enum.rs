@@ -28,7 +28,7 @@ fn test_functional() {
 
     let a = Udt::Aaa;
     let b = Udt::Bbb(3);
-    let c = add::invoke(&env, &contract_id, &a, &b);
+    let c = ContractClient::add(&env, &contract_id, a, b);
     assert_eq!(c, (a, b));
 }
 

@@ -13,7 +13,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
-        addcontract::Client::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
+        addcontract::ContractClient::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
     }
 }
 
@@ -21,7 +21,7 @@ impl Contract {
 mod test {
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{add_with, addcontract, Contract, ADD_CONTRACT_ID};
+    use crate::{addcontract, Contract, ContractClient, ADD_CONTRACT_ID};
 
     #[test]
     fn test_add() {
@@ -35,7 +35,7 @@ mod test {
 
         let x = 10i32;
         let y = 12i32;
-        let z = add_with::invoke(&e, &contract_id, &x, &y);
+        let z = ContractClient::add_with(&e, &contract_id, x, y);
         assert!(z == 22);
     }
 }
