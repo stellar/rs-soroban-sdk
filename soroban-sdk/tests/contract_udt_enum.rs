@@ -1,8 +1,7 @@
 #![cfg(feature = "testutils")]
 
 use soroban_sdk::{
-    contractclient, contractimpl, contracttype, symbol, vec, BytesN, ConversionError, Env, IntoVal,
-    TryFromVal,
+    contractimpl, contracttype, symbol, vec, BytesN, ConversionError, Env, IntoVal, TryFromVal,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -15,7 +14,6 @@ pub enum Udt {
 pub struct Contract;
 
 #[contractimpl]
-#[contractclient(name = "Client")]
 impl Contract {
     pub fn add(a: Udt, b: Udt) -> (Udt, Udt) {
         (a, b)
@@ -30,7 +28,7 @@ fn test_functional() {
 
     let a = Udt::Aaa;
     let b = Udt::Bbb(3);
-    let c = Client::add(&env, &contract_id, a, b);
+    let c = ContractClient::add(&env, &contract_id, a, b);
     assert_eq!(c, (a, b));
 }
 

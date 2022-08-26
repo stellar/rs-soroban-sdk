@@ -18,7 +18,8 @@ use sha2::{Digest, Sha256};
 use soroban_spec::gen::rust::{generate_from_file, GenerateFromFileError};
 use std::fs;
 use syn::{
-    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Visibility,
+    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Type,
+    Visibility,
 };
 
 use self::derive_client::ClientItem;
@@ -61,10 +62,21 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         })
         .collect();
 
+    let client_ident = if let Type::Path(path) = &**ty {
+        path.path
+            .segments
+            .last()
+            .map(|name| format!("{}Client", name.ident))
+    } else {
+        None
+    }
+    .unwrap_or_else(|| format!("Client"));
+
     match derived {
         Ok(derived_ok) => {
             let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
             quote! {
+                #[::soroban_sdk::contractclient(name = #client_ident)]
                 #imp
                 #derived_ok
                 #cfs

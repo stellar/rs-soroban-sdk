@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractclient, contractimpl, Env};
+use soroban_sdk::{contractimpl, Env};
 
 // There are two ways to export contract fns:
 
@@ -8,7 +8,6 @@ use soroban_sdk::{contractclient, contractimpl, Env};
 pub struct Add1;
 
 #[contractimpl]
-#[contractclient(name = "Add1Client")]
 impl Add1 {
     fn addimpl(a: i64, b: i64) -> i64 {
         a + b
@@ -27,7 +26,6 @@ pub trait Add2Trait {
 pub struct Add2;
 
 #[contractimpl]
-#[contractclient(name = "Add2Client")]
 impl Add2Trait for Add2 {
     fn add2(_e: Env, a: i64, b: i64) -> i64 {
         a + b

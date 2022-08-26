@@ -1,10 +1,9 @@
 #![no_std]
-use soroban_sdk::{contractclient, contractimpl};
+use soroban_sdk::contractimpl;
 
 pub struct Contract;
 
 #[contractimpl]
-#[contractclient(name = "Client")]
 impl Contract {
     pub fn empty() {}
 }
@@ -13,7 +12,7 @@ impl Contract {
 mod test {
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{Client, Contract};
+    use crate::{Contract, ContractClient};
 
     #[test]
     fn test_hello() {
@@ -21,6 +20,6 @@ mod test {
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
 
-        Client::empty(&e, &contract_id);
+        ContractClient::empty(&e, &contract_id);
     }
 }

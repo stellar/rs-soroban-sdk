@@ -1,6 +1,6 @@
 #![cfg(feature = "testutils")]
 
-use soroban_sdk::{contractclient, contractimpl, BytesN, Env};
+use soroban_sdk::{contractimpl, BytesN, Env};
 use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
@@ -13,7 +13,6 @@ mod addcontract {
 pub struct Contract;
 
 #[contractimpl]
-#[contractclient(name = "Client")]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
         addcontract::Client::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)
@@ -32,7 +31,7 @@ fn test_functional() {
 
     let x = 10i32;
     let y = 12i32;
-    let z = Client::add_with(&e, &contract_id, x, y);
+    let z = ContractClient::add_with(&e, &contract_id, x, y);
     assert!(z == 22);
 }
 

@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractclient, contractimpl, BytesN, Env};
+use soroban_sdk::{contractimpl, BytesN, Env};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
@@ -11,7 +11,6 @@ mod addcontract {
 pub struct Contract;
 
 #[contractimpl]
-#[contractclient(name = "ContractClient")]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
         addcontract::Client::add(&env, &BytesN::from_array(&env, &ADD_CONTRACT_ID), x, y)

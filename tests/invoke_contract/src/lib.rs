@@ -1,10 +1,9 @@
 #![no_std]
-use soroban_sdk::{contractclient, contractimpl, symbol, vec, BytesN, Env, IntoVal};
+use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, IntoVal};
 
 pub struct Contract;
 
 #[contractimpl]
-#[contractclient(name = "Client")]
 impl Contract {
     // TODO: Prevent arg overlap with generated args.
     pub fn add_with(env: Env, x: i32, y: i32, _contract_id: BytesN<32>) -> i32 {
@@ -29,7 +28,7 @@ impl AddContract {
 mod test {
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{AddContract, Client, Contract};
+    use crate::{AddContract, Contract, ContractClient};
 
     #[test]
     fn test_add() {
@@ -41,7 +40,7 @@ mod test {
 
         let x = 10i32;
         let y = 12i32;
-        let z = Client::add_with(&e, &contract_id, x, y, add_contract_id);
+        let z = ContractClient::add_with(&e, &contract_id, x, y, add_contract_id);
         assert!(z == 22);
     }
 }

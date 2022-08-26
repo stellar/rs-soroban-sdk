@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractclient, contractimpl, contracttype, Vec};
+use soroban_sdk::{contractimpl, contracttype, Vec};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -20,7 +20,6 @@ pub struct Contract;
 
 #[cfg_attr(feature = "export", contractimpl(export = true))]
 #[cfg_attr(not(feature = "export"), contractimpl(export = false))]
-#[contractclient(name = "Client")]
 impl Contract {
     pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
         let a = match a {
@@ -171,7 +170,7 @@ mod test {
             b: 12,
             c: vec![&e, 1],
         };
-        let z = Client::add(&e, &contract_id, UdtEnum::UdtA, UdtEnum::UdtB(udt));
+        let z = ContractClient::add(&e, &contract_id, UdtEnum::UdtA, UdtEnum::UdtB(udt));
         assert_eq!(z, 22);
     }
 

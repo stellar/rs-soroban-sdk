@@ -1,10 +1,9 @@
 #![no_std]
-use soroban_sdk::{contractclient, contractimpl};
+use soroban_sdk::contractimpl;
 
 pub struct Contract;
 
 #[contractimpl]
-#[contractclient(name = "Client")]
 impl Contract {
     pub fn add(a: i32, b: i32) -> i32 {
         a + b
@@ -15,7 +14,7 @@ impl Contract {
 mod test {
     use soroban_sdk::{BytesN, Env};
 
-    use crate::{Client, Contract};
+    use crate::{Contract, ContractClient};
 
     #[test]
     fn test_add() {
@@ -25,7 +24,7 @@ mod test {
 
         let x = 10i32;
         let y = 12i32;
-        let z = Client::add(&e, &contract_id, x, y);
+        let z = ContractClient::add(&e, &contract_id, x, y);
         assert!(z == 22);
     }
 }
