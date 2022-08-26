@@ -43,6 +43,16 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
+
+    let client_ident = if let Type::Path(path) = &**ty {
+        path.path
+            .segments
+            .last()
+            .map(|name| format!("{}Client", name.ident))
+    } else {
+        None
+    }
+    .unwrap_or_else(|| format!("Client"));
     let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
         .iter()
@@ -58,19 +68,10 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 &m.sig.output,
                 args.export,
                 &trait_ident,
+                &client_ident,
             )
         })
         .collect();
-
-    let client_ident = if let Type::Path(path) = &**ty {
-        path.path
-            .segments
-            .last()
-            .map(|name| format!("{}Client", name.ident))
-    } else {
-        None
-    }
-    .unwrap_or_else(|| format!("Client"));
 
     match derived {
         Ok(derived_ok) => {
