@@ -16,7 +16,12 @@ build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
 
 build-optimized: fmt
-	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build --target wasm32-unknown-unknown --release \
+	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build  --target wasm32-unknown-unknown --release \
+		--workspace \
+		--exclude soroban-spec \
+		--exclude soroban-sdk \
+		--exclude soroban-sdk-macros \
+		--exclude soroban-sdk-auth \
 		-Z build-std=std,panic_abort \
 		-Z build-std-features=panic_immediate_abort
 	cd target-tiny/wasm32-unknown-unknown/release/ && \
