@@ -123,6 +123,12 @@ impl Env {
         Events::new(self)
     }
 
+    /// Get the contract ID for a contract deployed or that could be deployed.
+    #[inline(always)]
+    pub fn contract_id(&self, namespace: impl Into<IdNamespace>, salt: impl Into<Bytes>) -> Events {
+        todo!()
+    }
+
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn get_current_contract(&self) -> BytesN<32> {
         internal::Env::get_current_contract(self)
@@ -203,21 +209,6 @@ impl Env {
         internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn create_contract_from_contract(&self, contract: Bytes, salt: BytesN<32>) -> BytesN<32> {
-        let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
-        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
-        let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
-        id_obj.try_into_val(self).unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn create_token_from_contract(&self, salt: BytesN<32>) -> BytesN<32> {
-        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
-        let id_obj = internal::Env::create_token_from_contract(self, salt_obj);
-        id_obj.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]

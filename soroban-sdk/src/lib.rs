@@ -40,6 +40,8 @@ pub use soroban_sdk_macros::{
 mod env;
 
 pub mod xdr;
+mod namespace;
+mod deployer;
 
 pub use env::ConversionError;
 
