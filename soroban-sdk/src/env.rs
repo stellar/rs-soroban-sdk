@@ -125,6 +125,7 @@ impl Env {
     }
 
     /// Get the contract ID for a contract deployed or that could be deployed.
+    #[doc(hidden)]
     #[inline(always)]
     pub fn contract_id(
         &self,

@@ -36,6 +36,7 @@ impl Deployer {
 
 pub enum DeployerNamespace {
     Current(CurrentNamespace),
+    #[doc(hidden)]
     Ed25519(Ed25519Namespace),
 }
 

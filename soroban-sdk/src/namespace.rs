@@ -8,11 +8,13 @@ pub struct ContractNamespace {
     pub contract_id: BytesN<32>,
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Ed25519Namespace {
     pub public_key: BytesN<32>,
 }
 
+#[doc(hidden)]
 pub enum IdNamespace {
     Current(CurrentNamespace),
     Contract(ContractNamespace),
