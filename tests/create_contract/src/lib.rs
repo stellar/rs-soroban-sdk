@@ -12,9 +12,9 @@ impl Contract {
         let _contract_id = e.deployer(CurrentNamespace).deploy_wasm(&salt, &wasm);
 
         let public_key = BytesN::from_array(&e, &[0; 32]);
+        let signature = BytesN::from_array(&e, &[0; 64]);
         let namespace = Ed25519Namespace { public_key };
         let _contract_id = e.contract_id(&namespace, &salt);
-        let signature = BytesN::from_array(&e, &[0; 64]);
         let _contract_id = e.deployer(&namespace).deploy_wasm(&salt, &wasm, signature);
     }
 }
