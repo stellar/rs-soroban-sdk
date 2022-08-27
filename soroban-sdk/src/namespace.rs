@@ -1,24 +1,6 @@
-use crate::{
-    deployer::{DeployToken, DeployWasm},
-    env::internal::Env as _,
-    Bytes, BytesN, Env, TryFromVal,
-};
+use crate::BytesN;
 
 pub struct CurrentNamespace;
-
-impl DeployWasm for CurrentNamespace {
-    fn deploy_wasm(&self, env: &Env, salt: Bytes, wasm: Bytes) -> BytesN<32> {
-        let id = env.create_contract_from_contract(wasm.to_object(), salt.to_object());
-        BytesN::<32>::try_from_val(env, id).unwrap()
-    }
-}
-
-impl DeployToken for CurrentNamespace {
-    fn deploy_token(&self, env: &Env, salt: Bytes) -> BytesN<32> {
-        let id = env.create_token_from_contract(salt.to_object());
-        BytesN::<32>::try_from_val(env, id).unwrap()
-    }
-}
 
 pub struct ContractNamespace {
     pub contract_id: BytesN<32>,
