@@ -175,6 +175,13 @@ impl From<&Bytes> for Object {
     }
 }
 
+impl From<&Bytes> for Bytes {
+    #[inline(always)]
+    fn from(v: &Bytes) -> Self {
+        v.clone()
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Bytes> for ScVal {
     type Error = ConversionError;
