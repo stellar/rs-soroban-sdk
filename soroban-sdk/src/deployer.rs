@@ -17,11 +17,29 @@ impl Deployer<CurrentNamespaceDeployer> for CurrentNamespace {
     }
 }
 
+impl Deployer<CurrentNamespaceDeployer> for &CurrentNamespace {
+    fn deployer(&self, env: &Env) -> CurrentNamespaceDeployer {
+        CurrentNamespaceDeployer {
+            env: env.clone(),
+            namespace: **self,
+        }
+    }
+}
+
 impl Deployer<Ed25519NamespaceDeployer> for Ed25519Namespace {
     fn deployer(&self, env: &Env) -> Ed25519NamespaceDeployer {
         Ed25519NamespaceDeployer {
             env: env.clone(),
             namespace: self.clone(),
+        }
+    }
+}
+
+impl Deployer<Ed25519NamespaceDeployer> for &Ed25519Namespace {
+    fn deployer(&self, env: &Env) -> Ed25519NamespaceDeployer {
+        Ed25519NamespaceDeployer {
+            env: env.clone(),
+            namespace: (*self).clone(),
         }
     }
 }
