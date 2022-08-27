@@ -33,20 +33,3 @@ impl From<Ed25519Namespace> for IdNamespace {
         Self::Ed25519(v)
     }
 }
-
-pub enum DeployerNamespace {
-    Current(CurrentNamespace),
-    Ed25519(Ed25519Namespace),
-}
-
-impl From<Ed25519Namespace> for DeployerNamespace {
-    fn from(v: Ed25519Namespace) -> Self {
-        Self::Ed25519(v)
-    }
-}
-
-impl From<CurrentNamespace> for DeployerNamespace {
-    fn from(v: CurrentNamespace) -> Self {
-        Self::Current(v)
-    }
-}

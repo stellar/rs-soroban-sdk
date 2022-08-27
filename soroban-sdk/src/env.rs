@@ -47,8 +47,9 @@ pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::Events;
-use crate::{Bytes, BytesN, ContractData, Ledger};
+use crate::{
+    deployer::Deployer, Bytes, BytesN, ContractData, DeployerNamespace, Events, IdNamespace, Ledger,
+};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -125,8 +126,18 @@ impl Env {
 
     /// Get the contract ID for a contract deployed or that could be deployed.
     #[inline(always)]
-    pub fn contract_id(&self, namespace: impl Into<IdNamespace>, salt: impl Into<Bytes>) -> Events {
+    pub fn contract_id(
+        &self,
+        _namespace: impl Into<IdNamespace>,
+        _salt: impl Into<Bytes>,
+    ) -> Events {
         todo!()
+    }
+
+    /// Get the contract ID for a contract deployed or that could be deployed.
+    #[inline(always)]
+    pub fn deployer(&self, namespace: impl Into<DeployerNamespace>) -> Deployer {
+        Deployer::new(self, namespace.into())
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.

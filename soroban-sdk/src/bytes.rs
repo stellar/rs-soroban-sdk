@@ -753,6 +753,13 @@ impl<const N: usize> From<BytesN<N>> for Bytes {
     }
 }
 
+impl<const N: usize> From<&BytesN<N>> for Bytes {
+    #[inline(always)]
+    fn from(v: &BytesN<N>) -> Self {
+        v.0.clone()
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     type Error = ConversionError;

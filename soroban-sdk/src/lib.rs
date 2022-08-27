@@ -40,8 +40,6 @@ pub use soroban_sdk_macros::{
 mod env;
 
 pub mod xdr;
-mod namespace;
-mod deployer;
 
 pub use env::ConversionError;
 
@@ -69,10 +67,12 @@ mod account;
 mod bigint;
 mod bytes;
 mod contract_data;
+mod deployer;
 mod events;
 pub mod iter;
 mod ledger;
 mod map;
+mod namespace;
 mod set;
 mod symbol;
 mod vec;
@@ -82,9 +82,11 @@ pub use bigint::BigInt;
 pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
+pub use deployer::{Deployer, DeployerNamespace};
 pub use events::Events;
 pub use ledger::Ledger;
 pub use map::Map;
+pub use namespace::{ContractNamespace, CurrentNamespace, Ed25519Namespace, IdNamespace};
 pub use set::Set;
 pub use vec::Vec;
 
