@@ -133,7 +133,10 @@ impl Env {
         todo!()
     }
 
-    /// Get the contract ID for a contract deployed or that could be deployed.
+    /// Get a [Deployer] for deploying contracts.
+    ///
+    /// The namespace given will define the namespace of the contract ID given
+    /// to the deployed contract.
     #[inline(always)]
     pub fn deployer<D>(&self, namespace: impl Deployer<D>) -> D {
         namespace.deployer(self)
