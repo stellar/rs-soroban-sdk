@@ -45,9 +45,21 @@ impl From<Ed25519Namespace> for DeployerNamespace {
     }
 }
 
+impl From<&Ed25519Namespace> for DeployerNamespace {
+    fn from(v: &Ed25519Namespace) -> Self {
+        Self::Ed25519(v.clone())
+    }
+}
+
 impl From<CurrentNamespace> for DeployerNamespace {
     fn from(v: CurrentNamespace) -> Self {
         Self::Current(v)
+    }
+}
+
+impl From<&CurrentNamespace> for DeployerNamespace {
+    fn from(v: &CurrentNamespace) -> Self {
+        Self::Current(*v)
     }
 }
 
