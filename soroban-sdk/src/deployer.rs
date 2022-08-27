@@ -4,13 +4,35 @@ use crate::{
     Bytes, BytesN, Env, TryFromVal,
 };
 
-pub struct Deployer {
-    env: Env,
-    namespace: DeployerNamespace,
+pub trait Deployer<D> {
+    fn deployer(&self, env: &Env) -> D;
 }
 
-impl Deployer {
-    pub(crate) fn new(env: &Env, namespace: DeployerNamespace) -> Self {
+impl Deployer<CurrentNamespaceDeployer> for CurrentNamespace {
+    fn deployer(&self, env: &Env) -> CurrentNamespaceDeployer {
+        CurrentNamespaceDeployer {
+            env: env.clone(),
+            namespace: *self,
+        }
+    }
+}
+
+impl Deployer<Ed25519NamespaceDeployer> for Ed25519Namespace {
+    fn deployer(&self, env: &Env) -> Ed25519NamespaceDeployer {
+        Ed25519NamespaceDeployer {
+            env: env.clone(),
+            namespace: self.clone(),
+        }
+    }
+}
+
+pub struct CurrentNamespaceDeployer {
+    env: Env,
+    namespace: CurrentNamespace,
+}
+
+impl CurrentNamespaceDeployer {
+    pub(crate) fn new(env: &Env, namespace: CurrentNamespace) -> Self {
         Self {
             env: env.clone(),
             namespace,
@@ -19,69 +41,58 @@ impl Deployer {
 
     pub fn deploy_wasm(&self, salt: impl Into<Bytes>, wasm: impl Into<Bytes>) -> BytesN<32> {
         let env = &self.env;
-        match &self.namespace {
-            DeployerNamespace::Current(c) => c.deploy_wasm(env, salt.into(), wasm.into()),
-            DeployerNamespace::Ed25519(_ed25519) => todo!(),
-        }
+        let id =
+            env.create_contract_from_contract(wasm.into().to_object(), salt.into().to_object());
+        BytesN::<32>::try_from_val(env, id).unwrap()
     }
 
     pub fn deploy_token(&self, salt: impl Into<Bytes>) -> BytesN<32> {
         let env = &self.env;
-        match &self.namespace {
-            DeployerNamespace::Current(c) => c.deploy_token(env, salt.into()),
-            DeployerNamespace::Ed25519(_ed25519) => todo!(),
-        }
-    }
-}
-
-pub enum DeployerNamespace {
-    Current(CurrentNamespace),
-    #[doc(hidden)]
-    Ed25519(Ed25519Namespace),
-}
-
-impl From<Ed25519Namespace> for DeployerNamespace {
-    fn from(v: Ed25519Namespace) -> Self {
-        Self::Ed25519(v)
-    }
-}
-
-impl From<&Ed25519Namespace> for DeployerNamespace {
-    fn from(v: &Ed25519Namespace) -> Self {
-        Self::Ed25519(v.clone())
-    }
-}
-
-impl From<CurrentNamespace> for DeployerNamespace {
-    fn from(v: CurrentNamespace) -> Self {
-        Self::Current(v)
-    }
-}
-
-impl From<&CurrentNamespace> for DeployerNamespace {
-    fn from(v: &CurrentNamespace) -> Self {
-        Self::Current(*v)
-    }
-}
-
-trait DeployWasm {
-    fn deploy_wasm(&self, env: &Env, salt: Bytes, wasm: Bytes) -> BytesN<32>;
-}
-
-trait DeployToken {
-    fn deploy_token(&self, env: &Env, salt: Bytes) -> BytesN<32>;
-}
-
-impl DeployWasm for CurrentNamespace {
-    fn deploy_wasm(&self, env: &Env, salt: Bytes, wasm: Bytes) -> BytesN<32> {
-        let id = env.create_contract_from_contract(wasm.to_object(), salt.to_object());
+        let id = env.create_token_from_contract(salt.into().to_object());
         BytesN::<32>::try_from_val(env, id).unwrap()
     }
 }
 
-impl DeployToken for CurrentNamespace {
-    fn deploy_token(&self, env: &Env, salt: Bytes) -> BytesN<32> {
-        let id = env.create_token_from_contract(salt.to_object());
+pub struct Ed25519NamespaceDeployer {
+    env: Env,
+    namespace: Ed25519Namespace,
+}
+
+impl Ed25519NamespaceDeployer {
+    pub(crate) fn new(env: &Env, namespace: Ed25519Namespace) -> Self {
+        Self {
+            env: env.clone(),
+            namespace,
+        }
+    }
+
+    pub fn deploy_wasm(
+        &self,
+        salt: impl Into<Bytes>,
+        wasm: impl Into<Bytes>,
+        signature: impl Into<BytesN<64>>,
+    ) -> BytesN<32> {
+        let env = &self.env;
+        let id = env.create_contract_from_ed25519(
+            wasm.into().to_object(),
+            salt.into().to_object(),
+            self.namespace.public_key.to_object(),
+            signature.into().to_object(),
+        );
+        BytesN::<32>::try_from_val(env, id).unwrap()
+    }
+
+    pub fn deploy_token(
+        &self,
+        salt: impl Into<Bytes>,
+        signature: impl Into<BytesN<64>>,
+    ) -> BytesN<32> {
+        let env = &self.env;
+        let id = env.create_token_from_ed25519(
+            salt.into().to_object(),
+            self.namespace.public_key.to_object(),
+            signature.into().to_object(),
+        );
         BytesN::<32>::try_from_val(env, id).unwrap()
     }
 }

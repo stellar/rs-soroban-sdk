@@ -82,7 +82,7 @@ pub use bigint::BigInt;
 pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
-pub use deployer::{Deployer, DeployerNamespace};
+pub use deployer::{CurrentNamespaceDeployer, Deployer, Ed25519NamespaceDeployer};
 pub use events::Events;
 pub use ledger::Ledger;
 pub use map::Map;
