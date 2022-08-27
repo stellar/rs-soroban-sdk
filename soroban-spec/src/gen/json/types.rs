@@ -1,7 +1,6 @@
 use serde::Serialize;
 use soroban_env_host::xdr::{
-    Error, ScSpecEntry, ScSpecFunctionInputV0, ScSpecTypeDef, ScSpecUdtStructFieldV0,
-    ScSpecUdtUnionCaseV0,
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtUnionCaseV0,
 };
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
@@ -11,14 +10,12 @@ pub struct StructField {
     value: Type,
 }
 
-impl TryFrom<&ScSpecUdtStructFieldV0> for StructField {
-    type Error = Error;
-
-    fn try_from(f: &ScSpecUdtStructFieldV0) -> Result<Self, Self::Error> {
-        Ok(StructField {
-            name: f.name.to_string()?,
-            value: Type::try_from(&f.type_)?,
-        })
+impl From<&ScSpecUdtStructFieldV0> for StructField {
+    fn from(f: &ScSpecUdtStructFieldV0) -> Self {
+        StructField {
+            name: f.name.to_string_lossy(),
+            value: (&f.type_).into(),
+        }
     }
 }
 
@@ -29,14 +26,12 @@ pub struct FunctionInput {
     value: Type,
 }
 
-impl TryFrom<&ScSpecFunctionInputV0> for FunctionInput {
-    type Error = Error;
-
-    fn try_from(f: &ScSpecFunctionInputV0) -> Result<Self, Self::Error> {
-        Ok(FunctionInput {
-            name: f.name.to_string()?,
-            value: Type::try_from(&f.type_)?,
-        })
+impl From<&ScSpecFunctionInputV0> for FunctionInput {
+    fn from(f: &ScSpecFunctionInputV0) -> Self {
+        FunctionInput {
+            name: f.name.to_string_lossy(),
+            value: (&f.type_).into(),
+        }
     }
 }
 
@@ -47,20 +42,12 @@ pub struct UnionCase {
     values: Vec<Type>,
 }
 
-impl TryFrom<&ScSpecUdtUnionCaseV0> for UnionCase {
-    type Error = Error;
-
-    fn try_from(c: &ScSpecUdtUnionCaseV0) -> Result<Self, Self::Error> {
-        Ok(UnionCase {
-            name: c.name.to_string()?,
-            values: c
-                .type_
-                .as_ref()
-                .map(Type::try_from)
-                .transpose()?
-                .into_iter()
-                .collect(),
-        })
+impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
+    fn from(c: &ScSpecUdtUnionCaseV0) -> Self {
+        UnionCase {
+            name: c.name.to_string_lossy(),
+            values: c.type_.as_ref().map(Type::from).into_iter().collect(),
+        }
     }
 }
 
@@ -107,87 +94,63 @@ pub enum Entry {
     },
 }
 
-impl TryFrom<&ScSpecTypeDef> for Type {
-    type Error = Error;
-
-    fn try_from(spec: &ScSpecTypeDef) -> Result<Self, Self::Error> {
+impl From<&ScSpecTypeDef> for Type {
+    fn from(spec: &ScSpecTypeDef) -> Self {
         match spec {
-            ScSpecTypeDef::Map(map) => Ok(Type::Map {
-                key: Box::new(Type::try_from(map.key_type.as_ref())?),
-                value: Box::new(Type::try_from(map.value_type.as_ref())?),
-            }),
-            ScSpecTypeDef::Option(opt) => Ok(Type::Option {
-                value: Box::new(Type::try_from(opt.value_type.as_ref())?),
-            }),
-            ScSpecTypeDef::Result(res) => Ok(Type::Result {
-                value: Box::new(Type::try_from(res.ok_type.as_ref())?),
-                error: Box::new(Type::try_from(res.error_type.as_ref())?),
-            }),
-            ScSpecTypeDef::Set(set) => Ok(Type::Set {
-                element: Box::new(Type::try_from(set.element_type.as_ref())?),
-            }),
-            ScSpecTypeDef::Tuple(tuple) => Ok(Type::Tuple {
-                elements: tuple
-                    .value_types
-                    .iter()
-                    .map(Type::try_from)
-                    .collect::<Result<Vec<_>, Error>>()?,
-            }),
-            ScSpecTypeDef::Vec(vec) => Ok(Type::Vec {
-                element: Box::new(Type::try_from(vec.element_type.as_ref())?),
-            }),
-            ScSpecTypeDef::Udt(udt) => Ok(Type::Custom {
-                name: udt.name.to_string()?,
-            }),
-            ScSpecTypeDef::BytesN(b) => Ok(Type::BytesN { n: b.n }),
-            ScSpecTypeDef::U64 => Ok(Type::U64),
-            ScSpecTypeDef::I64 => Ok(Type::I64),
-            ScSpecTypeDef::U32 => Ok(Type::U32),
-            ScSpecTypeDef::I32 => Ok(Type::I32),
-            ScSpecTypeDef::Bool => Ok(Type::Bool),
-            ScSpecTypeDef::Symbol => Ok(Type::Symbol),
-            ScSpecTypeDef::Bitset => Ok(Type::Bitset),
-            ScSpecTypeDef::Status => Ok(Type::Status),
-            ScSpecTypeDef::Bytes => Ok(Type::Bytes),
-            ScSpecTypeDef::BigInt => Ok(Type::BigInt),
+            ScSpecTypeDef::Map(map) => Type::Map {
+                key: Box::new(Type::from(map.key_type.as_ref())),
+                value: Box::new(Type::from(map.value_type.as_ref())),
+            },
+            ScSpecTypeDef::Option(opt) => Type::Option {
+                value: Box::new(Type::from(opt.value_type.as_ref())),
+            },
+            ScSpecTypeDef::Result(res) => Type::Result {
+                value: Box::new(Type::from(res.ok_type.as_ref())),
+                error: Box::new(Type::from(res.error_type.as_ref())),
+            },
+            ScSpecTypeDef::Set(set) => Type::Set {
+                element: Box::new(Type::from(set.element_type.as_ref())),
+            },
+            ScSpecTypeDef::Tuple(tuple) => Type::Tuple {
+                elements: tuple.value_types.iter().map(Type::from).collect(),
+            },
+            ScSpecTypeDef::Vec(vec) => Type::Vec {
+                element: Box::new(Type::from(vec.element_type.as_ref())),
+            },
+            ScSpecTypeDef::Udt(udt) => Type::Custom {
+                name: udt.name.to_string_lossy(),
+            },
+            ScSpecTypeDef::BytesN(b) => Type::BytesN { n: b.n },
+            ScSpecTypeDef::U64 => Type::U64,
+            ScSpecTypeDef::I64 => Type::I64,
+            ScSpecTypeDef::U32 => Type::U32,
+            ScSpecTypeDef::I32 => Type::I32,
+            ScSpecTypeDef::Bool => Type::Bool,
+            ScSpecTypeDef::Symbol => Type::Symbol,
+            ScSpecTypeDef::Bitset => Type::Bitset,
+            ScSpecTypeDef::Status => Type::Status,
+            ScSpecTypeDef::Bytes => Type::Bytes,
+            ScSpecTypeDef::BigInt => Type::BigInt,
         }
     }
 }
 
-impl TryFrom<&ScSpecEntry> for Entry {
-    type Error = Error;
-
-    fn try_from(spec: &ScSpecEntry) -> Result<Self, Self::Error> {
+impl From<&ScSpecEntry> for Entry {
+    fn from(spec: &ScSpecEntry) -> Self {
         match spec {
-            ScSpecEntry::FunctionV0(f) => Ok(Entry::Function {
-                name: f.name.to_string()?,
-                inputs: f
-                    .inputs
-                    .iter()
-                    .map(FunctionInput::try_from)
-                    .collect::<Result<Vec<_>, Error>>()?,
-                outputs: f
-                    .outputs
-                    .iter()
-                    .map(Type::try_from)
-                    .collect::<Result<Vec<_>, Error>>()?,
-            }),
-            ScSpecEntry::UdtStructV0(s) => Ok(Entry::Struct {
-                name: s.name.to_string()?,
-                fields: s
-                    .fields
-                    .iter()
-                    .map(StructField::try_from)
-                    .collect::<Result<Vec<_>, Error>>()?,
-            }),
-            ScSpecEntry::UdtUnionV0(u) => Ok(Entry::Union {
-                name: u.name.to_string()?,
-                cases: u
-                    .cases
-                    .iter()
-                    .map(UnionCase::try_from)
-                    .collect::<Result<Vec<_>, Error>>()?,
-            }),
+            ScSpecEntry::FunctionV0(f) => Entry::Function {
+                name: f.name.to_string_lossy(),
+                inputs: f.inputs.iter().map(FunctionInput::from).collect(),
+                outputs: f.outputs.iter().map(Type::from).collect(),
+            },
+            ScSpecEntry::UdtStructV0(s) => Entry::Struct {
+                name: s.name.to_string_lossy(),
+                fields: s.fields.iter().map(StructField::from).collect(),
+            },
+            ScSpecEntry::UdtUnionV0(u) => Entry::Union {
+                name: u.name.to_string_lossy(),
+                cases: u.cases.iter().map(UnionCase::from).collect(),
+            },
         }
     }
 }
