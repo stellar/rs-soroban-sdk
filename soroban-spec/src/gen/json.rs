@@ -50,11 +50,10 @@ pub fn generate_from_wasm(wasm: &[u8]) -> Result<String, FromWasmError> {
 }
 
 pub fn generate(spec: &[ScSpecEntry]) -> String {
-    spec.iter().map(|entry| {
-        let entry: Entry = entry.try_into().unwrap();
-        serde_json::to_string_pretty(&entry)
-            .expect("serialization of the spec entries should not have any failure cases as all keys are strings and the serialize implementations are derived")
-    }).collect()
+    spec.iter()
+        .map(Entry::from)
+        .map(|e| serde_json::to_string_pretty(&e).expect("serialization of the spec entries should not have any failure cases as all keys are strings and the serialize implementations are derived"))
+        .collect()
 }
 
 #[cfg(test)]
