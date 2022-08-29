@@ -44,11 +44,11 @@ exclude = [
 soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-auth = { path = "soroban-sdk-auth" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "2c084e9d" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "2c084e9d" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "2c084e9d" }
-soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "2c084e9d" }
-soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "2c084e9d" }
+soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "73a944a2" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "73a944a2" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "73a944a2" }
+soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "73a944a2" }
+soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "73a944a2" }
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "5b129da0" }
 
 # soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
