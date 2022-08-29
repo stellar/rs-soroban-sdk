@@ -3,10 +3,11 @@
 //! Contracts are assigned an ID that is derived from a set of arguments. A
 //! contract may choose which set of arguments to use to deploy with:
 //!
-//! - [Deployer::current] – A contract deployed by the currently executing
-//! contract will have an ID derived from the currently executing contract's ID.
+//! - [Deployer::from_current_contract] – A contract deployed by the currently
+//! executing contract will have an ID derived from the currently executing
+//! contract's ID.
 //!
-//! - [Deployer::ed25519] – A contract deployed by the currently executing
+//! - [Deployer::from_ed25519] – A contract deployed by the currently executing
 //! contract with an ed25519 public key will have an ID derived from the ed25519
 //! public key.
 //!
@@ -43,7 +44,7 @@ impl Deployer {
 
     #[doc(hidden)]
     /// Get a deployer for contracts that derive their contract IDs from the
-    /// give contract ID and the provided salt.
+    /// given contract ID and the provided salt.
     pub fn from_other_contract(
         &self,
         contract_id: impl IntoVal<Env, BytesN<32>>,
@@ -58,7 +59,7 @@ impl Deployer {
     }
 
     /// Get a deployer for contracts that derive their contract IDs from the
-    /// give ed25519 public key and the provided salt.
+    /// given ed25519 public key and the provided salt.
     pub fn from_ed25519(
         &self,
         public_key: impl IntoVal<Env, BytesN<32>>,
@@ -114,7 +115,7 @@ impl DeployerDerivedFromCurrentContract {
 
 #[doc(hidden)]
 /// A deployer for contracts that derive their contract IDs from the
-/// give contract ID and the provided salt.
+/// given contract ID and the provided salt.
 ///
 /// This deployer is unable to actually deploy contracts because the currently
 /// executing contract can only deploy contracts with IDs derived from its own
