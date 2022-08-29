@@ -2,7 +2,7 @@ use core::fmt::Debug;
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, BytesN, Map};
-use crate::{env::internal, vec, Env, IntoVal, RawVal, Vec};
+use crate::{env::internal, Env, IntoVal, RawVal, Vec};
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
 const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
