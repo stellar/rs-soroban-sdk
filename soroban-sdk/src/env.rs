@@ -24,6 +24,8 @@ pub mod internal {
 }
 
 #[cfg(feature = "testutils")]
+use internal::budget::Budget;
+#[cfg(feature = "testutils")]
 pub use internal::LedgerInfo;
 
 pub use internal::meta;
@@ -252,7 +254,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
-        let env_impl = internal::EnvImpl::with_storage(storage);
+        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, Budget::default());
 
         let l = LedgerInfo {
             protocol_version: 0,
@@ -395,12 +397,14 @@ impl Env {
                     return;
                 }
                 // Allow if the last debug log entry contains the status of requested.
-                if let Some(HostEvent::Debug(dbg)) = clone.env_impl.get_events().0.last() {
-                    for arg in dbg.args.iter() {
-                        if let DebugArg::Val(v) = arg {
-                            if let Ok(st) = TryInto::<Status>::try_into(*v) {
-                                if st == status {
-                                    return;
+                if let Some(events) = clone.env_impl.get_events().ok().map(|e| e.0) {
+                    if let Some(HostEvent::Debug(dbg)) = events.last() {
+                        for arg in dbg.args.iter() {
+                            if let DebugArg::Val(v) = arg {
+                                if let Ok(st) = TryInto::<Status>::try_into(*v) {
+                                    if st == status {
+                                        return;
+                                    }
                                 }
                             }
                         }

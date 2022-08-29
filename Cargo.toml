@@ -16,6 +16,7 @@ members = [
     "tests/udt",
     "tests/contract_data",
     "tests/create_contract",
+    "bytes-lit"
 ]
 
 exclude = [
@@ -44,12 +45,12 @@ exclude = [
 soroban-sdk = { path = "soroban-sdk" }
 soroban-sdk-auth = { path = "soroban-sdk-auth" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "52ed59a" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "52ed59a" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "52ed59a" }
-soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "52ed59a" }
-soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "09dbeaaa" }
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "61de11d" }
+soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "fb125eae" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "fb125eae" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "fb125eae" }
+soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "fb125eae" }
+soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "fb125eae" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "5b129da0" }
 
 # soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 # soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
