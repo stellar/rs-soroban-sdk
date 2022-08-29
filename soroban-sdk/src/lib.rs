@@ -72,7 +72,6 @@ mod events;
 pub mod iter;
 mod ledger;
 mod map;
-pub mod namespace;
 mod set;
 mod symbol;
 mod vec;
@@ -85,7 +84,6 @@ pub use contract_data::ContractData;
 pub use events::Events;
 pub use ledger::Ledger;
 pub use map::Map;
-pub use namespace::{ContractNamespace, CurrentNamespace, Ed25519Namespace, Namespace};
 pub use set::Set;
 pub use vec::Vec;
 
