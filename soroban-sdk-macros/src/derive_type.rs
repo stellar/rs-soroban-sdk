@@ -159,7 +159,6 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             #[inline(always)]
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScMap) -> Result<Self, Self::Error> {
                 use soroban_sdk::xdr::Validate;
-                // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
                 let map = val;
                 if map.len() != #field_count_usize {
@@ -465,7 +464,6 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             #[inline(always)]
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScVec) -> Result<Self, Self::Error> {
                 use soroban_sdk::xdr::Validate;
-                // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
 
                 let vec = val;
