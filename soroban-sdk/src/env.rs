@@ -49,9 +49,6 @@ pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger};
 
-#[cfg(doc)]
-use crate::deploy::{CurrentNamespace, Ed25519Namespace};
-
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
 ///
@@ -136,8 +133,8 @@ impl Env {
     /// To deploy a contract that will be assigned an ID derived from an ed25519
     /// public key, use [Ed25519Namespace].
     #[inline(always)]
-    pub fn deployer<D>(&self, namespace: impl Deployer<D>) -> D {
-        namespace.deployer(self)
+    pub fn deployer(&self) -> Deployer {
+        Deployer::new(self)
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
