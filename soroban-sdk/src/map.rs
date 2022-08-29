@@ -193,6 +193,16 @@ where
     }
 }
 
+impl<K, V> IntoVal<Env, RawVal> for &Map<K, V>
+where
+    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.to_raw()
+    }
+}
+
 impl<K, V> From<Map<K, V>> for RawVal
 where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,

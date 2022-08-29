@@ -118,7 +118,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                     self.env.invoke_contract(
                         &self.contract_id,
                         &::soroban_sdk::symbol!(#fn_name),
-                        ::soroban_sdk::vec![&self.env, #(#fn_input_names.clone().into_env_val(&self.env)),*],
+                        ::soroban_sdk::vec![&self.env, #(#fn_input_names.into_env_val(&self.env)),*],
                     )
                 }
 

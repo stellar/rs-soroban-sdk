@@ -140,6 +140,12 @@ impl IntoVal<Env, RawVal> for Bytes {
     }
 }
 
+impl IntoVal<Env, RawVal> for &Bytes {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.to_raw()
+    }
+}
+
 impl From<Bytes> for RawVal {
     #[inline(always)]
     fn from(v: Bytes) -> Self {
@@ -709,6 +715,12 @@ impl<const N: usize> TryIntoVal<Env, BytesN<N>> for RawVal {
 impl<const N: usize> IntoVal<Env, RawVal> for BytesN<N> {
     fn into_val(self, _env: &Env) -> RawVal {
         self.into()
+    }
+}
+
+impl<const N: usize> IntoVal<Env, RawVal> for &BytesN<N> {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.to_raw()
     }
 }
 
