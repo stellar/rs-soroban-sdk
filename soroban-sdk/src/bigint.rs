@@ -180,9 +180,21 @@ impl IntoVal<Env, RawVal> for BigInt {
     }
 }
 
+impl IntoVal<Env, RawVal> for &BigInt {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
+    }
+}
+
 impl From<BigInt> for RawVal {
     fn from(b: BigInt) -> Self {
         b.0.into()
+    }
+}
+
+impl From<&BigInt> for RawVal {
+    fn from(b: &BigInt) -> Self {
+        b.0.to_raw()
     }
 }
 

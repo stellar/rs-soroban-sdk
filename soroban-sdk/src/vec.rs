@@ -178,6 +178,15 @@ where
     }
 }
 
+impl<T> IntoVal<Env, RawVal> for &Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.to_raw()
+    }
+}
+
 impl<T> From<Vec<T>> for RawVal
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
