@@ -8,13 +8,58 @@ use crate::public_types::{
     SignaturePayloadV0,
 };
 
+/// Users of this module will need to pass a struct to check_auth that
+/// implements NonceAuth. NonceAuth should manage nonces in the contracts
+/// storage, and wrap the Signature being verified.
+///
+/// ### Examples
+/// ```
+/// use soroban_sdk::{BigInt, Env, contracttype};
+/// use soroban_sdk_auth::{check_auth,
+///     public_types::{Identifier, Signature},
+///     NonceAuth,
+/// };
+///
+/// #[contracttype]
+/// pub enum DataKey {
+///     Acc(Identifier),
+///     Nonce(Identifier)
+/// }
+/// struct WrappedAuth(Signature);
+///
+/// impl NonceAuth for WrappedAuth {
+///     fn read_nonce(e: &Env, id: Identifier) -> BigInt {
+///        let key = DataKey::Nonce(id);
+///        if let Some(nonce) = e.contract_data().get(key) {
+///             nonce.unwrap()
+///        } else {
+///             BigInt::zero(e)
+///        }
+///     }
+///    
+///     fn read_and_increment_nonce(&self, e: &Env, id: Identifier) -> BigInt {
+///         let key = DataKey::Nonce(id.clone());
+///         let nonce = Self::read_nonce(e, id);
+///         e.contract_data()
+///             .set(key, nonce.clone() + BigInt::from_u32(e, 1));
+///         nonce
+///     }
+///    
+///     fn signature(&self) -> &Signature {
+///         &self.0
+///     }
+/// }
+/// ```
 pub trait NonceAuth {
+    /// Return the nonce stored in the contract.
     fn read_nonce(e: &Env, id: Identifier) -> BigInt;
+    /// Return the nonce stored in the contract, and then increment it.
     fn read_and_increment_nonce(&self, e: &Env, id: Identifier) -> BigInt;
-    fn get_keyed_auth(&self) -> &Signature;
+    /// Return the Signature used for authorization.
+    fn signature(&self) -> &Signature;
 }
 
-pub fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args: Vec<RawVal>) {
+fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args: Vec<RawVal>) {
     let msg = SignaturePayloadV0 {
         function,
         contract: env.get_current_contract(),
@@ -30,12 +75,7 @@ pub fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, 
     );
 }
 
-pub fn check_account_auth(
-    env: &Env,
-    auth: &AccountSignatures,
-    function: Symbol,
-    args: Vec<RawVal>,
-) {
+fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, args: Vec<RawVal>) {
     let acc = Account::from_public_key(&auth.account_id).unwrap();
 
     let msg = SignaturePayloadV0 {
@@ -80,12 +120,13 @@ pub fn check_account_auth(
     }
 }
 
-// Note that nonce is not used by KeyedAuthorization::Contract
+/// Checks a Signature that should be wrapped in a struct that implements NonceAuth.
+/// Note that the nonce is expected to be 0 if the signature is of type Signature::Contract.
 pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, args: Vec<RawVal>)
 where
     T: NonceAuth,
 {
-    match auth.get_keyed_auth() {
+    match auth.signature() {
         Signature::Contract => {
             if nonce != BigInt::from_i32(env, 0) {
                 panic!("nonce should be zero for Contract")
