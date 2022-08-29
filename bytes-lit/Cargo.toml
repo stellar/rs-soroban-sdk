@@ -1,6 +1,6 @@
 [package]
-name = "array-from-lit-int"
-description = "Convert literal integers to arrays."
+name = "bytes-lit"
+description = "Convert literal integers to bytes."
 homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]

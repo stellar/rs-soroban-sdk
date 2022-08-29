@@ -66,7 +66,7 @@ macro_rules! bytes {
         $crate::Bytes::from_array($env, &[$($x),+])
     };
     ($env:expr, $x:tt $(,)?) => {
-        $crate::Bytes::from_array($env, &::array_from_lit_int::array_from_lit_int!($x))
+        $crate::Bytes::from_array($env, &::bytes_lit::bytes!($x))
     };
 }
 

@@ -60,10 +60,10 @@ macro_rules! bigint {
         $crate::BigInt::from_slice($env, &[$($x),+])
     };
     ($env:expr, $x:tt $(,)?) => {
-        $crate::BigInt::from_slice($env, &::array_from_lit_int::array_from_lit_int!($x))
+        $crate::BigInt::from_slice($env, &::bytes_lit::bytes!($x))
     };
     ($env:expr, -$x:tt $(,)?) => {
-        $crate::BigInt::from_sign_and_slice($env, &$crate::Sign::Minus, &::array_from_lit_int::array_from_lit_int!($x));
+        $crate::BigInt::from_sign_and_slice($env, &$crate::Sign::Minus, &::bytes_lit::bytes!($x))
     };
 }
 

@@ -8,12 +8,15 @@ use syn::LitInt;
 
 extern crate proc_macro;
 
+/// Bytes converts literals into an array of bytes.
+///
+/// Currently supports only integer literals of unbounded size.
 #[proc_macro]
-pub fn array_from_lit_int(input: TokenStream) -> TokenStream {
-    array_from_lit_int2(input.into()).into()
+pub fn bytes(input: TokenStream) -> TokenStream {
+    bytes2(input.into()).into()
 }
 
-fn array_from_lit_int2(input: TokenStream2) -> TokenStream2 {
+fn bytes2(input: TokenStream2) -> TokenStream2 {
     let lit = match syn::parse2::<LitInt>(input) {
         Ok(lit) => lit,
         Err(e) => return e.to_compile_error(),
@@ -25,19 +28,19 @@ fn array_from_lit_int2(input: TokenStream2) -> TokenStream2 {
 
 #[cfg(test)]
 mod test {
-    use crate::array_from_lit_int2;
+    use crate::bytes2;
     use pretty_assertions::assert_eq;
     use quote::quote;
     use syn::ExprArray;
 
     #[test]
     fn hex() {
-        let tokens = array_from_lit_int2(quote! {0x1});
+        let tokens = bytes2(quote! {0x1});
         let parsed = syn::parse2::<ExprArray>(tokens).unwrap();
         let expect = syn::parse_quote!([1u8]);
         assert_eq!(parsed, expect);
 
-        let tokens = array_from_lit_int2(quote! {0x928374892abc});
+        let tokens = bytes2(quote! {0x928374892abc});
         let parsed = syn::parse2::<ExprArray>(tokens).unwrap();
         let expect = syn::parse_quote!([146u8, 131u8, 116u8, 137u8, 42u8, 188u8]);
         assert_eq!(parsed, expect);
@@ -45,8 +48,7 @@ mod test {
 
     #[test]
     fn base10() {
-        let tokens =
-            array_from_lit_int2(quote! {340_282_366_920_938_463_463_374_607_431_768_211_455u128});
+        let tokens = bytes2(quote! {340_282_366_920_938_463_463_374_607_431_768_211_455u128});
         let parsed = syn::parse2::<ExprArray>(tokens).unwrap();
         let expect = syn::parse_quote!([
             255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8,
@@ -54,8 +56,7 @@ mod test {
         ]);
         assert_eq!(parsed, expect);
 
-        let tokens =
-            array_from_lit_int2(quote! {340_282_366_920_938_463_463_374_607_431_768_211_456});
+        let tokens = bytes2(quote! {340_282_366_920_938_463_463_374_607_431_768_211_456});
         let parsed = syn::parse2::<ExprArray>(tokens).unwrap();
         let expect = syn::parse_quote!([
             1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8
