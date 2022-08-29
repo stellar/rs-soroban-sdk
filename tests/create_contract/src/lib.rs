@@ -8,7 +8,7 @@ impl Contract {
     // Note that anyone can create a contract here with any salt, so a users call to
     // this could be frontrun and the same salt taken.
     pub fn create(e: Env, wasm: Bytes, salt: Bytes) {
-        let deployer = e.deployer().derived_from_self(&salt);
+        let deployer = e.deployer().derived_from_current_contract(&salt);
         let _contract_id = deployer.id();
         let _contract_id = deployer.deploy(&wasm);
 
