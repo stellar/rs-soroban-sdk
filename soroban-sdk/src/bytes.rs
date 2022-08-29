@@ -25,13 +25,48 @@ pub type Binary = Bytes;
 #[deprecated(note = "use soroban_sdk::BytesN")]
 pub type FixedBinary<const N: usize> = BytesN<N>;
 
+/// Create a [Bytes] with an array, or an integer or hex literal.
+///
+/// The first argument in the list must be a reference to an [Env].
+///
+/// The second argument can be an [u8] array, or an integer literal of unbounded
+/// size in any form: base10, hex, etc.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, bytes};
+///
+/// let env = Env::default();
+/// let bytes = bytes!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+/// assert_eq!(bytes.len(), 32);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bytes};
+///
+/// let env = Env::default();
+/// let bytes = bytes!(&env, [2, 0]);
+/// assert_eq!(bytes.len(), 2);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bytesbytes
+///
+/// let env = Env::default();
+/// let bytes = bytes!(&env);
+/// assert_eq!(bytes.len(), 0);
+/// ```
 #[macro_export]
 macro_rules! bytes {
-    ($env:expr) => {
+    ($env:expr $(,)?) => {
         $crate::Bytes::new($env)
     };
-    ($env:expr, $($x:expr),+ $(,)?) => {
+    ($env:expr, [$($x:expr),+ $(,)?] $(,)?) => {
         $crate::Bytes::from_array($env, &[$($x),+])
+    };
+    ($env:expr, $x:tt $(,)?) => {
+        $crate::Bytes::from_array($env, &::array_from_lit_int::array_from_lit_int!($x))
     };
 }
 
@@ -939,20 +974,43 @@ mod test {
     }
 
     #[test]
-    fn test_bin_macro() {
+    fn macro_bytes() {
         let env = Env::default();
-        assert_eq!(bytes![&env], Bytes::new(&env));
-        assert_eq!(bytes![&env, 1], {
+        assert_eq!(bytes!(&env), Bytes::new(&env));
+        assert_eq!(bytes!(&env, 1), {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bytes![&env, 1,], {
+        assert_eq!(bytes!(&env, 1,), {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bytes![&env, 3, 2, 1,], {
+        assert_eq!(bytes!(&env, [3, 2, 1,]), {
+            let mut b = Bytes::new(&env);
+            b.push(3);
+            b.push(2);
+            b.push(1);
+            b
+        });
+    }
+
+    #[test]
+    fn macro_bytes_hex() {
+        let env = Env::default();
+        assert_eq!(bytes!(&env), Bytes::new(&env));
+        assert_eq!(bytes!(&env, 1), {
+            let mut b = Bytes::new(&env);
+            b.push(1);
+            b
+        });
+        assert_eq!(bytes!(&env, 1,), {
+            let mut b = Bytes::new(&env);
+            b.push(1);
+            b
+        });
+        assert_eq!(bytes!(&env, 0x30201), {
             let mut b = Bytes::new(&env);
             b.push(3);
             b.push(2);

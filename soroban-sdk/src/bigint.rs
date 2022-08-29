@@ -11,6 +11,62 @@ use super::{
     Bytes, ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
+/// Create a [BigInt] with an integer literal, or an array.
+///
+/// The first argument in the list must be a reference to an [Env].
+///
+/// The second argument can be an integer literal of unbounded size in any form:
+/// base10, hex, etc, or an [u8] array.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, bigint};
+///
+/// let env = Env::default();
+/// let big = bigint!(&env, -5);
+/// assert_eq!(big.to_i64(), -5i64);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bigint};
+///
+/// let env = Env::default();
+/// let big = bigint!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+/// assert_eq!(big.bits(), 256);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bigint};
+///
+/// let env = Env::default();
+/// let big = bigint!(&env, [2, 0]);
+/// assert_eq!(big, 512);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bigint};
+///
+/// let env = Env::default();
+/// let big = bigint!(&env);
+/// assert_eq!(big, 0);
+/// ```
+#[macro_export]
+macro_rules! bigint {
+    ($env:expr $(,)?) => {
+        $crate::BigInt::zero($env)
+    };
+    ($env:expr, [$($x:expr),+ $(,)?] $(,)?) => {
+        $crate::BigInt::from_slice($env, &[$($x),+])
+    };
+    ($env:expr, $x:tt $(,)?) => {
+        $crate::BigInt::from_slice($env, &::array_from_lit_int::array_from_lit_int!($x))
+    };
+    ($env:expr, -$x:tt $(,)?) => {
+        $crate::BigInt::from_sign_and_slice($env, &$crate::Sign::Minus, &::array_from_lit_int::array_from_lit_int!($x));
+    };
+}
+
 /// BigInt is an arbitrary sized signed integer.
 ///
 /// ### Examples
@@ -44,6 +100,16 @@ pub enum Sign {
     NoSign,
     /// When [BigInt] > 0.
     Plus,
+}
+
+impl Sign {
+    pub(crate) const fn to_raw(&self) -> RawVal {
+        match self {
+            Sign::Minus => RawVal::I32_NEGATIVE_ONE,
+            Sign::NoSign => RawVal::I32_ZERO,
+            Sign::Plus => RawVal::I32_POSITIVE_ONE,
+        }
+    }
 }
 
 impl Debug for BigInt {
@@ -860,9 +926,27 @@ impl BigInt {
     /// The sign of the [BigInt] is not negative.
     /// Bytes are in big-endian order.
     pub fn from_bytes(b: &Bytes) -> BigInt {
+        Self::from_sign_and_bytes(&Sign::Plus, b)
+    }
+
+    /// Creates a [BigInt] with the slice.
+    ///
+    /// The sign of the [BigInt] is not negative.
+    /// Bytes are in big-endian order.
+    pub fn from_slice(env: &Env, bytes: &[u8]) -> BigInt {
+        Self::from_sign_and_slice(env, &Sign::Plus, bytes)
+    }
+
+    /// Creates a [BigInt] with a [Sign] and [Bytes].
+    ///
+    /// If the [Sign] is [Sign::NoSign] the bytes is ignored and the returned
+    /// value is zero.
+    ///
+    /// Bytes are in big-endian order.
+    pub fn from_sign_and_bytes(s: &Sign, b: &Bytes) -> BigInt {
         let env = b.env();
         let obj = env
-            .bigint_from_bytes_be(RawVal::I32_POSITIVE_ONE, b.to_object())
+            .bigint_from_bytes_be(s.to_raw(), b.to_object())
             .in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
@@ -871,8 +955,8 @@ impl BigInt {
     ///
     /// The sign of the [BigInt] is not negative.
     /// Bytes are in big-endian order.
-    pub fn from_slice(env: &Env, bytes: &[u8]) -> BigInt {
-        BigInt::from_bytes(&Bytes::from_slice(env, bytes))
+    pub fn from_sign_and_slice(env: &Env, s: &Sign, bytes: &[u8]) -> BigInt {
+        BigInt::from_sign_and_bytes(s, &Bytes::from_slice(env, bytes))
     }
 
     /// Converts the [BigInt] to [Bytes].
@@ -1019,6 +1103,36 @@ impl BigInt {
 #[cfg(test)]
 mod test {
     use crate::{BigInt, Env, Sign};
+
+    #[test]
+    fn bigint_macro() {
+        let env = Env::default();
+
+        assert_eq!(bigint!(&env), BigInt::zero(&env),);
+
+        assert_eq!(bigint!(&env, 1), BigInt::from_u64(&env, 1),);
+
+        assert_eq!(bigint!(&env, 0x10), BigInt::from_u64(&env, 16),);
+
+        let big = bigint!(&env, 340_282_366_920_938_463_463_374_607_431_768_211_456);
+        assert_eq!(big.bits(), 129);
+
+        let big = bigint!(&env, [1]);
+        assert_eq!(big, BigInt::from_u64(&env, 1));
+
+        let big = bigint!(&env, [1, 2]);
+        assert_eq!(big, BigInt::from_u64(&env, 258));
+
+        let big = bigint!(&env, 0x1ded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+        assert_eq!(big.bits(), 253);
+
+        let big = bigint!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+        assert_eq!(big.bits(), 256);
+
+        let big = bigint!(&env, -0x1);
+        assert_eq!(big.bits(), 1);
+        assert_eq!(big.sign(), Sign::Minus);
+    }
 
     #[test]
     fn display() {
