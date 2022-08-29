@@ -47,10 +47,7 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::{
-    deploy::{Deployer, Namespace},
-    Bytes, BytesN, ContractData, Events, Ledger,
-};
+use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger};
 
 #[cfg(doc)]
 use crate::deploy::{CurrentNamespace, Ed25519Namespace};
@@ -126,12 +123,6 @@ impl Env {
     #[inline(always)]
     pub fn events(&self) -> Events {
         Events::new(self)
-    }
-
-    /// Get the contract ID for a contract deployed or that could be deployed.
-    #[inline(always)]
-    pub fn contract_id(&self, _namespace: impl Into<Namespace>, _salt: impl Into<Bytes>) -> Events {
-        todo!()
     }
 
     /// Get a deployer for deploying contracts.

@@ -20,63 +20,24 @@
 
 use crate::{env::internal::Env as _, Bytes, BytesN, Env, TryFromVal};
 
-/// Namespace defines the namespace that other contracts IDs are defined with.
-pub enum Namespace {
-    Current(CurrentNamespace),
-    Contract(ContractNamespace),
-    Ed25519(Ed25519Namespace),
-}
-
 /// Namespace of the currently executing contract.
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
-pub struct CurrentNamespace;
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct CurrentNamespace {
+    pub salt: Bytes,
+}
 
 /// Namespace of a specific contract ID.
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct ContractNamespace {
     pub contract_id: BytesN<32>,
+    pub salt: Bytes,
 }
 
 /// Namespace of an ed25519 public key.
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Ed25519Namespace {
     pub public_key: BytesN<32>,
-}
-
-impl From<CurrentNamespace> for Namespace {
-    fn from(v: CurrentNamespace) -> Self {
-        Self::Current(v)
-    }
-}
-
-impl From<&CurrentNamespace> for Namespace {
-    fn from(v: &CurrentNamespace) -> Self {
-        Self::Current(*v)
-    }
-}
-
-impl From<ContractNamespace> for Namespace {
-    fn from(v: ContractNamespace) -> Self {
-        Self::Contract(v)
-    }
-}
-
-impl From<&ContractNamespace> for Namespace {
-    fn from(v: &ContractNamespace) -> Self {
-        Self::Contract(v.clone())
-    }
-}
-
-impl From<Ed25519Namespace> for Namespace {
-    fn from(v: Ed25519Namespace) -> Self {
-        Self::Ed25519(v)
-    }
-}
-
-impl From<&Ed25519Namespace> for Namespace {
-    fn from(v: &Ed25519Namespace) -> Self {
-        Self::Ed25519(v.clone())
-    }
+    pub salt: Bytes,
 }
 
 /// Deployer is a [Namespace] that the currently executing contract can deploy
@@ -93,7 +54,7 @@ impl Deployer<CurrentNamespaceDeployer> for CurrentNamespace {
     fn deployer(&self, env: &Env) -> CurrentNamespaceDeployer {
         CurrentNamespaceDeployer {
             env: env.clone(),
-            namespace: *self,
+            namespace: self.clone(),
         }
     }
 }
@@ -134,16 +95,23 @@ impl CurrentNamespaceDeployer {
         }
     }
 
+    /// Return the ID of the contract defined by the deployer.
+    pub fn id(&self) -> BytesN<32> {
+        todo!()
+    }
+
     /// Deploy a contract.
     ///
     /// The contract ID from the currently executing contract and the given salt
     /// will be used to derive a contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(&self, salt: impl Into<Bytes>, wasm: impl Into<Bytes>) -> BytesN<32> {
+    pub fn deploy(&self, wasm: impl Into<Bytes>) -> BytesN<32> {
         let env = &self.env;
-        let id =
-            env.create_contract_from_contract(wasm.into().to_object(), salt.into().to_object());
+        let id = env.create_contract_from_contract(
+            wasm.into().to_object(),
+            self.namespace.salt.to_object(),
+        );
         BytesN::<32>::try_from_val(env, id).unwrap()
     }
 
@@ -153,9 +121,9 @@ impl CurrentNamespaceDeployer {
     /// will be used to derive a contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy_token(&self, salt: impl Into<Bytes>) -> BytesN<32> {
+    pub fn deploy_token(&self) -> BytesN<32> {
         let env = &self.env;
-        let id = env.create_token_from_contract(salt.into().to_object());
+        let id = env.create_token_from_contract(self.namespace.salt.to_object());
         BytesN::<32>::try_from_val(env, id).unwrap()
     }
 }
@@ -175,26 +143,26 @@ impl Ed25519NamespaceDeployer {
         }
     }
 
+    /// Return the ID of the contract defined by the deployer.
+    pub fn id(&self) -> BytesN<32> {
+        todo!()
+    }
+
     /// Deploy a contract.
     ///
     /// The ed25519 public key and the given salt will be used to derive a
     /// contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(
-        &self,
-        salt: impl Into<Bytes>,
-        wasm: impl Into<Bytes>,
-        signature: impl Into<BytesN<64>>,
-    ) -> BytesN<32> {
+    pub fn deploy(&self, wasm: impl Into<Bytes>, signature: impl Into<BytesN<64>>) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_contract_from_ed25519(
             wasm.into().to_object(),
-            salt.into().to_object(),
+            self.namespace.salt.to_object(),
             self.namespace.public_key.to_object(),
             signature.into().to_object(),
         );
-        BytesN::<32>::try_from_val(env, id).unwrap()
+        BytesN::try_from_val(env, id).unwrap()
     }
 
     /// Deploy a built-in token contract.
@@ -203,17 +171,13 @@ impl Ed25519NamespaceDeployer {
     /// contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy_token(
-        &self,
-        salt: impl Into<Bytes>,
-        signature: impl Into<BytesN<64>>,
-    ) -> BytesN<32> {
+    pub fn deploy_token(&self, signature: impl Into<BytesN<64>>) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_token_from_ed25519(
-            salt.into().to_object(),
+            self.namespace.salt.to_object(),
             self.namespace.public_key.to_object(),
             signature.into().to_object(),
         );
-        BytesN::<32>::try_from_val(env, id).unwrap()
+        BytesN::try_from_val(env, id).unwrap()
     }
 }

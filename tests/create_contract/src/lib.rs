@@ -11,14 +11,15 @@ pub struct Contract;
 impl Contract {
     // Note that anyone can create a contract here with any salt, so a users call to
     // this could be frontrun and the same salt taken.
-    pub fn create(e: Env, wasm: Bytes, salt: BytesN<32>) {
-        let _contract_id = e.contract_id(CurrentNamespace, &salt);
-        let _contract_id = e.deployer(CurrentNamespace).deploy(&salt, &wasm);
+    pub fn create(e: Env, wasm: Bytes, salt: Bytes) {
+        let deployer = e.deployer(CurrentNamespace { salt: salt.clone() });
+        let _contract_id = deployer.id();
+        let _contract_id = deployer.deploy(&wasm);
 
         let public_key = BytesN::from_array(&e, &[0; 32]);
         let signature = BytesN::from_array(&e, &[0; 64]);
-        let namespace = Ed25519Namespace { public_key };
-        let _contract_id = e.contract_id(&namespace, &salt);
-        let _contract_id = e.deployer(&namespace).deploy(&salt, &wasm, signature);
+        let namespace = e.deployer(Ed25519Namespace { public_key, salt });
+        let _contract_id = namespace.id();
+        let _contract_id = namespace.deploy(&wasm, signature);
     }
 }
