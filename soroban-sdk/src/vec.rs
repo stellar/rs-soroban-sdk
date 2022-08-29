@@ -50,6 +50,15 @@ macro_rules! impl_into_vec_for_tuple {
                 vec![&env, $(self.$idx.into_val(env), )*]
             }
         }
+
+        impl<$($typ),*> IntoVal<Env, Vec<RawVal>> for &($($typ,)*)
+        where
+            $(for <'a> &'a $typ: IntoVal<Env, RawVal>),*
+        {
+            fn into_val(self, env: &Env) -> Vec<RawVal> {
+                vec![&env, $((&self.$idx).into_val(env), )*]
+            }
+        }
     };
 }
 impl_into_vec_for_tuple! { T0 0 }
