@@ -5,7 +5,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::Comma,
-    Attribute, Error, FnArg, Ident, ItemImpl, ItemTrait, Pat, ReturnType, Token, Type, TypePath,
+    Attribute, Error, FnArg, Ident, ItemImpl, ItemTrait, ReturnType, Token, Type, TypePath,
 };
 
 use crate::syn_ext;
@@ -101,20 +101,14 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 .iter()
                 .skip(if env_input.is_some() { 1 } else { 0 })
                 .map(|t| {
-                    match t {
-                        FnArg::Typed(pat_type) => {
-                            if let Pat::Ident(pat_ident) = *pat_type.pat.clone() {
-                                (pat_ident.ident, t)
-                            } else {
+                    let ident = match syn_ext::fn_arg_ident(t) {
+                        Ok(ident) => ident,
+                        Err(_) => {
                                 errors.push(Error::new(t.span(), "argument not supported"));
-                                (format_ident!(""), t)
-                            }
-                        }
-                        _ => {
-                            errors.push(Error::new(t.span(), "argument not supported"));
-                            (format_ident!(""), t)
-                        }
-                    }
+                                format_ident!("")
+                        },
+                    };
+                    (ident, syn_ext::fn_arg_make_ref(t))
                 })
                 .unzip();
             let fn_output = f.output;

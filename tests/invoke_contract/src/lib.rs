@@ -43,7 +43,7 @@ mod test {
 
         let x = 10i32;
         let y = 12i32;
-        let z = client.add_with(x, y, add_contract_id);
+        let z = client.add_with(&x, &y, &add_contract_id);
         assert!(z == 22);
     }
 }
