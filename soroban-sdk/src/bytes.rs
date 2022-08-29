@@ -51,7 +51,7 @@ pub type FixedBinary<const N: usize> = BytesN<N>;
 /// ```
 ///
 /// ```
-/// use soroban_sdk::{Env, bytesbytes
+/// use soroban_sdk::{Env, bytes};
 ///
 /// let env = Env::default();
 /// let bytes = bytes!(&env);
