@@ -30,7 +30,10 @@ impl Deployer {
 
     /// Get a deployer that deploys contracts that derive their contract IDs
     /// from the current contract and the provided salt.
-    pub fn current(&self, salt: impl IntoVal<Env, Bytes>) -> DeployerDerivedFromCurrentContract {
+    pub fn derived_from_self(
+        &self,
+        salt: impl IntoVal<Env, Bytes>,
+    ) -> DeployerDerivedFromCurrentContract {
         let env = self.env();
         DeployerDerivedFromCurrentContract {
             env: env.clone(),
@@ -41,7 +44,7 @@ impl Deployer {
     #[doc(hidden)]
     /// Get a deployer for contracts that derive their contract IDs from the
     /// give contract ID and the provided salt.
-    pub fn contract(
+    pub fn derived_from_contract(
         &self,
         contract_id: impl IntoVal<Env, BytesN<32>>,
         salt: impl IntoVal<Env, Bytes>,
@@ -56,7 +59,7 @@ impl Deployer {
 
     /// Get a deployer for contracts that derive their contract IDs from the
     /// give ed25519 public key and the provided salt.
-    pub fn ed25519(
+    pub fn derived_from_ed25519(
         &self,
         public_key: impl IntoVal<Env, BytesN<32>>,
         salt: impl IntoVal<Env, Bytes>,
