@@ -42,15 +42,15 @@ pub enum Identifier {
 
 #[derive(Clone)]
 #[contracttype]
-pub struct MessageV0 {
+pub struct SignaturePayloadV0 {
     pub function: Symbol,
-    pub contrct_id: BytesN<32>,
-    pub network_id: Bytes,
+    pub contract: BytesN<32>,
+    pub network: Bytes,
     pub args: Vec<RawVal>,
 }
 
 #[derive(Clone)]
 #[contracttype]
-pub enum Message {
-    V0(MessageV0),
+pub enum SignaturePayload {
+    V0(SignaturePayloadV0),
 }
