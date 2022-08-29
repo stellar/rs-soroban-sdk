@@ -16,6 +16,7 @@ members = [
     "tests/udt",
     "tests/contract_data",
     "tests/create_contract",
+    "bytes-lit"
 ]
 
 exclude = [

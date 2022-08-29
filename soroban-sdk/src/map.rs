@@ -29,7 +29,7 @@ use crate::ContractData;
 /// ```
 #[macro_export]
 macro_rules! map {
-    ($env:expr) => {
+    ($env:expr $(,)?) => {
         $crate::Map::new($env)
     };
     ($env:expr, $(($k:expr, $v:expr $(,)?)),+ $(,)?) => {

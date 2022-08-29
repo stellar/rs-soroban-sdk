@@ -75,7 +75,7 @@ mod set;
 mod symbol;
 mod vec;
 pub use account::Account;
-pub use bigint::BigInt;
+pub use bigint::{BigInt, Sign};
 #[allow(deprecated)]
 pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
