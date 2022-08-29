@@ -48,13 +48,13 @@ pub use env::EnvVal;
 pub use env::RawVal;
 
 pub use env::IntoVal;
+pub use env::FromVal;
 pub use env::TryFromVal;
 pub use env::TryIntoVal;
 
 pub use env::Symbol;
 
 mod envhidden {
-    pub use super::env::EnvType;
     pub use super::env::Object;
     pub use super::env::Status;
 }
