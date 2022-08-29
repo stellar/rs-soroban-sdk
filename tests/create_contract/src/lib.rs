@@ -14,8 +14,8 @@ impl Contract {
 
         let public_key = BytesN::from_array(&e, &[0; 32]);
         let signature = BytesN::from_array(&e, &[0; 64]);
-        let namespace = e.deployer().from_ed25519(&public_key, &salt);
-        let _contract_id = namespace.id();
-        let _contract_id = namespace.deploy(&wasm, signature);
+        let deployer = e.deployer().from_ed25519(&public_key, &salt);
+        let _contract_id = deployer.id();
+        let _contract_id = deployer.deploy(&wasm, signature);
     }
 }
