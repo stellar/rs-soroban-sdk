@@ -47,7 +47,7 @@ use crate::public_types::{
 ///     nonce
 /// }
 ///
-/// fn get_keyed_auth(&self) -> &Signature {
+/// fn signature(&self) -> &Signature {
 ///     &self.0
 /// }
 /// }
@@ -58,7 +58,7 @@ pub trait NonceAuth {
     /// Return the nonce stored in the contract, and then increment it.
     fn read_and_increment_nonce(&self, e: &Env, id: Identifier) -> BigInt;
     /// Return the Signature used for authorization.
-    fn get_keyed_auth(&self) -> &Signature;
+    fn signature(&self) -> &Signature;
 }
 
 fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args: Vec<RawVal>) {
@@ -128,7 +128,7 @@ pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, args:
 where
     T: NonceAuth,
 {
-    match auth.get_keyed_auth() {
+    match auth.signature() {
         Signature::Contract => {
             if nonce != BigInt::from_i32(env, 0) {
                 panic!("nonce should be zero for Contract")
