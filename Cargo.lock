@@ -109,7 +109,9 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "bytes-lit"
-version = "0.0.0"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b0f4f9f54e52a01d3195b9b9bc0f77b770e7a2f317fa6a2d3777b35e9c6c23a"
 dependencies = [
  "num-bigint",
  "pretty_assertions",
