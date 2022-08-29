@@ -249,7 +249,7 @@ pub fn derive_fn(
             ) #output {
                 use soroban_sdk::{EnvVal, IntoVal, Symbol, Vec};
                 let mut args: Vec<EnvVal> = Vec::new(e);
-                #(args.push(#invoke_idents.clone().into_env_val(e));)*
+                #(args.push_back(#invoke_idents.clone().into_env_val(e));)*
                 e.invoke_contract(contract_id, &::soroban_sdk::symbol!(#wrap_export_name), args)
             }
 

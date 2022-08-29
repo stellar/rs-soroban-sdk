@@ -429,28 +429,71 @@ where
     }
 
     #[inline(always)]
-    pub fn push(&mut self, x: T) {
+    pub fn push_front(&mut self, x: T) {
         let env = self.env();
-        let vec = env.vec_push(self.0.to_object(), x.into_val(env));
+        let vec = env.vec_push_front(self.0.to_object(), x.into_val(env));
         self.0 = vec.in_env(env);
     }
 
     #[inline(always)]
-    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
+    pub fn pop_front(&mut self) -> Option<Result<T, T::Error>> {
         let last = self.last()?;
         let env = self.env();
-        let vec = env.vec_pop(self.0.to_object());
+        let vec = env.vec_pop_front(self.0.to_object());
         self.0 = vec.in_env(env);
         Some(last)
     }
 
     #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
-        let last = self.last_unchecked();
+    pub fn pop_front_unchecked(&mut self) -> Result<T, T::Error> {
+        let last = self.first_unchecked();
         let env = self.env();
-        let vec = env.vec_pop(self.0.to_object());
+        let vec = env.vec_pop_front(self.0.to_object());
         self.0 = vec.in_env(env);
         last
+    }
+
+    #[inline(always)]
+    pub fn push_back(&mut self, x: T) {
+        let env = self.env();
+        let vec = env.vec_push_back(self.0.to_object(), x.into_val(env));
+        self.0 = vec.in_env(env);
+    }
+
+    #[inline(always)]
+    pub fn pop_back(&mut self) -> Option<Result<T, T::Error>> {
+        let last = self.last()?;
+        let env = self.env();
+        let vec = env.vec_pop_back(self.0.to_object());
+        self.0 = vec.in_env(env);
+        Some(last)
+    }
+
+    #[inline(always)]
+    pub fn pop_back_unchecked(&mut self) -> Result<T, T::Error> {
+        let last = self.last_unchecked();
+        let env = self.env();
+        let vec = env.vec_pop_back(self.0.to_object());
+        self.0 = vec.in_env(env);
+        last
+    }
+
+    #[deprecated(note = "use [Vec::push_back]")]
+    #[inline(always)]
+    pub fn push(&mut self, x: T) {
+        self.push_back(x)
+    }
+
+    #[deprecated(note = "use [Vec::pop_back]")]
+    #[inline(always)]
+    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
+        self.pop_back()
+    }
+
+    #[deprecated(note = "use [Vec::push_back_unchecked]")]
+    #[inline(always)]
+    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
+        self.pop_back_unchecked()
     }
 
     #[inline(always)]
@@ -506,7 +549,7 @@ where
     #[inline(always)]
     pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
         for item in items {
-            self.push(item);
+            self.push_back(item);
         }
     }
 
@@ -516,7 +559,7 @@ where
         T: Clone,
     {
         for item in items {
-            self.push(item.clone());
+            self.push_back(item.clone());
         }
     }
 
@@ -727,19 +770,19 @@ mod test {
         assert_eq!(vec![&env,], Vec::<i32>::new(&env));
         assert_eq!(vec![&env, 1], {
             let mut v = Vec::new(&env);
-            v.push(1);
+            v.push_back(1);
             v
         });
         assert_eq!(vec![&env, 1,], {
             let mut v = Vec::new(&env);
-            v.push(1);
+            v.push_back(1);
             v
         });
         assert_eq!(vec![&env, 3, 2, 1,], {
             let mut v = Vec::new(&env);
-            v.push(3);
-            v.push(2);
-            v.push(1);
+            v.push_back(3);
+            v.push_back(2);
+            v.push_back(1);
             v
         });
     }
@@ -750,11 +793,11 @@ mod test {
 
         let mut vec = Vec::<u32>::new(&env);
         assert_eq!(vec.len(), 0);
-        vec.push(10);
+        vec.push_back(10);
         assert_eq!(vec.len(), 1);
-        vec.push(20);
+        vec.push_back(20);
         assert_eq!(vec.len(), 2);
-        vec.push(30);
+        vec.push_back(30);
         assert_eq!(vec.len(), 3);
 
         let vec_ref = &vec;
@@ -763,14 +806,14 @@ mod test {
         let mut vec_copy = vec.clone();
         assert!(vec == vec_copy);
         assert_eq!(vec_copy.len(), 3);
-        vec_copy.push(40);
+        vec_copy.push_back(40);
         assert_eq!(vec_copy.len(), 4);
         assert!(vec != vec_copy);
 
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_unchecked();
+        _ = vec_copy.pop_back_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -780,11 +823,11 @@ mod test {
 
         let mut vec = Vec::<i64>::new(&env);
         assert_eq!(vec.len(), 0);
-        vec.push(-10);
+        vec.push_back(-10);
         assert_eq!(vec.len(), 1);
-        vec.push(20);
+        vec.push_back(20);
         assert_eq!(vec.len(), 2);
-        vec.push(-30);
+        vec.push_back(-30);
         assert_eq!(vec.len(), 3);
 
         let vec_ref = &vec;
@@ -793,14 +836,14 @@ mod test {
         let mut vec_copy = vec.clone();
         assert!(vec == vec_copy);
         assert_eq!(vec_copy.len(), 3);
-        vec_copy.push(40);
+        vec_copy.push_back(40);
         assert_eq!(vec_copy.len(), 4);
         assert!(vec != vec_copy);
 
         assert_eq!(vec.len(), 3);
         assert_eq!(vec_ref.len(), 3);
 
-        _ = vec_copy.pop_unchecked();
+        _ = vec_copy.pop_back_unchecked();
         assert!(vec == vec_copy);
     }
 
@@ -809,11 +852,11 @@ mod test {
         let env = Env::default();
 
         let mut vec_inner = Vec::<i64>::new(&env);
-        vec_inner.push(-10);
+        vec_inner.push_back(-10);
         assert_eq!(vec_inner.len(), 1);
 
         let mut vec_outer = Vec::<Vec<i64>>::new(&env);
-        vec_outer.push(vec_inner);
+        vec_outer.push_back(vec_inner);
         assert_eq!(vec_outer.len(), 1);
     }
 
