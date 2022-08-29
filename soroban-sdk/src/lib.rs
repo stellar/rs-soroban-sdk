@@ -67,6 +67,7 @@ mod account;
 mod bigint;
 mod bytes;
 mod contract_data;
+pub mod deploy;
 mod events;
 pub mod iter;
 mod ledger;

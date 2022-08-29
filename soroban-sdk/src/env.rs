@@ -47,8 +47,7 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::Events;
-use crate::{Bytes, BytesN, ContractData, Ledger};
+use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -121,6 +120,12 @@ impl Env {
     #[inline(always)]
     pub fn events(&self) -> Events {
         Events::new(self)
+    }
+
+    /// Get a deployer for deploying contracts.
+    #[inline(always)]
+    pub fn deployer(&self) -> Deployer {
+        Deployer::new(self)
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
@@ -203,21 +208,6 @@ impl Env {
         internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn create_contract_from_contract(&self, contract: Bytes, salt: BytesN<32>) -> BytesN<32> {
-        let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
-        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
-        let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
-        id_obj.try_into_val(self).unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn create_token_from_contract(&self, salt: BytesN<32>) -> BytesN<32> {
-        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
-        let id_obj = internal::Env::create_token_from_contract(self, salt_obj);
-        id_obj.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]

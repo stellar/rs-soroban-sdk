@@ -133,6 +133,18 @@ impl Ord for Bytes {
     }
 }
 
+impl IntoVal<Env, Bytes> for Bytes {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self
+    }
+}
+
+impl IntoVal<Env, Bytes> for &Bytes {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self.clone()
+    }
+}
+
 impl TryFromVal<Env, Object> for Bytes {
     type Error = ConversionError;
 
@@ -213,6 +225,13 @@ impl From<&Bytes> for Object {
     #[inline(always)]
     fn from(v: &Bytes) -> Self {
         v.0.val
+    }
+}
+
+impl From<&Bytes> for Bytes {
+    #[inline(always)]
+    fn from(v: &Bytes) -> Self {
+        v.clone()
     }
 }
 
@@ -797,6 +816,13 @@ impl<const N: usize> From<BytesN<N>> for Bytes {
     #[inline(always)]
     fn from(v: BytesN<N>) -> Self {
         v.0
+    }
+}
+
+impl<const N: usize> From<&BytesN<N>> for Bytes {
+    #[inline(always)]
+    fn from(v: &BytesN<N>) -> Self {
+        v.0.clone()
     }
 }
 
