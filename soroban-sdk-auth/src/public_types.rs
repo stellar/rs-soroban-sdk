@@ -44,8 +44,8 @@ pub enum Identifier {
 #[contracttype]
 pub struct SignaturePayloadV0 {
     pub function: Symbol,
-    pub contrct_id: BytesN<32>,
-    pub network_id: Bytes,
+    pub contract: BytesN<32>,
+    pub network: Bytes,
     pub args: Vec<RawVal>,
 }
 
