@@ -8,12 +8,24 @@ use crate::public_types::{
     SignaturePayloadV0,
 };
 
-/// Users of this module will need to pass a struct that implements NonceAuth
-/// NonceAuth should manage a nonce in the contracts storage
+/// Users of this module will need to pass a struct to check_auth that
+/// implements NonceAuth. NonceAuth should manage nonces in the contracts
+/// storage, and wrap the Signature being verified.
 ///
-///
-/// Example implementation for NonceAuth -
+/// ### Examples
 /// ```
+/// use soroban_sdk::{BigInt, Env, contracttype};
+/// use soroban_sdk_auth::{check_auth,
+///     public_types::{Identifier, Signature},
+///     NonceAuth,
+/// };
+///
+/// #[derive(Clone)]
+/// #[contracttype]
+/// pub enum DataKey {
+///     Acc(Identifier),
+///     Nonce(Identifier)
+/// }
 /// struct WrappedAuth(Signature);
 ///
 /// impl NonceAuth for WrappedAuth {
@@ -21,9 +33,9 @@ use crate::public_types::{
 /// fn read_nonce(e: &Env, id: Identifier) -> BigInt {
 ///    let key = DataKey::Nonce(id);
 ///    if let Some(nonce) = e.contract_data().get(key) {
-///       nonce.unwrap()
+///         nonce.unwrap()
 ///    } else {
-///        BigInt::zero(e)
+///         BigInt::zero(e)
 ///    }
 /// }
 ///
@@ -110,8 +122,8 @@ fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, arg
     }
 }
 
-/// Checks a Signature that should be wrapped in a struct that implements NonceAuth
-/// Note that the nonce is expected to be 0 if the signature is of type Signature::Contract
+/// Checks a Signature that should be wrapped in a struct that implements NonceAuth.
+/// Note that the nonce is expected to be 0 if the signature is of type Signature::Contract.
 pub fn check_auth<T>(env: &Env, auth: &T, nonce: BigInt, function: Symbol, args: Vec<RawVal>)
 where
     T: NonceAuth,
