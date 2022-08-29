@@ -6,9 +6,9 @@ use core::{
 
 use super::{
     env::internal::{Env as _, EnvBase, RawValConvertible},
-    env::{EnvObj, EnvType},
+    env::EnvObj,
     xdr::ScObjectType,
-    Bytes, ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
+    Bytes, ConversionError, Env, EnvVal, FromVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 /// Create a [BigInt] with an integer literal, or an array.
@@ -180,9 +180,21 @@ impl IntoVal<Env, RawVal> for BigInt {
     }
 }
 
+impl IntoVal<Env, RawVal> for &BigInt {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
+    }
+}
+
 impl From<BigInt> for RawVal {
     fn from(b: BigInt) -> Self {
         b.0.into()
+    }
+}
+
+impl From<&BigInt> for RawVal {
+    fn from(b: &BigInt) -> Self {
+        b.0.to_raw()
     }
 }
 
@@ -210,9 +222,9 @@ impl TryFrom<BigInt> for u64 {
     }
 }
 
-impl From<EnvType<u64>> for BigInt {
-    fn from(ev: EnvType<u64>) -> Self {
-        BigInt::from_u64(&ev.env, ev.val)
+impl FromVal<Env, u64> for BigInt {
+    fn from_val(env: &Env, val: u64) -> Self {
+        BigInt::from_u64(env, val)
     }
 }
 
@@ -234,9 +246,9 @@ impl TryFrom<BigInt> for i64 {
     }
 }
 
-impl From<EnvType<i64>> for BigInt {
-    fn from(ev: EnvType<i64>) -> Self {
-        BigInt::from_i64(&ev.env, ev.val)
+impl FromVal<Env, i64> for BigInt {
+    fn from_val(env: &Env, val: i64) -> Self {
+        BigInt::from_i64(env, val)
     }
 }
 
@@ -258,9 +270,9 @@ impl TryFrom<BigInt> for u32 {
     }
 }
 
-impl From<EnvType<u32>> for BigInt {
-    fn from(ev: EnvType<u32>) -> Self {
-        BigInt::from_u32(&ev.env, ev.val)
+impl FromVal<Env, u32> for BigInt {
+    fn from_val(env: &Env, val: u32) -> Self {
+        BigInt::from_u32(env, val)
     }
 }
 
@@ -282,9 +294,9 @@ impl TryFrom<BigInt> for i32 {
     }
 }
 
-impl From<EnvType<i32>> for BigInt {
-    fn from(ev: EnvType<i32>) -> Self {
-        BigInt::from_i32(&ev.env, ev.val)
+impl FromVal<Env, i32> for BigInt {
+    fn from_val(env: &Env, val: i32) -> Self {
+        BigInt::from_i32(env, val)
     }
 }
 

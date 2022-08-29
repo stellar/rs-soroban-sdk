@@ -2,7 +2,7 @@ use core::fmt::Debug;
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, BytesN, Map};
-use crate::{env::internal, vec, Env, IntoVal, RawVal, Vec};
+use crate::{env::internal, Env, IntoVal, RawVal, Vec};
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
 const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
@@ -61,23 +61,6 @@ impl IntoVal<Env, Vec<RawVal>> for () {
         Vec::<RawVal>::new(env)
     }
 }
-
-macro_rules! impl_into_vec_for_tuple {
-    ( $($typ:ident $idx:tt)* ) => {
-        impl<$($typ),*> IntoVal<Env, Vec<RawVal>> for ($($typ,)*)
-        where
-            $($typ: IntoVal<Env, RawVal>),*
-        {
-            fn into_val(self, env: &Env) -> Vec<RawVal> {
-                vec![&env, $(self.$idx.into_val(env), )*]
-            }
-        }
-    };
-}
-impl_into_vec_for_tuple! { T0 0 }
-impl_into_vec_for_tuple! { T0 0 T1 1 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
 
 macro_rules! impl_topics_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {

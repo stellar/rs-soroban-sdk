@@ -15,7 +15,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 soroban-sdk-macros = { version = "0.0.3" }
-bytes-lit = { path = "../bytes-lit" }
+bytes-lit = "0.0.2"
 ed25519-dalek = { version = "1.0.1", optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]

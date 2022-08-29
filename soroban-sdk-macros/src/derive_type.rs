@@ -59,7 +59,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     Err(soroban_sdk::ConversionError)?
                 }
             };
-            let into = quote! { map.set(#map_key, self.#ident.into_val(env)) };
+            let into = quote! { map.set(#map_key, (&self.#ident).into_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
                     let key = &#name.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
@@ -144,13 +144,21 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             }
         }
 
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for &#ident {
+            #[inline(always)]
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
+                let mut map = soroban_sdk::Map::<soroban_sdk::Symbol, soroban_sdk::RawVal>::new(env);
+                #(#intos;)*
+                map.into()
+            }
+        }
+
         #[cfg(any(test, feature = "testutils"))]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for #ident {
             type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScMap) -> Result<Self, Self::Error> {
                 use soroban_sdk::xdr::Validate;
-                // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
                 let map = val;
                 if map.len() != #field_count_usize {
@@ -332,7 +340,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                         Self::#ident(iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(env)?)
                     }
                 };
-                let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
+                let into = quote! { #enum_ident::#ident(ref value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => {
                         if iter.len() > 1 {
@@ -357,7 +365,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                         Self::#ident
                     }
                 };
-                let into = quote! { Self::#ident => (#discriminant_const_sym_ident,).into_val(env) };
+                let into = quote! { #enum_ident::#ident => (#discriminant_const_sym_ident,).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => {
                         if iter.len() > 0 {
@@ -434,6 +442,16 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             #[inline(always)]
             fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
                 #(#discriminant_consts)*
+                match &self {
+                    #(#intos,)*
+                }
+            }
+        }
+
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for &#enum_ident {
+            #[inline(always)]
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
+                #(#discriminant_consts)*
                 match self {
                     #(#intos,)*
                 }
@@ -446,7 +464,6 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             #[inline(always)]
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScVec) -> Result<Self, Self::Error> {
                 use soroban_sdk::xdr::Validate;
-                // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
 
                 let vec = val;

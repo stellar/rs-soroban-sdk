@@ -29,7 +29,7 @@ fn test_functional() {
 
     let a = Udt::Aaa;
     let b = Udt::Bbb(3);
-    let c = client.add(a, b);
+    let c = client.add(&a, &b);
     assert_eq!(c, (a, b));
 }
 

@@ -109,10 +109,11 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "bytes-lit"
-version = "0.0.0"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75651e281e98fa84907ea7704dde00b1970f611d803caeb0ee5619d4a1afc3cb"
 dependencies = [
  "num-bigint",
- "pretty_assertions",
  "proc-macro2",
  "quote",
  "syn",
@@ -884,7 +885,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=fb125eae#fb125eae0621917d1f23badf91fb1bb9719427f4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=2c084e9d#2c084e9d90c213414a66c5433dc0d4fcc05f5ebb"
 dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
@@ -895,7 +896,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=fb125eae#fb125eae0621917d1f23badf91fb1bb9719427f4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=2c084e9d#2c084e9d90c213414a66c5433dc0d4fcc05f5ebb"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -904,7 +905,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=fb125eae#fb125eae0621917d1f23badf91fb1bb9719427f4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=2c084e9d#2c084e9d90c213414a66c5433dc0d4fcc05f5ebb"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -927,7 +928,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.3"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=fb125eae#fb125eae0621917d1f23badf91fb1bb9719427f4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=2c084e9d#2c084e9d90c213414a66c5433dc0d4fcc05f5ebb"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -939,7 +940,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.1"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=fb125eae#fb125eae0621917d1f23badf91fb1bb9719427f4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=2c084e9d#2c084e9d90c213414a66c5433dc0d4fcc05f5ebb"
 dependencies = [
  "itertools",
  "proc-macro2",
