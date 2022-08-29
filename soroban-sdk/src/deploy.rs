@@ -1,19 +1,16 @@
-//! Deploy provides types for deploying contracts.
+//! Deploy contains types for deploying contracts.
 //!
 //! Contracts are assigned an ID that is derived from a set of arguments. A
-//! contract may choose which set of arguments to use to deploy with.  There are
-//! three deployers that provide access to deployments with different arguments:
+//! contract may choose which set of arguments to use to deploy with:
 //!
-//! - [CurrentDeployer] – A contract deployed by the currently executing
+//! - [Deployer::current] – A contract deployed by the currently executing
 //! contract will have an ID derived from the currently executing contract's ID.
 //!
-//! - [Ed25519Deployer] – A contract deployed by the currently executing
+//! - [Deployer::ed25519] – A contract deployed by the currently executing
 //! contract with an ed25519 public key will have an ID derived from the ed25519
 //! public key.
 //!
-//! The deployer for a namespace can be created using [Env::deployer].
-//!
-//! The contract ID for a deployed contract can be derived using [Env::contract_id].
+//! The deployer can be created using [Env::deployer].
 
 use crate::{env::internal::Env as _, Bytes, BytesN, Env, TryFromVal};
 
@@ -33,8 +30,8 @@ impl Deployer {
 
     /// Get a deployer that deploys contracts that derive their contract IDs
     /// from the current contract and the provided salt.
-    pub fn current(&self, salt: impl Into<Bytes>) -> CurrentDeployer {
-        CurrentDeployer {
+    pub fn current(&self, salt: impl Into<Bytes>) -> DeployerDerivedFromCurrentContract {
+        DeployerDerivedFromCurrentContract {
             env: self.env().clone(),
             salt: salt.into(),
         }
@@ -47,8 +44,8 @@ impl Deployer {
         &self,
         contract_id: impl Into<BytesN<32>>,
         salt: impl Into<Bytes>,
-    ) -> ContractDeployer {
-        ContractDeployer {
+    ) -> DeployerDerivedFromOtherContract {
+        DeployerDerivedFromOtherContract {
             env: self.env().clone(),
             contract_id: contract_id.into(),
             salt: salt.into(),
@@ -61,8 +58,8 @@ impl Deployer {
         &self,
         public_key: impl Into<BytesN<32>>,
         salt: impl Into<Bytes>,
-    ) -> Ed25519Deployer {
-        Ed25519Deployer {
+    ) -> DeployerDerivedFromEd25519 {
+        DeployerDerivedFromEd25519 {
             env: self.env().clone(),
             public_key: public_key.into(),
             salt: salt.into(),
@@ -70,14 +67,14 @@ impl Deployer {
     }
 }
 
-/// A deployer that deploys contracts that derive their contract IDs from the
-/// current contract and the provided salt.
-pub struct CurrentDeployer {
+/// A deployer that deploys a contract that has its ID derived from the current
+/// contract ID and the provided salt.
+pub struct DeployerDerivedFromCurrentContract {
     env: Env,
     salt: Bytes,
 }
 
-impl CurrentDeployer {
+impl DeployerDerivedFromCurrentContract {
     /// Return the ID of the contract defined by the deployer.
     #[doc(hidden)]
     pub fn id(&self) -> BytesN<32> {
@@ -109,19 +106,20 @@ impl CurrentDeployer {
     }
 }
 
+#[doc(hidden)]
 /// A deployer for contracts that derive their contract IDs from the
 /// give contract ID and the provided salt.
 ///
 /// This deployer is unable to actually deploy contracts because the currently
 /// executing contract can only deploy contracts with IDs derived from its own
 /// contract ID or an ed25519 public key.
-pub struct ContractDeployer {
+pub struct DeployerDerivedFromOtherContract {
     env: Env,
     contract_id: BytesN<32>,
     salt: Bytes,
 }
 
-impl ContractDeployer {
+impl DeployerDerivedFromOtherContract {
     #[doc(hidden)]
     /// Return the ID of the contract defined by the deployer.
     pub fn id(&self) -> BytesN<32> {
@@ -129,15 +127,15 @@ impl ContractDeployer {
     }
 }
 
-/// A deployer for contracts that derive their contract IDs from the give
+/// A deployer that deploys a contract that has its ID derived from the given
 /// ed25519 public key and the provided salt.
-pub struct Ed25519Deployer {
+pub struct DeployerDerivedFromEd25519 {
     env: Env,
     public_key: BytesN<32>,
     salt: Bytes,
 }
 
-impl Ed25519Deployer {
+impl DeployerDerivedFromEd25519 {
     #[doc(hidden)]
     /// Return the ID of the contract defined by the deployer.
     pub fn id(&self) -> BytesN<32> {

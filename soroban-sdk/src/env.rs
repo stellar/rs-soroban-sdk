@@ -123,15 +123,6 @@ impl Env {
     }
 
     /// Get a deployer for deploying contracts.
-    ///
-    /// The namespace given will define the namespace of the contract ID given
-    /// to the deployed contract.
-    ///
-    /// To deploy a contract that will be assigned an ID derived from the
-    /// currently executing contract's ID, use [CurrentNamespace].
-    ///
-    /// To deploy a contract that will be assigned an ID derived from an ed25519
-    /// public key, use [Ed25519Namespace].
     #[inline(always)]
     pub fn deployer(&self) -> Deployer {
         Deployer::new(self)
