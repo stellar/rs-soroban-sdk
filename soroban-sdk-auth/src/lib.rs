@@ -20,7 +20,6 @@ use crate::public_types::{
 ///     NonceAuth,
 /// };
 ///
-/// #[derive(Clone)]
 /// #[contracttype]
 /// pub enum DataKey {
 ///     Acc(Identifier),
@@ -29,27 +28,26 @@ use crate::public_types::{
 /// struct WrappedAuth(Signature);
 ///
 /// impl NonceAuth for WrappedAuth {
-///
-/// fn read_nonce(e: &Env, id: Identifier) -> BigInt {
-///    let key = DataKey::Nonce(id);
-///    if let Some(nonce) = e.contract_data().get(key) {
-///         nonce.unwrap()
-///    } else {
-///         BigInt::zero(e)
-///    }
-/// }
-///
-/// fn read_and_increment_nonce(&self, e: &Env, id: Identifier) -> BigInt {
-///     let key = DataKey::Nonce(id.clone());
-///     let nonce = Self::read_nonce(e, id);
-///     e.contract_data()
-///         .set(key, nonce.clone() + BigInt::from_u32(e, 1));
-///     nonce
-/// }
-///
-/// fn signature(&self) -> &Signature {
-///     &self.0
-/// }
+///     fn read_nonce(e: &Env, id: Identifier) -> BigInt {
+///        let key = DataKey::Nonce(id);
+///        if let Some(nonce) = e.contract_data().get(key) {
+///             nonce.unwrap()
+///        } else {
+///             BigInt::zero(e)
+///        }
+///     }
+///    
+///     fn read_and_increment_nonce(&self, e: &Env, id: Identifier) -> BigInt {
+///         let key = DataKey::Nonce(id.clone());
+///         let nonce = Self::read_nonce(e, id);
+///         e.contract_data()
+///             .set(key, nonce.clone() + BigInt::from_u32(e, 1));
+///         nonce
+///     }
+///    
+///     fn signature(&self) -> &Signature {
+///         &self.0
+///     }
 /// }
 /// ```
 pub trait NonceAuth {
