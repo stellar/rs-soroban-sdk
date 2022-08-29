@@ -47,8 +47,8 @@ pub use env::Env;
 pub use env::EnvVal;
 pub use env::RawVal;
 
-pub use env::IntoVal;
 pub use env::FromVal;
+pub use env::IntoVal;
 pub use env::TryFromVal;
 pub use env::TryIntoVal;
 
