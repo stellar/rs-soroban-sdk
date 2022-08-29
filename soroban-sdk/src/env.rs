@@ -33,6 +33,7 @@ pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
+pub use internal::FromVal;
 pub use internal::IntoVal;
 pub use internal::Object;
 pub use internal::RawVal;
@@ -43,7 +44,6 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
-pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
