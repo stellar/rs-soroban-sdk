@@ -4,7 +4,8 @@ use soroban_sdk::{serde::Serialize, Account, BigInt, BytesN, Env, RawVal, Symbol
 
 pub mod public_types;
 use crate::public_types::{
-    AccountSignatures, Ed25519Signature, Identifier, Message, MessageV0, Signature,
+    AccountSignatures, Ed25519Signature, Identifier, Signature, SignaturePayload,
+    SignaturePayloadV0,
 };
 
 /// Users of this module will need to pass a struct that implements NonceAuth
@@ -49,13 +50,13 @@ pub trait NonceAuth {
 }
 
 fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args: Vec<RawVal>) {
-    let msg = MessageV0 {
+    let msg = SignaturePayloadV0 {
         function,
-        contrct_id: env.get_current_contract(),
-        network_id: env.ledger().network_passphrase(),
+        contract: env.get_current_contract(),
+        network: env.ledger().network_passphrase(),
         args,
     };
-    let msg_bin = Message::V0(msg).serialize(env);
+    let msg_bin = SignaturePayload::V0(msg).serialize(env);
 
     env.verify_sig_ed25519(
         auth.public_key.clone().into(),
@@ -67,13 +68,13 @@ fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args
 fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, args: Vec<RawVal>) {
     let acc = Account::from_public_key(&auth.account_id).unwrap();
 
-    let msg = MessageV0 {
+    let msg = SignaturePayloadV0 {
         function,
-        contrct_id: env.get_current_contract(),
-        network_id: env.ledger().network_passphrase(),
+        contract: env.get_current_contract(),
+        network: env.ledger().network_passphrase(),
         args,
     };
-    let msg_bytes = Message::V0(msg).serialize(env);
+    let msg_bytes = SignaturePayload::V0(msg).serialize(env);
 
     let threshold = acc.medium_threshold();
     let mut weight = 0u32;
