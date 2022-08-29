@@ -1,4 +1,5 @@
 use core::{
+    borrow::Borrow,
     cmp::Ordering,
     fmt::Debug,
     iter::FusedIterator,
@@ -563,6 +564,66 @@ where
     }
 }
 
+impl<T> Vec<T>
+where
+    for<'a> &'a T: IntoVal<Env, RawVal>,
+{
+    /// Returns true if the Vec contains the item.
+    #[inline(always)]
+    pub fn contains(&self, item: impl Borrow<T>) -> bool {
+        let env = self.env();
+        let val = item.borrow().into_val(env);
+        !env.vec_first_index_of(self.to_object(), val).is_void()
+    }
+
+    /// Returns the index of the first occurrence of the item.
+    ///
+    /// If the item cannot be found [None] is returned.
+    #[inline(always)]
+    pub fn first_index_of(&self, item: impl Borrow<T>) -> Option<u32> {
+        let env = self.env();
+        let val = item.borrow().into_val(env);
+        env.vec_first_index_of(self.to_object(), val)
+            .try_into_val(env)
+            .unwrap()
+    }
+
+    /// Returns the index of the last occurrence of the item.
+    ///
+    /// If the item cannot be found [None] is returned.
+    #[inline(always)]
+    pub fn last_index_of(&self, item: impl Borrow<T>) -> Option<u32> {
+        let env = self.env();
+        let val = item.borrow().into_val(env);
+        env.vec_last_index_of(self.to_object(), val)
+            .try_into_val(env)
+            .unwrap()
+    }
+
+    /// Returns the index of an occurrence of the item in an already sorted
+    /// [Vec], or the index of where the item can be inserted to keep the [Vec]
+    /// sorted.
+    ///
+    /// If the item is found, [Result::Ok] is returned containing the index of
+    /// the item.
+    ///
+    /// If the item is not found, [Result::Err] is returned containing the index
+    /// of where the item could be inserted to retain the sorted ordering.
+    #[inline(always)]
+    pub fn binary_search(&self, item: impl Borrow<T>) -> Result<u32, u32> {
+        let env = self.env();
+        let val = item.borrow().into_val(env);
+        let high_low = env.vec_binary_search(self.to_object(), val);
+        let high: u32 = (high_low >> u32::BITS) as u32;
+        let low: u32 = high_low as u32;
+        if high == 1 {
+            Ok(low)
+        } else {
+            Err(low)
+        }
+    }
+}
+
 impl<T> Vec<Vec<T>>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -846,6 +907,57 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn contains() {
+        let env = Env::default();
+        let vec = vec![&env, 0, 3, 5, 7, 9, 5];
+        assert_eq!(vec.contains(&2), false);
+        assert_eq!(vec.contains(2), false);
+        assert_eq!(vec.contains(&3), true);
+        assert_eq!(vec.contains(3), true);
+        assert_eq!(vec.contains(&5), true);
+        assert_eq!(vec.contains(5), true);
+    }
+
+    #[test]
+    fn first_index_of() {
+        let env = Env::default();
+
+        let vec = vec![&env, 0, 3, 5, 7, 9, 5];
+        assert_eq!(vec.first_index_of(&2), None);
+        assert_eq!(vec.first_index_of(2), None);
+        assert_eq!(vec.first_index_of(&3), Some(1));
+        assert_eq!(vec.first_index_of(3), Some(1));
+        assert_eq!(vec.first_index_of(&5), Some(2));
+        assert_eq!(vec.first_index_of(5), Some(2));
+    }
+
+    #[test]
+    fn last_index_of() {
+        let env = Env::default();
+
+        let vec = vec![&env, 0, 3, 5, 7, 9, 5];
+        assert_eq!(vec.last_index_of(&2), None);
+        assert_eq!(vec.last_index_of(2), None);
+        assert_eq!(vec.last_index_of(&3), Some(1));
+        assert_eq!(vec.last_index_of(3), Some(1));
+        assert_eq!(vec.last_index_of(&5), Some(5));
+        assert_eq!(vec.last_index_of(5), Some(5));
+    }
+
+    #[test]
+    fn binary_search() {
+        let env = Env::default();
+
+        let vec = vec![&env, 0, 3, 5, 5, 7, 9];
+        assert_eq!(vec.binary_search(&2), Err(1));
+        assert_eq!(vec.binary_search(2), Err(1));
+        assert_eq!(vec.binary_search(&3), Ok(1));
+        assert_eq!(vec.binary_search(3), Ok(1));
+        assert_eq!(vec.binary_search(&5), Ok(3));
+        assert_eq!(vec.binary_search(5), Ok(3));
     }
 
     #[cfg(not(target_family = "wasm"))]
