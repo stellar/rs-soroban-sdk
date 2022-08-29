@@ -133,6 +133,18 @@ impl Ord for Bytes {
     }
 }
 
+impl IntoVal<Env, Bytes> for Bytes {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self
+    }
+}
+
+impl IntoVal<Env, Bytes> for &Bytes {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self.clone()
+    }
+}
+
 impl TryFromVal<Env, Object> for Bytes {
     type Error = ConversionError;
 

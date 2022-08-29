@@ -12,7 +12,7 @@
 //!
 //! The deployer can be created using [Env::deployer].
 
-use crate::{env::internal::Env as _, Bytes, BytesN, Env, TryFromVal};
+use crate::{env::internal::Env as _, Bytes, BytesN, Env, IntoVal, TryFromVal};
 
 /// Deployer provides access to deploying contracts.
 pub struct Deployer {
@@ -30,10 +30,11 @@ impl Deployer {
 
     /// Get a deployer that deploys contracts that derive their contract IDs
     /// from the current contract and the provided salt.
-    pub fn current(&self, salt: impl Into<Bytes>) -> DeployerDerivedFromCurrentContract {
+    pub fn current(&self, salt: impl IntoVal<Env, Bytes>) -> DeployerDerivedFromCurrentContract {
+        let env = self.env();
         DeployerDerivedFromCurrentContract {
-            env: self.env().clone(),
-            salt: salt.into(),
+            env: env.clone(),
+            salt: salt.into_val(env),
         }
     }
 
@@ -42,13 +43,14 @@ impl Deployer {
     /// give contract ID and the provided salt.
     pub fn contract(
         &self,
-        contract_id: impl Into<BytesN<32>>,
-        salt: impl Into<Bytes>,
+        contract_id: impl IntoVal<Env, BytesN<32>>,
+        salt: impl IntoVal<Env, Bytes>,
     ) -> DeployerDerivedFromOtherContract {
+        let env = self.env();
         DeployerDerivedFromOtherContract {
-            env: self.env().clone(),
-            contract_id: contract_id.into(),
-            salt: salt.into(),
+            env: env.clone(),
+            contract_id: contract_id.into_val(env),
+            salt: salt.into_val(env),
         }
     }
 
@@ -56,13 +58,14 @@ impl Deployer {
     /// give ed25519 public key and the provided salt.
     pub fn ed25519(
         &self,
-        public_key: impl Into<BytesN<32>>,
-        salt: impl Into<Bytes>,
+        public_key: impl IntoVal<Env, BytesN<32>>,
+        salt: impl IntoVal<Env, Bytes>,
     ) -> DeployerDerivedFromEd25519 {
+        let env = self.env();
         DeployerDerivedFromEd25519 {
-            env: self.env().clone(),
-            public_key: public_key.into(),
-            salt: salt.into(),
+            env: env.clone(),
+            public_key: public_key.into_val(env),
+            salt: salt.into_val(env),
         }
     }
 }
@@ -148,13 +151,17 @@ impl DeployerDerivedFromEd25519 {
     /// contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(&self, wasm: impl Into<Bytes>, signature: impl Into<BytesN<64>>) -> BytesN<32> {
+    pub fn deploy(
+        &self,
+        wasm: impl IntoVal<Env, Bytes>,
+        signature: impl IntoVal<Env, BytesN<64>>,
+    ) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_contract_from_ed25519(
-            wasm.into().to_object(),
+            wasm.into_val(env).to_object(),
             self.salt.to_object(),
             self.public_key.to_object(),
-            signature.into().to_object(),
+            signature.into_val(env).to_object(),
         );
         BytesN::try_from_val(env, id).unwrap()
     }
@@ -165,12 +172,12 @@ impl DeployerDerivedFromEd25519 {
     /// contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy_token(&self, signature: impl Into<BytesN<64>>) -> BytesN<32> {
+    pub fn deploy_token(&self, signature: impl IntoVal<Env, BytesN<64>>) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_token_from_ed25519(
             self.salt.to_object(),
             self.public_key.to_object(),
-            signature.into().to_object(),
+            signature.into_val(env).to_object(),
         );
         BytesN::try_from_val(env, id).unwrap()
     }
