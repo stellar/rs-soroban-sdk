@@ -722,6 +722,18 @@ impl<const N: usize> IntoVal<Env, BytesN<N>> for &BytesN<N> {
     }
 }
 
+impl<const N: usize> IntoVal<Env, Bytes> for BytesN<N> {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self.0
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Bytes> for &BytesN<N> {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self.0.clone()
+    }
+}
+
 impl<const N: usize> IntoVal<Env, BytesN<N>> for [u8; N] {
     fn into_val(self, env: &Env) -> BytesN<N> {
         BytesN::from_array(env, &self)
