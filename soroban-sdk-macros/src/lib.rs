@@ -96,32 +96,44 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
 }
 
-#[proc_macro_attribute]
-pub fn contracttype(_metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
-    quote! {
-        #[derive(soroban_sdk::ContractType)]
-        #input
-    }
-    .into()
+#[derive(Debug, FromMeta)]
+struct ContractTypeArgs {
+    lib: Option<String>,
 }
 
-#[doc(hidden)]
-#[proc_macro_derive(ContractType)]
-pub fn derive_contract_type(input: TokenStream) -> TokenStream {
+#[proc_macro_attribute]
+pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractTypeArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let gen_spec = matches!(input.vis, Visibility::Public(_));
+
+    // Have the derived type alias the specified lib, if the crate the macro is
+    // being used in is not the same crate as lib.
+    let alias_lib = args
+        .lib
+        .as_ref()
+        .map(|lib| lib != &std::env::var("CARGO_PKG_NAME").unwrap_or_default())
+        .unwrap_or_default();
+
     let derived = match &input.data {
-        syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec),
-        syn::Data::Enum(e) => derive_type_enum(ident, e, gen_spec),
+        syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec, &args.lib, alias_lib),
+        syn::Data::Enum(e) => derive_type_enum(ident, e, gen_spec, &args.lib, alias_lib),
         syn::Data::Union(u) => Error::new(
             u.union_token.span(),
             "unions are unsupported as contract types",
         )
         .to_compile_error(),
     };
-    quote! { #derived }.into()
+    quote! {
+        #input
+        #derived
+    }
+    .into()
 }
 
 #[derive(Debug, FromMeta)]

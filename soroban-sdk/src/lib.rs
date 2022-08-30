@@ -34,7 +34,7 @@ fn __link_sections() {
 }
 
 pub use soroban_sdk_macros::{
-    contractclient, contractfile, contractimpl, contractimport, contracttype, ContractType,
+    contractclient, contractfile, contractimpl, contractimport, contracttype,
 };
 
 mod env;

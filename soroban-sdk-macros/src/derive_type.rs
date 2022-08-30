@@ -15,7 +15,13 @@ use crate::map_type::map_type;
 // TODO: Better handling of partial types and types without all their fields and
 // types with private fields.
 
-pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> TokenStream2 {
+pub fn derive_type_struct(
+    ident: &Ident,
+    data: &DataStruct,
+    spec: bool,
+    lib: &Option<String>,
+    alias_lib: bool,
+) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
@@ -87,6 +93,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
         });
@@ -109,6 +116,15 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     };
 
     // Output.
+    if alias_lib {
+        if let Some(lib) = lib {
+            let lib_ident = format_ident!("{}", lib);
+            return quote! {
+                #spec_gen
+                type #ident = ::#lib_ident::#ident;
+            };
+        }
+    }
     quote! {
         #spec_gen
 
@@ -284,7 +300,13 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     }
 }
 
-pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> TokenStream2 {
+pub fn derive_type_enum(
+    enum_ident: &Ident,
+    data: &DataEnum,
+    spec: bool,
+    lib: &Option<String>,
+    alias_lib: bool,
+) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
@@ -389,6 +411,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
@@ -411,6 +434,15 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
     };
 
     // Output.
+    if alias_lib {
+        if let Some(lib) = lib {
+            let lib_ident = format_ident!("{}", lib);
+            return quote! {
+                #spec_gen
+                type #enum_ident = ::#lib_ident::#enum_ident;
+            };
+        }
+    }
     quote! {
         #spec_gen
 
