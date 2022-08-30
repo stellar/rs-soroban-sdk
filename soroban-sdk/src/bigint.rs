@@ -5,7 +5,7 @@ use core::{
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase, RawValConvertible},
+    env::internal::{Env as _, EnvBase},
     env::EnvObj,
     xdr::ScObjectType,
     Bytes, ConversionError, Env, EnvVal, FromVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
@@ -897,8 +897,7 @@ impl Eq for BigInt {}
 impl Ord for BigInt {
     fn cmp(&self, other: &Self) -> Ordering {
         let env = self.env();
-        let v = env.bigint_cmp(self.0.to_object(), other.0.to_object());
-        let i = i32::try_from(v).unwrap();
+        let i = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
         i.cmp(&0)
     }
 }
@@ -983,8 +982,7 @@ impl BigInt {
     /// Returns the [Sign] of the [BigInt].
     pub fn sign(&self) -> Sign {
         let env = self.env();
-        let sign = env.bigint_cmp(self.to_object(), BigInt::zero(env).to_object());
-        let sign = unsafe { <i32 as RawValConvertible>::unchecked_from_val(sign) };
+        let sign = env.obj_cmp(self.to_raw(), BigInt::zero(env).to_raw());
         match sign.cmp(&0) {
             Ordering::Less => Sign::Minus,
             Ordering::Equal => Sign::NoSign,
