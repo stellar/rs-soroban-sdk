@@ -76,7 +76,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             quote! { (#(#type_idents,)*) }
         }
         ScSpecTypeDef::BytesN(b) => {
-            let n = Literal::usize_unsuffixed(b.n as usize);
+            let n = Literal::u32_unsuffixed(b.n);
             quote! { ::soroban_sdk::BytesN<#n> }
         }
         ScSpecTypeDef::Udt(u) => {
