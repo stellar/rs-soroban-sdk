@@ -55,6 +55,7 @@ impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
 #[serde(tag = "type")]
 #[serde(rename_all = "camelCase")]
 pub enum Type {
+    Val,
     U64,
     I64,
     U32,
@@ -121,6 +122,7 @@ impl From<&ScSpecTypeDef> for Type {
                 name: udt.name.to_string_lossy(),
             },
             ScSpecTypeDef::BytesN(b) => Type::BytesN { n: b.n },
+            ScSpecTypeDef::Val => Type::Val,
             ScSpecTypeDef::U64 => Type::U64,
             ScSpecTypeDef::I64 => Type::I64,
             ScSpecTypeDef::U32 => Type::U32,
