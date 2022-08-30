@@ -306,7 +306,7 @@ impl Bytes {
     /// Create an empty Bytes.
     #[inline(always)]
     pub fn new(env: &Env) -> Bytes {
-        let obj = env.binary_new().in_env(env);
+        let obj = env.bytes_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 
@@ -318,7 +318,7 @@ impl Bytes {
 
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[u8]) -> Bytes {
-        Bytes(env.binary_new_from_slice(items).in_env(env))
+        Bytes(env.bytes_new_from_slice(items).in_env(env))
     }
 
     #[inline(always)]
@@ -326,7 +326,7 @@ impl Bytes {
         let v32: u32 = v.into();
         self.0 = self
             .env()
-            .binary_put(self.0.to_object(), i.into(), v32.into())
+            .bytes_put(self.0.to_object(), i.into(), v32.into())
             .in_env(self.env());
     }
 
@@ -343,7 +343,7 @@ impl Bytes {
     pub fn get_unchecked(&self, i: u32) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_get(self.0.to_object(), i.into())
+            .bytes_get(self.0.to_object(), i.into())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -351,15 +351,12 @@ impl Bytes {
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.env().binary_len(self.0.to_object()).is_u32_zero()
+        self.env().bytes_len(self.0.to_object()).is_u32_zero()
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        self.env()
-            .binary_len(self.0.to_object())
-            .try_into()
-            .unwrap()
+        self.env().bytes_len(self.0.to_object()).try_into().unwrap()
     }
 
     #[inline(always)]
@@ -375,7 +372,7 @@ impl Bytes {
     pub fn first_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_front(self.0.to_object())
+            .bytes_front(self.0.to_object())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -394,7 +391,7 @@ impl Bytes {
     pub fn last_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_back(self.0.to_object())
+            .bytes_back(self.0.to_object())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -413,7 +410,7 @@ impl Bytes {
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
         let env = self.env();
-        let bin = env.binary_del(self.0.to_object(), i.into());
+        let bin = env.bytes_del(self.0.to_object(), i.into());
         self.0 = bin.in_env(env);
     }
 
@@ -421,7 +418,7 @@ impl Bytes {
     pub fn push(&mut self, x: u8) {
         let x32: u32 = x.into();
         let env = self.env();
-        let bin = env.binary_push(self.0.to_object(), x32.into());
+        let bin = env.bytes_push(self.0.to_object(), x32.into());
         self.0 = bin.in_env(env);
     }
 
@@ -429,7 +426,7 @@ impl Bytes {
     pub fn pop(&mut self) -> Option<u8> {
         let last = self.last()?;
         let env = self.env();
-        let bin = env.binary_pop(self.0.to_object());
+        let bin = env.bytes_pop(self.0.to_object());
         self.0 = bin.in_env(env);
         Some(last)
     }
@@ -438,7 +435,7 @@ impl Bytes {
     pub fn pop_unchecked(&mut self) -> u8 {
         let last = self.last_unchecked();
         let env = self.env();
-        self.0 = env.binary_pop(self.0.to_object()).in_env(env);
+        self.0 = env.bytes_pop(self.0.to_object()).in_env(env);
         last
     }
 
@@ -452,7 +449,7 @@ impl Bytes {
     pub fn insert(&mut self, i: u32, b: u8) {
         let env = self.env();
         let b32: u32 = b.into();
-        let bin = env.binary_insert(self.0.to_object(), i.into(), b32.into());
+        let bin = env.bytes_insert(self.0.to_object(), i.into(), b32.into());
         self.0 = bin.in_env(env);
     }
 
@@ -498,7 +495,7 @@ impl Bytes {
     #[inline(always)]
     pub fn append(&mut self, other: &Bytes) {
         let env = self.env();
-        let bin = env.binary_append(self.0.to_object(), other.0.to_object());
+        let bin = env.bytes_append(self.0.to_object(), other.0.to_object());
         self.0 = bin.in_env(env);
     }
 
@@ -511,7 +508,7 @@ impl Bytes {
     pub fn extend_from_slice(&mut self, slice: &[u8]) {
         let env = self.env();
         self.0 = env
-            .binary_copy_from_slice(self.to_object(), self.len().into(), &slice)
+            .bytes_copy_from_slice(self.to_object(), self.len().into(), &slice)
             .in_env(env);
     }
 
@@ -523,7 +520,7 @@ impl Bytes {
     pub fn copy_from_slice(&mut self, i: u32, slice: &[u8]) {
         let env = self.env();
         self.0 = env
-            .binary_copy_from_slice(self.to_object(), i.into(), slice)
+            .bytes_copy_from_slice(self.to_object(), i.into(), slice)
             .in_env(env);
     }
 
@@ -534,7 +531,7 @@ impl Bytes {
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
-        env.binary_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
+        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
     }
 
     #[must_use]
@@ -550,7 +547,7 @@ impl Bytes {
             Bound::Unbounded => self.len(),
         };
         let env = self.env();
-        let bin = env.binary_slice(self.0.to_object(), start_bound.into(), end_bound.into());
+        let bin = env.bytes_slice(self.0.to_object(), start_bound.into(), end_bound.into());
         unsafe { Self::unchecked_new(bin.in_env(env)) }
     }
 
@@ -584,7 +581,7 @@ impl Iterator for BinIter {
         if self.0.len() == 0 {
             None
         } else {
-            let val = self.0.env().binary_front(self.0 .0.to_object());
+            let val = self.0.env().bytes_front(self.0 .0.to_object());
             self.0 = self.0.slice(1..);
             let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
@@ -603,7 +600,7 @@ impl DoubleEndedIterator for BinIter {
         if len == 0 {
             None
         } else {
-            let val = self.0.env().binary_back(self.0 .0.to_object());
+            let val = self.0.env().bytes_back(self.0 .0.to_object());
             self.0 = self.0.slice(..len - 1);
             let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
@@ -951,7 +948,7 @@ impl<const N: usize> BytesN<N> {
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
-        env.binary_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
+        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
     }
 
     pub fn iter(&self) -> BinIter {
