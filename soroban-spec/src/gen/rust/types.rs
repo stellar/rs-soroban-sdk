@@ -1,4 +1,4 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructV0, ScSpecUdtUnionV0};
 
@@ -76,7 +76,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             quote! { (#(#type_idents,)*) }
         }
         ScSpecTypeDef::BytesN(b) => {
-            let n: usize = b.n as usize;
+            let n = Literal::usize_unsuffixed(b.n as usize);
             quote! { ::soroban_sdk::BytesN<#n> }
         }
         ScSpecTypeDef::Udt(u) => {
