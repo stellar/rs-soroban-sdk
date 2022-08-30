@@ -19,6 +19,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     ident,
                     arguments: PathArguments::None,
                 }) => match &ident.to_string()[..] {
+                    "RawVal" => Ok(ScSpecTypeDef::Val),
                     "u64" => Ok(ScSpecTypeDef::U64),
                     "i64" => Ok(ScSpecTypeDef::I64),
                     "u32" => Ok(ScSpecTypeDef::U32),
@@ -44,70 +45,70 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                 }) => {
                     let args = angle_bracketed.args.iter().collect::<Vec<_>>();
                     match &ident.to_string()[..] {
-                    "Option" => {
-                        let t = match args.as_slice() {
+                        "Option" => {
+                            let t = match args.as_slice() {
                             [GenericArgument::Type(t)] => t,
                             [..] => Err(Error::new(
                                 t.span(),
                                 "incorrect number of generic arguments, expect one for Option<T>",
                             ))?,
                         };
-                        Ok(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
-                            value_type: Box::new(map_type(t)?),
-                        })))
-                    }
-                    "Vec" => {
-                        let t = match args.as_slice() {
-                            [GenericArgument::Type(t)] => t,
-                            [..] => Err(Error::new(
-                                t.span(),
-                                "incorrect number of generic arguments, expect one for Vec<T>",
-                            ))?,
-                        };
-                        Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
-                            element_type: Box::new(map_type(t)?),
-                        })))
-                    }
-                    "Set" => {
-                        let t = match args.as_slice() {
-                            [GenericArgument::Type(t)] => t,
-                            [..] => Err(Error::new(
-                                t.span(),
-                                "incorrect number of generic arguments, expect one for Set<T>",
-                            ))?,
-                        };
-                        Ok(ScSpecTypeDef::Set(Box::new(ScSpecTypeSet {
-                            element_type: Box::new(map_type(t)?),
-                        })))
-                    }
-                    "Map" => {
-                        let (k, v) = match args.as_slice() {
+                            Ok(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+                                value_type: Box::new(map_type(t)?),
+                            })))
+                        }
+                        "Vec" => {
+                            let t = match args.as_slice() {
+                                [GenericArgument::Type(t)] => t,
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect one for Vec<T>",
+                                ))?,
+                            };
+                            Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                                element_type: Box::new(map_type(t)?),
+                            })))
+                        }
+                        "Set" => {
+                            let t = match args.as_slice() {
+                                [GenericArgument::Type(t)] => t,
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect one for Set<T>",
+                                ))?,
+                            };
+                            Ok(ScSpecTypeDef::Set(Box::new(ScSpecTypeSet {
+                                element_type: Box::new(map_type(t)?),
+                            })))
+                        }
+                        "Map" => {
+                            let (k, v) = match args.as_slice() {
                             [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
                             [..] => Err(Error::new(
                                 t.span(),
                                 "incorrect number of generic arguments, expect two for Map<K, V>",
                             ))?,
                         };
-                        Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
-                            key_type: Box::new(map_type(k)?),
-                            value_type: Box::new(map_type(v)?),
-                        })))
-                    }
-                    "BytesN" => {
-                        let n = match args.as_slice() {
+                            Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+                                key_type: Box::new(map_type(k)?),
+                                value_type: Box::new(map_type(v)?),
+                            })))
+                        }
+                        "BytesN" => {
+                            let n = match args.as_slice() {
                             [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
                             [..] => Err(Error::new(
                                 t.span(),
                                 "incorrect number of generic arguments, expect one for BytesN<N>",
                             ))?,
                         };
-                        Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: n }))
+                            Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: n }))
+                        }
+                        _ => Err(Error::new(
+                            angle_bracketed.span(),
+                            "generics unsupported on user-defined types in contract functions",
+                        ))?,
                     }
-                    _ => Err(Error::new(
-                        angle_bracketed.span(),
-                        "generics unsupported on user-defined types in contract functions",
-                    ))?,
-                }
                 }
                 _ => Err(Error::new(t.span(), "unsupported type"))?,
             }
