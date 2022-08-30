@@ -4,6 +4,7 @@ mod derive_client;
 mod derive_fn;
 mod derive_type;
 mod map_type;
+mod path;
 mod syn_ext;
 
 use derive_client::derive_client;
@@ -15,7 +16,7 @@ use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::quote;
 use sha2::{Digest, Sha256};
-use soroban_spec::gen::rust::{generate_from_file, GenerateFromFileError};
+use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 use std::fs;
 use syn::{
     parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Type,
@@ -139,7 +140,8 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
     };
 
     // Read WASM from file.
-    let wasm = match fs::read(&args.file) {
+    let file_abs = path::abs_from_rel_to_manifest(&args.file);
+    let wasm = match fs::read(file_abs) {
         Ok(wasm) => wasm,
         Err(e) => {
             return Error::new(Span::call_site(), e.to_string())
@@ -203,7 +205,20 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
-    match generate_from_file(&args.file, args.sha256.as_deref()) {
+
+    // Read WASM from file.
+    let file_abs = path::abs_from_rel_to_manifest(&args.file);
+    let wasm = match fs::read(file_abs) {
+        Ok(wasm) => wasm,
+        Err(e) => {
+            return Error::new(Span::call_site(), e.to_string())
+                .into_compile_error()
+                .into()
+        }
+    };
+
+    // Generate.
+    match generate_from_wasm(&wasm, &args.file, args.sha256.as_deref()) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
             Error::new(args.sha256.span(), e.to_string()).into_compile_error()

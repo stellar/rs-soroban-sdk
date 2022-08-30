@@ -31,28 +31,26 @@ pub fn generate_from_file(
     // Read file.
     let wasm = fs::read(file).map_err(GenerateFromFileError::Io)?;
 
-    // Produce hash for file.
-    let sha256 = Sha256::digest(&wasm);
-    let sha256 = format!("{:x}", sha256);
-
-    if let Some(verify_sha256) = verify_sha256 {
-        if verify_sha256 != sha256 {
-            return Err(GenerateFromFileError::VerifySha256 { expected: sha256 });
-        }
-    }
-
     // Generate code.
-    let code = generate_from_wasm(&wasm, file, &sha256).map_err(GenerateFromFileError::GetSpec)?;
+    let code = generate_from_wasm(&wasm, file, verify_sha256)?;
     Ok(code)
 }
 
 pub fn generate_from_wasm(
     wasm: &[u8],
     file: &str,
-    sha256: &str,
-) -> Result<TokenStream, FromWasmError> {
-    let spec = from_wasm(wasm)?;
-    let code = generate(&spec, file, sha256);
+    verify_sha256: Option<&str>,
+) -> Result<TokenStream, GenerateFromFileError> {
+    let sha256 = Sha256::digest(&wasm);
+    let sha256 = format!("{:x}", sha256);
+    if let Some(verify_sha256) = verify_sha256 {
+        if verify_sha256 != sha256 {
+            return Err(GenerateFromFileError::VerifySha256 { expected: sha256 });
+        }
+    }
+
+    let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
+    let code = generate(&spec, file, &sha256);
     Ok(code)
 }
 
