@@ -111,18 +111,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let gen_spec = matches!(input.vis, Visibility::Public(_));
-
-    // Have the derived type alias the specified lib, if the crate the macro is
-    // being used in is not the same crate as lib.
-    let alias_lib = args
-        .lib
-        .as_ref()
-        .map(|lib| lib != &std::env::var("CARGO_PKG_NAME").unwrap_or_default())
-        .unwrap_or_default();
-
     let derived = match &input.data {
-        syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec, &args.lib, alias_lib),
-        syn::Data::Enum(e) => derive_type_enum(ident, e, gen_spec, &args.lib, alias_lib),
+        syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec, &args.lib),
+        syn::Data::Enum(e) => derive_type_enum(ident, e, gen_spec, &args.lib),
         syn::Data::Union(u) => Error::new(
             u.union_token.span(),
             "unions are unsupported as contract types",

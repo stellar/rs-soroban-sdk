@@ -20,7 +20,6 @@ pub fn derive_type_struct(
     data: &DataStruct,
     spec: bool,
     lib: &Option<String>,
-    alias_lib: bool,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -116,15 +115,6 @@ pub fn derive_type_struct(
     };
 
     // Output.
-    if alias_lib {
-        if let Some(lib) = lib {
-            let lib_ident = format_ident!("{}", lib);
-            return quote! {
-                #spec_gen
-                type #ident = ::#lib_ident::#ident;
-            };
-        }
-    }
     quote! {
         #spec_gen
 
@@ -305,7 +295,6 @@ pub fn derive_type_enum(
     data: &DataEnum,
     spec: bool,
     lib: &Option<String>,
-    alias_lib: bool,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -434,15 +423,6 @@ pub fn derive_type_enum(
     };
 
     // Output.
-    if alias_lib {
-        if let Some(lib) = lib {
-            let lib_ident = format_ident!("{}", lib);
-            return quote! {
-                #spec_gen
-                type #enum_ident = ::#lib_ident::#enum_ident;
-            };
-        }
-    }
     quote! {
         #spec_gen
 
