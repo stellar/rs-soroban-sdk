@@ -2,8 +2,8 @@
 
 use soroban_sdk::{serde::Serialize, Account, BigInt, BytesN, Env, RawVal, Symbol, Vec};
 
-pub mod public_types;
-use crate::public_types::{
+mod public_types;
+pub use crate::public_types::{
     AccountSignatures, Ed25519Signature, Identifier, Signature, SignaturePayload,
     SignaturePayloadV0,
 };
