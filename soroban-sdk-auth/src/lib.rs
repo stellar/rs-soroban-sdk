@@ -15,10 +15,7 @@ pub use crate::public_types::{
 /// ### Examples
 /// ```
 /// use soroban_sdk::{BigInt, Env, contracttype};
-/// use soroban_sdk_auth::{check_auth,
-///     public_types::{Identifier, Signature},
-///     NonceAuth,
-/// };
+/// use soroban_sdk_auth::{check_auth, Identifier, Signature, NonceAuth};
 ///
 /// #[contracttype]
 /// pub enum DataKey {
