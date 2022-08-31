@@ -328,6 +328,24 @@ impl Env {
             .unwrap();
     }
 
+    /// Register the built-in token contract with the [Env] for testing.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
+    /// env.register_contract_token(&contract_id);
+    /// # }
+    /// ```
+    pub fn register_contract_token(&self, contract_id: &BytesN<32>) {
+        self.env_impl
+            .register_test_contract_token(contract_id.to_object())
+            .unwrap();
+    }
+
     #[doc(hidden)]
     pub fn invoke_contract_external_raw(&self, hf: xdr::HostFunction, args: xdr::ScVec) -> RawVal {
         self.env_impl.invoke_function_raw(hf, args).unwrap()
