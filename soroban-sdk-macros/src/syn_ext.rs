@@ -1,4 +1,7 @@
-use syn::{ImplItem, ImplItemMethod, ItemImpl, ItemTrait, TraitItem, TraitItemMethod, Visibility, FnArg, Type, TypeReference, token::And, PatType, Pat, Error, spanned::Spanned, Ident};
+use syn::{
+    spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemMethod, ItemImpl,
+    ItemTrait, Pat, PatType, TraitItem, TraitItemMethod, Type, TypeReference, Visibility,
+};
 
 /// Gets methods from the implementation that have public visibility. For
 /// methods that are inherently implemented this is methods that have a pub
