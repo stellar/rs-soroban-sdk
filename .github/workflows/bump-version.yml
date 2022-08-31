@@ -30,10 +30,10 @@ jobs:
       with:
         script: |
           await github.rest.pulls.create({
-            title: 'Bump version to #{{ inputs.version }}',
+            title: 'Bump version to ${{ inputs.version }}',
             owner: context.repo.owner,
             repo: context.repo.repo,
             head: 'bump-version-${{ inputs.version }}',
             base: 'main',
-            body: '### What\nBump version to ${{ inputs.version }}.\n\n### Why\nTriggered by ${{ github.actor }}'
+            body: '### What\nBump version to ${{ inputs.version }}.\n\n### Why\nTriggered by ${{ github.actor }}.'
           });

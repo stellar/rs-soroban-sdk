@@ -99,7 +99,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update
-    - run: rustup target add wasm32-unknown-unknown
     - run: cargo install --locked --version 0.2.35 cargo-workspaces
     - run: make publish
       env:
