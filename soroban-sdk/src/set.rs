@@ -1,6 +1,9 @@
 use core::{cmp::Ordering, fmt::Debug};
 
-use super::{Env, IntoVal, Map, RawVal, TryFromVal};
+use super::{
+    env::internal::Env as _,
+    Env, IntoVal, Map, RawVal, TryFromVal
+};
 
 /// Create a [Set] with the given items.
 ///
@@ -53,11 +56,12 @@ macro_rules! set {
 /// set.insert(3);
 /// assert_eq!(set.len(), 3);
 /// ```
+#[derive(Clone)]
 pub struct Set<T>(Map<T, ()>);
 
 impl<T> Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Copy,
 {
     pub(crate) fn env(&self) -> &Env {
         self.0.env()
@@ -117,7 +121,25 @@ where
     pub fn is_empty(&self) -> bool {
         self.0.len() == 0
     }
+
+    pub fn first(&self) -> Option<Result<T, T::Error>> {
+        let env = self.env();
+        if self.is_empty() {
+            None
+        } else {
+            let min_key = env.map_min_key(self.0.to_object());
+            Some(T::try_from_val(env, min_key))
+        }
+    }
+
+    pub fn iter(&self) -> SetIter<T>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+    {
+        self.clone().into_iter()
+    }
 }
+
 
 impl<T> Eq for Set<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
@@ -150,17 +172,57 @@ where
 
 impl<T> Debug for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone + Copy,
     T::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Set(")?;
-        let keys = self.0.keys();
-        for k in keys {
+        for k in self.iter() {
             write!(f, "{:?}", k)?;
         }
         write!(f, ")")?;
         Ok(())
+    }
+}
+
+impl<T> IntoIterator for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Copy,
+{
+    type Item = Result<T, T::Error>;
+    type IntoIter = SetIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        SetIter(self)
+    }
+}
+
+#[derive(Clone)]
+pub struct SetIter<T>(Set<T>);
+
+impl<T> SetIter<T> {
+    fn into_set(self) -> Set<T> {
+        self.0
+    }
+}
+
+impl<T> Iterator for SetIter<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Copy,
+{
+    type Item = Result<T, T::Error>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let first = self.0.first();
+        if let Some(Ok(k)) = first {
+            self.0.remove(k);
+        }
+        first
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len() as usize;
+        (len, Some(len))
     }
 }
 
@@ -272,5 +334,23 @@ mod test {
 
         s2.extend_from_slice(&[4, 5, 6]);
         assert_eq!(s2, set![&env, 1, 2, 3, 4, 5, 6]);
+    }
+
+    #[test]
+    fn test_forward_iter() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 4, 5];
+        let mut iter = s.iter();
+
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(4)));
+        assert_eq!(iter.next(), Some(Ok(5)));
+        assert_eq!(iter.next(), None);
+
+        // Ensure values are not deleted from original set during iter:
+        assert_eq!(s, set![&env, 1, 2, 3, 4, 5]);
+
     }
 }
