@@ -6,7 +6,7 @@ repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
 license = "Apache-2.0"
-version = "0.0.1"
+version = "0.0.4"
 edition = "2021"
 rust-version = "1.63"
 
