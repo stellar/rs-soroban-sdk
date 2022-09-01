@@ -12,7 +12,34 @@
 //! public key.
 //!
 //! The deployer can be created using [Env::deployer].
-
+//!
+//! ### Examples
+//!
+//! ```
+//! # use soroban_sdk::{contractimpl, symbol, BytesN, Env, Symbol};
+//! #
+//! # pub struct Contract;
+//! #
+//! # #[contractimpl]
+//! # impl Contract {
+//! #     pub fn f(env: Env) {
+//! # let wasm = [0u8; 32];
+//! # let salt = [0u8; 32];
+//! let deployer = env.deployer().from_current_contract(&salt);
+//! let contract_id = deployer.deploy(&wasm);
+//! #     }
+//! # }
+//! #
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//! #     let env = Env::default();
+//! #     let contract_id = BytesN::from_array(&env, &[0; 32]);
+//! #     env.register_contract(&contract_id, Contract);
+//! #     f::invoke(&env, &contract_id);
+//! # }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
+//! ```
 use crate::{env::internal::Env as _, Bytes, BytesN, Env, IntoVal, TryFromVal};
 
 /// Deployer provides access to deploying contracts.
@@ -94,9 +121,10 @@ impl DeployerDerivedFromCurrentContract {
     /// will be used to derive a contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(&self, wasm: impl Into<Bytes>) -> BytesN<32> {
+    pub fn deploy(&self, wasm: impl IntoVal<Env, Bytes>) -> BytesN<32> {
         let env = &self.env;
-        let id = env.create_contract_from_contract(wasm.into().to_object(), self.salt.to_object());
+        let id = env
+            .create_contract_from_contract(wasm.into_val(env).to_object(), self.salt.to_object());
         BytesN::<32>::try_from_val(env, id).unwrap()
     }
 
