@@ -883,6 +883,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-auth"
+version = "0.0.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "soroban-env-common"
 version = "0.0.3"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=b94bbb7#b94bbb78525039491b85e78622c0d04edffcf068"
@@ -961,13 +968,6 @@ dependencies = [
  "soroban-spec",
  "stellar-xdr",
  "trybuild",
-]
-
-[[package]]
-name = "soroban-sdk-auth"
-version = "0.0.0"
-dependencies = [
- "soroban-sdk",
 ]
 
 [[package]]

@@ -6,8 +6,8 @@ CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest 
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
-	cargo test --doc -p soroban-sdk -p soroban-sdk-macros -p soroban-sdk-auth --features testutils
-	cargo +nightly doc -p soroban-sdk -p soroban-sdk-auth --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
+	cargo test --doc -p soroban-sdk -p soroban-sdk-macros -p soroban-auth --features testutils
+	cargo +nightly doc -p soroban-sdk -p soroban-auth --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 test: fmt build
 	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
@@ -21,7 +21,7 @@ build-optimized: fmt
 		--exclude soroban-spec \
 		--exclude soroban-sdk \
 		--exclude soroban-sdk-macros \
-		--exclude soroban-sdk-auth \
+		--exclude soroban-auth \
 		-Z build-std=std,panic_abort \
 		-Z build-std-features=panic_immediate_abort
 	cd target-tiny/wasm32-unknown-unknown/release/ && \
