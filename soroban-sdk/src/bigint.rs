@@ -11,7 +11,7 @@ use super::{
     Bytes, ConversionError, Env, EnvVal, FromVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
-/// Create a [BigInt] with an integer literal, or an array.
+/// Create a [BigInt] with an integer, hex, bits, or an array.
 ///
 /// The first argument in the list must be a reference to an [Env].
 ///
@@ -19,6 +19,8 @@ use super::{
 /// base10, hex, etc, or an [u8] array.
 ///
 /// ### Examples
+///
+/// Create a [BigInt] with an integer:
 ///
 /// ```
 /// use soroban_sdk::{Env, bigint};
@@ -28,6 +30,8 @@ use super::{
 /// assert_eq!(big.to_i64(), -5i64);
 /// ```
 ///
+/// Create a [BigInt] with hex:
+///
 /// ```
 /// use soroban_sdk::{Env, bigint};
 ///
@@ -36,20 +40,14 @@ use super::{
 /// assert_eq!(big.bits(), 256);
 /// ```
 ///
+/// Create a [BigInt] with an array:
+///
 /// ```
 /// use soroban_sdk::{Env, bigint};
 ///
 /// let env = Env::default();
 /// let big = bigint!(&env, [2, 0]);
 /// assert_eq!(big, 512);
-/// ```
-///
-/// ```
-/// use soroban_sdk::{Env, bigint};
-///
-/// let env = Env::default();
-/// let big = bigint!(&env);
-/// assert_eq!(big, 0);
 /// ```
 #[macro_export]
 macro_rules! bigint {
