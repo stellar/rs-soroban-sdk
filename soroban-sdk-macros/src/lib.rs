@@ -35,6 +35,10 @@ fn contractimpl_args_default_export() -> bool {
     true
 }
 
+/// Exports the publicly accessible functions in the implementation.
+///
+/// Functions that are publicly accessible in the implementation are invocable
+/// by other contracts, or directly by transactions, when deployed.
 #[proc_macro_attribute]
 pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -101,6 +105,11 @@ struct ContractTypeArgs {
     lib: Option<String>,
 }
 
+/// Generates conversions from the struct/enum from/into a `RawVal`.
+///
+/// Includes the type in the contract spec so that clients can generate bindings
+/// for the type.
+///
 #[proc_macro_attribute]
 pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -201,6 +210,55 @@ struct ContractImportArgs {
     sha256: darling::util::SpannedValue<Option<String>>,
 }
 
+/// Import a contract from its WASM file.
+///
+/// Generates in the current module:
+/// - A `Contract` trait that matches the contracts interface.
+/// - A `ContractClient` struct that has functions for each function in the
+/// contract.
+/// - Types for all contract types defined in the contract.
+///
+/// ### Examples
+///
+/// ```ignore
+/// use soroban_sdk::{BytesN, Env, Symbol};
+///
+/// mod contract_a {
+///     soroban_sdk::contractimport!(file = "contract_a.wasm");
+/// }
+///
+/// pub struct ContractB;
+///
+/// #[contractimpl]
+/// impl ContractB {
+///     pub fn add_with(env: Env, contract_id: BytesN<32>, x: u32, y: u32) -> u32 {
+///         let client = contract_a::ContractClient::new(&env, contract_id);
+///         client.add(&x, &y)
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+///     let env = Env::default();
+///
+///     // Define IDs for contract A and B.
+///     let contract_a_id = BytesN::from_array(&env, &[0; 32]);
+///     let contract_b_id = BytesN::from_array(&env, &[1; 32]);
+///
+///     // Register contract A using the imported WASM.
+///     env.register_contract_wasm(&contract_a_id, contract_a::WASM);
+///
+///     // Register contract B defined in this crate.
+///     env.register_contract(&contract_b_id, ContractB);
+///
+///     // Create a client for calling contract B.
+///     let client = ContractBClient::new(&env, &contract_b_id);
+///
+///     // Invoke contract B via its client.
+///     let sum = client.add_with(&contract_a_id, &5, &7);
+///     assert_eq!(sum, 12);
+/// }
+/// ```
 #[proc_macro]
 pub fn contractimport(metadata: TokenStream) -> TokenStream {
     let attr_args = parse_macro_input!(metadata as AttributeArgs);
