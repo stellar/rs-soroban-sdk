@@ -16,6 +16,7 @@ use super::{Env, IntoVal, Map, RawVal, TryFromVal};
 /// let set = set![&env, 0, 1, 2, 3, 3];
 /// assert_eq!(set.len(), 4);
 /// ```
+#[doc(hidden)]
 #[macro_export]
 macro_rules! set {
     ($env:expr) => {
@@ -53,6 +54,7 @@ macro_rules! set {
 /// set.insert(3);
 /// assert_eq!(set.len(), 3);
 /// ```
+#[doc(hidden)]
 pub struct Set<T>(Map<T, ()>);
 
 impl<T> Set<T>
