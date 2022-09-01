@@ -22,6 +22,7 @@ members = [
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
 soroban-auth = { path = "soroban-auth" }
+soroban-spec = { path = "soroban-spec" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
 soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "b94bbb7" }
 soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "b94bbb7" }
