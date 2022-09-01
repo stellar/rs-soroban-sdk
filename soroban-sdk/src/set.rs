@@ -351,6 +351,17 @@ mod test {
 
         // Ensure values are not deleted from original set during iter:
         assert_eq!(s, set![&env, 1, 2, 3, 4, 5]);
+    }
 
+    #[test]
+    fn test_iter_forloop() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 4, 5];
+        let mut c = 1;
+
+        for i in s {
+            assert_eq!(i, Ok(c));
+            c += 1;
+        }
     }
 }
