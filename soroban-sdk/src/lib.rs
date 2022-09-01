@@ -44,7 +44,6 @@ pub mod xdr;
 pub use env::ConversionError;
 
 pub use env::Env;
-pub use env::EnvVal;
 pub use env::RawVal;
 
 pub use env::FromVal;
@@ -55,6 +54,7 @@ pub use env::TryIntoVal;
 pub use env::Symbol;
 
 mod envhidden {
+    pub use super::env::EnvVal;
     pub use super::env::Object;
     pub use super::env::Status;
 }
