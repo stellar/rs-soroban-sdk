@@ -15,18 +15,18 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 soroban-sdk-macros = { version = "0.0.3" }
-bytes-lit = "0.0.2"
+bytes-lit = "0.0.3"
 ed25519-dalek = { version = "1.0.1", optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]
-soroban-env-guest = { version = "0.0.3" }
+soroban-env-guest = { version = "0.0.4" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { version = "0.0.3", features = ["vm"] }
+soroban-env-host = { version = "0.0.4", features = ["vm"] }
 
 [dev-dependencies]
-stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
-soroban-spec = { path = "../soroban-spec" }
+stellar-xdr = { version = "0.0.2", features = ["next", "std"] }
+soroban-spec = "0.0.1"
 trybuild = "1.0.63"
 hex = "0.4.3"
 

@@ -15,9 +15,9 @@ proc-macro = true
 doctest = false
 
 [dependencies]
-soroban-spec = { path = "../soroban-spec" }
-soroban-env-common = { version = "0.0.3" }
-stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
+soroban-spec = "0.0.1"
+soroban-env-common = "0.0.4"
+stellar-xdr = { version = "0.0.2", features = ["next", "std"] }
 syn = {version="1.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
