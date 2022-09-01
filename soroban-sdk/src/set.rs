@@ -61,7 +61,7 @@ pub struct Set<T>(Map<T, ()>);
 
 impl<T> Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Copy,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     pub(crate) fn env(&self) -> &Env {
         self.0.env()
@@ -172,7 +172,7 @@ where
 
 impl<T> Debug for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone + Copy,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
     T::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -187,7 +187,7 @@ where
 
 impl<T> IntoIterator for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Copy,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Item = Result<T, T::Error>;
     type IntoIter = SetIter<T>;
@@ -208,13 +208,13 @@ impl<T> SetIter<T> {
 
 impl<T> Iterator for SetIter<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Copy,
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Item = Result<T, T::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let first = self.0.first();
-        if let Some(Ok(k)) = first {
+        if let Some(Ok(k)) = self.0.first() {
             self.0.remove(k);
         }
         first
