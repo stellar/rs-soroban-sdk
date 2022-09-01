@@ -276,6 +276,24 @@ impl IntoVal<Env, Bytes> for &str {
     }
 }
 
+impl IntoVal<Env, Bytes> for &[u8] {
+    fn into_val(self, env: &Env) -> Bytes {
+        Bytes::from_slice(env, self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Bytes> for [u8; N] {
+    fn into_val(self, env: &Env) -> Bytes {
+        Bytes::from_array(env, &self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Bytes> for &[u8; N] {
+    fn into_val(self, env: &Env) -> Bytes {
+        Bytes::from_array(env, self)
+    }
+}
+
 impl Bytes {
     #[inline(always)]
     pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
