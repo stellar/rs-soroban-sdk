@@ -1,3 +1,44 @@
+//! Soroban SDK supports writing programs for the Soroban smart contract
+//! platform.
+//!
+//! ### Docs
+//!
+//! See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
+//!
+//! ### Examples
+//!
+//! ```
+//! use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+//!
+//! pub struct HelloContract;
+//!
+//! #[contractimpl]
+//! impl HelloContract {
+//!     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
+//!         vec![&env, symbol!("Hello"), to]
+//!     }
+//! }
+//!
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//!     let env = Env::default();
+//!     let contract_id = BytesN::from_array(&env, &[0; 32]);
+//!     env.register_contract(&contract_id, HelloContract);
+//!     let client = HelloContractClient::new(&env, &contract_id);
+//!
+//!     let words = client.hello(&symbol!("Dev"));
+//!
+//!     assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+//! }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
+//! ```
+//!
+//! More examples are available at <https://soroban.stellar.org/docs/category/examples>.
+
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
@@ -44,11 +85,18 @@ pub mod xdr;
 pub use env::ConversionError;
 
 pub use env::Env;
+/// Raw value of the Soroban smart contract platform that types can be converted
+/// to and from for storing, or passing between contracts.
+///
 pub use env::RawVal;
 
+/// Used to do conversions between values in the Soroban environment.
 pub use env::FromVal;
+/// Used to do conversions between values in the Soroban environment.
 pub use env::IntoVal;
+/// Used to do conversions between values in the Soroban environment.
 pub use env::TryFromVal;
+/// Used to do conversions between values in the Soroban environment.
 pub use env::TryIntoVal;
 
 pub use env::Symbol;
