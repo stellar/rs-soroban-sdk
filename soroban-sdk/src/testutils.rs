@@ -1,6 +1,8 @@
 #![cfg(feature = "testutils")]
 #![cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 
+//! Utilities intended for use when testing.
+
 mod test_sign;
 pub use test_sign::ed25519;
 
