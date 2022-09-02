@@ -4,6 +4,7 @@ version = "0.0.4"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"
+publish = false
 rust-version = "1.63"
 
 [lib]
