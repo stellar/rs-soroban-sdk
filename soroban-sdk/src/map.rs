@@ -548,6 +548,7 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::vec;
 
     #[test]
     fn test_map_macro() {
@@ -639,5 +640,29 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    // TODO: Remove this should_panic when
+    // https://github.com/stellar/rs-soroban-env/issues/405 is fixed.
+    #[should_panic = "already borrowed: BorrowMutError"]
+    fn test_keys() {
+        let env = Env::default();
+
+        let map = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+        let keys = map.keys();
+        assert_eq!(keys, vec![&env, 0, 1, 2, 3, 4]);
+    }
+
+    #[test]
+    // TODO: Remove this should_panic when
+    // https://github.com/stellar/rs-soroban-env/issues/405 is fixed.
+    #[should_panic = "already borrowed: BorrowMutError"]
+    fn test_values() {
+        let env = Env::default();
+
+        let map = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+        let values = map.values();
+        assert_eq!(values, vec![&env, 0, 10, 20, 30, 40]);
     }
 }
