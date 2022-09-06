@@ -123,11 +123,17 @@ where
 
     pub fn first(&self) -> Option<Result<T, T::Error>> {
         let env = self.env();
-        if self.is_empty() {
-            None
-        } else {
-            let min_key = env.map_min_key(self.0.to_object());
-            Some(T::try_from_val(env, min_key))
+        match self.is_empty() {
+            true => None,
+            false => Some(T::try_from_val(env, env.map_min_key(self.0.to_object()))),
+        }
+    }
+
+    pub fn last(&self) -> Option<Result<T, T::Error>> {
+        let env = self.env();
+        match self.is_empty() {
+            true => None,
+            false => Some(T::try_from_val(env, env.map_max_key(self.0.to_object()))),
         }
     }
 
@@ -332,6 +338,24 @@ mod test {
 
         s2.extend_from_slice(&[4, 5, 6]);
         assert_eq!(s2, set![&env, 1, 2, 3, 4, 5, 6]);
+    }
+
+    #[test]
+    fn test_first() {
+        let env = Env::default();
+        let s = set![&env, 2, 1, 3, 4, 5];
+
+        // Ordering is implicit, so in this case 1 will be the first entry
+        assert_eq!(s.first(), Some(Ok(1)));
+    }
+
+    #[test]
+    fn test_last() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 5, 4];
+
+        // Ordering is implicit, so in this case 5 will be the last entry
+        assert_eq!(s.last(), Some(Ok(5)));
     }
 
     #[test]
