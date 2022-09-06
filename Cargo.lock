@@ -886,6 +886,8 @@ dependencies = [
 name = "soroban-auth"
 version = "0.0.4"
 dependencies = [
+ "ed25519-dalek",
+ "rand 0.7.3",
  "soroban-sdk",
 ]
 
