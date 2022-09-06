@@ -1,6 +1,10 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
-use super::{env::internal::Env as _, Env, IntoVal, Map, RawVal, TryFromVal};
+use soroban_env_host::{ConversionError, Object};
+
+use super::{
+    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, Env, IntoVal, Map, RawVal, TryFromVal,
+};
 
 /// Create a [Set] with the given items.
 ///
@@ -65,9 +69,13 @@ where
     pub(crate) fn env(&self) -> &Env {
         self.0.env()
     }
-
     pub fn new(env: &Env) -> Set<T> {
         let map = Map::new(env);
+        Self(map)
+    }
+
+    unsafe fn unchecked_new(obj: EnvObj) -> Self {
+        let map = Map::unchecked_new(obj);
         Self(map)
     }
 
@@ -256,6 +264,50 @@ where
     }
 }
 
+impl<T> TryFromVal<Env, Object> for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = ConversionError;
+
+    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
+        if obj.is_obj_type(ScObjectType::Map) {
+            Ok(unsafe { Set::<T>::unchecked_new(obj.in_env(env)) })
+        } else {
+            Err(ConversionError {})
+        }
+    }
+}
+
+impl<T> TryFromVal<Env, RawVal> for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = <Set<T> as TryFromVal<Env, Object>>::Error;
+
+    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    }
+}
+
+impl<T> IntoVal<Env, RawVal> for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.0.into()
+    }
+}
+
+impl<T> IntoVal<Env, RawVal> for &Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.0.to_raw()
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -435,5 +487,31 @@ mod test {
             assert_eq!(i, Ok(c));
             c += 1;
         }
+    }
+
+    #[test]
+    fn test_set_recursive() {
+        let env = Env::default();
+
+        let mut set_inner = Set::<i64>::new(&env);
+        set_inner.insert(42);
+        assert_eq!(set_inner.len(), 1);
+
+        let set_inner_clone = set![&env, 42];
+        let set_inner_different = set![&env, 31415];
+
+        let mut set_outer = Set::<Set<i64>>::new(&env);
+        set_outer.insert(set_inner);
+        assert_eq!(set_outer.len(), 1);
+
+        // The following insert should effectivelly be a noop since
+        // set_inner == set_inner_clone:
+        set_outer.insert(set_inner_clone);
+        assert_eq!(set_outer.len(), 1);
+
+        // Now the length should increase since
+        // set_inner != set_inner_different:
+        set_outer.insert(set_inner_different);
+        assert_eq!(set_outer.len(), 2);
     }
 }

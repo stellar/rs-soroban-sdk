@@ -285,7 +285,7 @@ where
     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     #[inline(always)]
-    unsafe fn unchecked_new(obj: EnvObj) -> Self {
+    pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData, PhantomData)
     }
 
