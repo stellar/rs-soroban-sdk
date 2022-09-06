@@ -135,7 +135,7 @@ where
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, env.map_min_key(self.0.to_object())))
+            Some(T::try_from_val(env, env.map_min_key(self.to_object())))
         }
     }
 
@@ -144,7 +144,7 @@ where
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, env.map_max_key(self.0.to_object())))
+            Some(T::try_from_val(env, env.map_max_key(self.to_object())))
         }
     }
 
@@ -153,6 +153,14 @@ where
         T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
     {
         self.clone().into_iter()
+    }
+
+    pub fn to_raw(&self) -> RawVal {
+        self.0.to_raw()
+    }
+
+    pub fn to_object(&self) -> Object {
+        self.0.to_object()
     }
 }
 
@@ -305,11 +313,22 @@ where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn into_val(self, _env: &Env) -> RawVal {
-        self.0.to_raw()
+        self.to_raw()
     }
 }
 
 impl<T> TryIntoVal<Env, Set<T>> for RawVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Set<T>, Self::Error> {
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
+impl<T> TryIntoVal<Env, Set<T>> for Object
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -530,10 +549,17 @@ mod test {
     #[test]
     fn test_conversions() {
         let env = Env::default();
-        let s1 = set![&env, 1, 2, 3, 4, 5];
-        let raw = s1.0.to_raw();
-
+        let s1 = set![&env, 1, 2, 3];
+        let raw = s1.to_raw();
         let s2: Result<Set<i64>, ConversionError> = raw.try_into_val(&env);
         assert_eq!(s2, Ok(s1));
+
+        let s3 = set![&env, 1, 2, 3, 4, 5];
+        let obj = s3.to_object();
+        let s4: Result<Set<i64>, ConversionError> = obj.try_into_val(&env);
+        assert_eq!(s4, Ok(s3));
+
+        // Sanity check
+        assert_ne!(s2, s4);
     }
 }
