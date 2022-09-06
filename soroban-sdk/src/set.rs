@@ -3,7 +3,7 @@ use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 use soroban_env_host::{ConversionError, Object};
 
 use super::{
-    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, Env, EnvVal, IntoVal, Map, RawVal, TryFromVal,
+    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, Env, IntoVal, Map, RawVal, TryFromVal,
     TryIntoVal,
 };
 
@@ -363,25 +363,6 @@ where
 {
     fn from(v: Set<T>) -> Self {
         v.to_object()
-    }
-}
-
-impl<T> From<Set<T>> for EnvVal
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    fn from(v: Set<T>) -> Self {
-        v.into()
-    }
-}
-
-impl<T> From<Set<T>> for EnvObj
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    #[inline(always)]
-    fn from(v: Set<T>) -> Self {
-        v.into()
     }
 }
 
