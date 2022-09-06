@@ -1,4 +1,4 @@
-use core::{cmp::Ordering, fmt::Debug};
+use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
 use super::{env::internal::Env as _, Env, IntoVal, Map, RawVal, TryFromVal};
 
@@ -243,6 +243,17 @@ where
     }
 }
 
+impl<T> FusedIterator for SetIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+
+impl<T> ExactSizeIterator for SetIter<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn len(&self) -> usize {
+        self.0.len() as usize
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -401,7 +412,6 @@ mod test {
         assert_eq!(iter.next(), Some(Ok(2)));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
-
 
         let mut rev_iter = s.iter().rev();
         assert_eq!(rev_iter.next(), Some(Ok(5)));
