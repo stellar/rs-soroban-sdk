@@ -15,7 +15,12 @@ use crate::map_type::map_type;
 // TODO: Better handling of partial types and types without all their fields and
 // types with private fields.
 
-pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> TokenStream2 {
+pub fn derive_type_struct(
+    ident: &Ident,
+    data: &DataStruct,
+    spec: bool,
+    lib: &Option<String>,
+) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
@@ -51,9 +56,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     }
                 },
             };
-            let map_key = quote! { // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
-                { const k: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#name); k }
-            };
+            let map_key = quote! { ::soroban_sdk::symbol!(#name) };
             let try_from = quote! {
                 #ident: if let Some(Ok(val)) = map.get(#map_key) {
                     val.try_into_val(env)?
@@ -61,7 +64,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
                     Err(soroban_sdk::ConversionError)?
                 }
             };
-            let into = quote! { map.set(#map_key, self.#ident.into_val(env)) };
+            let into = quote! { map.set(#map_key, (&self.#ident).into_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
                     let key = &#name.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
@@ -89,6 +92,7 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
         });
@@ -146,13 +150,21 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
             }
         }
 
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for &#ident {
+            #[inline(always)]
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
+                let mut map = soroban_sdk::Map::<soroban_sdk::Symbol, soroban_sdk::RawVal>::new(env);
+                #(#intos;)*
+                map.into()
+            }
+        }
+
         #[cfg(any(test, feature = "testutils"))]
         impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for #ident {
             type Error = soroban_sdk::xdr::Error;
             #[inline(always)]
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScMap) -> Result<Self, Self::Error> {
                 use soroban_sdk::xdr::Validate;
-                // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
                 let map = val;
                 if map.len() != #field_count_usize {
@@ -278,7 +290,12 @@ pub fn derive_type_struct(ident: &Ident, data: &DataStruct, spec: bool) -> Token
     }
 }
 
-pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> TokenStream2 {
+pub fn derive_type_enum(
+    enum_ident: &Ident,
+    data: &DataEnum,
+    spec: bool,
+    lib: &Option<String>,
+) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
@@ -306,7 +323,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
             let discriminant_const_sym = quote! {
-                const #discriminant_const_sym_ident: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#name);
+                const #discriminant_const_sym_ident: soroban_sdk::Symbol = soroban_sdk::symbol!(#name);
             };
             let discriminant_const_u64 = quote! {
                 const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();
@@ -334,7 +351,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                         Self::#ident(iter.next().ok_or(soroban_sdk::ConversionError)??.try_into_val(env)?)
                     }
                 };
-                let into = quote! { Self::#ident(value) => (#discriminant_const_sym_ident, value).into_val(env) };
+                let into = quote! { #enum_ident::#ident(ref value) => (#discriminant_const_sym_ident, value).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => {
                         if iter.len() > 1 {
@@ -359,7 +376,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
                         Self::#ident
                     }
                 };
-                let into = quote! { Self::#ident => (#discriminant_const_sym_ident,).into_val(env) };
+                let into = quote! { #enum_ident::#ident => (#discriminant_const_sym_ident,).into_val(env) };
                 let try_from_xdr = quote! {
                     #name => {
                         if iter.len() > 0 {
@@ -383,6 +400,7 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
@@ -436,6 +454,16 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             #[inline(always)]
             fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
                 #(#discriminant_consts)*
+                match &self {
+                    #(#intos,)*
+                }
+            }
+        }
+
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for &#enum_ident {
+            #[inline(always)]
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
+                #(#discriminant_consts)*
                 match self {
                     #(#intos,)*
                 }
@@ -448,7 +476,6 @@ pub fn derive_type_enum(enum_ident: &Ident, data: &DataEnum, spec: bool) -> Toke
             #[inline(always)]
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScVec) -> Result<Self, Self::Error> {
                 use soroban_sdk::xdr::Validate;
-                // use soroban_sdk::EnvType;
                 use soroban_sdk::TryIntoVal;
 
                 let vec = val;

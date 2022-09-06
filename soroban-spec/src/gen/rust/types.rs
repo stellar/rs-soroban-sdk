@@ -1,4 +1,4 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructV0, ScSpecUdtUnionV0};
 
@@ -6,14 +6,22 @@ use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructV0, ScSpecUdtUnionV0};
 /// spec.
 pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_string().unwrap());
-    let fields = spec.fields.iter().map(|f| {
-        let f_ident = format_ident!("{}", f.name.to_string().unwrap());
-        let f_type = generate_type_ident(&f.type_);
-        quote! { pub #f_ident: #f_type }
-    });
-    quote! {
-        #[::soroban_sdk::contracttype]
-        pub struct #ident { #(#fields,)* }
+
+    if spec.lib.len() > 0 {
+        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        quote! {
+            type #ident = ::#lib_ident::#ident;
+        }
+    } else {
+        let fields = spec.fields.iter().map(|f| {
+            let f_ident = format_ident!("{}", f.name.to_string().unwrap());
+            let f_type = generate_type_ident(&f.type_);
+            quote! { pub #f_ident: #f_type }
+        });
+        quote! {
+            #[::soroban_sdk::contracttype]
+            pub struct #ident { #(#fields,)* }
+        }
     }
 }
 
@@ -21,23 +29,31 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
 /// spec.
 pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_string().unwrap());
-    let variants = spec.cases.iter().map(|c| {
-        let v_ident = format_ident!("{}", c.name.to_string().unwrap());
-        let v_type = c
-            .type_
-            .as_ref()
-            .map(generate_type_ident)
-            .map_or_else(|| quote! {}, |t| quote! { (#t) });
-        quote! { #v_ident #v_type }
-    });
-    quote! {
-        #[::soroban_sdk::contracttype]
-        pub enum #ident { #(#variants,)* }
+    if spec.lib.len() > 0 {
+        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        quote! {
+            type #ident = ::#lib_ident::#ident;
+        }
+    } else {
+        let variants = spec.cases.iter().map(|c| {
+            let v_ident = format_ident!("{}", c.name.to_string().unwrap());
+            let v_type = c
+                .type_
+                .as_ref()
+                .map(generate_type_ident)
+                .map_or_else(|| quote! {}, |t| quote! { (#t) });
+            quote! { #v_ident #v_type }
+        });
+        quote! {
+            #[::soroban_sdk::contracttype]
+            pub enum #ident { #(#variants,)* }
+        }
     }
 }
 
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
     match spec {
+        ScSpecTypeDef::Val => quote! { ::soroban_sdk::RawVal },
         ScSpecTypeDef::U64 => quote! { u64 },
         ScSpecTypeDef::I64 => quote! { i64 },
         ScSpecTypeDef::U32 => quote! { u32 },
@@ -73,6 +89,10 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Tuple(t) => {
             let type_idents = t.value_types.iter().map(generate_type_ident);
             quote! { (#(#type_idents,)*) }
+        }
+        ScSpecTypeDef::BytesN(b) => {
+            let n = Literal::u32_unsuffixed(b.n);
+            quote! { ::soroban_sdk::BytesN<#n> }
         }
         ScSpecTypeDef::Udt(u) => {
             let ident = format_ident!("{}", u.name.to_string().unwrap());

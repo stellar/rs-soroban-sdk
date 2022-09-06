@@ -1,3 +1,7 @@
+//! Iterators for use with collections like [Map], [Set], [Vec].
+#[cfg(doc)]
+use crate::{Map, Set, Vec};
+
 use core::fmt::Debug;
 use core::iter::FusedIterator;
 use core::marker::PhantomData;

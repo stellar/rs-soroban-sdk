@@ -1,21 +1,21 @@
 use soroban_sdk::{contracttype, Bytes, BytesN, Env, RawVal, Symbol, Vec};
 
 #[derive(Clone)]
-#[contracttype]
+#[contracttype(lib = "soroban_auth")]
 pub struct Ed25519Signature {
     pub public_key: BytesN<32>,
     pub signature: BytesN<64>,
 }
 
 #[derive(Clone)]
-#[contracttype]
+#[contracttype(lib = "soroban_auth")]
 pub struct AccountSignatures {
     pub account_id: BytesN<32>,
     pub signatures: Vec<Ed25519Signature>,
 }
 
 #[derive(Clone)]
-#[contracttype]
+#[contracttype(lib = "soroban_auth")]
 pub enum Signature {
     Contract,
     Ed25519(Ed25519Signature),
@@ -33,7 +33,7 @@ impl Signature {
 }
 
 #[derive(Clone, PartialEq)]
-#[contracttype]
+#[contracttype(lib = "soroban_auth")]
 pub enum Identifier {
     Contract(BytesN<32>),
     Ed25519(BytesN<32>),
@@ -41,16 +41,16 @@ pub enum Identifier {
 }
 
 #[derive(Clone)]
-#[contracttype]
-pub struct MessageV0 {
+#[contracttype(lib = "soroban_auth")]
+pub struct SignaturePayloadV0 {
     pub function: Symbol,
-    pub contrct_id: BytesN<32>,
-    pub network_id: Bytes,
+    pub contract: BytesN<32>,
+    pub network: Bytes,
     pub args: Vec<RawVal>,
 }
 
 #[derive(Clone)]
-#[contracttype]
-pub enum Message {
-    V0(MessageV0),
+#[contracttype(lib = "soroban_auth")]
+pub enum SignaturePayload {
+    V0(SignaturePayloadV0),
 }

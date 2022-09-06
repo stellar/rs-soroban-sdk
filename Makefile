@@ -1,4 +1,4 @@
-all: check build test
+all: check test
 
 export RUSTFLAGS=-Dwarnings
 
@@ -6,19 +6,22 @@ CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest 
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
-	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils
-	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
+	cargo test --doc -p soroban-sdk -p soroban-sdk-macros -p soroban-auth --features testutils
+	cargo +nightly doc -p soroban-sdk -p soroban-auth --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
-test: fmt build-normal
+test: fmt build
 	cargo hack --feature-powerset --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
 
-build: build-normal build-optimized
-
-build-normal: fmt
+build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
 
 build-optimized: fmt
-	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build --target wasm32-unknown-unknown --release \
+	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build  --target wasm32-unknown-unknown --release \
+		--workspace \
+		--exclude soroban-spec \
+		--exclude soroban-sdk \
+		--exclude soroban-sdk-macros \
+		--exclude soroban-auth \
 		-Z build-std=std,panic_abort \
 		-Z build-std-features=panic_immediate_abort
 	cd target-tiny/wasm32-unknown-unknown/release/ && \
@@ -27,8 +30,8 @@ build-optimized: fmt
 			ls -l "$$i"; \
 		done
 
-check: fmt
-	cargo hack --feature-powerset --exclude-features docs check --all-targets
+check: build fmt
+	cargo hack --feature-powerset --exclude-features docs check
 	cargo hack check --release --target wasm32-unknown-unknown
 
 watch:
@@ -44,19 +47,8 @@ clean:
 	cargo clean
 	CARGO_TARGET_DIR=target-tiny cargo +nightly clean
 
-# Build all projects as if they are being published to crates.io, and do so for
-# all feature and target combinations.
-publish-dry-run-sdk:
-	cargo +stable hack --feature-powerset publish --locked --dry-run --exclude-features docs --package soroban-sdk
-	cargo +stable hack --feature-powerset publish --locked --dry-run --exclude-features docs,testutils --package soroban-sdk --target wasm32-unknown-unknown
+bump-version:
+	cargo workspaces version --all --force '*' --no-git-commit --yes custom $(VERSION)
 
-publish-dry-run-sdk-macros:
-	cd macros && cargo +stable hack --feature-powerset publish --locked --dry-run --package soroban-sdk-macros
-
-# Publish publishes the crate to crates.io. The dry-run is a dependency because
-# the dry-run target will verify all feature set combinations.
-publish-sdk: publish-dry-run-sdk
-	cargo +stable publish --locked --package soroban-sdk
-
-publish-sdk-macros: publish-dry-run-sdk-macros
-	cd macros && cargo +stable publish --locked --package soroban-sdk-macros
+publish:
+	cargo workspaces publish --all --force '*' --from-git --yes

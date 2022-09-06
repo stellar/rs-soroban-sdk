@@ -1,9 +1,6 @@
 use core::{cmp::Ordering, fmt::Debug};
 
-use super::{
-    env::internal::Env as _,
-    Env, IntoVal, Map, RawVal, TryFromVal
-};
+use super::{env::internal::Env as _, Env, IntoVal, Map, RawVal, TryFromVal};
 
 /// Create a [Set] with the given items.
 ///
@@ -19,6 +16,7 @@ use super::{
 /// let set = set![&env, 0, 1, 2, 3, 3];
 /// assert_eq!(set.len(), 4);
 /// ```
+#[doc(hidden)]
 #[macro_export]
 macro_rules! set {
     ($env:expr) => {
@@ -57,6 +55,7 @@ macro_rules! set {
 /// assert_eq!(set.len(), 3);
 /// ```
 #[derive(Clone)]
+#[doc(hidden)]
 pub struct Set<T>(Map<T, ()>);
 
 impl<T> Set<T>
@@ -139,7 +138,6 @@ where
         self.clone().into_iter()
     }
 }
-
 
 impl<T> Eq for Set<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 

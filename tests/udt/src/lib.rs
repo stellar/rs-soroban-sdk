@@ -164,13 +164,14 @@ mod test {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
+        let client = ContractClient::new(&e, &contract_id);
 
         let udt = UdtStruct {
             a: 10,
             b: 12,
             c: vec![&e, 1],
         };
-        let z = add::invoke(&e, &contract_id, &UdtEnum::UdtA, &UdtEnum::UdtB(udt));
+        let z = client.add(&UdtEnum::UdtA, &UdtEnum::UdtB(udt));
         assert_eq!(z, 22);
     }
 

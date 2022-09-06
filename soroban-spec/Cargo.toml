@@ -6,11 +6,13 @@ repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
 license = "Apache-2.0"
-version = "0.0.1"
+version = "0.0.4"
 edition = "2021"
+rust-version = "1.63"
 
 [dependencies]
-stellar-xdr = { version = "0.0.1", features = ["next", "std"] }
+stellar-xdr = { version = "0.0.2", features = ["next", "std"] }
+soroban-env-host = { version = "0.0.4", features = ["vm", "serde"] }
 base64 = "0.13.0"
 thiserror = "1.0.32"
 syn = {version="1.0",features=["full"]}
@@ -20,3 +22,9 @@ itertools = "0.10.3"
 darling = "0.14.1"
 sha2 = "0.10.2"
 wasmparser = "0.88.0"
+serde = "1.0.82"
+serde_derive = "1.0.82"
+serde_json = "1.0.82"
+
+[dev_dependencies]
+pretty_assertions = "1.2.1"

@@ -31,22 +31,25 @@ pub fn generate_from_file(
     // Read file.
     let wasm = fs::read(file).map_err(GenerateFromFileError::Io)?;
 
-    // Produce hash for file.
+    // Generate code.
+    let code = generate_from_wasm(&wasm, file, verify_sha256)?;
+    Ok(code)
+}
+
+pub fn generate_from_wasm(
+    wasm: &[u8],
+    file: &str,
+    verify_sha256: Option<&str>,
+) -> Result<TokenStream, GenerateFromFileError> {
     let sha256 = Sha256::digest(&wasm);
     let sha256 = format!("{:x}", sha256);
-
     if let Some(verify_sha256) = verify_sha256 {
         if verify_sha256 != sha256 {
-            return Err(GenerateFromFileError::VerifySha256 {
-                expected: sha256.to_string(),
-            });
+            return Err(GenerateFromFileError::VerifySha256 { expected: sha256 });
         }
     }
 
-    // Read spec from file.
-    let spec = from_wasm(&wasm).map_err(GenerateFromFileError::GetSpec)?;
-
-    // Generate code.
+    let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
     let code = generate(&spec, file, &sha256);
     Ok(code)
 }
@@ -62,13 +65,18 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
         }
     }
-    let trait_ = r#trait::generate_trait("Contract", &spec_fns);
+
+    let trait_name = "Contract";
+    let client_name = format!("{}Client", trait_name);
+
+    let trait_ = r#trait::generate_trait(trait_name, &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
+
     quote! {
         pub const WASM: &[u8] = ::soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
 
-        #[::soroban_sdk::contractclient(name = "Client")]
+        #[::soroban_sdk::contractclient(name = #client_name)]
         #trait_
 
         #(#structs)*

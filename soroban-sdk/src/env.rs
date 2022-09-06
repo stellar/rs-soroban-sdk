@@ -24,6 +24,8 @@ pub mod internal {
 }
 
 #[cfg(feature = "testutils")]
+use internal::budget::Budget;
+#[cfg(feature = "testutils")]
 pub use internal::LedgerInfo;
 
 pub use internal::meta;
@@ -31,6 +33,7 @@ pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
+pub use internal::FromVal;
 pub use internal::IntoVal;
 pub use internal::Object;
 pub use internal::RawVal;
@@ -41,12 +44,10 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
-pub type EnvType<V> = internal::EnvVal<Env, V>;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::Events;
-use crate::{Bytes, BytesN, ContractData, Ledger};
+use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -119,6 +120,12 @@ impl Env {
     #[inline(always)]
     pub fn events(&self) -> Events {
         Events::new(self)
+    }
+
+    /// Get a deployer for deploying contracts.
+    #[inline(always)]
+    pub fn deployer(&self) -> Deployer {
+        Deployer::new(self)
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
@@ -204,21 +211,6 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn create_contract_from_contract(&self, contract: Bytes, salt: BytesN<32>) -> BytesN<32> {
-        let contract_obj: Object = RawVal::from(contract).try_into().unwrap();
-        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
-        let id_obj = internal::Env::create_contract_from_contract(self, contract_obj, salt_obj);
-        id_obj.try_into_val(self).unwrap()
-    }
-
-    #[doc(hidden)]
-    pub fn create_token_from_contract(&self, salt: BytesN<32>) -> BytesN<32> {
-        let salt_obj: Object = RawVal::from(salt).try_into().unwrap();
-        let id_obj = internal::Env::create_token_from_contract(self, salt_obj);
-        id_obj.try_into_val(self).unwrap()
-    }
-
-    #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self));
     }
@@ -252,7 +244,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
-        let env_impl = internal::EnvImpl::with_storage(storage);
+        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, Budget::default());
 
         let l = LedgerInfo {
             protocol_version: 0,
@@ -336,6 +328,24 @@ impl Env {
             .unwrap();
     }
 
+    /// Register the built-in token contract with the [Env] for testing.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
+    /// env.register_contract_token(&contract_id);
+    /// # }
+    /// ```
+    pub fn register_contract_token(&self, contract_id: &BytesN<32>) {
+        self.env_impl
+            .register_test_contract_token(contract_id.to_object())
+            .unwrap();
+    }
+
     #[doc(hidden)]
     pub fn invoke_contract_external_raw(&self, hf: xdr::HostFunction, args: xdr::ScVec) -> RawVal {
         self.env_impl.invoke_function_raw(hf, args).unwrap()
@@ -395,12 +405,14 @@ impl Env {
                     return;
                 }
                 // Allow if the last debug log entry contains the status of requested.
-                if let Some(HostEvent::Debug(dbg)) = clone.env_impl.get_events().0.last() {
-                    for arg in dbg.args.iter() {
-                        if let DebugArg::Val(v) = arg {
-                            if let Ok(st) = TryInto::<Status>::try_into(*v) {
-                                if st == status {
-                                    return;
+                if let Some(events) = clone.env_impl.get_events().ok().map(|e| e.0) {
+                    if let Some(HostEvent::Debug(dbg)) = events.last() {
+                        for arg in dbg.args.iter() {
+                            if let DebugArg::Val(v) = arg {
+                                if let Ok(st) = TryInto::<Status>::try_into(*v) {
+                                    if st == status {
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -453,16 +465,16 @@ impl internal::EnvBase for Env {
         }
     }
 
-    fn binary_copy_from_slice(&self, b: Object, b_pos: RawVal, mem: &[u8]) -> Object {
-        self.env_impl.binary_copy_from_slice(b, b_pos, mem)
+    fn bytes_copy_from_slice(&self, b: Object, b_pos: RawVal, mem: &[u8]) -> Object {
+        self.env_impl.bytes_copy_from_slice(b, b_pos, mem)
     }
 
-    fn binary_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) {
-        self.env_impl.binary_copy_to_slice(b, b_pos, mem)
+    fn bytes_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) {
+        self.env_impl.bytes_copy_to_slice(b, b_pos, mem)
     }
 
-    fn binary_new_from_slice(&self, mem: &[u8]) -> Object {
-        self.env_impl.binary_new_from_slice(mem)
+    fn bytes_new_from_slice(&self, mem: &[u8]) -> Object {
+        self.env_impl.bytes_new_from_slice(mem)
     }
 
     fn log_static_fmt_val(&self, _: &'static str, _: RawVal) {

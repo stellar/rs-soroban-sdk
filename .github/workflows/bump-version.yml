@@ -1,0 +1,39 @@
+name: Bump Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to bump to'
+        required: true
+
+jobs:
+
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup update
+    - run: cargo install --locked --version 0.2.35 cargo-workspaces
+    - run: |
+        make bump-version VERSION=${{ inputs.version }}
+    - name: Create Commit
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git checkout -b 'bump-version-${{ inputs.version }}'
+        git add .
+        git commit -m 'Bump version to ${{ inputs.version }}'
+        git push origin 'bump-version-${{ inputs.version }}'
+    - name: Create Pull Request
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.pulls.create({
+            title: 'Bump version to ${{ inputs.version }}',
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: 'bump-version-${{ inputs.version }}',
+            base: 'main',
+            body: '### What\nBump version to ${{ inputs.version }}.\n\n### Why\nTriggered by ${{ github.actor }}.'
+          });

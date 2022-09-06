@@ -22,6 +22,7 @@ pub fn derive_fn(
     output: &ReturnType,
     export: bool,
     trait_ident: &Option<&Ident>,
+    client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -140,8 +141,12 @@ pub fn derive_fn(
     let pub_mod_ident = format_ident!("{}", ident);
     let hidden_mod_ident = format_ident!("__{}", ident);
     let deprecated_note = format!(
-        "not intended for use, use {}::invoke instead",
-        &pub_mod_ident
+        "use `{}::new(&env, &contract_id).{}` instead",
+        client_ident, &ident
+    );
+    let deprecated_note_xdr = format!(
+        "use `{}::new(&env, &contract_id).{}_xdr` instead",
+        client_ident, &ident
     );
     let env_call = if env_input.is_some() {
         quote! { env.clone(), }
@@ -209,7 +214,6 @@ pub fn derive_fn(
         }
 
         #[doc(hidden)]
-        #[deprecated(note = #deprecated_note)]
         pub mod #hidden_mod_ident {
             use super::*;
 
@@ -239,9 +243,11 @@ pub fn derive_fn(
             use super::*;
         }
 
+        #[doc(hidden)]
         pub mod #pub_mod_ident {
             use super::*;
 
+            #[deprecated(note = #deprecated_note)]
             pub fn invoke(
                 e: &soroban_sdk::Env,
                 contract_id: &soroban_sdk::BytesN<32>,
@@ -249,12 +255,13 @@ pub fn derive_fn(
             ) #output {
                 use soroban_sdk::{EnvVal, IntoVal, Symbol, Vec};
                 let mut args: Vec<EnvVal> = Vec::new(e);
-                #(args.push(#invoke_idents.clone().into_env_val(e));)*
-                e.invoke_contract(contract_id, &Symbol::from_str(#wrap_export_name), args)
+                #(args.push_back(#invoke_idents.clone().into_env_val(e));)*
+                e.invoke_contract(contract_id, &::soroban_sdk::symbol!(#wrap_export_name), args)
             }
 
             #[cfg(feature = "testutils")]
             #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+            #[deprecated(note = #deprecated_note_xdr)]
             pub fn invoke_xdr(
                 e: &soroban_sdk::Env,
                 contract_id: &soroban_sdk::BytesN<32>,

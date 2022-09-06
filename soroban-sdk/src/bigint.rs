@@ -5,11 +5,65 @@ use core::{
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase, RawValConvertible},
-    env::{EnvObj, EnvType},
+    env::internal::{Env as _, EnvBase},
+    env::EnvObj,
     xdr::ScObjectType,
-    Bytes, ConversionError, Env, EnvVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
+    Bytes, ConversionError, Env, EnvVal, FromVal, IntoVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
+
+/// Create a [BigInt] with an integer, hex, bits, or an array.
+///
+/// The first argument in the list must be a reference to an [Env].
+///
+/// The second argument can be an integer literal of unbounded size in any form:
+/// base10, hex, etc, or an [u8] array.
+///
+/// ### Examples
+///
+/// Create a [BigInt] with an integer:
+///
+/// ```
+/// use soroban_sdk::{Env, bigint};
+///
+/// let env = Env::default();
+/// let big = bigint!(&env, -5);
+/// assert_eq!(big.to_i64(), -5i64);
+/// ```
+///
+/// Create a [BigInt] with hex:
+///
+/// ```
+/// use soroban_sdk::{Env, bigint};
+///
+/// let env = Env::default();
+/// let big = bigint!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+/// assert_eq!(big.bits(), 256);
+/// ```
+///
+/// Create a [BigInt] with an array:
+///
+/// ```
+/// use soroban_sdk::{Env, bigint};
+///
+/// let env = Env::default();
+/// let big = bigint!(&env, [2, 0]);
+/// assert_eq!(big, 512);
+/// ```
+#[macro_export]
+macro_rules! bigint {
+    ($env:expr $(,)?) => {
+        $crate::BigInt::zero($env)
+    };
+    ($env:expr, [$($x:expr),+ $(,)?] $(,)?) => {
+        $crate::BigInt::from_slice($env, &[$($x),+])
+    };
+    ($env:expr, $x:tt $(,)?) => {
+        $crate::BigInt::from_slice($env, &::bytes_lit::bytes!($x))
+    };
+    ($env:expr, -$x:tt $(,)?) => {
+        $crate::BigInt::from_sign_and_slice($env, &$crate::Sign::Minus, &::bytes_lit::bytes!($x))
+    };
+}
 
 /// BigInt is an arbitrary sized signed integer.
 ///
@@ -30,6 +84,32 @@ use super::{
 #[derive(Clone)]
 pub struct BigInt(EnvObj);
 
+/// Sign is the sign of a [BigInt].
+///
+/// The sign is defined as:
+///  - [Sign::Minus] if [BigInt] < 0
+///  - [Sign::NoSign] if [BigInt] == 0
+///  - [Sign::Plus] if [BigInt] > 0
+#[derive(Debug, Copy, Clone, Eq, PartialEq, PartialOrd, Ord, Hash)]
+pub enum Sign {
+    /// When [BigInt] < 0.
+    Minus,
+    /// When [BigInt] == 0.
+    NoSign,
+    /// When [BigInt] > 0.
+    Plus,
+}
+
+impl Sign {
+    pub(crate) const fn to_raw(&self) -> RawVal {
+        match self {
+            Sign::Minus => RawVal::I32_NEGATIVE_ONE,
+            Sign::NoSign => RawVal::I32_ZERO,
+            Sign::Plus => RawVal::I32_POSITIVE_ONE,
+        }
+    }
+}
+
 impl Debug for BigInt {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "BigInt(")?;
@@ -45,8 +125,7 @@ impl Display for BigInt {
         let bi = self.0.to_object();
         let obj: Object = env.bigint_to_radix_be(bi, 10u32.into());
         if let Ok(bin) = TryIntoVal::<_, Bytes>::try_into_val(obj, &env) {
-            let sign = env.bigint_cmp(bi, env.bigint_from_u64(0));
-            if let -1 = unsafe { <i32 as RawValConvertible>::unchecked_from_val(sign) } {
+            if self.sign() == Sign::Minus {
                 write!(f, "-")?;
             }
             for x in bin.iter() {
@@ -99,9 +178,21 @@ impl IntoVal<Env, RawVal> for BigInt {
     }
 }
 
+impl IntoVal<Env, RawVal> for &BigInt {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.into()
+    }
+}
+
 impl From<BigInt> for RawVal {
     fn from(b: BigInt) -> Self {
         b.0.into()
+    }
+}
+
+impl From<&BigInt> for RawVal {
+    fn from(b: &BigInt) -> Self {
+        b.0.to_raw()
     }
 }
 
@@ -129,9 +220,9 @@ impl TryFrom<BigInt> for u64 {
     }
 }
 
-impl From<EnvType<u64>> for BigInt {
-    fn from(ev: EnvType<u64>) -> Self {
-        BigInt::from_u64(&ev.env, ev.val)
+impl FromVal<Env, u64> for BigInt {
+    fn from_val(env: &Env, val: u64) -> Self {
+        BigInt::from_u64(env, val)
     }
 }
 
@@ -153,9 +244,9 @@ impl TryFrom<BigInt> for i64 {
     }
 }
 
-impl From<EnvType<i64>> for BigInt {
-    fn from(ev: EnvType<i64>) -> Self {
-        BigInt::from_i64(&ev.env, ev.val)
+impl FromVal<Env, i64> for BigInt {
+    fn from_val(env: &Env, val: i64) -> Self {
+        BigInt::from_i64(env, val)
     }
 }
 
@@ -177,9 +268,9 @@ impl TryFrom<BigInt> for u32 {
     }
 }
 
-impl From<EnvType<u32>> for BigInt {
-    fn from(ev: EnvType<u32>) -> Self {
-        BigInt::from_u32(&ev.env, ev.val)
+impl FromVal<Env, u32> for BigInt {
+    fn from_val(env: &Env, val: u32) -> Self {
+        BigInt::from_u32(env, val)
     }
 }
 
@@ -201,9 +292,9 @@ impl TryFrom<BigInt> for i32 {
     }
 }
 
-impl From<EnvType<i32>> for BigInt {
-    fn from(ev: EnvType<i32>) -> Self {
-        BigInt::from_i32(&ev.env, ev.val)
+impl FromVal<Env, i32> for BigInt {
+    fn from_val(env: &Env, val: i32) -> Self {
+        BigInt::from_i32(env, val)
     }
 }
 
@@ -260,6 +351,7 @@ impl Add for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<BigInt>::add);
 
 impl Add<u64> for BigInt {
     type Output = BigInt;
@@ -268,6 +360,7 @@ impl Add<u64> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<u64>::add);
 
 impl Add<i64> for BigInt {
     type Output = BigInt;
@@ -276,6 +369,7 @@ impl Add<i64> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<i64>::add);
 
 impl Add<u32> for BigInt {
     type Output = BigInt;
@@ -284,6 +378,7 @@ impl Add<u32> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<u32>::add);
 
 impl Add<i32> for BigInt {
     type Output = BigInt;
@@ -292,6 +387,7 @@ impl Add<i32> for BigInt {
         self.add(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Add<i32>::add);
 
 impl Sub for BigInt {
     type Output = BigInt;
@@ -302,6 +398,7 @@ impl Sub for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<BigInt>::sub);
 
 impl Sub<u64> for BigInt {
     type Output = BigInt;
@@ -310,6 +407,7 @@ impl Sub<u64> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<u64>::sub);
 
 impl Sub<i64> for BigInt {
     type Output = BigInt;
@@ -318,6 +416,7 @@ impl Sub<i64> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<i64>::sub);
 
 impl Sub<u32> for BigInt {
     type Output = BigInt;
@@ -326,6 +425,7 @@ impl Sub<u32> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<u32>::sub);
 
 impl Sub<i32> for BigInt {
     type Output = BigInt;
@@ -334,6 +434,7 @@ impl Sub<i32> for BigInt {
         self.sub(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Sub<i32>::sub);
 
 impl Mul for BigInt {
     type Output = BigInt;
@@ -344,6 +445,7 @@ impl Mul for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<BigInt>::mul);
 
 impl Mul<u64> for BigInt {
     type Output = BigInt;
@@ -352,6 +454,7 @@ impl Mul<u64> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<u64>::mul);
 
 impl Mul<i64> for BigInt {
     type Output = BigInt;
@@ -360,6 +463,7 @@ impl Mul<i64> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<i64>::mul);
 
 impl Mul<u32> for BigInt {
     type Output = BigInt;
@@ -368,6 +472,7 @@ impl Mul<u32> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<u32>::mul);
 
 impl Mul<i32> for BigInt {
     type Output = BigInt;
@@ -376,6 +481,7 @@ impl Mul<i32> for BigInt {
         self.mul(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Mul<i32>::mul);
 
 impl Div for BigInt {
     type Output = BigInt;
@@ -386,6 +492,7 @@ impl Div for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<BigInt>::div);
 
 impl Div<u64> for BigInt {
     type Output = BigInt;
@@ -394,6 +501,7 @@ impl Div<u64> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<u64>::div);
 
 impl Div<i64> for BigInt {
     type Output = BigInt;
@@ -402,6 +510,7 @@ impl Div<i64> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<i64>::div);
 
 impl Div<u32> for BigInt {
     type Output = BigInt;
@@ -410,6 +519,7 @@ impl Div<u32> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<u32>::div);
 
 impl Div<i32> for BigInt {
     type Output = BigInt;
@@ -418,6 +528,7 @@ impl Div<i32> for BigInt {
         self.div(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Div<i32>::div);
 
 impl Rem for BigInt {
     type Output = BigInt;
@@ -428,6 +539,7 @@ impl Rem for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<BigInt>::rem);
 
 impl Rem<u64> for BigInt {
     type Output = BigInt;
@@ -436,6 +548,7 @@ impl Rem<u64> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<u64>::rem);
 
 impl Rem<i64> for BigInt {
     type Output = BigInt;
@@ -444,6 +557,7 @@ impl Rem<i64> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<i64>::rem);
 
 impl Rem<u32> for BigInt {
     type Output = BigInt;
@@ -452,6 +566,7 @@ impl Rem<u32> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<u32>::rem);
 
 impl Rem<i32> for BigInt {
     type Output = BigInt;
@@ -460,6 +575,7 @@ impl Rem<i32> for BigInt {
         self.rem(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Rem<i32>::rem);
 
 impl BitAnd for BigInt {
     type Output = BigInt;
@@ -470,6 +586,7 @@ impl BitAnd for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<BigInt>::bitand);
 
 impl BitAnd<u64> for BigInt {
     type Output = BigInt;
@@ -478,6 +595,7 @@ impl BitAnd<u64> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<u64>::bitand);
 
 impl BitAnd<i64> for BigInt {
     type Output = BigInt;
@@ -486,6 +604,7 @@ impl BitAnd<i64> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<i64>::bitand);
 
 impl BitAnd<u32> for BigInt {
     type Output = BigInt;
@@ -494,6 +613,7 @@ impl BitAnd<u32> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<u32>::bitand);
 
 impl BitAnd<i32> for BigInt {
     type Output = BigInt;
@@ -502,6 +622,7 @@ impl BitAnd<i32> for BigInt {
         self.bitand(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitAnd<i32>::bitand);
 
 impl BitOr for BigInt {
     type Output = BigInt;
@@ -512,6 +633,7 @@ impl BitOr for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<BigInt>::bitor);
 
 impl BitOr<u64> for BigInt {
     type Output = BigInt;
@@ -520,6 +642,7 @@ impl BitOr<u64> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<u64>::bitor);
 
 impl BitOr<i64> for BigInt {
     type Output = BigInt;
@@ -528,6 +651,7 @@ impl BitOr<i64> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<i64>::bitor);
 
 impl BitOr<u32> for BigInt {
     type Output = BigInt;
@@ -536,6 +660,7 @@ impl BitOr<u32> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<u32>::bitor);
 
 impl BitOr<i32> for BigInt {
     type Output = BigInt;
@@ -544,6 +669,7 @@ impl BitOr<i32> for BigInt {
         self.bitor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitOr<i32>::bitor);
 
 impl BitXor for BigInt {
     type Output = BigInt;
@@ -554,6 +680,7 @@ impl BitXor for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<BigInt>::bitxor);
 
 impl BitXor<u64> for BigInt {
     type Output = BigInt;
@@ -562,6 +689,7 @@ impl BitXor<u64> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<u64>::bitxor);
 
 impl BitXor<i64> for BigInt {
     type Output = BigInt;
@@ -570,6 +698,7 @@ impl BitXor<i64> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<i64>::bitxor);
 
 impl BitXor<u32> for BigInt {
     type Output = BigInt;
@@ -578,6 +707,7 @@ impl BitXor<u32> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<u32>::bitxor);
 
 impl BitXor<i32> for BigInt {
     type Output = BigInt;
@@ -586,6 +716,7 @@ impl BitXor<i32> for BigInt {
         self.bitxor(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, BitXor<i32>::bitxor);
 
 impl Neg for BigInt {
     type Output = BigInt;
@@ -595,6 +726,7 @@ impl Neg for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Neg::neg);
 
 impl Not for BigInt {
     type Output = BigInt;
@@ -604,6 +736,7 @@ impl Not for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Not::not);
 
 impl Shl<BigInt> for BigInt {
     type Output = BigInt;
@@ -613,6 +746,7 @@ impl Shl<BigInt> for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<BigInt>::shl);
 
 impl Shl<u64> for BigInt {
     type Output = BigInt;
@@ -621,6 +755,7 @@ impl Shl<u64> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<u64>::shl);
 
 impl Shl<i64> for BigInt {
     type Output = BigInt;
@@ -629,6 +764,7 @@ impl Shl<i64> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<i64>::shl);
 
 impl Shl<u32> for BigInt {
     type Output = BigInt;
@@ -637,6 +773,7 @@ impl Shl<u32> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<u32>::shl);
 
 impl Shl<i32> for BigInt {
     type Output = BigInt;
@@ -645,6 +782,7 @@ impl Shl<i32> for BigInt {
         self.shl(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shl<i32>::shl);
 
 impl Shr<BigInt> for BigInt {
     type Output = BigInt;
@@ -654,6 +792,7 @@ impl Shr<BigInt> for BigInt {
         Self::try_from_val(env, b).unwrap()
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<BigInt>::shr);
 
 impl Shr<u64> for BigInt {
     type Output = BigInt;
@@ -662,6 +801,7 @@ impl Shr<u64> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<u64>::shr);
 
 impl Shr<i64> for BigInt {
     type Output = BigInt;
@@ -670,6 +810,7 @@ impl Shr<i64> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<i64>::shr);
 
 impl Shr<u32> for BigInt {
     type Output = BigInt;
@@ -678,6 +819,7 @@ impl Shr<u32> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<u32>::shr);
 
 impl Shr<i32> for BigInt {
     type Output = BigInt;
@@ -686,6 +828,7 @@ impl Shr<i32> for BigInt {
         self.shr(rhs)
     }
 }
+crate::operators::impl_ref_op!(BigInt, Shr<i32>::shr);
 
 impl PartialEq for BigInt {
     fn eq(&self, other: &Self) -> bool {
@@ -752,8 +895,7 @@ impl Eq for BigInt {}
 impl Ord for BigInt {
     fn cmp(&self, other: &Self) -> Ordering {
         let env = self.env();
-        let v = env.bigint_cmp(self.0.to_object(), other.0.to_object());
-        let i = i32::try_from(v).unwrap();
+        let i = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
         i.cmp(&0)
     }
 }
@@ -763,13 +905,87 @@ impl BigInt {
         Self(obj)
     }
 
-    fn env(&self) -> &Env {
+    pub fn env(&self) -> &Env {
         self.0.env()
+    }
+
+    pub fn as_raw(&self) -> &RawVal {
+        self.0.as_raw()
+    }
+
+    pub fn to_raw(&self) -> RawVal {
+        self.0.to_raw()
+    }
+
+    pub fn as_object(&self) -> &Object {
+        self.0.as_object()
+    }
+
+    pub fn to_object(&self) -> Object {
+        self.0.to_object()
     }
 
     /// Creates a [BigInt] with the value zero.
     pub fn zero(env: &Env) -> BigInt {
         BigInt::from_u32(env, 0)
+    }
+
+    /// Creates a [BigInt] with [Bytes].
+    ///
+    /// The sign of the [BigInt] is not negative.
+    /// Bytes are in big-endian order.
+    pub fn from_bytes(b: &Bytes) -> BigInt {
+        Self::from_sign_and_bytes(&Sign::Plus, b)
+    }
+
+    /// Creates a [BigInt] with the slice.
+    ///
+    /// The sign of the [BigInt] is not negative.
+    /// Bytes are in big-endian order.
+    pub fn from_slice(env: &Env, bytes: &[u8]) -> BigInt {
+        Self::from_sign_and_slice(env, &Sign::Plus, bytes)
+    }
+
+    /// Creates a [BigInt] with a [Sign] and [Bytes].
+    ///
+    /// If the [Sign] is [Sign::NoSign] the bytes is ignored and the returned
+    /// value is zero.
+    ///
+    /// Bytes are in big-endian order.
+    pub fn from_sign_and_bytes(s: &Sign, b: &Bytes) -> BigInt {
+        let env = b.env();
+        let obj = env
+            .bigint_from_bytes_be(s.to_raw(), b.to_object())
+            .in_env(env);
+        unsafe { Self::unchecked_new(obj) }
+    }
+
+    /// Creates a [BigInt] with the slice.
+    ///
+    /// The sign of the [BigInt] is not negative.
+    /// Bytes are in big-endian order.
+    pub fn from_sign_and_slice(env: &Env, s: &Sign, bytes: &[u8]) -> BigInt {
+        BigInt::from_sign_and_bytes(s, &Bytes::from_slice(env, bytes))
+    }
+
+    /// Converts the [BigInt] to [Bytes].
+    ///
+    /// The [Sign] is dropped and not included.
+    pub fn to_bytes(&self) -> Bytes {
+        let env = self.env();
+        let obj = env.bigint_to_bytes_be(self.to_object()).in_env(env);
+        unsafe { Bytes::unchecked_new(obj) }
+    }
+
+    /// Returns the [Sign] of the [BigInt].
+    pub fn sign(&self) -> Sign {
+        let env = self.env();
+        let sign = env.obj_cmp(self.to_raw(), BigInt::zero(env).to_raw());
+        match sign.cmp(&0) {
+            Ordering::Less => Sign::Minus,
+            Ordering::Equal => Sign::NoSign,
+            Ordering::Greater => Sign::Plus,
+        }
     }
 
     /// Creates a [BigInt] with the value of the [u64].
@@ -892,13 +1108,119 @@ impl BigInt {
     }
 }
 
-#[test]
-fn test_bigint() {
-    let env = Env::default();
-    let bi0 = BigInt::from_u64(&env, 237834);
-    println!("{:?}; {}", bi0, bi0);
-    let bi1 = BigInt::from_i64(&env, -3748709);
-    println!("{:?}; {}", bi1, bi1);
-    let bi2 = BigInt::from_i64(&env, 0);
-    println!("{:?}; {}", bi2, bi2);
+#[cfg(test)]
+mod test {
+    use crate::{BigInt, Env, Sign};
+
+    #[test]
+    fn bigint_macro() {
+        let env = Env::default();
+
+        assert_eq!(bigint!(&env), BigInt::zero(&env),);
+
+        assert_eq!(bigint!(&env, 1), BigInt::from_u64(&env, 1),);
+
+        assert_eq!(bigint!(&env, 0x10), BigInt::from_u64(&env, 16),);
+
+        let big = bigint!(&env, 340_282_366_920_938_463_463_374_607_431_768_211_456);
+        assert_eq!(big.bits(), 129);
+
+        let big = bigint!(&env, [1]);
+        assert_eq!(big, BigInt::from_u64(&env, 1));
+
+        let big = bigint!(&env, [1, 2]);
+        assert_eq!(big, BigInt::from_u64(&env, 258));
+
+        let big = bigint!(&env, 0x1ded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+        assert_eq!(big.bits(), 253);
+
+        let big = bigint!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+        assert_eq!(big.bits(), 256);
+
+        let big = bigint!(&env, -0x1);
+        assert_eq!(big.bits(), 1);
+        assert_eq!(big.sign(), Sign::Minus);
+    }
+
+    #[test]
+    fn display() {
+        let env = Env::default();
+
+        let b = BigInt::from_u64(&env, 237_834);
+        assert_eq!(format!("{:?}", b), "BigInt(237834)");
+        assert_eq!(format!("{}", b), "237834");
+
+        let b = BigInt::from_i64(&env, -3_748_709);
+        assert_eq!(format!("{:?}", b), "BigInt(-3748709)");
+        assert_eq!(format!("{}", b), "-3748709");
+
+        let b = BigInt::from_i64(&env, 0);
+        assert_eq!(format!("{:?}", b), "BigInt(0)");
+        assert_eq!(format!("{}", b), "0");
+    }
+
+    #[test]
+    fn from_bytes() {
+        let env = Env::default();
+
+        let b = BigInt::from_slice(&env, &[0; 6]);
+        assert_eq!(b.sign(), Sign::NoSign);
+        assert_eq!(format!("{:?}", b), "BigInt(0)");
+        assert_eq!(format!("{}", b), "0");
+
+        let b = BigInt::from_slice(&env, &[1]);
+        assert_eq!(b.sign(), Sign::Plus);
+        assert_eq!(format!("{:?}", b), "BigInt(1)");
+        assert_eq!(format!("{}", b), "1");
+
+        let b = BigInt::from_slice(&env, b"\x44");
+        assert_eq!(b.sign(), Sign::Plus);
+        assert_eq!(format!("{:?}", b), "BigInt(68)");
+        assert_eq!(format!("{}", b), "68");
+
+        let b = BigInt::from_slice(&env, b"\xE3\xA1\x9F\x15\x26\x2C\x57\xFB\xAF\x7A\x83\x46\xFE\xFB\x86\xF9\x5B\xEF\xB1\xBD\x50\xCD\xE9\xD1\xEE\x6A\xBD\x95\x88");
+        assert_eq!(b.sign(), Sign::Plus);
+        assert_eq!(
+            format!("{:?}", b),
+            "BigInt(6136928615193302557743427005993142806455592952175149900577400577430920)"
+        );
+        assert_eq!(
+            format!("{}", b),
+            "6136928615193302557743427005993142806455592952175149900577400577430920"
+        );
+        let b: BigInt = b * -1;
+        assert_eq!(b.sign(), Sign::Minus);
+        assert_eq!(
+            format!("{:?}", b),
+            "BigInt(-6136928615193302557743427005993142806455592952175149900577400577430920)"
+        );
+        assert_eq!(
+            format!("{}", b),
+            "-6136928615193302557743427005993142806455592952175149900577400577430920"
+        );
+    }
+
+    #[test]
+    fn to_bytes() {
+        let env = Env::default();
+
+        let slice = &[0, 1, 2, 3, 4, 5, 6, 7];
+        let b = BigInt::from_slice(&env, slice);
+        let array: [u8; 7] = b.to_bytes().try_into().unwrap();
+        assert_eq!(&array, &slice[1..])
+    }
+
+    #[test]
+    fn sign() {
+        let env = Env::default();
+
+        let b = BigInt::from_i64(&env, 0);
+        assert_eq!(b.sign(), Sign::NoSign);
+
+        let b = BigInt::from_i64(&env, 2);
+        assert_eq!(b.sign(), Sign::Plus);
+
+        let b = BigInt::from_i64(&env, -2);
+        assert_eq!(b.sign(), Sign::Minus);
+    }
 }

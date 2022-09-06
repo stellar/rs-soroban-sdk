@@ -8,7 +8,7 @@ use core::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, RawValConvertible},
-    env::{EnvObj, EnvType, IntoVal},
+    env::{EnvObj, IntoVal},
     xdr::ScObjectType,
     ConversionError, Env, EnvVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
@@ -25,13 +25,48 @@ pub type Binary = Bytes;
 #[deprecated(note = "use soroban_sdk::BytesN")]
 pub type FixedBinary<const N: usize> = BytesN<N>;
 
+/// Create a [Bytes] with an array, or an integer or hex literal.
+///
+/// The first argument in the list must be a reference to an [Env].
+///
+/// The second argument can be an [u8] array, or an integer literal of unbounded
+/// size in any form: base10, hex, etc.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, bytes};
+///
+/// let env = Env::default();
+/// let bytes = bytes!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+/// assert_eq!(bytes.len(), 32);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bytes};
+///
+/// let env = Env::default();
+/// let bytes = bytes!(&env, [2, 0]);
+/// assert_eq!(bytes.len(), 2);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bytes};
+///
+/// let env = Env::default();
+/// let bytes = bytes!(&env);
+/// assert_eq!(bytes.len(), 0);
+/// ```
 #[macro_export]
 macro_rules! bytes {
-    ($env:expr) => {
+    ($env:expr $(,)?) => {
         $crate::Bytes::new($env)
     };
-    ($env:expr, $($x:expr),+ $(,)?) => {
+    ($env:expr, [$($x:expr),+ $(,)?] $(,)?) => {
         $crate::Bytes::from_array($env, &[$($x),+])
+    };
+    ($env:expr, $x:tt $(,)?) => {
+        $crate::Bytes::from_array($env, &::bytes_lit::bytes!($x))
     };
 }
 
@@ -98,6 +133,18 @@ impl Ord for Bytes {
     }
 }
 
+impl IntoVal<Env, Bytes> for Bytes {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self
+    }
+}
+
+impl IntoVal<Env, Bytes> for &Bytes {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self.clone()
+    }
+}
+
 impl TryFromVal<Env, Object> for Bytes {
     type Error = ConversionError;
 
@@ -140,6 +187,12 @@ impl IntoVal<Env, RawVal> for Bytes {
     }
 }
 
+impl IntoVal<Env, RawVal> for &Bytes {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.to_raw()
+    }
+}
+
 impl From<Bytes> for RawVal {
     #[inline(always)]
     fn from(v: Bytes) -> Self {
@@ -172,6 +225,13 @@ impl From<&Bytes> for Object {
     #[inline(always)]
     fn from(v: &Bytes) -> Self {
         v.0.val
+    }
+}
+
+impl From<&Bytes> for Bytes {
+    #[inline(always)]
+    fn from(v: &Bytes) -> Self {
+        v.clone()
     }
 }
 
@@ -216,9 +276,21 @@ impl IntoVal<Env, Bytes> for &str {
     }
 }
 
-impl From<EnvType<&str>> for Bytes {
-    fn from(ev: EnvType<&str>) -> Self {
-        Bytes::from_slice(&ev.env, ev.val.as_bytes())
+impl IntoVal<Env, Bytes> for &[u8] {
+    fn into_val(self, env: &Env) -> Bytes {
+        Bytes::from_slice(env, self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Bytes> for [u8; N] {
+    fn into_val(self, env: &Env) -> Bytes {
+        Bytes::from_array(env, &self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Bytes> for &[u8; N] {
+    fn into_val(self, env: &Env) -> Bytes {
+        Bytes::from_array(env, self)
     }
 }
 
@@ -252,7 +324,7 @@ impl Bytes {
     /// Create an empty Bytes.
     #[inline(always)]
     pub fn new(env: &Env) -> Bytes {
-        let obj = env.binary_new().in_env(env);
+        let obj = env.bytes_new().in_env(env);
         unsafe { Self::unchecked_new(obj) }
     }
 
@@ -264,7 +336,7 @@ impl Bytes {
 
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[u8]) -> Bytes {
-        Bytes(env.binary_new_from_slice(items).in_env(env))
+        Bytes(env.bytes_new_from_slice(items).in_env(env))
     }
 
     #[inline(always)]
@@ -272,7 +344,7 @@ impl Bytes {
         let v32: u32 = v.into();
         self.0 = self
             .env()
-            .binary_put(self.0.to_object(), i.into(), v32.into())
+            .bytes_put(self.0.to_object(), i.into(), v32.into())
             .in_env(self.env());
     }
 
@@ -289,7 +361,7 @@ impl Bytes {
     pub fn get_unchecked(&self, i: u32) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_get(self.0.to_object(), i.into())
+            .bytes_get(self.0.to_object(), i.into())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -297,15 +369,12 @@ impl Bytes {
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.env().binary_len(self.0.to_object()).is_u32_zero()
+        self.env().bytes_len(self.0.to_object()).is_u32_zero()
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        self.env()
-            .binary_len(self.0.to_object())
-            .try_into()
-            .unwrap()
+        self.env().bytes_len(self.0.to_object()).try_into().unwrap()
     }
 
     #[inline(always)]
@@ -321,7 +390,7 @@ impl Bytes {
     pub fn first_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_front(self.0.to_object())
+            .bytes_front(self.0.to_object())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -340,7 +409,7 @@ impl Bytes {
     pub fn last_unchecked(&self) -> u8 {
         let res32: u32 = self
             .env()
-            .binary_back(self.0.to_object())
+            .bytes_back(self.0.to_object())
             .try_into()
             .unwrap();
         res32.try_into().unwrap()
@@ -359,7 +428,7 @@ impl Bytes {
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
         let env = self.env();
-        let bin = env.binary_del(self.0.to_object(), i.into());
+        let bin = env.bytes_del(self.0.to_object(), i.into());
         self.0 = bin.in_env(env);
     }
 
@@ -367,7 +436,7 @@ impl Bytes {
     pub fn push(&mut self, x: u8) {
         let x32: u32 = x.into();
         let env = self.env();
-        let bin = env.binary_push(self.0.to_object(), x32.into());
+        let bin = env.bytes_push(self.0.to_object(), x32.into());
         self.0 = bin.in_env(env);
     }
 
@@ -375,7 +444,7 @@ impl Bytes {
     pub fn pop(&mut self) -> Option<u8> {
         let last = self.last()?;
         let env = self.env();
-        let bin = env.binary_pop(self.0.to_object());
+        let bin = env.bytes_pop(self.0.to_object());
         self.0 = bin.in_env(env);
         Some(last)
     }
@@ -384,7 +453,7 @@ impl Bytes {
     pub fn pop_unchecked(&mut self) -> u8 {
         let last = self.last_unchecked();
         let env = self.env();
-        self.0 = env.binary_pop(self.0.to_object()).in_env(env);
+        self.0 = env.bytes_pop(self.0.to_object()).in_env(env);
         last
     }
 
@@ -398,7 +467,7 @@ impl Bytes {
     pub fn insert(&mut self, i: u32, b: u8) {
         let env = self.env();
         let b32: u32 = b.into();
-        let bin = env.binary_insert(self.0.to_object(), i.into(), b32.into());
+        let bin = env.bytes_insert(self.0.to_object(), i.into(), b32.into());
         self.0 = bin.in_env(env);
     }
 
@@ -444,7 +513,7 @@ impl Bytes {
     #[inline(always)]
     pub fn append(&mut self, other: &Bytes) {
         let env = self.env();
-        let bin = env.binary_append(self.0.to_object(), other.0.to_object());
+        let bin = env.bytes_append(self.0.to_object(), other.0.to_object());
         self.0 = bin.in_env(env);
     }
 
@@ -457,7 +526,7 @@ impl Bytes {
     pub fn extend_from_slice(&mut self, slice: &[u8]) {
         let env = self.env();
         self.0 = env
-            .binary_copy_from_slice(self.to_object(), self.len().into(), &slice)
+            .bytes_copy_from_slice(self.to_object(), self.len().into(), &slice)
             .in_env(env);
     }
 
@@ -469,7 +538,7 @@ impl Bytes {
     pub fn copy_from_slice(&mut self, i: u32, slice: &[u8]) {
         let env = self.env();
         self.0 = env
-            .binary_copy_from_slice(self.to_object(), i.into(), slice)
+            .bytes_copy_from_slice(self.to_object(), i.into(), slice)
             .in_env(env);
     }
 
@@ -480,7 +549,7 @@ impl Bytes {
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
-        env.binary_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
+        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
     }
 
     #[must_use]
@@ -496,7 +565,7 @@ impl Bytes {
             Bound::Unbounded => self.len(),
         };
         let env = self.env();
-        let bin = env.binary_slice(self.0.to_object(), start_bound.into(), end_bound.into());
+        let bin = env.bytes_slice(self.0.to_object(), start_bound.into(), end_bound.into());
         unsafe { Self::unchecked_new(bin.in_env(env)) }
     }
 
@@ -530,7 +599,7 @@ impl Iterator for BinIter {
         if self.0.len() == 0 {
             None
         } else {
-            let val = self.0.env().binary_front(self.0 .0.to_object());
+            let val = self.0.env().bytes_front(self.0 .0.to_object());
             self.0 = self.0.slice(1..);
             let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
@@ -549,7 +618,7 @@ impl DoubleEndedIterator for BinIter {
         if len == 0 {
             None
         } else {
-            let val = self.0.env().binary_back(self.0 .0.to_object());
+            let val = self.0.env().bytes_back(self.0 .0.to_object());
             self.0 = self.0.slice(..len - 1);
             let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
@@ -656,24 +725,39 @@ impl<const N: usize> AsRef<Bytes> for BytesN<N> {
     }
 }
 
-impl<const N: usize> From<EnvType<[u8; N]>> for BytesN<N> {
-    #[inline(always)]
-    fn from(ev: EnvType<[u8; N]>) -> Self {
-        let mut bin = Bytes::new(&ev.env);
-        for b in ev.val {
-            bin.push(b);
-        }
-        BytesN(bin)
+impl<const N: usize> IntoVal<Env, BytesN<N>> for BytesN<N> {
+    fn into_val(self, _env: &Env) -> BytesN<N> {
+        self
+    }
+}
+
+impl<const N: usize> IntoVal<Env, BytesN<N>> for &BytesN<N> {
+    fn into_val(self, _env: &Env) -> BytesN<N> {
+        self.clone()
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Bytes> for BytesN<N> {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self.0
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Bytes> for &BytesN<N> {
+    fn into_val(self, _env: &Env) -> Bytes {
+        self.0.clone()
     }
 }
 
 impl<const N: usize> IntoVal<Env, BytesN<N>> for [u8; N] {
     fn into_val(self, env: &Env) -> BytesN<N> {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .into()
+        BytesN::from_array(env, &self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, BytesN<N>> for &[u8; N] {
+    fn into_val(self, env: &Env) -> BytesN<N> {
+        BytesN::from_array(env, self)
     }
 }
 
@@ -715,6 +799,12 @@ impl<const N: usize> IntoVal<Env, RawVal> for BytesN<N> {
     }
 }
 
+impl<const N: usize> IntoVal<Env, RawVal> for &BytesN<N> {
+    fn into_val(self, _env: &Env) -> RawVal {
+        self.to_raw()
+    }
+}
+
 impl<const N: usize> TryFrom<Bytes> for BytesN<N> {
     type Error = ConversionError;
 
@@ -753,6 +843,13 @@ impl<const N: usize> From<BytesN<N>> for Bytes {
     #[inline(always)]
     fn from(v: BytesN<N>) -> Self {
         v.0
+    }
+}
+
+impl<const N: usize> From<&BytesN<N>> for Bytes {
+    #[inline(always)]
+    fn from(v: &BytesN<N>) -> Self {
+        v.0.clone()
     }
 }
 
@@ -869,7 +966,7 @@ impl<const N: usize> BytesN<N> {
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
-        env.binary_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
+        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice);
     }
 
     pub fn iter(&self) -> BinIter {
@@ -942,20 +1039,43 @@ mod test {
     }
 
     #[test]
-    fn test_bin_macro() {
+    fn macro_bytes() {
         let env = Env::default();
-        assert_eq!(bytes![&env], Bytes::new(&env));
-        assert_eq!(bytes![&env, 1], {
+        assert_eq!(bytes!(&env), Bytes::new(&env));
+        assert_eq!(bytes!(&env, 1), {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bytes![&env, 1,], {
+        assert_eq!(bytes!(&env, 1,), {
             let mut b = Bytes::new(&env);
             b.push(1);
             b
         });
-        assert_eq!(bytes![&env, 3, 2, 1,], {
+        assert_eq!(bytes!(&env, [3, 2, 1,]), {
+            let mut b = Bytes::new(&env);
+            b.push(3);
+            b.push(2);
+            b.push(1);
+            b
+        });
+    }
+
+    #[test]
+    fn macro_bytes_hex() {
+        let env = Env::default();
+        assert_eq!(bytes!(&env), Bytes::new(&env));
+        assert_eq!(bytes!(&env, 1), {
+            let mut b = Bytes::new(&env);
+            b.push(1);
+            b
+        });
+        assert_eq!(bytes!(&env, 1,), {
+            let mut b = Bytes::new(&env);
+            b.push(1);
+            b
+        });
+        assert_eq!(bytes!(&env, 0x30201), {
             let mut b = Bytes::new(&env);
             b.push(3);
             b.push(2);

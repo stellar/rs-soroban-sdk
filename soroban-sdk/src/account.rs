@@ -1,15 +1,32 @@
-use core::{borrow::Borrow, cmp::Ordering, fmt::Debug};
+use core::{
+    borrow::Borrow,
+    cmp::Ordering,
+    fmt::{Debug, Display},
+};
 
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    Bytes, BytesN, ConversionError, Env, EnvType, EnvVal, IntoVal, Object, TryFromVal, TryIntoVal,
+    Bytes, BytesN, ConversionError, Env, EnvVal, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
 /// Account references a Stellar account and provides access to information
 /// about the account, such as its thresholds and signers.
 #[derive(Clone)]
 pub struct Account(BytesN<32>);
+
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub enum AccountError {
+    DoesNotExist,
+}
+
+impl Display for AccountError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            AccountError::DoesNotExist => write!(f, "account does not exist"),
+        }
+    }
+}
 
 impl Debug for Account {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -91,19 +108,9 @@ impl AsRef<BytesN<32>> for Account {
     }
 }
 
-impl From<EnvType<[u8; 32]>> for Account {
-    fn from(ev: EnvType<[u8; 32]>) -> Self {
-        Account(ev.into())
-    }
-}
-
 impl IntoVal<Env, Account> for [u8; 32] {
     fn into_val(self, env: &Env) -> Account {
-        EnvType {
-            env: env.clone(),
-            val: self,
-        }
-        .into()
+        Account(self.into_val(env))
     }
 }
 
@@ -163,15 +170,18 @@ impl Account {
     }
 
     /// Creates an account from a public key.
-    ///
-    /// TODO: Return a `Result` `Err` if the account does not exist. Currently panics if account does not exist.
-    pub fn from_public_key(public_key: &BytesN<32>) -> Result<Account, ()> {
-        let acc = Account(public_key.clone());
-        // TODO: Fail when account doesn't exist. In the meantime cause a trap
-        // at this point by trying to get some information about the account
-        // which will trap if the account doesn't exist.
-        _ = acc.low_threshold();
-        Ok(acc)
+    pub fn from_public_key(public_key: &BytesN<32>) -> Result<Account, AccountError> {
+        let env = public_key.env();
+        if env.account_exists(public_key.to_object()).is_false() {
+            return Err(AccountError::DoesNotExist);
+        }
+        Ok(Account(public_key.clone()))
+    }
+
+    /// Returns if the account exists.
+    pub fn exists(public_key: &BytesN<32>) -> bool {
+        let env = public_key.env();
+        env.account_exists(public_key.to_object()).is_true()
     }
 
     /// Returns the low threshold for the Stellar account.
