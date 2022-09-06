@@ -4,6 +4,7 @@ use soroban_env_host::{ConversionError, Object};
 
 use super::{
     env::internal::Env as _, env::EnvObj, xdr::ScObjectType, Env, IntoVal, Map, RawVal, TryFromVal,
+    TryIntoVal,
 };
 
 /// Create a [Set] with the given items.
@@ -308,6 +309,17 @@ where
     }
 }
 
+impl<T> TryIntoVal<Env, Set<T>> for RawVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Error = ConversionError;
+
+    fn try_into_val(self, env: &Env) -> Result<Set<T>, Self::Error> {
+        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -513,5 +525,15 @@ mod test {
         // set_inner != set_inner_different:
         set_outer.insert(set_inner_different);
         assert_eq!(set_outer.len(), 2);
+    }
+
+    #[test]
+    fn test_conversions() {
+        let env = Env::default();
+        let s1 = set![&env, 1, 2, 3, 4, 5];
+        let raw = s1.0.to_raw();
+
+        let s2: Result<Set<i64>, ConversionError> = raw.try_into_val(&env);
+        assert_eq!(s2, Ok(s1));
     }
 }
