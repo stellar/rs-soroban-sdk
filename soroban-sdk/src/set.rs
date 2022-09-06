@@ -230,6 +230,19 @@ where
     }
 }
 
+impl<T> DoubleEndedIterator for SetIter<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let last = self.0.last();
+        if let Some(Ok(k)) = self.0.last() {
+            self.0.remove(k);
+        }
+        last
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -373,6 +386,31 @@ mod test {
 
         // Ensure values are not deleted from original set during iter:
         assert_eq!(s, set![&env, 1, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_back_and_forth_iter() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 4, 5];
+        let mut iter = s.iter();
+
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next_back(), Some(Ok(5)));
+        assert_eq!(iter.next_back(), Some(Ok(4)));
+        assert_eq!(iter.next_back(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+
+
+        let mut rev_iter = s.iter().rev();
+        assert_eq!(rev_iter.next(), Some(Ok(5)));
+        assert_eq!(rev_iter.next_back(), Some(Ok(1)));
+        assert_eq!(rev_iter.next_back(), Some(Ok(2)));
+        assert_eq!(rev_iter.next_back(), Some(Ok(3)));
+        assert_eq!(rev_iter.next(), Some(Ok(4)));
+        assert_eq!(rev_iter.next(), None);
+        assert_eq!(rev_iter.next_back(), None);
     }
 
     #[test]
