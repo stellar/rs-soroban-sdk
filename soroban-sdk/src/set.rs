@@ -3,7 +3,7 @@ use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 use soroban_env_host::{ConversionError, Object};
 
 use super::{
-    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, Env, IntoVal, Map, RawVal, TryFromVal,
+    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, Env, EnvVal, IntoVal, Map, RawVal, TryFromVal,
     TryIntoVal,
 };
 
@@ -96,7 +96,7 @@ where
     }
 
     pub fn insert(&mut self, x: T) {
-        self.0.set(x, ())
+        self.0.set(x, ());
     }
 
     pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
@@ -336,6 +336,52 @@ where
 
     fn try_into_val(self, env: &Env) -> Result<Set<T>, Self::Error> {
         <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    }
+}
+
+impl<T> From<Set<T>> for RawVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn from(v: Set<T>) -> Self {
+        v.0.into()
+    }
+}
+
+impl<T> IntoVal<Env, Object> for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn into_val(self, _env: &Env) -> Object {
+        self.into()
+    }
+}
+
+impl<T> From<Set<T>> for Object
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn from(v: Set<T>) -> Self {
+        v.to_object()
+    }
+}
+
+impl<T> From<Set<T>> for EnvVal
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn from(v: Set<T>) -> Self {
+        v.into()
+    }
+}
+
+impl<T> From<Set<T>> for EnvObj
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    #[inline(always)]
+    fn from(v: Set<T>) -> Self {
+        v.into()
     }
 }
 
