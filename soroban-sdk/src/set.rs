@@ -123,17 +123,19 @@ where
 
     pub fn first(&self) -> Option<Result<T, T::Error>> {
         let env = self.env();
-        match self.is_empty() {
-            true => None,
-            false => Some(T::try_from_val(env, env.map_min_key(self.0.to_object()))),
+        if self.is_empty() {
+            None
+        } else {
+            Some(T::try_from_val(env, env.map_min_key(self.0.to_object())))
         }
     }
 
     pub fn last(&self) -> Option<Result<T, T::Error>> {
         let env = self.env();
-        match self.is_empty() {
-            true => None,
-            false => Some(T::try_from_val(env, env.map_max_key(self.0.to_object()))),
+        if self.is_empty() {
+            None
+        } else {
+            Some(T::try_from_val(env, env.map_max_key(self.0.to_object())))
         }
     }
 
