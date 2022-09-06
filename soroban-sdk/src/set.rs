@@ -1,6 +1,6 @@
-use core::{cmp::Ordering, fmt::Debug};
+use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
-use super::{Env, IntoVal, Map, RawVal, TryFromVal};
+use super::{env::internal::Env as _, Env, IntoVal, Map, RawVal, TryFromVal};
 
 /// Create a [Set] with the given items.
 ///
@@ -54,6 +54,7 @@ macro_rules! set {
 /// set.insert(3);
 /// assert_eq!(set.len(), 3);
 /// ```
+#[derive(Clone)]
 #[doc(hidden)]
 pub struct Set<T>(Map<T, ()>);
 
@@ -119,6 +120,31 @@ where
     pub fn is_empty(&self) -> bool {
         self.0.len() == 0
     }
+
+    pub fn first(&self) -> Option<Result<T, T::Error>> {
+        let env = self.env();
+        if self.is_empty() {
+            None
+        } else {
+            Some(T::try_from_val(env, env.map_min_key(self.0.to_object())))
+        }
+    }
+
+    pub fn last(&self) -> Option<Result<T, T::Error>> {
+        let env = self.env();
+        if self.is_empty() {
+            None
+        } else {
+            Some(T::try_from_val(env, env.map_max_key(self.0.to_object())))
+        }
+    }
+
+    pub fn iter(&self) -> SetIter<T>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+    {
+        self.clone().into_iter()
+    }
 }
 
 impl<T> Eq for Set<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
@@ -157,12 +183,76 @@ where
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Set(")?;
-        let keys = self.0.keys();
-        for k in keys {
+        for k in self.iter() {
             write!(f, "{:?}", k)?;
         }
         write!(f, ")")?;
         Ok(())
+    }
+}
+
+impl<T> IntoIterator for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Item = Result<T, T::Error>;
+    type IntoIter = SetIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        SetIter(self)
+    }
+}
+
+#[derive(Clone)]
+pub struct SetIter<T>(Set<T>);
+
+impl<T> SetIter<T> {
+    fn into_set(self) -> Set<T> {
+        self.0
+    }
+}
+
+impl<T> Iterator for SetIter<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    type Item = Result<T, T::Error>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let first = self.0.first();
+        if let Some(Ok(k)) = self.0.first() {
+            self.0.remove(k);
+        }
+        first
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len() as usize;
+        (len, Some(len))
+    }
+}
+
+impl<T> DoubleEndedIterator for SetIter<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let last = self.0.last();
+        if let Some(Ok(k)) = self.0.last() {
+            self.0.remove(k);
+        }
+        last
+    }
+}
+
+impl<T> FusedIterator for SetIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+
+impl<T> ExactSizeIterator for SetIter<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn len(&self) -> usize {
+        self.0.len() as usize
     }
 }
 
@@ -274,5 +364,76 @@ mod test {
 
         s2.extend_from_slice(&[4, 5, 6]);
         assert_eq!(s2, set![&env, 1, 2, 3, 4, 5, 6]);
+    }
+
+    #[test]
+    fn test_first() {
+        let env = Env::default();
+        let s = set![&env, 2, 1, 3, 4, 5];
+
+        // Ordering is implicit, so in this case 1 will be the first entry
+        assert_eq!(s.first(), Some(Ok(1)));
+    }
+
+    #[test]
+    fn test_last() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 5, 4];
+
+        // Ordering is implicit, so in this case 5 will be the last entry
+        assert_eq!(s.last(), Some(Ok(5)));
+    }
+
+    #[test]
+    fn test_forward_iter() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 4, 5];
+        let mut iter = s.iter();
+
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(4)));
+        assert_eq!(iter.next(), Some(Ok(5)));
+        assert_eq!(iter.next(), None);
+
+        // Ensure values are not deleted from original set during iter:
+        assert_eq!(s, set![&env, 1, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_back_and_forth_iter() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 4, 5];
+        let mut iter = s.iter();
+
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next_back(), Some(Ok(5)));
+        assert_eq!(iter.next_back(), Some(Ok(4)));
+        assert_eq!(iter.next_back(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let mut rev_iter = s.iter().rev();
+        assert_eq!(rev_iter.next(), Some(Ok(5)));
+        assert_eq!(rev_iter.next_back(), Some(Ok(1)));
+        assert_eq!(rev_iter.next_back(), Some(Ok(2)));
+        assert_eq!(rev_iter.next_back(), Some(Ok(3)));
+        assert_eq!(rev_iter.next(), Some(Ok(4)));
+        assert_eq!(rev_iter.next(), None);
+        assert_eq!(rev_iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_iter_forloop() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3, 4, 5];
+        let mut c = 1;
+
+        for i in s {
+            assert_eq!(i, Ok(c));
+            c += 1;
+        }
     }
 }
