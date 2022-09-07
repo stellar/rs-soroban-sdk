@@ -660,9 +660,6 @@ mod test {
     }
 
     #[test]
-    // TODO: Remove this should_panic when
-    // https://github.com/stellar/rs-soroban-env/issues/405 is fixed.
-    #[should_panic = "already borrowed: BorrowMutError"]
     fn test_keys() {
         let env = Env::default();
 
@@ -672,9 +669,6 @@ mod test {
     }
 
     #[test]
-    // TODO: Remove this should_panic when
-    // https://github.com/stellar/rs-soroban-env/issues/405 is fixed.
-    #[should_panic = "already borrowed: BorrowMutError"]
     fn test_values() {
         let env = Env::default();
 
