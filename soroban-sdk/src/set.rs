@@ -373,7 +373,7 @@ where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn from(s: Set<T>) -> Self {
-        s.0.keys()
+        s.to_vec()
     }
 }
 
