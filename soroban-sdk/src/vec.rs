@@ -11,7 +11,7 @@ use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
     env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, EnvVal, IntoVal,
-    Object, RawVal, TryFromVal, TryIntoVal,
+    Object, RawVal, Set, TryFromVal, TryIntoVal,
 };
 
 #[cfg(doc)]
@@ -268,6 +268,19 @@ where
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.0
+    }
+}
+
+impl<T> From<Vec<T>> for Set<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn from(v: Vec<T>) -> Self {
+        let mut s: Set<T> = Set::new(v.env());
+        for i in v.into_iter().flatten() {
+            s.insert(i);
+        }
+        s
     }
 }
 
@@ -762,6 +775,7 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::set;
 
     #[test]
     fn test_vec_macro() {
@@ -1012,5 +1026,13 @@ mod test {
         let val: ScVal = v.clone().try_into().unwrap();
         let roundtrip = Vec::<i64>::try_from_val(&env, val).unwrap();
         assert_eq!(v, roundtrip);
+    }
+
+    #[test]
+    fn test_vec_to_set() {
+        let env = Env::default();
+        let v = vec![&env, 1, 2, 3];
+        let s = Set::from(v);
+        assert_eq!(s, set![&env, 1, 2, 3]);
     }
 }
