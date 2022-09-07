@@ -37,9 +37,9 @@ macro_rules! map {
     };
 }
 
-/// Map is a sorted key-value dictionary.
+/// Map is a ordered key-value dictionary.
 ///
-/// The map is sorted by its keys. Iterating a map is stable and always returns
+/// The map is ordered by its keys. Iterating a map is stable and always returns
 /// the keys and values in order of the keys.
 ///
 /// The map is stored in the Host and available to the Guest through the
