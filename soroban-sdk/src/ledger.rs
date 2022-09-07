@@ -87,7 +87,7 @@ impl Ledger {
     /// > Test SDF Network ; September 2015
     pub fn network_passphrase(&self) -> Bytes {
         let env = self.env();
-        let bin_obj = internal::Env::get_ledger_network_id(env);
+        let bin_obj = internal::Env::get_ledger_network_passphrase(env);
         unsafe { Bytes::unchecked_new(bin_obj.in_env(env)) }
     }
 }
