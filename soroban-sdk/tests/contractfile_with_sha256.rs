@@ -1,6 +1,6 @@
 pub const WASM: &[u8] = soroban_sdk::contractfile!(
     file = "../target/wasm32-unknown-unknown/release/example_add_i32.wasm",
-    sha256 = "d4096b608d95d17aca620e294a3840b683b19badb6e9c0ce110ce8f1ce421b78",
+    sha256 = "1fe14981cdfc7949303bf3617b3b14c0db76828e42771510c0a391601ef4325b",
 );
 
 #[test]
