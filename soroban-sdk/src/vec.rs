@@ -1034,5 +1034,10 @@ mod test {
         let v = vec![&env, 1, 2, 3];
         let s = Set::from(v);
         assert_eq!(s, set![&env, 1, 2, 3]);
+
+        // Ensure this also deduplicates and sorts values
+        let v2 = vec![&env, 9, 9, 1, 5, 3, 7, 3, 5, 5];
+        let s2 = Set::from(v2);
+        assert_eq!(s2, set![&env, 1, 3, 5, 7, 9]);
     }
 }
