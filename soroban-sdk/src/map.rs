@@ -37,7 +37,10 @@ macro_rules! map {
     };
 }
 
-/// Map is a key-value dictionary.
+/// Map is a ordered key-value dictionary.
+///
+/// The map is ordered by its keys. Iterating a map is stable and always returns
+/// the keys and values in order of the keys.
 ///
 /// The map is stored in the Host and available to the Guest through the
 /// functions defined on Map. Values stored in the Map are transmitted to the
@@ -48,22 +51,36 @@ macro_rules! map {
 /// conversion will fail if they are not. Most functions on Map return a
 /// `Result` due to this.
 ///
-/// Maps may have no more than one entry per key. Setting an value for a key in
-/// the map that already has a value for that key replaces the value.
-///
-/// Maps are sorted by their key, and iterating a map is consistent and stable.
+/// Maps have at most one entry per key. Setting a value for a key in the map
+/// that already has a value for that key replaces the value.
 ///
 /// Map values can be stored as [ContractData], or in other
 /// types like [Vec], [Map], etc.
 ///
 /// ### Examples
 ///
+/// Maps can be created and iterated.
+///
 /// ```
 /// use soroban_sdk::{Env, Map, map};
 ///
 /// let env = Env::default();
-/// let map = map![&env, (1, 10), (2, 20)];
+/// let map = map![&env, (2, 20), (1, 10)];
 /// assert_eq!(map.len(), 2);
+/// assert_eq!(map.iter().next(), Some(Ok((1, 10))));
+/// ```
+///
+/// Maps are ordered and so maps created with elements in different order will
+/// be equal.
+///
+/// ```
+/// use soroban_sdk::{Env, Map, map};
+///
+/// let env = Env::default();
+/// assert_eq!(
+///     map![&env, (1, 10), (2, 20)],
+///     map![&env, (2, 20), (1, 10)],
+/// )
 /// ```
 #[repr(transparent)]
 #[derive(Clone)]
