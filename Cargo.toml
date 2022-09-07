@@ -10,6 +10,7 @@ members = [
     "tests/hello",
     "tests/add_i32",
     "tests/add_i64",
+    "tests/add_u64",
     "tests/add_bigint",
     "tests/vec",
     "tests/import_contract",
