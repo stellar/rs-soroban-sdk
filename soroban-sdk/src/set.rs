@@ -1,10 +1,8 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
-use soroban_env_host::{ConversionError, Object};
-
 use super::{
-    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, Env, IntoVal, Map, RawVal, TryFromVal,
-    TryIntoVal,
+    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, IntoVal, Map,
+    Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 /// Create a [Set] with the given items.
