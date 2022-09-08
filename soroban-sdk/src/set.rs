@@ -2,7 +2,7 @@ use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
 use super::{
     env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, IntoVal, Map,
-    Object, RawVal, TryFromVal, TryIntoVal,
+    Object, RawVal, TryFromVal, TryIntoVal, Vec,
 };
 
 /// Create a [Set] with the given items.
@@ -159,6 +159,10 @@ where
 
     pub fn to_object(&self) -> Object {
         self.0.to_object()
+    }
+
+    pub fn to_vec(&self) -> Vec<T> {
+        self.0.keys()
     }
 }
 
@@ -341,8 +345,8 @@ impl<T> From<Set<T>> for RawVal
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    fn from(v: Set<T>) -> Self {
-        v.0.into()
+    fn from(s: Set<T>) -> Self {
+        s.0.into()
     }
 }
 
@@ -359,14 +363,24 @@ impl<T> From<Set<T>> for Object
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    fn from(v: Set<T>) -> Self {
-        v.to_object()
+    fn from(s: Set<T>) -> Self {
+        s.to_object()
+    }
+}
+
+impl<T> From<Set<T>> for Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    fn from(s: Set<T>) -> Self {
+        s.to_vec()
     }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::vec;
 
     #[test]
     fn test_idempotent_insert() {
@@ -586,5 +600,17 @@ mod test {
 
         // Sanity check
         assert_ne!(s2, s4);
+    }
+
+    #[test]
+    fn test_to_vec() {
+        let env = Env::default();
+        let s = set![&env, 1, 2, 3];
+        let v = s.to_vec();
+
+        assert_eq!(v, vec![&env, 1, 2, 3]);
+
+        let v2: Vec<i64> = Vec::from(s);
+        assert_eq!(v2, vec![&env, 1, 2, 3]);
     }
 }
