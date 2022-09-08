@@ -47,7 +47,7 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger};
+use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger, Vec};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -194,12 +194,12 @@ impl Env {
 
     /// Verifies an ed25519 signature.
     ///
-    /// The ed25519 siganture (`sig`) is verified as a valid signature of the
+    /// The ed25519 signature (`sig`) is verified as a valid signature of the
     /// message (`msg`) by the ed25519 public key (`pk`).
     ///
     /// ### Panics
     ///
-    /// Will panic if the siganture verification fails.
+    /// Will panic if the signature verification fails.
     ///
     /// ### TODO
     ///
@@ -208,6 +208,13 @@ impl Env {
         internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
+    }
+
+    /// Returns the contract call stack as a Vec
+    /// of (contractID, functionName).
+    pub fn get_current_call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
+        let stack = internal::Env::get_current_call_stack(self);
+        stack.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]

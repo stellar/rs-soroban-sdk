@@ -15,6 +15,7 @@ members = [
     "tests/vec",
     "tests/import_contract",
     "tests/invoke_contract",
+    "tests/call_stack",
     "tests/udt",
     "tests/contract_data",
     "tests/create_contract",
