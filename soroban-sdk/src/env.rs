@@ -47,7 +47,7 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger};
+use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger, Vec};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -194,12 +194,12 @@ impl Env {
 
     /// Verifies an ed25519 signature.
     ///
-    /// The ed25519 siganture (`sig`) is verified as a valid signature of the
+    /// The ed25519 signature (`sig`) is verified as a valid signature of the
     /// message (`msg`) by the ed25519 public key (`pk`).
     ///
     /// ### Panics
     ///
-    /// Will panic if the siganture verification fails.
+    /// Will panic if the signature verification fails.
     ///
     /// ### TODO
     ///
@@ -208,6 +208,42 @@ impl Env {
         internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
+    }
+
+    /// Returns the contract call stack as a Vec
+    /// of (contractID, functionName).
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol, symbol};
+    ///
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn hello(env: Env) {
+    ///         let stack = env.get_current_call_stack();
+    ///         assert_eq!(stack.len(), 1);
+    ///
+    ///         let outer = stack.get(0).unwrap().unwrap();
+    ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
+    ///         assert_eq!(outer.1, symbol!("hello"));
+    ///     }
+    /// }
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
+    /// env.register_contract(&contract_id, Contract);
+    /// let client = ContractClient::new(&env, &contract_id);
+    /// client.hello();
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn get_current_call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
+        let stack = internal::Env::get_current_call_stack(self);
+        stack.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]
