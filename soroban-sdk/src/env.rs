@@ -212,6 +212,35 @@ impl Env {
 
     /// Returns the contract call stack as a Vec
     /// of (contractID, functionName).
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol, symbol};
+    ///
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn hello(env: Env) {
+    ///         let stack = env.get_current_call_stack();
+    ///         assert_eq!(stack.len(), 1);
+    ///
+    ///         let outer = stack.get(0).unwrap().unwrap();
+    ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
+    ///         assert_eq!(outer.1, symbol!("hello"));
+    ///     }
+    /// }
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
+    /// env.register_contract(&contract_id, Contract);
+    /// let client = ContractClient::new(&env, &contract_id);
+    /// client.hello();
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
     pub fn get_current_call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
         let stack = internal::Env::get_current_call_stack(self);
         stack.try_into_val(self).unwrap()
