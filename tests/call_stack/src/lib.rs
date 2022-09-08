@@ -1,12 +1,27 @@
 #![no_std]
-use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env};
+use soroban_sdk::{contractimpl, symbol, BytesN, Env};
 
 pub struct OuterContract;
 
 #[contractimpl]
 impl OuterContract {
     pub fn outer(env: Env, contract_id: BytesN<32>) {
-        env.invoke_contract(&contract_id, &symbol!("inner"), vec![&env])
+        let check_call_stack = || {
+            let stack = env.get_current_call_stack();
+            assert_eq!(stack.len(), 1);
+            let outer = stack.get(0).unwrap().unwrap();
+            assert_eq!(outer.0, BytesN::from_array(&env, &[1u8; 32]));
+            assert_eq!(outer.1, symbol!("outer"));
+        };
+
+        // Check before the inner call
+        check_call_stack();
+
+        let client = InnerContractClient::new(&env, &contract_id);
+        client.inner();
+
+        // Check after the inner call
+        check_call_stack();
     }
 }
 
