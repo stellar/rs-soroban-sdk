@@ -54,7 +54,7 @@ jobs:
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --exclude-features docs test --target ${{ matrix.sys.target }}
     - if: startsWith(github.head_ref, 'release/')
-      uses: stellar/actions/rust-workspace-publish-dry-run@dryrun
+      uses: stellar/actions/rust-workspace-publish-dry-run@main
       with:
         cargo-package-options: --target ${{ matrix.sys.target }}
 
