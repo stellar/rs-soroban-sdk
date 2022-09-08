@@ -53,6 +53,10 @@ jobs:
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --exclude-features docs test --target ${{ matrix.sys.target }}
+    - if: startsWith(github.head_ref, 'release/')
+      uses: stellar/actions/rust-workspace-publish-dry-run@dryrun
+      with:
+        cargo-package-options: --target ${{ matrix.sys.target }}
 
   docs:
     runs-on: ubuntu-latest
