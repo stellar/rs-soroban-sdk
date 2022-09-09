@@ -894,9 +894,7 @@ impl Eq for BigInt {}
 
 impl Ord for BigInt {
     fn cmp(&self, other: &Self) -> Ordering {
-        let env = self.env();
-        let i = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
-        i.cmp(&0)
+        self.0.cmp(&other.0)
     }
 }
 

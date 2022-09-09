@@ -126,10 +126,7 @@ impl PartialOrd for Bytes {
 
 impl Ord for Bytes {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        let env = self.env();
-        let v = env.obj_cmp(self.0.to_raw(), other.0.to_raw());
-        let i = i32::try_from(v).unwrap();
-        i.cmp(&0)
+        self.0.cmp(&other.0)
     }
 }
 
