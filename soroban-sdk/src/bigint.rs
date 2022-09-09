@@ -1094,15 +1094,13 @@ impl BigInt {
     /// Returns true if the [BigInt] is zero.
     pub fn is_zero(&self) -> bool {
         let env = self.env();
-        let is_zero = env.bigint_is_zero(self.0.to_object());
-        bool::try_from(is_zero).unwrap()
+        env.bigint_is_zero(self.0.to_object()).is_true()
     }
 
     /// Returns the minimum number of bits required to store the [BigInt].
-    pub fn bits(&self) -> u32 {
+    pub fn bits(&self) -> u64 {
         let env = self.env();
-        let bits = env.bigint_bits(self.0.to_object());
-        u32::try_from(bits).unwrap()
+        env.bigint_bits(self.0.to_object())
     }
 }
 
