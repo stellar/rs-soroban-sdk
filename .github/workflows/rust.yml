@@ -4,8 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-  release:
-    types: [published]
 
 env:
   RUSTFLAGS: -D warnings
@@ -14,7 +12,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, rust-analyzer-compat, build-and-test, docs]
+    needs: [fmt, rust-analyzer-compat, build-and-test, docs, publish-dry-run]
     runs-on: ubuntu-latest
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -53,10 +51,6 @@ jobs:
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --exclude-features docs test --target ${{ matrix.sys.target }}
-    - if: startsWith(github.head_ref, 'release/')
-      uses: stellar/actions/rust-workspace-publish-dry-run@main
-      with:
-        cargo-package-options: --target ${{ matrix.sys.target }}
 
   docs:
     runs-on: ubuntu-latest
@@ -66,15 +60,19 @@ jobs:
     - run: rustup install nightly
     - run: make doc
 
-  publish:
-    if: github.event_name == 'release'
-    needs: [complete]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: stellar/actions/rust-cache@main
-    - run: rustup update
-    - run: cargo install --target-dir ~/.cargo/target --locked --version 0.2.35 cargo-workspaces
-    - run: make publish
-      env:
-        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+  publish-dry-run:
+    if: startsWith(github.head_ref, 'release/')
+    strategy:
+      matrix:
+        sys:
+        - os: ubuntu-latest
+          target: wasm32-unknown-unknown
+          cargo-hack-feature-options: ''
+        - os: ubuntu-latest
+          target: x86_64-unknown-linux-gnu
+          cargo-hack-feature-options: '--feature-powerset --exclude-features docs'
+    uses: stellar/actions/.github/workflows/rust-publish-dry-run.yml@main
+    with:
+      runs-on: ${{ matrix.sys.os }}
+      cargo-hack-feature-options: ${{ matrix.sys.cargo-hack-feature-options }}
+      cargo-package-options: --target ${{ matrix.sys.target }}

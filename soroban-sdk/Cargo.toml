@@ -19,10 +19,10 @@ bytes-lit = "0.0.3"
 ed25519-dalek = { version = "1.0.1", optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]
-soroban-env-guest = { version = "0.0.4" }
+soroban-env-guest = { version = "0.0.5" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { version = "0.0.4", features = ["vm"] }
+soroban-env-host = { version = "0.0.5", features = ["vm"] }
 
 [dev-dependencies]
 stellar-xdr = { version = "0.0.2", features = ["next", "std"] }
