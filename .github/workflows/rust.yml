@@ -72,4 +72,5 @@ jobs:
     uses: stellar/actions/.github/workflows/rust-publish-dry-run.yml@main
     with:
       runs-on: ${{ matrix.sys.os }}
-      cargo-package-options: --exclude-features docs --target ${{ matrix.sys.target }}
+      cargo-hack-feature-options: --exclude-features docs
+      cargo-package-options: --target ${{ matrix.sys.target }}
