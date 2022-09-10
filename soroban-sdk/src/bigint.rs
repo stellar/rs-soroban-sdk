@@ -1648,9 +1648,17 @@ mod test {
         let env = Env::default();
 
         assert_eq!(bigint!(&env, 1) + 1, bigint!(&env, 2));
+
         assert_eq!(bigint!(&env, 1) + &1, bigint!(&env, 2));
         assert_eq!(&bigint!(&env, 1) + 1, bigint!(&env, 2));
         assert_eq!(&bigint!(&env, 1) + &1, bigint!(&env, 2));
+
+        assert_eq!(bigint!(&env, 1) + &mut 1, bigint!(&env, 2));
+        assert_eq!(&mut bigint!(&env, 1) + 1, bigint!(&env, 2));
+        assert_eq!(&mut bigint!(&env, 1) + &mut 1, bigint!(&env, 2));
+
+        assert_eq!(&mut bigint!(&env, 1) + &1, bigint!(&env, 2));
+        assert_eq!(&bigint!(&env, 1) + &mut 1, bigint!(&env, 2));
     }
 
     #[test]
@@ -1660,6 +1668,7 @@ mod test {
         let mut b = bigint!(&env, 1);
         b += 1;
         assert_eq!(b, bigint!(&env, 2));
+
         let mut b = bigint!(&env, 1);
         b += &1;
         assert_eq!(b.clone(), bigint!(&env, 2));
@@ -1668,6 +1677,10 @@ mod test {
         assert_eq!(b.clone(), bigint!(&env, 2));
         let mut b = &mut bigint!(&env, 1);
         b += &1;
+        assert_eq!(b.clone(), bigint!(&env, 2));
+
+        let mut b = bigint!(&env, 1);
+        b += &mut 1;
         assert_eq!(b.clone(), bigint!(&env, 2));
     }
 }
