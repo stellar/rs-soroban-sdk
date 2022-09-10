@@ -53,3 +53,42 @@ macro_rules! impl_ref_op {
 }
 
 pub(crate) use impl_ref_op;
+
+/// Implement an assign operator for a type for all the ref variations.
+///
+/// Implements:
+///  - ref-op-ref
+///  - val-op-ref
+///  - ref-op-val
+///
+/// Only operators with a RHS, &mut self and no Output are supported.
+///
+/// Assumes that a val-op-val variaton already exists and calls it.
+///
+/// See [crate::BigInt] for example usage.
+macro_rules! impl_ref_assign_op {
+    ($ty:ident, $op:ident<$rhs:ident> :: $op_fn:ident) => {
+        impl<'a> $op<&'a $rhs> for &'a mut $ty {
+            #[inline(always)]
+            fn $op_fn(&mut self, rhs: &'a $rhs) {
+                (*self).$op_fn(rhs.clone());
+            }
+        }
+
+        impl<'a> $op<$rhs> for &'a mut $ty {
+            #[inline(always)]
+            fn $op_fn(&mut self, rhs: $rhs) {
+                (*self).$op_fn(rhs);
+            }
+        }
+
+        impl<'a> $op<&'a $rhs> for $ty {
+            #[inline(always)]
+            fn $op_fn(&mut self, rhs: &'a $rhs) {
+                (*self).$op_fn(rhs.clone());
+            }
+        }
+    };
+}
+
+pub(crate) use impl_ref_assign_op;
