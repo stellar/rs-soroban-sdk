@@ -212,7 +212,7 @@ impl TryFrom<BigInt> for u64 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= u64::BITS {
+        if b.bits() <= u64::BITS.into() {
             Ok(b.to_u64())
         } else {
             Err(())
@@ -236,7 +236,7 @@ impl TryFrom<BigInt> for i64 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= i64::BITS {
+        if b.bits() <= i64::BITS.into() {
             Ok(b.to_i64())
         } else {
             Err(())
@@ -260,7 +260,7 @@ impl TryFrom<BigInt> for u32 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= u32::BITS {
+        if b.bits() <= u32::BITS.into() {
             Ok(b.to_u32())
         } else {
             Err(())
@@ -284,7 +284,7 @@ impl TryFrom<BigInt> for i32 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= i32::BITS {
+        if b.bits() <= i32::BITS.into() {
             Ok(b.to_i32())
         } else {
             Err(())
@@ -1094,15 +1094,13 @@ impl BigInt {
     /// Returns true if the [BigInt] is zero.
     pub fn is_zero(&self) -> bool {
         let env = self.env();
-        let is_zero = env.bigint_is_zero(self.0.to_object());
-        bool::try_from(is_zero).unwrap()
+        env.bigint_is_zero(self.0.to_object()).is_true()
     }
 
     /// Returns the minimum number of bits required to store the [BigInt].
-    pub fn bits(&self) -> u32 {
+    pub fn bits(&self) -> u64 {
         let env = self.env();
-        let bits = env.bigint_bits(self.0.to_object());
-        u32::try_from(bits).unwrap()
+        env.bigint_bits(self.0.to_object())
     }
 }
 

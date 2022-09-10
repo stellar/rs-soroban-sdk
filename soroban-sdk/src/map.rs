@@ -3,8 +3,10 @@ use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, EnvVal, IntoVal,
-    Object, RawVal, Status, TryFromVal, TryIntoVal, Vec,
+    env::internal::{Env as _, RawValConvertible},
+    env::EnvObj,
+    xdr::ScObjectType,
+    ConversionError, Env, EnvVal, IntoVal, Object, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -409,7 +411,7 @@ where
     pub fn len(&self) -> u32 {
         let env = self.env();
         let len = env.map_len(self.0.to_object());
-        u32::try_from_val(env, len).unwrap()
+        unsafe { <u32 as RawValConvertible>::unchecked_from_val(len) }
     }
 
     #[inline(always)]
