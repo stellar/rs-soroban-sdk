@@ -352,7 +352,7 @@ impl Add for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_add(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Add<BigInt>::add);
@@ -398,7 +398,7 @@ impl AddAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_add(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, AddAssign<BigInt>::add_assign);
@@ -441,7 +441,7 @@ impl Sub for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_sub(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Sub<BigInt>::sub);
@@ -487,7 +487,7 @@ impl SubAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_sub(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, SubAssign<BigInt>::sub_assign);
@@ -530,7 +530,7 @@ impl Mul for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_mul(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Mul<BigInt>::mul);
@@ -576,7 +576,7 @@ impl MulAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_mul(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, MulAssign<BigInt>::mul_assign);
@@ -619,7 +619,7 @@ impl Div for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_div(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Div<BigInt>::div);
@@ -665,7 +665,7 @@ impl DivAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_div(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, DivAssign<BigInt>::div_assign);
@@ -708,7 +708,7 @@ impl Rem for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_rem(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Rem<BigInt>::rem);
@@ -754,7 +754,7 @@ impl RemAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_rem(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, RemAssign<BigInt>::rem_assign);
@@ -797,7 +797,7 @@ impl BitAnd for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_and(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, BitAnd<BigInt>::bitand);
@@ -843,7 +843,7 @@ impl BitAndAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_and(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, BitAndAssign<BigInt>::bitand_assign);
@@ -886,7 +886,7 @@ impl BitOr for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_or(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, BitOr<BigInt>::bitor);
@@ -932,7 +932,7 @@ impl BitOrAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_or(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, BitOrAssign<BigInt>::bitor_assign);
@@ -975,7 +975,7 @@ impl BitXor for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_xor(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, BitXor<BigInt>::bitxor);
@@ -1021,7 +1021,7 @@ impl BitXorAssign for BigInt {
         let env = self.env();
         env.check_same_env(rhs.env());
         let b = env.bigint_xor(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, BitXorAssign<BigInt>::bitxor_assign);
@@ -1063,7 +1063,7 @@ impl Neg for BigInt {
     fn neg(self) -> Self::Output {
         let env = self.env();
         let b = env.bigint_neg(self.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Neg::neg);
@@ -1073,7 +1073,7 @@ impl Not for BigInt {
     fn not(self) -> Self::Output {
         let env = self.env();
         let b = env.bigint_not(self.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Not::not);
@@ -1083,7 +1083,7 @@ impl Shl<BigInt> for BigInt {
     fn shl(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
         let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Shl<BigInt>::shl);
@@ -1128,7 +1128,7 @@ impl ShlAssign<BigInt> for BigInt {
     fn shl_assign(&mut self, rhs: BigInt) {
         let env = self.env();
         let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, ShlAssign<BigInt>::shl_assign);
@@ -1171,7 +1171,7 @@ impl Shr<BigInt> for BigInt {
     fn shr(self, rhs: BigInt) -> Self::Output {
         let env = self.env();
         let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_op!(BigInt, Shr<BigInt>::shr);
@@ -1216,7 +1216,7 @@ impl ShrAssign<BigInt> for BigInt {
     fn shr_assign(&mut self, rhs: BigInt) {
         let env = self.env();
         let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
-        *self = Self::try_from_val(env, b).unwrap()
+        *self = unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 }
 crate::operators::impl_ref_assign_op!(BigInt, ShrAssign<BigInt>::shr_assign);
@@ -1479,21 +1479,21 @@ impl BigInt {
     pub fn gcd(&self, other: BigInt) -> BigInt {
         let env = self.env();
         let b = env.bigint_gcd(self.0.to_object(), other.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 
     /// Returns the lowest common multiple of the [BigInt] and other.
     pub fn lcm(&self, other: BigInt) -> BigInt {
         let env = self.env();
         let b = env.bigint_lcm(self.0.to_object(), other.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 
     /// Returns the [BigInt] raised to the power specified.
     pub fn pow(&self, power: BigInt) -> BigInt {
         let env = self.env();
         let b = env.bigint_pow(self.0.to_object(), power.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 
     /// Returns `p.pow(q) mod m`.
@@ -1504,14 +1504,14 @@ impl BigInt {
     pub fn pow_mod(&self, q: BigInt, m: BigInt) -> BigInt {
         let env = self.env();
         let b = env.bigint_pow_mod(self.0.to_object(), q.0.to_object(), m.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 
     /// Returns the square root of the [BigInt].
     pub fn sqrt(&self) -> BigInt {
         let env = self.env();
         let b = env.bigint_sqrt(self.0.to_object());
-        Self::try_from_val(env, b).unwrap()
+        unsafe { Self::unchecked_new(b.in_env(env)) }
     }
 
     /// Returns true if the [BigInt] is zero.
