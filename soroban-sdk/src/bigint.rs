@@ -1,7 +1,11 @@
 use core::{
     cmp::Ordering,
     fmt::{Debug, Display},
-    ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub},
+    ops::{
+        Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div,
+        DivAssign, Mul, MulAssign, Neg, Not, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub,
+        SubAssign,
+    },
 };
 
 use super::{
@@ -389,6 +393,48 @@ impl Add<i32> for BigInt {
 }
 crate::operators::impl_ref_op!(BigInt, Add<i32>::add);
 
+impl AddAssign for BigInt {
+    fn add_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_add(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, AddAssign<BigInt>::add_assign);
+
+impl AddAssign<u64> for BigInt {
+    fn add_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.add_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, AddAssign<u64>::add_assign);
+
+impl AddAssign<i64> for BigInt {
+    fn add_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.add_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, AddAssign<i64>::add_assign);
+
+impl AddAssign<u32> for BigInt {
+    fn add_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.add_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, AddAssign<u32>::add_assign);
+
+impl AddAssign<i32> for BigInt {
+    fn add_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.add_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, AddAssign<i32>::add_assign);
+
 impl Sub for BigInt {
     type Output = BigInt;
     fn sub(self, rhs: Self) -> Self::Output {
@@ -435,6 +481,48 @@ impl Sub<i32> for BigInt {
     }
 }
 crate::operators::impl_ref_op!(BigInt, Sub<i32>::sub);
+
+impl SubAssign for BigInt {
+    fn sub_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_sub(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, SubAssign<BigInt>::sub_assign);
+
+impl SubAssign<u64> for BigInt {
+    fn sub_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.sub_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, SubAssign<u64>::sub_assign);
+
+impl SubAssign<i64> for BigInt {
+    fn sub_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.sub_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, SubAssign<i64>::sub_assign);
+
+impl SubAssign<u32> for BigInt {
+    fn sub_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.sub_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, SubAssign<u32>::sub_assign);
+
+impl SubAssign<i32> for BigInt {
+    fn sub_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.sub_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, SubAssign<i32>::sub_assign);
 
 impl Mul for BigInt {
     type Output = BigInt;
@@ -483,6 +571,48 @@ impl Mul<i32> for BigInt {
 }
 crate::operators::impl_ref_op!(BigInt, Mul<i32>::mul);
 
+impl MulAssign for BigInt {
+    fn mul_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_mul(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, MulAssign<BigInt>::mul_assign);
+
+impl MulAssign<u64> for BigInt {
+    fn mul_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.mul_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, MulAssign<u64>::mul_assign);
+
+impl MulAssign<i64> for BigInt {
+    fn mul_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.mul_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, MulAssign<i64>::mul_assign);
+
+impl MulAssign<u32> for BigInt {
+    fn mul_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.mul_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, MulAssign<u32>::mul_assign);
+
+impl MulAssign<i32> for BigInt {
+    fn mul_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.mul_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, MulAssign<i32>::mul_assign);
+
 impl Div for BigInt {
     type Output = BigInt;
     fn div(self, rhs: Self) -> Self::Output {
@@ -529,6 +659,48 @@ impl Div<i32> for BigInt {
     }
 }
 crate::operators::impl_ref_op!(BigInt, Div<i32>::div);
+
+impl DivAssign for BigInt {
+    fn div_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_div(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, DivAssign<BigInt>::div_assign);
+
+impl DivAssign<u64> for BigInt {
+    fn div_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.div_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, DivAssign<u64>::div_assign);
+
+impl DivAssign<i64> for BigInt {
+    fn div_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.div_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, DivAssign<i64>::div_assign);
+
+impl DivAssign<u32> for BigInt {
+    fn div_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.div_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, DivAssign<u32>::div_assign);
+
+impl DivAssign<i32> for BigInt {
+    fn div_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.div_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, DivAssign<i32>::div_assign);
 
 impl Rem for BigInt {
     type Output = BigInt;
@@ -577,6 +749,48 @@ impl Rem<i32> for BigInt {
 }
 crate::operators::impl_ref_op!(BigInt, Rem<i32>::rem);
 
+impl RemAssign for BigInt {
+    fn rem_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_rem(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, RemAssign<BigInt>::rem_assign);
+
+impl RemAssign<u64> for BigInt {
+    fn rem_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.rem_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, RemAssign<u64>::rem_assign);
+
+impl RemAssign<i64> for BigInt {
+    fn rem_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.rem_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, RemAssign<i64>::rem_assign);
+
+impl RemAssign<u32> for BigInt {
+    fn rem_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.rem_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, RemAssign<u32>::rem_assign);
+
+impl RemAssign<i32> for BigInt {
+    fn rem_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.rem_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, RemAssign<i32>::rem_assign);
+
 impl BitAnd for BigInt {
     type Output = BigInt;
     fn bitand(self, rhs: Self) -> Self::Output {
@@ -623,6 +837,48 @@ impl BitAnd<i32> for BigInt {
     }
 }
 crate::operators::impl_ref_op!(BigInt, BitAnd<i32>::bitand);
+
+impl BitAndAssign for BigInt {
+    fn bitand_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_and(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitAndAssign<BigInt>::bitand_assign);
+
+impl BitAndAssign<u64> for BigInt {
+    fn bitand_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.bitand_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitAndAssign<u64>::bitand_assign);
+
+impl BitAndAssign<i64> for BigInt {
+    fn bitand_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.bitand_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitAndAssign<i64>::bitand_assign);
+
+impl BitAndAssign<u32> for BigInt {
+    fn bitand_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.bitand_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitAndAssign<u32>::bitand_assign);
+
+impl BitAndAssign<i32> for BigInt {
+    fn bitand_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.bitand_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitAndAssign<i32>::bitand_assign);
 
 impl BitOr for BigInt {
     type Output = BigInt;
@@ -671,6 +927,48 @@ impl BitOr<i32> for BigInt {
 }
 crate::operators::impl_ref_op!(BigInt, BitOr<i32>::bitor);
 
+impl BitOrAssign for BigInt {
+    fn bitor_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_or(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitOrAssign<BigInt>::bitor_assign);
+
+impl BitOrAssign<u64> for BigInt {
+    fn bitor_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.bitor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitOrAssign<u64>::bitor_assign);
+
+impl BitOrAssign<i64> for BigInt {
+    fn bitor_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.bitor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitOrAssign<i64>::bitor_assign);
+
+impl BitOrAssign<u32> for BigInt {
+    fn bitor_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.bitor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitOrAssign<u32>::bitor_assign);
+
+impl BitOrAssign<i32> for BigInt {
+    fn bitor_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.bitor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitOrAssign<i32>::bitor_assign);
+
 impl BitXor for BigInt {
     type Output = BigInt;
     fn bitxor(self, rhs: Self) -> Self::Output {
@@ -717,6 +1015,48 @@ impl BitXor<i32> for BigInt {
     }
 }
 crate::operators::impl_ref_op!(BigInt, BitXor<i32>::bitxor);
+
+impl BitXorAssign for BigInt {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        let env = self.env();
+        env.check_same_env(rhs.env());
+        let b = env.bigint_xor(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitXorAssign<BigInt>::bitxor_assign);
+
+impl BitXorAssign<u64> for BigInt {
+    fn bitxor_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.bitxor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitXorAssign<u64>::bitxor_assign);
+
+impl BitXorAssign<i64> for BigInt {
+    fn bitxor_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.bitxor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitXorAssign<i64>::bitxor_assign);
+
+impl BitXorAssign<u32> for BigInt {
+    fn bitxor_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.bitxor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitXorAssign<u32>::bitxor_assign);
+
+impl BitXorAssign<i32> for BigInt {
+    fn bitxor_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.bitxor_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, BitXorAssign<i32>::bitxor_assign);
 
 impl Neg for BigInt {
     type Output = BigInt;
@@ -784,6 +1124,48 @@ impl Shl<i32> for BigInt {
 }
 crate::operators::impl_ref_op!(BigInt, Shl<i32>::shl);
 
+impl ShlAssign<BigInt> for BigInt {
+    fn shl_assign(&mut self, rhs: BigInt) {
+        let env = self.env();
+        let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShlAssign<BigInt>::shl_assign);
+
+impl ShlAssign<u64> for BigInt {
+    fn shl_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.shl_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShlAssign<u64>::shl_assign);
+
+impl ShlAssign<i64> for BigInt {
+    fn shl_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.shl_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShlAssign<i64>::shl_assign);
+
+impl ShlAssign<u32> for BigInt {
+    fn shl_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.shl_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShlAssign<u32>::shl_assign);
+
+impl ShlAssign<i32> for BigInt {
+    fn shl_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.shl_assign(rhs)
+    }
+}
+
+crate::operators::impl_ref_assign_op!(BigInt, ShlAssign<i32>::shl_assign);
+
 impl Shr<BigInt> for BigInt {
     type Output = BigInt;
     fn shr(self, rhs: BigInt) -> Self::Output {
@@ -829,6 +1211,47 @@ impl Shr<i32> for BigInt {
     }
 }
 crate::operators::impl_ref_op!(BigInt, Shr<i32>::shr);
+
+impl ShrAssign<BigInt> for BigInt {
+    fn shr_assign(&mut self, rhs: BigInt) {
+        let env = self.env();
+        let b = env.bigint_shl(self.0.to_object(), rhs.0.to_object());
+        *self = Self::try_from_val(env, b).unwrap()
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShrAssign<BigInt>::shr_assign);
+
+impl ShrAssign<u64> for BigInt {
+    fn shr_assign(&mut self, rhs: u64) {
+        let rhs = BigInt::from_u64(self.env(), rhs);
+        self.shr_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShrAssign<u64>::shr_assign);
+
+impl ShrAssign<i64> for BigInt {
+    fn shr_assign(&mut self, rhs: i64) {
+        let rhs = BigInt::from_i64(self.env(), rhs);
+        self.shr_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShrAssign<i64>::shr_assign);
+
+impl ShrAssign<u32> for BigInt {
+    fn shr_assign(&mut self, rhs: u32) {
+        let rhs = BigInt::from_u32(self.env(), rhs);
+        self.shr_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShrAssign<u32>::shr_assign);
+
+impl ShrAssign<i32> for BigInt {
+    fn shr_assign(&mut self, rhs: i32) {
+        let rhs = BigInt::from_i32(self.env(), rhs);
+        self.shr_assign(rhs)
+    }
+}
+crate::operators::impl_ref_assign_op!(BigInt, ShrAssign<i32>::shr_assign);
 
 impl PartialEq for BigInt {
     fn eq(&self, other: &Self) -> bool {
@@ -1218,5 +1641,33 @@ mod test {
 
         let b = BigInt::from_i64(&env, -2);
         assert_eq!(b.sign(), Sign::Minus);
+    }
+
+    #[test]
+    fn operators() {
+        let env = Env::default();
+
+        assert_eq!(bigint!(&env, 1) + 1, bigint!(&env, 2));
+        assert_eq!(bigint!(&env, 1) + &1, bigint!(&env, 2));
+        assert_eq!(&bigint!(&env, 1) + 1, bigint!(&env, 2));
+        assert_eq!(&bigint!(&env, 1) + &1, bigint!(&env, 2));
+    }
+
+    #[test]
+    fn assignment_operators() {
+        let env = Env::default();
+
+        let mut b = bigint!(&env, 1);
+        b += 1;
+        assert_eq!(b, bigint!(&env, 2));
+        let mut b = bigint!(&env, 1);
+        b += &1;
+        assert_eq!(b.clone(), bigint!(&env, 2));
+        let mut b = &mut bigint!(&env, 1);
+        b += 1;
+        assert_eq!(b.clone(), bigint!(&env, 2));
+        let mut b = &mut bigint!(&env, 1);
+        b += &1;
+        assert_eq!(b.clone(), bigint!(&env, 2));
     }
 }
