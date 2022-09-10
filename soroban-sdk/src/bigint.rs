@@ -212,7 +212,7 @@ impl TryFrom<BigInt> for u64 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= u64::BITS {
+        if b.bits() <= u64::BITS.into() {
             Ok(b.to_u64())
         } else {
             Err(())
@@ -236,7 +236,7 @@ impl TryFrom<BigInt> for i64 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= i64::BITS {
+        if b.bits() <= i64::BITS.into() {
             Ok(b.to_i64())
         } else {
             Err(())
@@ -260,7 +260,7 @@ impl TryFrom<BigInt> for u32 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= u32::BITS {
+        if b.bits() <= u32::BITS.into() {
             Ok(b.to_u32())
         } else {
             Err(())
@@ -284,7 +284,7 @@ impl TryFrom<BigInt> for i32 {
     type Error = ();
 
     fn try_from(b: BigInt) -> Result<Self, Self::Error> {
-        if b.bits() <= i32::BITS {
+        if b.bits() <= i32::BITS.into() {
             Ok(b.to_i32())
         } else {
             Err(())
