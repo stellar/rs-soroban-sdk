@@ -20,6 +20,24 @@
 ///
 /// See [crate::BigInt] for example usage.
 macro_rules! impl_ref_op {
+    // Special case: PartialEq.
+    ($ty:ident, PartialEq<$rhs:ident> :: eq) => {
+        impl<'a> PartialEq<$rhs> for &'a mut $ty {
+            #[inline(always)]
+            fn eq(&self, other: &$rhs) -> bool {
+                (*self).clone().eq(other)
+            }
+        }
+    };
+    // Special case: PartialOrd.
+    ($ty:ident, PartialOrd<$rhs:ident> :: eq) => {
+        impl<'a> PartialOrd<$rhs> for &'a mut $ty {
+            #[inline(always)]
+            fn partial_cmp(&self, other: &$rhs) -> Option<Ordering> {
+                (*self).clone().partial_cmp(other)
+            }
+        }
+    };
     // Operators with a RHS.
     ($ty:ident, $op:ident<$rhs:ident> :: $op_fn:ident) => {
         impl<'a> $op<&'a $rhs> for &'a $ty {

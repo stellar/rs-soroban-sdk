@@ -1258,60 +1258,70 @@ impl PartialEq for BigInt {
         self.partial_cmp(other) == Some(Ordering::Equal)
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialEq<BigInt>::eq);
 
 impl PartialEq<u64> for BigInt {
     fn eq(&self, other: &u64) -> bool {
         self.eq(&BigInt::from_u64(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialEq<u64>::eq);
 
 impl PartialEq<i64> for BigInt {
     fn eq(&self, other: &i64) -> bool {
         self.eq(&BigInt::from_i64(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialEq<i64>::eq);
 
 impl PartialEq<u32> for BigInt {
     fn eq(&self, other: &u32) -> bool {
         self.eq(&BigInt::from_u32(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialEq<u32>::eq);
 
 impl PartialEq<i32> for BigInt {
     fn eq(&self, other: &i32) -> bool {
         self.eq(&BigInt::from_i32(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialEq<i32>::eq);
 
 impl PartialOrd for BigInt {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialOrd<BigInt>::eq);
 
 impl PartialOrd<u64> for BigInt {
     fn partial_cmp(&self, other: &u64) -> Option<Ordering> {
         self.partial_cmp(&BigInt::from_u64(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialOrd<u64>::eq);
 
 impl PartialOrd<i64> for BigInt {
     fn partial_cmp(&self, other: &i64) -> Option<Ordering> {
         self.partial_cmp(&BigInt::from_i64(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialOrd<i64>::eq);
 
 impl PartialOrd<u32> for BigInt {
     fn partial_cmp(&self, other: &u32) -> Option<Ordering> {
         self.partial_cmp(&BigInt::from_u32(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialOrd<u32>::eq);
 
 impl PartialOrd<i32> for BigInt {
     fn partial_cmp(&self, other: &i32) -> Option<Ordering> {
         self.partial_cmp(&BigInt::from_i32(self.env(), *other))
     }
 }
+crate::operators::impl_ref_op!(BigInt, PartialOrd<i32>::eq);
 
 impl Eq for BigInt {}
 
@@ -1671,16 +1681,16 @@ mod test {
 
         let mut b = bigint!(&env, 1);
         b += &1;
-        assert_eq!(b.clone(), bigint!(&env, 2));
+        assert_eq!(b, bigint!(&env, 2));
         let mut b = &mut bigint!(&env, 1);
         b += 1;
-        assert_eq!(b.clone(), bigint!(&env, 2));
+        assert_eq!(b, bigint!(&env, 2));
         let mut b = &mut bigint!(&env, 1);
         b += &1;
-        assert_eq!(b.clone(), bigint!(&env, 2));
+        assert_eq!(b, bigint!(&env, 2));
 
         let mut b = bigint!(&env, 1);
         b += &mut 1;
-        assert_eq!(b.clone(), bigint!(&env, 2));
+        assert_eq!(b, bigint!(&env, 2));
     }
 }
