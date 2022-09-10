@@ -1642,4 +1642,32 @@ mod test {
         let b = BigInt::from_i64(&env, -2);
         assert_eq!(b.sign(), Sign::Minus);
     }
+
+    #[test]
+    fn operators() {
+        let env = Env::default();
+
+        assert_eq!(bigint!(&env, 1) + 1, bigint!(&env, 2));
+        assert_eq!(bigint!(&env, 1) + &1, bigint!(&env, 2));
+        assert_eq!(&bigint!(&env, 1) + 1, bigint!(&env, 2));
+        assert_eq!(&bigint!(&env, 1) + &1, bigint!(&env, 2));
+    }
+
+    #[test]
+    fn assignment_operators() {
+        let env = Env::default();
+
+        let mut b = bigint!(&env, 1);
+        b += 1;
+        assert_eq!(b, bigint!(&env, 2));
+        let mut b = bigint!(&env, 1);
+        b += &1;
+        assert_eq!(b.clone(), bigint!(&env, 2));
+        let mut b = &mut bigint!(&env, 1);
+        b += 1;
+        assert_eq!(b.clone(), bigint!(&env, 2));
+        let mut b = &mut bigint!(&env, 1);
+        b += &1;
+        assert_eq!(b.clone(), bigint!(&env, 2));
+    }
 }
