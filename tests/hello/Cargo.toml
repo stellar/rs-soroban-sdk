@@ -15,7 +15,6 @@ doctest = false
 soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
-proptest = "1.0.0"
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
 
 [features]
