@@ -74,6 +74,9 @@ fn __link_sections() {
     static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 }
 
+#[doc(hidden)]
+pub use bytes_lit::bytes as __bytes_lit_bytes;
+
 pub use soroban_sdk_macros::{
     contractclient, contractfile, contractimpl, contractimport, contracttype,
 };
