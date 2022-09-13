@@ -111,7 +111,7 @@ impl Env {
         let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
         match Status::try_from_val(self, rv) {
             Ok(status) => Err(status),
-            Err(_) => Ok(T::try_from_val(self, rv)),
+            Err(ConversionError) => Ok(T::try_from_val(self, rv)),
         }
     }
 
