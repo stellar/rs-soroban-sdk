@@ -86,12 +86,10 @@ impl Env {
     /// number of `args` do not match the argument count of the referenced
     /// contract function.
     ///
-    /// Will also panic if the value returned from the contract cannot be
-    /// converted into the type `T`.
+    /// Will panic if the contract that is invoked fails or aborts in anyway.
     ///
-    /// ### TODO
-    ///
-    /// Return a [Result] instead of panic.
+    /// Will panic if the value returned from the contract cannot be converted
+    /// into the type `T`.
     pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
         &self,
         contract_id: &BytesN<32>,
@@ -100,6 +98,21 @@ impl Env {
     ) -> T {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
         T::try_from_val(self, rv).map_err(|_| ()).unwrap()
+    }
+
+    /// Invokes a function of a contract that is registered in the [Env],
+    /// returns an error if the invocation fails for any reason.
+    pub fn try_invoke_contract<T: TryFromVal<Env, RawVal>>(
+        &self,
+        contract_id: &BytesN<32>,
+        func: &Symbol,
+        args: Vec<EnvVal>,
+    ) -> Result<Result<T, T::Error>, Status> {
+        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
+        match Status::try_from_val(self, rv) {
+            Ok(status) => Err(status),
+            Err(_) => Ok(T::try_from_val(self, rv)),
+        }
     }
 
     /// Get a [ContractData] for accessing and update contract data that has
