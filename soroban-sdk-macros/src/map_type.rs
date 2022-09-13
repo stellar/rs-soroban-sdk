@@ -102,7 +102,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                                 "incorrect number of generic arguments, expect one for BytesN<N>",
                             ))?,
                         };
-                            Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: n }))
+                            Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n }))
                         }
                         _ => Err(Error::new(
                             angle_bracketed.span(),

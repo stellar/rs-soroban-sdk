@@ -32,7 +32,7 @@ impl Signature {
     }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[contracttype(lib = "soroban_auth")]
 pub enum Identifier {
     Contract(BytesN<32>),

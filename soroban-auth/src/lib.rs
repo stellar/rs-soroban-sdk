@@ -65,11 +65,7 @@ fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args
     };
     let msg_bin = SignaturePayload::V0(msg).serialize(env);
 
-    env.verify_sig_ed25519(
-        auth.public_key.clone().into(),
-        msg_bin,
-        auth.signature.clone().into(),
-    );
+    env.verify_sig_ed25519(auth.public_key.clone(), msg_bin, auth.signature.clone());
 }
 
 fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, args: Vec<RawVal>) {
@@ -99,11 +95,7 @@ fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, arg
             }
         }
 
-        env.verify_sig_ed25519(
-            sig.public_key.clone().into(),
-            msg_bytes.clone(),
-            sig.signature.into(),
-        );
+        env.verify_sig_ed25519(sig.public_key.clone(), msg_bytes.clone(), sig.signature);
 
         weight = weight
             .checked_add(acc.signer_weight(&sig.public_key))
@@ -136,7 +128,7 @@ where
             if nonce != stored_nonce {
                 panic!("incorrect nonce")
             }
-            check_ed25519_auth(env, &kea, function, args)
+            check_ed25519_auth(env, kea, function, args)
         }
         Signature::Account(kaa) => {
             let stored_nonce =
@@ -144,7 +136,7 @@ where
             if nonce != stored_nonce {
                 panic!("incorrect nonce")
             }
-            check_account_auth(env, &kaa, function, args)
+            check_account_auth(env, kaa, function, args)
         }
     }
 }

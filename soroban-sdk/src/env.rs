@@ -96,10 +96,10 @@ impl Env {
         &self,
         contract_id: &BytesN<32>,
         func: &Symbol,
-        args: crate::vec::Vec<EnvVal>,
+        args: Vec<EnvVal>,
     ) -> T {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(&self, rv).map_err(|_| ()).unwrap()
+        T::try_from_val(self, rv).map_err(|_| ()).unwrap()
     }
 
     /// Get a [ContractData] for accessing and update contract data that has

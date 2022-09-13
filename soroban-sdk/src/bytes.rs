@@ -523,7 +523,7 @@ impl Bytes {
     pub fn extend_from_slice(&mut self, slice: &[u8]) {
         let env = self.env();
         self.0 = env
-            .bytes_copy_from_slice(self.to_object(), self.len().into(), &slice)
+            .bytes_copy_from_slice(self.to_object(), self.len().into(), slice)
             .in_env(env);
     }
 
@@ -593,7 +593,7 @@ impl Iterator for BinIter {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.0.len() == 0 {
+        if self.0.is_empty() {
             None
         } else {
             let val = self.0.env().bytes_front(self.0 .0.to_object());

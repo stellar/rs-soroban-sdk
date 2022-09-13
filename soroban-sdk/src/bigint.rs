@@ -105,7 +105,7 @@ pub enum Sign {
 }
 
 impl Sign {
-    pub(crate) const fn to_raw(&self) -> RawVal {
+    pub(crate) const fn to_raw(self) -> RawVal {
         match self {
             Sign::Minus => RawVal::I32_NEGATIVE_ONE,
             Sign::NoSign => RawVal::I32_ZERO,
@@ -128,7 +128,7 @@ impl Display for BigInt {
         let env = self.env();
         let bi = self.0.to_object();
         let obj: Object = env.bigint_to_radix_be(bi, 10u32.into());
-        if let Ok(bin) = TryIntoVal::<_, Bytes>::try_into_val(obj, &env) {
+        if let Ok(bin) = TryIntoVal::<_, Bytes>::try_into_val(obj, env) {
             if self.sign() == Sign::Minus {
                 write!(f, "-")?;
             }

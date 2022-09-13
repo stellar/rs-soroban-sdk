@@ -15,7 +15,7 @@ use crate::{
 #[derive(Clone)]
 pub struct Account(BytesN<32>);
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum AccountError {
     DoesNotExist,
 }
