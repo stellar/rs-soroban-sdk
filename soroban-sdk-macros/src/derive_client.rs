@@ -66,12 +66,22 @@ pub struct ClientFn<'a> {
     pub output: &'a ReturnType,
 }
 
+impl<'a> ClientFn<'a> {
+    pub fn output_type(&self) -> Type {
+        match self.output {
+            ReturnType::Default => Type::Verbatim(quote!(())),
+            ReturnType::Type(_, typ) => *typ.clone(),
+        }
+    }
+}
+
 pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     // Map the traits methods to methods for the Client.
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns.iter()
         .map(|f| {
             let fn_ident = &f.ident;
+            let fn_try_ident = format_ident!("try_{}", &f.ident);
             let fn_ident_xdr = format_ident!("{}_xdr", &f.ident);
             let fn_name = fn_ident.to_string();
 
@@ -112,10 +122,20 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 })
                 .unzip();
             let fn_output = f.output;
+            let fn_output_type = f.output_type();
             quote!{
                 pub fn #fn_ident(&self, #(#fn_input_types),*) #fn_output {
                     use ::soroban_sdk::IntoVal;
                     self.env.invoke_contract(
+                        &self.contract_id,
+                        &::soroban_sdk::symbol!(#fn_name),
+                        ::soroban_sdk::vec![&self.env, #(#fn_input_names.into_env_val(&self.env)),*],
+                    )
+                }
+
+                pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> Result<Result<#fn_output_type, <#fn_output_type as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>, ::soroban_sdk::Status> {
+                    use ::soroban_sdk::IntoVal;
+                    self.env.try_invoke_contract(
                         &self.contract_id,
                         &::soroban_sdk::symbol!(#fn_name),
                         ::soroban_sdk::vec![&self.env, #(#fn_input_names.into_env_val(&self.env)),*],
