@@ -7,8 +7,8 @@ use stellar_xdr::{
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
-    token::{And, Colon, Comma},
-    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath, TypeReference,
+    token::{Colon, Comma},
+    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
 use crate::map_type::map_type;
@@ -49,7 +49,7 @@ pub fn derive_fn(
     });
 
     // Prepare the argument inputs.
-    let (spec_args, wrap_args, wrap_calls, invoke_args, invoke_idents): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = inputs
+    let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
@@ -97,29 +97,11 @@ pub fn derive_fn(
                         #ident
                     ).unwrap()
                 };
-                let invoke_arg = FnArg::Typed(PatType {
-                    attrs: vec![],
-                    pat: Box::new(Pat::Ident(PatIdent {
-                        ident: ident.clone(),
-                        attrs: vec![],
-                        by_ref: None,
-                        mutability: None,
-                        subpat: None,
-                    })),
-                    colon_token: Colon::default(),
-                    ty: Box::new(Type::Reference(TypeReference {
-                        and_token: And::default(),
-                        lifetime: None,
-                        mutability: None,
-                        elem: pat_type.ty.clone(),
-                    })),
-                });
-                let invoke_call = quote! { #ident };
-                (spec, arg, call, invoke_arg, invoke_call)
+                (spec, arg, call)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {}, a.clone(), quote! {})
+                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {})
             }
         })
         .multiunzip();
@@ -138,14 +120,9 @@ pub fn derive_fn(
 
     // Generated code parameters.
     let wrap_export_name = format!("{}", ident);
-    let pub_mod_ident = format_ident!("{}", ident);
     let hidden_mod_ident = format_ident!("__{}", ident);
     let deprecated_note = format!(
         "use `{}::new(&env, &contract_id).{}` instead",
-        client_ident, &ident
-    );
-    let deprecated_note_xdr = format!(
-        "use `{}::new(&env, &contract_id).{}_xdr` instead",
         client_ident, &ident
     );
     let env_call = if env_input.is_some() {
@@ -163,7 +140,7 @@ pub fn derive_fn(
 
     // Generated code spec.
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        name: wrap_export_name.clone().try_into().unwrap_or_else(|_| {
+        name: wrap_export_name.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
             errors.push(Error::new(
                 ident.span(),
@@ -241,40 +218,6 @@ pub fn derive_fn(
             }
 
             use super::*;
-        }
-
-        #[doc(hidden)]
-        pub mod #pub_mod_ident {
-            use super::*;
-
-            #[deprecated(note = #deprecated_note)]
-            pub fn invoke(
-                e: &soroban_sdk::Env,
-                contract_id: &soroban_sdk::BytesN<32>,
-                #(#invoke_args),*
-            ) #output {
-                use soroban_sdk::{EnvVal, IntoVal, Symbol, Vec};
-                let mut args: Vec<EnvVal> = Vec::new(e);
-                #(args.push_back(#invoke_idents.clone().into_env_val(e));)*
-                e.invoke_contract(contract_id, &::soroban_sdk::symbol!(#wrap_export_name), args)
-            }
-
-            #[cfg(feature = "testutils")]
-            #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-            #[deprecated(note = #deprecated_note_xdr)]
-            pub fn invoke_xdr(
-                e: &soroban_sdk::Env,
-                contract_id: &soroban_sdk::BytesN<32>,
-                #(#invoke_args),*
-            ) #output {
-                use soroban_sdk::TryIntoVal;
-                e.invoke_contract_external_raw(
-                    soroban_sdk::xdr::HostFunction::Call,
-                    (contract_id, #wrap_export_name, #(#invoke_idents),*).try_into().unwrap()
-                )
-                .try_into_val(e)
-                .unwrap()
-            }
         }
     })
 }
