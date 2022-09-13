@@ -82,7 +82,6 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
         .map(|f| {
             let fn_ident = &f.ident;
             let fn_try_ident = format_ident!("try_{}", &f.ident);
-            let fn_ident_xdr = format_ident!("{}_xdr", &f.ident);
             let fn_name = fn_ident.to_string();
 
             // Check for the Env argument.
@@ -140,18 +139,6 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                         &::soroban_sdk::symbol!(#fn_name),
                         ::soroban_sdk::vec![&self.env, #(#fn_input_names.into_env_val(&self.env)),*],
                     )
-                }
-
-                #[cfg(feature = "testutils")]
-                #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-                pub fn #fn_ident_xdr(&self, #(#fn_input_types),*) #fn_output {
-                    use ::soroban_sdk::TryIntoVal;
-                    self.env.invoke_contract_external_raw(
-                        ::soroban_sdk::xdr::HostFunction::Call,
-                        (&self.contract_id, #fn_name, #(#fn_input_names),*).try_into().unwrap()
-                    )
-                    .try_into_val(&self.env)
-                    .unwrap()
                 }
             }
         })
