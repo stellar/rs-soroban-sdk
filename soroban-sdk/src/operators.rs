@@ -28,6 +28,12 @@ macro_rules! impl_ref_op {
                 (*self).clone().eq(other)
             }
         }
+        impl<'a> PartialEq<&$rhs> for $ty {
+            #[inline(always)]
+            fn eq(&self, other: &&$rhs) -> bool {
+                (*self).clone().eq(*other)
+            }
+        }
     };
     // Special case: PartialOrd.
     ($ty:ident, PartialOrd<$rhs:ident> :: eq) => {
@@ -35,6 +41,12 @@ macro_rules! impl_ref_op {
             #[inline(always)]
             fn partial_cmp(&self, other: &$rhs) -> Option<Ordering> {
                 (*self).clone().partial_cmp(other)
+            }
+        }
+        impl<'a> PartialOrd<&$rhs> for &'a mut $ty {
+            #[inline(always)]
+            fn partial_cmp(&self, other: &&$rhs) -> Option<Ordering> {
+                (*self).clone().partial_cmp(*other)
             }
         }
     };
