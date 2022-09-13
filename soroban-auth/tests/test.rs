@@ -27,7 +27,7 @@ fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
     // invoking contract, so this contract just expects 0.
     match id {
         Identifier::Contract(_) => {
-            if BigInt::zero(&e) != *expected_nonce {
+            if BigInt::zero(&e) != expected_nonce {
                 panic!("nonce should be zero for Contract")
             }
         }
@@ -37,7 +37,7 @@ fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
     let key = DataKey::Nonce(id.clone());
     let nonce = read_nonce(e, id);
 
-    if nonce != *expected_nonce {
+    if nonce != expected_nonce {
         panic!("incorrect nonce")
     }
     e.contract_data().set(key, &nonce + 1);
