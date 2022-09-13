@@ -11,6 +11,7 @@ pub use crate::public_types::{
 fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args: Vec<RawVal>) {
     let msg = SignaturePayloadV0 {
         function,
+        call_cntxt: env.get_parent_call_stack(),
         contract: env.get_current_contract(),
         network: env.ledger().network_passphrase(),
         args,
@@ -25,6 +26,7 @@ fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, arg
 
     let msg = SignaturePayloadV0 {
         function,
+        call_cntxt: env.get_parent_call_stack(),
         contract: env.get_current_contract(),
         network: env.ledger().network_passphrase(),
         args,

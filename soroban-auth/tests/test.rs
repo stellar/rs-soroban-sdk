@@ -6,7 +6,7 @@ use soroban_auth::{
     check_auth, Ed25519Signature, Identifier, Signature, SignaturePayload, SignaturePayloadV0,
 };
 use soroban_sdk::testutils::ed25519::Sign;
-use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env, IntoVal};
+use soroban_sdk::{contractimpl, contracttype, symbol, vec, BigInt, BytesN, Env, IntoVal};
 
 #[contracttype]
 pub enum DataKey {
@@ -86,6 +86,7 @@ fn test() {
 
     let msg = SignaturePayload::V0(SignaturePayloadV0 {
         function: symbol!("verify_sig"),
+        call_cntxt: vec![&env],
         contract: BytesN::from_array(&env, &[0; 32]),
         network: env.ledger().network_passphrase(),
         args: (&id, &nonce).into_val(&env),
@@ -96,4 +97,47 @@ fn test() {
     });
 
     client.verify_sig(&sig, &nonce);
+}
+
+// Test a contract that forwards a signature to another contract
+pub struct ForwardingContract;
+
+#[contractimpl]
+impl ForwardingContract {
+    pub fn fwd_sig(e: Env, contract_id: BytesN<32>, sig: Signature, nonce: BigInt) {
+        let client = TestContractClient::new(&e, contract_id);
+        client.verify_sig(&sig, &nonce)
+    }
+}
+
+#[test]
+fn test_context() {
+    let env = Env::default();
+
+    let recv_contract_id = BytesN::from_array(&env, &[0; 32]);
+    env.register_contract(&recv_contract_id, TestContract);
+
+    let fwd_contract_id = BytesN::from_array(&env, &[1; 32]);
+    env.register_contract(&fwd_contract_id, ForwardingContract);
+
+    let recv_client = TestContractClient::new(&env, &recv_contract_id);
+    let fwd_client = ForwardingContractClient::new(&env, &fwd_contract_id);
+
+    let kp = generate_keypair();
+    let id = make_identifier(&env, &kp);
+    let nonce = recv_client.nonce(&id);
+
+    let msg = SignaturePayload::V0(SignaturePayloadV0 {
+        function: symbol!("verify_sig"),
+        call_cntxt: vec![&env, (fwd_contract_id, symbol!("fwd_sig"))],
+        contract: recv_contract_id.clone(),
+        network: env.ledger().network_passphrase(),
+        args: (&id, &nonce).into_val(&env),
+    });
+    let sig = Signature::Ed25519(Ed25519Signature {
+        public_key: BytesN::from_array(&env, &kp.public.to_bytes()),
+        signature: kp.sign(msg).unwrap().into_val(&env),
+    });
+
+    fwd_client.fwd_sig(&recv_contract_id, &sig, &nonce);
 }

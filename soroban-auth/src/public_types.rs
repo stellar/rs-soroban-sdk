@@ -45,6 +45,7 @@ pub enum Identifier {
 pub struct SignaturePayloadV0 {
     pub function: Symbol,
     pub contract: BytesN<32>,
+    pub call_cntxt: Vec<(BytesN<32>, Symbol)>,
     pub network: Bytes,
     pub args: Vec<RawVal>,
 }

@@ -259,6 +259,16 @@ impl Env {
         stack.try_into_val(self).unwrap()
     }
 
+    //TODO: Docs
+    // Returns call stack like get_current_call_stack, but removes the
+    // most recent frame
+    pub fn get_parent_call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
+        let stack = internal::Env::get_current_call_stack(self);
+        let mut res: Vec<(BytesN<32>, Symbol)> = stack.try_into_val(self).unwrap();
+        res.pop_back();
+        res
+    }
+
     #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self));
