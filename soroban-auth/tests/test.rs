@@ -3,8 +3,7 @@
 use ed25519_dalek::Keypair;
 use rand::thread_rng;
 use soroban_auth::{
-    check_auth, Ed25519Signature, Identifier, NonceAuth, Signature, SignaturePayload,
-    SignaturePayloadV0,
+    check_auth, Ed25519Signature, Identifier, Signature, SignaturePayload, SignaturePayloadV0,
 };
 use soroban_sdk::testutils::ed25519::Sign;
 use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env, IntoVal};
@@ -14,31 +13,34 @@ pub enum DataKey {
     Nonce(Identifier),
 }
 
-fn read_nonce(e: &Env, id: Identifier) -> BigInt {
-    let key = DataKey::Nonce(id);
+fn read_nonce(e: &Env, id: &Identifier) -> BigInt {
+    let key = DataKey::Nonce(id.clone());
     e.contract_data()
         .get(key)
         .unwrap_or_else(|| Ok(BigInt::zero(e)))
         .unwrap()
 }
 
-struct NonceForSignature(Signature);
-
-impl NonceAuth for NonceForSignature {
-    fn read_nonce(e: &Env, id: Identifier) -> BigInt {
-        read_nonce(e, id)
+fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
+    // replay protection is not required for Contract authorization because
+    // there's no cryptographic signature involved. All that's checked is the
+    // invoking contract, so this contract just expects 0.
+    match id {
+        Identifier::Contract(_) => {
+            if BigInt::zero(&e) != expected_nonce {
+                panic!("nonce should be zero for Contract")
+            }
+        }
+        _ => {}
     }
 
-    fn read_and_increment_nonce(&self, e: &Env, id: Identifier) -> BigInt {
-        let key = DataKey::Nonce(id.clone());
-        let nonce = Self::read_nonce(e, id);
-        e.contract_data().set(key, &nonce + 1);
-        nonce
-    }
+    let key = DataKey::Nonce(id.clone());
+    let nonce = read_nonce(e, id);
 
-    fn signature(&self) -> &Signature {
-        &self.0
+    if nonce != expected_nonce {
+        panic!("incorrect nonce")
     }
+    e.contract_data().set(key, &nonce + 1);
 }
 
 pub struct TestContract;
@@ -48,17 +50,18 @@ impl TestContract {
     pub fn verify_sig(e: Env, sig: Signature, nonce: BigInt) {
         let auth_id = sig.get_identifier(&e);
 
+        verify_and_consume_nonce(&e, &auth_id, &nonce);
+
         check_auth(
             &e,
-            &NonceForSignature(sig),
-            nonce.clone(),
+            &sig,
             symbol!("verify_sig"),
             (&auth_id, nonce).into_val(&e),
         );
     }
 
     pub fn nonce(e: Env, id: Identifier) -> BigInt {
-        read_nonce(&e, id)
+        read_nonce(&e, &id)
     }
 }
 
