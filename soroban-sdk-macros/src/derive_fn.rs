@@ -13,15 +13,15 @@ use syn::{
 
 use crate::map_type::map_type;
 
-#[allow(clippy::too_many_lines)]
+#[allow(clippy::too_many_arguments)]
 pub fn derive_fn(
     call: &TokenStream2,
-    ty: &Box<Type>,
+    ty: &Type,
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
     export: bool,
-    trait_ident: &Option<&Ident>,
+    trait_ident: Option<&Ident>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
@@ -281,7 +281,7 @@ pub fn derive_fn(
 
 #[allow(clippy::too_many_lines)]
 pub fn derive_contract_function_set<'a>(
-    ty: &Box<Type>,
+    ty: &Type,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
 ) -> TokenStream2 {
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods

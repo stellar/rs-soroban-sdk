@@ -59,7 +59,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     } else {
         None
     }
-    .unwrap_or_else(|| format!("Client"));
+    .unwrap_or_else(|| "Client".to_string());
 
     let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
@@ -75,7 +75,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 &m.sig.inputs,
                 &m.sig.output,
                 args.export,
-                &trait_ident,
+                trait_ident,
                 &client_ident,
             )
         })

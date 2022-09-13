@@ -140,7 +140,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
         let compile_errors = errors.iter().map(Error::to_compile_error);
-        return quote! { #(#compile_errors)* }.into();
+        return quote! { #(#compile_errors)* };
     }
 
     // Render the Client.

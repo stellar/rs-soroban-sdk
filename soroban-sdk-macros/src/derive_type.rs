@@ -313,7 +313,7 @@ pub fn derive_type_enum(
             // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
             let ident = &v.ident;
             let name = &ident.to_string();
-            if let Err(e) = Symbol::try_from_str(&name) {
+            if let Err(e) = Symbol::try_from_str(name) {
                 errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
             }
             if v.fields.len() > 1 {
