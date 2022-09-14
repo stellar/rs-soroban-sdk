@@ -4,7 +4,7 @@ use core::fmt::Debug;
 use crate::{contracttype, Bytes, BytesN, Map};
 use crate::{
     env::internal::{self},
-    xdr, BytesN, Env, IntoVal, RawVal, Vec,
+    Env, IntoVal, RawVal, Vec,
 };
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
@@ -117,7 +117,7 @@ impl Events {
 }
 
 #[cfg(feature = "testutils")]
-use crate::TryIntoVal;
+use crate::{xdr, BytesN, TryIntoVal};
 
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
