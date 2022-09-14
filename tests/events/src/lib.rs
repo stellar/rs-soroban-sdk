@@ -40,7 +40,7 @@ mod test {
                 contract_id: None,
                 type_: ContractEventType::Contract,
                 body: ContractEventBody::V0(ContractEventV0 {
-                    topics: ().try_into().unwrap(),
+                    topics: alloc::vec![].try_into().unwrap(),
                     data: (symbol!("hello")).try_into().unwrap(),
                 })
             })]
