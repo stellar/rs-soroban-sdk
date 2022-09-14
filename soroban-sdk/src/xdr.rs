@@ -21,6 +21,11 @@ pub use super::env::xdr::{
     ScHostValErrorCode, ScUnknownErrorCode, ScVmErrorCode,
 };
 
+// XDR contract types.
+pub use super::env::xdr::{
+    ContractEvent, ContractEventBody, ContractEventType, ContractEventV0, ExtensionPoint,
+};
+
 // XDR contract env meta types.
 pub use super::env::xdr::{ScEnvMetaEntry, ScEnvMetaKind};
 
