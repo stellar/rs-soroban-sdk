@@ -94,7 +94,7 @@ impl Env {
         &self,
         contract_id: &BytesN<32>,
         func: &Symbol,
-        args: Vec<EnvVal>,
+        args: Vec<RawVal>,
     ) -> T {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
         T::try_from_val(self, rv).map_err(|_| ()).unwrap()
@@ -106,7 +106,7 @@ impl Env {
         &self,
         contract_id: &BytesN<32>,
         func: &Symbol,
-        args: Vec<EnvVal>,
+        args: Vec<RawVal>,
     ) -> Result<Result<T, T::Error>, Status> {
         let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
         match Status::try_from_val(self, rv) {
