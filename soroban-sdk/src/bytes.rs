@@ -80,7 +80,7 @@ macro_rules! bytes {
 /// ### Examples
 ///
 /// ```
-/// use soroban_sdk::{Env, bytes};
+/// use soroban_sdk::{Env, bytesn};
 ///
 /// let env = Env::default();
 /// let bytes = bytesn!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
@@ -88,19 +88,11 @@ macro_rules! bytes {
 /// ```
 ///
 /// ```
-/// use soroban_sdk::{Env, bytes};
+/// use soroban_sdk::{Env, bytesn};
 ///
 /// let env = Env::default();
 /// let bytes = bytesn!(&env, [2, 0]);
 /// assert_eq!(bytes.len(), 2);
-/// ```
-///
-/// ```
-/// use soroban_sdk::{Env, bytes};
-///
-/// let env = Env::default();
-/// let bytes = bytesn!(&env);
-/// assert_eq!(bytes.len(), 0);
 /// ```
 #[macro_export]
 macro_rules! bytesn {
