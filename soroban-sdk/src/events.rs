@@ -122,6 +122,12 @@ use crate::{xdr, TryIntoVal};
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Events {
+    /// Returns all events that have been published by contracts.
+    ///
+    /// Returns a [`Vec`] of three element tuples containing:
+    /// - Contract ID
+    /// - Event Topics as a [`Vec<RawVal>`])
+    /// - Event Data as a [`RawVal`]
     pub fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
         let env = self.env();
         let mut vec = Vec::new(env);
