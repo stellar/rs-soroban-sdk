@@ -117,12 +117,12 @@ impl Events {
 }
 
 #[cfg(feature = "testutils")]
-use crate::{xdr, BytesN, TryIntoVal};
+use crate::{xdr, TryIntoVal};
 
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Events {
-    pub fn get(&self) -> Vec<(BytesN<32>, Vec<RawVal>, RawVal)> {
+    pub fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
         let env = self.env();
         let mut vec = Vec::new(env);
         self.env()
