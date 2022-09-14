@@ -126,7 +126,7 @@ impl Events {
     ///
     /// Returns a [`Vec`] of three element tuples containing:
     /// - Contract ID
-    /// - Event Topics as a [`Vec<RawVal>`])
+    /// - Event Topics as a [`Vec<RawVal>`]
     /// - Event Data as a [`RawVal`]
     pub fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
         let env = self.env();
