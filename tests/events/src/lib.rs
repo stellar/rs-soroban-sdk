@@ -7,7 +7,9 @@ pub struct Contract;
 impl Contract {
     pub fn hello(env: Env) {
         env.events()
-            .publish((symbol!("topic1"), symbol!("topic2")), symbol!("hello"));
+            .publish((symbol!("greetings"), symbol!("topic2")), symbol!("hello"));
+        env.events()
+            .publish((symbol!("farewells"), symbol!("topic2")), symbol!("bye"));
     }
 }
 
@@ -31,18 +33,21 @@ mod test {
             env.events().get(),
             vec![
                 &env,
-                // Expect 1 event.
+                // Expect 2 events.
                 (
-                    contract_id,
+                    contract_id.clone(),
                     // Expect these event topics.
-                    vec![
-                        &env,
-                        symbol!("topic1").into_val(&env),
-                        symbol!("topic2").into_val(&env)
-                    ],
+                    (symbol!("greetings"), symbol!("topic2")).into_val(&env),
                     // Expect this event body.
                     symbol!("hello").into_val(&env)
-                )
+                ),
+                (
+                    contract_id.clone(),
+                    // Expect these event topics.
+                    (symbol!("farewells"), symbol!("topic2")).into_val(&env),
+                    // Expect this event body.
+                    symbol!("bye").into_val(&env)
+                ),
             ],
         );
     }
