@@ -2,7 +2,10 @@ use core::fmt::Debug;
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, BytesN, Map};
-use crate::{env::internal, Env, IntoVal, RawVal, Vec};
+use crate::{
+    env::internal::{self, events::HostEvent},
+    Env, IntoVal, RawVal, Vec,
+};
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
 const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
@@ -110,5 +113,13 @@ impl Events {
     {
         let env = self.env();
         internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env));
+    }
+}
+
+#[cfg(feature = "testutils")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl Events {
+    pub fn get(&self) -> alloc::vec::Vec<HostEvent> {
+        self.env().host().get_events().unwrap().0
     }
 }

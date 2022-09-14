@@ -43,6 +43,12 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
+#[cfg(all(target_family = "wasm", feature = "testutils"))]
+compile_error!("'testutils' feature is not supported on 'wasm' targets");
+
+#[cfg(feature = "testutils")]
+extern crate alloc;
+
 #[cfg(target_family = "wasm")]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {

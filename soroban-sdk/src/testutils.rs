@@ -6,7 +6,7 @@
 mod test_sign;
 pub use test_sign::ed25519;
 
-pub use crate::env::LedgerInfo;
+pub use crate::env::testutils::*;
 
 use crate::{Env, RawVal, Symbol};
 

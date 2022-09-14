@@ -23,10 +23,13 @@ pub mod internal {
     }
 }
 
+// Testutils from the environmen are pub here, and then pub re-exported out of
+// the SDK in the crate::testutils mod.
 #[cfg(feature = "testutils")]
-use internal::budget::Budget;
-#[cfg(feature = "testutils")]
-pub use internal::LedgerInfo;
+pub mod testutils {
+    pub use super::internal::events::HostEvent as EnvEvent;
+    pub use super::internal::LedgerInfo;
+}
 
 pub use internal::meta;
 pub use internal::xdr;
@@ -272,6 +275,10 @@ use std::rc::Rc;
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
+    pub(crate) fn host(&self) -> &internal::Host {
+        &self.env_impl
+    }
+
     fn with_empty_recording_storage() -> Env {
         struct EmptySnapshotSource();
 
@@ -293,9 +300,12 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
-        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, Budget::default());
+        let env_impl = internal::EnvImpl::with_storage_and_budget(
+            storage,
+            internal::budget::Budget::default(),
+        );
 
-        let l = LedgerInfo {
+        let l = internal::LedgerInfo {
             protocol_version: 0,
             sequence_number: 0,
             timestamp: 0,
@@ -307,7 +317,7 @@ impl Env {
 
     /// Sets ledger information in the [Env], which will be accessible via
     /// [Env::ledger].
-    pub fn set_ledger(&self, li: LedgerInfo) {
+    pub fn set_ledger(&self, li: internal::LedgerInfo) {
         self.env_impl.set_ledger_info(li)
     }
 
