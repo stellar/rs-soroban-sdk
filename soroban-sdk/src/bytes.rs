@@ -70,6 +70,40 @@ macro_rules! bytes {
     };
 }
 
+/// Create a [BytesN] with an array, or an integer or hex literal.
+///
+/// The first argument in the list must be a reference to an [Env].
+///
+/// The second argument can be an [u8] array, or an integer literal of unbounded
+/// size in any form: base10, hex, etc.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, bytesn};
+///
+/// let env = Env::default();
+/// let bytes = bytesn!(&env, 0xfded3f55dec47250a52a8c0bb7038e72fa6ffaae33562f77cd2b629ef7fd424d);
+/// assert_eq!(bytes.len(), 32);
+/// ```
+///
+/// ```
+/// use soroban_sdk::{Env, bytesn};
+///
+/// let env = Env::default();
+/// let bytes = bytesn!(&env, [2, 0]);
+/// assert_eq!(bytes.len(), 2);
+/// ```
+#[macro_export]
+macro_rules! bytesn {
+    ($env:expr, [$($x:expr),+ $(,)?] $(,)?) => {
+        $crate::BytesN::from_array($env, &[$($x),+])
+    };
+    ($env:expr, $x:tt $(,)?) => {
+        $crate::BytesN::from_array($env, &::bytes_lit::bytes!($x))
+    };
+}
+
 /// Bytes is a contiguous growable array type containing `u8`s.
 ///
 /// The array is stored in the Host and available to the Guest through the
@@ -1078,6 +1112,24 @@ mod test {
             b.push(2);
             b.push(1);
             b
+        });
+    }
+
+    #[test]
+    fn macro_bytesn() {
+        let env = Env::default();
+        assert_eq!(bytesn!(&env, 1), { BytesN::from_array(&env, &[1]) });
+        assert_eq!(bytesn!(&env, 1,), { BytesN::from_array(&env, &[1]) });
+        assert_eq!(bytesn!(&env, [3, 2, 1,]), {
+            BytesN::from_array(&env, &[3, 2, 1])
+        });
+    }
+
+    #[test]
+    fn macro_bytesn_hex() {
+        let env = Env::default();
+        assert_eq!(bytesn!(&env, 0x030201), {
+            BytesN::from_array(&env, &[3, 2, 1])
         });
     }
 
