@@ -310,6 +310,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "example_events"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "example_hello"
 version = "0.0.4"
 dependencies = [
@@ -753,7 +760,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=34b8108c#34b8108c4d523aa7eb81432108814360020a95d4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0a826765#0a826765e9728e263ec3eafa3ed81a1d38a8716a"
 dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
@@ -764,7 +771,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=34b8108c#34b8108c4d523aa7eb81432108814360020a95d4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0a826765#0a826765e9728e263ec3eafa3ed81a1d38a8716a"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -773,7 +780,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=34b8108c#34b8108c4d523aa7eb81432108814360020a95d4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0a826765#0a826765e9728e263ec3eafa3ed81a1d38a8716a"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -796,7 +803,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=34b8108c#34b8108c4d523aa7eb81432108814360020a95d4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0a826765#0a826765e9728e263ec3eafa3ed81a1d38a8716a"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -808,7 +815,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=34b8108c#34b8108c4d523aa7eb81432108814360020a95d4"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=0a826765#0a826765e9728e263ec3eafa3ed81a1d38a8716a"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -904,7 +911,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-xdr"
 version = "0.0.2"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=fee9a43#fee9a436be1af3a0c99c2f967758f39f958e5ff4"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=cebf5259#cebf52595c78fc3a4b5b40ba53ea1c0753777b5d"
 dependencies = [
  "base64",
  "serde",
