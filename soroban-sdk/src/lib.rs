@@ -44,7 +44,7 @@
 #![allow(dead_code)]
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
-compile_error!("'testutils' feature is not supported on 'wasm' targets");
+compile_error!("'testutils' feature is not supported on 'wasm' target");
 
 #[cfg(target_family = "wasm")]
 #[panic_handler]
