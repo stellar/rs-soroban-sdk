@@ -66,7 +66,7 @@ macro_rules! bytes {
         $crate::Bytes::from_array($env, &[$($x),+])
     };
     ($env:expr, $x:tt $(,)?) => {
-        $crate::Bytes::from_array($env, &::bytes_lit::bytes!($x))
+        $crate::Bytes::from_array($env, &$crate::__bytes_lit_bytes!($x))
     };
 }
 
@@ -100,7 +100,7 @@ macro_rules! bytesn {
         $crate::BytesN::from_array($env, &[$($x),+])
     };
     ($env:expr, $x:tt $(,)?) => {
-        $crate::BytesN::from_array($env, &::bytes_lit::bytes!($x))
+        $crate::BytesN::from_array($env, &$crate::__bytes_lit_bytes!($x))
     };
 }
 
