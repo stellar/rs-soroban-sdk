@@ -1,6 +1,6 @@
 use stellar_xdr::{
-    ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeSet,
-    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
+    ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
+    ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
 use syn::{
     spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
@@ -45,6 +45,19 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                 }) => {
                     let args = angle_bracketed.args.iter().collect::<Vec<_>>();
                     match &ident.to_string()[..] {
+                        "Result" => {
+                            let (ok, err) = match args.as_slice() {
+                                [GenericArgument::Type(ok), GenericArgument::Type(err)] => (ok, err),
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect two for Result<T, E>",
+                                ))?,
+                            };
+                            Ok(ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                                ok_type: Box::new(map_type(ok)?),
+                                error_type: Box::new(map_type(err)?),
+                            })))
+                        }
                         "Option" => {
                             let t = match args.as_slice() {
                             [GenericArgument::Type(t)] => t,
@@ -83,12 +96,12 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                         }
                         "Map" => {
                             let (k, v) = match args.as_slice() {
-                            [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
-                            [..] => Err(Error::new(
-                                t.span(),
-                                "incorrect number of generic arguments, expect two for Map<K, V>",
-                            ))?,
-                        };
+                                [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect two for Map<K, V>",
+                                ))?,
+                            };
                             Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
                                 key_type: Box::new(map_type(k)?),
                                 value_type: Box::new(map_type(v)?),
