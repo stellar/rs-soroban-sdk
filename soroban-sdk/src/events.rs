@@ -3,8 +3,8 @@ use core::fmt::Debug;
 #[cfg(doc)]
 use crate::{contracttype, Bytes, BytesN, Map};
 use crate::{
-    env::internal::{self, events::HostEvent},
-    Env, IntoVal, RawVal, Vec,
+    env::internal::{self},
+    xdr, BytesN, Env, IntoVal, RawVal, Vec,
 };
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
@@ -117,9 +117,35 @@ impl Events {
 }
 
 #[cfg(feature = "testutils")]
+use crate::TryIntoVal;
+
+#[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Events {
-    pub fn get(&self) -> alloc::vec::Vec<HostEvent> {
-        self.env().host().get_events().unwrap().0
+    pub fn get(&self) -> Vec<(BytesN<32>, Vec<RawVal>, RawVal)> {
+        let env = self.env();
+        let mut vec = Vec::new(env);
+        self.env()
+            .host()
+            .get_events()
+            .unwrap()
+            .0
+            .into_iter()
+            .for_each(|e| {
+                if let internal::events::HostEvent::Contract(xdr::ContractEvent {
+                    type_: xdr::ContractEventType::Contract,
+                    contract_id: Some(contract_id),
+                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
+                    ..
+                }) = e
+                {
+                    vec.push_back((
+                        contract_id.0.into_val(env),
+                        topics.try_into_val(env).unwrap(),
+                        data.try_into_val(env).unwrap(),
+                    ))
+                }
+            });
+        vec
     }
 }

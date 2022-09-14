@@ -27,7 +27,6 @@ pub mod internal {
 // the SDK in the crate::testutils mod.
 #[cfg(feature = "testutils")]
 pub mod testutils {
-    pub use super::internal::events::HostEvent as EnvEvent;
     pub use super::internal::LedgerInfo;
 }
 
@@ -310,6 +309,7 @@ impl Env {
             sequence_number: 0,
             timestamp: 0,
             network_passphrase: vec![0u8],
+            base_reserve: 0,
         };
         env_impl.set_ledger_info(l);
         Env { env_impl }
