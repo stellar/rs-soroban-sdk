@@ -15,7 +15,7 @@ impl Contract {
 mod test {
     extern crate alloc;
     use alloc::string::ToString;
-    use soroban_sdk::{symbol, testutils::Debugger, vec, BytesN, Env, IntoVal};
+    use soroban_sdk::{testutils::Logger, vec, BytesN, Env};
 
     use crate::{Contract, ContractClient};
 
@@ -32,15 +32,8 @@ mod test {
             env.debugger().all(),
             vec![
                 &env,
-                // Expect 2 debug events.
-                (
-                    "hello started: {}".to_string(),
-                    symbol!("hello").into_val(&env),
-                ),
-                (
-                    "hello finished: {}".to_string(),
-                    symbol!("bye").into_val(&env)
-                ),
+                "hello started: Symbol(hello)".to_string(),
+                "hello finished: Symbol(bye)".to_string(),
             ],
         );
     }

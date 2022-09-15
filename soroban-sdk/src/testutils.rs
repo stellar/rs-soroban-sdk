@@ -27,11 +27,7 @@ pub trait Events {
 }
 
 /// Test utilities for [`Debugger`][crate::Debugger].
-pub trait Debugger {
-    /// Returns all debug events that have been logged by contracts.
-    ///
-    /// Returns a [`Vec`] of three element tuples containing:
-    /// - Message as a [`String`]
-    /// - Arg as a [`RawVal`]
-    fn all(&self) -> Vec<(String, RawVal)>;
+pub trait Logger {
+    /// Returns all debug events that have been logged.
+    fn all(&self) -> Vec<String>;
 }

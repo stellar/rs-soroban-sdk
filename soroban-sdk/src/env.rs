@@ -49,7 +49,7 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Debugger, Events, Ledger, Vec};
+use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger, Logger, Vec};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -132,8 +132,8 @@ impl Env {
 
     /// Get [Debugger] for logging debug events.
     #[inline(always)]
-    pub fn debugger(&self) -> Debugger {
-        Debugger::new(self)
+    pub fn debugger(&self) -> Logger {
+        Logger::new(self)
     }
 
     /// Get [Events] for publishing events associated with the

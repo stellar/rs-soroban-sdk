@@ -4,7 +4,7 @@ use core::fmt::Debug;
 use crate::{contracttype, Bytes, BytesN, Map};
 use crate::{env::internal::EnvBase, Env, IntoVal, RawVal, Vec};
 
-/// Events publishes events for the currently executing contract.
+/// Logger logs debug events.
 ///
 /// ```
 /// use soroban_sdk::Env;
@@ -43,17 +43,17 @@ use crate::{env::internal::EnvBase, Env, IntoVal, RawVal, Vec};
 /// ```
 
 #[derive(Clone)]
-pub struct Debugger(Env);
+pub struct Logger(Env);
 
-impl Debug for Debugger {
+impl Debug for Logger {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Debug")
+        write!(f, "Logger")
     }
 }
 
 pub trait DebugArgs: IntoVal<Env, Vec<RawVal>> {}
 
-macro_rules! impl_topics_for_tuple {
+macro_rules! impl_debug_args_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {
         impl<$($typ),*> DebugArgs for ($($typ,)*)
         where
@@ -66,20 +66,20 @@ macro_rules! impl_topics_for_tuple {
 // 0 args
 impl DebugArgs for () {}
 // 1-4 args
-impl_topics_for_tuple! { T0 0 }
-impl_topics_for_tuple! { T0 0 T1 1 }
-impl_topics_for_tuple! { T0 0 T1 1 T2 2 }
-impl_topics_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
+impl_debug_args_for_tuple! { T0 0 }
+impl_debug_args_for_tuple! { T0 0 T1 1 }
+impl_debug_args_for_tuple! { T0 0 T1 1 T2 2 }
+impl_debug_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
 
-impl Debugger {
+impl Logger {
     #[inline(always)]
     pub(crate) fn env(&self) -> &Env {
         &self.0
     }
 
     #[inline(always)]
-    pub(crate) fn new(env: &Env) -> Debugger {
-        Debugger(env.clone())
+    pub(crate) fn new(env: &Env) -> Logger {
+        Logger(env.clone())
     }
 
     /// Log a debug event.
@@ -91,15 +91,12 @@ impl Debugger {
 }
 
 #[cfg(feature = "testutils")]
-use crate::{
-    env::internal::events::{DebugArg, DebugEvent, HostEvent},
-    testutils,
-};
+use crate::{env::internal::events::HostEvent, testutils};
 
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-impl testutils::Debugger for Debugger {
-    fn all(&self) -> Vec<(String, RawVal)> {
+impl testutils::Logger for Logger {
+    fn all(&self) -> Vec<String> {
         let env = self.env();
         let mut vec = Vec::new(env);
         env.host()
@@ -108,23 +105,7 @@ impl testutils::Debugger for Debugger {
             .0
             .into_iter()
             .for_each(|e| match e {
-                // TODO: Consider supporting other variations of DebugEvent,
-                // when Debugger supports those variations.
-                HostEvent::Debug(DebugEvent { msg: None, args }) => {
-                    match args.as_slice() {
-                        &[DebugArg::Val(v)] => vec.push_back(("".to_string(), v)),
-                        _ => {}
-                    };
-                }
-                HostEvent::Debug(DebugEvent {
-                    msg: Some(msg),
-                    args,
-                }) => {
-                    match args.as_slice() {
-                        &[DebugArg::Val(v)] => vec.push_back((msg.to_string(), v)),
-                        _ => {}
-                    };
-                }
+                HostEvent::Debug(de) => vec.push_back(format!("{}", de)),
                 _ => {}
             });
         vec
