@@ -6,8 +6,8 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env) {
-        env.debugger().debug("hello started: {}", symbol!("hello"));
-        env.debugger().debug("hello finished: {}", symbol!("bye"));
+        env.logger().debug("hello started: {}", symbol!("hello"));
+        env.logger().debug("hello finished: {}", symbol!("bye"));
     }
 }
 
@@ -29,7 +29,7 @@ mod test {
         client.hello();
 
         assert_eq!(
-            env.debugger().all(),
+            env.logger().all(),
             vec![
                 &env,
                 "hello started: Symbol(hello)".to_string(),
