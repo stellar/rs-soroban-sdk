@@ -91,15 +91,12 @@ impl Logger {
 }
 
 #[cfg(feature = "testutils")]
-extern crate alloc;
-
-#[cfg(feature = "testutils")]
 use crate::{env::internal::events::HostEvent, testutils};
 
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Logger for Logger {
-    fn all(&self) -> alloc::vec::Vec<String> {
+    fn all(&self) -> std::vec::Vec<String> {
         let env = self.env();
         env.host()
             .get_events()
@@ -110,6 +107,6 @@ impl testutils::Logger for Logger {
                 HostEvent::Debug(de) => Some(format!("{}", de)),
                 _ => None,
             })
-            .collect::<alloc::vec::Vec<_>>()
+            .collect::<std::vec::Vec<_>>()
     }
 }
