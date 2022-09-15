@@ -2,7 +2,7 @@ use core::fmt::Debug;
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, BytesN, Map};
-use crate::{env::internal::EnvBase, Env, IntoVal, RawVal, Vec};
+use crate::{env::internal::EnvBase, Env, IntoVal, RawVal};
 
 /// Logger logs debug events.
 ///
@@ -51,11 +51,11 @@ impl Debug for Logger {
     }
 }
 
-pub trait LogArgs<'a, const N: usize>: Into<[RawVal; N]> {}
+pub trait LogArgs<'a, const N: usize>: IntoVal<Env, [RawVal; N]> {}
 
 macro_rules! impl_log_args_for_tuple {
-    ( $($typ:ident $idx:tt)* ) => {
-        impl<'a, $($typ),*> LogArgs<'a> for ($($typ,)*)
+    ( $count:literal $($typ:ident $idx:tt)* ) => {
+        impl<'a, $($typ),*> LogArgs<'a, $count> for ($($typ,)*)
         where
             $($typ: IntoVal<Env, RawVal>),*
         {
@@ -64,12 +64,12 @@ macro_rules! impl_log_args_for_tuple {
 }
 
 // 0 args
-impl<'a> LogArgs<'a> for () {}
+impl<'a> LogArgs<'a, 0> for () {}
 // 1-4 args
-impl_log_args_for_tuple! { T0 0 }
-impl_log_args_for_tuple! { T0 0 T1 1 }
-impl_log_args_for_tuple! { T0 0 T1 1 T2 2 }
-impl_log_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
+impl_log_args_for_tuple! { 1 T0 0 }
+impl_log_args_for_tuple! { 2 T0 0 T1 1 }
+impl_log_args_for_tuple! { 3 T0 0 T1 1 T2 2 }
+impl_log_args_for_tuple! { 4 T0 0 T1 1 T2 2 T3 3 }
 
 impl Logger {
     #[inline(always)]
@@ -84,9 +84,12 @@ impl Logger {
 
     /// Log a debug event.
     #[inline(always)]
-    pub fn log<'a>(&self, fmt: &'static str, arg: impl LogArgs<'a>) {
-        let env = self.env();
-        env.log_static_fmt_val(fmt, arg.into_val(env))
+    pub fn log<'a, const N: usize>(&self, fmt: &'static str, args: impl LogArgs<'a, N>) {
+        if !cfg!(debug_assertions) {
+            let env = self.env();
+            let args = args.into_val(env);
+            env.log_static_fmt_general(fmt, &args, &[]);
+        }
     }
 }
 
