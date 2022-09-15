@@ -8,7 +8,7 @@ pub use test_sign::ed25519;
 
 pub use crate::env::testutils::*;
 
-use crate::{Env, RawVal, Symbol, Vec};
+use crate::{Bytes, Env, RawVal, Symbol, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -24,4 +24,14 @@ pub trait Events {
     /// - Event Topics as a [`Vec<RawVal>`]
     /// - Event Data as a [`RawVal`]
     fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)>;
+}
+
+/// Test utilities for [`Debugger`][crate::Debugger].
+pub trait Debugger {
+    /// Returns all debug events that have been logged by contracts.
+    ///
+    /// Returns a [`Vec`] of three element tuples containing:
+    /// - Message as a [`Bytes`]
+    /// - Arg as a [`RawVal`]
+    fn all(&self) -> Vec<(Bytes, RawVal)>;
 }
