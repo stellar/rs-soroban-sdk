@@ -12,16 +12,6 @@ impl Contract {
         log!(&env, "one: {}", symbol!("one"),);
         log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"));
         log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"),);
-
-        env.logger().log("none", ());
-
-        env.logger().log("one: {}", (symbol!("one"),)); // TODO: remove comma
-        env.logger().log("one: {}", (symbol!("one"),));
-
-        env.logger()
-            .log("one: {}, two: {}", (symbol!("one"), symbol!("two")));
-        env.logger()
-            .log("one: {}, two: {}", (symbol!("one"), symbol!("two")));
     }
 }
 
@@ -48,11 +38,6 @@ mod test {
                 env.logger().all(),
                 std::vec![
                     "none".to_string(),
-                    "none".to_string(),
-                    "one: Symbol(one)".to_string(),
-                    "one: Symbol(one)".to_string(),
-                    "one: Symbol(one), two: Symbol(two)".to_string(),
-                    "one: Symbol(one), two: Symbol(two)".to_string(),
                     "none".to_string(),
                     "one: Symbol(one)".to_string(),
                     "one: Symbol(one)".to_string(),
