@@ -1,14 +1,18 @@
+//! Logging contains types for logging debug events.
+//!
+//! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-#[cfg(doc)]
-use crate::{contracttype, Bytes, BytesN, Map};
-use crate::{env::internal::EnvBase, Env, IntoVal, RawVal};
+use crate::{env::internal::EnvBase, Env, RawVal};
 
 /// Log a debug event.
 ///
-/// The first argument in the list must be a reference to an [Env].
+/// Takes a [Env], and a literal format string that containing `{}` for each
+/// additional argument. Arguments may be any value that are convertible to
+/// [`RawVal`].
 ///
-/// The following arguments may be any value that are convertible to [`RawVal`].
+/// `log!` statements are only enabled in non optimized builds that have
+/// `debug-assertions` enabled.
 ///
 /// ### Examples
 ///
@@ -56,12 +60,12 @@ use crate::{env::internal::EnvBase, Env, IntoVal, RawVal};
 macro_rules! log {
     ($env:expr, $fmt:literal $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logger().log_raw($fmt, &[]);
+            $env.logger().log($fmt, &[]);
         }
     };
     ($env:expr, $fmt:literal, $($args:expr),* $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logger().log_raw($fmt, &[
+            $env.logger().log($fmt, &[
                 $(
                     <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val($args, $env)
                 ),*
@@ -72,8 +76,7 @@ macro_rules! log {
 
 /// Logger logs debug events.
 ///
-/// See [`log`] for how to conveniently log debug events.
-
+/// See [`log`][crate::log] for how to conveniently log debug events.
 #[derive(Clone)]
 pub struct Logger(Env);
 
@@ -82,26 +85,6 @@ impl Debug for Logger {
         write!(f, "Logger")
     }
 }
-
-pub trait LogArgs<'a, const N: usize>: IntoVal<Env, [RawVal; N]> {}
-
-macro_rules! impl_log_args_for_tuple {
-    ( $count:literal $($typ:ident $idx:tt)* ) => {
-        impl<'a, $($typ),*> LogArgs<'a, $count> for ($($typ,)*)
-        where
-            $($typ: IntoVal<Env, RawVal>),*
-        {
-        }
-    };
-}
-
-// 0 args
-impl<'a> LogArgs<'a, 0> for () {}
-// 1-4 arg tuples
-impl_log_args_for_tuple! { 1 T0 0 }
-impl_log_args_for_tuple! { 2 T0 0 T1 1 }
-impl_log_args_for_tuple! { 3 T0 0 T1 1 T2 2 }
-impl_log_args_for_tuple! { 4 T0 0 T1 1 T2 2 T3 3 }
 
 impl Logger {
     #[inline(always)]
@@ -115,17 +98,13 @@ impl Logger {
     }
 
     /// Log a debug event.
+    ///
+    /// Takes a literal format string that containing `{}` for each argument in
+    /// the args slice.
+    ///
+    /// See [`log`][crate::log] for how to conveniently log debug events.
     #[inline(always)]
-    pub fn log<'a, const N: usize>(&self, fmt: &'static str, args: impl LogArgs<'a, N>) {
-        if cfg!(debug_assertions) {
-            let env = self.env();
-            self.log_raw(fmt, &args.into_val(env));
-        }
-    }
-
-    #[inline(always)]
-    #[doc(hidden)]
-    pub fn log_raw(&self, fmt: &'static str, args: &[RawVal]) {
+    pub fn log(&self, fmt: &'static str, args: &[RawVal]) {
         if cfg!(debug_assertions) {
             let env = self.env();
             env.log_static_fmt_general(fmt, &args, &[]);
