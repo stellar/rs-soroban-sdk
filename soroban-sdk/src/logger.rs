@@ -51,11 +51,11 @@ impl Debug for Logger {
     }
 }
 
-pub trait DebugArgs: IntoVal<Env, Vec<RawVal>> {}
+pub trait LogArgs<'a, const N: usize>: Into<[RawVal; N]> {}
 
-macro_rules! impl_debug_args_for_tuple {
+macro_rules! impl_log_args_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {
-        impl<$($typ),*> DebugArgs for ($($typ,)*)
+        impl<'a, $($typ),*> LogArgs<'a> for ($($typ,)*)
         where
             $($typ: IntoVal<Env, RawVal>),*
         {
@@ -64,12 +64,12 @@ macro_rules! impl_debug_args_for_tuple {
 }
 
 // 0 args
-impl DebugArgs for () {}
+impl<'a> LogArgs<'a> for () {}
 // 1-4 args
-impl_debug_args_for_tuple! { T0 0 }
-impl_debug_args_for_tuple! { T0 0 T1 1 }
-impl_debug_args_for_tuple! { T0 0 T1 1 T2 2 }
-impl_debug_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
+impl_log_args_for_tuple! { T0 0 }
+impl_log_args_for_tuple! { T0 0 T1 1 }
+impl_log_args_for_tuple! { T0 0 T1 1 T2 2 }
+impl_log_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
 
 impl Logger {
     #[inline(always)]
@@ -84,7 +84,7 @@ impl Logger {
 
     /// Log a debug event.
     #[inline(always)]
-    pub fn debug(&self, fmt: &'static str, arg: impl IntoVal<Env, RawVal>) {
+    pub fn log<'a>(&self, fmt: &'static str, arg: impl LogArgs<'a>) {
         let env = self.env();
         env.log_static_fmt_val(fmt, arg.into_val(env))
     }
