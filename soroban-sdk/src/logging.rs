@@ -41,6 +41,7 @@ use crate::{env::internal::EnvBase, Env, RawVal};
 ///
 /// ```
 /// # #![cfg(feature = "testutils")]
+/// #{
 /// use soroban_sdk::{log, symbol, Env};
 ///
 /// let env = Env::default();
@@ -56,6 +57,7 @@ use crate::{env::internal::EnvBase, Env, RawVal};
 ///         "a log entry: I32(5), Symbol(another), Object(Vec(3))".to_string(),
 ///     ],
 /// );
+/// #}
 /// ```
 #[macro_export]
 macro_rules! log {
