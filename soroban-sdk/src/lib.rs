@@ -129,7 +129,7 @@ pub mod deploy;
 mod events;
 pub mod iter;
 mod ledger;
-pub mod logger;
+pub mod logging;
 mod map;
 mod set;
 mod symbol;

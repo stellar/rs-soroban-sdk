@@ -1,14 +1,27 @@
 #![no_std]
-use soroban_sdk::{contractimpl, symbol, Env};
+use soroban_sdk::{contractimpl, log, symbol, Env};
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env) {
-        env.log().debug("hello started: {}", (symbol!("hello"),));
-        env.log()
-            .debug("hello finished: {}, count: {}", (symbol!("bye"), 1u32));
+        log!(&env, "none");
+        log!(&env, "none",);
+        log!(&env, "one: {}", symbol!("one"));
+        log!(&env, "one: {}", symbol!("one"),);
+        log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"));
+        log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"),);
+
+        env.logger().log("none", ());
+
+        env.logger().log("one: {}", (symbol!("one"),)); // TODO: remove comma
+        env.logger().log("one: {}", (symbol!("one"),));
+
+        env.logger()
+            .log("one: {}, two: {}", (symbol!("one"), symbol!("two")));
+        env.logger()
+            .log("one: {}, two: {}", (symbol!("one"), symbol!("two")));
     }
 }
 
@@ -32,14 +45,23 @@ mod test {
 
         if cfg!(debug_assertions) {
             assert_eq!(
-                env.log().all(),
+                env.logger().all(),
                 std::vec![
-                    "hello started: Symbol(hello)".to_string(),
-                    "hello finished: Symbol(bye), count: U32(1)".to_string(),
+                    "none".to_string(),
+                    "none".to_string(),
+                    "one: Symbol(one)".to_string(),
+                    "one: Symbol(one)".to_string(),
+                    "one: Symbol(one), two: Symbol(two)".to_string(),
+                    "one: Symbol(one), two: Symbol(two)".to_string(),
+                    "none".to_string(),
+                    "one: Symbol(one)".to_string(),
+                    "one: Symbol(one)".to_string(),
+                    "one: Symbol(one), two: Symbol(two)".to_string(),
+                    "one: Symbol(one), two: Symbol(two)".to_string(),
                 ],
             );
         } else {
-            assert_eq!(env.log().all(), std::vec![""; 0]);
+            assert_eq!(env.logger().all(), std::vec![""; 0]);
         }
     }
 }
