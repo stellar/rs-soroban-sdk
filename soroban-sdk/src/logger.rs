@@ -65,7 +65,9 @@ macro_rules! impl_log_args_for_tuple {
 
 // 0 args
 impl<'a> LogArgs<'a, 0> for () {}
-// 1-4 args
+// 1 arg
+// impl<'a, T> LogArgs<'a, 1> for T where T: IntoVal<Env, RawVal> {}
+// 1-4 arg tuples
 impl_log_args_for_tuple! { 1 T0 0 }
 impl_log_args_for_tuple! { 2 T0 0 T1 1 }
 impl_log_args_for_tuple! { 3 T0 0 T1 1 T2 2 }
@@ -85,7 +87,7 @@ impl Logger {
     /// Log a debug event.
     #[inline(always)]
     pub fn log<'a, const N: usize>(&self, fmt: &'static str, args: impl LogArgs<'a, N>) {
-        if !cfg!(debug_assertions) {
+        if cfg!(debug_assertions) {
             let env = self.env();
             let args = args.into_val(env);
             env.log_static_fmt_general(fmt, &args, &[]);
