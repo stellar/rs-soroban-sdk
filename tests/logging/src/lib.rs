@@ -6,9 +6,9 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env) {
-        env.logger().log("hello started: {}", (symbol!("hello"),));
+        env.logger().debug("hello started: {}", (symbol!("hello"),));
         env.logger()
-            .log("hello finished: {}, count: {}", (symbol!("bye"), 1u32));
+            .debug("hello finished: {}, count: {}", (symbol!("bye"), 1u32));
     }
 }
 

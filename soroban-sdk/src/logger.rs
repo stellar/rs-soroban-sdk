@@ -86,7 +86,7 @@ impl Logger {
 
     /// Log a debug event.
     #[inline(always)]
-    pub fn log<'a, const N: usize>(&self, fmt: &'static str, args: impl LogArgs<'a, N>) {
+    pub fn debug<'a, const N: usize>(&self, fmt: &'static str, args: impl LogArgs<'a, N>) {
         if cfg!(debug_assertions) {
             let env = self.env();
             let args = args.into_val(env);
