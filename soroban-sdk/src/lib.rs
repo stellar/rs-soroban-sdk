@@ -71,9 +71,10 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 /// size.
 ///
 /// See https://github.com/stellar/rs-soroban-sdk/issues/383 for more details.
+#[cfg(target_family = "wasm")]
 #[export_name = "_"]
 fn __link_sections() {
-    #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
+    #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 }
 
