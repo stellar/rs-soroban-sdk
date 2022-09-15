@@ -6,8 +6,8 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env) {
-        env.logger().debug("hello started: {}", (symbol!("hello"),));
-        env.logger()
+        env.log().debug("hello started: {}", (symbol!("hello"),));
+        env.log()
             .debug("hello finished: {}, count: {}", (symbol!("bye"), 1u32));
     }
 }
@@ -32,14 +32,14 @@ mod test {
 
         if cfg!(debug_assertions) {
             assert_eq!(
-                env.logger().all(),
+                env.log().all(),
                 std::vec![
                     "hello started: Symbol(hello)".to_string(),
                     "hello finished: Symbol(bye), count: U32(1)".to_string(),
                 ],
             );
         } else {
-            assert_eq!(env.logger().all(), std::vec![""; 0]);
+            assert_eq!(env.log().all(), std::vec![""; 0]);
         }
     }
 }

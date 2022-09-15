@@ -130,9 +130,9 @@ impl Env {
         Ledger::new(self)
     }
 
-    /// Get [Logger] for logging debug events.
+    /// Get the [Logger] for logging debug events.
     #[inline(always)]
-    pub fn logger(&self) -> Logger {
+    pub fn log(&self) -> Logger {
         Logger::new(self)
     }
 
