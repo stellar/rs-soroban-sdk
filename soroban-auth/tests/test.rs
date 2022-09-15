@@ -30,6 +30,7 @@ fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
             if BigInt::zero(&e) != expected_nonce {
                 panic!("nonce should be zero for Contract")
             }
+            return;
         }
         _ => {}
     }
@@ -65,6 +66,16 @@ impl TestContract {
     }
 }
 
+pub struct OuterTestContract;
+
+#[contractimpl]
+impl OuterTestContract {
+    pub fn authorize(e: Env, contract_id: BytesN<32>) {
+        let client = TestContractClient::new(&e, contract_id);
+        client.verify_sig(&Signature::Contract, &BigInt::zero(&e));
+    }
+}
+
 fn generate_keypair() -> Keypair {
     Keypair::generate(&mut thread_rng())
 }
@@ -78,7 +89,7 @@ fn test() {
     let env = Env::default();
     let contract_id = BytesN::from_array(&env, &[0; 32]);
     env.register_contract(&contract_id, TestContract);
-    let client = TestContractClient::new(&env, contract_id);
+    let client = TestContractClient::new(&env, &contract_id);
 
     let kp = generate_keypair();
     let id = make_identifier(&env, &kp);
@@ -96,4 +107,12 @@ fn test() {
     });
 
     client.verify_sig(&sig, &nonce);
+
+    //Make sure the Nonce doesn't increment for Signature::Contract
+    let outer_contract_id = BytesN::from_array(&env, &[1; 32]);
+    let outer_client = OuterTestContractClient::new(&env, &outer_contract_id);
+    env.register_contract(&outer_contract_id, OuterTestContract);
+
+    outer_client.authorize(&contract_id);
+    outer_client.authorize(&contract_id);
 }
