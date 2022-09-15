@@ -20,7 +20,6 @@ pub fn derive_fn(
     ident: &Ident,
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
-    export: bool,
     trait_ident: Option<&Ident>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
@@ -119,7 +118,7 @@ pub fn derive_fn(
     };
 
     // Generated code parameters.
-    let wrap_export_name = format!("{}", ident);
+    let wrap_export_name = &format!("{}", ident);
     let hidden_mod_ident = format_ident!("__{}", ident);
     let deprecated_note = format!(
         "use `{}::new(&env, &contract_id).{}` instead",
@@ -130,9 +129,6 @@ pub fn derive_fn(
     } else {
         quote! {}
     };
-    let export_name = export.then(|| {
-        quote! { #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)] }
-    });
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let use_trait = if let Some(t) = trait_ident {
         quote! { use super::#t }
@@ -171,8 +167,6 @@ pub fn derive_fn(
     let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
     let spec_fn_ident = format_ident!("spec_xdr_{}", ident.to_string());
-    let link_section = export
-        .then(|| quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] });
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
@@ -183,7 +177,7 @@ pub fn derive_fn(
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
-        #link_section
+        #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
         pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
 
         impl #ty {
@@ -197,7 +191,7 @@ pub fn derive_fn(
             use super::*;
 
             #[deprecated(note = #deprecated_note)]
-            #export_name
+            #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
             pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
                 #use_trait;
                 <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
