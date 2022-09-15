@@ -12,14 +12,21 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
+    pub fn add() {
+        todo!()
+    }
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
         addcontract::ContractClient::new(&env, &ADD_CONTRACT_ID).add(&x, &y)
     }
 }
 
+use example_add_i32::__add as _;
+
 #[cfg(test)]
 mod test {
     use soroban_sdk::{BytesN, Env};
+
+    use example_add_i32::__add as _;
 
     use crate::{addcontract, Contract, ContractClient, ADD_CONTRACT_ID};
 

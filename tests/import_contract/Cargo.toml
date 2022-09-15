@@ -13,9 +13,11 @@ doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
+example_add_i32 = {path = "../add_i32"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+example_add_i32 = {path = "../add_i32"}
 
 [features]
 testutils = ["soroban-sdk/testutils"]

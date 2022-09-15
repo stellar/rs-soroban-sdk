@@ -327,6 +327,7 @@ dependencies = [
 name = "example_import_contract"
 version = "0.0.4"
 dependencies = [
+ "example_add_i32",
  "soroban-sdk",
 ]
 
