@@ -13,9 +13,10 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    extern crate alloc;
-    use alloc::string::ToString;
-    use soroban_sdk::{testutils::Logger, vec, BytesN, Env};
+    extern crate std;
+    use std::string::ToString;
+
+    use soroban_sdk::{testutils::Logger, BytesN, Env};
 
     use crate::{Contract, ContractClient};
 
@@ -30,8 +31,7 @@ mod test {
 
         assert_eq!(
             env.logger().all(),
-            vec![
-                &env,
+            std::vec![
                 "hello started: Symbol(hello)".to_string(),
                 "hello finished: Symbol(bye)".to_string(),
             ],
