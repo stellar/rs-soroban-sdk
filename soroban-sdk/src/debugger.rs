@@ -1,13 +1,8 @@
 use core::fmt::Debug;
 
-use soroban_env_host::EnvBase;
-
 #[cfg(doc)]
 use crate::{contracttype, Bytes, BytesN, Map};
-use crate::{
-    env::internal::{self},
-    Env, IntoVal, RawVal, Vec,
-};
+use crate::{env::internal::EnvBase, Env, IntoVal, RawVal, Vec};
 
 /// Events publishes events for the currently executing contract.
 ///
@@ -91,38 +86,46 @@ impl Debugger {
     #[inline(always)]
     pub fn debug(&self, fmt: &'static str, arg: impl IntoVal<Env, RawVal>) {
         let env = self.env();
-        let host = env.host();
-        host.log_static_fmt_val(fmt, arg.into_val(env))
+        env.log_static_fmt_val(fmt, arg.into_val(env))
     }
 }
 
 #[cfg(feature = "testutils")]
-use crate::{testutils, xdr, Bytes, TryIntoVal};
+use crate::{
+    env::internal::events::{DebugArg, DebugEvent, HostEvent},
+    testutils,
+};
 
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Debugger for Debugger {
-    fn all(&self) -> Vec<(Bytes, RawVal)> {
+    fn all(&self) -> Vec<(String, RawVal)> {
         let env = self.env();
         let mut vec = Vec::new(env);
-        self.env()
-            .host()
+        env.host()
             .get_events()
             .unwrap()
             .0
             .into_iter()
-            .for_each(|e| {
-                if let internal::events::HostEvent::Debug(internal::events::DebugEvent {
+            .for_each(|e| match e {
+                // TODO: Consider supporting other variations of DebugEvent,
+                // when Debugger supports those variations.
+                HostEvent::Debug(DebugEvent { msg: None, args }) => {
+                    match args.as_slice() {
+                        &[DebugArg::Val(v)] => vec.push_back(("".to_string(), v)),
+                        _ => {}
+                    };
+                }
+                HostEvent::Debug(DebugEvent {
                     msg: Some(msg),
                     args,
-                }) = e
-                {
-                    let msg: Bytes = msg.try_into_val(env).unwrap();
-                    vec.push_back((
-                        msg,
-                        args.try_into_val(env).unwrap(),
-                    ))
+                }) => {
+                    match args.as_slice() {
+                        &[DebugArg::Val(v)] => vec.push_back((msg.to_string(), v)),
+                        _ => {}
+                    };
                 }
+                _ => {}
             });
         vec
     }

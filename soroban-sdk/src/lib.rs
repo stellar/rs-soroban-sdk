@@ -86,8 +86,8 @@ pub use soroban_sdk_macros::{
 
 mod env;
 
-pub mod xdr;
 mod debugger;
+pub mod xdr;
 
 pub use env::ConversionError;
 
