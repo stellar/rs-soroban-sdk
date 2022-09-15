@@ -130,7 +130,9 @@ pub fn derive_fn(
     } else {
         quote! {}
     };
-    let export_name = export.then(|| quote! { #[export_name = #wrap_export_name] });
+    let export_name = export.then(|| {
+        quote! { #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)] }
+    });
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let use_trait = if let Some(t) = trait_ident {
         quote! { use super::#t }
