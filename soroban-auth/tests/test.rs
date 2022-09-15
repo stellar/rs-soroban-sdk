@@ -25,14 +25,11 @@ fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
     // replay protection is not required for Contract authorization because
     // there's no cryptographic signature involved. All that's checked is the
     // invoking contract, so this contract just expects 0.
-    match id {
-        Identifier::Contract(_) => {
-            if BigInt::zero(&e) != expected_nonce {
-                panic!("nonce should be zero for Contract")
-            }
-            return;
+    if matches!(id, Identifier::Contract(_)) {
+        if BigInt::zero(&e) != expected_nonce {
+            panic!("nonce should be zero for Contract")
         }
-        _ => {}
+        return;
     }
 
     let key = DataKey::Nonce(id.clone());
