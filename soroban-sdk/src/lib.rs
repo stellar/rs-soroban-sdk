@@ -43,6 +43,9 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
+#[cfg(not(target_family = "wasm"))]
+extern crate std;
+
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
@@ -126,6 +129,7 @@ pub mod deploy;
 mod events;
 pub mod iter;
 mod ledger;
+pub mod logging;
 mod map;
 mod set;
 mod symbol;
