@@ -80,8 +80,8 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 ///
 /// Values are stored in the environment and are available to contract through
 /// the functions defined on Vec.  Values stored in the Vec are transmitted to
-/// the environment as [RawVal]s, and when retrieved from the Vec are transmitted back
-/// and converted from [RawVal] back into their type.
+/// the environment as [RawVal]s, and when retrieved from the Vec are
+/// transmitted back and converted from [RawVal] back into their type.
 ///
 /// The values in a Vec are not guaranteed to be of type `T` and conversion will
 /// fail if they are not. Most functions on Vec return a `Result` due to this.
