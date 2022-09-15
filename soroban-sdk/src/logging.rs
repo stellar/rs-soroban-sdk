@@ -40,8 +40,7 @@ use crate::{env::internal::EnvBase, Env, RawVal};
 /// Assert on logs in tests:
 ///
 /// ```
-/// #![cfg(feature = "testutils")]
-///
+/// # #![cfg(feature = "testutils")]
 /// use soroban_sdk::{log, symbol, Env};
 ///
 /// let env = Env::default();
