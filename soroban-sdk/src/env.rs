@@ -49,7 +49,7 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Events, Ledger, Vec};
+use crate::{deploy::Deployer, Bytes, BytesN, ContractData, Debugger, Events, Ledger, Vec};
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -128,6 +128,12 @@ impl Env {
     #[inline(always)]
     pub fn ledger(&self) -> Ledger {
         Ledger::new(self)
+    }
+
+    /// Get [Debugger] for logging debug events.
+    #[inline(always)]
+    pub fn debugger(&self) -> Debugger {
+        Debugger::new(self)
     }
 
     /// Get [Events] for publishing events associated with the
@@ -526,8 +532,8 @@ impl internal::EnvBase for Env {
         self.env_impl.bytes_new_from_slice(mem)
     }
 
-    fn log_static_fmt_val(&self, _: &'static str, _: RawVal) {
-        unimplemented!()
+    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) {
+        self.env_impl.log_static_fmt_val(fmt, v);
     }
 
     fn log_static_fmt_static_str(&self, _: &'static str, _: &'static str) {

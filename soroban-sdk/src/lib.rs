@@ -86,7 +86,6 @@ pub use soroban_sdk_macros::{
 
 mod env;
 
-mod debugger;
 pub mod xdr;
 
 pub use env::ConversionError;
@@ -122,6 +121,7 @@ mod account;
 mod bigint;
 mod bytes;
 mod contract_data;
+mod debugger;
 pub mod deploy;
 mod events;
 pub mod iter;
@@ -136,6 +136,7 @@ pub use bigint::{BigInt, Sign};
 pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
+pub use debugger::Debugger;
 pub use events::Events;
 pub use ledger::Ledger;
 pub use map::Map;
