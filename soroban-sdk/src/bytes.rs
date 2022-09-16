@@ -14,7 +14,7 @@ use super::{
 };
 
 #[cfg(doc)]
-use crate::{ContractData, Map, Vec};
+use crate::{contract_data::ContractData, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;

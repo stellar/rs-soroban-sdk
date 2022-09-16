@@ -1,3 +1,4 @@
+//! Events contains types for publishing contract events.
 use core::fmt::Debug;
 
 #[cfg(doc)]
