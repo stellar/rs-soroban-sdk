@@ -25,27 +25,12 @@ use syn::{
 
 use self::derive_client::ClientItem;
 
-#[derive(Debug, FromMeta)]
-struct ContractImplArgs {
-    #[darling(default = "contractimpl_args_default_export")]
-    export: bool,
-}
-
-fn contractimpl_args_default_export() -> bool {
-    true
-}
-
 /// Exports the publicly accessible functions in the implementation.
 ///
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
 #[proc_macro_attribute]
-pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
-    let args = match ContractImplArgs::from_list(&args) {
-        Ok(v) => v,
-        Err(e) => return e.write_errors().into(),
-    };
+pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
 
@@ -74,7 +59,6 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 ident,
                 &m.sig.inputs,
                 &m.sig.output,
-                args.export,
                 trait_ident,
                 &client_ident,
             )
@@ -103,13 +87,13 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 #[derive(Debug, FromMeta)]
 struct ContractTypeArgs {
     lib: Option<String>,
+    export: Option<bool>,
 }
 
 /// Generates conversions from the struct/enum from/into a `RawVal`.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
-///
 #[proc_macro_attribute]
 pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -119,7 +103,13 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
-    let gen_spec = matches!(input.vis, Visibility::Public(_));
+    // If the export argument has a value, do as it instructs regarding
+    // exporting. If it does not have a value, export if the type is pub.
+    let gen_spec = if let Some(export) = args.export {
+        export
+    } else {
+        matches!(input.vis, Visibility::Public(_))
+    };
     let derived = match &input.data {
         syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec, &args.lib),
         syn::Data::Enum(e) => derive_type_enum(ident, e, gen_spec, &args.lib),

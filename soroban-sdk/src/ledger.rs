@@ -1,3 +1,4 @@
+//! Ledger contains types for retrieving information about the current ledger.
 use crate::{
     env::internal::{self, RawValConvertible},
     Bytes, Env,

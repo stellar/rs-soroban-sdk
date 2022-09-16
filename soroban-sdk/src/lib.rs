@@ -43,6 +43,12 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
+#[cfg(not(target_family = "wasm"))]
+extern crate std;
+
+#[cfg(all(target_family = "wasm", feature = "testutils"))]
+compile_error!("'testutils' feature is not supported on 'wasm' target");
+
 #[cfg(target_family = "wasm")]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
@@ -68,9 +74,10 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 /// size.
 ///
 /// See https://github.com/stellar/rs-soroban-sdk/issues/383 for more details.
+#[cfg(target_family = "wasm")]
 #[export_name = "_"]
 fn __link_sections() {
-    #[cfg_attr(target_family = "wasm", link_section = "contractenvmetav0")]
+    #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 }
 
@@ -117,23 +124,19 @@ mod operators;
 mod account;
 mod bigint;
 mod bytes;
-mod contract_data;
+pub mod contract_data;
 pub mod deploy;
-mod events;
+pub mod events;
 pub mod iter;
-mod ledger;
+pub mod ledger;
+pub mod logging;
 mod map;
 mod set;
 mod symbol;
 mod vec;
 pub use account::Account;
 pub use bigint::{BigInt, Sign};
-#[allow(deprecated)]
-pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
-pub use contract_data::ContractData;
-pub use events::Events;
-pub use ledger::Ledger;
 pub use map::Map;
 pub use set::Set;
 pub use vec::Vec;

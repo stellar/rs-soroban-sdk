@@ -1,8 +1,12 @@
+//! Events contains types for publishing contract events.
 use core::fmt::Debug;
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, BytesN, Map};
-use crate::{env::internal, Env, IntoVal, RawVal, Vec};
+use crate::{
+    env::internal::{self},
+    Env, IntoVal, RawVal, Vec,
+};
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
 const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
@@ -110,5 +114,39 @@ impl Events {
     {
         let env = self.env();
         internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env));
+    }
+}
+
+#[cfg(feature = "testutils")]
+use crate::{testutils, xdr, TryIntoVal};
+
+#[cfg(feature = "testutils")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl testutils::Events for Events {
+    fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
+        let env = self.env();
+        let mut vec = Vec::new(env);
+        self.env()
+            .host()
+            .get_events()
+            .unwrap()
+            .0
+            .into_iter()
+            .for_each(|e| {
+                if let internal::events::HostEvent::Contract(xdr::ContractEvent {
+                    type_: xdr::ContractEventType::Contract,
+                    contract_id: Some(contract_id),
+                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
+                    ..
+                }) = e
+                {
+                    vec.push_back((
+                        contract_id.0.into_val(env),
+                        topics.try_into_val(env).unwrap(),
+                        data.try_into_val(env).unwrap(),
+                    ))
+                }
+            });
+        vec
     }
 }

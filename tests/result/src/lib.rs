@@ -6,7 +6,7 @@ pub struct Contract;
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
-    AnError,
+    AnError = 1,
 }
 
 #[contractimpl]

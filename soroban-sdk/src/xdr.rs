@@ -11,14 +11,19 @@ pub use super::env::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
 
 // XDR contract val types.
 pub use super::env::xdr::{
-    ScBigInt, ScHash, ScHashType, ScMap, ScMapEntry, ScNumSign, ScObject, ScObjectType, ScStatic,
-    ScStatus, ScStatusType, ScSymbol, ScVal, ScValType, ScVec,
+    ScBigInt, ScMap, ScMapEntry, ScNumSign, ScObject, ScObjectType, ScStatic, ScStatus,
+    ScStatusType, ScSymbol, ScVal, ScValType, ScVec,
 };
 
 // XDR contract error codes.
 pub use super::env::xdr::{
     ScHostContextErrorCode, ScHostFnErrorCode, ScHostObjErrorCode, ScHostStorageErrorCode,
     ScHostValErrorCode, ScUnknownErrorCode, ScVmErrorCode,
+};
+
+// XDR contract types.
+pub use super::env::xdr::{
+    ContractEvent, ContractEventBody, ContractEventType, ContractEventV0, ExtensionPoint,
 };
 
 // XDR contract env meta types.
