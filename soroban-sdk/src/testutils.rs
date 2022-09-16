@@ -15,7 +15,7 @@ pub trait ContractFunctionSet {
     fn call(&self, func: &Symbol, env: Env, args: &[RawVal]) -> Option<RawVal>;
 }
 
-/// Test utilities for [`Events`][crate::Events].
+/// Test utilities for [`Events`][crate::events::Events].
 pub trait Events {
     /// Returns all events that have been published by contracts.
     ///
@@ -24,4 +24,10 @@ pub trait Events {
     /// - Event Topics as a [`Vec<RawVal>`]
     /// - Event Data as a [`RawVal`]
     fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)>;
+}
+
+/// Test utilities for [`Logger`][crate::logging::Logger].
+pub trait Logger {
+    /// Returns all debug events that have been logged.
+    fn all(&self) -> std::vec::Vec<String>;
 }

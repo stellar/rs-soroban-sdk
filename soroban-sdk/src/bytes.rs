@@ -14,16 +14,10 @@ use super::{
 };
 
 #[cfg(doc)]
-use crate::{ContractData, Map, Vec};
+use crate::{contract_data::ContractData, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;
-
-#[deprecated(note = "use soroban_sdk::Bytes")]
-pub type Binary = Bytes;
-
-#[deprecated(note = "use soroban_sdk::BytesN")]
-pub type FixedBinary<const N: usize> = BytesN<N>;
 
 /// Create a [Bytes] with an array, or an integer or hex literal.
 ///

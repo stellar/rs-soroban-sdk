@@ -15,7 +15,7 @@ use super::{
 };
 
 #[cfg(doc)]
-use crate::{Bytes, BytesN, ContractData, Map};
+use crate::{contract_data::ContractData, Bytes, BytesN, Map};
 
 /// Create a [Vec] with the given items.
 ///
@@ -76,12 +76,12 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 T11 11 }
 impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 T11 11 T12 12 }
 
-/// Vec is a contiguous growable array type.
+/// Vec is a sequential and indexable growable collection type.
 ///
-/// The array is stored in the Host and available to the Guest through the
-/// functions defined on Vec. Values stored in the Vec are transmitted to the
-/// Host as [RawVal]s, and when retrieved from the Vec are transmitted back and
-/// converted from [RawVal] back into their type.
+/// Values are stored in the environment and are available to contract through
+/// the functions defined on Vec.  Values stored in the Vec are transmitted to
+/// the environment as [RawVal]s, and when retrieved from the Vec are
+/// transmitted back and converted from [RawVal] back into their type.
 ///
 /// The values in a Vec are not guaranteed to be of type `T` and conversion will
 /// fail if they are not. Most functions on Vec return a `Result` due to this.
@@ -94,12 +94,24 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// ### Examples
 ///
 /// ```
-/// use soroban_sdk::{Binary, Env, vec};
+/// use soroban_sdk::{vec, Env};
 ///
 /// let env = Env::default();
 /// let vec = vec![&env, 0, 1, 2, 3];
 /// assert_eq!(vec.len(), 4);
 /// ```
+///
+/// ### Implementation Details
+///
+/// The following information is implementation details that has no consistency
+/// guarantee.
+///
+/// Values are stored in the environment backed by a [RRB-vector][rrb] using
+/// [im_rc::Vector]. Most operations are O(log n). Push/pop are O(1)
+/// amortised, and O(log n) in the worst case.
+///
+/// [im_rc::Vector]: https://docs.rs/im-rc/latest/im_rc/struct.Vector.html
+/// [rrb]: https://infoscience.epfl.ch/record/213452/files/rrbvector.pdf
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Vec<T>(EnvObj, PhantomData<T>);
