@@ -124,30 +124,29 @@ use crate::{testutils, xdr, TryIntoVal};
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
     fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
-        todo!()
-        // let env = self.env();
-        // let mut vec = Vec::new(env);
-        // self.env()
-        //     .host()
-        //     .get_events()
-        //     .unwrap()
-        //     .0
-        //     .into_iter()
-        //     .for_each(|e| {
-        //         if let internal::events::HostEvent::Contract(xdr::ContractEvent {
-        //             type_: xdr::ContractEventType::Contract,
-        //             contract_id: Some(contract_id),
-        //             body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
-        //             ..
-        //         }) = e
-        //         {
-        //             vec.push_back((
-        //                 contract_id.0.into_val(env),
-        //                 topics.try_into_val(env).unwrap(),
-        //                 data.try_into_val(env).unwrap(),
-        //             ))
-        //         }
-        //     });
-        // vec
+        let env = self.env();
+        let mut vec = Vec::new(env);
+        self.env()
+            .host()
+            .get_events()
+            .unwrap()
+            .0
+            .into_iter()
+            .for_each(|e| {
+                if let internal::events::HostEvent::Contract(xdr::ContractEvent {
+                    type_: xdr::ContractEventType::Contract,
+                    contract_id: Some(contract_id),
+                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
+                    ..
+                }) = e
+                {
+                    vec.push_back((
+                        contract_id.0.into_val(env),
+                        topics.try_into_val(env).unwrap(),
+                        data.try_into_val(env).unwrap(),
+                    ))
+                }
+            });
+        vec
     }
 }

@@ -318,6 +318,7 @@ impl Env {
             sequence_number: 0,
             timestamp: 0,
             network_passphrase: vec![0u8],
+            base_reserve: 0,
         };
         env_impl.set_ledger_info(l);
         Env { env_impl }
