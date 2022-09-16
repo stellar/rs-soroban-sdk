@@ -136,8 +136,6 @@ mod symbol;
 mod vec;
 pub use account::Account;
 pub use bigint::{BigInt, Sign};
-#[allow(deprecated)]
-pub use bytes::{Binary, FixedBinary};
 pub use bytes::{Bytes, BytesN};
 pub use contract_data::ContractData;
 pub use events::Events;
