@@ -115,10 +115,10 @@ impl Logger {
             let env = self.env();
 
             // Temporary logic using log_value.
-            let fmt: RawVal = fmt.into_val(env);
-            let mut values: Vec<RawVal> = vec![env, fmt];
-            values.extend_from_slice(args);
-            internal::Env::log_value(env, values.into_val(env));
+            internal::Env::log_value(env, fmt.into_val(env));
+            for arg in args {
+                internal::Env::log_value(env, *arg);
+            }
 
             // TODO: When debug events are supported in the Guest VM
             // (https://github.com/stellar/rs-soroban-env/issues/447), use the
