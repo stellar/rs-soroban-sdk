@@ -25,27 +25,12 @@ use syn::{
 
 use self::derive_client::ClientItem;
 
-#[derive(Debug, FromMeta)]
-struct ContractImplArgs {
-    #[darling(default = "contractimpl_args_default_export")]
-    export: bool,
-}
-
-fn contractimpl_args_default_export() -> bool {
-    true
-}
-
 /// Exports the publicly accessible functions in the implementation.
 ///
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
 #[proc_macro_attribute]
-pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
-    let args = match ContractImplArgs::from_list(&args) {
-        Ok(v) => v,
-        Err(e) => return e.write_errors().into(),
-    };
+pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
 
@@ -74,7 +59,6 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 ident,
                 &m.sig.inputs,
                 &m.sig.output,
-                args.export,
                 trait_ident,
                 &client_ident,
             )
