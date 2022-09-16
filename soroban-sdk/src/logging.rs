@@ -3,7 +3,10 @@
 //! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-use crate::{env::internal::EnvBase, Env, RawVal};
+use crate::{
+    env::internal::{self},
+    vec, Env, IntoVal, RawVal, Vec,
+};
 
 /// Log a debug event.
 ///
@@ -110,7 +113,17 @@ impl Logger {
     pub fn log(&self, fmt: &'static str, args: &[RawVal]) {
         if cfg!(debug_assertions) {
             let env = self.env();
-            env.log_static_fmt_general(fmt, &args, &[]);
+
+            // Temporary logic using log_value.
+            let fmt: RawVal = fmt.into_val(env);
+            let mut values: Vec<RawVal> = vec![env, fmt];
+            values.extend_from_slice(args);
+            internal::Env::log_value(env, values.into_val(env));
+
+            // TODO: When debug events are supported in the Guest VM
+            // (https://github.com/stellar/rs-soroban-env/issues/447), use the
+            // better log static function.
+            // env.log_static_fmt_general(fmt, &args, &[]);
         }
     }
 }

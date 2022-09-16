@@ -269,11 +269,6 @@ impl Env {
         let stack = internal::Env::get_current_call_stack(self);
         stack.try_into_val(self).unwrap()
     }
-
-    #[doc(hidden)]
-    pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
-        internal::Env::log_value(self, v.into_val(self));
-    }
 }
 
 #[cfg(feature = "testutils")]
