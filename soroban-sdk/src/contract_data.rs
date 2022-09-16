@@ -1,3 +1,5 @@
+//! Contract data contains types storing and retrieving data for the currently
+//! executing contract.
 use core::fmt::Debug;
 
 use crate::{
