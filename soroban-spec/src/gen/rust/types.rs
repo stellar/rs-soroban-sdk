@@ -19,7 +19,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
             quote! { pub #f_ident: #f_type }
         });
         quote! {
-            #[::soroban_sdk::contracttype]
+            #[::soroban_sdk::contracttype(export = false)]
             pub struct #ident { #(#fields,)* }
         }
     }
@@ -45,7 +45,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
             quote! { #v_ident #v_type }
         });
         quote! {
-            #[::soroban_sdk::contracttype]
+            #[::soroban_sdk::contracttype(export = false)]
             pub enum #ident { #(#variants,)* }
         }
     }
