@@ -15,7 +15,7 @@ pub trait ContractFunctionSet {
     fn call(&self, func: &Symbol, env: Env, args: &[RawVal]) -> Option<RawVal>;
 }
 
-/// Test utilities for [`Events`][crate::Events].
+/// Test utilities for [`Events`][crate::events::Events].
 pub trait Events {
     /// Returns all events that have been published by contracts.
     ///
