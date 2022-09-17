@@ -2,6 +2,7 @@ extern crate proc_macro;
 
 mod derive_client;
 mod derive_enum;
+mod derive_enum_int;
 mod derive_fn;
 mod derive_struct;
 mod map_type;
@@ -10,6 +11,7 @@ mod syn_ext;
 
 use derive_client::derive_client;
 use derive_enum::derive_type_enum;
+use derive_enum_int::derive_type_enum_int;
 use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_struct::derive_type_struct;
 
@@ -94,6 +96,19 @@ struct ContractTypeArgs {
 
 /// Generates conversions from the struct/enum from/into a `RawVal`.
 ///
+/// There are some constraints on the types that are supported:
+/// - Enums with integer values must have an explicit integer literal for every
+/// variant.
+/// - Enums with unit variants are supported.
+/// - Enums with tuple-like variants with a maximum of one tuple field are
+/// supported. The tuple field must be of a type that is also convertible to and
+/// from `RawVal`.
+/// - Enums with struct-like variants are not supported.
+/// - Structs are supported. All fields must be of a type that is also
+/// convertible to and from `RawVal`.
+/// - All variant names, field names, and type names must be 10-characters or
+/// less in length.
+///
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
 #[proc_macro_attribute]
@@ -114,7 +129,22 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let derived = match &input.data {
         syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec, &args.lib),
-        syn::Data::Enum(e) => derive_type_enum(ident, e, gen_spec, &args.lib),
+        syn::Data::Enum(e) => {
+            let count_of_variants = e.variants.len();
+            let count_of_int_variants = e
+                .variants
+                .iter()
+                .filter(|v| v.discriminant.is_some())
+                .count();
+            if count_of_int_variants == 0 {
+                derive_type_enum(ident, e, gen_spec, &args.lib)
+            } else if count_of_int_variants == count_of_variants {
+                derive_type_enum_int(ident, e, gen_spec, &args.lib)
+            } else {
+                Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
+                    .to_compile_error()
+            }
+        }
         syn::Data::Union(u) => Error::new(
             u.union_token.span(),
             "unions are unsupported as contract types",

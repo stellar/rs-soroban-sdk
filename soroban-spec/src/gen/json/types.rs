@@ -1,6 +1,7 @@
 use serde::Serialize;
 use soroban_env_host::xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtUnionCaseV0,
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecTypeDef, ScSpecUdtEnumCaseV0, ScSpecUdtStructFieldV0,
+    ScSpecUdtUnionCaseV0,
 };
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
@@ -52,6 +53,22 @@ impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EnumCase {
+    name: String,
+    value: u32,
+}
+
+impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
+    fn from(c: &ScSpecUdtEnumCaseV0) -> Self {
+        EnumCase {
+            name: c.name.to_string_lossy(),
+            value: c.value,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "camelCase")]
 pub enum Type {
@@ -92,6 +109,10 @@ pub enum Entry {
     Union {
         name: String,
         cases: Vec<UnionCase>,
+    },
+    Enum {
+        name: String,
+        cases: Vec<EnumCase>,
     },
 }
 
@@ -152,6 +173,10 @@ impl From<&ScSpecEntry> for Entry {
             ScSpecEntry::UdtUnionV0(u) => Entry::Union {
                 name: u.name.to_string_lossy(),
                 cases: u.cases.iter().map(UnionCase::from).collect(),
+            },
+            ScSpecEntry::UdtEnumV0(e) => Entry::Enum {
+                name: e.name.to_string_lossy(),
+                cases: e.cases.iter().map(EnumCase::from).collect(),
             },
         }
     }
