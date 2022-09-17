@@ -32,7 +32,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
     if spec.lib.len() > 0 {
         let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
         quote! {
-            type #ident = ::#lib_ident::#ident;
+            pub type #ident = ::#lib_ident::#ident;
         }
     } else {
         let variants = spec.cases.iter().map(|c| {
@@ -58,7 +58,7 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
     if spec.lib.len() > 0 {
         let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
         quote! {
-            type #ident = ::#lib_ident::#ident;
+            pub type #ident = ::#lib_ident::#ident;
         }
     } else {
         let variants = spec.cases.iter().map(|c| {
