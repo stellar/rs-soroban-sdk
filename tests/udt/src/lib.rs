@@ -2,7 +2,7 @@
 use soroban_sdk::{contractimpl, contracttype, Vec};
 
 #[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UdtEnum2 {
     A = 10,
     B = 15,
@@ -13,6 +13,7 @@ pub enum UdtEnum2 {
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
+    UdtC(UdtEnum2),
 }
 
 #[contracttype]
@@ -25,17 +26,18 @@ pub struct UdtStruct {
 
 pub struct Contract;
 
-#[cfg_attr(feature = "export", contractimpl(export = true))]
-#[cfg_attr(not(feature = "export"), contractimpl(export = false))]
+#[contractimpl]
 impl Contract {
     pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
         let a = match a {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
+            UdtEnum::UdtC(val) => val as i64,
         };
         let b = match b {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
+            UdtEnum::UdtC(val) => val as i64,
         };
         a + b
     }

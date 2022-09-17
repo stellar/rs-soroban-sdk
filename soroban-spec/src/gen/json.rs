@@ -100,6 +100,15 @@ mod test {
           "name": "UdtStruct"
         }
       ]
+    },
+    {
+      "name": "UdtC",
+      "values": [
+        {
+          "type": "custom",
+          "name": "UdtEnum2"
+        }
+      ]
     }
   ]
 }{
