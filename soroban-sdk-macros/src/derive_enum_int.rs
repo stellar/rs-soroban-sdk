@@ -22,14 +22,6 @@ pub fn derive_type_enum_int(
     let (spec_cases, discriminant_consts, try_froms, intos): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .map(|v| {
-            // TODO: Choose discriminant type based on repr type of enum.
-            // TODO: Should we use variants explicit discriminant? Probably not.
-            // Should have a separate derive for those types of enums that maps
-            // to an integer type only.
-            // TODO: Use attributes tagged on variant to control whether field is included.
-            // TODO: Support multi-field enum variants.
-            // TODO: Or, error on multi-field enum variants.
-            // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
             let ident = &v.ident;
             let name = &ident.to_string();
             if let Err(e) = Symbol::try_from_str(name) {
