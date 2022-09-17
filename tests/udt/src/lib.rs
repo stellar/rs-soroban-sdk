@@ -46,7 +46,17 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, TryFromVal};
+    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, IntoVal, RawVal, TryFromVal};
+
+    #[test]
+    fn test_adsf() {
+        let e = Env::default();
+        let u: RawVal = UdtEnum2::A.into_val(&e);
+        assert_eq!(
+            u.get_payload(),
+            RawVal::from_u32(UdtEnum2::A as u32).get_payload()
+        );
+    }
 
     #[test]
     fn test_serializing() {
