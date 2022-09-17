@@ -72,6 +72,19 @@ mod test {
         assert_eq!(
             json,
             r#"{
+  "type": "enum",
+  "name": "UdtEnum2",
+  "cases": [
+    {
+      "name": "A",
+      "value": 10
+    },
+    {
+      "name": "B",
+      "value": 15
+    }
+  ]
+}{
   "type": "union",
   "name": "UdtEnum",
   "cases": [
