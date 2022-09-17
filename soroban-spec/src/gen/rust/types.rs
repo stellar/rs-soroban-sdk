@@ -54,28 +54,23 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec.
 pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
-    todo!()
-    // let ident = format_ident!("{}", spec.name.to_string().unwrap());
-    // if spec.lib.len() > 0 {
-    //     let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
-    //     quote! {
-    //         type #ident = ::#lib_ident::#ident;
-    //     }
-    // } else {
-    //     let variants = spec.cases.iter().map(|c| {
-    //         let v_ident = format_ident!("{}", c.name.to_string().unwrap());
-    //         let v_type = c
-    //             .type_
-    //             .as_ref()
-    //             .map(generate_type_ident)
-    //             .map_or_else(|| quote! {}, |t| quote! { (#t) });
-    //         quote! { #v_ident #v_type }
-    //     });
-    //     quote! {
-    //         #[::soroban_sdk::contracttype(export = false)]
-    //         pub enum #ident { #(#variants,)* }
-    //     }
-    // }
+    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    if spec.lib.len() > 0 {
+        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        quote! {
+            type #ident = ::#lib_ident::#ident;
+        }
+    } else {
+        let variants = spec.cases.iter().map(|c| {
+            let v_ident = format_ident!("{}", c.name.to_string().unwrap());
+            let v_value = c.value;
+            quote! { #v_ident = #v_value }
+        });
+        quote! {
+            #[::soroban_sdk::contracttype(export = false)]
+            pub enum #ident { #(#variants,)* }
+        }
+    }
 }
 
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
