@@ -63,7 +63,7 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
     } else {
         let variants = spec.cases.iter().map(|c| {
             let v_ident = format_ident!("{}", c.name.to_string().unwrap());
-            let v_value = c.value;
+            let v_value = Literal::u32_unsuffixed(c.value);
             quote! { #v_ident = #v_value }
         });
         quote! {
