@@ -4,7 +4,7 @@ use soroban_sdk::{contractimpl, contracttype, symbol, Symbol};
 pub struct Contract;
 
 #[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     AnError = 1,
 }
