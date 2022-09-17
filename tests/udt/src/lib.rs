@@ -3,6 +3,13 @@ use soroban_sdk::{contractimpl, contracttype, Vec};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UdtEnum2 {
+    A = 10,
+    B = 15,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
