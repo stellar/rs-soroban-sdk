@@ -1,15 +1,17 @@
 extern crate proc_macro;
 
 mod derive_client;
+mod derive_enum;
 mod derive_fn;
-mod derive_type;
+mod derive_struct;
 mod map_type;
 mod path;
 mod syn_ext;
 
 use derive_client::derive_client;
+use derive_enum::derive_type_enum;
 use derive_fn::{derive_contract_function_set, derive_fn};
-use derive_type::{derive_type_enum, derive_type_struct};
+use derive_struct::derive_type_struct;
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
