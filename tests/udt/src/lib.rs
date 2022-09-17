@@ -2,10 +2,18 @@
 use soroban_sdk::{contractimpl, contracttype, Vec};
 
 #[contracttype]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UdtEnum2 {
+    A = 10,
+    B = 15,
+}
+
+#[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
+    UdtC(UdtEnum2),
 }
 
 #[contracttype]
@@ -18,17 +26,18 @@ pub struct UdtStruct {
 
 pub struct Contract;
 
-#[cfg_attr(feature = "export", contractimpl(export = true))]
-#[cfg_attr(not(feature = "export"), contractimpl(export = false))]
+#[contractimpl]
 impl Contract {
     pub fn add(a: UdtEnum, b: UdtEnum) -> i64 {
         let a = match a {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
+            UdtEnum::UdtC(val) => val as i64,
         };
         let b = match b {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
+            UdtEnum::UdtC(val) => val as i64,
         };
         a + b
     }
@@ -37,7 +46,17 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, TryFromVal};
+    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, IntoVal, RawVal, TryFromVal};
+
+    #[test]
+    fn test_adsf() {
+        let e = Env::default();
+        let u: RawVal = UdtEnum2::A.into_val(&e);
+        assert_eq!(
+            u.get_payload(),
+            RawVal::from_u32(UdtEnum2::A as u32).get_payload()
+        );
+    }
 
     #[test]
     fn test_serializing() {
