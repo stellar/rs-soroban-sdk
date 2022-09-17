@@ -96,6 +96,19 @@ struct ContractTypeArgs {
 
 /// Generates conversions from the struct/enum from/into a `RawVal`.
 ///
+/// There are some constraints on the types that are supported:
+/// - Enums with integer values must have an explicit integer literal for every
+/// variant.
+/// - Enums with unit variants are supported.
+/// - Enums with tuple-like variants with a maximum of one tuple field are
+/// supported. The tuple field must be of a type that is also convertible to and
+/// from `RawVal`.
+/// - Enums with struct-like variants are not supported.
+/// - Structs are supported. All fields must be of a type that is also
+/// convertible to and from `RawVal`.
+/// - All variant names, field names, and type names must be 10-characters or
+/// less in length.
+///
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
 #[proc_macro_attribute]
