@@ -3,6 +3,7 @@ extern crate proc_macro;
 mod derive_client;
 mod derive_enum;
 mod derive_enum_int;
+mod derive_error_enum_int;
 mod derive_fn;
 mod derive_struct;
 mod map_type;
@@ -12,6 +13,7 @@ mod syn_ext;
 use derive_client::derive_client;
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
+use derive_error_enum_int::derive_type_error_enum_int;
 use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_struct::derive_type_struct;
 
@@ -148,6 +150,63 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         syn::Data::Union(u) => Error::new(
             u.union_token.span(),
             "unions are unsupported as contract types",
+        )
+        .to_compile_error(),
+    };
+    quote! {
+        #input
+        #derived
+    }
+    .into()
+}
+
+/// Generates conversions from the repr(u32) enum from/into a `Status`.
+///
+/// There are some constraints on the types that are supported:
+/// - Enum variants must have an explicit integer literal.
+/// - Enum variants must have a value convertible to u32.
+///
+/// Includes the type in the contract spec so that clients can generate bindings
+/// for the type.
+#[proc_macro_attribute]
+pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractTypeArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let input = parse_macro_input!(input as DeriveInput);
+    let ident = &input.ident;
+    // If the export argument has a value, do as it instructs regarding
+    // exporting. If it does not have a value, export if the type is pub.
+    let gen_spec = if let Some(export) = args.export {
+        export
+    } else {
+        matches!(input.vis, Visibility::Public(_))
+    };
+    let derived = match &input.data {
+        syn::Data::Enum(e) => {
+            let count_of_variants = e.variants.len();
+            let count_of_int_variants = e
+                .variants
+                .iter()
+                .filter(|v| v.discriminant.is_some())
+                .count();
+            if count_of_int_variants == count_of_variants {
+                derive_type_error_enum_int(ident, e, gen_spec, &args.lib)
+            } else {
+                Error::new(input.span(), "enums are supported as contract errors only when all variants have an explicit integer literal")
+                    .to_compile_error()
+            }
+        }
+        syn::Data::Struct(s) => Error::new(
+            s.struct_token.span(),
+            "structs are unsupported as contract errors",
+        )
+        .to_compile_error(),
+        syn::Data::Union(u) => Error::new(
+            u.union_token.span(),
+            "unions are unsupported as contract errors",
         )
         .to_compile_error(),
     };

@@ -10,7 +10,7 @@ use stellar_xdr::{self, ScSpecEntry};
 
 use crate::read::{from_wasm, FromWasmError};
 
-use types::{generate_enum, generate_struct, generate_union};
+use types::{generate_enum, generate_error_enum, generate_struct, generate_union};
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
@@ -59,12 +59,14 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
     let mut spec_enums = Vec::new();
+    let mut spec_error_enums = Vec::new();
     for s in specs {
         match s {
             ScSpecEntry::FunctionV0(f) => spec_fns.push(f),
             ScSpecEntry::UdtStructV0(s) => spec_structs.push(s),
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
             ScSpecEntry::UdtEnumV0(e) => spec_enums.push(e),
+            ScSpecEntry::UdtErrorEnumV0(e) => spec_error_enums.push(e),
         }
     }
 
@@ -75,6 +77,7 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
     let enums = spec_enums.iter().map(|s| generate_enum(s));
+    let error_enums = spec_error_enums.iter().map(|s| generate_error_enum(s));
 
     quote! {
         pub const WASM: &[u8] = ::soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
@@ -85,5 +88,6 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
         #(#structs)*
         #(#unions)*
         #(#enums)*
+        #(#error_enums)*
     }
 }

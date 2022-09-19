@@ -1,9 +1,9 @@
 #![no_std]
-use soroban_sdk::{contractimpl, contracttype, symbol, Symbol};
+use soroban_sdk::{contracterror, contractimpl, symbol, Status, Symbol};
 
 pub struct Contract;
 
-#[contracttype]
+#[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     AnError = 1,
@@ -11,11 +11,11 @@ pub enum Error {
 
 #[contractimpl]
 impl Contract {
-    pub fn hello(flag: u32) -> Result<Symbol, Error> {
+    pub fn hello(flag: u32) -> Result<Symbol, Status> {
         if flag == 0 {
             Ok(symbol!("hello"))
         } else {
-            Err(Error::AnError)
+            Err(Error::AnError.into())
         }
     }
 }
@@ -37,6 +37,6 @@ mod test {
         assert_eq!(res, Ok(symbol!("hello")));
 
         let res = client.hello(&1);
-        assert_eq!(res, Err(Error::AnError));
+        assert_eq!(res, Err(Error::AnError.into()));
     }
 }

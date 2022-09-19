@@ -1,6 +1,8 @@
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
-use stellar_xdr::{ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0};
+use stellar_xdr::{
+    ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
+};
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
@@ -68,6 +70,28 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
         });
         quote! {
             #[::soroban_sdk::contracttype(export = false)]
+            pub enum #ident { #(#variants,)* }
+        }
+    }
+}
+
+/// Constructs a token stream containing a single enum that mirrors the enum
+/// spec, that is intended for use with errors.
+pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
+    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    if spec.lib.len() > 0 {
+        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        quote! {
+            pub type #ident = ::#lib_ident::#ident;
+        }
+    } else {
+        let variants = spec.cases.iter().map(|c| {
+            let v_ident = format_ident!("{}", c.name.to_string().unwrap());
+            let v_value = Literal::u32_unsuffixed(c.value);
+            quote! { #v_ident = #v_value }
+        });
+        quote! {
+            #[::soroban_sdk::contracterror(export = false)]
             pub enum #ident { #(#variants,)* }
         }
     }
