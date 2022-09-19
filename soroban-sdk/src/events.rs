@@ -118,21 +118,22 @@ impl Events {
 }
 
 #[cfg(feature = "testutils")]
-use crate::{testutils, xdr, TryIntoVal};
+use crate::{
+    testutils,
+    xdr::{self, ScVal},
+};
 
 #[cfg(feature = "testutils")]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
+    fn all(&self) -> std::vec::Vec<([u8; 32], std::vec::Vec<ScVal>, ScVal)> {
         let env = self.env();
-        let mut vec = Vec::new(env);
-        self.env()
-            .host()
+        env.host()
             .get_events()
             .unwrap()
             .0
             .into_iter()
-            .for_each(|e| {
+            .filter_map(|e| {
                 if let internal::events::HostEvent::Contract(xdr::ContractEvent {
                     type_: xdr::ContractEventType::Contract,
                     contract_id: Some(contract_id),
@@ -140,13 +141,11 @@ impl testutils::Events for Events {
                     ..
                 }) = e
                 {
-                    vec.push_back((
-                        contract_id.0.into_val(env),
-                        topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
-                    ))
+                    Some((contract_id.0, topics.into(), data))
+                } else {
+                    None
                 }
-            });
-        vec
+            })
+            .collect()
     }
 }

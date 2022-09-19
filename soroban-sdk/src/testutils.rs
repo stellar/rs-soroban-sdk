@@ -8,7 +8,7 @@ pub use test_sign::ed25519;
 
 pub use crate::env::testutils::*;
 
-use crate::{Env, RawVal, Symbol, Vec};
+use crate::{xdr::ScVal, Env, RawVal, Symbol};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -23,7 +23,7 @@ pub trait Events {
     /// - Contract ID
     /// - Event Topics as a [`Vec<RawVal>`]
     /// - Event Data as a [`RawVal`]
-    fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)>;
+    fn all(&self) -> std::vec::Vec<([u8; 32], std::vec::Vec<ScVal>, ScVal)>;
 }
 
 /// Test utilities for [`Logger`][crate::logging::Logger].

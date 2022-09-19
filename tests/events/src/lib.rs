@@ -15,8 +15,8 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    extern crate alloc;
-    use soroban_sdk::{symbol, testutils::Events, vec, BytesN, Env, IntoVal};
+    extern crate std;
+    use soroban_sdk::{symbol, testutils::Events, xdr::ScVal, BytesN, Env, IntoVal};
 
     use crate::{Contract, ContractClient};
 
@@ -31,22 +31,27 @@ mod test {
 
         assert_eq!(
             env.events().all(),
-            vec![
-                &env,
+            std::vec![
                 // Expect 2 events.
                 (
-                    contract_id.clone(),
+                    &[0; 32],
                     // Expect these event topics.
-                    (symbol!("greetings"), symbol!("topic2")).into_val(&env),
+                    std::vec![
+                        ScVal::Symbol("greetings".try_into().unwrap()),
+                        ScVal::Symbol("topic2".try_into().unwrap()),
+                    ],
                     // Expect this event body.
-                    symbol!("hello").into_val(&env)
+                    ScVal::Symbol("hello".try_into().unwrap()),
                 ),
                 (
-                    contract_id.clone(),
+                    &[0; 32],
                     // Expect these event topics.
-                    (symbol!("farewells"), symbol!("topic2")).into_val(&env),
+                    std::vec![
+                        ScVal::Symbol("farewells".try_into().unwrap()),
+                        ScVal::Symbol("topic2".try_into().unwrap()),
+                    ],
                     // Expect this event body.
-                    symbol!("bye").into_val(&env)
+                    ScVal::Symbol("byte".try_into().unwrap()),
                 ),
             ],
         );
