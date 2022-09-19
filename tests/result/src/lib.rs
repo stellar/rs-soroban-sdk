@@ -22,12 +22,12 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{symbol, BytesN, Env};
+    use soroban_sdk::{symbol, BytesN, Env, Status};
 
     use crate::{Contract, ContractClient, Error};
 
     #[test]
-    fn test_hello() {
+    fn hello_ok() {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
@@ -38,22 +38,20 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
-    fn test_hello_uncaught_error() {
+    fn hello_error() {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let _ = client.hello(&1);
-        // TODO:
-        // e.assert_panic_with_status(Status::from_contract_error(Error::AnError as u32), |e| {
-        //     let _ = client.hello(&1);
-        // })
+        let expected_status = Status::from_contract_error(Error::AnError as u32);
+        e.assert_panic_with_status(expected_status, |_| {
+            let _ = client.hello(&1);
+        })
     }
 
     #[test]
-    fn test_hello_error_handling_ok() {
+    fn try_hello_ok() {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
@@ -64,7 +62,7 @@ mod test {
     }
 
     #[test]
-    fn test_hello_error_handling_err() {
+    fn try_hello_error() {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
@@ -73,10 +71,4 @@ mod test {
         let res = client.try_hello(&1);
         assert_eq!(res, Err(Ok(Error::AnError)));
     }
-
-    // let res = client.hello(&0);
-    // assert_eq!(res, Ok(symbol!("hello")));
-
-    // let res = client.hello(&1);
-    // assert_eq!(res, Err(Error::AnError.into()));
 }
