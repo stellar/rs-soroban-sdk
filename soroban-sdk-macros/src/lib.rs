@@ -163,6 +163,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
 /// Generates conversions from the repr(u32) enum from/into a `Status`.
 ///
 /// There are some constraints on the types that are supported:
+/// - Enum must derive `Copy`.
 /// - Enum variants must have an explicit integer literal.
 /// - Enum variants must have a value convertible to u32.
 ///

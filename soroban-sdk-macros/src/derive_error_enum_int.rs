@@ -103,12 +103,68 @@ pub fn derive_type_error_enum_int(
             }
         }
 
+        impl TryFrom<&soroban_sdk::Status> for #enum_ident {
+            type Error = soroban_sdk::Status;
+            #[inline(always)]
+            fn try_from(status: &soroban_sdk::Status) -> Result<Self, Self::Error> {
+                <_ as TryFrom<soroban_sdk::Status>>::try_from(*status)
+            }
+        }
+
         impl From<#enum_ident> for soroban_sdk::Status {
             #[inline(always)]
             fn from(val: #enum_ident) -> soroban_sdk::Status {
                 match val {
                     #(#intos,)*
                 }
+            }
+        }
+
+        impl From<&#enum_ident> for soroban_sdk::Status {
+            #[inline(always)]
+            fn from(val: &#enum_ident) -> soroban_sdk::Status {
+                <_ as From<#enum_ident>>::from(*val)
+            }
+        }
+
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal> for #enum_ident {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::RawVal) -> Result<Self, Self::Error> {
+                use soroban_sdk::TryIntoVal;
+                let status: soroban_sdk::Status = val.try_into_val(env)?;
+                if !status.is_type(soroban_sdk::xdr::ScStatusType::ContractError) {
+                    return Err(soroban_sdk::ConversionError);
+                }
+                let discriminant: u32 = status.get_code();
+                Ok(match discriminant {
+                    #(#try_froms,)*
+                    _ => Err(soroban_sdk::ConversionError)?,
+                })
+            }
+        }
+
+        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #enum_ident> for soroban_sdk::RawVal {
+            type Error = soroban_sdk::ConversionError;
+            #[inline(always)]
+            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#enum_ident, Self::Error> {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, self)
+            }
+        }
+
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for #enum_ident {
+            #[inline(always)]
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
+                let status: Status = self.into();
+                status.into_val(env)
+            }
+        }
+
+        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for &#enum_ident {
+            #[inline(always)]
+            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
+                let status: Status = self.into();
+                status.into_val(env)
             }
         }
     }

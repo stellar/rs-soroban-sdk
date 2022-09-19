@@ -22,7 +22,7 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{symbol, BytesN, Env, Status};
+    use soroban_sdk::{symbol, BytesN, Env};
 
     use crate::{Contract, ContractClient, Error};
 
@@ -70,7 +70,7 @@ mod test {
         e.register_contract(&contract_id, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.try_hello(&0);
+        let res = client.try_hello(&1);
         assert_eq!(res, Err(Ok(Error::AnError)));
     }
 
