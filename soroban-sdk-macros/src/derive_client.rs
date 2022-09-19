@@ -5,7 +5,8 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::Comma,
-    Attribute, Error, FnArg, Ident, ItemImpl, ItemTrait, ReturnType, Token, Type, TypePath,
+    AngleBracketedGenericArguments, Attribute, Error, FnArg, Ident, ItemImpl, ItemTrait,
+    PathArguments, PathSegment, ReturnType, Token, Type, TypePath,
 };
 
 use crate::syn_ext;
@@ -67,18 +68,116 @@ pub struct ClientFn<'a> {
 }
 
 impl<'a> ClientFn<'a> {
-    pub fn output_type(&self) -> Type {
+    pub fn output(&self) -> Type {
         match self.output {
             ReturnType::Default => Type::Verbatim(quote!(())),
-            ReturnType::Type(_, typ) => *typ.clone(),
+            ReturnType::Type(_, typ) => {
+                let typ = *typ.clone();
+                let unwrapped_type = match &typ {
+                    Type::Path(TypePath { path, .. }) => {
+                        if let Some(PathSegment {
+                            ident,
+                            arguments:
+                                PathArguments::AngleBracketed(AngleBracketedGenericArguments {
+                                    args,
+                                    ..
+                                }),
+                        }) = path.segments.last()
+                        {
+                            let args = args.iter().collect::<Vec<_>>();
+                            match (&ident.to_string()[..], args.as_slice()) {
+                                ("Result", [t, _]) => Some(Type::Verbatim(quote!(#t))),
+                                _ => None,
+                            }
+                        } else {
+                            None
+                        }
+                    }
+                    _ => None,
+                };
+                if let Some(unwrapped_type) = unwrapped_type {
+                    unwrapped_type
+                } else {
+                    Type::Verbatim(quote!(#typ))
+                }
+            }
         }
+    }
+    pub fn try_output(&self) -> Type {
+        match self.output {
+            ReturnType::Default => Type::Verbatim(quote!(Result<(), Result<Status, Status>)),
+            ReturnType::Type(_, typ) => {
+                let typ = *typ.clone();
+                let result_type = match &typ {
+                    Type::Path(TypePath { path, .. }) => {
+                        if let Some(PathSegment {
+                            ident,
+                            arguments:
+                                PathArguments::AngleBracketed(AngleBracketedGenericArguments {
+                                    args,
+                                    ..
+                                }),
+                        }) = path.segments.last()
+                        {
+                            let args = args.iter().collect::<Vec<_>>();
+                            match (&ident.to_string()[..], args.as_slice()) {
+                                ("Result", [t, e]) => Some(Type::Verbatim(quote! {
+                                    Result<
+                                        Result<
+                                            #t,
+                                            <#t as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
+                                        >,
+                                        Result<
+                                            #e,
+                                            <#e as TryFrom<::soroban_sdk::Status>>::Error
+                                        >
+                                    >
+                                })),
+                                _ => None,
+                            }
+                        } else {
+                            None
+                        }
+                    }
+                    _ => None,
+                };
+                if let Some(result_type) = result_type {
+                    result_type
+                } else {
+                    Type::Verbatim(quote! {
+                        Result<
+                            Result<
+                                #typ,
+                                <#typ as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
+                            >,
+                            Result<
+                                ::soroban_sdk::Status,
+                                <Status as TryFrom<::soroban_sdk::Status>>::Error
+                            >
+                        >
+                    })
+                }
+            }
+        }
+        // Result<
+        //     Result<
+        //         #fn_output_type,
+        //         <#fn_output_type as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
+        //     >,
+        //     Result<
+        //         #fn_output_type,
+        //         <#fn_output_type as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
+        //     >,
+        //     ::soroban_sdk::Status
+        // >,
     }
 }
 
 pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     // Map the traits methods to methods for the Client.
     let mut errors = Vec::<Error>::new();
-    let fns: Vec<_> = fns.iter()
+    let fns: Vec<_> = fns
+        .iter()
         .map(|f| {
             let fn_ident = &f.ident;
             let fn_try_ident = format_ident!("try_{}", &f.ident);
@@ -106,24 +205,25 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
             });
 
             // Map all remaining inputs.
-            let (fn_input_names, fn_input_types): (Vec<_>, Vec<_>) = f.inputs
+            let (fn_input_names, fn_input_types): (Vec<_>, Vec<_>) = f
+                .inputs
                 .iter()
                 .skip(if env_input.is_some() { 1 } else { 0 })
                 .map(|t| {
                     let ident = match syn_ext::fn_arg_ident(t) {
                         Ok(ident) => ident,
                         Err(_) => {
-                                errors.push(Error::new(t.span(), "argument not supported"));
-                                format_ident!("")
-                        },
+                            errors.push(Error::new(t.span(), "argument not supported"));
+                            format_ident!("")
+                        }
                     };
                     (ident, syn_ext::fn_arg_make_ref(t))
                 })
                 .unzip();
-            let fn_output = f.output;
-            let fn_output_type = f.output_type();
-            quote!{
-                pub fn #fn_ident(&self, #(#fn_input_types),*) #fn_output {
+            let fn_output = f.output();
+            let fn_try_output = f.try_output();
+            quote! {
+                pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                     use ::soroban_sdk::IntoVal;
                     self.env.invoke_contract(
                         &self.contract_id,
@@ -132,7 +232,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                     )
                 }
 
-                pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> Result<Result<#fn_output_type, <#fn_output_type as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>, ::soroban_sdk::Status> {
+                pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                     use ::soroban_sdk::IntoVal;
                     self.env.try_invoke_contract(
                         &self.contract_id,
