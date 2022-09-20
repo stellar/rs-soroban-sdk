@@ -40,6 +40,7 @@ impl Signature {
         }
     }
 
+    #[doc(hidden)]
     #[deprecated(note = "use Signature::identifier(...)")]
     pub fn get_identifier(&self, env: &Env) -> Identifier {
         self.identifier(env)
