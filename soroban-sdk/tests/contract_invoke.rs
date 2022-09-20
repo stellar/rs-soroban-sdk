@@ -34,9 +34,9 @@ fn test_try_invoke() {
     let res = ContractClient::new(&e, &contract_id).try_panic();
     assert_eq!(
         res,
-        Err(Status::from_type_and_code(
+        Err(Ok(Status::from_type_and_code(
             ScStatusType::VmError,
             ScVmErrorCode::Function as u32,
-        ))
+        )))
     );
 }
