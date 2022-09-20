@@ -187,13 +187,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let derived = match &input.data {
         syn::Data::Enum(e) => {
-            let count_of_variants = e.variants.len();
-            let count_of_int_variants = e
-                .variants
-                .iter()
-                .filter(|v| v.discriminant.is_some())
-                .count();
-            if count_of_int_variants == count_of_variants {
+            if e.variants.iter().all(|v| v.discriminant.is_some()) {
                 derive_type_error_enum_int(ident, e, gen_spec, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract errors only when all variants have an explicit integer literal")
