@@ -88,9 +88,9 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "bytes-lit"
-version = "0.0.3"
+version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3a949b8abd1d84c29a91f4c8480dac1b426d53cebc9a31a8424a5cbe5be32f6"
+checksum = "1c181bca161a49348b90fa75f9a54fe11b7138098eed90d841a1055d574b4250"
 dependencies = [
  "num-bigint",
  "proc-macro2",

@@ -62,10 +62,10 @@ macro_rules! bigint {
         $crate::BigInt::from_slice($env, &[$($x),+])
     };
     ($env:expr, $x:tt $(,)?) => {
-        $crate::BigInt::from_slice($env, &$crate::__bytes_lit_bytes!($x))
+        $crate::BigInt::from_slice($env, &$crate::__bytes_lit_bytesmin!($x))
     };
     ($env:expr, -$x:tt $(,)?) => {
-        $crate::BigInt::from_sign_and_slice($env, &$crate::Sign::Minus, &$crate::__bytes_lit_bytes!($x))
+        $crate::BigInt::from_sign_and_slice($env, &$crate::Sign::Minus, &$crate::__bytes_lit_bytesmin!($x))
     };
 }
 
@@ -1550,6 +1550,8 @@ mod test {
         assert_eq!(bigint!(&env, 1), BigInt::from_u64(&env, 1),);
 
         assert_eq!(bigint!(&env, 0x10), BigInt::from_u64(&env, 16),);
+
+        assert_eq!(bigint!(&env, 0x0010), BigInt::from_u64(&env, 16),);
 
         let big = bigint!(&env, 340_282_366_920_938_463_463_374_607_431_768_211_456);
         assert_eq!(big.bits(), 129);
