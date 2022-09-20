@@ -1,7 +1,6 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use soroban_env_common::Symbol;
 use stellar_xdr::ScSpecUdtEnumV0;
 use syn::{spanned::Spanned, DataEnum, Error, ExprLit, Ident, Lit};
 
@@ -24,9 +23,6 @@ pub fn derive_type_enum_int(
         .map(|v| {
             let ident = &v.ident;
             let name = &ident.to_string();
-            if let Err(e) = Symbol::try_from_str(name) {
-                errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
-            }
             let discriminant: u32 = if let syn::Expr::Lit(ExprLit {
                 lit: Lit::Int(ref lit_int),
                 ..
