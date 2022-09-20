@@ -1107,6 +1107,9 @@ mod test {
             b.push(1);
             b
         });
+        assert_eq!(bytes!(&env, 0x0000030201), {
+            Bytes::from_array(&env, &[0, 0, 3, 2, 1])
+        });
     }
 
     #[test]
@@ -1124,6 +1127,9 @@ mod test {
         let env = Env::default();
         assert_eq!(bytesn!(&env, 0x030201), {
             BytesN::from_array(&env, &[3, 2, 1])
+        });
+        assert_eq!(bytesn!(&env, 0x0000030201), {
+            BytesN::from_array(&env, &[0, 0, 3, 2, 1])
         });
     }
 
