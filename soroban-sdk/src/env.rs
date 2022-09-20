@@ -1,3 +1,4 @@
+use core::convert::TryInto;
 use core::fmt::Debug;
 
 #[cfg(target_family = "wasm")]
@@ -95,27 +96,36 @@ impl Env {
     ///
     /// Will panic if the value returned from the contract cannot be converted
     /// into the type `T`.
-    pub fn invoke_contract<T: TryFromVal<Env, RawVal>>(
+    pub fn invoke_contract<T>(
         &self,
         contract_id: &BytesN<32>,
         func: &Symbol,
         args: Vec<RawVal>,
-    ) -> T {
+    ) -> T
+    where
+        T: TryFromVal<Env, RawVal>,
+    {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv).map_err(|_| ()).unwrap()
+        T::try_from_val(self, rv.clone())
+            .map_err(|_| ConversionError)
+            .unwrap()
     }
 
     /// Invokes a function of a contract that is registered in the [Env],
     /// returns an error if the invocation fails for any reason.
-    pub fn try_invoke_contract<T: TryFromVal<Env, RawVal>>(
+    pub fn try_invoke_contract<T, E>(
         &self,
         contract_id: &BytesN<32>,
         func: &Symbol,
         args: Vec<RawVal>,
-    ) -> Result<Result<T, T::Error>, Status> {
+    ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
+    where
+        T: TryFromVal<Env, RawVal>,
+        E: TryFrom<Status>,
+    {
         let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
         match Status::try_from_val(self, rv) {
-            Ok(status) => Err(status),
+            Ok(status) => Err(E::try_from(status)),
             Err(ConversionError) => Ok(T::try_from_val(self, rv)),
         }
     }
