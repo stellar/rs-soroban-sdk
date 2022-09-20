@@ -133,14 +133,7 @@ pub fn derive_type_error_enum_int(
             fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::RawVal) -> Result<Self, Self::Error> {
                 use soroban_sdk::TryIntoVal;
                 let status: soroban_sdk::Status = val.try_into_val(env)?;
-                if !status.is_type(soroban_sdk::xdr::ScStatusType::ContractError) {
-                    return Err(soroban_sdk::ConversionError);
-                }
-                let discriminant: u32 = status.get_code();
-                Ok(match discriminant {
-                    #(#try_froms,)*
-                    _ => Err(soroban_sdk::ConversionError)?,
-                })
+                status.try_into().map_err(|_| soroban_sdk::ConversionError)
             }
         }
 
