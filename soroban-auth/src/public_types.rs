@@ -58,8 +58,8 @@ pub enum Identifier {
     Account(BytesN<32>),
 }
 
-/// Signature payload v0 contains the data that must be signed to auth the
-/// invocation of a contract.
+/// Signature payload v0 contains the data that must be signed to authenticate
+/// the [`Identifier`] within when invoking a contract.
 ///
 /// The data contained within includes a domain separator formed from:
 ///
@@ -89,8 +89,8 @@ pub struct SignaturePayloadV0 {
     pub args: Vec<RawVal>,
 }
 
-/// Signature payload contains the data that must be signed to auth the
-/// invocation of a contract.
+/// Signature payload contains the data that must be signed to authenticate the
+/// [`Identifier`] within when invoking a contract.
 #[derive(Clone)]
 #[contracttype(lib = "soroban_auth")]
 pub enum SignaturePayload {

@@ -1,4 +1,5 @@
-//! Soroban auth provides basic auth capabilities to Soroban contracts.
+//! Soroban auth provides basic authentication capabilities to Soroban
+//! contracts.
 //!
 //! See [`verify`] for how to use.
 //!
