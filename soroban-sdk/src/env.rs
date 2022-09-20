@@ -106,22 +106,9 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
     {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        match T::try_from_val(self, rv.clone()) {
-            Ok(t) => t,
-            Err(_) => {
-                // In tests we'll manually lift the conversion error that would
-                // be a regular panic into a status panic, so that the
-                // experience catching panics in tests is the same as it will be
-                // in the WASM environment, where the panics will become a
-                // Status.
-                if !cfg!(target_family = "wasm") {
-                    if let Ok(status) = Status::try_from_val(self, rv) {
-                        std::panic::panic_any(status);
-                    }
-                }
-                panic!("");
-            }
-        }
+        T::try_from_val(self, rv.clone())
+            .map_err(|_| ConversionError)
+            .unwrap()
     }
 
     /// Invokes a function of a contract that is registered in the [Env],
