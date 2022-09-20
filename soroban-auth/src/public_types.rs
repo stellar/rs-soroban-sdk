@@ -32,6 +32,7 @@ pub enum Signature {
 }
 
 impl Signature {
+    /// Returns the identifier that this signatures claims to authenticate.
     pub fn identifier(&self, env: &Env) -> Identifier {
         match self {
             Signature::Contract => Identifier::Contract(env.get_invoking_contract()),
