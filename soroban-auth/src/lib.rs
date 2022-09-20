@@ -1,6 +1,6 @@
 #![no_std]
 
-use soroban_sdk::{serde::Serialize, Account, BytesN, Env, RawVal, Symbol, Vec};
+use soroban_sdk::{serde::Serialize, Account, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 
 mod public_types;
 pub use crate::public_types::{
@@ -17,7 +17,7 @@ fn check_ed25519_auth(env: &Env, auth: &Ed25519Signature, function: Symbol, args
     };
     let msg_bin = SignaturePayload::V0(msg).serialize(env);
 
-    env.verify_sig_ed25519(auth.public_key.clone(), msg_bin, auth.signature.clone());
+    env.verify_sig_ed25519(&auth.public_key, &msg_bin, &auth.signature);
 }
 
 fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, args: Vec<RawVal>) {
@@ -47,7 +47,7 @@ fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, arg
             }
         }
 
-        env.verify_sig_ed25519(sig.public_key.clone(), msg_bytes.clone(), sig.signature);
+        env.verify_sig_ed25519(&sig.public_key, &msg_bytes, &sig.signature);
 
         weight = weight
             .checked_add(acc.signer_weight(&sig.public_key))
@@ -64,12 +64,17 @@ fn check_account_auth(env: &Env, auth: &AccountSignatures, function: Symbol, arg
 /// Verifies a Signature. It's important to note that this module does
 /// not provide replay protection. That will need to be implemented by
 /// the user.
-pub fn check_auth(env: &Env, sig: &Signature, function: Symbol, args: Vec<RawVal>) {
+pub fn check_auth(
+    env: &Env,
+    sig: &Signature,
+    function: Symbol,
+    args: impl IntoVal<Env, Vec<RawVal>>,
+) {
     match sig {
         Signature::Contract => {
             env.get_invoking_contract();
         }
-        Signature::Ed25519(kea) => check_ed25519_auth(env, &kea, function, args),
-        Signature::Account(kaa) => check_account_auth(env, &kaa, function, args),
+        Signature::Ed25519(kea) => check_ed25519_auth(env, &kea, function, args.into_val(env)),
+        Signature::Account(kaa) => check_account_auth(env, &kaa, function, args.into_val(env)),
     }
 }

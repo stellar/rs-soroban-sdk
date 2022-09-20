@@ -164,6 +164,18 @@ where
     }
 }
 
+impl<T> IntoVal<Env, Vec<RawVal>> for Vec<T> {
+    fn into_val(self, _env: &Env) -> Vec<RawVal> {
+        unsafe { Vec::unchecked_new(self.0) }
+    }
+}
+
+impl<T> IntoVal<Env, Vec<RawVal>> for &Vec<T> {
+    fn into_val(self, _env: &Env) -> Vec<RawVal> {
+        unsafe { Vec::unchecked_new(self.0.clone()) }
+    }
+}
+
 impl<T> TryFromVal<Env, Object> for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,

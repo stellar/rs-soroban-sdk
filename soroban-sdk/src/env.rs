@@ -221,7 +221,7 @@ impl Env {
     }
 
     /// Computes a SHA-256 hash.
-    pub fn compute_hash_sha256(&self, msg: Bytes) -> BytesN<32> {
+    pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
         let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
         bin_obj.try_into_val(self).unwrap()
     }
@@ -238,7 +238,7 @@ impl Env {
     /// ### TODO
     ///
     /// Return a [Result] instead of panicking.
-    pub fn verify_sig_ed25519(&self, pk: BytesN<32>, msg: Bytes, sig: BytesN<64>) {
+    pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
         internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
             .try_into()
             .unwrap()
