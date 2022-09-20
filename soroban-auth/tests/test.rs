@@ -50,12 +50,7 @@ impl TestContract {
 
         verify_and_consume_nonce(&e, &auth_id, &nonce);
 
-        check_auth(
-            &e,
-            &sig,
-            symbol!("verify_sig"),
-            (&auth_id, nonce).into_val(&e),
-        );
+        check_auth(&e, &sig, symbol!("verify_sig"), (&auth_id, nonce));
     }
 
     pub fn nonce(e: Env, id: Identifier) -> BigInt {
