@@ -5,8 +5,8 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, Error, FnArg, Ident, ItemImpl, ItemTrait,
-    PathArguments, PathSegment, ReturnType, Token, Type, TypePath,
+    AngleBracketedGenericArguments, Attribute, Error, FnArg, GenericArgument, Ident, ItemImpl,
+    ItemTrait, PathArguments, PathSegment, ReturnType, Token, Type, TypePath,
 };
 
 use crate::syn_ext;
@@ -72,31 +72,8 @@ impl<'a> ClientFn<'a> {
         match self.output {
             ReturnType::Default => Type::Verbatim(quote!(())),
             ReturnType::Type(_, typ) => {
-                let typ = *typ.clone();
-                let unwrapped_type = match &typ {
-                    Type::Path(TypePath { path, .. }) => {
-                        if let Some(PathSegment {
-                            ident,
-                            arguments:
-                                PathArguments::AngleBracketed(AngleBracketedGenericArguments {
-                                    args,
-                                    ..
-                                }),
-                        }) = path.segments.last()
-                        {
-                            let args = args.iter().collect::<Vec<_>>();
-                            match (&ident.to_string()[..], args.as_slice()) {
-                                ("Result", [t, _]) => Some(Type::Verbatim(quote!(#t))),
-                                _ => None,
-                            }
-                        } else {
-                            None
-                        }
-                    }
-                    _ => None,
-                };
-                if let Some(unwrapped_type) = unwrapped_type {
-                    unwrapped_type
+                if let Some((t, _)) = unpack_result(typ) {
+                    Type::Verbatim(quote!(#t))
                 } else {
                     Type::Verbatim(quote!(#typ))
                 }
@@ -105,71 +82,36 @@ impl<'a> ClientFn<'a> {
     }
     pub fn try_output(&self) -> Type {
         match self.output {
-            ReturnType::Default => Type::Verbatim(quote!(Result<(), Result<Status, Status>)),
+            ReturnType::Default => Type::Verbatim(quote!(
+                Result<
+                    Result<
+                        (),
+                        <() as ::soroban_sdk::TryFromVal<
+                            ::soroban_sdk::Env,
+                            ::soroban_sdk::RawVal,
+                        >>::Error,
+                    >,
+                    Result<::soroban_sdk::Status, ::core::convert::Infallible>,
+                >
+            )),
             ReturnType::Type(_, typ) => {
-                let typ = *typ.clone();
-                let result_type = match &typ {
-                    Type::Path(TypePath { path, .. }) => {
-                        if let Some(PathSegment {
-                            ident,
-                            arguments:
-                                PathArguments::AngleBracketed(AngleBracketedGenericArguments {
-                                    args,
-                                    ..
-                                }),
-                        }) = path.segments.last()
-                        {
-                            let args = args.iter().collect::<Vec<_>>();
-                            match (&ident.to_string()[..], args.as_slice()) {
-                                ("Result", [t, e]) => Some(Type::Verbatim(quote! {
-                                    Result<
-                                        Result<
-                                            #t,
-                                            <#t as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
-                                        >,
-                                        Result<
-                                            #e,
-                                            <#e as TryFrom<::soroban_sdk::Status>>::Error
-                                        >
-                                    >
-                                })),
-                                _ => None,
-                            }
-                        } else {
-                            None
-                        }
-                    }
-                    _ => None,
-                };
-                if let Some(result_type) = result_type {
-                    result_type
+                if let Some((t, e)) = unpack_result(typ) {
+                    Type::Verbatim(quote! {
+                        Result<
+                            Result<#t, <#t as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>,
+                            Result<#e, <#e as TryFrom<::soroban_sdk::Status>>::Error>
+                        >
+                    })
                 } else {
                     Type::Verbatim(quote! {
                         Result<
-                            Result<
-                                #typ,
-                                <#typ as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
-                            >,
-                            Result<
-                                ::soroban_sdk::Status,
-                                <Status as TryFrom<::soroban_sdk::Status>>::Error
-                            >
+                            Result<#typ, <#typ as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>,
+                            Result<::soroban_sdk::Status, <::soroban_sdk::Status as TryFrom<::soroban_sdk::Status>>::Error>
                         >
                     })
                 }
             }
         }
-        // Result<
-        //     Result<
-        //         #fn_output_type,
-        //         <#fn_output_type as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
-        //     >,
-        //     Result<
-        //         #fn_output_type,
-        //         <#fn_output_type as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error
-        //     >,
-        //     ::soroban_sdk::Status
-        // >,
     }
 }
 
@@ -267,5 +209,29 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
 
             #(#fns)*
         }
+    }
+}
+
+fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
+    match &typ {
+        Type::Path(TypePath { path, .. }) => {
+            if let Some(PathSegment {
+                ident,
+                arguments:
+                    PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }),
+            }) = path.segments.last()
+            {
+                let args = args.iter().collect::<Vec<_>>();
+                match (&ident.to_string()[..], args.as_slice()) {
+                    ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
+                        Some((t.clone(), e.clone()))
+                    }
+                    _ => None,
+                }
+            } else {
+                None
+            }
+        }
+        _ => None,
     }
 }
