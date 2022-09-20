@@ -69,49 +69,29 @@ pub struct ClientFn<'a> {
 
 impl<'a> ClientFn<'a> {
     pub fn output(&self) -> Type {
-        match self.output {
-            ReturnType::Default => Type::Verbatim(quote!(())),
-            ReturnType::Type(_, typ) => {
-                if let Some((t, _)) = unpack_result(typ) {
-                    Type::Verbatim(quote!(#t))
-                } else {
-                    Type::Verbatim(quote!(#typ))
-                }
-            }
-        }
+        let t = match self.output {
+            ReturnType::Default => quote!(()),
+            ReturnType::Type(_, typ) => match unpack_result(typ) {
+                Some((t, _)) => quote!(#t),
+                None => quote!(#typ),
+            },
+        };
+        Type::Verbatim(t)
     }
     pub fn try_output(&self) -> Type {
-        match self.output {
-            ReturnType::Default => Type::Verbatim(quote!(
-                Result<
-                    Result<
-                        (),
-                        <() as ::soroban_sdk::TryFromVal<
-                            ::soroban_sdk::Env,
-                            ::soroban_sdk::RawVal,
-                        >>::Error,
-                    >,
-                    Result<::soroban_sdk::Status, ::core::convert::Infallible>,
-                >
-            )),
-            ReturnType::Type(_, typ) => {
-                if let Some((t, e)) = unpack_result(typ) {
-                    Type::Verbatim(quote! {
-                        Result<
-                            Result<#t, <#t as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>,
-                            Result<#e, <#e as TryFrom<::soroban_sdk::Status>>::Error>
-                        >
-                    })
-                } else {
-                    Type::Verbatim(quote! {
-                        Result<
-                            Result<#typ, <#typ as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>,
-                            Result<::soroban_sdk::Status, <::soroban_sdk::Status as TryFrom<::soroban_sdk::Status>>::Error>
-                        >
-                    })
-                }
-            }
-        }
+        let (t, e) = match self.output {
+            ReturnType::Default => (quote!(()), quote!(::soroban_sdk::Status)),
+            ReturnType::Type(_, typ) => match unpack_result(typ) {
+                Some((t, e)) => (quote!(#t), quote!(#e)),
+                None => (quote!(#typ), quote!(::soroban_sdk::Status)),
+            },
+        };
+        Type::Verbatim(quote! {
+            Result<
+                Result<#t, <#t as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>,
+                Result<#e, <#e as TryFrom<::soroban_sdk::Status>>::Error>
+            >
+        })
     }
 }
 
