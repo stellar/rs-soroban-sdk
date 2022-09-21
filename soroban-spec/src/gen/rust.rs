@@ -71,7 +71,6 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
     }
 
     let trait_name = "Contract";
-    let client_name = "Client";
 
     let trait_ = r#trait::generate_trait(trait_name, &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
@@ -82,8 +81,11 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
     quote! {
         pub const WASM: &[u8] = ::soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
 
-        #[::soroban_sdk::contractclient(name = #client_name)]
+        #[::soroban_sdk::contractclient(name = "Client")]
         #trait_
+
+        #[deprecated(note = "use Client instead of ContractClient")]
+        pub type ContractClient = Client;
 
         #(#structs)*
         #(#unions)*
