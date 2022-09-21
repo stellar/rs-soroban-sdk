@@ -63,6 +63,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
                 &call,
                 ty,
                 ident,
+                &m.attrs,
                 &m.sig.inputs,
                 &m.sig.output,
                 trait_ident,

@@ -26,6 +26,7 @@ impl Contract {
         }
     }
 
+    #[cfg(test)]
     pub fn persisted(env: Env) -> bool {
         env.contract_data()
             .get(symbol!("persisted"))

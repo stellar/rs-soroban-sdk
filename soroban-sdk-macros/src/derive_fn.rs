@@ -8,7 +8,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
 use crate::map_type::map_type;
@@ -18,6 +18,7 @@ pub fn derive_fn(
     call: &TokenStream2,
     ty: &Type,
     ident: &Ident,
+    attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
     trait_ident: Option<&Ident>,
@@ -177,16 +178,19 @@ pub fn derive_fn(
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
+        #(#attrs)*
         #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
         pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
 
         impl #ty {
+            #(#attrs)*
             pub const fn #spec_fn_ident() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
             }
         }
 
         #[doc(hidden)]
+        #(#attrs)*
         pub mod #hidden_mod_ident {
             use super::*;
 
@@ -223,11 +227,17 @@ pub fn derive_contract_function_set<'a>(
     ty: &Type,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
 ) -> TokenStream2 {
-    let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
+    let (idents, wrap_idents, attrs): (Vec<_>, Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
             let wrap_ident = format_ident!("__{}", m.sig.ident);
-            (ident, wrap_ident)
+            let attrs = m
+                .attrs
+                .iter()
+                // Don't propogate doc comments into the match statement below.
+                .filter(|a| !a.path.is_ident("doc"))
+                .collect::<Vec<_>>();
+            (ident, wrap_ident, attrs)
         })
         .multiunzip();
     quote! {
@@ -240,10 +250,13 @@ pub fn derive_contract_function_set<'a>(
                 args: &[soroban_sdk::RawVal],
             ) -> Option<soroban_sdk::RawVal> {
                 match func.to_str().as_ref() {
-                    #(#idents => {
-                        #[allow(deprecated)]
-                        Some(#wrap_idents::invoke_raw_slice(env, args))
-                    })*
+                    #(
+                        #(#attrs)*
+                        #idents => {
+                            #[allow(deprecated)]
+                            Some(#wrap_idents::invoke_raw_slice(env, args))
+                        }
+                    )*
                     _ => {
                         None
                     }
