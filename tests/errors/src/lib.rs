@@ -131,6 +131,7 @@ mod test {
     #[test]
     // TODO: Remove the should_panic when this issue is fixed:
     // https://github.com/stellar/rs-soroban-env/issues/430
+    #[should_panic(expected = "an error")]
     fn try_hello_error_panic_string() {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
