@@ -533,32 +533,47 @@ impl internal::EnvBase for Env {
         }
     }
 
-    fn bytes_copy_from_slice(&self, b: Object, b_pos: RawVal, mem: &[u8]) -> Object {
+    fn bytes_copy_from_slice(
+        &self,
+        b: Object,
+        b_pos: RawVal,
+        mem: &[u8],
+    ) -> Result<Object, Status> {
         self.env_impl.bytes_copy_from_slice(b, b_pos, mem)
     }
 
-    fn bytes_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) {
+    fn bytes_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) -> Result<(), Status> {
         self.env_impl.bytes_copy_to_slice(b, b_pos, mem)
     }
 
-    fn bytes_new_from_slice(&self, mem: &[u8]) -> Object {
+    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Status> {
         self.env_impl.bytes_new_from_slice(mem)
     }
 
-    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) {
-        self.env_impl.log_static_fmt_val(fmt, v);
+    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Status> {
+        self.env_impl.log_static_fmt_val(fmt, v)
     }
 
-    fn log_static_fmt_static_str(&self, fmt: &'static str, s: &'static str) {
-        self.env_impl.log_static_fmt_static_str(fmt, s);
+    fn log_static_fmt_static_str(&self, fmt: &'static str, s: &'static str) -> Result<(), Status> {
+        self.env_impl.log_static_fmt_static_str(fmt, s)
     }
 
-    fn log_static_fmt_val_static_str(&self, fmt: &'static str, v: RawVal, s: &'static str) {
-        self.env_impl.log_static_fmt_val_static_str(fmt, v, s);
+    fn log_static_fmt_val_static_str(
+        &self,
+        fmt: &'static str,
+        v: RawVal,
+        s: &'static str,
+    ) -> Result<(), Status> {
+        self.env_impl.log_static_fmt_val_static_str(fmt, v, s)
     }
 
-    fn log_static_fmt_general(&self, fmt: &'static str, v: &[RawVal], s: &[&'static str]) {
-        self.env_impl.log_static_fmt_general(fmt, v, s);
+    fn log_static_fmt_general(
+        &self,
+        fmt: &'static str,
+        v: &[RawVal],
+        s: &[&'static str],
+    ) -> Result<(), Status> {
+        self.env_impl.log_static_fmt_general(fmt, v, s)
     }
 }
 
