@@ -21,7 +21,7 @@ members = [
     "tests/create_contract",
     "tests/events",
     "tests/logging",
-    "tests/result",
+    "tests/errors",
 ]
 
 [patch.crates-io]
