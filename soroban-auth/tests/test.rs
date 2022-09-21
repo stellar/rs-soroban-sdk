@@ -3,7 +3,7 @@
 use ed25519_dalek::Keypair;
 use rand::thread_rng;
 use soroban_auth::{
-    check_auth, Ed25519Signature, Identifier, Signature, SignaturePayload, SignaturePayloadV0,
+    verify, Ed25519Signature, Identifier, Signature, SignaturePayload, SignaturePayloadV0,
 };
 use soroban_sdk::testutils::ed25519::Sign;
 use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env, IntoVal};
@@ -46,11 +46,11 @@ pub struct TestContract;
 #[contractimpl]
 impl TestContract {
     pub fn verify_sig(e: Env, sig: Signature, nonce: BigInt) {
-        let auth_id = sig.get_identifier(&e);
+        let auth_id = sig.identifier(&e);
 
         verify_and_consume_nonce(&e, &auth_id, &nonce);
 
-        check_auth(&e, &sig, symbol!("verify_sig"), (&auth_id, nonce));
+        verify(&e, &sig, symbol!("verify_sig"), (&auth_id, nonce));
     }
 
     pub fn nonce(e: Env, id: Identifier) -> BigInt {
