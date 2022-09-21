@@ -40,7 +40,7 @@ mod test {
     #[test]
     // TODO: Remove the should_panic when this issue is fixed:
     // https://github.com/stellar/rs-soroban-sdk/issues/642
-    #[should_panic("Status(ContractError(1))")]
+    #[should_panic(expect = "Status(ContractError(1))")]
     fn hello_error() {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
