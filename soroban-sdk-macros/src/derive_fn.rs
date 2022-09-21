@@ -227,11 +227,11 @@ pub fn derive_contract_function_set<'a>(
     ty: &Type,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
 ) -> TokenStream2 {
-    let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
+    let (idents, attrs, wrap_idents): (Vec<_>, Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
             let wrap_ident = format_ident!("__{}", m.sig.ident);
-            (ident, wrap_ident)
+            (ident, &m.attrs, wrap_ident)
         })
         .multiunzip();
     quote! {
@@ -244,10 +244,13 @@ pub fn derive_contract_function_set<'a>(
                 args: &[soroban_sdk::RawVal],
             ) -> Option<soroban_sdk::RawVal> {
                 match func.to_str().as_ref() {
-                    #(#idents => {
-                        #[allow(deprecated)]
-                        Some(#wrap_idents::invoke_raw_slice(env, args))
-                    })*
+                    #(
+                        #(#attrs)*
+                        #idents => {
+                            #[allow(deprecated)]
+                            Some(#wrap_idents::invoke_raw_slice(env, args))
+                        }
+                    )*
                     _ => {
                         None
                     }
