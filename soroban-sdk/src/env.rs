@@ -1,5 +1,4 @@
 use core::convert::TryInto;
-use core::fmt::Debug;
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
