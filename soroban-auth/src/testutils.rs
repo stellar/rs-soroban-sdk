@@ -21,7 +21,7 @@ pub mod ed25519 {
 
     impl Identifier for ed25519_dalek::Keypair {
         fn identifier(&self, env: &Env) -> IdentifierValue {
-            IdentifierValue::Ed25519(self.public.to_bytes().into_val(env))
+            IdentifierValue::Ed25519(self.public.as_bytes().into_val(env))
         }
     }
 
