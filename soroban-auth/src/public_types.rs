@@ -36,8 +36,8 @@ impl Signature {
     pub fn identifier(&self, env: &Env) -> Identifier {
         match self {
             Signature::Contract => Identifier::Contract(env.get_invoking_contract()),
-            Signature::Ed25519(kea) => Identifier::Ed25519(kea.public_key.clone()),
-            Signature::Account(kaa) => Identifier::Account(kaa.account_id.clone()),
+            Signature::Ed25519(e) => Identifier::Ed25519(e.public_key.clone()),
+            Signature::Account(a) => Identifier::Account(a.account_id.clone()),
         }
     }
 
@@ -61,7 +61,10 @@ pub enum Identifier {
 /// Signature payload v0 contains the data that must be signed to authenticate
 /// the [`Identifier`] within when invoking a contract.
 ///
-/// The data contained within includes a domain separator formed from:
+/// The data contained within includes a domain separator formed from the fields
+/// below. The domain separator constrains where the signature is valid. It is
+/// only valid for the invocation of a specific function, of a specific
+/// contract, on a specific network.
 ///
 /// - `network`
 ///
@@ -75,11 +78,16 @@ pub enum Identifier {
 ///
 ///   The symbol for the function being invoked.
 ///
-/// Applications using the signing the signature payload must take care to only
-/// sign argument lists for contracts by first constructing the
-/// [`SignaturePayload`] and signing the whole payload only. Applications should
-/// never trust a signature payload without either inspecting its entire
-/// contents, or building it themselves.
+/// The data contained also includes all the arguments that are to be included
+/// with the invocation. The arguments constrain what inputs may be provided to
+/// the function. The signature over them ensures that the signer is approving
+/// these inputs to accompany their authentication.
+///
+/// Applications using the signature payload must take care to only sign
+/// argument lists for contracts by first constructing the [`SignaturePayload`]
+/// and signing the whole payload only. Applications should never trust a
+/// signature payload without either inspecting its entire contents, or building
+/// it themselves.
 #[derive(Clone)]
 #[contracttype(lib = "soroban_auth")]
 pub struct SignaturePayloadV0 {
