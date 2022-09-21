@@ -12,6 +12,7 @@ pub enum Error {
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env, flag: u32) -> Result<Symbol, Error> {
+        env.contract_data().set(symbol!("persisted"), true);
         if flag == 0 {
             Ok(symbol!("hello"))
         } else if flag == 1 {
@@ -23,6 +24,13 @@ impl Contract {
         } else {
             unimplemented!()
         }
+    }
+
+    pub fn persisted(env: Env) -> bool {
+        env.contract_data()
+            .get(symbol!("persisted"))
+            .unwrap_or_else(|| Ok(false))
+            .unwrap()
     }
 }
 
@@ -45,6 +53,7 @@ mod test {
 
         let res = client.hello(&0);
         assert_eq!(res, symbol!("hello"));
+        assert!(client.persisted());
     }
 
     #[test]
@@ -60,7 +69,8 @@ mod test {
         let expected_status = Status::from_contract_error(Error::AnError as u32);
         e.assert_panic_with_status(expected_status, |_| {
             let _ = client.hello(&1);
-        })
+        });
+        assert!(!client.persisted());
     }
 
     #[test]
@@ -76,7 +86,8 @@ mod test {
         let expected_status = Status::from_contract_error(Error::AnError as u32);
         e.assert_panic_with_status(expected_status, |_| {
             let _ = client.hello(&2);
-        })
+        });
+        assert!(!client.persisted());
     }
 
     #[test]
@@ -89,7 +100,10 @@ mod test {
         let expected_string = "an error";
         e.assert_panic_with_string(expected_string, |_| {
             let _ = client.hello(&3);
-        })
+        });
+        // TODO: Remove this when
+        // https://github.com/stellar/rs-soroban-env/issues/462 is resolved.
+        // assert!(!client.persisted());
     }
 
     #[test]
@@ -101,6 +115,7 @@ mod test {
 
         let res = client.try_hello(&0);
         assert_eq!(res, Ok(Ok(symbol!("hello"))));
+        assert!(client.persisted());
     }
 
     #[test]
@@ -112,6 +127,7 @@ mod test {
 
         let res = client.try_hello(&1);
         assert_eq!(res, Err(Ok(Error::AnError)));
+        assert!(!client.persisted());
     }
 
     #[test]
@@ -126,6 +142,7 @@ mod test {
 
         let res = client.try_hello(&2);
         assert_eq!(res, Err(Ok(Error::AnError)));
+        assert!(!client.persisted());
     }
 
     #[test]
@@ -145,5 +162,6 @@ mod test {
                 ScVmErrorCode::TrapUnreachable
             ),)))
         );
+        assert!(!client.persisted());
     }
 }
