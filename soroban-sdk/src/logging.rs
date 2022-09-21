@@ -114,7 +114,7 @@ impl Logger {
     pub fn log(&self, fmt: &'static str, args: &[RawVal]) {
         if cfg!(debug_assertions) {
             let env = self.env();
-            env.log_static_fmt_general(fmt, &args, &[]);
+            env.log_static_fmt_general(fmt, &args, &[]).unwrap();
         }
     }
 }
