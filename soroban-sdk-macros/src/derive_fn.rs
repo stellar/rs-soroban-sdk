@@ -227,11 +227,17 @@ pub fn derive_contract_function_set<'a>(
     ty: &Type,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
 ) -> TokenStream2 {
-    let (idents, attrs, wrap_idents): (Vec<_>, Vec<_>, Vec<_>) = methods
+    let (idents, wrap_idents, attrs): (Vec<_>, Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
             let wrap_ident = format_ident!("__{}", m.sig.ident);
-            (ident, &m.attrs, wrap_ident)
+            let attrs = m
+                .attrs
+                .iter()
+                // Don't propogate doc comments into the match statement below.
+                .filter(|a| !a.path.is_ident("doc"))
+                .collect::<Vec<_>>();
+            (ident, wrap_ident, attrs)
         })
         .multiunzip();
     quote! {
