@@ -8,7 +8,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
 use crate::map_type::map_type;
@@ -18,6 +18,7 @@ pub fn derive_fn(
     call: &TokenStream2,
     ty: &Type,
     ident: &Ident,
+    attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
     trait_ident: Option<&Ident>,
@@ -177,16 +178,19 @@ pub fn derive_fn(
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
+        #(#attrs)*
         #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
         pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
 
         impl #ty {
+            #(#attrs)*
             pub const fn #spec_fn_ident() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
             }
         }
 
         #[doc(hidden)]
+        #(#attrs)*
         pub mod #hidden_mod_ident {
             use super::*;
 
