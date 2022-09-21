@@ -23,7 +23,6 @@ soroban-env-guest = { version = "0.0.5" }
 [target.'cfg(not(target_family="wasm"))'.dependencies]
 soroban-env-host = { version = "0.0.5", features = ["vm"] }
 ed25519-dalek = { version = "1.0.1", optional = true }
-rand = { version = "0.7.3", optional = true }
 
 [dev-dependencies]
 stellar-xdr = { version = "0.0.2", features = ["next", "std"] }
@@ -32,7 +31,7 @@ trybuild = "1.0.63"
 hex = "0.4.3"
 
 [features]
-testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek", "dep:rand"]
+testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
 docs = []
 
 [package.metadata.docs.rs]

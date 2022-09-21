@@ -7,11 +7,7 @@
 pub mod ed25519 {
     use core::panic;
 
-    use ed25519_dalek::Keypair;
-    use soroban_sdk::{
-        testutils::ed25519::{Generate, Sign},
-        BytesN, Env, IntoVal, RawVal, Symbol, Vec,
-    };
+    use soroban_sdk::{testutils::ed25519::Sign, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 
     use crate::{Ed25519Signature, Identifier, Signature, SignaturePayload, SignaturePayloadV0};
 
@@ -23,7 +19,7 @@ pub mod ed25519 {
         Identifier,
         impl Sign<SignaturePayload, Signature = [u8; 64]>,
     ) {
-        let signer = <Keypair as Generate<_, SignaturePayload>>::generate();
+        let signer = ed25519_dalek::Keypair::generate(&mut rand::thread_rng());
         (
             Identifier::Ed25519(signer.public.to_bytes().into_val(env)),
             signer,

@@ -767,6 +767,7 @@ name = "soroban-auth"
 version = "0.0.4"
 dependencies = [
  "ed25519-dalek",
+ "rand",
  "soroban-sdk",
 ]
 
@@ -843,7 +844,6 @@ dependencies = [
  "bytes-lit",
  "ed25519-dalek",
  "hex",
- "rand",
  "soroban-env-guest",
  "soroban-env-host",
  "soroban-sdk-macros",
