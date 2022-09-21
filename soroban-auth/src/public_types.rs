@@ -2,7 +2,7 @@ use soroban_sdk::{contracttype, Bytes, BytesN, Env, RawVal, Symbol, Vec};
 
 /// An Ed25519 signature contains a single signature for the
 /// [`SignaturePayload`].
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub struct Ed25519Signature {
     pub public_key: BytesN<32>,
@@ -14,7 +14,7 @@ pub struct Ed25519Signature {
 ///
 /// Multiple signatures may be present within if the
 /// account has multiple signers.
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub struct AccountSignatures {
     pub account_id: BytesN<32>,
@@ -23,7 +23,7 @@ pub struct AccountSignatures {
 
 /// Signature contains a signature of a [`SignaturePayload`] that can be
 /// verified by [`verify`](crate::verify).
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub enum Signature {
     Contract,
@@ -50,7 +50,7 @@ impl Signature {
 
 /// Identifier is an identifier for a authenticating party. Each [`Signature`]
 /// has a corresponding identifier.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub enum Identifier {
     Contract(BytesN<32>),
@@ -88,7 +88,7 @@ pub enum Identifier {
 /// and signing the whole payload only. Applications should never trust a
 /// signature payload without either inspecting its entire contents, or building
 /// it themselves.
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub struct SignaturePayloadV0 {
     pub network: Bytes,
@@ -99,7 +99,7 @@ pub struct SignaturePayloadV0 {
 
 /// Signature payload contains the data that must be signed to authenticate the
 /// [`Identifier`] within when invoking a contract.
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub enum SignaturePayload {
     V0(SignaturePayloadV0),

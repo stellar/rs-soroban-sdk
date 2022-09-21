@@ -8,6 +8,8 @@
 //!
 //! See [`verify`] for how to use.
 //!
+//! See [`testutils`] for test utilities.
+//!
 //! **The utilities in this crate provide no replay protection. Contracts must
 //! provide their own mechanism suitable for replay prevention that prevents
 //! contract invocations to be replayable if it is important they are not.**
@@ -15,7 +17,10 @@
 
 use soroban_sdk::{serde::Serialize, Account, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 
+pub mod testutils;
+
 mod public_types;
+
 pub use crate::public_types::{
     AccountSignatures, Ed25519Signature, Identifier, Signature, SignaturePayload,
     SignaturePayloadV0,
@@ -33,6 +38,7 @@ fn verify_ed25519_signature(
         network: env.ledger().network_passphrase(),
         args,
     };
+
     let msg_bin = SignaturePayload::V0(msg).serialize(env);
 
     env.verify_sig_ed25519(&auth.public_key, &msg_bin, &auth.signature);

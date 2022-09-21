@@ -11,11 +11,13 @@ edition = "2021"
 rust-version = "1.63"
 
 [features]
-testutils = ["soroban-sdk/testutils"]
+testutils = ["soroban-sdk/testutils", "dep:ed25519-dalek"]
 
 [dependencies]
 soroban-sdk = "0.0.4"
 
+[target.'cfg(not(target_family="wasm"))'.dependencies]
+ed25519-dalek = { version = "1.0.1", optional = true }
+
 [dev_dependencies]
 ed25519-dalek = { version = "1.0.1" }
-rand = { version = "0.7.3" }

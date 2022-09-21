@@ -1,5 +1,11 @@
 #![cfg(feature = "testutils")]
 
+/// Generate implementations produce a key for signing.
+pub trait Generate<S: Sign<MSG>, MSG> {
+    /// Generate produces a key for signing.
+    fn generate() -> S;
+}
+
 /// Sign implementations produce signatures for types that can be represented as
 /// the MSG.
 pub trait Sign<MSG> {
@@ -57,9 +63,19 @@ pub mod ed25519 {
         }
     }
 
-    pub use super::Sign;
+    pub use super::{Generate, Sign};
 
-    impl<S, M> super::Sign<M> for S
+    impl<M> Generate<ed25519_dalek::Keypair, M> for ed25519_dalek::Keypair
+    where
+        M: TryInto<xdr::ScVal>,
+        <M as TryInto<xdr::ScVal>>::Error: std::error::Error,
+    {
+        fn generate() -> Self {
+            ed25519_dalek::Keypair::generate(&mut rand::thread_rng())
+        }
+    }
+
+    impl<S, M> Sign<M> for S
     where
         S: ed25519_dalek::Signer<ed25519_dalek::Signature>,
         M: TryInto<xdr::ScVal>,
@@ -79,7 +95,13 @@ pub mod ed25519 {
     mod test {
         use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 
-        use super::Sign;
+        use super::{Generate, Sign};
+
+        #[test]
+        fn generate_and_sign() {
+            let s = <Keypair as Generate<_, i64>>::generate();
+            let _ = s.sign(128i64).unwrap();
+        }
 
         #[test]
         fn sign() {
