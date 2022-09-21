@@ -22,7 +22,7 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{symbol, BytesN, Env};
+    use soroban_sdk::{symbol, BytesN, Env, Status};
 
     use crate::{Contract, ContractClient, Error};
 
@@ -39,18 +39,18 @@ mod test {
 
     #[test]
     // TODO: Remove the should_panic when this issue is fixed:
-    // https://github.com/stellar/rs-soroban-env/issues/430.
-    #[should_panic(expected = "called `Result::unwrap()` on an `Err` value: ConversionError")]
+    // https://github.com/stellar/rs-soroban-sdk/issues/642
+    #[should_panic("Status(ContractError(1))")]
     fn hello_error() {
         let e = Env::default();
         let contract_id = BytesN::from_array(&e, &[0; 32]);
         e.register_contract(&contract_id, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        // let expected_status = Status::from_contract_error(Error::AnError as u32);
-        // e.assert_panic_with_status(expected_status, |_| {
-        let _ = client.hello(&1);
-        // })
+        let expected_status = Status::from_contract_error(Error::AnError as u32);
+        e.assert_panic_with_status(expected_status, |_| {
+            let _ = client.hello(&1);
+        })
     }
 
     #[test]
