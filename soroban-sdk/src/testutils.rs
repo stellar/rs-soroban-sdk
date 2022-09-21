@@ -3,8 +3,8 @@
 
 //! Utilities intended for use when testing.
 
-mod test_sign;
-pub use test_sign::ed25519;
+mod sign;
+pub use sign::ed25519;
 
 pub use crate::env::testutils::*;
 
