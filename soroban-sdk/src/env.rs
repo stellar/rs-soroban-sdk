@@ -82,6 +82,15 @@ impl Default for Env {
 }
 
 impl Env {
+    /// Panic with the given error.
+    ///
+    /// Equivalent to `panic!`, but with an error value instead of a string.
+    #[doc(hidden)]
+    pub fn panic_error(&self, error: impl Into<Status>) {
+        _ = internal::Env::fail_with_status(self, error.into());
+        unreachable!()
+    }
+
     /// Invokes a function of a contract that is registered in the [Env].
     ///
     /// # Panics

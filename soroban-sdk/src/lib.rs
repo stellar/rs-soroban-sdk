@@ -90,6 +90,23 @@ pub use soroban_sdk_macros::{
     contractclient, contracterror, contractfile, contractimpl, contractimport, contracttype,
 };
 
+/// Panic with the given error.
+///
+/// The first argument in the list must be a reference to an [Env].
+///
+/// The second argument is an error value. The error value will be given to any
+/// calling contract.
+///
+/// Equivalent to `panic!`, but with an error value instead of a string. The
+/// error value will be given to any calling contract.
+#[macro_export]
+macro_rules! panic_error {
+    ($env:expr, $error:expr) => {{
+        $env.panic_error($error);
+        unreachable!()
+    }};
+}
+
 mod env;
 
 pub mod xdr;
