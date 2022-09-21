@@ -22,6 +22,7 @@ impl ClientItem {
             ClientItem::Trait(t) => syn_ext::trait_methods(t)
                 .map(|m| ClientFn {
                     ident: &m.sig.ident,
+                    attrs: &m.attrs,
                     inputs: &m.sig.inputs,
                     output: &m.sig.output,
                 })
@@ -29,6 +30,7 @@ impl ClientItem {
             ClientItem::Impl(i) => syn_ext::impl_pub_methods(i)
                 .map(|m| ClientFn {
                     ident: &m.sig.ident,
+                    attrs: &m.attrs,
                     inputs: &m.sig.inputs,
                     output: &m.sig.output,
                 })
@@ -63,6 +65,7 @@ impl ToTokens for ClientItem {
 
 pub struct ClientFn<'a> {
     pub ident: &'a Ident,
+    pub attrs: &'a [Attribute],
     pub inputs: &'a Punctuated<FnArg, Comma>,
     pub output: &'a ReturnType,
 }
@@ -144,7 +147,9 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 .unzip();
             let fn_output = f.output();
             let fn_try_output = f.try_output();
+            let fn_attrs = f.attrs;
             quote! {
+                #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                     use ::soroban_sdk::IntoVal;
                     self.env.invoke_contract(
@@ -154,6 +159,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                     )
                 }
 
+                #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                     use ::soroban_sdk::IntoVal;
                     self.env.try_invoke_contract(
