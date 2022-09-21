@@ -46,7 +46,7 @@ pub struct TestContract;
 #[contractimpl]
 impl TestContract {
     pub fn verify_sig(e: Env, sig: Signature, nonce: BigInt) {
-        let auth_id = sig.get_identifier(&e);
+        let auth_id = sig.identifier(&e);
 
         verify_and_consume_nonce(&e, &auth_id, &nonce);
 
