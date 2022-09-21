@@ -248,6 +248,8 @@ impl Env {
 
 #[cfg(feature = "testutils")]
 use crate::testutils::ContractFunctionSet;
+#[cfg(feature = "doc")]
+use core::fmt::Debug;
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 #[cfg(feature = "testutils")]
