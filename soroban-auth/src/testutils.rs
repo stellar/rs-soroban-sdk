@@ -9,21 +9,32 @@ pub mod ed25519 {
 
     use soroban_sdk::{testutils::ed25519::Sign, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 
-    use crate::{Ed25519Signature, Identifier, Signature, SignaturePayload, SignaturePayloadV0};
+    use crate::{
+        Ed25519Signature, Identifier as IdentifierValue, Signature, SignaturePayload,
+        SignaturePayloadV0,
+    };
+
+    /// Identifier implementations have an identifier.
+    pub trait Identifier {
+        fn identifier(&self, env: &Env) -> IdentifierValue;
+    }
+
+    impl Identifier for ed25519_dalek::Keypair {
+        fn identifier(&self, env: &Env) -> IdentifierValue {
+            IdentifierValue::Ed25519(self.public.to_bytes().into_val(env))
+        }
+    }
 
     /// Generate an ed25519 identifier and signer that can sign
     /// [`SignaturePayload`]s for that identifier.
     pub fn generate(
         env: &Env,
     ) -> (
-        Identifier,
-        impl Sign<SignaturePayload, Signature = [u8; 64]>,
+        IdentifierValue,
+        impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]>,
     ) {
         let signer = ed25519_dalek::Keypair::generate(&mut rand::thread_rng());
-        (
-            Identifier::Ed25519(signer.public.to_bytes().into_val(env)),
-            signer,
-        )
+        (signer.identifier(env), signer)
     }
 
     /// Sign a [`SignaturePayload`] constructed using the arguments.
@@ -32,16 +43,14 @@ pub mod ed25519 {
     /// with the same arguments within the specified contract.
     pub fn sign(
         env: &Env,
-        signer: (
-            &Identifier,
-            &impl Sign<SignaturePayload, Signature = [u8; 64]>,
-        ),
+        signer: &(impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]>),
         contract: &BytesN<32>,
         function: Symbol,
         args: impl IntoVal<Env, Vec<RawVal>>,
     ) -> Signature {
-        let (public_key, signer) = if let (Identifier::Ed25519(public_key), signer) = &signer {
-            (public_key, signer)
+        let identifier = signer.identifier(env);
+        let public_key = if let IdentifierValue::Ed25519(public_key) = identifier {
+            public_key
         } else {
             panic!("identifier must be ed25519")
         };

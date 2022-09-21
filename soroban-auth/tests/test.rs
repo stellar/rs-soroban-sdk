@@ -76,7 +76,7 @@ fn test() {
 
     let sig = sign(
         &env,
-        (&id, &signer),
+        &signer,
         &contract_id,
         symbol!("verify_sig"),
         (&id, &nonce),
