@@ -8,12 +8,16 @@
 //!
 //! See [`verify`] for how to use.
 //!
+//! See [`testutils`] for test utilities.
+//!
 //! **The utilities in this crate provide no replay protection. Contracts must
 //! provide their own mechanism suitable for replay prevention that prevents
 //! contract invocations to be replayable if it is important they are not.**
 #![no_std]
 
 use soroban_sdk::{serde::Serialize, Account, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
+
+pub mod testutils;
 
 mod public_types;
 pub use crate::public_types::{

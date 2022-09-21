@@ -1,12 +1,8 @@
 #![cfg(feature = "testutils")]
 
-use ed25519_dalek::Keypair;
-use rand::thread_rng;
-use soroban_auth::{
-    verify, Ed25519Signature, Identifier, Signature, SignaturePayload, SignaturePayloadV0,
-};
-use soroban_sdk::testutils::ed25519::Sign;
-use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env, IntoVal};
+use soroban_auth::testutils::ed25519::{generate, sign};
+use soroban_auth::{verify, Identifier, Signature};
+use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env};
 
 #[contracttype]
 pub enum DataKey {
@@ -68,14 +64,6 @@ impl OuterTestContract {
     }
 }
 
-fn generate_keypair() -> Keypair {
-    Keypair::generate(&mut thread_rng())
-}
-
-fn make_identifier(e: &Env, kp: &Keypair) -> Identifier {
-    Identifier::Ed25519(kp.public.to_bytes().into_val(e))
-}
-
 #[test]
 fn test() {
     let env = Env::default();
@@ -83,20 +71,16 @@ fn test() {
     env.register_contract(&contract_id, TestContract);
     let client = TestContractClient::new(&env, &contract_id);
 
-    let kp = generate_keypair();
-    let id = make_identifier(&env, &kp);
+    let (id, signer) = generate(&env);
     let nonce = client.nonce(&id);
 
-    let msg = SignaturePayload::V0(SignaturePayloadV0 {
-        function: symbol!("verify_sig"),
-        contract: BytesN::from_array(&env, &[0; 32]),
-        network: env.ledger().network_passphrase(),
-        args: (&id, &nonce).into_val(&env),
-    });
-    let sig = Signature::Ed25519(Ed25519Signature {
-        public_key: BytesN::from_array(&env, &kp.public.to_bytes()),
-        signature: kp.sign(msg).unwrap().into_val(&env),
-    });
+    let sig = sign(
+        &env,
+        &signer,
+        &contract_id,
+        symbol!("verify_sig"),
+        (&id, &nonce),
+    );
 
     client.verify_sig(&sig, &nonce);
 

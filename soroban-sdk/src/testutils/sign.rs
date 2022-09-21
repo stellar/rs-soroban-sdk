@@ -59,7 +59,7 @@ pub mod ed25519 {
 
     pub use super::Sign;
 
-    impl<S, M> super::Sign<M> for S
+    impl<S, M> Sign<M> for S
     where
         S: ed25519_dalek::Signer<ed25519_dalek::Signature>,
         M: TryInto<xdr::ScVal>,
