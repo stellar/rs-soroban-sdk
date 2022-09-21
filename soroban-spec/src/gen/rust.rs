@@ -84,7 +84,7 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
         #[::soroban_sdk::contractclient(name = "Client")]
         #trait_
 
-        #[deprecated(note = "use Client instead of ContractClient")]
+        #[deprecated(note = "use Client instead of ContractClient as it has been renamed")]
         pub type ContractClient = Client;
 
         #(#structs)*
