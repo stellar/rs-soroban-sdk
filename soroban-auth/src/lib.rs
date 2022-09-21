@@ -3,8 +3,8 @@
 //!
 //! See [`verify`] for how to use.
 //!
-//! **The utilities in this create provide no replay protection. Contracts must
-//! provide their own mechanism suitable replay prevention that prevents
+//! **The utilities in this crate provide no replay protection. Contracts must
+//! provide their own mechanism suitable for replay prevention that prevents
 //! contract invocations to be replayable if it is important they are not.**
 #![no_std]
 
@@ -104,8 +104,8 @@ fn verify_account_signatures(
 ///   signatures in the `sig` field.
 ///
 /// **This function provides no replay protection. Contracts must provide their
-/// own mechanism suitable replay prevention that prevents contract invocations
-/// to be replayable if it is important they are not.**
+/// own mechanism suitable for replay prevention that prevents contract
+/// invocations to be replayable if it is important they are not.**
 pub fn verify(env: &Env, sig: &Signature, function: Symbol, args: impl IntoVal<Env, Vec<RawVal>>) {
     match sig {
         Signature::Contract => {
