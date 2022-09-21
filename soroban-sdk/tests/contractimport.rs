@@ -15,7 +15,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
-        addcontract::ContractClient::new(&env, &ADD_CONTRACT_ID).add(&x, &y)
+        addcontract::Client::new(&env, &ADD_CONTRACT_ID).add(&x, &y)
     }
 }
 
