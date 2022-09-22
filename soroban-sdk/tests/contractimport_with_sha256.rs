@@ -7,7 +7,7 @@ const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
     soroban_sdk::contractimport!(
         file = "../target/wasm32-unknown-unknown/release/example_add_i32.wasm",
-        sha256 = "994ab7061a7b085e666eb36583636f1990f8d92fa1bf0b9b1e343472d209026b",
+        sha256 = "26f5c00d05439950c7edbfcc1f2bd47f383094b2105f8473168407636b050258",
     );
 }
 
