@@ -17,13 +17,15 @@ use crate::{
 /// `log!` statements are only enabled in non optimized builds that have
 /// `debug-assertions` enabled. To enable `debug-assertions` add the following
 /// lines to `Cargo.toml`, then build with the profile specified, `--profile
-/// release-with-logs`.
+/// release-with-logs`. See the cargo docs for how to use [custom profiles].
 ///
 /// ```toml
 /// [profile.release-with-logs]
 /// inherits = "release"
 /// debug-assertions = true
 /// ```
+///
+/// [custom profiles]: https://doc.rust-lang.org/cargo/reference/profiles.html#custom-profiles
 ///
 /// ### Examples
 ///
