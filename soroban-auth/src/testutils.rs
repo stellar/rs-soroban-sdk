@@ -5,6 +5,7 @@
 //! [`soroban_auth`](crate).
 
 pub mod ed25519 {
+    use core::fmt::Debug;
     use core::panic;
 
     use soroban_sdk::{testutils::ed25519::Sign, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
@@ -31,7 +32,7 @@ pub mod ed25519 {
         env: &Env,
     ) -> (
         IdentifierValue,
-        impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]>,
+        impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]> + Debug,
     ) {
         let signer = ed25519_dalek::Keypair::generate(&mut rand::thread_rng());
         (signer.identifier(env), signer)
