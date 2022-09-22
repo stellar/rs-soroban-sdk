@@ -3,7 +3,10 @@
 //! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-use crate::{env::internal::EnvBase, Env, RawVal};
+use crate::{
+    env::internal::{self, EnvBase},
+    Bytes, Env, IntoVal, RawVal, Vec,
+};
 
 /// Log a debug event.
 ///
@@ -12,11 +15,17 @@ use crate::{env::internal::EnvBase, Env, RawVal};
 /// [`RawVal`].
 ///
 /// `log!` statements are only enabled in non optimized builds that have
-/// `debug-assertions` enabled.
+/// `debug-assertions` enabled. To enable `debug-assertions` add the following
+/// lines to `Cargo.toml`, then build with the profile specified, `--profile
+/// release-with-logs`. See the cargo docs for how to use [custom profiles].
 ///
-/// <p style="padding:0.75em;background:var(--code-block-background-color);">
-/// <b>Note</b>: Log support in WASM builds is pending on <a href="https://github.com/stellar/rs-soroban-env/issues/447">soroban-env#447</a>.
-/// </p>
+/// ```toml
+/// [profile.release-with-logs]
+/// inherits = "release"
+/// debug-assertions = true
+/// ```
+///
+/// [custom profiles]: https://doc.rust-lang.org/cargo/reference/profiles.html#custom-profiles
 ///
 /// ### Examples
 ///
@@ -114,7 +123,17 @@ impl Logger {
     pub fn log(&self, fmt: &'static str, args: &[RawVal]) {
         if cfg!(debug_assertions) {
             let env = self.env();
-            env.log_static_fmt_general(fmt, &args, &[]).unwrap();
+            // If building for WASM logging will be transmitted through the
+            // guest interface via host types. This is very inefficient. When
+            // building on non-WASM environments where the environment Host is
+            // directly available, use the log static variants.
+            if cfg!(target_family = "wasm") {
+                let fmt: Bytes = fmt.into_val(env);
+                let args: Vec<RawVal> = Vec::from_slice(env, args);
+                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object());
+            } else {
+                env.log_static_fmt_general(fmt, &args, &[]).unwrap();
+            }
         }
     }
 }
