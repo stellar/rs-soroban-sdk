@@ -17,10 +17,6 @@ use crate::{
 /// `log!` statements are only enabled in non optimized builds that have
 /// `debug-assertions` enabled.
 ///
-/// <p style="padding:0.75em;background:var(--code-block-background-color);">
-/// <b>Note</b>: Log support in WASM builds is pending on <a href="https://github.com/stellar/rs-soroban-env/issues/447">soroban-env#447</a>.
-/// </p>
-///
 /// ### Examples
 ///
 /// Log a string:
