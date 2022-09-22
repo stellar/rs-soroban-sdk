@@ -87,8 +87,29 @@ pub use bytes_lit::bytes as __bytes_lit_bytes;
 pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 
 pub use soroban_sdk_macros::{
-    contractclient, contracterror, contractfile, contractimpl, contractimport, contracttype, symbol,
+    contractclient, contracterror, contractfile, contractimpl, contractimport, contracttype,
 };
+
+/// Create a [Symbol] with the given string.
+///
+/// The [Symbol] is generated at compile time and returned as a const.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{symbol, Symbol};
+///
+/// let symbol = symbol!("a_str");
+/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// ```
+///
+/// ```
+/// use soroban_sdk::{symbol, Symbol};
+///
+/// const symbol: Symbol = symbol!("a_str");
+/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// ```
+pub use soroban_sdk_macros::symbol;
 
 /// Panic with the given error.
 ///
