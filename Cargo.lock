@@ -774,7 +774,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=a1f3a5c#a1f3a5c6df414afda3d07949b4f88ba5759dfa6e"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fccd5196#fccd5196cbebd31213a1bd149a714db404490582"
 dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
@@ -785,7 +785,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=a1f3a5c#a1f3a5c6df414afda3d07949b4f88ba5759dfa6e"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fccd5196#fccd5196cbebd31213a1bd149a714db404490582"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -794,7 +794,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=a1f3a5c#a1f3a5c6df414afda3d07949b4f88ba5759dfa6e"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fccd5196#fccd5196cbebd31213a1bd149a714db404490582"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -817,7 +817,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=a1f3a5c#a1f3a5c6df414afda3d07949b4f88ba5759dfa6e"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fccd5196#fccd5196cbebd31213a1bd149a714db404490582"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -829,7 +829,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=a1f3a5c#a1f3a5c6df414afda3d07949b4f88ba5759dfa6e"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fccd5196#fccd5196cbebd31213a1bd149a714db404490582"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -925,7 +925,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-xdr"
 version = "0.0.2"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=fb78a6b8#fb78a6b84c807fd2641cf257818060e1d7d26c62"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=c026149#c026149f0e8a1a7c7564aac6e6dc30e4d0102c90"
 dependencies = [
  "base64",
  "serde",
