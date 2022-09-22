@@ -90,6 +90,31 @@ pub use soroban_sdk_macros::{
     contractclient, contracterror, contractfile, contractimpl, contractimport, contracttype,
 };
 
+/// Create a [Symbol] with the given string.
+///
+/// A symbol's maximum length is 10 characters.
+///
+/// Valid characters are `a-zA-Z0-9_`.
+///
+/// The [Symbol] is generated at compile time and returned as a const.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{symbol, Symbol};
+///
+/// let symbol = symbol!("a_str");
+/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// ```
+///
+/// ```
+/// use soroban_sdk::{symbol, Symbol};
+///
+/// const symbol: Symbol = symbol!("a_str");
+/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// ```
+pub use soroban_sdk_macros::symbol;
+
 /// Panic with the given error.
 ///
 /// The first argument in the list must be a reference to an [Env].
@@ -99,6 +124,8 @@ pub use soroban_sdk_macros::{
 ///
 /// Equivalent to `panic!`, but with an error value instead of a string. The
 /// error value will be given to any calling contract.
+///
+/// See [`contracterror`] for how to define an error type.
 #[macro_export]
 macro_rules! panic_error {
     ($env:expr, $error:expr) => {{
@@ -151,7 +178,6 @@ pub mod ledger;
 pub mod logging;
 mod map;
 mod set;
-mod symbol;
 mod vec;
 pub use account::Account;
 pub use bigint::{BigInt, Sign};

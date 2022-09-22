@@ -45,7 +45,7 @@ pub mod ed25519 {
         env: &Env,
         signer: &(impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]>),
         contract: &BytesN<32>,
-        function: Symbol,
+        name: Symbol,
         args: impl IntoVal<Env, Vec<RawVal>>,
     ) -> Signature {
         let identifier = signer.identifier(env);
@@ -57,7 +57,7 @@ pub mod ed25519 {
         let payload = SignaturePayload::V0(SignaturePayloadV0 {
             network: env.ledger().network_passphrase(),
             contract: contract.clone(),
-            function,
+            name,
             args: args.into_val(env),
         });
         let signature = match signer.sign(payload) {

@@ -63,8 +63,8 @@ pub enum Identifier {
 ///
 /// The data contained within includes a domain separator formed from the fields
 /// below. The domain separator constrains where the signature is valid. It is
-/// only valid for the invocation of a specific function, of a specific
-/// contract, on a specific network.
+/// only valid for the invocation in the context of a contract defined name, of
+/// a specific contract, on a specific network.
 ///
 /// - `network`
 ///
@@ -72,11 +72,12 @@ pub enum Identifier {
 ///
 /// - `contract`
 ///
-///   The contract ID for the function being invoked.
+///   The contract ID for the name being invoked.
 ///
-/// - `function`
+/// - `name`
 ///
-///   The symbol for the function being invoked.
+///   The name of the signing domain. Could be the name of the function to be
+///   invoked, or some other name the contract has defined.
 ///
 /// The data contained also includes all the arguments that are to be included
 /// with the invocation. The arguments constrain what inputs may be provided to
@@ -93,7 +94,7 @@ pub enum Identifier {
 pub struct SignaturePayloadV0 {
     pub network: Bytes,
     pub contract: BytesN<32>,
-    pub function: Symbol,
+    pub name: Symbol,
     pub args: Vec<RawVal>,
 }
 
