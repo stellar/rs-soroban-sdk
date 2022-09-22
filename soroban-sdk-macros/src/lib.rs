@@ -22,14 +22,51 @@ use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::quote;
 use sha2::{Digest, Sha256};
-use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 use std::fs;
 use syn::{
-    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, Type,
+    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, LitStr, Type,
     Visibility,
 };
 
 use self::derive_client::ClientItem;
+
+use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
+
+use soroban_env_common::Symbol;
+
+/// Create a [Symbol] with the given string.
+///
+/// The [Symbol] is generated at compile time and returned as a const.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{symbol, Symbol};
+///
+/// let symbol = symbol!("a_str");
+/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// ```
+///
+/// ```
+/// use soroban_sdk::{symbol, Symbol};
+///
+/// const symbol: Symbol = symbol!("a_str");
+/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// ```
+#[proc_macro]
+pub fn symbol(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+    match Symbol::try_from_str(&input.value()) {
+        Ok(_) => quote! {{
+            const symbol: ::soroban_sdk::Symbol = ::soroban_sdk::Symbol::from_str(#input);
+            symbol
+        }}
+        .into(),
+        Err(e) => Error::new(input.span(), format!("{}", e))
+            .to_compile_error()
+            .into(),
+    }
+}
 
 /// Exports the publicly accessible functions in the implementation.
 ///

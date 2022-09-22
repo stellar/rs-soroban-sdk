@@ -87,7 +87,7 @@ pub use bytes_lit::bytes as __bytes_lit_bytes;
 pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 
 pub use soroban_sdk_macros::{
-    contractclient, contracterror, contractfile, contractimpl, contractimport, contracttype,
+    contractclient, contracterror, contractfile, contractimpl, contractimport, contracttype, symbol,
 };
 
 /// Panic with the given error.
@@ -151,7 +151,6 @@ pub mod ledger;
 pub mod logging;
 mod map;
 mod set;
-mod symbol;
 mod vec;
 pub use account::Account;
 pub use bigint::{BigInt, Sign};
