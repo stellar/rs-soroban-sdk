@@ -92,6 +92,10 @@ pub use soroban_sdk_macros::{
 
 /// Create a [Symbol] with the given string.
 ///
+/// A symbol's maximum length is 10 characters.
+///
+/// Valid characters are `a-zA-Z0-9_`.
+///
 /// The [Symbol] is generated at compile time and returned as a const.
 ///
 /// ### Examples
