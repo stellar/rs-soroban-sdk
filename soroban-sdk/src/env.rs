@@ -311,6 +311,13 @@ impl Env {
         self.env_impl.set_ledger_info(li)
     }
 
+    pub fn with_mut_ledger_info<F>(&self, f: F)
+    where
+        F: FnMut(&mut internal::LedgerInfo),
+    {
+        self.env_impl.with_mut_ledger_info(f).unwrap();
+    }
+
     /// Register a contract with the [Env] for testing.
     ///
     /// ### Examples
