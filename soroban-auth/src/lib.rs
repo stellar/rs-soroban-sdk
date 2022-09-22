@@ -25,14 +25,9 @@ pub use crate::public_types::{
     SignaturePayloadV0,
 };
 
-fn verify_ed25519_signature(
-    env: &Env,
-    auth: &Ed25519Signature,
-    function: Symbol,
-    args: Vec<RawVal>,
-) {
+fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, args: Vec<RawVal>) {
     let msg = SignaturePayloadV0 {
-        function,
+        name,
         contract: env.get_current_contract(),
         network: env.ledger().network_passphrase(),
         args,
@@ -42,16 +37,11 @@ fn verify_ed25519_signature(
     env.verify_sig_ed25519(&auth.public_key, &msg_bin, &auth.signature);
 }
 
-fn verify_account_signatures(
-    env: &Env,
-    auth: &AccountSignatures,
-    function: Symbol,
-    args: Vec<RawVal>,
-) {
+fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, args: Vec<RawVal>) {
     let acc = Account::from_public_key(&auth.account_id).unwrap();
 
     let msg = SignaturePayloadV0 {
-        function,
+        name,
         contract: env.get_current_contract(),
         network: env.ledger().network_passphrase(),
         args,
@@ -93,7 +83,7 @@ fn verify_account_signatures(
 /// [`Signature`].
 ///
 /// Verify that the given signature is a signature of the [`SignaturePayload`]
-/// that contain `function`, and `args`.
+/// that contain `name`, and `args`.
 ///
 /// Three types of signature are accepted:
 ///
@@ -115,23 +105,18 @@ fn verify_account_signatures(
 /// **This function provides no replay protection. Contracts must provide their
 /// own mechanism suitable for replay prevention that prevents contract
 /// invocations to be replayable if it is important they are not.**
-pub fn verify(env: &Env, sig: &Signature, function: Symbol, args: impl IntoVal<Env, Vec<RawVal>>) {
+pub fn verify(env: &Env, sig: &Signature, name: Symbol, args: impl IntoVal<Env, Vec<RawVal>>) {
     match sig {
         Signature::Contract => {
             env.get_invoking_contract();
         }
-        Signature::Ed25519(e) => verify_ed25519_signature(env, &e, function, args.into_val(env)),
-        Signature::Account(a) => verify_account_signatures(env, &a, function, args.into_val(env)),
+        Signature::Ed25519(e) => verify_ed25519_signature(env, &e, name, args.into_val(env)),
+        Signature::Account(a) => verify_account_signatures(env, &a, name, args.into_val(env)),
     }
 }
 
 #[doc(hidden)]
 #[deprecated(note = "use soroban_auth::verify(...)")]
-pub fn check_auth(
-    env: &Env,
-    sig: &Signature,
-    function: Symbol,
-    args: impl IntoVal<Env, Vec<RawVal>>,
-) {
-    verify(env, sig, function, args)
+pub fn check_auth(env: &Env, sig: &Signature, name: Symbol, args: impl IntoVal<Env, Vec<RawVal>>) {
+    verify(env, sig, name, args)
 }
