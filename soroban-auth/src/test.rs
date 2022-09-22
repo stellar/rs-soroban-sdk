@@ -3,7 +3,7 @@
 
 extern crate std;
 
-use soroban_sdk::{contractimpl, symbol, BytesN, Env};
+use soroban_sdk::{contractimpl, symbol, BytesN, Env, testutils::LedgerInfo};
 
 use crate::{
     testutils::ed25519::{generate, sign},
@@ -30,6 +30,18 @@ fn test() {
     let contract_id = BytesN::from_array(&env, &[0; 32]);
     env.register_contract(&contract_id, ExampleContract);
     let client = ExampleContractClient::new(&env, &contract_id);
+
+    env.set_ledger(LedgerInfo {
+        base_reserve: 0,
+        network_passphrase: "soroban-auth test".as_bytes().to_vec(),
+        protocol_version: 0,
+        sequence_number: 0,
+        timestamp: 0,
+    });
+
+    std::println!("network: {:?}", env.ledger().network_passphrase());
+    std::println!("contract id: {:?}", contract_id);
+    std::println!("name: {:?}", symbol!("examplefn"));
 
     let (id, signer) = generate(&env);
     std::println!("signer: {:?}", signer);
