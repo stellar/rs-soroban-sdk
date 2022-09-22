@@ -15,7 +15,13 @@ use crate::{
 /// [`RawVal`].
 ///
 /// `log!` statements are only enabled in non optimized builds that have
-/// `debug-assertions` enabled.
+/// `debug-assertions` enabled. To enable `debug-assertions` add the following
+/// lines to `Cargo.toml`:
+///
+/// ```toml
+/// [profile.release.package.soroban-env-host]
+/// debug-assertions = true
+/// ```
 ///
 /// ### Examples
 ///
