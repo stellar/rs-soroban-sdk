@@ -16,10 +16,12 @@ use crate::{
 ///
 /// `log!` statements are only enabled in non optimized builds that have
 /// `debug-assertions` enabled. To enable `debug-assertions` add the following
-/// lines to `Cargo.toml`:
+/// lines to `Cargo.toml`, then build with the profile specified, `--profile
+/// release-with-logs`.
 ///
 /// ```toml
-/// [profile.release.package.soroban-env-host]
+/// [profile.release-with-logs]
+/// inherits = "release"
 /// debug-assertions = true
 /// ```
 ///
