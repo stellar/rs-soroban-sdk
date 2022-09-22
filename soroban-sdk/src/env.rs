@@ -45,7 +45,6 @@ pub use internal::Symbol;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
-use soroban_env_host::LedgerInfo;
 
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
@@ -314,7 +313,7 @@ impl Env {
 
     pub fn with_mut_ledger_info<F>(&self, f: F)
     where
-        F: FnMut(&mut LedgerInfo),
+        F: FnMut(&mut internal::LedgerInfo),
     {
         self.env_impl.with_mut_ledger_info(f).unwrap();
     }
