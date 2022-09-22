@@ -124,6 +124,8 @@ pub use soroban_sdk_macros::symbol;
 ///
 /// Equivalent to `panic!`, but with an error value instead of a string. The
 /// error value will be given to any calling contract.
+///
+/// See [`contracterror`] for how to define an error type.
 #[macro_export]
 macro_rules! panic_error {
     ($env:expr, $error:expr) => {{
