@@ -3,7 +3,7 @@
 
 extern crate std;
 
-use soroban_sdk::{contractimpl, symbol, BytesN, Env, testutils::LedgerInfo};
+use soroban_sdk::{contractimpl, symbol, testutils::LedgerInfo, BytesN, Env};
 
 use crate::{
     testutils::ed25519::{generate, sign},
