@@ -1,4 +1,4 @@
-error: sha256 does not match, expected: 26f5c00d05439950c7edbfcc1f2bd47f383094b2105f8473168407636b050258
+error: sha256 does not match, expected: a99f9c800317a653dd6fe106e6c9789f0033b69b6bf9ff4c7fcdd63530557cb3
  --> tests/trybuild/contractfile_with_sha256_verify_fail.rs:3:5
   |
 3 |     sha256 = "0000000000000000000000000000000000000000000000000000000000000000",
