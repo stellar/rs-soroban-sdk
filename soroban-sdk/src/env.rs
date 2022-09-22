@@ -45,6 +45,7 @@ pub use internal::Symbol;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
+use soroban_env_host::LedgerInfo;
 
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
@@ -309,6 +310,13 @@ impl Env {
     /// [Env::ledger].
     pub fn set_ledger(&self, li: internal::LedgerInfo) {
         self.env_impl.set_ledger_info(li)
+    }
+
+    pub fn with_mutable_ledger_info<F>(&self, f: F)
+    where
+        F: FnMut(&mut LedgerInfo),
+    {
+        self.env_impl.with_mutable_ledger_info(f).unwrap();
     }
 
     /// Register a contract with the [Env] for testing.
