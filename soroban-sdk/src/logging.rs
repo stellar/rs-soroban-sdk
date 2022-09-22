@@ -3,7 +3,10 @@
 //! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-use crate::{env::internal::EnvBase, Env, RawVal};
+use crate::{
+    env::internal::{self, EnvBase},
+    Bytes, Env, IntoVal, RawVal, Vec,
+};
 
 /// Log a debug event.
 ///
@@ -114,7 +117,17 @@ impl Logger {
     pub fn log(&self, fmt: &'static str, args: &[RawVal]) {
         if cfg!(debug_assertions) {
             let env = self.env();
-            env.log_static_fmt_general(fmt, &args, &[]).unwrap();
+            // If building for WASM logging will be transmitted through the
+            // guest interface via host types. This is very inefficient. When
+            // building on non-WASM environments where the environment Host is
+            // directly available, use the log static variants.
+            if cfg!(target_family = "wasm") {
+                let fmt: Bytes = fmt.into_val(env);
+                let args: Vec<RawVal> = Vec::from_slice(env, args);
+                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object());
+            } else {
+                env.log_static_fmt_general(fmt, &args, &[]).unwrap();
+            }
         }
     }
 }
