@@ -1,5 +1,5 @@
 use itertools::MultiUnzip;
-use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
 use syn::{spanned::Spanned, DataStruct, Error, Ident, Visibility};
@@ -37,11 +37,15 @@ pub fn derive_type_struct(
         .filter(|f| matches!(f.vis, Visibility::Public(_)))
         .enumerate()
         .map(|(i, f)| {
-            let ident = f
-                .ident
-                .as_ref()
-                .map_or_else(|| format_ident!("{}", i), Ident::clone);
-            let name = ident.to_string();
+            // For named fields use the ident as is. For unnamed fields like
+            // those of tuple structs use the field index as the token to
+            // reference the field.
+            let (ident, name) = if let Some(ident) = &f.ident {
+                (quote!{ #ident }, ident.to_string())
+            } else {
+                let i_unsuffixed = Literal::usize_unsuffixed(i);
+                (quote!{ #i_unsuffixed }, format!("{}", i))
+            };
             if let Err(e) = Symbol::try_from_str(&name) {
                 errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
             }
