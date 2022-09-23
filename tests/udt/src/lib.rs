@@ -14,7 +14,12 @@ pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
     UdtC(UdtEnum2),
+    UdtD(UdtTuple),
 }
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UdtTuple(pub i64, pub Vec<i64>);
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -33,11 +38,13 @@ impl Contract {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
             UdtEnum::UdtC(val) => val as i64,
+            UdtEnum::UdtD(tup) => tup.0 + tup.1.iter().fold(0i64, |sum, i| sum + i.unwrap()),
         };
         let b = match b {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
             UdtEnum::UdtC(val) => val as i64,
+            UdtEnum::UdtD(tup) => tup.0 + tup.1.iter().fold(0i64, |sum, i| sum + i.unwrap()),
         };
         a + b
     }
@@ -46,17 +53,7 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, IntoVal, RawVal, TryFromVal};
-
-    #[test]
-    fn test_adsf() {
-        let e = Env::default();
-        let u: RawVal = UdtEnum2::A.into_val(&e);
-        assert_eq!(
-            u.get_payload(),
-            RawVal::from_u32(UdtEnum2::A as u32).get_payload()
-        );
-    }
+    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, TryFromVal};
 
     #[test]
     fn test_serializing() {
@@ -192,6 +189,11 @@ mod test {
         };
         let z = client.add(&UdtEnum::UdtA, &UdtEnum::UdtB(udt));
         assert_eq!(z, 22);
+
+        let udt1 = UdtEnum2::A;
+        let udt2 = UdtTuple(1, vec![&e, 2, 3]);
+        let z = client.add(&UdtEnum::UdtC(udt1), &UdtEnum::UdtD(udt2));
+        assert_eq!(z, 16);
     }
 
     #[test]

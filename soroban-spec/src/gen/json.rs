@@ -109,6 +109,35 @@ mod test {
           "name": "UdtEnum2"
         }
       ]
+    },
+    {
+      "name": "UdtD",
+      "values": [
+        {
+          "type": "custom",
+          "name": "UdtTuple"
+        }
+      ]
+    }
+  ]
+}{
+  "type": "struct",
+  "name": "UdtTuple",
+  "fields": [
+    {
+      "name": "0",
+      "value": {
+        "type": "i64"
+      }
+    },
+    {
+      "name": "1",
+      "value": {
+        "type": "vec",
+        "element": {
+          "type": "i64"
+        }
+      }
     }
   ]
 }{
