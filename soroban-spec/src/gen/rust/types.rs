@@ -5,6 +5,9 @@ use stellar_xdr::{
 };
 
 // TODO: Replace the unwrap()s in this code with returning Result.
+// TODO: Create Idents in a way that we can get a Result back and return it too
+// because at the moment the format_ident! calls can panic if the inputs do not
+// result in a valid ident.
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
