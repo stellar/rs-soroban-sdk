@@ -917,6 +917,11 @@ impl<const N: usize> TryIntoVal<Env, BytesN<N>> for ScVal {
 }
 
 impl<const N: usize> BytesN<N> {
+    #[inline(always)]
+    pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
+        Self(Bytes::unchecked_new(obj))
+    }
+
     pub fn env(&self) -> &Env {
         self.0.env()
     }

@@ -49,6 +49,7 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
+use crate::invoker::Invoker;
 use crate::{
     contract_data::ContractData, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
     Bytes, BytesN, Vec,
@@ -175,6 +176,18 @@ impl Env {
         internal::Env::get_current_contract(self)
             .try_into_val(self)
             .unwrap()
+    }
+
+    pub fn invoker(&self) -> Invoker {
+        match internal::Env::get_invoker_type(self) {
+            0 => Invoker::Account(unsafe {
+                BytesN::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
+            }),
+            1 => Invoker::Contract(unsafe {
+                BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
+            }),
+            _ => panic!("unrecognized invoker type"),
+        }
     }
 
     /// Get the 32-byte hash identifier of the contract that invoked this

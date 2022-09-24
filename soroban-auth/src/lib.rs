@@ -109,7 +109,7 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
 /// invocations to be replayable if it is important they are not.**
 pub fn verify(env: &Env, sig: &Signature, name: Symbol, args: impl IntoVal<Env, Vec<RawVal>>) {
     match sig {
-        Signature::Contract => {
+        Signature::Invoker => {
             env.get_invoking_contract();
         }
         Signature::Ed25519(e) => verify_ed25519_signature(env, &e, name, args.into_val(env)),
