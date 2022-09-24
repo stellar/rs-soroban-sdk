@@ -10,11 +10,26 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_string().unwrap());
 
     if spec.lib.len() > 0 {
-        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        let lib_ident = format_ident!("{}", spec.lib.to_string().unwrap());
         quote! {
             type #ident = ::#lib_ident::#ident;
         }
+    } else if spec
+        .fields
+        .iter()
+        .all(|f| f.name.to_string().unwrap().parse::<usize>().is_ok())
+    {
+        // If all fields are numeric, generate a tuple with unnamed fields.
+        let fields = spec.fields.iter().map(|f| {
+            let f_type = generate_type_ident(&f.type_);
+            quote! { pub #f_type }
+        });
+        quote! {
+            #[::soroban_sdk::contracttype(export = false)]
+            pub struct #ident ( #(#fields),* );
+        }
     } else {
+        // Otherwise generate a struct with named fields.
         let fields = spec.fields.iter().map(|f| {
             let f_ident = format_ident!("{}", f.name.to_string().unwrap());
             let f_type = generate_type_ident(&f.type_);
