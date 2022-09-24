@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{spanned::Spanned, DataStruct, Error, Ident, Visibility};
+use syn::{spanned::Spanned, DataStruct, Error, Ident};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, VecM, WriteXdr,
@@ -34,7 +34,6 @@ pub fn derive_type_struct(
     });
     let (spec_fields, try_froms, intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
-        .filter(|f| matches!(f.vis, Visibility::Public(_)))
         .enumerate()
         .map(|(i, f)| {
             // For named fields use the ident as is. For unnamed fields like
