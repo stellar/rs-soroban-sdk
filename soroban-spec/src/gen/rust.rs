@@ -7,6 +7,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
 use stellar_xdr::{self, ScSpecEntry};
+use syn::Error;
 
 use crate::read::{from_wasm, FromWasmError};
 
@@ -91,5 +92,74 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
         #(#unions)*
         #(#enums)*
         #(#error_enums)*
+    }
+}
+
+/// Implemented by types that can be converted into pretty formatted Strings of
+/// Rust code.
+pub trait ToFormattedString {
+    /// Converts the value to a String that is pretty formatted. If there is any
+    /// error parsin the token stream the raw String version of the code is
+    /// returned instead.
+    fn to_formatted_string(&self) -> Result<String, Error>;
+}
+
+impl ToFormattedString for TokenStream {
+    fn to_formatted_string(&self) -> Result<String, Error> {
+        let file = syn::parse2(self.clone())?;
+        Ok(prettyplease::unparse(&file))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use pretty_assertions::assert_eq;
+
+    use crate::gen::rust::ToFormattedString;
+
+    use super::generate;
+
+    const EXAMPLE_WASM: &[u8] =
+        include_bytes!("../../../target/wasm32-unknown-unknown/release/example_udt.wasm");
+
+    #[test]
+    fn example() {
+        let entries = crate::read::from_wasm(EXAMPLE_WASM).unwrap();
+        let rust = generate(&entries, "<file>", "<sha256>")
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"pub const WASM: &[u8] = ::soroban_sdk::contractfile!(
+    file = "<file>", sha256 = "<sha256>"
+);
+#[::soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn add(env: ::soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
+}
+#[deprecated(note = "use Client instead of ContractClient as it has been renamed")]
+pub type ContractClient = Client;
+#[::soroban_sdk::contracttype(export = false)]
+pub struct UdtTuple(pub i64, pub ::soroban_sdk::Vec<i64>);
+#[::soroban_sdk::contracttype(export = false)]
+pub struct UdtStruct {
+    pub a: i64,
+    pub b: i64,
+    pub c: ::soroban_sdk::Vec<i64>,
+}
+#[::soroban_sdk::contracttype(export = false)]
+pub enum UdtEnum {
+    UdtA,
+    UdtB(UdtStruct),
+    UdtC(UdtEnum2),
+    UdtD(UdtTuple),
+}
+#[::soroban_sdk::contracttype(export = false)]
+pub enum UdtEnum2 {
+    A = 10,
+    B = 15,
+}
+"#,
+        );
     }
 }
