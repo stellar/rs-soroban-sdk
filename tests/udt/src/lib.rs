@@ -24,8 +24,8 @@ pub struct UdtTuple(pub i64, pub Vec<i64>);
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UdtStruct {
-    pub a: i64,
-    pub b: i64,
+    a: i64,
+    b: i64,
     pub c: Vec<i64>,
 }
 
