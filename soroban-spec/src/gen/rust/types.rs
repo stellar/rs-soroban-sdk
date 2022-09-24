@@ -4,6 +4,8 @@ use stellar_xdr::{
     ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
+// TODO: Replace the unwrap()s in this code with returning Result.
+
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
 pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
