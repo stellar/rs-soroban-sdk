@@ -24,8 +24,8 @@ use quote::quote;
 use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
-    parse_macro_input, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl, LitStr, Type,
-    Visibility,
+    parse_macro_input, parse_str, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl,
+    LitStr, Path, Type, Visibility,
 };
 
 use self::derive_client::ClientItem;
@@ -33,6 +33,10 @@ use self::derive_client::ClientItem;
 use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 
 use soroban_env_common::Symbol;
+
+fn default_crate_path() -> Path {
+    parse_str("::soroban_sdk").unwrap()
+}
 
 #[proc_macro]
 pub fn symbol(input: TokenStream) -> TokenStream {
@@ -111,6 +115,8 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 
 #[derive(Debug, FromMeta)]
 struct ContractTypeArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
     lib: Option<String>,
     export: Option<bool>,
 }
@@ -149,7 +155,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         matches!(input.vis, Visibility::Public(_))
     };
     let derived = match &input.data {
-        syn::Data::Struct(s) => derive_type_struct(ident, s, gen_spec, &args.lib),
+        syn::Data::Struct(s) => derive_type_struct(&args.crate_path, ident, s, gen_spec, &args.lib),
         syn::Data::Enum(e) => {
             let count_of_variants = e.variants.len();
             let count_of_int_variants = e
@@ -158,9 +164,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(ident, e, gen_spec, &args.lib)
+                derive_type_enum(&args.crate_path, ident, e, gen_spec, &args.lib)
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(ident, e, gen_spec, &args.lib)
+                derive_type_enum_int(&args.crate_path, ident, e, gen_spec, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()
@@ -207,7 +213,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let derived = match &input.data {
         syn::Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
-                derive_type_error_enum_int(ident, e, gen_spec, &args.lib)
+                derive_type_error_enum_int(&args.crate_path, ident, e, gen_spec, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract errors only when all variants have an explicit integer literal")
                     .to_compile_error()

@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{spanned::Spanned, DataStruct, Error, Ident};
+use syn::{spanned::Spanned, DataStruct, Error, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, VecM, WriteXdr,
@@ -15,6 +15,7 @@ use crate::map_type::map_type;
 // types with private fields.
 
 pub fn derive_type_struct(
+    path: &Path,
     ident: &Ident,
     data: &DataStruct,
     spec: bool,
@@ -58,27 +59,27 @@ pub fn derive_type_struct(
                     }
                 },
             };
-            let map_key = quote! { ::soroban_sdk::symbol!(#name) };
+            let map_key = quote! { #path::symbol!(#name) };
             let try_from = quote! {
                 #ident: if let Some(Ok(val)) = map.get(#map_key) {
                     val.try_into_val(env)?
                 } else {
-                    Err(soroban_sdk::ConversionError)?
+                    Err(#path::ConversionError)?
                 }
             };
             let into = quote! { map.set(#map_key, (&self.#ident).into_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
-                    let key = &#name.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let idx = map.binary_search_by_key(key, |entry| entry.key.clone()).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::RawVal = (&map[idx].val.clone()).try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    rv.try_into_val(env).map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                    let key = &#name.try_into().map_err(|_| #path::xdr::Error::Invalid)?;
+                    let idx = map.binary_search_by_key(key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
+                    let rv: #path::RawVal = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                    rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
             let into_xdr = quote! {
-                soroban_sdk::xdr::ScMapEntry {
-                    key: #name.try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    val: (&self.#ident).try_into().map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                #path::xdr::ScMapEntry {
+                    key: #name.try_into().map_err(|_| #path::xdr::Error::Invalid)?,
+                    val: (&self.#ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };
             (spec_field, try_from, into, try_from_xdr, into_xdr)
@@ -120,14 +121,14 @@ pub fn derive_type_struct(
     quote! {
         #spec_gen
 
-        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal> for #ident {
-            type Error = soroban_sdk::ConversionError;
+        impl #path::TryFromVal<#path::Env, #path::RawVal> for #ident {
+            type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::RawVal) -> Result<Self, Self::Error> {
-                use soroban_sdk::TryIntoVal;
-                let map: soroban_sdk::Map<soroban_sdk::Symbol, soroban_sdk::RawVal> = val.try_into_val(env)?;
+            fn try_from_val(env: &#path::Env, val: #path::RawVal) -> Result<Self, Self::Error> {
+                use #path::TryIntoVal;
+                let map: #path::Map<#path::Symbol, #path::RawVal> = val.try_into_val(env)?;
                 if map.len() != #field_count_u32 {
-                    return Err(soroban_sdk::ConversionError);
+                    return Err(#path::ConversionError);
                 }
                 Ok(Self{
                     #(#try_froms,)*
@@ -135,42 +136,42 @@ pub fn derive_type_struct(
             }
         }
 
-        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::RawVal {
-            type Error = soroban_sdk::ConversionError;
+        impl #path::TryIntoVal<#path::Env, #ident> for #path::RawVal {
+            type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
-                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, self)
+            fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
+                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
             }
         }
 
-        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for #ident {
+        impl #path::IntoVal<#path::Env, #path::RawVal> for #ident {
             #[inline(always)]
-            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
-                let mut map = soroban_sdk::Map::<soroban_sdk::Symbol, soroban_sdk::RawVal>::new(env);
+            fn into_val(self, env: &#path::Env) -> #path::RawVal {
+                let mut map = #path::Map::<#path::Symbol, #path::RawVal>::new(env);
                 #(#intos;)*
                 map.into()
             }
         }
 
-        impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal> for &#ident {
+        impl #path::IntoVal<#path::Env, #path::RawVal> for &#ident {
             #[inline(always)]
-            fn into_val(self, env: &soroban_sdk::Env) -> soroban_sdk::RawVal {
-                let mut map = soroban_sdk::Map::<soroban_sdk::Symbol, soroban_sdk::RawVal>::new(env);
+            fn into_val(self, env: &#path::Env) -> #path::RawVal {
+                let mut map = #path::Map::<#path::Symbol, #path::RawVal>::new(env);
                 #(#intos;)*
                 map.into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for #ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScMap) -> Result<Self, Self::Error> {
-                use soroban_sdk::xdr::Validate;
-                use soroban_sdk::TryIntoVal;
+            fn try_from_val(env: &#path::Env, val: #path::xdr::ScMap) -> Result<Self, Self::Error> {
+                use #path::xdr::Validate;
+                use #path::TryIntoVal;
                 let map = val;
                 if map.len() != #field_count_usize {
-                    return Err(soroban_sdk::xdr::Error::Invalid);
+                    return Err(#path::xdr::Error::Invalid);
                 }
                 map.validate()?;
                 Ok(Self{
@@ -180,112 +181,112 @@ pub fn derive_type_struct(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::xdr::ScMap {
-            type Error = soroban_sdk::xdr::Error;
+        impl #path::TryIntoVal<#path::Env, #ident> for #path::xdr::ScMap {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
-                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, self)
+            fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
+                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScObject> for #ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl #path::TryFromVal<#path::Env, #path::xdr::ScObject> for #ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScObject) -> Result<Self, Self::Error> {
-                if let soroban_sdk::xdr::ScObject::Map(map) = val {
-                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+            fn try_from_val(env: &#path::Env, val: #path::xdr::ScObject) -> Result<Self, Self::Error> {
+                if let #path::xdr::ScObject::Map(map) = val {
+                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, map)
                 } else {
-                    Err(soroban_sdk::xdr::Error::Invalid)
+                    Err(#path::xdr::Error::Invalid)
                 }
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::xdr::ScObject {
-            type Error = soroban_sdk::xdr::Error;
+        impl #path::TryIntoVal<#path::Env, #ident> for #path::xdr::ScObject {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
-                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, self)
+            fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
+                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for #ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &soroban_sdk::Env, val: soroban_sdk::xdr::ScVal) -> Result<Self, Self::Error> {
-                if let soroban_sdk::xdr::ScVal::Object(Some(obj)) = val {
-                    <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, obj)
+            fn try_from_val(env: &#path::Env, val: #path::xdr::ScVal) -> Result<Self, Self::Error> {
+                if let #path::xdr::ScVal::Object(Some(obj)) = val {
+                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, obj)
                 } else {
-                    Err(soroban_sdk::xdr::Error::Invalid)
+                    Err(#path::xdr::Error::Invalid)
                 }
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl soroban_sdk::TryIntoVal<soroban_sdk::Env, #ident> for soroban_sdk::xdr::ScVal {
-            type Error = soroban_sdk::xdr::Error;
+        impl #path::TryIntoVal<#path::Env, #ident> for #path::xdr::ScVal {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into_val(self, env: &soroban_sdk::Env) -> Result<#ident, Self::Error> {
-                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, self)
+            fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
+                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<soroban_sdk::xdr::ScMap> for &#ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl TryInto<#path::xdr::ScMap> for &#ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<soroban_sdk::xdr::ScMap, Self::Error> {
+            fn try_into(self) -> Result<#path::xdr::ScMap, Self::Error> {
                 extern crate alloc;
-                use soroban_sdk::TryFromVal;
-                soroban_sdk::xdr::ScMap::sorted_from(alloc::vec![
+                use #path::TryFromVal;
+                #path::xdr::ScMap::sorted_from(alloc::vec![
                     #(#into_xdrs,)*
                 ])
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<soroban_sdk::xdr::ScMap> for #ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl TryInto<#path::xdr::ScMap> for #ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<soroban_sdk::xdr::ScMap, Self::Error> {
+            fn try_into(self) -> Result<#path::xdr::ScMap, Self::Error> {
                 (&self).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<soroban_sdk::xdr::ScObject> for &#ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl TryInto<#path::xdr::ScObject> for &#ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<soroban_sdk::xdr::ScObject, Self::Error> {
-                Ok(soroban_sdk::xdr::ScObject::Map(self.try_into()?))
+            fn try_into(self) -> Result<#path::xdr::ScObject, Self::Error> {
+                Ok(#path::xdr::ScObject::Map(self.try_into()?))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<soroban_sdk::xdr::ScObject> for #ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl TryInto<#path::xdr::ScObject> for #ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<soroban_sdk::xdr::ScObject, Self::Error> {
+            fn try_into(self) -> Result<#path::xdr::ScObject, Self::Error> {
                 (&self).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<soroban_sdk::xdr::ScVal> for &#ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl TryInto<#path::xdr::ScVal> for &#ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<soroban_sdk::xdr::ScVal, Self::Error> {
-                Ok(soroban_sdk::xdr::ScVal::Object(Some(self.try_into()?)))
+            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
+                Ok(#path::xdr::ScVal::Object(Some(self.try_into()?)))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<soroban_sdk::xdr::ScVal> for #ident {
-            type Error = soroban_sdk::xdr::Error;
+        impl TryInto<#path::xdr::ScVal> for #ident {
+            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<soroban_sdk::xdr::ScVal, Self::Error> {
+            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
                 (&self).try_into()
             }
         }
