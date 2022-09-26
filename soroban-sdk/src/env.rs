@@ -184,7 +184,7 @@ impl Env {
     pub fn invoker(&self) -> Invoker {
         let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
             .try_into()
-            .expect("unrecogniaed invoker type");
+            .expect("unrecognized invoker type");
         match invoker_type {
             InvokerType::Account => Invoker::Account(unsafe {
                 AccountId::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
