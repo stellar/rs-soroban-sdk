@@ -1,4 +1,4 @@
-use crate::{contracttype, BytesN};
+use crate::{contracttype, AccountId, BytesN};
 
 /// Invoker is the invoker of a contract.
 // The Invoker type is a contracttype and transmitted to the host like an enum,
@@ -7,6 +7,6 @@ use crate::{contracttype, BytesN};
 #[contracttype(crate_path = "crate", lib = "soroban_sdk", export = false)]
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Invoker {
-    Account(BytesN<32>),
+    Account(AccountId),
     Contract(BytesN<32>),
 }

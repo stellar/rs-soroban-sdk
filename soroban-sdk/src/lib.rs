@@ -180,7 +180,7 @@ pub mod logging;
 mod map;
 mod set;
 mod vec;
-pub use account::Account;
+pub use account::{Account, AccountId};
 pub use bigint::{BigInt, Sign};
 pub use bytes::{Bytes, BytesN};
 pub use invoker::Invoker;
