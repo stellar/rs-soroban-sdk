@@ -195,12 +195,8 @@ impl Env {
         }
     }
 
-    /// Get the 32-byte hash identifier of the contract that invoked this
-    /// contract.
-    ///
-    /// # Panics
-    ///
-    /// Will panic the contract was not invoked by another contract.
+    #[doc(hidden)]
+    #[deprecated(note = "use Env::invoker")]
     pub fn get_invoking_contract(&self) -> BytesN<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Bytes::try_from_val(self, rv).unwrap();
