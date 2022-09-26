@@ -29,18 +29,18 @@ soroban-sdk = { path = "soroban-sdk" }
 soroban-auth = { path = "soroban-auth" }
 soroban-spec = { path = "soroban-spec" }
 soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
-soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
+# soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
+# soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
+# soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
+# soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
 soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "74940dbb" }
 stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "17b62ab1" }
 wasmi = { package = "soroban-wasmi", git = "https://github.com/stellar/wasmi", rev = "a61b6df" }
 
-# soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-# soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-# soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
-# soroban-env-macros = { path = "../rs-soroban-env/soroban-env-macros" }
+soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
+soroban-env-macros = { path = "../rs-soroban-env/soroban-env-macros" }
 
 [profile.dev]
 overflow-checks = true

@@ -310,6 +310,10 @@ impl Env {
             internal::budget::Budget::default(),
         );
 
+        env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+            xdr::Uint256([0; 32]),
+        )));
+
         let l = internal::LedgerInfo {
             protocol_version: 0,
             sequence_number: 0,
