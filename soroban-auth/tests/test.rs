@@ -18,12 +18,12 @@ fn read_nonce(e: &Env, id: &Identifier) -> BigInt {
 }
 
 fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
-    // replay protection is not required for Contract authorization because
+    // replay protection is not required for invoker authorization because
     // there's no cryptographic signature involved. All that's checked is the
-    // invoking contract, so this contract just expects 0.
-    if matches!(id, Identifier::Contract(_)) {
+    // invoker, so this contract just expects 0.
+    if matches!(id, Identifier::Invoker(_)) {
         if BigInt::zero(&e) != expected_nonce {
-            panic!("nonce should be zero for Contract")
+            panic!("nonce should be zero for invoker")
         }
         return;
     }
@@ -60,7 +60,7 @@ pub struct OuterTestContract;
 impl OuterTestContract {
     pub fn authorize(e: Env, contract_id: BytesN<32>) {
         let client = TestContractClient::new(&e, contract_id);
-        client.verify_sig(&Signature::Contract, &BigInt::zero(&e));
+        client.verify_sig(&Signature::Invoker, &BigInt::zero(&e));
     }
 }
 

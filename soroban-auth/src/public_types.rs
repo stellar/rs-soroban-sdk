@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, Bytes, BytesN, Env, RawVal, Symbol, Vec};
+use soroban_sdk::{contracttype, Bytes, BytesN, Env, Invoker, RawVal, Symbol, Vec};
 
 /// An Ed25519 signature contains a single signature for the
 /// [`SignaturePayload`].
@@ -26,7 +26,7 @@ pub struct AccountSignatures {
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub enum Signature {
-    Contract,
+    Invoker,
     Ed25519(Ed25519Signature),
     Account(AccountSignatures),
 }
@@ -35,7 +35,7 @@ impl Signature {
     /// Returns the identifier that this signatures claims to authenticate.
     pub fn identifier(&self, env: &Env) -> Identifier {
         match self {
-            Signature::Contract => Identifier::Contract(env.get_invoking_contract()),
+            Signature::Invoker => Identifier::Invoker(env.invoker()),
             Signature::Ed25519(e) => Identifier::Ed25519(e.public_key.clone()),
             Signature::Account(a) => Identifier::Account(a.account_id.clone()),
         }
@@ -53,7 +53,7 @@ impl Signature {
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub enum Identifier {
-    Contract(BytesN<32>),
+    Invoker(Invoker),
     Ed25519(BytesN<32>),
     Account(BytesN<32>),
 }

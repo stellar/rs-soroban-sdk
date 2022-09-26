@@ -37,6 +37,7 @@ pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::FromVal;
 pub use internal::IntoVal;
+use internal::InvokerType;
 pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
@@ -49,6 +50,8 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
+use crate::invoker::Invoker;
+use crate::AccountId;
 use crate::{
     contract_data::ContractData, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
     Bytes, BytesN, Vec,
@@ -177,12 +180,23 @@ impl Env {
             .unwrap()
     }
 
-    /// Get the 32-byte hash identifier of the contract that invoked this
-    /// contract.
-    ///
-    /// # Panics
-    ///
-    /// Will panic the contract was not invoked by another contract.
+    /// Get the invoker of the current executing contract.
+    pub fn invoker(&self) -> Invoker {
+        let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
+            .try_into()
+            .expect("unrecognized invoker type");
+        match invoker_type {
+            InvokerType::Account => Invoker::Account(unsafe {
+                AccountId::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
+            }),
+            InvokerType::Contract => Invoker::Contract(unsafe {
+                BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
+            }),
+        }
+    }
+
+    #[doc(hidden)]
+    #[deprecated(note = "use Env::invoker")]
     pub fn get_invoking_contract(&self) -> BytesN<32> {
         let rv = internal::Env::get_invoking_contract(self).to_raw();
         let bin = Bytes::try_from_val(self, rv).unwrap();
@@ -294,6 +308,10 @@ impl Env {
             internal::budget::Budget::default(),
         );
 
+        env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+            xdr::Uint256([0; 32]),
+        )));
+
         let l = internal::LedgerInfo {
             protocol_version: 0,
             sequence_number: 0,
@@ -303,6 +321,12 @@ impl Env {
         };
         env_impl.set_ledger_info(l);
         Env { env_impl }
+    }
+
+    /// Sets the source account in the [Env], which will be accessible via
+    /// [Env::invoker] when the current executing contract is directly invoked.
+    pub fn set_source_account(&self, account_id: xdr::AccountId) {
+        self.env_impl.set_source_account(account_id)
     }
 
     /// Sets ledger information in the [Env], which will be accessible via
