@@ -37,6 +37,7 @@ pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::FromVal;
 pub use internal::IntoVal;
+use internal::InvokerType;
 pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
@@ -179,14 +180,16 @@ impl Env {
     }
 
     pub fn invoker(&self) -> Invoker {
-        match internal::Env::get_invoker_type(self) {
-            0 => Invoker::Account(unsafe {
+        let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
+            .try_into()
+            .expect("unrecogniaed invoker type");
+        match invoker_type {
+            InvokerType::Account => Invoker::Account(unsafe {
                 BytesN::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
             }),
-            1 => Invoker::Contract(unsafe {
+            InvokerType::Contract => Invoker::Contract(unsafe {
                 BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
             }),
-            _ => panic!("unrecognized invoker type"),
         }
     }
 
