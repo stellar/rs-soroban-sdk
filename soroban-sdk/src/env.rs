@@ -327,6 +327,12 @@ impl Env {
         Env { env_impl }
     }
 
+    /// Sets the source account in the [Env], which will be accessible via
+    /// [Env::invoker] when the current executing contract is directly invoked.
+    pub fn set_source_account(&self, account_id: xdr::AccountId) {
+        self.env_impl.set_source_account(account_id)
+    }
+
     /// Sets ledger information in the [Env], which will be accessible via
     /// [Env::ledger].
     pub fn set_ledger(&self, li: internal::LedgerInfo) {
