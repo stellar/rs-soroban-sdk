@@ -6,6 +6,7 @@ members = [
     "soroban-auth",
     "soroban-sdk-macros",
     "soroban-spec",
+    "soroban-built-in-token-spec",
     "tests/empty",
     "tests/hello",
     "tests/add_i32",

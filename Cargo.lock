@@ -789,6 +789,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-built-in-token-spec"
+version = "0.0.4"
+dependencies = [
+ "ed25519-dalek",
+ "rand",
+ "soroban-sdk",
+]
+
+[[package]]
 name = "soroban-env-common"
 version = "0.0.5"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=1173313f#1173313f6001757f8cdc7b7627f49e24a185339e"
