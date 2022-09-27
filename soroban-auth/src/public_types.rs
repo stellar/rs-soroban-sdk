@@ -35,7 +35,10 @@ impl Signature {
     /// Returns the identifier that this signatures claims to authenticate.
     pub fn identifier(&self, env: &Env) -> Identifier {
         match self {
-            Signature::Invoker => Identifier::Invoker(env.invoker()),
+            Signature::Invoker => match env.invoker() {
+                Invoker::Account(a) => Identifier::Account(a),
+                Invoker::Contract(c) => Identifier::Contract(c),
+            },
             Signature::Ed25519(e) => Identifier::Ed25519(e.public_key.clone()),
             Signature::Account(a) => Identifier::Account(a.account_id.clone()),
         }
@@ -53,7 +56,7 @@ impl Signature {
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub enum Identifier {
-    Invoker(Invoker),
+    Contract(BytesN<32>),
     Ed25519(BytesN<32>),
     Account(AccountId),
 }

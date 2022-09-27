@@ -21,9 +21,9 @@ fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
     // replay protection is not required for invoker authorization because
     // there's no cryptographic signature involved. All that's checked is the
     // invoker, so this contract just expects 0.
-    if matches!(id, Identifier::Invoker(_)) {
+    if matches!(id, Identifier::Contract(_)) {
         if BigInt::zero(&e) != expected_nonce {
-            panic!("nonce should be zero for invoker")
+            panic!("nonce should be zero for contract")
         }
         return;
     }
