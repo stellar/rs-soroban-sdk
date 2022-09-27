@@ -40,7 +40,7 @@ fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, ar
 }
 
 fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, args: Vec<RawVal>) {
-    let acc = Account::from_public_key(&auth.account_id).unwrap();
+    let acc = Account::from_id(&auth.account_id).unwrap();
 
     let msg = SignaturePayloadV0 {
         name,

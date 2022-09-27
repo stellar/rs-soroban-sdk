@@ -1,5 +1,4 @@
 use core::{
-    borrow::Borrow,
     cmp::Ordering,
     fmt::{Debug, Display},
 };
@@ -8,7 +7,7 @@ use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
     xdr::ScObjectType,
-    Bytes, BytesN, ConversionError, Env, EnvVal, IntoVal, Object, TryFromVal, TryIntoVal,
+    BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
 /// Account ID is a Stellar account ID.
@@ -59,7 +58,7 @@ impl TryFromVal<Env, Object> for AccountId {
 }
 
 impl TryIntoVal<Env, AccountId> for Object {
-    type Error = <Account as TryFromVal<Env, Object>>::Error;
+    type Error = <AccountId as TryFromVal<Env, Object>>::Error;
 
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
         <_ as TryFromVal<_, Object>>::try_from_val(env, self)
@@ -67,7 +66,7 @@ impl TryIntoVal<Env, AccountId> for Object {
 }
 
 impl TryFromVal<Env, RawVal> for AccountId {
-    type Error = <Account as TryFromVal<Env, Object>>::Error;
+    type Error = <AccountId as TryFromVal<Env, Object>>::Error;
 
     fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
         <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
@@ -75,7 +74,7 @@ impl TryFromVal<Env, RawVal> for AccountId {
 }
 
 impl TryIntoVal<Env, AccountId> for RawVal {
-    type Error = <Account as TryFromVal<Env, Object>>::Error;
+    type Error = <AccountId as TryFromVal<Env, Object>>::Error;
 
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
         <_ as TryFromVal<_, RawVal>>::try_from_val(env, self)
@@ -173,7 +172,7 @@ impl AccountId {
 /// Account references a Stellar account and provides access to information
 /// about the account, such as its thresholds and signers.
 #[derive(Clone)]
-pub struct Account(BytesN<32>);
+pub struct Account(AccountId);
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum AccountError {
@@ -217,91 +216,9 @@ impl Ord for Account {
     }
 }
 
-impl Borrow<Bytes> for Account {
-    fn borrow(&self) -> &Bytes {
-        self.0.borrow()
-    }
-}
-
-impl Borrow<Bytes> for &Account {
-    fn borrow(&self) -> &Bytes {
-        self.0.borrow()
-    }
-}
-
-impl Borrow<Bytes> for &mut Account {
-    fn borrow(&self) -> &Bytes {
-        self.0.borrow()
-    }
-}
-
-impl Borrow<BytesN<32>> for Account {
-    fn borrow(&self) -> &BytesN<32> {
-        self.0.borrow()
-    }
-}
-
-impl Borrow<BytesN<32>> for &Account {
-    fn borrow(&self) -> &BytesN<32> {
-        self.0.borrow()
-    }
-}
-
-impl Borrow<BytesN<32>> for &mut Account {
-    fn borrow(&self) -> &BytesN<32> {
-        self.0.borrow()
-    }
-}
-
-impl AsRef<Bytes> for Account {
-    fn as_ref(&self) -> &Bytes {
-        self.0.as_ref()
-    }
-}
-
-impl AsRef<BytesN<32>> for Account {
-    fn as_ref(&self) -> &BytesN<32> {
+impl AsRef<AccountId> for Account {
+    fn as_ref(&self) -> &AccountId {
         &self.0
-    }
-}
-
-impl IntoVal<Env, Account> for [u8; 32] {
-    fn into_val(self, env: &Env) -> Account {
-        Account(self.into_val(env))
-    }
-}
-
-impl TryFromVal<Env, Object> for Account {
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
-        Ok(Account(val.try_into_val(env)?))
-    }
-}
-
-impl TryFromVal<Env, RawVal> for Account {
-    type Error = <Account as TryFromVal<Env, Object>>::Error;
-
-    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
-    }
-}
-
-impl From<Account> for RawVal {
-    fn from(a: Account) -> Self {
-        a.0.into()
-    }
-}
-
-impl From<Account> for EnvVal {
-    fn from(a: Account) -> Self {
-        a.0.into()
-    }
-}
-
-impl From<Account> for EnvObj {
-    fn from(a: Account) -> Self {
-        a.0.into()
     }
 }
 
@@ -327,18 +244,22 @@ impl Account {
     }
 
     /// Creates an account from a public key.
-    pub fn from_public_key(public_key: &BytesN<32>) -> Result<Account, AccountError> {
-        let env = public_key.env();
-        if env.account_exists(public_key.to_object()).is_false() {
+    pub fn from_id(id: &AccountId) -> Result<Account, AccountError> {
+        let env = id.env();
+        if env.account_exists(id.to_object()).is_false() {
             return Err(AccountError::DoesNotExist);
         }
-        Ok(Account(public_key.clone()))
+        Ok(Account(id.clone()))
+    }
+
+    pub fn to_id(&self) -> AccountId {
+        self.0.clone()
     }
 
     /// Returns if the account exists.
-    pub fn exists(public_key: &BytesN<32>) -> bool {
-        let env = public_key.env();
-        env.account_exists(public_key.to_object()).is_true()
+    pub fn exists(id: &AccountId) -> bool {
+        let env = id.env();
+        env.account_exists(id.to_object()).is_true()
     }
 
     /// Returns the low threshold for the Stellar account.
