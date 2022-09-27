@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, Bytes, BytesN, Env, Invoker, RawVal, Symbol, Vec};
+use soroban_sdk::{contracttype, AccountId, Bytes, BytesN, Env, Invoker, RawVal, Symbol, Vec};
 
 /// An Ed25519 signature contains a single signature for the
 /// [`SignaturePayload`].
@@ -17,7 +17,7 @@ pub struct Ed25519Signature {
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
 pub struct AccountSignatures {
-    pub account_id: BytesN<32>,
+    pub account_id: AccountId,
     pub signatures: Vec<Ed25519Signature>,
 }
 
@@ -55,7 +55,7 @@ impl Signature {
 pub enum Identifier {
     Invoker(Invoker),
     Ed25519(BytesN<32>),
-    Account(BytesN<32>),
+    Account(AccountId),
 }
 
 /// Signature payload v0 contains the data that must be signed to authenticate
