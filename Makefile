@@ -14,6 +14,7 @@ test: fmt build
 
 build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
+	cp target/wasm32-unknown-unknown/release/soroban_built_in_token_spec.wasm soroban-built-in-token-spec/
 
 build-optimized: fmt
 	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build  --target wasm32-unknown-unknown --release \
@@ -29,6 +30,8 @@ build-optimized: fmt
 			wasm-opt -Oz "$$i" -o "$$i.tmp" && mv "$$i.tmp" "$$i"; \
 			ls -l "$$i"; \
 		done
+
+	cp target-tiny/wasm32-unknown-unknown/release/soroban_built_in_token_spec.wasm soroban-built-in-token-spec/
 
 check: build fmt
 	cargo hack --feature-powerset --exclude-features docs check
