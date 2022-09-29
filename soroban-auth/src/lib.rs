@@ -15,7 +15,7 @@
 //! contract invocations to be replayable if it is important they are not.**
 #![no_std]
 
-mod test;
+mod tests;
 
 use soroban_sdk::{serde::Serialize, Account, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 

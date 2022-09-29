@@ -1,5 +1,5 @@
-use soroban_auth::testutils::ed25519::{generate, sign};
-use soroban_auth::{verify, Identifier, Signature};
+use crate::testutils::ed25519::{generate, sign};
+use crate::{verify, Identifier, Signature};
 use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env};
 
 #[contracttype]
