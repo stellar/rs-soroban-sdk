@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(unused_variables)]
 use soroban_sdk::{contractimpl, BigInt, Bytes, Env};
 
 use soroban_auth::{Identifier, Signature};
@@ -15,138 +16,138 @@ pub trait TokenTrait {
     ///
     /// No admin will be set for the Native token, so any function that checks the admin
     /// (burn, freeze, unfreeze, mint, set_admin) will always fail
-    fn init_wrap(_env: Env, _metadata: ClassicMetadata);
+    fn init_wrap(env: Env, metadata: ClassicMetadata);
 
     /// init_token creates a token contract that does not wrap an asset on the classic side.
     /// No checks are done on the contractID.
-    fn init_token(_env: Env, _admin: Identifier, _metadata: TokenMetadata);
+    fn init_token(env: Env, admin: Identifier, metadata: TokenMetadata);
 
-    fn nonce(_env: Env, _id: Identifier) -> BigInt;
+    fn nonce(env: Env, id: Identifier) -> BigInt;
 
-    fn allowance(_env: Env, _from: Identifier, _spender: Identifier) -> BigInt;
+    fn allowance(env: Env, from: Identifier, spender: Identifier) -> BigInt;
 
-    fn approve(_env: Env, _from: Signature, _nonce: BigInt, _spender: Identifier, _amount: BigInt);
+    fn approve(env: Env, from: Signature, nonce: BigInt, spender: Identifier, amount: BigInt);
 
-    fn balance(_env: Env, _id: Identifier) -> BigInt;
+    fn balance(env: Env, id: Identifier) -> BigInt;
 
-    fn is_frozen(_env: Env, _id: Identifier) -> bool;
+    fn is_frozen(env: Env, id: Identifier) -> bool;
 
-    fn xfer(_env: Env, _from: Signature, _nonce: BigInt, _to: Identifier, _amount: BigInt);
+    fn xfer(env: Env, from: Signature, nonce: BigInt, to: Identifier, amount: BigInt);
 
     fn xfer_from(
-        _env: Env,
-        _spender: Signature,
-        _nonce: BigInt,
-        _from: Identifier,
-        _to: Identifier,
-        _amount: BigInt,
+        env: Env,
+        spender: Signature,
+        nonce: BigInt,
+        from: Identifier,
+        to: Identifier,
+        amount: BigInt,
     );
 
-    fn burn(_env: Env, _admin: Signature, _nonce: BigInt, _from: Identifier, _amount: BigInt);
+    fn burn(env: Env, admin: Signature, nonce: BigInt, from: Identifier, amount: BigInt);
 
-    fn freeze(_env: Env, _admin: Signature, _nonce: BigInt, _id: Identifier);
+    fn freeze(env: Env, admin: Signature, nonce: BigInt, id: Identifier);
 
-    fn mint(_env: Env, _admin: Signature, _nonce: BigInt, _to: Identifier, _amount: BigInt);
+    fn mint(env: Env, admin: Signature, nonce: BigInt, to: Identifier, amount: BigInt);
 
-    fn set_admin(_env: Env, _admin: Signature, _nonce: BigInt, _new_admin: Identifier);
+    fn set_admin(env: Env, admin: Signature, nonce: BigInt, new_admin: Identifier);
 
-    fn unfreeze(_env: Env, _admin: Signature, _nonce: BigInt, _id: Identifier);
+    fn unfreeze(env: Env, admin: Signature, nonce: BigInt, id: Identifier);
 
-    fn decimals(_env: Env) -> u32;
+    fn decimals(env: Env) -> u32;
 
-    fn name(_env: Env) -> Bytes;
+    fn name(env: Env) -> Bytes;
 
-    fn symbol(_env: Env) -> Bytes;
+    fn symbol(env: Env) -> Bytes;
 
-    fn to_smart(_env: Env, _id: Signature, _nonce: BigInt, _amount: i64);
+    fn to_smart(env: Env, id: Signature, nonce: BigInt, amount: i64);
 
-    fn to_classic(_env: Env, _id: Signature, _nonce: BigInt, _amount: i64);
+    fn to_classic(env: Env, id: Signature, nonce: BigInt, amount: i64);
 }
 
 pub struct Token;
 
 #[contractimpl]
 impl TokenTrait for Token {
-    fn init_wrap(_env: Env, _metadata: ClassicMetadata) {
+    fn init_wrap(env: Env, metadata: ClassicMetadata) {
         panic!("calling into interface");
     }
 
-    fn init_token(_env: Env, _admin: Identifier, _metadata: TokenMetadata) {
+    fn init_token(env: Env, admin: Identifier, metadata: TokenMetadata) {
         panic!("calling into interface");
     }
 
-    fn nonce(_env: Env, _id: Identifier) -> BigInt {
+    fn nonce(env: Env, id: Identifier) -> BigInt {
         panic!("calling into interface");
     }
 
-    fn allowance(_env: Env, _from: Identifier, _spender: Identifier) -> BigInt {
+    fn allowance(env: Env, from: Identifier, spender: Identifier) -> BigInt {
         panic!("calling into interface");
     }
 
-    fn approve(_env: Env, _from: Signature, _nonce: BigInt, _spender: Identifier, _amount: BigInt) {
+    fn approve(env: Env, from: Signature, nonce: BigInt, spender: Identifier, amount: BigInt) {
         panic!("calling into interface");
     }
 
-    fn balance(_env: Env, _id: Identifier) -> BigInt {
+    fn balance(env: Env, id: Identifier) -> BigInt {
         panic!("calling into interface");
     }
 
-    fn is_frozen(_env: Env, _id: Identifier) -> bool {
+    fn is_frozen(env: Env, id: Identifier) -> bool {
         panic!("calling into interface");
     }
 
-    fn xfer(_env: Env, _from: Signature, _nonce: BigInt, _to: Identifier, _amount: BigInt) {
+    fn xfer(env: Env, from: Signature, nonce: BigInt, to: Identifier, amount: BigInt) {
         panic!("calling into interface");
     }
 
     fn xfer_from(
-        _env: Env,
-        _spender: Signature,
-        _nonce: BigInt,
-        _from: Identifier,
-        _to: Identifier,
-        _amount: BigInt,
+        env: Env,
+        spender: Signature,
+        nonce: BigInt,
+        from: Identifier,
+        to: Identifier,
+        amount: BigInt,
     ) {
         panic!("calling into interface");
     }
 
-    fn burn(_env: Env, _admin: Signature, _nonce: BigInt, _from: Identifier, _amount: BigInt) {
+    fn burn(env: Env, admin: Signature, nonce: BigInt, from: Identifier, amount: BigInt) {
         panic!("calling into interface");
     }
 
-    fn freeze(_env: Env, _admin: Signature, _nonce: BigInt, _id: Identifier) {
+    fn freeze(env: Env, admin: Signature, nonce: BigInt, id: Identifier) {
         panic!("calling into interface");
     }
 
-    fn mint(_env: Env, _admin: Signature, _nonce: BigInt, _to: Identifier, _amount: BigInt) {
+    fn mint(env: Env, admin: Signature, nonce: BigInt, to: Identifier, amount: BigInt) {
         panic!("calling into interface");
     }
 
-    fn set_admin(_env: Env, _admin: Signature, _nonce: BigInt, _new_admin: Identifier) {
+    fn set_admin(env: Env, admin: Signature, nonce: BigInt, new_admin: Identifier) {
         panic!("calling into interface");
     }
 
-    fn unfreeze(_env: Env, _admin: Signature, _nonce: BigInt, _id: Identifier) {
+    fn unfreeze(env: Env, admin: Signature, nonce: BigInt, id: Identifier) {
         panic!("calling into interface");
     }
 
-    fn decimals(_env: Env) -> u32 {
+    fn decimals(env: Env) -> u32 {
         panic!("calling into interface");
     }
 
-    fn name(_env: Env) -> Bytes {
+    fn name(env: Env) -> Bytes {
         panic!("calling into interface");
     }
 
-    fn symbol(_env: Env) -> Bytes {
+    fn symbol(env: Env) -> Bytes {
         panic!("calling into interface");
     }
 
-    fn to_smart(_env: Env, _id: Signature, _nonce: BigInt, _amount: i64) {
+    fn to_smart(env: Env, id: Signature, nonce: BigInt, amount: i64) {
         panic!("calling into interface");
     }
 
-    fn to_classic(_env: Env, _id: Signature, _nonce: BigInt, _amount: i64) {
+    fn to_classic(env: Env, id: Signature, nonce: BigInt, amount: i64) {
         panic!("calling into interface");
     }
 }
