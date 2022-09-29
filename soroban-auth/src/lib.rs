@@ -79,13 +79,9 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
         }
 
         env.verify_sig_ed25519(&sig.public_key, &msg_bytes, &sig.signature);
-        // Clamp signature weight to be at most 255. The maximum threshold is
-        // limited by 255 too. This is consistent with classic tx signature
-        // weight computations in Stellar Core.
-        weight += min(
-            acc.signer_weight(&sig.public_key),
-            MAX_ACCOUNT_SIGNATURE_WEIGHT,
-        );
+        // Signature weight can be at most 255, hence overflow isn't possible 
+        // here as 255 * MAX_ACCOUNT_SIGNATURES is < u32::MAX.
+        weight += acc.signer_weight(&sig.public_key);
 
         prev_pk = Some(sig.public_key);
     }
