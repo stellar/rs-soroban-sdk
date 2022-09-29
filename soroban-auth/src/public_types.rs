@@ -115,22 +115,6 @@ impl SignaturePayloadV0 {
     pub fn new(network: Bytes, contract: BytesN<32>, name: Symbol, args: Vec<RawVal>) -> Self {
         Self(network, contract, name, args)
     }
-
-    pub fn network(&self) -> &Bytes {
-        &self.0
-    }
-
-    pub fn contract(&self) -> &BytesN<32> {
-        &self.1
-    }
-
-    pub fn symbol(&self) -> &Symbol {
-        &self.2
-    }
-
-    pub fn args(&self) -> &Vec<RawVal> {
-        &self.3
-    }
 }
 
 /// Signature payload contains the data that must be signed to authenticate the
