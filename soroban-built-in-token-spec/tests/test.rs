@@ -2,12 +2,12 @@
 
 use soroban_auth::{
     testutils::ed25519::{generate, sign},
-    Signature,
+    Identifier, Signature,
 };
 use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env, IntoVal};
 
 mod token_contract;
-use token_contract::{Identifier, TokenClient, TokenMetadata};
+use token_contract::{TokenClient, TokenMetadata};
 
 #[contracttype]
 pub enum DataKey {
