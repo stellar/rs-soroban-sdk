@@ -28,12 +28,12 @@ pub use crate::public_types::{
 };
 
 fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, args: Vec<RawVal>) {
-    let msg = SignaturePayloadV0 {
+    let msg = SignaturePayloadV0::new(
+        env.ledger().network_passphrase(),
+        env.get_current_contract(),
         name,
-        contract: env.get_current_contract(),
-        network: env.ledger().network_passphrase(),
         args,
-    };
+    );
     let msg_bin = SignaturePayload::V0(msg).serialize(env);
 
     env.verify_sig_ed25519(&auth.public_key, &msg_bin, &auth.signature);
@@ -42,12 +42,12 @@ fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, ar
 fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, args: Vec<RawVal>) {
     let acc = Account::from_id(&auth.account_id).unwrap();
 
-    let msg = SignaturePayloadV0 {
+    let msg = SignaturePayloadV0::new(
+        env.ledger().network_passphrase(),
+        env.get_current_contract(),
         name,
-        contract: env.get_current_contract(),
-        network: env.ledger().network_passphrase(),
         args,
-    };
+    );
     let msg_bytes = SignaturePayload::V0(msg).serialize(env);
 
     let threshold = acc.medium_threshold();

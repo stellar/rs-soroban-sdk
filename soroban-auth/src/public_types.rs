@@ -92,13 +92,45 @@ pub enum Identifier {
 /// and signing the whole payload only. Applications should never trust a
 /// signature payload without either inspecting its entire contents, or building
 /// it themselves.
+///
+/// To produce this structure in XDR, produce an `ScVec` containing for elements:
+/// - Network: `ScVal::Object(Some(ScObject::Bytes(_)))`
+/// - Contract: `ScVal::Object(Some(ScObject::Bytes(_)))`
+/// - Name: `ScVal::Symbol(_)`
+/// - Args: `ScVal::Object(Some(ScObject::Vec(_)))`
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[contracttype(lib = "soroban_auth")]
-pub struct SignaturePayloadV0 {
-    pub network: Bytes,
-    pub contract: BytesN<32>,
-    pub name: Symbol,
-    pub args: Vec<RawVal>,
+pub struct SignaturePayloadV0(
+    // Network Passphrase
+    Bytes,
+    // Contract ID
+    BytesN<32>,
+    // Name
+    Symbol,
+    // Args
+    Vec<RawVal>,
+);
+
+impl SignaturePayloadV0 {
+    pub fn new(network: Bytes, contract: BytesN<32>, name: Symbol, args: Vec<RawVal>) -> Self {
+        Self(network, contract, name, args)
+    }
+
+    pub fn network(&self) -> &Bytes {
+        &self.0
+    }
+
+    pub fn contract(&self) -> &BytesN<32> {
+        &self.1
+    }
+
+    pub fn symbol(&self) -> &Symbol {
+        &self.2
+    }
+
+    pub fn args(&self) -> &Vec<RawVal> {
+        &self.3
+    }
 }
 
 /// Signature payload contains the data that must be signed to authenticate the

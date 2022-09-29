@@ -55,12 +55,12 @@ pub mod ed25519 {
         } else {
             panic!("identifier must be ed25519")
         };
-        let payload = SignaturePayload::V0(SignaturePayloadV0 {
-            network: env.ledger().network_passphrase(),
-            contract: contract.clone(),
+        let payload = SignaturePayload::V0(SignaturePayloadV0::new(
+            env.ledger().network_passphrase(),
+            contract.clone(),
             name,
-            args: args.into_val(env),
-        });
+            args.into_val(env),
+        ));
         let signature = match signer.sign(payload) {
             Ok(signature) => signature,
             Err(_) => panic!("error signing signature payload"),
