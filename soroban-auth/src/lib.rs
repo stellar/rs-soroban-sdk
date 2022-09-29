@@ -27,7 +27,6 @@ pub use crate::public_types::{
     SignaturePayloadV0,
 };
 
-const MAX_ACCOUNT_SIGNATURE_WEIGHT: u32 = u8::MAX as u32;
 const MAX_ACCOUNT_SIGNATURES: u32 = 20;
 
 fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, args: Vec<RawVal>) {
