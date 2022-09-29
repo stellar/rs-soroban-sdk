@@ -1,5 +1,4 @@
 #![cfg(test)]
-#![cfg(feature = "testutils")]
 
 extern crate std;
 
