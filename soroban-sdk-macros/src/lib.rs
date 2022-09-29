@@ -6,6 +6,7 @@ mod derive_enum_int;
 mod derive_error_enum_int;
 mod derive_fn;
 mod derive_struct;
+mod derive_struct_tuple;
 mod map_type;
 mod path;
 mod syn_ext;
@@ -16,6 +17,7 @@ use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
 use derive_fn::{derive_contract_function_set, derive_fn};
 use derive_struct::derive_type_struct;
+use derive_struct_tuple::derive_type_struct_tuple;
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
@@ -24,8 +26,8 @@ use quote::quote;
 use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
-    parse_macro_input, parse_str, spanned::Spanned, AttributeArgs, DeriveInput, Error, ItemImpl,
-    LitStr, Path, Type, Visibility,
+    parse_macro_input, parse_str, spanned::Spanned, AttributeArgs, Data, DeriveInput, Error,
+    Fields, ItemImpl, LitStr, Path, Type, Visibility,
 };
 
 use self::derive_client::ClientItem;
@@ -155,8 +157,18 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         matches!(input.vis, Visibility::Public(_))
     };
     let derived = match &input.data {
-        syn::Data::Struct(s) => derive_type_struct(&args.crate_path, ident, s, gen_spec, &args.lib),
-        syn::Data::Enum(e) => {
+        Data::Struct(s) => match s.fields {
+            Fields::Named(_) => derive_type_struct(&args.crate_path, ident, s, gen_spec, &args.lib),
+            Fields::Unnamed(_) => {
+                derive_type_struct_tuple(&args.crate_path, ident, s, gen_spec, &args.lib)
+            }
+            Fields::Unit => Error::new(
+                s.fields.span(),
+                "unit structs are not supported as contract types",
+            )
+            .to_compile_error(),
+        },
+        Data::Enum(e) => {
             let count_of_variants = e.variants.len();
             let count_of_int_variants = e
                 .variants
@@ -172,7 +184,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     .to_compile_error()
             }
         }
-        syn::Data::Union(u) => Error::new(
+        Data::Union(u) => Error::new(
             u.union_token.span(),
             "unions are unsupported as contract types",
         )
@@ -211,7 +223,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
         matches!(input.vis, Visibility::Public(_))
     };
     let derived = match &input.data {
-        syn::Data::Enum(e) => {
+        Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
                 derive_type_error_enum_int(&args.crate_path, ident, e, gen_spec, &args.lib)
             } else {
@@ -219,12 +231,12 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     .to_compile_error()
             }
         }
-        syn::Data::Struct(s) => Error::new(
+        Data::Struct(s) => Error::new(
             s.struct_token.span(),
             "structs are unsupported as contract errors",
         )
         .to_compile_error(),
-        syn::Data::Union(u) => Error::new(
+        Data::Union(u) => Error::new(
             u.union_token.span(),
             "unions are unsupported as contract errors",
         )
