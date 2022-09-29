@@ -1,7 +1,5 @@
 #![cfg(feature = "testutils")]
 
-use std::io::Cursor;
-
 use soroban_sdk::{contractimpl, BytesN, Env};
 use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
@@ -28,7 +26,7 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::read_xdr(&mut Cursor::new(&__SPEC_XDR_ADD)).unwrap();
+    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_ADD).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add".try_into().unwrap(),
         inputs: vec![
