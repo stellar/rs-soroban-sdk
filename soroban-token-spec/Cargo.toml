@@ -1,5 +1,5 @@
 [package]
-name = "soroban-built-in-token-spec"
+name = "soroban-token-spec"
 description = "Soroban spec for the built-in token contract"
 homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
