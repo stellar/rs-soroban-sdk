@@ -9,10 +9,6 @@ use stellar_xdr::{
 
 use crate::map_type::map_type;
 
-// TODO: Add field attribute for including/excluding fields in types.
-// TODO: Better handling of partial types and types without all their fields and
-// types with private fields.
-
 pub fn derive_type_struct_tuple(
     path: &Path,
     ident: &Ident,
