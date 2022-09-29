@@ -7,6 +7,14 @@ use soroban_auth::{Identifier, Signature};
 mod public_types;
 use crate::public_types::{ClassicMetadata, TokenMetadata};
 
+/// The interface below was copied from
+/// https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
+/// at commit b3c188f48dec51a956c1380fb6fe92201a3f716b.
+///
+/// Differences between this interface and the built-in contract
+/// 1. The return values here don't return Results.
+/// 2. The implementations have been replaced with a panic.
+/// 3. &Host type usage are replaced with Env
 pub trait TokenTrait {
     /// init_wrap can create a contract for a wrapped classic asset
     /// (Native, AlphaNum4, or AlphaNum12). It will fail if the contractID
