@@ -1,7 +1,5 @@
 #![cfg(feature = "testutils")]
 
-use std::io::Cursor;
-
 use soroban_sdk::{
     contractimpl, contracttype, vec, BytesN, ConversionError, Env, IntoVal, RawVal, TryFromVal,
     TryIntoVal, Vec,
@@ -72,7 +70,7 @@ fn test_error_on_partial_decode() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::read_xdr(&mut Cursor::new(&__SPEC_XDR_ADD)).unwrap();
+    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_ADD).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add".try_into().unwrap(),
         inputs: std::vec![
