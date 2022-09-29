@@ -17,8 +17,6 @@
 
 mod tests;
 
-use core::cmp::min;
-
 use soroban_sdk::{serde::Serialize, Account, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 
 pub mod testutils;
@@ -79,7 +77,7 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
         }
 
         env.verify_sig_ed25519(&sig.public_key, &msg_bytes, &sig.signature);
-        // Signature weight can be at most 255, hence overflow isn't possible 
+        // Signature weight can be at most 255, hence overflow isn't possible
         // here as 255 * MAX_ACCOUNT_SIGNATURES is < u32::MAX.
         weight += acc.signer_weight(&sig.public_key);
 
