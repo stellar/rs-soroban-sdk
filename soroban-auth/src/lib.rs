@@ -88,7 +88,7 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
         prev_pk = Some(sig.public_key);
     }
 
-    if weight < threshold {
+    if weight < threshold.into() {
         panic!("insufficient signing weight")
     }
 }
