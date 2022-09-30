@@ -4,7 +4,7 @@ use soroban_sdk::{
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[contracttype(crate_path = "crate")]
+#[contracttype]
 pub enum Udt {
     Aaa,
     Bbb(i32),

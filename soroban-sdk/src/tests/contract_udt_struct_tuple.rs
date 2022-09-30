@@ -9,7 +9,7 @@ use stellar_xdr::{
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[contracttype(crate_path = "crate")]
+#[contracttype]
 pub struct Udt(pub i32, pub i32);
 
 pub struct Contract;
