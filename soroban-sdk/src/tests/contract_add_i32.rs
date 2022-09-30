@@ -1,5 +1,4 @@
-#![cfg(feature = "testutils")]
-
+use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, BytesN, Env};
 use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 

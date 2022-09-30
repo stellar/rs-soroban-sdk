@@ -50,7 +50,7 @@ jobs:
     - run: cargo install --target-dir ~/.cargo/target --locked --version 0.5.16 cargo-hack
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
-    - run: cargo hack --feature-powerset --exclude-features docs test --target ${{ matrix.sys.target }}
+    - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
 
   docs:
     runs-on: ubuntu-latest

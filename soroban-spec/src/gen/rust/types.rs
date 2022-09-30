@@ -30,7 +30,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
             quote! { pub #f_type }
         });
         quote! {
-            #[::soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype(export = false)]
             pub struct #ident ( #(#fields),* );
         }
     } else {
@@ -41,7 +41,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
             quote! { pub #f_ident: #f_type }
         });
         quote! {
-            #[::soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype(export = false)]
             pub struct #ident { #(#fields,)* }
         }
     }
@@ -67,7 +67,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
             quote! { #v_ident #v_type }
         });
         quote! {
-            #[::soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype(export = false)]
             pub enum #ident { #(#variants,)* }
         }
     }
@@ -89,7 +89,7 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
             quote! { #v_ident = #v_value }
         });
         quote! {
-            #[::soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype(export = false)]
             pub enum #ident { #(#variants,)* }
         }
     }
@@ -111,7 +111,7 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
             quote! { #v_ident = #v_value }
         });
         quote! {
-            #[::soroban_sdk::contracterror(export = false)]
+            #[soroban_sdk::contracterror(export = false)]
             pub enum #ident { #(#variants,)* }
         }
     }
@@ -119,19 +119,19 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
 
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
     match spec {
-        ScSpecTypeDef::Val => quote! { ::soroban_sdk::RawVal },
+        ScSpecTypeDef::Val => quote! { soroban_sdk::RawVal },
         ScSpecTypeDef::U64 => quote! { u64 },
         ScSpecTypeDef::I64 => quote! { i64 },
         ScSpecTypeDef::U32 => quote! { u32 },
         ScSpecTypeDef::I32 => quote! { i32 },
         ScSpecTypeDef::Bool => quote! { bool },
-        ScSpecTypeDef::Symbol => quote! { ::soroban_sdk::Symbol },
-        ScSpecTypeDef::Bitset => quote! { ::soroban_sdk::Bitset },
-        ScSpecTypeDef::Status => quote! { ::soroban_sdk::Status },
-        ScSpecTypeDef::Bytes => quote! { ::soroban_sdk::Bytes },
-        ScSpecTypeDef::BigInt => quote! { ::soroban_sdk::BigInt },
-        ScSpecTypeDef::Invoker => quote! { ::soroban_sdk::Invoker },
-        ScSpecTypeDef::AccountId => quote! { ::soroban_sdk::AccountId },
+        ScSpecTypeDef::Symbol => quote! { soroban_sdk::Symbol },
+        ScSpecTypeDef::Bitset => quote! { soroban_sdk::Bitset },
+        ScSpecTypeDef::Status => quote! { soroban_sdk::Status },
+        ScSpecTypeDef::Bytes => quote! { soroban_sdk::Bytes },
+        ScSpecTypeDef::BigInt => quote! { soroban_sdk::BigInt },
+        ScSpecTypeDef::Invoker => quote! { soroban_sdk::Invoker },
+        ScSpecTypeDef::AccountId => quote! { soroban_sdk::AccountId },
         ScSpecTypeDef::Option(o) => {
             let value_ident = generate_type_ident(&o.value_type);
             quote! { Option<#value_ident> }
@@ -143,16 +143,16 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         }
         ScSpecTypeDef::Vec(v) => {
             let element_ident = generate_type_ident(&v.element_type);
-            quote! { ::soroban_sdk::Vec<#element_ident> }
+            quote! { soroban_sdk::Vec<#element_ident> }
         }
         ScSpecTypeDef::Map(m) => {
             let key_ident = generate_type_ident(&m.key_type);
             let value_ident = generate_type_ident(&m.value_type);
-            quote! { ::soroban_sdk::Map<#key_ident, #value_ident> }
+            quote! { soroban_sdk::Map<#key_ident, #value_ident> }
         }
         ScSpecTypeDef::Set(s) => {
             let element_ident = generate_type_ident(&s.element_type);
-            quote! { ::soroban_sdk::Set<#element_ident> }
+            quote! { soroban_sdk::Set<#element_ident> }
         }
         ScSpecTypeDef::Tuple(t) => {
             let type_idents = t.value_types.iter().map(generate_type_ident);
@@ -160,7 +160,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         }
         ScSpecTypeDef::BytesN(b) => {
             let n = Literal::u32_unsuffixed(b.n);
-            quote! { ::soroban_sdk::BytesN<#n> }
+            quote! { soroban_sdk::BytesN<#n> }
         }
         ScSpecTypeDef::Udt(u) => {
             let ident = format_ident!("{}", u.name.to_string().unwrap());

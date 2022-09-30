@@ -138,10 +138,10 @@ impl Logger {
     }
 }
 
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use crate::{env::internal::events::HostEvent, testutils};
 
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Logger for Logger {
     fn all(&self) -> std::vec::Vec<String> {

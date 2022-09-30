@@ -191,3 +191,5 @@ pub use vec::Vec;
 pub mod serde;
 
 pub mod testutils;
+
+mod tests;
