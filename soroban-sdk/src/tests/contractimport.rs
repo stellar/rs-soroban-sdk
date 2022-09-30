@@ -6,7 +6,7 @@ const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
     use crate as soroban_sdk;
     soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/example_add_i32.wasm"
+        file = "../target/wasm32-unknown-unknown/release/test_add_i32.wasm"
     );
 }
 

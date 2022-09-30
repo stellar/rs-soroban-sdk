@@ -4,7 +4,7 @@ use soroban_sdk::{contractimpl, Env};
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
     soroban_sdk::contractimport!(
-        file = "../../target/wasm32-unknown-unknown/release/example_add_u64.wasm"
+        file = "../../target/wasm32-unknown-unknown/release/test_add_u64.wasm"
     );
 }
 
