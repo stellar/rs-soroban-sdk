@@ -15,7 +15,7 @@ use super::{
 };
 
 #[cfg(doc)]
-use crate::{contract_data::ContractData, Bytes, BytesN, Map};
+use crate::{data::Data, Bytes, BytesN, Map};
 
 /// Create a [Vec] with the given items.
 ///
@@ -88,8 +88,8 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 ///
 /// To store `u8`s and binary data, use [Bytes]/[BytesN] instead.
 ///
-/// Vec values can be stored as [ContractData], or in other
-/// types like [Vec], [Map], etc.
+/// Vec values can be stored as [Data], or in other types like [Vec], [Map],
+/// etc.
 ///
 /// ### Examples
 ///
