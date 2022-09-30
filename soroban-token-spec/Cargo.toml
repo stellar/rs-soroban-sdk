@@ -1,0 +1,31 @@
+[package]
+name = "soroban-token-spec"
+description = "Soroban spec for the built-in token contract"
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version = "0.0.4"
+edition = "2021"
+rust-version = "1.64"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+testutils = ["soroban-sdk/testutils", "dep:ed25519-dalek", "dep:rand"]
+
+[dependencies]
+soroban-sdk = "0.0.4"
+soroban-auth = "0.0.4"
+
+[target.'cfg(not(target_family="wasm"))'.dependencies]
+ed25519-dalek = { version = "1.0.1", optional = true }
+rand = { version = "0.7.3", optional = true }
+
+[dev_dependencies]
+soroban-auth = { version = "0.0.4", features = ["testutils"] }
+ed25519-dalek = { version = "1.0.1" }
+rand = { version = "0.7.3" }
