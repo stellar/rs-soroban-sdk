@@ -130,9 +130,7 @@ mod test {
             .unwrap();
         assert_eq!(
             rust,
-            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(
-    file = "<file>", sha256 = "<sha256>"
-);
+            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(file = "<file>", sha256 = "<sha256>");
 #[soroban_sdk::contractclient(name = "Client")]
 pub trait Contract {
     fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
