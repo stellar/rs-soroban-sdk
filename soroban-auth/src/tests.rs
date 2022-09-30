@@ -1,4 +1,4 @@
 #![cfg(test)]
 
-mod test_complex;
-mod test_simple;
+mod test_ed25519_with_nonce;
+mod test_ed25519;
