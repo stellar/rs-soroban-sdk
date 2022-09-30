@@ -6,7 +6,13 @@ use soroban_auth::{
 };
 use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env, IntoVal};
 
-mod token_contract;
+mod token_contract {
+    soroban_sdk::contractimport!(
+        file = "../target/wasm32-unknown-unknown/release/soroban_token_spec.wasm"
+    );
+    pub type TokenClient = Client;
+}
+
 use token_contract::{TokenClient, TokenMetadata};
 
 #[contracttype]
