@@ -1,5 +1,5 @@
 error: enum variant name symbol too long: length 15, max 10
- --> tests/trybuild/contracttype_enum_field_name_too_long.rs:6:5
+ --> src/tests/trybuild/contracttype_enum_field_name_too_long.rs:6:5
   |
 6 |     Variant2TooLong,
   |     ^^^^^^^^^^^^^^^

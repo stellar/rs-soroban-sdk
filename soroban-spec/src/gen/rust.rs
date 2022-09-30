@@ -80,9 +80,9 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
     let error_enums = spec_error_enums.iter().map(|s| generate_error_enum(s));
 
     quote! {
-        pub const WASM: &[u8] = ::soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
+        pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
 
-        #[::soroban_sdk::contractclient(name = "Client")]
+        #[soroban_sdk::contractclient(name = "Client")]
         #trait_
 
         #[deprecated(note = "use Client instead of ContractClient as it has been renamed")]
@@ -130,31 +130,31 @@ mod test {
             .unwrap();
         assert_eq!(
             rust,
-            r#"pub const WASM: &[u8] = ::soroban_sdk::contractfile!(
+            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(
     file = "<file>", sha256 = "<sha256>"
 );
-#[::soroban_sdk::contractclient(name = "Client")]
+#[soroban_sdk::contractclient(name = "Client")]
 pub trait Contract {
-    fn add(env: ::soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
+    fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
 }
 #[deprecated(note = "use Client instead of ContractClient as it has been renamed")]
 pub type ContractClient = Client;
-#[::soroban_sdk::contracttype(export = false)]
-pub struct UdtTuple(pub i64, pub ::soroban_sdk::Vec<i64>);
-#[::soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype(export = false)]
+pub struct UdtTuple(pub i64, pub soroban_sdk::Vec<i64>);
+#[soroban_sdk::contracttype(export = false)]
 pub struct UdtStruct {
     pub a: i64,
     pub b: i64,
-    pub c: ::soroban_sdk::Vec<i64>,
+    pub c: soroban_sdk::Vec<i64>,
 }
-#[::soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype(export = false)]
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
     UdtC(UdtEnum2),
     UdtD(UdtTuple),
 }
-#[::soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype(export = false)]
 pub enum UdtEnum2 {
     A = 10,
     B = 15,

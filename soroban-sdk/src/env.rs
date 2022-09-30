@@ -25,7 +25,7 @@ pub mod internal {
 
 // Testutils from the environmen are pub here, and then pub re-exported out of
 // the SDK in the crate::testutils mod.
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 pub mod testutils {
     pub use super::internal::LedgerInfo;
 }
@@ -71,14 +71,14 @@ pub struct Env {
 }
 
 impl Default for Env {
-    #[cfg(not(feature = "testutils"))]
+    #[cfg(not(any(test, feature = "testutils")))]
     fn default() -> Self {
         Self {
             env_impl: Default::default(),
         }
     }
 
-    #[cfg(feature = "testutils")]
+    #[cfg(any(test, feature = "testutils"))]
     fn default() -> Self {
         Self::with_empty_recording_storage()
     }
@@ -269,13 +269,13 @@ impl Env {
     }
 }
 
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use crate::testutils::ContractFunctionSet;
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use core::fmt::Debug;
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     pub(crate) fn host(&self) -> &internal::Host {

@@ -1,11 +1,10 @@
-#![cfg(feature = "testutils")]
-
+use crate as soroban_sdk;
 use soroban_sdk::{
     contractimpl, contracttype, symbol, vec, BytesN, ConversionError, Env, IntoVal, TryFromVal,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[contracttype]
+#[contracttype(crate_path = "crate")]
 pub enum Udt {
     Aaa,
     Bbb(i32),

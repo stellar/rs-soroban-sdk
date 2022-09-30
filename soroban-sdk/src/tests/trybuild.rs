@@ -1,5 +1,5 @@
 #[test]
 fn fails() {
     let t = trybuild::TestCases::new();
-    t.compile_fail("tests/trybuild/*.rs");
+    t.compile_fail("src/tests/trybuild/*.rs");
 }

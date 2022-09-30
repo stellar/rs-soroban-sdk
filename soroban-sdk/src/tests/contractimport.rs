@@ -1,10 +1,10 @@
-#![cfg(feature = "testutils")]
-
+use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, BytesN, Env};
 use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
+    use crate as soroban_sdk;
     soroban_sdk::contractimport!(
         file = "../target/wasm32-unknown-unknown/release/example_add_i32.wasm"
     );
@@ -12,7 +12,7 @@ mod addcontract {
 
 pub struct Contract;
 
-#[contractimpl]
+#[contractimpl(crate_path = "crate")]
 impl Contract {
     pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
         addcontract::Client::new(&env, &ADD_CONTRACT_ID).add(&x, &y)

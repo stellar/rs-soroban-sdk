@@ -23,7 +23,7 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
                 .map(|t| generate_type_ident(&t))
                 .map(|t| quote! { -> #t });
             quote! {
-                fn #fn_ident(env: ::soroban_sdk::Env, #(#fn_inputs),*) #fn_output
+                fn #fn_ident(env: soroban_sdk::Env, #(#fn_inputs),*) #fn_output
             }
         })
         .collect();
