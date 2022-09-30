@@ -53,8 +53,8 @@ pub type EnvObj = internal::EnvVal<Env, Object>;
 use crate::invoker::Invoker;
 use crate::AccountId;
 use crate::{
-    contract_data::ContractData, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    Bytes, BytesN, Vec,
+    data::Data, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger, Bytes, BytesN,
+    Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -141,11 +141,11 @@ impl Env {
         }
     }
 
-    /// Get a [ContractData] for accessing and update contract data that has
-    /// been stored by the currently executing contract.
+    /// Get a [Data] for accessing and update contract data that has been stored
+    /// by the currently executing contract.
     #[inline(always)]
-    pub fn contract_data(&self) -> ContractData {
-        ContractData::new(self)
+    pub fn data(&self) -> Data {
+        Data::new(self)
     }
 
     /// Get a [Ledger] for accessing the current ledger.

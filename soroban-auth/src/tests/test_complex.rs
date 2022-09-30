@@ -9,7 +9,7 @@ pub enum DataKey {
 
 fn read_nonce(e: &Env, id: &Identifier) -> BigInt {
     let key = DataKey::Nonce(id.clone());
-    e.contract_data()
+    e.data()
         .get(key)
         .unwrap_or_else(|| Ok(BigInt::zero(e)))
         .unwrap()
@@ -32,7 +32,7 @@ fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
     if nonce != expected_nonce {
         panic!("incorrect nonce")
     }
-    e.contract_data().set(key, &nonce + 1);
+    e.data().set(key, &nonce + 1);
 }
 
 pub struct TestContract;
