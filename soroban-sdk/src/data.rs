@@ -1,5 +1,4 @@
-//! Contract data contains types storing and retrieving data for the currently
-//! executing contract.
+//! Data contains types for storing data for the currently executing contract.
 use core::fmt::Debug;
 
 use crate::{
@@ -26,11 +25,11 @@ use crate::{
 /// # #[contractimpl]
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
-/// let contract_data = env.contract_data();
+/// let data = env.data();
 /// let key = symbol!("key");
-/// env.contract_data().set(key, 1);
-/// assert_eq!(contract_data.has(key), true);
-/// assert_eq!(contract_data.get::<_, i32>(key), Some(Ok(1)));
+/// env.data().set(key, 1);
+/// assert_eq!(data.has(key), true);
+/// assert_eq!(data.get::<_, i32>(key), Some(Ok(1)));
 /// #     }
 /// # }
 /// #
