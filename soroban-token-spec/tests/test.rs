@@ -1,5 +1,3 @@
-#![cfg(feature = "testutils")]
-
 use soroban_auth::{
     testutils::ed25519::{generate, sign},
     Identifier, Signature,
