@@ -16,8 +16,3 @@ soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
-
-[features]
-default = ["export"]
-export = []
-testutils = ["soroban-sdk/testutils"]
