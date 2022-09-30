@@ -1,5 +1,5 @@
 [package]
-name = "example_contract_data"
+name = "test_contract_data"
 version = "0.0.4"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"

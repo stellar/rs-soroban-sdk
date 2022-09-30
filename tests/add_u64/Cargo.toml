@@ -1,5 +1,5 @@
 [package]
-name = "example_add_u64"
+name = "test_add_u64"
 version = "0.0.4"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"

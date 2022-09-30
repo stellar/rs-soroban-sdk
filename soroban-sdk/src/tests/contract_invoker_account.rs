@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Account, Env};
+use soroban_sdk::{contractimpl, Account, BytesN, Env};
 
 pub struct Contract;
 

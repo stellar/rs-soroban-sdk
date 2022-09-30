@@ -117,10 +117,10 @@ impl Events {
     }
 }
 
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use crate::{testutils, xdr, TryIntoVal};
 
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
     fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {

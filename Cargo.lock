@@ -254,76 +254,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 
 [[package]]
-name = "example_add_bigint"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_add_u64"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_contract_data"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_empty"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_events"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_import_contract"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_invoke_contract"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_logging"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_result"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_udt"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -942,6 +872,76 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bab24d30b911b2376f3a13cc2cd443142f0c81dda04c118693e35b3835757755"
 dependencies = [
  "winapi-util",
+]
+
+[[package]]
+name = "test_add_bigint"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_add_u64"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_contract_data"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_empty"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_events"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_import_contract"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_invoke_contract"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_logging"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_result"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_udt"
+version = "0.0.4"
+dependencies = [
+ "soroban-sdk",
 ]
 
 [[package]]
