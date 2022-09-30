@@ -19,7 +19,7 @@ fn get_contract_id(e: &Env) -> Identifier {
 }
 
 fn get_token(e: &Env) -> BytesN<32> {
-    e.contract_data().get_unchecked(DataKey::Token).unwrap()
+    e.data().get_unchecked(DataKey::Token).unwrap()
 }
 
 pub struct TestContract;
@@ -27,7 +27,7 @@ pub struct TestContract;
 #[contractimpl]
 impl TestContract {
     pub fn init(e: Env, salt: BytesN<32>) {
-        let id = e.deployer().from_current_contract(salt).deploy_token();
+        let id = e.deployer().with_current_contract(salt).deploy_token();
         let metadata = TokenMetadata {
             name: "name".into_val(&e),
             symbol: "symbol".into_val(&e),
@@ -35,7 +35,7 @@ impl TestContract {
         };
         TokenClient::new(&e, &id).init_token(&get_contract_id(&e), &metadata);
 
-        e.contract_data().set(DataKey::Token, id);
+        e.data().set(DataKey::Token, id);
     }
 
     pub fn get_token(e: Env) -> BytesN<32> {
