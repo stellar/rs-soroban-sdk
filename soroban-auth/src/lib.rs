@@ -81,7 +81,7 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
             panic!("signature doesn't belong to account");
         }
         // Signature weight can be at most 255, hence overflow isn't possible
-        // here as 255 * MAX_ACCOUNT_SIGNATURES is < u32::MAX.        
+        // here as 255 * MAX_ACCOUNT_SIGNATURES is < u32::MAX.
         weight += signer_weight;
 
         prev_pk = Some(sig.public_key);
