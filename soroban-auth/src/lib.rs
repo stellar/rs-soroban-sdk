@@ -27,6 +27,8 @@ pub use crate::public_types::{
     SignaturePayloadV0,
 };
 
+const MAX_ACCOUNT_SIGNATURES: u32 = 20;
+
 fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, args: Vec<RawVal>) {
     let msg = SignaturePayloadV0 {
         name,
@@ -54,6 +56,13 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
     let mut weight = 0u32;
 
     let sigs = &auth.signatures;
+
+    // Check if there is too many signatures: there shouldn't be more
+    // signatures then the amount of account signers.
+    if sigs.len() > MAX_ACCOUNT_SIGNATURES {
+        panic!("too many account signatures");
+    }
+
     let mut prev_pk: Option<BytesN<32>> = None;
     for sig in sigs.iter().map(Result::unwrap) {
         // Cannot take multiple signatures from the same key
@@ -67,10 +76,13 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
         }
 
         env.verify_sig_ed25519(&sig.public_key, &msg_bytes, &sig.signature);
-
-        weight = weight
-            .checked_add(acc.signer_weight(&sig.public_key))
-            .expect("weight overflow");
+        let signer_weight = acc.signer_weight(&sig.public_key);
+        if signer_weight == 0 {
+            panic!("signature doesn't belong to account");
+        }
+        // Signature weight can be at most 255, hence overflow isn't possible
+        // here as 255 * MAX_ACCOUNT_SIGNATURES is < u32::MAX.
+        weight += signer_weight;
 
         prev_pk = Some(sig.public_key);
     }
