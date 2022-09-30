@@ -30,7 +30,6 @@ soroban-env-host = { version = "0.0.5", features = ["vm", "hostfn_log_fmt_values
 stellar-xdr = { version = "0.0.2", features = ["next", "std"] }
 soroban-spec = "0.0.4"
 ed25519-dalek = "1.0.1"
-trybuild = "1.0.63"
 hex = "0.4.3"
 
 [features]

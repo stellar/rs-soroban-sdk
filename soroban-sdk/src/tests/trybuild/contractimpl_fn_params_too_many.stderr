@@ -1,5 +1,0 @@
-error: contract function has too many parameters, max count 10 parameters
-  --> src/tests/trybuild/contractimpl_fn_params_too_many.rs:18:9
-   |
-18 |         p11: u32,
-   |         ^^^
