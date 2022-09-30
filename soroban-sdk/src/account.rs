@@ -285,9 +285,10 @@ impl Account {
 
     /// Returns the signer weight for the signer for this Stellar account. If
     /// the signer does not exist for the account, returns zero (`0`).
-    pub fn signer_weight(&self, signer: &BytesN<32>) -> u32 {
+    pub fn signer_weight(&self, signer: &BytesN<32>) -> u8 {
         let env = self.env();
         let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
-        unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
+        let weight_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
+        weight_u32 as u8
     }
 }
