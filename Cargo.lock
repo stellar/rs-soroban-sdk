@@ -254,28 +254,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 
 [[package]]
-name = "example_account"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "example_add_bigint"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_add_i32"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_add_i64"
 version = "0.0.4"
 dependencies = [
  "soroban-sdk",
@@ -289,21 +268,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "example_call_stack"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "example_contract_data"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_create_contract"
 version = "0.0.4"
 dependencies = [
  "soroban-sdk",
@@ -318,13 +283,6 @@ dependencies = [
 
 [[package]]
 name = "example_events"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_hello"
 version = "0.0.4"
 dependencies = [
  "soroban-sdk",
@@ -360,13 +318,6 @@ dependencies = [
 
 [[package]]
 name = "example_udt"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "example_vec"
 version = "0.0.4"
 dependencies = [
  "soroban-sdk",

@@ -1,4 +1,4 @@
-#![no_std]
+use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, symbol, BytesN, Env};
 
 pub struct OuterContract;
@@ -43,23 +43,16 @@ impl InnerContract {
     }
 }
 
-#[cfg(test)]
-mod test {
-    use soroban_sdk::{BytesN, Env};
+#[test]
+fn test() {
+    let e = Env::default();
 
-    use crate::{InnerContract, OuterContract, OuterContractClient};
+    let inner_contract_id = BytesN::from_array(&e, &[0; 32]);
+    e.register_contract(&inner_contract_id, InnerContract);
 
-    #[test]
-    fn test() {
-        let e = Env::default();
+    let contract_id = BytesN::from_array(&e, &[1; 32]);
+    e.register_contract(&contract_id, OuterContract);
+    let client = OuterContractClient::new(&e, &contract_id);
 
-        let inner_contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&inner_contract_id, InnerContract);
-
-        let contract_id = BytesN::from_array(&e, &[1; 32]);
-        e.register_contract(&contract_id, OuterContract);
-        let client = OuterContractClient::new(&e, &contract_id);
-
-        client.outer(&inner_contract_id);
-    }
+    client.outer(&inner_contract_id);
 }

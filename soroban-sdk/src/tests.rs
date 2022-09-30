@@ -2,6 +2,7 @@
 
 mod assert_panic;
 mod contract_add_i32;
+mod contract_call_stack;
 mod contract_invoke;
 mod contract_udt_enum;
 mod contract_udt_struct;
@@ -10,3 +11,4 @@ mod contractfile_with_sha256;
 mod contractimport;
 mod contractimport_with_sha256;
 mod trybuild;
+mod contract_invoker_account;
