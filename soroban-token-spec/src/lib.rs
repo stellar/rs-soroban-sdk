@@ -5,7 +5,7 @@ use soroban_auth::{Identifier, Signature};
 
 mod public_types;
 mod tests;
-use crate::public_types::{ClassicMetadata, TokenMetadata};
+use crate::public_types::TokenMetadata;
 
 /// The interface below was copied from
 /// https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
