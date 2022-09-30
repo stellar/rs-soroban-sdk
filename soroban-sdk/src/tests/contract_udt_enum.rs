@@ -1,5 +1,4 @@
-#![cfg(feature = "testutils")]
-
+use crate as soroban_sdk;
 use soroban_sdk::{
     contractimpl, contracttype, symbol, vec, BytesN, ConversionError, Env, IntoVal, TryFromVal,
 };

@@ -1,21 +1,20 @@
-#![cfg(feature = "testutils")]
-
+use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, BytesN, Env};
 use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
+    use crate as soroban_sdk;
     soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/example_add_i32.wasm",
-        sha256 = "f0554f39a5ea3fe414d11b52831ea9a5a65e62a171b8c18f2bd51b2365cbb242",
+        file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm"
     );
 }
 
 pub struct Contract;
 
-#[contractimpl]
+#[contractimpl(crate_path = "crate")]
 impl Contract {
-    pub fn add_with(env: Env, x: i32, y: i32) -> i32 {
+    pub fn add_with(env: Env, x: u64, y: u64) -> u64 {
         addcontract::Client::new(&env, &ADD_CONTRACT_ID).add(&x, &y)
     }
 }
@@ -31,8 +30,8 @@ fn test_functional() {
     e.register_contract(&contract_id, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
-    let x = 10i32;
-    let y = 12i32;
+    let x = 10u64;
+    let y = 12u64;
     let z = client.add_with(&x, &y);
     assert!(z == 22);
 }
@@ -45,16 +44,16 @@ fn test_spec() {
         inputs: vec![
             ScSpecFunctionInputV0 {
                 name: "x".try_into().unwrap(),
-                type_: ScSpecTypeDef::I32,
+                type_: ScSpecTypeDef::U64,
             },
             ScSpecFunctionInputV0 {
                 name: "y".try_into().unwrap(),
-                type_: ScSpecTypeDef::I32,
+                type_: ScSpecTypeDef::U64,
             },
         ]
         .try_into()
         .unwrap(),
-        outputs: vec![ScSpecTypeDef::I32].try_into().unwrap(),
+        outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
     })];
     assert_eq!(entries, expect);
 }

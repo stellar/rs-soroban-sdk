@@ -1,5 +1,4 @@
-#![cfg(feature = "testutils")]
-
+use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, xdr::ScStatusType, BytesN, Env, Status};
 use stellar_xdr::ScVmErrorCode;
 

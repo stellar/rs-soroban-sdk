@@ -1,4 +1,4 @@
-#![cfg(feature = "testutils")]
+#![cfg(any(test, feature = "testutils"))]
 
 /// Sign implementations produce signatures for types that can be represented as
 /// the MSG.

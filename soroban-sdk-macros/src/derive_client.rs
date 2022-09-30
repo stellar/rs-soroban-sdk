@@ -83,16 +83,16 @@ impl<'a> ClientFn<'a> {
     }
     pub fn try_output(&self) -> Type {
         let (t, e) = match self.output {
-            ReturnType::Default => (quote!(()), quote!(::soroban_sdk::Status)),
+            ReturnType::Default => (quote!(()), quote!(soroban_sdk::Status)),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
                 Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(::soroban_sdk::Status)),
+                None => (quote!(#typ), quote!(soroban_sdk::Status)),
             },
         };
         Type::Verbatim(quote! {
             Result<
-                Result<#t, <#t as ::soroban_sdk::TryFromVal<::soroban_sdk::Env, ::soroban_sdk::RawVal>>::Error>,
-                Result<#e, <#e as TryFrom<::soroban_sdk::Status>>::Error>
+                Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
+                Result<#e, <#e as TryFrom<soroban_sdk::Status>>::Error>
             >
         })
     }
@@ -151,21 +151,21 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    use ::soroban_sdk::IntoVal;
+                    use soroban_sdk::IntoVal;
                     self.env.invoke_contract(
                         &self.contract_id,
-                        &::soroban_sdk::symbol!(#fn_name),
-                        ::soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        &soroban_sdk::symbol!(#fn_name),
+                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
                 }
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
-                    use ::soroban_sdk::IntoVal;
+                    use soroban_sdk::IntoVal;
                     self.env.try_invoke_contract(
                         &self.contract_id,
-                        &::soroban_sdk::symbol!(#fn_name),
-                        ::soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        &soroban_sdk::symbol!(#fn_name),
+                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
                 }
             }
@@ -182,11 +182,11 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     let client_ident = format_ident!("{}", name);
     quote! {
         pub struct #client_ident {
-            env: ::soroban_sdk::Env,
-            contract_id: ::soroban_sdk::BytesN<32>,
+            env: soroban_sdk::Env,
+            contract_id: soroban_sdk::BytesN<32>,
         }
         impl #client_ident {
-            pub fn new(env: &::soroban_sdk::Env, contract_id: impl ::soroban_sdk::IntoVal<::soroban_sdk::Env, ::soroban_sdk::BytesN<32>>) -> Self {
+            pub fn new(env: &soroban_sdk::Env, contract_id: impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),

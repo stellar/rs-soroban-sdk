@@ -1,5 +1,4 @@
-#![cfg(all(feature = "testutils", not(target_family = "wasm")))]
-
+use crate as soroban_sdk;
 use soroban_sdk::{Env, Status};
 use std::panic::panic_any;
 use stellar_xdr::ScHostStorageErrorCode;
