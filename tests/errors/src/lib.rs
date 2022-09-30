@@ -12,7 +12,7 @@ pub enum Error {
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env, flag: u32) -> Result<Symbol, Error> {
-        env.contract_data().set(symbol!("persisted"), true);
+        env.data().set(symbol!("persisted"), true);
         if flag == 0 {
             Ok(symbol!("hello"))
         } else if flag == 1 {
@@ -28,7 +28,7 @@ impl Contract {
 
     #[cfg(test)]
     pub fn persisted(env: Env) -> bool {
-        env.contract_data()
+        env.data()
             .get(symbol!("persisted"))
             .unwrap_or_else(|| Ok(false))
             .unwrap()

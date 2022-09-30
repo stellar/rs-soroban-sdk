@@ -1,5 +1,4 @@
-//! Contract data contains types storing and retrieving data for the currently
-//! executing contract.
+//! Data contains types for storing data for the currently executing contract.
 use core::fmt::Debug;
 
 use crate::{
@@ -7,7 +6,7 @@ use crate::{
     Env, IntoVal, TryFromVal,
 };
 
-/// ContractData stores and retrieves data for the currently executing contract.
+/// Data stores and retrieves data for the currently executing contract.
 ///
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Other contracts cannot query or modify data stored by other contracts.
@@ -26,11 +25,11 @@ use crate::{
 /// # #[contractimpl]
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
-/// let contract_data = env.contract_data();
+/// let data = env.data();
 /// let key = symbol!("key");
-/// env.contract_data().set(key, 1);
-/// assert_eq!(contract_data.has(key), true);
-/// assert_eq!(contract_data.get::<_, i32>(key), Some(Ok(1)));
+/// env.data().set(key, 1);
+/// assert_eq!(data.has(key), true);
+/// assert_eq!(data.get::<_, i32>(key), Some(Ok(1)));
 /// #     }
 /// # }
 /// #
@@ -45,23 +44,23 @@ use crate::{
 /// # fn main() { }
 /// ```
 #[derive(Clone)]
-pub struct ContractData(Env);
+pub struct Data(Env);
 
-impl Debug for ContractData {
+impl Debug for Data {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "ContractData")
+        write!(f, "Data")
     }
 }
 
-impl ContractData {
+impl Data {
     #[inline(always)]
     pub(crate) fn env(&self) -> &Env {
         &self.0
     }
 
     #[inline(always)]
-    pub(crate) fn new(env: &Env) -> ContractData {
-        ContractData(env.clone())
+    pub(crate) fn new(env: &Env) -> Data {
+        Data(env.clone())
     }
 
     // TODO: Use Borrow<K> for all key use in these functions.
