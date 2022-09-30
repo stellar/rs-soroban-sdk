@@ -37,7 +37,7 @@ use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 use soroban_env_common::Symbol;
 
 fn default_crate_path() -> Path {
-    parse_str("::soroban_sdk").unwrap()
+    parse_str("soroban_sdk").unwrap()
 }
 
 #[proc_macro]
