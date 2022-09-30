@@ -4,6 +4,7 @@ use soroban_sdk::{contractimpl, BigInt, Bytes, Env};
 use soroban_auth::{Identifier, Signature};
 
 mod public_types;
+mod tests;
 use crate::public_types::{ClassicMetadata, TokenMetadata};
 
 /// The interface below was copied from
