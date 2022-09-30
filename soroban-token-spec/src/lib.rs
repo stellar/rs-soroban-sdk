@@ -1,5 +1,4 @@
 #![no_std]
-#![allow(unused_variables)]
 use soroban_sdk::{contractimpl, BigInt, Bytes, Env};
 
 use soroban_auth::{Identifier, Signature};
@@ -18,6 +17,7 @@ use crate::public_types::{ClassicMetadata, TokenMetadata};
 pub struct Token;
 
 #[contractimpl]
+#[allow(unused_variables)]
 impl Token {
     /// init_wrap can create a contract for a wrapped classic asset
     /// (Native, AlphaNum4, or AlphaNum12). It will fail if the contractID
