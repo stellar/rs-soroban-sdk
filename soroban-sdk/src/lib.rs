@@ -171,7 +171,7 @@ mod operators;
 mod account;
 mod bigint;
 mod bytes;
-pub mod contract_data;
+pub mod data;
 pub mod deploy;
 pub mod events;
 pub mod iter;
@@ -191,3 +191,5 @@ pub use vec::Vec;
 pub mod serde;
 
 pub mod testutils;
+
+mod tests;

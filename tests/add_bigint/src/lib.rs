@@ -6,6 +6,6 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add(a: BigInt, b: BigInt) -> BigInt {
-        &a + b + &a
+        a + b
     }
 }

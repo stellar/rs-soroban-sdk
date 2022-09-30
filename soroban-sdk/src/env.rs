@@ -25,7 +25,7 @@ pub mod internal {
 
 // Testutils from the environmen are pub here, and then pub re-exported out of
 // the SDK in the crate::testutils mod.
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 pub mod testutils {
     pub use super::internal::LedgerInfo;
 }
@@ -53,8 +53,8 @@ pub type EnvObj = internal::EnvVal<Env, Object>;
 use crate::invoker::Invoker;
 use crate::AccountId;
 use crate::{
-    contract_data::ContractData, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    Bytes, BytesN, Vec,
+    data::Data, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger, Bytes, BytesN,
+    Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -71,14 +71,14 @@ pub struct Env {
 }
 
 impl Default for Env {
-    #[cfg(not(feature = "testutils"))]
+    #[cfg(not(any(test, feature = "testutils")))]
     fn default() -> Self {
         Self {
             env_impl: Default::default(),
         }
     }
 
-    #[cfg(feature = "testutils")]
+    #[cfg(any(test, feature = "testutils"))]
     fn default() -> Self {
         Self::with_empty_recording_storage()
     }
@@ -141,11 +141,11 @@ impl Env {
         }
     }
 
-    /// Get a [ContractData] for accessing and update contract data that has
-    /// been stored by the currently executing contract.
+    /// Get a [Data] for accessing and update contract data that has been stored
+    /// by the currently executing contract.
     #[inline(always)]
-    pub fn contract_data(&self) -> ContractData {
-        ContractData::new(self)
+    pub fn data(&self) -> Data {
+        Data::new(self)
     }
 
     /// Get a [Ledger] for accessing the current ledger.
@@ -269,13 +269,13 @@ impl Env {
     }
 }
 
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use crate::testutils::ContractFunctionSet;
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use core::fmt::Debug;
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
-#[cfg(feature = "testutils")]
+#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     pub(crate) fn host(&self) -> &internal::Host {
