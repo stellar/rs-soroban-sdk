@@ -23,9 +23,5 @@ fn test_hello() {
 
     let exists = client.exists();
 
-    // TODO: This test is somewhat odd in that the account invoking the
-    // contract would always exist in the real world, but doesn't exist in
-    // tests. We should find a way to align the test behavior with real
-    // world behavior.
-    assert!(!exists);
+    assert!(exists);
 }
