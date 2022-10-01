@@ -92,3 +92,23 @@ impl Ledger {
         unsafe { Bytes::unchecked_new(bin_obj.in_env(env)) }
     }
 }
+
+#[cfg(any(test, feature = "testutils"))]
+use crate::testutils;
+
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl testutils::Ledger for Ledger {
+    fn set_info(&self, li: testutils::LedgerInfo) {
+        let env = self.env();
+        env.host().set_ledger_info(li);
+    }
+
+    fn with_mut_info<F>(&self, f: F)
+    where
+        F: FnMut(&mut internal::LedgerInfo),
+    {
+        let env = self.env();
+        env.host().with_mut_ledger_info(f).unwrap();
+    }
+}

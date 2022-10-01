@@ -15,6 +15,17 @@ pub trait ContractFunctionSet {
     fn call(&self, func: &Symbol, env: Env, args: &[RawVal]) -> Option<RawVal>;
 }
 
+/// Test utilities for [`Ledger`][crate::ledger::Ledger].
+pub trait Ledger {
+    /// Set ledger info.
+    fn set_info(&self, l: LedgerInfo);
+
+    /// Modify the ledger info.
+    fn with_mut_info<F>(&self, f: F)
+    where
+        F: FnMut(&mut LedgerInfo);
+}
+
 /// Test utilities for [`Events`][crate::events::Events].
 pub trait Events {
     /// Returns all events that have been published by contracts.
