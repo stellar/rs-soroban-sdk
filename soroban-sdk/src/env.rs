@@ -270,7 +270,7 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::ContractFunctionSet;
+use crate::testutils::{ContractFunctionSet, Ledger as _};
 #[cfg(any(test, feature = "testutils"))]
 use core::fmt::Debug;
 #[cfg(any(test, feature = "testutils"))]
@@ -314,7 +314,7 @@ impl Env {
             xdr::Uint256([0; 32]),
         )));
 
-        env.set_ledger(internal::LedgerInfo {
+        env.ledger().set(internal::LedgerInfo {
             protocol_version: 0,
             sequence_number: 0,
             timestamp: 0,
@@ -353,19 +353,6 @@ impl Env {
                 storage.put(&k, &v)
             })
             .unwrap();
-    }
-
-    /// Sets ledger information in the [Env], which will be accessible via
-    /// [Env::ledger].
-    pub fn set_ledger(&self, li: internal::LedgerInfo) {
-        self.env_impl.set_ledger_info(li)
-    }
-
-    pub fn with_mut_ledger_info<F>(&self, f: F)
-    where
-        F: FnMut(&mut internal::LedgerInfo),
-    {
-        self.env_impl.with_mut_ledger_info(f).unwrap();
     }
 
     /// Register a contract with the [Env] for testing.
