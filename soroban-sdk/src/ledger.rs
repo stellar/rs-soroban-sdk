@@ -104,7 +104,7 @@ impl testutils::Ledger for Ledger {
         env.host().set_ledger_info(li);
     }
 
-    fn with_mut_info<F>(&self, f: F)
+    fn with_mut<F>(&self, f: F)
     where
         F: FnMut(&mut internal::LedgerInfo),
     {
