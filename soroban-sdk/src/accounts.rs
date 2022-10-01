@@ -30,10 +30,10 @@ impl Accounts {
     /// Gets the account for the account ID.
     pub fn get(&self, id: &AccountId) -> Option<Account> {
         let env = id.env();
-        if env.account_exists(id.to_object()).is_false() {
-            None
-        } else {
+        if env.account_exists(id.to_object()).is_true() {
             Some(Account(id.clone()))
+        } else {
+            None
         }
     }
 }
