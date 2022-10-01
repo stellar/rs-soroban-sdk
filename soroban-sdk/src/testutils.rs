@@ -18,7 +18,7 @@ pub trait ContractFunctionSet {
 /// Test utilities for [`Ledger`][crate::ledger::Ledger].
 pub trait Ledger {
     /// Set ledger info.
-    fn set_info(&self, l: LedgerInfo);
+    fn set(&self, l: LedgerInfo);
 
     /// Modify the ledger info.
     fn with_mut_info<F>(&self, f: F)

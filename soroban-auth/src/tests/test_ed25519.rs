@@ -32,7 +32,7 @@ fn test() {
     env.register_contract(&contract_id, ExampleContract);
     let client = ExampleContractClient::new(&env, &contract_id);
 
-    env.ledger().set_info(LedgerInfo {
+    env.ledger().set(LedgerInfo {
         base_reserve: 0,
         network_passphrase: "soroban-auth test".as_bytes().to_vec(),
         protocol_version: 0,

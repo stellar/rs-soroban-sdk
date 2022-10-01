@@ -99,7 +99,7 @@ use crate::testutils;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Ledger for Ledger {
-    fn set_info(&self, li: testutils::LedgerInfo) {
+    fn set(&self, li: testutils::LedgerInfo) {
         let env = self.env();
         env.host().set_ledger_info(li);
     }

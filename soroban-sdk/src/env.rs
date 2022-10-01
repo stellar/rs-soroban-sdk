@@ -314,7 +314,7 @@ impl Env {
             xdr::Uint256([0; 32]),
         )));
 
-        env.ledger().set_info(internal::LedgerInfo {
+        env.ledger().set(internal::LedgerInfo {
             protocol_version: 0,
             sequence_number: 0,
             timestamp: 0,
