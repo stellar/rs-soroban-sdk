@@ -17,71 +17,24 @@
 
 mod tests;
 
-use soroban_sdk::{
-    contracttype, serde::Serialize, Account, Bytes, BytesN, Env, IntoVal, RawVal, Symbol, Vec,
-};
+use soroban_sdk::{serde::Serialize, Account, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 
 pub mod testutils;
 
 mod public_types;
-pub use crate::public_types::{AccountSignatures, Ed25519Signature, Identifier, Signature};
-
-/// Signature payload v0 contains the data that must be signed to authenticate
-/// the [`Identifier`] within when invoking a contract.
-///
-/// The data contained within includes a domain separator formed from the fields
-/// below. The domain separator constrains where the signature is valid. It is
-/// only valid for the invocation in the context of a contract defined name, of
-/// a specific contract, on a specific network.
-///
-/// - `network`
-///
-///    The network passphrase for the network that the invocation is to occur.
-///
-/// - `contract`
-///
-///   The contract ID for the name being invoked.
-///
-/// - `name`
-///
-///   The name of the signing domain. Could be the name of the function to be
-///   invoked, or some other name the contract has defined.
-///
-/// The data contained also includes all the arguments that are to be included
-/// with the invocation. The arguments constrain what inputs may be provided to
-/// the function. The signature over them ensures that the signer is approving
-/// these inputs to accompany their authentication.
-///
-/// Applications using the signature payload must take care to only sign
-/// argument lists for contracts by first constructing the [`SignaturePayload`]
-/// and signing the whole payload only. Applications should never trust a
-/// signature payload without either inspecting its entire contents, or building
-/// it themselves.
-#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
-#[contracttype(lib = "soroban_auth")]
-struct SignaturePayloadV0 {
-    pub f0network: Bytes,
-    pub f1contrac: BytesN<32>,
-    pub f2name: Symbol,
-    pub f3args: Vec<RawVal>,
-}
-
-/// Signature payload contains the data that must be signed to authenticate the
-/// [`Identifier`] within when invoking a contract.
-#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
-#[contracttype(lib = "soroban_auth")]
-enum SignaturePayload {
-    V0(SignaturePayloadV0),
-}
+pub use crate::public_types::{
+    AccountSignatures, Ed25519Signature, Identifier, Signature, SignaturePayload,
+    SignaturePayloadV0,
+};
 
 const MAX_ACCOUNT_SIGNATURES: u32 = 20;
 
 fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, args: Vec<RawVal>) {
     let msg = SignaturePayloadV0 {
-        f0network: env.ledger().network_passphrase(),
-        f1contrac: env.get_current_contract(),
-        f2name: name,
-        f3args: args,
+        name,
+        contract: env.get_current_contract(),
+        network: env.ledger().network_passphrase(),
+        args,
     };
     let msg_bin = SignaturePayload::V0(msg).serialize(env);
 
@@ -92,10 +45,10 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
     let acc = Account::from_id(&auth.account_id).unwrap();
 
     let msg = SignaturePayloadV0 {
-        f0network: env.ledger().network_passphrase(),
-        f1contrac: env.get_current_contract(),
-        f2name: name,
-        f3args: args,
+        name,
+        contract: env.get_current_contract(),
+        network: env.ledger().network_passphrase(),
+        args,
     };
     let msg_bytes = SignaturePayload::V0(msg).serialize(env);
 
