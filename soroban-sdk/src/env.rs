@@ -80,7 +80,7 @@ impl Default for Env {
 
     #[cfg(any(test, feature = "testutils"))]
     fn default() -> Self {
-        Self::with_empty_recording_storage()
+        Self::default_with_testutils()
     }
 }
 
@@ -282,7 +282,7 @@ impl Env {
         &self.env_impl
     }
 
-    fn with_empty_recording_storage() -> Env {
+    fn default_with_testutils() -> Env {
         struct EmptySnapshotSource();
 
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
@@ -308,25 +308,51 @@ impl Env {
             internal::budget::Budget::default(),
         );
 
-        env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+        let env = Env { env_impl };
+
+        env.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
             xdr::Uint256([0; 32]),
         )));
 
-        let l = internal::LedgerInfo {
+        env.set_ledger(internal::LedgerInfo {
             protocol_version: 0,
             sequence_number: 0,
             timestamp: 0,
             network_passphrase: vec![0u8],
             base_reserve: 0,
-        };
-        env_impl.set_ledger_info(l);
-        Env { env_impl }
+        });
+
+        env
     }
 
     /// Sets the source account in the [Env], which will be accessible via
     /// [Env::invoker] when the current executing contract is directly invoked.
     pub fn set_source_account(&self, account_id: xdr::AccountId) {
-        self.env_impl.set_source_account(account_id)
+        self.env_impl.set_source_account(account_id.clone());
+        self.env_impl
+            .with_mut_storage(|storage| {
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: account_id.clone(),
+                });
+                let v = xdr::LedgerEntry {
+                    data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
+                        account_id,
+                        balance: 0,
+                        flags: 0,
+                        home_domain: xdr::VecM::default(),
+                        inflation_dest: None,
+                        num_sub_entries: 0,
+                        seq_num: xdr::SequenceNumber(0),
+                        thresholds: xdr::Thresholds([0; 4]),
+                        signers: xdr::VecM::default(),
+                        ext: xdr::AccountEntryExt::V0,
+                    }),
+                    last_modified_ledger_seq: 0,
+                    ext: xdr::LedgerEntryExt::V0,
+                };
+                storage.put(&k, &v)
+            })
+            .unwrap();
     }
 
     /// Sets ledger information in the [Env], which will be accessible via
