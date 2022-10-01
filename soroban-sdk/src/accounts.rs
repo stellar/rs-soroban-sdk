@@ -325,20 +325,7 @@ fn default_account_ledger_entry(id: &xdr::AccountId) -> xdr::AccountEntry {
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Accounts for Accounts {
     fn create(&self, id: &xdr::AccountId) {
-        let env = self.env();
-        env.host()
-            .with_mut_storage(|storage| {
-                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: id.clone(),
-                });
-                let v = xdr::LedgerEntry {
-                    data: xdr::LedgerEntryData::Account(default_account_ledger_entry(id)),
-                    last_modified_ledger_seq: 0,
-                    ext: xdr::LedgerEntryExt::V0,
-                };
-                storage.put(&k, &v)
-            })
-            .unwrap();
+        self.with_mut(id, |_| {})
     }
 
     fn set(&self, a: xdr::AccountEntry) {
@@ -390,6 +377,18 @@ impl testutils::Accounts for Accounts {
                     panic!("ledger entry is not an account");
                 }
                 storage.put(&k, &v)
+            })
+            .unwrap();
+    }
+
+    fn remove(&self, id: &xdr::AccountId) {
+        let env = self.env();
+        env.host()
+            .with_mut_storage(|storage| {
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: id.clone(),
+                });
+                storage.del(&k)
             })
             .unwrap();
     }

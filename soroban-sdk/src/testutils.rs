@@ -57,4 +57,7 @@ pub trait Accounts {
     fn with_mut<F>(&self, id: &xdr::AccountId, f: F)
     where
         F: FnMut(&mut xdr::AccountEntry);
+
+    /// Remove an account.
+    fn remove(&self, id: &xdr::AccountId);
 }
