@@ -651,7 +651,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=35f752b#35f752b6197173c8616034b4e3a587b2f530c49d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=6cdd397b#6cdd397b41350c809f23ac30c8defeb60da562fa"
 dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
@@ -662,7 +662,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=35f752b#35f752b6197173c8616034b4e3a587b2f530c49d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=6cdd397b#6cdd397b41350c809f23ac30c8defeb60da562fa"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -671,7 +671,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=35f752b#35f752b6197173c8616034b4e3a587b2f530c49d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=6cdd397b#6cdd397b41350c809f23ac30c8defeb60da562fa"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -694,7 +694,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=35f752b#35f752b6197173c8616034b4e3a587b2f530c49d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=6cdd397b#6cdd397b41350c809f23ac30c8defeb60da562fa"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -706,7 +706,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.5"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=35f752b#35f752b6197173c8616034b4e3a587b2f530c49d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=6cdd397b#6cdd397b41350c809f23ac30c8defeb60da562fa"
 dependencies = [
  "itertools",
  "proc-macro2",
