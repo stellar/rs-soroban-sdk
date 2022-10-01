@@ -263,31 +263,35 @@ impl Account {
     }
 
     /// Returns the low threshold for the Stellar account.
-    pub fn low_threshold(&self) -> u32 {
+    pub fn low_threshold(&self) -> u8 {
         let env = self.env();
         let val = env.account_get_low_threshold(self.to_object());
-        unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
+        let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
+        threshold_u32 as u8
     }
 
     /// Returns the medium threshold for the Stellar account.
-    pub fn medium_threshold(&self) -> u32 {
+    pub fn medium_threshold(&self) -> u8 {
         let env = self.env();
         let val = env.account_get_medium_threshold(self.to_object());
-        unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
+        let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
+        threshold_u32 as u8
     }
 
     /// Returns the high threshold for the Stellar account.
-    pub fn high_threshold(&self) -> u32 {
+    pub fn high_threshold(&self) -> u8 {
         let env = self.env();
         let val = env.account_get_high_threshold(self.to_object());
-        unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
+        let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
+        threshold_u32 as u8
     }
 
     /// Returns the signer weight for the signer for this Stellar account. If
     /// the signer does not exist for the account, returns zero (`0`).
-    pub fn signer_weight(&self, signer: &BytesN<32>) -> u32 {
+    pub fn signer_weight(&self, signer: &BytesN<32>) -> u8 {
         let env = self.env();
         let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
-        unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) }
+        let weight_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
+        weight_u32 as u8
     }
 }
