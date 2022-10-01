@@ -21,20 +21,3 @@ pub struct AlphaNum12Metadata {
     pub asset_code: BytesN<12>,
     pub issuer: AccountId,
 }
-
-#[derive(Clone)]
-#[contracttype]
-pub enum ClassicMetadata {
-    Native,
-    AlphaNum4(AlphaNum4Metadata),
-    AlphaNum12(AlphaNum12Metadata),
-}
-
-#[derive(Clone)]
-#[contracttype]
-pub enum Metadata {
-    Token(TokenMetadata),
-    Native,
-    AlphaNum4(AlphaNum4Metadata),
-    AlphaNum12(AlphaNum12Metadata),
-}

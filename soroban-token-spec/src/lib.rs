@@ -5,7 +5,7 @@ use soroban_auth::{Identifier, Signature};
 
 mod public_types;
 mod tests;
-use crate::public_types::{ClassicMetadata, TokenMetadata};
+use crate::public_types::TokenMetadata;
 
 /// The interface below was copied from
 /// https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -20,21 +20,9 @@ pub struct Token;
 #[contractimpl]
 #[allow(unused_variables)]
 impl Token {
-    /// init_wrap can create a contract for a wrapped classic asset
-    /// (Native, AlphaNum4, or AlphaNum12). It will fail if the contractID
-    /// of this contract does not match the expected contractID for this asset
-    /// returned by Host::get_contract_id_from_asset. This function should only be
-    /// called by the create_token_wrapper host function for this reason.
-    ///
-    /// No admin will be set for the Native token, so any function that checks the admin
-    /// (burn, freeze, unfreeze, mint, set_admin) will always fail
-    pub fn init_wrap(env: Env, metadata: ClassicMetadata) {
-        panic!("calling into interface");
-    }
-
-    /// init_token creates a token contract that does not wrap an asset on the classic side.
-    /// No checks are done on the contractID.
-    pub fn init_token(env: Env, admin: Identifier, metadata: TokenMetadata) {
+    /// Init creates a token contract that does not wrap an asset on the classic
+    /// side. No checks are done on the contractID.
+    pub fn init(env: Env, admin: Identifier, metadata: TokenMetadata) {
         panic!("calling into interface");
     }
 

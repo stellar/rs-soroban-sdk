@@ -37,7 +37,7 @@ impl TestContract {
             symbol: "symbol".into_val(&e),
             decimals: 7u32,
         };
-        TokenClient::new(&e, &id).init_token(&get_contract_id(&e), &metadata);
+        TokenClient::new(&e, &id).init(&get_contract_id(&e), &metadata);
 
         e.data().set(DataKey::Token, id);
     }
