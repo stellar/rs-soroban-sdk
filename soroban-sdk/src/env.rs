@@ -50,11 +50,9 @@ pub use internal::Val;
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
-use crate::invoker::Invoker;
-use crate::AccountId;
 use crate::{
-    data::Data, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger, Bytes, BytesN,
-    Vec,
+    accounts::Accounts, data::Data, deploy::Deployer, events::Events, invoker::Invoker,
+    ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -152,6 +150,12 @@ impl Env {
     #[inline(always)]
     pub fn ledger(&self) -> Ledger {
         Ledger::new(self)
+    }
+
+    /// Get an [Accounts] for accessing accounts in the current ledger.
+    #[inline(always)]
+    pub fn accounts(&self) -> Accounts {
+        Accounts::new(self)
     }
 
     /// Get the [Logger] for logging debug events.
@@ -270,7 +274,7 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{ContractFunctionSet, Ledger as _};
+use crate::testutils::{Accounts as _, ContractFunctionSet, Ledger as _};
 #[cfg(any(test, feature = "testutils"))]
 use core::fmt::Debug;
 #[cfg(any(test, feature = "testutils"))]
@@ -328,31 +332,8 @@ impl Env {
     /// Sets the source account in the [Env], which will be accessible via
     /// [Env::invoker] when the current executing contract is directly invoked.
     pub fn set_source_account(&self, account_id: xdr::AccountId) {
-        self.env_impl.set_source_account(account_id.clone());
-        self.env_impl
-            .with_mut_storage(|storage| {
-                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: account_id.clone(),
-                });
-                let v = xdr::LedgerEntry {
-                    data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
-                        account_id,
-                        balance: 0,
-                        flags: 0,
-                        home_domain: xdr::VecM::default(),
-                        inflation_dest: None,
-                        num_sub_entries: 0,
-                        seq_num: xdr::SequenceNumber(0),
-                        thresholds: xdr::Thresholds([0; 4]),
-                        signers: xdr::VecM::default(),
-                        ext: xdr::AccountEntryExt::V0,
-                    }),
-                    last_modified_ledger_seq: 0,
-                    ext: xdr::LedgerEntryExt::V0,
-                };
-                storage.put(&k, &v)
-            })
-            .unwrap();
+        self.accounts().create(&account_id);
+        self.env_impl.set_source_account(account_id);
     }
 
     /// Register a contract with the [Env] for testing.

@@ -8,7 +8,7 @@ pub use sign::ed25519;
 
 pub use crate::env::testutils::*;
 
-use crate::{Env, RawVal, Symbol, Vec};
+use crate::{xdr, Env, RawVal, Symbol, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -41,4 +41,20 @@ pub trait Events {
 pub trait Logger {
     /// Returns all debug events that have been logged.
     fn all(&self) -> std::vec::Vec<String>;
+}
+
+/// Test utilities for [`Accounts`][crate::accounts::Accounts].
+pub trait Accounts {
+    /// Create an account.
+    fn create(&self, id: &xdr::AccountId);
+
+    /// Set the details for an account.
+    ///
+    /// Creates the account if the account does not exist. Updates the details if it does.
+    fn set(&self, l: xdr::AccountEntry);
+
+    /// Modify an account.
+    fn with_mut<F>(&self, id: &xdr::AccountId, f: F)
+    where
+        F: FnMut(&mut xdr::AccountEntry);
 }

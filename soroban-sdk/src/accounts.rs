@@ -1,7 +1,4 @@
-use core::{
-    cmp::Ordering,
-    fmt::{Debug, Display},
-};
+use core::{cmp::Ordering, fmt::Debug};
 
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
@@ -9,6 +6,37 @@ use crate::{
     xdr::ScObjectType,
     BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
+
+/// Accouns retrieves information about accounts that exist in the current
+/// ledger.
+///
+/// ### Examples
+///
+/// TODO
+#[derive(Clone)]
+pub struct Accounts(Env);
+
+impl Accounts {
+    #[inline(always)]
+    pub(crate) fn env(&self) -> &Env {
+        &self.0
+    }
+
+    #[inline(always)]
+    pub(crate) fn new(env: &Env) -> Accounts {
+        Accounts(env.clone())
+    }
+
+    /// Gets the account for the account ID.
+    pub fn get(&self, id: &AccountId) -> Option<Account> {
+        let env = id.env();
+        if env.account_exists(id.to_object()).is_false() {
+            None
+        } else {
+            Some(Account(id.clone()))
+        }
+    }
+}
 
 /// Account ID is a Stellar account ID.
 ///
@@ -174,19 +202,6 @@ impl AccountId {
 #[derive(Clone)]
 pub struct Account(AccountId);
 
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub enum AccountError {
-    DoesNotExist,
-}
-
-impl Display for AccountError {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        match self {
-            AccountError::DoesNotExist => write!(f, "account does not exist"),
-        }
-    }
-}
-
 impl Debug for Account {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Account(")?;
@@ -243,15 +258,6 @@ impl Account {
         self.0.to_object()
     }
 
-    /// Creates an account from a public key.
-    pub fn from_id(id: &AccountId) -> Result<Account, AccountError> {
-        let env = id.env();
-        if env.account_exists(id.to_object()).is_false() {
-            return Err(AccountError::DoesNotExist);
-        }
-        Ok(Account(id.clone()))
-    }
-
     pub fn to_id(&self) -> AccountId {
         self.0.clone()
     }
@@ -293,5 +299,98 @@ impl Account {
         let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
         let weight_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         weight_u32 as u8
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+use crate::{env::internal::xdr, testutils};
+
+#[cfg(any(test, feature = "testutils"))]
+fn default_account_ledger_entry(id: &xdr::AccountId) -> xdr::AccountEntry {
+    xdr::AccountEntry {
+        account_id: id.clone(),
+        balance: 0,
+        flags: 0,
+        home_domain: xdr::VecM::default(),
+        inflation_dest: None,
+        num_sub_entries: 0,
+        seq_num: xdr::SequenceNumber(0),
+        thresholds: xdr::Thresholds([0; 4]),
+        signers: xdr::VecM::default(),
+        ext: xdr::AccountEntryExt::V0,
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl testutils::Accounts for Accounts {
+    fn create(&self, id: &xdr::AccountId) {
+        let env = self.env();
+        env.host()
+            .with_mut_storage(|storage| {
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: id.clone(),
+                });
+                let v = xdr::LedgerEntry {
+                    data: xdr::LedgerEntryData::Account(default_account_ledger_entry(id)),
+                    last_modified_ledger_seq: 0,
+                    ext: xdr::LedgerEntryExt::V0,
+                };
+                storage.put(&k, &v)
+            })
+            .unwrap();
+    }
+
+    fn set(&self, a: xdr::AccountEntry) {
+        let env = self.env();
+        env.host()
+            .with_mut_storage(|storage| {
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: a.account_id.clone(),
+                });
+                let v = xdr::LedgerEntry {
+                    data: xdr::LedgerEntryData::Account(a),
+                    last_modified_ledger_seq: 0,
+                    ext: xdr::LedgerEntryExt::V0,
+                };
+                storage.put(&k, &v)
+            })
+            .unwrap();
+    }
+
+    fn with_mut<F>(&self, id: &xdr::AccountId, f: F)
+    where
+        F: FnOnce(&mut xdr::AccountEntry),
+    {
+        let env = self.env();
+        env.host()
+            .with_mut_storage(|storage| {
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: id.clone(),
+                });
+                let mut v = storage
+                    .get(&k)
+                    .ok()
+                    .map(|v| {
+                        if let xdr::LedgerEntryData::Account(_) = v.data {
+                            Some(v)
+                        } else {
+                            None
+                        }
+                    })
+                    .flatten()
+                    .unwrap_or_else(|| xdr::LedgerEntry {
+                        data: xdr::LedgerEntryData::Account(default_account_ledger_entry(id)),
+                        last_modified_ledger_seq: 0,
+                        ext: xdr::LedgerEntryExt::V0,
+                    });
+                if let xdr::LedgerEntryData::Account(ref mut a) = &mut v.data {
+                    f(a);
+                } else {
+                    panic!("ledger entry is not an account");
+                }
+                storage.put(&k, &v)
+            })
+            .unwrap();
     }
 }

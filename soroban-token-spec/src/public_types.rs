@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, AccountId, Bytes, BytesN};
+use soroban_sdk::{accounts::AccountId, contracttype, Bytes, BytesN};
 
 #[derive(Clone)]
 #[contracttype]

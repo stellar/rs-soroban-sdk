@@ -1,4 +1,6 @@
-use soroban_sdk::{contracttype, AccountId, Bytes, BytesN, Env, Invoker, RawVal, Symbol, Vec};
+use soroban_sdk::{
+    accounts::AccountId, contracttype, Bytes, BytesN, Env, Invoker, RawVal, Symbol, Vec,
+};
 
 /// An Ed25519 signature contains a single signature for the
 /// [`SignaturePayload`].
