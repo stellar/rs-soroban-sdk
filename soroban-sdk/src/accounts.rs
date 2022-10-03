@@ -253,8 +253,8 @@ impl AccountId {
     }
 }
 
-/// Account references a Stellar account and provides access to information
-/// about the account, such as its thresholds and signers.
+/// Account provides access to information about an accounts thresholds and
+/// signers.
 #[derive(Clone)]
 pub struct Account(AccountId);
 
