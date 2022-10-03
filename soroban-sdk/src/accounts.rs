@@ -1,5 +1,7 @@
 use core::{cmp::Ordering, fmt::Debug};
 
+use stellar_xdr::Uint256;
+
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
@@ -400,24 +402,31 @@ impl testutils::Accounts for Accounts {
     fn set_signer_weight(&self, id: &AccountId, signer: &BytesN<32>, weight: u8) {
         let id: xdr::AccountId = id.try_into().unwrap();
         self.update_account_ledger_entry(&id, |a| {
-            let mut signers = a.signers.to_vec();
-            let mut found = false;
-            for s in signers.iter_mut() {
-                if let xdr::SignerKey::Ed25519(ed25519) = &s.key {
-                    if signer == &ed25519.0 {
-                        s.weight = weight.into();
-                        found = true;
-                        break;
+            let xdr::PublicKey::PublicKeyTypeEd25519(Uint256(account_id_ed25519)) = a.account_id.0;
+            if signer == &account_id_ed25519 {
+                // Master key.
+                a.thresholds[0] = weight.into();
+            } else {
+                // Additional signer.
+                let mut signers = a.signers.to_vec();
+                let mut found = false;
+                for s in signers.iter_mut() {
+                    if let xdr::SignerKey::Ed25519(ed25519) = &s.key {
+                        if signer == &ed25519.0 {
+                            s.weight = weight.into();
+                            found = true;
+                            break;
+                        }
                     }
                 }
+                if !found {
+                    signers.push(xdr::Signer {
+                        key: xdr::SignerKey::Ed25519(xdr::Uint256(signer.into_val(self.env()))),
+                        weight: weight.into(),
+                    })
+                }
+                a.signers = signers.try_into().unwrap();
             }
-            if !found {
-                signers.push(xdr::Signer {
-                    key: xdr::SignerKey::Ed25519(xdr::Uint256(signer.into_val(self.env()))),
-                    weight: weight.into(),
-                })
-            }
-            a.signers = signers.try_into().unwrap();
         });
     }
 
