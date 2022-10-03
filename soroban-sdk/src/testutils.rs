@@ -48,6 +48,9 @@ pub trait Accounts {
     /// Generate an account ID.
     fn generate(&self) -> AccountId;
 
+    /// Generate and account ID and creates an account.
+    fn generate_and_create(&self) -> AccountId;
+
     /// Create an account.
     fn create(&self, id: &AccountId);
 

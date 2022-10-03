@@ -368,6 +368,12 @@ use crate::{env::internal::xdr, testutils};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Accounts for Accounts {
+    fn generate_and_create(&self) -> AccountId {
+        let id = self.generate();
+        self.create(&id);
+        id
+    }
+
     fn generate(&self) -> AccountId {
         use rand::RngCore;
         let mut bytes: [u8; 32] = Default::default();
