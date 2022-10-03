@@ -1,7 +1,5 @@
 use core::{cmp::Ordering, fmt::Debug};
 
-use stellar_xdr::Uint256;
-
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
@@ -402,7 +400,8 @@ impl testutils::Accounts for Accounts {
     fn set_signer_weight(&self, id: &AccountId, signer: &BytesN<32>, weight: u8) {
         let id: xdr::AccountId = id.try_into().unwrap();
         self.update_account_ledger_entry(&id, |a| {
-            let xdr::PublicKey::PublicKeyTypeEd25519(Uint256(account_id_ed25519)) = a.account_id.0;
+            let xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(account_id_ed25519)) =
+                a.account_id.0;
             if signer == &account_id_ed25519 {
                 // Master key.
                 a.thresholds.0[0] = weight.into();
