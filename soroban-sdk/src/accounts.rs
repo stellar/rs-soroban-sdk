@@ -405,7 +405,7 @@ impl testutils::Accounts for Accounts {
             let xdr::PublicKey::PublicKeyTypeEd25519(Uint256(account_id_ed25519)) = a.account_id.0;
             if signer == &account_id_ed25519 {
                 // Master key.
-                a.thresholds[0] = weight.into();
+                a.thresholds.0[0] = weight.into();
             } else {
                 // Additional signer.
                 let mut signers = a.signers.to_vec();
