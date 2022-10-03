@@ -68,11 +68,13 @@ impl Accounts {
     }
 }
 
-/// Account ID is a Stellar account ID.
+/// Account ID is an identifier for an account.
 ///
 /// The ID is opaque and does not expose the identifier to the contract, but the
-/// value is unique and can be used as a key in maps, or compared with other
-/// account identifiers.
+/// value can be used as a key in maps, or compared with other account
+/// identifiers.
+///
+/// In tests account identifiers can be generated using [`Accounts`].
 #[derive(Clone)]
 pub struct AccountId(EnvObj);
 
@@ -255,6 +257,8 @@ impl AccountId {
 
 /// Account provides access to information about an accounts thresholds and
 /// signers.
+///
+/// In tests accounts can be generated using [`Accounts`].
 #[derive(Clone)]
 pub struct Account(AccountId);
 
