@@ -45,7 +45,7 @@ pub trait Logger {
 
 /// Test utilities for [`Accounts`][crate::accounts::Accounts].
 pub trait Accounts {
-    /// Create a random account.
+    /// Generate an account ID.
     fn generate(&self) -> AccountId;
 
     /// Create an account.
