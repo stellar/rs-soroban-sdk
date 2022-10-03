@@ -7,12 +7,39 @@ use crate::{
     BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
-/// Accouns retrieves information about accounts that exist in the current
+/// Accounts retrieves information about accounts that exist in the current
 /// ledger.
 ///
 /// ### Examples
 ///
-/// TODO
+/// ```
+/// use soroban_sdk::Env;
+///
+/// # use soroban_sdk::{contractimpl, AccountId, BytesN};
+/// #
+/// # pub struct Contract;
+/// #
+/// # #[contractimpl]
+/// # impl Contract {
+/// #     pub fn f(env: Env, account_id: AccountId) {
+/// let account = env.accounts().get(&account_id).expect("account does not exist");
+/// assert_eq!(account.medium_threshold(), 1);
+/// #     }
+/// # }
+/// #
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+/// #     use soroban_sdk::testutils::Accounts;
+/// #     let env = Env::default();
+/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
+/// #     env.register_contract(&contract_id, Contract);
+/// #     let account_id = env.accounts().generate();
+/// #     env.accounts().create(&account_id);
+/// #     ContractClient::new(&env, &contract_id).f(&account_id);
+/// # }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
 #[derive(Clone)]
 pub struct Accounts(Env);
 
@@ -145,6 +172,15 @@ impl TryFrom<&AccountId> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl TryFrom<&AccountId> for super::xdr::AccountId {
+    type Error = ConversionError;
+    fn try_from(v: &AccountId) -> Result<Self, Self::Error> {
+        let id: ScVal = v.to_raw().try_into_val(v.env()).unwrap();
+        id.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryFrom<AccountId> for ScVal {
     type Error = ConversionError;
     fn try_from(v: AccountId) -> Result<Self, Self::Error> {
@@ -164,7 +200,24 @@ impl TryFromVal<Env, ScVal> for AccountId {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, super::xdr::AccountId> for AccountId {
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: super::xdr::AccountId) -> Result<Self, Self::Error> {
+        let val: ScVal = val.try_into()?;
+        val.try_into_val(env).map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryIntoVal<Env, AccountId> for ScVal {
+    type Error = ConversionError;
+    fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
+        AccountId::try_from_val(env, self)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryIntoVal<Env, AccountId> for super::xdr::AccountId {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
         AccountId::try_from_val(env, self)
@@ -308,22 +361,25 @@ use crate::{env::internal::xdr, testutils};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Accounts for Accounts {
-    fn generate(&self) -> xdr::AccountId {
+    fn generate(&self) -> AccountId {
         use rand::RngCore;
         let mut bytes: [u8; 32] = Default::default();
         rand::thread_rng().fill_bytes(&mut bytes);
         xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(bytes)))
+            .try_into_val(self.env())
+            .unwrap()
     }
 
-    fn create(&self, id: &xdr::AccountId) {
+    fn create(&self, id: &AccountId) {
         let env = self.env();
+        let id: xdr::AccountId = id.try_into().unwrap();
         env.host()
             .with_mut_storage(|storage| {
                 let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
                     account_id: id.clone(),
                 });
                 let v = xdr::LedgerEntry {
-                    data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(id)),
+                    data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(&id)),
                     last_modified_ledger_seq: 0,
                     ext: xdr::LedgerEntryExt::V0,
                 };
@@ -332,16 +388,20 @@ impl testutils::Accounts for Accounts {
             .unwrap();
     }
 
-    fn set_thresholds(&self, id: &xdr::AccountId, low: u8, medium: u8, high: u8) {
-        self.update_account_ledger_entry(id, |a| {
+    fn set_thresholds(&self, id: &AccountId, low: u8, medium: u8, high: u8) {
+        let env = self.env();
+        let id: xdr::AccountId = id.try_into().unwrap();
+        self.update_account_ledger_entry(&id, |a| {
             a.thresholds.0[1] = low;
             a.thresholds.0[2] = medium;
             a.thresholds.0[3] = high;
         });
     }
 
-    fn set_signer_weight(&self, id: &crate::xdr::AccountId, signer: &BytesN<32>, weight: u8) {
-        self.update_account_ledger_entry(id, |a| {
+    fn set_signer_weight(&self, id: &AccountId, signer: &BytesN<32>, weight: u8) {
+        let env = self.env();
+        let id: xdr::AccountId = id.try_into().unwrap();
+        self.update_account_ledger_entry(&id, |a| {
             let mut signers = a.signers.to_vec();
             let mut found = false;
             for s in signers.iter_mut() {
@@ -363,13 +423,12 @@ impl testutils::Accounts for Accounts {
         });
     }
 
-    fn remove(&self, id: &xdr::AccountId) {
+    fn remove(&self, id: &AccountId) {
         let env = self.env();
+        let id: xdr::AccountId = id.try_into().unwrap();
         env.host()
             .with_mut_storage(|storage| {
-                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: id.clone(),
-                });
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount { account_id: id });
                 storage.del(&k)
             })
             .unwrap();
