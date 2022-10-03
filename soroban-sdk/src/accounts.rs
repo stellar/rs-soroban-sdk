@@ -1,3 +1,6 @@
+//! Accounts contains types for accessing accounts in the current ledger.
+//!
+//! See [`Accounts`][Accounts] for examples.
 use core::{cmp::Ordering, fmt::Debug};
 
 use crate::{
