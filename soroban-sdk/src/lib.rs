@@ -168,7 +168,7 @@ pub use envhidden::*;
 
 mod operators;
 
-mod account;
+pub mod accounts;
 mod bigint;
 mod bytes;
 pub mod data;
@@ -180,7 +180,7 @@ pub mod logging;
 mod map;
 mod set;
 mod vec;
-pub use account::{Account, AccountId};
+pub use accounts::AccountId;
 pub use bigint::{BigInt, Sign};
 pub use bytes::{Bytes, BytesN};
 pub use invoker::Invoker;

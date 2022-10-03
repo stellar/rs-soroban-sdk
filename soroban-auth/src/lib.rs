@@ -17,7 +17,7 @@
 
 mod tests;
 
-use soroban_sdk::{serde::Serialize, Account, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
+use soroban_sdk::{serde::Serialize, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
 
 pub mod testutils;
 
@@ -42,7 +42,7 @@ fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, ar
 }
 
 fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, args: Vec<RawVal>) {
-    let acc = Account::from_id(&auth.account_id).unwrap();
+    let acc = env.accounts().get(&auth.account_id).unwrap();
 
     let msg = SignaturePayloadV0 {
         name,

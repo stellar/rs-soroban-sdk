@@ -36,3 +36,6 @@ pub use super::env::xdr::{
     ScSpecTypeVec, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0,
     ScSpecUdtUnionV0,
 };
+
+// XDR for ledger entries.
+pub use super::env::xdr::{AccountEntry, AccountId};

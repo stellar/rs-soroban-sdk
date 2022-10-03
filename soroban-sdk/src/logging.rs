@@ -67,7 +67,7 @@ use crate::{
 /// assert_eq!(
 ///     env.logger().all(),
 ///     std::vec![
-///         "a log entry: I32(5), Symbol(another), Object(Vec(3))".to_string(),
+///         "a log entry: I32(5), Symbol(another), Object(Vec(4))".to_string(),
 ///     ],
 /// );
 /// # }

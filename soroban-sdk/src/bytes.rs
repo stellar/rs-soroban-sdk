@@ -717,9 +717,37 @@ impl<const N: usize> PartialEq for BytesN<N> {
     }
 }
 
+impl<const N: usize> PartialEq<[u8; N]> for BytesN<N> {
+    fn eq(&self, other: &[u8; N]) -> bool {
+        let other: BytesN<N> = other.into_val(self.env());
+        self.eq(&other)
+    }
+}
+
+impl<const N: usize> PartialEq<BytesN<N>> for [u8; N] {
+    fn eq(&self, other: &BytesN<N>) -> bool {
+        let self_: BytesN<N> = self.into_val(other.env());
+        self_.eq(other)
+    }
+}
+
 impl<const N: usize> PartialOrd for BytesN<N> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
+    }
+}
+
+impl<const N: usize> PartialOrd<[u8; N]> for BytesN<N> {
+    fn partial_cmp(&self, other: &[u8; N]) -> Option<Ordering> {
+        let other: BytesN<N> = other.into_val(self.env());
+        self.partial_cmp(&other)
+    }
+}
+
+impl<const N: usize> PartialOrd<BytesN<N>> for [u8; N] {
+    fn partial_cmp(&self, other: &BytesN<N>) -> Option<Ordering> {
+        let self_: BytesN<N> = self.into_val(other.env());
+        self_.partial_cmp(other)
     }
 }
 
@@ -786,6 +814,18 @@ impl<const N: usize> IntoVal<Env, BytesN<N>> for [u8; N] {
 impl<const N: usize> IntoVal<Env, BytesN<N>> for &[u8; N] {
     fn into_val(self, env: &Env) -> BytesN<N> {
         BytesN::from_array(env, self)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, [u8; N]> for BytesN<N> {
+    fn into_val(self, _env: &Env) -> [u8; N] {
+        self.to_array()
+    }
+}
+
+impl<const N: usize> IntoVal<Env, [u8; N]> for &BytesN<N> {
+    fn into_val(self, _env: &Env) -> [u8; N] {
+        self.to_array()
     }
 }
 
@@ -1001,6 +1041,14 @@ impl<const N: usize> BytesN<N> {
         let env = self.env();
         env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice)
             .unwrap();
+    }
+
+    /// Copy the bytes in [BytesN] into an array.
+    #[inline(always)]
+    pub fn to_array(&self) -> [u8; N] {
+        let mut array = [0u8; N];
+        self.copy_into_slice(&mut array);
+        array
     }
 
     pub fn iter(&self) -> BinIter {

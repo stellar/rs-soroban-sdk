@@ -1,4 +1,4 @@
-use crate::{contracttype, AccountId, BytesN};
+use crate::{accounts::AccountId, contracttype, BytesN};
 
 /// Invoker is the invoker of a contract.
 // The Invoker type is a contracttype and transmitted to the host like an enum,
