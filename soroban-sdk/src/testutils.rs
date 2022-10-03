@@ -8,7 +8,7 @@ pub use sign::ed25519;
 
 pub use crate::env::testutils::*;
 
-use crate::{xdr, Env, RawVal, Symbol, Vec};
+use crate::{xdr, BytesN, Env, RawVal, Symbol, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -45,18 +45,19 @@ pub trait Logger {
 
 /// Test utilities for [`Accounts`][crate::accounts::Accounts].
 pub trait Accounts {
+    /// Create a random account.
+    fn generate(&self) -> xdr::AccountId;
+
     /// Create an account.
     fn create(&self, id: &xdr::AccountId);
 
-    /// Set the details for an account.
-    ///
-    /// Creates the account if the account does not exist. Updates the details if it does.
-    fn set(&self, l: xdr::AccountEntry);
+    /// Set the thresholds of an account.
+    fn set_thresholds(&self, id: &xdr::AccountId, low: u8, med: u8, high: u8);
 
-    /// Modify an account.
-    fn with_mut<F>(&self, id: &xdr::AccountId, f: F)
-    where
-        F: FnMut(&mut xdr::AccountEntry);
+    /// Set the weight of a signer of an account.
+    ///
+    /// Setting a weight of zero removes the signer from the account.
+    fn set_signer_weight(&self, id: &xdr::AccountId, signer: &BytesN<32>, weight: u8);
 
     /// Remove an account.
     fn remove(&self, id: &xdr::AccountId);

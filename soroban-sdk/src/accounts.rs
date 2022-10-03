@@ -306,37 +306,24 @@ impl Account {
 use crate::{env::internal::xdr, testutils};
 
 #[cfg(any(test, feature = "testutils"))]
-fn default_account_ledger_entry(id: &xdr::AccountId) -> xdr::AccountEntry {
-    xdr::AccountEntry {
-        account_id: id.clone(),
-        balance: 0,
-        flags: 0,
-        home_domain: xdr::VecM::default(),
-        inflation_dest: None,
-        num_sub_entries: 0,
-        seq_num: xdr::SequenceNumber(0),
-        thresholds: xdr::Thresholds([0; 4]),
-        signers: xdr::VecM::default(),
-        ext: xdr::AccountEntryExt::V0,
-    }
-}
-
-#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Accounts for Accounts {
-    fn create(&self, id: &xdr::AccountId) {
-        self.with_mut(id, |_| {})
+    fn generate(&self) -> xdr::AccountId {
+        use rand::RngCore;
+        let mut bytes: [u8; 32] = Default::default();
+        rand::thread_rng().fill_bytes(&mut bytes);
+        xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(bytes)))
     }
 
-    fn set(&self, a: xdr::AccountEntry) {
+    fn create(&self, id: &xdr::AccountId) {
         let env = self.env();
         env.host()
             .with_mut_storage(|storage| {
                 let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: a.account_id.clone(),
+                    account_id: id.clone(),
                 });
                 let v = xdr::LedgerEntry {
-                    data: xdr::LedgerEntryData::Account(a),
+                    data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(id)),
                     last_modified_ledger_seq: 0,
                     ext: xdr::LedgerEntryExt::V0,
                 };
@@ -345,7 +332,69 @@ impl testutils::Accounts for Accounts {
             .unwrap();
     }
 
-    fn with_mut<F>(&self, id: &xdr::AccountId, f: F)
+    fn set_thresholds(&self, id: &xdr::AccountId, low: u8, medium: u8, high: u8) {
+        self.update_account_ledger_entry(id, |a| {
+            a.thresholds.0[1] = low;
+            a.thresholds.0[2] = medium;
+            a.thresholds.0[3] = high;
+        });
+    }
+
+    fn set_signer_weight(&self, id: &crate::xdr::AccountId, signer: &BytesN<32>, weight: u8) {
+        self.update_account_ledger_entry(id, |a| {
+            let mut signers = a.signers.to_vec();
+            let mut found = false;
+            for s in signers.iter_mut() {
+                if let xdr::SignerKey::Ed25519(ed25519) = &s.key {
+                    if signer == &ed25519.0 {
+                        s.weight = weight.into();
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if !found {
+                signers.push(xdr::Signer {
+                    key: xdr::SignerKey::Ed25519(xdr::Uint256(signer.into_val(self.env()))),
+                    weight: weight.into(),
+                })
+            }
+            a.signers = signers.try_into().unwrap();
+        });
+    }
+
+    fn remove(&self, id: &xdr::AccountId) {
+        let env = self.env();
+        env.host()
+            .with_mut_storage(|storage| {
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: id.clone(),
+                });
+                storage.del(&k)
+            })
+            .unwrap();
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl Accounts {
+    #[cfg(any(test, feature = "testutils"))]
+    fn default_account_ledger_entry(&self, id: &xdr::AccountId) -> xdr::AccountEntry {
+        xdr::AccountEntry {
+            account_id: id.clone(),
+            balance: 0,
+            flags: 0,
+            home_domain: xdr::VecM::default(),
+            inflation_dest: None,
+            num_sub_entries: 0,
+            seq_num: xdr::SequenceNumber(0),
+            thresholds: xdr::Thresholds([1; 4]),
+            signers: xdr::VecM::default(),
+            ext: xdr::AccountEntryExt::V0,
+        }
+    }
+
+    fn update_account_ledger_entry<F>(&self, id: &xdr::AccountId, f: F)
     where
         F: FnOnce(&mut xdr::AccountEntry),
     {
@@ -367,7 +416,7 @@ impl testutils::Accounts for Accounts {
                     })
                     .flatten()
                     .unwrap_or_else(|| xdr::LedgerEntry {
-                        data: xdr::LedgerEntryData::Account(default_account_ledger_entry(id)),
+                        data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(id)),
                         last_modified_ledger_seq: 0,
                         ext: xdr::LedgerEntryExt::V0,
                     });
@@ -377,18 +426,6 @@ impl testutils::Accounts for Accounts {
                     panic!("ledger entry is not an account");
                 }
                 storage.put(&k, &v)
-            })
-            .unwrap();
-    }
-
-    fn remove(&self, id: &xdr::AccountId) {
-        let env = self.env();
-        env.host()
-            .with_mut_storage(|storage| {
-                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: id.clone(),
-                });
-                storage.del(&k)
             })
             .unwrap();
     }
