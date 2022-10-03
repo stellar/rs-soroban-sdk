@@ -63,6 +63,18 @@ pub enum Identifier {
     Account(AccountId),
 }
 
+impl From<AccountId> for Identifier {
+    fn from(v: AccountId) -> Self {
+        Identifier::Account(v)
+    }
+}
+
+impl From<&AccountId> for Identifier {
+    fn from(v: &AccountId) -> Self {
+        Identifier::Account(v.clone())
+    }
+}
+
 /// Signature payload v0 contains the data that must be signed to authenticate
 /// the [`Identifier`] within when invoking a contract.
 ///
