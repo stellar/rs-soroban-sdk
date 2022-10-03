@@ -389,7 +389,6 @@ impl testutils::Accounts for Accounts {
     }
 
     fn set_thresholds(&self, id: &AccountId, low: u8, medium: u8, high: u8) {
-        let env = self.env();
         let id: xdr::AccountId = id.try_into().unwrap();
         self.update_account_ledger_entry(&id, |a| {
             a.thresholds.0[1] = low;
@@ -399,7 +398,6 @@ impl testutils::Accounts for Accounts {
     }
 
     fn set_signer_weight(&self, id: &AccountId, signer: &BytesN<32>, weight: u8) {
-        let env = self.env();
         let id: xdr::AccountId = id.try_into().unwrap();
         self.update_account_ledger_entry(&id, |a| {
             let mut signers = a.signers.to_vec();

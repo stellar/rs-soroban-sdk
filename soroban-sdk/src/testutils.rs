@@ -8,7 +8,7 @@ pub use sign::ed25519;
 
 pub use crate::env::testutils::*;
 
-use crate::{xdr, AccountId, BytesN, Env, RawVal, Symbol, Vec};
+use crate::{AccountId, BytesN, Env, RawVal, Symbol, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
