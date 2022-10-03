@@ -314,7 +314,7 @@ impl Env {
 
         let env = Env { env_impl };
 
-        env.set_source_account(env.accounts().generate());
+        env.set_source_account(&env.accounts().generate());
 
         env.ledger().set(internal::LedgerInfo {
             protocol_version: 0,
@@ -329,10 +329,10 @@ impl Env {
 
     /// Sets the source account in the [Env], which will be accessible via
     /// [Env::invoker] when the current executing contract is directly invoked.
-    pub fn set_source_account(&self, account_id: AccountId) {
-        self.accounts().create(&account_id);
+    pub fn set_source_account(&self, account_id: &AccountId) {
+        self.accounts().create(account_id);
         self.env_impl
-            .set_source_account((&account_id).try_into().unwrap());
+            .set_source_account(account_id.try_into().unwrap());
     }
 
     /// Register a contract with the [Env] for testing.
