@@ -4,9 +4,10 @@
 use core::{cmp::Ordering, fmt::Debug};
 
 use crate::{
+    env::internal::xdr,
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    xdr, BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
+    BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
 /// Accounts retrieves information about accounts that exist in the current
@@ -372,7 +373,7 @@ impl Account {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{env::internal::xdr, testutils};
+use crate::testutils;
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
