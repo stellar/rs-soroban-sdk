@@ -1,11 +1,16 @@
 #![no_std]
-use soroban_sdk::{contractimpl, BigInt, Bytes, Env};
-
+use soroban_sdk::{contractimpl, contracttype, BigInt, Bytes, Env};
 use soroban_auth::{Identifier, Signature};
 
-mod public_types;
 mod tests;
-use crate::public_types::TokenMetadata;
+
+#[derive(Clone)]
+#[contracttype]
+pub struct TokenMetadata {
+    pub name: Bytes,
+    pub symbol: Bytes,
+    pub decimals: u32,
+}
 
 /// The interface below was copied from
 /// https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
