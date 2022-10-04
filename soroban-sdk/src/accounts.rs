@@ -6,8 +6,7 @@ use core::{cmp::Ordering, fmt::Debug};
 use crate::{
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    xdr::ScObjectType,
-    BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
+    xdr, BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
 /// Accounts retrieves information about accounts that exist in the current
@@ -119,7 +118,7 @@ impl TryFromVal<Env, Object> for AccountId {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
-        if val.is_obj_type(ScObjectType::AccountId) {
+        if val.is_obj_type(xdr::ScObjectType::AccountId) {
             Ok(AccountId(val.in_env(env)))
         } else {
             Err(ConversionError {})
