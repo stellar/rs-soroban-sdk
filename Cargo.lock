@@ -39,6 +39,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "base32"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23ce669cd6c8588f79e15cf450314f9638f967fc5770ff1c7c1deb0925ea7cfa"
+
+[[package]]
 name = "base64"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -761,6 +767,7 @@ dependencies = [
  "soroban-env-host",
  "soroban-sdk-macros",
  "soroban-spec",
+ "stellar-strkey",
  "stellar-xdr",
 ]
 
@@ -844,6 +851,15 @@ name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
+
+[[package]]
+name = "stellar-strkey"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "350ec80765002d972f7fa9bc2bd9e550fc3bf9fbe3f1c0e55b30755fccc2fd34"
+dependencies = [
+ "base32",
+]
 
 [[package]]
 name = "stellar-xdr"

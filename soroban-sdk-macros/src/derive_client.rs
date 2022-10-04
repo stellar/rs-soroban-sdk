@@ -152,20 +152,24 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                     use soroban_sdk::IntoVal;
-                    self.env.invoke_contract(
-                        &self.contract_id,
-                        &soroban_sdk::symbol!(#fn_name),
-                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                    self.with_env(|env|
+                        env.invoke_contract(
+                            &self.contract_id,
+                            &soroban_sdk::symbol!(#fn_name),
+                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        )
                     )
                 }
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                     use soroban_sdk::IntoVal;
-                    self.env.try_invoke_contract(
-                        &self.contract_id,
-                        &soroban_sdk::symbol!(#fn_name),
-                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                    self.with_env(|env|
+                        env.try_invoke_contract(
+                            &self.contract_id,
+                            &soroban_sdk::symbol!(#fn_name),
+                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        )
                     )
                 }
             }
@@ -184,16 +188,45 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
         pub struct #client_ident {
             env: soroban_sdk::Env,
             contract_id: soroban_sdk::BytesN<32>,
+            #[cfg(any(test, feature = "testutils"))]
+            source_account: Option<soroban_sdk::AccountId>,
         }
+
         impl #client_ident {
             pub fn new(env: &soroban_sdk::Env, contract_id: impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
+                    #[cfg(any(test, feature = "testutils"))]
+                    source_account: None,
                 }
             }
 
+            fn with_env<R>(&self, f: impl FnOnce(&soroban_sdk::Env) -> R) -> R {
+                let env = &self.env;
+                #[cfg(any(test, feature = "testutils"))]
+                if let Some(new) = &self.source_account {
+                    let old = env.source_account();
+                    env.set_source_account(new);
+                    let r = f(env);
+                    env.set_source_account(&old);
+                    return r;
+                }
+                f(env)
+            }
+
             #(#fns)*
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        impl #client_ident {
+            pub fn with_source_account(&self, source_account: &soroban_sdk::AccountId) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    source_account: Some(source_account.clone()),
+                }
+            }
         }
     }
 }

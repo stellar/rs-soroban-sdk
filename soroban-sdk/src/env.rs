@@ -327,12 +327,23 @@ impl Env {
         env
     }
 
-    /// Sets the source account in the [Env], which will be accessible via
-    /// [Env::invoker] when the current executing contract is directly invoked.
+    /// Sets the source account in the [Env].
+    ///
+    /// The source account will be accessible via [Env::invoker] when a contract
+    /// is directly invoked.
     pub fn set_source_account(&self, account_id: &AccountId) {
         self.accounts().create(account_id);
         self.env_impl
             .set_source_account(account_id.try_into().unwrap());
+    }
+
+    /// Gets the source account set in the [Env].
+    pub fn source_account(&self) -> AccountId {
+        self.env_impl
+            .source_account()
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
     }
 
     /// Register a contract with the [Env] for testing.

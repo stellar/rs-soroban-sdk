@@ -4,9 +4,9 @@
 use core::{cmp::Ordering, fmt::Debug};
 
 use crate::{
+    env::internal::xdr,
     env::internal::{Env as _, RawVal, RawValConvertible},
     env::EnvObj,
-    xdr::ScObjectType,
     BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
@@ -80,7 +80,17 @@ pub struct AccountId(EnvObj);
 
 impl Debug for AccountId {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        #[cfg(target_family = "wasm")]
         write!(f, "AccountId(..)")?;
+        #[cfg(not(target_family = "wasm"))]
+        {
+            use stellar_strkey::StrkeyPublicKeyEd25519;
+            let account_id: xdr::AccountId = self.try_into().map_err(|_| core::fmt::Error)?;
+            let xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(ed25519))) =
+                account_id;
+            let strkey = StrkeyPublicKeyEd25519(ed25519);
+            write!(f, "AccountId({})", strkey.to_string())?;
+        }
         Ok(())
     }
 }
@@ -109,7 +119,7 @@ impl TryFromVal<Env, Object> for AccountId {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
-        if val.is_obj_type(ScObjectType::AccountId) {
+        if val.is_obj_type(xdr::ScObjectType::AccountId) {
             Ok(AccountId(val.in_env(env)))
         } else {
             Err(ConversionError {})
@@ -363,7 +373,7 @@ impl Account {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{env::internal::xdr, testutils};
+use crate::testutils;
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
