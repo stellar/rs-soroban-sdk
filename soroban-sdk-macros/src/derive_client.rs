@@ -152,20 +152,24 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                     use soroban_sdk::IntoVal;
-                    self.env.invoke_contract(
-                        &self.contract_id,
-                        &soroban_sdk::symbol!(#fn_name),
-                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                    self.with_env(|env|
+                        env.invoke_contract(
+                            &self.contract_id,
+                            &soroban_sdk::symbol!(#fn_name),
+                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        )
                     )
                 }
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                     use soroban_sdk::IntoVal;
-                    self.env.try_invoke_contract(
-                        &self.contract_id,
-                        &soroban_sdk::symbol!(#fn_name),
-                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                    self.with_env(|env|
+                        env.try_invoke_contract(
+                            &self.contract_id,
+                            &soroban_sdk::symbol!(#fn_name),
+                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        )
                     )
                 }
             }
@@ -198,17 +202,17 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 }
             }
 
-            fn with_env(&self, f: impl FnOnce(&soroban_sdk::Env)) {
+            fn with_env<R>(&self, f: impl FnOnce(&soroban_sdk::Env) -> R) -> R {
                 let env = &self.env;
                 #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
                 if let Some(new) = &self.source_account {
                     let old = env.source_account();
                     env.set_source_account(new);
-                    f(env);
+                    let r = f(env);
                     env.set_source_account(&old);
-                    return;
+                    return r;
                 }
-                f(env);
+                f(env)
             }
 
             #(#fns)*
