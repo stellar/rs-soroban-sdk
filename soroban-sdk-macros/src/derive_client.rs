@@ -197,7 +197,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
-                    #[cfg(not(target_family = "wasm"))]
+                    #[cfg(any(test, feature = "testutils"))]
                     source_account: None,
                 }
             }
