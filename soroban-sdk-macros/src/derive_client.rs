@@ -188,7 +188,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
         pub struct #client_ident {
             env: soroban_sdk::Env,
             contract_id: soroban_sdk::BytesN<32>,
-            #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
+            #[cfg(any(test, feature = "testutils"))]
             source_account: Option<soroban_sdk::AccountId>,
         }
 
@@ -204,7 +204,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
 
             fn with_env<R>(&self, f: impl FnOnce(&soroban_sdk::Env) -> R) -> R {
                 let env = &self.env;
-                #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
+                #[cfg(any(test, feature = "testutils"))]
                 if let Some(new) = &self.source_account {
                     let old = env.source_account();
                     env.set_source_account(new);
@@ -218,7 +218,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
             #(#fns)*
         }
 
-        #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
+        #[cfg(any(test, feature = "testutils"))]
         impl #client_ident {
             pub fn with_source_account(&self, source_account: &soroban_sdk::AccountId) -> Self {
                 Self {
