@@ -976,13 +976,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_who_am_i"
-version = "0.0.4"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "thiserror"
 version = "1.0.37"
 source = "registry+https://github.com/rust-lang/crates.io-index"
