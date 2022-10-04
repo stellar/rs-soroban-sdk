@@ -220,7 +220,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
 
         #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
         impl #client_ident {
-            pub fn r#as(&self, source_account: &soroban_sdk::AccountId) -> Self {
+            pub fn with_source_account(&self, source_account: &soroban_sdk::AccountId) -> Self {
                 Self {
                     env: self.env.clone(),
                     contract_id: self.contract_id.clone(),

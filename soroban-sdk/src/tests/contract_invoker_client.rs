@@ -32,10 +32,10 @@ fn test() {
     assert_ne!(&invoker_1, &e.source_account());
     assert_ne!(&invoker_2, &e.source_account());
 
-    let result_1a = client.r#as(&invoker_1).whoami();
+    let result_1a = client.with_source_account(&invoker_1).whoami();
     std::println!("result 1a: {:?}", result_1a);
 
-    let result_1b = client.r#as(&invoker_1).whoami();
+    let result_1b = client.with_source_account(&invoker_1).whoami();
     std::println!("result 1b: {:?}", result_1b);
 
     assert_eq!(result_1a, result_1b);
@@ -52,7 +52,7 @@ fn test() {
     assert_eq!(result_1a, Invoker::Account(invoker_1.clone()));
     assert_eq!(result_1b, Invoker::Account(invoker_1.clone()));
 
-    let result_2 = client.r#as(&invoker_2).whoami();
+    let result_2 = client.with_source_account(&invoker_2).whoami();
     std::println!("result 2: {:?}", result_2);
     assert_ne!(result_1a, result_2);
     assert_ne!(result_1b, result_2);
