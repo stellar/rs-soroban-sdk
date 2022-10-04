@@ -10,6 +10,7 @@ members = [
     "tests/empty",
     "tests/add_u64",
     "tests/add_bigint",
+    "tests/who_am_i",
     "tests/import_contract",
     "tests/invoke_contract",
     "tests/udt",

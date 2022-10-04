@@ -23,6 +23,7 @@ soroban-env-guest = { version = "0.0.5" }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
 soroban-env-host = { version = "0.0.5", features = ["vm", "hostfn_log_fmt_values"] }
+stellar-strkey = "0.0.2"
 ed25519-dalek = { version = "1.0.1", optional = true }
 rand = "0.8.5"
 
