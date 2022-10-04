@@ -1,6 +1,6 @@
 #![no_std]
-use soroban_sdk::{contractimpl, contracttype, BigInt, Bytes, Env};
 use soroban_auth::{Identifier, Signature};
+use soroban_sdk::{contractimpl, contracttype, BigInt, Bytes, Env};
 
 mod tests;
 
