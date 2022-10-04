@@ -184,16 +184,45 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
         pub struct #client_ident {
             env: soroban_sdk::Env,
             contract_id: soroban_sdk::BytesN<32>,
+            #[cfg(not(target_family = "wasm"))]
+            source_account: Option<soroban_sdk::AccountId>,
         }
+
         impl #client_ident {
             pub fn new(env: &soroban_sdk::Env, contract_id: impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
+                    #[cfg(not(target_family = "wasm"))]
+                    source_account: None,
                 }
             }
 
+            fn with_env(&self, f: impl FnOnce(&soroban_sdk::Env)) {
+                let env = &self.env;
+                #[cfg(not(target_family = "wasm"))]
+                if let Some(new) = &self.source_account {
+                    let old = env.source_account();
+                    env.set_source_account(new);
+                    f(env);
+                    env.set_source_account(&old);
+                    return;
+                }
+                f(env);
+            }
+
             #(#fns)*
+        }
+
+        #[cfg(not(target_family = "wasm"))]
+        impl #client_ident {
+            pub fn r#as(&self, source_account: &soroban_sdk::AccountId) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    source_account: Some(source_account.clone()),
+                }
+            }
         }
     }
 }
