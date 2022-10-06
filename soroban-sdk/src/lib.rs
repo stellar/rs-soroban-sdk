@@ -136,7 +136,7 @@ macro_rules! panic_error {
 
 mod env;
 
-mod invoker;
+mod address;
 pub mod xdr;
 
 pub use env::ConversionError;
@@ -183,7 +183,7 @@ mod vec;
 pub use accounts::AccountId;
 pub use bigint::{BigInt, Sign};
 pub use bytes::{Bytes, BytesN};
-pub use invoker::Invoker;
+pub use address::Address;
 pub use map::Map;
 pub use set::Set;
 pub use vec::Vec;

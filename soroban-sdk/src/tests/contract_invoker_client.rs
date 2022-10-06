@@ -1,11 +1,11 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, testutils::Accounts, BytesN, Env, Invoker};
+use soroban_sdk::{contractimpl, testutils::Accounts, Address, BytesN, Env};
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn whoami(e: Env) -> Invoker {
+    pub fn whoami(e: Env) -> Address {
         e.invoker()
     }
 }
@@ -39,22 +39,22 @@ fn test() {
     std::println!("result 1b: {:?}", result_1b);
 
     assert_eq!(result_1a, result_1b);
-    assert_eq!(result_1a, Invoker::Account(invoker_1.clone()));
-    assert_eq!(result_1b, Invoker::Account(invoker_1.clone()));
+    assert_eq!(result_1a, Address::Account(invoker_1.clone()));
+    assert_eq!(result_1b, Address::Account(invoker_1.clone()));
 
     let result_default = client.whoami();
     std::println!("result default: {:?}", result_default);
     assert_ne!(result_default, result_1a);
     assert_ne!(result_default, result_1b);
-    assert_eq!(result_default, Invoker::Account(default.clone()));
+    assert_eq!(result_default, Address::Account(default.clone()));
 
     assert_eq!(result_1a, result_1b);
-    assert_eq!(result_1a, Invoker::Account(invoker_1.clone()));
-    assert_eq!(result_1b, Invoker::Account(invoker_1.clone()));
+    assert_eq!(result_1a, Address::Account(invoker_1.clone()));
+    assert_eq!(result_1b, Address::Account(invoker_1.clone()));
 
     let result_2 = client.with_source_account(&invoker_2).whoami();
     std::println!("result 2: {:?}", result_2);
     assert_ne!(result_1a, result_2);
     assert_ne!(result_1b, result_2);
-    assert_eq!(result_2, Invoker::Account(invoker_2.clone()));
+    assert_eq!(result_2, Address::Account(invoker_2.clone()));
 }

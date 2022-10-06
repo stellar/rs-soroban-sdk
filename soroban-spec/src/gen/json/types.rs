@@ -99,7 +99,7 @@ pub enum Type {
     Status,
     Bytes,
     BigInt,
-    Invoker,
+    Address,
     AccountId,
     Map { key: Box<Type>, value: Box<Type> },
     Option { value: Box<Type> },
@@ -176,7 +176,7 @@ impl From<&ScSpecTypeDef> for Type {
             ScSpecTypeDef::Status => Type::Status,
             ScSpecTypeDef::Bytes => Type::Bytes,
             ScSpecTypeDef::BigInt => Type::BigInt,
-            ScSpecTypeDef::Invoker => Type::Invoker,
+            ScSpecTypeDef::Invoker => Type::Address,
             ScSpecTypeDef::AccountId => Type::AccountId,
         }
     }
