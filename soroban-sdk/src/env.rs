@@ -51,7 +51,7 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{
-    accounts::Accounts, data::Data, deploy::Deployer, events::Events, address::Address,
+    accounts::Accounts, address::Address, data::Data, deploy::Deployer, events::Events,
     ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
 };
 
