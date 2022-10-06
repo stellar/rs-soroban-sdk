@@ -10,6 +10,6 @@ on:
 jobs:
 
   bump-version:
-    uses: stellar/actions/.github/workflows/rust-bump-version.yml@main
+    uses: stellar/actions/.github/workflows/rust-bump-version.yml@9b1a234e
     with:
       version: ${{ inputs.version }}
