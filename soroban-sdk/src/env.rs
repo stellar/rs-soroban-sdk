@@ -92,6 +92,126 @@ impl Env {
         unreachable!()
     }
 
+    /// Get the invoking [Address] of the current executing contract.
+    pub fn invoker(&self) -> Address {
+        let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
+            .try_into()
+            .expect("unrecognized invoker type");
+        match invoker_type {
+            InvokerType::Account => Address::Account(unsafe {
+                AccountId::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
+            }),
+            InvokerType::Contract => Address::Contract(unsafe {
+                BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
+            }),
+        }
+    }
+
+    /// Get a [Data] for accessing and update contract data that has been stored
+    /// by the currently executing contract.
+    #[inline(always)]
+    pub fn data(&self) -> Data {
+        Data::new(self)
+    }
+
+    /// Get [Events] for publishing events associated with the
+    /// currently executing contract.
+    #[inline(always)]
+    pub fn events(&self) -> Events {
+        Events::new(self)
+    }
+
+    /// Get a [Ledger] for accessing the current ledger.
+    #[inline(always)]
+    pub fn ledger(&self) -> Ledger {
+        Ledger::new(self)
+    }
+
+    /// Get an [Accounts] for accessing accounts in the current ledger.
+    #[inline(always)]
+    pub fn accounts(&self) -> Accounts {
+        Accounts::new(self)
+    }
+
+    /// Get a deployer for deploying contracts.
+    #[inline(always)]
+    pub fn deployer(&self) -> Deployer {
+        Deployer::new(self)
+    }
+
+    /// Get the 32-byte hash identifier of the current executing contract.
+    pub fn current_contract(&self) -> BytesN<32> {
+        internal::Env::get_current_contract(self)
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Get the 32-byte hash identifier of the current executing contract.
+    #[doc(hidden)]
+    pub fn get_current_contract(&self) -> BytesN<32> {
+        self.current_contract()
+    }
+
+    /// Returns the contract call stack as a [`Vec`]
+    /// of `(contract_id, function_name)`.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol, symbol};
+    ///
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn hello(env: Env) {
+    ///         let stack = env.call_stack();
+    ///         assert_eq!(stack.len(), 1);
+    ///
+    ///         let outer = stack.get(0).unwrap().unwrap();
+    ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
+    ///         assert_eq!(outer.1, symbol!("hello"));
+    ///     }
+    /// }
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// let env = Env::default();
+    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
+    /// env.register_contract(&contract_id, Contract);
+    /// let client = ContractClient::new(&env, &contract_id);
+    /// client.hello();
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
+        let stack = internal::Env::get_current_call_stack(self);
+        stack.try_into_val(self).unwrap()
+    }
+
+    /// Computes a SHA-256 hash.
+    pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
+        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
+        bin_obj.try_into_val(self).unwrap()
+    }
+
+    /// Verifies an ed25519 signature.
+    ///
+    /// The ed25519 signature (`sig`) is verified as a valid signature of the
+    /// message (`msg`) by the ed25519 public key (`pk`).
+    ///
+    /// ### Panics
+    ///
+    /// Will panic if the signature verification fails.
+    ///
+    /// ### TODO
+    ///
+    /// Return a [Result] instead of panicking.
+    pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
+        internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
+            .try_into()
+            .unwrap()
+    }
+
     /// Invokes a function of a contract that is registered in the [Env].
     ///
     /// # Panics
@@ -139,132 +259,10 @@ impl Env {
         }
     }
 
-    /// Get a [Data] for accessing and update contract data that has been stored
-    /// by the currently executing contract.
-    #[inline(always)]
-    pub fn data(&self) -> Data {
-        Data::new(self)
-    }
-
-    /// Get a [Ledger] for accessing the current ledger.
-    #[inline(always)]
-    pub fn ledger(&self) -> Ledger {
-        Ledger::new(self)
-    }
-
-    /// Get an [Accounts] for accessing accounts in the current ledger.
-    #[inline(always)]
-    pub fn accounts(&self) -> Accounts {
-        Accounts::new(self)
-    }
-
     /// Get the [Logger] for logging debug events.
     #[inline(always)]
     pub fn logger(&self) -> Logger {
         Logger::new(self)
-    }
-
-    /// Get [Events] for publishing events associated with the
-    /// currently executing contract.
-    #[inline(always)]
-    pub fn events(&self) -> Events {
-        Events::new(self)
-    }
-
-    /// Get a deployer for deploying contracts.
-    #[inline(always)]
-    pub fn deployer(&self) -> Deployer {
-        Deployer::new(self)
-    }
-
-    /// Get the 32-byte hash identifier of the current executing contract.
-    pub fn get_current_contract(&self) -> BytesN<32> {
-        internal::Env::get_current_contract(self)
-            .try_into_val(self)
-            .unwrap()
-    }
-
-    /// Get the invoker of the current executing contract.
-    pub fn invoker(&self) -> Address {
-        let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
-            .try_into()
-            .expect("unrecognized invoker type");
-        match invoker_type {
-            InvokerType::Account => Address::Account(unsafe {
-                AccountId::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
-            }),
-            InvokerType::Contract => Address::Contract(unsafe {
-                BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
-            }),
-        }
-    }
-
-    #[doc(hidden)]
-    #[deprecated(note = "use Env::invoker")]
-    pub fn get_invoking_contract(&self) -> BytesN<32> {
-        let rv = internal::Env::get_invoking_contract(self).to_raw();
-        let bin = Bytes::try_from_val(self, rv).unwrap();
-        bin.try_into().unwrap()
-    }
-
-    /// Computes a SHA-256 hash.
-    pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
-        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
-        bin_obj.try_into_val(self).unwrap()
-    }
-
-    /// Verifies an ed25519 signature.
-    ///
-    /// The ed25519 signature (`sig`) is verified as a valid signature of the
-    /// message (`msg`) by the ed25519 public key (`pk`).
-    ///
-    /// ### Panics
-    ///
-    /// Will panic if the signature verification fails.
-    ///
-    /// ### TODO
-    ///
-    /// Return a [Result] instead of panicking.
-    pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
-        internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
-            .try_into()
-            .unwrap()
-    }
-
-    /// Returns the contract call stack as a Vec
-    /// of (contractID, functionName).
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol, symbol};
-    ///
-    /// pub struct Contract;
-    ///
-    /// #[contractimpl]
-    /// impl Contract {
-    ///     pub fn hello(env: Env) {
-    ///         let stack = env.get_current_call_stack();
-    ///         assert_eq!(stack.len(), 1);
-    ///
-    ///         let outer = stack.get(0).unwrap().unwrap();
-    ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
-    ///         assert_eq!(outer.1, symbol!("hello"));
-    ///     }
-    /// }
-    /// # #[cfg(feature = "testutils")]
-    /// # fn main() {
-    /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract(&contract_id, Contract);
-    /// let client = ContractClient::new(&env, &contract_id);
-    /// client.hello();
-    /// # }
-    /// # #[cfg(not(feature = "testutils"))]
-    /// # fn main() { }
-    /// ```
-    pub fn get_current_call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
-        let stack = internal::Env::get_current_call_stack(self);
-        stack.try_into_val(self).unwrap()
     }
 
     #[doc(hidden)]
