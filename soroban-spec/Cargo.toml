@@ -11,8 +11,8 @@ edition = "2021"
 rust-version = "1.64"
 
 [dependencies]
-stellar-xdr = { version = "0.0.2", features = ["next", "std"] }
-soroban-env-host = { version = "0.0.5", features = ["vm", "serde"] }
+stellar-xdr = { version = "0.0.6", features = ["next", "std"] }
+soroban-env-host = { version = "0.0.6", features = ["vm", "serde"] }
 base64 = "0.13.0"
 thiserror = "1.0.32"
 syn = {version="1.0",features=["full"]}
