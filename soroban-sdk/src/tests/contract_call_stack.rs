@@ -7,7 +7,7 @@ pub struct OuterContract;
 impl OuterContract {
     pub fn outer(env: Env, contract_id: BytesN<32>) {
         let check_call_stack = || {
-            let stack = env.get_current_call_stack();
+            let stack = env.call_stack();
             assert_eq!(stack.len(), 1);
             let outer = stack.get(0).unwrap().unwrap();
             assert_eq!(outer.0, BytesN::from_array(&env, &[1u8; 32]));
@@ -30,7 +30,7 @@ pub struct InnerContract;
 #[contractimpl]
 impl InnerContract {
     pub fn inner(env: Env) {
-        let stack = env.get_current_call_stack();
+        let stack = env.call_stack();
         assert_eq!(stack.len(), 2);
 
         let outer = stack.get(0).unwrap().unwrap();
