@@ -1,7 +1,7 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, BytesN, ConversionError, Env, IntoVal, RawVal, TryFromVal,
-    TryIntoVal, Vec,
+    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    Vec,
 };
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
@@ -33,8 +33,7 @@ fn test_conversion() {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = BytesN::from_array(&env, &[0; 32]);
-    env.register_contract(&contract_id, Contract);
+    let contract_id = env.register_contract(None, Contract);
 
     let a = Udt(5, 7);
     let b = Udt(10, 14);

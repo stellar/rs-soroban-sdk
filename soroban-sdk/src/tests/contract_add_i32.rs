@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, BytesN, Env};
+use soroban_sdk::{contractimpl, Env};
 use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 pub struct Contract;
@@ -14,8 +14,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let e = Env::default();
-    let contract_id = BytesN::from_array(&e, &[0; 32]);
-    e.register_contract(&contract_id, Contract);
+    let contract_id = e.register_contract(None, Contract);
 
     let a = 10i32;
     let b = 12i32;

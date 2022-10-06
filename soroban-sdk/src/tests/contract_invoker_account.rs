@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{accounts::Account, contractimpl, BytesN, Env};
+use soroban_sdk::{accounts::Account, contractimpl, Env};
 
 pub struct Contract;
 
@@ -17,8 +17,7 @@ impl Contract {
 #[test]
 fn test_hello() {
     let e = Env::default();
-    let contract_id = BytesN::from_array(&e, &[0; 32]);
-    e.register_contract(&contract_id, Contract);
+    let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
     let exists = client.exists();

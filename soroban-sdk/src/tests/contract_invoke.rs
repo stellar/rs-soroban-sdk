@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, xdr::ScStatusType, BytesN, Env, Status};
+use soroban_sdk::{contractimpl, xdr::ScStatusType, Env, Status};
 use stellar_xdr::ScVmErrorCode;
 
 pub struct Contract;
@@ -15,8 +15,7 @@ impl Contract {
 #[should_panic(expected = "I panicked")]
 fn test_invoke() {
     let e = Env::default();
-    let contract_id = BytesN::from_array(&e, &[0; 32]);
-    e.register_contract(&contract_id, Contract);
+    let contract_id = e.register_contract(None, Contract);
 
     ContractClient::new(&e, &contract_id).panic();
 }
@@ -27,8 +26,7 @@ fn test_invoke() {
 #[should_panic(expected = "I panicked")]
 fn test_try_invoke() {
     let e = Env::default();
-    let contract_id = BytesN::from_array(&e, &[0; 32]);
-    e.register_contract(&contract_id, Contract);
+    let contract_id = e.register_contract(None, Contract);
 
     let res = ContractClient::new(&e, &contract_id).try_panic();
     assert_eq!(

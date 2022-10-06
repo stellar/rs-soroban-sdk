@@ -278,6 +278,8 @@ use crate::testutils::{Accounts as _, ContractFunctionSet, Ledger as _};
 #[cfg(any(test, feature = "testutils"))]
 use core::fmt::Debug;
 #[cfg(any(test, feature = "testutils"))]
+use rand::RngCore;
+#[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -348,6 +350,12 @@ impl Env {
 
     /// Register a contract with the [Env] for testing.
     ///
+    /// Passing a contract ID for the first arguments registers the contract
+    /// with that contract ID. Providing `None` causes a random ID to be
+    /// assigned to the contract.
+    ///
+    /// Returns the contract ID of the registered contract.
+    ///
     /// ### Examples
     /// ```
     /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
@@ -367,11 +375,11 @@ impl Env {
     /// env.register_contract(&contract_id, HelloContract);
     /// # }
     /// ```
-    pub fn register_contract<T: ContractFunctionSet + 'static>(
+    pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: &BytesN<32>,
+        contract_id: impl Into<Option<&'a BytesN<32>>>,
         contract: T,
-    ) {
+    ) -> BytesN<32> {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
         impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
             fn call(
@@ -384,15 +392,29 @@ impl Env {
             }
         }
 
+        let contract_id = if let Some(contract_id) = contract_id.into() {
+            contract_id.clone()
+        } else {
+            let mut contract_id = [0u8; 32];
+            rand::thread_rng().fill_bytes(&mut contract_id);
+            BytesN::from_array(self, &contract_id)
+        };
         self.env_impl
             .register_test_contract(
                 contract_id.to_object(),
                 Rc::new(InternalContractFunctionSet(contract)),
             )
             .unwrap();
+        contract_id
     }
 
     /// Register a contract in a WASM file with the [Env] for testing.
+    ///
+    /// Passing a contract ID for the first arguments registers the contract
+    /// with that contract ID. Providing `None` causes a random ID to be
+    /// assigned to the contract.
+    ///
+    /// Returns the contract ID of the registered contract.
     ///
     /// ### Examples
     /// ```
@@ -406,13 +428,31 @@ impl Env {
     /// env.register_contract_wasm(&contract_id, WASM);
     /// # }
     /// ```
-    pub fn register_contract_wasm(&self, contract_id: &BytesN<32>, contract_wasm: &[u8]) {
+    pub fn register_contract_wasm<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_wasm: &[u8],
+    ) -> BytesN<32> {
+        let contract_id = if let Some(contract_id) = contract_id.into() {
+            contract_id.clone()
+        } else {
+            let mut contract_id = [0u8; 32];
+            rand::thread_rng().fill_bytes(&mut contract_id);
+            BytesN::from_array(self, &contract_id)
+        };
         self.env_impl
             .register_test_contract_wasm(contract_id.to_object(), contract_wasm)
             .unwrap();
+        contract_id
     }
 
     /// Register the built-in token contract with the [Env] for testing.
+    ///
+    /// Passing a contract ID for the first arguments registers the contract
+    /// with that contract ID. Providing `None` causes a random ID to be
+    /// assigned to the contract.
+    ///
+    /// Returns the contract ID of the registered contract.
     ///
     /// ### Examples
     /// ```
@@ -424,10 +464,21 @@ impl Env {
     /// env.register_contract_token(&contract_id);
     /// # }
     /// ```
-    pub fn register_contract_token(&self, contract_id: &BytesN<32>) {
+    pub fn register_contract_token<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a BytesN<32>>>,
+    ) -> BytesN<32> {
+        let contract_id = if let Some(contract_id) = contract_id.into() {
+            contract_id.clone()
+        } else {
+            let mut contract_id = [0u8; 32];
+            rand::thread_rng().fill_bytes(&mut contract_id);
+            BytesN::from_array(self, &contract_id)
+        };
         self.env_impl
             .register_test_contract_token(contract_id.to_object())
             .unwrap();
+        contract_id
     }
 
     #[cfg(not(target_family = "wasm"))]

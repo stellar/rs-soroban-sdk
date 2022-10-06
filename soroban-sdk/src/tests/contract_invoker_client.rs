@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, testutils::Accounts, Address, BytesN, Env};
+use soroban_sdk::{contractimpl, testutils::Accounts, Address, Env};
 
 pub struct Contract;
 
@@ -15,8 +15,7 @@ extern crate std;
 #[test]
 fn test() {
     let e = Env::default();
-    let contract_id = BytesN::from_array(&e, &[0; 32]);
-    e.register_contract(&contract_id, Contract);
+    let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
     let default = e.source_account();
