@@ -98,11 +98,11 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn to_smart(env: Env, id: Signature, nonce: BigInt, amount: i64) {
+    pub fn import(env: Env, id: Signature, nonce: BigInt, amount: i64) {
         panic!("calling into interface");
     }
 
-    pub fn to_classic(env: Env, id: Signature, nonce: BigInt, amount: i64) {
+    pub fn export(env: Env, id: Signature, nonce: BigInt, amount: i64) {
         panic!("calling into interface");
     }
 }
