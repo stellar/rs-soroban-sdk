@@ -21,6 +21,6 @@ ed25519-dalek = { version = "1.0.1", optional = true }
 rand = { version = "0.7.3", optional = true }
 
 [dev_dependencies]
-soroban-sdk = { version = "0.0.4", features = ["testutils"] }
+soroban-sdk = { version = "0.0.6", features = ["testutils"] }
 ed25519-dalek = { version = "1.0.1" }
 rand = { version = "0.7.3" }
