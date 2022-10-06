@@ -1,8 +1,9 @@
 use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, BytesN, Env};
-use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
+use stellar_xdr::{
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeBytesN, ScSpecTypeDef,
+};
 
-const ADD_CONTRACT_ID: [u8; 32] = [0; 32];
 mod addcontract {
     use crate as soroban_sdk;
     soroban_sdk::contractimport!(
@@ -14,8 +15,8 @@ pub struct Contract;
 
 #[contractimpl(crate_path = "crate")]
 impl Contract {
-    pub fn add_with(env: Env, x: u64, y: u64) -> u64 {
-        addcontract::Client::new(&env, &ADD_CONTRACT_ID).add(&x, &y)
+    pub fn add_with(env: Env, contract_id: BytesN<32>, x: u64, y: u64) -> u64 {
+        addcontract::Client::new(&env, &contract_id).add(&x, &y)
     }
 }
 
@@ -23,16 +24,14 @@ impl Contract {
 fn test_functional() {
     let e = Env::default();
 
-    let add_contract_id = BytesN::from_array(&e, &ADD_CONTRACT_ID);
-    e.register_contract_wasm(&add_contract_id, addcontract::WASM);
+    let add_contract_id = e.register_contract_wasm(None, addcontract::WASM);
 
-    let contract_id = BytesN::from_array(&e, &[1; 32]);
-    e.register_contract(&contract_id, Contract);
+    let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
     let x = 10u64;
     let y = 12u64;
-    let z = client.add_with(&x, &y);
+    let z = client.add_with(&add_contract_id, &x, &y);
     assert!(z == 22);
 }
 
@@ -42,6 +41,10 @@ fn test_spec() {
     let expect = vec![ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add_with".try_into().unwrap(),
         inputs: vec![
+            ScSpecFunctionInputV0 {
+                name: "contract_id".try_into().unwrap(),
+                type_: ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+            },
             ScSpecFunctionInputV0 {
                 name: "x".try_into().unwrap(),
                 type_: ScSpecTypeDef::U64,

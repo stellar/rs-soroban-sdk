@@ -1,7 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{
-    contractimpl, contracttype, map, symbol, BytesN, ConversionError, Env, TryFromVal,
-};
+use soroban_sdk::{contractimpl, contracttype, map, symbol, ConversionError, Env, TryFromVal};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
     ScSpecTypeUdt,
@@ -26,8 +24,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = BytesN::from_array(&env, &[0; 32]);
-    env.register_contract(&contract_id, Contract);
+    let contract_id = env.register_contract(None, Contract);
 
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };

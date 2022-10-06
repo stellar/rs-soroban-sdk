@@ -1,6 +1,6 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, symbol, vec, BytesN, ConversionError, Env, IntoVal, TryFromVal,
+    contractimpl, contracttype, symbol, vec, ConversionError, Env, IntoVal, TryFromVal,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -22,8 +22,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = BytesN::from_array(&env, &[0; 32]);
-    env.register_contract(&contract_id, Contract);
+    let contract_id = env.register_contract(None, Contract);
     let client = ContractClient::new(&env, &contract_id);
 
     let a = Udt::Aaa;
