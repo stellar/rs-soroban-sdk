@@ -51,7 +51,7 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{
-    accounts::Accounts, data::Data, deploy::Deployer, events::Events, invoker::Invoker,
+    accounts::Accounts, address::Address, data::Data, deploy::Deployer, events::Events,
     ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
 };
 
@@ -185,15 +185,15 @@ impl Env {
     }
 
     /// Get the invoker of the current executing contract.
-    pub fn invoker(&self) -> Invoker {
+    pub fn invoker(&self) -> Address {
         let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
             .try_into()
             .expect("unrecognized invoker type");
         match invoker_type {
-            InvokerType::Account => Invoker::Account(unsafe {
+            InvokerType::Account => Address::Account(unsafe {
                 AccountId::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
             }),
-            InvokerType::Contract => Invoker::Contract(unsafe {
+            InvokerType::Contract => Address::Contract(unsafe {
                 BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
             }),
         }

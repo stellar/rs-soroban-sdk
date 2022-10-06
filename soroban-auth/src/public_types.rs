@@ -1,5 +1,5 @@
 use soroban_sdk::{
-    accounts::AccountId, contracttype, Bytes, BytesN, Env, Invoker, RawVal, Symbol, Vec,
+    accounts::AccountId, contracttype, Address, Bytes, BytesN, Env, RawVal, Symbol, Vec,
 };
 
 /// An Ed25519 signature contains a single signature for the
@@ -38,8 +38,8 @@ impl Signature {
     pub fn identifier(&self, env: &Env) -> Identifier {
         match self {
             Signature::Invoker => match env.invoker() {
-                Invoker::Account(a) => Identifier::Account(a),
-                Invoker::Contract(c) => Identifier::Contract(c),
+                Address::Account(a) => Identifier::Account(a),
+                Address::Contract(c) => Identifier::Contract(c),
             },
             Signature::Ed25519(e) => Identifier::Ed25519(e.public_key.clone()),
             Signature::Account(a) => Identifier::Account(a.account_id.clone()),

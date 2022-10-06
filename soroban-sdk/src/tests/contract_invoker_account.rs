@@ -7,7 +7,7 @@ pub struct Contract;
 impl Contract {
     pub fn exists(env: Env) -> bool {
         let a = match env.invoker() {
-            soroban_sdk::Invoker::Account(a) => a,
+            soroban_sdk::Address::Account(a) => a,
             _ => panic!("must be invoked by account"),
         };
         Account::exists(&a)

@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, IntoVal, Invoker};
+use soroban_sdk::{contractimpl, symbol, vec, Address, BytesN, Env, IntoVal};
 
 pub struct Contract;
 
@@ -7,7 +7,7 @@ pub struct Contract;
 impl Contract {
     // TODO: Prevent arg overlap with generated args.
     pub fn add_with(env: Env, x: i32, y: i32, contract_id: BytesN<32>) -> i32 {
-        assert!(matches!(env.invoker(), Invoker::Account(_)));
+        assert!(matches!(env.invoker(), Address::Account(_)));
         env.invoke_contract(
             &contract_id,
             &symbol!("add"),
@@ -21,7 +21,7 @@ pub struct AddContract;
 #[contractimpl]
 impl AddContract {
     pub fn add(env: Env, a: i32, b: i32) -> i32 {
-        assert!(matches!(env.invoker(), Invoker::Contract(_)));
+        assert!(matches!(env.invoker(), Address::Contract(_)));
         a + b
     }
 }

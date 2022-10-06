@@ -30,7 +30,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     "Status" => Ok(ScSpecTypeDef::Status),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
                     "BigInt" => Ok(ScSpecTypeDef::BigInt),
-                    "Invoker" => Ok(ScSpecTypeDef::Invoker),
+                    "Address" => Ok(ScSpecTypeDef::Invoker),
                     "AccountId" => Ok(ScSpecTypeDef::AccountId),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                         name: s.try_into().map_err(|e| {
