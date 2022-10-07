@@ -146,7 +146,7 @@ pub fn derive_type_error_enum_int(
         impl #path::IntoVal<#path::Env, #path::RawVal> for #enum_ident {
             #[inline(always)]
             fn into_val(self, env: &#path::Env) -> #path::RawVal {
-                let status: Status = self.into();
+                let status: #path::Status = self.into();
                 status.into_val(env)
             }
         }
@@ -154,7 +154,7 @@ pub fn derive_type_error_enum_int(
         impl #path::IntoVal<#path::Env, #path::RawVal> for &#enum_ident {
             #[inline(always)]
             fn into_val(self, env: &#path::Env) -> #path::RawVal {
-                let status: Status = self.into();
+                let status: #path::Status = self.into();
                 status.into_val(env)
             }
         }
