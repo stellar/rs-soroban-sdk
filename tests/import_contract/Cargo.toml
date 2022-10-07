@@ -1,6 +1,6 @@
 [package]
 name = "test_import_contract"
-version = "0.0.6"
+version = "0.1.0"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"
