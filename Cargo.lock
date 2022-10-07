@@ -683,10 +683,22 @@ dependencies = [
 [[package]]
 name = "soroban-auth"
 version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ea9efe67bd3c0a55b9c8bc08f4371e45697effc2c7822862c87ce47352f64745"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
- "soroban-sdk",
+ "soroban-sdk 0.0.6",
+]
+
+[[package]]
+name = "soroban-auth"
+version = "0.0.7"
+dependencies = [
+ "ed25519-dalek",
+ "rand 0.7.3",
+ "soroban-sdk 0.0.6",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
@@ -758,6 +770,21 @@ dependencies = [
 [[package]]
 name = "soroban-sdk"
 version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a91dffef032d6f37e299cd18bf0a483e1659d8ac02ff46a77568fd92fdaf4e9f"
+dependencies = [
+ "bytes-lit",
+ "ed25519-dalek",
+ "rand 0.8.5",
+ "soroban-env-guest",
+ "soroban-env-host",
+ "soroban-sdk-macros 0.0.6",
+ "stellar-strkey",
+]
+
+[[package]]
+name = "soroban-sdk"
+version = "0.0.7"
 dependencies = [
  "bytes-lit",
  "ed25519-dalek",
@@ -765,8 +792,8 @@ dependencies = [
  "rand 0.8.5",
  "soroban-env-guest",
  "soroban-env-host",
- "soroban-sdk-macros",
- "soroban-spec",
+ "soroban-sdk-macros 0.0.7",
+ "soroban-spec 0.0.7",
  "stellar-strkey",
  "stellar-xdr",
 ]
@@ -774,6 +801,8 @@ dependencies = [
 [[package]]
 name = "soroban-sdk-macros"
 version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "263e781969896acce43c9f4c90a9f5a908631e5b1b123c7a9866e9a016ea083e"
 dependencies = [
  "darling",
  "itertools",
@@ -781,7 +810,22 @@ dependencies = [
  "quote",
  "sha2 0.10.6",
  "soroban-env-common",
- "soroban-spec",
+ "soroban-spec 0.0.6",
+ "stellar-xdr",
+ "syn",
+]
+
+[[package]]
+name = "soroban-sdk-macros"
+version = "0.0.7"
+dependencies = [
+ "darling",
+ "itertools",
+ "proc-macro2",
+ "quote",
+ "sha2 0.10.6",
+ "soroban-env-common",
+ "soroban-spec 0.0.7",
  "stellar-xdr",
  "syn",
 ]
@@ -789,6 +833,29 @@ dependencies = [
 [[package]]
 name = "soroban-spec"
 version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "297a3bc33e3217909146b3bcb3850eb6512898950ea17cd223e3e7c367ecac1d"
+dependencies = [
+ "base64",
+ "darling",
+ "itertools",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "sha2 0.10.6",
+ "soroban-env-host",
+ "stellar-xdr",
+ "syn",
+ "thiserror",
+ "wasmparser",
+]
+
+[[package]]
+name = "soroban-spec"
+version = "0.0.7"
 dependencies = [
  "base64",
  "darling",
@@ -810,12 +877,13 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-spec"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
- "soroban-auth",
- "soroban-sdk",
+ "soroban-auth 0.0.6",
+ "soroban-auth 0.0.7",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
@@ -907,72 +975,72 @@ dependencies = [
 
 [[package]]
 name = "test_add_bigint"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_empty"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_events"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_logging"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_result"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
 name = "test_udt"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
- "soroban-sdk",
+ "soroban-sdk 0.0.7",
 ]
 
 [[package]]
