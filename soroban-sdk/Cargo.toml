@@ -6,7 +6,7 @@ repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
 license = "Apache-2.0"
-version = "0.0.6"
+version = "0.1.0"
 edition = "2021"
 rust-version = "1.64"
 
@@ -15,7 +15,7 @@ crate-type = ["cdylib", "rlib"]
 doctest = false
 
 [dependencies]
-soroban-sdk-macros = { version = "0.0.6" }
+soroban-sdk-macros = { version = "0.1.0" }
 bytes-lit = "0.0.4"
 
 [target.'cfg(target_family="wasm")'.dependencies]
@@ -30,7 +30,7 @@ rand = "0.8.5"
 [dev-dependencies]
 soroban-env-host = { version = "0.0.6", features = ["vm", "hostfn_log_fmt_values", "testutils"] }
 stellar-xdr = { version = "0.0.6", features = ["next", "std"] }
-soroban-spec = "0.0.6"
+soroban-spec = "0.1.0"
 ed25519-dalek = "1.0.1"
 rand = "0.8.5"
 hex = "0.4.3"
