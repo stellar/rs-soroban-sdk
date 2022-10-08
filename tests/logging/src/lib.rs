@@ -33,6 +33,8 @@ mod test {
 
         client.hello();
 
+        env.logger().print();
+
         if cfg!(debug_assertions) {
             assert_eq!(
                 env.logger().all(),
