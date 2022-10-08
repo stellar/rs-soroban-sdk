@@ -157,4 +157,8 @@ impl testutils::Logger for Logger {
             })
             .collect::<std::vec::Vec<_>>()
     }
+
+    fn print(&self) {
+        std::println!("{}", self.all().join("\n"))
+    }
 }
