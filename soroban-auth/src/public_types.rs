@@ -75,6 +75,15 @@ impl From<&AccountId> for Identifier {
     }
 }
 
+impl From<Address> for Identifier {
+    fn from(addr: Address) -> Self {
+        match addr {
+            Address::Account(a) => Identifier::Account(a),
+            Address::Contract(c) => Identifier::Contract(c),
+        }
+    }
+}
+
 /// Signature payload v0 contains the data that must be signed to authenticate
 /// the [`Identifier`] within when invoking a contract.
 ///
