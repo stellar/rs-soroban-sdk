@@ -111,51 +111,54 @@ impl Token {
 
 /// Obtains the full spec for the Token contract
 pub const fn get_token_contract_spec_xdr() -> [u8; 2232] {
-    let entries: &[&[u8]] = &[
-        &Token::spec_xdr_allowance(),
-        &Token::spec_xdr_approve(),
-        &Token::spec_xdr_balance(),
-        &Token::spec_xdr_burn(),
-        &Token::spec_xdr_decimals(),
-        &Token::spec_xdr_export(),
-        &Token::spec_xdr_freeze(),
-        &Token::spec_xdr_import(),
-        &Token::spec_xdr_init(),
-        &Token::spec_xdr_is_frozen(),
-        &Token::spec_xdr_mint(),
-        &Token::spec_xdr_name(),
-        &Token::spec_xdr_nonce(),
-        &Token::spec_xdr_set_admin(),
-        &Token::spec_xdr_symbol(),
-        &Token::spec_xdr_unfreeze(),
-        &Token::spec_xdr_xfer(),
-        &Token::spec_xdr_xfer_from(),
-        &TokenMetadata::spec_xdr(),
-        &soroban_auth::Identifier::spec_xdr(),
-        &soroban_auth::Signature::spec_xdr(),
-        &soroban_auth::Ed25519Signature::spec_xdr(),
-        &soroban_auth::AccountSignatures::spec_xdr(),
-        &soroban_auth::SignaturePayload::spec_xdr(),
-        &soroban_auth::SignaturePayloadV0::spec_xdr(),
-    ];
+    const spec_xdr: [u8; 2232] = {
+        let entries: &[&[u8]] = &[
+            &Token::spec_xdr_allowance(),
+            &Token::spec_xdr_approve(),
+            &Token::spec_xdr_balance(),
+            &Token::spec_xdr_burn(),
+            &Token::spec_xdr_decimals(),
+            &Token::spec_xdr_export(),
+            &Token::spec_xdr_freeze(),
+            &Token::spec_xdr_import(),
+            &Token::spec_xdr_init(),
+            &Token::spec_xdr_is_frozen(),
+            &Token::spec_xdr_mint(),
+            &Token::spec_xdr_name(),
+            &Token::spec_xdr_nonce(),
+            &Token::spec_xdr_set_admin(),
+            &Token::spec_xdr_symbol(),
+            &Token::spec_xdr_unfreeze(),
+            &Token::spec_xdr_xfer(),
+            &Token::spec_xdr_xfer_from(),
+            &TokenMetadata::spec_xdr(),
+            &soroban_auth::Identifier::spec_xdr(),
+            &soroban_auth::Signature::spec_xdr(),
+            &soroban_auth::Ed25519Signature::spec_xdr(),
+            &soroban_auth::AccountSignatures::spec_xdr(),
+            &soroban_auth::SignaturePayload::spec_xdr(),
+            &soroban_auth::SignaturePayloadV0::spec_xdr(),
+        ];
 
-    let mut spec_xdr = [0u8; 2232];
-    let mut next: usize = 0;
+        let mut spec_xdr = [0u8; 2232];
+        let mut next: usize = 0;
 
-    let mut j: usize = 0;
-    while j < entries.len() {
-        let entry = entries[j];
-        let mut k: usize = 0;
-        while k < entry.len() {
-            spec_xdr[next] = entry[k];
-            next += 1;
-            k += 1;
+        let mut j: usize = 0;
+        while j < entries.len() {
+            let entry = entries[j];
+            let mut k: usize = 0;
+            while k < entry.len() {
+                spec_xdr[next] = entry[k];
+                next += 1;
+                k += 1;
+            }
+            j += 1;
         }
-        j += 1;
-    }
-    if next != spec_xdr.len() {
-        panic!("the lenth of spec_xdr is too large")
-    }
+        if next != spec_xdr.len() {
+            panic!("the lenth of spec_xdr is too large")
+        }
 
+        spec_xdr
+    };
     spec_xdr
 }
