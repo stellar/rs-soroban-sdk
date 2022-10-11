@@ -84,6 +84,12 @@ impl From<Address> for Identifier {
     }
 }
 
+impl From<&Address> for Identifier {
+    fn from(addr: &Address) -> Self {
+        Identifier::from(addr.clone())
+    }
+}
+
 /// Signature payload v0 contains the data that must be signed to authenticate
 /// the [`Identifier`] within when invoking a contract.
 ///
