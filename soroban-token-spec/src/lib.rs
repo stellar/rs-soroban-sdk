@@ -143,16 +143,16 @@ pub const fn get_token_contract_spec_xdr() -> [u8; 2232] {
         let mut spec_xdr = [0u8; 2232];
         let mut next: usize = 0;
 
-        let mut j: usize = 0;
-        while j < entries.len() {
-            let entry = entries[j];
-            let mut k: usize = 0;
-            while k < entry.len() {
-                spec_xdr[next] = entry[k];
+        let mut i: usize = 0;
+        while i < entries.len() {
+            let entry = entries[i];
+            let mut j: usize = 0;
+            while j < entry.len() {
+                spec_xdr[next] = entry[j];
                 next += 1;
-                k += 1;
+                j += 1;
             }
-            j += 1;
+            i += 1;
         }
         if next != spec_xdr.len() {
             panic!("the lenth of spec_xdr is too large")
