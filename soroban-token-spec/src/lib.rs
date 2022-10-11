@@ -1,5 +1,4 @@
 #![no_std]
-
 use concat_arrays::concat_arrays;
 use soroban_auth::{Identifier, Signature};
 use soroban_sdk::{contractimpl, contracttype, BigInt, Bytes, Env};
