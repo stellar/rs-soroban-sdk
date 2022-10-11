@@ -111,7 +111,7 @@ impl Token {
 
 /// Obtains the full spec for the Token contract
 pub const fn get_token_contract_spec_xdr() -> [u8; 2232] {
-    const spec_xdr: [u8; 2232] = {
+    const SPEC_XDR: [u8; 2232] = {
         let entries: &[&[u8]] = &[
             &Token::spec_xdr_allowance(),
             &Token::spec_xdr_approve(),
@@ -160,5 +160,5 @@ pub const fn get_token_contract_spec_xdr() -> [u8; 2232] {
 
         spec_xdr
     };
-    spec_xdr
+    SPEC_XDR
 }
