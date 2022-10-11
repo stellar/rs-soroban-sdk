@@ -154,6 +154,7 @@ pub const fn get_token_contract_spec_xdr() -> [u8; 2232] {
             }
             i += 1;
         }
+
         if next != spec_xdr.len() {
             panic!("the lenth of spec_xdr is too large")
         }
