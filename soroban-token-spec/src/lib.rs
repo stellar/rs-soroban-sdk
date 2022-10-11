@@ -1,4 +1,5 @@
 #![no_std]
+
 use soroban_auth::{Identifier, Signature};
 use soroban_sdk::{contractimpl, contracttype, BigInt, Bytes, Env};
 
@@ -105,4 +106,53 @@ impl Token {
     pub fn export(env: Env, id: Signature, nonce: BigInt, amount: i64) {
         panic!("calling into interface");
     }
+}
+
+/// Returns the XDR spec for the Token contract.
+#[doc(hidden)]
+pub const fn spec_xdr() -> [u8; 2037] {
+    let input: &[&[u8]] = &[
+        &Token::spec_xdr_allowance(),
+        &Token::spec_xdr_approve(),
+        &Token::spec_xdr_balance(),
+        &Token::spec_xdr_burn(),
+        &Token::spec_xdr_decimals(),
+        &Token::spec_xdr_export(),
+        &Token::spec_xdr_freeze(),
+        &Token::spec_xdr_import(),
+        &Token::spec_xdr_init(),
+        &Token::spec_xdr_is_frozen(),
+        &Token::spec_xdr_mint(),
+        &Token::spec_xdr_name(),
+        &Token::spec_xdr_nonce(),
+        &Token::spec_xdr_set_admin(),
+        &Token::spec_xdr_symbol(),
+        &Token::spec_xdr_unfreeze(),
+        &Token::spec_xdr_xfer(),
+        &Token::spec_xdr_xfer_from(),
+        &TokenMetadata::spec_xdr(),
+        &soroban_auth::Identifier::spec_xdr(),
+        &soroban_auth::Signature::spec_xdr(),
+        &soroban_auth::Ed25519Signature::spec_xdr(),
+        &soroban_auth::AccountSignatures::spec_xdr(),
+    ];
+
+    let mut output = [0u8; 2037];
+    let mut input_i = 0;
+    let mut output_i = 0;
+    while input_i < input.len() {
+        let subinput = input[input_i];
+        let mut subinput_i = 0;
+        while subinput_i < subinput.len() {
+            output[output_i] = subinput[subinput_i];
+            output_i += 1;
+            subinput_i += 1;
+        }
+        input_i += 1;
+    }
+    // Unfortunately we cannot call assert_eq!() in a const function
+    if output_i != output.len() - 1 {
+        panic!("unexpected output length",);
+    }
+    output
 }
