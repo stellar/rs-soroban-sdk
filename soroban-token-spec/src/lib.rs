@@ -1,7 +1,5 @@
 #![no_std]
 extern crate alloc;
-
-use alloc::vec::Vec;
 use soroban_auth::{Identifier, Signature};
 use soroban_sdk::{contractimpl, contracttype, BigInt, Bytes, Env};
 
@@ -111,7 +109,7 @@ impl Token {
 }
 
 /// Obtains the full spec for the Token contract
-pub fn get_token_contract_spec_xdr() -> Vec<u8> {
+pub fn get_token_contract_spec_xdr() -> alloc::vec::Vec<u8> {
     // TODO: We should probably update the contractimpl macro to automatically generate this as a method
     [
         Token::spec_xdr_allowance().as_slice(),
