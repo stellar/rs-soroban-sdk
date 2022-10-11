@@ -109,7 +109,7 @@ impl Token {
 }
 
 /// Obtains the full spec for the Token contract
-pub const fn get_token_contract_spec_xdr() -> [u8; 2037] {
+pub const fn spec_xdr() -> [u8; 2037] {
     let input: &[&[u8]] = &[
         &Token::spec_xdr_allowance(),
         &Token::spec_xdr_approve(),
