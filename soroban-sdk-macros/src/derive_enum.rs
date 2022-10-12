@@ -5,7 +5,7 @@ use soroban_env_common::Symbol;
 use syn::{spanned::Spanned, DataEnum, Error, Ident, Path};
 
 use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, VecM, WriteXdr,
+    ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, StringM, WriteXdr,
 };
 
 use crate::map_type::map_type;
@@ -55,7 +55,7 @@ pub fn derive_type_enum(
             };
             if let Some(f) = field {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    name: name.try_into().unwrap_or_else(|_| VecM::default()),
+                    name: name.try_into().unwrap_or_else(|_| StringM::default()),
                     type_: Some(match map_type(&f.ty) {
                         Ok(t) => t,
                         Err(e) => {
@@ -86,7 +86,7 @@ pub fn derive_type_enum(
                 (spec_case, discriminant_const, try_from, into, try_from_xdr, into_xdr)
             } else {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    name: name.try_into().unwrap_or_else(|_| VecM::default()),
+                    name: name.try_into().unwrap_or_else(|_| StringM::default()),
                     type_: None,
                 };
                 let try_from = quote! {
