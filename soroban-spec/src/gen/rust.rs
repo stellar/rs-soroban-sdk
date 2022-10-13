@@ -85,9 +85,6 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
         #[soroban_sdk::contractclient(name = "Client")]
         #trait_
 
-        #[deprecated(note = "use Client instead of ContractClient as it has been renamed")]
-        pub type ContractClient = Client;
-
         #(#structs)*
         #(#unions)*
         #(#enums)*
@@ -135,8 +132,6 @@ mod test {
 pub trait Contract {
     fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
 }
-#[deprecated(note = "use Client instead of ContractClient as it has been renamed")]
-pub type ContractClient = Client;
 #[soroban_sdk::contracttype(export = false)]
 pub struct UdtTuple(pub i64, pub soroban_sdk::Vec<i64>);
 #[soroban_sdk::contracttype(export = false)]
