@@ -127,9 +127,3 @@ pub fn verify(env: &Env, sig: &Signature, name: Symbol, args: impl IntoVal<Env, 
         Signature::Account(a) => verify_account_signatures(env, &a, name, args.into_val(env)),
     }
 }
-
-#[doc(hidden)]
-#[deprecated(note = "use soroban_auth::verify(...)")]
-pub fn check_auth(env: &Env, sig: &Signature, name: Symbol, args: impl IntoVal<Env, Vec<RawVal>>) {
-    verify(env, sig, name, args)
-}

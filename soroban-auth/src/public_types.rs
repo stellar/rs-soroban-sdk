@@ -45,12 +45,6 @@ impl Signature {
             Signature::Account(a) => Identifier::Account(a.account_id.clone()),
         }
     }
-
-    #[doc(hidden)]
-    #[deprecated(note = "use Signature::identifier(...)")]
-    pub fn get_identifier(&self, env: &Env) -> Identifier {
-        self.identifier(env)
-    }
 }
 
 /// Identifier is an identifier for a authenticating party. Each [`Signature`]
