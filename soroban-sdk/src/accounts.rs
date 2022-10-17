@@ -466,7 +466,6 @@ impl testutils::Accounts for Accounts {
 
 #[cfg(any(test, feature = "testutils"))]
 impl Accounts {
-    #[cfg(any(test, feature = "testutils"))]
     fn default_account_ledger_entry(&self, id: &xdr::AccountId) -> xdr::AccountEntry {
         xdr::AccountEntry {
             account_id: id.clone(),
