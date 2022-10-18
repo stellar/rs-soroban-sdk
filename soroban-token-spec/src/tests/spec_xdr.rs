@@ -1,14 +1,15 @@
-use soroban_sdk::xdr::{ReadXdr, ScSpecEntry};
+use soroban_sdk::xdr::{Error, ReadXdr, ScSpecEntry};
 
 use crate::spec_xdr;
 
 extern crate std;
 
 #[test]
-fn test_spec_xdr() {
+fn test_spec_xdr() -> Result<(), Error> {
     let xdr = spec_xdr();
     let mut cursor = std::io::Cursor::new(xdr);
-    for (i, spec_entry) in ScSpecEntry::read_xdr_iter(&mut cursor).enumerate() {
-        std::println!("{}: {:?}", i, spec_entry);
+    for spec_entry in ScSpecEntry::read_xdr_iter(&mut cursor) {
+        spec_entry?;
     }
+    Ok(())
 }
