@@ -110,7 +110,7 @@ impl Token {
 
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]
-pub const fn spec_xdr() -> [u8; 2037] {
+pub const fn spec_xdr() -> [u8; 2036] {
     let input: &[&[u8]] = &[
         &Token::spec_xdr_allowance(),
         &Token::spec_xdr_approve(),
@@ -137,7 +137,8 @@ pub const fn spec_xdr() -> [u8; 2037] {
         &soroban_auth::AccountSignatures::spec_xdr(),
     ];
 
-    let mut output = [0u8; 2037];
+    // Concatenate all XDR for each item that makes up the token spec.
+    let mut output = [0u8; 2036];
     let mut input_i = 0;
     let mut output_i = 0;
     while input_i < input.len() {
@@ -150,9 +151,12 @@ pub const fn spec_xdr() -> [u8; 2037] {
         }
         input_i += 1;
     }
-    // Unfortunately we cannot call assert_eq!() in a const function
-    if output_i != output.len() - 1 {
+
+    // Check that the numbers of bytes written is equal to the number of bytes
+    // expected in the output.
+    if output_i != output.len() {
         panic!("unexpected output length",);
     }
+
     output
 }
