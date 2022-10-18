@@ -137,6 +137,7 @@ pub const fn spec_xdr() -> [u8; 2036] {
         &soroban_auth::AccountSignatures::spec_xdr(),
     ];
 
+    // Concatenate all XDR for each item that makes up the token spec.
     let mut output = [0u8; 2036];
     let mut input_i = 0;
     let mut output_i = 0;
@@ -150,9 +151,12 @@ pub const fn spec_xdr() -> [u8; 2036] {
         }
         input_i += 1;
     }
-    // Unfortunately we cannot call assert_eq!() in a const function
+
+    // Check that the numbers of bytes written is equal to the number of bytes
+    // expected in the output.
     if output_i != output.len() {
         panic!("unexpected output length",);
     }
+
     output
 }
