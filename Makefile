@@ -16,7 +16,7 @@ build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
 
 build-optimized: fmt
-	CARGO_TARGET_DIR=target-tiny cargo +nightly hack build  --target wasm32-unknown-unknown --release \
+	cargo +nightly hack build  --target wasm32-unknown-unknown --release \
 		--workspace \
 		--exclude soroban-spec \
 		--exclude soroban-sdk \
@@ -24,7 +24,7 @@ build-optimized: fmt
 		--exclude soroban-auth \
 		-Z build-std=std,panic_abort \
 		-Z build-std-features=panic_immediate_abort
-	cd target-tiny/wasm32-unknown-unknown/release/ && \
+	cd target/wasm32-unknown-unknown/release/ && \
 		for i in *.wasm ; do \
 			wasm-opt -Oz "$$i" -o "$$i.tmp" && mv "$$i.tmp" "$$i"; \
 			ls -l "$$i"; \
@@ -45,7 +45,6 @@ fmt:
 
 clean:
 	cargo clean
-	CARGO_TARGET_DIR=target-tiny cargo +nightly clean
 
 bump-version:
 	cargo workspaces version --all --force '*' --no-git-commit --yes custom $(VERSION)
