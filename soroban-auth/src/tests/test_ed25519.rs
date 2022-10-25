@@ -2,25 +2,31 @@ extern crate std;
 
 use soroban_sdk::{
     contractimpl, symbol,
-    testutils::{Ledger, LedgerInfo},
+    testutils::{ed25519::Sign, Ledger, LedgerInfo},
     BytesN, Env,
 };
 
 use crate::{
-    testutils::ed25519::{generate, sign},
-    verify, Signature,
+    testutils::ed25519::{generate, sign, Identifier},
+    verify, Signature, SignaturePayload,
 };
 
 pub struct ExampleContract;
 
 #[contractimpl]
 impl ExampleContract {
-    pub fn examplefn(env: Env, sig: Signature, arg1: i32, arg2: i32) {
+    pub fn examplefn(env: Env, sig1: Signature, sig2: Signature, arg1: i32, arg2: i32) {
         verify(
             &env,
-            &sig,
+            &sig1,
             symbol!("examplefn"),
-            (&sig.identifier(&env), arg1, arg2),
+            (&sig1.identifier(&env), &sig2.identifier(&env), arg1, arg2),
+        );
+        verify(
+            &env,
+            &sig1,
+            symbol!("examplefn"),
+            (&sig1.identifier(&env), &sig2.identifier(&env), arg1, arg2),
         );
     }
 }
@@ -44,17 +50,56 @@ fn test() {
     std::println!("contract id: {:?}", contract_id);
     std::println!("name: {:?}", symbol!("examplefn"));
 
-    let (id, signer) = generate(&env);
-    std::println!("signer: {:?}", signer);
-    std::println!("id: {:?}", id);
-    let sig = sign(
-        &env,
-        &signer,
-        &contract_id,
-        symbol!("examplefn"),
-        (&id, &1, &2),
-    );
-    std::println!("signature: {:?}", sig);
+    let (id1, signer1) = generate(&env);
+    std::println!("id1: {:?}", id1);
+    std::println!("signer1: {:?}", signer1);
 
-    client.examplefn(&sig, &1, &2);
+    let (id2, signer2) = generate(&env);
+    std::println!("id2: {:?}", id2);
+    std::println!("signer2: {:?}", signer2);
+
+    let (sig1, sig2) = both_sign(&env, &contract_id, signer1, signer2, 1, 2);
+    std::println!("signature1: {:?}", sig1);
+    std::println!("signature2: {:?}", sig2);
+
+    client.examplefn(&sig1, &sig2, &1, &2);
+}
+
+fn both_sign<S>(
+    env: &Env,
+    contract_id: &BytesN<32>,
+    signer1: S,
+    signer2: S,
+    arg1: i32,
+    arg2: i32,
+) -> (Signature, Signature)
+where
+    S: Identifier + Sign<SignaturePayload, Signature = [u8; 64]>,
+{
+    (
+        sign(
+            &env,
+            &signer1,
+            &contract_id,
+            symbol!("examplefn"),
+            (
+                &signer1.identifier(env),
+                &signer2.identifier(env),
+                &arg1,
+                &arg2,
+            ),
+        ),
+        sign(
+            &env,
+            &signer2,
+            &contract_id,
+            symbol!("examplefn"),
+            (
+                &signer1.identifier(env),
+                &signer2.identifier(env),
+                &arg1,
+                &arg2,
+            ),
+        ),
+    )
 }
