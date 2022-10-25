@@ -14,6 +14,7 @@
 //! provide their own mechanism suitable for replay prevention that prevents
 //! contract invocations to be replayable if it is important they are not.**
 #![no_std]
+#![cfg_attr(feature = "docs", feature(doc_cfg))]
 
 mod tests;
 
