@@ -10,8 +10,12 @@ version = "0.1.1"
 edition = "2021"
 rust-version = "1.64"
 
+[lib]
+doctest = false
+
 [features]
 testutils = ["soroban-sdk/testutils", "dep:ed25519-dalek", "dep:rand"]
+docs = []
 
 [dependencies]
 soroban-sdk = "0.1.0"
@@ -24,3 +28,6 @@ rand = { version = "0.7.3", optional = true }
 soroban-sdk = { version = "0.1.0", features = ["testutils"] }
 ed25519-dalek = { version = "1.0.1" }
 rand = { version = "0.7.3" }
+
+[package.metadata.docs.rs]
+all-features = true
