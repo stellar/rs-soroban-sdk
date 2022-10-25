@@ -469,7 +469,7 @@ impl Accounts {
     fn default_account_ledger_entry(&self, id: &xdr::AccountId) -> xdr::AccountEntry {
         xdr::AccountEntry {
             account_id: id.clone(),
-            balance: 10_000_0000000,
+            balance: 0,
             flags: 0,
             home_domain: xdr::StringM::default(),
             inflation_dest: None,
