@@ -25,8 +25,7 @@
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //!     let env = Env::default();
-//!     let contract_id = BytesN::from_array(&env, &[0; 32]);
-//!     env.register_contract(&contract_id, HelloContract);
+//!     let contract_id = env.register_contract(None, HelloContract);
 //!     let client = HelloContractClient::new(&env, &contract_id);
 //!
 //!     let words = client.hello(&symbol!("Dev"));

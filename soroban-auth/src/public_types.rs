@@ -45,12 +45,6 @@ impl Signature {
             Signature::Account(a) => Identifier::Account(a.account_id.clone()),
         }
     }
-
-    #[doc(hidden)]
-    #[deprecated(note = "use Signature::identifier(...)")]
-    pub fn get_identifier(&self, env: &Env) -> Identifier {
-        self.identifier(env)
-    }
 }
 
 /// Identifier is an identifier for a authenticating party. Each [`Signature`]
@@ -72,6 +66,21 @@ impl From<AccountId> for Identifier {
 impl From<&AccountId> for Identifier {
     fn from(v: &AccountId) -> Self {
         Identifier::Account(v.clone())
+    }
+}
+
+impl From<Address> for Identifier {
+    fn from(addr: Address) -> Self {
+        match addr {
+            Address::Account(a) => Identifier::Account(a),
+            Address::Contract(c) => Identifier::Contract(c),
+        }
+    }
+}
+
+impl From<&Address> for Identifier {
+    fn from(addr: &Address) -> Self {
+        Identifier::from(addr.clone())
     }
 }
 

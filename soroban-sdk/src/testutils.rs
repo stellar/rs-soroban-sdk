@@ -41,6 +41,8 @@ pub trait Events {
 pub trait Logger {
     /// Returns all debug events that have been logged.
     fn all(&self) -> std::vec::Vec<String>;
+    /// Prints all debug events to stdout.
+    fn print(&self);
 }
 
 /// Test utilities for [`Accounts`][crate::accounts::Accounts].

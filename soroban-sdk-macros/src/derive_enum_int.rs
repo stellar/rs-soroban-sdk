@@ -1,10 +1,10 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::ScSpecUdtEnumV0;
+use stellar_xdr::{ScSpecUdtEnumV0, StringM};
 use syn::{spanned::Spanned, DataEnum, Error, ExprLit, Ident, Lit, Path};
 
-use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, VecM, WriteXdr};
+use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -44,7 +44,7 @@ pub fn derive_type_enum_int(
                 0
             };
             let spec_case = ScSpecUdtEnumCaseV0 {
-                name: name.try_into().unwrap_or_else(|_| VecM::default()),
+                name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 value: discriminant,
             };
             let try_from = quote! { #discriminant => Self::#ident };

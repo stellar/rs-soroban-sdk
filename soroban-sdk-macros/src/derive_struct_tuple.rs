@@ -4,7 +4,7 @@ use quote::{format_ident, quote};
 use syn::{spanned::Spanned, DataStruct, Error, Ident, Path};
 
 use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, VecM, WriteXdr,
+    ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
 use crate::map_type::map_type;
@@ -37,7 +37,7 @@ pub fn derive_type_struct_tuple(
             let ident = Literal::usize_unsuffixed(i);
             let name = format!("{}", i);
             let spec_field = ScSpecUdtStructFieldV0 {
-                name: name.try_into().unwrap_or_else(|_| VecM::default()),
+                name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
                     Err(e) => {

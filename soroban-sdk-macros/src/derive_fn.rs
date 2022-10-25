@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, VecM, WriteXdr,
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, StringM, VecM, WriteXdr,
 };
 use syn::{
     punctuated::Punctuated,
@@ -66,7 +66,7 @@ pub fn derive_fn(
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
                             errors.push(Error::new(ident.span(), format!("argument name too long, max length {} characters", MAX)));
-                            VecM::<_, MAX>::default()
+                            StringM::<MAX>::default()
                         });
                         ScSpecFunctionInputV0{ name, type_ }
                     },
@@ -148,7 +148,7 @@ pub fn derive_fn(
                     MAX,
                 ),
             ));
-            VecM::<_, MAX>::default()
+            StringM::<MAX>::default()
         }),
         inputs: spec_args.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;

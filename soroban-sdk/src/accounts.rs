@@ -466,13 +466,12 @@ impl testutils::Accounts for Accounts {
 
 #[cfg(any(test, feature = "testutils"))]
 impl Accounts {
-    #[cfg(any(test, feature = "testutils"))]
     fn default_account_ledger_entry(&self, id: &xdr::AccountId) -> xdr::AccountEntry {
         xdr::AccountEntry {
             account_id: id.clone(),
             balance: 0,
             flags: 0,
-            home_domain: xdr::VecM::default(),
+            home_domain: xdr::StringM::default(),
             inflation_dest: None,
             num_sub_entries: 0,
             seq_num: xdr::SequenceNumber(0),
