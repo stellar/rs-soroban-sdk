@@ -11,7 +11,7 @@ impl Contract {
 }
 
 #[test]
-#[should_panic(expected = "Status(UnknownError(0)")]
+#[should_panic(expected = "I panicked")]
 fn test_invoke() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
@@ -20,8 +20,8 @@ fn test_invoke() {
 }
 
 #[test]
-#[should_panic(expected = "I panicked")]
-fn test_invoke_retains_panic_string_in_message() {
+#[should_panic(expected = "Status(UnknownError(0)")]
+fn test_invoke_expect_status() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
 
