@@ -47,7 +47,10 @@ jobs:
     - run: rustup update
     - run: rustup target add ${{ matrix.sys.target }}
     - run: rustup target add wasm32-unknown-unknown
-    - run: cargo install --target-dir ~/.cargo/target --locked --version 0.5.16 cargo-hack
+    - uses: stellar/binaries@v12
+      with:
+        name: cargo-hack
+        version: 0.5.16
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
