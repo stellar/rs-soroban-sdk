@@ -20,6 +20,15 @@ fn test_invoke() {
 }
 
 #[test]
+#[should_panic(expected = "I panicked")]
+fn test_invoke_retains_panic_string_in_message() {
+    let e = Env::default();
+    let contract_id = e.register_contract(None, Contract);
+
+    ContractClient::new(&e, &contract_id).panic();
+}
+
+#[test]
 fn test_try_invoke() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
