@@ -615,12 +615,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "parity-wasm"
-version = "0.42.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be5e13c266502aadf83426d87d81a0f5d1ef45b8027f5a471c360abfe4bfae92"
-
-[[package]]
 name = "ppv-lite86"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -875,7 +869,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.6"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4f2f3a2d#4f2f3a2da58dd869b559f41311815b20d1552ce5"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=3a21379#3a213796684769271129b89b557976b4538a904e"
 dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
@@ -886,7 +880,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.6"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4f2f3a2d#4f2f3a2da58dd869b559f41311815b20d1552ce5"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=3a21379#3a213796684769271129b89b557976b4538a904e"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -895,7 +889,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.6"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4f2f3a2d#4f2f3a2da58dd869b559f41311815b20d1552ce5"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=3a21379#3a213796684769271129b89b557976b4538a904e"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -906,7 +900,6 @@ dependencies = [
  "num-bigint",
  "num-integer",
  "num-traits",
- "parity-wasm",
  "sha2 0.10.6",
  "soroban-env-common",
  "soroban-native-sdk-macros",
@@ -918,7 +911,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.6"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4f2f3a2d#4f2f3a2da58dd869b559f41311815b20d1552ce5"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=3a21379#3a213796684769271129b89b557976b4538a904e"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -930,7 +923,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.6"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4f2f3a2d#4f2f3a2da58dd869b559f41311815b20d1552ce5"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=3a21379#3a213796684769271129b89b557976b4538a904e"
 dependencies = [
  "itertools",
  "proc-macro2",

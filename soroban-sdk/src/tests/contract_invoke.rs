@@ -1,6 +1,5 @@
 use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, xdr::ScStatusType, Env, Status};
-use stellar_xdr::ScVmErrorCode;
 
 pub struct Contract;
 
@@ -12,7 +11,7 @@ impl Contract {
 }
 
 #[test]
-#[should_panic(expected = "I panicked")]
+#[should_panic]
 fn test_invoke() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
@@ -21,9 +20,6 @@ fn test_invoke() {
 }
 
 #[test]
-// TODO: Remove the should_panic when this issue is fixed:
-// https://github.com/stellar/rs-soroban-env/issues/430.
-#[should_panic(expected = "I panicked")]
 fn test_try_invoke() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
@@ -32,8 +28,8 @@ fn test_try_invoke() {
     assert_eq!(
         res,
         Err(Ok(Status::from_type_and_code(
-            ScStatusType::VmError,
-            ScVmErrorCode::Function as u32,
+            ScStatusType::UnknownError,
+            0,
         )))
     );
 }
