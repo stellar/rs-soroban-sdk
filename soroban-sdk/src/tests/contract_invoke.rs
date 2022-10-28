@@ -11,7 +11,7 @@ impl Contract {
 }
 
 #[test]
-#[should_panic]
+#[should_panic(expected = "Status(UnknownError(0)")]
 fn test_invoke() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
