@@ -8,7 +8,7 @@ publish = false
 rust-version = "1.64"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
 doctest = false
 
 [dependencies]
