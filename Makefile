@@ -14,6 +14,10 @@ test: fmt build
 
 build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
+	cd target/wasm32-unknown-unknown/release/ && \
+		for i in *.wasm ; do \
+			ls -l "$$i"; \
+		done
 
 build-optimized: fmt
 	cargo +nightly hack build  --target wasm32-unknown-unknown --release \
