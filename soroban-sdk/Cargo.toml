@@ -11,7 +11,6 @@ edition = "2021"
 rust-version = "1.64"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
 doctest = false
 
 [dependencies]
