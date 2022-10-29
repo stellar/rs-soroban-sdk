@@ -274,8 +274,6 @@ impl Env {
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{Accounts as _, ContractFunctionSet, Ledger as _};
 #[cfg(any(test, feature = "testutils"))]
-use core::fmt::Debug;
-#[cfg(any(test, feature = "testutils"))]
 use rand::RngCore;
 #[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
@@ -477,91 +475,6 @@ impl Env {
             .register_test_contract_token(contract_id.to_object())
             .unwrap();
         contract_id
-    }
-
-    #[cfg(not(target_family = "wasm"))]
-    fn clone_self_and_catch_panic<F, T>(&self, f: F) -> (Env, std::thread::Result<T>)
-    where
-        F: FnOnce(Env) -> T,
-    {
-        let hook = std::panic::take_hook();
-        std::panic::set_hook(Box::new(|_| ()));
-        let deep_clone = self.deep_clone();
-        let res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(deep_clone.clone())));
-        std::panic::set_hook(hook);
-        (deep_clone, res)
-    }
-
-    #[cfg(not(target_family = "wasm"))]
-    pub fn assert_panic_with_string<F, T: Debug>(&self, s: &str, f: F)
-    where
-        F: FnOnce(Env) -> T,
-    {
-        match self.clone_self_and_catch_panic(f) {
-            (_, Ok(v)) => panic!("inner function expected to panic, but returned {:?}", v),
-            (_, Err(e)) => match e.downcast_ref::<String>() {
-                None => match e.downcast_ref::<&str>() {
-                    Some(ps) => assert_eq!(*ps, s),
-                    None => panic!(
-                        "inner function panicked with unknown type when \"{}\" expected",
-                        s
-                    ),
-                },
-                Some(ps) => assert_eq!(*ps, s),
-            },
-        }
-    }
-
-    #[cfg(not(target_family = "wasm"))]
-    pub fn assert_panic_with_status<F, T: Debug>(&self, status: Status, f: F)
-    where
-        F: FnOnce(Env) -> T,
-    {
-        use soroban_env_host::events::{DebugArg, HostEvent};
-
-        match self.clone_self_and_catch_panic(f) {
-            (_, Ok(v)) => panic!("inner function expected to panic, but returned {:?}", v),
-            (clone, Err(e)) => {
-                // Allow if there was a panic literally _carrying_ the status requested.
-                if let Some(st) = e.downcast_ref::<Status>() {
-                    assert_eq!(*st, status);
-                    return;
-                }
-                // Allow if the last debug log entry contains the status of requested.
-                if let Some(events) = clone.env_impl.get_events().ok().map(|e| e.0) {
-                    if let Some(HostEvent::Debug(dbg)) = events.last() {
-                        for arg in dbg.args.iter() {
-                            if let DebugArg::Val(v) = arg {
-                                if let Ok(st) = TryInto::<Status>::try_into(*v) {
-                                    if st == status {
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Otherwise we're going to fail but we'll try to produce a useful diagnostic if
-                // the panic was a string, which many are.
-                if let Some(s) = e.downcast_ref::<String>() {
-                    panic!(
-                        "inner function panicked with \"{}\" when status {:?} expected",
-                        s, status
-                    );
-                }
-                if let Some(s) = e.downcast_ref::<&str>() {
-                    panic!(
-                        "inner function panicked with \"{}\" when status {:?} expected",
-                        s, status
-                    );
-                }
-                panic!(
-                    "inner function panicked with unknown type when status {:?} expected",
-                    status
-                );
-            }
-        }
     }
 }
 
