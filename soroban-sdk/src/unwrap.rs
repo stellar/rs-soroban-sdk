@@ -6,6 +6,7 @@ pub trait UnwrapOptimized {
 impl<T> UnwrapOptimized for Option<T> {
     type Output = T;
 
+    #[inline(always)]
     fn unwrap_optimized(self) -> Self::Output {
         if cfg!(target_family = "wasm") {
             match self {
@@ -21,6 +22,7 @@ impl<T> UnwrapOptimized for Option<T> {
 impl<T, E: core::fmt::Debug> UnwrapOptimized for Result<T, E> {
     type Output = T;
 
+    #[inline(always)]
     fn unwrap_optimized(self) -> Self::Output {
         if cfg!(target_family = "wasm") {
             match self {
