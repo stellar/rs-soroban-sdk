@@ -92,10 +92,10 @@ pub fn derive_fn(
                     ty: Box::new(Type::Verbatim(quote! { soroban_sdk::RawVal })),
                 });
                 let call = quote! {
-                    <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
+                    <_ as soroban_sdk::unwrap::UnwrapOrPanic>::unwrap_or_panic(<_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
                         &env,
                         #ident
-                    ).unwrap()
+                    ))
                 };
                 (spec, arg, call)
             }
