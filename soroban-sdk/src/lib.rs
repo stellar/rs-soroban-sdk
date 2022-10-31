@@ -129,7 +129,30 @@ pub use soroban_sdk_macros::symbol;
 macro_rules! panic_error {
     ($env:expr, $error:expr) => {{
         $env.panic_error($error);
-        unreachable!()
+        unreachable!();
+    }};
+}
+
+/// Assert a condition and panic with the given error if it is false.
+///
+/// The first argument in the list must be a reference to an [Env].
+///
+/// The second argument is an expression that if resolves to `false` will cause
+/// a panic with the error in the third argument.
+///
+/// The third argument is an error value. The error value will be given to any
+/// calling contract.
+///
+/// Equivalent to `assert!`, but with an error value instead of a string. The
+/// error value will be given to any calling contract.
+///
+/// See [`contracterror`] for how to define an error type.
+#[macro_export]
+macro_rules! assert_error {
+    ($env:expr, $cond:expr, $error:expr) => {{
+        if !($cond) {
+            $crate::panic_error!($env, $error);
+        }
     }};
 }
 

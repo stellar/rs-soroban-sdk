@@ -11,3 +11,4 @@ mod contract_udt_struct_tuple;
 mod contractfile_with_sha256;
 mod contractimport;
 mod contractimport_with_sha256;
+mod contract_assert_error;
