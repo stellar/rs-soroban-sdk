@@ -13,6 +13,7 @@ use super::{
     ConversionError, Env, EnvVal, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
+use crate::unwrap::UnwrapOptimized;
 #[cfg(doc)]
 use crate::{data::Data, Map, Vec};
 
@@ -361,7 +362,11 @@ impl Bytes {
 
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[u8]) -> Bytes {
-        Bytes(env.bytes_new_from_slice(items).unwrap().in_env(env))
+        Bytes(
+            env.bytes_new_from_slice(items)
+                .unwrap_optimized()
+                .in_env(env),
+        )
     }
 
     #[inline(always)]
@@ -552,7 +557,7 @@ impl Bytes {
         let env = self.env();
         self.0 = env
             .bytes_copy_from_slice(self.to_object(), self.len().into(), slice)
-            .unwrap()
+            .unwrap_optimized()
             .in_env(env);
     }
 
@@ -565,7 +570,7 @@ impl Bytes {
         let env = self.env();
         self.0 = env
             .bytes_copy_from_slice(self.to_object(), i.into(), slice)
-            .unwrap()
+            .unwrap_optimized()
             .in_env(env);
     }
 
@@ -577,7 +582,7 @@ impl Bytes {
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
         env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice)
-            .unwrap();
+            .unwrap_optimized();
     }
 
     #[must_use]
@@ -1040,7 +1045,7 @@ impl<const N: usize> BytesN<N> {
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
         env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice)
-            .unwrap();
+            .unwrap_optimized();
     }
 
     /// Copy the bytes in [BytesN] into an array.

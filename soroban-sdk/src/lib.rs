@@ -133,6 +133,9 @@ macro_rules! panic_error {
     }};
 }
 
+#[doc(hidden)]
+pub mod unwrap;
+
 mod env;
 
 mod address;
