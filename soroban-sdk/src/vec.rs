@@ -10,8 +10,9 @@ use core::{
 use crate::iter::{UncheckedEnumerable, UncheckedIter};
 
 use super::{
-    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, EnvVal, IntoVal,
-    Object, RawVal, Set, TryFromVal, TryIntoVal,
+    env::{internal::Env as _, EnvObj, RawValConvertible},
+    xdr::ScObjectType,
+    ConversionError, Env, EnvVal, IntoVal, Object, RawVal, Set, TryFromVal, TryIntoVal,
 };
 
 #[cfg(doc)]
@@ -437,7 +438,7 @@ where
 
 impl<T> Vec<T> {
     #[inline(always)]
-    unsafe fn unchecked_new(obj: EnvObj) -> Self {
+    pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
         Self(obj, PhantomData)
     }
 
@@ -545,7 +546,7 @@ where
     pub fn len(&self) -> u32 {
         let env = self.env();
         let val = env.vec_len(self.0.to_object());
-        u32::try_from(val).unwrap()
+        unsafe { <_ as RawValConvertible>::unchecked_from_val(val) }
     }
 
     #[inline(always)]

@@ -389,12 +389,13 @@ impl Bytes {
 
     #[inline(always)]
     pub fn get_unchecked(&self, i: u32) -> u8 {
-        let res32: u32 = self
+        let res = self
             .env()
             .bytes_get(self.0.to_object(), i.into())
             .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
+            .unwrap_optimized();
+        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
+        res32 as u8
     }
 
     #[inline(always)]
@@ -404,7 +405,8 @@ impl Bytes {
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        self.env().bytes_len(self.0.to_object()).try_into().unwrap()
+        let len = self.env().bytes_len(self.0.to_object());
+        unsafe { <_ as RawValConvertible>::unchecked_from_val(len) }
     }
 
     #[inline(always)]
@@ -418,12 +420,9 @@ impl Bytes {
 
     #[inline(always)]
     pub fn first_unchecked(&self) -> u8 {
-        let res32: u32 = self
-            .env()
-            .bytes_front(self.0.to_object())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
+        let res = self.env().bytes_front(self.0.to_object());
+        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
+        res32 as u8
     }
 
     #[inline(always)]
@@ -437,12 +436,9 @@ impl Bytes {
 
     #[inline(always)]
     pub fn last_unchecked(&self) -> u8 {
-        let res32: u32 = self
-            .env()
-            .bytes_back(self.0.to_object())
-            .try_into()
-            .unwrap();
-        res32.try_into().unwrap()
+        let res = self.env().bytes_back(self.0.to_object());
+        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
+        res32 as u8
     }
 
     #[inline(always)]

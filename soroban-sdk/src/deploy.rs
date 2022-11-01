@@ -126,7 +126,7 @@ impl DeployerWithCurrentContract {
         let env = &self.env;
         let id = env
             .create_contract_from_contract(wasm.into_val(env).to_object(), self.salt.to_object());
-        BytesN::<32>::try_from_val(env, id).unwrap()
+        unsafe { BytesN::<32>::unchecked_new(id.in_env(env)) }
     }
 
     /// Deploy a built-in token contract.
@@ -138,7 +138,7 @@ impl DeployerWithCurrentContract {
     pub fn deploy_token(&self) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_token_from_contract(self.salt.to_object());
-        BytesN::<32>::try_from_val(env, id).unwrap()
+        unsafe { BytesN::<32>::unchecked_new(id.in_env(env)) }
     }
 }
 
