@@ -870,23 +870,11 @@ dependencies = [
 
 [[package]]
 name = "soroban-auth"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d904ff8fd0e8a35facdaabbb9d34c12ccd7e1c1a61de9091234e6bf8ab019d1"
-dependencies = [
- "ed25519-dalek",
- "rand 0.7.3",
- "soroban-sdk 0.1.1",
-]
-
-[[package]]
-name = "soroban-auth"
 version = "0.2.0"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
- "soroban-sdk 0.1.1",
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -957,21 +945,6 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d2c4bb2877150d209bb569be137a9943314a4e6d27b7c56794373d4d7516612"
-dependencies = [
- "bytes-lit",
- "ed25519-dalek",
- "rand 0.8.5",
- "soroban-env-guest",
- "soroban-env-host",
- "soroban-sdk-macros 0.1.1",
- "stellar-strkey",
-]
-
-[[package]]
-name = "soroban-sdk"
 version = "0.2.0"
 dependencies = [
  "bytes-lit",
@@ -980,27 +953,10 @@ dependencies = [
  "rand 0.8.5",
  "soroban-env-guest",
  "soroban-env-host",
- "soroban-sdk-macros 0.2.0",
- "soroban-spec 0.2.0",
+ "soroban-sdk-macros",
+ "soroban-spec",
  "stellar-strkey",
  "stellar-xdr",
-]
-
-[[package]]
-name = "soroban-sdk-macros"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f7102a5ad75edc869402c1facdab7514bc5ae630257392983624504b0aa6c31"
-dependencies = [
- "darling",
- "itertools",
- "proc-macro2",
- "quote",
- "sha2 0.10.6",
- "soroban-env-common",
- "soroban-spec 0.1.1",
- "stellar-xdr",
- "syn",
 ]
 
 [[package]]
@@ -1013,32 +969,9 @@ dependencies = [
  "quote",
  "sha2 0.10.6",
  "soroban-env-common",
- "soroban-spec 0.2.0",
+ "soroban-spec",
  "stellar-xdr",
  "syn",
-]
-
-[[package]]
-name = "soroban-spec"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3497c3304194e619ceb5cafa107a1ee969730601b9461f52192366c4f4ca386"
-dependencies = [
- "base64",
- "darling",
- "itertools",
- "prettyplease",
- "proc-macro2",
- "quote",
- "serde",
- "serde_derive",
- "serde_json",
- "sha2 0.10.6",
- "soroban-env-host",
- "stellar-xdr",
- "syn",
- "thiserror",
- "wasmparser",
 ]
 
 [[package]]
@@ -1069,9 +1002,8 @@ version = "0.2.0"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
- "soroban-auth 0.1.1",
- "soroban-auth 0.2.0",
- "soroban-sdk 0.2.0",
+ "soroban-auth",
+ "soroban-sdk",
 ]
 
 [[package]]
@@ -1176,70 +1108,70 @@ dependencies = [
 name = "test_add_bigint"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_result"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
 version = "0.2.0"
 dependencies = [
- "soroban-sdk 0.2.0",
+ "soroban-sdk",
 ]
 
 [[package]]

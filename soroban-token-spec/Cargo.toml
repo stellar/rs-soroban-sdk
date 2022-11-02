@@ -26,6 +26,6 @@ ed25519-dalek = { version = "1.0.1", optional = true }
 rand = { version = "0.7.3", optional = true }
 
 [dev_dependencies]
-soroban-auth = { version = "0.1.0", features = ["testutils"] }
+soroban-auth = { version = "0.2.0", features = ["testutils"] }
 ed25519-dalek = { version = "1.0.1" }
 rand = { version = "0.7.3" }
