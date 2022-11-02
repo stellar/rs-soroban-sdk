@@ -13,7 +13,7 @@ pub enum Error {
 #[contractimpl]
 impl Contract {
     pub fn assert(env: Env, value: u32) -> u32 {
-        assert_error!(&env, value > 0, Error::Zero);
+        assert_with_error!(&env, value > 0, Error::Zero);
         value
     }
 }

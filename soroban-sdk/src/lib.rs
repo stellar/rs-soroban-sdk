@@ -148,7 +148,7 @@ macro_rules! panic_error {
 ///
 /// See [`contracterror`] for how to define an error type.
 #[macro_export]
-macro_rules! assert_error {
+macro_rules! assert_with_error {
     ($env:expr, $cond:expr, $error:expr) => {{
         if !($cond) {
             $crate::panic_error!($env, $error);
