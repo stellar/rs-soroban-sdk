@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contracterror, contractimpl, panic_error, symbol, Env, Symbol};
+use soroban_sdk::{contracterror, contractimpl, panic_with_error, symbol, Env, Symbol};
 
 pub struct Contract;
 
@@ -18,7 +18,7 @@ impl Contract {
         } else if flag == 1 {
             Err(Error::AnError)
         } else if flag == 2 {
-            panic_error!(&env, Error::AnError)
+            panic_with_error!(&env, Error::AnError)
         } else if flag == 3 {
             panic!("an error")
         } else {

@@ -87,7 +87,7 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
-    pub fn panic_error(&self, error: impl Into<Status>) {
+    pub fn panic_with_error(&self, error: impl Into<Status>) {
         _ = internal::Env::fail_with_status(self, error.into());
         unreachable!()
     }
