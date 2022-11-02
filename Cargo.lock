@@ -1140,6 +1140,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_f32"
+version = "0.1.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_import_contract"
 version = "0.1.1"
 dependencies = [

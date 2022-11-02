@@ -17,6 +17,7 @@ members = [
     "tests/events",
     "tests/logging",
     "tests/errors",
+    "tests/f32",
 ]
 [patch.crates-io]
 soroban-sdk = { path = "soroban-sdk" }
