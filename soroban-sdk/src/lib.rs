@@ -156,6 +156,9 @@ macro_rules! assert_with_error {
     }};
 }
 
+#[doc(hidden)]
+pub mod unwrap;
+
 mod env;
 
 mod address;

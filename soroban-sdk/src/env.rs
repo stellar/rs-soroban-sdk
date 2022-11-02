@@ -141,9 +141,8 @@ impl Env {
 
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn current_contract(&self) -> BytesN<32> {
-        internal::Env::get_current_contract(self)
-            .try_into_val(self)
-            .unwrap()
+        let id = internal::Env::get_current_contract(self);
+        unsafe { BytesN::<32>::unchecked_new(id.in_env(self)) }
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
@@ -185,13 +184,13 @@ impl Env {
     /// ```
     pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
         let stack = internal::Env::get_current_call_stack(self);
-        stack.try_into_val(self).unwrap()
+        unsafe { Vec::unchecked_new(stack.in_env(self)) }
     }
 
     /// Computes a SHA-256 hash.
     pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
         let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
-        bin_obj.try_into_val(self).unwrap()
+        unsafe { BytesN::unchecked_new(bin_obj.in_env(self)) }
     }
 
     /// Verifies an ed25519 signature.
@@ -207,9 +206,12 @@ impl Env {
     ///
     /// Return a [Result] instead of panicking.
     pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
-        internal::Env::verify_sig_ed25519(self, msg.to_object(), pk.to_object(), sig.to_object())
-            .try_into()
-            .unwrap()
+        let _ = internal::Env::verify_sig_ed25519(
+            self,
+            msg.to_object(),
+            pk.to_object(),
+            sig.to_object(),
+        );
     }
 
     /// Invokes a function of a contract that is registered in the [Env].
