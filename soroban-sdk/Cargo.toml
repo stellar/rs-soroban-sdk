@@ -18,17 +18,17 @@ soroban-sdk-macros = { version = "0.2.0" }
 bytes-lit = "0.0.4"
 
 [target.'cfg(target_family="wasm")'.dependencies]
-soroban-env-guest = { version = "0.0.6" }
+soroban-env-guest = { workspace = true }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { version = "0.0.6", features = ["vm", "hostfn_log_fmt_values"] }
-stellar-strkey = "0.0.2"
+soroban-env-host = { workspace = true, features = ["vm", "hostfn_log_fmt_values"] }
+stellar-strkey = { workspace = true }
 ed25519-dalek = { version = "1.0.1", optional = true }
 rand = "0.8.5"
 
 [dev-dependencies]
-soroban-env-host = { version = "0.0.6", features = ["vm", "hostfn_log_fmt_values", "testutils"] }
-stellar-xdr = { version = "0.0.6", features = ["next", "std"] }
+soroban-env-host = { workspace = true, features = ["vm", "hostfn_log_fmt_values", "testutils"] }
+stellar-xdr = { workspace = true, features = ["next", "std"] }
 soroban-spec = "0.2.0"
 ed25519-dalek = "1.0.1"
 rand = "0.8.5"
