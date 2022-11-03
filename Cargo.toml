@@ -36,7 +36,7 @@ soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "
 soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "755052b0" }
 soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "755052b0" }
 soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "755052b0" }
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "3ba13687" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "e88f9fa7" }
 wasmi = { package = "soroban-wasmi", git = "https://github.com/stellar/wasmi", rev = "d1ec0036" }
 
 # soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
