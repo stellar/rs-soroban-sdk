@@ -126,10 +126,19 @@ pub use soroban_sdk_macros::symbol;
 ///
 /// See [`contracterror`] for how to define an error type.
 #[macro_export]
+macro_rules! panic_with_error {
+    ($env:expr, $error:expr) => {{
+        $env.panic_with_error($error);
+        unreachable!();
+    }};
+}
+
+#[doc(hidden)]
+#[deprecated(note = "use panic_with_error!")]
+#[macro_export]
 macro_rules! panic_error {
     ($env:expr, $error:expr) => {{
-        $env.panic_error($error);
-        unreachable!();
+        $crate::panic_with_error!($env, $error);
     }};
 }
 
@@ -151,7 +160,7 @@ macro_rules! panic_error {
 macro_rules! assert_with_error {
     ($env:expr, $cond:expr, $error:expr) => {{
         if !($cond) {
-            $crate::panic_error!($env, $error);
+            $crate::panic_with_error!($env, $error);
         }
     }};
 }
