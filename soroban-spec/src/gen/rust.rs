@@ -133,14 +133,17 @@ pub trait Contract {
     fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
 }
 #[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct UdtTuple(pub i64, pub soroban_sdk::Vec<i64>);
 #[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct UdtStruct {
     pub a: i64,
     pub b: i64,
     pub c: soroban_sdk::Vec<i64>,
 }
 #[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
@@ -148,6 +151,7 @@ pub enum UdtEnum {
     UdtD(UdtTuple),
 }
 #[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum UdtEnum2 {
     A = 10,
     B = 15,
