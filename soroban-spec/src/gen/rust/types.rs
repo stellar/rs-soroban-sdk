@@ -31,6 +31,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
         });
         quote! {
             #[soroban_sdk::contracttype(export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
             pub struct #ident ( #(#fields),* );
         }
     } else {
@@ -42,6 +43,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
         });
         quote! {
             #[soroban_sdk::contracttype(export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
             pub struct #ident { #(#fields,)* }
         }
     }
@@ -68,6 +70,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
         });
         quote! {
             #[soroban_sdk::contracttype(export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
             pub enum #ident { #(#variants,)* }
         }
     }
@@ -90,6 +93,7 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
         });
         quote! {
             #[soroban_sdk::contracttype(export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
             pub enum #ident { #(#variants,)* }
         }
     }
@@ -112,6 +116,7 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
         });
         quote! {
             #[soroban_sdk::contracterror(export = false)]
+            #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
             pub enum #ident { #(#variants,)* }
         }
     }

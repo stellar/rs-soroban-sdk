@@ -1,5 +1,5 @@
 [package]
-name = "test_result"
+name = "test_errors"
 version = "0.2.0"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
