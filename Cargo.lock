@@ -870,7 +870,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-auth"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
@@ -945,7 +945,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "bytes-lit",
  "ed25519-dalek",
@@ -961,7 +961,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "darling",
  "itertools",
@@ -976,7 +976,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "base64",
  "darling",
@@ -998,7 +998,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-spec"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
@@ -1107,70 +1107,70 @@ dependencies = [
 
 [[package]]
 name = "test_add_bigint"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "0.2.0"
+version = "0.2.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_errors"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "0.2.0"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
-name = "test_result"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "soroban-sdk",
 ]
