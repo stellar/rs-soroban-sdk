@@ -4,11 +4,14 @@
 //! Utilities intended for use when testing.
 
 mod sign;
+use rand::RngCore;
 pub use sign::ed25519;
 
 pub use crate::env::testutils::*;
 
 use crate::{AccountId, BytesN, Env, RawVal, Symbol, Vec};
+
+use crate::env::xdr;
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -66,4 +69,22 @@ pub trait Accounts {
 
     /// Remove an account.
     fn remove(&self, id: &AccountId);
+}
+
+pub fn random_id() -> [u8; 32] {
+    let mut id = [0u8; 32];
+    rand::thread_rng().fill_bytes(&mut id);
+    id
+}
+
+pub fn random_account_id() -> xdr::AccountId {
+    xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
+        random_id(),
+    )))
+}
+
+impl Env {
+    pub fn random_id_bytes(&self) -> BytesN<32> {
+        BytesN::from_array(self, &random_id())
+    }
 }

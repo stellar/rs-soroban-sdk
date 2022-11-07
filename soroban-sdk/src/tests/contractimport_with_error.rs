@@ -21,7 +21,7 @@ impl Contract {
 fn test_functional() {
     let e = Env::default();
 
-    let err_contract_id = e.register_contract_wasm(None, errcontract::WASM);
+    let err_contract_id = e.register_contract_wasm(errcontract::WASM);
 
     let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
