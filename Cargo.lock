@@ -900,7 +900,6 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.9"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=c04c2332#c04c2332fd3ed3ee0e4b72c68c618c7f45f44ba1"
 dependencies = [
  "backtrace",
  "dyn-fmt",

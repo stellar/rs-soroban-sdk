@@ -346,6 +346,27 @@ impl Env {
             .unwrap()
     }
 
+    /// Run the closure as if executed by the given contract ID.
+    ///
+    /// Used to write or read contract data, or take other actions in tests for
+    /// setting up tests or asserting on internal state.
+    pub fn as_contract<T>(&self, id: BytesN<32>, f: impl FnOnce() -> T) -> T
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+        T::Error: core::fmt::Debug,
+    {
+        let id: [u8; 32] = id.into();
+        let func = Symbol::from_str("");
+        let result = self
+            .env_impl
+            .with_artificial_test_contract_frame(id.into(), func, || {
+                let t = f();
+                Ok(t.into_val(self))
+            })
+            .unwrap();
+        <_ as TryFromVal<_, _>>::try_from_val(self, result).unwrap()
+    }
+
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
