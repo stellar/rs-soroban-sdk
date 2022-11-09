@@ -887,6 +887,15 @@ impl<const N: usize> TryFrom<Bytes> for BytesN<N> {
     }
 }
 
+impl<const N: usize> TryFrom<&Bytes> for BytesN<N> {
+    type Error = ConversionError;
+
+    #[inline(always)]
+    fn try_from(bin: &Bytes) -> Result<Self, Self::Error> {
+        bin.clone().try_into()
+    }
+}
+
 impl<const N: usize> From<BytesN<N>> for RawVal {
     #[inline(always)]
     fn from(v: BytesN<N>) -> Self {
@@ -1076,10 +1085,29 @@ impl<const N: usize> TryFrom<Bytes> for [u8; N] {
     }
 }
 
+impl<const N: usize> TryFrom<&Bytes> for [u8; N] {
+    type Error = ConversionError;
+
+    fn try_from(bin: &Bytes) -> Result<Self, Self::Error> {
+        let fixed: BytesN<N> = bin.try_into()?;
+        Ok(fixed.into())
+    }
+}
+
 impl<const N: usize> From<BytesN<N>> for [u8; N] {
     fn from(bin: BytesN<N>) -> Self {
         let mut res = [0u8; N];
         for (i, b) in bin.into_iter().enumerate() {
+            res[i] = b;
+        }
+        res
+    }
+}
+
+impl<const N: usize> From<&BytesN<N>> for [u8; N] {
+    fn from(bin: &BytesN<N>) -> Self {
+        let mut res = [0u8; N];
+        for (i, b) in bin.iter().enumerate() {
             res[i] = b;
         }
         res

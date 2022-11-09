@@ -18,5 +18,8 @@ fn test() {
 
     client.store(&2, &4);
 
-    e.as_contract(contract_id, || e.data().get::<_, i32>(2));
+    assert_eq!(
+        e.as_contract(&contract_id, || e.data().get::<_, i32>(2)),
+        Some(Ok(4))
+    );
 }
