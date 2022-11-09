@@ -248,10 +248,6 @@ impl AccountId {
         self.0.env()
     }
 
-    pub fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
-    }
-
     pub fn as_object(&self) -> &Object {
         self.0.as_object()
     }
@@ -310,10 +306,6 @@ impl AsRef<AccountId> for Account {
 impl Account {
     pub(crate) fn env(&self) -> &Env {
         self.0.env()
-    }
-
-    pub(crate) fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
     }
 
     pub(crate) fn as_object(&self) -> &Object {

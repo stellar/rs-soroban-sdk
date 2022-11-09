@@ -331,10 +331,6 @@ impl Bytes {
         self.0.env()
     }
 
-    pub fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
-    }
-
     pub fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
@@ -400,13 +396,12 @@ impl Bytes {
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.env().bytes_len(self.0.to_object()).is_u32_zero()
+        self.env().bytes_len(self.0.to_object()) == 0
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        let len = self.env().bytes_len(self.0.to_object());
-        unsafe { <_ as RawValConvertible>::unchecked_from_val(len) }
+        self.env().bytes_len(self.0.to_object())
     }
 
     #[inline(always)]
@@ -420,9 +415,7 @@ impl Bytes {
 
     #[inline(always)]
     pub fn first_unchecked(&self) -> u8 {
-        let res = self.env().bytes_front(self.0.to_object());
-        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
-        res32 as u8
+        self.env().bytes_front(self.0.to_object()) as u8
     }
 
     #[inline(always)]
@@ -436,9 +429,7 @@ impl Bytes {
 
     #[inline(always)]
     pub fn last_unchecked(&self) -> u8 {
-        let res = self.env().bytes_back(self.0.to_object());
-        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
-        res32 as u8
+        self.env().bytes_back(self.0.to_object()) as u8
     }
 
     #[inline(always)]
@@ -577,7 +568,7 @@ impl Bytes {
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
-        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice)
+        env.bytes_copy_to_slice(self.to_object(), 0, slice)
             .unwrap_optimized();
     }
 
@@ -628,9 +619,8 @@ impl Iterator for BinIter {
         if self.0.is_empty() {
             None
         } else {
-            let val = self.0.env().bytes_front(self.0 .0.to_object());
+            let val = self.0.env().bytes_front(self.0 .0.to_object()) as u8;
             self.0 = self.0.slice(1..);
-            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
         }
     }
@@ -647,9 +637,8 @@ impl DoubleEndedIterator for BinIter {
         if len == 0 {
             None
         } else {
-            let val = self.0.env().bytes_back(self.0 .0.to_object());
+            let val = self.0.env().bytes_back(self.0 .0.to_object()) as u8;
             self.0 = self.0.slice(..len - 1);
-            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
             Some(val)
         }
     }
@@ -926,7 +915,7 @@ impl<const N: usize> From<&BytesN<N>> for Bytes {
 impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &BytesN<N>) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.0 .0.env, v.0 .0.val.to_raw())
+        ScVal::try_from_val(&v.0 .0.env, v.0 .0.val.clone().into())
     }
 }
 
@@ -965,10 +954,6 @@ impl<const N: usize> BytesN<N> {
 
     pub fn env(&self) -> &Env {
         self.0.env()
-    }
-
-    pub fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
     }
 
     pub fn to_raw(&self) -> RawVal {
@@ -1040,7 +1025,7 @@ impl<const N: usize> BytesN<N> {
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
-        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice)
+        env.bytes_copy_to_slice(self.to_object(), 0, slice)
             .unwrap_optimized();
     }
 

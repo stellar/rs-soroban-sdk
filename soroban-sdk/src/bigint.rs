@@ -1340,10 +1340,6 @@ impl BigInt {
         self.0.env()
     }
 
-    pub fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
-    }
-
     pub fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }
@@ -1411,7 +1407,7 @@ impl BigInt {
     /// Returns the [Sign] of the [BigInt].
     pub fn sign(&self) -> Sign {
         let env = self.env();
-        let sign = env.obj_cmp(self.to_raw(), BigInt::zero(env).to_raw());
+        let sign = env.obj_cmp(self.to_object(), BigInt::zero(env).to_object());
         match sign.cmp(&0) {
             Ordering::Less => Sign::Minus,
             Ordering::Equal => Sign::NoSign,

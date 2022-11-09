@@ -446,10 +446,6 @@ impl<T> Vec<T> {
         self.0.env()
     }
 
-    pub fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
-    }
-
     pub fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }

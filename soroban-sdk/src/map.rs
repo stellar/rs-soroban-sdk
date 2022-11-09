@@ -311,11 +311,6 @@ where
     }
 
     #[inline(always)]
-    pub fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
-    }
-
-    #[inline(always)]
     pub fn to_raw(&self) -> RawVal {
         self.0.to_raw()
     }

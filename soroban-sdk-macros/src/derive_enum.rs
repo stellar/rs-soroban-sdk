@@ -42,16 +42,16 @@ pub fn derive_type_enum(
             }
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
-            let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
+            let discriminant_const_u128_ident = format_ident!("DISCRIMINANT_U128_{}", name.to_uppercase());
             let discriminant_const_sym = quote! {
                 const #discriminant_const_sym_ident: #path::Symbol = #path::Symbol::from_str(#name);
             };
-            let discriminant_const_u64 = quote! {
-                const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();
+            let discriminant_const_u128 = quote! {
+                const #discriminant_const_u128_ident: u128 = #discriminant_const_sym_ident.to_u128();
             };
             let discriminant_const = quote! {
                 #discriminant_const_sym
-                #discriminant_const_u64
+                #discriminant_const_u128
             };
             if let Some(f) = field {
                 let spec_case = ScSpecUdtUnionCaseV0 {
@@ -65,7 +65,7 @@ pub fn derive_type_enum(
                     }),
                 };
                 let try_from = quote! {
-                    #discriminant_const_u64_ident => {
+                    #discriminant_const_u128_ident => {
                         if iter.len() > 1 {
                             return Err(#path::ConversionError);
                         }
@@ -90,7 +90,7 @@ pub fn derive_type_enum(
                     type_: None,
                 };
                 let try_from = quote! {
-                    #discriminant_const_u64_ident => {
+                    #discriminant_const_u128_ident => {
                         if iter.len() > 0 {
                             return Err(#path::ConversionError);
                         }
@@ -156,7 +156,7 @@ pub fn derive_type_enum(
                 let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
                 let mut iter = vec.iter();
                 let discriminant = iter.next().ok_or(#path::ConversionError)??;
-                Ok(match discriminant.get_payload() {
+                Ok(match discriminant.payload {
                     #(#try_froms,)*
                     _ => Err(#path::ConversionError{})?,
                 })
