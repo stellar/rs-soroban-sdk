@@ -355,7 +355,7 @@ impl Env {
         let func = Symbol::from_str("");
         let mut t: Option<T> = None;
         self.env_impl
-            .with_artificial_test_contract_frame(id.into(), func, || {
+            .with_test_contract_frame(id.into(), func, || {
                 t = Some(f());
                 Ok(().into())
             })
