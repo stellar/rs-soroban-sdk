@@ -19,31 +19,48 @@ members = [
     "tests/errors",
 ]
 
+[workspace.package]
+version = "0.2.1"
+
 [workspace.dependencies]
-soroban-env-common = "0.0.9"
-soroban-env-guest = "0.0.9"
-soroban-env-host = "0.0.9"
-stellar-strkey = "0.0.6"
-stellar-xdr = "0.0.7"
+soroban-sdk = { version = "0.2.1", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "0.2.1", path = "soroban-sdk-macros" }
+soroban-auth = { version = "0.2.1", path = "soroban-auth" }
+soroban-spec = { version = "0.2.1", path = "soroban-spec" }
+soroban-token-spec = { version = "0.2.1", path = "soroban-token-spec" }
 
-[patch.crates-io]
-soroban-sdk = { path = "soroban-sdk" }
-soroban-auth = { path = "soroban-auth" }
-soroban-spec = { path = "soroban-spec" }
-soroban-sdk-macros = { path = "soroban-sdk-macros" }
-soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "adad06cc" }
-soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "adad06cc" }
-soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "adad06cc" }
-soroban-env-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "adad06cc" }
-soroban-native-sdk-macros = { git = "https://github.com/stellar/rs-soroban-env", rev = "adad06cc" }
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "e88f9fa7" }
-wasmi = { package = "soroban-wasmi", git = "https://github.com/stellar/wasmi", rev = "d1ec0036" }
+[workspace.dependencies.soroban-env-common]
+version = "0.0.9"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "99de1bf0"
 
+[workspace.dependencies.soroban-env-guest]
+version = "0.0.9"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "99de1bf0"
+
+[workspace.dependencies.soroban-env-host]
+version = "0.0.9"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "99de1bf0"
+
+[workspace.dependencies.stellar-strkey]
+version = "0.0.6"
+git = "https://github.com/stellar/rs-stellar-strkey"
+rev = "5e582a8b"
+
+[workspace.dependencies.stellar-xdr]
+version = "0.0.7"
+git = "https://github.com/stellar/rs-stellar-xdr"
+rev = "e88f9fa7"
+default-features = false
+
+# [patch."https://github.com/stellar/rs-soroban-env"]
 # soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 # soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-# soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
-# soroban-env-macros = { path = "../rs-soroban-env/soroban-env-macros" }
-# soroban-native-sdk-macros = { path = "../rs-soroban-env/soroban-native-sdk-macros" }
+# soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+# [patch."https://github.com/stellar/rs-stellar-xdr"]
+# stellar-xdr = { path = "../rs-stellar-xdr/" }
 
 [profile.dev]
 overflow-checks = true

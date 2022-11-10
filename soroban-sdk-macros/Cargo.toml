@@ -6,7 +6,7 @@ repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 readme = "../README.md"
 license = "Apache-2.0"
-version = "0.2.1"
+version.workspace = true
 edition = "2021"
 rust-version = "1.65"
 
@@ -15,7 +15,7 @@ proc-macro = true
 doctest = false
 
 [dependencies]
-soroban-spec = "0.2.1"
+soroban-spec = { workspace = true }
 soroban-env-common = { workspace = true }
 stellar-xdr = { workspace = true, features = ["next", "std"] }
 syn = {version="1.0",features=["full"]}
