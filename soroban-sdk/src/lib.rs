@@ -222,6 +222,8 @@ pub use map::Map;
 pub use set::Set;
 pub use vec::Vec;
 
+pub use soroban_env_common::abi;
+
 pub mod serde;
 
 pub mod testutils;

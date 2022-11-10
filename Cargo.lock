@@ -948,6 +948,7 @@ dependencies = [
  "ed25519-dalek",
  "hex",
  "rand 0.8.5",
+ "soroban-env-common",
  "soroban-env-guest",
  "soroban-env-host",
  "soroban-sdk-macros",

@@ -5,10 +5,8 @@ use stellar_xdr::{
     ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, StringM, VecM, WriteXdr,
 };
 use syn::{
-    punctuated::Punctuated,
-    spanned::Spanned,
-    token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
+    parse_quote, punctuated::Punctuated, spanned::Spanned, token::Comma, Attribute, Error, Expr,
+    FnArg, Ident, Pat, ReturnType, Type, TypePath,
 };
 
 use crate::map_type::map_type;
@@ -49,7 +47,7 @@ pub fn derive_fn(
     });
 
     // Prepare the argument inputs.
-    let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
+    let (spec_args, args, implodes, converts): (Vec<_>, Vec<Vec<FnArg>>, Vec<Expr>, Vec<Expr>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
@@ -78,35 +76,38 @@ pub fn derive_fn(
                         }
                     }
                 };
-                let ident = format_ident!("arg_{}", i);
-                let arg = FnArg::Typed(PatType {
-                    attrs: vec![],
-                    pat: Box::new(Pat::Ident(PatIdent {
-                        ident: ident.clone(),
-                        attrs: vec![],
-                        by_ref: None,
-                        mutability: None,
-                        subpat: None,
-                    })),
-                    colon_token: Colon::default(),
-                    ty: Box::new(Type::Verbatim(quote! { soroban_sdk::RawVal })),
-                });
-                let call = quote! {
+                let ident0: Ident = format_ident!("arg0_{}", i);
+                let ident1: Ident = format_ident!("arg1_{}", i);
+                let ident2: Ident = format_ident!("arg2_{}", i);
+                let arg0: FnArg = parse_quote!{ #ident0:u32 };
+                let arg1: FnArg = parse_quote!{ #ident1:u64 };
+                let arg2: FnArg = parse_quote!{ #ident2:u64 };
+                let args = vec![arg0,arg1,arg2];
+                let implode: Expr = parse_quote! {
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
-                            &env,
-                            #ident
+                            &env, <soroban_sdk::RawVal as soroban_sdk::abi::V160>::v160_implode(#ident0, #ident1, #ident2)
                         )
                     )
                 };
-                (spec, arg, call)
+                let convert: Expr = parse_quote! {
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
+                            &env,
+                            args[#i]
+                        )
+                    )
+                };
+                (spec, args, implode, convert)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {})
+                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 }, vec![], parse_quote!{}, parse_quote! {})
             }
         })
         .multiunzip();
+
+    let args: Vec<FnArg> = args.into_iter().flatten().collect();
 
     // Prepare the output.
     let spec_result = match output {
@@ -132,7 +133,6 @@ pub fn derive_fn(
     } else {
         quote! {}
     };
-    let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let use_trait = if let Some(t) = trait_ident {
         quote! { use super::#t }
     } else {
@@ -195,19 +195,19 @@ pub fn derive_fn(
         #(#attrs)*
         pub mod #hidden_mod_ident {
             use super::*;
+            static mut RET: <soroban_sdk::RawVal as soroban_sdk::abi::BufReadWrite>::MemBuf = <soroban_sdk::RawVal as soroban_sdk::abi::BufReadWrite>::ZERO_BUF;
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
+            pub fn invoke_raw(env: soroban_sdk::Env, #(#args),*) -> u32 {
                 #use_trait;
-                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
-                    #[allow(deprecated)]
-                    #call(
-                        #env_call
-                        #(#wrap_calls),*
-                    ),
-                    &env
-                )
+                unsafe {
+                    <soroban_sdk::RawVal as soroban_sdk::abi::BufReadWrite>::buf_write(
+                    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
+                          #[allow(deprecated)] #call(#env_call #(#implodes),*), &env), &mut RET);
+                    let ptr: *mut _ = &mut RET;
+                    ptr as u32
+                }
             }
 
             #[deprecated(note = #deprecated_note)]
@@ -216,7 +216,10 @@ pub fn derive_fn(
                 args: &[soroban_sdk::RawVal],
             ) -> soroban_sdk::RawVal {
                 #[allow(deprecated)]
-                invoke_raw(env, #(#slice_args),*)
+                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
+                    #[allow(deprecated)]
+                    #call(#env_call #(#converts),*),
+                    &env)
             }
 
             use super::*;

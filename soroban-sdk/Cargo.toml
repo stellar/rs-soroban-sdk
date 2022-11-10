@@ -17,6 +17,8 @@ doctest = false
 soroban-sdk-macros = { version = "0.2.0" }
 bytes-lit = "0.0.4"
 
+soroban-env-common = { workspace = true }
+
 [target.'cfg(target_family="wasm")'.dependencies]
 soroban-env-guest = { workspace = true }
 

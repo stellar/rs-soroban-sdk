@@ -503,12 +503,7 @@ impl internal::EnvBase for Env {
         }
     }
 
-    fn bytes_copy_from_slice(
-        &self,
-        b: Object,
-        b_pos: u32,
-        mem: &[u8],
-    ) -> Result<Object, Status> {
+    fn bytes_copy_from_slice(&self, b: Object, b_pos: u32, mem: &[u8]) -> Result<Object, Status> {
         self.env_impl.bytes_copy_from_slice(b, b_pos, mem)
     }
 
