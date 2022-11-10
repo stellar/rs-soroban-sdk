@@ -880,7 +880,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.9"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=adad06cc#adad06ccef08c0ec7b6c29c5b741867e6d47e879"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a613a0ce#a613a0ce7834b7286da766009ca3db633113e5f9"
 dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
@@ -891,7 +891,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.9"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=adad06cc#adad06ccef08c0ec7b6c29c5b741867e6d47e879"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a613a0ce#a613a0ce7834b7286da766009ca3db633113e5f9"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -900,7 +900,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.9"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=adad06cc#adad06ccef08c0ec7b6c29c5b741867e6d47e879"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a613a0ce#a613a0ce7834b7286da766009ca3db633113e5f9"
 dependencies = [
  "backtrace",
  "dyn-fmt",
@@ -923,7 +923,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.9"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=adad06cc#adad06ccef08c0ec7b6c29c5b741867e6d47e879"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a613a0ce#a613a0ce7834b7286da766009ca3db633113e5f9"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -935,7 +935,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.9"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=adad06cc#adad06ccef08c0ec7b6c29c5b741867e6d47e879"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a613a0ce#a613a0ce7834b7286da766009ca3db633113e5f9"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1043,8 +1043,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 [[package]]
 name = "stellar-strkey"
 version = "0.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbdc24a977b92cac2028693957b8e07ffb9249a0767a548391246c9fb964a439"
+source = "git+https://github.com/stellar/rs-stellar-strkey?rev=5e582a8b#5e582a8b48f85443df60dc78e2e98959862400d6"
 dependencies = [
  "base32",
  "thiserror",
