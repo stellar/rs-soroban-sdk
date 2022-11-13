@@ -1,5 +1,5 @@
 use serde::Serialize;
-use soroban_env_host::xdr::{
+use stellar_xdr::{
     ScSpecEntry, ScSpecFunctionInputV0, ScSpecTypeDef, ScSpecUdtEnumCaseV0,
     ScSpecUdtErrorEnumCaseV0, ScSpecUdtStructFieldV0, ScSpecUdtUnionCaseV0,
 };
