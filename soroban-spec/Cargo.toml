@@ -11,7 +11,7 @@ edition = "2021"
 rust-version = "1.65"
 
 [dependencies]
-stellar-xdr = { workspace = true, features = ["next", "std"] }
+stellar-xdr = { workspace = true, features = ["next", "std", "serde"] }
 base64 = "0.13.0"
 thiserror = "1.0.32"
 syn = {version="1.0",features=["full"]}

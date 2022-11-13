@@ -3,7 +3,7 @@ use std::{fs, io};
 pub mod types;
 
 use sha2::{Digest, Sha256};
-use soroban_env_host::xdr::ScSpecEntry;
+use stellar_xdr::ScSpecEntry;
 
 use types::Entry;
 
