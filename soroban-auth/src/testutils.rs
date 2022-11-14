@@ -38,6 +38,22 @@ pub mod ed25519 {
         (signer.identifier(env), signer)
     }
 
+    /// Build a ed25519 keypair from a Stellar keypair.
+    pub fn build(
+        env: &Env,
+        public: &[u8],
+        secret: &[u8],
+    ) -> (
+        IdentifierValue,
+        impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]> + Debug,
+    ) {
+        let signer = ed25519_dalek::Keypair {
+            secret: ed25519_dalek::SecretKey::from_bytes(secret).unwrap(),
+            public: ed25519_dalek::PublicKey::from_bytes(public).unwrap(),
+        };
+        (signer.identifier(env), signer)
+    }
+
     /// Sign a [`SignaturePayload`] constructed using the arguments.
     ///
     /// The returned [`Signature`] can be verified by [`verify`](crate::verify)
@@ -69,6 +85,18 @@ pub mod ed25519 {
             public_key: public_key.into_val(env),
             signature: signature.into_val(env),
         })
+    }
+}
+
+pub mod strkey_utils {
+    pub fn decode_public(public: &str) -> [u8; 32] {
+        let pub_key = stellar_strkey::StrkeyPublicKeyEd25519::from_string(public).unwrap();
+        pub_key.0
+    }
+
+    pub fn decode_secret(secret: &str) -> [u8; 32] {
+        let secret_key = stellar_strkey::StrkeyPrivateKeyEd25519::from_string(secret).unwrap();
+        secret_key.0
     }
 }
 
