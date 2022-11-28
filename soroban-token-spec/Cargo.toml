@@ -14,18 +14,17 @@ rust-version = "1.65"
 crate-type = ["cdylib", "rlib"]
 doctest = false
 
-[features]
-testutils = ["soroban-sdk/testutils", "dep:ed25519-dalek", "dep:rand"]
+#[features]
+#testutils = ["soroban-sdk/testutils", "dep:ed25519-dalek", "dep:rand"]
 
 [dependencies]
 soroban-sdk = { workspace = true }
-soroban-auth = { workspace = true }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
 ed25519-dalek = { version = "1.0.1", optional = true }
 rand = { version = "0.7.3", optional = true }
 
 [dev_dependencies]
-soroban-auth = { workspace = true, features = ["testutils"] }
 ed25519-dalek = { version = "1.0.1" }
 rand = { version = "0.7.3" }
+soroban-sdk = { workspace = true, features = ["testutils"] }

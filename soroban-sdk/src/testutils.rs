@@ -45,37 +45,6 @@ pub trait Logger {
     fn print(&self);
 }
 
-/// Test utilities for [`AccountId`][crate::accounts::AccountId].
-pub trait AccountId {
-    /// Generate a random account ID.
-    //
-    // The value filled is not cryptographically secure.
-    fn random(env: &Env) -> crate::AccountId;
-}
-
-/// Test utilities for [`Accounts`][crate::accounts::Accounts].
-pub trait Accounts {
-    /// Generate an account ID.
-    fn generate(&self) -> crate::AccountId;
-
-    /// Generate and account ID and creates an account.
-    fn generate_and_create(&self) -> crate::AccountId;
-
-    /// Create an account.
-    fn create(&self, id: &crate::AccountId);
-
-    /// Set the thresholds of an account.
-    fn set_thresholds(&self, id: &crate::AccountId, low: u8, med: u8, high: u8);
-
-    /// Set the weight of a signer of an account.
-    ///
-    /// Setting a weight of zero removes the signer from the account.
-    fn set_signer_weight(&self, id: &crate::AccountId, signer: &crate::BytesN<32>, weight: u8);
-
-    /// Remove an account.
-    fn remove(&self, id: &crate::AccountId);
-}
-
 /// Test utilities for [`BytesN`][crate::BytesN].
 pub trait BytesN<const N: usize> {
     // Generate a BytesN filled with random bytes.

@@ -170,6 +170,7 @@ pub mod unwrap;
 
 mod env;
 
+mod account;
 mod address;
 pub mod xdr;
 
@@ -200,7 +201,6 @@ mod envhidden {
 #[doc(hidden)]
 pub use envhidden::*;
 
-pub mod accounts;
 mod bytes;
 pub mod data;
 pub mod deploy;
@@ -211,7 +211,7 @@ pub mod logging;
 mod map;
 mod set;
 mod vec;
-pub use accounts::AccountId;
+pub use account::Account;
 pub use address::Address;
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;

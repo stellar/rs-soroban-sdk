@@ -37,7 +37,6 @@ pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::FromVal;
 pub use internal::IntoVal;
-use internal::InvokerType;
 pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
@@ -51,8 +50,8 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{
-    accounts::Accounts, address::Address, data::Data, deploy::Deployer, events::Events,
-    ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
+    data::Data, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger, Account,
+    Address, Bytes, BytesN, Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -92,21 +91,6 @@ impl Env {
         unreachable!()
     }
 
-    /// Get the invoking [Address] of the current executing contract.
-    pub fn invoker(&self) -> Address {
-        let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
-            .try_into()
-            .expect("unrecognized invoker type");
-        match invoker_type {
-            InvokerType::Account => Address::Account(unsafe {
-                AccountId::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
-            }),
-            InvokerType::Contract => Address::Contract(unsafe {
-                BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
-            }),
-        }
-    }
-
     /// Get a [Data] for accessing and update contract data that has been stored
     /// by the currently executing contract.
     #[inline(always)]
@@ -127,28 +111,28 @@ impl Env {
         Ledger::new(self)
     }
 
-    /// Get an [Accounts] for accessing accounts in the current ledger.
-    #[inline(always)]
-    pub fn accounts(&self) -> Accounts {
-        Accounts::new(self)
-    }
-
     /// Get a deployer for deploying contracts.
     #[inline(always)]
     pub fn deployer(&self) -> Deployer {
         Deployer::new(self)
     }
 
-    /// Get the 32-byte hash identifier of the current executing contract.
-    pub fn current_contract(&self) -> BytesN<32> {
-        let id = internal::Env::get_current_contract(self);
-        unsafe { BytesN::<32>::unchecked_new(id.in_env(self)) }
+    pub fn current_contract_account(&self) -> Account {
+        internal::Env::get_current_contract_account(self)
+            .try_into_val(self)
+            .unwrap()
     }
 
-    /// Get the 32-byte hash identifier of the current executing contract.
-    #[doc(hidden)]
-    pub fn get_current_contract(&self) -> BytesN<32> {
-        self.current_contract()
+    pub(crate) fn get_account_address(&self, account: &Account) -> Address {
+        internal::Env::get_account_address(self, account.to_object())
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    pub(crate) fn authorize_account(&self, account: &Account, args: &Vec<RawVal>) {
+        internal::Env::authorize_account(self, account.to_object(), args.to_object())
+            .try_into()
+            .unwrap()
     }
 
     /// Returns the contract call stack as a [`Vec`]
@@ -274,9 +258,7 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{
-    random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet, Ledger as _,
-};
+use crate::testutils::{random, BytesN as _, ContractFunctionSet, Ledger as _};
 #[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
 #[cfg(any(test, feature = "testutils"))]
@@ -307,14 +289,14 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
+        let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(
             storage,
-            internal::budget::Budget::default(),
+            budget.clone(),
+            internal::auth::AuthorizationManager::new_recording(budget),
         );
 
         let env = Env { env_impl };
-
-        env.set_source_account(&env.accounts().generate());
 
         env.ledger().set(internal::LedgerInfo {
             protocol_version: 0,
@@ -325,25 +307,6 @@ impl Env {
         });
 
         env
-    }
-
-    /// Sets the source account in the [Env].
-    ///
-    /// The source account will be accessible via [Env::invoker] when a contract
-    /// is directly invoked.
-    pub fn set_source_account(&self, account_id: &AccountId) {
-        self.accounts().create(account_id);
-        self.env_impl
-            .set_source_account(account_id.try_into().unwrap());
-    }
-
-    /// Gets the source account set in the [Env].
-    pub fn source_account(&self) -> AccountId {
-        self.env_impl
-            .source_account()
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
     }
 
     /// Run the closure as if executed by the given contract ID.
@@ -410,7 +373,8 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            BytesN::random(self)
+            // BytesN::random(self)
+            BytesN::from_array(self, &random())
         };
         self.env_impl
             .register_test_contract(
@@ -503,7 +467,9 @@ impl Env {
             None
         };
         self.env_impl
-            .set_source_account(AccountId::random(self).try_into().unwrap());
+            .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+                xdr::Uint256(random()),
+            )));
 
         let contract_id: BytesN<32> = self
             .env_impl
@@ -521,6 +487,21 @@ impl Env {
             self.env_impl.remove_source_account();
         }
         contract_id
+    }
+
+    pub fn verify_account_authorization(
+        &self,
+        account: &Account,
+        call_stack: &[(BytesN<32>, &str)],
+        args: Vec<RawVal>,
+    ) -> bool {
+        let call_stack = call_stack
+            .iter()
+            .map(|(contract_id, fn_name)| (xdr::Hash(contract_id.to_array()), Symbol::try_from_str(fn_name).unwrap()))
+            .collect();
+        self.env_impl
+            .verify_account_authorization(account.to_object(), call_stack, args.to_object())
+            .unwrap()
     }
 }
 

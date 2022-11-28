@@ -188,8 +188,6 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
         pub struct #client_ident {
             pub env: soroban_sdk::Env,
             pub contract_id: soroban_sdk::BytesN<32>,
-            #[cfg(any(test, feature = "testutils"))]
-            pub source_account: Option<soroban_sdk::AccountId>,
         }
 
         impl #client_ident {
@@ -197,36 +195,15 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
-                    #[cfg(any(test, feature = "testutils"))]
-                    source_account: None,
                 }
             }
 
             fn with_env<R>(&self, f: impl FnOnce(&soroban_sdk::Env) -> R) -> R {
                 let env = &self.env;
-                #[cfg(any(test, feature = "testutils"))]
-                if let Some(new) = &self.source_account {
-                    let old = env.source_account();
-                    env.set_source_account(new);
-                    let r = f(env);
-                    env.set_source_account(&old);
-                    return r;
-                }
                 f(env)
             }
 
             #(#fns)*
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
-        impl #client_ident {
-            pub fn with_source_account(&self, source_account: &soroban_sdk::AccountId) -> Self {
-                Self {
-                    env: self.env.clone(),
-                    contract_id: self.contract_id.clone(),
-                    source_account: Some(source_account.clone()),
-                }
-            }
         }
     }
 }
