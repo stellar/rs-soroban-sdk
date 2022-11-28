@@ -2,7 +2,7 @@ use soroban_auth::{
     testutils::ed25519::{generate, sign},
     Identifier, Signature,
 };
-use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env, IntoVal};
+use soroban_sdk::{contractimpl, contracttype, symbol, BytesN, Env, IntoVal};
 
 mod token_contract {
     soroban_sdk::contractimport!(
@@ -46,21 +46,12 @@ impl TestContract {
         get_token(&e)
     }
 
-    pub fn mint(e: Env, to: Identifier, amount: BigInt) {
-        TokenClient::new(&e, get_token(&e)).mint(
-            &Signature::Invoker,
-            &BigInt::zero(&e),
-            &to,
-            &amount,
-        );
+    pub fn mint(e: Env, to: Identifier, amount: i128) {
+        TokenClient::new(&e, get_token(&e)).mint(&Signature::Invoker, &0, &to, &amount);
     }
 
     pub fn set_admin(e: Env, new_admin: Identifier) {
-        TokenClient::new(&e, get_token(&e)).set_admin(
-            &Signature::Invoker,
-            &BigInt::zero(&e),
-            &new_admin,
-        );
+        TokenClient::new(&e, get_token(&e)).set_admin(&Signature::Invoker, &0, &new_admin);
     }
 }
 
@@ -80,9 +71,9 @@ fn test() {
     let (id, signer) = generate(&env);
     let (id2, _signer2) = generate(&env);
 
-    let ten = BigInt::from_u32(&env, 10);
-    client.mint(&id, &ten);
-    assert_eq!(token_client.balance(&id), &ten);
+    let amount = 10;
+    client.mint(&id, &amount);
+    assert_eq!(token_client.balance(&id), amount);
 
     // transger admin so we can test ed25519 auth
     client.set_admin(&id);
@@ -93,8 +84,8 @@ fn test() {
         &signer,
         &client.get_token(),
         symbol!("mint"),
-        (&id, nonce, &id2, &ten),
+        (&id, nonce, &id2, &amount),
     );
-    token_client.mint(&sig, nonce, &id2, &ten);
-    assert_eq!(token_client.balance(&id2), &ten);
+    token_client.mint(&sig, nonce, &id2, &amount);
+    assert_eq!(token_client.balance(&id2), amount);
 }

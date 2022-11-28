@@ -1,5 +1,5 @@
 [package]
-name = "test_add_bigint"
+name = "test_add_u128"
 version = "0.2.1"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
