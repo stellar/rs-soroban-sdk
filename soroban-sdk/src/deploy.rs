@@ -7,10 +7,6 @@
 //! executing contract will have an ID derived from the currently executing
 //! contract's ID.
 //!
-//! - [Deployer::with_ed25519] – A contract deployed by the currently executing
-//! contract with an ed25519 public key will have an ID derived from the ed25519
-//! public key.
-//!
 //! The deployer can be created using [Env::deployer].
 //!
 //! ### Examples
@@ -22,11 +18,10 @@
 //! #
 //! # #[contractimpl]
 //! # impl Contract {
-//! #     pub fn f(env: Env) {
-//! # let wasm = [0u8; 32];
-//! # let salt = [0u8; 32];
-//! let deployer = env.deployer().with_current_contract(&salt);
-//! let contract_id = deployer.deploy(&wasm);
+//! #     pub fn f(env: Env, wasm_id: BytesN<32>) {
+//! #         let salt = [0u8; 32];
+//! #         let deployer = env.deployer().with_current_contract(&salt);
+//! #         let contract_id = deployer.deploy(&wasm_id);
 //! #     }
 //! # }
 //! #
@@ -35,7 +30,9 @@
 //! #     let env = Env::default();
 //! #     let contract_id = BytesN::from_array(&env, &[0; 32]);
 //! #     env.register_contract(&contract_id, Contract);
-//! #     ContractClient::new(&env, &contract_id).f();
+//! #     // Install the contract code before deploying its instance.
+//! #     let wasm_id = env.install_contract_wasm(&[0u8; 100]);
+//! #     ContractClient::new(&env, &contract_id).f(&wasm_id);
 //! # }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }

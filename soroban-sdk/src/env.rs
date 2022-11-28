@@ -419,11 +419,39 @@ impl Env {
         contract_id
     }
 
-    /// Register a contract in a WASM file with the [Env] for testing.
+    /// Install the contract WASM code to the [Env] for testing.
     ///
-    /// Passing a contract ID for the first arguments registers the contract
-    /// with that contract ID. Providing `None` causes a random ID to be
-    /// assigned to the contract.
+    /// Returns the identifier of the installed code that can be then used for
+    /// the contract deployment.
+    ///
+    /// This is mostly useful for contract factory testing, otherwise use
+    /// `register_contract_wasm` function that installs and deploys the contract
+    /// in a single call.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// # fn main() {
+    /// let env = Env::default();
+    /// env.install_contract_wasm(WASM);
+    /// # }
+    /// ```
+    pub fn install_contract_wasm<'a>(&self, contract_wasm: &[u8]) -> BytesN<32> {
+        self.env_impl
+            .invoke_function(xdr::HostFunction::InstallContractCode(
+                xdr::InstallContractCodeArgs {
+                    code: contract_wasm.clone().try_into().unwrap(),
+                },
+            ))
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Register a contract in a WASM file with the [Env] for testing.
     ///
     /// Returns the contract ID of the registered contract.
     ///
@@ -435,21 +463,11 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract_wasm(&contract_id, WASM);
+    /// env.register_contract_wasm(WASM);
     /// # }
     /// ```
     pub fn register_contract_wasm<'a>(&self, contract_wasm: &[u8]) -> BytesN<32> {
-        let wasm_id: BytesN<32> = self
-            .env_impl
-            .invoke_function(xdr::HostFunction::InstallContractCode(
-                xdr::InstallContractCodeArgs {
-                    code: contract_wasm.clone().try_into().unwrap(),
-                },
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap();
+        let wasm_id: BytesN<32> = self.install_contract_wasm(contract_wasm);
         self.register_contract_with_source(xdr::ScContractCode::WasmRef(xdr::Hash(
             wasm_id.to_array(),
         )))
@@ -469,8 +487,7 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract_token(&contract_id);
+    /// env.register_contract_token();
     /// # }
     /// ```
     pub fn register_contract_token<'a>(&self) -> BytesN<32> {
