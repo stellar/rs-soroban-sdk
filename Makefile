@@ -6,8 +6,8 @@ CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest 
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
-	cargo test --doc -p soroban-sdk -p soroban-sdk-macros -p soroban-auth --features testutils
-	cargo +nightly doc -p soroban-sdk -p soroban-auth --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
+	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils
+	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 test: fmt build
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
@@ -27,11 +27,6 @@ readme:
 	cd soroban-sdk \
 		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
 		&& cat ../target/doc/soroban_sdk.json \
-		| jq -r '.index[.root].docs' \
-		> README.md
-	cd soroban-auth \
-		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
-		&& cat ../target/doc/soroban_auth.json \
 		| jq -r '.index[.root].docs' \
 		> README.md
 
