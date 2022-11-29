@@ -49,8 +49,7 @@ pub trait Logger {
 pub trait AccountId {
     /// Generate a random account ID.
     //
-    // The value filled is not cryptographically secure and is only intended for
-    // use in tests.
+    // The value filled is not cryptographically secure.
     fn random(env: &Env) -> crate::AccountId;
 }
 
@@ -81,15 +80,13 @@ pub trait Accounts {
 pub trait BytesN<const N: usize> {
     // Generate a BytesN filled with random bytes.
     //
-    // The value filled is not cryptographically secure and is only intended for
-    // use in tests.
+    // The value filled is not cryptographically secure.
     fn random(env: &Env) -> crate::BytesN<N>;
 }
 
 /// Generates an array of N random bytes.
 ///
-/// The value returned is not cryptographically secure and is only intended for
-/// use in tests.
+/// The value returned is not cryptographically secure.
 pub fn random<const N: usize>() -> [u8; N] {
     use rand::RngCore;
     let mut arr = [0u8; N];
