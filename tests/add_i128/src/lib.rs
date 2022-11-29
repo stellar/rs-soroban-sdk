@@ -19,8 +19,7 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let x = 2i128.pow(70);
