@@ -8,7 +8,7 @@ mod addcontract {
     use crate as soroban_sdk;
     soroban_sdk::contractimport!(
         file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm",
-        sha256 = "134b7bb632955e2851c85015852fbf1e0d6e7625029b2e38a54cb9044d9501da",
+        sha256 = "ccdd95bcb18a2c0dcf4d277cb12bd905ce2442b38d9320c294184e6a5135b6e0",
     );
 }
 
@@ -25,7 +25,7 @@ impl Contract {
 fn test_functional() {
     let e = Env::default();
 
-    let add_contract_id = e.register_contract_wasm(None, addcontract::WASM);
+    let add_contract_id = e.register_contract_wasm(addcontract::WASM);
 
     let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);

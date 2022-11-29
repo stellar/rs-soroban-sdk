@@ -4,11 +4,14 @@
 //! Utilities intended for use when testing.
 
 mod sign;
+use rand::RngCore;
 pub use sign::ed25519;
 
 pub use crate::env::testutils::*;
 
 use crate::{AccountId, BytesN, Env, RawVal, Symbol, Vec};
+
+use crate::env::xdr;
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -66,4 +69,25 @@ pub trait Accounts {
 
     /// Remove an account.
     fn remove(&self, id: &AccountId);
+}
+
+/// Generates a Rust array of N random bytes.
+pub fn random_bytes_array<const N: usize>() -> [u8; N] {
+    let mut arr = [0u8; N];
+    rand::thread_rng().fill_bytes(&mut arr);
+    arr
+}
+
+/// Generates a random Stellar `AccountId` XDR.
+pub fn random_account_id() -> xdr::AccountId {
+    xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
+        random_bytes_array(),
+    )))
+}
+
+impl Env {
+    /// Generates a Host-owned array of `N` random bytes.
+    pub fn random_bytes<const N: usize>(&self) -> BytesN<N> {
+        BytesN::from_array(self, &random_bytes_array())
+    }
 }

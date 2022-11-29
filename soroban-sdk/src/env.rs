@@ -276,8 +276,6 @@ impl Env {
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{Accounts as _, ContractFunctionSet, Ledger as _};
 #[cfg(any(test, feature = "testutils"))]
-use rand::RngCore;
-#[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -410,9 +408,7 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            let mut contract_id = [0u8; 32];
-            rand::thread_rng().fill_bytes(&mut contract_id);
-            BytesN::from_array(self, &contract_id)
+            self.random_bytes()
         };
         self.env_impl
             .register_test_contract(
@@ -423,11 +419,39 @@ impl Env {
         contract_id
     }
 
-    /// Register a contract in a WASM file with the [Env] for testing.
+    /// Install the contract WASM code to the [Env] for testing.
     ///
-    /// Passing a contract ID for the first arguments registers the contract
-    /// with that contract ID. Providing `None` causes a random ID to be
-    /// assigned to the contract.
+    /// Returns the hash of the installed code that can be then used for
+    /// the contract deployment.
+    ///
+    /// Useful for contract factory testing, otherwise use
+    /// `register_contract_wasm` function that installs and deploys the contract
+    /// in a single call.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// # fn main() {
+    /// let env = Env::default();
+    /// env.install_contract_wasm(WASM);
+    /// # }
+    /// ```
+    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
+        self.env_impl
+            .invoke_function(xdr::HostFunction::InstallContractCode(
+                xdr::InstallContractCodeArgs {
+                    code: contract_wasm.clone().try_into().unwrap(),
+                },
+            ))
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Register a contract in a WASM file with the [Env] for testing.
     ///
     /// Returns the contract ID of the registered contract.
     ///
@@ -439,26 +463,14 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract_wasm(&contract_id, WASM);
+    /// env.register_contract_wasm(WASM);
     /// # }
     /// ```
-    pub fn register_contract_wasm<'a>(
-        &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
-        contract_wasm: &[u8],
-    ) -> BytesN<32> {
-        let contract_id = if let Some(contract_id) = contract_id.into() {
-            contract_id.clone()
-        } else {
-            let mut contract_id = [0u8; 32];
-            rand::thread_rng().fill_bytes(&mut contract_id);
-            BytesN::from_array(self, &contract_id)
-        };
-        self.env_impl
-            .register_test_contract_wasm(contract_id.to_object(), contract_wasm)
-            .unwrap();
-        contract_id
+    pub fn register_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
+        let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
+        self.register_contract_with_source(xdr::ScContractCode::WasmRef(xdr::Hash(
+            wasm_hash.to_array(),
+        )))
     }
 
     /// Register the built-in token contract with the [Env] for testing.
@@ -475,24 +487,38 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract_token(&contract_id);
+    /// env.register_contract_token();
     /// # }
     /// ```
-    pub fn register_contract_token<'a>(
-        &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
-    ) -> BytesN<32> {
-        let contract_id = if let Some(contract_id) = contract_id.into() {
-            contract_id.clone()
+    pub fn register_contract_token(&self) -> BytesN<32> {
+        self.register_contract_with_source(xdr::ScContractCode::Token)
+    }
+
+    fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
+        use crate::testutils::random_account_id;
+        use crate::testutils::random_bytes_array;
+        let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
+            Some(prev_acc)
         } else {
-            let mut contract_id = [0u8; 32];
-            rand::thread_rng().fill_bytes(&mut contract_id);
-            BytesN::from_array(self, &contract_id)
+            None
         };
-        self.env_impl
-            .register_test_contract_token(contract_id.to_object())
+        self.env_impl.set_source_account(random_account_id());
+
+        let contract_id: BytesN<32> = self
+            .env_impl
+            .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
+                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random_bytes_array())),
+                source,
+            }))
+            .unwrap()
+            .try_into_val(self)
             .unwrap();
+
+        if let Some(prev_acc) = prev_source_account {
+            self.env_impl.set_source_account(prev_acc);
+        } else {
+            self.env_impl.remove_source_account();
+        }
         contract_id
     }
 }
