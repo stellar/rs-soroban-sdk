@@ -424,7 +424,7 @@ impl Env {
     /// Returns the hash of the installed code that can be then used for
     /// the contract deployment.
     ///
-    /// Useful for contract factory testing, otherwise use 
+    /// Useful for contract factory testing, otherwise use
     /// `register_contract_wasm` function that installs and deploys the contract
     /// in a single call.
     ///
