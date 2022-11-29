@@ -2,6 +2,7 @@ use std::{fs, io};
 
 pub mod types;
 
+use itertools::Itertools;
 use sha2::{Digest, Sha256};
 use stellar_xdr::ScSpecEntry;
 
@@ -50,10 +51,12 @@ pub fn generate_from_wasm(wasm: &[u8]) -> Result<String, FromWasmError> {
 }
 
 pub fn generate(spec: &[ScSpecEntry]) -> String {
-    spec.iter()
-        .map(Entry::from)
-        .map(|e| serde_json::to_string_pretty(&e).expect("serialization of the spec entries should not have any failure cases as all keys are strings and the serialize implementations are derived"))
-        .collect()
+    format!("[{}]",
+        spec.iter()
+            .map(Entry::from)
+            .map(|e| serde_json::to_string_pretty(&e).expect("serialization of the spec entries should not have any failure cases as all keys are strings and the serialize implementations are derived"))
+            .join(",")
+    )
 }
 
 #[cfg(test)]
@@ -71,7 +74,7 @@ mod test {
         let json = generate(&entries);
         assert_eq!(
             json,
-            r#"{
+            r#"[{
   "type": "enum",
   "name": "UdtEnum2",
   "cases": [
@@ -84,7 +87,7 @@ mod test {
       "value": 15
     }
   ]
-}{
+},{
   "type": "union",
   "name": "UdtEnum",
   "cases": [
@@ -120,7 +123,7 @@ mod test {
       ]
     }
   ]
-}{
+},{
   "type": "struct",
   "name": "UdtTuple",
   "fields": [
@@ -140,7 +143,7 @@ mod test {
       }
     }
   ]
-}{
+},{
   "type": "struct",
   "name": "UdtStruct",
   "fields": [
@@ -166,7 +169,7 @@ mod test {
       }
     }
   ]
-}{
+},{
   "type": "function",
   "name": "add",
   "inputs": [
@@ -190,7 +193,7 @@ mod test {
       "type": "i64"
     }
   ]
-}"#,
+}]"#,
         );
     }
 }
