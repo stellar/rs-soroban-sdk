@@ -439,7 +439,7 @@ impl Env {
     /// env.install_contract_wasm(WASM);
     /// # }
     /// ```
-    pub fn install_contract_wasm<'a>(&self, contract_wasm: &[u8]) -> BytesN<32> {
+    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
         self.env_impl
             .invoke_function(xdr::HostFunction::InstallContractCode(
                 xdr::InstallContractCodeArgs {
@@ -466,7 +466,7 @@ impl Env {
     /// env.register_contract_wasm(WASM);
     /// # }
     /// ```
-    pub fn register_contract_wasm<'a>(&self, contract_wasm: &[u8]) -> BytesN<32> {
+    pub fn register_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
         self.register_contract_with_source(xdr::ScContractCode::WasmRef(xdr::Hash(
             wasm_hash.to_array(),
@@ -490,11 +490,11 @@ impl Env {
     /// env.register_contract_token();
     /// # }
     /// ```
-    pub fn register_contract_token<'a>(&self) -> BytesN<32> {
+    pub fn register_contract_token(&self) -> BytesN<32> {
         self.register_contract_with_source(xdr::ScContractCode::Token)
     }
 
-    fn register_contract_with_source<'a>(&self, source: xdr::ScContractCode) -> BytesN<32> {
+    fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
         use crate::testutils::random_account_id;
         use crate::testutils::random_id;
         let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
