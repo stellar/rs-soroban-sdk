@@ -2,7 +2,6 @@ use std::{fs, io};
 
 pub mod types;
 
-use itertools::Itertools;
 use sha2::{Digest, Sha256};
 use stellar_xdr::ScSpecEntry;
 
@@ -51,12 +50,8 @@ pub fn generate_from_wasm(wasm: &[u8]) -> Result<String, FromWasmError> {
 }
 
 pub fn generate(spec: &[ScSpecEntry]) -> String {
-    format!("[{}]",
-        spec.iter()
-            .map(Entry::from)
-            .map(|e| serde_json::to_string_pretty(&e).expect("serialization of the spec entries should not have any failure cases as all keys are strings and the serialize implementations are derived"))
-            .join(",")
-    )
+    let collected: Vec<_> = spec.iter().map(Entry::from).collect();
+    serde_json::to_string_pretty(&collected).expect("serialization of the spec entries should not have any failure cases as all keys are strings and the serialize implementations are derived")
 }
 
 #[cfg(test)]
@@ -74,126 +69,132 @@ mod test {
         let json = generate(&entries);
         assert_eq!(
             json,
-            r#"[{
-  "type": "enum",
-  "name": "UdtEnum2",
-  "cases": [
-    {
-      "name": "A",
-      "value": 10
-    },
-    {
-      "name": "B",
-      "value": 15
-    }
-  ]
-},{
-  "type": "union",
-  "name": "UdtEnum",
-  "cases": [
-    {
-      "name": "UdtA",
-      "values": []
-    },
-    {
-      "name": "UdtB",
-      "values": [
-        {
-          "type": "custom",
-          "name": "UdtStruct"
-        }
-      ]
-    },
-    {
-      "name": "UdtC",
-      "values": [
-        {
-          "type": "custom",
-          "name": "UdtEnum2"
-        }
-      ]
-    },
-    {
-      "name": "UdtD",
-      "values": [
-        {
-          "type": "custom",
-          "name": "UdtTuple"
-        }
-      ]
-    }
-  ]
-},{
-  "type": "struct",
-  "name": "UdtTuple",
-  "fields": [
-    {
-      "name": "0",
-      "value": {
-        "type": "i64"
+            r#"[
+  {
+    "type": "enum",
+    "name": "UdtEnum2",
+    "cases": [
+      {
+        "name": "A",
+        "value": 10
+      },
+      {
+        "name": "B",
+        "value": 15
       }
-    },
-    {
-      "name": "1",
-      "value": {
-        "type": "vec",
-        "element": {
+    ]
+  },
+  {
+    "type": "union",
+    "name": "UdtEnum",
+    "cases": [
+      {
+        "name": "UdtA",
+        "values": []
+      },
+      {
+        "name": "UdtB",
+        "values": [
+          {
+            "type": "custom",
+            "name": "UdtStruct"
+          }
+        ]
+      },
+      {
+        "name": "UdtC",
+        "values": [
+          {
+            "type": "custom",
+            "name": "UdtEnum2"
+          }
+        ]
+      },
+      {
+        "name": "UdtD",
+        "values": [
+          {
+            "type": "custom",
+            "name": "UdtTuple"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "UdtTuple",
+    "fields": [
+      {
+        "name": "0",
+        "value": {
           "type": "i64"
         }
-      }
-    }
-  ]
-},{
-  "type": "struct",
-  "name": "UdtStruct",
-  "fields": [
-    {
-      "name": "a",
-      "value": {
-        "type": "i64"
-      }
-    },
-    {
-      "name": "b",
-      "value": {
-        "type": "i64"
-      }
-    },
-    {
-      "name": "c",
-      "value": {
-        "type": "vec",
-        "element": {
-          "type": "i64"
+      },
+      {
+        "name": "1",
+        "value": {
+          "type": "vec",
+          "element": {
+            "type": "i64"
+          }
         }
       }
-    }
-  ]
-},{
-  "type": "function",
-  "name": "add",
-  "inputs": [
-    {
-      "name": "a",
-      "value": {
-        "type": "custom",
-        "name": "UdtEnum"
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "UdtStruct",
+    "fields": [
+      {
+        "name": "a",
+        "value": {
+          "type": "i64"
+        }
+      },
+      {
+        "name": "b",
+        "value": {
+          "type": "i64"
+        }
+      },
+      {
+        "name": "c",
+        "value": {
+          "type": "vec",
+          "element": {
+            "type": "i64"
+          }
+        }
       }
-    },
-    {
-      "name": "b",
-      "value": {
-        "type": "custom",
-        "name": "UdtEnum"
+    ]
+  },
+  {
+    "type": "function",
+    "name": "add",
+    "inputs": [
+      {
+        "name": "a",
+        "value": {
+          "type": "custom",
+          "name": "UdtEnum"
+        }
+      },
+      {
+        "name": "b",
+        "value": {
+          "type": "custom",
+          "name": "UdtEnum"
+        }
       }
-    }
-  ],
-  "outputs": [
-    {
-      "type": "i64"
-    }
-  ]
-}]"#,
+    ],
+    "outputs": [
+      {
+        "type": "i64"
+      }
+    ]
+  }
+]"#,
         );
     }
 }
