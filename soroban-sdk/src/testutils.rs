@@ -87,7 +87,7 @@ pub trait BytesN<const N: usize> {
 /// Generates an array of N random bytes.
 ///
 /// The value returned is not cryptographically secure.
-pub fn random<const N: usize>() -> [u8; N] {
+pub(crate) fn random<const N: usize>() -> [u8; N] {
     use rand::RngCore;
     let mut arr = [0u8; N];
     rand::thread_rng().fill_bytes(&mut arr);
