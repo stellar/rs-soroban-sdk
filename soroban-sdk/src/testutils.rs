@@ -48,6 +48,9 @@ pub trait Logger {
 /// Test utilities for [`AccountId`][crate::accounts::AccountId].
 pub trait AccountId {
     /// Generate a random account ID.
+    //
+    // The value filled is not cryptographically secure and is only intended for
+    // use in tests.
     fn random(env: &Env) -> crate::AccountId;
 }
 
@@ -76,6 +79,10 @@ pub trait Accounts {
 
 /// Test utilities for [`BytesN`][crate::BytesN].
 pub trait BytesN<const N: usize> {
+    // Generate a BytesN filled with random bytes.
+    //
+    // The value filled is not cryptographically secure and is only intended for
+    // use in tests.
     fn random(env: &Env) -> crate::BytesN<N>;
 }
 
