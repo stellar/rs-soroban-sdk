@@ -71,20 +71,23 @@ pub trait Accounts {
     fn remove(&self, id: &AccountId);
 }
 
-pub fn random_id() -> [u8; 32] {
-    let mut id = [0u8; 32];
-    rand::thread_rng().fill_bytes(&mut id);
-    id
+/// Generates a Rust array of N random bytes.
+pub fn random_bytes_array<const N: usize>() -> [u8; N] {
+    let mut arr = [0u8; N];
+    rand::thread_rng().fill_bytes(&mut arr);
+    arr
 }
 
+/// Generates a random Stellar `AccountId` XDR.
 pub fn random_account_id() -> xdr::AccountId {
     xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
-        random_id(),
+        random_bytes_array(),
     )))
 }
 
 impl Env {
-    pub fn random_id_bytes(&self) -> BytesN<32> {
-        BytesN::from_array(self, &random_id())
+    /// Generates a Host-owned array of `N` random bytes.
+    pub fn random_bytes<const N: usize>(&self) -> BytesN<N> {
+        BytesN::from_array(self, &random_bytes_array())
     }
 }

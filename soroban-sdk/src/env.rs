@@ -408,7 +408,7 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            self.random_id_bytes()
+            self.random_bytes()
         };
         self.env_impl
             .register_test_contract(
@@ -496,7 +496,7 @@ impl Env {
 
     fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
         use crate::testutils::random_account_id;
-        use crate::testutils::random_id;
+        use crate::testutils::random_bytes_array;
         let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
             Some(prev_acc)
         } else {
@@ -507,7 +507,7 @@ impl Env {
         let contract_id: BytesN<32> = self
             .env_impl
             .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random_id())),
+                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random_bytes_array())),
                 source,
             }))
             .unwrap()
