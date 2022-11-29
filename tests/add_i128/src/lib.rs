@@ -12,7 +12,7 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{BytesN, Env};
+    use soroban_sdk::Env;
 
     use crate::{Contract, ContractClient};
 
