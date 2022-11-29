@@ -18,10 +18,10 @@
 //! #
 //! # #[contractimpl]
 //! # impl Contract {
-//! #     pub fn f(env: Env, wasm_id: BytesN<32>) {
+//! #     pub fn f(env: Env, wasm_hash: BytesN<32>) {
 //! #         let salt = [0u8; 32];
-//! #         let deployer = env.deployer().with_current_contract(&salt);
-//! #         let contract_id = deployer.deploy(&wasm_id);
+//! let deployer = env.deployer().with_current_contract(&salt);
+//! let contract_id = deployer.deploy(&wasm_hash);
 //! #     }
 //! # }
 //! #
@@ -31,8 +31,8 @@
 //! #     let contract_id = BytesN::from_array(&env, &[0; 32]);
 //! #     env.register_contract(&contract_id, Contract);
 //! #     // Install the contract code before deploying its instance.
-//! #     let wasm_id = env.install_contract_wasm(&[0u8; 100]);
-//! #     ContractClient::new(&env, &contract_id).f(&wasm_id);
+//! #     let wasm_hash = env.install_contract_wasm(&[0u8; 100]);
+//! #     ContractClient::new(&env, &contract_id).f(&wasm_hash);
 //! # }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }

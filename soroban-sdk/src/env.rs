@@ -421,10 +421,10 @@ impl Env {
 
     /// Install the contract WASM code to the [Env] for testing.
     ///
-    /// Returns the identifier of the installed code that can be then used for
+    /// Returns the hash of the installed code that can be then used for
     /// the contract deployment.
     ///
-    /// This is mostly useful for contract factory testing, otherwise use
+    /// Useful for contract factory testing, otherwise use 
     /// `register_contract_wasm` function that installs and deploys the contract
     /// in a single call.
     ///
@@ -467,9 +467,9 @@ impl Env {
     /// # }
     /// ```
     pub fn register_contract_wasm<'a>(&self, contract_wasm: &[u8]) -> BytesN<32> {
-        let wasm_id: BytesN<32> = self.install_contract_wasm(contract_wasm);
+        let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
         self.register_contract_with_source(xdr::ScContractCode::WasmRef(xdr::Hash(
-            wasm_id.to_array(),
+            wasm_hash.to_array(),
         )))
     }
 
