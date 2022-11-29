@@ -186,10 +186,10 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     let client_ident = format_ident!("{}", name);
     quote! {
         pub struct #client_ident {
-            env: soroban_sdk::Env,
-            contract_id: soroban_sdk::BytesN<32>,
+            pub env: soroban_sdk::Env,
+            pub contract_id: soroban_sdk::BytesN<32>,
             #[cfg(any(test, feature = "testutils"))]
-            source_account: Option<soroban_sdk::AccountId>,
+            pub source_account: Option<soroban_sdk::AccountId>,
         }
 
         impl #client_ident {
