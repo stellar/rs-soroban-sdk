@@ -274,7 +274,9 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{Accounts as _, ContractFunctionSet, Ledger as _};
+use crate::testutils::{
+    random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet, Ledger as _,
+};
 #[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
 #[cfg(any(test, feature = "testutils"))]
@@ -408,7 +410,7 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            self.random_bytes()
+            BytesN::random(self)
         };
         self.env_impl
             .register_test_contract(
@@ -495,19 +497,18 @@ impl Env {
     }
 
     fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
-        use crate::testutils::random_account_id;
-        use crate::testutils::random_bytes_array;
         let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
             Some(prev_acc)
         } else {
             None
         };
-        self.env_impl.set_source_account(random_account_id());
+        self.env_impl
+            .set_source_account(AccountId::random(self).try_into().unwrap());
 
         let contract_id: BytesN<32> = self
             .env_impl
             .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random_bytes_array())),
+                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random())),
                 source,
             }))
             .unwrap()

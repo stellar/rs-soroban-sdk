@@ -4,14 +4,11 @@
 //! Utilities intended for use when testing.
 
 mod sign;
-use rand::RngCore;
 pub use sign::ed25519;
 
 pub use crate::env::testutils::*;
 
-use crate::{AccountId, BytesN, Env, RawVal, Symbol, Vec};
-
-use crate::env::xdr;
+use crate::{Env, RawVal, Symbol, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -48,46 +45,47 @@ pub trait Logger {
     fn print(&self);
 }
 
+/// Test utilities for [`AccountId`][crate::accounts::AccountId].
+pub trait AccountId {
+    /// Generate a random account ID.
+    fn random(env: &Env) -> crate::AccountId;
+}
+
 /// Test utilities for [`Accounts`][crate::accounts::Accounts].
 pub trait Accounts {
     /// Generate an account ID.
-    fn generate(&self) -> AccountId;
+    fn generate(&self) -> crate::AccountId;
 
     /// Generate and account ID and creates an account.
-    fn generate_and_create(&self) -> AccountId;
+    fn generate_and_create(&self) -> crate::AccountId;
 
     /// Create an account.
-    fn create(&self, id: &AccountId);
+    fn create(&self, id: &crate::AccountId);
 
     /// Set the thresholds of an account.
-    fn set_thresholds(&self, id: &AccountId, low: u8, med: u8, high: u8);
+    fn set_thresholds(&self, id: &crate::AccountId, low: u8, med: u8, high: u8);
 
     /// Set the weight of a signer of an account.
     ///
     /// Setting a weight of zero removes the signer from the account.
-    fn set_signer_weight(&self, id: &AccountId, signer: &BytesN<32>, weight: u8);
+    fn set_signer_weight(&self, id: &crate::AccountId, signer: &crate::BytesN<32>, weight: u8);
 
     /// Remove an account.
-    fn remove(&self, id: &AccountId);
+    fn remove(&self, id: &crate::AccountId);
 }
 
-/// Generates a Rust array of N random bytes.
-pub fn random_bytes_array<const N: usize>() -> [u8; N] {
+/// Test utilities for [`BytesN`][crate::BytesN].
+pub trait BytesN<const N: usize> {
+    fn random(env: &Env) -> crate::BytesN<N>;
+}
+
+/// Generates an array of N random bytes.
+///
+/// The value returned is not cryptographically secure and is only intended for
+/// use in tests.
+pub fn random<const N: usize>() -> [u8; N] {
+    use rand::RngCore;
     let mut arr = [0u8; N];
     rand::thread_rng().fill_bytes(&mut arr);
     arr
-}
-
-/// Generates a random Stellar `AccountId` XDR.
-pub fn random_account_id() -> xdr::AccountId {
-    xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
-        random_bytes_array(),
-    )))
-}
-
-impl Env {
-    /// Generates a Host-owned array of `N` random bytes.
-    pub fn random_bytes<const N: usize>(&self) -> BytesN<N> {
-        BytesN::from_array(self, &random_bytes_array())
-    }
 }
