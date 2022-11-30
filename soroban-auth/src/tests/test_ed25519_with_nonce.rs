@@ -9,7 +9,7 @@ pub enum DataKey {
 
 fn read_nonce(e: &Env, id: &Identifier) -> i128 {
     let key = DataKey::Nonce(id.clone());
-    e.data().get(key).unwrap_or_else(|| Ok(0)).unwrap()
+    e.data().get(key).unwrap_or(Ok(0)).unwrap()
 }
 
 fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: i128) {

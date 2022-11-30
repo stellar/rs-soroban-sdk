@@ -442,7 +442,7 @@ impl testutils::Accounts for Accounts {
                 a.account_id.0;
             if signer == &account_id_ed25519 {
                 // Master key.
-                a.thresholds.0[0] = weight.into();
+                a.thresholds.0[0] = weight;
             } else {
                 // Additional signer.
                 let mut signers = a.signers.to_vec();
@@ -509,14 +509,13 @@ impl Accounts {
                 let mut v = storage
                     .get(&k)
                     .ok()
-                    .map(|v| {
+                    .and_then(|v| {
                         if let xdr::LedgerEntryData::Account(_) = v.data {
                             Some(v)
                         } else {
                             None
                         }
                     })
-                    .flatten()
                     .unwrap_or_else(|| xdr::LedgerEntry {
                         data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(id)),
                         last_modified_ledger_seq: 0,
