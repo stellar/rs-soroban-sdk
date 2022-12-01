@@ -46,6 +46,7 @@ pub use internal::Symbol;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
+use xdr::LedgerEntry;
 
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
@@ -283,6 +284,8 @@ use crate::testutils::{
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
+#[cfg(any(test, feature = "testutils"))]
+use xdr::{Hash, LedgerKey, LedgerKeyContractCode};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -528,14 +531,39 @@ impl Env {
     ///
     /// # fn main() {
     /// let env = Env::default();
-    /// env.register_contract_wasm(WASM);
+    /// env.register_contract_wasm(None, WASM);
     /// # }
     /// ```
-    pub fn register_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
+    pub fn register_contract_wasm<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_wasm: &[u8],
+    ) -> BytesN<32> {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
-        self.register_contract_with_source(xdr::ScContractCode::WasmRef(xdr::Hash(
-            wasm_hash.to_array(),
-        )))
+        if let Some(contract_id) = contract_id.into() {
+            let hash = Hash(contract_id.into());
+            self.env_impl
+                .with_mut_storage(|storage| {
+                    storage.put(
+                        &LedgerKey::ContractCode(LedgerKeyContractCode { hash: hash.clone() }),
+                        &LedgerEntry {
+                            last_modified_ledger_seq: 0,
+                            ext: xdr::LedgerEntryExt::V0,
+                            data: xdr::LedgerEntryData::ContractCode(xdr::ContractCodeEntry {
+                                ext: xdr::ExtensionPoint::V0,
+                                hash,
+                                code: contract_wasm.try_into().unwrap(),
+                            }),
+                        },
+                    )
+                })
+                .unwrap();
+            contract_id.clone()
+        } else {
+            self.register_contract_with_source(xdr::ScContractCode::WasmRef(xdr::Hash(
+                wasm_hash.to_array(),
+            )))
+        }
     }
 
     /// Register the built-in token contract with the [Env] for testing.

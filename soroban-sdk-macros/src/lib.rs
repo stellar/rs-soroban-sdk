@@ -354,7 +354,7 @@ struct ContractImportArgs {
 /// fn test() {
 ///     let env = Env::default();
 ///     // Register contract A using the imported WASM.
-///     let contract_a_id = env.register_contract_wasm(contract_a::WASM);
+///     let contract_a_id = env.register_contract_wasm(None, contract_a::WASM);
 ///     let contract_b_id = BytesN::from_array(&env, &[1; 32]);
 ///     // Register contract B defined in this crate.
 ///     env.register_contract(&contract_b_id, ContractB);
