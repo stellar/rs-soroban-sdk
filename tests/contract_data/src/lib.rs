@@ -9,6 +9,10 @@ impl Contract {
         e.data().set(key, val)
     }
 
+    pub fn get(e: Env, key: Symbol) -> Option<Symbol> {
+        e.data().get(key).map(|v| v.unwrap())
+    }
+
     pub fn del(e: Env, key: Symbol) {
         e.data().remove(key)
     }

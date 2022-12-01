@@ -1,5 +1,4 @@
 use std::{
-    collections::HashMap,
     error::Error,
     fs::File,
     io::{Read, Write},
@@ -22,7 +21,7 @@ pub struct LedgerSnapshot {
     pub timestamp: u64,
     pub network_passphrase: Vec<u8>,
     pub base_reserve: u32,
-    pub entries: HashMap<Box<LedgerKey>, Box<LedgerEntry>>,
+    pub ledger_entries: Vec<(Box<LedgerKey>, Box<LedgerEntry>)>,
 }
 
 impl LedgerSnapshot {
@@ -61,7 +60,7 @@ impl LedgerSnapshot {
     pub fn entries<'a>(
         &'a self,
     ) -> impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)> {
-        self.entries.iter()
+        self.ledger_entries.iter().map(|(k, v)| (k, v))
     }
 
     // Replace the entries in the snapshot with the entries in the iterator.
@@ -69,9 +68,9 @@ impl LedgerSnapshot {
         &mut self,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)>,
     ) {
-        self.entries.clear();
+        self.ledger_entries.clear();
         for (k, e) in entries {
-            self.entries.insert(k.clone(), e.clone());
+            self.ledger_entries.push((k.clone(), e.clone()));
         }
     }
 
@@ -83,10 +82,16 @@ impl LedgerSnapshot {
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Option<Box<LedgerEntry>>)>,
     ) {
         for (k, e) in entries {
+            let i = self.ledger_entries.iter().position(|(ik, _)| ik == k);
             if let Some(e) = e {
-                self.entries.insert(k.clone(), e.clone());
-            } else {
-                self.entries.remove(k);
+                let new = (k.clone(), e.clone());
+                if let Some(i) = i {
+                    self.ledger_entries[i] = new;
+                } else {
+                    self.ledger_entries.push(new)
+                }
+            } else if let Some(i) = i {
+                self.ledger_entries.swap_remove(i);
             }
         }
     }
@@ -110,14 +115,14 @@ impl LedgerSnapshot {
 
     // Write a [`LedgerSnapshot`] to file.
     pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
-        self.write(File::open(p)?)
+        self.write(File::create(p)?)
     }
 }
 
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            entries: HashMap::default(),
+            ledger_entries: Vec::default(),
             protocol_version: 20,
             sequence_number: Default::default(),
             timestamp: Default::default(),
@@ -129,15 +134,15 @@ impl Default for LedgerSnapshot {
 
 impl SnapshotSource for &LedgerSnapshot {
     fn get(&self, key: &LedgerKey) -> Result<LedgerEntry, HostError> {
-        match self.entries.get(key) {
-            Some(v) => Ok(*v.clone()),
+        match self.ledger_entries.iter().find(|(k, _)| k.as_ref() == key) {
+            Some((_, v)) => Ok(*v.clone()),
             None => {
                 Err(ScStatus::HostStorageError(ScHostStorageErrorCode::AccessToUnknownEntry).into())
             }
         }
     }
     fn has(&self, key: &LedgerKey) -> Result<bool, HostError> {
-        Ok(self.entries.contains_key(key))
+        Ok(self.ledger_entries.iter().any(|(k, _)| k.as_ref() == key))
     }
 }
 
