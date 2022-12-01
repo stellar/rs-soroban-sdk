@@ -237,7 +237,7 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
     {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv.clone())
+        T::try_from_val(self, rv)
             .map_err(|_| ConversionError)
             .unwrap()
     }

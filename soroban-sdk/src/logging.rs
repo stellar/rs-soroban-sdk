@@ -132,7 +132,7 @@ impl Logger {
                 let args: Vec<RawVal> = Vec::from_slice(env, args);
                 internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object());
             } else {
-                env.log_static_fmt_general(fmt, &args, &[]).unwrap();
+                env.log_static_fmt_general(fmt, args, &[]).unwrap();
             }
         }
     }
