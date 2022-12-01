@@ -546,8 +546,8 @@ impl Env {
                     storage.put(
                         &LedgerKey::ContractCode(LedgerKeyContractCode { hash: hash.clone() }),
                         &LedgerEntry {
-                            last_modified_ledger_seq: 0,
                             ext: xdr::LedgerEntryExt::V0,
+                            last_modified_ledger_seq: 0, // TODO: Decide on what value to place here.
                             data: xdr::LedgerEntryData::ContractCode(xdr::ContractCodeEntry {
                                 ext: xdr::ExtensionPoint::V0,
                                 hash,
