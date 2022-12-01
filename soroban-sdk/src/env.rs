@@ -278,6 +278,8 @@ use crate::testutils::{
     random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet, Ledger as _,
 };
 #[cfg(any(test, feature = "testutils"))]
+use soroban_ledger_snapshot::LedgerSnapshot;
+#[cfg(any(test, feature = "testutils"))]
 use std::rc::Rc;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -323,6 +325,26 @@ impl Env {
             network_passphrase: vec![0u8],
             base_reserve: 0,
         });
+
+        env
+    }
+
+    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    ///
+    /// The ledger info and state in the snapshot are aloaded into the Env.
+    pub fn from_snapshot(s: LedgerSnapshot) -> Env {
+        let rf = Rc::new(s);
+        let storage = internal::storage::Storage::with_recording_footprint(rf);
+        let env_impl = internal::EnvImpl::with_storage_and_budget(
+            storage,
+            internal::budget::Budget::default(),
+        );
+
+        let env = Env { env_impl };
+
+        env.set_source_account(&env.accounts().generate());
+
+        env.ledger().set(s.to_ledger_info());
 
         env
     }
