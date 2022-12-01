@@ -20,6 +20,9 @@ pub trait Ledger {
     /// Set ledger info.
     fn set(&self, l: LedgerInfo);
 
+    /// Get ledger info.
+    fn get(&self) -> LedgerInfo;
+
     /// Modify the ledger info.
     fn with_mut<F>(&self, f: F)
     where

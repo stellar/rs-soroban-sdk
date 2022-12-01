@@ -885,6 +885,7 @@ version = "0.0.9"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=eda2ab70#eda2ab70fbc2a9f78a12f54a211e308d1b6ac1b7"
 dependencies = [
  "crate-git-revision",
+ "serde",
  "soroban-env-macros",
  "soroban-wasmi",
  "static_assertions",
@@ -936,6 +937,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-ledger-snapshot"
+version = "0.2.1"
+dependencies = [
+ "pretty_assertions",
+ "serde",
+ "serde_json",
+ "soroban-env-host",
+]
+
+[[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.9"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=eda2ab70#eda2ab70fbc2a9f78a12f54a211e308d1b6ac1b7"
@@ -956,6 +967,7 @@ dependencies = [
  "rand 0.8.5",
  "soroban-env-guest",
  "soroban-env-host",
+ "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
  "stellar-strkey",

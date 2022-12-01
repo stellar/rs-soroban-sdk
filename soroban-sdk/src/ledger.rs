@@ -104,6 +104,11 @@ impl testutils::Ledger for Ledger {
         env.host().set_ledger_info(li);
     }
 
+    fn get(&self) -> testutils::LedgerInfo {
+        let env = self.env();
+        env.host().with_ledger_info(|li| Ok(li.clone())).unwrap()
+    }
+
     fn with_mut<F>(&self, f: F)
     where
         F: FnMut(&mut internal::LedgerInfo),
