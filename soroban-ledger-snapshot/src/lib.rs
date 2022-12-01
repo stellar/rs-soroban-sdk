@@ -122,12 +122,12 @@ impl LedgerSnapshot {
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            ledger_entries: Vec::default(),
             protocol_version: 20,
             sequence_number: Default::default(),
             timestamp: Default::default(),
             network_passphrase: Vec::default(),
             base_reserve: Default::default(),
+            ledger_entries: Vec::default(),
         }
     }
 }
