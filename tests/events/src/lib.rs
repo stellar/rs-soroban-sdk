@@ -42,7 +42,7 @@ mod test {
                     symbol!("hello").into_val(&env)
                 ),
                 (
-                    contract_id.clone(),
+                    contract_id,
                     // Expect these event topics.
                     (symbol!("farewells"), symbol!("topic2")).into_val(&env),
                     // Expect this event body.

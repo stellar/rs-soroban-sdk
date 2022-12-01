@@ -11,8 +11,8 @@ pub use super::env::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
 
 // XDR contract val types.
 pub use super::env::xdr::{
-    ScBigInt, ScMap, ScMapEntry, ScNumSign, ScObject, ScObjectType, ScStatic, ScStatus,
-    ScStatusType, ScSymbol, ScVal, ScValType, ScVec,
+    ScMap, ScMapEntry, ScObject, ScObjectType, ScStatic, ScStatus, ScStatusType, ScSymbol, ScVal,
+    ScValType, ScVec,
 };
 
 // XDR contract error codes.

@@ -204,6 +204,14 @@ impl TryFrom<AccountId> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl TryFrom<AccountId> for super::xdr::AccountId {
+    type Error = ConversionError;
+    fn try_from(v: AccountId) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for AccountId {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
@@ -262,6 +270,18 @@ impl AccountId {
 
     pub fn to_object(&self) -> Object {
         self.0.to_object()
+    }
+}
+
+#[cfg(feature = "testutils")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl crate::testutils::AccountId for AccountId {
+    fn random(env: &Env) -> AccountId {
+        xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
+            crate::testutils::random(),
+        )))
+        .try_into_val(env)
+        .unwrap()
     }
 }
 
@@ -373,7 +393,7 @@ impl Account {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils;
+use crate::testutils::{self, AccountId as _};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -385,12 +405,7 @@ impl testutils::Accounts for Accounts {
     }
 
     fn generate(&self) -> AccountId {
-        use rand::RngCore;
-        let mut bytes: [u8; 32] = Default::default();
-        rand::thread_rng().fill_bytes(&mut bytes);
-        xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(bytes)))
-            .try_into_val(self.env())
-            .unwrap()
+        AccountId::random(self.env())
     }
 
     fn create(&self, id: &AccountId) {
@@ -427,7 +442,7 @@ impl testutils::Accounts for Accounts {
                 a.account_id.0;
             if signer == &account_id_ed25519 {
                 // Master key.
-                a.thresholds.0[0] = weight.into();
+                a.thresholds.0[0] = weight;
             } else {
                 // Additional signer.
                 let mut signers = a.signers.to_vec();
@@ -494,14 +509,13 @@ impl Accounts {
                 let mut v = storage
                     .get(&k)
                     .ok()
-                    .map(|v| {
+                    .and_then(|v| {
                         if let xdr::LedgerEntryData::Account(_) = v.data {
                             Some(v)
                         } else {
                             None
                         }
                     })
-                    .flatten()
                     .unwrap_or_else(|| xdr::LedgerEntry {
                         data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(id)),
                         last_modified_ledger_seq: 0,

@@ -66,6 +66,8 @@ use crate::{
 #[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
+    #[cfg(any(test, feature = "testutils"))]
+    snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
 impl Default for Env {
@@ -237,7 +239,7 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
     {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv.clone())
+        T::try_from_val(self, rv)
             .map_err(|_| ConversionError)
             .unwrap()
     }
@@ -274,9 +276,13 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{Accounts as _, ContractFunctionSet, Ledger as _};
+use crate::testutils::{
+    random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet, Ledger as _,
+};
 #[cfg(any(test, feature = "testutils"))]
-use std::rc::Rc;
+use soroban_ledger_snapshot::LedgerSnapshot;
+#[cfg(any(test, feature = "testutils"))]
+use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -310,7 +316,10 @@ impl Env {
             internal::budget::Budget::default(),
         );
 
-        let env = Env { env_impl };
+        let env = Env {
+            env_impl,
+            snapshot: None,
+        };
 
         env.set_source_account(&env.accounts().generate());
 
@@ -323,6 +332,62 @@ impl Env {
         });
 
         env
+    }
+
+    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    ///
+    /// The ledger info and state in the snapshot are aloaded into the Env.
+    pub fn from_snapshot(s: LedgerSnapshot) -> Env {
+        let info = s.ledger_info();
+
+        let rs = Rc::new(s.clone());
+        let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
+        let env_impl = internal::EnvImpl::with_storage_and_budget(
+            storage,
+            internal::budget::Budget::default(),
+        );
+
+        let env = Env {
+            env_impl,
+            snapshot: Some(rs.clone()),
+        };
+
+        env.set_source_account(&env.accounts().generate());
+
+        env.ledger().set(info);
+
+        env
+    }
+
+    /// Creates a new Env loaded with the ledger snapshot loaded from the file.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
+        Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
+    }
+
+    /// Create a snapshot from the Env's current state.
+    pub fn to_snapshot(&self) -> LedgerSnapshot {
+        let snapshot = self.snapshot.clone().unwrap_or_default();
+        let mut snapshot = (*snapshot).clone();
+        snapshot.set_ledger_info(self.ledger().get());
+        let storage = self
+            .env_impl
+            .with_mut_storage(|s| Ok(s.map.clone()))
+            .unwrap();
+        snapshot.update_entries(storage.iter());
+        snapshot
+    }
+
+    /// Create a snapshot file from the Env's current state.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_snapshot().write_file(p).unwrap();
     }
 
     /// Sets the source account in the [Env].
@@ -408,7 +473,7 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            self.random_bytes()
+            BytesN::random(self)
         };
         self.env_impl
             .register_test_contract(
@@ -495,19 +560,18 @@ impl Env {
     }
 
     fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
-        use crate::testutils::random_account_id;
-        use crate::testutils::random_bytes_array;
         let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
             Some(prev_acc)
         } else {
             None
         };
-        self.env_impl.set_source_account(random_account_id());
+        self.env_impl
+            .set_source_account(AccountId::random(self).try_into().unwrap());
 
         let contract_id: BytesN<32> = self
             .env_impl
             .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random_bytes_array())),
+                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random())),
                 source,
             }))
             .unwrap()
@@ -526,7 +590,11 @@ impl Env {
 #[doc(hidden)]
 impl Env {
     pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
-        Env { env_impl }
+        Env {
+            env_impl,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
+        }
     }
 }
 
@@ -543,6 +611,8 @@ impl internal::EnvBase for Env {
     fn deep_clone(&self) -> Self {
         Env {
             env_impl: self.env_impl.deep_clone(),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: self.snapshot.clone(),
         }
     }
 

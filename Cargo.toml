@@ -6,10 +6,12 @@ members = [
     "soroban-auth",
     "soroban-sdk-macros",
     "soroban-spec",
+    "soroban-ledger-snapshot",
     "soroban-token-spec",
     "tests/empty",
     "tests/add_u64",
-    "tests/add_bigint",
+    "tests/add_i128",
+    "tests/add_u128",
     "tests/import_contract",
     "tests/invoke_contract",
     "tests/udt",
@@ -27,22 +29,23 @@ soroban-sdk = { version = "0.2.1", path = "soroban-sdk" }
 soroban-sdk-macros = { version = "0.2.1", path = "soroban-sdk-macros" }
 soroban-auth = { version = "0.2.1", path = "soroban-auth" }
 soroban-spec = { version = "0.2.1", path = "soroban-spec" }
+soroban-ledger-snapshot = { version = "0.2.1", path = "soroban-ledger-snapshot" }
 soroban-token-spec = { version = "0.2.1", path = "soroban-token-spec" }
 
 [workspace.dependencies.soroban-env-common]
 version = "0.0.9"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "f5d64c9c"
+rev = "eda2ab70"
 
 [workspace.dependencies.soroban-env-guest]
 version = "0.0.9"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "f5d64c9c"
+rev = "eda2ab70"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.9"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "f5d64c9c"
+rev = "eda2ab70"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.6"
@@ -52,7 +55,7 @@ rev = "5e582a8b"
 [workspace.dependencies.stellar-xdr]
 version = "0.0.7"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "5fd7c7d4"
+rev = "2775f4b6"
 default-features = false
 
 # [patch."https://github.com/stellar/rs-soroban-env"]

@@ -67,7 +67,7 @@ use crate::{
 /// assert_eq!(
 ///     env.logger().all(),
 ///     std::vec![
-///         "a log entry: I32(5), Symbol(another), Object(Vec(4))".to_string(),
+///         "a log entry: I32(5), Symbol(another), Object(Vec(#4))".to_string(),
 ///     ],
 /// );
 /// # }
@@ -132,7 +132,7 @@ impl Logger {
                 let args: Vec<RawVal> = Vec::from_slice(env, args);
                 internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object());
             } else {
-                env.log_static_fmt_general(fmt, &args, &[]).unwrap();
+                env.log_static_fmt_general(fmt, args, &[]).unwrap();
             }
         }
     }
