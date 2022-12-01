@@ -333,6 +333,8 @@ impl Env {
     ///
     /// The ledger info and state in the snapshot are aloaded into the Env.
     pub fn from_snapshot(s: LedgerSnapshot) -> Env {
+        let info = s.ledger_info();
+
         let rf = Rc::new(s);
         let storage = internal::storage::Storage::with_recording_footprint(rf);
         let env_impl = internal::EnvImpl::with_storage_and_budget(
@@ -344,7 +346,7 @@ impl Env {
 
         env.set_source_account(&env.accounts().generate());
 
-        env.ledger().set(s.to_ledger_info());
+        env.ledger().set(info);
 
         env
     }
