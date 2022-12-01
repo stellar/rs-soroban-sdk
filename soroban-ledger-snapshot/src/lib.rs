@@ -26,6 +26,7 @@ pub struct LedgerSnapshot {
 }
 
 impl LedgerSnapshot {
+    // Create a ledger snapshot from ledger info and a set of entries.
     pub fn from<'a>(
         info: LedgerInfo,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)>,
@@ -36,7 +37,8 @@ impl LedgerSnapshot {
         s
     }
 
-    pub fn to_ledger_info(&self) -> LedgerInfo {
+    // Get the ledger info in the snapshot.
+    pub fn ledger_info(&self) -> LedgerInfo {
         LedgerInfo {
             protocol_version: self.protocol_version,
             sequence_number: self.sequence_number,
@@ -46,6 +48,7 @@ impl LedgerSnapshot {
         }
     }
 
+    // Set the ledger info in the snapshot.
     pub fn set_ledger_info(&mut self, info: LedgerInfo) {
         self.protocol_version = info.protocol_version;
         self.sequence_number = info.sequence_number;
@@ -54,21 +57,27 @@ impl LedgerSnapshot {
         self.base_reserve = info.base_reserve;
     }
 
+    // Get the entries in the snapshot.
     pub fn entries<'a>(
         &'a self,
     ) -> impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)> {
         self.entries.iter()
     }
 
+    // Replace the entries in the snapshot with the entries in the iterator.
     pub fn set_entries<'a>(
         &mut self,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)>,
     ) {
+        self.entries.clear();
         for (k, e) in entries {
             self.entries.insert(k.clone(), e.clone());
         }
     }
 
+    // Update entries in the snapshot by adding or replacing any entries that
+    // have entry in the input iterator, or removing any that does not have an
+    // entry.
     pub fn update_entries<'a>(
         &mut self,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Option<Box<LedgerEntry>>)>,
@@ -84,18 +93,22 @@ impl LedgerSnapshot {
 }
 
 impl LedgerSnapshot {
+    // Read in a [`LedgerSnapshot`] from a reader.
     pub fn read(r: impl Read) -> Result<LedgerSnapshot, Box<dyn Error>> {
         Ok(serde_json::from_reader::<_, LedgerSnapshot>(r)?)
     }
 
+    // Read in a [`LedgerSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Box<dyn Error>> {
         Self::read(File::open(p)?)
     }
 
+    // Write a [`LedgerSnapshot`] to a writer.
     pub fn write(&self, w: impl Write) -> Result<(), Box<dyn Error>> {
         Ok(serde_json::to_writer_pretty(w, self)?)
     }
 
+    // Write a [`LedgerSnapshot`] to file.
     pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
         self.write(File::open(p)?)
     }
