@@ -611,6 +611,7 @@ pub use envhidden::*;
 
 pub mod accounts;
 mod bytes;
+pub mod crypto;
 pub mod data;
 pub mod deploy;
 pub mod events;
