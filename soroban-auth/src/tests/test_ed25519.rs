@@ -1,5 +1,7 @@
 extern crate std;
 
+use core::str::FromStr;
+
 use soroban_sdk::{
     contractimpl, symbol,
     testutils::{Ledger, LedgerInfo},
@@ -78,10 +80,11 @@ fn test_build_keypair() {
     std::println!("contract id: {:?}", contract_id);
     std::println!("name: {:?}", symbol!("examplefn"));
 
-    let (id, signer) = signer(
-        &env,
-        &strkey_utils::decode_secret("SC24O4H2LT4PVOYCWMKUSD2DL4UL26IYGPFKANDH7S4MU6JVQEFOS7DC"),
-    );
+    let key = &stellar_strkey::StrkeyPrivateKeyEd25519::from_str(
+        "SC24O4H2LT4PVOYCWMKUSD2DL4UL26IYGPFKANDH7S4MU6JVQEFOS7DC",
+    )
+    .unwrap();
+    let (id, signer) = signer(&env, &key.0);
     std::println!("signer: {:?}", signer);
     std::println!("id: {:?}", id);
     let sig = sign(
