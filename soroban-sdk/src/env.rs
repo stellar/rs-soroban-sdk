@@ -51,8 +51,8 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{
-    accounts::Accounts, address::Address, data::Data, deploy::Deployer, events::Events,
-    ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
+    accounts::Accounts, address::Address, crypto::Crypto, data::Data, deploy::Deployer,
+    events::Events, ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -141,6 +141,12 @@ impl Env {
         Deployer::new(self)
     }
 
+    /// Get a [Crypto] for accessing the current cryptographic functions.
+    #[inline(always)]
+    pub fn crypto(&self) -> Crypto {
+        Crypto::new(self)
+    }
+
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn current_contract(&self) -> BytesN<32> {
         let id = internal::Env::get_current_contract(self);
@@ -192,31 +198,16 @@ impl Env {
         unsafe { Vec::unchecked_new(stack.in_env(self)) }
     }
 
-    /// Computes a SHA-256 hash.
+    #[doc(hidden)]
+    #[deprecated(note = "use env.crypto().sha259(msg)")]
     pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
-        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
-        unsafe { BytesN::unchecked_new(bin_obj.in_env(self)) }
+        self.crypto().sha256(msg)
     }
 
-    /// Verifies an ed25519 signature.
-    ///
-    /// The ed25519 signature (`sig`) is verified as a valid signature of the
-    /// message (`msg`) by the ed25519 public key (`pk`).
-    ///
-    /// ### Panics
-    ///
-    /// Will panic if the signature verification fails.
-    ///
-    /// ### TODO
-    ///
-    /// Return a [Result] instead of panicking.
+    #[doc(hidden)]
+    #[deprecated(note = "use env.crypto().ed25519_verify(pk, msg, sig)")]
     pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
-        let _ = internal::Env::verify_sig_ed25519(
-            self,
-            msg.to_object(),
-            pk.to_object(),
-            sig.to_object(),
-        );
+        self.crypto().ed25519_verify(pk, msg, sig);
     }
 
     /// Invokes a function of a contract that is registered in the [Env].

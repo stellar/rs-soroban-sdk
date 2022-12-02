@@ -41,7 +41,8 @@ fn verify_ed25519_signature(env: &Env, auth: &Ed25519Signature, name: Symbol, ar
     };
     let msg_bin = SignaturePayload::V0(msg).serialize(env);
 
-    env.verify_sig_ed25519(&auth.public_key, &msg_bin, &auth.signature);
+    env.crypto()
+        .ed25519_verify(&auth.public_key, &msg_bin, &auth.signature);
 }
 
 fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, args: Vec<RawVal>) {
@@ -78,7 +79,8 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
             }
         }
 
-        env.verify_sig_ed25519(&sig.public_key, &msg_bytes, &sig.signature);
+        env.crypto()
+            .ed25519_verify(&sig.public_key, &msg_bytes, &sig.signature);
         let signer_weight = acc.signer_weight(&sig.public_key);
         if signer_weight == 0 {
             panic!("signature doesn't belong to account");
