@@ -7,10 +7,7 @@ use soroban_sdk::{
 };
 
 use crate::{
-    testutils::{
-        ed25519::{build, generate, sign},
-        strkey_utils,
-    },
+    testutils::ed25519::{generate, sign, signer},
     verify, Signature,
 };
 
@@ -81,9 +78,8 @@ fn test_build_keypair() {
     std::println!("contract id: {:?}", contract_id);
     std::println!("name: {:?}", symbol!("examplefn"));
 
-    let (id, signer) = build(
+    let (id, signer) = signer(
         &env,
-        &strkey_utils::decode_public("GAWAXT4J2NFPHZL3EYCKOG32HSZL7ZYTP7C3G45GQW7CTHURCB5HVLQV"),
         &strkey_utils::decode_secret("SC24O4H2LT4PVOYCWMKUSD2DL4UL26IYGPFKANDH7S4MU6JVQEFOS7DC"),
     );
     std::println!("signer: {:?}", signer);
