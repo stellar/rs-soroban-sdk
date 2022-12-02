@@ -173,14 +173,17 @@ impl Env {
     ///         assert_eq!(outer.1, symbol!("hello"));
     ///     }
     /// }
+    /// #[test]
+    /// fn test() {
+    /// # }
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
-    /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract(&contract_id, Contract);
-    /// let client = ContractClient::new(&env, &contract_id);
-    /// client.hello();
-    /// # }
+    ///     let env = Env::default();
+    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
+    ///     env.register_contract(&contract_id, Contract);
+    ///     let client = ContractClient::new(&env, &contract_id);
+    ///     client.hello();
+    /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
@@ -338,7 +341,7 @@ impl Env {
 
     /// Creates a new Env loaded with the [`LedgerSnapshot`].
     ///
-    /// The ledger info and state in the snapshot are aloaded into the Env.
+    /// The ledger info and state in the snapshot are loaded into the Env.
     pub fn from_snapshot(s: LedgerSnapshot) -> Env {
         let info = s.ledger_info();
 
@@ -365,7 +368,7 @@ impl Env {
     ///
     /// ### Panics
     ///
-    /// If there is any error writing the file.
+    /// If there is any error reading the file.
     pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
         Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
     }
@@ -411,7 +414,7 @@ impl Env {
             .unwrap()
     }
 
-    /// Run the closure as if executed by the given contract ID.
+    /// Run the function as if executed by the given contract ID.
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
@@ -451,11 +454,14 @@ impl Env {
     ///     }
     /// }
     ///
-    /// # fn main() {
-    /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract(&contract_id, HelloContract);
+    /// #[test]
+    /// fn test() {
     /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
+    ///     env.register_contract(&contract_id, HelloContract);
+    /// }
     /// ```
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
@@ -503,10 +509,13 @@ impl Env {
     ///
     /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
     ///
-    /// # fn main() {
-    /// let env = Env::default();
-    /// env.install_contract_wasm(WASM);
+    /// #[test]
+    /// fn test() {
     /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.install_contract_wasm(WASM);
+    /// }
     /// ```
     pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
         self.env_impl
@@ -536,10 +545,13 @@ impl Env {
     ///
     /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
     ///
-    /// # fn main() {
-    /// let env = Env::default();
-    /// env.register_contract_wasm(None, WASM);
+    /// #[test]
+    /// fn test() {
     /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.register_contract_wasm(None, WASM);
+    /// }
     /// ```
     pub fn register_contract_wasm<'a>(
         &self,
@@ -594,10 +606,13 @@ impl Env {
     /// ```
     /// use soroban_sdk::{BytesN, Env};
     ///
-    /// # fn main() {
-    /// let env = Env::default();
-    /// env.register_contract_token(None);
+    /// #[test]
+    /// fn test() {
     /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.register_contract_token(None);
+    /// }
     /// ```
     pub fn register_contract_token<'a>(
         &self,
