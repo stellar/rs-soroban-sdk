@@ -548,7 +548,7 @@ impl Env {
                         &key,
                         &LedgerEntry {
                             ext: xdr::LedgerEntryExt::V0,
-                            last_modified_ledger_seq: 0, // TODO: Decide on what value to place here.
+                            last_modified_ledger_seq: 0,
                             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
                                 contract_id: hash.clone(),
                                 key: xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode),
