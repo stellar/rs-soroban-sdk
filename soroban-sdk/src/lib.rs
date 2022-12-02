@@ -146,7 +146,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 ///
 /// ```should_panic
 /// # use soroban_sdk::{contracterror, contractimpl, Env};
-///
+/// #
 /// # #[contracterror]
 /// # #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 /// # #[repr(u32)]
@@ -154,9 +154,9 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// #     MyError = 1,
 /// #     AnotherError = 2,
 /// # }
-///
+/// #
 /// # pub struct Contract;
-///
+/// #
 /// # #[contractimpl]
 /// # impl Contract {
 /// #     pub fn causeerror(env: Env) -> Result<(), Error> {
