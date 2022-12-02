@@ -38,6 +38,25 @@ pub mod ed25519 {
         (signer.identifier(env), signer)
     }
 
+    /// Create a signer from a ed25519 secret key.
+    pub fn signer(
+        env: &Env,
+        secret_key: &[u8; 32],
+    ) -> (
+        IdentifierValue,
+        impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]> + Debug,
+    ) {
+        let secret = ed25519_dalek::SecretKey::from_bytes(secret_key).unwrap();
+        let public = ed25519_dalek::PublicKey::from(&secret);
+        let signer = ed25519_dalek::Keypair { secret, public };
+        (signer.identifier(env), signer)
+    }
+
+    /// Create an identifier from a ed25519 public key.
+    pub fn identifier(env: &Env, public_key: &[u8; 32]) -> IdentifierValue {
+        IdentifierValue::Ed25519(public_key.into_val(env))
+    }
+
     /// Sign a [`SignaturePayload`] constructed using the arguments.
     ///
     /// The returned [`Signature`] can be verified by [`verify`](crate::verify)
