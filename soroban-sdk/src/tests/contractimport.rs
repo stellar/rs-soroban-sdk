@@ -36,6 +36,22 @@ fn test_functional() {
 }
 
 #[test]
+fn test_register_at_id() {
+    let e = Env::default();
+
+    let add_contract_id = BytesN::from_array(&e, &[1; 32]);
+    e.register_contract_wasm(&add_contract_id, addcontract::WASM);
+
+    let contract_id = e.register_contract(None, Contract);
+    let client = ContractClient::new(&e, &contract_id);
+
+    let x = 10u64;
+    let y = 12u64;
+    let z = client.add_with(&add_contract_id, &x, &y);
+    assert!(z == 22);
+}
+
+#[test]
 fn test_spec() {
     let entries = soroban_spec::read::parse_raw(&Contract::spec_xdr_add_with()).unwrap();
     let expect = vec![ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
