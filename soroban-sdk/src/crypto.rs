@@ -15,7 +15,7 @@ impl Crypto {
         &self.env
     }
 
-    /// Returns the a SHA-256 hash of the data.
+    /// Returns the SHA-256 hash of the data.
     pub fn sha256(&self, data: &Bytes) -> BytesN<32> {
         let env = self.env();
         let bin_obj = internal::Env::compute_hash_sha256(env, data.into());
