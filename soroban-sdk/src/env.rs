@@ -559,37 +559,10 @@ impl Env {
         contract_wasm: &[u8],
     ) -> BytesN<32> {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
-        if let Some(contract_id) = contract_id.into() {
-            let contract_id_hash = Hash(contract_id.into());
-            let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
-            let key = LedgerKey::ContractData(LedgerKeyContractData {
-                contract_id: contract_id_hash.clone(),
-                key: data_key.clone(),
-            });
-            self.env_impl
-                .with_mut_storage(|storage| {
-                    storage.put(
-                        &key,
-                        &LedgerEntry {
-                            ext: xdr::LedgerEntryExt::V0,
-                            last_modified_ledger_seq: 0,
-                            data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                                contract_id: contract_id_hash.clone(),
-                                key: data_key,
-                                val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(
-                                    xdr::ScContractCode::WasmRef(Hash(wasm_hash.into())),
-                                ))),
-                            }),
-                        },
-                    )
-                })
-                .unwrap();
-            contract_id.clone()
-        } else {
-            self.register_contract_with_source(xdr::ScContractCode::WasmRef(xdr::Hash(
-                wasm_hash.to_array(),
-            )))
-        }
+        self.register_contract_with_optional_contract_id_and_source(
+            contract_id,
+            xdr::ScContractCode::WasmRef(xdr::Hash(wasm_hash.into())),
+        )
     }
 
     /// Register the built-in token contract with the [Env] for testing.
@@ -618,34 +591,22 @@ impl Env {
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,
     ) -> BytesN<32> {
+        self.register_contract_with_optional_contract_id_and_source(
+            contract_id,
+            xdr::ScContractCode::Token,
+        )
+    }
+
+    fn register_contract_with_optional_contract_id_and_source<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        source: xdr::ScContractCode,
+    ) -> BytesN<32> {
         if let Some(contract_id) = contract_id.into() {
-            let contract_id_hash = Hash(contract_id.into());
-            let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
-            let key = LedgerKey::ContractData(LedgerKeyContractData {
-                contract_id: contract_id_hash.clone(),
-                key: data_key.clone(),
-            });
-            self.env_impl
-                .with_mut_storage(|storage| {
-                    storage.put(
-                        &key,
-                        &LedgerEntry {
-                            ext: xdr::LedgerEntryExt::V0,
-                            last_modified_ledger_seq: 0,
-                            data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                                contract_id: contract_id_hash.clone(),
-                                key: data_key,
-                                val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(
-                                    xdr::ScContractCode::Token,
-                                ))),
-                            }),
-                        },
-                    )
-                })
-                .unwrap();
+            self.register_contract_with_contract_id_and_source(contract_id, source);
             contract_id.clone()
         } else {
-            self.register_contract_with_source(xdr::ScContractCode::Token)
+            self.register_contract_with_source(source)
         }
     }
 
@@ -674,6 +635,35 @@ impl Env {
             self.env_impl.remove_source_account();
         }
         contract_id
+    }
+
+    fn register_contract_with_contract_id_and_source(
+        &self,
+        contract_id: &BytesN<32>,
+        source: xdr::ScContractCode,
+    ) {
+        let contract_id_hash = Hash(contract_id.into());
+        let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
+        let key = LedgerKey::ContractData(LedgerKeyContractData {
+            contract_id: contract_id_hash.clone(),
+            key: data_key.clone(),
+        });
+        self.env_impl
+            .with_mut_storage(|storage| {
+                storage.put(
+                    &key,
+                    &LedgerEntry {
+                        ext: xdr::LedgerEntryExt::V0,
+                        last_modified_ledger_seq: 0,
+                        data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                            contract_id: contract_id_hash.clone(),
+                            key: data_key,
+                            val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(source))),
+                        }),
+                    },
+                )
+            })
+            .unwrap();
     }
 }
 
