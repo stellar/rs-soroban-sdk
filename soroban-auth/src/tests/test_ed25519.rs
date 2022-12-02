@@ -80,7 +80,7 @@ fn test_build_keypair() {
     std::println!("contract id: {:?}", contract_id);
     std::println!("name: {:?}", symbol!("examplefn"));
 
-    let key = &stellar_strkey::StrkeyPrivateKeyEd25519::from_str(
+    let key = stellar_strkey::StrkeyPrivateKeyEd25519::from_str(
         "SC24O4H2LT4PVOYCWMKUSD2DL4UL26IYGPFKANDH7S4MU6JVQEFOS7DC",
     )
     .unwrap();
