@@ -145,25 +145,25 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// with `should_panic`.
 ///
 /// ```should_panic
-/// use soroban_sdk::{contracterror, contractimpl, Env};
+/// # use soroban_sdk::{contracterror, contractimpl, Env};
 ///
-/// #[contracterror]
-/// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
-/// #[repr(u32)]
-/// pub enum Error {
-///     MyError = 1,
-///     AnotherError = 2,
-/// }
+/// # #[contracterror]
+/// # #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+/// # #[repr(u32)]
+/// # pub enum Error {
+/// #     MyError = 1,
+/// #     AnotherError = 2,
+/// # }
 ///
-/// pub struct Contract;
+/// # pub struct Contract;
 ///
-/// #[contractimpl]
-/// impl Contract {
-///     pub fn causeerror(env: Env) -> Result<(), Error> {
-///         Err(Error::MyError)
-///     }
-/// }
-///
+/// # #[contractimpl]
+/// # impl Contract {
+/// #     pub fn causeerror(env: Env) -> Result<(), Error> {
+/// #         Err(Error::MyError)
+/// #     }
+/// # }
+/// #
 /// #[test]
 /// #[should_panic(expected = "ContractError(1)")]
 /// fn test() {
