@@ -141,8 +141,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// # fn main() { }
 /// ```
 ///
-/// Defining an error and that error causing a panic that can be asserted on
-/// with `should_panic`.
+/// Testing invocations that cause errors with `should_panic` instead of `try_`.
 ///
 /// ```should_panic
 /// # use soroban_sdk::{contracterror, contractimpl, Env};
