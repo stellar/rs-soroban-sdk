@@ -7,7 +7,7 @@
 //!
 //! ### Examples
 //!
-//! ```
+//! ```rust
 //! use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
 //!
 //! pub struct HelloContract;

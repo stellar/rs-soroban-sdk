@@ -38,6 +38,18 @@ check: build fmt
 	cargo hack --feature-powerset --exclude-features docs check
 	cargo hack check --release --target wasm32-unknown-unknown
 
+readme:
+	cd soroban-sdk \
+		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
+		&& cat ../target/doc/soroban_sdk.json \
+		| jq -r '.index[.root].docs' \
+		> README.md
+	cd soroban-auth \
+		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
+		&& cat ../target/doc/soroban_auth.json \
+		| jq -r '.index[.root].docs' \
+		> README.md
+
 watch:
 	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
 
