@@ -520,6 +520,8 @@ impl Env {
 
     /// Register a contract in a WASM file with the [Env] for testing.
     ///
+    /// Registering a contract that is already registered replaces it.
+    ///
     /// Returns the contract ID of the registered contract.
     ///
     /// ### Examples
