@@ -877,7 +877,6 @@ dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
  "soroban-sdk",
- "stellar-strkey 0.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -971,7 +970,7 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
- "stellar-strkey 0.0.6 (git+https://github.com/stellar/rs-stellar-strkey?rev=5e582a8b)",
+ "stellar-strkey",
  "stellar-xdr",
 ]
 
@@ -1054,16 +1053,6 @@ name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
-
-[[package]]
-name = "stellar-strkey"
-version = "0.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbdc24a977b92cac2028693957b8e07ffb9249a0767a548391246c9fb964a439"
-dependencies = [
- "base32",
- "thiserror",
-]
 
 [[package]]
 name = "stellar-strkey"

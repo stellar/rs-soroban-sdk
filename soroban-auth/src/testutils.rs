@@ -38,20 +38,23 @@ pub mod ed25519 {
         (signer.identifier(env), signer)
     }
 
-    /// Build a ed25519 keypair from a Stellar keypair.
-    pub fn build(
+    /// Create a signer from a ed25519 secret key.
+    pub fn signer(
         env: &Env,
-        public: &[u8],
-        secret: &[u8],
+        secret_key: &[u8; 32],
     ) -> (
         IdentifierValue,
         impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]> + Debug,
     ) {
-        let signer = ed25519_dalek::Keypair {
-            secret: ed25519_dalek::SecretKey::from_bytes(secret).unwrap(),
-            public: ed25519_dalek::PublicKey::from_bytes(public).unwrap(),
-        };
+        let secret = ed25519_dalek::SecretKey::from_bytes(secret_key).unwrap();
+        let public = ed25519_dalek::PublicKey::from(&secret);
+        let signer = ed25519_dalek::Keypair { secret, public };
         (signer.identifier(env), signer)
+    }
+
+    /// Create an identifier from a ed25519 public key.
+    pub fn identifier(env: &Env, public_key: &[u8; 32]) -> IdentifierValue {
+        IdentifierValue::Ed25519(public_key.into_val(env))
     }
 
     /// Sign a [`SignaturePayload`] constructed using the arguments.
@@ -85,18 +88,6 @@ pub mod ed25519 {
             public_key: public_key.into_val(env),
             signature: signature.into_val(env),
         })
-    }
-}
-
-pub mod strkey_utils {
-    pub fn decode_public(public: &str) -> [u8; 32] {
-        let pub_key = stellar_strkey::StrkeyPublicKeyEd25519::from_string(public).unwrap();
-        pub_key.0
-    }
-
-    pub fn decode_secret(secret: &str) -> [u8; 32] {
-        let secret_key = stellar_strkey::StrkeyPrivateKeyEd25519::from_string(secret).unwrap();
-        secret_key.0
     }
 }
 

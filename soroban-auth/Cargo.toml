@@ -27,7 +27,6 @@ rand = { version = "0.7.3", optional = true }
 [dev_dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }
 ed25519-dalek = { version = "1.0.1" }
-stellar-strkey = { version = "0.0.6" }
 rand = { version = "0.7.3" }
 
 [package.metadata.docs.rs]
