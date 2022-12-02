@@ -339,25 +339,6 @@ impl Env {
         env
     }
 
-    /// Sets the source account in the [Env].
-    ///
-    /// The source account will be accessible via [Env::invoker] when a contract
-    /// is directly invoked.
-    pub fn set_source_account(&self, account_id: &AccountId) {
-        self.accounts().create(account_id);
-        self.env_impl
-            .set_source_account(account_id.try_into().unwrap());
-    }
-
-    /// Gets the source account set in the [Env].
-    pub fn source_account(&self) -> AccountId {
-        self.env_impl
-            .source_account()
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
-    }
-
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -419,41 +400,6 @@ impl Env {
             )
             .unwrap();
         contract_id
-    }
-
-    /// Install the contract WASM code to the [Env] for testing.
-    ///
-    /// Returns the hash of the installed code that can be then used for
-    /// the contract deployment.
-    ///
-    /// Useful for contract factory testing, otherwise use
-    /// `register_contract_wasm` function that installs and deploys the contract
-    /// in a single call.
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{BytesN, Env};
-    ///
-    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
-    ///
-    /// #[test]
-    /// fn test() {
-    /// # }
-    /// # fn main() {
-    ///     let env = Env::default();
-    ///     env.install_contract_wasm(WASM);
-    /// }
-    /// ```
-    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
-        self.env_impl
-            .invoke_function(xdr::HostFunction::InstallContractCode(
-                xdr::InstallContractCodeArgs {
-                    code: contract_wasm.clone().try_into().unwrap(),
-                },
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
     }
 
     /// Register a contract in a WASM file with the [Env] for testing.
@@ -591,6 +537,60 @@ impl Env {
                 )
             })
             .unwrap();
+    }
+
+    /// Install the contract WASM code to the [Env] for testing.
+    ///
+    /// Returns the hash of the installed code that can be then used for
+    /// the contract deployment.
+    ///
+    /// Useful for contract factory testing, otherwise use
+    /// `register_contract_wasm` function that installs and deploys the contract
+    /// in a single call.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.install_contract_wasm(WASM);
+    /// }
+    /// ```
+    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
+        self.env_impl
+            .invoke_function(xdr::HostFunction::InstallContractCode(
+                xdr::InstallContractCodeArgs {
+                    code: contract_wasm.clone().try_into().unwrap(),
+                },
+            ))
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Sets the source account in the [Env].
+    ///
+    /// The source account will be accessible via [Env::invoker] when a contract
+    /// is directly invoked.
+    pub fn set_source_account(&self, account_id: &AccountId) {
+        self.accounts().create(account_id);
+        self.env_impl
+            .set_source_account(account_id.try_into().unwrap());
+    }
+
+    /// Gets the source account set in the [Env].
+    pub fn source_account(&self) -> AccountId {
+        self.env_impl
+            .source_account()
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
     }
 
     /// Run the function as if executed by the given contract ID.
