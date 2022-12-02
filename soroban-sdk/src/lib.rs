@@ -292,6 +292,145 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
+///
+/// ### Examples
+///
+/// Defining a contract type that is a struct and use it in a contract.
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::{contractimpl, contracttype, symbol, Env, Symbol};
+///
+/// #[contracttype]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct State {
+///     pub count: u32,
+///     pub last_incr: u32,
+/// }
+///
+/// pub struct Contract;
+///
+/// #[contractimpl]
+/// impl Contract {
+///     /// Increment increments an internal counter, and returns the value.
+///     pub fn increment(env: Env, incr: u32) -> u32 {
+///         // Get the current count.
+///         let mut state = Self::get_state(env.clone());
+///
+///         // Increment the count.
+///         state.count += incr;
+///         state.last_incr = incr;
+///
+///         // Save the count.
+///         env.data().set(symbol!("STATE"), &state);
+///
+///         // Return the count to the caller.
+///         state.count
+///     }
+///
+///     /// Return the current state.
+///     pub fn get_state(env: Env) -> State {
+///         env.data()
+///             .get(symbol!("STATE"))
+///             .unwrap_or_else(|| Ok(State::default())) // If no value set, assume 0.
+///             .unwrap() // Panic if the value of COUNTER is not a State.
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register_contract(None, Contract);
+///     let client = ContractClient::new(&env, &contract_id);
+///
+///     assert_eq!(client.increment(&1), 1);
+///     assert_eq!(client.increment(&10), 11);
+///     assert_eq!(
+///         client.get_state(),
+///         State {
+///             count: 11,
+///             last_incr: 10,
+///         },
+///     );
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+///
+/// Defining contract types that are three different types of enums and using
+/// them in a contract.
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::{contractimpl, contracttype, symbol, Env};
+///
+/// /// A tuple enum is stored as a two-element vector containing the name of
+/// /// the enum variant as a Symbol, then the value in the tuple.
+/// #[contracttype]
+/// #[derive(Clone, Debug, Eq, PartialEq)]
+/// pub enum Color {
+///     Red(Intensity),
+///     Blue(Shade),
+/// }
+///
+/// /// A unit enum is stored as a single-element vector containing the name of
+/// /// the enum variant as a Symbol.
+/// #[contracttype]
+/// #[derive(Clone, Debug, Eq, PartialEq)]
+/// pub enum Shade {
+///     Light,
+///     Dark,
+/// }
+///
+/// /// An integer enum is stored as its integer value.
+/// #[contracttype]
+/// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+/// #[repr(u32)]
+/// pub enum Intensity {
+///     Low = 1,
+///     High = 2,
+/// }
+///
+/// pub struct Contract;
+///
+/// #[contractimpl]
+/// impl Contract {
+///     /// Set the color.
+///     pub fn set(env: Env, c: Color) {
+///         env.data().set(symbol!("COLOR"), c);
+///     }
+///
+///     /// Get the color.
+///     pub fn get(env: Env) -> Option<Color> {
+///         env.data()
+///             .get(symbol!("COLOR"))
+///             .map(Result::unwrap) // Panic if the value of COLOR is not a Color.
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register_contract(None, Contract);
+///     let client = ContractClient::new(&env, &contract_id);
+///
+///     assert_eq!(client.get(), None);
+///
+///     client.set(&Color::Red(Intensity::High));
+///     assert_eq!(client.get(), Some(Color::Red(Intensity::High)));
+///
+///     client.set(&Color::Blue(Shade::Light));
+///     assert_eq!(client.get(), Some(Color::Blue(Shade::Light)));
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
 pub use soroban_sdk_macros::contracttype;
 
 /// Generates a client for a contract trait.
