@@ -51,8 +51,8 @@ pub type EnvVal = internal::EnvVal<Env, RawVal>;
 pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{
-    accounts::Accounts, address::Address, data::Data, deploy::Deployer, events::Events,
-    ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
+    accounts::Accounts, address::Address, crypto::Crypto, data::Data, deploy::Deployer,
+    events::Events, ledger::Ledger, logging::Logger, AccountId, Bytes, BytesN, Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -66,6 +66,8 @@ use crate::{
 #[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
+    #[cfg(any(test, feature = "testutils"))]
+    snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
 impl Default for Env {
@@ -139,6 +141,12 @@ impl Env {
         Deployer::new(self)
     }
 
+    /// Get a [Crypto] for accessing the current cryptographic functions.
+    #[inline(always)]
+    pub fn crypto(&self) -> Crypto {
+        Crypto::new(self)
+    }
+
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn current_contract(&self) -> BytesN<32> {
         let id = internal::Env::get_current_contract(self);
@@ -171,14 +179,17 @@ impl Env {
     ///         assert_eq!(outer.1, symbol!("hello"));
     ///     }
     /// }
+    /// #[test]
+    /// fn test() {
+    /// # }
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
-    /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract(&contract_id, Contract);
-    /// let client = ContractClient::new(&env, &contract_id);
-    /// client.hello();
-    /// # }
+    ///     let env = Env::default();
+    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
+    ///     env.register_contract(&contract_id, Contract);
+    ///     let client = ContractClient::new(&env, &contract_id);
+    ///     client.hello();
+    /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
@@ -187,31 +198,16 @@ impl Env {
         unsafe { Vec::unchecked_new(stack.in_env(self)) }
     }
 
-    /// Computes a SHA-256 hash.
+    #[doc(hidden)]
+    #[deprecated(note = "use env.crypto().sha259(msg)")]
     pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
-        let bin_obj = internal::Env::compute_hash_sha256(self, msg.into());
-        unsafe { BytesN::unchecked_new(bin_obj.in_env(self)) }
+        self.crypto().sha256(msg)
     }
 
-    /// Verifies an ed25519 signature.
-    ///
-    /// The ed25519 signature (`sig`) is verified as a valid signature of the
-    /// message (`msg`) by the ed25519 public key (`pk`).
-    ///
-    /// ### Panics
-    ///
-    /// Will panic if the signature verification fails.
-    ///
-    /// ### TODO
-    ///
-    /// Return a [Result] instead of panicking.
+    #[doc(hidden)]
+    #[deprecated(note = "use env.crypto().ed25519_verify(pk, msg, sig)")]
     pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
-        let _ = internal::Env::verify_sig_ed25519(
-            self,
-            msg.to_object(),
-            pk.to_object(),
-            sig.to_object(),
-        );
+        self.crypto().ed25519_verify(pk, msg, sig);
     }
 
     /// Invokes a function of a contract that is registered in the [Env].
@@ -237,7 +233,7 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
     {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv.clone())
+        T::try_from_val(self, rv)
             .map_err(|_| ConversionError)
             .unwrap()
     }
@@ -274,11 +270,15 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{Accounts as _, ContractFunctionSet, Ledger as _};
+use crate::testutils::{
+    random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet, Ledger as _,
+};
 #[cfg(any(test, feature = "testutils"))]
-use rand::RngCore;
+use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
-use std::rc::Rc;
+use std::{path::Path, rc::Rc};
+#[cfg(any(test, feature = "testutils"))]
+use xdr::{Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -312,7 +312,10 @@ impl Env {
             internal::budget::Budget::default(),
         );
 
-        let env = Env { env_impl };
+        let env = Env {
+            env_impl,
+            snapshot: None,
+        };
 
         env.set_source_account(&env.accounts().generate());
 
@@ -327,47 +330,13 @@ impl Env {
         env
     }
 
-    /// Sets the source account in the [Env].
-    ///
-    /// The source account will be accessible via [Env::invoker] when a contract
-    /// is directly invoked.
-    pub fn set_source_account(&self, account_id: &AccountId) {
-        self.accounts().create(account_id);
-        self.env_impl
-            .set_source_account(account_id.try_into().unwrap());
-    }
-
-    /// Gets the source account set in the [Env].
-    pub fn source_account(&self) -> AccountId {
-        self.env_impl
-            .source_account()
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
-    }
-
-    /// Run the closure as if executed by the given contract ID.
-    ///
-    /// Used to write or read contract data, or take other actions in tests for
-    /// setting up tests or asserting on internal state.
-    pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
-        let id: [u8; 32] = id.into();
-        let func = Symbol::from_str("");
-        let mut t: Option<T> = None;
-        self.env_impl
-            .with_test_contract_frame(id.into(), func, || {
-                t = Some(f());
-                Ok(().into())
-            })
-            .unwrap();
-        t.unwrap()
-    }
-
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
     /// with that contract ID. Providing `None` causes a random ID to be
     /// assigned to the contract.
+    ///
+    /// Registering a contract that is already registered replaces it.
     ///
     /// Returns the contract ID of the registered contract.
     ///
@@ -384,11 +353,14 @@ impl Env {
     ///     }
     /// }
     ///
-    /// # fn main() {
-    /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract(&contract_id, HelloContract);
+    /// #[test]
+    /// fn test() {
     /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
+    ///     env.register_contract(&contract_id, HelloContract);
+    /// }
     /// ```
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
@@ -410,9 +382,7 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            let mut contract_id = [0u8; 32];
-            rand::thread_rng().fill_bytes(&mut contract_id);
-            BytesN::from_array(self, &contract_id)
+            BytesN::random(self)
         };
         self.env_impl
             .register_test_contract(
@@ -429,6 +399,8 @@ impl Env {
     /// with that contract ID. Providing `None` causes a random ID to be
     /// assigned to the contract.
     ///
+    /// Registering a contract that is already registered replaces it.
+    ///
     /// Returns the contract ID of the registered contract.
     ///
     /// ### Examples
@@ -437,28 +409,24 @@ impl Env {
     ///
     /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
     ///
-    /// # fn main() {
-    /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract_wasm(&contract_id, WASM);
+    /// #[test]
+    /// fn test() {
     /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.register_contract_wasm(None, WASM);
+    /// }
     /// ```
     pub fn register_contract_wasm<'a>(
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,
         contract_wasm: &[u8],
     ) -> BytesN<32> {
-        let contract_id = if let Some(contract_id) = contract_id.into() {
-            contract_id.clone()
-        } else {
-            let mut contract_id = [0u8; 32];
-            rand::thread_rng().fill_bytes(&mut contract_id);
-            BytesN::from_array(self, &contract_id)
-        };
-        self.env_impl
-            .register_test_contract_wasm(contract_id.to_object(), contract_wasm)
-            .unwrap();
-        contract_id
+        let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
+        self.register_contract_with_optional_contract_id_and_source(
+            contract_id,
+            xdr::ScContractCode::WasmRef(xdr::Hash(wasm_hash.into())),
+        )
     }
 
     /// Register the built-in token contract with the [Env] for testing.
@@ -467,40 +435,237 @@ impl Env {
     /// with that contract ID. Providing `None` causes a random ID to be
     /// assigned to the contract.
     ///
+    /// Registering a contract that is already registered replaces it.
+    ///
     /// Returns the contract ID of the registered contract.
     ///
     /// ### Examples
     /// ```
     /// use soroban_sdk::{BytesN, Env};
     ///
-    /// # fn main() {
-    /// let env = Env::default();
-    /// let contract_id = BytesN::from_array(&env, &[0; 32]);
-    /// env.register_contract_token(&contract_id);
+    /// #[test]
+    /// fn test() {
     /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.register_contract_token(None);
+    /// }
     /// ```
     pub fn register_contract_token<'a>(
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,
     ) -> BytesN<32> {
-        let contract_id = if let Some(contract_id) = contract_id.into() {
+        self.register_contract_with_optional_contract_id_and_source(
+            contract_id,
+            xdr::ScContractCode::Token,
+        )
+    }
+
+    fn register_contract_with_optional_contract_id_and_source<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        source: xdr::ScContractCode,
+    ) -> BytesN<32> {
+        if let Some(contract_id) = contract_id.into() {
+            self.register_contract_with_contract_id_and_source(contract_id, source);
             contract_id.clone()
         } else {
-            let mut contract_id = [0u8; 32];
-            rand::thread_rng().fill_bytes(&mut contract_id);
-            BytesN::from_array(self, &contract_id)
+            self.register_contract_with_source(source)
+        }
+    }
+
+    fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
+        let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
+            Some(prev_acc)
+        } else {
+            None
         };
         self.env_impl
-            .register_test_contract_token(contract_id.to_object())
+            .set_source_account(AccountId::random(self).try_into().unwrap());
+
+        let contract_id: BytesN<32> = self
+            .env_impl
+            .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
+                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random())),
+                source,
+            }))
+            .unwrap()
+            .try_into_val(self)
             .unwrap();
+
+        if let Some(prev_acc) = prev_source_account {
+            self.env_impl.set_source_account(prev_acc);
+        } else {
+            self.env_impl.remove_source_account();
+        }
         contract_id
+    }
+
+    fn register_contract_with_contract_id_and_source(
+        &self,
+        contract_id: &BytesN<32>,
+        source: xdr::ScContractCode,
+    ) {
+        let contract_id_hash = Hash(contract_id.into());
+        let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
+        let key = LedgerKey::ContractData(LedgerKeyContractData {
+            contract_id: contract_id_hash.clone(),
+            key: data_key.clone(),
+        });
+        self.env_impl
+            .with_mut_storage(|storage| {
+                storage.put(
+                    &key,
+                    &LedgerEntry {
+                        ext: xdr::LedgerEntryExt::V0,
+                        last_modified_ledger_seq: 0,
+                        data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                            contract_id: contract_id_hash.clone(),
+                            key: data_key,
+                            val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(source))),
+                        }),
+                    },
+                )
+            })
+            .unwrap();
+    }
+
+    /// Install the contract WASM code to the [Env] for testing.
+    ///
+    /// Returns the hash of the installed code that can be then used for
+    /// the contract deployment.
+    ///
+    /// Useful for contract factory testing, otherwise use
+    /// `register_contract_wasm` function that installs and deploys the contract
+    /// in a single call.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.install_contract_wasm(WASM);
+    /// }
+    /// ```
+    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
+        self.env_impl
+            .invoke_function(xdr::HostFunction::InstallContractCode(
+                xdr::InstallContractCodeArgs {
+                    code: contract_wasm.clone().try_into().unwrap(),
+                },
+            ))
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Sets the source account in the [Env].
+    ///
+    /// The source account will be accessible via [Env::invoker] when a contract
+    /// is directly invoked.
+    pub fn set_source_account(&self, account_id: &AccountId) {
+        self.accounts().create(account_id);
+        self.env_impl
+            .set_source_account(account_id.try_into().unwrap());
+    }
+
+    /// Gets the source account set in the [Env].
+    pub fn source_account(&self) -> AccountId {
+        self.env_impl
+            .source_account()
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Run the function as if executed by the given contract ID.
+    ///
+    /// Used to write or read contract data, or take other actions in tests for
+    /// setting up tests or asserting on internal state.
+    pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
+        let id: [u8; 32] = id.into();
+        let func = Symbol::from_str("");
+        let mut t: Option<T> = None;
+        self.env_impl
+            .with_test_contract_frame(id.into(), func, || {
+                t = Some(f());
+                Ok(().into())
+            })
+            .unwrap();
+        t.unwrap()
+    }
+
+    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    ///
+    /// The ledger info and state in the snapshot are loaded into the Env.
+    pub fn from_snapshot(s: LedgerSnapshot) -> Env {
+        let info = s.ledger_info();
+
+        let rs = Rc::new(s.clone());
+        let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
+        let env_impl = internal::EnvImpl::with_storage_and_budget(
+            storage,
+            internal::budget::Budget::default(),
+        );
+
+        let env = Env {
+            env_impl,
+            snapshot: Some(rs.clone()),
+        };
+
+        env.set_source_account(&env.accounts().generate());
+
+        env.ledger().set(info);
+
+        env
+    }
+
+    /// Creates a new Env loaded with the ledger snapshot loaded from the file.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error reading the file.
+    pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
+        Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
+    }
+
+    /// Create a snapshot from the Env's current state.
+    pub fn to_snapshot(&self) -> LedgerSnapshot {
+        let snapshot = self.snapshot.clone().unwrap_or_default();
+        let mut snapshot = (*snapshot).clone();
+        snapshot.set_ledger_info(self.ledger().get());
+        let storage = self
+            .env_impl
+            .with_mut_storage(|s| Ok(s.map.clone()))
+            .unwrap();
+        snapshot.update_entries(storage.iter());
+        snapshot
+    }
+
+    /// Create a snapshot file from the Env's current state.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_snapshot().write_file(p).unwrap();
     }
 }
 
 #[doc(hidden)]
 impl Env {
     pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
-        Env { env_impl }
+        Env {
+            env_impl,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
+        }
     }
 }
 
@@ -517,6 +682,8 @@ impl internal::EnvBase for Env {
     fn deep_clone(&self) -> Self {
         Env {
             env_impl: self.env_impl.deep_clone(),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: self.snapshot.clone(),
         }
     }
 

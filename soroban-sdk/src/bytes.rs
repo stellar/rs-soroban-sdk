@@ -1066,6 +1066,14 @@ impl<const N: usize> BytesN<N> {
     }
 }
 
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl<const N: usize> crate::testutils::BytesN<N> for BytesN<N> {
+    fn random(env: &Env) -> BytesN<N> {
+        BytesN::from_array(env, &crate::testutils::random())
+    }
+}
+
 impl<const N: usize> IntoIterator for BytesN<N> {
     type Item = u8;
 

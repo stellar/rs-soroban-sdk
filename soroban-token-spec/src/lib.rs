@@ -1,7 +1,7 @@
 #![no_std]
 
 use soroban_auth::{Identifier, Signature};
-use soroban_sdk::{contractimpl, contracttype, BigInt, Bytes, Env};
+use soroban_sdk::{contractimpl, contracttype, Bytes, Env};
 
 mod tests;
 
@@ -32,19 +32,19 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn nonce(env: Env, id: Identifier) -> BigInt {
+    pub fn nonce(env: Env, id: Identifier) -> i128 {
         panic!("calling into interface");
     }
 
-    pub fn allowance(env: Env, from: Identifier, spender: Identifier) -> BigInt {
+    pub fn allowance(env: Env, from: Identifier, spender: Identifier) -> i128 {
         panic!("calling into interface");
     }
 
-    pub fn approve(env: Env, from: Signature, nonce: BigInt, spender: Identifier, amount: BigInt) {
+    pub fn approve(env: Env, from: Signature, nonce: i128, spender: Identifier, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn balance(env: Env, id: Identifier) -> BigInt {
+    pub fn balance(env: Env, id: Identifier) -> i128 {
         panic!("calling into interface");
     }
 
@@ -52,38 +52,38 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn xfer(env: Env, from: Signature, nonce: BigInt, to: Identifier, amount: BigInt) {
+    pub fn xfer(env: Env, from: Signature, nonce: i128, to: Identifier, amount: i128) {
         panic!("calling into interface");
     }
 
     pub fn xfer_from(
         env: Env,
         spender: Signature,
-        nonce: BigInt,
+        nonce: i128,
         from: Identifier,
         to: Identifier,
-        amount: BigInt,
+        amount: i128,
     ) {
         panic!("calling into interface");
     }
 
-    pub fn burn(env: Env, admin: Signature, nonce: BigInt, from: Identifier, amount: BigInt) {
+    pub fn burn(env: Env, admin: Signature, nonce: i128, from: Identifier, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn freeze(env: Env, admin: Signature, nonce: BigInt, id: Identifier) {
+    pub fn freeze(env: Env, admin: Signature, nonce: i128, id: Identifier) {
         panic!("calling into interface");
     }
 
-    pub fn mint(env: Env, admin: Signature, nonce: BigInt, to: Identifier, amount: BigInt) {
+    pub fn mint(env: Env, admin: Signature, nonce: i128, to: Identifier, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn set_admin(env: Env, admin: Signature, nonce: BigInt, new_admin: Identifier) {
+    pub fn set_admin(env: Env, admin: Signature, nonce: i128, new_admin: Identifier) {
         panic!("calling into interface");
     }
 
-    pub fn unfreeze(env: Env, admin: Signature, nonce: BigInt, id: Identifier) {
+    pub fn unfreeze(env: Env, admin: Signature, nonce: i128, id: Identifier) {
         panic!("calling into interface");
     }
 
@@ -99,11 +99,11 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn import(env: Env, id: Signature, nonce: BigInt, amount: i64) {
+    pub fn import(env: Env, id: Signature, nonce: i128, amount: i64) {
         panic!("calling into interface");
     }
 
-    pub fn export(env: Env, id: Signature, nonce: BigInt, amount: i64) {
+    pub fn export(env: Env, id: Signature, nonce: i128, amount: i64) {
         panic!("calling into interface");
     }
 }

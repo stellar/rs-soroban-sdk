@@ -55,10 +55,6 @@ pub fn symbol(input: TokenStream) -> TokenStream {
     }
 }
 
-/// Exports the publicly accessible functions in the implementation.
-///
-/// Functions that are publicly accessible in the implementation are invocable
-/// by other contracts, or directly by transactions, when deployed.
 #[proc_macro_attribute]
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
@@ -123,23 +119,6 @@ struct ContractTypeArgs {
     export: Option<bool>,
 }
 
-/// Generates conversions from the struct/enum from/into a `RawVal`.
-///
-/// There are some constraints on the types that are supported:
-/// - Enums with integer values must have an explicit integer literal for every
-/// variant.
-/// - Enums with unit variants are supported.
-/// - Enums with tuple-like variants with a maximum of one tuple field are
-/// supported. The tuple field must be of a type that is also convertible to and
-/// from `RawVal`.
-/// - Enums with struct-like variants are not supported.
-/// - Structs are supported. All fields must be of a type that is also
-/// convertible to and from `RawVal`.
-/// - All variant names, field names, and type names must be 10-characters or
-/// less in length.
-///
-/// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
 #[proc_macro_attribute]
 pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -197,15 +176,6 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     .into()
 }
 
-/// Generates conversions from the repr(u32) enum from/into a `Status`.
-///
-/// There are some constraints on the types that are supported:
-/// - Enum must derive `Copy`.
-/// - Enum variants must have an explicit integer literal.
-/// - Enum variants must have a value convertible to u32.
-///
-/// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
 #[proc_macro_attribute]
 pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -255,7 +225,6 @@ struct ContractFileArgs {
     sha256: darling::util::SpannedValue<String>,
 }
 
-#[doc(hidden)]
 #[proc_macro]
 pub fn contractfile(metadata: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -297,7 +266,6 @@ struct ContractClientArgs {
     name: String,
 }
 
-#[doc(hidden)]
 #[proc_macro_attribute]
 pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
@@ -322,56 +290,6 @@ struct ContractImportArgs {
     #[darling(default)]
     sha256: darling::util::SpannedValue<Option<String>>,
 }
-
-/// Import a contract from its WASM file.
-///
-/// Generates in the current module:
-/// - A `Contract` trait that matches the contracts interface.
-/// - A `ContractClient` struct that has functions for each function in the
-/// contract.
-/// - Types for all contract types defined in the contract.
-///
-/// ### Examples
-///
-/// ```ignore
-/// use soroban_sdk::{BytesN, Env, Symbol};
-///
-/// mod contract_a {
-///     soroban_sdk::contractimport!(file = "contract_a.wasm");
-/// }
-///
-/// pub struct ContractB;
-///
-/// #[contractimpl]
-/// impl ContractB {
-///     pub fn add_with(env: Env, contract_id: BytesN<32>, x: u32, y: u32) -> u32 {
-///         let client = contract_a::ContractClient::new(&env, contract_id);
-///         client.add(&x, &y)
-///     }
-/// }
-///
-/// #[test]
-/// fn test() {
-///     let env = Env::default();
-///
-///     // Define IDs for contract A and B.
-///     let contract_a_id = BytesN::from_array(&env, &[0; 32]);
-///     let contract_b_id = BytesN::from_array(&env, &[1; 32]);
-///
-///     // Register contract A using the imported WASM.
-///     env.register_contract_wasm(&contract_a_id, contract_a::WASM);
-///
-///     // Register contract B defined in this crate.
-///     env.register_contract(&contract_b_id, ContractB);
-///
-///     // Create a client for calling contract B.
-///     let client = ContractBClient::new(&env, &contract_b_id);
-///
-///     // Invoke contract B via its client.
-///     let sum = client.add_with(&contract_a_id, &5, &7);
-///     assert_eq!(sum, 12);
-/// }
-/// ```
 #[proc_macro]
 pub fn contractimport(metadata: TokenStream) -> TokenStream {
     let attr_args = parse_macro_input!(metadata as AttributeArgs);

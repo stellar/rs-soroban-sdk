@@ -1,26 +1,23 @@
 use crate::testutils::ed25519::{generate, sign};
 use crate::{verify, Identifier, Signature};
-use soroban_sdk::{contractimpl, contracttype, symbol, BigInt, BytesN, Env};
+use soroban_sdk::{contractimpl, contracttype, symbol, BytesN, Env};
 
 #[contracttype]
 pub enum DataKey {
     Nonce(Identifier),
 }
 
-fn read_nonce(e: &Env, id: &Identifier) -> BigInt {
+fn read_nonce(e: &Env, id: &Identifier) -> i128 {
     let key = DataKey::Nonce(id.clone());
-    e.data()
-        .get(key)
-        .unwrap_or_else(|| Ok(BigInt::zero(e)))
-        .unwrap()
+    e.data().get(key).unwrap_or(Ok(0)).unwrap()
 }
 
-fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: &BigInt) {
+fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: i128) {
     // replay protection is not required for invoker authorization because
     // there's no cryptographic signature involved. All that's checked is the
     // invoker, so this contract just expects 0.
     if matches!(id, Identifier::Contract(_)) {
-        if BigInt::zero(&e) != expected_nonce {
+        if expected_nonce != 0 {
             panic!("nonce should be zero for contract")
         }
         return;
@@ -39,15 +36,15 @@ pub struct TestContract;
 
 #[contractimpl]
 impl TestContract {
-    pub fn verify_sig(e: Env, sig: Signature, nonce: BigInt) {
+    pub fn verify_sig(e: Env, sig: Signature, nonce: i128) {
         let auth_id = sig.identifier(&e);
 
-        verify_and_consume_nonce(&e, &auth_id, &nonce);
+        verify_and_consume_nonce(&e, &auth_id, nonce);
 
         verify(&e, &sig, symbol!("verify_sig"), (&auth_id, nonce));
     }
 
-    pub fn nonce(e: Env, id: Identifier) -> BigInt {
+    pub fn nonce(e: Env, id: Identifier) -> i128 {
         read_nonce(&e, &id)
     }
 }
@@ -58,7 +55,7 @@ pub struct OuterTestContract;
 impl OuterTestContract {
     pub fn authorize(e: Env, contract_id: BytesN<32>) {
         let client = TestContractClient::new(&e, contract_id);
-        client.verify_sig(&Signature::Invoker, &BigInt::zero(&e));
+        client.verify_sig(&Signature::Invoker, &0);
     }
 }
 
