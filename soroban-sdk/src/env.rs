@@ -541,17 +541,20 @@ impl Env {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
         if let Some(contract_id) = contract_id.into() {
             let hash = Hash(contract_id.into());
+            let key = LedgerKey::ContractCode(LedgerKeyContractCode { hash: hash.clone() });
             self.env_impl
                 .with_mut_storage(|storage| {
                     storage.put(
-                        &LedgerKey::ContractCode(LedgerKeyContractCode { hash: hash.clone() }),
+                        &key,
                         &LedgerEntry {
                             ext: xdr::LedgerEntryExt::V0,
                             last_modified_ledger_seq: 0, // TODO: Decide on what value to place here.
-                            data: xdr::LedgerEntryData::ContractCode(xdr::ContractCodeEntry {
-                                ext: xdr::ExtensionPoint::V0,
-                                hash,
-                                code: contract_wasm.try_into().unwrap(),
+                            data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                                contract_id: hash.clone(),
+                                key: xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode),
+                                val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(
+                                    xdr::ScContractCode::WasmRef(Hash(wasm_hash.into())),
+                                ))),
                             }),
                         },
                     )
