@@ -61,3 +61,25 @@ fn test_register_token_at_id() {
 
     assert_eq!(client.name(), Bytes::from_slice(&e, b"testme"))
 }
+
+#[test]
+fn test_reregister_over_wasm_with_token() {
+    let e = Env::default();
+
+    // Register a contract with bogus wasm.
+    let contract_id = e.register_contract_wasm(None, &[]);
+    // Reregister the contract with a token instead.
+    e.register_contract_token(&contract_id);
+    let client = TokenClient::new(&e, &contract_id);
+
+    client.init(
+        &Identifier::Account(AccountId::random(&e)),
+        &TokenMetadata {
+            name: Bytes::from_slice(&e, b"testme"),
+            decimals: 7,
+            symbol: Bytes::from_slice(&e, &[]),
+        },
+    );
+
+    assert_eq!(client.name(), Bytes::from_slice(&e, b"testme"))
+}

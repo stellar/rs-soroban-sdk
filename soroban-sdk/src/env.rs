@@ -586,6 +586,8 @@ impl Env {
     /// with that contract ID. Providing `None` causes a random ID to be
     /// assigned to the contract.
     ///
+    /// Registering a contract that is already registered replaces it.
+    ///
     /// Returns the contract ID of the registered contract.
     ///
     /// ### Examples
