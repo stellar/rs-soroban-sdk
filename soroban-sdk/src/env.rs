@@ -339,98 +339,6 @@ impl Env {
         env
     }
 
-    /// Creates a new Env loaded with the [`LedgerSnapshot`].
-    ///
-    /// The ledger info and state in the snapshot are loaded into the Env.
-    pub fn from_snapshot(s: LedgerSnapshot) -> Env {
-        let info = s.ledger_info();
-
-        let rs = Rc::new(s.clone());
-        let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
-        let env_impl = internal::EnvImpl::with_storage_and_budget(
-            storage,
-            internal::budget::Budget::default(),
-        );
-
-        let env = Env {
-            env_impl,
-            snapshot: Some(rs.clone()),
-        };
-
-        env.set_source_account(&env.accounts().generate());
-
-        env.ledger().set(info);
-
-        env
-    }
-
-    /// Creates a new Env loaded with the ledger snapshot loaded from the file.
-    ///
-    /// ### Panics
-    ///
-    /// If there is any error reading the file.
-    pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
-        Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
-    }
-
-    /// Create a snapshot from the Env's current state.
-    pub fn to_snapshot(&self) -> LedgerSnapshot {
-        let snapshot = self.snapshot.clone().unwrap_or_default();
-        let mut snapshot = (*snapshot).clone();
-        snapshot.set_ledger_info(self.ledger().get());
-        let storage = self
-            .env_impl
-            .with_mut_storage(|s| Ok(s.map.clone()))
-            .unwrap();
-        snapshot.update_entries(storage.iter());
-        snapshot
-    }
-
-    /// Create a snapshot file from the Env's current state.
-    ///
-    /// ### Panics
-    ///
-    /// If there is any error writing the file.
-    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
-        self.to_snapshot().write_file(p).unwrap();
-    }
-
-    /// Sets the source account in the [Env].
-    ///
-    /// The source account will be accessible via [Env::invoker] when a contract
-    /// is directly invoked.
-    pub fn set_source_account(&self, account_id: &AccountId) {
-        self.accounts().create(account_id);
-        self.env_impl
-            .set_source_account(account_id.try_into().unwrap());
-    }
-
-    /// Gets the source account set in the [Env].
-    pub fn source_account(&self) -> AccountId {
-        self.env_impl
-            .source_account()
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
-    }
-
-    /// Run the function as if executed by the given contract ID.
-    ///
-    /// Used to write or read contract data, or take other actions in tests for
-    /// setting up tests or asserting on internal state.
-    pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
-        let id: [u8; 32] = id.into();
-        let func = Symbol::from_str("");
-        let mut t: Option<T> = None;
-        self.env_impl
-            .with_test_contract_frame(id.into(), func, || {
-                t = Some(f());
-                Ok(().into())
-            })
-            .unwrap();
-        t.unwrap()
-    }
-
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -492,41 +400,6 @@ impl Env {
             )
             .unwrap();
         contract_id
-    }
-
-    /// Install the contract WASM code to the [Env] for testing.
-    ///
-    /// Returns the hash of the installed code that can be then used for
-    /// the contract deployment.
-    ///
-    /// Useful for contract factory testing, otherwise use
-    /// `register_contract_wasm` function that installs and deploys the contract
-    /// in a single call.
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{BytesN, Env};
-    ///
-    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
-    ///
-    /// #[test]
-    /// fn test() {
-    /// # }
-    /// # fn main() {
-    ///     let env = Env::default();
-    ///     env.install_contract_wasm(WASM);
-    /// }
-    /// ```
-    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
-        self.env_impl
-            .invoke_function(xdr::HostFunction::InstallContractCode(
-                xdr::InstallContractCodeArgs {
-                    code: contract_wasm.clone().try_into().unwrap(),
-                },
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
     }
 
     /// Register a contract in a WASM file with the [Env] for testing.
@@ -664,6 +537,133 @@ impl Env {
                 )
             })
             .unwrap();
+    }
+
+    /// Install the contract WASM code to the [Env] for testing.
+    ///
+    /// Returns the hash of the installed code that can be then used for
+    /// the contract deployment.
+    ///
+    /// Useful for contract factory testing, otherwise use
+    /// `register_contract_wasm` function that installs and deploys the contract
+    /// in a single call.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.install_contract_wasm(WASM);
+    /// }
+    /// ```
+    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
+        self.env_impl
+            .invoke_function(xdr::HostFunction::InstallContractCode(
+                xdr::InstallContractCodeArgs {
+                    code: contract_wasm.clone().try_into().unwrap(),
+                },
+            ))
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Sets the source account in the [Env].
+    ///
+    /// The source account will be accessible via [Env::invoker] when a contract
+    /// is directly invoked.
+    pub fn set_source_account(&self, account_id: &AccountId) {
+        self.accounts().create(account_id);
+        self.env_impl
+            .set_source_account(account_id.try_into().unwrap());
+    }
+
+    /// Gets the source account set in the [Env].
+    pub fn source_account(&self) -> AccountId {
+        self.env_impl
+            .source_account()
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
+    /// Run the function as if executed by the given contract ID.
+    ///
+    /// Used to write or read contract data, or take other actions in tests for
+    /// setting up tests or asserting on internal state.
+    pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
+        let id: [u8; 32] = id.into();
+        let func = Symbol::from_str("");
+        let mut t: Option<T> = None;
+        self.env_impl
+            .with_test_contract_frame(id.into(), func, || {
+                t = Some(f());
+                Ok(().into())
+            })
+            .unwrap();
+        t.unwrap()
+    }
+
+    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    ///
+    /// The ledger info and state in the snapshot are loaded into the Env.
+    pub fn from_snapshot(s: LedgerSnapshot) -> Env {
+        let info = s.ledger_info();
+
+        let rs = Rc::new(s.clone());
+        let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
+        let env_impl = internal::EnvImpl::with_storage_and_budget(
+            storage,
+            internal::budget::Budget::default(),
+        );
+
+        let env = Env {
+            env_impl,
+            snapshot: Some(rs.clone()),
+        };
+
+        env.set_source_account(&env.accounts().generate());
+
+        env.ledger().set(info);
+
+        env
+    }
+
+    /// Creates a new Env loaded with the ledger snapshot loaded from the file.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error reading the file.
+    pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
+        Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
+    }
+
+    /// Create a snapshot from the Env's current state.
+    pub fn to_snapshot(&self) -> LedgerSnapshot {
+        let snapshot = self.snapshot.clone().unwrap_or_default();
+        let mut snapshot = (*snapshot).clone();
+        snapshot.set_ledger_info(self.ledger().get());
+        let storage = self
+            .env_impl
+            .with_mut_storage(|s| Ok(s.map.clone()))
+            .unwrap();
+        snapshot.update_entries(storage.iter());
+        snapshot
+    }
+
+    /// Create a snapshot file from the Env's current state.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_snapshot().write_file(p).unwrap();
     }
 }
 
