@@ -16,9 +16,9 @@ impl Crypto {
     }
 
     /// Computes a SHA-256 hash.
-    pub fn sha256(&self, msg: &Bytes) -> BytesN<32> {
+    pub fn sha256(&self, message: &Bytes) -> BytesN<32> {
         let env = self.env();
-        let bin_obj = internal::Env::compute_hash_sha256(env, msg.into());
+        let bin_obj = internal::Env::compute_hash_sha256(env, message.into());
         unsafe { BytesN::unchecked_new(bin_obj.in_env(env)) }
     }
 
@@ -34,13 +34,13 @@ impl Crypto {
     /// ### TODO
     ///
     /// Return a [Result] instead of panicking.
-    pub fn ed25519_verify(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
+    pub fn ed25519_verify(&self, public_key: &BytesN<32>, message: &Bytes, signature: &BytesN<64>) {
         let env = self.env();
         let _ = internal::Env::verify_sig_ed25519(
             env,
-            msg.to_object(),
-            pk.to_object(),
-            sig.to_object(),
+            message.to_object(),
+            public_key.to_object(),
+            signature.to_object(),
         );
     }
 }
