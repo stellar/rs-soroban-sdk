@@ -187,7 +187,8 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// ```
 pub use soroban_sdk_macros::contracterror;
 
-/// Import a contract from its WASM file.
+/// Import a contract from its WASM file, generating a client, types, and
+/// constant holding the contract file.
 ///
 /// Generates in the current module:
 /// - A `Contract` trait that matches the contracts interface.
@@ -234,7 +235,7 @@ pub use soroban_sdk_macros::contracterror;
 /// ```
 pub use soroban_sdk_macros::contractimport;
 
-/// Exports the publicly accessible functions in the implementation.
+/// Exports the publicly accessible functions to the Soroban environment.
 ///
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
@@ -293,7 +294,7 @@ pub use soroban_sdk_macros::contractimpl;
 /// for the type.
 pub use soroban_sdk_macros::contracttype;
 
-/// Generates a contract client for a trait.
+/// Generates a client for a contract trait.
 ///
 /// Can be used to create clients for contracts that live outside the current
 /// crate, using a trait that has been published as a standard or shared
@@ -350,8 +351,8 @@ pub use soroban_sdk_macros::contracttype;
 /// # fn main() { }
 pub use soroban_sdk_macros::contractclient;
 
-/// Loads a WASM contract into a constant that can be registered in tests or
-/// used in deployments to install the contract code.
+/// Import a contract from its WASM file, generating a constant holding the
+/// contract file.
 ///
 /// Note that [`contractimport`] also automatically imports the contract file
 /// into a constant, and so it is usually unnecessary to use [`contractfile`]
