@@ -284,7 +284,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{Hash, LedgerEntry, LedgerKey, LedgerKeyContractCode};
+use xdr::{Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -540,8 +540,12 @@ impl Env {
     ) -> BytesN<32> {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
         if let Some(contract_id) = contract_id.into() {
-            let hash = Hash(contract_id.into());
-            let key = LedgerKey::ContractCode(LedgerKeyContractCode { hash: hash.clone() });
+            let contract_id_hash = Hash(contract_id.into());
+            let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
+            let key = LedgerKey::ContractData(LedgerKeyContractData {
+                contract_id: contract_id_hash.clone(),
+                key: data_key.clone(),
+            });
             self.env_impl
                 .with_mut_storage(|storage| {
                     storage.put(
@@ -550,8 +554,8 @@ impl Env {
                             ext: xdr::LedgerEntryExt::V0,
                             last_modified_ledger_seq: 0,
                             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                                contract_id: hash.clone(),
-                                key: xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode),
+                                contract_id: contract_id_hash.clone(),
+                                key: data_key,
                                 val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(
                                     xdr::ScContractCode::WasmRef(Hash(wasm_hash.into())),
                                 ))),
