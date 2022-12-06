@@ -1,4 +1,6 @@
-use soroban_sdk::{contractimpl, contracttype, vec, Account, Address, BytesN, Env, IntoVal};
+use soroban_sdk::{
+    contractimpl, contracttype, vec, Account, Address, BytesN, Env, IntoVal, TryIntoVal,
+};
 
 mod token_contract {
     soroban_sdk::contractimport!(
@@ -72,7 +74,11 @@ fn test() {
     assert!(env.verify_account_authorization(
         &acc,
         &[(token_client.contract_id.clone(), "mint")],
-        vec![&env, 20_i128.into()],
+        vec![
+            &env,
+            acc.address().to_raw(),
+            20_i128.try_into_val(&env).unwrap()
+        ],
     ));
 
     assert_eq!(token_client.balance(&acc.address()), 30);
