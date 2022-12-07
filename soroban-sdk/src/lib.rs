@@ -635,6 +635,8 @@ pub use address::Address;
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
 pub use set::Set;
+#[doc(inline)]
+pub use storage_map::StorageMap;
 pub use vec::Vec;
 
 pub mod serde;

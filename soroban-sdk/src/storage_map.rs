@@ -7,10 +7,10 @@ use crate::{
     Env, IntoVal, TryFromVal,
 };
 
-/// Storage mapper stores and retrieves specific key and value types for the
+/// Storage map stores and retrieves specific key and value types for the
 /// currently executing contract.
 ///
-/// The storage mapper is a layer ontop of [`Storage`][crate::storage::Storage],
+/// Storage map is a layer ontop of [`Storage`][crate::storage::Storage],
 /// and the same behaviors and access rules apply.
 ///
 /// ### Examples
@@ -18,7 +18,7 @@ use crate::{
 /// ```
 /// use soroban_sdk::{Env, Symbol};
 ///
-/// # use soroban_sdk::{contractimpl, symbol, BytesN};
+/// # use soroban_sdk::{contractimpl, symbol, BytesN, StorageMap};
 /// #
 /// # pub struct Contract;
 /// #
