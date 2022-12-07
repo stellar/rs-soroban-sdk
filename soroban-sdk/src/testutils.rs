@@ -39,6 +39,10 @@ pub mod budget {
 
     /// Budget that tracks the resources consumed for the environment.
     ///
+    /// Note that some budgets – CPU instructions, memory, and VM cost types –
+    /// are likely to be underestimated when running Rust code compared to
+    /// running the WASM equivalent.
+    ///
     /// ### Examples
     ///
     /// ```
@@ -79,16 +83,25 @@ pub mod budget {
         }
 
         /// Get the CPU instruction count.
+        ///
+        /// Note that CPU instructions are likely to be underestimated when
+        /// running Rust code compared to running the WASM equivalent.
         pub fn get_cpu_instruction_count(&self) -> u64 {
             self.0.get_cpu_insns_count()
         }
 
         /// Get the memory bytes used.
+        ///
+        /// Note that memory is likely to be underestimated when running Rust
+        /// code compared to running the WASM equivalent.
         pub fn get_memory_bytes_count(&self) -> u64 {
             self.0.get_mem_bytes_count()
         }
 
         /// Get other cost counts.
+        ///
+        /// Note that VM cost types are likely to be underestimated when running
+        /// Rust code compared to running the WASM equivalent.
         pub fn get(&self, cost_type: CostType) -> u64 {
             self.0.get_input(cost_type)
         }
