@@ -609,10 +609,17 @@ mod envhidden {
 #[doc(hidden)]
 pub use envhidden::*;
 
+#[doc(hidden)]
+#[deprecated(note = "use env.storage()")]
+pub mod data {
+    #[doc(hidden)]
+    #[deprecated(note = "use env.storage()")]
+    pub use super::storage::Storage as Data;
+}
+
 pub mod accounts;
 mod bytes;
 pub mod crypto;
-pub mod data;
 pub mod deploy;
 pub mod events;
 pub mod iter;
@@ -620,6 +627,7 @@ pub mod ledger;
 pub mod logging;
 mod map;
 mod set;
+pub mod storage;
 mod vec;
 pub use accounts::AccountId;
 pub use address::Address;

@@ -1,4 +1,4 @@
-//! Data contains types for storing data for the currently executing contract.
+//! Storage contains types for storing data for the currently executing contract.
 use core::fmt::Debug;
 
 use crate::{
@@ -6,7 +6,7 @@ use crate::{
     Env, IntoVal, TryFromVal,
 };
 
-/// Data stores and retrieves data for the currently executing contract.
+/// Storage stores and retrieves data for the currently executing contract.
 ///
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Other contracts cannot query or modify data stored by other contracts.
@@ -25,11 +25,11 @@ use crate::{
 /// # #[contractimpl]
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
-/// let data = env.data();
+/// let storage = env.storage();
 /// let key = symbol!("key");
-/// env.data().set(key, 1);
-/// assert_eq!(data.has(key), true);
-/// assert_eq!(data.get::<_, i32>(key), Some(Ok(1)));
+/// env.storage().set(key, 1);
+/// assert_eq!(storage.has(key), true);
+/// assert_eq!(storage.get::<_, i32>(key), Some(Ok(1)));
 /// #     }
 /// # }
 /// #
@@ -44,23 +44,23 @@ use crate::{
 /// # fn main() { }
 /// ```
 #[derive(Clone)]
-pub struct Data(Env);
+pub struct Storage(Env);
 
-impl Debug for Data {
+impl Debug for Storage {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Data")
     }
 }
 
-impl Data {
+impl Storage {
     #[inline(always)]
     pub(crate) fn env(&self) -> &Env {
         &self.0
     }
 
     #[inline(always)]
-    pub(crate) fn new(env: &Env) -> Data {
-        Data(env.clone())
+    pub(crate) fn new(env: &Env) -> Storage {
+        Storage(env.clone())
     }
 
     // TODO: Use Borrow<K> for all key use in these functions.
@@ -78,7 +78,7 @@ impl Data {
     }
 
     /// Returns the value there is a value stored for the given key in the
-    /// currently executing contracts data.
+    /// currently executing contract's data.
     ///
     /// ### Panics
     ///
@@ -125,7 +125,7 @@ impl Data {
         V::try_from_val(env, rv)
     }
 
-    /// Sets the value for the given key in the currently executing contracts
+    /// Sets the value for the given key in the currently executing contract's
     /// data.
     ///
     /// If the key already has a value associated with it, the old value is

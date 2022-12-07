@@ -15,7 +15,7 @@ use super::{
 
 use crate::unwrap::UnwrapOptimized;
 #[cfg(doc)]
-use crate::{data::Data, Map, Vec};
+use crate::{storage::Storage, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;

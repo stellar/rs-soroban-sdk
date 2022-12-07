@@ -13,7 +13,7 @@ use super::{
 use super::xdr::ScVal;
 
 #[cfg(doc)]
-use crate::data::Data;
+use crate::storage::Storage;
 
 /// Create a [Map] with the given key-value pairs.
 ///
