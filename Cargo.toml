@@ -55,7 +55,7 @@ rev = "5e582a8b"
 [workspace.dependencies.stellar-xdr]
 version = "0.0.9"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "1309e3de"
+rev = "78fb3de4"
 default-features = false
 
 # [patch."https://github.com/stellar/rs-soroban-env"]
