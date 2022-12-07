@@ -48,7 +48,7 @@ pub struct Storage(Env);
 
 impl Debug for Storage {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Data")
+        write!(f, "Storage")
     }
 }
 
