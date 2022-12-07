@@ -110,7 +110,7 @@ impl Env {
         }
     }
 
-    /// Get a [Data] for accessing and update contract data that has been stored
+    /// Get a [Storage] for accessing and update contract data that has been stored
     /// by the currently executing contract.
     #[inline(always)]
     #[deprecated(note = "use env.storage()")]
