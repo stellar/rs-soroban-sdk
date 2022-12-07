@@ -628,6 +628,7 @@ pub mod logging;
 mod map;
 mod set;
 pub mod storage;
+pub mod storage_map;
 mod vec;
 pub use accounts::AccountId;
 pub use address::Address;

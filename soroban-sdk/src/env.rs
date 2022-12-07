@@ -52,7 +52,8 @@ pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{
     accounts::Accounts, address::Address, crypto::Crypto, deploy::Deployer, events::Events,
-    ledger::Ledger, logging::Logger, storage::Storage, AccountId, Bytes, BytesN, Vec,
+    ledger::Ledger, logging::Logger, storage::Storage, storage_map::StorageMap, AccountId, Bytes,
+    BytesN, Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -122,6 +123,18 @@ impl Env {
     #[inline(always)]
     pub fn storage(&self) -> Storage {
         Storage::new(self)
+    }
+
+    /// Get a [StorageMap] for accessing and update contract data that has been stored
+    /// by the currently executing contract.
+    #[inline(always)]
+    pub fn storage_map<K, V>(&self) -> StorageMap<K, V>
+    where
+        K: IntoVal<Env, RawVal>,
+        V: IntoVal<Env, RawVal>,
+        V: TryFromVal<Env, RawVal>,
+    {
+        StorageMap::new(self)
     }
 
     /// Get [Events] for publishing events associated with the
