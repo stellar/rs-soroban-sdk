@@ -659,7 +659,12 @@ impl Env {
         self.to_snapshot().write_file(p).unwrap();
     }
 
-    /// Get the budget for the environment that tracks the resources consumed.
+    /// Reset the budget that tracks the resources consumed for the environment.
+    pub fn reset_budget(&self) {
+        self.env_impl.with_budget(|b| b.reset_default())
+    }
+
+    /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> crate::testutils::Budget {
         self.env_impl.with_budget(|b| b.clone())
     }

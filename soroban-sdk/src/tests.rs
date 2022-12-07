@@ -16,3 +16,4 @@ mod contractimport;
 mod contractimport_with_error;
 mod contractimport_with_sha256;
 mod contracttoken;
+mod budget;
