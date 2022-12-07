@@ -6,7 +6,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn store(env: Env, k: i32, v: i32) {
-        env.data().set(k, v)
+        env.storage().set(k, v)
     }
 }
 
@@ -19,7 +19,7 @@ fn test() {
     client.store(&2, &4);
 
     assert_eq!(
-        e.as_contract(&contract_id, || e.data().get::<_, i32>(2)),
+        e.as_contract(&contract_id, || e.storage().get::<_, i32>(2)),
         Some(Ok(4))
     );
 }

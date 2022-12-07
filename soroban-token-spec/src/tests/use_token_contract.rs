@@ -23,7 +23,7 @@ fn get_contract_id(e: &Env) -> Identifier {
 }
 
 fn get_token(e: &Env) -> BytesN<32> {
-    e.data().get_unchecked(DataKey::Token).unwrap()
+    e.storage().get_unchecked(DataKey::Token).unwrap()
 }
 
 pub struct TestContract;
@@ -39,7 +39,7 @@ impl TestContract {
         };
         TokenClient::new(&e, &id).init(&get_contract_id(&e), &metadata);
 
-        e.data().set(DataKey::Token, id);
+        e.storage().set(DataKey::Token, id);
     }
 
     pub fn get_token(e: Env) -> BytesN<32> {

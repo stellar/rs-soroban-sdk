@@ -15,7 +15,7 @@ use super::{
 
 use crate::unwrap::UnwrapOptimized;
 #[cfg(doc)]
-use crate::{data::Data, Map, Vec};
+use crate::{storage::Storage, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;
@@ -104,8 +104,8 @@ macro_rules! bytesn {
 /// The array is stored in the Host and available to the Guest through the
 /// functions defined on Bytes.
 ///
-/// Bytes values can be stored as [Data], or in other types like [Vec], [Map],
-/// etc.
+/// Bytes values can be stored as [Storage], or in other types like [Vec],
+/// [Map], etc.
 ///
 /// ### Examples
 ///
@@ -668,7 +668,7 @@ impl ExactSizeIterator for BinIter {
 /// The array is stored in the Host and available to the Guest through the
 /// functions defined on Bytes.
 ///
-/// Bytes values can be stored as [Data], or in other types like [Vec], [Map],
+/// Bytes values can be stored as [Storage], or in other types like [Vec], [Map],
 /// etc.
 ///
 /// ### Examples
