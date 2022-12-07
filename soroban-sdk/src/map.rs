@@ -13,7 +13,7 @@ use super::{
 use super::xdr::ScVal;
 
 #[cfg(doc)]
-use crate::data::Data;
+use crate::storage::Storage;
 
 /// Create a [Map] with the given key-value pairs.
 ///
@@ -56,7 +56,7 @@ macro_rules! map {
 /// Maps have at most one entry per key. Setting a value for a key in the map
 /// that already has a value for that key replaces the value.
 ///
-/// Map values can be stored as [Data], or in other types like [Vec], [Map],
+/// Map values can be stored as [Storage], or in other types like [Vec], [Map],
 /// etc.
 ///
 /// ### Examples

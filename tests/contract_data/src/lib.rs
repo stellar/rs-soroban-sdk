@@ -6,14 +6,14 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn put(e: Env, key: Symbol, val: Symbol) {
-        e.data().set(key, val)
+        e.storage().set(key, val)
     }
 
     pub fn get(e: Env, key: Symbol) -> Option<Symbol> {
-        e.data().get(key).map(|v| v.unwrap())
+        e.storage().get(key).map(|v| v.unwrap())
     }
 
     pub fn del(e: Env, key: Symbol) {
-        e.data().remove(key)
+        e.storage().remove(key)
     }
 }
