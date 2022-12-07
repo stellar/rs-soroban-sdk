@@ -1,5 +1,6 @@
 #![cfg(test)]
 
+mod budget;
 mod contract_add_i32;
 mod contract_assert;
 mod contract_call_stack;
@@ -16,4 +17,3 @@ mod contractimport;
 mod contractimport_with_error;
 mod contractimport_with_sha256;
 mod contracttoken;
-mod budget;

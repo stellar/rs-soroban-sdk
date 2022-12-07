@@ -273,7 +273,8 @@ impl Env {
 
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet, Ledger as _,
+    budget::Budget, random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet,
+    Ledger as _,
 };
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
@@ -659,14 +660,9 @@ impl Env {
         self.to_snapshot().write_file(p).unwrap();
     }
 
-    /// Reset the budget that tracks the resources consumed for the environment.
-    pub fn reset_budget(&self) {
-        self.env_impl.with_budget(|b| b.reset_default())
-    }
-
     /// Get the budget that tracks the resources consumed for the environment.
-    pub fn budget(&self) -> crate::testutils::Budget {
-        self.env_impl.with_budget(|b| b.clone())
+    pub fn budget(&self) -> Budget {
+        self.env_impl.with_budget(|b| Budget::new(b.clone()))
     }
 }
 
