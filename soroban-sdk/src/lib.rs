@@ -610,10 +610,10 @@ mod envhidden {
 pub use envhidden::*;
 
 #[doc(hidden)]
-#[deprecated(note = "use env.storage()")]
+#[deprecated(note = "use storage")]
 pub mod data {
     #[doc(hidden)]
-    #[deprecated(note = "use env.storage()")]
+    #[deprecated(note = "use storage::Storage")]
     pub use super::storage::Storage as Data;
 }
 
