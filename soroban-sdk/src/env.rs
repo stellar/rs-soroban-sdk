@@ -27,6 +27,8 @@ pub mod internal {
 // the SDK in the crate::testutils mod.
 #[cfg(any(test, feature = "testutils"))]
 pub mod testutils {
+    pub use super::internal::budget::Budget;
+    pub use super::internal::budget::CostType;
     pub use super::internal::LedgerInfo;
 }
 
@@ -655,6 +657,11 @@ impl Env {
     /// If there is any error writing the file.
     pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
         self.to_snapshot().write_file(p).unwrap();
+    }
+
+    /// Get the budget for the environment that tracks the resources consumed.
+    pub fn budget(&self) -> crate::testutils::Budget {
+        self.env_impl.with_budget(|b| b.clone())
     }
 }
 
