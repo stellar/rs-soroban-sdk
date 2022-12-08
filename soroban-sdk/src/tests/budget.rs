@@ -21,7 +21,7 @@ fn test_budget() {
     e.budget().reset();
     let b = client.add();
     println!("{}", e.budget());
-    assert_eq!(e.budget().get(CostType::BytesAppend), 36);
+    assert_eq!(e.budget().input(CostType::BytesAppend), 36);
     assert_eq!(
         b,
         Bytes::from_array(&e, b"abcdefghijklmnopqrstuvwyxz0123456789")

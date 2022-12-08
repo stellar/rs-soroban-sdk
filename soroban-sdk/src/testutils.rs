@@ -39,6 +39,12 @@ pub mod budget {
 
     /// Budget that tracks the resources consumed for the environment.
     ///
+    /// The budget consistents of two cost dimensions:
+    ///  - CPU instructions
+    ///  - Memory
+    ///
+    /// Inputs feed into those cost dimensions.
+    ///
     /// Note that some budgets – CPU instructions, memory, and VM cost types –
     /// are likely to be underestimated when running Rust code compared to
     /// running the WASM equivalent.
@@ -62,10 +68,12 @@ pub mod budget {
 
     impl Display for Budget {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            writeln!(f, "CPU Instructions: {}", self.get_cpu_instruction_count())?;
-            writeln!(f, "Memory Bytes: {}", self.get_memory_bytes_count())?;
+            writeln!(f, "Costs:")?;
+            writeln!(f, "- CPU Instructions: {}", self.cpu_instruction_cost())?;
+            writeln!(f, "- Memory Bytes: {}", self.memory_bytes_cost())?;
+            writeln!(f, "Inputs:")?;
             for cost_type in CostType::variants() {
-                writeln!(f, "{cost_type:?}: {}", self.get(*cost_type))?;
+                writeln!(f, "- {cost_type:?}: {}", self.input(*cost_type))?;
             }
             Ok(())
         }
@@ -82,28 +90,33 @@ pub mod budget {
             self.0.reset_unlimited();
         }
 
-        /// Get the CPU instruction count.
+        /// Returns the CPU instruction cost.
         ///
         /// Note that CPU instructions are likely to be underestimated when
         /// running Rust code compared to running the WASM equivalent.
-        pub fn get_cpu_instruction_count(&self) -> u64 {
+        pub fn cpu_instruction_cost(&self) -> u64 {
             self.0.get_cpu_insns_count()
         }
 
-        /// Get the memory bytes used.
+        /// Returns the memory cost.
         ///
         /// Note that memory is likely to be underestimated when running Rust
         /// code compared to running the WASM equivalent.
-        pub fn get_memory_bytes_count(&self) -> u64 {
+        pub fn memory_bytes_cost(&self) -> u64 {
             self.0.get_mem_bytes_count()
         }
 
-        /// Get other cost counts.
+        /// Get inputs that have led to the cost.
         ///
         /// Note that VM cost types are likely to be underestimated when running
         /// Rust code compared to running the WASM equivalent.
-        pub fn get(&self, cost_type: CostType) -> u64 {
+        pub fn input(&self, cost_type: CostType) -> u64 {
             self.0.get_input(cost_type)
+        }
+
+        /// Print the budget costs and inputs to stdout.
+        pub fn print(&self) {
+            println!("{}", self);
         }
     }
 }
