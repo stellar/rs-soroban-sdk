@@ -27,6 +27,8 @@ pub mod internal {
 // the SDK in the crate::testutils mod.
 #[cfg(any(test, feature = "testutils"))]
 pub mod testutils {
+    pub use super::internal::budget::Budget;
+    pub use super::internal::budget::CostType;
     pub use super::internal::LedgerInfo;
 }
 
@@ -279,7 +281,8 @@ impl Env {
 
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet, Ledger as _,
+    budget::Budget, random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet,
+    Ledger as _,
 };
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
@@ -663,6 +666,11 @@ impl Env {
     /// If there is any error writing the file.
     pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
         self.to_snapshot().write_file(p).unwrap();
+    }
+
+    /// Get the budget that tracks the resources consumed for the environment.
+    pub fn budget(&self) -> Budget {
+        self.env_impl.with_budget(|b| Budget::new(b.clone()))
     }
 }
 
