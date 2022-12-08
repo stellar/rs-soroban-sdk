@@ -45,9 +45,9 @@ pub mod budget {
     ///
     /// Inputs feed into those cost dimensions.
     ///
-    /// Note that some budgets – CPU instructions, memory, and VM cost types –
-    /// are likely to be underestimated when running Rust code compared to
-    /// running the WASM equivalent.
+    /// Note that all cost dimensions – CPU instructions, memory – and the VM
+    /// cost type inputs are likely to be underestimated when running Rust code
+    /// compared to running the WASM equivalent.
     ///
     /// ### Examples
     ///
