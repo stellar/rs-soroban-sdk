@@ -129,7 +129,7 @@ impl Env {
             .unwrap()
     }
 
-    pub(crate) fn authorize_account(&self, account: &Account, args: &Vec<RawVal>) {
+    pub(crate) fn authorize_account(&self, account: &Account, args: Vec<RawVal>) {
         internal::Env::authorize_account(self, account.to_object(), args.to_object())
             .try_into()
             .unwrap()
@@ -492,7 +492,7 @@ impl Env {
     pub fn verify_account_authorization(
         &self,
         account: &Account,
-        call_stack: &[(BytesN<32>, &str)],
+        call_stack: &[(&BytesN<32>, &str)],
         args: Vec<RawVal>,
     ) -> bool {
         let call_stack = call_stack

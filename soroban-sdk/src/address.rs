@@ -6,6 +6,9 @@ use crate::{env::EnvObj, ConversionError, Env, IntoVal, Object, RawVal, TryFromV
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
 
+#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+use crate::BytesN;
+
 #[derive(Clone)]
 pub struct Address(EnvObj);
 
@@ -147,5 +150,15 @@ impl Address {
 
     pub fn to_object(&self) -> Object {
         self.0.to_object()
+    }
+
+    #[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+    pub fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
+        use crate::env::xdr::{Hash, ScAddress, ScObject};
+
+        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(
+            contract_id.into_val(env),
+        )))));
+        Self::try_from_val(env, sc_addr).unwrap()
     }
 }

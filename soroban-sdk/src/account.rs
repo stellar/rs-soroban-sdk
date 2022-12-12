@@ -92,6 +92,22 @@ impl IntoVal<Env, RawVal> for &Account {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Account> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: &Account) -> Result<Self, Self::Error> {
+        ScVal::try_from_val(&v.0.env, v.0.val.to_raw())
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Account> for ScVal {
+    type Error = ConversionError;
+    fn try_from(v: Account) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for Account {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
@@ -123,7 +139,7 @@ impl Account {
         self.0.env().get_account_address(&self)
     }
 
-    pub fn authorize(&self, args: &Vec<RawVal>) {
+    pub fn authorize(&self, args: Vec<RawVal>) {
         self.0.env().authorize_account(&self, args);
     }
 

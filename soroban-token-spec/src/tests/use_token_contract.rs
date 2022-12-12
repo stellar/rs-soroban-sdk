@@ -1,6 +1,4 @@
-use soroban_sdk::{
-    contractimpl, contracttype, vec, Account, Address, BytesN, Env, IntoVal, TryIntoVal,
-};
+use soroban_sdk::{contractimpl, contracttype, Account, Address, BytesN, Env, IntoVal};
 
 mod token_contract {
     soroban_sdk::contractimport!(
@@ -71,14 +69,22 @@ fn test() {
     client.set_admin(&acc.address());
 
     token_client.mint(&acc, &acc.address(), &20);
+    // Smoke test check that authorization with wrong args didn't happen.
+    assert!(!env.verify_account_authorization(
+        &acc,
+        &[(&token_client.contract_id, "mint")],
+        (acc.address(), 19_i128).into_val(&env),
+    ));
     assert!(env.verify_account_authorization(
         &acc,
-        &[(token_client.contract_id.clone(), "mint")],
-        vec![
-            &env,
-            acc.address().to_raw(),
-            20_i128.try_into_val(&env).unwrap()
-        ],
+        &[(&token_client.contract_id, "mint")],
+        (acc.address(), 20_i128).into_val(&env),
+    ));
+    // Smoke test check that double authorization didn't happen.
+    assert!(!env.verify_account_authorization(
+        &acc,
+        &[(&token_client.contract_id, "mint")],
+        (acc.address(), 20_i128).into_val(&env),
     ));
 
     assert_eq!(token_client.balance(&acc.address()), 30);
