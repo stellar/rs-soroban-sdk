@@ -20,6 +20,8 @@ use crate::{storage::Storage, Map, Vec};
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;
 
+extern crate alloc;
+
 /// Create a [Bytes] with an array, or an integer or hex literal.
 ///
 /// The first argument in the list must be a reference to an [Env].
@@ -601,6 +603,14 @@ impl Bytes {
     pub fn iter(&self) -> BinIter {
         self.clone().into_iter()
     }
+
+    pub fn to_vec(&self) -> alloc::vec::Vec<u8> {
+        let env = self.env();
+        let mut vec = alloc::vec![0u8; self.len() as usize];
+        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, &mut vec)
+            .unwrap_optimized();
+        vec
+    }
 }
 
 impl IntoIterator for Bytes {
@@ -1063,6 +1073,15 @@ impl<const N: usize> BytesN<N> {
 
     pub fn iter(&self) -> BinIter {
         self.clone().into_iter()
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    pub fn to_vec(&self) -> alloc::vec::Vec<u8> {
+        let env = self.env();
+        let mut vec = alloc::vec![0u8; self.len() as usize];
+        env.bytes_copy_to_slice(self.to_object(), RawVal::U32_ZERO, &mut vec)
+            .unwrap_optimized();
+        vec
     }
 }
 

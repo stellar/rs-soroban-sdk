@@ -1,0 +1,20 @@
+[package]
+name = "test_borsh"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version = "1.65"
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+borsh = { version = "0.9.3", default-features = false, features = [] }
+wee_alloc = "0.4.5"
+
+[dev-dependencies]
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
