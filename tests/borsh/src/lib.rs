@@ -4,8 +4,6 @@
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-extern crate alloc;
-
 use borsh::{BorshDeserialize, BorshSerialize};
 use soroban_sdk::{contractimpl, Bytes, Env};
 
@@ -25,12 +23,19 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn add(e: Env, req: Bytes) -> Bytes {
-        let req = req.to_vec();
-        let req = Request::try_from_slice(&req).unwrap();
+        let buffer = &mut [0u8; 16];
+
+        let buf = buffer.as_mut();
+        req.copy_into_slice(buf);
+        let req_buf = &buf[0..req.len() as usize];
+        let req = Request::try_from_slice(req_buf).unwrap();
+
         let c = req.a + req.b;
+
         let resp = Response { c };
-        let resp = resp.try_to_vec().unwrap();
-        Bytes::from_slice(&e, &resp)
+        let mut buf = buffer.as_mut();
+        resp.serialize(&mut buf).unwrap();
+        Bytes::from_slice(&e, buf)
     }
 }
 
