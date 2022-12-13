@@ -5,7 +5,7 @@ use core::{cmp::Ordering, fmt::Debug};
 
 use crate::{
     env::internal::xdr,
-    env::internal::{Env as _, RawVal, RawValConvertible},
+    env::internal::{Env as _, EnvBase as _, RawVal, RawValConvertible},
     env::EnvObj,
     BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
@@ -111,16 +111,30 @@ impl PartialOrd for AccountId {
 
 impl Ord for AccountId {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.0.cmp(&other.0)
+        self.0.env.check_same_env(&other.0.env);
+        let v = self
+            .0
+            .env
+            .obj_cmp(self.0.obj.to_raw(), other.0.obj.to_raw());
+        if v == 0 {
+            Ordering::Equal
+        } else if v < 0 {
+            Ordering::Less
+        } else {
+            Ordering::Greater
+        }
     }
 }
 
 impl TryFromVal<Env, Object> for AccountId {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, val: Object) -> Result<Self, Self::Error> {
-        if val.is_obj_type(xdr::ScObjectType::AccountId) {
-            Ok(AccountId(val.in_env(env)))
+    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
+        if obj.is_obj_type(xdr::ScObjectType::AccountId) {
+            Ok(AccountId(EnvObj {
+                env: env.clone(),
+                obj,
+            }))
         } else {
             Err(ConversionError {})
         }
@@ -182,7 +196,7 @@ use super::xdr::ScVal;
 impl TryFrom<&AccountId> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &AccountId) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.0.env, v.0.val.to_raw())
+        ScVal::try_from_val(&v.0.env, v.0.obj.to_raw())
     }
 }
 
@@ -248,28 +262,28 @@ impl TryIntoVal<Env, AccountId> for super::xdr::AccountId {
 }
 
 impl AccountId {
-    pub(crate) unsafe fn unchecked_new(obj: EnvObj) -> Self {
-        Self(obj)
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+        Self(EnvObj { env, obj })
     }
 
     pub fn env(&self) -> &Env {
-        self.0.env()
+        &self.0.env
     }
 
     pub fn as_raw(&self) -> &RawVal {
-        self.0.as_raw()
+        self.0.obj.as_raw()
     }
 
     pub fn as_object(&self) -> &Object {
-        self.0.as_object()
+        &self.0.obj
     }
 
     pub fn to_raw(&self) -> RawVal {
-        self.0.to_raw()
+        self.0.obj.to_raw()
     }
 
     pub fn to_object(&self) -> Object {
-        self.0.to_object()
+        self.0.obj
     }
 }
 
@@ -421,7 +435,11 @@ impl testutils::Accounts for Accounts {
                     last_modified_ledger_seq: 0,
                     ext: xdr::LedgerEntryExt::V0,
                 };
-                storage.put(&k, &v)
+                storage.put(
+                    &k,
+                    &v,
+                    soroban_env_host::budget::AsBudget::as_budget(env.host()),
+                )
             })
             .unwrap();
     }
@@ -473,7 +491,10 @@ impl testutils::Accounts for Accounts {
         env.host()
             .with_mut_storage(|storage| {
                 let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount { account_id: id });
-                storage.del(&k)
+                storage.del(
+                    &k,
+                    soroban_env_host::budget::AsBudget::as_budget(env.host()),
+                )
             })
             .unwrap();
     }
@@ -507,7 +528,10 @@ impl Accounts {
                     account_id: id.clone(),
                 });
                 let mut v = storage
-                    .get(&k)
+                    .get(
+                        &k,
+                        soroban_env_host::budget::AsBudget::as_budget(env.host()),
+                    )
                     .ok()
                     .and_then(|v| {
                         if let xdr::LedgerEntryData::Account(_) = v.data {
@@ -526,7 +550,11 @@ impl Accounts {
                 } else {
                     panic!("ledger entry is not an account");
                 }
-                storage.put(&k, &v)
+                storage.put(
+                    &k,
+                    &v,
+                    soroban_env_host::budget::AsBudget::as_budget(env.host()),
+                )
             })
             .unwrap();
     }

@@ -283,7 +283,12 @@ where
 
     fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
         if obj.is_obj_type(ScObjectType::Map) {
-            Ok(unsafe { Set::<T>::unchecked_new(obj.in_env(env)) })
+            Ok(unsafe {
+                Set::<T>::unchecked_new(EnvObj {
+                    env: env.clone(),
+                    obj,
+                })
+            })
         } else {
             Err(ConversionError {})
         }

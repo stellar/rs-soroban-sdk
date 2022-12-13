@@ -18,8 +18,8 @@ impl Crypto {
     /// Returns the SHA-256 hash of the data.
     pub fn sha256(&self, data: &Bytes) -> BytesN<32> {
         let env = self.env();
-        let bin_obj = internal::Env::compute_hash_sha256(env, data.into());
-        unsafe { BytesN::unchecked_new(bin_obj.in_env(env)) }
+        let bin = internal::Env::compute_hash_sha256(env, data.into());
+        unsafe { BytesN::unchecked_new(env.clone(), bin) }
     }
 
     /// Verifies an ed25519 signature.

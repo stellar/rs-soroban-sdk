@@ -602,7 +602,6 @@ pub use env::TryIntoVal;
 pub use env::Symbol;
 
 mod envhidden {
-    pub use super::env::EnvVal;
     pub use super::env::Object;
     pub use super::env::Status;
 }

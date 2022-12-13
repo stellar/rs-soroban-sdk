@@ -109,7 +109,7 @@ impl DeployerWithCurrentContract {
             wasm_hash.into_val(env).to_object(),
             self.salt.to_object(),
         );
-        unsafe { BytesN::<32>::unchecked_new(id.in_env(env)) }
+        unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }
     }
 
     /// Deploy a built-in token contract.
@@ -121,7 +121,7 @@ impl DeployerWithCurrentContract {
     pub fn deploy_token(&self) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_token_from_contract(self.salt.to_object());
-        unsafe { BytesN::<32>::unchecked_new(id.in_env(env)) }
+        unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }
     }
 }
 

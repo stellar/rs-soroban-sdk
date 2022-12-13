@@ -89,7 +89,7 @@ impl Ledger {
     pub fn network_passphrase(&self) -> Bytes {
         let env = self.env();
         let bin_obj = internal::Env::get_ledger_network_passphrase(env);
-        unsafe { Bytes::unchecked_new(bin_obj.in_env(env)) }
+        unsafe { Bytes::unchecked_new(env.clone(), bin_obj) }
     }
 }
 
