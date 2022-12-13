@@ -51,12 +51,6 @@ pub use internal::TryIntoVal;
 pub use internal::Val;
 
 #[derive(Clone)]
-pub struct EnvVal {
-    pub env: Env,
-    pub val: RawVal,
-}
-
-#[derive(Clone)]
 pub struct EnvObj {
     pub env: Env,
     pub obj: Object,

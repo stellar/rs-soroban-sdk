@@ -248,28 +248,6 @@ where
     }
 }
 
-// impl<K, V> From<Map<K, V>> for EnvVal
-// where
-//     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-//     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-// {
-//     #[inline(always)]
-//     fn from(m: Map<K, V>) -> Self {
-//         m.0.into()
-//     }
-// }
-
-// impl<K, V> From<Map<K, V>> for EnvObj
-// where
-//     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-//     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-// {
-//     #[inline(always)]
-//     fn from(m: Map<K, V>) -> Self {
-//         m.0
-//     }
-// }
-
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     type Error = ConversionError;

@@ -290,25 +290,6 @@ where
     }
 }
 
-// impl<T> From<Vec<T>> for EnvVal
-// where
-//     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-// {
-//     fn from(v: Vec<T>) -> Self {
-//         v.0.into()
-//     }
-// }
-
-// impl<T> From<Vec<T>> for EnvObj
-// where
-//     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-// {
-//     #[inline(always)]
-//     fn from(v: Vec<T>) -> Self {
-//         v.0
-//     }
-// }
-
 impl<T> From<Vec<T>> for Set<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,

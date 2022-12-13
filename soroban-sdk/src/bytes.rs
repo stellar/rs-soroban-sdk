@@ -237,13 +237,6 @@ impl From<Bytes> for RawVal {
     }
 }
 
-// impl From<Bytes> for EnvVal {
-//     #[inline(always)]
-//     fn from(v: Bytes) -> Self {
-//         v.0.into()
-//     }
-// }
-
 impl From<Bytes> for Object {
     #[inline(always)]
     fn from(v: Bytes) -> Self {
@@ -889,13 +882,6 @@ impl<const N: usize> From<BytesN<N>> for RawVal {
         v.0.into()
     }
 }
-
-// impl<const N: usize> From<BytesN<N>> for EnvVal {
-//     #[inline(always)]
-//     fn from(v: BytesN<N>) -> Self {
-//         v.0.into()
-//     }
-// }
 
 impl<const N: usize> From<BytesN<N>> for Bytes {
     #[inline(always)]
