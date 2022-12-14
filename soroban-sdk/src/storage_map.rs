@@ -25,7 +25,7 @@ use crate::{
 /// # #[contractimpl]
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
-/// let mapping: StorageMap<Symbol, u32> = env.storage_map();
+/// let mapping: StorageMap<Symbol, Symbol, u32> = env.storage_map(symbol!("key_to_num"));
 /// let key = symbol!("key");
 /// mapping.set(key, 1);
 /// assert_eq!(mapping.has(key), true);
@@ -44,14 +44,21 @@ use crate::{
 /// # fn main() { }
 /// ```
 #[derive(Clone)]
-pub struct StorageMap<const D: u64, K, V>(Env, PhantomData<K>, PhantomData<V>)
+pub struct StorageMap<D, K, V>
 where
+    D: IntoVal<Env, RawVal>,
     K: IntoVal<Env, RawVal>,
     V: IntoVal<Env, RawVal>,
-    V: TryFromVal<Env, RawVal>;
+    V: TryFromVal<Env, RawVal>,
+{
+    env: Env,
+    discriminant: RawVal,
+    _p: (PhantomData<D>, PhantomData<K>, PhantomData<V>),
+}
 
-impl<const D: u64, K, V> Debug for StorageMap<D, K, V>
+impl<D, K, V> Debug for StorageMap<D, K, V>
 where
+    D: IntoVal<Env, RawVal>,
     K: IntoVal<Env, RawVal>,
     V: IntoVal<Env, RawVal>,
     V: TryFromVal<Env, RawVal>,
@@ -61,20 +68,25 @@ where
     }
 }
 
-impl<const D: u64, K, V> StorageMap<D, K, V>
+impl<D, K, V> StorageMap<D, K, V>
 where
+    D: IntoVal<Env, RawVal>,
     K: IntoVal<Env, RawVal>,
     V: IntoVal<Env, RawVal>,
     V: TryFromVal<Env, RawVal>,
 {
     #[inline(always)]
     pub(crate) fn env(&self) -> &Env {
-        &self.0
+        &self.env
     }
 
     #[inline(always)]
-    pub(crate) fn new(env: &Env) -> Self {
-        Self(env.clone(), PhantomData, PhantomData)
+    pub(crate) fn new(env: &Env, discriminant: D) -> Self {
+        Self {
+            env: env.clone(),
+            discriminant: discriminant.into_val(env),
+            _p: (PhantomData, PhantomData, PhantomData),
+        }
     }
 
     /// Returns if there is a value stored for the given key in the currently
@@ -82,7 +94,7 @@ where
     #[inline(always)]
     pub fn has(&self, key: K) -> bool {
         let env = self.env();
-        let key = (D, key.into_val(env)).into_val(env);
+        let key = (self.discriminant, key.into_val(env)).into_val(env);
         let rv = internal::Env::has_contract_data(env, key);
         rv.is_true()
     }
@@ -105,7 +117,7 @@ where
         V::Error: Debug,
     {
         let env = self.env();
-        let key = (D, key.into_val(env)).into_val(env);
+        let key = (self.discriminant, key.into_val(env)).into_val(env);
         let has = internal::Env::has_contract_data(env, key);
         if has.is_true() {
             let rv = internal::Env::get_contract_data(env, key);
@@ -127,7 +139,7 @@ where
         V::Error: Debug,
     {
         let env = self.env();
-        let key = (D, key.into_val(env)).into_val(env);
+        let key = (self.discriminant, key.into_val(env)).into_val(env);
         let rv = internal::Env::get_contract_data(env, key);
         V::try_from_val(env, rv)
     }
@@ -140,7 +152,7 @@ where
     #[inline(always)]
     pub fn set(&self, key: K, val: V) {
         let env = self.env();
-        let key = (D, key.into_val(env)).into_val(env);
+        let key = (self.discriminant, key.into_val(env)).into_val(env);
         let val = val.into_val(env);
         internal::Env::put_contract_data(env, key, val);
     }
@@ -148,7 +160,7 @@ where
     #[inline(always)]
     pub fn remove(&self, key: K) {
         let env = self.env();
-        let key = (D, key.into_val(env)).into_val(env);
+        let key = (self.discriminant, key.into_val(env)).into_val(env);
         internal::Env::del_contract_data(env, key);
     }
 }
