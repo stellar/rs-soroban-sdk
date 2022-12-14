@@ -3,6 +3,7 @@ use std::{
     fs::File,
     io::{Read, Write},
     path::Path,
+    rc::Rc,
 };
 
 use soroban_env_host::{
@@ -79,12 +80,12 @@ impl LedgerSnapshot {
     // entry.
     pub fn update_entries<'a>(
         &mut self,
-        entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Option<Box<LedgerEntry>>)>,
+        entries: impl IntoIterator<Item = &'a (Rc<LedgerKey>, Option<Rc<LedgerEntry>>)>,
     ) {
         for (k, e) in entries {
-            let i = self.ledger_entries.iter().position(|(ik, _)| ik == k);
+            let i = self.ledger_entries.iter().position(|(ik, _)| **ik == **k);
             if let Some(e) = e {
-                let new = (k.clone(), e.clone());
+                let new = (Box::new((**k).clone()), Box::new((**e).clone()));
                 if let Some(i) = i {
                     self.ledger_entries[i] = new;
                 } else {

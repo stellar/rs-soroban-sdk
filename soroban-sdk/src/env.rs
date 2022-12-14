@@ -12,18 +12,18 @@ pub mod internal {
     pub type EnvImpl = Host;
 
     #[doc(hidden)]
-    impl<F, T> TryConvert<F, T> for super::Env
+    impl<F, T> Convert<F, T> for super::Env
     where
-        EnvImpl: TryConvert<F, T>,
+        EnvImpl: Convert<F, T>,
     {
-        type Error = <EnvImpl as TryConvert<F, T>>::Error;
+        type Error = <EnvImpl as Convert<F, T>>::Error;
         fn convert(&self, f: F) -> Result<T, Self::Error> {
             self.env_impl.convert(f)
         }
     }
 }
 
-// Testutils from the environmen are pub here, and then pub re-exported out of
+// Testutils from the environment are pub here, and then pub re-exported out of
 // the SDK in the crate::testutils mod.
 #[cfg(any(test, feature = "testutils"))]
 pub mod testutils {
@@ -35,6 +35,7 @@ pub mod testutils {
 pub use internal::meta;
 pub use internal::xdr;
 pub use internal::BitSet;
+pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::FromVal;
@@ -48,9 +49,6 @@ pub use internal::Symbol;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
-
-pub type EnvVal = internal::EnvVal<Env, RawVal>;
-pub type EnvObj = internal::EnvVal<Env, Object>;
 
 use crate::{
     accounts::Accounts, address::Address, crypto::Crypto, deploy::Deployer, events::Events,
@@ -103,10 +101,10 @@ impl Env {
             .expect("unrecognized invoker type");
         match invoker_type {
             InvokerType::Account => Address::Account(unsafe {
-                AccountId::unchecked_new(internal::Env::get_invoking_account(self).in_env(self))
+                AccountId::unchecked_new(self.clone(), internal::Env::get_invoking_account(self))
             }),
             InvokerType::Contract => Address::Contract(unsafe {
-                BytesN::unchecked_new(internal::Env::get_invoking_contract(self).in_env(self))
+                BytesN::unchecked_new(self.clone(), internal::Env::get_invoking_contract(self))
             }),
         }
     }
@@ -160,7 +158,7 @@ impl Env {
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn current_contract(&self) -> BytesN<32> {
         let id = internal::Env::get_current_contract(self);
-        unsafe { BytesN::<32>::unchecked_new(id.in_env(self)) }
+        unsafe { BytesN::<32>::unchecked_new(self.clone(), id) }
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
@@ -205,7 +203,7 @@ impl Env {
     /// ```
     pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
         let stack = internal::Env::get_current_call_stack(self);
-        unsafe { Vec::unchecked_new(stack.in_env(self)) }
+        unsafe { Vec::unchecked_new(self.clone(), stack) }
     }
 
     #[doc(hidden)]
@@ -536,6 +534,7 @@ impl Env {
                             val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(source))),
                         }),
                     },
+                    &self.env_impl.budget_cloned(),
                 )
             })
             .unwrap();
@@ -651,11 +650,12 @@ impl Env {
         let snapshot = self.snapshot.clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
+        let budget = soroban_env_host::budget::AsBudget::as_budget(&self.env_impl);
         let storage = self
             .env_impl
             .with_mut_storage(|s| Ok(s.map.clone()))
             .unwrap();
-        snapshot.update_entries(storage.iter());
+        snapshot.update_entries(storage.iter(budget).unwrap());
         snapshot
     }
 
@@ -670,7 +670,7 @@ impl Env {
 
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
-        self.env_impl.with_budget(|b| Budget::new(b.clone()))
+        self.env_impl.with_budget(|b| Budget::new(b))
     }
 }
 
