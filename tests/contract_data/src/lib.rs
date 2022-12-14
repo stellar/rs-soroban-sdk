@@ -1,11 +1,13 @@
 #![no_std]
-use soroban_sdk::{contractimpl, storage_map::StorageMap, Env, Symbol};
+use soroban_sdk::{contractimpl, storage_map::StorageMap, symbol, Env, Symbol};
 
 pub struct Contract;
 
+const ATOB: u64 = symbol!("atob").to_raw().get_payload();
+
 #[contractimpl]
 impl Contract {
-    fn mapping(e: &Env) -> StorageMap<Symbol, u32> {
+    fn mapping(e: &Env) -> StorageMap<ATOB, Symbol, u32> {
         e.storage_map()
     }
 

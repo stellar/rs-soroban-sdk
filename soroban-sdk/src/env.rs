@@ -130,7 +130,7 @@ impl Env {
     /// Get a [StorageMap] for accessing and update contract data that has been stored
     /// by the currently executing contract.
     #[inline(always)]
-    pub fn storage_map<K, V>(&self) -> StorageMap<K, V>
+    pub fn storage_map<const D: u64, K, V>(&self) -> StorageMap<D, K, V>
     where
         K: IntoVal<Env, RawVal>,
         V: IntoVal<Env, RawVal>,
