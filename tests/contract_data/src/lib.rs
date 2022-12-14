@@ -1,19 +1,17 @@
 #![no_std]
-use soroban_sdk::{contractimpl, storage_map::StorageMap, symbol, Env, Symbol};
+use soroban_sdk::{contractimpl, symbol, Env, Symbol};
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    fn mapping(e: &Env) -> StorageMap<Symbol, Symbol, u32> {
-        e.storage_map(symbol!("atob"))
-    }
-
     pub fn put(e: Env, key: Symbol, val: u32) {
-        Self::mapping(&e).set(key, val)
+        e.storage_map::<Symbol, _, _>(symbol!("atob")).set(key, val)
     }
 
     pub fn get(e: Env, key: Symbol) -> Option<u32> {
-        Self::mapping(&e).get(key).map(|val| val.unwrap())
+        e.storage_map::<Symbol, _, _>(symbol!("atob"))
+            .get(key)
+            .map(|val| val.unwrap())
     }
 }
