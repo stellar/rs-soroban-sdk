@@ -470,6 +470,20 @@ impl Env {
         )
     }
 
+    //TODO: Add comment
+    pub fn register_stellar_asset_contract(&self, asset: xdr::Asset) -> BytesN<32> {
+        let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
+            contract_id: xdr::ContractId::Asset(asset),
+            source: xdr::ScContractCode::Token,
+        });
+
+        self.env_impl
+            .invoke_function(create)
+            .unwrap()
+            .try_into_val(self)
+            .unwrap()
+    }
+
     fn register_contract_with_optional_contract_id_and_source<'a>(
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,

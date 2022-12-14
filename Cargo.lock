@@ -976,6 +976,7 @@ dependencies = [
  "rand 0.7.3",
  "soroban-auth",
  "soroban-sdk",
+ "stellar-xdr",
 ]
 
 [[package]]
