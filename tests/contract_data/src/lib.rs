@@ -5,7 +5,7 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    fn mapping(e: &Env) -> StorageMap<Symbol, u32> {
+    fn mapping(e: &Env) -> StorageMap<Symbol, Symbol, u32> {
         e.storage_map(symbol!("atob"))
     }
 
