@@ -3,12 +3,10 @@ use soroban_sdk::{contractimpl, storage_map::StorageMap, symbol, Env, Symbol};
 
 pub struct Contract;
 
-const ATOB: u64 = symbol!("atob").to_raw().get_payload();
-
 #[contractimpl]
 impl Contract {
-    fn mapping(e: &Env) -> StorageMap<ATOB, Symbol, u32> {
-        e.storage_map()
+    fn mapping(e: &Env) -> StorageMap<Symbol, u32> {
+        e.storage_map(symbol!("atob"))
     }
 
     pub fn put(e: Env, key: Symbol, val: u32) {
