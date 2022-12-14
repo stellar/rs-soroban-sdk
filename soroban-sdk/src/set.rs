@@ -1,8 +1,8 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
 use super::{
-    env::internal::Env as _, env::EnvObj, xdr::ScObjectType, ConversionError, Env, IntoVal, Map,
-    Object, RawVal, TryFromVal, TryIntoVal, Vec,
+    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, IntoVal, Map, Object, RawVal,
+    TryFromVal, TryIntoVal, Vec,
 };
 
 /// Create a [Set] with the given items.
@@ -73,8 +73,8 @@ where
         Self(map)
     }
 
-    unsafe fn unchecked_new(obj: EnvObj) -> Self {
-        let map = Map::unchecked_new(obj);
+    unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+        let map = Map::unchecked_new(env, obj);
         Self(map)
     }
 
@@ -283,12 +283,7 @@ where
 
     fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
         if obj.is_obj_type(ScObjectType::Map) {
-            Ok(unsafe {
-                Set::<T>::unchecked_new(EnvObj {
-                    env: env.clone(),
-                    obj,
-                })
-            })
+            Ok(unsafe { Set::<T>::unchecked_new(env.clone(), obj) })
         } else {
             Err(ConversionError {})
         }

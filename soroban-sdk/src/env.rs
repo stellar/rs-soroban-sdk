@@ -50,12 +50,6 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
-#[derive(Clone)]
-pub struct EnvObj {
-    pub env: Env,
-    pub obj: Object,
-}
-
 use crate::{
     accounts::Accounts, address::Address, crypto::Crypto, deploy::Deployer, events::Events,
     ledger::Ledger, logging::Logger, storage::Storage, AccountId, Bytes, BytesN, Vec,
@@ -209,12 +203,7 @@ impl Env {
     /// ```
     pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
         let stack = internal::Env::get_current_call_stack(self);
-        unsafe {
-            Vec::unchecked_new(EnvObj {
-                env: self.clone(),
-                obj: stack,
-            })
-        }
+        unsafe { Vec::unchecked_new(self.clone(), stack) }
     }
 
     #[doc(hidden)]

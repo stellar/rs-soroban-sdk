@@ -6,7 +6,6 @@ use core::{cmp::Ordering, fmt::Debug};
 use crate::{
     env::internal::xdr,
     env::internal::{Env as _, EnvBase as _, RawVal, RawValConvertible},
-    env::EnvObj,
     BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
 };
 
@@ -76,7 +75,10 @@ impl Accounts {
 ///
 /// In tests account identifiers can be generated using [`Accounts`].
 #[derive(Clone)]
-pub struct AccountId(EnvObj);
+pub struct AccountId {
+    env: Env,
+    obj: Object,
+}
 
 impl Debug for AccountId {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -111,18 +113,9 @@ impl PartialOrd for AccountId {
 
 impl Ord for AccountId {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.0.env.check_same_env(&other.0.env);
-        let v = self
-            .0
-            .env
-            .obj_cmp(self.0.obj.to_raw(), other.0.obj.to_raw());
-        if v == 0 {
-            Ordering::Equal
-        } else if v < 0 {
-            Ordering::Less
-        } else {
-            Ordering::Greater
-        }
+        self.env.check_same_env(&other.env);
+        let v = self.env.obj_cmp(self.obj.to_raw(), other.obj.to_raw());
+        v.cmp(&0)
     }
 }
 
@@ -131,10 +124,10 @@ impl TryFromVal<Env, Object> for AccountId {
 
     fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
         if obj.is_obj_type(xdr::ScObjectType::AccountId) {
-            Ok(AccountId(EnvObj {
+            Ok(AccountId {
                 env: env.clone(),
                 obj,
-            }))
+            })
         } else {
             Err(ConversionError {})
         }
@@ -196,7 +189,7 @@ use super::xdr::ScVal;
 impl TryFrom<&AccountId> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &AccountId) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.0.env, v.0.obj.to_raw())
+        ScVal::try_from_val(&v.env, v.obj.to_raw())
     }
 }
 
@@ -263,27 +256,27 @@ impl TryIntoVal<Env, AccountId> for super::xdr::AccountId {
 
 impl AccountId {
     pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
-        Self(EnvObj { env, obj })
+        Self { env, obj }
     }
 
     pub fn env(&self) -> &Env {
-        &self.0.env
+        &self.env
     }
 
     pub fn as_raw(&self) -> &RawVal {
-        self.0.obj.as_raw()
+        self.obj.as_raw()
     }
 
     pub fn as_object(&self) -> &Object {
-        &self.0.obj
+        &self.obj
     }
 
     pub fn to_raw(&self) -> RawVal {
-        self.0.obj.to_raw()
+        self.obj.to_raw()
     }
 
     pub fn to_object(&self) -> Object {
-        self.0.obj
+        self.obj
     }
 }
 
