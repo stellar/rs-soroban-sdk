@@ -159,13 +159,7 @@ impl Ord for Bytes {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.env.check_same_env(&other.env);
         let v = self.env.obj_cmp(self.obj.to_raw(), other.obj.to_raw());
-        if v == 0 {
-            Ordering::Equal
-        } else if v < 0 {
-            Ordering::Less
-        } else {
-            Ordering::Greater
-        }
+        v.cmp(&0)
     }
 }
 
