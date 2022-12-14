@@ -1,7 +1,6 @@
 use std::{
-    error::Error,
     fs::File,
-    io::{Read, Write},
+    io::{self, Read, Write},
     path::Path,
     rc::Rc,
 };
@@ -11,6 +10,14 @@ use soroban_env_host::{
     xdr::{LedgerEntry, LedgerKey, ScHostStorageErrorCode, ScStatus},
     HostError, LedgerInfo,
 };
+
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
+    #[error("io")]
+    Io(#[from] io::Error),
+    #[error("serde")]
+    Serde(#[from] serde_json::Error),
+}
 
 /// Ledger snapshot stores a snapshot of a ledger that can be restored for use
 /// in environments as a [`LedgerInfo`] and a [`SnapshotSource`].
@@ -100,22 +107,22 @@ impl LedgerSnapshot {
 
 impl LedgerSnapshot {
     // Read in a [`LedgerSnapshot`] from a reader.
-    pub fn read(r: impl Read) -> Result<LedgerSnapshot, Box<dyn Error>> {
+    pub fn read(r: impl Read) -> Result<LedgerSnapshot, Error> {
         Ok(serde_json::from_reader::<_, LedgerSnapshot>(r)?)
     }
 
     // Read in a [`LedgerSnapshot`] from a file.
-    pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Box<dyn Error>> {
+    pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Error> {
         Self::read(File::open(p)?)
     }
 
     // Write a [`LedgerSnapshot`] to a writer.
-    pub fn write(&self, w: impl Write) -> Result<(), Box<dyn Error>> {
+    pub fn write(&self, w: impl Write) -> Result<(), Error> {
         Ok(serde_json::to_writer_pretty(w, self)?)
     }
 
     // Write a [`LedgerSnapshot`] to file.
-    pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
+    pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Error> {
         self.write(File::create(p)?)
     }
 }
