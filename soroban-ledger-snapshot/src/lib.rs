@@ -1,5 +1,5 @@
 use std::{
-    fs::File,
+    fs::{create_dir_all, File},
     io::{self, Read, Write},
     path::Path,
     rc::Rc,
@@ -123,6 +123,12 @@ impl LedgerSnapshot {
 
     // Write a [`LedgerSnapshot`] to file.
     pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Error> {
+        let p = p.as_ref();
+        if let Some(dir) = p.parent() {
+            if !dir.exists() {
+                create_dir_all(dir)?;
+            }
+        }
         self.write(File::create(p)?)
     }
 }
