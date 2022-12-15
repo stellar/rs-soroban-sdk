@@ -871,6 +871,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-account"
+version = "0.2.1"
+dependencies = [
+ "soroban-sdk",
+ "soroban-sdk-macros",
+]
+
+[[package]]
 name = "soroban-env-common"
 version = "0.0.9"
 dependencies = [
