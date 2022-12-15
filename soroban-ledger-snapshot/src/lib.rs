@@ -72,7 +72,7 @@ impl LedgerSnapshot {
         }
     }
 
-    // Set the ledger info in the snapshot.
+    /// Set the ledger info in the snapshot.
     pub fn set_ledger_info(&mut self, info: LedgerInfo) {
         self.protocol_version = info.protocol_version;
         self.sequence_number = info.sequence_number;
@@ -81,14 +81,12 @@ impl LedgerSnapshot {
         self.base_reserve = info.base_reserve;
     }
 
-    // Get the entries in the snapshot.
-    pub fn entries<'a>(
-        &'a self,
-    ) -> impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)> {
+    /// Get the entries in the snapshot.
+    pub fn entries(&self) -> impl IntoIterator<Item = (&Box<LedgerKey>, &Box<LedgerEntry>)> {
         self.ledger_entries.iter().map(|(k, v)| (k, v))
     }
 
-    // Replace the entries in the snapshot with the entries in the iterator.
+    /// Replace the entries in the snapshot with the entries in the iterator.
     pub fn set_entries<'a>(
         &mut self,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)>,
@@ -99,9 +97,9 @@ impl LedgerSnapshot {
         }
     }
 
-    // Update entries in the snapshot by adding or replacing any entries that
-    // have entry in the input iterator, or removing any that does not have an
-    // entry.
+    /// Update entries in the snapshot by adding or replacing any entries that
+    /// have entry in the input iterator, or removing any that does not have an
+    /// entry.
     pub fn update_entries<'a>(
         &mut self,
         entries: impl IntoIterator<Item = &'a (Rc<LedgerKey>, Option<Rc<LedgerEntry>>)>,
@@ -113,7 +111,7 @@ impl LedgerSnapshot {
                 if let Some(i) = i {
                     self.ledger_entries[i] = new;
                 } else {
-                    self.ledger_entries.push(new)
+                    self.ledger_entries.push(new);
                 }
             } else if let Some(i) = i {
                 self.ledger_entries.swap_remove(i);
