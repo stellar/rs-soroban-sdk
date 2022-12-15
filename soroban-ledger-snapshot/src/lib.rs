@@ -61,7 +61,7 @@ impl LedgerSnapshot {
         });
     }
 
-    /// Get the ledger info in the snapshot.
+    // Get the ledger info in the snapshot.
     pub fn ledger_info(&self) -> LedgerInfo {
         LedgerInfo {
             protocol_version: self.protocol_version,
