@@ -111,6 +111,18 @@ impl DeployerWithCurrentContract {
         );
         unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }
     }
+
+    /// Deploy a built-in token contract.
+    ///
+    /// The contract ID from the currently executing contract and the given salt
+    /// will be used to derive a contract ID for the deployed contract.
+    ///
+    /// Returns the deployed contract's ID.
+    pub fn deploy_token(&self) -> BytesN<32> {
+        let env = &self.env;
+        let id = env.create_token_from_contract(self.salt.to_object());
+        unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }
+    }
 }
 
 #[doc(hidden)]
