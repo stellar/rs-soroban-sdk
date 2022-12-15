@@ -46,7 +46,7 @@ where
     fn serialize(self, env: &Env) -> Bytes {
         let val: RawVal = self.into_val(env);
         let bin = env.serialize_to_bytes(val);
-        unsafe { Bytes::unchecked_new(bin.in_env(env)) }
+        unsafe { Bytes::unchecked_new(env.clone(), bin) }
     }
 }
 

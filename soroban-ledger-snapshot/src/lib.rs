@@ -1,8 +1,8 @@
 use std::{
-    error::Error,
-    fs::File,
-    io::{Read, Write},
+    fs::{create_dir_all, File},
+    io::{self, Read, Write},
     path::Path,
+    rc::Rc,
 };
 
 use soroban_env_host::{
@@ -10,6 +10,14 @@ use soroban_env_host::{
     xdr::{LedgerEntry, LedgerKey, ScHostStorageErrorCode, ScStatus},
     HostError, LedgerInfo,
 };
+
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
+    #[error("io")]
+    Io(#[from] io::Error),
+    #[error("serde")]
+    Serde(#[from] serde_json::Error),
+}
 
 /// Ledger snapshot stores a snapshot of a ledger that can be restored for use
 /// in environments as a [`LedgerInfo`] and a [`SnapshotSource`].
@@ -79,12 +87,12 @@ impl LedgerSnapshot {
     // entry.
     pub fn update_entries<'a>(
         &mut self,
-        entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Option<Box<LedgerEntry>>)>,
+        entries: impl IntoIterator<Item = &'a (Rc<LedgerKey>, Option<Rc<LedgerEntry>>)>,
     ) {
         for (k, e) in entries {
-            let i = self.ledger_entries.iter().position(|(ik, _)| ik == k);
+            let i = self.ledger_entries.iter().position(|(ik, _)| **ik == **k);
             if let Some(e) = e {
-                let new = (k.clone(), e.clone());
+                let new = (Box::new((**k).clone()), Box::new((**e).clone()));
                 if let Some(i) = i {
                     self.ledger_entries[i] = new;
                 } else {
@@ -99,22 +107,28 @@ impl LedgerSnapshot {
 
 impl LedgerSnapshot {
     // Read in a [`LedgerSnapshot`] from a reader.
-    pub fn read(r: impl Read) -> Result<LedgerSnapshot, Box<dyn Error>> {
+    pub fn read(r: impl Read) -> Result<LedgerSnapshot, Error> {
         Ok(serde_json::from_reader::<_, LedgerSnapshot>(r)?)
     }
 
     // Read in a [`LedgerSnapshot`] from a file.
-    pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Box<dyn Error>> {
+    pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Error> {
         Self::read(File::open(p)?)
     }
 
     // Write a [`LedgerSnapshot`] to a writer.
-    pub fn write(&self, w: impl Write) -> Result<(), Box<dyn Error>> {
+    pub fn write(&self, w: impl Write) -> Result<(), Error> {
         Ok(serde_json::to_writer_pretty(w, self)?)
     }
 
     // Write a [`LedgerSnapshot`] to file.
-    pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
+    pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Error> {
+        let p = p.as_ref();
+        if let Some(dir) = p.parent() {
+            if !dir.exists() {
+                create_dir_all(dir)?;
+            }
+        }
         self.write(File::create(p)?)
     }
 }
