@@ -207,7 +207,7 @@ impl Env {
     }
 
     #[doc(hidden)]
-    #[deprecated(note = "use env.crypto().sha259(msg)")]
+    #[deprecated(note = "use env.crypto().sha256(msg)")]
     pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
         self.crypto().sha256(msg)
     }
