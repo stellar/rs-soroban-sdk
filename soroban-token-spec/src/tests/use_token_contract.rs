@@ -42,7 +42,7 @@ impl TestContract {
 
 #[test]
 fn test() {
-    use stellar_xdr::Asset;
+    use soroban_sdk::xdr::Asset;
 
     let env = Env::default();
 

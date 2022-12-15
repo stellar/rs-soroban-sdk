@@ -38,4 +38,4 @@ pub use super::env::xdr::{
 };
 
 // XDR for ledger entries.
-pub use super::env::xdr::{AccountEntry, AccountId};
+pub use super::env::xdr::{AccountEntry, AccountId, Asset};
