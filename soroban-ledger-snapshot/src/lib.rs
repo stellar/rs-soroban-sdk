@@ -50,7 +50,7 @@ impl LedgerSnapshot {
     /// snapshot.  The entries in the host's storage will overwrite entries in
     /// the snapshot. Existing entries in the snapshot that are untouched by the
     /// host will remain.
-    pub fn update(&mut self, host: Host) {
+    pub fn update(&mut self, host: &Host) {
         let _result = host.with_ledger_info(|li| {
             self.set_ledger_info(li.clone());
             Ok(())
