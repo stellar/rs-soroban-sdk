@@ -1,7 +1,9 @@
 use core::cmp::Ordering;
 
 use crate::env::internal::xdr::ScObjectType;
-use crate::{Address, ConversionError, IntoVal, Object, RawVal, TryFromVal, TryIntoVal, Vec};
+use crate::{
+    Address, BytesN, ConversionError, IntoVal, Object, RawVal, TryFromVal, TryIntoVal, Vec,
+};
 
 use crate::{env::EnvObj, Env};
 
@@ -171,6 +173,15 @@ impl Account {
             signature_args: ScVec(vec![].try_into().unwrap()),
         };
         Account::try_from_val(e, ScVal::Object(Some(ScObject::Account(sc_account)))).unwrap()
-        // sc_account.try_into_val(e).unwrap()
+    }
+
+    pub fn generic(e: &Env, contract_id: &BytesN<32>) -> Self {
+        use crate::env::internal::xdr::ScObject;
+        let sc_account = ScAccount {
+            account_id: ScAccountId::GenericAccount(Hash(contract_id.to_array())),
+            invocations: vec![].try_into().unwrap(),
+            signature_args: ScVec(vec![].try_into().unwrap()),
+        };
+        Account::try_from_val(e, ScVal::Object(Some(ScObject::Account(sc_account)))).unwrap()
     }
 }

@@ -123,6 +123,12 @@ impl Env {
             .unwrap()
     }
 
+    pub fn current_contract_id(&self) -> BytesN<32> {
+        internal::Env::get_current_contract_id(self)
+            .try_into_val(self)
+            .unwrap()
+    }
+
     pub(crate) fn get_account_address(&self, account: &Account) -> Address {
         internal::Env::get_account_address(self, account.to_object())
             .try_into_val(self)
@@ -497,7 +503,12 @@ impl Env {
     ) -> bool {
         let call_stack = call_stack
             .iter()
-            .map(|(contract_id, fn_name)| (xdr::Hash(contract_id.to_array()), Symbol::try_from_str(fn_name).unwrap()))
+            .map(|(contract_id, fn_name)| {
+                (
+                    xdr::Hash(contract_id.to_array()),
+                    Symbol::try_from_str(fn_name).unwrap(),
+                )
+            })
             .collect();
         self.env_impl
             .verify_account_authorization(account.to_object(), call_stack, args.to_object())
