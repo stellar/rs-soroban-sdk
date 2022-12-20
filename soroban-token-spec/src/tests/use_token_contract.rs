@@ -32,7 +32,7 @@ impl TestContract {
     }
 
     pub fn approve(e: Env, spender: Identifier, amount: i128) {
-        TokenClient::new(&e, get_token(&e)).approve(&Signature::Invoker, &0, &spender, &amount);
+        TokenClient::new(&e, get_token(&e)).incr_allow(&Signature::Invoker, &0, &spender, &amount);
     }
 
     pub fn allowance(e: Env, from: Identifier, spender: Identifier) -> i128 {
