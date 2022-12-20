@@ -1117,6 +1117,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_empty2"
+version = "0.3.2"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_errors"
 version = "0.3.2"
 dependencies = [
