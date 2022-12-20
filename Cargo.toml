@@ -9,6 +9,7 @@ members = [
     "soroban-ledger-snapshot",
     "soroban-token-spec",
     "tests/empty",
+    "tests/empty2",
     "tests/add_u64",
     "tests/add_i128",
     "tests/add_u128",
