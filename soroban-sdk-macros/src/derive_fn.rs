@@ -96,10 +96,6 @@ pub fn derive_fn(
                 });
                 let call = quote! {
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        // <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
-                        //     &env,
-                        //     #ident
-                        // )
                         <soroban_sdk::RawVal as soroban_sdk::TryIntoVal<soroban_sdk::Env, _>>::try_into_val(#ident, &env)
                     )
                 };

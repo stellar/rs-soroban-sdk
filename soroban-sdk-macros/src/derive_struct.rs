@@ -60,7 +60,7 @@ pub fn derive_type_struct(
                     Err(#path::ConversionError)?
                 }
             };
-            
+
             let into = quote! { map.set(#map_key, (&self.#ident).into_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
@@ -115,26 +115,10 @@ pub fn derive_type_struct(
     quote! {
         #spec_gen
 
-        // impl #path::TryFromVal<#path::Env, #path::RawVal> for #ident {
-        //     type Error = #path::ConversionError;
-        //     #[inline(always)]
-        //     fn try_from_val(env: &#path::Env, val: #path::RawVal) -> Result<Self, Self::Error> {
-        //         use #path::TryIntoVal;
-        //         let map: #path::Map<#path::Symbol, #path::RawVal> = val.try_into_val(env)?;
-        //         if map.len() != #field_count_u32 {
-        //             return Err(#path::ConversionError);
-        //         }
-        //         Ok(Self{
-        //             #(#try_froms,)*
-        //         })
-        //     }
-        // }
-
         impl #path::TryIntoVal<#path::Env, #ident> for #path::RawVal {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
-                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
                 use #path::TryIntoVal;
                 let map: #path::Map<#path::Symbol, #path::RawVal> = self.try_into_val(env)?;
                 if map.len() != #field_count_u32 {
@@ -164,30 +148,11 @@ pub fn derive_type_struct(
             }
         }
 
-        // #[cfg(any(test, feature = "testutils"))]
-        // impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
-        //     type Error = #path::xdr::Error;
-        //     #[inline(always)]
-        //     fn try_from_val(env: &#path::Env, val: #path::xdr::ScMap) -> Result<Self, Self::Error> {
-        //         use #path::xdr::Validate;
-        //         use #path::TryIntoVal;
-        //         let map = val;
-        //         if map.len() != #field_count_usize {
-        //             return Err(#path::xdr::Error::Invalid);
-        //         }
-        //         map.validate()?;
-        //         Ok(Self{
-        //             #(#try_from_xdrs,)*
-        //         })
-        //     }
-        // }
-
         #[cfg(any(test, feature = "testutils"))]
         impl #path::TryIntoVal<#path::Env, #ident> for #path::xdr::ScMap {
             type Error = #path::xdr::Error;
             #[inline(always)]
             fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
-                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
                 use #path::xdr::Validate;
                 use #path::TryIntoVal;
                 let map = self;
@@ -201,25 +166,11 @@ pub fn derive_type_struct(
             }
         }
 
-        // #[cfg(any(test, feature = "testutils"))]
-        // impl #path::TryFromVal<#path::Env, #path::xdr::ScObject> for #ident {
-        //     type Error = #path::xdr::Error;
-        //     #[inline(always)]
-        //     fn try_from_val(env: &#path::Env, val: #path::xdr::ScObject) -> Result<Self, Self::Error> {
-        //         if let #path::xdr::ScObject::Map(map) = val {
-        //             <_ as #path::TryFromVal<_, _>>::try_from_val(env, map)
-        //         } else {
-        //             Err(#path::xdr::Error::Invalid)
-        //         }
-        //     }
-        // }
-
         #[cfg(any(test, feature = "testutils"))]
         impl #path::TryIntoVal<#path::Env, #ident> for #path::xdr::ScObject {
             type Error = #path::xdr::Error;
             #[inline(always)]
             fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
-                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
                 if let #path::xdr::ScObject::Map(map) = self {
                     <_ as #path::TryIntoVal<_, _>>::try_into_val(map, env)
                 } else {
@@ -228,25 +179,11 @@ pub fn derive_type_struct(
             }
         }
 
-        // #[cfg(any(test, feature = "testutils"))]
-        // impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
-        //     type Error = #path::xdr::Error;
-        //     #[inline(always)]
-        //     fn try_from_val(env: &#path::Env, val: #path::xdr::ScVal) -> Result<Self, Self::Error> {
-        //         if let #path::xdr::ScVal::Object(Some(obj)) = val {
-        //             <_ as #path::TryFromVal<_, _>>::try_from_val(env, obj)
-        //         } else {
-        //             Err(#path::xdr::Error::Invalid)
-        //         }
-        //     }
-        // }
-
         #[cfg(any(test, feature = "testutils"))]
         impl #path::TryIntoVal<#path::Env, #ident> for #path::xdr::ScVal {
             type Error = #path::xdr::Error;
             #[inline(always)]
             fn try_into_val(self, env: &#path::Env) -> Result<#ident, Self::Error> {
-                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
                 if let #path::xdr::ScVal::Object(Some(obj)) = self {
                     <_ as #path::TryIntoVal<_, _>>::try_into_val(obj, env)
                 } else {

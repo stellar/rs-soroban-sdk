@@ -125,21 +125,10 @@ pub fn derive_type_error_enum_int(
             }
         }
 
-        // impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
-        //     type Error = #path::ConversionError;
-        //     #[inline(always)]
-        //     fn try_from_val(env: &#path::Env, val: #path::RawVal) -> Result<Self, Self::Error> {
-        //         use #path::TryIntoVal;
-        //         let status: #path::Status = val.try_into_val(env)?;
-        //         status.try_into().map_err(|_| #path::ConversionError)
-        //     }
-        // }
-
         impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::RawVal {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
-                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
                 use #path::TryIntoVal;
                 let status: #path::Status = self.try_into_val(env)?;
                 status.try_into().map_err(|_| #path::ConversionError)

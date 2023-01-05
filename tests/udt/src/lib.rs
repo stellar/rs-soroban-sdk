@@ -53,7 +53,7 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, TryFromVal};
+    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, TryIntoVal};
 
     #[test]
     fn test_serializing() {
@@ -205,7 +205,7 @@ mod test {
             c: vec![&e, 1],
         };
         let val: ScVal = udt.clone().try_into().unwrap();
-        let roundtrip = UdtStruct::try_from_val(&e, val).unwrap();
+        let roundtrip = val.try_into_val(&e).unwrap();
         assert_eq!(udt, roundtrip);
     }
 }
