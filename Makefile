@@ -10,10 +10,12 @@ doc: fmt
 	cargo +nightly doc -p soroban-sdk -p soroban-auth --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 test: fmt build
-	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
+	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs,alloc $(CARGO_TEST_SUBCOMMAND)
+	cd tests-nightly && CARGO_TARGET_DIR=../target cargo +nightly hack test
 
 build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
+	cd tests-nightly && CARGO_TARGET_DIR=../target cargo +nightly hack build --target wasm32-unknown-unknown --release
 	cd target/wasm32-unknown-unknown/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
@@ -28,6 +30,7 @@ build-optimized: fmt
 		--exclude soroban-auth \
 		-Z build-std=std,panic_abort \
 		-Z build-std-features=panic_immediate_abort
+	cd tests-nightly && CARGO_TARGET_DIR=../target cargo +nightly hack build --target wasm32-unknown-unknown --release
 	cd target/wasm32-unknown-unknown/release/ && \
 		for i in *.wasm ; do \
 			wasm-opt -Oz "$$i" -o "$$i.tmp" && mv "$$i.tmp" "$$i"; \

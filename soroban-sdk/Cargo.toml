@@ -36,6 +36,8 @@ rand = "0.8.5"
 hex = "0.4.3"
 
 [features]
+std = []
+alloc = []
 testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
 docs = []
 

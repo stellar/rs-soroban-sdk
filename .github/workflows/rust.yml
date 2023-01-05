@@ -12,7 +12,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, rust-analyzer-compat, build-and-test, docs]
+    needs: [fmt, rust-analyzer-compat, build-and-test, build-and-test-nightly, docs]
     runs-on: ubuntu-latest
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -52,8 +52,33 @@ jobs:
         name: cargo-hack
         version: 0.5.16
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
+    - run: cargo hack --feature-powerset --exclude-features docs,alloc build --target ${{ matrix.sys.target }}
+    - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs,alloc test --target ${{ matrix.sys.target }}
+
+  build-and-test-nightly:
+    strategy:
+      matrix:
+        sys:
+        - os: ubuntu-latest
+          target: x86_64-unknown-linux-gnu
+    runs-on: ${{ matrix.sys.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - run: rustup update nightly && rustup default nightly
+    - run: rustup target add ${{ matrix.sys.target }}
+    - run: rustup target add wasm32-unknown-unknown
+    - uses: stellar/binaries@v12
+      with:
+        name: cargo-hack
+        version: 0.5.16
+    - run: cargo hack build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
+    - run: |
+        cd tests-nightly && CARGO_TARGET_DIR=../target cargo +nightly hack build --target wasm32-unknown-unknown --profile release
+    - run: |
+        cd tests-nightly && CARGO_TARGET_DIR=../target cargo +nightly hack test --target ${{ matrix.sys.target }}
 
   docs:
     runs-on: ubuntu-latest

@@ -1,5 +1,3 @@
-#![cfg(target_family = "wasm")]
-
 // This code is adapted from https://github.com/wenyuzhao/bump-allocator-rs
 
 use core::alloc::{GlobalAlloc, Layout};
@@ -72,3 +70,8 @@ unsafe impl GlobalAlloc for BumpPointer {
 
 #[global_allocator]
 static GLOBAL: BumpPointer = BumpPointer;
+
+#[alloc_error_handler]
+fn foo(_: core::alloc::Layout) -> ! {
+    panic!()
+}
