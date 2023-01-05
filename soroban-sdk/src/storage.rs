@@ -3,7 +3,7 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, RawVal},
-    Env, IntoVal, TryFromVal,
+    Env, IntoVal, TryIntoVal,
 };
 
 /// Storage stores and retrieves data for the currently executing contract.
@@ -90,18 +90,18 @@ impl Storage {
     ///
     /// Add safe checked versions of these functions.
     #[inline(always)]
-    pub fn get<K, V>(&self, key: K) -> Option<Result<V, V::Error>>
+    pub fn get<K, V>(&self, key: K) -> Option<Result<V, <RawVal as TryIntoVal<Env, V>>::Error>>
     where
-        V::Error: Debug,
+        <RawVal as TryIntoVal<Env, V>>::Error: Debug,
         K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
+        RawVal: TryIntoVal<Env, V>,
     {
         let env = self.env();
         let key = key.into_val(env);
         let has = internal::Env::has_contract_data(env, key);
         if has.is_true() {
             let rv = internal::Env::get_contract_data(env, key);
-            Some(V::try_from_val(env, rv))
+            Some(rv.try_into_val(env))
         } else {
             None
         }
@@ -114,15 +114,15 @@ impl Storage {
     ///
     /// When the key does not have a value stored.
     #[inline(always)]
-    pub fn get_unchecked<K, V>(&self, key: K) -> Result<V, V::Error>
+    pub fn get_unchecked<K, V>(&self, key: K) -> Result<V, <RawVal as TryIntoVal<Env, V>>::Error>
     where
-        V::Error: Debug,
+        <RawVal as TryIntoVal<Env, V>>::Error: Debug,
         K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
+        RawVal: TryIntoVal<Env, V>,
     {
         let env = self.env();
         let rv = internal::Env::get_contract_data(env, key.into_val(env));
-        V::try_from_val(env, rv)
+        rv.try_into_val(env)
     }
 
     /// Sets the value for the given key in the currently executing contract's

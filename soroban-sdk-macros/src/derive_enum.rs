@@ -147,27 +147,35 @@ pub fn derive_type_enum(
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
+        // impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
+        //     type Error = #path::ConversionError;
+        //     #[inline(always)]
+        //     fn try_from_val(env: &#path::Env, val: #path::RawVal) -> Result<Self, Self::Error> {
+        //         use #path::TryIntoVal;
+        //         #(#discriminant_consts)*
+        //         let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
+        //         let mut iter = vec.iter();
+        //         let discriminant = iter.next().ok_or(#path::ConversionError)??;
+        //         Ok(match discriminant.get_payload() {
+        //             #(#try_froms,)*
+        //             _ => Err(#path::ConversionError{})?,
+        //         })
+        //     }
+        // }
+
+        impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::RawVal {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: #path::RawVal) -> Result<Self, Self::Error> {
+            fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
                 use #path::TryIntoVal;
                 #(#discriminant_consts)*
-                let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
+                let vec: #path::Vec<#path::RawVal> = self.try_into_val(env)?;
                 let mut iter = vec.iter();
                 let discriminant = iter.next().ok_or(#path::ConversionError)??;
                 Ok(match discriminant.get_payload() {
                     #(#try_froms,)*
                     _ => Err(#path::ConversionError{})?,
                 })
-            }
-        }
-
-        impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::RawVal {
-            type Error = #path::ConversionError;
-            #[inline(always)]
-            fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
-                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
             }
         }
 
@@ -191,15 +199,36 @@ pub fn derive_type_enum(
             }
         }
 
+        // #[cfg(any(test, feature = "testutils"))]
+        // impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #enum_ident {
+        //     type Error = #path::xdr::Error;
+        //     #[inline(always)]
+        //     fn try_from_val(env: &#path::Env, val: #path::xdr::ScVec) -> Result<Self, Self::Error> {
+        //         use #path::xdr::Validate;
+        //         use #path::TryIntoVal;
+
+        //         let vec = val;
+        //         let mut iter = vec.iter();
+        //         let discriminant: #path::xdr::ScSymbol = iter.next().ok_or(#path::xdr::Error::Invalid)?.clone().try_into().map_err(|_| #path::xdr::Error::Invalid)?;
+        //         let discriminant_name: &str = &discriminant.to_string()?;
+
+        //         Ok(match discriminant_name {
+        //             #(#try_from_xdrs,)*
+        //             _ => Err(#path::xdr::Error::Invalid)?,
+        //         })
+        //     }
+        // }
+
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #enum_ident {
+        impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: #path::xdr::ScVec) -> Result<Self, Self::Error> {
+            fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
+                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
                 use #path::xdr::Validate;
                 use #path::TryIntoVal;
 
-                let vec = val;
+                let vec = self;
                 let mut iter = vec.iter();
                 let discriminant: #path::xdr::ScSymbol = iter.next().ok_or(#path::xdr::Error::Invalid)?.clone().try_into().map_err(|_| #path::xdr::Error::Invalid)?;
                 let discriminant_name: &str = &discriminant.to_string()?;
@@ -211,56 +240,61 @@ pub fn derive_type_enum(
             }
         }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::xdr::ScVec {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
-                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
-            }
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScObject> for #enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: #path::xdr::ScObject) -> Result<Self, Self::Error> {
-                if let #path::xdr::ScObject::Vec(vec) = val {
-                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, vec)
-                } else {
-                    Err(#path::xdr::Error::Invalid)
-                }
-            }
-        }
+        // #[cfg(any(test, feature = "testutils"))]
+        // impl #path::TryFromVal<#path::Env, #path::xdr::ScObject> for #enum_ident {
+        //     type Error = #path::xdr::Error;
+        //     #[inline(always)]
+        //     fn try_from_val(env: &#path::Env, val: #path::xdr::ScObject) -> Result<Self, Self::Error> {
+        //         if let #path::xdr::ScObject::Vec(vec) = val {
+        //             <_ as #path::TryFromVal<_, _>>::try_from_val(env, vec)
+        //         } else {
+        //             Err(#path::xdr::Error::Invalid)
+        //         }
+        //     }
+        // }
 
         #[cfg(any(test, feature = "testutils"))]
         impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::xdr::ScObject {
             type Error = #path::xdr::Error;
             #[inline(always)]
             fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
-                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
-            }
-        }
+                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: #path::xdr::ScVal) -> Result<Self, Self::Error> {
-                if let #path::xdr::ScVal::Object(Some(obj)) = val {
-                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, obj)
+                if let #path::xdr::ScObject::Vec(vec) = self {
+                    // <_ as #path::TryFromVal<_, _>>::try_from_val(env, vec)
+                    <_ as #path::TryIntoVal<_, _>>::try_into_val(vec, env)
                 } else {
                     Err(#path::xdr::Error::Invalid)
                 }
+
             }
         }
+
+        // #[cfg(any(test, feature = "testutils"))]
+        // impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
+        //     type Error = #path::xdr::Error;
+        //     #[inline(always)]
+        //     fn try_from_val(env: &#path::Env, val: #path::xdr::ScVal) -> Result<Self, Self::Error> {
+        //         if let #path::xdr::ScVal::Object(Some(obj)) = val {
+        //             <_ as #path::TryFromVal<_, _>>::try_from_val(env, obj)
+        //         } else {
+        //             Err(#path::xdr::Error::Invalid)
+        //         }
+        //     }
+        // }
 
         #[cfg(any(test, feature = "testutils"))]
         impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::xdr::ScVal {
             type Error = #path::xdr::Error;
             #[inline(always)]
             fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
-                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
+                // <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
+                if let #path::xdr::ScVal::Object(Some(obj)) = self {
+                    // <_ as #path::TryFromVal<_, _>>::try_from_val(env, obj)
+                    <_ as #path::TryIntoVal<_, _>>::try_into_val(env, obj)
+                } else {
+                    Err(#path::xdr::Error::Invalid)
+                }
             }
         }
 

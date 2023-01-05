@@ -8,7 +8,7 @@
 //! ```
 //! use soroban_sdk::{
 //!     serde::{Deserialize, Serialize},
-//!     Env, Bytes, IntoVal, TryFromVal,
+//!     Env, Bytes, IntoVal, TryIntoVal,
 //! };
 //!
 //! let env = Env::default();
@@ -22,7 +22,7 @@
 //! assert_eq!(roundtrip, Ok(value));
 //! ```
 
-use crate::{env::internal::Env as _, Bytes, Env, IntoVal, RawVal, TryFromVal};
+use crate::{env::internal::Env as _, Bytes, Env, IntoVal, RawVal, TryIntoVal};
 
 /// Implemented by types that can be serialized to [Bytes].
 ///
@@ -52,12 +52,13 @@ where
 
 impl<T> Deserialize for T
 where
-    T: TryFromVal<Env, RawVal>,
+    // T: TryFromVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
-    type Error = T::Error;
+    type Error = <RawVal as TryIntoVal<Env, T>>::Error;
 
     fn deserialize(env: &Env, b: &Bytes) -> Result<Self, Self::Error> {
         let t = env.deserialize_from_bytes(b.into());
-        T::try_from_val(env, t)
+        t.try_into_val(env)
     }
 }

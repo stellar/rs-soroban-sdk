@@ -91,7 +91,8 @@ impl<'a> ClientFn<'a> {
         };
         Type::Verbatim(quote! {
             Result<
-                Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
+                // Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
+                Result<#t, <soroban_sdk::RawVal as soroban_sdk::TryIntoVal<soroban_sdk::Env, #t>>::Error>,
                 Result<#e, <#e as TryFrom<soroban_sdk::Status>>::Error>
             >
         })

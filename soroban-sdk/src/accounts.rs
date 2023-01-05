@@ -5,8 +5,8 @@ use core::{cmp::Ordering, fmt::Debug};
 
 use crate::{
     env::internal::xdr,
-    env::internal::{Env as _, EnvBase as _, RawVal, RawValConvertible},
-    BytesN, ConversionError, Env, IntoVal, Object, TryFromVal, TryIntoVal,
+    env::internal::{try_convert_to, Env as _, EnvBase as _, RawVal, RawValConvertible},
+    BytesN, ConversionError, Env, IntoVal, Object, TryIntoVal,
 };
 
 /// Accounts retrieves information about accounts that exist in the current
@@ -119,14 +119,14 @@ impl Ord for AccountId {
     }
 }
 
-impl TryFromVal<Env, Object> for AccountId {
+impl TryIntoVal<Env, AccountId> for Object {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_obj_type(xdr::ScObjectType::AccountId) {
+    fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
+        if self.is_obj_type(xdr::ScObjectType::AccountId) {
             Ok(AccountId {
                 env: env.clone(),
-                obj,
+                obj: self,
             })
         } else {
             Err(ConversionError {})
@@ -134,27 +134,11 @@ impl TryFromVal<Env, Object> for AccountId {
     }
 }
 
-impl TryIntoVal<Env, AccountId> for Object {
-    type Error = <AccountId as TryFromVal<Env, Object>>::Error;
-
-    fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, self)
-    }
-}
-
-impl TryFromVal<Env, RawVal> for AccountId {
-    type Error = <AccountId as TryFromVal<Env, Object>>::Error;
-
-    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
-    }
-}
-
 impl TryIntoVal<Env, AccountId> for RawVal {
-    type Error = <AccountId as TryFromVal<Env, Object>>::Error;
+    type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
-        <_ as TryFromVal<_, RawVal>>::try_from_val(env, self)
+        try_convert_to::<_, _, Object>(self.try_into()?, env)
     }
 }
 
@@ -189,7 +173,7 @@ use super::xdr::ScVal;
 impl TryFrom<&AccountId> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &AccountId) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.env, v.obj.to_raw())
+        v.obj.to_raw().try_into_val(&v.env)
     }
 }
 
@@ -219,30 +203,10 @@ impl TryFrom<AccountId> for super::xdr::AccountId {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFromVal<Env, ScVal> for AccountId {
-    type Error = ConversionError;
-    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            val.try_into_val(env).map_err(|_| ConversionError)?,
-        )
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl TryFromVal<Env, super::xdr::AccountId> for AccountId {
-    type Error = ConversionError;
-    fn try_from_val(env: &Env, val: super::xdr::AccountId) -> Result<Self, Self::Error> {
-        let val: ScVal = val.try_into()?;
-        val.try_into_val(env).map_err(|_| ConversionError)
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
 impl TryIntoVal<Env, AccountId> for ScVal {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
-        AccountId::try_from_val(env, self)
+        try_convert_to::<_, _, Object>(self.try_into_val(env).map_err(|_| ConversionError)?, env)
     }
 }
 
@@ -250,7 +214,8 @@ impl TryIntoVal<Env, AccountId> for ScVal {
 impl TryIntoVal<Env, AccountId> for super::xdr::AccountId {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
-        AccountId::try_from_val(env, self)
+        let val: ScVal = self.try_into()?;
+        val.try_into_val(env)
     }
 }
 

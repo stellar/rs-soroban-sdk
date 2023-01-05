@@ -1,7 +1,6 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
-    Vec,
+    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryIntoVal, Vec,
 };
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,

@@ -33,12 +33,12 @@ pub mod testutils {
 }
 
 pub use internal::meta;
+pub use internal::try_convert_to;
 pub use internal::xdr;
 pub use internal::BitSet;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::FromVal;
 pub use internal::IntoVal;
 use internal::InvokerType;
 pub use internal::Object;
@@ -46,7 +46,6 @@ pub use internal::RawVal;
 pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
-pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
@@ -238,12 +237,10 @@ impl Env {
         args: Vec<RawVal>,
     ) -> T
     where
-        T: TryFromVal<Env, RawVal>,
+        RawVal: TryIntoVal<Env, T>,
     {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv)
-            .map_err(|_| ConversionError)
-            .unwrap()
+        rv.try_into_val(self).map_err(|_| ConversionError).unwrap()
     }
 
     /// Invokes a function of a contract that is registered in the [Env],
@@ -253,15 +250,15 @@ impl Env {
         contract_id: &BytesN<32>,
         func: &Symbol,
         args: Vec<RawVal>,
-    ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
+    ) -> Result<Result<T, <RawVal as TryIntoVal<Env, T>>::Error>, Result<E, E::Error>>
     where
-        T: TryFromVal<Env, RawVal>,
+        RawVal: TryIntoVal<Env, T>,
         E: TryFrom<Status>,
     {
         let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
-        match Status::try_from_val(self, rv) {
+        match try_convert_to::<Status, _, _>(rv, self) {
             Ok(status) => Err(E::try_from(status)),
-            Err(ConversionError) => Ok(T::try_from_val(self, rv)),
+            Err(ConversionError) => Ok(rv.try_into_val(self)),
         }
     }
 

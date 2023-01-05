@@ -1,8 +1,9 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, IntoVal, Map, Object, RawVal,
-    TryFromVal, TryIntoVal, Vec,
+    env::internal::{try_convert_to, Env as _},
+    xdr::ScObjectType,
+    ConversionError, Env, IntoVal, Map, Object, RawVal, TryIntoVal, Vec,
 };
 
 /// Create a [Set] with the given items.
@@ -63,18 +64,19 @@ pub struct Set<T>(Map<T, ()>);
 
 impl<T> Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     pub(crate) fn env(&self) -> &Env {
         self.0.env()
     }
     pub fn new(env: &Env) -> Set<T> {
-        let map = Map::new(env);
+        let map = Map::<T, ()>::new(env);
         Self(map)
     }
 
     unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
-        let map = Map::unchecked_new(env, obj);
+        let map = Map::<T, ()>::unchecked_new(env, obj);
         Self(map)
     }
 
@@ -128,27 +130,28 @@ where
         self.0.len() == 0
     }
 
-    pub fn first(&self) -> Option<Result<T, T::Error>> {
+    pub fn first(&self) -> Option<Result<T, <RawVal as TryIntoVal<Env, T>>::Error>> {
         let env = self.env();
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, env.map_min_key(self.to_object())))
+            Some(env.map_min_key(self.to_object()).try_into_val(env))
         }
     }
 
-    pub fn last(&self) -> Option<Result<T, T::Error>> {
+    pub fn last(&self) -> Option<Result<T, <RawVal as TryIntoVal<Env, T>>::Error>> {
         let env = self.env();
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, env.map_max_key(self.to_object())))
+            Some(env.map_max_key(self.to_object()).try_into_val(env))
         }
     }
 
     pub fn iter(&self) -> SetIter<T>
     where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T: IntoVal<Env, RawVal> + Clone,
+        RawVal: TryIntoVal<Env, T>,
     {
         self.clone().into_iter()
     }
@@ -166,11 +169,17 @@ where
     }
 }
 
-impl<T> Eq for Set<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+impl<T> Eq for Set<T>
+where
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
+{
+}
 
 impl<T> PartialEq for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
@@ -179,7 +188,8 @@ where
 
 impl<T> PartialOrd for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
@@ -188,7 +198,8 @@ where
 
 impl<T> Ord for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.0.cmp(&other.0)
@@ -197,8 +208,9 @@ where
 
 impl<T> Debug for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
-    T::Error: Debug,
+    T: IntoVal<Env, RawVal> + Debug + Clone,
+    <RawVal as TryIntoVal<Env, T>>::Error: Debug,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Set(")?;
@@ -212,9 +224,10 @@ where
 
 impl<T> IntoIterator for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
-    type Item = Result<T, T::Error>;
+    type Item = Result<T, <RawVal as TryIntoVal<Env, T>>::Error>;
     type IntoIter = SetIter<T>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -233,9 +246,10 @@ impl<T> SetIter<T> {
 
 impl<T> Iterator for SetIter<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
-    type Item = Result<T, T::Error>;
+    type Item = Result<T, <RawVal as TryIntoVal<Env, T>>::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let first = self.0.first();
@@ -253,7 +267,8 @@ where
 
 impl<T> DoubleEndedIterator for SetIter<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let last = self.0.last();
@@ -264,46 +279,27 @@ where
     }
 }
 
-impl<T> FusedIterator for SetIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+impl<T> FusedIterator for SetIter<T>
+where
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
+{
+}
 
 impl<T> ExactSizeIterator for SetIter<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn len(&self) -> usize {
         self.0.len() as usize
     }
 }
 
-impl<T> TryFromVal<Env, Object> for Set<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
-        if obj.is_obj_type(ScObjectType::Map) {
-            Ok(unsafe { Set::<T>::unchecked_new(env.clone(), obj) })
-        } else {
-            Err(ConversionError {})
-        }
-    }
-}
-
-impl<T> TryFromVal<Env, RawVal> for Set<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = <Set<T> as TryFromVal<Env, Object>>::Error;
-
-    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
-    }
-}
-
 impl<T> IntoVal<Env, RawVal> for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn into_val(self, _env: &Env) -> RawVal {
         self.0.into()
@@ -312,7 +308,8 @@ where
 
 impl<T> IntoVal<Env, RawVal> for &Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn into_val(self, _env: &Env) -> RawVal {
         self.to_raw()
@@ -321,29 +318,36 @@ where
 
 impl<T> TryIntoVal<Env, Set<T>> for RawVal
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<Set<T>, Self::Error> {
-        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+        try_convert_to::<_, _, Object>(self.try_into()?, env)
     }
 }
 
 impl<T> TryIntoVal<Env, Set<T>> for Object
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     type Error = ConversionError;
 
     fn try_into_val(self, env: &Env) -> Result<Set<T>, Self::Error> {
-        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+        if self.is_obj_type(ScObjectType::Map) {
+            Ok(unsafe { Set::<T>::unchecked_new(env.clone(), self) })
+        } else {
+            Err(ConversionError {})
+        }
     }
 }
 
 impl<T> From<Set<T>> for RawVal
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn from(s: Set<T>) -> Self {
         s.0.into()
@@ -352,7 +356,8 @@ where
 
 impl<T> IntoVal<Env, Object> for Set<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn into_val(self, _env: &Env) -> Object {
         self.into()
@@ -361,7 +366,8 @@ where
 
 impl<T> From<Set<T>> for Object
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn from(s: Set<T>) -> Self {
         s.to_object()
@@ -370,7 +376,8 @@ where
 
 impl<T> From<Set<T>> for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
+    RawVal: TryIntoVal<Env, T>,
 {
     fn from(s: Set<T>) -> Self {
         s.to_vec()

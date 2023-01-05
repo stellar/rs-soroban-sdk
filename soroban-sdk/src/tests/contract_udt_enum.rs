@@ -1,7 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{
-    contractimpl, contracttype, symbol, vec, ConversionError, Env, IntoVal, TryFromVal,
-};
+use soroban_sdk::{contractimpl, contracttype, symbol, vec, ConversionError, Env, IntoVal};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[contracttype]

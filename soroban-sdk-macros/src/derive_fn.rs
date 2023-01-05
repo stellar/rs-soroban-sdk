@@ -65,14 +65,17 @@ pub fn derive_fn(
                     Ok(type_) => {
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
-                            errors.push(Error::new(ident.span(), format!("argument name too long, max length {} characters", MAX)));
+                            errors.push(Error::new(
+                                ident.span(),
+                                format!("argument name too long, max length {} characters", MAX),
+                            ));
                             StringM::<MAX>::default()
                         });
-                        ScSpecFunctionInputV0{ name, type_ }
-                    },
+                        ScSpecFunctionInputV0 { name, type_ }
+                    }
                     Err(e) => {
                         errors.push(e);
-                        ScSpecFunctionInputV0{
+                        ScSpecFunctionInputV0 {
                             name: "arg".try_into().unwrap(),
                             type_: ScSpecTypeDef::I32,
                         }
@@ -93,17 +96,25 @@ pub fn derive_fn(
                 });
                 let call = quote! {
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
-                            &env,
-                            #ident
-                        )
+                        // <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
+                        //     &env,
+                        //     #ident
+                        // )
+                        <_ as soroban_sdk::TryIntoVal<_, _>>::try_into_val(#ident, &env)
                     )
                 };
                 (spec, arg, call)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {})
+                (
+                    ScSpecFunctionInputV0 {
+                        name: "".try_into().unwrap(),
+                        type_: ScSpecTypeDef::I32,
+                    },
+                    a.clone(),
+                    quote! {},
+                )
             }
         })
         .multiunzip();
