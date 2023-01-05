@@ -830,7 +830,7 @@ checksum = "74233d3b3b2f6d4b006dc19dee745e73e2a6bfb6f93607cd3b02bd5b00797d7c"
 
 [[package]]
 name = "soroban-auth"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
@@ -848,7 +848,7 @@ dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
  "static_assertions",
- "stellar-xdr 0.0.12 (git+https://github.com/stellar/rs-stellar-xdr?rev=154e07e)",
+ "stellar-xdr",
 ]
 
 [[package]]
@@ -892,14 +892,14 @@ dependencies = [
  "quote",
  "serde",
  "serde_json",
- "stellar-xdr 0.0.12 (git+https://github.com/stellar/rs-stellar-xdr?rev=154e07e)",
+ "stellar-xdr",
  "syn",
  "thiserror",
 ]
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -921,7 +921,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "bytes-lit",
  "ed25519-dalek",
@@ -933,12 +933,12 @@ dependencies = [
  "soroban-sdk-macros",
  "soroban-spec",
  "stellar-strkey",
- "stellar-xdr 0.0.12 (git+https://github.com/stellar/rs-stellar-xdr?rev=154e07eb)",
+ "stellar-xdr",
 ]
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "darling",
  "itertools",
@@ -947,13 +947,13 @@ dependencies = [
  "sha2 0.10.6",
  "soroban-env-common",
  "soroban-spec",
- "stellar-xdr 0.0.12 (git+https://github.com/stellar/rs-stellar-xdr?rev=154e07eb)",
+ "stellar-xdr",
  "syn",
 ]
 
 [[package]]
 name = "soroban-spec"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "base64",
  "darling",
@@ -966,7 +966,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "sha2 0.10.6",
- "stellar-xdr 0.0.12 (git+https://github.com/stellar/rs-stellar-xdr?rev=154e07eb)",
+ "stellar-xdr",
  "syn",
  "thiserror",
  "wasmparser",
@@ -974,7 +974,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-spec"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ed25519-dalek",
  "rand 0.7.3",
@@ -1038,17 +1038,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stellar-xdr"
-version = "0.0.12"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=154e07eb#154e07ebbb0ad307475fd665d5a0dcf169a9596f"
-dependencies = [
- "crate-git-revision",
- "hex",
- "serde",
- "serde_with",
-]
-
-[[package]]
 name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1094,84 +1083,84 @@ dependencies = [
 
 [[package]]
 name = "test_add_i128"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "soroban-sdk",
 ]
