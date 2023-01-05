@@ -52,8 +52,8 @@ jobs:
         name: cargo-hack
         version: 0.5.16
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
-    - run: cargo hack --feature-powerset --exclude-features docs,alloc build --target ${{ matrix.sys.target }}
-    - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs,alloc test --target ${{ matrix.sys.target }}
+    - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
+    - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
 
   docs:
     runs-on: ubuntu-latest
