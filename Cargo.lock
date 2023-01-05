@@ -1103,6 +1103,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_alloc"
+version = "0.4.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_contract_data"
 version = "0.4.1"
 dependencies = [

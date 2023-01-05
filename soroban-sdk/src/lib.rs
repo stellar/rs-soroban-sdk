@@ -40,25 +40,22 @@
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
-#![cfg_attr(
-    all(not(feature = "std"), feature = "alloc", target_family = "wasm"),
-    feature(alloc_error_handler)
-)]
 #![allow(dead_code)]
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
 // When used in a no_std contract, provide a panic handler as one is required.
-#[cfg(all(not(feature = "std"), target_family = "wasm"))]
+#[cfg(all(not(feature = "alloc"), target_family = "wasm"))]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
 }
 
-// When used in a no_std contract that has enabled alloc, provide an allocator.
-// Note that this module requires nightly at this time.
-#[cfg(all(not(feature = "std"), feature = "alloc", target_family = "wasm"))]
+#[cfg(all(feature = "alloc", target_family = "wasm"))]
+extern crate std;
+
+#[cfg(all(feature = "alloc", target_family = "wasm"))]
 mod alloc;
 
 /// __link_sections returns and does nothing, but it contains link sections that

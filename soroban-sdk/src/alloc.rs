@@ -70,8 +70,3 @@ unsafe impl GlobalAlloc for BumpPointer {
 
 #[global_allocator]
 static GLOBAL: BumpPointer = BumpPointer;
-
-#[alloc_error_handler]
-fn foo(_: core::alloc::Layout) -> ! {
-    panic!()
-}
