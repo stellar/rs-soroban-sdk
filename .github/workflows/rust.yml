@@ -76,9 +76,9 @@ jobs:
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
     - run: |
-        cd tests-nightly && CARGO_TARGET_DIR=../target cargo +nightly hack build --target wasm32-unknown-unknown --profile release
+        cd tests-nightly && cargo +nightly hack build --target wasm32-unknown-unknown --profile release
     - run: |
-        cd tests-nightly && CARGO_TARGET_DIR=../target cargo +nightly hack test --target ${{ matrix.sys.target }}
+        cd tests-nightly && cargo +nightly hack test --target ${{ matrix.sys.target }}
 
   docs:
     runs-on: ubuntu-latest
