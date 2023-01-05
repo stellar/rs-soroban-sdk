@@ -43,7 +43,7 @@ pub fn derive_type_error_enum_int(
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 value: discriminant,
             };
-            let try_from = quote! { #discriminant => #enum_ident::#ident };
+            let try_from = quote! { #discriminant => Self::#ident };
             let into =
                 quote! { #enum_ident::#ident => #path::Status::from_contract_error(#discriminant) };
             (spec_case, try_from, into)
