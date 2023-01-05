@@ -100,7 +100,7 @@ pub fn derive_fn(
                         //     &env,
                         //     #ident
                         // )
-                        <_ as soroban_sdk::TryIntoVal<_, _>>::try_into_val(#ident, &env)
+                        <soroban_sdk::RawVal as soroban_sdk::TryIntoVal<soroban_sdk::Env, _>>::try_into_val(#ident, &env)
                     )
                 };
                 (spec, arg, call)

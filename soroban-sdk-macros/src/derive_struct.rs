@@ -60,6 +60,7 @@ pub fn derive_type_struct(
                     Err(#path::ConversionError)?
                 }
             };
+            
             let into = quote! { map.set(#map_key, (&self.#ident).into_val(env)) };
             let try_from_xdr = quote! {
                 #ident: {
@@ -139,7 +140,7 @@ pub fn derive_type_struct(
                 if map.len() != #field_count_u32 {
                     return Err(#path::ConversionError);
                 }
-                Ok(Self{
+                Ok(#ident{
                     #(#try_froms,)*
                 })
             }
@@ -194,7 +195,7 @@ pub fn derive_type_struct(
                     return Err(#path::xdr::Error::Invalid);
                 }
                 map.validate()?;
-                Ok(Self{
+                Ok(#ident{
                     #(#try_from_xdrs,)*
                 })
             }

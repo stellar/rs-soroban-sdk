@@ -47,7 +47,7 @@ pub fn derive_type_enum_int(
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 value: discriminant,
             };
-            let try_from = quote! { #discriminant => Self::#ident };
+            let try_from = quote! { #discriminant => #enum_ident::#ident };
             let into = quote! { #enum_ident::#ident => #discriminant.into_val(env) };
             (spec_case, try_from, into)
         })

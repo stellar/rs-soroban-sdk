@@ -69,7 +69,7 @@ pub fn derive_type_enum(
                         if iter.len() > 1 {
                             return Err(#path::ConversionError);
                         }
-                        Self::#ident(iter.next().ok_or(#path::ConversionError)??.try_into_val(env)?)
+                        #enum_ident::#ident(iter.next().ok_or(#path::ConversionError)??.try_into_val(env)?)
                     }
                 };
                 let into = quote! { #enum_ident::#ident(ref value) => (#discriminant_const_sym_ident, value).into_val(env) };
@@ -79,7 +79,7 @@ pub fn derive_type_enum(
                             return Err(#path::xdr::Error::Invalid);
                         }
                         let rv: #path::RawVal = iter.next().ok_or(#path::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
-                        Self::#ident(rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?)
+                        #enum_ident::#ident(rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?)
                     }
                 };
                 let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| #path::xdr::Error::Invalid)? };
@@ -94,7 +94,7 @@ pub fn derive_type_enum(
                         if iter.len() > 0 {
                             return Err(#path::ConversionError);
                         }
-                        Self::#ident
+                        #enum_ident::#ident
                     }
                 };
                 let into = quote! { #enum_ident::#ident => (#discriminant_const_sym_ident,).into_val(env) };
@@ -103,7 +103,7 @@ pub fn derive_type_enum(
                         if iter.len() > 0 {
                             return Err(#path::xdr::Error::Invalid);
                         }
-                        Self::#ident
+                        #enum_ident::#ident
                     }
                 };
                 let into_xdr = quote! { #enum_ident::#ident => (#name,).try_into().map_err(|_| #path::xdr::Error::Invalid)? };

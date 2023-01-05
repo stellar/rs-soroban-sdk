@@ -127,7 +127,7 @@ pub fn derive_type_struct_tuple(
                 if vec.len() != #field_count_u32 {
                     return Err(#path::ConversionError);
                 }
-                Ok(Self{
+                Ok(#ident{
                     #(#try_froms,)*
                 })
             }
@@ -180,7 +180,7 @@ pub fn derive_type_struct_tuple(
                 if vec.len() != #field_count_usize {
                     return Err(#path::xdr::Error::Invalid);
                 }
-                Ok(Self{
+                Ok(#ident{
                     #(#try_from_xdrs,)*
                 })
             }
