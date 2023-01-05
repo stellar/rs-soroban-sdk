@@ -45,6 +45,8 @@
 #[cfg(not(target_family = "wasm"))]
 extern crate std;
 
+mod alloc;
+
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
