@@ -60,10 +60,17 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 // components that produce large code footprint).
 //
 // This is _almost_ possible without involving `std` but unfortunately there's
-// still an allocation-error handler that there's no stable way to install if
-// one only uses the `alloc` crate, so we pull in a dependency on `std` here
-// (for now). When the stabilization of the allocation error handler registration
-// function happens in some future Rust version, we can remove this.
+// still an allocation-error handler (`alloc_error_handler`) that there's no
+// stable way to install if one only uses the `alloc` crate, so we pull in a
+// dependency on `std` here (for now). When the stabilization of the allocation
+// error handler registration function happens in some future Rust version, or
+// it gets removed which it looks like work is heading towards instead, we can
+// remove std.
+//
+// See these issues for more details:
+// - https://github.com/rust-lang/rust/issues/51540
+// - https://github.com/rust-lang/rust/issues/66740
+// - https://github.com/rust-lang/rust/issues/66741
 #[cfg(all(feature = "alloc", target_family = "wasm"))]
 extern crate std;
 
