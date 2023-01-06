@@ -52,9 +52,23 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
 }
 
+// This is a bit subtle: we want to provide a narrowly-scoped feature `"alloc"`
+// that provides support for the `alloc` crate and its types, while using our
+// allocator (defined below in module `alloc`). We want to do this without
+// changing the user-interface a lot (in particular keeping users writing
+// `#[no_std]` and mostly not-using the stdlib casually, because it has many
+// components that produce large code footprint).
+//
+// This is _almost_ possible without involving `std` but unfortunately there's
+// still an allocation-error handler that there's no stable way to install if
+// one only uses the `alloc` crate, so we pull in a dependency on `std` here
+// (for now). When the stabilization of the allocation error handler registration
+// function happens in some future Rust version, we can remove this.
 #[cfg(all(feature = "alloc", target_family = "wasm"))]
 extern crate std;
 
+// Here we provide a `#[global_allocator]` that is a minimal non-freeing bump
+// allocator, appropriate for a WASM blob that runs a single contract call.
 #[cfg(all(feature = "alloc", target_family = "wasm"))]
 mod alloc;
 
