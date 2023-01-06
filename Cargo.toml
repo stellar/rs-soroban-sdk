@@ -20,6 +20,7 @@ members = [
     "tests/events",
     "tests/logging",
     "tests/errors",
+    "tests/alloc",
 ]
 
 [workspace.package]
