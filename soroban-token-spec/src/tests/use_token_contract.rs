@@ -42,11 +42,24 @@ impl TestContract {
 
 #[test]
 fn test() {
-    use soroban_sdk::xdr::Asset;
+    use soroban_sdk::xdr::{
+        AccountId, AlphaNum12, AlphaNum4, Asset, AssetCode12, AssetCode4, PublicKey, Uint256,
+    };
 
     let env = Env::default();
 
-    let token_contract_id = env.register_stellar_asset_contract(Asset::Native);
+    let issuer = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([65u8; 32])));
+    let asset4 = Asset::CreditAlphanum4(AlphaNum4 {
+        asset_code: AssetCode4([66u8; 4]),
+        issuer: issuer.clone(),
+    });
+    let asset12 = Asset::CreditAlphanum12(AlphaNum12 {
+        asset_code: AssetCode12([1u8; 12]),
+        issuer,
+    });
+    let token_contract_id = env.register_stellar_asset_contract(asset4);
+    // We aren't using the asset12 contract. We just want to make sure the registration works.
+    env.register_stellar_asset_contract(asset12);
 
     let contract_id = BytesN::from_array(&env, &[0; 32]);
     env.register_contract(&contract_id, TestContract);
@@ -54,7 +67,10 @@ fn test() {
     client.init(&token_contract_id);
 
     let token_client = TokenClient::new(&env, &client.get_token());
-    assert_eq!(token_client.name(), "native".into_val(&env));
+    assert_eq!(
+        token_client.name(),
+        "BBBB:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA".into_val(&env)
+    );
 
     let (id, _signer) = generate(&env);
 
