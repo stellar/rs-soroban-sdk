@@ -169,6 +169,9 @@ pub trait Accounts {
 
     /// Remove an account.
     fn remove(&self, id: &crate::AccountId);
+
+    /// Updates balance
+    fn update_balance(&self, id: &crate::AccountId, new_balance: i64);
 }
 
 /// Test utilities for [`BytesN`][crate::BytesN].

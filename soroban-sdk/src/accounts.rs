@@ -491,6 +491,11 @@ impl testutils::Accounts for Accounts {
             })
             .unwrap();
     }
+
+    fn update_balance(&self, id: &AccountId, new_balance: i64) {
+        let id: xdr::AccountId = id.try_into().unwrap();
+        self.update_account_ledger_entry(&id, |a| a.balance = new_balance);
+    }
 }
 
 #[cfg(any(test, feature = "testutils"))]
