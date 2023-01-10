@@ -170,7 +170,7 @@ pub trait Accounts {
     /// Remove an account.
     fn remove(&self, id: &crate::AccountId);
 
-    /// Updates balance
+    /// Updates the native balance of a classic account.
     fn update_balance(&self, id: &crate::AccountId, new_balance: i64);
 }
 
