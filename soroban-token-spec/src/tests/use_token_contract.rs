@@ -81,3 +81,32 @@ fn test() {
         amount
     );
 }
+
+#[test]
+fn test_xlm_xfer() {
+    use soroban_sdk::xdr::Asset;
+
+    use soroban_sdk::testutils::Accounts;
+
+    let env = Env::default();
+    let user1 = env.accounts().generate_and_create();
+    env.accounts().update_balance(&user1, 1000i64);
+
+    let token_contract = env.register_stellar_asset_contract(Asset::Native);
+
+    let contract = BytesN::from_array(&env, &[0; 32]);
+    env.register_contract(&contract, TestContract);
+    let client = TestContractClient::new(&env, &contract);
+    client.init(&token_contract);
+
+    let contract_id = Identifier::Contract(contract);
+
+    let token_client = TokenClient::new(&env, &client.get_token());
+    token_client
+        .with_source_account(&user1)
+        .xfer(&Signature::Invoker, &0, &contract_id, &1);
+    assert_eq!(token_client.balance(&contract_id), 1);
+
+    let user1_id = Identifier::Account(user1);
+    assert_eq!(token_client.balance(&user1_id), 999);
+}

@@ -423,16 +423,23 @@ impl testutils::Accounts for Accounts {
                 let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
                     account_id: id.clone(),
                 });
-                let v = xdr::LedgerEntry {
-                    data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(&id)),
-                    last_modified_ledger_seq: 0,
-                    ext: xdr::LedgerEntryExt::V0,
-                };
-                storage.put(
+
+                if !storage.has(
                     &k,
-                    &v,
                     soroban_env_host::budget::AsBudget::as_budget(env.host()),
-                )
+                )? {
+                    let v = xdr::LedgerEntry {
+                        data: xdr::LedgerEntryData::Account(self.default_account_ledger_entry(&id)),
+                        last_modified_ledger_seq: 0,
+                        ext: xdr::LedgerEntryExt::V0,
+                    };
+                    storage.put(
+                        &k,
+                        &v,
+                        soroban_env_host::budget::AsBudget::as_budget(env.host()),
+                    )?
+                }
+                Ok(())
             })
             .unwrap();
     }
@@ -490,6 +497,11 @@ impl testutils::Accounts for Accounts {
                 )
             })
             .unwrap();
+    }
+
+    fn update_balance(&self, id: &AccountId, new_balance: i64) {
+        let id: xdr::AccountId = id.try_into().unwrap();
+        self.update_account_ledger_entry(&id, |a| a.balance = new_balance);
     }
 }
 
