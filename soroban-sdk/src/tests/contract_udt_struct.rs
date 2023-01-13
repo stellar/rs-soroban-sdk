@@ -39,7 +39,7 @@ fn test_error_on_partial_decode() {
     // Success case, a map will decode to a Udt if the symbol keys match the
     // fields.
     let map = map![&env, (symbol!("a"), 5), (symbol!("b"), 7)].to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
 
     // If a struct has fields a, b, and a map is decoded into it where the map
@@ -53,7 +53,7 @@ fn test_error_on_partial_decode() {
         (symbol!("c"), 9)
     ]
     .to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Err(ConversionError));
 }
 

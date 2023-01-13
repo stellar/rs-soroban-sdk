@@ -58,6 +58,6 @@ where
 
     fn deserialize(env: &Env, b: &Bytes) -> Result<Self, Self::Error> {
         let t = env.deserialize_from_bytes(b.into());
-        T::try_from_val(env, t)
+        T::try_from_val(env, &t)
     }
 }

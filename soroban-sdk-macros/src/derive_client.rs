@@ -193,7 +193,7 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
         }
 
         impl #client_ident {
-            pub fn new(env: &soroban_sdk::Env, contract_id: impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
+            pub fn new(env: &soroban_sdk::Env, contract_id: &impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),

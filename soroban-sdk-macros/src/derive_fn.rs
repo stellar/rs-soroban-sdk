@@ -95,7 +95,7 @@ pub fn derive_fn(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
                             &env,
-                            #ident
+                            &#ident
                         )
                     )
                 };
@@ -202,7 +202,7 @@ pub fn derive_fn(
                 #use_trait;
                 <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
                     #[allow(deprecated)]
-                    #call(
+                    &#call(
                         #env_call
                         #(#wrap_calls),*
                     ),

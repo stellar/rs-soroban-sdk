@@ -22,7 +22,7 @@ impl ExampleContract {
             &env,
             &sig,
             symbol!("examplefn"),
-            (&sig.identifier(&env), arg1, arg2),
+            (sig.identifier(&env), arg1, arg2),
         );
     }
 }
@@ -54,7 +54,7 @@ fn test() {
         &signer,
         &contract_id,
         symbol!("examplefn"),
-        (&id, &1, &2),
+        (id, 1, 2),
     );
     std::println!("signature: {:?}", sig);
 
@@ -92,7 +92,7 @@ fn test_build_keypair() {
         &signer,
         &contract_id,
         symbol!("examplefn"),
-        (&id, &1, &2),
+        (id, 1, 2),
     );
     std::println!("signature: {:?}", sig);
 

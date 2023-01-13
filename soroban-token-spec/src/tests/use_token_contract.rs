@@ -16,7 +16,7 @@ pub enum DataKey {
 }
 
 fn get_token(e: &Env) -> BytesN<32> {
-    e.storage().get_unchecked(DataKey::Token).unwrap()
+    e.storage().get_unchecked(&DataKey::Token).unwrap()
 }
 
 pub struct TestContract;
@@ -24,7 +24,7 @@ pub struct TestContract;
 #[contractimpl]
 impl TestContract {
     pub fn init(e: Env, contract: BytesN<32>) {
-        e.storage().set(DataKey::Token, contract);
+        e.storage().set(&DataKey::Token, &contract);
     }
 
     pub fn get_token(e: Env) -> BytesN<32> {
@@ -32,11 +32,11 @@ impl TestContract {
     }
 
     pub fn approve(e: Env, spender: Identifier, amount: i128) {
-        TokenClient::new(&e, get_token(&e)).incr_allow(&Signature::Invoker, &0, &spender, &amount);
+        TokenClient::new(&e, &get_token(&e)).incr_allow(&Signature::Invoker, &0, &spender, &amount);
     }
 
     pub fn allowance(e: Env, from: Identifier, spender: Identifier) -> i128 {
-        TokenClient::new(&e, get_token(&e)).allowance(&from, &spender)
+        TokenClient::new(&e, &get_token(&e)).allowance(&from, &spender)
     }
 }
 

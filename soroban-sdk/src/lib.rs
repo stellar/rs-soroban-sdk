@@ -346,7 +346,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///         state.last_incr = incr;
 ///
 ///         // Save the count.
-///         env.data().set(symbol!("STATE"), &state);
+///         env.storage().set(&symbol!("STATE"), &state);
 ///
 ///         // Return the count to the caller.
 ///         state.count
@@ -354,8 +354,8 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 ///     /// Return the current state.
 ///     pub fn get_state(env: Env) -> State {
-///         env.data()
-///             .get(symbol!("STATE"))
+///         env.storage()
+///             .get(&symbol!("STATE"))
 ///             .unwrap_or_else(|| Ok(State::default())) // If no value set, assume 0.
 ///             .unwrap() // Panic if the value of COUNTER is not a State.
 ///     }
@@ -424,13 +424,13 @@ pub use soroban_sdk_macros::contractimpl;
 /// impl Contract {
 ///     /// Set the color.
 ///     pub fn set(env: Env, c: Color) {
-///         env.data().set(symbol!("COLOR"), c);
+///         env.storage().set(&symbol!("COLOR"), &c);
 ///     }
 ///
 ///     /// Get the color.
 ///     pub fn get(env: Env) -> Option<Color> {
-///         env.data()
-///             .get(symbol!("COLOR"))
+///         env.storage()
+///             .get(&symbol!("COLOR"))
 ///             .map(Result::unwrap) // Panic if the value of COLOR is not a Color.
 ///     }
 /// }
