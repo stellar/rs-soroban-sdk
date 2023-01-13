@@ -637,7 +637,7 @@ where
     #[inline(always)]
     pub fn insert(&mut self, i: u32, x: T) {
         let env = self.env();
-        self.obj = env.vec_put(self.obj, i.into(), x.into_val(env));
+        self.obj = env.vec_insert(self.obj, i.into(), x.into_val(env));
     }
 
     #[inline(always)]
@@ -1125,5 +1125,21 @@ mod test {
         let v2 = vec![&env, 9, 9, 1, 5, 3, 7, 3, 5, 5];
         let s2 = Set::from(v2);
         assert_eq!(s2, set![&env, 1, 3, 5, 7, 9]);
+    }
+
+    #[test]
+    fn insert_and_set() {
+        let env = Env::default();
+        let mut v = Vec::<i64>::new(&env);
+        v.insert(0, 3);
+        v.insert(0, 1);
+        v.insert(1, 4);
+        v.insert(3, 6);
+        assert_eq!(v, vec![&env, 1, 4, 3, 6]);
+        v.set(0, 7);
+        v.set(1, 6);
+        v.set(2, 2);
+        v.set(3, 5);
+        assert_eq!(v, vec![&env, 7, 6, 2, 5]);
     }
 }
