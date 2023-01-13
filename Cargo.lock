@@ -1082,6 +1082,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_1"
+version = "0.4.3"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_2"
+version = "0.4.3"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_3"
+version = "0.4.3"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_add_i128"
 version = "0.4.3"
 dependencies = [

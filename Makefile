@@ -19,6 +19,31 @@ build: fmt
 			ls -l "$$i"; \
 		done
 
+faa:
+	@echo "----"
+	cargo hack build -p test_1 -p test_2 -p test_3 --target wasm32-unknown-unknown --release
+	@echo "----"
+	cd target/wasm32-unknown-unknown/release/ && ls -l test_[0-9].wasm
+	@echo "----"
+	soroban deploy --id 1 --wasm target/wasm32-unknown-unknown/release/test_1.wasm
+	soroban invoke --id 1 --fn set --arg 1000 --cost
+	soroban read --id 1
+	soroban invoke --id 1 --fn counter
+	soroban invoke --id 1 --fn balance
+	@echo "----"
+	soroban deploy --id 2 --wasm target/wasm32-unknown-unknown/release/test_2.wasm
+	soroban invoke --id 2 --fn set --arg 1000 --cost
+	soroban read --id 2
+	soroban invoke --id 2 --fn counter
+	soroban invoke --id 2 --fn balance
+	@echo "----"
+	soroban deploy --id 3 --wasm target/wasm32-unknown-unknown/release/test_3.wasm
+	soroban invoke --id 3 --fn set --arg 1000 --cost
+	soroban read --id 3
+	soroban invoke --id 3 --fn counter
+	soroban invoke --id 3 --fn balance
+	@echo "----"
+
 build-optimized: fmt
 	cargo +nightly hack build  --target wasm32-unknown-unknown --release \
 		--workspace \
