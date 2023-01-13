@@ -8,7 +8,7 @@ pub mod ed25519 {
     use core::fmt::Debug;
     use core::panic;
 
-    use soroban_sdk::{testutils::ed25519::Sign, BytesN, Env, IntoVal, RawVal, Symbol, Vec};
+    use soroban_sdk::{testutils::ed25519::Sign, BytesN, Env, RawVal, Symbol, Vec};
 
     use crate::{
         Ed25519Signature, Identifier as IdentifierValue, Signature, SignaturePayload,
@@ -66,7 +66,7 @@ pub mod ed25519 {
         signer: &(impl Identifier + Sign<SignaturePayload, Signature = [u8; 64]>),
         contract: &BytesN<32>,
         name: Symbol,
-        args: impl IntoVal<Env, Vec<RawVal>>,
+        args: impl TryIntoVal<Env, Vec<RawVal>>,
     ) -> Signature {
         let identifier = signer.identifier(env);
         let public_key = if let IdentifierValue::Ed25519(public_key) = identifier {
@@ -78,7 +78,7 @@ pub mod ed25519 {
             network: env.ledger().network_passphrase(),
             contract: contract.clone(),
             name,
-            args: args.into_val(env),
+            args: args.try_into_val(env).unwrap_optimized(),
         });
         let signature = match signer.sign(payload) {
             Ok(signature) => signature,

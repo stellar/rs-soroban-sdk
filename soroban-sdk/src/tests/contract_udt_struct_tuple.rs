@@ -1,7 +1,6 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
-    Vec,
+    contractimpl, contracttype, vec, ConversionError, Env, RawVal, TryFromVal, TryIntoVal, Vec,
 };
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
@@ -47,14 +46,14 @@ fn test_error_on_partial_decode() {
 
     // Success case, a vec will decode to a Udt.
     let map = vec![&env, 5, 7].to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt(5, 7)));
 
     // If a struct has 2 fields, and a vec is decoded into it where the vec has
     // 2 elements, it is an error. It is an error because all fields must be
     // assigned values.
     let map = vec![&env, 5, 7, 9].to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Err(ConversionError));
 
     // If a struct has 2 fields, and a vec is decoded into it where the vec has
@@ -62,7 +61,7 @@ fn test_error_on_partial_decode() {
     // will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
     let map = vec![&env, 5, 7, 9].to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Err(ConversionError));
 }
 

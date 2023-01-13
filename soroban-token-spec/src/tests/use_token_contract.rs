@@ -1,5 +1,5 @@
 use soroban_auth::{testutils::ed25519::generate, Identifier, Signature};
-use soroban_sdk::{contractimpl, contracttype, BytesN, Env, IntoVal};
+use soroban_sdk::{contractimpl, contracttype, BytesN, Env};
 
 mod token_contract {
     soroban_sdk::contractimport!(

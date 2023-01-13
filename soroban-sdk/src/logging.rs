@@ -5,7 +5,8 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, EnvBase},
-    Bytes, Env, IntoVal, RawVal, Vec,
+    unwrap::UnwrapOptimized,
+    Bytes, Env, RawVal, TryIntoVal, Vec,
 };
 
 /// Log a debug event.
@@ -83,7 +84,7 @@ macro_rules! log {
         if cfg!(debug_assertions) {
             $env.logger().log($fmt, &[
                 $(
-                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val($args, $env)
+                    <_ as $crate::TryIntoVal<Env, $crate::RawVal>>::try_into_val($args, $env).unwrap_optimized()
                 ),*
             ]);
         }
@@ -128,7 +129,7 @@ impl Logger {
             // building on non-WASM environments where the environment Host is
             // directly available, use the log static variants.
             if cfg!(target_family = "wasm") {
-                let fmt: Bytes = fmt.into_val(env);
+                let fmt: Bytes = fmt.try_into_val(env).unwrap_optimized();
                 let args: Vec<RawVal> = Vec::from_slice(env, args);
                 internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object());
             } else {

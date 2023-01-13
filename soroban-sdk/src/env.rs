@@ -38,8 +38,6 @@ pub use internal::BitSet;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::FromVal;
-pub use internal::IntoVal;
 use internal::InvokerType;
 pub use internal::Object;
 pub use internal::RawVal;
@@ -241,7 +239,7 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
     {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv)
+        T::try_from_val(self, &rv)
             .map_err(|_| ConversionError)
             .unwrap()
     }
@@ -259,9 +257,9 @@ impl Env {
         E: TryFrom<Status>,
     {
         let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
-        match Status::try_from_val(self, rv) {
+        match Status::try_from_val(self, &rv) {
             Ok(status) => Err(E::try_from(status)),
-            Err(ConversionError) => Ok(T::try_from_val(self, rv)),
+            Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
         }
     }
 
@@ -272,8 +270,13 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
-        internal::Env::log_value(self, v.into_val(self));
+    pub fn log_value<V>(&self, v: &V)
+    where
+        RawVal: TryFromVal<Env, V>,
+    {
+        if let Ok(rv) = RawVal::try_from_val(self, v) {
+            internal::Env::log_value(self, rv);
+        }
     }
 }
 

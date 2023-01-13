@@ -151,24 +151,26 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    use soroban_sdk::IntoVal;
-                    self.with_env(|env|
+                    use soroban_sdk::{TryIntoVal,unwrap::UnwrapOptimized};
+                    let args = soroban_sdk::vec![&self.env, #(#fn_input_names.try_into_val(&self.env).unwrap_optimized()),*];
+                    self.with_env(move |env|
                         env.invoke_contract(
                             &self.contract_id,
                             &soroban_sdk::symbol!(#fn_name),
-                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                            args,
                         )
                     )
                 }
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
-                    use soroban_sdk::IntoVal;
-                    self.with_env(|env|
+                    use soroban_sdk::{TryIntoVal,ConversionError};
+                    let args = soroban_sdk::vec![&self.env, #(#fn_input_names.try_into_val(&self.env).map_err(|_| ConversionError)?),*];
+                    self.with_env(move |env|
                         env.try_invoke_contract(
                             &self.contract_id,
                             &soroban_sdk::symbol!(#fn_name),
-                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                            args,
                         )
                     )
                 }
@@ -193,10 +195,11 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
         }
 
         impl #client_ident {
-            pub fn new(env: &soroban_sdk::Env, contract_id: impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
+            pub fn new(env: &soroban_sdk::Env, contract_id: impl soroban_sdk::TryIntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
+                use soroban_sdk::unwrap::UnwrapOptimized;
                 Self {
                     env: env.clone(),
-                    contract_id: contract_id.into_val(env),
+                    contract_id: contract_id.try_into_val(env).unwrap_optimized(),
                     #[cfg(any(test, feature = "testutils"))]
                     source_account: None,
                 }

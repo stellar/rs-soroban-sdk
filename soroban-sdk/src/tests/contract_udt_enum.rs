@@ -1,7 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{
-    contractimpl, contracttype, symbol, vec, ConversionError, Env, IntoVal, TryFromVal,
-};
+use soroban_sdk::{contractimpl, contracttype, symbol, vec, ConversionError, Env, TryFromVal};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[contracttype]
@@ -39,10 +37,10 @@ fn test_error_on_partial_decode() {
     // variant name as a Symbol, and following elements are tuple-like values
     // for the variant.
     let vec = vec![&env, symbol!("Aaa").into_val(&env)].to_raw();
-    let udt = Udt::try_from_val(&env, vec);
+    let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Ok(Udt::Aaa));
     let vec = vec![&env, symbol!("Bbb").into_val(&env), 8.into()].to_raw();
-    let udt = Udt::try_from_val(&env, vec);
+    let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Ok(Udt::Bbb(8)));
 
     // If an enum has a tuple like variant with one value, but the vec has
@@ -50,9 +48,9 @@ fn test_error_on_partial_decode() {
     // encoding will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
     let vec = vec![&env, symbol!("Aaa").into_val(&env), 8.into()].to_raw();
-    let udt = Udt::try_from_val(&env, vec);
+    let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Err(ConversionError));
     let vec = vec![&env, symbol!("Bbb").into_val(&env), 8.into(), 9.into()].to_raw();
-    let udt = Udt::try_from_val(&env, vec);
+    let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Err(ConversionError));
 }

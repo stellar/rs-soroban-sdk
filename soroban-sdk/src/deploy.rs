@@ -37,7 +37,10 @@
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
-use crate::{env::internal::Env as _, Bytes, BytesN, Env, IntoVal};
+use crate::{
+    env::internal::Env as _, unwrap::UnwrapOptimized, Bytes, BytesN, ConversionError, Env,
+    TryIntoVal,
+};
 
 /// Deployer provides access to deploying contracts.
 pub struct Deployer {
@@ -57,12 +60,12 @@ impl Deployer {
     /// from the current contract and the provided salt.
     pub fn with_current_contract(
         &self,
-        salt: impl IntoVal<Env, Bytes>,
+        salt: impl TryIntoVal<Env, Bytes>,
     ) -> DeployerWithCurrentContract {
         let env = self.env();
         DeployerWithCurrentContract {
             env: env.clone(),
-            salt: salt.into_val(env),
+            salt: salt.try_into_val(env).unwrap_optimized(),
         }
     }
 
@@ -71,14 +74,14 @@ impl Deployer {
     /// given contract ID and the provided salt.
     pub fn with_other_contract(
         &self,
-        contract_id: impl IntoVal<Env, BytesN<32>>,
-        salt: impl IntoVal<Env, Bytes>,
+        contract_id: impl TryIntoVal<Env, BytesN<32>>,
+        salt: impl TryIntoVal<Env, Bytes>,
     ) -> DeployerWithOtherContract {
         let env = self.env();
         DeployerWithOtherContract {
             env: env.clone(),
-            contract_id: contract_id.into_val(env),
-            salt: salt.into_val(env),
+            contract_id: contract_id.try_into_val(env).unwrap_optimized(),
+            salt: salt.try_into_val(env).unwrap_optimized(),
         }
     }
 }
@@ -103,10 +106,10 @@ impl DeployerWithCurrentContract {
     /// will be used to derive a contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) -> BytesN<32> {
+    pub fn deploy(&self, wasm_hash: impl TryIntoVal<Env, BytesN<32>>) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_contract_from_contract(
-            wasm_hash.into_val(env).to_object(),
+            wasm_hash.try_into_val(env).unwrap_optimized().to_object(),
             self.salt.to_object(),
         );
         unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }

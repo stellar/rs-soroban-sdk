@@ -18,9 +18,7 @@
 
 mod tests;
 
-use soroban_sdk::{
-    serde::Serialize, unwrap::UnwrapOptimized, BytesN, Env, IntoVal, RawVal, Symbol, Vec,
-};
+use soroban_sdk::{serde::Serialize, unwrap::UnwrapOptimized, BytesN, Env, RawVal, Symbol, Vec};
 
 pub mod testutils;
 
@@ -125,10 +123,14 @@ fn verify_account_signatures(env: &Env, auth: &AccountSignatures, name: Symbol, 
 /// **This function provides no replay protection. Contracts must provide their
 /// own mechanism suitable for replay prevention that prevents contract
 /// invocations to be replayable if it is important they are not.**
-pub fn verify(env: &Env, sig: &Signature, name: Symbol, args: impl IntoVal<Env, Vec<RawVal>>) {
+pub fn verify(env: &Env, sig: &Signature, name: Symbol, args: impl TryIntoVal<Env, Vec<RawVal>>) {
     match sig {
         Signature::Invoker => {}
-        Signature::Ed25519(e) => verify_ed25519_signature(env, e, name, args.into_val(env)),
-        Signature::Account(a) => verify_account_signatures(env, a, name, args.into_val(env)),
+        Signature::Ed25519(e) => {
+            verify_ed25519_signature(env, e, name, args.try_into_val(env).unwrap_optimized())
+        }
+        Signature::Account(a) => {
+            verify_account_signatures(env, a, name, args.try_into_val(env).unwrap_optimized())
+        }
     }
 }

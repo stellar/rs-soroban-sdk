@@ -1,11 +1,14 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
-use crate::iter::{UncheckedEnumerable, UncheckedIter};
+use crate::{
+    iter::{UncheckedEnumerable, UncheckedIter},
+    unwrap::UnwrapOptimized,
+};
 
 use super::{
     env::internal::{Env as _, EnvBase as _, RawValConvertible},
     xdr::ScObjectType,
-    ConversionError, Env, IntoVal, Object, RawVal, Status, TryFromVal, TryIntoVal, Vec,
+    ConversionError, Env, Object, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -93,15 +96,15 @@ pub struct Map<K, V> {
 
 impl<K, V> Eq for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
 }
 
 impl<K, V> PartialEq for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
@@ -110,8 +113,8 @@ where
 
 impl<K, V> PartialOrd for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
@@ -120,8 +123,8 @@ where
 
 impl<K, V> Ord for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.env.check_same_env(&other.env);
@@ -132,10 +135,10 @@ where
 
 impl<K, V> Debug for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
-    K::Error: Debug,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
-    V::Error: Debug,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
+    <K as TryIntoVal<Env, RawVal>>::Error: Debug,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
+    <V as TryIntoVal<Env, RawVal>>::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Map(")?;
@@ -153,17 +156,17 @@ where
 
 impl<K, V> TryFromVal<Env, Object> for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
 
     #[inline(always)]
-    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, Self::Error> {
         if obj.is_obj_type(ScObjectType::Map) {
             Ok(Map {
                 env: env.clone(),
-                obj,
+                obj: *obj,
                 _k: PhantomData,
                 _v: PhantomData,
             })
@@ -175,64 +178,33 @@ where
 
 impl<K, V> TryFromVal<Env, RawVal> for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = <Map<K, V> as TryFromVal<Env, Object>>::Error;
 
-    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+        let obj: Object = (*val).try_into()?;
+        <_ as TryFromVal<_, Object>>::try_from_val(env, &obj)
     }
 }
 
-impl<K, V> TryIntoVal<Env, Map<K, V>> for Object
+impl<K, V> TryFromVal<Env, Map<K, V>> for RawVal
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
 
-    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
-        <_ as TryFromVal<_, _>>::try_from_val(env, self)
-    }
-}
-
-impl<K, V> TryIntoVal<Env, Map<K, V>> for RawVal
-where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-
-    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
-        <_ as TryFromVal<_, _>>::try_from_val(env, self)
-    }
-}
-
-impl<K, V> IntoVal<Env, RawVal> for Map<K, V>
-where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    fn into_val(self, _env: &Env) -> RawVal {
-        self.into()
-    }
-}
-
-impl<K, V> IntoVal<Env, RawVal> for &Map<K, V>
-where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    fn into_val(self, _env: &Env) -> RawVal {
-        self.to_raw()
+    fn try_from_val(_env: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
+        Ok(v.obj.into())
     }
 }
 
 impl<K, V> From<Map<K, V>> for RawVal
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
@@ -244,7 +216,7 @@ where
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Map<K, V>) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.env, v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_raw())
     }
 }
 
@@ -259,34 +231,20 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFromVal<Env, ScVal> for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
-    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            val.try_into_val(env).map_err(|_| ConversionError)?,
-        )
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl<K, V> TryIntoVal<Env, Map<K, V>> for ScVal
-where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<Map<K, V>, Self::Error> {
-        Map::try_from_val(env, self)
+    fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
+        let obj: Object = val.try_into_val(env).map_err(|_| ConversionError)?;
+        <_ as TryFromVal<_, Object>>::try_from_val(env, &obj)
     }
 }
 
 impl<K, V> Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     #[inline(always)]
     pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
@@ -340,40 +298,44 @@ where
     #[inline(always)]
     pub fn contains_key(&self, k: K) -> bool {
         let env = self.env();
-        let has = env.map_has(self.obj, k.into_val(env));
+        let has = env.map_has(self.obj, k.try_into_val(env).unwrap_optimized());
         has.is_true()
     }
 
     #[inline(always)]
-    pub fn get(&self, k: K) -> Option<Result<V, V::Error>> {
+    pub fn get(&self, k: K) -> Option<Result<V, <V as TryFromVal<Env, RawVal>>::Error>> {
         let env = self.env();
-        let k = k.into_val(env);
+        let k = k.try_into_val(env).unwrap_optimized();
         let has = env.map_has(self.obj, k);
         if has.is_true() {
             let v = env.map_get(self.obj, k);
-            Some(V::try_from_val(env, v))
+            Some(V::try_from_val(env, &v))
         } else {
             None
         }
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, k: K) -> Result<V, V::Error> {
+    pub fn get_unchecked(&self, k: K) -> Result<V, <V as TryFromVal<Env, RawVal>>::Error> {
         let env = self.env();
-        let v = env.map_get(self.obj, k.into_val(env));
-        V::try_from_val(env, v)
+        let v = env.map_get(self.obj, k.try_into_val(env).unwrap_optimized());
+        V::try_from_val(env, &v)
     }
 
     #[inline(always)]
     pub fn set(&mut self, k: K, v: V) {
         let env = self.env();
-        self.obj = env.map_put(self.obj, k.into_val(env), v.into_val(env));
+        self.obj = env.map_put(
+            self.obj,
+            k.try_into_val(env).unwrap_optimized(),
+            v.try_into_val(env).unwrap_optimized(),
+        );
     }
 
     #[inline(always)]
     pub fn remove(&mut self, k: K) -> Option<()> {
         let env = self.env();
-        let k = k.into_val(env);
+        let k = k.try_into_val(env).unwrap_optimized();
         let has = env.map_has(self.obj, k);
         if has.is_true() {
             self.obj = env.map_del(self.obj, k);
@@ -386,7 +348,7 @@ where
     #[inline(always)]
     pub fn remove_unchecked(&mut self, k: K) {
         let env = self.env();
-        self.obj = env.map_del(self.obj, k.into_val(env));
+        self.obj = env.map_del(self.obj, k.try_into_val(env).unwrap_optimized());
     }
 
     #[inline(always)]
@@ -407,14 +369,14 @@ where
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
         let vec = env.map_keys(self.obj);
-        Vec::<K>::try_from_val(env, vec).unwrap()
+        Vec::<K>::try_from_val(env, &vec).unwrap_optimized()
     }
 
     #[inline(always)]
     pub fn values(&self) -> Vec<V> {
         let env = self.env();
         let vec = env.map_values(self.obj);
-        Vec::<V>::try_from_val(env, vec).unwrap()
+        Vec::<V>::try_from_val(env, &vec).unwrap_optimized()
     }
 
     pub fn iter(&self) -> MapIter<K, V>
@@ -428,10 +390,10 @@ where
     #[inline(always)]
     pub fn iter_unchecked(&self) -> UncheckedIter<MapIter<K, V>, (K, V), ConversionError>
     where
-        K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        K::Error: Debug,
-        V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        V::Error: Debug,
+        K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        <K as TryIntoVal<Env, RawVal>>::Error: Debug,
+        V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        <V as TryIntoVal<Env, RawVal>>::Error: Debug,
     {
         self.iter().unchecked()
     }
@@ -439,10 +401,10 @@ where
     #[inline(always)]
     pub fn into_iter_unchecked(self) -> UncheckedIter<MapIter<K, V>, (K, V), ConversionError>
     where
-        K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        K::Error: Debug,
-        V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        V::Error: Debug,
+        K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        <K as TryIntoVal<Env, RawVal>>::Error: Debug,
+        V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        <V as TryIntoVal<Env, RawVal>>::Error: Debug,
     {
         self.into_iter().unchecked()
     }
@@ -450,8 +412,8 @@ where
 
 impl<K, V> IntoIterator for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Item = Result<(K, V), ConversionError>;
     type IntoIter = MapIter<K, V>;
@@ -472,8 +434,8 @@ impl<K, V> MapIter<K, V> {
 
 impl<K, V> Iterator for MapIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Item = Result<(K, V), ConversionError>;
 
@@ -486,11 +448,11 @@ where
         let value = env.map_get(self.0.obj, key);
         self.0.obj = env.map_del(self.0.obj, key);
         Some(Ok((
-            match K::try_from_val(env, key) {
+            match K::try_from_val(env, &key) {
                 Ok(k) => k,
                 Err(_) => return Some(Err(ConversionError)),
             },
-            match V::try_from_val(env, value) {
+            match V::try_from_val(env, &value) {
                 Ok(v) => v,
                 Err(_) => return Some(Err(ConversionError)),
             },
@@ -507,8 +469,8 @@ where
 
 impl<K, V> DoubleEndedIterator for MapIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = &self.0.env;
@@ -519,11 +481,11 @@ where
         let value = env.map_get(self.0.obj, key);
         self.0.obj = env.map_del(self.0.obj, key);
         Some(Ok((
-            match K::try_from_val(env, key) {
+            match K::try_from_val(env, &key) {
                 Ok(k) => k,
                 Err(_) => return Some(Err(ConversionError)),
             },
-            match V::try_from_val(env, value) {
+            match V::try_from_val(env, &value) {
                 Ok(v) => v,
                 Err(_) => return Some(Err(ConversionError)),
             },
@@ -535,15 +497,15 @@ where
 
 impl<K, V> FusedIterator for MapIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
 }
 
 impl<K, V> ExactSizeIterator for MapIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    V: TryIntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     fn len(&self) -> usize {
         self.0.len() as usize

@@ -205,7 +205,7 @@ mod test {
             c: vec![&e, 1],
         };
         let val: ScVal = udt.clone().try_into().unwrap();
-        let roundtrip = UdtStruct::try_from_val(&e, val).unwrap();
+        let roundtrip = UdtStruct::try_from_val(&e, &val).unwrap();
         assert_eq!(udt, roundtrip);
     }
 }

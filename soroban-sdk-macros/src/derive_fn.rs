@@ -95,7 +95,7 @@ pub fn derive_fn(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
                             &env,
-                            #ident
+                            &#ident
                         )
                     )
                 };
@@ -199,15 +199,16 @@ pub fn derive_fn(
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
             pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
+                use soroban_sdk::unwrap::UnwrapOptimized;
                 #use_trait;
-                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
+                <_ as soroban_sdk::TryIntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_into_val(
                     #[allow(deprecated)]
-                    #call(
+                    &#call(
                         #env_call
                         #(#wrap_calls),*
                     ),
                     &env
-                )
+                ).unwrap_optimized()
             }
 
             #[deprecated(note = #deprecated_note)]

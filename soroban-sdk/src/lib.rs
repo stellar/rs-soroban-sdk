@@ -616,10 +616,6 @@ pub use env::Env;
 pub use env::RawVal;
 
 /// Used to do conversions between values in the Soroban environment.
-pub use env::FromVal;
-/// Used to do conversions between values in the Soroban environment.
-pub use env::IntoVal;
-/// Used to do conversions between values in the Soroban environment.
 pub use env::TryFromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryIntoVal;

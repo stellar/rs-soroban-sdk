@@ -3,7 +3,8 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, RawVal},
-    Env, IntoVal, TryFromVal,
+    unwrap::UnwrapOptimized,
+    ConversionError, Env, TryFromVal, TryIntoVal,
 };
 
 /// Storage stores and retrieves data for the currently executing contract.
@@ -70,10 +71,10 @@ impl Storage {
     #[inline(always)]
     pub fn has<K>(&self, key: K) -> bool
     where
-        K: IntoVal<Env, RawVal>,
+        K: TryIntoVal<Env, RawVal>,
     {
         let env = self.env();
-        let rv = internal::Env::has_contract_data(env, key.into_val(env));
+        let rv = internal::Env::has_contract_data(env, key.try_into_val(env).unwrap_optimized());
         rv.is_true()
     }
 
@@ -93,15 +94,15 @@ impl Storage {
     pub fn get<K, V>(&self, key: K) -> Option<Result<V, V::Error>>
     where
         V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
+        K: TryIntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
         let env = self.env();
-        let key = key.into_val(env);
+        let key = key.try_into_val(env).unwrap_optimized();
         let has = internal::Env::has_contract_data(env, key);
         if has.is_true() {
             let rv = internal::Env::get_contract_data(env, key);
-            Some(V::try_from_val(env, rv))
+            Some(V::try_from_val(env, &rv))
         } else {
             None
         }
@@ -117,12 +118,12 @@ impl Storage {
     pub fn get_unchecked<K, V>(&self, key: K) -> Result<V, V::Error>
     where
         V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
+        K: TryIntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
         let env = self.env();
-        let rv = internal::Env::get_contract_data(env, key.into_val(env));
-        V::try_from_val(env, rv)
+        let rv = internal::Env::get_contract_data(env, key.try_into_val(env).unwrap_optimized());
+        V::try_from_val(env, &rv)
     }
 
     /// Sets the value for the given key in the currently executing contract's
@@ -133,19 +134,23 @@ impl Storage {
     #[inline(always)]
     pub fn set<K, V>(&self, key: K, val: V)
     where
-        K: IntoVal<Env, RawVal>,
-        V: IntoVal<Env, RawVal>,
+        K: TryIntoVal<Env, RawVal>,
+        V: TryIntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env));
+        internal::Env::put_contract_data(
+            env,
+            key.try_into_val(env).unwrap_optimized(),
+            val.try_into_val(env).unwrap_optimized(),
+        );
     }
 
     #[inline(always)]
     pub fn remove<K>(&self, key: K)
     where
-        K: IntoVal<Env, RawVal>,
+        K: TryIntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::del_contract_data(env, key.into_val(env));
+        internal::Env::del_contract_data(env, key.try_into_val(env).unwrap_optimized());
     }
 }

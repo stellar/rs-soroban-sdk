@@ -8,7 +8,7 @@
 //! ```
 //! use soroban_sdk::{
 //!     serde::{Deserialize, Serialize},
-//!     Env, Bytes, IntoVal, TryFromVal,
+//!     Env, Bytes, TryFromVal,
 //! };
 //!
 //! let env = Env::default();
@@ -22,7 +22,10 @@
 //! assert_eq!(roundtrip, Ok(value));
 //! ```
 
-use crate::{env::internal::Env as _, Bytes, Env, IntoVal, RawVal, TryFromVal};
+use crate::{
+    env::internal::Env as _, unwrap::UnwrapOptimized, Bytes, ConversionError, Env, RawVal,
+    TryFromVal, TryIntoVal,
+};
 
 /// Implemented by types that can be serialized to [Bytes].
 ///
@@ -41,10 +44,10 @@ pub trait Deserialize: Sized {
 
 impl<T> Serialize for T
 where
-    T: IntoVal<Env, RawVal>,
+    T: TryIntoVal<Env, RawVal>,
 {
     fn serialize(self, env: &Env) -> Bytes {
-        let val: RawVal = self.into_val(env);
+        let val: RawVal = self.try_into_val(env).unwrap_optimized();
         let bin = env.serialize_to_bytes(val);
         unsafe { Bytes::unchecked_new(env.clone(), bin) }
     }
@@ -58,6 +61,6 @@ where
 
     fn deserialize(env: &Env, b: &Bytes) -> Result<Self, Self::Error> {
         let t = env.deserialize_from_bytes(b.into());
-        T::try_from_val(env, t)
+        T::try_from_val(env, &t)
     }
 }

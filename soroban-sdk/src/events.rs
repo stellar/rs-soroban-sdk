@@ -5,7 +5,8 @@ use core::fmt::Debug;
 use crate::{contracttype, Bytes, BytesN, Map};
 use crate::{
     env::internal::{self},
-    Env, IntoVal, RawVal, Vec,
+    unwrap::UnwrapOptimized,
+    ConversionError, Env, RawVal, TryFromVal, TryIntoVal, Vec,
 };
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
@@ -58,11 +59,13 @@ impl Debug for Events {
     }
 }
 
-pub trait Topics: IntoVal<Env, Vec<RawVal>> {}
+pub trait Topics: TryIntoVal<Env, Vec<RawVal>> {}
 
-impl IntoVal<Env, Vec<RawVal>> for () {
-    fn into_val(self, env: &Env) -> Vec<RawVal> {
-        Vec::<RawVal>::new(env)
+impl TryFromVal<Env, ()> for Vec<RawVal> {
+    type Error = ConversionError;
+
+    fn try_from_val(env: &Env, v: &()) -> Result<Self, Self::Error> {
+        Ok(Vec::<RawVal>::new(env))
     }
 }
 
@@ -70,7 +73,7 @@ macro_rules! impl_topics_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {
         impl<$($typ),*> Topics for ($($typ,)*)
         where
-            $($typ: IntoVal<Env, RawVal>),*
+            $($typ: TryIntoVal<Env, RawVal>),*
         {
         }
     };
@@ -110,15 +113,19 @@ impl Events {
     pub fn publish<T, D>(&self, topics: T, data: D)
     where
         T: Topics,
-        D: IntoVal<Env, RawVal>,
+        D: TryIntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env));
+        internal::Env::contract_event(
+            env,
+            topics.try_into_val(env).unwrap_optimized().to_object(),
+            data.try_into_val(env).unwrap_optimized(),
+        );
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, TryIntoVal};
+use crate::{testutils, xdr};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -141,7 +148,7 @@ impl testutils::Events for Events {
                 }) = e
                 {
                     vec.push_back((
-                        contract_id.0.into_val(env),
+                        contract_id.0.try_into_val(env).unwrap(),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
                     ))

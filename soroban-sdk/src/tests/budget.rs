@@ -16,7 +16,7 @@ impl Contract {
 fn test_budget() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
-    let client = ContractClient::new(&e, &contract_id);
+    let client = ContractClient::new(&e, contract_id);
 
     e.budget().reset();
     let b = client.add();
