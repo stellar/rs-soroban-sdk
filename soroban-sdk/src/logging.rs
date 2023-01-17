@@ -83,7 +83,7 @@ macro_rules! log {
         if cfg!(debug_assertions) {
             $env.logger().log($fmt, &[
                 $(
-                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val($args, $env)
+                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val(&$args, $env)
                 ),*
             ]);
         }

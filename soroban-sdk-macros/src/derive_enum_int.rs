@@ -19,7 +19,7 @@ pub fn derive_type_enum_int(
     let mut errors = Vec::<Error>::new();
 
     let variants = &data.variants;
-    let (spec_cases, try_froms, intos): (Vec<_>, Vec<_>, Vec<_>) = variants
+    let (spec_cases, try_froms, try_intos): (Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .map(|v| {
             let ident = &v.ident;
@@ -48,8 +48,8 @@ pub fn derive_type_enum_int(
                 value: discriminant,
             };
             let try_from = quote! { #discriminant => Self::#ident };
-            let into = quote! { #enum_ident::#ident => #discriminant.into_val(env) };
-            (spec_case, try_from, into)
+            let try_into = quote! { #enum_ident::#ident => #discriminant.into() };
+            (spec_case, try_from, try_into)
         })
         .multiunzip();
 
@@ -91,7 +91,7 @@ pub fn derive_type_enum_int(
         impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: #path::RawVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
                 use #path::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -101,29 +101,13 @@ pub fn derive_type_enum_int(
             }
         }
 
-        impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
-                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
-            }
-        }
-
-        impl #path::IntoVal<#path::Env, #path::RawVal> for #enum_ident {
-            #[inline(always)]
-            fn into_val(self, env: &#path::Env) -> #path::RawVal {
-                match &self {
-                    #(#intos,)*
-                }
-            }
-        }
-
-        impl #path::IntoVal<#path::Env, #path::RawVal> for &#enum_ident {
-            #[inline(always)]
-            fn into_val(self, env: &#path::Env) -> #path::RawVal {
-                match self {
-                    #(#intos,)*
-                }
+            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, Self::Error> {
+                Ok(match val {
+                    #(#try_intos,)*
+                })
             }
         }
 
@@ -131,21 +115,15 @@ pub fn derive_type_enum_int(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: #path::xdr::ScVal) -> Result<Self, Self::Error> {
-                let discriminant: u32 = val.try_into().map_err(|_| #path::xdr::Error::Invalid)?;
-                Ok(match discriminant {
-                    #(#try_froms,)*
-                    _ => Err(#path::xdr::Error::Invalid)?,
-                })
-            }
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryIntoVal<#path::Env, #enum_ident> for #path::xdr::ScVal {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into_val(self, env: &#path::Env) -> Result<#enum_ident, Self::Error> {
-                <_ as #path::TryFromVal<_, _>>::try_from_val(env, self)
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, Self::Error> {
+                if let #path::xdr::ScVal::U32(discriminant) = val {
+                    Ok(match *discriminant {
+                        #(#try_froms,)*
+                        _ => Err(#path::xdr::Error::Invalid)?,
+                    })
+                } else {
+                    Err(#path::xdr::Error::Invalid)
+                }
             }
         }
 

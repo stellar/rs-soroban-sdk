@@ -44,21 +44,13 @@ macro_rules! vec {
 
 macro_rules! impl_into_vec_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {
-        impl<$($typ),*> IntoVal<Env, Vec<RawVal>> for ($($typ,)*)
+        impl<$($typ),*> TryFromVal<Env, ($($typ,)*)> for Vec<RawVal>
         where
             $($typ: IntoVal<Env, RawVal>),*
         {
-            fn into_val(self, env: &Env) -> Vec<RawVal> {
-                vec![&env, $(self.$idx.into_val(env), )*]
-            }
-        }
-
-        impl<$($typ),*> IntoVal<Env, Vec<RawVal>> for &($($typ,)*)
-        where
-            $(for <'a> &'a $typ: IntoVal<Env, RawVal>),*
-        {
-            fn into_val(self, env: &Env) -> Vec<RawVal> {
-                vec![&env, $((&self.$idx).into_val(env), )*]
+            type Error = ConversionError;
+            fn try_from_val(env: &Env, v: &($($typ,)*)) -> Result<Self, Self::Error> {
+                Ok(vec![&env, $(v.$idx.into_val(env), )*])
             }
         }
     };
@@ -170,15 +162,22 @@ where
     }
 }
 
-impl<T> IntoVal<Env, Vec<RawVal>> for Vec<T> {
-    fn into_val(self, _env: &Env) -> Vec<RawVal> {
-        unsafe { Vec::unchecked_new(self.env, self.obj) }
+impl<T> TryFromVal<Env, Vec<T>> for Vec<RawVal> {
+    type Error = ConversionError;
+
+    fn try_from_val(env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
     }
 }
 
-impl<T> IntoVal<Env, Vec<RawVal>> for &Vec<T> {
-    fn into_val(self, _env: &Env) -> Vec<RawVal> {
-        unsafe { Vec::unchecked_new(self.env.clone(), self.obj.clone()) }
+// This conflicts with the previous definition unless we add the spurious &,
+// which is not .. great. Maybe don't define this particular blanket, or add
+// a to_other<T>() method?
+impl<T> TryFromVal<Env, &Vec<RawVal>> for Vec<T> {
+    type Error = ConversionError;
+
+    fn try_from_val(env: &Env, v: &&Vec<RawVal>) -> Result<Self, Self::Error> {
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
     }
 }
 
@@ -189,9 +188,9 @@ where
     type Error = ConversionError;
 
     #[inline(always)]
-    fn try_from_val(env: &Env, obj: Object) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, Self::Error> {
         if obj.is_obj_type(ScObjectType::Vec) {
-            Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), obj) })
+            Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), obj.clone()) })
         } else {
             Err(ConversionError {})
         }
@@ -205,48 +204,24 @@ where
     type Error = <Vec<T> as TryFromVal<Env, Object>>::Error;
 
     #[inline(always)]
-    fn try_from_val(env: &Env, val: RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, val.try_into()?)
+    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
     }
 }
 
-impl<T> TryIntoVal<Env, Vec<T>> for Object
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
+impl<T> TryFromVal<Env, Vec<T>> for RawVal {
     type Error = ConversionError;
 
-    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
-        <_ as TryFromVal<_, _>>::try_from_val(env, self)
+    fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
+        Ok(v.to_raw())
     }
 }
 
-impl<T> TryIntoVal<Env, Vec<T>> for RawVal
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
+impl<T> TryFromVal<Env, Vec<T>> for Object {
     type Error = ConversionError;
 
-    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
-        <_ as TryFromVal<_, _>>::try_from_val(env, self)
-    }
-}
-
-impl<T> IntoVal<Env, RawVal> for Vec<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    fn into_val(self, _env: &Env) -> RawVal {
-        self.into()
-    }
-}
-
-impl<T> IntoVal<Env, RawVal> for &Vec<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    fn into_val(self, _env: &Env) -> RawVal {
-        self.to_raw()
+    fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
+        Ok(v.obj.into())
     }
 }
 
@@ -257,15 +232,6 @@ where
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
         v.obj.into()
-    }
-}
-
-impl<T> IntoVal<Env, Object> for Vec<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    fn into_val(self, _env: &Env) -> Object {
-        self.into()
     }
 }
 
@@ -299,7 +265,7 @@ use super::xdr::{ScObject, ScVal, ScVec};
 impl<T> TryFrom<&Vec<T>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.env, v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_raw())
     }
 }
 
@@ -359,10 +325,10 @@ where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
-    fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         <_ as TryFromVal<_, Object>>::try_from_val(
             env,
-            val.try_into_val(env).map_err(|_| ConversionError)?,
+            &val.try_into_val(env).map_err(|_| ConversionError)?,
         )
     }
 }
@@ -373,8 +339,8 @@ where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
-    fn try_from_val(env: &Env, val: ScObject) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, ScVal>>::try_from_val(env, ScVal::Object(Some(val)))
+    fn try_from_val(env: &Env, val: &ScObject) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, ScVal>>::try_from_val(env, &ScVal::Object(Some(val.clone())))
     }
 }
 
@@ -384,41 +350,8 @@ where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
-    fn try_from_val(env: &Env, val: ScVec) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, ScObject>>::try_from_val(env, ScObject::Vec(val))
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl<T> TryIntoVal<Env, Vec<T>> for ScVal
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
-        Vec::try_from_val(env, self)
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl<T> TryIntoVal<Env, Vec<T>> for ScObject
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
-        Vec::try_from_val(env, self)
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl<T> TryIntoVal<Env, Vec<T>> for ScVec
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    type Error = ConversionError;
-    fn try_into_val(self, env: &Env) -> Result<Vec<T>, Self::Error> {
-        Vec::try_from_val(env, self)
+    fn try_from_val(env: &Env, val: &ScVec) -> Result<Self, Self::Error> {
+        <_ as TryFromVal<_, ScObject>>::try_from_val(env, &ScObject::Vec(val.clone()))
     }
 }
 
@@ -484,7 +417,7 @@ where
         if i < self.len() {
             let env = self.env();
             let val = env.vec_get(self.obj, i.into());
-            Some(T::try_from_val(env, val))
+            Some(T::try_from_val(env, &val))
         } else {
             None
         }
@@ -497,7 +430,7 @@ where
     {
         let env = self.env();
         let val = env.vec_get(self.obj, i.into());
-        T::try_from_val(env, val)
+        T::try_from_val(env, &val)
     }
 
     #[inline(always)]
@@ -605,7 +538,7 @@ where
         } else {
             let env = &self.env;
             let val = env.vec_front(self.obj);
-            Some(T::try_from_val(env, val))
+            Some(T::try_from_val(env, &val))
         }
     }
 
@@ -613,7 +546,7 @@ where
     pub fn first_unchecked(&self) -> Result<T, T::Error> {
         let env = &self.env;
         let val = env.vec_front(self.obj);
-        T::try_from_val(env, val)
+        T::try_from_val(env, &val)
     }
 
     #[inline(always)]
@@ -623,7 +556,7 @@ where
         } else {
             let env = self.env();
             let val = env.vec_back(self.obj);
-            Some(T::try_from_val(env, val))
+            Some(T::try_from_val(env, &val))
         }
     }
 
@@ -631,7 +564,7 @@ where
     pub fn last_unchecked(&self) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_back(self.obj);
-        T::try_from_val(env, val)
+        T::try_from_val(env, &val)
     }
 
     #[inline(always)]
@@ -708,7 +641,7 @@ where
 
 impl<T> Vec<T>
 where
-    for<'a> &'a T: IntoVal<Env, RawVal>,
+    T: IntoVal<Env, RawVal>,
 {
     /// Returns true if the Vec contains the item.
     #[inline(always)]
@@ -815,7 +748,7 @@ where
         } else {
             let val = self.0.env().vec_front(self.0.obj);
             self.0 = self.0.slice(1..);
-            Some(T::try_from_val(self.0.env(), val))
+            Some(T::try_from_val(self.0.env(), &val))
         }
     }
 
@@ -839,7 +772,7 @@ where
         } else {
             let val = self.0.env().vec_back(self.0.obj);
             self.0 = self.0.slice(..len - 1);
-            Some(T::try_from_val(self.0.env(), val))
+            Some(T::try_from_val(self.0.env(), &val))
         }
     }
 
@@ -1110,7 +1043,7 @@ mod test {
         let env = Env::default();
         let v = vec![&env, 1];
         let val: ScVal = v.clone().try_into().unwrap();
-        let roundtrip = Vec::<i64>::try_from_val(&env, val).unwrap();
+        let roundtrip = Vec::<i64>::try_from_val(&env, &val).unwrap();
         assert_eq!(v, roundtrip);
     }
 

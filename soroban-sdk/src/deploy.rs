@@ -57,7 +57,7 @@ impl Deployer {
     /// from the current contract and the provided salt.
     pub fn with_current_contract(
         &self,
-        salt: impl IntoVal<Env, Bytes>,
+        salt: &impl IntoVal<Env, Bytes>,
     ) -> DeployerWithCurrentContract {
         let env = self.env();
         DeployerWithCurrentContract {
@@ -71,8 +71,8 @@ impl Deployer {
     /// given contract ID and the provided salt.
     pub fn with_other_contract(
         &self,
-        contract_id: impl IntoVal<Env, BytesN<32>>,
-        salt: impl IntoVal<Env, Bytes>,
+        contract_id: &impl IntoVal<Env, BytesN<32>>,
+        salt: &impl IntoVal<Env, Bytes>,
     ) -> DeployerWithOtherContract {
         let env = self.env();
         DeployerWithOtherContract {
@@ -103,7 +103,7 @@ impl DeployerWithCurrentContract {
     /// will be used to derive a contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) -> BytesN<32> {
+    pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> BytesN<32> {
         let env = &self.env;
         let id = env.create_contract_from_contract(
             wasm_hash.into_val(env).to_object(),

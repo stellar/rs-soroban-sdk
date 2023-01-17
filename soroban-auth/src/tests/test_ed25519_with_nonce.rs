@@ -9,7 +9,7 @@ pub enum DataKey {
 
 fn read_nonce(e: &Env, id: &Identifier) -> i128 {
     let key = DataKey::Nonce(id.clone());
-    e.storage().get(key).unwrap_or(Ok(0)).unwrap()
+    e.storage().get(&key).unwrap_or(Ok(0)).unwrap()
 }
 
 fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: i128) {
@@ -29,7 +29,7 @@ fn verify_and_consume_nonce(e: &Env, id: &Identifier, expected_nonce: i128) {
     if nonce != expected_nonce {
         panic!("incorrect nonce")
     }
-    e.storage().set(key, &nonce + 1);
+    e.storage().set(&key, &(nonce + 1));
 }
 
 pub struct TestContract;
@@ -41,7 +41,7 @@ impl TestContract {
 
         verify_and_consume_nonce(&e, &auth_id, nonce);
 
-        verify(&e, &sig, symbol!("verify_sig"), (&auth_id, nonce));
+        verify(&e, &sig, symbol!("verify_sig"), (auth_id, nonce));
     }
 
     pub fn nonce(e: Env, id: Identifier) -> i128 {
@@ -54,7 +54,7 @@ pub struct OuterTestContract;
 #[contractimpl]
 impl OuterTestContract {
     pub fn authorize(e: Env, contract_id: BytesN<32>) {
-        let client = TestContractClient::new(&e, contract_id);
+        let client = TestContractClient::new(&e, &contract_id);
         client.verify_sig(&Signature::Invoker, &0);
     }
 }
@@ -74,7 +74,7 @@ fn test() {
         &signer,
         &contract_id,
         symbol!("verify_sig"),
-        (&id, &nonce),
+        (id, nonce),
     );
 
     client.verify_sig(&sig, &nonce);

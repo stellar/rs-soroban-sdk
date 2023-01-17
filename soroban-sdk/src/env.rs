@@ -38,8 +38,6 @@ pub use internal::BitSet;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::FromVal;
-pub use internal::IntoVal;
 use internal::InvokerType;
 pub use internal::Object;
 pub use internal::RawVal;
@@ -50,6 +48,33 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
+pub trait IntoVal<E: internal::Env, T> {
+    fn into_val(&self, e: &E) -> T;
+}
+
+pub trait FromVal<E: internal::Env, T> {
+    fn from_val(e: &E, v: &T) -> Self;
+}
+
+impl<E: internal::Env, T, U> FromVal<E, T> for U
+where
+    U: TryFromVal<E, T>,
+{
+    fn from_val(e: &E, v: &T) -> Self {
+        U::try_from_val(e, v).unwrap_optimized()
+    }
+}
+
+impl<E: internal::Env, T, U> IntoVal<E, T> for U
+where
+    T: FromVal<E, Self>,
+{
+    fn into_val(&self, e: &E) -> T {
+        T::from_val(e, self)
+    }
+}
+
+use crate::unwrap::UnwrapOptimized;
 use crate::{
     accounts::Accounts, address::Address, crypto::Crypto, deploy::Deployer, events::Events,
     ledger::Ledger, logging::Logger, storage::Storage, AccountId, Bytes, BytesN, Vec,
@@ -241,7 +266,7 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
     {
         let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv)
+        T::try_from_val(self, &rv)
             .map_err(|_| ConversionError)
             .unwrap()
     }
@@ -259,9 +284,9 @@ impl Env {
         E: TryFrom<Status>,
     {
         let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
-        match Status::try_from_val(self, rv) {
+        match Status::try_from_val(self, &rv) {
             Ok(status) => Err(E::try_from(status)),
-            Err(ConversionError) => Ok(T::try_from_val(self, rv)),
+            Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
         }
     }
 

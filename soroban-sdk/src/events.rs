@@ -5,7 +5,7 @@ use core::fmt::Debug;
 use crate::{contracttype, Bytes, BytesN, Map};
 use crate::{
     env::internal::{self},
-    Env, IntoVal, RawVal, Vec,
+    ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
 };
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
@@ -60,9 +60,11 @@ impl Debug for Events {
 
 pub trait Topics: IntoVal<Env, Vec<RawVal>> {}
 
-impl IntoVal<Env, Vec<RawVal>> for () {
-    fn into_val(self, env: &Env) -> Vec<RawVal> {
-        Vec::<RawVal>::new(env)
+impl TryFromVal<Env, ()> for Vec<RawVal> {
+    type Error = ConversionError;
+
+    fn try_from_val(env: &Env, _v: &()) -> Result<Self, Self::Error> {
+        Ok(Vec::<RawVal>::new(env))
     }
 }
 
