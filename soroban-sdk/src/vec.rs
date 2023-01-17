@@ -477,7 +477,7 @@ where
 
     #[inline(always)]
     pub fn pop_front(&mut self) -> Option<Result<T, T::Error>> {
-        let last = self.last()?;
+        let last = self.first()?;
         let env = self.env();
         self.obj = env.vec_pop_front(self.obj);
         Some(last)
@@ -1074,5 +1074,54 @@ mod test {
         v.set(2, 2);
         v.set(3, 5);
         assert_eq!(v, vec![&env, 7, 6, 2, 5]);
+    }
+
+    #[test]
+    fn is_empty_and_len() {
+        let env = Env::default();
+
+        let mut v: Vec<i32> = vec![&env, 1, 4, 3];
+        assert_eq!(v.is_empty(), false);
+        assert_eq!(v.len(), 3);
+
+        v = vec![&env];
+        assert_eq!(v.is_empty(), true);
+        assert_eq!(v.len(), 0);
+    }
+
+    #[test]
+    fn push_pop_front() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+        v.push_front(42);
+        assert_eq!(v, vec![&env, 42]);
+        v.push_front(1);
+        assert_eq!(v, vec![&env, 1, 42]);
+        let pop_checked = v.pop_front();
+        assert_eq!(pop_checked, Some(Ok(1)));
+        assert_eq!(v, vec![&env, 42]);
+        let pop_unchecked = v.pop_front_unchecked();
+        assert_eq!(pop_unchecked, Ok(42));
+        assert_eq!(v, vec![&env]);
+        assert_eq!(v.pop_front(), None);
+    }
+
+    #[test]
+    fn push_pop_back() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+        v.push_back(42);
+        assert_eq!(v, vec![&env, 42]);
+        v.push_back(1);
+        assert_eq!(v, vec![&env, 42, 1]);
+        let pop_checked = v.pop_back();
+        assert_eq!(pop_checked, Some(Ok(1)));
+        assert_eq!(v, vec![&env, 42]);
+        let pop_unchecked = v.pop_back_unchecked();
+        assert_eq!(pop_unchecked, Ok(42));
+        assert_eq!(v, vec![&env]);
+        assert_eq!(v.pop_back(), None);
     }
 }
