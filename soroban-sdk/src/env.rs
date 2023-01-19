@@ -330,7 +330,7 @@ impl Env {
             ) -> Result<xdr::LedgerEntry, soroban_env_host::HostError> {
                 use xdr::{ScHostStorageErrorCode, ScStatus};
                 let status: internal::Status =
-                    ScStatus::HostStorageError(ScHostStorageErrorCode::UnknownError).into();
+                    ScStatus::HostStorageError(ScHostStorageErrorCode::MissingKeyInGet).into();
                 Err(status.into())
             }
 
