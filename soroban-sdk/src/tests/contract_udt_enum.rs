@@ -1,4 +1,5 @@
 use crate as soroban_sdk;
+use crate::MapErrToEnv;
 use soroban_sdk::{
     contractimpl, contracttype, symbol, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
 };
@@ -51,8 +52,8 @@ fn test_error_on_partial_decode() {
     // relatively difficult to use safely.
     let vec: Vec<RawVal> = vec![&env, symbol!("Aaa").into_val(&env), 8.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
-    assert_eq!(udt, Err(ConversionError));
+    assert_eq!(udt, Err(ConversionError).map_err_to_env(&env));
     let vec: Vec<RawVal> = vec![&env, symbol!("Bbb").into_val(&env), 8.into(), 9.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
-    assert_eq!(udt, Err(ConversionError));
+    assert_eq!(udt, Err(ConversionError).map_err_to_env(&env));
 }

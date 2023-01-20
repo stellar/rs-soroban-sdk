@@ -126,18 +126,16 @@ pub fn derive_type_error_enum_int(
         }
 
         impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
-            type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
-                use #path::TryIntoVal;
+            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::EnvError> {
+                use #path::{TryIntoVal, MapErrToEnv};
                 let status: #path::Status = val.try_into_val(env)?;
-                status.try_into().map_err(|_| #path::ConversionError)
+                status.try_into().map_err(|_| #path::ConversionError).map_err_to_env(env)
             }
         }
         impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
-            type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::EnvError> {
                 let status: #path::Status = val.into();
                 Ok(status.into())
             }

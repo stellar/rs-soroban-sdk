@@ -89,22 +89,20 @@ pub fn derive_type_enum_int(
         #spec_gen
 
         impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
-            type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
-                use #path::TryIntoVal;
+            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::EnvError> {
+                use #path::{TryIntoVal,MapErrToEnv};
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
                     #(#try_froms,)*
-                    _ => Err(#path::ConversionError{})?,
+                    _ => Err(#path::ConversionError{}).map_err_to_env(env)?,
                 })
             }
         }
 
         impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
-            type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::EnvError> {
                 Ok(match val {
                     #(#try_intos,)*
                 })
@@ -113,16 +111,16 @@ pub fn derive_type_enum_int(
 
         #[cfg(any(test, feature = "testutils"))]
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
-            type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::EnvError> {
+                use #path::MapErrToEnv;
                 if let #path::xdr::ScVal::U32(discriminant) = val {
                     Ok(match *discriminant {
                         #(#try_froms,)*
-                        _ => Err(#path::xdr::Error::Invalid)?,
+                        _ => Err(#path::xdr::Error::Invalid).map_err_to_env(env)?,
                     })
                 } else {
-                    Err(#path::xdr::Error::Invalid)
+                    Err(#path::xdr::Error::Invalid).map_err_to_env(env)
                 }
             }
         }

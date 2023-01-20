@@ -16,8 +16,7 @@ pub mod internal {
     where
         EnvImpl: Convert<F, T>,
     {
-        type Error = <EnvImpl as Convert<F, T>>::Error;
-        fn convert(&self, f: F) -> Result<T, Self::Error> {
+        fn convert(&self, f: F) -> Result<T, <EnvImpl as EnvBase>::Error> {
             self.env_impl.convert(f)
         }
     }
@@ -39,6 +38,7 @@ pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
 use internal::InvokerType;
+pub use internal::MapErrToEnv;
 pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
@@ -95,6 +95,11 @@ pub struct Env {
     snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
+/// A type abbreviation to reduce the need to write `<Env as EnvBase>::Error`
+/// everywhere this is used. When inherent associated types are stable, this
+/// can probably be moved to `type Error = ...` inside `impl Env`.
+pub type EnvError = <Env as EnvBase>::Error;
+
 impl Default for Env {
     #[cfg(not(any(test, feature = "testutils")))]
     fn default() -> Self {
@@ -113,23 +118,81 @@ impl Env {
     /// Panic with the given error.
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
+
     #[doc(hidden)]
-    pub fn panic_with_error(&self, error: impl Into<Status>) {
-        _ = internal::Env::fail_with_status(self, error.into());
-        unreachable!()
+    #[allow(unused_variables)]
+    pub fn panic_with_error(&self, error: impl Into<Status>) -> ! {
+        let status: Status = error.into();
+        let err = self.escalate_status_to_error(status);
+
+        // At this point we have `err` which is either `HostError` in a native
+        // build (with a status, stacktrace and debug-event log) or `Infallible`
+        // in a wasm build, which is a statically empty type, meaning none of
+        // the code below executes at all: the call above halted the VM. We
+        // handle these cases one by one below.
+
+        #[cfg(feature = "testutils")]
+        {
+            // In a testutils build (which is necessarily native) this will
+            // exist and by calling it we will panic. We use the host-provided
+            // panic-escalator here which suppresses the default panic hook that
+            // prints panic-values originating inside contract calls, so we just
+            // log the panic-error status and unwind out to the contract-call
+            // site where there is a panic-handler. This is all to attempt to
+            // behave as similarly as possible to how things work in the VM
+            // case.
+            _ = self.escalate_error_to_panic(err);
+        }
+        #[cfg(not(any(target_family = "wasm", feature = "testutils")))]
+        {
+            // In a native, non-testutils build, we have to panic here manually
+            // because there is no host panic-escalator; it's feature-gated on
+            // testutils. We don't expect people to build this way very often,
+            // and they will get an overall worse (noisy, confusing) experience.
+            panic!("{:?}", err)
+        }
+        #[cfg(target_family = "wasm")]
+        {
+            // In a wasm build we can never actually get here, the
+            // `escalate_status_to_error` call above doesn't return, and rust
+            // knows this line is unreachable -- almost. Its unreachable-code
+            // analysis is a little unreliable when it comes to uninhabited
+            // types (see https://github.com/rust-lang/rust/issues/107179) and
+            // in any case the "unreachable" nature of this line doesn't placate
+            // the typechecker: we need to put something here that has type `!`
+            // anyway.
+            //
+            // As inside `Guest::escalate_status_to_error`, we have a few
+            // options, but the least-problematic one is the same 1-byte `0x00`
+            // wasm `unreachable` instruction used there to get us a `!` type
+            // (i.e. we produced a `!` and converted it to `Infallible` and are
+            // now going to produce a `!` again due to the limitations of rust's
+            // reasoning about `!`; eventually this can all go away when `!` is
+            // stable and less buggy. In the meantime this can sometimes result
+            // in _two_ such 1-byte instructions back to back, though wasm-opt
+            // easily optimizes this away and it's pretty harmless if left in.)
+            core::arch::wasm32::unreachable()
+        }
     }
 
     /// Get the invoking [Address] of the current executing contract.
     pub fn invoker(&self) -> Address {
         let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
+            .unwrap_optimized()
             .try_into()
             .expect("unrecognized invoker type");
         match invoker_type {
             InvokerType::Account => Address::Account(unsafe {
-                AccountId::unchecked_new(self.clone(), internal::Env::get_invoking_account(self))
+                AccountId::unchecked_new(
+                    self.clone(),
+                    internal::Env::get_invoking_account(self).unwrap_optimized(),
+                )
             }),
             InvokerType::Contract => Address::Contract(unsafe {
-                BytesN::unchecked_new(self.clone(), internal::Env::get_invoking_contract(self))
+                BytesN::unchecked_new(
+                    self.clone(),
+                    internal::Env::get_invoking_contract(self).unwrap_optimized(),
+                )
             }),
         }
     }
@@ -182,7 +245,7 @@ impl Env {
 
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn current_contract(&self) -> BytesN<32> {
-        let id = internal::Env::get_current_contract(self);
+        let id = internal::Env::get_current_contract(self).unwrap_optimized();
         unsafe { BytesN::<32>::unchecked_new(self.clone(), id) }
     }
 
@@ -227,7 +290,7 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
-        let stack = internal::Env::get_current_call_stack(self);
+        let stack = internal::Env::get_current_call_stack(self).unwrap_optimized();
         unsafe { Vec::unchecked_new(self.clone(), stack) }
     }
 
@@ -265,7 +328,8 @@ impl Env {
     where
         T: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
+        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object())
+            .unwrap_optimized();
         T::try_from_val(self, &rv)
             .map_err(|_| ConversionError)
             .unwrap()
@@ -278,15 +342,16 @@ impl Env {
         contract_id: &BytesN<32>,
         func: &Symbol,
         args: Vec<RawVal>,
-    ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
+    ) -> Result<Result<T, EnvError>, Result<E, E::Error>>
     where
         T: TryFromVal<Env, RawVal>,
         E: TryFrom<Status>,
     {
-        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
+        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object())
+            .unwrap_optimized();
         match Status::try_from_val(self, &rv) {
             Ok(status) => Err(E::try_from(status)),
-            Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
+            Err(_) => Ok(T::try_from_val(self, &rv)),
         }
     }
 
@@ -298,7 +363,7 @@ impl Env {
 
     #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
-        internal::Env::log_value(self, v.into_val(self));
+        internal::Env::log_value(self, v.into_val(self)).unwrap_optimized();
     }
 }
 
@@ -694,6 +759,8 @@ impl Env {
 
 #[doc(hidden)]
 impl internal::EnvBase for Env {
+    type Error = <internal::EnvImpl as internal::EnvBase>::Error;
+
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
         self
     }
@@ -715,23 +782,32 @@ impl internal::EnvBase for Env {
         b: Object,
         b_pos: RawVal,
         mem: &[u8],
-    ) -> Result<Object, Status> {
+    ) -> Result<Object, EnvError> {
         self.env_impl.bytes_copy_from_slice(b, b_pos, mem)
     }
 
-    fn bytes_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) -> Result<(), Status> {
+    fn bytes_copy_to_slice(
+        &self,
+        b: Object,
+        b_pos: RawVal,
+        mem: &mut [u8],
+    ) -> Result<(), EnvError> {
         self.env_impl.bytes_copy_to_slice(b, b_pos, mem)
     }
 
-    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Status> {
+    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, EnvError> {
         self.env_impl.bytes_new_from_slice(mem)
     }
 
-    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Status> {
+    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), EnvError> {
         self.env_impl.log_static_fmt_val(fmt, v)
     }
 
-    fn log_static_fmt_static_str(&self, fmt: &'static str, s: &'static str) -> Result<(), Status> {
+    fn log_static_fmt_static_str(
+        &self,
+        fmt: &'static str,
+        s: &'static str,
+    ) -> Result<(), EnvError> {
         self.env_impl.log_static_fmt_static_str(fmt, s)
     }
 
@@ -740,7 +816,7 @@ impl internal::EnvBase for Env {
         fmt: &'static str,
         v: RawVal,
         s: &'static str,
-    ) -> Result<(), Status> {
+    ) -> Result<(), EnvError> {
         self.env_impl.log_static_fmt_val_static_str(fmt, v, s)
     }
 
@@ -749,8 +825,17 @@ impl internal::EnvBase for Env {
         fmt: &'static str,
         v: &[RawVal],
         s: &[&'static str],
-    ) -> Result<(), Status> {
+    ) -> Result<(), EnvError> {
         self.env_impl.log_static_fmt_general(fmt, v, s)
+    }
+
+    fn escalate_status_to_error(&self, s: Status) -> Self::Error {
+        self.env_impl.escalate_status_to_error(s)
+    }
+
+    #[cfg(feature = "testutils")]
+    fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
+        self.env_impl.escalate_error_to_panic(e)
     }
 }
 
@@ -770,7 +855,7 @@ macro_rules! sdk_function_helper {
     {$mod_id:ident, fn $fn_id:ident($($arg:ident:$type:ty),*) -> $ret:ty}
     =>
     {
-        fn $fn_id(&self, $($arg:$type),*) -> $ret {
+        fn $fn_id(&self, $($arg:$type),*) -> Result<$ret, EnvError> {
             self.env_impl.$fn_id($($arg),*)
         }
     };

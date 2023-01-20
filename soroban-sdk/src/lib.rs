@@ -562,8 +562,7 @@ pub use soroban_sdk_macros::symbol;
 #[macro_export]
 macro_rules! panic_with_error {
     ($env:expr, $error:expr) => {{
-        $env.panic_with_error($error);
-        unreachable!();
+        $env.panic_with_error($error)
     }};
 }
 
@@ -608,8 +607,8 @@ mod address;
 pub mod xdr;
 
 pub use env::ConversionError;
-
 pub use env::Env;
+pub use env::EnvError;
 /// Raw value of the Soroban smart contract platform that types can be converted
 /// to and from for storing, or passing between contracts.
 ///
@@ -619,6 +618,8 @@ pub use env::RawVal;
 pub use env::FromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::IntoVal;
+/// Used to convert `Status`-convertable errors to Soroban environment errors.
+pub use env::MapErrToEnv;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryFromVal;
 /// Used to do conversions between values in the Soroban environment.

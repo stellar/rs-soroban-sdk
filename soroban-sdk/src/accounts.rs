@@ -5,8 +5,9 @@ use core::{cmp::Ordering, fmt::Debug};
 
 use crate::{
     env::internal::xdr,
-    env::internal::{Env as _, EnvBase as _, RawVal, RawValConvertible},
-    BytesN, ConversionError, Env, Object, TryFromVal,
+    env::internal::{Env as _, EnvBase, RawVal, RawValConvertible},
+    unwrap::UnwrapOptimized,
+    BytesN, ConversionError, Env, EnvError, MapErrToEnv, Object, TryFromVal,
 };
 
 #[cfg(any(test, feature = "testutils"))]
@@ -65,7 +66,11 @@ impl Accounts {
     /// Gets the account for the account ID.
     pub fn get(&self, id: &AccountId) -> Option<Account> {
         let env = id.env();
-        if env.account_exists(id.to_object()).is_true() {
+        if env
+            .account_exists(id.to_object())
+            .unwrap_optimized()
+            .is_true()
+        {
             Some(Account(id.clone()))
         } else {
             None
@@ -120,46 +125,41 @@ impl PartialOrd for AccountId {
 impl Ord for AccountId {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.env.check_same_env(&other.env);
-        let v = self.env.obj_cmp(self.obj.to_raw(), other.obj.to_raw());
+        let v = self
+            .env
+            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .unwrap_optimized();
         v.cmp(&0)
     }
 }
 
 impl TryFromVal<Env, Object> for AccountId {
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, EnvError> {
         if obj.is_obj_type(xdr::ScObjectType::AccountId) {
             Ok(AccountId {
                 env: env.clone(),
                 obj: *obj,
             })
         } else {
-            Err(ConversionError {})
+            Err(ConversionError {}).map_err_to_env(env)
         }
     }
 }
 
 impl TryFromVal<Env, RawVal> for AccountId {
-    type Error = <AccountId as TryFromVal<Env, Object>>::Error;
-
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, EnvError> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into().map_err_to_env(env)?)
     }
 }
 
 impl TryFromVal<Env, AccountId> for Object {
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &AccountId) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, v: &AccountId) -> Result<Self, EnvError> {
         Ok(v.to_object())
     }
 }
 
 impl TryFromVal<Env, AccountId> for RawVal {
-    type Error = <Object as TryFromVal<Env, AccountId>>::Error;
-
-    fn try_from_val(_env: &Env, v: &AccountId) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, v: &AccountId) -> Result<Self, EnvError> {
         Ok(v.to_raw())
     }
 }
@@ -171,7 +171,7 @@ use super::xdr::ScVal;
 impl TryFrom<&AccountId> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &AccountId) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_raw()).map_err(|_| ConversionError)
     }
 }
 
@@ -202,21 +202,21 @@ impl TryFrom<AccountId> for super::xdr::AccountId {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for AccountId {
-    type Error = ConversionError;
-    fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, EnvError> {
         <_ as TryFromVal<_, Object>>::try_from_val(
             env,
-            &val.try_into_val(env).map_err(|_| ConversionError)?,
+            &val.try_into_val(env)
+                .map_err(|_| ConversionError)
+                .map_err_to_env(env)?,
         )
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, super::xdr::AccountId> for AccountId {
-    type Error = ConversionError;
-    fn try_from_val(env: &Env, val: &super::xdr::AccountId) -> Result<Self, Self::Error> {
-        let val: ScVal = val.try_into()?;
-        val.try_into_val(env).map_err(|_| ConversionError)
+    fn try_from_val(env: &Env, val: &super::xdr::AccountId) -> Result<Self, EnvError> {
+        let val: ScVal = val.into();
+        val.try_into_val(env)
     }
 }
 
@@ -328,13 +328,17 @@ impl Account {
     /// Returns if the account exists.
     pub fn exists(id: &AccountId) -> bool {
         let env = id.env();
-        env.account_exists(id.to_object()).is_true()
+        env.account_exists(id.to_object())
+            .unwrap_optimized()
+            .is_true()
     }
 
     /// Returns the low threshold for the Stellar account.
     pub fn low_threshold(&self) -> u8 {
         let env = self.env();
-        let val = env.account_get_low_threshold(self.to_object());
+        let val = env
+            .account_get_low_threshold(self.to_object())
+            .unwrap_optimized();
         let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         threshold_u32 as u8
     }
@@ -342,7 +346,9 @@ impl Account {
     /// Returns the medium threshold for the Stellar account.
     pub fn medium_threshold(&self) -> u8 {
         let env = self.env();
-        let val = env.account_get_medium_threshold(self.to_object());
+        let val = env
+            .account_get_medium_threshold(self.to_object())
+            .unwrap_optimized();
         let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         threshold_u32 as u8
     }
@@ -350,7 +356,9 @@ impl Account {
     /// Returns the high threshold for the Stellar account.
     pub fn high_threshold(&self) -> u8 {
         let env = self.env();
-        let val = env.account_get_high_threshold(self.to_object());
+        let val = env
+            .account_get_high_threshold(self.to_object())
+            .unwrap_optimized();
         let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         threshold_u32 as u8
     }
@@ -359,7 +367,9 @@ impl Account {
     /// the signer does not exist for the account, returns zero (`0`).
     pub fn signer_weight(&self, signer: &BytesN<32>) -> u8 {
         let env = self.env();
-        let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
+        let val = env
+            .account_get_signer_weight(self.to_object(), signer.to_object())
+            .unwrap_optimized();
         let weight_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         weight_u32 as u8
     }

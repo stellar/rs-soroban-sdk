@@ -5,6 +5,7 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, EnvBase},
+    unwrap::UnwrapOptimized,
     Bytes, Env, IntoVal, RawVal, Vec,
 };
 
@@ -130,7 +131,8 @@ impl Logger {
             if cfg!(target_family = "wasm") {
                 let fmt: Bytes = fmt.into_val(env);
                 let args: Vec<RawVal> = Vec::from_slice(env, args);
-                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object());
+                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
+                    .unwrap_optimized();
             } else {
                 env.log_static_fmt_general(fmt, args, &[]).unwrap();
             }

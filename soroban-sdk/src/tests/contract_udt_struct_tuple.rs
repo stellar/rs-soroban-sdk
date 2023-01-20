@@ -1,7 +1,7 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
-    Vec,
+    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, MapErrToEnv, RawVal,
+    TryFromVal, TryIntoVal, Vec,
 };
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
@@ -55,7 +55,7 @@ fn test_error_on_partial_decode() {
     // assigned values.
     let vec = vec![&env, 5, 7, 9].to_raw();
     let udt = Udt::try_from_val(&env, &vec);
-    assert_eq!(udt, Err(ConversionError));
+    assert_eq!(udt, Err(ConversionError).map_err_to_env(&env));
 
     // If a struct has 2 fields, and a vec is decoded into it where the vec has
     // 3 elements, it is an error. It is an error because decoding and encoding
@@ -63,7 +63,7 @@ fn test_error_on_partial_decode() {
     // relatively difficult to use safely.
     let vec = vec![&env, 5, 7, 9].to_raw();
     let udt = Udt::try_from_val(&env, &vec);
-    assert_eq!(udt, Err(ConversionError));
+    assert_eq!(udt, Err(ConversionError).map_err_to_env(&env));
 }
 
 #[test]

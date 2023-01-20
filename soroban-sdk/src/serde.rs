@@ -22,7 +22,10 @@
 //! assert_eq!(roundtrip, Ok(value));
 //! ```
 
-use crate::{env::internal::Env as _, Bytes, Env, IntoVal, RawVal, TryFromVal};
+use crate::{
+    env::internal::Env as _, unwrap::UnwrapOptimized, Bytes, Env, EnvError, IntoVal, RawVal,
+    TryFromVal,
+};
 
 /// Implemented by types that can be serialized to [Bytes].
 ///
@@ -45,7 +48,7 @@ where
 {
     fn serialize(self, env: &Env) -> Bytes {
         let val: RawVal = self.into_val(env);
-        let bin = env.serialize_to_bytes(val);
+        let bin = env.serialize_to_bytes(val).unwrap_optimized();
         unsafe { Bytes::unchecked_new(env.clone(), bin) }
     }
 }
@@ -54,10 +57,10 @@ impl<T> Deserialize for T
 where
     T: TryFromVal<Env, RawVal>,
 {
-    type Error = T::Error;
+    type Error = EnvError;
 
     fn deserialize(env: &Env, b: &Bytes) -> Result<Self, Self::Error> {
-        let t = env.deserialize_from_bytes(b.into());
+        let t = env.deserialize_from_bytes(b.into()).unwrap_optimized();
         T::try_from_val(env, &t)
     }
 }

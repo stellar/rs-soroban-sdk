@@ -1,6 +1,7 @@
 //! Ledger contains types for retrieving information about the current ledger.
 use crate::{
     env::internal::{self, RawValConvertible},
+    unwrap::UnwrapOptimized,
     Bytes, Env,
 };
 
@@ -54,7 +55,7 @@ impl Ledger {
     /// Returns the version of the protocol that the ledger created with.
     pub fn protocol_version(&self) -> u32 {
         let env = self.env();
-        let val = internal::Env::get_ledger_version(env);
+        let val = internal::Env::get_ledger_version(env).unwrap_optimized();
         unsafe { u32::unchecked_from_val(val) }
     }
 
@@ -64,7 +65,7 @@ impl Ledger {
     /// that is sequential, incremented by one for each new ledger.
     pub fn sequence(&self) -> u32 {
         let env = self.env();
-        let val = internal::Env::get_ledger_sequence(env);
+        let val = internal::Env::get_ledger_sequence(env).unwrap_optimized();
         unsafe { u32::unchecked_from_val(val) }
     }
 
@@ -75,8 +76,8 @@ impl Ledger {
     /// at 00:00:00 UTC.
     pub fn timestamp(&self) -> u64 {
         let env = self.env();
-        let obj = internal::Env::get_ledger_timestamp(env);
-        internal::Env::obj_to_u64(env, obj)
+        let obj = internal::Env::get_ledger_timestamp(env).unwrap_optimized();
+        internal::Env::obj_to_u64(env, obj).unwrap_optimized()
     }
 
     /// Returns the network passphrase.
@@ -88,7 +89,7 @@ impl Ledger {
     /// > Test SDF Network ; September 2015
     pub fn network_passphrase(&self) -> Bytes {
         let env = self.env();
-        let bin_obj = internal::Env::get_ledger_network_passphrase(env);
+        let bin_obj = internal::Env::get_ledger_network_passphrase(env).unwrap_optimized();
         unsafe { Bytes::unchecked_new(env.clone(), bin_obj) }
     }
 }

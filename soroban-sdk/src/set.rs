@@ -1,9 +1,8 @@
-use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
-
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, IntoVal, Map, Object, RawVal,
-    TryFromVal, Vec,
+    env::internal::Env as _, unwrap::UnwrapOptimized, xdr::ScObjectType, ConversionError, Env,
+    EnvError, IntoVal, Map, MapErrToEnv, Object, RawVal, TryFromVal, Vec,
 };
+use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
 /// Create a [Set] with the given items.
 ///
@@ -128,21 +127,27 @@ where
         self.0.len() == 0
     }
 
-    pub fn first(&self) -> Option<Result<T, T::Error>> {
+    pub fn first(&self) -> Option<Result<T, EnvError>> {
         let env = self.env();
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, &env.map_min_key(self.to_object())))
+            Some(T::try_from_val(
+                env,
+                &env.map_min_key(self.to_object()).unwrap_optimized(),
+            ))
         }
     }
 
-    pub fn last(&self) -> Option<Result<T, T::Error>> {
+    pub fn last(&self) -> Option<Result<T, EnvError>> {
         let env = self.env();
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, &env.map_max_key(self.to_object())))
+            Some(T::try_from_val(
+                env,
+                &env.map_max_key(self.to_object()).unwrap_optimized(),
+            ))
         }
     }
 
@@ -198,7 +203,6 @@ where
 impl<T> Debug for Set<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
-    T::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Set(")?;
@@ -214,7 +218,7 @@ impl<T> IntoIterator for Set<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Item = Result<T, T::Error>;
+    type Item = Result<T, EnvError>;
     type IntoIter = SetIter<T>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -235,7 +239,7 @@ impl<T> Iterator for SetIter<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Item = Result<T, T::Error>;
+    type Item = Result<T, EnvError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let first = self.0.first();
@@ -279,13 +283,11 @@ impl<T> TryFromVal<Env, Object> for Set<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, EnvError> {
         if obj.is_obj_type(ScObjectType::Map) {
             Ok(unsafe { Set::<T>::unchecked_new(env.clone(), obj.clone()) })
         } else {
-            Err(ConversionError {})
+            Err(ConversionError {}).map_err_to_env(env)
         }
     }
 }
@@ -294,10 +296,8 @@ impl<T> TryFromVal<Env, RawVal> for Set<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = <Set<T> as TryFromVal<Env, Object>>::Error;
-
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, EnvError> {
+        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into().map_err_to_env(env)?)
     }
 }
 
@@ -305,9 +305,7 @@ impl<T> TryFromVal<Env, Set<T>> for RawVal
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &Set<T>) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, v: &Set<T>) -> Result<Self, EnvError> {
         Ok(v.to_raw())
     }
 }
@@ -325,9 +323,7 @@ impl<T> TryFromVal<Env, Set<T>> for Object
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &Set<T>) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, v: &Set<T>) -> Result<Self, EnvError> {
         Ok(v.to_object())
     }
 }
@@ -564,12 +560,12 @@ mod test {
         let env = Env::default();
         let s1 = set![&env, 1, 2, 3];
         let raw = s1.to_raw();
-        let s2: Result<Set<i64>, ConversionError> = raw.try_into_val(&env);
+        let s2: Result<Set<i64>, EnvError> = raw.try_into_val(&env);
         assert_eq!(s2, Ok(s1));
 
         let s3 = set![&env, 1, 2, 3, 4, 5];
         let obj = s3.to_object();
-        let s4: Result<Set<i64>, ConversionError> = obj.try_into_val(&env);
+        let s4: Result<Set<i64>, EnvError> = obj.try_into_val(&env);
         assert_eq!(s4, Ok(s3));
 
         // Sanity check

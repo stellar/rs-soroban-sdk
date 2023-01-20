@@ -1,4 +1,5 @@
 use crate as soroban_sdk;
+use crate::MapErrToEnv;
 use soroban_sdk::{contractimpl, contracttype, map, symbol, ConversionError, Env, TryFromVal};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
@@ -54,7 +55,7 @@ fn test_error_on_partial_decode() {
     ]
     .to_raw();
     let udt = Udt::try_from_val(&env, &map);
-    assert_eq!(udt, Err(ConversionError));
+    assert_eq!(udt, Err(ConversionError).map_err_to_env(&env));
 }
 
 #[test]

@@ -1,5 +1,5 @@
 //! Crypto contains functions for cryptographic functions.
-use crate::{env::internal, Bytes, BytesN, Env};
+use crate::{env::internal, unwrap::UnwrapOptimized, Bytes, BytesN, Env};
 
 /// Crypto provides access to cryptographic functions.
 pub struct Crypto {
@@ -18,7 +18,7 @@ impl Crypto {
     /// Returns the SHA-256 hash of the data.
     pub fn sha256(&self, data: &Bytes) -> BytesN<32> {
         let env = self.env();
-        let bin = internal::Env::compute_hash_sha256(env, data.into());
+        let bin = internal::Env::compute_hash_sha256(env, data.into()).unwrap_optimized();
         unsafe { BytesN::unchecked_new(env.clone(), bin) }
     }
 
