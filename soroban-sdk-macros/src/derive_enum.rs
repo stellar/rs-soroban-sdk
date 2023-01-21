@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{spanned::Spanned, DataEnum, Error, Ident, Path};
+use syn::{spanned::Spanned, DataEnum, Error, Fields, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, StringM, WriteXdr,
@@ -40,6 +40,12 @@ pub fn derive_type_enum(
             if v.fields.len() > 1 {
                 errors.push(Error::new(v.fields.span(), format!("enum variant name {} has too many tuple values, max 1 supported", ident)));
             }
+            match v.fields {
+                Fields::Named(_) => {
+                    errors.push(Error::new(v.fields.span(), format!("enum variant {} has unsupported named fields", ident)));
+                }
+                _ => {}
+            };
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
