@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{Attribute, DataStruct, Error, Ident, Path};
+use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
@@ -16,6 +16,7 @@ use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_struct(
     path: &Path,
+    vis: &Visibility,
     ident: &Ident,
     attrs: &[Attribute],
     data: &DataStruct,
@@ -99,6 +100,8 @@ pub fn derive_type_struct(
     } else {
         None
     };
+
+    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct(path, vis, ident, data);
 
     // Output.
     quote! {
@@ -200,5 +203,7 @@ pub fn derive_type_struct(
                 (&val).try_into()
             }
         }
+
+        #arbitrary_tokens
     }
 }
