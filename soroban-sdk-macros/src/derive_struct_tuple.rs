@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{Attribute, DataStruct, Error, Ident, Path};
+use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
@@ -11,6 +11,7 @@ use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
+    vis: &Visibility,
     ident: &Ident,
     attrs: &[Attribute],
     data: &DataStruct,
@@ -86,6 +87,8 @@ pub fn derive_type_struct_tuple(
     } else {
         None
     };
+
+    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct_tuple(path, vis, ident, data);
 
     // Output.
     quote! {
@@ -186,5 +189,7 @@ pub fn derive_type_struct_tuple(
                 (&val).try_into()
             }
         }
+
+        #arbitrary_tokens
     }
 }

@@ -1,5 +1,6 @@
 extern crate proc_macro;
 
+mod arbitrary;
 mod derive_client;
 mod derive_enum;
 mod derive_enum_int;
@@ -111,6 +112,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.write_errors().into(),
     };
     let input = parse_macro_input!(input as DeriveInput);
+    let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
@@ -123,11 +125,17 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
             Fields::Named(_) => {
-                derive_type_struct(&args.crate_path, ident, attrs, s, gen_spec, &args.lib)
+                derive_type_struct(&args.crate_path, vis, ident, attrs, s, gen_spec, &args.lib)
             }
-            Fields::Unnamed(_) => {
-                derive_type_struct_tuple(&args.crate_path, ident, attrs, s, gen_spec, &args.lib)
-            }
+            Fields::Unnamed(_) => derive_type_struct_tuple(
+                &args.crate_path,
+                vis,
+                ident,
+                attrs,
+                s,
+                gen_spec,
+                &args.lib,
+            ),
             Fields::Unit => Error::new(
                 s.fields.span(),
                 "unit structs are not supported as contract types",
@@ -142,9 +150,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()
