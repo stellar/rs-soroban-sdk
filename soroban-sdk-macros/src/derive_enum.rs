@@ -21,6 +21,12 @@ pub fn derive_type_enum(
     let mut errors = Vec::<Error>::new();
 
     let variants = &data.variants;
+    if variants.is_empty() {
+        errors.push(Error::new(
+            enum_ident.span(),
+            format!("enum {} must have variants", enum_ident),
+        ));
+    }
     let (spec_cases, discriminant_consts, try_froms, try_intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .map(|v| {
