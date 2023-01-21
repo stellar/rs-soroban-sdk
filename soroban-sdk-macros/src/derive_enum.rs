@@ -38,7 +38,7 @@ pub fn derive_type_enum(
                 errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
             }
             if v.fields.len() > 1 {
-                errors.push(Error::new(v.fields.span(), "enum variant name {} has too many tuple values, max 1 supported"));
+                errors.push(Error::new(v.fields.span(), format!("enum variant name {} has too many tuple values, max 1 supported", ident)));
             }
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
