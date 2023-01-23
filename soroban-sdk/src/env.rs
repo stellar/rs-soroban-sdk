@@ -1,15 +1,37 @@
+use core::convert::Infallible;
 use core::convert::TryInto;
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
+    use core::convert::Infallible;
+
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
+
+    // In the Guest case, Env::Error is already Infallible so there is no work
+    // to do to "reject an error": if an error occurs in the environment, the
+    // host will trap our VM and we'll never get here at all.
+    pub(crate) fn reject_err<T>(_env: &Guest, r: Result<T, Infallible>) -> Result<T, Infallible> {
+        r
+    }
 }
 
 #[cfg(not(target_family = "wasm"))]
 pub mod internal {
+    use core::convert::Infallible;
+
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
+
+    #[cfg(feature = "testutils")]
+    pub(crate) fn reject_err<T>(env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
+        r.map_err(|e| env.escalate_error_to_panic(e))
+    }
+
+    #[cfg(not(feature = "testutils"))]
+    pub(crate) fn reject_err<T>(_env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
+        r.map_err(|e| panic!("{:?}", e))
+    }
 
     #[doc(hidden)]
     impl<F, T> Convert<F, T> for super::Env
@@ -74,6 +96,7 @@ where
     }
 }
 
+use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
     accounts::Accounts, address::Address, crypto::Crypto, deploy::Deployer, events::Events,
@@ -122,14 +145,21 @@ impl Env {
     /// Get the invoking [Address] of the current executing contract.
     pub fn invoker(&self) -> Address {
         let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
+            .unwrap_infallible()
             .try_into()
             .expect("unrecognized invoker type");
         match invoker_type {
             InvokerType::Account => Address::Account(unsafe {
-                AccountId::unchecked_new(self.clone(), internal::Env::get_invoking_account(self))
+                AccountId::unchecked_new(
+                    self.clone(),
+                    internal::Env::get_invoking_account(self).unwrap_infallible(),
+                )
             }),
             InvokerType::Contract => Address::Contract(unsafe {
-                BytesN::unchecked_new(self.clone(), internal::Env::get_invoking_contract(self))
+                BytesN::unchecked_new(
+                    self.clone(),
+                    internal::Env::get_invoking_contract(self).unwrap_infallible(),
+                )
             }),
         }
     }
@@ -182,7 +212,7 @@ impl Env {
 
     /// Get the 32-byte hash identifier of the current executing contract.
     pub fn current_contract(&self) -> BytesN<32> {
-        let id = internal::Env::get_current_contract(self);
+        let id = internal::Env::get_current_contract(self).unwrap_infallible();
         unsafe { BytesN::<32>::unchecked_new(self.clone(), id) }
     }
 
@@ -227,7 +257,7 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
-        let stack = internal::Env::get_current_call_stack(self);
+        let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
         unsafe { Vec::unchecked_new(self.clone(), stack) }
     }
 
@@ -265,7 +295,8 @@ impl Env {
     where
         T: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
+        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object())
+            .unwrap_infallible();
         T::try_from_val(self, &rv)
             .map_err(|_| ConversionError)
             .unwrap()
@@ -283,7 +314,8 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
         E: TryFrom<Status>,
     {
-        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
+        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object())
+            .unwrap_infallible();
         match Status::try_from_val(self, &rv) {
             Ok(status) => Err(E::try_from(status)),
             Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
@@ -298,7 +330,7 @@ impl Env {
 
     #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
-        internal::Env::log_value(self, v.into_val(self));
+        internal::Env::log_value(self, v.into_val(self)).unwrap_infallible();
     }
 }
 
@@ -694,6 +726,13 @@ impl Env {
 
 #[doc(hidden)]
 impl internal::EnvBase for Env {
+    type Error = Infallible;
+
+    #[cfg(feature = "testutils")]
+    fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
+        panic!("{:?}", e)
+    }
+
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
         self
     }
@@ -715,24 +754,42 @@ impl internal::EnvBase for Env {
         b: Object,
         b_pos: RawVal,
         mem: &[u8],
-    ) -> Result<Object, Status> {
-        self.env_impl.bytes_copy_from_slice(b, b_pos, mem)
+    ) -> Result<Object, Self::Error> {
+        Ok(self
+            .env_impl
+            .bytes_copy_from_slice(b, b_pos, mem)
+            .unwrap_optimized())
     }
 
-    fn bytes_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) -> Result<(), Status> {
-        self.env_impl.bytes_copy_to_slice(b, b_pos, mem)
+    fn bytes_copy_to_slice(
+        &self,
+        b: Object,
+        b_pos: RawVal,
+        mem: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .bytes_copy_to_slice(b, b_pos, mem)
+            .unwrap_optimized())
     }
 
-    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Status> {
-        self.env_impl.bytes_new_from_slice(mem)
+    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Self::Error> {
+        Ok(self.env_impl.bytes_new_from_slice(mem).unwrap_optimized())
     }
 
-    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_val(fmt, v)
+    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Self::Error> {
+        Ok(self.env_impl.log_static_fmt_val(fmt, v).unwrap_optimized())
     }
 
-    fn log_static_fmt_static_str(&self, fmt: &'static str, s: &'static str) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_static_str(fmt, s)
+    fn log_static_fmt_static_str(
+        &self,
+        fmt: &'static str,
+        s: &'static str,
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .log_static_fmt_static_str(fmt, s)
+            .unwrap_optimized())
     }
 
     fn log_static_fmt_val_static_str(
@@ -740,8 +797,11 @@ impl internal::EnvBase for Env {
         fmt: &'static str,
         v: RawVal,
         s: &'static str,
-    ) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_val_static_str(fmt, v, s)
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .log_static_fmt_val_static_str(fmt, v, s)
+            .unwrap_optimized())
     }
 
     fn log_static_fmt_general(
@@ -749,8 +809,11 @@ impl internal::EnvBase for Env {
         fmt: &'static str,
         v: &[RawVal],
         s: &[&'static str],
-    ) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_general(fmt, v, s)
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .log_static_fmt_general(fmt, v, s)
+            .unwrap_optimized())
     }
 }
 
@@ -770,8 +833,8 @@ macro_rules! sdk_function_helper {
     {$mod_id:ident, fn $fn_id:ident($($arg:ident:$type:ty),*) -> $ret:ty}
     =>
     {
-        fn $fn_id(&self, $($arg:$type),*) -> $ret {
-            self.env_impl.$fn_id($($arg),*)
+        fn $fn_id(&self, $($arg:$type),*) -> Result<$ret, Self::Error> {
+            internal::reject_err(&self.env_impl, self.env_impl.$fn_id($($arg),*))
         }
     };
 }

@@ -6,6 +6,7 @@ use core::{cmp::Ordering, fmt::Debug};
 use crate::{
     env::internal::xdr,
     env::internal::{Env as _, EnvBase as _, RawVal, RawValConvertible},
+    unwrap::UnwrapInfallible,
     BytesN, ConversionError, Env, Object, TryFromVal,
 };
 
@@ -65,7 +66,11 @@ impl Accounts {
     /// Gets the account for the account ID.
     pub fn get(&self, id: &AccountId) -> Option<Account> {
         let env = id.env();
-        if env.account_exists(id.to_object()).is_true() {
+        if env
+            .account_exists(id.to_object())
+            .unwrap_infallible()
+            .is_true()
+        {
             Some(Account(id.clone()))
         } else {
             None
@@ -120,7 +125,10 @@ impl PartialOrd for AccountId {
 impl Ord for AccountId {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.env.check_same_env(&other.env);
-        let v = self.env.obj_cmp(self.obj.to_raw(), other.obj.to_raw());
+        let v = self
+            .env
+            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .unwrap_infallible();
         v.cmp(&0)
     }
 }
@@ -328,13 +336,17 @@ impl Account {
     /// Returns if the account exists.
     pub fn exists(id: &AccountId) -> bool {
         let env = id.env();
-        env.account_exists(id.to_object()).is_true()
+        env.account_exists(id.to_object())
+            .unwrap_infallible()
+            .is_true()
     }
 
     /// Returns the low threshold for the Stellar account.
     pub fn low_threshold(&self) -> u8 {
         let env = self.env();
-        let val = env.account_get_low_threshold(self.to_object());
+        let val = env
+            .account_get_low_threshold(self.to_object())
+            .unwrap_infallible();
         let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         threshold_u32 as u8
     }
@@ -342,7 +354,9 @@ impl Account {
     /// Returns the medium threshold for the Stellar account.
     pub fn medium_threshold(&self) -> u8 {
         let env = self.env();
-        let val = env.account_get_medium_threshold(self.to_object());
+        let val = env
+            .account_get_medium_threshold(self.to_object())
+            .unwrap_infallible();
         let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         threshold_u32 as u8
     }
@@ -350,7 +364,9 @@ impl Account {
     /// Returns the high threshold for the Stellar account.
     pub fn high_threshold(&self) -> u8 {
         let env = self.env();
-        let val = env.account_get_high_threshold(self.to_object());
+        let val = env
+            .account_get_high_threshold(self.to_object())
+            .unwrap_infallible();
         let threshold_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         threshold_u32 as u8
     }
@@ -359,7 +375,9 @@ impl Account {
     /// the signer does not exist for the account, returns zero (`0`).
     pub fn signer_weight(&self, signer: &BytesN<32>) -> u8 {
         let env = self.env();
-        let val = env.account_get_signer_weight(self.to_object(), signer.to_object());
+        let val = env
+            .account_get_signer_weight(self.to_object(), signer.to_object())
+            .unwrap_infallible();
         let weight_u32 = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) };
         weight_u32 as u8
     }
