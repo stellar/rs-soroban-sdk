@@ -1,5 +1,7 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
 
+use crate::unwrap::UnwrapInfallible;
+
 use super::{
     env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, IntoVal, Map, Object, RawVal,
     TryFromVal, Vec,
@@ -133,7 +135,10 @@ where
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, &env.map_min_key(self.to_object())))
+            Some(T::try_from_val(
+                env,
+                &env.map_min_key(self.to_object()).unwrap_infallible(),
+            ))
         }
     }
 
@@ -142,7 +147,10 @@ where
         if self.is_empty() {
             None
         } else {
-            Some(T::try_from_val(env, &env.map_max_key(self.to_object())))
+            Some(T::try_from_val(
+                env,
+                &env.map_max_key(self.to_object()).unwrap_infallible(),
+            ))
         }
     }
 

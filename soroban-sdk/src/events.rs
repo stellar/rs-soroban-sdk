@@ -5,6 +5,7 @@ use core::fmt::Debug;
 use crate::{contracttype, Bytes, BytesN, Map};
 use crate::{
     env::internal::{self},
+    unwrap::UnwrapInfallible,
     ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
 };
 
@@ -115,7 +116,8 @@ impl Events {
         D: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env));
+        internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env))
+            .unwrap_infallible();
     }
 }
 

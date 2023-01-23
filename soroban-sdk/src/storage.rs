@@ -3,6 +3,7 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, RawVal},
+    unwrap::UnwrapInfallible,
     Env, IntoVal, TryFromVal,
 };
 
@@ -73,7 +74,7 @@ impl Storage {
         K: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        let rv = internal::Env::has_contract_data(env, key.into_val(env));
+        let rv = internal::Env::has_contract_data(env, key.into_val(env)).unwrap_infallible();
         rv.is_true()
     }
 
@@ -98,9 +99,9 @@ impl Storage {
     {
         let env = self.env();
         let key = key.into_val(env);
-        let has = internal::Env::has_contract_data(env, key);
+        let has = internal::Env::has_contract_data(env, key).unwrap_infallible();
         if has.is_true() {
-            let rv = internal::Env::get_contract_data(env, key);
+            let rv = internal::Env::get_contract_data(env, key).unwrap_infallible();
             Some(V::try_from_val(env, &rv))
         } else {
             None
@@ -121,7 +122,7 @@ impl Storage {
         V: TryFromVal<Env, RawVal>,
     {
         let env = self.env();
-        let rv = internal::Env::get_contract_data(env, key.into_val(env));
+        let rv = internal::Env::get_contract_data(env, key.into_val(env)).unwrap_infallible();
         V::try_from_val(env, &rv)
     }
 
@@ -137,7 +138,8 @@ impl Storage {
         V: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env));
+        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env))
+            .unwrap_infallible();
     }
 
     #[inline(always)]
@@ -146,6 +148,6 @@ impl Storage {
         K: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::del_contract_data(env, key.into_val(env));
+        internal::Env::del_contract_data(env, key.into_val(env)).unwrap_infallible();
     }
 }
