@@ -1,6 +1,9 @@
 use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
 
-use crate::iter::{UncheckedEnumerable, UncheckedIter};
+use crate::{
+    iter::{UncheckedEnumerable, UncheckedIter},
+    unwrap::UnwrapInfallible,
+};
 
 use super::{
     env::internal::{Env as _, EnvBase as _, RawValConvertible},
@@ -125,7 +128,10 @@ where
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.env.check_same_env(&other.env);
-        let v = self.env.obj_cmp(self.obj.to_raw(), other.obj.to_raw());
+        let v = self
+            .env
+            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .unwrap_infallible();
         v.cmp(&0)
     }
 }
@@ -281,7 +287,7 @@ where
 
     #[inline(always)]
     pub fn new(env: &Env) -> Map<K, V> {
-        unsafe { Self::unchecked_new(env.clone(), env.map_new()) }
+        unsafe { Self::unchecked_new(env.clone(), env.map_new().unwrap_infallible()) }
     }
 
     #[inline(always)]
@@ -296,7 +302,7 @@ where
     #[inline(always)]
     pub fn contains_key(&self, k: K) -> bool {
         let env = self.env();
-        let has = env.map_has(self.obj, k.into_val(env));
+        let has = env.map_has(self.obj, k.into_val(env)).unwrap_infallible();
         has.is_true()
     }
 
@@ -304,9 +310,9 @@ where
     pub fn get(&self, k: K) -> Option<Result<V, V::Error>> {
         let env = self.env();
         let k = k.into_val(env);
-        let has = env.map_has(self.obj, k);
+        let has = env.map_has(self.obj, k).unwrap_infallible();
         if has.is_true() {
-            let v = env.map_get(self.obj, k);
+            let v = env.map_get(self.obj, k).unwrap_infallible();
             Some(V::try_from_val(env, &v))
         } else {
             None
@@ -316,23 +322,25 @@ where
     #[inline(always)]
     pub fn get_unchecked(&self, k: K) -> Result<V, V::Error> {
         let env = self.env();
-        let v = env.map_get(self.obj, k.into_val(env));
+        let v = env.map_get(self.obj, k.into_val(env)).unwrap_infallible();
         V::try_from_val(env, &v)
     }
 
     #[inline(always)]
     pub fn set(&mut self, k: K, v: V) {
         let env = self.env();
-        self.obj = env.map_put(self.obj, k.into_val(env), v.into_val(env));
+        self.obj = env
+            .map_put(self.obj, k.into_val(env), v.into_val(env))
+            .unwrap_infallible();
     }
 
     #[inline(always)]
     pub fn remove(&mut self, k: K) -> Option<()> {
         let env = self.env();
         let k = k.into_val(env);
-        let has = env.map_has(self.obj, k);
+        let has = env.map_has(self.obj, k).unwrap_infallible();
         if has.is_true() {
-            self.obj = env.map_del(self.obj, k);
+            self.obj = env.map_del(self.obj, k).unwrap_infallible();
             Some(())
         } else {
             None
@@ -342,34 +350,34 @@ where
     #[inline(always)]
     pub fn remove_unchecked(&mut self, k: K) {
         let env = self.env();
-        self.obj = env.map_del(self.obj, k.into_val(env));
+        self.obj = env.map_del(self.obj, k.into_val(env)).unwrap_infallible();
     }
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         let env = self.env();
-        let len = env.map_len(self.obj);
+        let len = env.map_len(self.obj).unwrap_infallible();
         len.is_u32_zero()
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
         let env = self.env();
-        let len = env.map_len(self.obj);
+        let len = env.map_len(self.obj).unwrap_infallible();
         unsafe { <u32 as RawValConvertible>::unchecked_from_val(len) }
     }
 
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
-        let vec = env.map_keys(self.obj);
+        let vec = env.map_keys(self.obj).unwrap_infallible();
         Vec::<K>::try_from_val(env, &vec).unwrap()
     }
 
     #[inline(always)]
     pub fn values(&self) -> Vec<V> {
         let env = self.env();
-        let vec = env.map_values(self.obj);
+        let vec = env.map_values(self.obj).unwrap_infallible();
         Vec::<V>::try_from_val(env, &vec).unwrap()
     }
 
@@ -435,12 +443,12 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         let env = &self.0.env;
-        let key = env.map_min_key(self.0.obj);
+        let key = env.map_min_key(self.0.obj).unwrap_infallible();
         if Status::try_from(key).is_ok() {
             return None;
         }
-        let value = env.map_get(self.0.obj, key);
-        self.0.obj = env.map_del(self.0.obj, key);
+        let value = env.map_get(self.0.obj, key).unwrap_infallible();
+        self.0.obj = env.map_del(self.0.obj, key).unwrap_infallible();
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -468,12 +476,12 @@ where
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = &self.0.env;
-        let key = env.map_max_key(self.0.obj);
+        let key = env.map_max_key(self.0.obj).unwrap_infallible();
         if Status::try_from(key).is_ok() {
             return None;
         }
-        let value = env.map_get(self.0.obj, key);
-        self.0.obj = env.map_del(self.0.obj, key);
+        let value = env.map_get(self.0.obj, key).unwrap_infallible();
+        self.0.obj = env.map_del(self.0.obj, key).unwrap_infallible();
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,

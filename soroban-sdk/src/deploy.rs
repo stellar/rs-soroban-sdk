@@ -37,7 +37,7 @@
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
-use crate::{env::internal::Env as _, Bytes, BytesN, Env, IntoVal};
+use crate::{env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, BytesN, Env, IntoVal};
 
 /// Deployer provides access to deploying contracts.
 pub struct Deployer {
@@ -105,10 +105,12 @@ impl DeployerWithCurrentContract {
     /// Returns the deployed contract's ID.
     pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> BytesN<32> {
         let env = &self.env;
-        let id = env.create_contract_from_contract(
-            wasm_hash.into_val(env).to_object(),
-            self.salt.to_object(),
-        );
+        let id = env
+            .create_contract_from_contract(
+                wasm_hash.into_val(env).to_object(),
+                self.salt.to_object(),
+            )
+            .unwrap_infallible();
         unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }
     }
 }
