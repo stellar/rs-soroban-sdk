@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{spanned::Spanned, DataEnum, Error, Ident, Path};
+use syn::{spanned::Spanned, DataEnum, Error, Fields, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, StringM, WriteXdr,
@@ -21,6 +21,12 @@ pub fn derive_type_enum(
     let mut errors = Vec::<Error>::new();
 
     let variants = &data.variants;
+    if variants.is_empty() {
+        errors.push(Error::new(
+            enum_ident.span(),
+            format!("enum {} must have variants", enum_ident),
+        ));
+    }
     let (spec_cases, discriminant_consts, try_froms, try_intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .map(|v| {
@@ -38,8 +44,14 @@ pub fn derive_type_enum(
                 errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
             }
             if v.fields.len() > 1 {
-                errors.push(Error::new(v.fields.span(), "enum variant name {} has too many tuple values, max 1 supported"));
+                errors.push(Error::new(v.fields.span(), format!("enum variant name {} has too many tuple values, max 1 supported", ident)));
             }
+            match v.fields {
+                Fields::Named(_) => {
+                    errors.push(Error::new(v.fields.span(), format!("enum variant {} has unsupported named fields", ident)));
+                }
+                _ => {}
+            };
             let field = v.fields.iter().next();
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
