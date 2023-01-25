@@ -59,7 +59,7 @@ fn test_error_on_partial_decode() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_ADD).unwrap();
+    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         name: "add".try_into().unwrap(),
         inputs: vec![
