@@ -69,7 +69,7 @@ pub fn derive_type_enum_int(
         let spec_xdr = spec_entry.to_xdr().unwrap();
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_{}", enum_ident.to_string().to_uppercase());
+        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();

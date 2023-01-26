@@ -168,7 +168,7 @@ pub fn derive_fn(
     let spec_xdr = spec_entry.to_xdr().unwrap();
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
     let spec_xdr_len = spec_xdr.len();
-    let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
+    let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.to_string().to_uppercase());
     let spec_fn_ident = format_ident!("spec_xdr_{}", ident.to_string());
 
     // If errors have occurred, render them instead.
