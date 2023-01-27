@@ -26,13 +26,16 @@ fn test_functional() {
 fn test_spec() {
     let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
         name: "add".try_into().unwrap(),
         inputs: vec![
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::I32,
             },
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::I32,
             },

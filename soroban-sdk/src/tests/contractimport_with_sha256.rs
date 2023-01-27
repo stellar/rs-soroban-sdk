@@ -8,7 +8,7 @@ mod addcontract {
     use crate as soroban_sdk;
     soroban_sdk::contractimport!(
         file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm",
-        sha256 = "88d88c54624c85d4d6e4654150cd76aaf34614dfaef67c73aa4a793614687798",
+        sha256 = "09fb4f148df9aadbaa58892a13649a62b8b2143a7cbfd5634ee829d4daeacb40",
     );
 }
 
@@ -40,17 +40,21 @@ fn test_functional() {
 fn test_spec() {
     let entries = soroban_spec::read::parse_raw(&Contract::spec_xdr_add_with()).unwrap();
     let expect = vec![ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
         name: "add_with".try_into().unwrap(),
         inputs: vec![
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "contract_id".try_into().unwrap(),
                 type_: ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
             },
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "x".try_into().unwrap(),
                 type_: ScSpecTypeDef::U64,
             },
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "y".try_into().unwrap(),
                 type_: ScSpecTypeDef::U64,
             },
