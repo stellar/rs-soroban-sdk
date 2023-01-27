@@ -4,6 +4,10 @@ use stellar_xdr::{
     ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
+// IMPORTANT: The "docs" fields of spec entries are not output in Rust token
+// streams as rustdocs, because rustdocs are evaluated and execute code by
+// default in Rust projects.
+
 // TODO: Replace the unwrap()s in this code with returning Result.
 // TODO: Create Idents in a way that we can get a Result back and return it too
 // because at the moment the format_ident! calls can panic if the inputs do not

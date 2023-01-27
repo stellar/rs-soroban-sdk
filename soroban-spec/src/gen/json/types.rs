@@ -7,6 +7,7 @@ use stellar_xdr::{
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StructField {
+    docs: String,
     name: String,
     value: Type,
 }
@@ -14,6 +15,7 @@ pub struct StructField {
 impl From<&ScSpecUdtStructFieldV0> for StructField {
     fn from(f: &ScSpecUdtStructFieldV0) -> Self {
         StructField {
+            docs: f.docs.to_string_lossy(),
             name: f.name.to_string_lossy(),
             value: (&f.type_).into(),
         }
@@ -39,6 +41,7 @@ impl From<&ScSpecFunctionInputV0> for FunctionInput {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UnionCase {
+    docs: String,
     name: String,
     values: Vec<Type>,
 }
@@ -46,6 +49,7 @@ pub struct UnionCase {
 impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
     fn from(c: &ScSpecUdtUnionCaseV0) -> Self {
         UnionCase {
+            docs: c.docs.to_string_lossy(),
             name: c.name.to_string_lossy(),
             values: c.type_.as_ref().map(Type::from).into_iter().collect(),
         }
@@ -55,6 +59,7 @@ impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EnumCase {
+    docs: String,
     name: String,
     value: u32,
 }
@@ -62,6 +67,7 @@ pub struct EnumCase {
 impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
     fn from(c: &ScSpecUdtEnumCaseV0) -> Self {
         EnumCase {
+            docs: c.docs.to_string_lossy(),
             name: c.name.to_string_lossy(),
             value: c.value,
         }
@@ -71,6 +77,7 @@ impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ErrorEnumCase {
+    docs: String,
     name: String,
     value: u32,
 }
@@ -78,6 +85,7 @@ pub struct ErrorEnumCase {
 impl From<&ScSpecUdtErrorEnumCaseV0> for EnumCase {
     fn from(c: &ScSpecUdtErrorEnumCaseV0) -> Self {
         EnumCase {
+            docs: c.docs.to_string_lossy(),
             name: c.name.to_string_lossy(),
             value: c.value,
         }
@@ -117,23 +125,28 @@ pub enum Type {
 #[serde(rename_all = "camelCase")]
 pub enum Entry {
     Function {
+        docs: String,
         name: String,
         inputs: Vec<FunctionInput>,
         outputs: Vec<Type>,
     },
     Struct {
+        docs: String,
         name: String,
         fields: Vec<StructField>,
     },
     Union {
+        docs: String,
         name: String,
         cases: Vec<UnionCase>,
     },
     Enum {
+        docs: String,
         name: String,
         cases: Vec<EnumCase>,
     },
     ErrorEnum {
+        docs: String,
         name: String,
         cases: Vec<ErrorEnumCase>,
     },
@@ -188,23 +201,28 @@ impl From<&ScSpecEntry> for Entry {
     fn from(spec: &ScSpecEntry) -> Self {
         match spec {
             ScSpecEntry::FunctionV0(f) => Entry::Function {
+                docs: f.docs.to_string_lossy(),
                 name: f.name.to_string_lossy(),
                 inputs: f.inputs.iter().map(FunctionInput::from).collect(),
                 outputs: f.outputs.iter().map(Type::from).collect(),
             },
             ScSpecEntry::UdtStructV0(s) => Entry::Struct {
+                docs: s.docs.to_string_lossy(),
                 name: s.name.to_string_lossy(),
                 fields: s.fields.iter().map(StructField::from).collect(),
             },
             ScSpecEntry::UdtUnionV0(u) => Entry::Union {
+                docs: u.docs.to_string_lossy(),
                 name: u.name.to_string_lossy(),
                 cases: u.cases.iter().map(UnionCase::from).collect(),
             },
             ScSpecEntry::UdtEnumV0(e) => Entry::Enum {
+                docs: e.docs.to_string_lossy(),
                 name: e.name.to_string_lossy(),
                 cases: e.cases.iter().map(EnumCase::from).collect(),
             },
             ScSpecEntry::UdtErrorEnumV0(e) => Entry::Enum {
+                docs: e.docs.to_string_lossy(),
                 name: e.name.to_string_lossy(),
                 cases: e.cases.iter().map(EnumCase::from).collect(),
             },
