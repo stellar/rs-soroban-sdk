@@ -141,6 +141,7 @@ pub fn derive_fn(
 
     // Generated code spec.
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        docs: "".try_into().unwrap(), // TODO: Add docs here.
         name: wrap_export_name.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
             errors.push(Error::new(
