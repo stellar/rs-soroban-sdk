@@ -68,11 +68,16 @@ pub fn derive_fn(
                             errors.push(Error::new(ident.span(), format!("argument name too long, max length {} characters", MAX)));
                             StringM::<MAX>::default()
                         });
-                        ScSpecFunctionInputV0{ name, type_ }
+                        ScSpecFunctionInputV0{
+                            doc: "".try_into().unwrap(), // TODO: Add docs here.
+                            name,
+                            type_,
+                        }
                     },
                     Err(e) => {
                         errors.push(e);
                         ScSpecFunctionInputV0{
+                            doc: "".try_into().unwrap(), // TODO: Add docs here.
                             name: "arg".try_into().unwrap(),
                             type_: ScSpecTypeDef::I32,
                         }
@@ -103,7 +108,7 @@ pub fn derive_fn(
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {})
+                (ScSpecFunctionInputV0{ doc: "".try_into().unwrap(), name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {})
             }
         })
         .multiunzip();
@@ -141,7 +146,7 @@ pub fn derive_fn(
 
     // Generated code spec.
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        docs: "".try_into().unwrap(), // TODO: Add docs here.
+        doc: "".try_into().unwrap(), // TODO: Add docs here.
         name: wrap_export_name.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
             errors.push(Error::new(

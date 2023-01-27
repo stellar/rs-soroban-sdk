@@ -67,7 +67,7 @@ pub fn derive_type_enum(
             };
             if let Some(f) = field {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    docs: "".try_into().unwrap(), // TODO: Add docs here.
+                    doc: "".try_into().unwrap(), // TODO: Add docs here.
                     name: name.try_into().unwrap_or_else(|_| StringM::default()),
                     type_: Some(match map_type(&f.ty) {
                         Ok(t) => t,
@@ -104,7 +104,7 @@ pub fn derive_type_enum(
                 (spec_case, discriminant_const, try_from, try_into, try_from_xdr, into_xdr)
             } else {
                 let spec_case = ScSpecUdtUnionCaseV0 {
-                    docs: "".try_into().unwrap(), // TODO: Add docs here.
+                    doc: "".try_into().unwrap(), // TODO: Add docs here.
                     name: name.try_into().unwrap_or_else(|_| StringM::default()),
                     type_: None,
                 };
@@ -145,7 +145,7 @@ pub fn derive_type_enum(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
-            docs: "".try_into().unwrap(), // TODO: Add docs here.
+            doc: "".try_into().unwrap(), // TODO: Add docs here.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),

@@ -43,7 +43,7 @@ pub fn derive_type_struct(
                 errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {
-        docs: "".try_into().unwrap(), // TODO: Add docs here.
+        doc: "".try_into().unwrap(), // TODO: Add docs here.
                 name: name.clone().try_into().unwrap_or_else(|_| StringM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
@@ -89,7 +89,7 @@ pub fn derive_type_struct(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            docs: "".try_into().unwrap(), // TODO: Add docs here.
+            doc: "".try_into().unwrap(), // TODO: Add docs here.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),

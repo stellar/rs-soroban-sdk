@@ -15,7 +15,7 @@ pub struct StructField {
 impl From<&ScSpecUdtStructFieldV0> for StructField {
     fn from(f: &ScSpecUdtStructFieldV0) -> Self {
         StructField {
-            docs: f.docs.to_string_lossy(),
+            docs: f.doc.to_string_lossy(),
             name: f.name.to_string_lossy(),
             value: (&f.type_).into(),
         }
@@ -49,7 +49,7 @@ pub struct UnionCase {
 impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
     fn from(c: &ScSpecUdtUnionCaseV0) -> Self {
         UnionCase {
-            docs: c.docs.to_string_lossy(),
+            docs: c.doc.to_string_lossy(),
             name: c.name.to_string_lossy(),
             values: c.type_.as_ref().map(Type::from).into_iter().collect(),
         }
@@ -67,7 +67,7 @@ pub struct EnumCase {
 impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
     fn from(c: &ScSpecUdtEnumCaseV0) -> Self {
         EnumCase {
-            docs: c.docs.to_string_lossy(),
+            docs: c.doc.to_string_lossy(),
             name: c.name.to_string_lossy(),
             value: c.value,
         }
@@ -85,7 +85,7 @@ pub struct ErrorEnumCase {
 impl From<&ScSpecUdtErrorEnumCaseV0> for EnumCase {
     fn from(c: &ScSpecUdtErrorEnumCaseV0) -> Self {
         EnumCase {
-            docs: c.docs.to_string_lossy(),
+            docs: c.doc.to_string_lossy(),
             name: c.name.to_string_lossy(),
             value: c.value,
         }
@@ -201,28 +201,28 @@ impl From<&ScSpecEntry> for Entry {
     fn from(spec: &ScSpecEntry) -> Self {
         match spec {
             ScSpecEntry::FunctionV0(f) => Entry::Function {
-                docs: f.docs.to_string_lossy(),
+                docs: f.doc.to_string_lossy(),
                 name: f.name.to_string_lossy(),
                 inputs: f.inputs.iter().map(FunctionInput::from).collect(),
                 outputs: f.outputs.iter().map(Type::from).collect(),
             },
             ScSpecEntry::UdtStructV0(s) => Entry::Struct {
-                docs: s.docs.to_string_lossy(),
+                docs: s.doc.to_string_lossy(),
                 name: s.name.to_string_lossy(),
                 fields: s.fields.iter().map(StructField::from).collect(),
             },
             ScSpecEntry::UdtUnionV0(u) => Entry::Union {
-                docs: u.docs.to_string_lossy(),
+                docs: u.doc.to_string_lossy(),
                 name: u.name.to_string_lossy(),
                 cases: u.cases.iter().map(UnionCase::from).collect(),
             },
             ScSpecEntry::UdtEnumV0(e) => Entry::Enum {
-                docs: e.docs.to_string_lossy(),
+                docs: e.doc.to_string_lossy(),
                 name: e.name.to_string_lossy(),
                 cases: e.cases.iter().map(EnumCase::from).collect(),
             },
             ScSpecEntry::UdtErrorEnumV0(e) => Entry::Enum {
-                docs: e.docs.to_string_lossy(),
+                docs: e.doc.to_string_lossy(),
                 name: e.name.to_string_lossy(),
                 cases: e.cases.iter().map(EnumCase::from).collect(),
             },
