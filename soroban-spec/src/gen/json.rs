@@ -71,8 +71,8 @@ mod test {
             json,
             r#"[
   {
-    "doc": "",
     "type": "enum",
+    "doc": "",
     "name": "UdtEnum2",
     "cases": [
       {
@@ -88,8 +88,8 @@ mod test {
     ]
   },
   {
-    "doc": "",
     "type": "union",
+    "doc": "",
     "name": "UdtEnum",
     "cases": [
       {
@@ -130,8 +130,8 @@ mod test {
     ]
   },
   {
-    "doc": "",
     "type": "struct",
+    "doc": "",
     "name": "UdtTuple",
     "fields": [
       {
@@ -154,8 +154,8 @@ mod test {
     ]
   },
   {
-    "doc": "",
     "type": "struct",
+    "doc": "",
     "name": "UdtStruct",
     "fields": [
       {
@@ -185,8 +185,8 @@ mod test {
     ]
   },
   {
-    "doc": "",
     "type": "function",
+    "doc": "",
     "name": "add",
     "inputs": [
       {
