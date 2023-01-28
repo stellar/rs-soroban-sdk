@@ -7,6 +7,7 @@ mod derive_error_enum_int;
 mod derive_fn;
 mod derive_struct;
 mod derive_struct_tuple;
+mod doc;
 mod map_type;
 mod path;
 mod syn_ext;

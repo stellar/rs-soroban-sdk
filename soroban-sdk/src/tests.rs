@@ -4,6 +4,7 @@ mod budget;
 mod contract_add_i32;
 mod contract_assert;
 mod contract_call_stack;
+mod contract_docs;
 mod contract_invoke;
 mod contract_invoker_account;
 mod contract_invoker_client;

@@ -11,7 +11,7 @@ use syn::{
     Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
-use crate::map_type::map_type;
+use crate::{doc::docs_from_attrs, map_type::map_type};
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn(
@@ -146,7 +146,7 @@ pub fn derive_fn(
 
     // Generated code spec.
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: "".try_into().unwrap(), // TODO: Add docs here.
+        doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
         name: wrap_export_name.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
             errors.push(Error::new(

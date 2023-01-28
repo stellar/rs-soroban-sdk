@@ -98,9 +98,11 @@ impl Token {
     }
 }
 
+const SPEC_XDR_LEN: usize = 2320;
+
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]
-pub const fn spec_xdr() -> [u8; 2012] {
+pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
     let input: &[&[u8]] = &[
         &Token::spec_xdr_allowance(),
         &Token::spec_xdr_authorized(),
@@ -127,7 +129,7 @@ pub const fn spec_xdr() -> [u8; 2012] {
     ];
 
     // Concatenate all XDR for each item that makes up the token spec.
-    let mut output = [0u8; 2012];
+    let mut output = [0u8; SPEC_XDR_LEN];
     let mut input_i = 0;
     let mut output_i = 0;
     while input_i < input.len() {
