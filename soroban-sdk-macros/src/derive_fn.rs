@@ -69,7 +69,7 @@ pub fn derive_fn(
                             StringM::<MAX>::default()
                         });
                         ScSpecFunctionInputV0{
-                            doc: "".try_into().unwrap(), // TODO: Add docs here.
+                            doc: "".try_into().unwrap(),
                             name,
                             type_,
                         }
@@ -77,7 +77,7 @@ pub fn derive_fn(
                     Err(e) => {
                         errors.push(e);
                         ScSpecFunctionInputV0{
-                            doc: "".try_into().unwrap(), // TODO: Add docs here.
+                            doc: "".try_into().unwrap(),
                             name: "arg".try_into().unwrap(),
                             type_: ScSpecTypeDef::I32,
                         }
