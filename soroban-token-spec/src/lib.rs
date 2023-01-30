@@ -98,36 +98,39 @@ impl Token {
     }
 }
 
+const SPEC_XDR_INPUT: &[&[u8]] = &[
+    &Token::spec_xdr_allowance(),
+    &Token::spec_xdr_authorized(),
+    &Token::spec_xdr_balance(),
+    &Token::spec_xdr_burn(),
+    &Token::spec_xdr_burn_from(),
+    &Token::spec_xdr_clawback(),
+    &Token::spec_xdr_decimals(),
+    &Token::spec_xdr_decr_allow(),
+    &Token::spec_xdr_incr_allow(),
+    &Token::spec_xdr_mint(),
+    &Token::spec_xdr_name(),
+    &Token::spec_xdr_nonce(),
+    &Token::spec_xdr_set_admin(),
+    &Token::spec_xdr_set_auth(),
+    &Token::spec_xdr_spendable(),
+    &Token::spec_xdr_symbol(),
+    &Token::spec_xdr_xfer(),
+    &Token::spec_xdr_xfer_from(),
+    &soroban_auth::Identifier::spec_xdr(),
+    &soroban_auth::Signature::spec_xdr(),
+    &soroban_auth::Ed25519Signature::spec_xdr(),
+    &soroban_auth::AccountSignatures::spec_xdr(),
+];
+
+const SPEC_XDR_LEN: usize = 2012;
+
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]
-pub const fn spec_xdr() -> [u8; 2012] {
-    let input: &[&[u8]] = &[
-        &Token::spec_xdr_allowance(),
-        &Token::spec_xdr_authorized(),
-        &Token::spec_xdr_balance(),
-        &Token::spec_xdr_burn(),
-        &Token::spec_xdr_burn_from(),
-        &Token::spec_xdr_clawback(),
-        &Token::spec_xdr_decimals(),
-        &Token::spec_xdr_decr_allow(),
-        &Token::spec_xdr_incr_allow(),
-        &Token::spec_xdr_mint(),
-        &Token::spec_xdr_name(),
-        &Token::spec_xdr_nonce(),
-        &Token::spec_xdr_set_admin(),
-        &Token::spec_xdr_set_auth(),
-        &Token::spec_xdr_spendable(),
-        &Token::spec_xdr_symbol(),
-        &Token::spec_xdr_xfer(),
-        &Token::spec_xdr_xfer_from(),
-        &soroban_auth::Identifier::spec_xdr(),
-        &soroban_auth::Signature::spec_xdr(),
-        &soroban_auth::Ed25519Signature::spec_xdr(),
-        &soroban_auth::AccountSignatures::spec_xdr(),
-    ];
-
+pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
+    let input = SPEC_XDR_INPUT;
     // Concatenate all XDR for each item that makes up the token spec.
-    let mut output = [0u8; 2012];
+    let mut output = [0u8; SPEC_XDR_LEN];
     let mut input_i = 0;
     let mut output_i = 0;
     while input_i < input.len() {
