@@ -123,7 +123,7 @@ const SPEC_XDR_INPUT: &[&[u8]] = &[
     &soroban_auth::AccountSignatures::spec_xdr(),
 ];
 
-const SPEC_XDR_LEN: usize = 2012;
+const SPEC_XDR_LEN: usize = 2536;
 
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]
