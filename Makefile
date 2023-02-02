@@ -19,21 +19,6 @@ build: fmt
 			ls -l "$$i"; \
 		done
 
-build-optimized: fmt
-	cargo +nightly hack build  --target wasm32-unknown-unknown --release \
-		--workspace \
-		--exclude soroban-spec \
-		--exclude soroban-sdk \
-		--exclude soroban-sdk-macros \
-		--exclude soroban-auth \
-		-Z build-std=std,panic_abort \
-		-Z build-std-features=panic_immediate_abort
-	cd target/wasm32-unknown-unknown/release/ && \
-		for i in *.wasm ; do \
-			wasm-opt -Oz "$$i" -o "$$i.tmp" && mv "$$i.tmp" "$$i"; \
-			ls -l "$$i"; \
-		done
-
 check: build fmt
 	cargo hack --feature-powerset --exclude-features docs check
 	cargo hack check --release --target wasm32-unknown-unknown
