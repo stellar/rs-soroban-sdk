@@ -22,12 +22,41 @@ pub mod internal {
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
 
-    #[cfg(feature = "testutils")]
+    // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
+    // `soroban-env-{common,host}/testutils` which in turn adds the helper method
+    // `Env::escalate_error_to_panic` to the Env trait.
+    //
+    // When this is available we want to use it, because it works in concert
+    // with a _different_ part of the host that's also `testutils`-gated: the
+    // mechanism for emulating the WASM VM error-handling semantics with native
+    // contracts. In particular when a WASM contract calls a host function that
+    // fails with some error E, the host traps the VM (not returning to it at
+    // all) and propagates E to the caller of the contract. This is simulated in
+    // the native case by returning a (nontrivial) error E to us here, which we
+    // then "reject" back to the host, which stores E in a temporary cell inside
+    // any `TestContract` frame in progress and then _panics_, unwinding back to
+    // a panic-catcher it installed when invoking the `TestContract` frame, and
+    // then extracting E from the frame and returning it to its caller. This
+    // simulates the "crash, but catching the error" behaviour of the WASM case.
+    // This only works if we panic via `escalate_error_to_panic`.
+    //
+    // (The reason we don't just panic_any() here and let the panic-catcher do a
+    // type-based catch is that there might _be_ no panic-catcher around us, and
+    // we want to print out a nice error message in that case too, which
+    // panic_any() does not do us the favor of producing. This is all very
+    // subtle. See also soroban_env_host::Host::escalate_error_to_panic.)
+    #[cfg(any(test, feature = "testutils"))]
     pub(crate) fn reject_err<T>(env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
         r.map_err(|e| env.escalate_error_to_panic(e))
     }
 
-    #[cfg(not(feature = "testutils"))]
+    // When we're _not_ in a cfg enabling `soroban-env-{common,host}/testutils`,
+    // there is no `Env::escalate_error_to_panic` to call, so we just panic
+    // here. But this is ok because in that case there is also no multi-contract
+    // calling machinery set up, nor probably any panic-catcher installed that
+    // we need to hide error values for the benefit of. Any panic in this case
+    // is probably going to unwind completely anyways. No special case needed.
+    #[cfg(not(any(test, feature = "testutils")))]
     pub(crate) fn reject_err<T>(_env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
         r.map_err(|e| panic!("{:?}", e))
     }
@@ -820,9 +849,25 @@ impl Env {
 impl internal::EnvBase for Env {
     type Error = Infallible;
 
+    // Note: the function `escalate_error_to_panic` only exists _on the `Env`
+    // trait_ when the feature `soroban-env-common/testutils` is enabled. This
+    // is because the host wants to never have this function even _compiled in_
+    // when building for production, as it might be accidentally called (we have
+    // mistakenly done so with conversion and comparison traits in the past).
+    //
+    // As a result, we only implement it here (fairly meaninglessly) when we're
+    // in `cfg(test)` (which enables `soroban-env-host/testutils` thus
+    // `soroban-env-common/testutils`) or when we've had our own `testutils`
+    // feature enabled (which does the same).
+    //
+    // See the `internal::reject_err` functions above for more detail about what
+    // it actually does (when implemented for real, on the host). In this
+    // not-very-serious impl, since `Self::Error` is `Infallible`, this instance
+    // can never actually be called and so its body is just a trivial
+    // transformation from one empty type to another, for Type System Reasons.
     #[cfg(any(test, feature = "testutils"))]
     fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
-        panic!("{:?}", e)
+        match e {}
     }
 
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
