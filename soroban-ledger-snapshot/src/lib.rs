@@ -27,7 +27,7 @@ pub struct LedgerSnapshot {
     pub protocol_version: u32,
     pub sequence_number: u32,
     pub timestamp: u64,
-    pub network_passphrase: Vec<u8>,
+    pub network_id: [u8; 32],
     pub base_reserve: u32,
     pub ledger_entries: Vec<(Box<LedgerKey>, Box<LedgerEntry>)>,
 }
@@ -67,7 +67,7 @@ impl LedgerSnapshot {
             protocol_version: self.protocol_version,
             sequence_number: self.sequence_number,
             timestamp: self.timestamp,
-            network_passphrase: self.network_passphrase.clone(),
+            network_id: self.network_id.clone(),
             base_reserve: self.base_reserve,
         }
     }
@@ -77,7 +77,7 @@ impl LedgerSnapshot {
         self.protocol_version = info.protocol_version;
         self.sequence_number = info.sequence_number;
         self.timestamp = info.timestamp;
-        self.network_passphrase = info.network_passphrase;
+        self.network_id = info.network_id;
         self.base_reserve = info.base_reserve;
     }
 
@@ -154,7 +154,7 @@ impl Default for LedgerSnapshot {
             protocol_version: 20,
             sequence_number: Default::default(),
             timestamp: Default::default(),
-            network_passphrase: Vec::default(),
+            network_id: Default::default(),
             base_reserve: Default::default(),
             ledger_entries: Vec::default(),
         }
