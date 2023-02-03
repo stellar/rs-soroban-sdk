@@ -5,8 +5,6 @@ mod contract_add_i32;
 mod contract_assert;
 mod contract_call_stack;
 mod contract_invoke;
-mod contract_invoker_account;
-mod contract_invoker_client;
 mod contract_overlapping_type_fn_names;
 mod contract_snapshot;
 mod contract_store;
