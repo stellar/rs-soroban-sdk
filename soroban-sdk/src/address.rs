@@ -206,30 +206,3 @@ impl Address {
         self.obj
     }
 }
-
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
-use crate::env::xdr::{Hash, ScAddress, ScObject};
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
-use crate::{testutils::random, BytesN};
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
-impl Address {
-    /// Build an address from a contract identifier.
-    ///
-    /// This is useful to create an Address of the registered contract.
-    pub fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(
-            contract_id.to_array(),
-        )))));
-        Self::try_from_val(env, &sc_addr).unwrap()
-    }
-
-    /// Create a random Address.
-    ///
-    /// Implementation note: this always builds the contract addresses now. This
-    /// shouldn't normally matter though, as contracts should be agnostic to
-    /// the underlying Address value.
-    pub fn random(env: &Env) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(random())))));
-        Self::try_from_val(env, &sc_addr).unwrap()
-    }
-}
