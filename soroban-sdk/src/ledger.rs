@@ -2,7 +2,7 @@
 use crate::{
     env::internal::{self, RawValConvertible},
     unwrap::UnwrapInfallible,
-    Bytes, Env,
+    BytesN, Env,
 };
 
 /// Ledger retrieves information about the current ledger.
@@ -24,15 +24,14 @@ use crate::{
 /// let protocol_version = ledger.protocol_version();
 /// let sequence = ledger.sequence();
 /// let timestamp = ledger.timestamp();
-/// let network_passphrase = ledger.network_passphrase();
+/// let network_id = ledger.network_id();
 /// #     }
 /// # }
 /// #
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
-/// #     env.register_contract(&contract_id, Contract);
+/// #     let contract_id = env.register_contract(None, Contract);
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]
@@ -80,17 +79,18 @@ impl Ledger {
         internal::Env::obj_to_u64(env, obj).unwrap_infallible()
     }
 
-    /// Returns the network passphrase.
+    /// Returns the network identifier.
     ///
-    /// Returns for the Public Network:
-    /// > Public Global Stellar Network ; September 2015
+    /// This is SHA-256 hash of the network passphrase, for example
+    /// for the Public Network this returns:
+    /// > SHA256(Public Global Stellar Network ; September 2015)
     ///
     /// Returns for the Test Network:
-    /// > Test SDF Network ; September 2015
-    pub fn network_passphrase(&self) -> Bytes {
+    /// > SHA256(Test SDF Network ; September 2015)
+    pub fn network_id(&self) -> BytesN<32> {
         let env = self.env();
-        let bin_obj = internal::Env::get_ledger_network_passphrase(env).unwrap_infallible();
-        unsafe { Bytes::unchecked_new(env.clone(), bin_obj) }
+        let bin_obj = internal::Env::get_ledger_network_id(env).unwrap_infallible();
+        unsafe { BytesN::<32>::unchecked_new(env.clone(), bin_obj) }
     }
 }
 

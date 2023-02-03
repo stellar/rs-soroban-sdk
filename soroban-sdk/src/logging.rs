@@ -61,14 +61,14 @@ use crate::{
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}, {}", value, symbol!("another"), (1, 2, 1));
+/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
 ///
 /// use soroban_sdk::testutils::Logger;
 ///
 /// assert_eq!(
 ///     env.logger().all(),
 ///     std::vec![
-///         "a log entry: I32(5), Symbol(another), Object(Vec(#4))".to_string(),
+///         "a log entry: I32(5), Symbol(another)".to_string(),
 ///     ],
 /// );
 /// # }

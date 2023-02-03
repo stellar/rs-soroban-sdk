@@ -829,13 +829,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74233d3b3b2f6d4b006dc19dee745e73e2a6bfb6f93607cd3b02bd5b00797d7c"
 
 [[package]]
-name = "soroban-auth"
+name = "soroban-account"
 version = "0.4.3"
 dependencies = [
- "ed25519-dalek",
- "rand 0.7.3",
  "soroban-sdk",
- "stellar-strkey",
+ "soroban-sdk-macros",
 ]
 
 [[package]]
@@ -976,9 +974,7 @@ dependencies = [
 name = "soroban-token-spec"
 version = "0.4.3"
 dependencies = [
- "ed25519-dalek",
  "rand 0.7.3",
- "soroban-auth",
  "soroban-sdk",
 ]
 
