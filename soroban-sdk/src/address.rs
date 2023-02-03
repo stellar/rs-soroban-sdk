@@ -157,10 +157,13 @@ impl Address {
     /// Ensures that this Address has authorized invocation of the current
     /// contract with the provided arguments.
     ///
-    /// Traps if the invocation is not authorized. During the on-chain execution
-    /// the Soroban host will perform the needed authentication (verify the
-    /// signatures) and ensure the replay prevention. The contracts don't
-    /// need to perform this tasks.
+    /// ### Panics
+    ///
+    /// If the invocation is not authorized.
+    ///
+    /// During the on-chain execution the Soroban host will perform the needed
+    /// authentication (verify the signatures) and ensure the replay prevention.
+    /// The contracts don't need to perform this tasks.
     ///
     /// The arguments don't have to match the arguments of the contract
     /// invocation. However, it's considered the best practice to have a
