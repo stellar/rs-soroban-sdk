@@ -833,7 +833,6 @@ name = "soroban-account"
 version = "0.4.3"
 dependencies = [
  "soroban-sdk",
- "soroban-sdk-macros",
 ]
 
 [[package]]

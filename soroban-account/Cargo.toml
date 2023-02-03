@@ -14,7 +14,6 @@ rust-version = "1.65"
 doctest = false
 
 [dependencies]
-soroban-sdk-macros = { workspace = true }
 soroban-sdk = { workspace = true }
 
 [package.metadata.docs.rs]
