@@ -34,8 +34,32 @@ pub struct Address {
 
 impl Debug for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        // TODO: We should use strkey (ideally including the contract strkey).
+        #[cfg(target_family = "wasm")]
         write!(f, "Address(..)")?;
+        #[cfg(not(target_family = "wasm"))]
+        {
+            use crate::env::internal::xdr;
+            use stellar_strkey::StrkeyPublicKeyEd25519;
+            let sc_val = ScVal::try_from(self).map_err(|_| core::fmt::Error)?;
+            if let ScVal::Object(Some(xdr::ScObject::Address(addr))) = sc_val {
+                match addr {
+                    xdr::ScAddress::Account(account_id) => {
+                        let xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
+                            ed25519,
+                        ))) = account_id;
+                        let strkey = StrkeyPublicKeyEd25519(ed25519);
+                        write!(f, "AccountId({})", strkey.to_string())?;
+                    }
+                    xdr::ScAddress::Contract(contract_id) => {
+                        // TODO: we should use contract strkey here when it's
+                        // supported.
+                        write!(f, "Contract({:?})", contract_id.0)?;
+                    }
+                }
+            } else {
+                return Err(core::fmt::Error);
+            }
+        }
         Ok(())
     }
 }
