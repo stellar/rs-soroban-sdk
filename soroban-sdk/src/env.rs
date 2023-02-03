@@ -23,12 +23,12 @@ pub mod internal {
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
 
-    #[cfg(feature = "testutils")]
+    #[cfg(any(test, feature = "testutils"))]
     pub(crate) fn reject_err<T>(env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
         r.map_err(|e| env.escalate_error_to_panic(e))
     }
 
-    #[cfg(not(feature = "testutils"))]
+    #[cfg(not(any(test, feature = "testutils")))]
     pub(crate) fn reject_err<T>(_env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
         r.map_err(|e| panic!("{:?}", e))
     }
@@ -728,7 +728,16 @@ impl Env {
 impl internal::EnvBase for Env {
     type Error = Infallible;
 
-    #[cfg(feature = "testutils")]
+    // NB: the function `escalate_error_to_panic` is enabled _on the Env trait_
+    // only when the feature `soroban-env-common/testutils` is enabled. This is
+    // because the host wants to never have this function even _compiled in_
+    // when building for production, as it might be accidentally called (we have
+    // mistakenly done so with conversion and comparison traits in the past). As
+    // a result, we only implement it here when we're in `cfg(test)` (which
+    // enables `soroban-env-host/testutils` thus `soroban-env-common/testutils`)
+    // or when we've had our own `testutils` feature enabled (which does the
+    // same).
+    #[cfg(any(test, feature = "testutils"))]
     fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
         panic!("{:?}", e)
     }
