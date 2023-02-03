@@ -2,8 +2,8 @@
 resolver = "2"
 
 members = [
+    "soroban-account",
     "soroban-sdk",
-    "soroban-auth",
     "soroban-sdk-macros",
     "soroban-spec",
     "soroban-ledger-snapshot",
@@ -37,17 +37,17 @@ soroban-token-spec = { version = "0.4.3", path = "soroban-token-spec" }
 [workspace.dependencies.soroban-env-common]
 version = "0.0.12"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "96ea6dcbb2a57208b2ba1dc202490b92d4ba537e"
+rev = "fc611e5cdd50bcc3113ff1ccb4a09d3ad0dc68f4"
 
 [workspace.dependencies.soroban-env-guest]
 version = "0.0.12"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "96ea6dcbb2a57208b2ba1dc202490b92d4ba537e"
+rev = "fc611e5cdd50bcc3113ff1ccb4a09d3ad0dc68f4"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.12"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "96ea6dcbb2a57208b2ba1dc202490b92d4ba537e"
+rev = "fc611e5cdd50bcc3113ff1ccb4a09d3ad0dc68f4"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.6"
@@ -57,7 +57,7 @@ rev = "5e582a8b"
 [workspace.dependencies.stellar-xdr]
 version = "0.0.12"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "154e07e"
+rev = "763b104d0eb0147c0be94620254c223677fd4b7b"
 default-features = false
 
 # [patch."https://github.com/stellar/rs-soroban-env"]
