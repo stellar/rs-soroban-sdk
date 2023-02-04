@@ -9,10 +9,6 @@ mod token_contract {
 
 use token_contract::TokenClient;
 
-use soroban_sdk::xdr::{
-    AccountId, AlphaNum12, AlphaNum4, Asset, AssetCode12, AssetCode4, PublicKey, Uint256,
-};
-
 #[contracttype]
 pub enum DataKey {
     Token,
@@ -43,17 +39,18 @@ impl TestContract {
     }
 }
 
-fn run_test(asset: Asset, expected_name: &str) {
+#[test]
+fn test() {
     let env = Env::default();
-
-    let token_contract_id = env.register_stellar_asset_contract(asset);
+    let admin = Address::random(&env);
+    let token_contract_id = env.register_stellar_asset_contract(admin);
 
     let contract_id = env.register_contract(None, TestContract);
     let client = TestContractClient::new(&env, &contract_id);
     client.init(&token_contract_id);
 
     let token_client = TokenClient::new(&env, &client.get_token());
-    assert_eq!(token_client.name(), expected_name.into_val(&env));
+    assert_eq!(token_client.decimals(), 7);
 
     let from = Address::random(&env);
     let spender = Address::random(&env);
@@ -81,29 +78,4 @@ fn run_test(asset: Asset, expected_name: &str) {
     ));
 
     assert_eq!(client.allowance(&from, &spender), 20);
-}
-
-#[test]
-fn test_asset_4() {
-    let issuer = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([65u8; 32])));
-    let asset4 = Asset::CreditAlphanum4(AlphaNum4 {
-        asset_code: AssetCode4([66u8; 4]),
-        issuer: issuer.clone(),
-    });
-    run_test(asset4, "BBBB:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-}
-
-#[test]
-fn test_asset_12() {
-    let issuer = AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([65u8; 32])));
-    let asset12 = Asset::CreditAlphanum12(AlphaNum12 {
-        asset_code: AssetCode12([67u8; 12]),
-        issuer,
-    });
-    run_test(asset12, "CCCCCCCCCCCC:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-}
-
-#[test]
-fn test_native_asset() {
-    run_test(Asset::Native, "native");
 }
