@@ -496,20 +496,6 @@ impl Env {
         )
     }
 
-    /// Register the built-in Stellar Asset Contract for testing.
-    pub fn register_stellar_asset_contract(&self, asset: xdr::Asset) -> BytesN<32> {
-        let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-            contract_id: xdr::ContractId::Asset(asset),
-            source: xdr::ScContractCode::Token,
-        });
-
-        self.env_impl
-            .invoke_function(create)
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
-    }
-
     /// Register the built-in Stellar Asset Contract with provided admin address.
     ///
     /// Returns the contract ID of the registered token contract.
@@ -517,7 +503,7 @@ impl Env {
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    pub fn register_stellar_asset_contract_with_admin(&self, admin: Address) -> BytesN<32> {
+    pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
         let issuer_id =
             xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(random())));
 
@@ -561,8 +547,17 @@ impl Env {
             asset_code: xdr::AssetCode4(random()),
             issuer: issuer_id.clone(),
         });
+        let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
+            contract_id: xdr::ContractId::Asset(asset.clone()),
+            source: xdr::ScContractCode::Token,
+        });
 
-        let token_id = self.register_stellar_asset_contract(asset);
+        let token_id = self
+            .env_impl
+            .invoke_function(create)
+            .unwrap()
+            .try_into_val(self)
+            .unwrap();
         let issuer_address = Address::try_from_val(
             self,
             &xdr::ScVal::Object(Some(xdr::ScObject::Address(xdr::ScAddress::Account(
@@ -638,7 +633,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, Address, Env, IntoVal};
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal};
     ///
     /// pub struct Contract;
     ///

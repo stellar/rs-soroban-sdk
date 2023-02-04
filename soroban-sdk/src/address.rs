@@ -34,8 +34,31 @@ pub struct Address {
 
 impl Debug for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        // TODO: We should use strkey (ideally including the contract strkey).
+        #[cfg(target_family = "wasm")]
         write!(f, "Address(..)")?;
+        #[cfg(not(target_family = "wasm"))]
+        {
+            use crate::env::internal::xdr;
+            use stellar_strkey::{ed25519, Contract, Strkey};
+            let sc_val = ScVal::try_from(self).map_err(|_| core::fmt::Error)?;
+            if let ScVal::Object(Some(xdr::ScObject::Address(addr))) = sc_val {
+                match addr {
+                    xdr::ScAddress::Account(account_id) => {
+                        let xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
+                            ed25519,
+                        ))) = account_id;
+                        let strkey = Strkey::PublicKeyEd25519(ed25519::PublicKey(ed25519));
+                        write!(f, "AccountId({})", strkey.to_string())?;
+                    }
+                    xdr::ScAddress::Contract(contract_id) => {
+                        let strkey = Strkey::Contract(Contract(contract_id.0));
+                        write!(f, "Contract({})", strkey.to_string())?;
+                    }
+                }
+            } else {
+                return Err(core::fmt::Error);
+            }
+        }
         Ok(())
     }
 }
@@ -133,10 +156,9 @@ impl Address {
     /// Ensures that this Address has authorized invocation of the current
     /// contract with the provided arguments.
     ///
-    /// Traps if the invocation is not authorized. During the on-chain execution
-    /// the Soroban host will perform the needed authentication (verify the
-    /// signatures) and ensure the replay prevention. The contracts don't
-    /// need to perform this tasks.
+    /// During the on-chain execution the Soroban host will perform the needed
+    /// authentication (verify the signatures) and ensure the replay prevention.
+    /// The contracts don't need to perform this tasks.
     ///
     /// The arguments don't have to match the arguments of the contract
     /// invocation. However, it's considered the best practice to have a
@@ -149,6 +171,10 @@ impl Address {
     /// no signatures are required. In order to make sure that the contract
     /// has indeed called `require_auth` for this Address with expected arguments
     /// use `env.verify_top_authorization`.
+    ///
+    /// ### Panics
+    ///
+    /// If the invocation is not authorized.
     pub fn require_auth(&self, args: Vec<RawVal>) {
         self.env.require_auth(&self, args);
     }
@@ -180,28 +206,21 @@ impl Address {
     }
 }
 
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+#[cfg(any(test, feature = "testutils"))]
 use crate::env::xdr::{Hash, ScAddress, ScObject};
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+#[cfg(any(test, feature = "testutils"))]
 use crate::{testutils::random, BytesN};
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
-impl Address {
-    /// Build an address from a contract identifier.
-    ///
-    /// This is useful to create an Address of the registered contract.
-    pub fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl crate::testutils::Address for Address {
+    fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
         let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(
             contract_id.to_array(),
         )))));
         Self::try_from_val(env, &sc_addr).unwrap()
     }
 
-    /// Create a random Address.
-    ///
-    /// Implementation note: this always builds the contract addresses now. This
-    /// shouldn't normally matter though, as contracts should be agnostic to
-    /// the underlying Address value.
-    pub fn random(env: &Env) -> Self {
+    fn random(env: &Env) -> Self {
         let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(random())))));
         Self::try_from_val(env, &sc_addr).unwrap()
     }

@@ -157,3 +157,17 @@ pub(crate) fn random<const N: usize>() -> [u8; N] {
     rand::thread_rng().fill_bytes(&mut arr);
     arr
 }
+
+pub trait Address {
+    /// Build an address from a contract identifier.
+    ///
+    /// This is useful to create an Address of the registered contract.
+    fn from_contract_id(env: &Env, contract_id: &crate::BytesN<32>) -> crate::Address;
+
+    /// Create a random Address.
+    ///
+    /// Implementation note: this always builds the contract addresses now. This
+    /// shouldn't normally matter though, as contracts should be agnostic to
+    /// the underlying Address value.
+    fn random(env: &Env) -> crate::Address;
+}

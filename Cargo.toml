@@ -2,7 +2,7 @@
 resolver = "2"
 
 members = [
-    "soroban-account",
+    "soroban-auth",
     "soroban-sdk",
     "soroban-sdk-macros",
     "soroban-spec",
@@ -50,9 +50,8 @@ git = "https://github.com/stellar/rs-soroban-env"
 rev = "c8583e3e"
 
 [workspace.dependencies.stellar-strkey]
-version = "0.0.6"
+version = "0.0.7"
 git = "https://github.com/stellar/rs-stellar-strkey"
-rev = "5e582a8b"
 
 [workspace.dependencies.stellar-xdr]
 version = "0.0.12"
