@@ -158,7 +158,6 @@ pub(crate) fn random<const N: usize>() -> [u8; N] {
     arr
 }
 
-#[cfg(not(target_family = "wasm"))]
 pub trait Address {
     /// Build an address from a contract identifier.
     ///

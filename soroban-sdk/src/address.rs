@@ -206,11 +206,11 @@ impl Address {
     }
 }
 
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+#[cfg(any(test, feature = "testutils"))]
 use crate::env::xdr::{Hash, ScAddress, ScObject};
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+#[cfg(any(test, feature = "testutils"))]
 use crate::{testutils::random, BytesN};
-#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
     fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
