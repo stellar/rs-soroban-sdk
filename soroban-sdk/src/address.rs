@@ -39,7 +39,7 @@ impl Debug for Address {
         #[cfg(not(target_family = "wasm"))]
         {
             use crate::env::internal::xdr;
-            use stellar_strkey::StrkeyPublicKeyEd25519;
+            use stellar_strkey::{ed25519, Contract, Strkey};
             let sc_val = ScVal::try_from(self).map_err(|_| core::fmt::Error)?;
             if let ScVal::Object(Some(xdr::ScObject::Address(addr))) = sc_val {
                 match addr {
@@ -47,13 +47,12 @@ impl Debug for Address {
                         let xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
                             ed25519,
                         ))) = account_id;
-                        let strkey = StrkeyPublicKeyEd25519(ed25519);
+                        let strkey = Strkey::PublicKeyEd25519(ed25519::PublicKey(ed25519));
                         write!(f, "AccountId({})", strkey.to_string())?;
                     }
                     xdr::ScAddress::Contract(contract_id) => {
-                        // TODO: we should use contract strkey here when it's
-                        // supported.
-                        write!(f, "Contract({:?})", contract_id.0)?;
+                        let strkey = Strkey::Contract(Contract(contract_id.0));
+                        write!(f, "Contract({})", strkey.to_string())?;
                     }
                 }
             } else {
