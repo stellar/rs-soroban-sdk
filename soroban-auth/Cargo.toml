@@ -1,6 +1,6 @@
 [package]
-name = "soroban-account"
-description = "Soroban account SDK."
+name = "soroban-auth"
+description = "Soroban auth SDK."
 homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]

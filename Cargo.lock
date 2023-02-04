@@ -829,7 +829,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74233d3b3b2f6d4b006dc19dee745e73e2a6bfb6f93607cd3b02bd5b00797d7c"
 
 [[package]]
-name = "soroban-account"
+name = "soroban-auth"
 version = "0.4.3"
 dependencies = [
  "soroban-sdk",

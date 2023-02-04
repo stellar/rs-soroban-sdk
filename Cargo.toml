@@ -2,7 +2,7 @@
 resolver = "2"
 
 members = [
-    "soroban-account",
+    "soroban-auth",
     "soroban-sdk",
     "soroban-sdk-macros",
     "soroban-spec",
