@@ -633,7 +633,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, Address, Env, IntoVal};
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal};
     ///
     /// pub struct Contract;
     ///
