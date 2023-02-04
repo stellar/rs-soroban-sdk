@@ -156,10 +156,6 @@ impl Address {
     /// Ensures that this Address has authorized invocation of the current
     /// contract with the provided arguments.
     ///
-    /// ### Panics
-    ///
-    /// If the invocation is not authorized.
-    ///
     /// During the on-chain execution the Soroban host will perform the needed
     /// authentication (verify the signatures) and ensure the replay prevention.
     /// The contracts don't need to perform this tasks.
@@ -175,6 +171,10 @@ impl Address {
     /// no signatures are required. In order to make sure that the contract
     /// has indeed called `require_auth` for this Address with expected arguments
     /// use `env.verify_top_authorization`.
+    ///
+    /// ### Panics
+    ///
+    /// If the invocation is not authorized.
     pub fn require_auth(&self, args: Vec<RawVal>) {
         self.env.require_auth(&self, args);
     }
