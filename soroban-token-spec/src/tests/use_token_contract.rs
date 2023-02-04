@@ -1,4 +1,6 @@
-use soroban_sdk::{contractimpl, contracttype, Address, BytesN, Env, IntoVal};
+use soroban_sdk::{
+    contractimpl, contracttype, testutils::Address as _, Address, BytesN, Env, IntoVal,
+};
 
 mod token_contract {
     soroban_sdk::contractimport!(
@@ -51,7 +53,6 @@ fn test() {
 
     let token_client = TokenClient::new(&env, &client.get_token());
     assert_eq!(token_client.decimals(), 7);
-
     let from = Address::random(&env);
     let spender = Address::random(&env);
     client.incr_allow(&from, &spender, &20);

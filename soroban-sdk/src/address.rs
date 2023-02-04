@@ -205,3 +205,23 @@ impl Address {
         self.obj
     }
 }
+
+#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+use crate::env::xdr::{Hash, ScAddress, ScObject};
+#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+use crate::{testutils::random, BytesN};
+#[cfg(all(feature = "testutils", not(target_family = "wasm")))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl crate::testutils::Address for Address {
+    fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
+        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(
+            contract_id.to_array(),
+        )))));
+        Self::try_from_val(env, &sc_addr).unwrap()
+    }
+
+    fn random(env: &Env) -> Self {
+        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(random())))));
+        Self::try_from_val(env, &sc_addr).unwrap()
+    }
+}
