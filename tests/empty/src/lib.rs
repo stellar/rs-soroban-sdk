@@ -5,9 +5,6 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    /// dope function
-    // extra function
-    /// wonderful functio
     pub fn empty() {}
 }
 
