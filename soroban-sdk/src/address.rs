@@ -175,8 +175,26 @@ impl Address {
     /// ### Panics
     ///
     /// If the invocation is not authorized.
-    pub fn require_auth(&self, args: Vec<RawVal>) {
-        self.env.require_auth(&self, args);
+    pub fn require_auth_for_args(&self, args: Vec<RawVal>) {
+        self.env.require_auth_for_args(&self, args);
+    }
+
+    /// Ensures that this Address has authorized invocation of the current
+    /// contract with all the invocation arguments
+    ///
+    /// This works exactly in the same fashion as `require_auth_for_args`, but
+    /// arguments are automatically inferred from the current contract
+    /// invocation.
+    ///
+    /// This is useful when there is only a single Address that needs to
+    /// authorize the contract invocation and there are no dynamic arguments
+    /// that don't need authorization.
+    ///
+    /// ### Panics
+    ///
+    /// If the invocation is not authorized.    
+    pub fn require_auth(&self) {
+        self.env.require_auth(&self);
     }
 
     #[inline(always)]

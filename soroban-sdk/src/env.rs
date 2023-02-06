@@ -225,9 +225,14 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub(crate) fn require_auth(&self, address: &Address, args: Vec<RawVal>) {
-        internal::Env::require_auth(self, address.to_object(), args.to_object())
+    pub(crate) fn require_auth_for_args(&self, address: &Address, args: Vec<RawVal>) {
+        internal::Env::require_auth_for_args(self, address.to_object(), args.to_object())
             .unwrap_infallible();
+    }
+
+    #[doc(hidden)]
+    pub(crate) fn require_auth(&self, address: &Address) {
+        internal::Env::require_auth(self, address.to_object()).unwrap_infallible();
     }
 
     /// Returns the contract call stack as a [`Vec`]
@@ -616,8 +621,9 @@ impl Env {
         contract_id
     }
 
-    /// Checks if a top-level `require_auth` call has happened during the last
-    /// contract invocation for the given `address` and contract invocation.
+    /// Checks if a top-level `require_auth` or `require_auth_for_args` call has
+    /// happened during the last contract invocation for the given `address` and
+    /// contract invocation.
     ///
     /// This also removes the record about the authorization, so calling this
     /// for the second time with the same arguments will usually return `false`
@@ -640,7 +646,7 @@ impl Env {
     /// #[contractimpl]
     /// impl Contract {
     ///     pub fn transfer(env: Env, address: Address, amount: i128) {
-    ///         address.require_auth((amount / 2,).into_val(&env));
+    ///         address.require_auth_for_args((amount / 2,).into_val(&env));
     ///     }
     /// }
     ///
