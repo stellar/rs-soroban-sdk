@@ -7,6 +7,7 @@ mod derive_error_enum_int;
 mod derive_fn;
 mod derive_struct;
 mod derive_struct_tuple;
+mod doc;
 mod map_type;
 mod path;
 mod syn_ext;
@@ -128,6 +129,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
+    let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub.
     let gen_spec = if let Some(export) = args.export {
@@ -155,7 +157,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(&args.crate_path, ident, e, gen_spec, &args.lib)
+                derive_type_enum(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
             } else if count_of_int_variants == count_of_variants {
                 derive_type_enum_int(&args.crate_path, ident, e, gen_spec, &args.lib)
             } else {

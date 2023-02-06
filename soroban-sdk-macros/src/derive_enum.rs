@@ -2,17 +2,18 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{spanned::Spanned, DataEnum, Error, Fields, Ident, Path};
+use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, StringM, WriteXdr,
 };
 
-use crate::map_type::map_type;
+use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_enum(
     path: &Path,
     enum_ident: &Ident,
+    attrs: &[Attribute],
     data: &DataEnum,
     spec: bool,
     lib: &Option<String>,
@@ -67,6 +68,7 @@ pub fn derive_type_enum(
             };
             if let Some(f) = field {
                 let spec_case = ScSpecUdtUnionCaseV0 {
+                    doc: docs_from_attrs(&v.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                     name: name.try_into().unwrap_or_else(|_| StringM::default()),
                     type_: Some(match map_type(&f.ty) {
                         Ok(t) => t,
@@ -103,6 +105,7 @@ pub fn derive_type_enum(
                 (spec_case, discriminant_const, try_from, try_into, try_from_xdr, into_xdr)
             } else {
                 let spec_case = ScSpecUdtUnionCaseV0 {
+                    doc: docs_from_attrs(&v.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                     name: name.try_into().unwrap_or_else(|_| StringM::default()),
                     type_: None,
                 };
@@ -143,6 +146,7 @@ pub fn derive_type_enum(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),

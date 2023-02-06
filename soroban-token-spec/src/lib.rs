@@ -106,7 +106,7 @@ const SPEC_XDR_INPUT: &[&[u8]] = &[
     &Token::spec_xdr_xfer_from(),
 ];
 
-const SPEC_XDR_LEN: usize = 944;
+const SPEC_XDR_LEN: usize = 1148;
 
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]

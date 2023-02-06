@@ -108,17 +108,21 @@ fn test_reregister_over_wasm_with_rust_impl() {
 fn test_spec() {
     let entries = soroban_spec::read::parse_raw(&Contract::spec_xdr_add_with()).unwrap();
     let expect = vec![ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
         name: "add_with".try_into().unwrap(),
         inputs: vec![
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "contract_id".try_into().unwrap(),
                 type_: ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
             },
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "x".try_into().unwrap(),
                 type_: ScSpecTypeDef::U64,
             },
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "y".try_into().unwrap(),
                 type_: ScSpecTypeDef::U64,
             },

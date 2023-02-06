@@ -44,6 +44,7 @@ pub fn derive_type_enum_int(
                 0
             };
             let spec_case = ScSpecUdtEnumCaseV0 {
+                doc: "".try_into().unwrap(), // TODO: Add docs here.
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 value: discriminant,
             };
@@ -62,6 +63,7 @@ pub fn derive_type_enum_int(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
+            doc: "".try_into().unwrap(), // TODO: Add docs here.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
