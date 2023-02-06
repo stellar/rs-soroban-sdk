@@ -64,13 +64,20 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
         }
     } else {
         let variants = spec.cases.iter().map(|c| {
-            let v_ident = format_ident!("{}", c.name.to_string().unwrap());
-            let v_type = c
-                .type_
-                .as_ref()
-                .map(generate_type_ident)
-                .map_or_else(|| quote! {}, |t| quote! { (#t) });
-            quote! { #v_ident #v_type }
+            let name = match c {
+                stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(v) => v.name.clone(),
+                stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => t.name.clone(),
+            };
+            let v_ident = format_ident!("{}", name.to_string_lossy());
+            match c {
+                stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => {
+                    quote! { #v_ident }
+                }
+                stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => {
+                    let v_type = t.type_.iter().map(generate_type_ident);
+                    quote! { #v_ident ( #(#v_type),* ) }
+                }
+            }
         });
         quote! {
             #[soroban_sdk::contracttype(export = false)]

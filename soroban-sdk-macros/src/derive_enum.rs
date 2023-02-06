@@ -5,7 +5,8 @@ use soroban_env_common::Symbol;
 use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path};
 
 use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, StringM, WriteXdr,
+    ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
+    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, WriteXdr,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type};
@@ -67,17 +68,21 @@ pub fn derive_type_enum(
                 #discriminant_const_u64
             };
             if let Some(f) = field {
-                let spec_case = ScSpecUdtUnionCaseV0 {
+                let spec_case = ScSpecUdtUnionCaseV0::TupleV0(
+                    ScSpecUdtUnionCaseTupleV0 {
                     doc: docs_from_attrs(&v.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                     name: name.try_into().unwrap_or_else(|_| StringM::default()),
-                    type_: Some(match map_type(&f.ty) {
-                        Ok(t) => t,
-                        Err(e) => {
-                            errors.push(e);
-                            ScSpecTypeDef::I32
-                        }
-                    }),
-                };
+                    type_: vec![
+                        match map_type(&f.ty) {
+                            Ok(t) => t,
+                            Err(e) => {
+                                errors.push(e);
+                                ScSpecTypeDef::I32
+                            }
+                        },
+                        ].try_into().unwrap()
+                    }
+                );
                 let try_from = quote! {
                     #discriminant_const_u64_ident => {
                         if iter.len() > 1 {
@@ -104,11 +109,10 @@ pub fn derive_type_enum(
                 let into_xdr = quote! { #enum_ident::#ident(value) => (#name, value).try_into().map_err(|_| #path::xdr::Error::Invalid)? };
                 (spec_case, discriminant_const, try_from, try_into, try_from_xdr, into_xdr)
             } else {
-                let spec_case = ScSpecUdtUnionCaseV0 {
+                let spec_case = ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
                     doc: docs_from_attrs(&v.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                     name: name.try_into().unwrap_or_else(|_| StringM::default()),
-                    type_: None,
-                };
+                });
                 let try_from = quote! {
                     #discriminant_const_u64_ident => {
                         if iter.len() > 0 {

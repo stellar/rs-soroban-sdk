@@ -50,11 +50,17 @@ pub struct UnionCase {
 
 impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
     fn from(c: &ScSpecUdtUnionCaseV0) -> Self {
-        UnionCase {
-            doc: c.doc.to_string_lossy(),
-            name: c.name.to_string_lossy(),
-            values: c.type_.as_ref().map(Type::from).into_iter().collect(),
-        }
+        let (doc, name, values) = match c {
+            ScSpecUdtUnionCaseV0::VoidV0(v) => {
+                (v.doc.to_string_lossy(), v.name.to_string_lossy(), vec![])
+            }
+            ScSpecUdtUnionCaseV0::TupleV0(t) => (
+                t.doc.to_string_lossy(),
+                t.name.to_string_lossy(),
+                t.type_.iter().map(Type::from).into_iter().collect(),
+            ),
+        };
+        UnionCase { doc, name, values }
     }
 }
 
