@@ -605,7 +605,7 @@ pub mod unwrap;
 mod env;
 
 mod address;
-pub mod xdr;
+pub use env::xdr;
 
 pub use env::ConversionError;
 
