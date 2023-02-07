@@ -621,13 +621,21 @@ impl Env {
         contract_id
     }
 
-    /// Checks if a top-level `require_auth` or `require_auth_for_args` call has
-    /// happened during the last contract invocation for the given `address` and
-    /// contract invocation.
+    /// Returns the recorded top-level `require_auth` or `require_auth_for_args`
+    /// calls that have happened during the last contract invocation.    
     ///
-    /// This also removes the record about the authorization, so calling this
-    /// for the second time with the same arguments will usually return `false`
-    /// (unless the identical authorization happened multiple times).
+    /// Use this in tests to verify that the expected authorizations with the
+    /// expected arguments are required.
+    ///
+    /// The return value is a vector of authorizations represented by tuples of
+    /// `(address, contract_id, function_name, args)` corresponding to the calls
+    /// of `require_auth_for_args(address, args)` from the contract function
+    /// `(contract_id, function_name)` (or `require_auth` with all the arguments
+    /// of the function invocation).
+    ///
+    /// The order of the returned vector is defined by the order of
+    /// `require_auth` calls. It is recommended though to do unordered
+    /// comparison in case if multiple entries are returned.
     ///
     /// 'Top-level call' here means that this is the first call of
     /// `require_auth` for a given address in the call stack; it doesn't have
@@ -637,15 +645,22 @@ impl Env {
     /// `true` when verifying the contract B's `require_auth` call, but it will
     /// return `false` if contract A makes a `require_auth` call.
     ///
+    /// It is possible for a single address to be present multiple times in the
+    /// output, as long as there are multiple disjoint call trees for that
+    /// address.
+    ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal};
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal, symbol};
     ///
     /// pub struct Contract;
     ///
     /// #[contractimpl]
     /// impl Contract {
     ///     pub fn transfer(env: Env, address: Address, amount: i128) {
+    ///         address.require_auth();
+    ///     }
+    ///     pub fn transfer2(env: Env, address: Address, amount: i128) {
     ///         address.require_auth_for_args((amount / 2,).into_val(&env));
     ///     }
     /// }
@@ -655,44 +670,67 @@ impl Env {
     /// # }
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
+    ///     extern crate std;
     ///     let env = Env::default();
     ///     let contract_id = env.register_contract(None, Contract);
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     let address = Address::random(&env);
     ///     client.transfer(&address, &1000_i128);
-    ///     // `transfer` requires auth for (amount / 2) == (1000 / 2) == 500.
-    ///     assert!(env.verify_top_authorization(
-    ///         &address,
-    ///         &contract_id,
-    ///         "transfer",
-    ///         (500_i128,).into_val(&env)
-    ///     ));
-    ///     // The duplicate verification won't succeed.
-    ///     assert!(!env.verify_top_authorization(
-    ///         &address,
-    ///         &contract_id,
-    ///         "transfer",
-    ///         (500_i128,).into_val(&env)
-    ///     ));
+    ///     assert_eq!(
+    ///         env.recorded_top_authorizations(),
+    ///         std::vec![(
+    ///             address.clone(),
+    ///             client.contract_id.clone(),
+    ///             symbol!("transfer"),
+    ///             (&address, 1000_i128,).into_val(&env)
+    ///         )]
+    ///     );
+    ///
+    ///     client.transfer2(&address, &1000_i128);
+    ///     assert_eq!(
+    ///         env.recorded_top_authorizations(),
+    ///         std::vec![(
+    ///             address.clone(),
+    ///             client.contract_id.clone(),
+    ///             symbol!("transfer2"),
+    ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
+    ///             (500_i128,).into_val(&env)
+    ///         )]
+    ///     );
     /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn verify_top_authorization(
+    pub fn recorded_top_authorizations(
         &self,
-        address: &Address,
-        contract_id: &BytesN<32>,
-        function_name: &str,
-        args: Vec<RawVal>,
-    ) -> bool {
-        self.env_impl
-            .verify_top_authorization(
-                address.to_object(),
-                xdr::Hash(contract_id.to_array()),
-                Symbol::try_from_str(function_name).unwrap(),
-                args.to_object(),
-            )
-            .unwrap()
+    ) -> std::vec::Vec<(Address, BytesN<32>, Symbol, Vec<RawVal>)> {
+        use xdr::{ScObject, ScVal};
+        let authorizations = self.env_impl.get_recorded_top_authorizations().unwrap();
+        authorizations
+            .iter()
+            .map(|a| {
+                let mut args = Vec::new(self);
+                for v in a.3.iter() {
+                    args.push_back(RawVal::try_from_val(self, v).unwrap());
+                }
+                (
+                    Address::try_from_val(
+                        self,
+                        &ScVal::Object(Some(ScObject::Address(a.0.clone()))),
+                    )
+                    .unwrap(),
+                    BytesN::<32>::try_from_val(
+                        self,
+                        &ScVal::Object(Some(ScObject::Bytes(
+                            a.1.as_slice().to_vec().try_into().unwrap(),
+                        ))),
+                    )
+                    .unwrap(),
+                    a.2.clone(),
+                    args,
+                )
+            })
+            .collect()
     }
 
     fn register_contract_with_contract_id_and_source(

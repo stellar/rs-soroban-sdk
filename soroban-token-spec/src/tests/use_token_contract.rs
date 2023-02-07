@@ -1,5 +1,5 @@
 use soroban_sdk::{
-    contractimpl, contracttype, testutils::Address as _, Address, BytesN, Env, IntoVal,
+    contractimpl, contracttype, symbol, testutils::Address as _, Address, BytesN, Env, IntoVal,
 };
 
 mod token_contract {
@@ -43,6 +43,8 @@ impl TestContract {
 
 #[test]
 fn test() {
+    extern crate std;
+
     let env = Env::default();
     let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
@@ -57,26 +59,15 @@ fn test() {
     let spender = Address::random(&env);
     client.incr_allow(&from, &spender, &20);
 
-    // Smoke test check that authorization with wrong args didn't happen.
-    assert!(!env.verify_top_authorization(
-        &from,
-        &token_client.contract_id,
-        "incr_allow",
-        (&from, &spender, 19_i128).into_val(&env),
-    ));
-    assert!(env.verify_top_authorization(
-        &from,
-        &token_client.contract_id,
-        "incr_allow",
-        (&from, &spender, 20_i128).into_val(&env),
-    ));
-    // Smoke test check that double authorization didn't happen.
-    assert!(!env.verify_top_authorization(
-        &from,
-        &token_client.contract_id,
-        "incr_allow",
-        (&from, &spender, 20_i128).into_val(&env),
-    ));
+    assert_eq!(
+        env.recorded_top_authorizations(),
+        std::vec![(
+            from.clone(),
+            token_client.contract_id.clone(),
+            symbol!("incr_allow"),
+            (&from, &spender, 20_i128).into_val(&env)
+        )]
+    );
 
     assert_eq!(client.allowance(&from, &spender), 20);
 }
