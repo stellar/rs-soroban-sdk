@@ -1,13 +1,13 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{spanned::Spanned, DataStruct, Error, Ident, Path, Attribute};
+use syn::{spanned::Spanned, Attribute, DataStruct, Error, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::{map_type::map_type, doc::docs_from_attrs};
+use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
