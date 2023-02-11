@@ -2,13 +2,13 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use soroban_env_common::Symbol;
-use syn::{spanned::Spanned, DataStruct, Error, Ident, Path};
+use syn::{spanned::Spanned, Attribute, DataStruct, Error, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::map_type::map_type;
+use crate::{doc::docs_from_attrs, map_type::map_type};
 
 // TODO: Add field attribute for including/excluding fields in types.
 // TODO: Better handling of partial types and types without all their fields and
@@ -17,6 +17,7 @@ use crate::map_type::map_type;
 pub fn derive_type_struct(
     path: &Path,
     ident: &Ident,
+    attrs: &[Attribute],
     data: &DataStruct,
     spec: bool,
     lib: &Option<String>,
@@ -43,7 +44,7 @@ pub fn derive_type_struct(
                 errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {
-        doc: "".try_into().unwrap(), // TODO: Add docs here.
+                doc: "".try_into().unwrap(), // TODO: Add docs here.
                 name: name.clone().try_into().unwrap_or_else(|_| StringM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
@@ -89,7 +90,7 @@ pub fn derive_type_struct(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            doc: "".try_into().unwrap(), // TODO: Add docs here.
+            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
