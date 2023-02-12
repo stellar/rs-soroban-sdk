@@ -44,6 +44,11 @@ pub fn derive_type_enum(
                 Fields::Named(_) => {
                     errors.push(Error::new(v.fields.span(), format!("enum variant {} has unsupported named fields", ident)));
                 }
+                Fields::Unnamed(_) if v.fields.is_empty() => {
+                    // Empty tuples are unsupported because it would require extra complexity
+                    // to distinguish them from unit-style variants.
+                    errors.push(Error::new(v.fields.span(), format!("enum variant {} is unsupported 0-element tuple", ident)));
+                }
                 _ => { }
             }
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
@@ -58,8 +63,8 @@ pub fn derive_type_enum(
                 #discriminant_const_sym
                 #discriminant_const_u64
             };
-            let has_fields = v.fields.iter().next().is_some();
-            if has_fields {
+            let is_unit_variant = v.fields == Fields::Unit;
+            if !is_unit_variant {
                 let VariantTokens {
                     spec_case, try_from, try_into, try_from_xdr, into_xdr
                 } = map_tuple_variant(
