@@ -22,12 +22,12 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD).unwrap();
+    let entry = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: "Add adds\nthings together.".try_into().unwrap(),
         name: "add".try_into().unwrap(),
         inputs: vec![].try_into().unwrap(),
         outputs: vec![].try_into().unwrap(),
     });
-    assert_eq!(entries, expect);
+    assert_eq!(entry, expect);
 }
