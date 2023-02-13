@@ -19,3 +19,4 @@ mod contractimport_with_error;
 mod contractimport_with_sha256;
 mod contract_docs_struct_tuple;
 mod contract_docs_enum_int;
+mod contract_docs_enum_error_int;
