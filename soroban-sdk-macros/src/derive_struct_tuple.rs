@@ -38,7 +38,7 @@ pub fn derive_type_struct_tuple(
             let ident = Literal::usize_unsuffixed(i);
             let name = format!("{}", i);
             let spec_field = ScSpecUdtStructFieldV0 {
-                doc: "".try_into().unwrap(), // TODO: Add docs here.
+                doc: docs_from_attrs(&f.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,

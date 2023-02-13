@@ -17,3 +17,4 @@ mod contractfile_with_sha256;
 mod contractimport;
 mod contractimport_with_error;
 mod contractimport_with_sha256;
+mod contract_docs_struct_tuple;
