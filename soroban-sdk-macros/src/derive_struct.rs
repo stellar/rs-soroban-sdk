@@ -44,7 +44,7 @@ pub fn derive_type_struct(
                 errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {
-                doc: "".try_into().unwrap(), // TODO: Add docs here.
+                doc: docs_from_attrs(&f.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: name.clone().try_into().unwrap_or_else(|_| StringM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
