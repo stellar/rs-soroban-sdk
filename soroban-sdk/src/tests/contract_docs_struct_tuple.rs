@@ -5,7 +5,6 @@ use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV
 /// S holds two u64s.
 #[contracttype]
 pub struct S(
-    
     /// first
     u64,
     /// second
