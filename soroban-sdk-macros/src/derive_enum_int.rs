@@ -47,7 +47,7 @@ pub fn derive_type_enum_int(
                 0
             };
             let spec_case = ScSpecUdtEnumCaseV0 {
-                doc: "".try_into().unwrap(), // TODO: Add docs here.
+                doc: docs_from_attrs(&v.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 value: discriminant,
             };
