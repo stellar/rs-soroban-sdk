@@ -44,7 +44,8 @@ mod struct_ {
     #[contracttype]
     /// b.
     pub struct S {
-        /// a is a
+        /// a is
+        /// a
         a: u64,
         /// b is b
         b: u64,
@@ -59,7 +60,7 @@ mod struct_ {
             lib: "".try_into().unwrap(),
             fields: [
                 ScSpecUdtStructFieldV0 {
-                    doc: "a is a".try_into().unwrap(),
+                    doc: "a is\na".try_into().unwrap(),
                     name: "a".try_into().unwrap(),
                     type_: stellar_xdr::ScSpecTypeDef::U64,
                 },
@@ -85,6 +86,7 @@ mod struct_tuple {
     #[contracttype]
     pub struct S(
         /// first
+        /// line
         u64,
         /// second
         u64,
@@ -99,7 +101,7 @@ mod struct_tuple {
             lib: "".try_into().unwrap(),
             fields: [
                 ScSpecUdtStructFieldV0 {
-                    doc: "first".try_into().unwrap(),
+                    doc: "first\nline".try_into().unwrap(),
                     name: "0".try_into().unwrap(),
                     type_: stellar_xdr::ScSpecTypeDef::U64,
                 },
@@ -128,9 +130,11 @@ mod enum_ {
     #[contracttype]
     #[derive(Copy, Clone)]
     pub enum E {
-        /// A is a.
+        /// A is
+        /// a.
         A,
-        /// B is b.
+        /// B is
+        /// b.
         B(u64, u64),
     }
 
@@ -143,11 +147,11 @@ mod enum_ {
             name: "E".try_into().unwrap(),
             cases: [
                 ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
-                    doc: "A is a.".try_into().unwrap(),
+                    doc: "A is\na.".try_into().unwrap(),
                     name: "A".try_into().unwrap(),
                 }),
                 ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
-                    doc: "B is b.".try_into().unwrap(),
+                    doc: "B is\nb.".try_into().unwrap(),
                     name: "B".try_into().unwrap(),
                     type_: [
                         // TODO: Add docs for tuple values in union cases.
@@ -174,7 +178,8 @@ mod enum_int {
     #[contracttype]
     #[derive(Copy, Clone)]
     pub enum E {
-        /// A is a.
+        /// A is
+        /// a.
         A = 1,
         /// B is b.
         B = 2,
@@ -189,7 +194,7 @@ mod enum_int {
             lib: "".try_into().unwrap(),
             cases: [
                 ScSpecUdtEnumCaseV0 {
-                    doc: "A is a.".try_into().unwrap(),
+                    doc: "A is\na.".try_into().unwrap(),
                     name: "A".try_into().unwrap(),
                     value: 1,
                 },
@@ -215,7 +220,8 @@ mod enum_error_int {
     #[contracterror]
     #[derive(Copy, Clone)]
     pub enum E {
-        /// A is a.
+        /// A is
+        /// a.
         A = 1,
         /// B is b.
         B = 2,
@@ -230,7 +236,7 @@ mod enum_error_int {
             lib: "".try_into().unwrap(),
             cases: [
                 ScSpecUdtErrorEnumCaseV0 {
-                    doc: "A is a.".try_into().unwrap(),
+                    doc: "A is\na.".try_into().unwrap(),
                     name: "A".try_into().unwrap(),
                     value: 1,
                 },
