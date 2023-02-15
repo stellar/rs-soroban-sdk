@@ -139,9 +139,11 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
-            Fields::Named(_) => derive_type_struct(&args.crate_path, ident, s, gen_spec, &args.lib),
+            Fields::Named(_) => {
+                derive_type_struct(&args.crate_path, ident, attrs, s, gen_spec, &args.lib)
+            }
             Fields::Unnamed(_) => {
-                derive_type_struct_tuple(&args.crate_path, ident, s, gen_spec, &args.lib)
+                derive_type_struct_tuple(&args.crate_path, ident, attrs, s, gen_spec, &args.lib)
             }
             Fields::Unit => Error::new(
                 s.fields.span(),
@@ -159,7 +161,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
             if count_of_int_variants == 0 {
                 derive_type_enum(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(&args.crate_path, ident, e, gen_spec, &args.lib)
+                derive_type_enum_int(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()
@@ -187,6 +189,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
+    let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub.
     let gen_spec = if let Some(export) = args.export {
@@ -197,7 +200,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let derived = match &input.data {
         Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
-                derive_type_error_enum_int(&args.crate_path, ident, e, gen_spec, &args.lib)
+                derive_type_error_enum_int(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract errors only when all variants have an explicit integer literal")
                     .to_compile_error()

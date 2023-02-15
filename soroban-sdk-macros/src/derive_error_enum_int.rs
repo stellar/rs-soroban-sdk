@@ -2,11 +2,14 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM, WriteXdr};
-use syn::{spanned::Spanned, DataEnum, Error, ExprLit, Ident, Lit, Path};
+use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path};
+
+use crate::doc::docs_from_attrs;
 
 pub fn derive_type_error_enum_int(
     path: &Path,
     enum_ident: &Ident,
+    attrs: &[Attribute],
     data: &DataEnum,
     spec: bool,
     lib: &Option<String>,
@@ -40,7 +43,7 @@ pub fn derive_type_error_enum_int(
                 0
             };
             let spec_case = ScSpecUdtErrorEnumCaseV0 {
-                doc: "".try_into().unwrap(), // TODO: Add docs here.
+                doc: docs_from_attrs(&v.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 value: discriminant,
             };
@@ -60,7 +63,7 @@ pub fn derive_type_error_enum_int(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
-            doc: "".try_into().unwrap(), // TODO: Add docs here.
+            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),

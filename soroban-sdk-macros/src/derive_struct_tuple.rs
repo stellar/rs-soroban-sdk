@@ -1,17 +1,18 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{spanned::Spanned, DataStruct, Error, Ident, Path};
+use syn::{spanned::Spanned, Attribute, DataStruct, Error, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::map_type::map_type;
+use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
     ident: &Ident,
+    attrs: &[Attribute],
     data: &DataStruct,
     spec: bool,
     lib: &Option<String>,
@@ -37,7 +38,7 @@ pub fn derive_type_struct_tuple(
             let ident = Literal::usize_unsuffixed(i);
             let name = format!("{}", i);
             let spec_field = ScSpecUdtStructFieldV0 {
-        doc: "".try_into().unwrap(), // TODO: Add docs here.
+                doc: docs_from_attrs(&f.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 type_: match map_type(&f.ty) {
                     Ok(t) => t,
@@ -77,7 +78,7 @@ pub fn derive_type_struct_tuple(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            doc: "".try_into().unwrap(), // TODO: Add docs here.
+            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
