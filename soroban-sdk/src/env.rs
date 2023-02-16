@@ -127,7 +127,7 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, storage_map::StorageMap, Address, Bytes, BytesN, Vec,
+    storage::Storage, Address, Bytes, BytesN, Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -182,19 +182,6 @@ impl Env {
     #[inline(always)]
     pub fn storage(&self) -> Storage {
         Storage::new(self)
-    }
-
-    /// Get a [StorageMap] for accessing and update contract data that has been stored
-    /// by the currently executing contract.
-    #[inline(always)]
-    pub fn storage_map<D, K, V>(&self, discriminant: D) -> StorageMap<D, K, V>
-    where
-        D: IntoVal<Env, RawVal>,
-        K: IntoVal<Env, RawVal>,
-        V: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
-    {
-        StorageMap::new(self, discriminant)
     }
 
     /// Get [Events] for publishing events associated with the

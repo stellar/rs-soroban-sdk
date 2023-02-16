@@ -5,7 +5,7 @@ use core::{fmt::Debug, marker::PhantomData};
 use crate::{
     env::internal::{self, RawVal},
     unwrap::UnwrapInfallible,
-    Env, IntoVal, TryFromVal,
+    Env, IntoVal, Symbol, TryFromVal,
 };
 
 /// Storage map stores and retrieves specific key and value types for the
@@ -45,21 +45,18 @@ use crate::{
 /// # fn main() { }
 /// ```
 #[derive(Clone)]
-pub struct StorageMap<D, K, V>
+pub struct StorageMap<K, V>
 where
-    D: IntoVal<Env, RawVal>,
     K: IntoVal<Env, RawVal>,
     V: IntoVal<Env, RawVal>,
     V: TryFromVal<Env, RawVal>,
 {
-    env: Env,
-    discriminant: RawVal,
-    _p: (PhantomData<D>, PhantomData<K>, PhantomData<V>),
+    discriminant: Symbol,
+    _p: (PhantomData<K>, PhantomData<V>),
 }
 
-impl<D, K, V> Debug for StorageMap<D, K, V>
+impl<K, V> Debug for StorageMap<K, V>
 where
-    D: IntoVal<Env, RawVal>,
     K: IntoVal<Env, RawVal>,
     V: IntoVal<Env, RawVal>,
     V: TryFromVal<Env, RawVal>,
@@ -69,32 +66,24 @@ where
     }
 }
 
-impl<D, K, V> StorageMap<D, K, V>
+impl<K, V> StorageMap<K, V>
 where
-    D: IntoVal<Env, RawVal>,
     K: IntoVal<Env, RawVal>,
     V: IntoVal<Env, RawVal>,
     V: TryFromVal<Env, RawVal>,
 {
     #[inline(always)]
-    pub(crate) fn env(&self) -> &Env {
-        &self.env
-    }
-
-    #[inline(always)]
-    pub(crate) fn new(env: &Env, discriminant: D) -> Self {
+    pub const fn new(discriminant: &str) -> Self {
         Self {
-            env: env.clone(),
-            discriminant: discriminant.into_val(env),
-            _p: (PhantomData, PhantomData, PhantomData),
+            discriminant: Symbol::from_str(discriminant),
+            _p: (PhantomData, PhantomData),
         }
     }
 
     /// Returns if there is a value stored for the given key in the currently
     /// executing contracts data.
     #[inline(always)]
-    pub fn has(&self, key: K) -> bool {
-        let env = self.env();
+    pub fn has(&self, env: &Env, key: K) -> bool {
         let key = (self.discriminant, key.into_val(env)).into_val(env);
         let rv = internal::Env::has_contract_data(env, key).unwrap_infallible();
         rv.is_true()
@@ -113,11 +102,10 @@ where
     ///
     /// Add safe checked versions of these functions.
     #[inline(always)]
-    pub fn get(&self, key: K) -> Option<Result<V, V::Error>>
+    pub fn get(&self, env: &Env, key: K) -> Option<Result<V, V::Error>>
     where
         V::Error: Debug,
     {
-        let env = self.env();
         let key = (self.discriminant, key.into_val(env)).into_val(env);
         let has = internal::Env::has_contract_data(env, key).unwrap_infallible();
         if has.is_true() {
@@ -135,11 +123,10 @@ where
     ///
     /// When the key does not have a value stored.
     #[inline(always)]
-    pub fn get_unchecked(&self, key: K) -> Result<V, V::Error>
+    pub fn get_unchecked(&self, env: &Env, key: K) -> Result<V, V::Error>
     where
         V::Error: Debug,
     {
-        let env = self.env();
         let key = (self.discriminant, key.into_val(env)).into_val(env);
         let rv = internal::Env::get_contract_data(env, key).unwrap_infallible();
         V::try_from_val(env, &rv)
@@ -151,16 +138,14 @@ where
     /// If the key already has a value associated with it, the old value is
     /// replaced by the new value.
     #[inline(always)]
-    pub fn set(&self, key: K, val: V) {
-        let env = self.env();
+    pub fn set(&self, env: &Env, key: K, val: V) {
         let key = (self.discriminant, key.into_val(env)).into_val(env);
         let val = val.into_val(env);
         internal::Env::put_contract_data(env, key, val).unwrap_infallible();
     }
 
     #[inline(always)]
-    pub fn remove(&self, key: K) {
-        let env = self.env();
+    pub fn remove(&self, env: &Env, key: K) {
         let key = (self.discriminant, key.into_val(env)).into_val(env);
         internal::Env::del_contract_data(env, key).unwrap_infallible();
     }
