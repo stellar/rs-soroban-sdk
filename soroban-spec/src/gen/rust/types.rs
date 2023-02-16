@@ -4,6 +4,10 @@ use stellar_xdr::{
     ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
+// IMPORTANT: The "docs" fields of spec entries are not output in Rust token
+// streams as rustdocs, because rustdocs are evaluated and execute code by
+// default in Rust projects.
+
 // TODO: Replace the unwrap()s in this code with returning Result.
 // TODO: Create Idents in a way that we can get a Result back and return it too
 // because at the moment the format_ident! calls can panic if the inputs do not
@@ -60,13 +64,20 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
         }
     } else {
         let variants = spec.cases.iter().map(|c| {
-            let v_ident = format_ident!("{}", c.name.to_string().unwrap());
-            let v_type = c
-                .type_
-                .as_ref()
-                .map(generate_type_ident)
-                .map_or_else(|| quote! {}, |t| quote! { (#t) });
-            quote! { #v_ident #v_type }
+            let name = match c {
+                stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(v) => v.name.clone(),
+                stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => t.name.clone(),
+            };
+            let v_ident = format_ident!("{}", name.to_string_lossy());
+            match c {
+                stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => {
+                    quote! { #v_ident }
+                }
+                stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => {
+                    let v_type = t.type_.iter().map(generate_type_ident);
+                    quote! { #v_ident ( #(#v_type),* ) }
+                }
+            }
         });
         quote! {
             #[soroban_sdk::contracttype(export = false)]
@@ -136,8 +147,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Bitset => quote! { soroban_sdk::Bitset },
         ScSpecTypeDef::Status => quote! { soroban_sdk::Status },
         ScSpecTypeDef::Bytes => quote! { soroban_sdk::Bytes },
-        ScSpecTypeDef::Invoker => quote! { soroban_sdk::Address },
-        ScSpecTypeDef::AccountId => quote! { soroban_sdk::AccountId },
+        ScSpecTypeDef::Address => quote! { soroban_sdk::Address },
         ScSpecTypeDef::Option(o) => {
             let value_ident = generate_type_ident(&o.value_type);
             quote! { Option<#value_ident> }

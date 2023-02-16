@@ -11,7 +11,7 @@ use syn::{
     Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, ReturnType, Type, TypePath,
 };
 
-use crate::map_type::map_type;
+use crate::{doc::docs_from_attrs, map_type::map_type};
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn(
@@ -68,11 +68,16 @@ pub fn derive_fn(
                             errors.push(Error::new(ident.span(), format!("argument name too long, max length {} characters", MAX)));
                             StringM::<MAX>::default()
                         });
-                        ScSpecFunctionInputV0{ name, type_ }
+                        ScSpecFunctionInputV0{
+                            doc: "".try_into().unwrap(),
+                            name,
+                            type_,
+                        }
                     },
                     Err(e) => {
                         errors.push(e);
                         ScSpecFunctionInputV0{
+                            doc: "".try_into().unwrap(),
                             name: "arg".try_into().unwrap(),
                             type_: ScSpecTypeDef::I32,
                         }
@@ -95,7 +100,7 @@ pub fn derive_fn(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
                             &env,
-                            #ident
+                            &#ident
                         )
                     )
                 };
@@ -103,7 +108,7 @@ pub fn derive_fn(
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (ScSpecFunctionInputV0{ name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {})
+                (ScSpecFunctionInputV0{ doc: "".try_into().unwrap(), name: "".try_into().unwrap(), type_: ScSpecTypeDef::I32 } , a.clone(), quote! {})
             }
         })
         .multiunzip();
@@ -141,6 +146,7 @@ pub fn derive_fn(
 
     // Generated code spec.
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
         name: wrap_export_name.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
             errors.push(Error::new(
@@ -168,7 +174,7 @@ pub fn derive_fn(
     let spec_xdr = spec_entry.to_xdr().unwrap();
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
     let spec_xdr_len = spec_xdr.len();
-    let spec_ident = format_ident!("__SPEC_XDR_{}", ident.to_string().to_uppercase());
+    let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.to_string().to_uppercase());
     let spec_fn_ident = format_ident!("spec_xdr_{}", ident.to_string());
 
     // If errors have occurred, render them instead.
@@ -202,7 +208,7 @@ pub fn derive_fn(
                 #use_trait;
                 <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
                     #[allow(deprecated)]
-                    #call(
+                    &#call(
                         #env_call
                         #(#wrap_calls),*
                     ),
@@ -251,7 +257,7 @@ pub fn derive_contract_function_set<'a>(
                 env: soroban_sdk::Env,
                 args: &[soroban_sdk::RawVal],
             ) -> Option<soroban_sdk::RawVal> {
-                match func.to_str().as_ref() {
+                match ::core::convert::AsRef::<str>::as_ref(&func.to_str()) {
                     #(
                         #(#attrs)*
                         #idents => {

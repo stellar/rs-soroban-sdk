@@ -7,6 +7,7 @@ use stellar_xdr::{
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StructField {
+    doc: String,
     name: String,
     value: Type,
 }
@@ -14,6 +15,7 @@ pub struct StructField {
 impl From<&ScSpecUdtStructFieldV0> for StructField {
     fn from(f: &ScSpecUdtStructFieldV0) -> Self {
         StructField {
+            doc: f.doc.to_string_lossy(),
             name: f.name.to_string_lossy(),
             value: (&f.type_).into(),
         }
@@ -23,6 +25,7 @@ impl From<&ScSpecUdtStructFieldV0> for StructField {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FunctionInput {
+    doc: String,
     name: String,
     value: Type,
 }
@@ -30,6 +33,7 @@ pub struct FunctionInput {
 impl From<&ScSpecFunctionInputV0> for FunctionInput {
     fn from(f: &ScSpecFunctionInputV0) -> Self {
         FunctionInput {
+            doc: f.doc.to_string_lossy(),
             name: f.name.to_string_lossy(),
             value: (&f.type_).into(),
         }
@@ -39,22 +43,31 @@ impl From<&ScSpecFunctionInputV0> for FunctionInput {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UnionCase {
+    doc: String,
     name: String,
     values: Vec<Type>,
 }
 
 impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
     fn from(c: &ScSpecUdtUnionCaseV0) -> Self {
-        UnionCase {
-            name: c.name.to_string_lossy(),
-            values: c.type_.as_ref().map(Type::from).into_iter().collect(),
-        }
+        let (doc, name, values) = match c {
+            ScSpecUdtUnionCaseV0::VoidV0(v) => {
+                (v.doc.to_string_lossy(), v.name.to_string_lossy(), vec![])
+            }
+            ScSpecUdtUnionCaseV0::TupleV0(t) => (
+                t.doc.to_string_lossy(),
+                t.name.to_string_lossy(),
+                t.type_.iter().map(Type::from).into_iter().collect(),
+            ),
+        };
+        UnionCase { doc, name, values }
     }
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EnumCase {
+    doc: String,
     name: String,
     value: u32,
 }
@@ -62,6 +75,7 @@ pub struct EnumCase {
 impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
     fn from(c: &ScSpecUdtEnumCaseV0) -> Self {
         EnumCase {
+            doc: c.doc.to_string_lossy(),
             name: c.name.to_string_lossy(),
             value: c.value,
         }
@@ -71,6 +85,7 @@ impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ErrorEnumCase {
+    doc: String,
     name: String,
     value: u32,
 }
@@ -78,6 +93,7 @@ pub struct ErrorEnumCase {
 impl From<&ScSpecUdtErrorEnumCaseV0> for EnumCase {
     fn from(c: &ScSpecUdtErrorEnumCaseV0) -> Self {
         EnumCase {
+            doc: c.doc.to_string_lossy(),
             name: c.name.to_string_lossy(),
             value: c.value,
         }
@@ -101,7 +117,6 @@ pub enum Type {
     Status,
     Bytes,
     Address,
-    AccountId,
     Map { key: Box<Type>, value: Box<Type> },
     Option { value: Box<Type> },
     Result { value: Box<Type>, error: Box<Type> },
@@ -117,23 +132,28 @@ pub enum Type {
 #[serde(rename_all = "camelCase")]
 pub enum Entry {
     Function {
+        doc: String,
         name: String,
         inputs: Vec<FunctionInput>,
         outputs: Vec<Type>,
     },
     Struct {
+        doc: String,
         name: String,
         fields: Vec<StructField>,
     },
     Union {
+        doc: String,
         name: String,
         cases: Vec<UnionCase>,
     },
     Enum {
+        doc: String,
         name: String,
         cases: Vec<EnumCase>,
     },
     ErrorEnum {
+        doc: String,
         name: String,
         cases: Vec<ErrorEnumCase>,
     },
@@ -178,8 +198,7 @@ impl From<&ScSpecTypeDef> for Type {
             ScSpecTypeDef::Bitset => Type::Bitset,
             ScSpecTypeDef::Status => Type::Status,
             ScSpecTypeDef::Bytes => Type::Bytes,
-            ScSpecTypeDef::Invoker => Type::Address,
-            ScSpecTypeDef::AccountId => Type::AccountId,
+            ScSpecTypeDef::Address => Type::Address,
         }
     }
 }
@@ -188,23 +207,28 @@ impl From<&ScSpecEntry> for Entry {
     fn from(spec: &ScSpecEntry) -> Self {
         match spec {
             ScSpecEntry::FunctionV0(f) => Entry::Function {
+                doc: f.doc.to_string_lossy(),
                 name: f.name.to_string_lossy(),
                 inputs: f.inputs.iter().map(FunctionInput::from).collect(),
                 outputs: f.outputs.iter().map(Type::from).collect(),
             },
             ScSpecEntry::UdtStructV0(s) => Entry::Struct {
+                doc: s.doc.to_string_lossy(),
                 name: s.name.to_string_lossy(),
                 fields: s.fields.iter().map(StructField::from).collect(),
             },
             ScSpecEntry::UdtUnionV0(u) => Entry::Union {
+                doc: u.doc.to_string_lossy(),
                 name: u.name.to_string_lossy(),
                 cases: u.cases.iter().map(UnionCase::from).collect(),
             },
             ScSpecEntry::UdtEnumV0(e) => Entry::Enum {
+                doc: e.doc.to_string_lossy(),
                 name: e.name.to_string_lossy(),
                 cases: e.cases.iter().map(EnumCase::from).collect(),
             },
             ScSpecEntry::UdtErrorEnumV0(e) => Entry::Enum {
+                doc: e.doc.to_string_lossy(),
                 name: e.name.to_string_lossy(),
                 cases: e.cases.iter().map(EnumCase::from).collect(),
             },

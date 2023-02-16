@@ -8,7 +8,7 @@ use std::{
 use soroban_env_host::{
     storage::SnapshotSource,
     xdr::{LedgerEntry, LedgerKey, ScHostStorageErrorCode, ScStatus},
-    HostError, LedgerInfo,
+    Host, HostError, LedgerInfo,
 };
 
 #[derive(thiserror::Error, Debug)]
@@ -27,7 +27,7 @@ pub struct LedgerSnapshot {
     pub protocol_version: u32,
     pub sequence_number: u32,
     pub timestamp: u64,
-    pub network_passphrase: Vec<u8>,
+    pub network_id: [u8; 32],
     pub base_reserve: u32,
     pub ledger_entries: Vec<(Box<LedgerKey>, Box<LedgerEntry>)>,
 }
@@ -44,34 +44,49 @@ impl LedgerSnapshot {
         s
     }
 
+    /// Update the snapshot with the state within the given [`Host`].
+    ///
+    /// The ledger info of the host will overwrite the ledger info in the
+    /// snapshot.  The entries in the host's storage will overwrite entries in
+    /// the snapshot. Existing entries in the snapshot that are untouched by the
+    /// host will remain.
+    pub fn update(&mut self, host: &Host) {
+        let _result = host.with_ledger_info(|li| {
+            self.set_ledger_info(li.clone());
+            Ok(())
+        });
+        let _result = host.with_mut_storage(|s| {
+            self.update_entries(&s.map);
+            Ok(())
+        });
+    }
+
     // Get the ledger info in the snapshot.
     pub fn ledger_info(&self) -> LedgerInfo {
         LedgerInfo {
             protocol_version: self.protocol_version,
             sequence_number: self.sequence_number,
             timestamp: self.timestamp,
-            network_passphrase: self.network_passphrase.clone(),
+            network_id: self.network_id.clone(),
             base_reserve: self.base_reserve,
         }
     }
 
-    // Set the ledger info in the snapshot.
+    /// Set the ledger info in the snapshot.
     pub fn set_ledger_info(&mut self, info: LedgerInfo) {
         self.protocol_version = info.protocol_version;
         self.sequence_number = info.sequence_number;
         self.timestamp = info.timestamp;
-        self.network_passphrase = info.network_passphrase;
+        self.network_id = info.network_id;
         self.base_reserve = info.base_reserve;
     }
 
-    // Get the entries in the snapshot.
-    pub fn entries<'a>(
-        &'a self,
-    ) -> impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)> {
+    /// Get the entries in the snapshot.
+    pub fn entries(&self) -> impl IntoIterator<Item = (&Box<LedgerKey>, &Box<LedgerEntry>)> {
         self.ledger_entries.iter().map(|(k, v)| (k, v))
     }
 
-    // Replace the entries in the snapshot with the entries in the iterator.
+    /// Replace the entries in the snapshot with the entries in the iterator.
     pub fn set_entries<'a>(
         &mut self,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)>,
@@ -82,9 +97,9 @@ impl LedgerSnapshot {
         }
     }
 
-    // Update entries in the snapshot by adding or replacing any entries that
-    // have entry in the input iterator, or removing any that does not have an
-    // entry.
+    /// Update entries in the snapshot by adding or replacing any entries that
+    /// have entry in the input iterator, or removing any that does not have an
+    /// entry.
     pub fn update_entries<'a>(
         &mut self,
         entries: impl IntoIterator<Item = &'a (Rc<LedgerKey>, Option<Rc<LedgerEntry>>)>,
@@ -96,7 +111,7 @@ impl LedgerSnapshot {
                 if let Some(i) = i {
                     self.ledger_entries[i] = new;
                 } else {
-                    self.ledger_entries.push(new)
+                    self.ledger_entries.push(new);
                 }
             } else if let Some(i) = i {
                 self.ledger_entries.swap_remove(i);
@@ -139,7 +154,7 @@ impl Default for LedgerSnapshot {
             protocol_version: 20,
             sequence_number: Default::default(),
             timestamp: Default::default(),
-            network_passphrase: Vec::default(),
+            network_id: Default::default(),
             base_reserve: Default::default(),
             ledger_entries: Vec::default(),
         }

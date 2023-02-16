@@ -1,17 +1,8 @@
 #![no_std]
 
-use soroban_auth::{Identifier, Signature};
-use soroban_sdk::{contractimpl, contracttype, Bytes, Env};
+use soroban_sdk::{contractimpl, Address, Bytes, Env};
 
 mod tests;
-
-#[derive(Clone)]
-#[contracttype]
-pub struct TokenMetadata {
-    pub name: Bytes,
-    pub symbol: Bytes,
-    pub decimals: u32,
-}
 
 /// The interface below was copied from
 /// https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -26,64 +17,59 @@ pub struct Token;
 #[contractimpl]
 #[allow(unused_variables)]
 impl Token {
-    /// Init creates a token contract that does not wrap an asset on the classic
-    /// side. No checks are done on the contractID.
-    pub fn init(env: Env, admin: Identifier, metadata: TokenMetadata) {
+    pub fn allowance(env: Env, from: Address, spender: Address) -> i128 {
         panic!("calling into interface");
     }
 
-    pub fn nonce(env: Env, id: Identifier) -> i128 {
+    pub fn incr_allow(env: Env, from: Address, spender: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn allowance(env: Env, from: Identifier, spender: Identifier) -> i128 {
+    pub fn decr_allow(env: Env, from: Address, spender: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn approve(env: Env, from: Signature, nonce: i128, spender: Identifier, amount: i128) {
+    pub fn balance(env: Env, id: Address) -> i128 {
         panic!("calling into interface");
     }
 
-    pub fn balance(env: Env, id: Identifier) -> i128 {
+    pub fn spendable(env: Env, id: Address) -> i128 {
         panic!("calling into interface");
     }
 
-    pub fn is_frozen(env: Env, id: Identifier) -> bool {
+    pub fn authorized(env: Env, id: Address) -> bool {
         panic!("calling into interface");
     }
 
-    pub fn xfer(env: Env, from: Signature, nonce: i128, to: Identifier, amount: i128) {
+    pub fn xfer(env: Env, from: Address, to: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn xfer_from(
-        env: Env,
-        spender: Signature,
-        nonce: i128,
-        from: Identifier,
-        to: Identifier,
-        amount: i128,
-    ) {
+    pub fn xfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn burn(env: Env, admin: Signature, nonce: i128, from: Identifier, amount: i128) {
+    pub fn burn(env: Env, from: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn freeze(env: Env, admin: Signature, nonce: i128, id: Identifier) {
+    pub fn burn_from(env: Env, spender: Address, from: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn mint(env: Env, admin: Signature, nonce: i128, to: Identifier, amount: i128) {
+    pub fn set_auth(env: Env, admin: Address, id: Address, authorize: bool) {
         panic!("calling into interface");
     }
 
-    pub fn set_admin(env: Env, admin: Signature, nonce: i128, new_admin: Identifier) {
+    pub fn mint(env: Env, admin: Address, to: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn unfreeze(env: Env, admin: Signature, nonce: i128, id: Identifier) {
+    pub fn clawback(env: Env, admin: Address, from: Address, amount: i128) {
+        panic!("calling into interface");
+    }
+
+    pub fn set_admin(env: Env, admin: Address, new_admin: Address) {
         panic!("calling into interface");
     }
 
@@ -98,47 +84,36 @@ impl Token {
     pub fn symbol(env: Env) -> Bytes {
         panic!("calling into interface");
     }
-
-    pub fn import(env: Env, id: Signature, nonce: i128, amount: i64) {
-        panic!("calling into interface");
-    }
-
-    pub fn export(env: Env, id: Signature, nonce: i128, amount: i64) {
-        panic!("calling into interface");
-    }
 }
+
+const SPEC_XDR_INPUT: &[&[u8]] = &[
+    &Token::spec_xdr_allowance(),
+    &Token::spec_xdr_authorized(),
+    &Token::spec_xdr_balance(),
+    &Token::spec_xdr_burn(),
+    &Token::spec_xdr_burn_from(),
+    &Token::spec_xdr_clawback(),
+    &Token::spec_xdr_decimals(),
+    &Token::spec_xdr_decr_allow(),
+    &Token::spec_xdr_incr_allow(),
+    &Token::spec_xdr_mint(),
+    &Token::spec_xdr_name(),
+    &Token::spec_xdr_set_admin(),
+    &Token::spec_xdr_set_auth(),
+    &Token::spec_xdr_spendable(),
+    &Token::spec_xdr_symbol(),
+    &Token::spec_xdr_xfer(),
+    &Token::spec_xdr_xfer_from(),
+];
+
+const SPEC_XDR_LEN: usize = 1148;
 
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]
-pub const fn spec_xdr() -> [u8; 2036] {
-    let input: &[&[u8]] = &[
-        &Token::spec_xdr_allowance(),
-        &Token::spec_xdr_approve(),
-        &Token::spec_xdr_balance(),
-        &Token::spec_xdr_burn(),
-        &Token::spec_xdr_decimals(),
-        &Token::spec_xdr_export(),
-        &Token::spec_xdr_freeze(),
-        &Token::spec_xdr_import(),
-        &Token::spec_xdr_init(),
-        &Token::spec_xdr_is_frozen(),
-        &Token::spec_xdr_mint(),
-        &Token::spec_xdr_name(),
-        &Token::spec_xdr_nonce(),
-        &Token::spec_xdr_set_admin(),
-        &Token::spec_xdr_symbol(),
-        &Token::spec_xdr_unfreeze(),
-        &Token::spec_xdr_xfer(),
-        &Token::spec_xdr_xfer_from(),
-        &TokenMetadata::spec_xdr(),
-        &soroban_auth::Identifier::spec_xdr(),
-        &soroban_auth::Signature::spec_xdr(),
-        &soroban_auth::Ed25519Signature::spec_xdr(),
-        &soroban_auth::AccountSignatures::spec_xdr(),
-    ];
-
+pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
+    let input = SPEC_XDR_INPUT;
     // Concatenate all XDR for each item that makes up the token spec.
-    let mut output = [0u8; 2036];
+    let mut output = [0u8; SPEC_XDR_LEN];
     let mut input_i = 0;
     let mut output_i = 0;
     while input_i < input.len() {

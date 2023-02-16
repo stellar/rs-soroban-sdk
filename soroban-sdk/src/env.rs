@@ -1,15 +1,65 @@
-use core::convert::TryInto;
+use core::convert::Infallible;
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
+    use core::convert::Infallible;
+
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
+
+    // In the Guest case, Env::Error is already Infallible so there is no work
+    // to do to "reject an error": if an error occurs in the environment, the
+    // host will trap our VM and we'll never get here at all.
+    pub(crate) fn reject_err<T>(_env: &Guest, r: Result<T, Infallible>) -> Result<T, Infallible> {
+        r
+    }
 }
 
 #[cfg(not(target_family = "wasm"))]
 pub mod internal {
+    use core::convert::Infallible;
+
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
+
+    // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
+    // `soroban-env-{common,host}/testutils` which in turn adds the helper method
+    // `Env::escalate_error_to_panic` to the Env trait.
+    //
+    // When this is available we want to use it, because it works in concert
+    // with a _different_ part of the host that's also `testutils`-gated: the
+    // mechanism for emulating the WASM VM error-handling semantics with native
+    // contracts. In particular when a WASM contract calls a host function that
+    // fails with some error E, the host traps the VM (not returning to it at
+    // all) and propagates E to the caller of the contract. This is simulated in
+    // the native case by returning a (nontrivial) error E to us here, which we
+    // then "reject" back to the host, which stores E in a temporary cell inside
+    // any `TestContract` frame in progress and then _panics_, unwinding back to
+    // a panic-catcher it installed when invoking the `TestContract` frame, and
+    // then extracting E from the frame and returning it to its caller. This
+    // simulates the "crash, but catching the error" behaviour of the WASM case.
+    // This only works if we panic via `escalate_error_to_panic`.
+    //
+    // (The reason we don't just panic_any() here and let the panic-catcher do a
+    // type-based catch is that there might _be_ no panic-catcher around us, and
+    // we want to print out a nice error message in that case too, which
+    // panic_any() does not do us the favor of producing. This is all very
+    // subtle. See also soroban_env_host::Host::escalate_error_to_panic.)
+    #[cfg(any(test, feature = "testutils"))]
+    pub(crate) fn reject_err<T>(env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
+        r.map_err(|e| env.escalate_error_to_panic(e))
+    }
+
+    // When we're _not_ in a cfg enabling `soroban-env-{common,host}/testutils`,
+    // there is no `Env::escalate_error_to_panic` to call, so we just panic
+    // here. But this is ok because in that case there is also no multi-contract
+    // calling machinery set up, nor probably any panic-catcher installed that
+    // we need to hide error values for the benefit of. Any panic in this case
+    // is probably going to unwind completely anyways. No special case needed.
+    #[cfg(not(any(test, feature = "testutils")))]
+    pub(crate) fn reject_err<T>(_env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
+        r.map_err(|e| panic!("{:?}", e))
+    }
 
     #[doc(hidden)]
     impl<F, T> Convert<F, T> for super::Env
@@ -38,9 +88,6 @@ pub use internal::BitSet;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::FromVal;
-pub use internal::IntoVal;
-use internal::InvokerType;
 pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
@@ -50,10 +97,37 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 
+pub trait IntoVal<E: internal::Env, T> {
+    fn into_val(&self, e: &E) -> T;
+}
+
+pub trait FromVal<E: internal::Env, T> {
+    fn from_val(e: &E, v: &T) -> Self;
+}
+
+impl<E: internal::Env, T, U> FromVal<E, T> for U
+where
+    U: TryFromVal<E, T>,
+{
+    fn from_val(e: &E, v: &T) -> Self {
+        U::try_from_val(e, v).unwrap_optimized()
+    }
+}
+
+impl<E: internal::Env, T, U> IntoVal<E, T> for U
+where
+    T: FromVal<E, Self>,
+{
+    fn into_val(&self, e: &E) -> T {
+        T::from_val(e, self)
+    }
+}
+
+use crate::unwrap::UnwrapInfallible;
+use crate::unwrap::UnwrapOptimized;
 use crate::{
-    accounts::Accounts, address::Address, crypto::Crypto, deploy::Deployer, events::Events,
-    ledger::Ledger, logging::Logger, storage::Storage, storage_map::StorageMap, AccountId, Bytes,
-    BytesN, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
+    storage::Storage, storage_map::StorageMap, Address, Bytes, BytesN, Vec,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -93,21 +167,6 @@ impl Env {
     pub fn panic_with_error(&self, error: impl Into<Status>) {
         _ = internal::Env::fail_with_status(self, error.into());
         unreachable!()
-    }
-
-    /// Get the invoking [Address] of the current executing contract.
-    pub fn invoker(&self) -> Address {
-        let invoker_type: InvokerType = internal::Env::get_invoker_type(self)
-            .try_into()
-            .expect("unrecognized invoker type");
-        match invoker_type {
-            InvokerType::Account => Address::Account(unsafe {
-                AccountId::unchecked_new(self.clone(), internal::Env::get_invoking_account(self))
-            }),
-            InvokerType::Contract => Address::Contract(unsafe {
-                BytesN::unchecked_new(self.clone(), internal::Env::get_invoking_contract(self))
-            }),
-        }
     }
 
     /// Get a [Storage] for accessing and update contract data that has been stored
@@ -151,12 +210,6 @@ impl Env {
         Ledger::new(self)
     }
 
-    /// Get an [Accounts] for accessing accounts in the current ledger.
-    #[inline(always)]
-    pub fn accounts(&self) -> Accounts {
-        Accounts::new(self)
-    }
-
     /// Get a deployer for deploying contracts.
     #[inline(always)]
     pub fn deployer(&self) -> Deployer {
@@ -169,16 +222,30 @@ impl Env {
         Crypto::new(self)
     }
 
-    /// Get the 32-byte hash identifier of the current executing contract.
-    pub fn current_contract(&self) -> BytesN<32> {
-        let id = internal::Env::get_current_contract(self);
-        unsafe { BytesN::<32>::unchecked_new(self.clone(), id) }
+    /// Get the Address object corresponding to the current executing contract.
+    pub fn current_contract_address(&self) -> Address {
+        let address = internal::Env::get_current_contract_address(self).unwrap_infallible();
+        unsafe { Address::unchecked_new(self.clone(), address) }
     }
 
     /// Get the 32-byte hash identifier of the current executing contract.
+    ///
+    /// Prefer `current_contract_address` for the most cases, unless dealing
+    /// with contract-specific functions (like the call stacks).
+    pub fn current_contract_id(&self) -> BytesN<32> {
+        let id = internal::Env::get_current_contract_id(self).unwrap_infallible();
+        unsafe { BytesN::<32>::unchecked_new(self.clone(), id) }
+    }
+
     #[doc(hidden)]
-    pub fn get_current_contract(&self) -> BytesN<32> {
-        self.current_contract()
+    pub(crate) fn require_auth_for_args(&self, address: &Address, args: Vec<RawVal>) {
+        internal::Env::require_auth_for_args(self, address.to_object(), args.to_object())
+            .unwrap_infallible();
+    }
+
+    #[doc(hidden)]
+    pub(crate) fn require_auth(&self, address: &Address) {
+        internal::Env::require_auth(self, address.to_object()).unwrap_infallible();
     }
 
     /// Returns the contract call stack as a [`Vec`]
@@ -216,12 +283,12 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
-        let stack = internal::Env::get_current_call_stack(self);
+        let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
         unsafe { Vec::unchecked_new(self.clone(), stack) }
     }
 
     #[doc(hidden)]
-    #[deprecated(note = "use env.crypto().sha259(msg)")]
+    #[deprecated(note = "use env.crypto().sha256(msg)")]
     pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
         self.crypto().sha256(msg)
     }
@@ -254,8 +321,9 @@ impl Env {
     where
         T: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object());
-        T::try_from_val(self, rv)
+        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object())
+            .unwrap_infallible();
+        T::try_from_val(self, &rv)
             .map_err(|_| ConversionError)
             .unwrap()
     }
@@ -272,10 +340,11 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
         E: TryFrom<Status>,
     {
-        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object());
-        match Status::try_from_val(self, rv) {
+        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object())
+            .unwrap_infallible();
+        match Status::try_from_val(self, &rv) {
             Ok(status) => Err(E::try_from(status)),
-            Err(ConversionError) => Ok(T::try_from_val(self, rv)),
+            Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
         }
     }
 
@@ -287,15 +356,12 @@ impl Env {
 
     #[doc(hidden)]
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
-        internal::Env::log_value(self, v.into_val(self));
+        internal::Env::log_value(self, v.into_val(self)).unwrap_infallible();
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{
-    budget::Budget, random, AccountId as _, Accounts as _, BytesN as _, ContractFunctionSet,
-    Ledger as _,
-};
+use crate::testutils::{budget::Budget, random, BytesN as _, ContractFunctionSet, Ledger as _};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -319,7 +385,7 @@ impl Env {
             ) -> Result<xdr::LedgerEntry, soroban_env_host::HostError> {
                 use xdr::{ScHostStorageErrorCode, ScStatus};
                 let status: internal::Status =
-                    ScStatus::HostStorageError(ScHostStorageErrorCode::UnknownError).into();
+                    ScStatus::HostStorageError(ScHostStorageErrorCode::MissingKeyInGet).into();
                 Err(status.into())
             }
 
@@ -330,23 +396,19 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
-        let env_impl = internal::EnvImpl::with_storage_and_budget(
-            storage,
-            internal::budget::Budget::default(),
-        );
-
+        let budget = internal::budget::Budget::default();
+        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
+        env_impl.switch_to_recording_auth();
         let env = Env {
             env_impl,
             snapshot: None,
         };
 
-        env.set_source_account(&env.accounts().generate());
-
         env.ledger().set(internal::LedgerInfo {
             protocol_version: 0,
             sequence_number: 0,
             timestamp: 0,
-            network_passphrase: vec![0u8],
+            network_id: [0; 32],
             base_reserve: 0,
         });
 
@@ -452,18 +514,82 @@ impl Env {
         )
     }
 
-    /// Register the built-in Stellar Asset Contract for testing.
-    pub fn register_stellar_asset_contract(&self, asset: xdr::Asset) -> BytesN<32> {
+    /// Register the built-in Stellar Asset Contract with provided admin address.
+    ///
+    /// Returns the contract ID of the registered token contract.
+    ///
+    /// The contract will wrap a randomly-generated Stellar asset. This function
+    /// is useful for using in the tests when an arbitrary token contract
+    /// instance is needed.
+    pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
+        let issuer_id =
+            xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(random())));
+
+        self.host()
+            .with_mut_storage(|storage| {
+                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: issuer_id.clone(),
+                });
+
+                if !storage.has(
+                    &k,
+                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
+                )? {
+                    let v = xdr::LedgerEntry {
+                        data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
+                            account_id: issuer_id.clone(),
+                            balance: 0,
+                            flags: 0,
+                            home_domain: xdr::StringM::default(),
+                            inflation_dest: None,
+                            num_sub_entries: 0,
+                            seq_num: xdr::SequenceNumber(0),
+                            thresholds: xdr::Thresholds([1; 4]),
+                            signers: xdr::VecM::default(),
+                            ext: xdr::AccountEntryExt::V0,
+                        }),
+                        last_modified_ledger_seq: 0,
+                        ext: xdr::LedgerEntryExt::V0,
+                    };
+                    storage.put(
+                        &k,
+                        &v,
+                        soroban_env_host::budget::AsBudget::as_budget(self.host()),
+                    )?
+                }
+                Ok(())
+            })
+            .unwrap();
+
+        let asset = xdr::Asset::CreditAlphanum4(xdr::AlphaNum4 {
+            asset_code: xdr::AssetCode4(random()),
+            issuer: issuer_id.clone(),
+        });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-            contract_id: xdr::ContractId::Asset(asset),
+            contract_id: xdr::ContractId::Asset(asset.clone()),
             source: xdr::ScContractCode::Token,
         });
 
-        self.env_impl
+        let token_id = self
+            .env_impl
             .invoke_function(create)
             .unwrap()
             .try_into_val(self)
-            .unwrap()
+            .unwrap();
+        let issuer_address = Address::try_from_val(
+            self,
+            &xdr::ScVal::Object(Some(xdr::ScObject::Address(xdr::ScAddress::Account(
+                issuer_id.clone(),
+            )))),
+        )
+        .unwrap();
+        let _: () = self.invoke_contract(
+            &token_id,
+            &Symbol::from_str("set_admin"),
+            (issuer_address, admin).try_into_val(self).unwrap(),
+        );
+
+        token_id
     }
 
     fn register_contract_with_optional_contract_id_and_source<'a>(
@@ -486,7 +612,9 @@ impl Env {
             None
         };
         self.env_impl
-            .set_source_account(AccountId::random(self).try_into().unwrap());
+            .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+                xdr::Uint256(random()),
+            )));
 
         let contract_id: BytesN<32> = self
             .env_impl
@@ -504,6 +632,118 @@ impl Env {
             self.env_impl.remove_source_account();
         }
         contract_id
+    }
+
+    /// Returns the recorded top-level `require_auth` or `require_auth_for_args`
+    /// calls that have happened during the last contract invocation.    
+    ///
+    /// Use this in tests to verify that the expected authorizations with the
+    /// expected arguments are required.
+    ///
+    /// The return value is a vector of authorizations represented by tuples of
+    /// `(address, contract_id, function_name, args)` corresponding to the calls
+    /// of `require_auth_for_args(address, args)` from the contract function
+    /// `(contract_id, function_name)` (or `require_auth` with all the arguments
+    /// of the function invocation).
+    ///
+    /// The order of the returned vector is defined by the order of
+    /// `require_auth` calls. It is recommended though to do unordered
+    /// comparison in case if multiple entries are returned.
+    ///
+    /// 'Top-level call' here means that this is the first call of
+    /// `require_auth` for a given address in the call stack; it doesn't have
+    /// to coincide with the actual top-level contract invocation. For example,
+    /// if contract A doesn't use `require_auth` and then it calls contract B
+    /// that uses `require_auth`, then `verify_top_authorization` will return
+    /// `true` when verifying the contract B's `require_auth` call, but it will
+    /// return `false` if contract A makes a `require_auth` call.
+    ///
+    /// It is possible for a single address to be present multiple times in the
+    /// output, as long as there are multiple disjoint call trees for that
+    /// address.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal, symbol};
+    ///
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn transfer(env: Env, address: Address, amount: i128) {
+    ///         address.require_auth();
+    ///     }
+    ///     pub fn transfer2(env: Env, address: Address, amount: i128) {
+    ///         address.require_auth_for_args((amount / 2,).into_val(&env));
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    ///     extern crate std;
+    ///     let env = Env::default();
+    ///     let contract_id = env.register_contract(None, Contract);
+    ///     let client = ContractClient::new(&env, &contract_id);
+    ///     let address = Address::random(&env);
+    ///     client.transfer(&address, &1000_i128);
+    ///     assert_eq!(
+    ///         env.recorded_top_authorizations(),
+    ///         std::vec![(
+    ///             address.clone(),
+    ///             client.contract_id.clone(),
+    ///             symbol!("transfer"),
+    ///             (&address, 1000_i128,).into_val(&env)
+    ///         )]
+    ///     );
+    ///
+    ///     client.transfer2(&address, &1000_i128);
+    ///     assert_eq!(
+    ///         env.recorded_top_authorizations(),
+    ///         std::vec![(
+    ///             address.clone(),
+    ///             client.contract_id.clone(),
+    ///             symbol!("transfer2"),
+    ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
+    ///             (500_i128,).into_val(&env)
+    ///         )]
+    ///     );
+    /// }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn recorded_top_authorizations(
+        &self,
+    ) -> std::vec::Vec<(Address, BytesN<32>, Symbol, Vec<RawVal>)> {
+        use xdr::{ScObject, ScVal};
+        let authorizations = self.env_impl.get_recorded_top_authorizations().unwrap();
+        authorizations
+            .iter()
+            .map(|a| {
+                let mut args = Vec::new(self);
+                for v in a.3.iter() {
+                    args.push_back(RawVal::try_from_val(self, v).unwrap());
+                }
+                (
+                    Address::try_from_val(
+                        self,
+                        &ScVal::Object(Some(ScObject::Address(a.0.clone()))),
+                    )
+                    .unwrap(),
+                    BytesN::<32>::try_from_val(
+                        self,
+                        &ScVal::Object(Some(ScObject::Bytes(
+                            a.1.as_slice().to_vec().try_into().unwrap(),
+                        ))),
+                    )
+                    .unwrap(),
+                    a.2.clone(),
+                    args,
+                )
+            })
+            .collect()
     }
 
     fn register_contract_with_contract_id_and_source(
@@ -571,25 +811,6 @@ impl Env {
             .unwrap()
     }
 
-    /// Sets the source account in the [Env].
-    ///
-    /// The source account will be accessible via [Env::invoker] when a contract
-    /// is directly invoked.
-    pub fn set_source_account(&self, account_id: &AccountId) {
-        self.accounts().create(account_id);
-        self.env_impl
-            .set_source_account(account_id.try_into().unwrap());
-    }
-
-    /// Gets the source account set in the [Env].
-    pub fn source_account(&self) -> AccountId {
-        self.env_impl
-            .source_account()
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
-    }
-
     /// Run the function as if executed by the given contract ID.
     ///
     /// Used to write or read contract data, or take other actions in tests for
@@ -615,20 +836,15 @@ impl Env {
 
         let rs = Rc::new(s.clone());
         let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
-        let env_impl = internal::EnvImpl::with_storage_and_budget(
-            storage,
-            internal::budget::Budget::default(),
-        );
+        let budget = internal::budget::Budget::default();
+        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
+        env_impl.switch_to_recording_auth();
 
         let env = Env {
             env_impl,
             snapshot: Some(rs.clone()),
         };
-
-        env.set_source_account(&env.accounts().generate());
-
         env.ledger().set(info);
-
         env
     }
 
@@ -683,6 +899,29 @@ impl Env {
 
 #[doc(hidden)]
 impl internal::EnvBase for Env {
+    type Error = Infallible;
+
+    // Note: the function `escalate_error_to_panic` only exists _on the `Env`
+    // trait_ when the feature `soroban-env-common/testutils` is enabled. This
+    // is because the host wants to never have this function even _compiled in_
+    // when building for production, as it might be accidentally called (we have
+    // mistakenly done so with conversion and comparison traits in the past).
+    //
+    // As a result, we only implement it here (fairly meaninglessly) when we're
+    // in `cfg(test)` (which enables `soroban-env-host/testutils` thus
+    // `soroban-env-common/testutils`) or when we've had our own `testutils`
+    // feature enabled (which does the same).
+    //
+    // See the `internal::reject_err` functions above for more detail about what
+    // it actually does (when implemented for real, on the host). In this
+    // not-very-serious impl, since `Self::Error` is `Infallible`, this instance
+    // can never actually be called and so its body is just a trivial
+    // transformation from one empty type to another, for Type System Reasons.
+    #[cfg(any(test, feature = "testutils"))]
+    fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
+        match e {}
+    }
+
     fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
         self
     }
@@ -704,24 +943,42 @@ impl internal::EnvBase for Env {
         b: Object,
         b_pos: RawVal,
         mem: &[u8],
-    ) -> Result<Object, Status> {
-        self.env_impl.bytes_copy_from_slice(b, b_pos, mem)
+    ) -> Result<Object, Self::Error> {
+        Ok(self
+            .env_impl
+            .bytes_copy_from_slice(b, b_pos, mem)
+            .unwrap_optimized())
     }
 
-    fn bytes_copy_to_slice(&self, b: Object, b_pos: RawVal, mem: &mut [u8]) -> Result<(), Status> {
-        self.env_impl.bytes_copy_to_slice(b, b_pos, mem)
+    fn bytes_copy_to_slice(
+        &self,
+        b: Object,
+        b_pos: RawVal,
+        mem: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .bytes_copy_to_slice(b, b_pos, mem)
+            .unwrap_optimized())
     }
 
-    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Status> {
-        self.env_impl.bytes_new_from_slice(mem)
+    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Self::Error> {
+        Ok(self.env_impl.bytes_new_from_slice(mem).unwrap_optimized())
     }
 
-    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_val(fmt, v)
+    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Self::Error> {
+        Ok(self.env_impl.log_static_fmt_val(fmt, v).unwrap_optimized())
     }
 
-    fn log_static_fmt_static_str(&self, fmt: &'static str, s: &'static str) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_static_str(fmt, s)
+    fn log_static_fmt_static_str(
+        &self,
+        fmt: &'static str,
+        s: &'static str,
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .log_static_fmt_static_str(fmt, s)
+            .unwrap_optimized())
     }
 
     fn log_static_fmt_val_static_str(
@@ -729,8 +986,11 @@ impl internal::EnvBase for Env {
         fmt: &'static str,
         v: RawVal,
         s: &'static str,
-    ) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_val_static_str(fmt, v, s)
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .log_static_fmt_val_static_str(fmt, v, s)
+            .unwrap_optimized())
     }
 
     fn log_static_fmt_general(
@@ -738,8 +998,11 @@ impl internal::EnvBase for Env {
         fmt: &'static str,
         v: &[RawVal],
         s: &[&'static str],
-    ) -> Result<(), Status> {
-        self.env_impl.log_static_fmt_general(fmt, v, s)
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .log_static_fmt_general(fmt, v, s)
+            .unwrap_optimized())
     }
 }
 
@@ -759,8 +1022,8 @@ macro_rules! sdk_function_helper {
     {$mod_id:ident, fn $fn_id:ident($($arg:ident:$type:ty),*) -> $ret:ty}
     =>
     {
-        fn $fn_id(&self, $($arg:$type),*) -> $ret {
-            self.env_impl.$fn_id($($arg),*)
+        fn $fn_id(&self, $($arg:$type),*) -> Result<$ret, Self::Error> {
+            internal::reject_err(&self.env_impl, self.env_impl.$fn_id($($arg),*))
         }
     };
 }

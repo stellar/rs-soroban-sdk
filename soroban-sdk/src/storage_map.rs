@@ -4,6 +4,7 @@ use core::{fmt::Debug, marker::PhantomData};
 
 use crate::{
     env::internal::{self, RawVal},
+    unwrap::UnwrapInfallible,
     Env, IntoVal, TryFromVal,
 };
 
@@ -95,7 +96,7 @@ where
     pub fn has(&self, key: K) -> bool {
         let env = self.env();
         let key = (self.discriminant, key.into_val(env)).into_val(env);
-        let rv = internal::Env::has_contract_data(env, key);
+        let rv = internal::Env::has_contract_data(env, key).unwrap_infallible();
         rv.is_true()
     }
 
@@ -118,10 +119,10 @@ where
     {
         let env = self.env();
         let key = (self.discriminant, key.into_val(env)).into_val(env);
-        let has = internal::Env::has_contract_data(env, key);
+        let has = internal::Env::has_contract_data(env, key).unwrap_infallible();
         if has.is_true() {
-            let rv = internal::Env::get_contract_data(env, key);
-            Some(V::try_from_val(env, rv))
+            let rv = internal::Env::get_contract_data(env, key).unwrap_infallible();
+            Some(V::try_from_val(env, &rv))
         } else {
             None
         }
@@ -140,8 +141,8 @@ where
     {
         let env = self.env();
         let key = (self.discriminant, key.into_val(env)).into_val(env);
-        let rv = internal::Env::get_contract_data(env, key);
-        V::try_from_val(env, rv)
+        let rv = internal::Env::get_contract_data(env, key).unwrap_infallible();
+        V::try_from_val(env, &rv)
     }
 
     /// Sets the value for the given key in the currently executing contract's
@@ -154,13 +155,13 @@ where
         let env = self.env();
         let key = (self.discriminant, key.into_val(env)).into_val(env);
         let val = val.into_val(env);
-        internal::Env::put_contract_data(env, key, val);
+        internal::Env::put_contract_data(env, key, val).unwrap_infallible();
     }
 
     #[inline(always)]
     pub fn remove(&self, key: K) {
         let env = self.env();
         let key = (self.discriminant, key.into_val(env)).into_val(env);
-        internal::Env::del_contract_data(env, key);
+        internal::Env::del_contract_data(env, key).unwrap_infallible();
     }
 }

@@ -1,5 +1,5 @@
 [package]
-name = "test_import_contract"
+name = "test_empty2"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"

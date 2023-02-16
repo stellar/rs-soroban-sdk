@@ -8,7 +8,7 @@ readme = "README.md"
 license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
-rust-version = "1.65"
+rust-version = "1.67"
 
 [lib]
 doctest = false
@@ -36,6 +36,7 @@ rand = "0.8.5"
 hex = "0.4.3"
 
 [features]
+alloc = []
 testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
 docs = []
 

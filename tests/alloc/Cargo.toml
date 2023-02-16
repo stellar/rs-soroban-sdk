@@ -1,5 +1,5 @@
 [package]
-name = "test_import_contract"
+name = "test_alloc"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -12,7 +12,7 @@ crate-type = ["cdylib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = {path = "../../soroban-sdk"}
+soroban-sdk = {path = "../../soroban-sdk", features = ["alloc"]}
 
 [dev-dependencies]
-soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+soroban-sdk = {path = "../../soroban-sdk", features = ["alloc", "testutils"]}

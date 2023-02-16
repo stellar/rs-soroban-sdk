@@ -3,6 +3,7 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, RawVal},
+    unwrap::UnwrapInfallible,
     Env, IntoVal, TryFromVal,
 };
 
@@ -27,9 +28,9 @@ use crate::{
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
 /// let key = symbol!("key");
-/// env.storage().set(key, 1);
-/// assert_eq!(storage.has(key), true);
-/// assert_eq!(storage.get::<_, i32>(key), Some(Ok(1)));
+/// env.storage().set(&key, &1);
+/// assert_eq!(storage.has(&key), true);
+/// assert_eq!(storage.get::<_, i32>(&key), Some(Ok(1)));
 /// #     }
 /// # }
 /// #
@@ -68,12 +69,12 @@ impl Storage {
     /// Returns if there is a value stored for the given key in the currently
     /// executing contracts data.
     #[inline(always)]
-    pub fn has<K>(&self, key: K) -> bool
+    pub fn has<K>(&self, key: &K) -> bool
     where
         K: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        let rv = internal::Env::has_contract_data(env, key.into_val(env));
+        let rv = internal::Env::has_contract_data(env, key.into_val(env)).unwrap_infallible();
         rv.is_true()
     }
 
@@ -90,7 +91,7 @@ impl Storage {
     ///
     /// Add safe checked versions of these functions.
     #[inline(always)]
-    pub fn get<K, V>(&self, key: K) -> Option<Result<V, V::Error>>
+    pub fn get<K, V>(&self, key: &K) -> Option<Result<V, V::Error>>
     where
         V::Error: Debug,
         K: IntoVal<Env, RawVal>,
@@ -98,10 +99,10 @@ impl Storage {
     {
         let env = self.env();
         let key = key.into_val(env);
-        let has = internal::Env::has_contract_data(env, key);
+        let has = internal::Env::has_contract_data(env, key).unwrap_infallible();
         if has.is_true() {
-            let rv = internal::Env::get_contract_data(env, key);
-            Some(V::try_from_val(env, rv))
+            let rv = internal::Env::get_contract_data(env, key).unwrap_infallible();
+            Some(V::try_from_val(env, &rv))
         } else {
             None
         }
@@ -114,15 +115,15 @@ impl Storage {
     ///
     /// When the key does not have a value stored.
     #[inline(always)]
-    pub fn get_unchecked<K, V>(&self, key: K) -> Result<V, V::Error>
+    pub fn get_unchecked<K, V>(&self, key: &K) -> Result<V, V::Error>
     where
         V::Error: Debug,
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
         let env = self.env();
-        let rv = internal::Env::get_contract_data(env, key.into_val(env));
-        V::try_from_val(env, rv)
+        let rv = internal::Env::get_contract_data(env, key.into_val(env)).unwrap_infallible();
+        V::try_from_val(env, &rv)
     }
 
     /// Sets the value for the given key in the currently executing contract's
@@ -131,21 +132,22 @@ impl Storage {
     /// If the key already has a value associated with it, the old value is
     /// replaced by the new value.
     #[inline(always)]
-    pub fn set<K, V>(&self, key: K, val: V)
+    pub fn set<K, V>(&self, key: &K, val: &V)
     where
         K: IntoVal<Env, RawVal>,
         V: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env));
+        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env))
+            .unwrap_infallible();
     }
 
     #[inline(always)]
-    pub fn remove<K>(&self, key: K)
+    pub fn remove<K>(&self, key: &K)
     where
         K: IntoVal<Env, RawVal>,
     {
         let env = self.env();
-        internal::Env::del_contract_data(env, key.into_val(env));
+        internal::Env::del_contract_data(env, key.into_val(env)).unwrap_infallible();
     }
 }

@@ -1,5 +1,6 @@
-use soroban_auth::{testutils::ed25519::generate, Identifier, Signature};
-use soroban_sdk::{contractimpl, contracttype, BytesN, Env, IntoVal};
+use soroban_sdk::{
+    contractimpl, contracttype, symbol, testutils::Address as _, Address, BytesN, Env, IntoVal,
+};
 
 mod token_contract {
     soroban_sdk::contractimport!(
@@ -16,7 +17,7 @@ pub enum DataKey {
 }
 
 fn get_token(e: &Env) -> BytesN<32> {
-    e.storage().get_unchecked(DataKey::Token).unwrap()
+    e.storage().get_unchecked(&DataKey::Token).unwrap()
 }
 
 pub struct TestContract;
@@ -24,44 +25,49 @@ pub struct TestContract;
 #[contractimpl]
 impl TestContract {
     pub fn init(e: Env, contract: BytesN<32>) {
-        e.storage().set(DataKey::Token, contract);
+        e.storage().set(&DataKey::Token, &contract);
     }
 
     pub fn get_token(e: Env) -> BytesN<32> {
         get_token(&e)
     }
 
-    pub fn approve(e: Env, spender: Identifier, amount: i128) {
-        TokenClient::new(&e, get_token(&e)).approve(&Signature::Invoker, &0, &spender, &amount);
+    pub fn incr_allow(e: Env, from: Address, spender: Address, amount: i128) {
+        TokenClient::new(&e, &get_token(&e)).incr_allow(&from, &spender, &amount);
     }
 
-    pub fn allowance(e: Env, from: Identifier, spender: Identifier) -> i128 {
-        TokenClient::new(&e, get_token(&e)).allowance(&from, &spender)
+    pub fn allowance(e: Env, from: Address, spender: Address) -> i128 {
+        TokenClient::new(&e, &get_token(&e)).allowance(&from, &spender)
     }
 }
 
 #[test]
 fn test() {
-    use soroban_sdk::xdr::Asset;
+    extern crate std;
 
     let env = Env::default();
+    let admin = Address::random(&env);
+    let token_contract_id = env.register_stellar_asset_contract(admin);
 
-    let token_contract_id = env.register_stellar_asset_contract(Asset::Native);
-
-    let contract_id = BytesN::from_array(&env, &[0; 32]);
-    env.register_contract(&contract_id, TestContract);
+    let contract_id = env.register_contract(None, TestContract);
     let client = TestContractClient::new(&env, &contract_id);
     client.init(&token_contract_id);
 
     let token_client = TokenClient::new(&env, &client.get_token());
-    assert_eq!(token_client.name(), "native".into_val(&env));
+    assert_eq!(token_client.decimals(), 7);
+    let from = Address::random(&env);
+    let spender = Address::random(&env);
+    client.incr_allow(&from, &spender, &20);
 
-    let (id, _signer) = generate(&env);
-
-    let amount = 10;
-    client.approve(&id, &amount);
     assert_eq!(
-        client.allowance(&Identifier::Contract(contract_id), &id),
-        amount
+        env.recorded_top_authorizations(),
+        std::vec![(
+            from.clone(),
+            token_client.contract_id.clone(),
+            symbol!("incr_allow"),
+            (&from, &spender, 20_i128).into_val(&env)
+        )]
     );
+
+    assert_eq!(client.allowance(&from, &spender), 20);
 }

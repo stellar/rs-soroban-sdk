@@ -5,6 +5,7 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, EnvBase},
+    unwrap::UnwrapInfallible,
     Bytes, Env, IntoVal, RawVal, Vec,
 };
 
@@ -60,14 +61,14 @@ use crate::{
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}, {}", value, symbol!("another"), (1, 2, 1));
+/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
 ///
 /// use soroban_sdk::testutils::Logger;
 ///
 /// assert_eq!(
 ///     env.logger().all(),
 ///     std::vec![
-///         "a log entry: I32(5), Symbol(another), Object(Vec(#4))".to_string(),
+///         "a log entry: I32(5), Symbol(another)".to_string(),
 ///     ],
 /// );
 /// # }
@@ -83,7 +84,7 @@ macro_rules! log {
         if cfg!(debug_assertions) {
             $env.logger().log($fmt, &[
                 $(
-                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val($args, $env)
+                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val(&$args, $env)
                 ),*
             ]);
         }
@@ -130,7 +131,8 @@ impl Logger {
             if cfg!(target_family = "wasm") {
                 let fmt: Bytes = fmt.into_val(env);
                 let args: Vec<RawVal> = Vec::from_slice(env, args);
-                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object());
+                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
+                    .unwrap_infallible();
             } else {
                 env.log_static_fmt_general(fmt, args, &[]).unwrap();
             }

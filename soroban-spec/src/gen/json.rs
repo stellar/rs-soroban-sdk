@@ -72,13 +72,16 @@ mod test {
             r#"[
   {
     "type": "enum",
+    "doc": "",
     "name": "UdtEnum2",
     "cases": [
       {
+        "doc": "",
         "name": "A",
         "value": 10
       },
       {
+        "doc": "",
         "name": "B",
         "value": 15
       }
@@ -86,13 +89,16 @@ mod test {
   },
   {
     "type": "union",
+    "doc": "",
     "name": "UdtEnum",
     "cases": [
       {
+        "doc": "",
         "name": "UdtA",
         "values": []
       },
       {
+        "doc": "",
         "name": "UdtB",
         "values": [
           {
@@ -102,6 +108,7 @@ mod test {
         ]
       },
       {
+        "doc": "",
         "name": "UdtC",
         "values": [
           {
@@ -111,6 +118,7 @@ mod test {
         ]
       },
       {
+        "doc": "",
         "name": "UdtD",
         "values": [
           {
@@ -123,15 +131,18 @@ mod test {
   },
   {
     "type": "struct",
+    "doc": "",
     "name": "UdtTuple",
     "fields": [
       {
+        "doc": "",
         "name": "0",
         "value": {
           "type": "i64"
         }
       },
       {
+        "doc": "",
         "name": "1",
         "value": {
           "type": "vec",
@@ -144,21 +155,25 @@ mod test {
   },
   {
     "type": "struct",
+    "doc": "",
     "name": "UdtStruct",
     "fields": [
       {
+        "doc": "",
         "name": "a",
         "value": {
           "type": "i64"
         }
       },
       {
+        "doc": "",
         "name": "b",
         "value": {
           "type": "i64"
         }
       },
       {
+        "doc": "",
         "name": "c",
         "value": {
           "type": "vec",
@@ -171,9 +186,11 @@ mod test {
   },
   {
     "type": "function",
+    "doc": "",
     "name": "add",
     "inputs": [
       {
+        "doc": "",
         "name": "a",
         "value": {
           "type": "custom",
@@ -181,6 +198,7 @@ mod test {
         }
       },
       {
+        "doc": "",
         "name": "b",
         "value": {
           "type": "custom",

@@ -46,39 +46,42 @@ fn test_error_on_partial_decode() {
     let env = Env::default();
 
     // Success case, a vec will decode to a Udt.
-    let map = vec![&env, 5, 7].to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let vec = vec![&env, 5, 7].to_raw();
+    let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Ok(Udt(5, 7)));
 
     // If a struct has 2 fields, and a vec is decoded into it where the vec has
     // 2 elements, it is an error. It is an error because all fields must be
     // assigned values.
-    let map = vec![&env, 5, 7, 9].to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let vec = vec![&env, 5, 7, 9].to_raw();
+    let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Err(ConversionError));
 
     // If a struct has 2 fields, and a vec is decoded into it where the vec has
     // 3 elements, it is an error. It is an error because decoding and encoding
     // will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
-    let map = vec![&env, 5, 7, 9].to_raw();
-    let udt = Udt::try_from_val(&env, map);
+    let vec = vec![&env, 5, 7, 9].to_raw();
+    let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Err(ConversionError));
 }
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_ADD).unwrap();
+    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
         name: "add".try_into().unwrap(),
         inputs: std::vec![
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     name: "Udt".try_into().unwrap(),
                 }),
             },
             ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     name: "Udt".try_into().unwrap(),

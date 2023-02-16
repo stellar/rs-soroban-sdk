@@ -42,17 +42,42 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
-#[cfg(not(target_family = "wasm"))]
-extern crate std;
-
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
-#[cfg(target_family = "wasm")]
+// When used in a no_std contract, provide a panic handler as one is required.
+#[cfg(all(not(feature = "alloc"), target_family = "wasm"))]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
 }
+
+// This is a bit subtle: we want to provide a narrowly-scoped feature `"alloc"`
+// that provides support for the `alloc` crate and its types, while using our
+// allocator (defined below in module `alloc`). We want to do this without
+// changing the user-interface a lot (in particular keeping users writing
+// `#[no_std]` and mostly not-using the stdlib casually, because it has many
+// components that produce large code footprint).
+//
+// This is _almost_ possible without involving `std` but unfortunately there's
+// still an allocation-error handler (`alloc_error_handler`) that there's no
+// stable way to install if one only uses the `alloc` crate, so we pull in a
+// dependency on `std` here (for now). When the stabilization of the allocation
+// error handler registration function happens in some future Rust version, or
+// it gets removed which it looks like work is heading towards instead, we can
+// remove std.
+//
+// See these issues for more details:
+// - https://github.com/rust-lang/rust/issues/51540
+// - https://github.com/rust-lang/rust/issues/66740
+// - https://github.com/rust-lang/rust/issues/66741
+#[cfg(all(feature = "alloc", target_family = "wasm"))]
+extern crate std;
+
+// Here we provide a `#[global_allocator]` that is a minimal non-freeing bump
+// allocator, appropriate for a WASM blob that runs a single contract call.
+#[cfg(all(feature = "alloc", target_family = "wasm"))]
+mod alloc;
 
 /// __link_sections returns and does nothing, but it contains link sections that
 /// should be ensured end up in the final build of any contract using the SDK.
@@ -321,7 +346,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///         state.last_incr = incr;
 ///
 ///         // Save the count.
-///         env.data().set(symbol!("STATE"), &state);
+///         env.storage().set(&symbol!("STATE"), &state);
 ///
 ///         // Return the count to the caller.
 ///         state.count
@@ -329,8 +354,8 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 ///     /// Return the current state.
 ///     pub fn get_state(env: Env) -> State {
-///         env.data()
-///             .get(symbol!("STATE"))
+///         env.storage()
+///             .get(&symbol!("STATE"))
 ///             .unwrap_or_else(|| Ok(State::default())) // If no value set, assume 0.
 ///             .unwrap() // Panic if the value of COUNTER is not a State.
 ///     }
@@ -399,13 +424,13 @@ pub use soroban_sdk_macros::contractimpl;
 /// impl Contract {
 ///     /// Set the color.
 ///     pub fn set(env: Env, c: Color) {
-///         env.data().set(symbol!("COLOR"), c);
+///         env.storage().set(&symbol!("COLOR"), &c);
 ///     }
 ///
 ///     /// Get the color.
 ///     pub fn get(env: Env) -> Option<Color> {
-///         env.data()
-///             .get(symbol!("COLOR"))
+///         env.storage()
+///             .get(&symbol!("COLOR"))
 ///             .map(Result::unwrap) // Panic if the value of COLOR is not a Color.
 ///     }
 /// }
@@ -580,7 +605,7 @@ pub mod unwrap;
 mod env;
 
 mod address;
-pub mod xdr;
+pub use env::xdr;
 
 pub use env::ConversionError;
 
@@ -615,8 +640,6 @@ pub mod data {
     #[deprecated(note = "use storage::Storage")]
     pub use super::storage::Storage as Data;
 }
-
-pub mod accounts;
 mod bytes;
 pub mod crypto;
 pub mod deploy;
@@ -629,7 +652,6 @@ mod set;
 pub mod storage;
 pub mod storage_map;
 mod vec;
-pub use accounts::AccountId;
 pub use address::Address;
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
