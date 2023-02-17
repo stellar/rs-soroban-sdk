@@ -57,14 +57,14 @@ mod test {
 
     #[test]
     fn test_serializing() {
-        use soroban_sdk::serde::Serialize;
+        use soroban_sdk::xdr::ToXdr;
         let e = Env::default();
         let udt = UdtStruct {
             a: 10,
             b: 12,
             c: vec![&e, 1],
         };
-        let bin = udt.serialize(&e);
+        let bin = udt.to_xdr(&e);
         assert_eq!(bin, {
             let mut bin = Bytes::new(&e);
             bin.push(0);
