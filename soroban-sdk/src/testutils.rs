@@ -85,7 +85,7 @@ pub mod budget {
         }
 
         /// Reset the budget.
-        pub fn reset(&mut self) {
+        pub fn reset_default(&mut self) {
             self.0.reset_default();
         }
 
@@ -95,14 +95,6 @@ pub mod budget {
 
         pub fn reset_limits(&mut self, cpu: u64, mem: u64) {
             self.0.reset_limits(cpu, mem);
-        }
-
-        pub fn reset_unlimited_cpu(&mut self) {
-            self.0.reset_unlimited_cpu();
-        }
-
-        pub fn reset_unlimited_mem(&mut self) {
-            self.0.reset_unlimited_mem();
         }
 
         pub fn reset_inputs(&mut self) {
