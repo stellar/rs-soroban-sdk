@@ -18,7 +18,7 @@ fn test_budget() {
     let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
-    e.budget().reset();
+    e.budget().reset_default();
     let b = client.add();
     e.budget().print();
 
