@@ -57,7 +57,7 @@ pub mod budget {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// env.budget().reset();
+    /// env.budget().reset_default();
     /// // ...
     /// println!("{}", env.budget());
     /// # }
