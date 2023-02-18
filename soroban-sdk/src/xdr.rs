@@ -1,13 +1,13 @@
-//! Serialize and deserialize values to and from [Bytes].
+//! Convert values to and from [Bytes].
 //!
 //! All types that are convertible to and from [RawVal] implement the
-//! [Serialize] and [Deserialize] traits, and serialize to the ScVal XDR form.
+//! [ToXdr] and [FromXdr] traits, and serialize to the ScVal XDR form.
 //!
 //! ### Examples
 //!
 //! ```
 //! use soroban_sdk::{
-//!     serde::{Deserialize, Serialize},
+//!     xdr::{FromXdr, ToXdr},
 //!     Env, Bytes, IntoVal, TryFromVal,
 //! };
 //!
@@ -15,10 +15,10 @@
 //!
 //! let value: u32 = 5;
 //!
-//! let bytes = value.serialize(&env);
+//! let bytes = value.to_xdr(&env);
 //! assert_eq!(bytes.len(), 8);
 //!
-//! let roundtrip = u32::deserialize(&env, &bytes);
+//! let roundtrip = u32::from_xdr(&env, &bytes);
 //! assert_eq!(roundtrip, Ok(value));
 //! ```
 
@@ -26,39 +26,42 @@ use crate::{
     env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, RawVal, TryFromVal,
 };
 
+// Re-export all the XDR from the environment.
+pub use crate::env::xdr::*;
+
 /// Implemented by types that can be serialized to [Bytes].
 ///
 /// All types that are convertible to [RawVal] are implemented.
-pub trait Serialize {
-    fn serialize(self, env: &Env) -> Bytes;
+pub trait ToXdr {
+    fn to_xdr(self, env: &Env) -> Bytes;
 }
 
 /// Implemented by types that can be deserialized from [Bytes].
 ///
 /// All types that are convertible from [RawVal] are implemented.
-pub trait Deserialize: Sized {
+pub trait FromXdr: Sized {
     type Error;
-    fn deserialize(env: &Env, b: &Bytes) -> Result<Self, Self::Error>;
+    fn from_xdr(env: &Env, b: &Bytes) -> Result<Self, Self::Error>;
 }
 
-impl<T> Serialize for T
+impl<T> ToXdr for T
 where
     T: IntoVal<Env, RawVal>,
 {
-    fn serialize(self, env: &Env) -> Bytes {
+    fn to_xdr(self, env: &Env) -> Bytes {
         let val: RawVal = self.into_val(env);
         let bin = env.serialize_to_bytes(val).unwrap_infallible();
         unsafe { Bytes::unchecked_new(env.clone(), bin) }
     }
 }
 
-impl<T> Deserialize for T
+impl<T> FromXdr for T
 where
     T: TryFromVal<Env, RawVal>,
 {
     type Error = T::Error;
 
-    fn deserialize(env: &Env, b: &Bytes) -> Result<Self, Self::Error> {
+    fn from_xdr(env: &Env, b: &Bytes) -> Result<Self, Self::Error> {
         let t = env.deserialize_from_bytes(b.into()).unwrap_infallible();
         T::try_from_val(env, &t)
     }

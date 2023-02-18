@@ -605,7 +605,6 @@ pub mod unwrap;
 mod env;
 
 mod address;
-pub use env::xdr;
 
 pub use env::ConversionError;
 
@@ -657,7 +656,7 @@ pub use map::Map;
 pub use set::Set;
 pub use vec::Vec;
 
-pub mod serde;
+pub mod xdr;
 
 pub mod testutils;
 
