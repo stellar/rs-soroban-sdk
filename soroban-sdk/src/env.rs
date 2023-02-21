@@ -593,11 +593,7 @@ impl Env {
     }
 
     fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
-        let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
-            Some(prev_acc)
-        } else {
-            None
-        };
+        let prev_source_account = self.env_impl.source_account();
         self.env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
                 xdr::Uint256(random()),
