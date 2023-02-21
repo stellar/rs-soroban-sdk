@@ -7,9 +7,9 @@ use stellar_xdr::{
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StructField {
-    doc: String,
-    name: String,
-    value: Type,
+    pub doc: String,
+    pub name: String,
+    pub value: Type,
 }
 
 impl From<&ScSpecUdtStructFieldV0> for StructField {
@@ -25,9 +25,9 @@ impl From<&ScSpecUdtStructFieldV0> for StructField {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FunctionInput {
-    doc: String,
-    name: String,
-    value: Type,
+    pub doc: String,
+    pub name: String,
+    pub value: Type,
 }
 
 impl From<&ScSpecFunctionInputV0> for FunctionInput {
@@ -43,9 +43,9 @@ impl From<&ScSpecFunctionInputV0> for FunctionInput {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UnionCase {
-    doc: String,
-    name: String,
-    values: Vec<Type>,
+    pub doc: String,
+    pub name: String,
+    pub values: Vec<Type>,
 }
 
 impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
@@ -67,9 +67,9 @@ impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EnumCase {
-    doc: String,
-    name: String,
-    value: u32,
+    pub doc: String,
+    pub name: String,
+    pub value: u32,
 }
 
 impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
@@ -85,9 +85,9 @@ impl From<&ScSpecUdtEnumCaseV0> for EnumCase {
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ErrorEnumCase {
-    doc: String,
-    name: String,
-    value: u32,
+    pub doc: String,
+    pub name: String,
+    pub value: u32,
 }
 
 impl From<&ScSpecUdtErrorEnumCaseV0> for EnumCase {
