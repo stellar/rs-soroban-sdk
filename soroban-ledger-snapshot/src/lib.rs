@@ -5,9 +5,15 @@ use std::{
     rc::Rc,
 };
 
+use sha2::Digest;
 use soroban_env_host::{
     storage::SnapshotSource,
-    xdr::{LedgerEntry, LedgerKey, ScHostStorageErrorCode, ScStatus},
+    xdr::{
+        self, ContractCodeEntry, ContractDataEntry, ExtensionPoint, Hash, InstallContractCodeArgs,
+        LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, LedgerKeyContractCode,
+        LedgerKeyContractData, ScContractCode, ScHostStorageErrorCode, ScObject, ScStatic,
+        ScStatus, ScVal, WriteXdr,
+    },
     Host, HostError, LedgerInfo,
 };
 
@@ -117,6 +123,61 @@ impl LedgerSnapshot {
                 self.ledger_entries.swap_remove(i);
             }
         }
+    }
+
+    pub fn add_contract_to_entries(&mut self, contract_id: [u8; 32], wasm_hash: [u8; 32]) {
+        let entries = &mut self.ledger_entries;
+        // Create the contract
+        let contract_key = LedgerKey::ContractData(LedgerKeyContractData {
+            contract_id: contract_id.into(),
+            key: ScVal::Static(ScStatic::LedgerKeyContractCode),
+        });
+
+        let contract_entry = LedgerEntry {
+            last_modified_ledger_seq: 0,
+            data: LedgerEntryData::ContractData(ContractDataEntry {
+                contract_id: contract_id.into(),
+                key: ScVal::Static(ScStatic::LedgerKeyContractCode),
+                val: ScVal::Object(Some(ScObject::ContractCode(ScContractCode::WasmRef(Hash(
+                    wasm_hash,
+                ))))),
+            }),
+            ext: LedgerEntryExt::V0,
+        };
+        for (k, e) in entries.iter_mut() {
+            if **k == contract_key {
+                **e = contract_entry;
+                return;
+            }
+        }
+        entries.push((Box::new(contract_key), Box::new(contract_entry)));
+    }
+
+    pub fn add_contract_code_to_entries(&mut self, contract: &[u8]) -> Result<Hash, xdr::Error> {
+        let entries = &mut self.ledger_entries;
+        let args_xdr = InstallContractCodeArgs {
+            code: contract.try_into()?,
+        }
+        .to_xdr()?;
+        let hash = Hash(sha2::Sha256::digest(args_xdr).into());
+        let code_key = LedgerKey::ContractCode(LedgerKeyContractCode { hash: hash.clone() });
+        let code_entry = LedgerEntry {
+            last_modified_ledger_seq: 0,
+            data: LedgerEntryData::ContractCode(ContractCodeEntry {
+                code: contract.try_into()?,
+                ext: ExtensionPoint::V0,
+                hash: hash.clone(),
+            }),
+            ext: LedgerEntryExt::V0,
+        };
+        for (k, e) in entries.iter_mut() {
+            if **k == code_key {
+                **e = code_entry;
+                return Ok(hash);
+            }
+        }
+        entries.push((Box::new(code_key), Box::new(code_entry)));
+        Ok(hash)
     }
 }
 

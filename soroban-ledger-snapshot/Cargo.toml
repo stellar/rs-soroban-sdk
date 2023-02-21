@@ -15,6 +15,8 @@ soroban-env-host = { workspace = true, features = ["serde"] }
 serde = { version = "1.0.0", features = ["derive"] }
 serde_json = "1.0.0"
 thiserror = "1.0"
+sha2 = "0.10.6"
+
 
 [dev_dependencies]
 pretty_assertions = "1.2.1"
