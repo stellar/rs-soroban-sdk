@@ -76,12 +76,12 @@ impl Storage {
         rv.is_true()
     }
 
-    /// Returns the value stored for the given key in the currently executing 
+    /// Returns the value stored for the given key in the currently executing
     /// contract's storage, when present.
     ///
     /// Returns `None` when the value is missing.
-    /// 
-    /// If the value is present, then the returned value will be a result of 
+    ///
+    /// If the value is present, then the returned value will be a result of
     /// converting the internal value representation to `V`.
     #[inline(always)]
     pub fn get<K, V>(&self, key: &K) -> Option<Result<V, V::Error>>
@@ -103,10 +103,10 @@ impl Storage {
 
     /// Returns the value there is a value stored for the given key in the
     /// currently executing contract's storage.
-    /// 
+    ///
     /// The returned value is a result of converting the internal value
     /// representation to `V`.
-    /// 
+    ///
     /// ### Panics
     ///
     /// When the key does not have a value stored.
@@ -140,7 +140,7 @@ impl Storage {
 
     /// Removes the key and the corresponding value from the currently executing
     /// contract's storage.
-    /// 
+    ///
     /// No-op if the key does not exist.
     #[inline(always)]
     pub fn remove<K>(&self, key: &K)
