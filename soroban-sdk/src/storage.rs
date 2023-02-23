@@ -10,8 +10,8 @@ use crate::{
 /// Storage stores and retrieves data for the currently executing contract.
 ///
 /// All data stored can only be queried and modified by the contract that stores
-/// it. Other contracts cannot query or modify data stored by other contracts.
-/// Data is stored in the ledger and viewable outside of contracts where-ever
+/// it. Contracts cannot query or modify data stored by other contracts.
+/// Data is stored in the ledger and viewable outside of contracts wherever
 /// the ledger is accessible.
 ///
 /// ### Examples
@@ -64,10 +64,8 @@ impl Storage {
         Storage(env.clone())
     }
 
-    // TODO: Use Borrow<K> for all key use in these functions.
-
     /// Returns if there is a value stored for the given key in the currently
-    /// executing contracts data.
+    /// executing contracts storage.
     #[inline(always)]
     pub fn has<K>(&self, key: &K) -> bool
     where
@@ -78,18 +76,13 @@ impl Storage {
         rv.is_true()
     }
 
-    /// Returns the value there is a value stored for the given key in the
-    /// currently executing contract's data.
+    /// Returns the value stored for the given key in the currently executing
+    /// contract's storage, when present.
     ///
-    /// ### Panics
+    /// Returns `None` when the value is missing.
     ///
-    /// When the key does not have a value stored.
-    ///
-    /// When the value stored cannot be converted into the type expected.
-    ///
-    /// ### TODO
-    ///
-    /// Add safe checked versions of these functions.
+    /// If the value is present, then the returned value will be a result of
+    /// converting the internal value representation to `V`.
     #[inline(always)]
     pub fn get<K, V>(&self, key: &K) -> Option<Result<V, V::Error>>
     where
@@ -109,7 +102,10 @@ impl Storage {
     }
 
     /// Returns the value there is a value stored for the given key in the
-    /// currently executing contracts data.
+    /// currently executing contract's storage.
+    ///
+    /// The returned value is a result of converting the internal value
+    /// representation to `V`.
     ///
     /// ### Panics
     ///
@@ -127,7 +123,7 @@ impl Storage {
     }
 
     /// Sets the value for the given key in the currently executing contract's
-    /// data.
+    /// storage.
     ///
     /// If the key already has a value associated with it, the old value is
     /// replaced by the new value.
@@ -142,6 +138,10 @@ impl Storage {
             .unwrap_infallible();
     }
 
+    /// Removes the key and the corresponding value from the currently executing
+    /// contract's storage.
+    ///
+    /// No-op if the key does not exist.
     #[inline(always)]
     pub fn remove<K>(&self, key: &K)
     where
