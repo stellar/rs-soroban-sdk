@@ -57,7 +57,7 @@ pub mod budget {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// env.budget().reset();
+    /// env.budget().reset_default();
     /// // ...
     /// println!("{}", env.budget());
     /// # }
@@ -85,9 +85,20 @@ pub mod budget {
         }
 
         /// Reset the budget.
-        pub fn reset(&mut self) {
+        pub fn reset_default(&mut self) {
             self.0.reset_default();
+        }
+
+        pub fn reset_unlimited(&mut self) {
             self.0.reset_unlimited();
+        }
+
+        pub fn reset_limits(&mut self, cpu: u64, mem: u64) {
+            self.0.reset_limits(cpu, mem);
+        }
+
+        pub fn reset_inputs(&mut self) {
+            self.0.reset_inputs();
         }
 
         /// Returns the CPU instruction cost.
