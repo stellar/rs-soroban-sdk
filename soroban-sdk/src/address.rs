@@ -3,12 +3,15 @@ use core::{cmp::Ordering, fmt::Debug};
 use super::{
     env::internal::{Env as _, EnvBase as _},
     xdr::ScObjectType,
-    ConversionError, Env, Object, RawVal, TryFromVal,
+    BytesN, ConversionError, Env, Object, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
-use crate::{unwrap::UnwrapInfallible, Vec};
+use crate::{
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
+    Vec,
+};
 
 /// Address is a universal opaque identifier to use in contracts.
 ///
@@ -144,7 +147,6 @@ impl TryFrom<Address> for ScVal {
 impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        use soroban_env_host::TryIntoVal;
         <_ as TryFromVal<_, Object>>::try_from_val(
             env,
             &val.try_into_val(env).map_err(|_| ConversionError)?,
@@ -197,6 +199,73 @@ impl Address {
         self.env.require_auth(&self);
     }
 
+    /// Creates an `Address` corresponding to the provided contract identifier.
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases, for example to get an Address of a freshly
+    /// deployed contract.
+    pub fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
+        unsafe {
+            Self::unchecked_new(
+                env.clone(),
+                env.contract_id_to_address(contract_id.to_object())
+                    .unwrap_optimized(),
+            )
+        }
+    }
+
+    /// Creates an `Address` corresponding to the provided Stellar account
+    /// 32-byte identifier (public key).
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases, like for cross-chain interoperability.
+    pub fn from_account_id(env: &Env, account_pk: &BytesN<32>) -> Self {
+        unsafe {
+            Self::unchecked_new(
+                env.clone(),
+                env.account_public_key_to_address(account_pk.to_object())
+                    .unwrap_optimized(),
+            )
+        }
+    }
+
+    /// Returns 32-byte contract identifier corresponding to this `Address`.
+    ///
+    /// Returns `None` when this `Address` does not belong to a contract.
+    ///
+    /// Avoid using the returned contract identifier for authorization purposes
+    /// and prefer using `Address` directly whenever possible. This is only
+    /// useful in special cases, for example, to be able to invoke a contract
+    /// given its `Address`.
+    pub fn contract_id(&self) -> Option<BytesN<32>> {
+        let rv = self.env.address_to_contract_id(self.obj).unwrap_optimized();
+        if let Ok(()) = rv.try_into_val(&self.env) {
+            None
+        } else {
+            Some(rv.try_into_val(&self.env).unwrap_optimized())
+        }
+    }
+
+    /// Returns 32-byte Stellar account identifier (public key) corresponding
+    /// to this `Address`.
+    ///
+    /// Returns `None` when this `Address` does not belong to an account.
+    ///
+    /// Avoid using the returned account identifier for authorization purposes
+    /// and prefer using `Address` directly whenever possible. This is only
+    /// useful in special cases, like for cross-chain interoperability.
+    pub fn account_id(&self) -> Option<BytesN<32>> {
+        let rv = self
+            .env
+            .address_to_account_public_key(self.obj)
+            .unwrap_optimized();
+        if let Ok(()) = rv.try_into_val(&self.env) {
+            None
+        } else {
+            Some(rv.try_into_val(&self.env).unwrap_optimized())
+        }
+    }
+
     #[inline(always)]
     pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
         Self { env, obj }
@@ -227,17 +296,10 @@ impl Address {
 #[cfg(any(test, feature = "testutils"))]
 use crate::env::xdr::{Hash, ScAddress, ScObject};
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils::random, BytesN};
+use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
-    fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(
-            contract_id.to_array(),
-        )))));
-        Self::try_from_val(env, &sc_addr).unwrap()
-    }
-
     fn random(env: &Env) -> Self {
         let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(random())))));
         Self::try_from_val(env, &sc_addr).unwrap()
