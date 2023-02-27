@@ -162,24 +162,24 @@ impl Default for LedgerSnapshot {
 }
 
 impl SnapshotSource for &LedgerSnapshot {
-    fn get(&self, key: &LedgerKey) -> Result<LedgerEntry, HostError> {
-        match self.ledger_entries.iter().find(|(k, _)| k.as_ref() == key) {
-            Some((_, v)) => Ok(*v.clone()),
+    fn get(&self, key: &Rc<LedgerKey>) -> Result<Rc<LedgerEntry>, HostError> {
+        match self.ledger_entries.iter().find(|(k, _)| &**k == &**key) {
+            Some((_, v)) => Ok(Rc::new(*v.clone())),
             None => {
                 Err(ScStatus::HostStorageError(ScHostStorageErrorCode::AccessToUnknownEntry).into())
             }
         }
     }
-    fn has(&self, key: &LedgerKey) -> Result<bool, HostError> {
-        Ok(self.ledger_entries.iter().any(|(k, _)| k.as_ref() == key))
+    fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {
+        Ok(self.ledger_entries.iter().any(|(k, _)| &**k == &**key))
     }
 }
 
 impl SnapshotSource for LedgerSnapshot {
-    fn get(&self, key: &LedgerKey) -> Result<LedgerEntry, HostError> {
+    fn get(&self, key: &Rc<LedgerKey>) -> Result<Rc<LedgerEntry>, HostError> {
         <_ as SnapshotSource>::get(&self, key)
     }
-    fn has(&self, key: &LedgerKey) -> Result<bool, HostError> {
+    fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {
         <_ as SnapshotSource>::has(&self, key)
     }
 }

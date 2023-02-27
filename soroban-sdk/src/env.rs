@@ -368,15 +368,15 @@ impl Env {
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
             fn get(
                 &self,
-                _key: &xdr::LedgerKey,
-            ) -> Result<xdr::LedgerEntry, soroban_env_host::HostError> {
+                _key: &Rc<xdr::LedgerKey>,
+            ) -> Result<Rc<xdr::LedgerEntry>, soroban_env_host::HostError> {
                 use xdr::{ScHostStorageErrorCode, ScStatus};
                 let status: internal::Status =
                     ScStatus::HostStorageError(ScHostStorageErrorCode::MissingKeyInGet).into();
                 Err(status.into())
             }
 
-            fn has(&self, _key: &xdr::LedgerKey) -> Result<bool, soroban_env_host::HostError> {
+            fn has(&self, _key: &Rc<xdr::LedgerKey>) -> Result<bool, soroban_env_host::HostError> {
                 Ok(false)
             }
         }
@@ -514,15 +514,15 @@ impl Env {
 
         self.host()
             .with_mut_storage(|storage| {
-                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
                     account_id: issuer_id.clone(),
-                });
+                }));
 
                 if !storage.has(
                     &k,
                     soroban_env_host::budget::AsBudget::as_budget(self.host()),
                 )? {
-                    let v = xdr::LedgerEntry {
+                    let v = Rc::new(xdr::LedgerEntry {
                         data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
                             account_id: issuer_id.clone(),
                             balance: 0,
@@ -537,7 +537,7 @@ impl Env {
                         }),
                         last_modified_ledger_seq: 0,
                         ext: xdr::LedgerEntryExt::V0,
-                    };
+                    });
                     storage.put(
                         &k,
                         &v,
@@ -736,26 +736,21 @@ impl Env {
     ) {
         let contract_id_hash = Hash(contract_id.into());
         let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
-        let key = LedgerKey::ContractData(LedgerKeyContractData {
+        let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract_id: contract_id_hash.clone(),
             key: data_key.clone(),
+        }));
+        let entry = Rc::new(LedgerEntry {
+            ext: xdr::LedgerEntryExt::V0,
+            last_modified_ledger_seq: 0,
+            data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                contract_id: contract_id_hash.clone(),
+                key: data_key,
+                val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(source))),
+            }),
         });
         self.env_impl
-            .with_mut_storage(|storage| {
-                storage.put(
-                    &key,
-                    &LedgerEntry {
-                        ext: xdr::LedgerEntryExt::V0,
-                        last_modified_ledger_seq: 0,
-                        data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                            contract_id: contract_id_hash.clone(),
-                            key: data_key,
-                            val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(source))),
-                        }),
-                    },
-                    &self.env_impl.budget_cloned(),
-                )
-            })
+            .with_mut_storage(|storage| storage.put(&key, &entry, &self.env_impl.budget_cloned()))
             .unwrap();
     }
 
