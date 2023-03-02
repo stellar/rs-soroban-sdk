@@ -2,7 +2,8 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, StringM, VecM, WriteXdr,
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM, VecM,
+    WriteXdr,
 };
 use syn::{
     punctuated::Punctuated,
@@ -156,7 +157,7 @@ pub fn derive_fn(
                     MAX,
                 ),
             ));
-            StringM::<MAX>::default()
+            ScSymbol::default()
         }),
         inputs: spec_args.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
