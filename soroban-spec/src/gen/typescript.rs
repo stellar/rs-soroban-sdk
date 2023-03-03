@@ -51,6 +51,7 @@ pub fn generate(spec: &[ScSpecEntry]) -> String {
     let header = r#"import * as SorobanClient from "soroban-client";
 let xdr = SorobanClient.xdr;
 
+// TODO: Move all the non-trivial conversions to js-stellar-base and use them them from there.
 function bigintToI128(value: bigint): SorobanClient.xdr.ScVal {
   const buf = bigintToBuf(value);
   if (buf.length > 16) {
@@ -194,7 +195,6 @@ fn generate_method(method: &ScSpecFunctionV0, _spec: &[ScSpecEntry]) -> String {
         ));
     }
 
-    let names = arg_names.join(", ");
     let types = arg_types.join(", ");
     let parsers = arg_parsers.join("\n");
 
