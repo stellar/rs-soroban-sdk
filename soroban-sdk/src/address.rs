@@ -4,7 +4,7 @@ use soroban_env_host::AddressObject;
 
 use super::{
     env::internal::{Env as _, EnvBase as _},
-    BytesN, ConversionError, Env, Object, RawVal, TryFromVal, TryIntoVal,
+    BytesN, ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[cfg(not(target_family = "wasm"))]

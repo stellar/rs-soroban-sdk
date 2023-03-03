@@ -1,4 +1,8 @@
-use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator, marker::PhantomData};
+use core::{
+    cmp::Ordering, convert::Infallible, fmt::Debug, iter::FusedIterator, marker::PhantomData,
+};
+
+use soroban_env_host::MapObject;
 
 use crate::{
     iter::{UncheckedEnumerable, UncheckedIter},
@@ -7,7 +11,6 @@ use crate::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, RawValConvertible},
-    xdr::ScObjectType,
     ConversionError, Env, IntoVal, Object, RawVal, Status, TryFromVal, Vec,
 };
 
@@ -89,7 +92,7 @@ macro_rules! map {
 #[derive(Clone)]
 pub struct Map<K, V> {
     env: Env,
-    obj: Object,
+    obj: MapObject,
     _k: PhantomData<K>,
     _v: PhantomData<V>,
 }
@@ -157,25 +160,21 @@ where
     }
 }
 
-impl<K, V> TryFromVal<Env, Object> for Map<K, V>
+impl<K, V> TryFromVal<Env, MapObject> for Map<K, V>
 where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = ConversionError;
+    type Error = Infallible;
 
     #[inline(always)]
-    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, Self::Error> {
-        if obj.is_obj_type(ScObjectType::Map) {
-            Ok(Map {
-                env: env.clone(),
-                obj: *obj,
-                _k: PhantomData,
-                _v: PhantomData,
-            })
-        } else {
-            Err(ConversionError {})
-        }
+    fn try_from_val(env: &Env, obj: &MapObject) -> Result<Self, Self::Error> {
+        Ok(Map {
+            env: env.clone(),
+            obj: *obj,
+            _k: PhantomData,
+            _v: PhantomData,
+        })
     }
 }
 
@@ -184,10 +183,12 @@ where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = <Map<K, V> as TryFromVal<Env, Object>>::Error;
+    type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+        Ok(MapObject::try_from_val(env, val)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
@@ -196,7 +197,7 @@ where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = ConversionError;
+    type Error = Infallible;
 
     fn try_from_val(_env: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
         Ok(v.to_raw())
@@ -238,9 +239,10 @@ where
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            &val.try_into_val(env).map_err(|_| ConversionError)?,
+        Ok(
+            MapObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+                .try_into_val(env)
+                .unwrap_infallible(),
         )
     }
 }
@@ -251,7 +253,7 @@ where
     V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     #[inline(always)]
-    pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: MapObject) -> Self {
         Self {
             env,
             obj,
@@ -276,12 +278,12 @@ where
     }
 
     #[inline(always)]
-    pub(crate) fn as_object(&self) -> &Object {
+    pub(crate) fn as_object(&self) -> &MapObject {
         &self.obj
     }
 
     #[inline(always)]
-    pub(crate) fn to_object(&self) -> Object {
+    pub(crate) fn to_object(&self) -> MapObject {
         self.obj
     }
 
@@ -301,17 +303,18 @@ where
 
     #[inline(always)]
     pub fn contains_key(&self, k: K) -> bool {
-        let env = self.env();
-        let has = env.map_has(self.obj, k.into_val(env)).unwrap_infallible();
-        has.is_true()
+        self.env
+            .map_has(self.obj, k.into_val(&self.env))
+            .unwrap_infallible()
+            .into()
     }
 
     #[inline(always)]
     pub fn get(&self, k: K) -> Option<Result<V, V::Error>> {
         let env = self.env();
         let k = k.into_val(env);
-        let has = env.map_has(self.obj, k).unwrap_infallible();
-        if has.is_true() {
+        let has = env.map_has(self.obj, k).unwrap_infallible().into();
+        if has {
             let v = env.map_get(self.obj, k).unwrap_infallible();
             Some(V::try_from_val(env, &v))
         } else {
@@ -338,8 +341,8 @@ where
     pub fn remove(&mut self, k: K) -> Option<()> {
         let env = self.env();
         let k = k.into_val(env);
-        let has = env.map_has(self.obj, k).unwrap_infallible();
-        if has.is_true() {
+        let has = env.map_has(self.obj, k).unwrap_infallible().into();
+        if has {
             self.obj = env.map_del(self.obj, k).unwrap_infallible();
             Some(())
         } else {
@@ -355,16 +358,12 @@ where
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        let env = self.env();
-        let len = env.map_len(self.obj).unwrap_infallible();
-        len.is_u32_zero()
+        self.len() == 0
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        let env = self.env();
-        let len = env.map_len(self.obj).unwrap_infallible();
-        unsafe { <u32 as RawValConvertible>::unchecked_from_val(len) }
+        self.env().map_len(self.obj).unwrap_infallible().into()
     }
 
     #[inline(always)]
