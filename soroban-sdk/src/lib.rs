@@ -655,6 +655,9 @@ pub use bytes::{Bytes, BytesN};
 pub use map::Map;
 pub use set::Set;
 pub use vec::Vec;
+mod duration;
+mod num;
+mod timepoint;
 
 pub mod xdr;
 
