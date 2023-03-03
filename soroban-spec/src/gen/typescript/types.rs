@@ -52,17 +52,18 @@ pub fn generate_type_parser(spec: &ScSpecTypeDef, name: &str) -> String {
         ScSpecTypeDef::I64 => {
             format!("xdr.ScVal.scvObject(xdr.ScObject.scoI64({name}))").to_string()
         }
-        ScSpecTypeDef::U128 => todo!("generate_type_parser(u128)"),
-        ScSpecTypeDef::I128 => todo!("generate_type_parser(i128)"),
+        // TODO: Implement U128 and I128 conversion somewhere properly
+        ScSpecTypeDef::U128 => format!("bigintToU128({name})").to_string(),
+        ScSpecTypeDef::I128 => format!("bigintToI128({name})").to_string(),
         ScSpecTypeDef::U32 => format!("xdr.ScVal.scvU32({name})").to_string(),
         ScSpecTypeDef::I32 => format!("xdr.ScVal.scvI32({name})").to_string(),
         ScSpecTypeDef::Bool => {
-            format!("xdr.ScVal.scvStatic(name ? xdr.ScStatic.scsTrue() : xdr.ScStatic.scsFalse())")
+            format!("xdr.ScVal.scvStatic({name} ? xdr.ScStatic.scsTrue() : xdr.ScStatic.scsFalse())")
                 .to_string()
         }
         ScSpecTypeDef::Symbol => format!("xdr.ScVal.scvSymbol({name})").to_string(),
         ScSpecTypeDef::Bytes | ScSpecTypeDef::BytesN(_) => {
-            format!("xdr.ScVal.scvObject(xdr.ScObject.scoBytes({name}))").to_string()
+            format!("xdr.ScVal.scvObject(xdr.ScObject.scoBytes(Buffer.from({name})))").to_string()
         }
         ScSpecTypeDef::Address => format!(
             "(typeof {name} === \"string\" ? new SorobanClient.Address({name}) : {name}).toScVal()"
