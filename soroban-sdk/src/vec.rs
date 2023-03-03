@@ -8,16 +8,14 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use soroban_env_host::VecObject;
-
 use crate::{
     iter::{UncheckedEnumerable, UncheckedIter},
     unwrap::UnwrapInfallible,
 };
 
 use super::{
-    env::{internal::Env as _, internal::EnvBase as _, RawValConvertible},
-    ConversionError, Env, IntoVal, Object, RawVal, Set, TryFromVal, TryIntoVal,
+    env::internal::{Env as _, EnvBase as _, VecObject},
+    ConversionError, Env, IntoVal, RawVal, Set, TryFromVal, TryIntoVal,
 };
 
 #[cfg(doc)]
@@ -220,14 +218,6 @@ impl<T> TryFromVal<Env, Vec<T>> for RawVal {
 
     fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
         Ok(v.to_raw())
-    }
-}
-
-impl<T> TryFromVal<Env, Vec<T>> for Object {
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
-        Ok(v.obj.into())
     }
 }
 

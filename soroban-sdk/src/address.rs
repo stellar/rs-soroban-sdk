@@ -1,9 +1,7 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
-use soroban_env_host::AddressObject;
-
 use super::{
-    env::internal::{Env as _, EnvBase as _},
+    env::internal::{AddressObject, Env as _, EnvBase as _},
     BytesN, ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 

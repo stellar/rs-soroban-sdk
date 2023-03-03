@@ -7,12 +7,10 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use soroban_env_host::BytesObject;
-
 use super::{
-    env::internal::{Env as _, EnvBase as _, RawValConvertible},
+    env::internal::{BytesObject, Env as _, EnvBase as _, RawValConvertible},
     env::IntoVal,
-    ConversionError, Env, Object, RawVal, TryFromVal,
+    ConversionError, Env, RawVal, TryFromVal,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};

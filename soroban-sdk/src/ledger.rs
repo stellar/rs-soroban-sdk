@@ -1,9 +1,5 @@
 //! Ledger contains types for retrieving information about the current ledger.
-use crate::{
-    env::internal::{self, RawValConvertible},
-    unwrap::UnwrapInfallible,
-    BytesN, Env,
-};
+use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 
 /// Ledger retrieves information about the current ledger.
 ///
@@ -53,9 +49,9 @@ impl Ledger {
 
     /// Returns the version of the protocol that the ledger created with.
     pub fn protocol_version(&self) -> u32 {
-        let env = self.env();
-        let val = internal::Env::get_ledger_version(env).unwrap_infallible();
-        unsafe { u32::unchecked_from_val(val) }
+        internal::Env::get_ledger_version(self.env())
+            .unwrap_infallible()
+            .into()
     }
 
     /// Returns the sequence number of the ledger.
@@ -63,9 +59,9 @@ impl Ledger {
     /// The sequence number is a unique number for each ledger
     /// that is sequential, incremented by one for each new ledger.
     pub fn sequence(&self) -> u32 {
-        let env = self.env();
-        let val = internal::Env::get_ledger_sequence(env).unwrap_infallible();
-        unsafe { u32::unchecked_from_val(val) }
+        internal::Env::get_ledger_sequence(self.env())
+            .unwrap_infallible()
+            .into()
     }
 
     /// Returns a unix timestamp for when the ledger was closed.
@@ -74,9 +70,10 @@ impl Ledger {
     /// that have elapsed since unix epoch. Unix epoch is January 1st, 1970,
     /// at 00:00:00 UTC.
     pub fn timestamp(&self) -> u64 {
-        let env = self.env();
-        let obj = internal::Env::get_ledger_timestamp(env).unwrap_infallible();
-        internal::Env::obj_to_u64(env, obj).unwrap_infallible()
+        internal::Env::get_ledger_timestamp(self.env())
+            .unwrap_infallible()
+            .try_into_val(self.env())
+            .unwrap()
     }
 
     /// Returns the network identifier.

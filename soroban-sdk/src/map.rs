@@ -2,16 +2,14 @@ use core::{
     cmp::Ordering, convert::Infallible, fmt::Debug, iter::FusedIterator, marker::PhantomData,
 };
 
-use soroban_env_host::MapObject;
-
 use crate::{
     iter::{UncheckedEnumerable, UncheckedIter},
     unwrap::UnwrapInfallible,
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, RawValConvertible},
-    ConversionError, Env, IntoVal, Object, RawVal, Status, TryFromVal, Vec,
+    env::internal::{Env as _, EnvBase as _, MapObject},
+    ConversionError, Env, IntoVal, RawVal, Status, TryFromVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]

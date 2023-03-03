@@ -131,8 +131,9 @@ impl Logger {
             if cfg!(target_family = "wasm") {
                 let fmt: Bytes = fmt.into_val(env);
                 let args: Vec<RawVal> = Vec::from_slice(env, args);
-                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
-                    .unwrap_infallible();
+                // TODO: use String type when we have it
+                // internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
+                //     .unwrap_infallible();
             } else {
                 env.log_static_fmt_general(fmt, args, &[]).unwrap();
             }

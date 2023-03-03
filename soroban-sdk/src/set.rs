@@ -1,11 +1,10 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug, iter::FusedIterator};
 
-use soroban_env_host::{MapObject, TryIntoVal};
-
 use crate::unwrap::UnwrapInfallible;
 
 use super::{
-    env::internal::Env as _, ConversionError, Env, IntoVal, Map, Object, RawVal, TryFromVal, Vec,
+    env::internal::{Env as _, MapObject},
+    ConversionError, Env, IntoVal, Map, RawVal, TryFromVal, TryIntoVal, Vec,
 };
 
 /// Create a [Set] with the given items.

@@ -537,14 +537,14 @@ pub use soroban_sdk_macros::contractfile;
 /// use soroban_sdk::{symbol, Symbol};
 ///
 /// let symbol = symbol!("a_str");
-/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// assert_eq!(symbol, Symbol::from_small_str("a_str"));
 /// ```
 ///
 /// ```
 /// use soroban_sdk::{symbol, Symbol};
 ///
 /// const symbol: Symbol = symbol!("a_str");
-/// assert_eq!(symbol, Symbol::from_str("a_str"));
+/// assert_eq!(symbol, Symbol::from_small_str("a_str"));
 /// ```
 pub use soroban_sdk_macros::symbol;
 
@@ -626,7 +626,6 @@ pub use env::TryIntoVal;
 pub use env::Symbol;
 
 mod envhidden {
-    pub use super::env::Object;
     pub use super::env::Status;
 }
 #[doc(hidden)]

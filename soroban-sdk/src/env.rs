@@ -84,18 +84,15 @@ pub mod testutils {
 
 pub use internal::meta;
 pub use internal::xdr;
-pub use internal::BitSet;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::Object;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
-pub use internal::Val;
 
 pub trait IntoVal<E: internal::Env, T> {
     fn into_val(&self, e: &E) -> T;
@@ -128,6 +125,10 @@ use crate::unwrap::UnwrapOptimized;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
     storage::Storage, Address, Bytes, BytesN, Vec,
+};
+use internal::{
+    AddressObject, Bool, BytesObject, I128Object, I64Object, MapObject, Object, StringObject,
+    SymbolObject, U128Object, U32Val, U64Object, U64Val, VecObject, Void,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -495,9 +496,9 @@ impl Env {
         contract_wasm: &[u8],
     ) -> BytesN<32> {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
-        self.register_contract_with_optional_contract_id_and_source(
+        self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
-            xdr::ScContractCode::WasmRef(xdr::Hash(wasm_hash.into())),
+            xdr::ScContractExecutable::WasmRef(xdr::Hash(wasm_hash.into())),
         )
     }
 
@@ -509,8 +510,10 @@ impl Env {
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
     pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
-        let issuer_id =
-            xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(random())));
+        let issuer_pk = random();
+        let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
+            issuer_pk.clone(),
+        )));
 
         self.host()
             .with_mut_storage(|storage| {
@@ -527,7 +530,7 @@ impl Env {
                             account_id: issuer_id.clone(),
                             balance: 0,
                             flags: 0,
-                            home_domain: xdr::StringM::default(),
+                            home_domain: Default::default(),
                             inflation_dest: None,
                             num_sub_entries: 0,
                             seq_num: xdr::SequenceNumber(0),
@@ -554,7 +557,7 @@ impl Env {
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
             contract_id: xdr::ContractId::Asset(asset.clone()),
-            source: xdr::ScContractCode::Token,
+            source: xdr::ScContractExecutable::Token,
         });
 
         let token_id = self
@@ -563,36 +566,30 @@ impl Env {
             .unwrap()
             .try_into_val(self)
             .unwrap();
-        let issuer_address = Address::try_from_val(
-            self,
-            &xdr::ScVal::Object(Some(xdr::ScObject::Address(xdr::ScAddress::Account(
-                issuer_id.clone(),
-            )))),
-        )
-        .unwrap();
+        let issuer_address = Address::from_account_id(self, &BytesN::from_array(self, &issuer_pk));
         let _: () = self.invoke_contract(
             &token_id,
-            &Symbol::from_str("set_admin"),
+            &Symbol::from_small_str("set_admin"),
             (issuer_address, admin).try_into_val(self).unwrap(),
         );
 
         token_id
     }
 
-    fn register_contract_with_optional_contract_id_and_source<'a>(
+    fn register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,
-        source: xdr::ScContractCode,
+        executable: xdr::ScContractExecutable,
     ) -> BytesN<32> {
         if let Some(contract_id) = contract_id.into() {
-            self.register_contract_with_contract_id_and_source(contract_id, source);
+            self.register_contract_with_contract_id_and_executable(contract_id, executable);
             contract_id.clone()
         } else {
-            self.register_contract_with_source(source)
+            self.register_contract_with_source(executable)
         }
     }
 
-    fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
+    fn register_contract_with_source(&self, source: xdr::ScContractExecutable) -> BytesN<32> {
         let prev_source_account = self.env_impl.source_account();
         self.env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
@@ -700,7 +697,7 @@ impl Env {
     pub fn recorded_top_authorizations(
         &self,
     ) -> std::vec::Vec<(Address, BytesN<32>, Symbol, Vec<RawVal>)> {
-        use xdr::{ScObject, ScVal};
+        use xdr::{ScBytes, ScVal};
         let authorizations = self.env_impl.get_recorded_top_authorizations().unwrap();
         authorizations
             .iter()
@@ -710,32 +707,26 @@ impl Env {
                     args.push_back(RawVal::try_from_val(self, v).unwrap());
                 }
                 (
-                    Address::try_from_val(
-                        self,
-                        &ScVal::Object(Some(ScObject::Address(a.0.clone()))),
-                    )
-                    .unwrap(),
+                    Address::try_from_val(self, &ScVal::Address(a.0.clone())).unwrap(),
                     BytesN::<32>::try_from_val(
                         self,
-                        &ScVal::Object(Some(ScObject::Bytes(
-                            a.1.as_slice().to_vec().try_into().unwrap(),
-                        ))),
+                        &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
                     )
                     .unwrap(),
-                    a.2.clone(),
+                    Symbol::try_from_val(self, &a.2).unwrap(),
                     args,
                 )
             })
             .collect()
     }
 
-    fn register_contract_with_contract_id_and_source(
+    fn register_contract_with_contract_id_and_executable(
         &self,
         contract_id: &BytesN<32>,
-        source: xdr::ScContractCode,
+        executable: xdr::ScContractExecutable,
     ) {
         let contract_id_hash = Hash(contract_id.into());
-        let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
+        let data_key = xdr::ScVal::LedgerKeyContractExecutable;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract_id: contract_id_hash.clone(),
             key: data_key.clone(),
@@ -746,7 +737,7 @@ impl Env {
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
                 contract_id: contract_id_hash.clone(),
                 key: data_key,
-                val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(source))),
+                val: xdr::ScVal::ContractExecutable(executable),
             }),
         });
         self.env_impl
@@ -795,7 +786,7 @@ impl Env {
     /// setting up tests or asserting on internal state.
     pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
         let id: [u8; 32] = id.into();
-        let func = Symbol::from_str("");
+        let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
         self.env_impl
             .with_test_contract_frame(id.into(), func, || {
@@ -918,30 +909,30 @@ impl internal::EnvBase for Env {
 
     fn bytes_copy_from_slice(
         &self,
-        b: Object,
-        b_pos: RawVal,
-        mem: &[u8],
-    ) -> Result<Object, Self::Error> {
+        b: BytesObject,
+        b_pos: U32Val,
+        slice: &[u8],
+    ) -> Result<BytesObject, Self::Error> {
         Ok(self
             .env_impl
-            .bytes_copy_from_slice(b, b_pos, mem)
+            .bytes_copy_from_slice(b, b_pos, slice)
             .unwrap_optimized())
     }
 
     fn bytes_copy_to_slice(
         &self,
-        b: Object,
-        b_pos: RawVal,
-        mem: &mut [u8],
+        b: BytesObject,
+        b_pos: U32Val,
+        slice: &mut [u8],
     ) -> Result<(), Self::Error> {
         Ok(self
             .env_impl
-            .bytes_copy_to_slice(b, b_pos, mem)
+            .bytes_copy_to_slice(b, b_pos, slice)
             .unwrap_optimized())
     }
 
-    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Self::Error> {
-        Ok(self.env_impl.bytes_new_from_slice(mem).unwrap_optimized())
+    fn bytes_new_from_slice(&self, slice: &[u8]) -> Result<BytesObject, Self::Error> {
+        Ok(self.env_impl.bytes_new_from_slice(slice).unwrap_optimized())
     }
 
     fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Self::Error> {
@@ -981,6 +972,78 @@ impl internal::EnvBase for Env {
             .env_impl
             .log_static_fmt_general(fmt, v, s)
             .unwrap_optimized())
+    }
+
+    fn string_copy_to_slice(
+        &self,
+        b: soroban_env_host::StringObject,
+        b_pos: soroban_env_host::U32Val,
+        slice: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        todo!()
+    }
+
+    fn symbol_copy_to_slice(
+        &self,
+        b: soroban_env_host::SymbolObject,
+        b_pos: soroban_env_host::U32Val,
+        mem: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        todo!()
+    }
+
+    fn string_new_from_slice(
+        &self,
+        slice: &str,
+    ) -> Result<soroban_env_host::StringObject, Self::Error> {
+        todo!()
+    }
+
+    fn symbol_new_from_slice(
+        &self,
+        slice: &str,
+    ) -> Result<soroban_env_host::SymbolObject, Self::Error> {
+        todo!()
+    }
+
+    fn map_new_from_slices(
+        &self,
+        keys: &[&str],
+        vals: &[RawVal],
+    ) -> Result<soroban_env_host::MapObject, Self::Error> {
+        todo!()
+    }
+
+    fn map_unpack_to_slice(
+        &self,
+        map: soroban_env_host::MapObject,
+        keys: &[&str],
+        vals: &mut [RawVal],
+    ) -> Result<soroban_env_host::Void, Self::Error> {
+        todo!()
+    }
+
+    fn vec_new_from_slice(
+        &self,
+        vals: &[RawVal],
+    ) -> Result<soroban_env_host::VecObject, Self::Error> {
+        todo!()
+    }
+
+    fn vec_unpack_to_slice(
+        &self,
+        vec: soroban_env_host::VecObject,
+        vals: &mut [RawVal],
+    ) -> Result<soroban_env_host::Void, Self::Error> {
+        todo!()
+    }
+
+    fn symbol_index_in_strs(
+        &self,
+        key: Symbol,
+        strs: &[&str],
+    ) -> Result<soroban_env_host::U32Val, Self::Error> {
+        todo!()
     }
 }
 

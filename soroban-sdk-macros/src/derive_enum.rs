@@ -54,7 +54,9 @@ pub fn derive_type_enum(
             let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
             let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
             let discriminant_const_sym = quote! {
-                const #discriminant_const_sym_ident: #path::Symbol = #path::Symbol::from_str(#name);
+                // TODO: this probably could be changed to an infallible conversion
+                // (although maybe we shouldn't be using symbols here at all).
+                const #discriminant_const_sym_ident: #path::Symbol = #path::Symbol::from_small_str(#name);
             };
             let discriminant_const_u64 = quote! {
                 const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();
