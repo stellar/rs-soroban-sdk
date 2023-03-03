@@ -44,7 +44,7 @@ fn default_crate_path() -> Path {
 #[proc_macro]
 pub fn symbol(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
-    match Symbol::try_from_str(&input.value()) {
+    match Symbol::try_from_small_str(&input.value()) {
         Ok(_) => quote! {{
             const symbol: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#input);
             symbol

@@ -40,7 +40,7 @@ pub fn derive_type_struct(
         .map(|(_, f)| {
             let ident = f.ident.as_ref().unwrap();
             let name = ident.to_string();
-            if let Err(e) = Symbol::try_from_str(&name) {
+            if let Err(e) = Symbol::try_from_small_str(&name) {
                 errors.push(Error::new(ident.span(), format!("struct field name {}", e)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {
