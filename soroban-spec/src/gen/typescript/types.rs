@@ -57,10 +57,10 @@ pub fn generate_type_parser(spec: &ScSpecTypeDef, name: &str) -> String {
         ScSpecTypeDef::I128 => format!("bigintToI128({name})").to_string(),
         ScSpecTypeDef::U32 => format!("xdr.ScVal.scvU32({name})").to_string(),
         ScSpecTypeDef::I32 => format!("xdr.ScVal.scvI32({name})").to_string(),
-        ScSpecTypeDef::Bool => {
-            format!("xdr.ScVal.scvStatic({name} ? xdr.ScStatic.scsTrue() : xdr.ScStatic.scsFalse())")
-                .to_string()
-        }
+        ScSpecTypeDef::Bool => format!(
+            "xdr.ScVal.scvStatic({name} ? xdr.ScStatic.scsTrue() : xdr.ScStatic.scsFalse())"
+        )
+        .to_string(),
         ScSpecTypeDef::Symbol => format!("xdr.ScVal.scvSymbol({name})").to_string(),
         ScSpecTypeDef::Bytes | ScSpecTypeDef::BytesN(_) => {
             format!("xdr.ScVal.scvObject(xdr.ScObject.scoBytes(Buffer.from({name})))").to_string()

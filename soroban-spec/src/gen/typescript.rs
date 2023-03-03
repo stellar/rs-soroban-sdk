@@ -143,7 +143,7 @@ function bigintToBuf(bn: bigint): Buffer {
   return Buffer.from(u8);
 }
 "#
-        .to_string();
+    .to_string();
 
     // TODO: Generate types for udts.
     let types: Vec<String> = Vec::new();
@@ -186,10 +186,7 @@ fn generate_method(method: &ScSpecFunctionV0, _spec: &[ScSpecEntry]) -> String {
             &input_name,
             generate_type_ident(&input.type_),
         ));
-        arg_names.push(format!(
-            "{}_xdr",
-            &input_name,
-        ));
+        arg_names.push(format!("{}_xdr", &input_name,));
         arg_parsers.push(format!(
             "const {}_xdr = {};",
             &input_name,
@@ -204,7 +201,6 @@ fn generate_method(method: &ScSpecFunctionV0, _spec: &[ScSpecEntry]) -> String {
     let mut args: Vec<String> = vec![format!("\"{name}\"")];
     args.extend(arg_names.iter().map(|x| format!("{x}")));
     let args_param = args.join(", ");
-
 
     format!(
         r#"  {name}({types}): SorobanClient.xdr.Operation {{
