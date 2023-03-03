@@ -209,6 +209,20 @@ impl From<Bytes> for RawVal {
     }
 }
 
+impl From<Bytes> for BytesObject {
+    #[inline(always)]
+    fn from(v: Bytes) -> Self {
+        v.obj
+    }
+}
+
+impl From<&Bytes> for BytesObject {
+    #[inline(always)]
+    fn from(v: &Bytes) -> Self {
+        v.obj
+    }
+}
+
 impl From<&Bytes> for Bytes {
     #[inline(always)]
     fn from(v: &Bytes) -> Self {
@@ -857,6 +871,11 @@ impl<const N: usize> TryFromVal<Env, ScVal> for BytesN<N> {
 }
 
 impl<const N: usize> BytesN<N> {
+    #[inline(always)]
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: BytesObject) -> Self {
+        Self(Bytes::unchecked_new(env, obj))
+    }
+
     pub fn env(&self) -> &Env {
         self.0.env()
     }
