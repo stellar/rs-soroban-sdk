@@ -976,74 +976,85 @@ impl internal::EnvBase for Env {
 
     fn string_copy_to_slice(
         &self,
-        b: soroban_env_host::StringObject,
-        b_pos: soroban_env_host::U32Val,
+        b: StringObject,
+        b_pos: U32Val,
         slice: &mut [u8],
     ) -> Result<(), Self::Error> {
-        todo!()
+        Ok(self
+            .env_impl
+            .string_copy_to_slice(b, b_pos, slice)
+            .unwrap_optimized())
     }
 
     fn symbol_copy_to_slice(
         &self,
-        b: soroban_env_host::SymbolObject,
-        b_pos: soroban_env_host::U32Val,
+        b: SymbolObject,
+        b_pos: U32Val,
         mem: &mut [u8],
     ) -> Result<(), Self::Error> {
-        todo!()
+        Ok(self
+            .env_impl
+            .symbol_copy_to_slice(b, b_pos, mem)
+            .unwrap_optimized())
     }
 
-    fn string_new_from_slice(
-        &self,
-        slice: &str,
-    ) -> Result<soroban_env_host::StringObject, Self::Error> {
-        todo!()
+    fn string_new_from_slice(&self, slice: &str) -> Result<StringObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .string_new_from_slice(slice)
+            .unwrap_optimized())
     }
 
-    fn symbol_new_from_slice(
-        &self,
-        slice: &str,
-    ) -> Result<soroban_env_host::SymbolObject, Self::Error> {
-        todo!()
+    fn symbol_new_from_slice(&self, slice: &str) -> Result<SymbolObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .symbol_new_from_slice(slice)
+            .unwrap_optimized())
     }
 
     fn map_new_from_slices(
         &self,
         keys: &[&str],
         vals: &[RawVal],
-    ) -> Result<soroban_env_host::MapObject, Self::Error> {
-        todo!()
+    ) -> Result<MapObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .map_new_from_slices(keys, vals)
+            .unwrap_optimized())
     }
 
     fn map_unpack_to_slice(
         &self,
-        map: soroban_env_host::MapObject,
+        map: MapObject,
         keys: &[&str],
         vals: &mut [RawVal],
-    ) -> Result<soroban_env_host::Void, Self::Error> {
-        todo!()
+    ) -> Result<Void, Self::Error> {
+        Ok(self
+            .env_impl
+            .map_unpack_to_slice(map, keys, vals)
+            .unwrap_optimized())
     }
 
-    fn vec_new_from_slice(
-        &self,
-        vals: &[RawVal],
-    ) -> Result<soroban_env_host::VecObject, Self::Error> {
-        todo!()
+    fn vec_new_from_slice(&self, vals: &[RawVal]) -> Result<VecObject, Self::Error> {
+        Ok(self.env_impl.vec_new_from_slice(vals).unwrap_optimized())
     }
 
     fn vec_unpack_to_slice(
         &self,
-        vec: soroban_env_host::VecObject,
+        vec: VecObject,
         vals: &mut [RawVal],
     ) -> Result<soroban_env_host::Void, Self::Error> {
-        todo!()
+        Ok(self
+            .env_impl
+            .vec_unpack_to_slice(vec, vals)
+            .unwrap_optimized())
     }
 
-    fn symbol_index_in_strs(
-        &self,
-        key: Symbol,
-        strs: &[&str],
-    ) -> Result<soroban_env_host::U32Val, Self::Error> {
-        todo!()
+    fn symbol_index_in_strs(&self, key: Symbol, strs: &[&str]) -> Result<U32Val, Self::Error> {
+        Ok(self
+            .env_impl
+            .symbol_index_in_strs(key, strs)
+            .unwrap_optimized())
     }
 }
 
