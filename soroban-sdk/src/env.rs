@@ -1043,7 +1043,7 @@ impl internal::EnvBase for Env {
         &self,
         vec: VecObject,
         vals: &mut [RawVal],
-    ) -> Result<soroban_env_host::Void, Self::Error> {
+    ) -> Result<Void, Self::Error> {
         Ok(self
             .env_impl
             .vec_unpack_to_slice(vec, vals)

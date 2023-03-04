@@ -9,11 +9,11 @@ use crate::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, MapObject},
-    ConversionError, Env, IntoVal, RawVal, Status, TryFromVal, Vec,
+    ConversionError, Env, IntoVal, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{xdr::ScVal, TryIntoVal};
+use super::xdr::ScVal;
 
 #[cfg(doc)]
 use crate::storage::Storage;

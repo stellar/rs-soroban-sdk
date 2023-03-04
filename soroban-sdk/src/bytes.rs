@@ -10,7 +10,7 @@ use core::{
 use super::{
     env::internal::{BytesObject, Env as _, EnvBase as _, RawValConvertible},
     env::IntoVal,
-    ConversionError, Env, RawVal, TryFromVal,
+    ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -18,7 +18,7 @@ use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
 use crate::{storage::Storage, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
-use super::{xdr::ScVal, TryIntoVal};
+use super::xdr::ScVal;
 
 /// Create a [Bytes] with an array, or an integer or hex literal.
 ///
