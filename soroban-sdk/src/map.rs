@@ -230,6 +230,14 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
+        v.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFromVal<Env, ScVal> for Map<K, V>
 where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,

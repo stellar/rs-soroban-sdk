@@ -627,7 +627,10 @@ pub use env::Symbol;
 
 mod envhidden {
     pub use super::env::EnvBase;
+    pub use super::env::MapObject;
     pub use super::env::Status;
+    pub use super::env::SymbolStr;
+    pub use super::env::VecObject;
 }
 #[doc(hidden)]
 pub use envhidden::*;

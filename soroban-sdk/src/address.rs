@@ -141,6 +141,14 @@ impl TryFrom<Address> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, Address> for ScVal {
+    type Error = ConversionError;
+    fn try_from_val(_e: &Env, v: &Address) -> Result<Self, Self::Error> {
+        v.try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {

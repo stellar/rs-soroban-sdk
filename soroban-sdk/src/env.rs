@@ -87,12 +87,15 @@ pub use internal::xdr;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
+pub use internal::MapObject;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
 pub use internal::Status;
 pub use internal::Symbol;
+pub use internal::SymbolStr;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
+pub use internal::VecObject;
 
 pub trait IntoVal<E: internal::Env, T> {
     fn into_val(&self, e: &E) -> T;
@@ -127,8 +130,8 @@ use crate::{
     storage::Storage, Address, Bytes, BytesN, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, I128Object, I64Object, MapObject, Object, StringObject,
-    SymbolObject, U128Object, U32Val, U64Object, U64Val, VecObject, Void,
+    AddressObject, Bool, BytesObject, I128Object, I64Object, Object, StringObject, SymbolObject,
+    U128Object, U32Val, U64Object, U64Val, Void,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
