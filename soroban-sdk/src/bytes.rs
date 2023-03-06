@@ -7,12 +7,10 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use soroban_env_host::BytesObject;
-
 use super::{
-    env::internal::{Env as _, EnvBase as _, RawValConvertible},
+    env::internal::{BytesObject, Env as _, EnvBase as _, RawValConvertible},
     env::IntoVal,
-    ConversionError, Env, Object, RawVal, TryFromVal,
+    ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -20,7 +18,7 @@ use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
 use crate::{storage::Storage, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
-use super::{xdr::ScVal, TryIntoVal};
+use super::xdr::ScVal;
 
 /// Create a [Bytes] with an array, or an integer or hex literal.
 ///
@@ -243,6 +241,14 @@ impl TryFrom<Bytes> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Bytes) -> Result<Self, Self::Error> {
         (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, Bytes> for ScVal {
+    type Error = ConversionError;
+    fn try_from_val(_e: &Env, v: &Bytes) -> Result<Self, Self::Error> {
+        v.try_into()
     }
 }
 
@@ -859,6 +865,14 @@ impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: BytesN<N>) -> Result<Self, Self::Error> {
         (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<const N: usize> TryFromVal<Env, BytesN<N>> for ScVal {
+    type Error = ConversionError;
+    fn try_from_val(_e: &Env, v: &BytesN<N>) -> Result<Self, Self::Error> {
+        v.try_into()
     }
 }
 

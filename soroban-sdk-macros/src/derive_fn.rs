@@ -258,7 +258,9 @@ pub fn derive_contract_function_set<'a>(
                 env: soroban_sdk::Env,
                 args: &[soroban_sdk::RawVal],
             ) -> Option<soroban_sdk::RawVal> {
-                match ::core::convert::AsRef::<str>::as_ref(&func.to_str()) {
+                use soroban_sdk::FromVal;
+                let symstr = soroban_sdk::SymbolStr::from_val(&env, &func);
+                match ::core::convert::AsRef::<str>::as_ref(&symstr) {
                     #(
                         #(#attrs)*
                         #idents => {

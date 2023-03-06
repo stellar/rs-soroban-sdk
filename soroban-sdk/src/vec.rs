@@ -8,16 +8,14 @@ use core::{
     ops::{Bound, RangeBounds},
 };
 
-use soroban_env_host::VecObject;
-
 use crate::{
     iter::{UncheckedEnumerable, UncheckedIter},
     unwrap::UnwrapInfallible,
 };
 
 use super::{
-    env::{internal::Env as _, internal::EnvBase as _, RawValConvertible},
-    ConversionError, Env, IntoVal, Object, RawVal, Set, TryFromVal, TryIntoVal,
+    env::internal::{Env as _, EnvBase as _, VecObject},
+    ConversionError, Env, IntoVal, RawVal, Set, TryFromVal, TryIntoVal,
 };
 
 #[cfg(doc)]
@@ -223,14 +221,6 @@ impl<T> TryFromVal<Env, Vec<T>> for RawVal {
     }
 }
 
-impl<T> TryFromVal<Env, Vec<T>> for Object {
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
-        Ok(v.obj.into())
-    }
-}
-
 impl<T> From<Vec<T>> for RawVal
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -272,6 +262,14 @@ impl<T> TryFrom<&Vec<T>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
         ScVal::try_from_val(&v.env, &v.obj.to_raw())
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFromVal<Env, Vec<T>> for ScVal {
+    type Error = ConversionError;
+    fn try_from_val(_e: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
+        v.try_into()
     }
 }
 

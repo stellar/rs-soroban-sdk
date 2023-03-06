@@ -2,20 +2,18 @@ use core::{
     cmp::Ordering, convert::Infallible, fmt::Debug, iter::FusedIterator, marker::PhantomData,
 };
 
-use soroban_env_host::MapObject;
-
 use crate::{
     iter::{UncheckedEnumerable, UncheckedIter},
     unwrap::UnwrapInfallible,
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, RawValConvertible},
-    ConversionError, Env, IntoVal, Object, RawVal, Status, TryFromVal, Vec,
+    env::internal::{Env as _, EnvBase as _, MapObject},
+    ConversionError, Env, IntoVal, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
-use super::{xdr::ScVal, TryIntoVal};
+use super::xdr::ScVal;
 
 #[cfg(doc)]
 use crate::storage::Storage;
@@ -228,6 +226,14 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Map<K, V>) -> Result<Self, Self::Error> {
         (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
+    type Error = ConversionError;
+    fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
+        v.try_into()
     }
 }
 

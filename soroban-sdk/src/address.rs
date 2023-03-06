@@ -1,9 +1,7 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
-use soroban_env_host::AddressObject;
-
 use super::{
-    env::internal::{Env as _, EnvBase as _},
+    env::internal::{AddressObject, Env as _, EnvBase as _},
     BytesN, ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
@@ -139,6 +137,14 @@ impl TryFrom<Address> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Address) -> Result<Self, Self::Error> {
         (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, Address> for ScVal {
+    type Error = ConversionError;
+    fn try_from_val(_e: &Env, v: &Address) -> Result<Self, Self::Error> {
+        v.try_into()
     }
 }
 

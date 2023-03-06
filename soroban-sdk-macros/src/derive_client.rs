@@ -151,11 +151,11 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    use soroban_sdk::IntoVal;
+                    use soroban_sdk::{IntoVal,FromVal};
                     self.with_env(|env|
                         env.invoke_contract(
                             &self.contract_id,
-                            &soroban_sdk::symbol!(#fn_name),
+                            &soroban_sdk::Symbol::from_val(&self.env, &#fn_name),
                             soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                         )
                     )
@@ -163,11 +163,11 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
-                    use soroban_sdk::IntoVal;
+                    use soroban_sdk::{IntoVal,FromVal};
                     self.with_env(|env|
                         env.try_invoke_contract(
                             &self.contract_id,
-                            &soroban_sdk::symbol!(#fn_name),
+                            &soroban_sdk::Symbol::from_val(&self.env, &#fn_name),
                             soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                         )
                     )

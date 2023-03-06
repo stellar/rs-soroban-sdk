@@ -35,7 +35,7 @@ use self::derive_client::ClientItem;
 
 use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 
-use soroban_env_common::Symbol;
+use soroban_env_common::SymbolSmall;
 
 fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
@@ -44,12 +44,14 @@ fn default_crate_path() -> Path {
 #[proc_macro]
 pub fn symbol(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
-    match Symbol::try_from_small_str(&input.value()) {
-        Ok(_) => quote! {{
-            const symbol: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#input);
-            symbol
-        }}
-        .into(),
+    match SymbolSmall::try_from_str(&input.value()) {
+        Ok(ss) => {
+            let body: u64 = unsafe { ss.get_body() };
+            quote! {{
+               { const symbol: soroban_sdk::Symbol = unsafe { soroban_sdk::Symbol::from_small_body(#body) }; symbol }
+            }}
+            .into()
+        }
         Err(e) => Error::new(input.span(), format!("{}", e))
             .to_compile_error()
             .into(),
