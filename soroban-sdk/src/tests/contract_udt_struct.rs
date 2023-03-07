@@ -18,6 +18,15 @@ pub struct UdtWithLongName {
     pub this_is_a_very_long_name_1234567: u64,
 }
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[contracttype]
+pub struct UdtWithNonAlphabeticallyOrderedFields {
+    pub bb: i32,
+    pub ba: i32,
+    pub b: i32,
+    pub a: i32,
+}
+
 pub struct Contract;
 
 #[contractimpl]
@@ -57,6 +66,15 @@ fn test_long_names_functional() {
         ContractClient::new(&env, &contract_id).add_udt_with_long_name(&a, &b),
         6_000_000_000_000
     );
+}
+
+#[test]
+fn test_out_of_order_functional() {
+    let env = Env::default();
+
+    let map = map![&env, (Symbol::short("a"), 5), (Symbol::short("b"), 7), (Symbol::short("ba"), 9), (Symbol::short("bb"), 11)].to_raw();
+    let udt = UdtWithNonAlphabeticallyOrderedFields::try_from_val(&env, &map);
+    assert_eq!(udt, Ok(UdtWithNonAlphabeticallyOrderedFields { a: 5, b: 7, ba: 9, bb: 11 }));
 }
 
 // TODO: at present UDT try_from_vals actually trap rather than returning
