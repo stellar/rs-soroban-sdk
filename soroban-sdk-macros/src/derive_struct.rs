@@ -1,11 +1,11 @@
-use itertools::MultiUnzip;
+use itertools::Itertools;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use soroban_env_common::Symbol;
 use syn::{Attribute, DataStruct, Error, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
+    SCSYMBOL_LIMIT,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type};
@@ -27,17 +27,17 @@ pub fn derive_type_struct(
 
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
-    let (spec_fields, field_idents, field_str_lits, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (spec_fields, field_idents, field_names, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
+        .sorted_by_key(|field| field.ident.as_ref().unwrap().to_string())
         .enumerate()
         .map(|(field_num, field)| {
             let field_ident = field.ident.as_ref().unwrap();
             let field_name = field_ident.to_string();
-            let field_str_lit = Literal::string(&field_name);
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
 
-            if let Err(e) = Symbol::try_from_small_str(&field_name) {
-                errors.push(Error::new(field_ident.span(), format!("struct field name {}", e)));
+            if field_name.len() > SCSYMBOL_LIMIT as usize {
+                errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is {}", field_name.len(), SCSYMBOL_LIMIT)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
@@ -64,7 +64,7 @@ pub fn derive_type_struct(
                     val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };
-            (spec_field, field_ident, field_str_lit, field_idx_lit, try_from_xdr, try_into_xdr)
+            (spec_field, field_ident, field_name, field_idx_lit, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -108,7 +108,7 @@ pub fn derive_type_struct(
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
                 use #path::{TryIntoVal,EnvBase,ConversionError,RawVal,MapObject};
-                const KEYS: [&'static str; #field_count_usize] = [#(#field_str_lits),*];
+                const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let mut vals: [RawVal; #field_count_usize] = [RawVal::VOID.to_raw(); #field_count_usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
                 env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
@@ -122,7 +122,7 @@ pub fn derive_type_struct(
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, Self::Error> {
                 use #path::{TryIntoVal,EnvBase,ConversionError,RawVal};
-                const KEYS: [&'static str; #field_count_usize] = [#(#field_str_lits),*];
+                const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let vals: [RawVal; #field_count_usize] = [
                     #((&val.#field_idents).try_into_val(env).map_err(|_| ConversionError)?),*
                 ];
