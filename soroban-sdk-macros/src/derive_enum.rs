@@ -162,8 +162,8 @@ pub fn derive_type_enum(
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
                 let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
                 let mut iter = vec.iter();
-                let discriminant: #path::Symbol = iter.next().ok_or(#path::ConversionError)??.try_into().map_err(|_|#path::ConversionError)?;
-                Ok(match u32::from(env.symbol_index_in_strs(discriminant, CASES)?) as usize {
+                let discriminant: #path::Symbol = iter.next().ok_or(#path::ConversionError)??.try_into_val(env).map_err(|_|#path::ConversionError)?;
+                Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_val(), CASES)?) as usize {
                     #(#try_froms,)*
                     _ => Err(#path::ConversionError{})?,
                 })
@@ -215,41 +215,41 @@ pub fn derive_type_enum(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVec> for &#enum_ident {
+        impl TryFrom<&#enum_ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVec, Self::Error> {
+            fn try_from(val: &#enum_ident) -> Result<Self, Self::Error> {
                 extern crate alloc;
-                Ok(match self {
+                Ok(match val {
                     #(#into_xdrs,)*
                 })
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVec> for #enum_ident {
+        impl TryFrom<#enum_ident> for #path::xdr::ScVec  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVec, Self::Error> {
-                (&self).try_into()
+            fn try_from(val: #enum_ident) -> Result<Self, Self::Error> {
+                (&val).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for &#enum_ident {
+        impl TryFrom<&#enum_ident> for #path::xdr::ScVal  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
-                Ok(#path::xdr::ScVal::Vec(Some(self.try_into()?)))
+            fn try_from(val: &#enum_ident) -> Result<Self, Self::Error> {
+                Ok(#path::xdr::ScVal::Vec(Some(val.try_into()?)))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for #enum_ident {
+        impl TryFrom<#enum_ident> for #path::xdr::ScVal  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
-                (&self).try_into()
+            fn try_from(val: #enum_ident) -> Result<Self, Self::Error> {
+                (&val).try_into()
             }
         }
     }

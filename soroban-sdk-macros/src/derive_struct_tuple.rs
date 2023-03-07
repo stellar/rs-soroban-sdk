@@ -49,7 +49,7 @@ pub fn derive_type_struct_tuple(
                 }
             };
             let try_into_xdr = quote! {
-                (&self.#field_idx_lit).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
+                (&val.#field_idx_lit).try_into().map_err(|_| #path::xdr::Error::Invalid)?
             };
             (field_spec, field_idx_lit, try_from_xdr, try_into_xdr)
         })
@@ -148,10 +148,10 @@ pub fn derive_type_struct_tuple(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryIntoVal<#path::Env, #path::xdr::ScVec> for &#ident {
+        impl TryFrom<&#ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into_val(&self, env: #path::Env) -> Result<#path::xdr::ScVec, Self::Error> {
+            fn try_from(val: &#ident) -> Result<Self, Self::Error> {
                 extern crate alloc;
                 use #path::TryFromVal;
                 Ok(#path::xdr::ScVec(alloc::vec![
@@ -161,29 +161,29 @@ pub fn derive_type_struct_tuple(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryIntoVal<#path::Env, #path::xdr::ScVec> for #ident {
+        impl TryFrom<#ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into_val(&self, env: #path::Env) -> Result<#path::xdr::ScVec, Self::Error> {
-                (&self).try_into_val(env)
+            fn try_from(val: #ident) -> Result<Self, Self::Error> {
+                (&val).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryIntoVal<#path::Env, #path::xdr::ScVal> for &#ident {
+        impl TryFrom<&#ident> for #path::xdr::ScVal {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into_val(&self, env: #path::Env) -> Result<#path::xdr::ScVal, Self::Error> {
-                Ok(#path::xdr::ScVal::Vec(Some(self.try_into_val(env)?)))
+            fn try_from(val: &#ident) -> Result<Self, Self::Error> {
+                Ok(#path::xdr::ScVal::Vec(Some(val.try_into()?)))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryIntoVal<#path::Env, #path::xdr::ScVal> for #ident {
+        impl TryFrom<#ident> for #path::xdr::ScVal {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into_val(&self, env: #path::Env) -> Result<#path::xdr::ScVal, Self::Error> {
-                (&self).try_into_val(env)
+            fn try_from(val: #ident) -> Result<Self, Self::Error> {
+                (&val).try_into()
             }
         }
     }

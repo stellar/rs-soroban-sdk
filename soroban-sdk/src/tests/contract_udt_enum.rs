@@ -1,8 +1,8 @@
-use crate as soroban_sdk;
+use crate::{self as soroban_sdk, Symbol};
 use soroban_sdk::xdr::ScVec;
 use soroban_sdk::{
-    contractimpl, contracttype, symbol, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal,
-    TryIntoVal, Vec,
+    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    Vec,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -48,10 +48,10 @@ fn test_error_on_partial_decode() {
     // Success case, a vec will decode to a Udt if the first element is the
     // variant name as a Symbol, and following elements are tuple-like values
     // for the variant.
-    let vec: Vec<RawVal> = vec![&env, symbol!("Aaa").into_val(&env)];
+    let vec: Vec<RawVal> = vec![&env, Symbol::short("Aaa").into_val(&env)];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Ok(Udt::Aaa));
-    let vec: Vec<RawVal> = vec![&env, symbol!("Bbb").into_val(&env), 8.into()];
+    let vec: Vec<RawVal> = vec![&env, Symbol::short("Bbb").into_val(&env), 8.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Ok(Udt::Bbb(8)));
 
@@ -59,10 +59,15 @@ fn test_error_on_partial_decode() {
     // multiple values, it is an error. It is an error because decoding and
     // encoding will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
-    let vec: Vec<RawVal> = vec![&env, symbol!("Aaa").into_val(&env), 8.into()];
+    let vec: Vec<RawVal> = vec![&env, Symbol::short("Aaa").into_val(&env), 8.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Err(ConversionError));
-    let vec: Vec<RawVal> = vec![&env, symbol!("Bbb").into_val(&env), 8.into(), 9.into()];
+    let vec: Vec<RawVal> = vec![
+        &env,
+        Symbol::short("Bbb").into_val(&env),
+        8.into(),
+        9.into(),
+    ];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Err(ConversionError));
 }

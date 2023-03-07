@@ -8,14 +8,14 @@ See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
 ### Examples
 
 ```rust
-use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+use soroban_sdk::{contractimpl, vec, BytesN, Env, Symbol, Vec};
 
 pub struct HelloContract;
 
 #[contractimpl]
 impl HelloContract {
     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-        vec![&env, symbol!("Hello"), to]
+        vec![&env, Symbol::short("Hello"), to]
     }
 }
 
@@ -25,9 +25,9 @@ fn test() {
     let contract_id = env.register_contract(None, HelloContract);
     let client = HelloContractClient::new(&env, &contract_id);
 
-    let words = client.hello(&symbol!("Dev"));
+    let words = client.hello(&Symbol::short("Dev"));
 
-    assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+    assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
 }
 ```
 

@@ -15,7 +15,7 @@
 //! #[contractimpl]
 //! impl HelloContract {
 //!     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-//!         vec![&env, symbol!("Hello"), to]
+//!         vec![&env, Symbol::short("Hello"), to]
 //!     }
 //! }
 //!
@@ -28,9 +28,9 @@
 //!     let contract_id = env.register_contract(None, HelloContract);
 //!     let client = HelloContractClient::new(&env, &contract_id);
 //!
-//!     let words = client.hello(&symbol!("Dev"));
+//!     let words = client.hello(&Symbol::short("Dev"));
 //!
-//!     assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+//!     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
@@ -277,7 +277,7 @@ pub use soroban_sdk_macros::contractimport;
 /// #[contractimpl]
 /// impl HelloContract {
 ///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-///         vec![&env, symbol!("Hello"), to]
+///         vec![&env, Symbol::short("Hello"), to]
 ///     }
 /// }
 ///
@@ -290,9 +290,9 @@ pub use soroban_sdk_macros::contractimport;
 ///     let contract_id = env.register_contract(None, HelloContract);
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
-///     let words = client.hello(&symbol!("Dev"));
+///     let words = client.hello(&Symbol::short("Dev"));
 ///
-///     assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
 /// }
 /// # #[cfg(not(feature = "testutils"))]
 /// # fn main() { }
@@ -346,7 +346,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///         state.last_incr = incr;
 ///
 ///         // Save the count.
-///         env.storage().set(&symbol!("STATE"), &state);
+///         env.storage().set(&Symbol::short("STATE"), &state);
 ///
 ///         // Return the count to the caller.
 ///         state.count
@@ -355,7 +355,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///     /// Return the current state.
 ///     pub fn get_state(env: Env) -> State {
 ///         env.storage()
-///             .get(&symbol!("STATE"))
+///             .get(&Symbol::short("STATE"))
 ///             .unwrap_or_else(|| Ok(State::default())) // If no value set, assume 0.
 ///             .unwrap() // Panic if the value of COUNTER is not a State.
 ///     }
@@ -424,13 +424,13 @@ pub use soroban_sdk_macros::contractimpl;
 /// impl Contract {
 ///     /// Set the color.
 ///     pub fn set(env: Env, c: Color) {
-///         env.storage().set(&symbol!("COLOR"), &c);
+///         env.storage().set(&Symbol::short("COLOR"), &c);
 ///     }
 ///
 ///     /// Get the color.
 ///     pub fn get(env: Env) -> Option<Color> {
 ///         env.storage()
-///             .get(&symbol!("COLOR"))
+///             .get(&Symbol::short("COLOR"))
 ///             .map(Result::unwrap) // Panic if the value of COLOR is not a Color.
 ///     }
 /// }
@@ -488,7 +488,7 @@ pub use soroban_sdk_macros::contracttype;
 /// #[contractimpl]
 /// impl HelloContract {
 ///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-///         vec![&env, symbol!("Hello"), to]
+///         vec![&env, Symbol::short("Hello"), to]
 ///     }
 /// }
 ///
@@ -506,9 +506,9 @@ pub use soroban_sdk_macros::contracttype;
 ///     // the trait.
 ///     let client = Client::new(&env, &contract_id);
 ///
-///     let words = client.hello(&symbol!("Dev"));
+///     let words = client.hello(&Symbol::short("Dev"));
 ///
-///     assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
 /// }
 /// # #[cfg(not(feature = "testutils"))]
 /// # fn main() { }
@@ -522,31 +522,6 @@ pub use soroban_sdk_macros::contractclient;
 /// directly, unless you specifically want to only load the contract file
 /// without generating a client for it.
 pub use soroban_sdk_macros::contractfile;
-
-/// Create a [Symbol] with the given string.
-///
-/// A symbol's maximum length is 10 characters.
-///
-/// Valid characters are `a-zA-Z0-9_`.
-///
-/// The [Symbol] is generated at compile time and returned as a const.
-///
-/// ### Examples
-///
-/// ```
-/// use soroban_sdk::{symbol, Symbol};
-///
-/// let symbol = symbol!("a_str");
-/// assert_eq!(symbol, Symbol::from_small_str("a_str"));
-/// ```
-///
-/// ```
-/// use soroban_sdk::{symbol, Symbol};
-///
-/// const symbol: Symbol = symbol!("a_str");
-/// assert_eq!(symbol, Symbol::from_small_str("a_str"));
-/// ```
-pub use soroban_sdk_macros::symbol;
 
 /// Panic with the given error.
 ///
@@ -605,6 +580,7 @@ pub mod unwrap;
 mod env;
 
 mod address;
+mod symbol;
 
 pub use env::ConversionError;
 
@@ -622,8 +598,6 @@ pub use env::IntoVal;
 pub use env::TryFromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryIntoVal;
-
-pub use env::Symbol;
 
 mod envhidden {
     pub use super::env::EnvBase;
@@ -657,6 +631,7 @@ pub use address::Address;
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
 pub use set::Set;
+pub use symbol::Symbol;
 pub use vec::Vec;
 mod num;
 pub use num::{Duration, Timepoint, I256, U256};

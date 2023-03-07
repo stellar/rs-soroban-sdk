@@ -245,14 +245,6 @@ impl TryFrom<Bytes> for ScVal {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFromVal<Env, Bytes> for ScVal {
-    type Error = ConversionError;
-    fn try_from_val(_e: &Env, v: &Bytes) -> Result<Self, Self::Error> {
-        v.try_into()
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for Bytes {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
@@ -865,14 +857,6 @@ impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: BytesN<N>) -> Result<Self, Self::Error> {
         (&v).try_into()
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFromVal<Env, BytesN<N>> for ScVal {
-    type Error = ConversionError;
-    fn try_from_val(_e: &Env, v: &BytesN<N>) -> Result<Self, Self::Error> {
-        v.try_into()
     }
 }
 

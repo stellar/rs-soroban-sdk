@@ -28,34 +28,15 @@ use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, AttributeArgs, Data, DeriveInput, Error,
-    Fields, ItemImpl, LitStr, Path, Type, Visibility,
+    Fields, ItemImpl, Path, Type, Visibility,
 };
 
 use self::derive_client::ClientItem;
 
 use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 
-use soroban_env_common::SymbolSmall;
-
 fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
-}
-
-#[proc_macro]
-pub fn symbol(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
-    match SymbolSmall::try_from_str(&input.value()) {
-        Ok(ss) => {
-            let body: u64 = unsafe { ss.get_body() };
-            quote! {{
-               { const symbol: soroban_sdk::Symbol = unsafe { soroban_sdk::Symbol::from_small_body(#body) }; symbol }
-            }}
-            .into()
-        }
-        Err(e) => Error::new(input.span(), format!("{}", e))
-            .to_compile_error()
-            .into(),
-    }
 }
 
 #[proc_macro_attribute]

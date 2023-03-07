@@ -27,7 +27,7 @@ use crate::{
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
-/// let key = symbol!("key");
+/// let key = Symbol::short("key");
 /// env.storage().set(&key, &1);
 /// assert_eq!(storage.has(&key), true);
 /// assert_eq!(storage.get::<_, i32>(&key), Some(Ok(1)));

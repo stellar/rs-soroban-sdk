@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contracterror, contractimpl, panic_with_error, symbol, Env, Symbol};
+use soroban_sdk::{contracterror, contractimpl, panic_with_error, Env, Symbol};
 
 pub struct Contract;
 
@@ -12,9 +12,9 @@ pub enum Error {
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env, flag: u32) -> Result<Symbol, Error> {
-        env.storage().set(&symbol!("persisted"), &true);
+        env.storage().set(&Symbol::short("persisted"), &true);
         if flag == 0 {
-            Ok(symbol!("hello"))
+            Ok(Symbol::short("hello"))
         } else if flag == 1 {
             Err(Error::AnError)
         } else if flag == 2 {
@@ -29,7 +29,7 @@ impl Contract {
     #[cfg(test)]
     pub fn persisted(env: Env) -> bool {
         env.storage()
-            .get(&symbol!("persisted"))
+            .get(&Symbol::short("persisted"))
             .unwrap_or(Ok(false))
             .unwrap()
     }
@@ -38,9 +38,8 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use soroban_sdk::{
-        symbol,
         xdr::{ScStatus, ScUnknownErrorCode},
-        BytesN, Env, Status,
+        BytesN, Env, Status, Symbol,
     };
 
     use crate::{Contract, ContractClient, Error};
@@ -53,7 +52,7 @@ mod test {
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.hello(&0);
-        assert_eq!(res, symbol!("hello"));
+        assert_eq!(res, Symbol::short("hello"));
         assert!(client.persisted());
     }
 
@@ -65,7 +64,7 @@ mod test {
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&0);
-        assert_eq!(res, Ok(Ok(symbol!("hello"))));
+        assert_eq!(res, Ok(Ok(Symbol::short("hello"))));
         assert!(client.persisted());
     }
 
