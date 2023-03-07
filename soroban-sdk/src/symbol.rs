@@ -14,7 +14,7 @@ use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
 
 /// Symbol is a short string with a limited character set.
 ///
-/// Valid characters are `a-zA-Z0-9_` and maximum length is 30 characters.
+/// Valid characters are `a-zA-Z0-9_` and maximum length is 32 characters.
 /// 
 /// Symbols are used for the for symbolic identifiers, such as function
 /// names and user-defined structure field/enum variant names. That's why
@@ -184,7 +184,7 @@ impl TryFromVal<Env, ScSymbol> for Symbol {
 impl Symbol {
     /// Creates a new Symbol given a string with valid characters.
     /// 
-    /// Valid characters are `a-zA-Z0-9_` and maximum string length is 30
+    /// Valid characters are `a-zA-Z0-9_` and maximum string length is 32
     /// characters.
     /// 
     /// Use `Symbol::try_from_val(env, s)`/`s.try_into_val(env)` in case if
