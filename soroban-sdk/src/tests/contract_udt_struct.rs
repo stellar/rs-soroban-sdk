@@ -32,7 +32,10 @@ fn test_functional() {
     assert_eq!(c, (a, b));
 }
 
+// TODO: at present UDT try_from_vals actually trap rather than returning
+// catchable errors. This is intentional to minimize code size. Can revisit.
 #[test]
+#[should_panic]
 fn test_error_on_partial_decode() {
     let env = Env::default();
 
