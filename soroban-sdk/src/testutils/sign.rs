@@ -96,7 +96,7 @@ pub mod ed25519 {
             let sig = kp.sign(128i64).unwrap();
             assert_eq!(
                 hex::encode(sig),
-                // Verified with https://go.dev/play/p/yW7mYkXPdNj.
+                // Verified with https://go.dev/play/p/XiK8sOmvPsh
                 "a9b9dfac10bc1e5c8bc565e9515e5d086e3264b71bf4daf2c7340e1d10fae86e2563fa1d639ff153559a9710dfa270a9462fe87faa0e18a7a54a8a1a6151e909",
             );
         }
