@@ -12,12 +12,22 @@ pub struct Udt {
     pub b: i32,
 }
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[contracttype]
+pub struct UdtWithLongName {
+    pub this_is_a_very_long_name_1234567: u64,
+}
+
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
     pub fn add(a: Udt, b: Udt) -> (Udt, Udt) {
         (a, b)
+    }
+
+    pub fn add_udt_with_long_name(a: UdtWithLongName, b: UdtWithLongName) -> u64 {
+        a.this_is_a_very_long_name_1234567 + b.this_is_a_very_long_name_1234567
     }
 }
 
@@ -30,6 +40,23 @@ fn test_functional() {
     let b = Udt { a: 10, b: 14 };
     let c = ContractClient::new(&env, &contract_id).add(&a, &b);
     assert_eq!(c, (a, b));
+}
+
+#[test]
+fn test_long_names_functional() {
+    let env = Env::default();
+    let contract_id = env.register_contract(None, Contract);
+
+    let a = UdtWithLongName {
+        this_is_a_very_long_name_1234567: 1_000_000_000_000,
+    };
+    let b = UdtWithLongName {
+        this_is_a_very_long_name_1234567: 5_000_000_000_000,
+    };
+    assert_eq!(
+        ContractClient::new(&env, &contract_id).add_udt_with_long_name(&a, &b),
+        6_000_000_000_000
+    );
 }
 
 // TODO: at present UDT try_from_vals actually trap rather than returning
@@ -98,6 +125,35 @@ fn test_spec() {
         }))]
         .try_into()
         .unwrap(),
+    });
+    assert_eq!(entries, expect);
+}
+
+#[test]
+fn test_spec_with_long_names() {
+    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD_UDT_WITH_LONG_NAME).unwrap();
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: "add_udt_with_long_name".try_into().unwrap(),
+        inputs: vec![
+            ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "a".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "UdtWithLongName".try_into().unwrap(),
+                }),
+            },
+            ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "b".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "UdtWithLongName".try_into().unwrap(),
+                }),
+            },
+        ]
+        .try_into()
+        .unwrap(),
+        outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
     });
     assert_eq!(entries, expect);
 }

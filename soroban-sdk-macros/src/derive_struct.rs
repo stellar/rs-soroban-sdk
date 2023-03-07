@@ -1,11 +1,11 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use soroban_env_common::Symbol;
 use syn::{Attribute, DataStruct, Error, Ident, Path};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
+    SCSYMBOL_LIMIT,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type};
@@ -36,8 +36,8 @@ pub fn derive_type_struct(
             let field_str_lit = Literal::string(&field_name);
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
 
-            if let Err(e) = Symbol::try_from_small_str(&field_name) {
-                errors.push(Error::new(field_ident.span(), format!("struct field name {}", e)));
+            if field_name.len() > SCSYMBOL_LIMIT as usize {
+                errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is {}", field_name.len(), SCSYMBOL_LIMIT)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
