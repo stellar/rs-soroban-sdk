@@ -570,16 +570,16 @@ mod test {
         let env = Env::default();
         let s1 = set![&env, 1, 2, 3];
         let raw = s1.to_raw();
-        let s2: Result<Set<i64>, ConversionError> = raw.try_into_val(&env);
+        let s2: Result<Set<i64>, _> = raw.try_into_val(&env);
         assert_eq!(s2, Ok(s1));
 
         let s3 = set![&env, 1, 2, 3, 4, 5];
         let obj = s3.to_object();
-        let s4: Result<Set<i64>, ConversionError> = obj.try_into_val(&env);
+        let s4: Result<Set<i64>, _> = obj.try_into_val(&env);
         assert_eq!(s4, Ok(s3));
 
         // Sanity check
-        assert_ne!(s2, s4);
+        assert_ne!(s2.unwrap(), s4.unwrap());
     }
 
     #[test]

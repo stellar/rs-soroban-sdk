@@ -1,9 +1,12 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, Symbol as SymbolVal, SymbolSmall, SymbolStr},
+    env::internal::{Env as _, EnvBase as _, Symbol as SymbolVal, SymbolSmall},
     ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
+
+#[cfg(not(target_family = "wasm"))]
+use super::env::SymbolStr;
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::{ScSymbol, ScVal};
