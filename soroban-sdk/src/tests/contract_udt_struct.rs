@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, contracttype, map, symbol, ConversionError, Env, TryFromVal};
+use soroban_sdk::{contractimpl, contracttype, map, ConversionError, Env, Symbol, TryFromVal};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
     ScSpecTypeUdt,
@@ -38,7 +38,7 @@ fn test_error_on_partial_decode() {
 
     // Success case, a map will decode to a Udt if the symbol keys match the
     // fields.
-    let map = map![&env, (symbol!("a"), 5), (symbol!("b"), 7)].to_raw();
+    let map = map![&env, (Symbol::short("a"), 5), (Symbol::short("b"), 7)].to_raw();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
 
@@ -48,9 +48,9 @@ fn test_error_on_partial_decode() {
     // is relatively difficult to use safely.
     let map = map![
         &env,
-        (symbol!("a"), 5),
-        (symbol!("b"), 7),
-        (symbol!("c"), 9)
+        (Symbol::short("a"), 5),
+        (Symbol::short("b"), 7),
+        (Symbol::short("c"), 9)
     ]
     .to_raw();
     let udt = Udt::try_from_val(&env, &map);

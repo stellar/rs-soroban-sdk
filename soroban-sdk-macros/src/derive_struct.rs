@@ -178,7 +178,7 @@ pub fn derive_type_struct(
         impl TryInto<#path::xdr::ScMap> for #ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(&self) -> Result<#path::xdr::ScMap, Self::Error> {
+            fn try_into(self) -> Result<#path::xdr::ScMap, Self::Error> {
                 (&self).try_into()
             }
         }

@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, log, symbol, Env};
+use soroban_sdk::{contractimpl, log, Env, Symbol};
 
 pub struct Contract;
 
@@ -8,10 +8,21 @@ impl Contract {
     pub fn hello(env: Env) {
         log!(&env, "none");
         log!(&env, "none",);
-        log!(&env, "one: {}", symbol!("one"));
-        log!(&env, "one: {}", symbol!("one"),);
-        log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"));
-        log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"),);
+        log!(&env, "one: {}", Symbol::short("one"));
+        log!(&env, "one: {}", Symbol::short("one"),);
+        log!(
+            &env,
+            "one: {}, two: {}",
+            Symbol::short("one"),
+            Symbol::short("two")
+        );
+        log!(
+            &env,
+            "one: {}, two: {}",
+            Symbol::short("one"),
+            Symbol::short("two"),
+        );
+        log!(&env, "long: {}", Symbol::new(&env, "one_two_three_four"))
     }
 }
 
@@ -45,6 +56,7 @@ mod test {
                     "one: Symbol(one)".to_string(),
                     "one: Symbol(one), two: Symbol(two)".to_string(),
                     "one: Symbol(one), two: Symbol(two)".to_string(),
+                    "long: Symbol(one_two_three_four)".to_string(),
                 ],
             );
         } else {

@@ -91,7 +91,6 @@ pub use internal::MapObject;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
 pub use internal::Status;
-pub use internal::Symbol;
 pub use internal::SymbolStr;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
@@ -130,8 +129,8 @@ use crate::{
     storage::Storage, Address, Bytes, BytesN, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, I128Object, I64Object, Object, StringObject, SymbolObject,
-    U128Object, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, I128Object, I64Object, Object, StringObject, Symbol,
+    SymbolObject, U128Object, U32Val, U64Object, U64Val, Void,
 };
 
 /// The [Env] type provides access to the environment the contract is executing
@@ -256,7 +255,7 @@ impl Env {
     ///
     ///         let outer = stack.get(0).unwrap().unwrap();
     ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
-    ///         assert_eq!(outer.1, symbol!("hello"));
+    ///         assert_eq!(outer.1, Symbol::short("hello"));
     ///     }
     /// }
     /// #[test]
@@ -273,7 +272,7 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
+    pub fn call_stack(&self) -> Vec<(BytesN<32>, crate::Symbol)> {
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
         unsafe { Vec::unchecked_new(self.clone(), stack) }
     }
@@ -306,14 +305,19 @@ impl Env {
     pub fn invoke_contract<T>(
         &self,
         contract_id: &BytesN<32>,
-        func: &Symbol,
+        func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> T
     where
         T: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object())
-            .unwrap_infallible();
+        let rv = internal::Env::call(
+            self,
+            contract_id.to_object(),
+            func.to_val(),
+            args.to_object(),
+        )
+        .unwrap_infallible();
         T::try_from_val(self, &rv)
             .map_err(|_| ConversionError)
             .unwrap()
@@ -324,15 +328,20 @@ impl Env {
     pub fn try_invoke_contract<T, E>(
         &self,
         contract_id: &BytesN<32>,
-        func: &Symbol,
+        func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
     where
         T: TryFromVal<Env, RawVal>,
         E: TryFrom<Status>,
     {
-        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object())
-            .unwrap_infallible();
+        let rv = internal::Env::try_call(
+            self,
+            contract_id.to_object(),
+            func.to_val(),
+            args.to_object(),
+        )
+        .unwrap_infallible();
         match Status::try_from_val(self, &rv) {
             Ok(status) => Err(E::try_from(status)),
             Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
@@ -424,7 +433,7 @@ impl Env {
     ///
     /// #[contractimpl]
     /// impl HelloContract {
-    ///     pub fn hello(env: Env, recipient: soroban_sdk::Symbol) -> soroban_sdk::Symbol {
+    ///     pub fn hello(env: Env, recipient: Symbol) -> Symbol {
     ///         todo!()
     ///     }
     /// }
@@ -451,7 +460,15 @@ impl Env {
                 env_impl: &internal::EnvImpl,
                 args: &[RawVal],
             ) -> Option<RawVal> {
-                self.0.call(func, Env::with_impl(env_impl.clone()), args)
+                let env = Env::with_impl(env_impl.clone());
+                self.0.call(
+                    crate::Symbol::try_from_val(&env, func)
+                        .unwrap_infallible()
+                        .to_string()
+                        .as_str(),
+                    env,
+                    args,
+                )
             }
         }
 
@@ -572,7 +589,7 @@ impl Env {
         let issuer_address = Address::from_account_id(self, &BytesN::from_array(self, &issuer_pk));
         let _: () = self.invoke_contract(
             &token_id,
-            &Symbol::from_small_str("set_admin"),
+            &crate::Symbol::short("set_admin"),
             (issuer_address, admin).try_into_val(self).unwrap(),
         );
 
@@ -647,7 +664,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal, symbol};
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal};
     ///
     /// pub struct Contract;
     ///
@@ -677,7 +694,7 @@ impl Env {
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
-    ///             symbol!("transfer"),
+    ///             Symbol::short("transfer"),
     ///             (&address, 1000_i128,).into_val(&env)
     ///         )]
     ///     );
@@ -688,7 +705,7 @@ impl Env {
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
-    ///             symbol!("transfer2"),
+    ///             Symbol::short("transfer2"),
     ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///             (500_i128,).into_val(&env)
     ///         )]
@@ -699,7 +716,7 @@ impl Env {
     /// ```
     pub fn recorded_top_authorizations(
         &self,
-    ) -> std::vec::Vec<(Address, BytesN<32>, Symbol, Vec<RawVal>)> {
+    ) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
         use xdr::{ScBytes, ScVal};
         let authorizations = self.env_impl.get_recorded_top_authorizations().unwrap();
         authorizations
@@ -716,7 +733,7 @@ impl Env {
                         &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
                     )
                     .unwrap(),
-                    Symbol::try_from_val(self, &a.2).unwrap(),
+                    crate::Symbol::try_from_val(self, &a.2).unwrap(),
                     args,
                 )
             })

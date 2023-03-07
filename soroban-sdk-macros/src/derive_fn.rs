@@ -254,13 +254,11 @@ pub fn derive_contract_function_set<'a>(
         impl soroban_sdk::testutils::ContractFunctionSet for #ty {
             fn call(
                 &self,
-                func: &soroban_sdk::Symbol,
+                func: &str,
                 env: soroban_sdk::Env,
                 args: &[soroban_sdk::RawVal],
             ) -> Option<soroban_sdk::RawVal> {
-                use soroban_sdk::FromVal;
-                let symstr = soroban_sdk::SymbolStr::from_val(&env, &func);
-                match ::core::convert::AsRef::<str>::as_ref(&symstr) {
+                match func {
                     #(
                         #(#attrs)*
                         #idents => {

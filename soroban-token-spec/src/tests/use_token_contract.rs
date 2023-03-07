@@ -1,5 +1,5 @@
 use soroban_sdk::{
-    contractimpl, contracttype, symbol, testutils::Address as _, Address, BytesN, Env, IntoVal,
+    contractimpl, contracttype, testutils::Address as _, Address, BytesN, Env, IntoVal, Symbol,
 };
 
 mod token_contract {
@@ -64,7 +64,7 @@ fn test() {
         std::vec![(
             from.clone(),
             token_client.contract_id.clone(),
-            symbol!("incr_allow"),
+            Symbol::short("incr_allow"),
             (&from, &spender, 20_i128).into_val(&env)
         )]
     );

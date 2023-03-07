@@ -44,7 +44,7 @@ use crate::{env::internal::EnvBase, Bytes, Env, IntoVal, RawVal, Vec};
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
+/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
 /// ```
 ///
 /// Assert on logs in tests:
@@ -57,7 +57,7 @@ use crate::{env::internal::EnvBase, Bytes, Env, IntoVal, RawVal, Vec};
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
+/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
 ///
 /// use soroban_sdk::testutils::Logger;
 ///
