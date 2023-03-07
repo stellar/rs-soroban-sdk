@@ -12,6 +12,17 @@ use super::env::SymbolStr;
 use crate::env::internal::xdr::{ScSymbol, ScVal};
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
 
+/// Symbol is a short string with a limited character set.
+///
+/// Valid characters are `a-zA-Z0-9_` and maximum length is 30 characters.
+/// 
+/// Symbols are used for the for symbolic identifiers, such as function
+/// names and user-defined structure field/enum variant names. That's why
+/// these idenfiers have limited length.
+/// 
+/// While Symbols up to 30 characters long are allowed, Symbols that are 9 
+/// characters long or shorter are more efficient at runtime and also can be
+/// computed at compile time.
 #[derive(Clone)]
 pub struct Symbol {
     env: Option<Env>,
@@ -171,6 +182,17 @@ impl TryFromVal<Env, ScSymbol> for Symbol {
 }
 
 impl Symbol {
+    /// Creates a new Symbol given a string with valid characters.
+    /// 
+    /// Valid characters are `a-zA-Z0-9_` and maximum string length is 30
+    /// characters.
+    /// 
+    /// Use `Symbol::try_from_val(env, s)`/`s.try_into_val(env)` in case if
+    /// failures need to be handled gracefully.
+    /// 
+    /// ### Panics
+    ///
+    /// When the input string is not representable by Symbol.
     pub fn new(env: &Env, s: &str) -> Self {
         Self {
             env: Some(env.clone()),
@@ -178,6 +200,15 @@ impl Symbol {
         }
     }
 
+    /// Creates a new Symbol given a short string with valid characters.
+    /// 
+    /// Valid characters are `a-zA-Z0-9_` and maximum length is 9 characters.
+    /// 
+    /// The conversion happens at compile time.
+    /// 
+    /// ### Panics
+    ///
+    /// When the input string is not representable by Symbol.
     pub const fn short(s: &str) -> Self {
         if let Ok(sym) = SymbolSmall::try_from_str(s) {
             Symbol {
