@@ -1,27 +1,26 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{
-        DurationObject, Env as _, EnvBase as _, I256Object, TimepointObject, U256Object,
-    },
+    env::internal::{Env as _, EnvBase as _, I256Small, I256Val, U256Small, U256Val},
     ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
-use crate::unwrap::UnwrapInfallible;
+use crate::{env::MaybeEnv, unwrap::UnwrapInfallible};
 
-macro_rules! impl_num_type_wrapping_object {
-    ($wrapper:ident, $obj:ty) => {
+macro_rules! impl_num_wrapping_val_type {
+    ($wrapper:ident, $val:ty, $small:ty) => {
         #[derive(Clone)]
         pub struct $wrapper {
-            env: Env,
-            obj: $obj,
+            env: MaybeEnv,
+            val: $val,
         }
 
         impl Debug for $wrapper {
             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                write!(f, "{:?}", self.obj.as_raw())
+                // FIXME: properly print it when we have the conversion functions
+                write!(f, "{:?}", self.val.as_raw())
             }
         }
 
@@ -41,19 +40,40 @@ macro_rules! impl_num_type_wrapping_object {
 
         impl Ord for $wrapper {
             fn cmp(&self, other: &Self) -> Ordering {
-                self.env.check_same_env(&other.env);
-                let v = self
-                    .env
-                    .obj_cmp(self.obj.into(), other.obj.into())
-                    .unwrap_infallible();
-                v.cmp(&0)
+                let self_raw = self.val.to_raw();
+                let other_raw = other.val.to_raw();
+
+                match (<$small>::try_from(self_raw), <$small>::try_from(other_raw)) {
+                    // Compare small symbols.
+                    (Ok(self_sym), Ok(other_sym)) => self_sym.cmp(&other_sym),
+                    // The object-to-small symbol comparisons are handled by `obj_cmp`,
+                    // so it's safe to handle all the other cases using it.
+                    _ => {
+                        let env: Option<Env> =
+                            match (self.env.clone().try_into(), other.env.clone().try_into()) {
+                                (Err(_), Err(_)) => None,
+                                (Err(_), Ok(e)) => Some(e),
+                                (Ok(e), Err(_)) => Some(e),
+                                (Ok(e1), Ok(e2)) => {
+                                    e1.check_same_env(&e2);
+                                    Some(e1)
+                                }
+                            };
+                        if let Some(env) = env {
+                            let v = env.obj_cmp(self_raw, other_raw).unwrap_infallible();
+                            v.cmp(&0)
+                        } else {
+                            panic!("$wrapper object is missing the env reference");
+                        }
+                    }
+                }
             }
         }
 
-        impl TryFromVal<Env, $obj> for $wrapper {
+        impl TryFromVal<Env, $val> for $wrapper {
             type Error = Infallible;
 
-            fn try_from_val(env: &Env, val: &$obj) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &Env, val: &$val) -> Result<Self, Self::Error> {
                 Ok(unsafe { $wrapper::unchecked_new(env.clone(), *val) })
             }
         }
@@ -62,7 +82,7 @@ macro_rules! impl_num_type_wrapping_object {
             type Error = ConversionError;
 
             fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-                Ok(<$obj>::try_from_val(env, val)?
+                Ok(<$val>::try_from_val(env, val)?
                     .try_into_val(env)
                     .unwrap_infallible())
             }
@@ -72,7 +92,7 @@ macro_rules! impl_num_type_wrapping_object {
             type Error = ConversionError;
 
             fn try_from_val(_env: &Env, v: &$wrapper) -> Result<Self, Self::Error> {
-                Ok(v.obj.to_raw())
+                Ok(v.to_raw())
             }
         }
 
@@ -80,7 +100,7 @@ macro_rules! impl_num_type_wrapping_object {
             type Error = ConversionError;
 
             fn try_from_val(_env: &Env, v: &&$wrapper) -> Result<Self, Self::Error> {
-                Ok(v.obj.to_raw())
+                Ok(v.to_raw())
             }
         }
 
@@ -88,7 +108,12 @@ macro_rules! impl_num_type_wrapping_object {
         impl TryFrom<&$wrapper> for ScVal {
             type Error = ConversionError;
             fn try_from(v: &$wrapper) -> Result<Self, Self::Error> {
-                ScVal::try_from_val(&v.env, &v.obj.to_raw())
+                if let Ok(ss) = <$small>::try_from(v.val) {
+                    ScVal::try_from(ss)
+                } else {
+                    let e: Env = v.env.clone().try_into()?;
+                    ScVal::try_from_val(&e, &v.to_raw())
+                }
             }
         }
 
@@ -104,7 +129,7 @@ macro_rules! impl_num_type_wrapping_object {
         impl TryFromVal<Env, ScVal> for $wrapper {
             type Error = ConversionError;
             fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-                Ok(<$obj>::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+                Ok(<$val>::try_from_val(env, &RawVal::try_from_val(env, val)?)?
                     .try_into_val(env)
                     .unwrap_infallible())
             }
@@ -112,35 +137,27 @@ macro_rules! impl_num_type_wrapping_object {
 
         impl $wrapper {
             #[inline(always)]
-            pub(crate) unsafe fn unchecked_new(env: Env, obj: $obj) -> Self {
-                Self { env, obj }
-            }
-
-            #[inline(always)]
-            pub fn env(&self) -> &Env {
-                &self.env
+            pub(crate) unsafe fn unchecked_new(env: Env, val: $val) -> Self {
+                Self {
+                    env: env.into(),
+                    val,
+                }
             }
 
             pub fn as_raw(&self) -> &RawVal {
-                self.obj.as_raw()
+                self.val.as_raw()
             }
 
             pub fn to_raw(&self) -> RawVal {
-                self.obj.to_raw()
+                self.val.to_raw()
             }
 
-            pub fn as_object(&self) -> &$obj {
-                &self.obj
-            }
-
-            pub fn to_object(&self) -> $obj {
-                self.obj
+            pub fn to_val(&self) -> $val {
+                self.val
             }
         }
     };
 }
 
-impl_num_type_wrapping_object!(Duration, DurationObject);
-impl_num_type_wrapping_object!(Timepoint, TimepointObject);
-impl_num_type_wrapping_object!(U256, U256Object);
-impl_num_type_wrapping_object!(I256, I256Object);
+impl_num_wrapping_val_type!(U256, U256Val, U256Small);
+impl_num_wrapping_val_type!(I256, I256Val, I256Small);
