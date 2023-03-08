@@ -633,6 +633,8 @@ pub use map::Map;
 pub use set::Set;
 pub use symbol::Symbol;
 pub use vec::Vec;
+mod num;
+pub use num::{I256, U256};
 
 pub mod xdr;
 
