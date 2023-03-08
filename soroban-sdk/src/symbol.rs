@@ -142,7 +142,7 @@ impl TryFrom<&Symbol> for ScVal {
         if let Ok(ss) = SymbolSmall::try_from(v.val) {
             ScVal::try_from(ss)
         } else {
-            let e: Env = v.env.try_into()?;
+            let e: Env = v.env.clone().try_into()?;
             ScVal::try_from_val(&e, &v.to_raw())
         }
     }
@@ -254,7 +254,7 @@ impl ToString for Symbol {
         if let Ok(s) = SymbolSmall::try_from(self.val) {
             s.to_string()
         } else {
-            let e: Env = self.env.try_into().unwrap_optimized();
+            let e: Env = self.env.clone().try_into().unwrap_optimized();
             SymbolStr::try_from_val(&e, &self.val)
                 .unwrap_optimized()
                 .to_string()
