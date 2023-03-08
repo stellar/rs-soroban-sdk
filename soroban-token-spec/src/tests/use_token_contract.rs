@@ -64,7 +64,7 @@ fn test() {
         std::vec![(
             from.clone(),
             token_client.contract_id.clone(),
-            Symbol::short("incr_allow"),
+            Symbol::new(&env, "incr_allow"),
             (&from, &spender, 20_i128).into_val(&env)
         )]
     );

@@ -5,7 +5,7 @@ use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path};
 
 use stellar_xdr::{
     Error as XdrError, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr,
+    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type};
@@ -45,6 +45,16 @@ pub fn derive_type_enum(
             let case_name = &case_ident.to_string();
             let case_name_str_lit = Literal::string(&case_name);
             let case_num_lit = Literal::usize_unsuffixed(case_num);
+            if case_name.len() > SCSYMBOL_LIMIT as usize {
+                errors.push(Error::new(
+                    case_ident.span(),
+                    format!(
+                        "enum field name is too long: {}, max is {}",
+                        case_name.len(),
+                        SCSYMBOL_LIMIT
+                    ),
+                ));
+            }
 
             match variant.fields {
                 Fields::Named(_) => {
