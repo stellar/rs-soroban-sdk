@@ -12,6 +12,7 @@ pub enum Udt {
     Bbb(i32),
     MaxFields(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32),
     Nested(Udt2, Udt2),
+    ThisIsAVeryLongName1234567890,
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -85,6 +86,14 @@ fn round_trips() {
     assert_eq!(before, after);
 
     let before = Udt::MaxFields(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+    let rawval: RawVal = before.try_into_val(&env).unwrap();
+    let after: Udt = rawval.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+    let scvec: ScVec = before.try_into().unwrap();
+    let after: Udt = scvec.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let before = Udt::ThisIsAVeryLongName1234567890;
     let rawval: RawVal = before.try_into_val(&env).unwrap();
     let after: Udt = rawval.try_into_val(&env).unwrap();
     assert_eq!(before, after);

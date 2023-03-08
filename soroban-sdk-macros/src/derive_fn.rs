@@ -3,7 +3,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
     ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM, VecM,
-    WriteXdr,
+    WriteXdr, SCSYMBOL_LIMIT,
 };
 use syn::{
     punctuated::Punctuated,
@@ -149,12 +149,12 @@ pub fn derive_fn(
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
         name: wrap_export_name.try_into().unwrap_or_else(|_| {
-            const MAX: u32 = 10;
             errors.push(Error::new(
                 ident.span(),
                 format!(
-                    "contract function name too long, max length {} characters",
-                    MAX,
+                    "contract function name is too long: {}, max is {}",
+                    wrap_export_name.len(),
+                    SCSYMBOL_LIMIT,
                 ),
             ));
             ScSymbol::default()
