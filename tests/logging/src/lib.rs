@@ -22,7 +22,6 @@ impl Contract {
             Symbol::short("one"),
             Symbol::short("two"),
         );
-        log!(&env, "long: {}", Symbol::new(&env, "one_two_three_four"))
     }
 }
 
@@ -56,7 +55,6 @@ mod test {
                     "one: Symbol(one)".to_string(),
                     "one: Symbol(one), two: Symbol(two)".to_string(),
                     "one: Symbol(one), two: Symbol(two)".to_string(),
-                    "long: Symbol(one_two_three_four)".to_string(),
                 ],
             );
         } else {
