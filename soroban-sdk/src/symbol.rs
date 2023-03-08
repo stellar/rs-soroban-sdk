@@ -10,7 +10,10 @@ use super::env::SymbolStr;
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::{ScSymbol, ScVal};
-use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
+use crate::{
+    env::MaybeEnv,
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
+};
 
 /// Symbol is a short string with a limited character set.
 ///
@@ -25,7 +28,7 @@ use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
 /// computed at compile time.
 #[derive(Clone)]
 pub struct Symbol {
-    env: Option<Env>,
+    env: MaybeEnv,
     val: SymbolVal,
 }
 
@@ -67,15 +70,16 @@ impl Ord for Symbol {
             // The object-to-small symbol comparisons are handled by `obj_cmp`,
             // so it's safe to handle all the other cases using it.
             _ => {
-                let env = match (&self.env, &other.env) {
-                    (None, None) => None,
-                    (None, Some(e)) => Some(e),
-                    (Some(e), None) => Some(e),
-                    (Some(e1), Some(e2)) => {
-                        e1.check_same_env(e2);
-                        Some(e1)
-                    }
-                };
+                let env: Option<Env> =
+                    match (self.env.clone().try_into(), other.env.clone().try_into()) {
+                        (Err(_), Err(_)) => None,
+                        (Err(_), Ok(e)) => Some(e),
+                        (Ok(e), Err(_)) => Some(e),
+                        (Ok(e1), Ok(e2)) => {
+                            e1.check_same_env(&e2);
+                            Some(e1)
+                        }
+                    };
                 if let Some(env) = env {
                     let v = env.obj_cmp(self_raw, other_raw).unwrap_infallible();
                     v.cmp(&0)
@@ -135,10 +139,11 @@ impl TryFromVal<Env, &str> for Symbol {
 impl TryFrom<&Symbol> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Symbol) -> Result<Self, Self::Error> {
-        if let Some(env) = &v.env {
-            ScVal::try_from_val(env, &v.val.to_raw())
+        if let Ok(ss) = SymbolSmall::try_from(v.val) {
+            ScVal::try_from(ss)
         } else {
-            Ok(ScVal::try_from(&SymbolSmall::try_from(v.val).unwrap()).unwrap())
+            let e: Env = v.env.clone().try_into()?;
+            ScVal::try_from_val(&e, &v.to_raw())
         }
     }
 }
@@ -195,7 +200,7 @@ impl Symbol {
     /// When the input string is not representable by Symbol.
     pub fn new(env: &Env, s: &str) -> Self {
         Self {
-            env: Some(env.clone()),
+            env: env.clone().into(),
             val: s.try_into_val(env).unwrap_optimized(),
         }
     }
@@ -212,7 +217,7 @@ impl Symbol {
     pub const fn short(s: &str) -> Self {
         if let Ok(sym) = SymbolSmall::try_from_str(s) {
             Symbol {
-                env: None,
+                env: MaybeEnv::none(),
                 val: SymbolVal::from_small(sym),
             }
         } else {
@@ -223,7 +228,7 @@ impl Symbol {
     #[inline(always)]
     pub(crate) unsafe fn unchecked_new(env: Env, val: SymbolVal) -> Self {
         Self {
-            env: Some(env),
+            env: env.into(),
             val,
         }
     }
@@ -249,8 +254,9 @@ impl ToString for Symbol {
         if let Ok(s) = SymbolSmall::try_from(self.val) {
             s.to_string()
         } else {
-            SymbolStr::try_from_val(self.env.as_ref().unwrap(), &self.val)
-                .unwrap()
+            let e: Env = self.env.clone().try_into().unwrap_optimized();
+            SymbolStr::try_from_val(&e, &self.val)
+                .unwrap_optimized()
                 .to_string()
         }
     }

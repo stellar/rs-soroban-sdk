@@ -6,6 +6,7 @@ pub mod internal {
 
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
+    pub type MaybeEnvImpl = Guest;
 
     // In the Guest case, Env::Error is already Infallible so there is no work
     // to do to "reject an error": if an error occurs in the environment, the
@@ -21,6 +22,7 @@ pub mod internal {
 
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
+    pub type MaybeEnvImpl = Option<Host>;
 
     // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
     // `soroban-env-{common,host}/testutils` which in turn adds the helper method
@@ -132,6 +134,96 @@ use internal::{
     AddressObject, Bool, BytesObject, I128Object, I64Object, Object, StringObject, Symbol,
     SymbolObject, U128Object, U32Val, U64Object, U64Val, Void,
 };
+
+#[doc(hidden)]
+#[derive(Clone)]
+pub struct MaybeEnv {
+    maybe_env_impl: internal::MaybeEnvImpl,
+    #[cfg(any(test, feature = "testutils"))]
+    snapshot: Option<Rc<LedgerSnapshot>>,
+}
+
+#[cfg(target_family = "wasm")]
+impl TryFrom<MaybeEnv> for Env {
+    type Error = Infallible;
+
+    fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
+        Ok(Env {
+            env_impl: internal::EnvImpl {},
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
+        })
+    }
+}
+
+impl Default for MaybeEnv {
+    fn default() -> Self {
+        Self::none()
+    }
+}
+
+#[cfg(target_family = "wasm")]
+impl MaybeEnv {
+    // separate function to be const
+    pub const fn none() -> Self {
+        Self {
+            maybe_env_impl: internal::EnvImpl {},
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl MaybeEnv {
+    // separate function to be const
+    pub const fn none() -> Self {
+        Self {
+            maybe_env_impl: None,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
+        }
+    }
+}
+
+#[cfg(target_family = "wasm")]
+impl From<Env> for MaybeEnv {
+    fn from(value: Env) -> Self {
+        MaybeEnv {
+            maybe_env_impl: value.env_impl,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<MaybeEnv> for Env {
+    type Error = ConversionError;
+
+    fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
+        if let Some(env_impl) = value.maybe_env_impl {
+            Ok(Env {
+                env_impl,
+                #[cfg(any(test, feature = "testutils"))]
+                snapshot: value.snapshot,
+            })
+        } else {
+            Err(ConversionError)
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<Env> for MaybeEnv {
+    fn from(value: Env) -> Self {
+        MaybeEnv {
+            maybe_env_impl: Some(value.env_impl),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
+        }
+    }
+}
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.

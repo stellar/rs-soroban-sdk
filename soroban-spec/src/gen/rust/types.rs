@@ -181,7 +181,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             let ident = format_ident!("{}", u.name.to_string().unwrap());
             quote! { #ident }
         }
-        ScSpecTypeDef::Void => todo!(),
+        ScSpecTypeDef::Void => quote! { () },
         ScSpecTypeDef::Timepoint => todo!(),
         ScSpecTypeDef::Duration => todo!(),
         ScSpecTypeDef::U256 => todo!(),
