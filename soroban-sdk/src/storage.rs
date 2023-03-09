@@ -19,7 +19,7 @@ use crate::{
 /// ```
 /// use soroban_sdk::{Env, Symbol};
 ///
-/// # use soroban_sdk::{contractimpl, symbol, BytesN};
+/// # use soroban_sdk::{contractimpl, BytesN};
 /// #
 /// # pub struct Contract;
 /// #

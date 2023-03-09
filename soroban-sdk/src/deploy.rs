@@ -12,7 +12,7 @@
 //! ### Examples
 //!
 //! ```
-//! # use soroban_sdk::{contractimpl, symbol, BytesN, Env, Symbol};
+//! # use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
 //! #
 //! # pub struct Contract;
 //! #

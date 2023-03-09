@@ -8,7 +8,7 @@
 //! ### Examples
 //!
 //! ```rust
-//! use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+//! use soroban_sdk::{contractimpl, vec, BytesN, Env, Symbol, Vec};
 //!
 //! pub struct HelloContract;
 //!
@@ -270,7 +270,7 @@ pub use soroban_sdk_macros::contractimport;
 /// using the generated client.
 ///
 /// ```
-/// use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+/// use soroban_sdk::{contractimpl, vec, BytesN, Env, Symbol, Vec};
 ///
 /// pub struct HelloContract;
 ///
@@ -323,7 +323,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 /// ```
 /// #![no_std]
-/// use soroban_sdk::{contractimpl, contracttype, symbol, Env, Symbol};
+/// use soroban_sdk::{contractimpl, contracttype, Env, Symbol};
 ///
 /// #[contracttype]
 /// #[derive(Clone, Default, Debug, Eq, PartialEq)]
@@ -389,7 +389,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 /// ```
 /// #![no_std]
-/// use soroban_sdk::{contractimpl, contracttype, symbol, Env};
+/// use soroban_sdk::{contractimpl, contracttype, Symbol, Env};
 ///
 /// /// A tuple enum is stored as a two-element vector containing the name of
 /// /// the enum variant as a Symbol, then the value in the tuple.
@@ -476,7 +476,7 @@ pub use soroban_sdk_macros::contracttype;
 /// ### Examples
 ///
 /// ```
-/// use soroban_sdk::{contractclient, contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+/// use soroban_sdk::{contractclient, contractimpl, vec, BytesN, Env, Symbol, Vec};
 ///
 /// #[contractclient(name = "Client")]
 /// pub trait HelloInteface {

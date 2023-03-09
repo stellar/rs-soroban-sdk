@@ -335,7 +335,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol, symbol};
+    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
     ///
     /// pub struct Contract;
     ///
@@ -756,7 +756,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal};
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Symbol, Env, IntoVal};
     ///
     /// pub struct Contract;
     ///

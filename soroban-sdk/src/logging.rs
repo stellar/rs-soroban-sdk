@@ -39,7 +39,7 @@ use crate::{env::internal::EnvBase, Bytes, Env, IntoVal, RawVal, Vec};
 /// Log a string with values:
 ///
 /// ```
-/// use soroban_sdk::{log, symbol, Env};
+/// use soroban_sdk::{log, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
@@ -52,7 +52,7 @@ use crate::{env::internal::EnvBase, Bytes, Env, IntoVal, RawVal, Vec};
 /// ```
 /// # #[cfg(feature = "testutils")]
 /// # {
-/// use soroban_sdk::{log, symbol, Env};
+/// use soroban_sdk::{log, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
