@@ -44,9 +44,9 @@ macro_rules! impl_num_wrapping_val_type {
                 let other_raw = other.val.to_raw();
 
                 match (<$small>::try_from(self_raw), <$small>::try_from(other_raw)) {
-                    // Compare small symbols.
-                    (Ok(self_sym), Ok(other_sym)) => self_sym.cmp(&other_sym),
-                    // The object-to-small symbol comparisons are handled by `obj_cmp`,
+                    // Compare small numbers.
+                    (Ok(self_num), Ok(other_num)) => self_num.cmp(&other_num),
+                    // The object-to-small number comparisons are handled by `obj_cmp`,
                     // so it's safe to handle all the other cases using it.
                     _ => {
                         let env: Option<Env> =
