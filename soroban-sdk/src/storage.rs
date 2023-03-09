@@ -19,7 +19,7 @@ use crate::{
 /// ```
 /// use soroban_sdk::{Env, Symbol};
 ///
-/// # use soroban_sdk::{contractimpl, symbol, BytesN};
+/// # use soroban_sdk::{contractimpl, BytesN};
 /// #
 /// # pub struct Contract;
 /// #
@@ -27,7 +27,7 @@ use crate::{
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
-/// let key = symbol!("key");
+/// let key = Symbol::short("key");
 /// env.storage().set(&key, &1);
 /// assert_eq!(storage.has(&key), true);
 /// assert_eq!(storage.get::<_, i32>(&key), Some(Ok(1)));
@@ -73,7 +73,7 @@ impl Storage {
     {
         let env = self.env();
         let rv = internal::Env::has_contract_data(env, key.into_val(env)).unwrap_infallible();
-        rv.is_true()
+        rv.into()
     }
 
     /// Returns the value stored for the given key in the currently executing
@@ -93,7 +93,7 @@ impl Storage {
         let env = self.env();
         let key = key.into_val(env);
         let has = internal::Env::has_contract_data(env, key).unwrap_infallible();
-        if has.is_true() {
+        if has.into() {
             let rv = internal::Env::get_contract_data(env, key).unwrap_infallible();
             Some(V::try_from_val(env, &rv))
         } else {

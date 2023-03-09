@@ -1,8 +1,8 @@
-use crate as soroban_sdk;
+use crate::{self as soroban_sdk, Symbol};
 use soroban_sdk::xdr::ScVec;
 use soroban_sdk::{
-    contractimpl, contracttype, symbol, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal,
-    TryIntoVal, Vec,
+    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    Vec,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -12,6 +12,7 @@ pub enum Udt {
     Bbb(i32),
     MaxFields(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32),
     Nested(Udt2, Udt2),
+    ThisIsAVeryLongName1234567890,
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -48,10 +49,10 @@ fn test_error_on_partial_decode() {
     // Success case, a vec will decode to a Udt if the first element is the
     // variant name as a Symbol, and following elements are tuple-like values
     // for the variant.
-    let vec: Vec<RawVal> = vec![&env, symbol!("Aaa").into_val(&env)];
+    let vec: Vec<RawVal> = vec![&env, Symbol::short("Aaa").into_val(&env)];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Ok(Udt::Aaa));
-    let vec: Vec<RawVal> = vec![&env, symbol!("Bbb").into_val(&env), 8.into()];
+    let vec: Vec<RawVal> = vec![&env, Symbol::short("Bbb").into_val(&env), 8.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Ok(Udt::Bbb(8)));
 
@@ -59,10 +60,15 @@ fn test_error_on_partial_decode() {
     // multiple values, it is an error. It is an error because decoding and
     // encoding will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
-    let vec: Vec<RawVal> = vec![&env, symbol!("Aaa").into_val(&env), 8.into()];
+    let vec: Vec<RawVal> = vec![&env, Symbol::short("Aaa").into_val(&env), 8.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Err(ConversionError));
-    let vec: Vec<RawVal> = vec![&env, symbol!("Bbb").into_val(&env), 8.into(), 9.into()];
+    let vec: Vec<RawVal> = vec![
+        &env,
+        Symbol::short("Bbb").into_val(&env),
+        8.into(),
+        9.into(),
+    ];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Err(ConversionError));
 }
@@ -80,6 +86,14 @@ fn round_trips() {
     assert_eq!(before, after);
 
     let before = Udt::MaxFields(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+    let rawval: RawVal = before.try_into_val(&env).unwrap();
+    let after: Udt = rawval.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+    let scvec: ScVec = before.try_into().unwrap();
+    let after: Udt = scvec.try_into_val(&env).unwrap();
+    assert_eq!(before, after);
+
+    let before = Udt::ThisIsAVeryLongName1234567890;
     let rawval: RawVal = before.try_into_val(&env).unwrap();
     let after: Udt = rawval.try_into_val(&env).unwrap();
     assert_eq!(before, after);

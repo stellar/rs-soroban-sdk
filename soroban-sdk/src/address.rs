@@ -1,9 +1,8 @@
-use core::{cmp::Ordering, fmt::Debug};
+use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{Env as _, EnvBase as _},
-    xdr::ScObjectType,
-    BytesN, ConversionError, Env, Object, RawVal, TryFromVal, TryIntoVal,
+    env::internal::{AddressObject, Env as _, EnvBase as _},
+    BytesN, ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -32,7 +31,7 @@ use crate::{
 #[derive(Clone)]
 pub struct Address {
     env: Env,
-    obj: Object,
+    obj: AddressObject,
 }
 
 impl Debug for Address {
@@ -44,7 +43,7 @@ impl Debug for Address {
             use crate::env::internal::xdr;
             use stellar_strkey::{ed25519, Contract, Strkey};
             let sc_val = ScVal::try_from(self).map_err(|_| core::fmt::Error)?;
-            if let ScVal::Object(Some(xdr::ScObject::Address(addr))) = sc_val {
+            if let ScVal::Address(addr) = sc_val {
                 match addr {
                     xdr::ScAddress::Account(account_id) => {
                         let xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
@@ -91,23 +90,21 @@ impl Ord for Address {
     }
 }
 
-impl TryFromVal<Env, Object> for Address {
-    type Error = ConversionError;
+impl TryFromVal<Env, AddressObject> for Address {
+    type Error = Infallible;
 
-    fn try_from_val(env: &Env, val: &Object) -> Result<Self, Self::Error> {
-        if val.is_obj_type(ScObjectType::Address) {
-            Ok(unsafe { Address::unchecked_new(env.clone(), *val) })
-        } else {
-            Err(ConversionError {})
-        }
+    fn try_from_val(env: &Env, val: &AddressObject) -> Result<Self, Self::Error> {
+        Ok(unsafe { Address::unchecked_new(env.clone(), *val) })
     }
 }
 
 impl TryFromVal<Env, RawVal> for Address {
-    type Error = <Address as TryFromVal<Env, Object>>::Error;
+    type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+        Ok(AddressObject::try_from_val(env, val)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
@@ -147,9 +144,10 @@ impl TryFrom<Address> for ScVal {
 impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            &val.try_into_val(env).map_err(|_| ConversionError)?,
+        Ok(
+            AddressObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+                .try_into_val(env)
+                .unwrap_infallible(),
         )
     }
 }
@@ -267,7 +265,7 @@ impl Address {
     }
 
     #[inline(always)]
-    pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: AddressObject) -> Self {
         Self { env, obj }
     }
 
@@ -284,24 +282,24 @@ impl Address {
         self.obj.to_raw()
     }
 
-    pub fn as_object(&self) -> &Object {
+    pub fn as_object(&self) -> &AddressObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> Object {
+    pub fn to_object(&self) -> AddressObject {
         self.obj
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::env::xdr::{Hash, ScAddress, ScObject};
+use crate::env::xdr::{Hash, ScAddress};
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
     fn random(env: &Env) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(random())))));
+        let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
     }
 }

@@ -113,7 +113,6 @@ pub enum Type {
     I128,
     Bool,
     Symbol,
-    Bitset,
     Status,
     Bytes,
     Address,
@@ -195,10 +194,15 @@ impl From<&ScSpecTypeDef> for Type {
             ScSpecTypeDef::I128 => Type::I128,
             ScSpecTypeDef::Bool => Type::Bool,
             ScSpecTypeDef::Symbol => Type::Symbol,
-            ScSpecTypeDef::Bitset => Type::Bitset,
             ScSpecTypeDef::Status => Type::Status,
             ScSpecTypeDef::Bytes => Type::Bytes,
             ScSpecTypeDef::Address => Type::Address,
+            ScSpecTypeDef::Void => todo!(),
+            ScSpecTypeDef::Timepoint => todo!(),
+            ScSpecTypeDef::Duration => todo!(),
+            ScSpecTypeDef::U256 => todo!(),
+            ScSpecTypeDef::I256 => todo!(),
+            ScSpecTypeDef::String => todo!(),
         }
     }
 }

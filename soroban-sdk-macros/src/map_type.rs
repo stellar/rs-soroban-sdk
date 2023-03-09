@@ -28,7 +28,6 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     "i128" => Ok(ScSpecTypeDef::I128),
                     "bool" => Ok(ScSpecTypeDef::Bool),
                     "Symbol" => Ok(ScSpecTypeDef::Symbol),
-                    "Bitset" => Ok(ScSpecTypeDef::Bitset),
                     "Status" => Ok(ScSpecTypeDef::Status),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
                     "Address" => Ok(ScSpecTypeDef::Address),

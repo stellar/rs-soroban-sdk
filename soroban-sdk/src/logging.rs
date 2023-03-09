@@ -3,11 +3,7 @@
 //! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-use crate::{
-    env::internal::{self, EnvBase},
-    unwrap::UnwrapInfallible,
-    Bytes, Env, IntoVal, RawVal, Vec,
-};
+use crate::{env::internal::EnvBase, Bytes, Env, IntoVal, RawVal, Vec};
 
 /// Log a debug event.
 ///
@@ -43,12 +39,12 @@ use crate::{
 /// Log a string with values:
 ///
 /// ```
-/// use soroban_sdk::{log, symbol, Env};
+/// use soroban_sdk::{log, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
+/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
 /// ```
 ///
 /// Assert on logs in tests:
@@ -56,12 +52,12 @@ use crate::{
 /// ```
 /// # #[cfg(feature = "testutils")]
 /// # {
-/// use soroban_sdk::{log, symbol, Env};
+/// use soroban_sdk::{log, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
+/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
 ///
 /// use soroban_sdk::testutils::Logger;
 ///
@@ -129,10 +125,11 @@ impl Logger {
             // building on non-WASM environments where the environment Host is
             // directly available, use the log static variants.
             if cfg!(target_family = "wasm") {
-                let fmt: Bytes = fmt.into_val(env);
-                let args: Vec<RawVal> = Vec::from_slice(env, args);
-                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
-                    .unwrap_infallible();
+                let _fmt: Bytes = fmt.into_val(env);
+                let _args: Vec<RawVal> = Vec::from_slice(env, args);
+                // TODO: use String type when we have it
+                // internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
+                //     .unwrap_infallible();
             } else {
                 env.log_static_fmt_general(fmt, args, &[]).unwrap();
             }

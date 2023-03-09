@@ -2,7 +2,8 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, StringM, VecM, WriteXdr,
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM, VecM,
+    WriteXdr, SCSYMBOL_LIMIT,
 };
 use syn::{
     punctuated::Punctuated,
@@ -148,15 +149,15 @@ pub fn derive_fn(
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
         name: wrap_export_name.try_into().unwrap_or_else(|_| {
-            const MAX: u32 = 10;
             errors.push(Error::new(
                 ident.span(),
                 format!(
-                    "contract function name too long, max length {} characters",
-                    MAX,
+                    "contract function name is too long: {}, max is {}",
+                    wrap_export_name.len(),
+                    SCSYMBOL_LIMIT,
                 ),
             ));
-            StringM::<MAX>::default()
+            ScSymbol::default()
         }),
         inputs: spec_args.try_into().unwrap_or_else(|_| {
             const MAX: u32 = 10;
@@ -253,11 +254,11 @@ pub fn derive_contract_function_set<'a>(
         impl soroban_sdk::testutils::ContractFunctionSet for #ty {
             fn call(
                 &self,
-                func: &soroban_sdk::Symbol,
+                func: &str,
                 env: soroban_sdk::Env,
                 args: &[soroban_sdk::RawVal],
             ) -> Option<soroban_sdk::RawVal> {
-                match ::core::convert::AsRef::<str>::as_ref(&func.to_str()) {
+                match func {
                     #(
                         #(#attrs)*
                         #idents => {

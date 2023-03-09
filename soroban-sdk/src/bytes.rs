@@ -1,16 +1,16 @@
 use core::{
     borrow::Borrow,
     cmp::Ordering,
+    convert::Infallible,
     fmt::Debug,
     iter::FusedIterator,
     ops::{Bound, RangeBounds},
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, RawValConvertible},
+    env::internal::{BytesObject, Env as _, EnvBase as _, RawValConvertible},
     env::IntoVal,
-    xdr::ScObjectType,
-    ConversionError, Env, Object, RawVal, TryFromVal,
+    ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -18,7 +18,7 @@ use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
 use crate::{storage::Storage, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
-use super::{xdr::ScVal, TryIntoVal};
+use super::xdr::ScVal;
 
 /// Create a [Bytes] with an array, or an integer or hex literal.
 ///
@@ -123,7 +123,7 @@ macro_rules! bytesn {
 #[derive(Clone)]
 pub struct Bytes {
     env: Env,
-    obj: Object,
+    obj: BytesObject,
 }
 
 impl Debug for Bytes {
@@ -174,23 +174,21 @@ impl TryFromVal<Env, Bytes> for Bytes {
     }
 }
 
-impl TryFromVal<Env, Object> for Bytes {
-    type Error = ConversionError;
+impl TryFromVal<Env, BytesObject> for Bytes {
+    type Error = Infallible;
 
-    fn try_from_val(env: &Env, val: &Object) -> Result<Self, Self::Error> {
-        if val.is_obj_type(ScObjectType::Bytes) {
-            Ok(unsafe { Bytes::unchecked_new(env.clone(), *val) })
-        } else {
-            Err(ConversionError {})
-        }
+    fn try_from_val(env: &Env, val: &BytesObject) -> Result<Self, Self::Error> {
+        Ok(unsafe { Bytes::unchecked_new(env.clone(), *val) })
     }
 }
 
 impl TryFromVal<Env, RawVal> for Bytes {
-    type Error = <Bytes as TryFromVal<Env, Object>>::Error;
+    type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+        Ok(BytesObject::try_from_val(env, val)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
@@ -209,14 +207,14 @@ impl From<Bytes> for RawVal {
     }
 }
 
-impl From<Bytes> for Object {
+impl From<Bytes> for BytesObject {
     #[inline(always)]
     fn from(v: Bytes) -> Self {
         v.obj
     }
 }
 
-impl From<&Bytes> for Object {
+impl From<&Bytes> for BytesObject {
     #[inline(always)]
     fn from(v: &Bytes) -> Self {
         v.obj
@@ -250,12 +248,14 @@ impl TryFrom<Bytes> for ScVal {
 impl TryFromVal<Env, ScVal> for Bytes {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            &val.try_into_val(env).map_err(|_| ConversionError)?,
+        Ok(
+            BytesObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+                .try_into_val(env)
+                .unwrap_infallible(),
         )
     }
 }
+
 impl TryFromVal<Env, &str> for Bytes {
     type Error = ConversionError;
 
@@ -282,7 +282,7 @@ impl<const N: usize> TryFromVal<Env, [u8; N]> for Bytes {
 
 impl Bytes {
     #[inline(always)]
-    pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: BytesObject) -> Self {
         Self { env, obj }
     }
 
@@ -299,11 +299,11 @@ impl Bytes {
         self.obj.to_raw()
     }
 
-    pub fn as_object(&self) -> &Object {
+    pub fn as_object(&self) -> &BytesObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> Object {
+    pub fn to_object(&self) -> BytesObject {
         self.obj
     }
 
@@ -360,16 +360,12 @@ impl Bytes {
 
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.env()
-            .bytes_len(self.obj)
-            .unwrap_infallible()
-            .is_u32_zero()
+        self.len() == 0
     }
 
     #[inline(always)]
     pub fn len(&self) -> u32 {
-        let len = self.env().bytes_len(self.obj).unwrap_infallible();
-        unsafe { <_ as RawValConvertible>::unchecked_from_val(len) }
+        self.env().bytes_len(self.obj).unwrap_infallible().into()
     }
 
     #[inline(always)]
@@ -383,9 +379,8 @@ impl Bytes {
 
     #[inline(always)]
     pub fn first_unchecked(&self) -> u8 {
-        let res = self.env().bytes_front(self.obj).unwrap_infallible();
-        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
-        res32 as u8
+        let res: u32 = self.env().bytes_front(self.obj).unwrap_infallible().into();
+        res as u8
     }
 
     #[inline(always)]
@@ -399,9 +394,8 @@ impl Bytes {
 
     #[inline(always)]
     pub fn last_unchecked(&self) -> u8 {
-        let res = self.env().bytes_back(self.obj).unwrap_infallible();
-        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
-        res32 as u8
+        let res: u32 = self.env().bytes_back(self.obj).unwrap_infallible().into();
+        res as u8
     }
 
     #[inline(always)]
@@ -589,10 +583,14 @@ impl Iterator for BinIter {
         if self.0.is_empty() {
             None
         } else {
-            let val = self.0.env().bytes_front(self.0.obj).unwrap_infallible();
+            let val: u32 = self
+                .0
+                .env()
+                .bytes_front(self.0.obj)
+                .unwrap_infallible()
+                .into();
             self.0 = self.0.slice(1..);
-            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
-            Some(val)
+            Some(val as u8)
         }
     }
 
@@ -608,10 +606,14 @@ impl DoubleEndedIterator for BinIter {
         if len == 0 {
             None
         } else {
-            let val = self.0.env().bytes_back(self.0.obj).unwrap_infallible();
+            let val: u32 = self
+                .0
+                .env()
+                .bytes_back(self.0.obj)
+                .unwrap_infallible()
+                .into();
             self.0 = self.0.slice(..len - 1);
-            let val = unsafe { <u32 as RawValConvertible>::unchecked_from_val(val) } as u8;
-            Some(val)
+            Some(val as u8)
         }
     }
 }
@@ -775,11 +777,11 @@ impl<const N: usize> TryFromVal<Env, BytesN<N>> for [u8; N] {
     }
 }
 
-impl<const N: usize> TryFromVal<Env, Object> for BytesN<N> {
+impl<const N: usize> TryFromVal<Env, BytesObject> for BytesN<N> {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, val: &Object) -> Result<Self, Self::Error> {
-        Bytes::try_from_val(env, val)?.try_into()
+    fn try_from_val(env: &Env, obj: &BytesObject) -> Result<Self, Self::Error> {
+        Bytes::try_from_val(env, obj).unwrap_infallible().try_into()
     }
 }
 
@@ -787,7 +789,7 @@ impl<const N: usize> TryFromVal<Env, RawVal> for BytesN<N> {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+        Bytes::try_from_val(env, val)?.try_into()
     }
 }
 
@@ -862,16 +864,13 @@ impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
 impl<const N: usize> TryFromVal<Env, ScVal> for BytesN<N> {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            &val.try_into_val(env).map_err(|_| ConversionError)?,
-        )
+        Bytes::try_from_val(env, val)?.try_into()
     }
 }
 
 impl<const N: usize> BytesN<N> {
     #[inline(always)]
-    pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: BytesObject) -> Self {
         Self(Bytes::unchecked_new(env, obj))
     }
 
@@ -887,11 +886,11 @@ impl<const N: usize> BytesN<N> {
         self.0.to_raw()
     }
 
-    pub fn as_object(&self) -> &Object {
+    pub fn as_object(&self) -> &BytesObject {
         self.0.as_object()
     }
 
-    pub fn to_object(&self) -> Object {
+    pub fn to_object(&self) -> BytesObject {
         self.0.to_object()
     }
 

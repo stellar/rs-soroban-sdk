@@ -7,11 +7,11 @@ mod sign;
 
 pub use sign::ed25519;
 
-use crate::{Env, RawVal, Symbol, Vec};
+use crate::{Env, RawVal, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
-    fn call(&self, func: &Symbol, env: Env, args: &[RawVal]) -> Option<RawVal>;
+    fn call(&self, func: &str, env: Env, args: &[RawVal]) -> Option<RawVal>;
 }
 
 #[doc(inline)]

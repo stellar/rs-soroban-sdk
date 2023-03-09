@@ -41,7 +41,10 @@ fn test_functional() {
     assert_eq!(c, (a, b));
 }
 
+// TODO: at present UDT try_from_vals actually trap rather than returning
+// catchable errors. This is intentional to minimize code size. Can revisit.
 #[test]
+#[should_panic]
 fn test_error_on_partial_decode() {
     let env = Env::default();
 
@@ -51,9 +54,9 @@ fn test_error_on_partial_decode() {
     assert_eq!(udt, Ok(Udt(5, 7)));
 
     // If a struct has 2 fields, and a vec is decoded into it where the vec has
-    // 2 elements, it is an error. It is an error because all fields must be
+    // 1 element, it is an error. It is an error because all fields must be
     // assigned values.
-    let vec = vec![&env, 5, 7, 9].to_raw();
+    let vec = vec![&env, 5].to_raw();
     let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Err(ConversionError));
 
