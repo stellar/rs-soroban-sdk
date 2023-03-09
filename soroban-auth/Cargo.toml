@@ -16,5 +16,14 @@ doctest = false
 [dependencies]
 soroban-sdk = { workspace = true }
 
+[dev_dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+
+[target.'cfg(not(target_family="wasm"))'.dependencies]
+soroban-env-host = { workspace = true, features = ["vm", "hostfn_log_fmt_values"] }
+
+[features]
+testutils = ["soroban-env-host/testutils", "soroban-sdk/testutils"]
+
 [package.metadata.docs.rs]
 all-features = true
