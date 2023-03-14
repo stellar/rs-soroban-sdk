@@ -858,7 +858,11 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.14"
+<<<<<<< Updated upstream
 source = "git+https://github.com/stellar/rs-soroban-env?rev=d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b#d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b"
+=======
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fac563f484d93826dcadb4dc2a52ff2934aec248#fac563f484d93826dcadb4dc2a52ff2934aec248"
+>>>>>>> Stashed changes
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -867,7 +871,11 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.14"
+<<<<<<< Updated upstream
 source = "git+https://github.com/stellar/rs-soroban-env?rev=d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b#d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b"
+=======
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fac563f484d93826dcadb4dc2a52ff2934aec248#fac563f484d93826dcadb4dc2a52ff2934aec248"
+>>>>>>> Stashed changes
 dependencies = [
  "backtrace",
  "curve25519-dalek",
@@ -889,7 +897,11 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.14"
+<<<<<<< Updated upstream
 source = "git+https://github.com/stellar/rs-soroban-env?rev=d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b#d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b"
+=======
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fac563f484d93826dcadb4dc2a52ff2934aec248#fac563f484d93826dcadb4dc2a52ff2934aec248"
+>>>>>>> Stashed changes
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -915,7 +927,11 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.14"
+<<<<<<< Updated upstream
 source = "git+https://github.com/stellar/rs-soroban-env?rev=d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b#d39dd845d5bf31f976cdfea9bc7c2f8da8396b6b"
+=======
+source = "git+https://github.com/stellar/rs-soroban-env?rev=fac563f484d93826dcadb4dc2a52ff2934aec248#fac563f484d93826dcadb4dc2a52ff2934aec248"
+>>>>>>> Stashed changes
 dependencies = [
  "itertools",
  "proc-macro2",
