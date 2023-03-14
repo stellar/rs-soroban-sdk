@@ -14,7 +14,7 @@ pub trait EnvAuthUtils {
     /// `soroban_sdk::Status` if `__check_auth` doesn't return a special
     /// contract error and use the error with `contracterror` attribute
     /// otherwise.
-    /// 
+    ///
     /// ### Examples
     /// ```
     /// use soroban_sdk::{contracterror, contractimpl, testutils::BytesN as _, vec, BytesN, Env, Vec, RawVal};
@@ -64,7 +64,7 @@ pub trait EnvAuthUtils {
     ///         // as long as a valid error type used.
     ///         Err(Ok(NoopAccountError::SomeError))
     ///     );
-    ///     // Succesful call of `__check_auth` with a `soroban_sdk::Status` 
+    ///     // Succesful call of `__check_auth` with a `soroban_sdk::Status`
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
     ///         e.invoke_account_contract_check_auth::<soroban_sdk::Status>(
