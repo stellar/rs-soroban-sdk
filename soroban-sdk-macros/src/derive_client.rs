@@ -194,6 +194,10 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 }
             }
 
+            pub fn address(&self) -> soroban_sdk::Address {
+                soroban_sdk::Address::from_contract_id(&self.env, &self.contract_id)
+            }
+
             #(#fns)*
         }
     }
