@@ -147,6 +147,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Status => quote! { soroban_sdk::Status },
         ScSpecTypeDef::Bytes => quote! { soroban_sdk::Bytes },
         ScSpecTypeDef::Address => quote! { soroban_sdk::Address },
+        ScSpecTypeDef::String => quote! { soroban_sdk::String },
         ScSpecTypeDef::Option(o) => {
             let value_ident = generate_type_ident(&o.value_type);
             quote! { Option<#value_ident> }
@@ -186,6 +187,5 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Duration => todo!(),
         ScSpecTypeDef::U256 => todo!(),
         ScSpecTypeDef::I256 => todo!(),
-        ScSpecTypeDef::String => todo!(),
     }
 }
