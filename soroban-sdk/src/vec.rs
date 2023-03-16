@@ -361,9 +361,12 @@ where
 
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
-        let mut vec = Vec::new(env);
-        vec.extend_from_array(items);
-        vec
+        let mut tmp: [RawVal; N] = [RawVal::VOID.to_raw(); N];
+        for (dst, src) in tmp.iter_mut().zip(items.iter()) {
+            *dst = src.into_val(env)
+        }
+        let vec = env.vec_new_from_slice(&tmp).unwrap_infallible();
+        unsafe { Self::unchecked_new(env.clone(), vec) }
     }
 
     #[inline(always)]
@@ -549,9 +552,7 @@ where
 
     #[inline(always)]
     pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
-        for item in items {
-            self.push_back(item);
-        }
+        self.append(&Self::from_array(&self.env, items))
     }
 
     #[inline(always)]
