@@ -23,7 +23,7 @@ use crate::{
 /// names and user-defined structure field/enum variant names. That's why
 /// these idenfiers have limited length.
 ///
-/// While Symbols up to 30 characters long are allowed, Symbols that are 9
+/// While Symbols up to 32 characters long are allowed, Symbols that are 9
 /// characters long or shorter are more efficient at runtime and also can be
 /// computed at compile time.
 #[derive(Clone)]
@@ -209,7 +209,7 @@ impl Symbol {
     ///
     /// Valid characters are `a-zA-Z0-9_` and maximum length is 9 characters.
     ///
-    /// The conversion happens at compile time.
+    /// The conversion can happen at compile time.
     ///
     /// ### Panics
     ///
