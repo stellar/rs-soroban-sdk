@@ -141,7 +141,7 @@ impl Logger {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{env::internal::events::HostEvent, testutils};
+use crate::{env::internal::events::Event, testutils};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -153,8 +153,8 @@ impl testutils::Logger for Logger {
             .unwrap()
             .0
             .into_iter()
-            .filter_map(|e| match e {
-                HostEvent::Debug(de) => Some(format!("{}", de)),
+            .filter_map(|e| match e.event {
+                Event::Debug(de) => Some(format!("{}", de)),
                 _ => None,
             })
             .collect::<std::vec::Vec<_>>()
