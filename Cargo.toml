@@ -37,17 +37,17 @@ soroban-token-spec = { version = "0.7.0", path = "soroban-token-spec" }
 [workspace.dependencies.soroban-env-common]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "cf83838ae8a07a00224f0a5a3500eb7969bac7cf"
+rev = "ddda443ff9d03deb6241a63daf25bc014bc65bd9"
 
 [workspace.dependencies.soroban-env-guest]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "cf83838ae8a07a00224f0a5a3500eb7969bac7cf"
+rev = "ddda443ff9d03deb6241a63daf25bc014bc65bd9"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "cf83838ae8a07a00224f0a5a3500eb7969bac7cf"
+rev = "ddda443ff9d03deb6241a63daf25bc014bc65bd9"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
