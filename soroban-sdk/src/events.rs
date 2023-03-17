@@ -137,12 +137,12 @@ impl testutils::Events for Events {
             .0
             .into_iter()
             .for_each(|e| {
-                if let internal::events::HostEvent::Contract(xdr::ContractEvent {
+                if let internal::events::Event::Contract(xdr::ContractEvent {
                     type_: xdr::ContractEventType::Contract,
                     contract_id: Some(contract_id),
                     body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
                     ..
-                }) = e
+                }) = e.event
                 {
                     vec.push_back((
                         contract_id.0.into_val(env),
