@@ -43,7 +43,7 @@ pub fn derive_type_enum(
             // TODO: Use attributes tagged on variant to control whether field is included.
             let case_ident = &variant.ident;
             let case_name = &case_ident.to_string();
-            let case_name_str_lit = Literal::string(&case_name);
+            let case_name_str_lit = Literal::string(case_name);
             let case_num_lit = Literal::usize_unsuffixed(case_num);
             if case_name.len() > SCSYMBOL_LIMIT as usize {
                 errors.push(Error::new(
@@ -86,7 +86,7 @@ pub fn derive_type_enum(
                     enum_ident,
                     &case_num_lit,
                     &case_name_str_lit,
-                    &case_name,
+                    case_name,
                     case_ident,
                     &variant.attrs,
                     &variant.fields,
@@ -112,7 +112,7 @@ pub fn derive_type_enum(
                     enum_ident,
                     &case_num_lit,
                     &case_name_str_lit,
-                    &case_name,
+                    case_name,
                     case_ident,
                     &variant.attrs,
                 );

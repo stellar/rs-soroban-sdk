@@ -6,5 +6,5 @@ pub const WASM: &[u8] = soroban_sdk::contractfile!(
 
 #[test]
 fn test_spec() {
-    assert!(WASM.len() > 0);
+    assert!(!WASM.is_empty());
 }

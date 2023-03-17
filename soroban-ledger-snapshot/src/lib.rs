@@ -67,7 +67,7 @@ impl LedgerSnapshot {
             protocol_version: self.protocol_version,
             sequence_number: self.sequence_number,
             timestamp: self.timestamp,
-            network_id: self.network_id.clone(),
+            network_id: self.network_id,
             base_reserve: self.base_reserve,
         }
     }

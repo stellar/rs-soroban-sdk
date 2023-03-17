@@ -209,6 +209,10 @@ impl String {
         self.env().string_len(self.obj).unwrap_infallible().into()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Copy the bytes in [String] into the given slice.
     ///
     /// The minimum number of bytes are copied to either exhaust [String] or fill

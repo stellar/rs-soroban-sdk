@@ -86,6 +86,7 @@ pub trait EnvAuthUtils {
     ) -> Result<(), Result<E, E::Error>>;
 }
 
+#[allow(clippy::unit_arg)]
 impl EnvAuthUtils for Env {
     fn invoke_account_contract_check_auth<E: TryFrom<Status>>(
         &self,
@@ -95,7 +96,7 @@ impl EnvAuthUtils for Env {
         auth_context: &Vec<AuthorizationContext>,
     ) -> Result<(), Result<E, E::Error>> {
         let args: Vec<RawVal> = vec![
-            &self,
+            self,
             signature_payload.into_val(self),
             signatures.into_val(self),
             auth_context.into_val(self),

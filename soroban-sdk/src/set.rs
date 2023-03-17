@@ -290,7 +290,7 @@ where
     type Error = Infallible;
 
     fn try_from_val(env: &Env, obj: &MapObject) -> Result<Self, Self::Error> {
-        Ok(unsafe { Set::<T>::unchecked_new(env.clone(), obj.clone()) })
+        Ok(unsafe { Set::<T>::unchecked_new(env.clone(), *obj) })
     }
 }
 
@@ -378,19 +378,19 @@ mod test {
     fn test_contains() {
         let env = Env::default();
         let s = set![&env, 3, 4];
-        assert_eq!(s.contains(3), true);
-        assert_eq!(s.contains(4), true);
-        assert_eq!(s.contains(5), false);
+        assert!(s.contains(3));
+        assert!(s.contains(4));
+        assert!(!s.contains(5));
     }
 
     #[test]
     fn test_is_empty() {
         let env = Env::default();
         let mut s = set![&env];
-        assert_eq!(s.is_empty(), true);
+        assert!(s.is_empty());
 
         s.insert(3);
-        assert_eq!(s.is_empty(), false);
+        assert!(!s.is_empty());
     }
 
     #[test]
@@ -398,19 +398,19 @@ mod test {
         let env = Env::default();
         let mut s = set![&env];
 
-        assert_eq!(s.contains(1), false);
+        assert!(!s.contains(1));
 
         s.insert(1);
         s.insert(2);
         assert_eq!(s.len(), 2);
 
-        assert_eq!(s.contains(1), true);
-        assert_eq!(s.contains(2), true);
+        assert!(s.contains(1));
+        assert!(s.contains(2));
 
         s.remove(1);
         assert_eq!(s.len(), 1);
-        assert_eq!(s.contains(1), false);
-        assert_eq!(s.contains(2), true);
+        assert!(!s.contains(1));
+        assert!(s.contains(2));
     }
 
     #[test]
@@ -418,10 +418,10 @@ mod test {
         let env = Env::default();
         let s = Set::from_array(&env, [0, 1, 2, 3, 4]);
 
-        assert_eq!(s.contains(0), true);
-        assert_eq!(s.contains(1), true);
-        assert_eq!(s.contains(4), true);
-        assert_eq!(s.contains(5), false);
+        assert!(s.contains(0));
+        assert!(s.contains(1));
+        assert!(s.contains(4));
+        assert!(!s.contains(5));
     }
 
     #[test]
@@ -429,12 +429,12 @@ mod test {
         let env = Env::default();
         let s = set![&env, 1, 1, 2, 3, 3, 3, 4, 5, 5, 5, 5];
 
-        assert_eq!(s.contains(1), true);
-        assert_eq!(s.contains(2), true);
-        assert_eq!(s.contains(3), true);
-        assert_eq!(s.contains(4), true);
-        assert_eq!(s.contains(5), true);
-        assert_eq!(s.contains(5), true);
+        assert!(s.contains(1));
+        assert!(s.contains(2));
+        assert!(s.contains(3));
+        assert!(s.contains(4));
+        assert!(s.contains(5));
+        assert!(s.contains(5));
         assert_eq!(s.len(), 5);
     }
 

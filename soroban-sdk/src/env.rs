@@ -98,6 +98,7 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::VecObject;
 
+#[allow(clippy::wrong_self_convention)]
 pub trait IntoVal<E: internal::Env, T> {
     fn into_val(&self, e: &E) -> T;
 }
@@ -489,7 +490,7 @@ impl Env {
         let rf = Rc::new(EmptySnapshotSource());
         let storage = internal::storage::Storage::with_recording_footprint(rf);
         let budget = internal::budget::Budget::default();
-        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
+        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget);
         env_impl.switch_to_recording_auth();
         let env = Env {
             env_impl,
@@ -624,7 +625,7 @@ impl Env {
     pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
         let issuer_pk = random();
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
-            issuer_pk.clone(),
+            issuer_pk,
         )));
 
         self.host()
@@ -665,10 +666,10 @@ impl Env {
 
         let asset = xdr::Asset::CreditAlphanum4(xdr::AlphaNum4 {
             asset_code: xdr::AssetCode4(random()),
-            issuer: issuer_id.clone(),
+            issuer: issuer_id,
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-            contract_id: xdr::ContractId::Asset(asset.clone()),
+            contract_id: xdr::ContractId::Asset(asset),
             source: xdr::ScContractExecutable::Token,
         });
 
@@ -847,7 +848,7 @@ impl Env {
             ext: xdr::LedgerEntryExt::V0,
             last_modified_ledger_seq: 0,
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                contract_id: contract_id_hash.clone(),
+                contract_id: contract_id_hash,
                 key: data_key,
                 val: xdr::ScVal::ContractExecutable(executable),
             }),
@@ -884,7 +885,7 @@ impl Env {
         self.env_impl
             .invoke_function(xdr::HostFunction::InstallContractCode(
                 xdr::InstallContractCodeArgs {
-                    code: contract_wasm.clone().try_into().unwrap(),
+                    code: contract_wasm.try_into().unwrap(),
                 },
             ))
             .unwrap()
@@ -915,15 +916,15 @@ impl Env {
     pub fn from_snapshot(s: LedgerSnapshot) -> Env {
         let info = s.ledger_info();
 
-        let rs = Rc::new(s.clone());
+        let rs = Rc::new(s);
         let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
         let budget = internal::budget::Budget::default();
-        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
+        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget);
         env_impl.switch_to_recording_auth();
 
         let env = Env {
             env_impl,
-            snapshot: Some(rs.clone()),
+            snapshot: Some(rs),
         };
         env.ledger().set(info);
         env
@@ -963,7 +964,7 @@ impl Env {
 
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
-        self.env_impl.with_budget(|b| Budget::new(b))
+        self.env_impl.with_budget(Budget::new)
     }
 }
 
@@ -1037,10 +1038,10 @@ impl internal::EnvBase for Env {
         b_pos: U32Val,
         slice: &mut [u8],
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .bytes_copy_to_slice(b, b_pos, slice)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn bytes_new_from_slice(&self, slice: &[u8]) -> Result<BytesObject, Self::Error> {
@@ -1048,7 +1049,8 @@ impl internal::EnvBase for Env {
     }
 
     fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Self::Error> {
-        Ok(self.env_impl.log_static_fmt_val(fmt, v).unwrap_optimized())
+        self.env_impl.log_static_fmt_val(fmt, v).unwrap_optimized();
+        Ok(())
     }
 
     fn log_static_fmt_static_str(
@@ -1056,10 +1058,10 @@ impl internal::EnvBase for Env {
         fmt: &'static str,
         s: &'static str,
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .log_static_fmt_static_str(fmt, s)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn log_static_fmt_val_static_str(
@@ -1068,10 +1070,10 @@ impl internal::EnvBase for Env {
         v: RawVal,
         s: &'static str,
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .log_static_fmt_val_static_str(fmt, v, s)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn log_static_fmt_general(
@@ -1080,10 +1082,10 @@ impl internal::EnvBase for Env {
         v: &[RawVal],
         s: &[&'static str],
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .log_static_fmt_general(fmt, v, s)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn string_copy_to_slice(
@@ -1092,10 +1094,10 @@ impl internal::EnvBase for Env {
         b_pos: U32Val,
         slice: &mut [u8],
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .string_copy_to_slice(b, b_pos, slice)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn symbol_copy_to_slice(
@@ -1104,10 +1106,10 @@ impl internal::EnvBase for Env {
         b_pos: U32Val,
         mem: &mut [u8],
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .symbol_copy_to_slice(b, b_pos, mem)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn string_new_from_slice(&self, slice: &str) -> Result<StringObject, Self::Error> {

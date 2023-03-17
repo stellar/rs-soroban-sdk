@@ -268,7 +268,7 @@ impl TryFromVal<Env, &[u8]> for Bytes {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, v: &&[u8]) -> Result<Self, Self::Error> {
-        Ok(Bytes::from_slice(env, *v))
+        Ok(Bytes::from_slice(env, v))
     }
 }
 

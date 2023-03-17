@@ -57,7 +57,7 @@ impl From<&ScSpecUdtUnionCaseV0> for UnionCase {
             ScSpecUdtUnionCaseV0::TupleV0(t) => (
                 t.doc.to_string_lossy(),
                 t.name.to_string_lossy(),
-                t.type_.iter().map(Type::from).into_iter().collect(),
+                t.type_.iter().map(Type::from).collect(),
             ),
         };
         UnionCase { doc, name, values }

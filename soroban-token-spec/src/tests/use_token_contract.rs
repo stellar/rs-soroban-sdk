@@ -63,7 +63,7 @@ fn test() {
         env.recorded_top_authorizations(),
         std::vec![(
             from.clone(),
-            token_client.contract_id.clone(),
+            token_client.contract_id,
             Symbol::new(&env, "incr_allow"),
             (&from, &spender, 20_i128).into_val(&env)
         )]

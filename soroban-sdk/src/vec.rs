@@ -172,7 +172,7 @@ impl<T> TryFromVal<Env, Vec<T>> for Vec<RawVal> {
     type Error = Infallible;
 
     fn try_from_val(env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj) })
     }
 }
 
@@ -183,7 +183,7 @@ impl<T> TryFromVal<Env, &Vec<RawVal>> for Vec<T> {
     type Error = Infallible;
 
     fn try_from_val(env: &Env, v: &&Vec<RawVal>) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj) })
     }
 }
 
@@ -195,7 +195,7 @@ where
 
     #[inline(always)]
     fn try_from_val(env: &Env, obj: &VecObject) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), obj.clone()) })
+        Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), *obj) })
     }
 }
 
@@ -964,12 +964,12 @@ mod test {
     fn contains() {
         let env = Env::default();
         let vec = vec![&env, 0, 3, 5, 7, 9, 5];
-        assert_eq!(vec.contains(&2), false);
-        assert_eq!(vec.contains(2), false);
-        assert_eq!(vec.contains(&3), true);
-        assert_eq!(vec.contains(3), true);
-        assert_eq!(vec.contains(&5), true);
-        assert_eq!(vec.contains(5), true);
+        assert!(!vec.contains(2));
+        assert!(!vec.contains(2));
+        assert!(vec.contains(3));
+        assert!(vec.contains(3));
+        assert!(vec.contains(5));
+        assert!(vec.contains(5));
     }
 
     #[test]
@@ -977,11 +977,11 @@ mod test {
         let env = Env::default();
 
         let vec = vec![&env, 0, 3, 5, 7, 9, 5];
-        assert_eq!(vec.first_index_of(&2), None);
         assert_eq!(vec.first_index_of(2), None);
-        assert_eq!(vec.first_index_of(&3), Some(1));
+        assert_eq!(vec.first_index_of(2), None);
         assert_eq!(vec.first_index_of(3), Some(1));
-        assert_eq!(vec.first_index_of(&5), Some(2));
+        assert_eq!(vec.first_index_of(3), Some(1));
+        assert_eq!(vec.first_index_of(5), Some(2));
         assert_eq!(vec.first_index_of(5), Some(2));
     }
 
@@ -990,11 +990,11 @@ mod test {
         let env = Env::default();
 
         let vec = vec![&env, 0, 3, 5, 7, 9, 5];
-        assert_eq!(vec.last_index_of(&2), None);
         assert_eq!(vec.last_index_of(2), None);
-        assert_eq!(vec.last_index_of(&3), Some(1));
+        assert_eq!(vec.last_index_of(2), None);
         assert_eq!(vec.last_index_of(3), Some(1));
-        assert_eq!(vec.last_index_of(&5), Some(5));
+        assert_eq!(vec.last_index_of(3), Some(1));
+        assert_eq!(vec.last_index_of(5), Some(5));
         assert_eq!(vec.last_index_of(5), Some(5));
     }
 
@@ -1003,11 +1003,11 @@ mod test {
         let env = Env::default();
 
         let vec = vec![&env, 0, 3, 5, 5, 7, 9];
-        assert_eq!(vec.binary_search(&2), Err(1));
         assert_eq!(vec.binary_search(2), Err(1));
-        assert_eq!(vec.binary_search(&3), Ok(1));
+        assert_eq!(vec.binary_search(2), Err(1));
         assert_eq!(vec.binary_search(3), Ok(1));
-        assert_eq!(vec.binary_search(&5), Ok(3));
+        assert_eq!(vec.binary_search(3), Ok(1));
+        assert_eq!(vec.binary_search(5), Ok(3));
         assert_eq!(vec.binary_search(5), Ok(3));
     }
 
@@ -1056,11 +1056,11 @@ mod test {
         let env = Env::default();
 
         let mut v: Vec<i32> = vec![&env, 1, 4, 3];
-        assert_eq!(v.is_empty(), false);
+        assert!(!v.is_empty());
         assert_eq!(v.len(), 3);
 
         v = vec![&env];
-        assert_eq!(v.is_empty(), true);
+        assert!(v.is_empty());
         assert_eq!(v.len(), 0);
     }
 
