@@ -211,7 +211,7 @@ where
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Set(")?;
         for k in self.iter() {
-            write!(f, "{:?}", k)?;
+            write!(f, "{k:?}")?;
         }
         write!(f, ")")?;
         Ok(())

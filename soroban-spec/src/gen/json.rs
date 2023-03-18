@@ -30,7 +30,7 @@ pub fn generate_from_file(
 
     // Produce hash for file.
     let sha256 = Sha256::digest(&wasm);
-    let sha256 = format!("{:x}", sha256);
+    let sha256 = format!("{sha256:x}");
 
     if let Some(verify_sha256) = verify_sha256 {
         if verify_sha256 != sha256 {

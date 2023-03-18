@@ -35,7 +35,7 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     Err(Error::new(arg.span(), "argument not supported"))
 }
 
-/// Returns a clone of FnArg with the type as a reference if the arg is a typed
+/// Returns a clone of `FnArg` with the type as a reference if the arg is a typed
 /// arg and its type is not already a reference.
 pub fn fn_arg_make_ref(arg: &FnArg) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {

@@ -49,8 +49,8 @@ macro_rules! map {
 ///
 /// The map is stored in the Host and available to the Guest through the
 /// functions defined on Map. Values stored in the Map are transmitted to the
-/// Host as [RawVal]s, and when retrieved from the Map are transmitted back and
-/// converted from [RawVal] back into their type.
+/// Host as [`RawVal`]s, and when retrieved from the Map are transmitted back and
+/// converted from [`RawVal`] back into their type.
 ///
 /// The keys and values in a Map are not guaranteed to be of type `K`/`V` and
 /// conversion will fail if they are not. Most functions on Map return a
@@ -148,10 +148,10 @@ where
         write!(f, "Map(")?;
         let mut iter = self.iter();
         if let Some(x) = iter.next() {
-            write!(f, "{:?}", x)?;
+            write!(f, "{x:?}")?;
         }
         for x in iter {
-            write!(f, ", {:?}", x)?;
+            write!(f, ", {x:?}")?;
         }
         write!(f, ")")?;
         Ok(())

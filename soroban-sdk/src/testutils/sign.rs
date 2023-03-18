@@ -38,9 +38,9 @@ pub mod ed25519 {
     impl<E: std::error::Error> std::fmt::Display for Error<E> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
             match self {
-                Self::XdrError(e) => write!(f, "{}", e),
-                Self::Ed25519SignatureError(e) => write!(f, "{}", e),
-                Self::ConversionError(e) => write!(f, "{}", e),
+                Self::XdrError(e) => write!(f, "{e}"),
+                Self::Ed25519SignatureError(e) => write!(f, "{e}"),
+                Self::ConversionError(e) => write!(f, "{e}"),
             }
         }
     }

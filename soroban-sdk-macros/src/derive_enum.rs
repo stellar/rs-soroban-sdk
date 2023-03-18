@@ -25,7 +25,7 @@ pub fn derive_type_enum(
     if variants.is_empty() {
         errors.push(Error::new(
             enum_ident.span(),
-            format!("enum {} must have variants", enum_ident),
+            format!("enum {enum_ident} must have variants"),
         ));
     }
     let (spec_cases, case_name_str_lits, try_froms, try_intos, try_from_xdrs, into_xdrs): (
@@ -60,7 +60,7 @@ pub fn derive_type_enum(
                 Fields::Named(_) => {
                     errors.push(Error::new(
                         variant.fields.span(),
-                        format!("enum variant {} has unsupported named fields", case_ident),
+                        format!("enum variant {case_ident} has unsupported named fields"),
                     ));
                 }
                 Fields::Unnamed(_) if variant.fields.is_empty() => {
@@ -68,7 +68,7 @@ pub fn derive_type_enum(
                     // to distinguish them from unit-style variants.
                     errors.push(Error::new(
                         variant.fields.span(),
-                        format!("enum variant {} is unsupported 0-element tuple", case_ident),
+                        format!("enum variant {case_ident} is unsupported 0-element tuple"),
                     ));
                 }
                 _ => {}
@@ -351,8 +351,7 @@ fn map_tuple_variant(
                         errors.push(Error::new(
                             fields.span(),
                             format!(
-                                "enum variant name {} has too many tuple values, max {} supported",
-                                case_ident, max_len
+                                "enum variant name {case_ident} has too many tuple values, max {max_len} supported"
                             ),
                         ));
                     }

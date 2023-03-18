@@ -30,7 +30,7 @@ pub fn derive_type_struct_tuple(
             // For tuple structs that have unnamed fields, use the field index
             // as the token to reference the field.
             let field_idx_lit = Literal::usize_unsuffixed(field_idx);
-            let field_name = format!("{}", field_idx);
+            let field_name = format!("{field_idx}");
             let field_spec = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),

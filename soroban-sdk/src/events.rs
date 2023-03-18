@@ -107,7 +107,7 @@ impl Events {
     ///
     /// - [Vec]
     /// - [Map]
-    /// - [Bytes]/[BytesN] longer than 32 bytes
+    /// - [Bytes]/[`BytesN`] longer than 32 bytes
     /// - [contracttype]
     #[inline(always)]
     pub fn publish<T, D>(&self, topics: T, data: D)

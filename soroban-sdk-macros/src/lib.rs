@@ -234,11 +234,11 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
 
     // Verify SHA256 hash.
     let sha256 = Sha256::digest(&wasm);
-    let sha256 = format!("{:x}", sha256);
+    let sha256 = format!("{sha256:x}");
     if *args.sha256 != sha256 {
         return Error::new(
             args.sha256.span(),
-            format!("sha256 does not match, expected: {}", sha256),
+            format!("sha256 does not match, expected: {sha256}"),
         )
         .into_compile_error()
         .into();

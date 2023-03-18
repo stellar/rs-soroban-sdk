@@ -1,7 +1,7 @@
 //! Convert values to and from [Bytes].
 //!
-//! All types that are convertible to and from [RawVal] implement the
-//! [ToXdr] and [FromXdr] traits, and serialize to the ScVal XDR form.
+//! All types that are convertible to and from [`RawVal`] implement the
+//! [`ToXdr`] and [`FromXdr`] traits, and serialize to the `ScVal` XDR form.
 //!
 //! ### Examples
 //!
@@ -31,14 +31,14 @@ pub use crate::env::xdr::*;
 
 /// Implemented by types that can be serialized to [Bytes].
 ///
-/// All types that are convertible to [RawVal] are implemented.
+/// All types that are convertible to [`RawVal`] are implemented.
 pub trait ToXdr {
     fn to_xdr(self, env: &Env) -> Bytes;
 }
 
 /// Implemented by types that can be deserialized from [Bytes].
 ///
-/// All types that are convertible from [RawVal] are implemented.
+/// All types that are convertible from [`RawVal`] are implemented.
 pub trait FromXdr: Sized {
     type Error;
     fn from_xdr(env: &Env, b: &Bytes) -> Result<Self, Self::Error>;

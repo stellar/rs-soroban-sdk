@@ -74,10 +74,7 @@ impl<'a> ClientFn<'a> {
     pub fn output(&self) -> Type {
         let t = match self.output {
             ReturnType::Default => quote!(()),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => quote!(#t),
-                None => quote!(#typ),
-            },
+            ReturnType::Type(_, typ) => if let Some((t, _)) = unpack_result(typ) { quote!(#t) } else { quote!(#typ) },
         };
         Type::Verbatim(t)
     }
@@ -133,14 +130,11 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
             let (fn_input_names, fn_input_types): (Vec<_>, Vec<_>) = f
                 .inputs
                 .iter()
-                .skip(if env_input.is_some() { 1 } else { 0 })
+                .skip(usize::from(env_input.is_some()))
                 .map(|t| {
-                    let ident = match syn_ext::fn_arg_ident(t) {
-                        Ok(ident) => ident,
-                        Err(_) => {
-                            errors.push(Error::new(t.span(), "argument not supported"));
-                            format_ident!("")
-                        }
+                    let ident = if let Ok(ident) = syn_ext::fn_arg_ident(t) { ident } else {
+                        errors.push(Error::new(t.span(), "argument not supported"));
+                        format_ident!("")
                     };
                     (ident, syn_ext::fn_arg_make_ref(t))
                 })

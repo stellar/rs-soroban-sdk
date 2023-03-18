@@ -129,9 +129,7 @@ pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
 
     // Check that the numbers of bytes written is equal to the number of bytes
     // expected in the output.
-    if output_i != output.len() {
-        panic!("unexpected output length",);
-    }
+    assert!(output_i == output.len(), "unexpected output length");
 
     output
 }

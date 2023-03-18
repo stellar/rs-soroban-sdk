@@ -154,7 +154,7 @@ impl testutils::Logger for Logger {
             .0
             .into_iter()
             .filter_map(|e| match e.event {
-                Event::Debug(de) => Some(format!("{}", de)),
+                Event::Debug(de) => Some(format!("{de}")),
                 _ => None,
             })
             .collect::<std::vec::Vec<_>>()

@@ -52,7 +52,7 @@ pub fn derive_fn(
     // Prepare the argument inputs.
     let (spec_args, wrap_args, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
-        .skip(if env_input.is_some() { 1 } else { 0 })
+        .skip(usize::from(env_input.is_some()))
         .enumerate()
         .map(|(i, a)| match a {
             FnArg::Typed(pat_type) => {
@@ -60,13 +60,13 @@ pub fn derive_fn(
                     pat_ident.ident.to_string()
                 } else {
                     errors.push(Error::new(a.span(), "argument not supported"));
-                    "".to_string()
+                    String::new()
                 };
                 let spec = match map_type(&pat_type.ty) {
                     Ok(type_) => {
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
-                            errors.push(Error::new(ident.span(), format!("argument name too long, max length {} characters", MAX)));
+                            errors.push(Error::new(ident.span(), format!("argument name too long, max length {MAX} characters")));
                             StringM::<MAX>::default()
                         });
                         ScSpecFunctionInputV0{
@@ -127,7 +127,7 @@ pub fn derive_fn(
     };
 
     // Generated code parameters.
-    let wrap_export_name = &format!("{}", ident);
+    let wrap_export_name = &format!("{ident}");
     let hidden_mod_ident = format_ident!("__{}", ident);
     let deprecated_note = format!(
         "use `{}::new(&env, &contract_id).{}` instead",
@@ -164,8 +164,7 @@ pub fn derive_fn(
             errors.push(Error::new(
                 inputs.iter().nth(MAX as usize).span(),
                 format!(
-                    "contract function has too many parameters, max count {} parameters",
-                    MAX,
+                    "contract function has too many parameters, max count {MAX} parameters",
                 ),
             ));
             VecM::<_, MAX>::default()

@@ -76,13 +76,13 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 ///
 /// Values are stored in the environment and are available to contract through
 /// the functions defined on Vec.  Values stored in the Vec are transmitted to
-/// the environment as [RawVal]s, and when retrieved from the Vec are
-/// transmitted back and converted from [RawVal] back into their type.
+/// the environment as [`RawVal`]s, and when retrieved from the Vec are
+/// transmitted back and converted from [`RawVal`] back into their type.
 ///
 /// The values in a Vec are not guaranteed to be of type `T` and conversion will
 /// fail if they are not. Most functions on Vec return a `Result` due to this.
 ///
-/// To store `u8`s and binary data, use [Bytes]/[BytesN] instead.
+/// To store `u8`s and binary data, use [Bytes]/[`BytesN`] instead.
 ///
 /// Vec values can be stored as [Storage], or in other types like [Vec], [Map],
 /// etc.
@@ -103,7 +103,7 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// guarantee.
 ///
 /// Values are stored in the environment backed by a [RRB-vector][rrb] using
-/// [im_rc::Vector]. Most operations are O(log n). Push/pop are O(1)
+/// [`im_rc::Vector`]. Most operations are O(log n). Push/pop are O(1)
 /// amortised, and O(log n) in the worst case.
 ///
 /// [im_rc::Vector]: https://docs.rs/im-rc/latest/im_rc/struct.Vector.html
@@ -158,10 +158,10 @@ where
         write!(f, "Vec(")?;
         let mut iter = self.iter();
         if let Some(x) = iter.next() {
-            write!(f, "{:?}", x)?;
+            write!(f, "{x:?}")?;
         }
         for x in iter {
-            write!(f, ", {:?}", x)?;
+            write!(f, ", {x:?}")?;
         }
         write!(f, ")")?;
         Ok(())
@@ -654,10 +654,10 @@ where
     /// [Vec], or the index of where the item can be inserted to keep the [Vec]
     /// sorted.
     ///
-    /// If the item is found, [Result::Ok] is returned containing the index of
+    /// If the item is found, [`Result::Ok`] is returned containing the index of
     /// the item.
     ///
-    /// If the item is not found, [Result::Err] is returned containing the index
+    /// If the item is not found, [`Result::Err`] is returned containing the index
     /// of where the item could be inserted to retain the sorted ordering.
     #[inline(always)]
     pub fn binary_search(&self, item: impl Borrow<T>) -> Result<u32, u32> {

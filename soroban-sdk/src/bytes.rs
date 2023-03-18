@@ -65,7 +65,7 @@ macro_rules! bytes {
     };
 }
 
-/// Create a [BytesN] with an array, or an integer or hex literal.
+/// Create a [`BytesN`] with an array, or an integer or hex literal.
 ///
 /// The first argument in the list must be a reference to an [Env].
 ///
@@ -131,10 +131,10 @@ impl Debug for Bytes {
         write!(f, "Bytes(")?;
         let mut iter = self.iter();
         if let Some(x) = iter.next() {
-            write!(f, "{:?}", x)?;
+            write!(f, "{x:?}")?;
         }
         for x in iter {
-            write!(f, ", {:?}", x)?;
+            write!(f, ", {x:?}")?;
         }
         write!(f, ")")?;
         Ok(())
@@ -626,7 +626,7 @@ impl ExactSizeIterator for BinIter {
     }
 }
 
-/// BytesN is a contiguous fixed-size array type containing `u8`s.
+/// `BytesN` is a contiguous fixed-size array type containing `u8`s.
 ///
 /// The array is stored in the Host and available to the Guest through the
 /// functions defined on Bytes.
@@ -636,7 +636,7 @@ impl ExactSizeIterator for BinIter {
 ///
 /// ### Examples
 ///
-/// BytesN values can be created from arrays:
+/// `BytesN` values can be created from arrays:
 /// ```
 /// use soroban_sdk::{Bytes, BytesN, Env};
 ///
@@ -645,7 +645,7 @@ impl ExactSizeIterator for BinIter {
 /// assert_eq!(bytes.len(), 32);
 /// ```
 ///
-/// BytesN and Bytes values are convertible:
+/// `BytesN` and Bytes values are convertible:
 /// ```
 /// use soroban_sdk::{Bytes, BytesN, Env};
 ///
@@ -660,13 +660,13 @@ pub struct BytesN<const N: usize>(Bytes);
 
 impl<const N: usize> Debug for BytesN<N> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "BytesN<{}>(", N)?;
+        write!(f, "BytesN<{N}>(")?;
         let mut iter = self.iter();
         if let Some(x) = iter.next() {
-            write!(f, "{:?}", x)?;
+            write!(f, "{x:?}")?;
         }
         for x in iter {
-            write!(f, ", {:?}", x)?;
+            write!(f, ", {x:?}")?;
         }
         write!(f, ")")?;
         Ok(())
@@ -944,9 +944,9 @@ impl<const N: usize> BytesN<N> {
         self.0.last_unchecked()
     }
 
-    /// Copy the bytes in [BytesN] into the given slice.
+    /// Copy the bytes in [`BytesN`] into the given slice.
     ///
-    /// The minimum number of bytes are copied to either exhaust [BytesN] or
+    /// The minimum number of bytes are copied to either exhaust [`BytesN`] or
     /// fill slice.
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
@@ -955,7 +955,7 @@ impl<const N: usize> BytesN<N> {
             .unwrap_optimized();
     }
 
-    /// Copy the bytes in [BytesN] into an array.
+    /// Copy the bytes in [`BytesN`] into an array.
     #[inline(always)]
     pub fn to_array(&self) -> [u8; N] {
         let mut array = [0u8; N];
@@ -1141,7 +1141,7 @@ mod test {
         assert_eq!(bin.len(), 2);
         bin.push(30);
         assert_eq!(bin.len(), 3);
-        println!("{:?}", bin);
+        println!("{bin:?}");
 
         let bin_ref = &bin;
         assert_eq!(bin_ref.len(), 3);
@@ -1162,7 +1162,7 @@ mod test {
         let bad_fixed: Result<BytesN<4>, ConversionError> = bin.try_into();
         assert!(bad_fixed.is_err());
         let fixed: BytesN<3> = bin_copy.try_into().unwrap();
-        println!("{:?}", fixed);
+        println!("{fixed:?}");
     }
 
     #[test]
@@ -1231,6 +1231,6 @@ mod test {
         bin.push(20);
         bin.push(30);
         let arr_bin: BytesN<3> = bin.clone().try_into().unwrap();
-        assert_eq!(format!("{:?}", arr_bin), "BytesN<3>(10, 20, 30)");
+        assert_eq!(format!("{arr_bin:?}"), "BytesN<3>(10, 20, 30)");
     }
 }

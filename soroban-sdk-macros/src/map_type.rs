@@ -38,7 +38,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                         name: s.try_into().map_err(|e| {
                             Error::new(
                                 t.span(),
-                                format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
+                                format!("Udt name {s:?} cannot be used in XDR spec: {e}"),
                             )
                         })?,
                     })),
@@ -140,7 +140,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     .map_err(|e| {
                         Error::new(
                             t.span(),
-                            format!("tuple values cannot be used in XDR spec: {}", e),
+                            format!("tuple values cannot be used in XDR spec: {e}"),
                         )
                     })?,
             })))

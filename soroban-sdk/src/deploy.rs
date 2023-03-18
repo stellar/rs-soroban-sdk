@@ -3,11 +3,11 @@
 //! Contracts are assigned an ID that is derived from a set of arguments. A
 //! contract may choose which set of arguments to use to deploy with:
 //!
-//! - [Deployer::with_current_contract] – A contract deployed by the currently
+//! - [`Deployer::with_current_contract`] – A contract deployed by the currently
 //! executing contract will have an ID derived from the currently executing
 //! contract's ID.
 //!
-//! The deployer can be created using [Env::deployer].
+//! The deployer can be created using [`Env::deployer`].
 //!
 //! ### Examples
 //!

@@ -43,7 +43,7 @@ pub fn generate_from_wasm(
     verify_sha256: Option<&str>,
 ) -> Result<TokenStream, GenerateFromFileError> {
     let sha256 = Sha256::digest(wasm);
-    let sha256 = format!("{:x}", sha256);
+    let sha256 = format!("{sha256:x}");
     if let Some(verify_sha256) = verify_sha256 {
         if verify_sha256 != sha256 {
             return Err(GenerateFromFileError::VerifySha256 { expected: sha256 });
