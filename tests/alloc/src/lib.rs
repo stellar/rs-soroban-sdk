@@ -33,6 +33,6 @@ mod test {
         let client = ContractClient::new(&e, &contract_id);
 
         let list = client.num_list(&5);
-        assert_eq!(list, vec![&e, 0, 1, 2, 3, 4])
+        assert_eq!(list, vec![&e, 0, 1, 2, 3, 4]);
     }
 }

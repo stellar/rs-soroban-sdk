@@ -363,7 +363,7 @@ where
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
         let mut tmp: [RawVal; N] = [RawVal::VOID.to_raw(); N];
         for (dst, src) in tmp.iter_mut().zip(items.iter()) {
-            *dst = src.into_val(env)
+            *dst = src.into_val(env);
         }
         let vec = env.vec_new_from_slice(&tmp).unwrap_infallible();
         unsafe { Self::unchecked_new(env.clone(), vec) }
@@ -485,7 +485,7 @@ where
     #[deprecated(note = "use [Vec::push_back]")]
     #[inline(always)]
     pub fn push(&mut self, x: T) {
-        self.push_back(x)
+        self.push_back(x);
     }
 
     #[deprecated(note = "use [Vec::pop_back]")]
@@ -552,7 +552,7 @@ where
 
     #[inline(always)]
     pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
-        self.append(&Self::from_array(&self.env, items))
+        self.append(&Self::from_array(&self.env, items));
     }
 
     #[inline(always)]
@@ -660,6 +660,7 @@ where
     /// If the item is not found, [`Result::Err`] is returned containing the index
     /// of where the item could be inserted to retain the sorted ordering.
     #[inline(always)]
+    #[allow(clippy::cast_possible_truncation)]
     pub fn binary_search(&self, item: impl Borrow<T>) -> Result<u32, u32> {
         let env = self.env();
         let val = item.borrow().into_val(env);

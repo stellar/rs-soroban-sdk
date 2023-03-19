@@ -161,6 +161,6 @@ impl testutils::Logger for Logger {
     }
 
     fn print(&self) {
-        std::println!("{}", self.all().join("\n"))
+        std::println!("{}", self.all().join("\n"));
     }
 }

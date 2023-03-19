@@ -61,31 +61,30 @@ impl Ord for Symbol {
         let self_raw = self.val.to_raw();
         let other_raw = other.val.to_raw();
 
-        match (
+        if let (Ok(self_sym), Ok(other_sym)) = (
             SymbolSmall::try_from(self_raw),
             SymbolSmall::try_from(other_raw),
         ) {
             // Compare small symbols.
-            (Ok(self_sym), Ok(other_sym)) => self_sym.cmp(&other_sym),
-            // The object-to-small symbol comparisons are handled by `obj_cmp`,
-            // so it's safe to handle all the other cases using it.
-            _ => {
-                let env: Option<Env> =
-                    match (self.env.clone().try_into(), other.env.clone().try_into()) {
-                        (Err(_), Err(_)) => None,
-                        (Err(_), Ok(e)) => Some(e),
-                        (Ok(e), Err(_)) => Some(e),
-                        (Ok(e1), Ok(e2)) => {
-                            e1.check_same_env(&e2);
-                            Some(e1)
-                        }
-                    };
-                if let Some(env) = env {
-                    let v = env.obj_cmp(self_raw, other_raw).unwrap_infallible();
-                    v.cmp(&0)
-                } else {
-                    panic!("symbol object is missing the env reference");
+            self_sym.cmp(&other_sym)
+        }
+        // The object-to-small symbol comparisons are handled by `obj_cmp`,
+        // so it's safe to handle all the other cases using it.
+        else {
+            let env: Option<Env> = match (self.env.clone().try_into(), other.env.clone().try_into())
+            {
+                (Err(_), Err(_)) => None,
+                (Err(_), Ok(e)) | (Ok(e), Err(_)) => Some(e),
+                (Ok(e1), Ok(e2)) => {
+                    e1.check_same_env(&e2);
+                    Some(e1)
                 }
+            };
+            if let Some(env) = env {
+                let v = env.obj_cmp(self_raw, other_raw).unwrap_infallible();
+                v.cmp(&0)
+            } else {
+                panic!("symbol object is missing the env reference");
             }
         }
     }

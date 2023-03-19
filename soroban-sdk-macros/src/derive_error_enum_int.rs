@@ -6,6 +6,7 @@ use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Pat
 
 use crate::doc::docs_from_attrs;
 
+#[allow(clippy::too_many_lines)]
 pub fn derive_type_error_enum_int(
     path: &Path,
     enum_ident: &Ident,

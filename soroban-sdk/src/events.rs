@@ -148,7 +148,7 @@ impl testutils::Events for Events {
                         contract_id.0.into_val(env),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
-                    ))
+                    ));
                 }
             });
         vec

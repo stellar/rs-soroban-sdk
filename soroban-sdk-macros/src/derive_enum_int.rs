@@ -9,7 +9,7 @@ use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 use crate::doc::docs_from_attrs;
 
 // TODO: Add conversions to/from ScVal types.
-
+#[allow(clippy::too_many_lines)]
 pub fn derive_type_enum_int(
     path: &Path,
     enum_ident: &Ident,

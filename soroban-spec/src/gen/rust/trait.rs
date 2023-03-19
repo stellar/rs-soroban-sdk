@@ -6,7 +6,7 @@ use super::types::generate_type_ident;
 
 /// Constructs a token stream containing a single trait that has a function for
 /// every function spec.
-pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
+pub fn generate(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
     let trait_ident = format_ident!("{}", name);
     let fns: Vec<_> = specs
         .iter()

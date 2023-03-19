@@ -1,3 +1,4 @@
+#![allow(clippy::too_many_lines)]
 extern crate proc_macro;
 
 mod derive_client;

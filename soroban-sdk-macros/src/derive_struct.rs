@@ -36,7 +36,7 @@ pub fn derive_type_struct(
             let field_name = field_ident.to_string();
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
 
-            if field_name.len() > SCSYMBOL_LIMIT as usize {
+            if field_name.len() as u64 > SCSYMBOL_LIMIT {
                 errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is {}", field_name.len(), SCSYMBOL_LIMIT)));
             }
             let spec_field = ScSpecUdtStructFieldV0 {

@@ -5,7 +5,7 @@ use soroban_sdk::{contractimpl, Address, Bytes, Env};
 mod tests;
 
 /// The interface below was copied from
-/// https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
+/// [sorobon-env-host](https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs)
 /// at commit b3c188f48dec51a956c1380fb6fe92201a3f716b.
 ///
 /// Differences between this interface and the built-in contract

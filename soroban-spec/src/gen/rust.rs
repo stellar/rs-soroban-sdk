@@ -73,7 +73,7 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
 
     let trait_name = "Contract";
 
-    let trait_ = r#trait::generate_trait(trait_name, &spec_fns);
+    let trait_ = r#trait::generate(trait_name, &spec_fns);
     let structs = spec_structs.iter().map(|s| generate_struct(s));
     let unions = spec_unions.iter().map(|s| generate_union(s));
     let enums = spec_enums.iter().map(|s| generate_enum(s));

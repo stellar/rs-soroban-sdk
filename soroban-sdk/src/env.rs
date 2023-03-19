@@ -60,7 +60,7 @@ pub mod internal {
     // is probably going to unwind completely anyways. No special case needed.
     #[cfg(not(any(test, feature = "testutils")))]
     pub(crate) fn reject_err<T>(_env: &Host, r: Result<T, HostError>) -> Result<T, Infallible> {
-        r.map_err(|e| panic!("{:?}", e))
+        r.map_err(|e| panic!("{e:?}"))
     }
 
     #[doc(hidden)]
@@ -241,6 +241,7 @@ pub struct Env {
     snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
+#[allow(clippy::derivable_impls)]
 impl Default for Env {
     #[cfg(not(any(test, feature = "testutils")))]
     fn default() -> Self {
@@ -658,7 +659,7 @@ impl Env {
                         &k,
                         &v,
                         soroban_env_host::budget::AsBudget::as_budget(self.host()),
-                    )?
+                    )?;
                 }
                 Ok(())
             })

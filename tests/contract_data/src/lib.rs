@@ -6,7 +6,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn put(e: Env, key: Symbol, val: Symbol) {
-        e.storage().set(&key, &val)
+        e.storage().set(&key, &val);
     }
 
     pub fn get(e: Env, key: Symbol) -> Option<Symbol> {
@@ -14,6 +14,6 @@ impl Contract {
     }
 
     pub fn del(e: Env, key: Symbol) {
-        e.storage().remove(&key)
+        e.storage().remove(&key);
     }
 }

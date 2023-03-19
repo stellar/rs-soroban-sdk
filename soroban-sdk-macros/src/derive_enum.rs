@@ -45,7 +45,7 @@ pub fn derive_type_enum(
             let case_name = &case_ident.to_string();
             let case_name_str_lit = Literal::string(case_name);
             let case_num_lit = Literal::usize_unsuffixed(case_num);
-            if case_name.len() > SCSYMBOL_LIMIT as usize {
+            if case_name.len() as u64 > SCSYMBOL_LIMIT {
                 errors.push(Error::new(
                     case_ident.span(),
                     format!(
@@ -74,14 +74,14 @@ pub fn derive_type_enum(
                 _ => {}
             }
             let is_unit_variant = variant.fields == Fields::Unit;
-            if !is_unit_variant {
+            if is_unit_variant {
                 let VariantTokens {
                     spec_case,
                     try_from,
                     try_into,
                     try_from_xdr,
                     into_xdr,
-                } = map_tuple_variant(
+                } = map_empty_variant(
                     path,
                     enum_ident,
                     &case_num_lit,
@@ -89,8 +89,6 @@ pub fn derive_type_enum(
                     case_name,
                     case_ident,
                     &variant.attrs,
-                    &variant.fields,
-                    &mut errors,
                 );
                 (
                     spec_case,
@@ -107,7 +105,7 @@ pub fn derive_type_enum(
                     try_into,
                     try_from_xdr,
                     into_xdr,
-                } = map_empty_variant(
+                } = map_tuple_variant(
                     path,
                     enum_ident,
                     &case_num_lit,
@@ -115,6 +113,8 @@ pub fn derive_type_enum(
                     case_name,
                     case_ident,
                     &variant.attrs,
+                    &variant.fields,
+                    &mut errors,
                 );
                 (
                     spec_case,
@@ -319,6 +319,7 @@ fn map_empty_variant(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn map_tuple_variant(
     path: &Path,
     enum_ident: &Ident,
@@ -341,7 +342,7 @@ fn map_tuple_variant(
                 }
             })
             .collect::<Vec<_>>();
-        let field_types = match VecM::try_from(field_types) {
+        let type_ = match VecM::try_from(field_types) {
             Ok(t) => t,
             Err(e) => {
                 let v = VecM::default();
@@ -365,7 +366,7 @@ fn map_tuple_variant(
         ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
             doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
             name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
-            type_: field_types.try_into().unwrap(),
+            type_,
         })
     };
 

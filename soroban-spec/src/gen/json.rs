@@ -55,6 +55,7 @@ pub fn generate(spec: &[ScSpecEntry]) -> String {
 }
 
 #[cfg(test)]
+#[allow(clippy::too_many_lines)]
 mod test {
     use pretty_assertions::assert_eq;
 

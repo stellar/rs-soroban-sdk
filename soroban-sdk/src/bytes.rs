@@ -1,3 +1,4 @@
+#![allow(clippy::cast_possible_truncation)]
 use core::{
     borrow::Borrow,
     cmp::Ordering,
@@ -334,7 +335,7 @@ impl Bytes {
         self.obj = self
             .env()
             .bytes_put(self.obj, i.into(), v32.into())
-            .unwrap_infallible()
+            .unwrap_infallible();
     }
 
     #[inline(always)]
@@ -370,11 +371,7 @@ impl Bytes {
 
     #[inline(always)]
     pub fn first(&self) -> Option<u8> {
-        if !self.is_empty() {
-            Some(self.first_unchecked())
-        } else {
-            None
-        }
+        (!self.is_empty()).then(|| self.first_unchecked())
     }
 
     #[inline(always)]
@@ -385,11 +382,7 @@ impl Bytes {
 
     #[inline(always)]
     pub fn last(&self) -> Option<u8> {
-        if !self.is_empty() {
-            Some(self.last_unchecked())
-        } else {
-            None
-        }
+        (!self.is_empty()).then(|| self.last_unchecked())
     }
 
     #[inline(always)]
@@ -410,7 +403,7 @@ impl Bytes {
 
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
-        self.obj = self.env().bytes_del(self.obj, i.into()).unwrap_infallible()
+        self.obj = self.env().bytes_del(self.obj, i.into()).unwrap_infallible();
     }
 
     #[inline(always)]
@@ -419,7 +412,7 @@ impl Bytes {
         self.obj = self
             .env()
             .bytes_push(self.obj, x32.into())
-            .unwrap_infallible()
+            .unwrap_infallible();
     }
 
     #[inline(always)]
@@ -448,12 +441,12 @@ impl Bytes {
         self.obj = self
             .env()
             .bytes_insert(self.obj, i.into(), b32.into())
-            .unwrap_infallible()
+            .unwrap_infallible();
     }
 
     /// Insert the bytes in `bytes` into this [Bytes] starting at position
     /// indicated by `i`, and growing the size of [Bytes] by the length of
-    /// `bytes.
+    /// `bytes`.
     ///
     /// ### Panics
     ///
@@ -463,31 +456,31 @@ impl Bytes {
         let mut result = self.slice(..i);
         result.append(&bytes);
         result.append(&self.slice(i..));
-        *self = result
+        *self = result;
     }
 
     /// Insert the bytes in `array` into this [Bytes] starting at position
     /// indicated by `i`, and growing the size of [Bytes] by the length of
-    /// `bytes.
+    /// `bytes`.
     ///
     /// ### Panics
     ///
     /// When `i` is greater than the length of [Bytes].
     #[inline(always)]
     pub fn insert_from_array<const N: usize>(&mut self, i: u32, array: &[u8; N]) {
-        self.insert_from_slice(i, array)
+        self.insert_from_slice(i, array);
     }
 
     /// Insert the bytes in `slice` into this [Bytes] starting at position
     /// indicated by `i`, and growing the size of [Bytes] by the length of
-    /// `bytes.
+    /// `bytes`.
     ///
     /// ### Panics
     ///
     /// When `i` is greater than the length of [Bytes].
     #[inline(always)]
     pub fn insert_from_slice(&mut self, i: u32, slice: &[u8]) {
-        self.insert_from_bytes(i, Bytes::from_slice(self.env(), slice))
+        self.insert_from_bytes(i, Bytes::from_slice(self.env(), slice));
     }
 
     #[inline(always)]
@@ -495,12 +488,12 @@ impl Bytes {
         self.obj = self
             .env()
             .bytes_append(self.obj, other.obj)
-            .unwrap_infallible()
+            .unwrap_infallible();
     }
 
     #[inline(always)]
     pub fn extend_from_array<const N: usize>(&mut self, array: &[u8; N]) {
-        self.extend_from_slice(array)
+        self.extend_from_slice(array);
     }
 
     #[inline(always)]
@@ -508,7 +501,7 @@ impl Bytes {
         self.obj = self
             .env()
             .bytes_copy_from_slice(self.to_object(), self.len().into(), slice)
-            .unwrap_optimized()
+            .unwrap_optimized();
     }
 
     /// Copy the bytes from slice into [Bytes].
@@ -520,7 +513,7 @@ impl Bytes {
         self.obj = self
             .env()
             .bytes_copy_from_slice(self.to_object(), i.into(), slice)
-            .unwrap_optimized()
+            .unwrap_optimized();
     }
 
     /// Copy the bytes in [Bytes] into the given slice.

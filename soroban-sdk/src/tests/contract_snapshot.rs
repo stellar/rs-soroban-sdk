@@ -6,7 +6,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn store(env: Env, k: i32, v: i32) {
-        env.storage().set(&k, &v)
+        env.storage().set(&k, &v);
     }
     pub fn get(env: Env, k: i32) -> i32 {
         env.storage().get(&k).unwrap().unwrap()

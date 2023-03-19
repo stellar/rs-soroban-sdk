@@ -237,6 +237,6 @@ mod test {
         let s = String::from_slice(&env, msg);
         let mut out = [0u8; 9];
         s.copy_into_slice(&mut out);
-        assert_eq!(msg.as_bytes(), out)
+        assert_eq!(msg.as_bytes(), out);
     }
 }
