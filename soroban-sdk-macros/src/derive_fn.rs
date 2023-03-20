@@ -163,9 +163,7 @@ pub fn derive_fn(
             const MAX: u32 = 10;
             errors.push(Error::new(
                 inputs.iter().nth(MAX as usize).span(),
-                format!(
-                    "contract function has too many parameters, max count {MAX} parameters",
-                ),
+                format!("contract function has too many parameters, max count {MAX} parameters",),
             ));
             VecM::<_, MAX>::default()
         }),
