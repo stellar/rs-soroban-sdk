@@ -54,6 +54,7 @@ jobs:
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
+    - run: cargo hack --feature-powerset clippy --locked --target ${{ matrix.sys.target }}
 
   docs:
     runs-on: ubuntu-latest
