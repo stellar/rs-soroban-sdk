@@ -1,14 +1,15 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, testutils::budget::CostType, Bytes, Env};
+use soroban_sdk::{contractimpl, map, testutils::budget::CostType, Env, Map};
 
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn add(e: Env) -> Bytes {
-        let mut b = Bytes::from_array(&e, b"abcdefghijklmnopqrstuvwyxz");
-        b.append(&Bytes::from_array(&e, b"0123456789"));
-        b
+    pub fn add(e: Env) -> Map<i32, i32> {
+        let mut map = Map::new(&e);
+        map.set(1, 10);
+        map.set(2, 20);
+        map
     }
 }
 
@@ -22,10 +23,7 @@ fn test_budget() {
     let b = client.add();
     e.budget().print();
 
-    assert_eq!(e.budget().input(CostType::HostMemCpy), 68);
-    assert_eq!(e.budget().input(CostType::HostMemAlloc), 228);
-    assert_eq!(
-        b,
-        Bytes::from_array(&e, b"abcdefghijklmnopqrstuvwyxz0123456789")
-    );
+    assert_eq!(e.budget().input(CostType::MapNew), 1);
+    assert_eq!(e.budget().input(CostType::MapEntry), 5);
+    assert_eq!(b, map![&e, (1, 10), (2, 20)]);
 }
