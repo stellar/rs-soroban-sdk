@@ -22,7 +22,8 @@ fn test_budget() {
     let b = client.add();
     e.budget().print();
 
-    assert_eq!(e.budget().input(CostType::BytesAppend), 36);
+    assert_eq!(e.budget().input(CostType::HostMemCpy), 68);
+    assert_eq!(e.budget().input(CostType::HostMemAlloc), 228);
     assert_eq!(
         b,
         Bytes::from_array(&e, b"abcdefghijklmnopqrstuvwyxz0123456789")
