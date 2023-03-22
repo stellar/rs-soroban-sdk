@@ -127,7 +127,7 @@ pub mod budget {
 
         /// Print the budget costs and inputs to stdout.
         pub fn print(&self) {
-            println!("{}", self);
+            println!("{}", self.0);
         }
     }
 }
