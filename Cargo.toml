@@ -24,39 +24,39 @@ members = [
 ]
 
 [workspace.package]
-version = "0.6.0"
+version = "0.7.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "0.6.0", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "0.6.0", path = "soroban-sdk-macros" }
-soroban-auth = { version = "0.6.0", path = "soroban-auth" }
-soroban-spec = { version = "0.6.0", path = "soroban-spec" }
-soroban-ledger-snapshot = { version = "0.6.0", path = "soroban-ledger-snapshot" }
-soroban-token-spec = { version = "0.6.0", path = "soroban-token-spec" }
+soroban-sdk = { version = "0.7.0", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "0.7.0", path = "soroban-sdk-macros" }
+soroban-auth = { version = "0.7.0", path = "soroban-auth" }
+soroban-spec = { version = "0.7.0", path = "soroban-spec" }
+soroban-ledger-snapshot = { version = "0.7.0", path = "soroban-ledger-snapshot" }
+soroban-token-spec = { version = "0.7.0", path = "soroban-token-spec" }
 
 [workspace.dependencies.soroban-env-common]
-version = "0.0.14"
+version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "75b21696b0636bd145b7acb47a6fed4621b05978"
+rev = "cf83838ae8a07a00224f0a5a3500eb7969bac7cf"
 
 [workspace.dependencies.soroban-env-guest]
-version = "0.0.14"
+version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "75b21696b0636bd145b7acb47a6fed4621b05978"
+rev = "cf83838ae8a07a00224f0a5a3500eb7969bac7cf"
 
 [workspace.dependencies.soroban-env-host]
-version = "0.0.14"
+version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "75b21696b0636bd145b7acb47a6fed4621b05978"
+rev = "cf83838ae8a07a00224f0a5a3500eb7969bac7cf"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
 git = "https://github.com/stellar/rs-stellar-strkey"
 
 [workspace.dependencies.stellar-xdr]
-version = "0.0.14"
+version = "0.0.15"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "07aff1190dc3f97b889d31b2bfb77098e7db55ce"
+rev = "4655b635c698bb3bbc628bdba456df627c42ee3a"
 default-features = false
 
 # [patch."https://github.com/stellar/rs-soroban-env"]
