@@ -959,11 +959,11 @@ impl Env {
     }
 
     /// Resets the `temp_storage()` associated with this `Env`.
-    /// 
+    ///
     /// This removes all the temporary storage entries without distinguishing
     /// between the contracts that own them.
     pub fn reset_temp_storage(&self) {
-        self.env_impl.reset_temp_storage();        
+        self.env_impl.reset_temp_storage();
     }
 }
 

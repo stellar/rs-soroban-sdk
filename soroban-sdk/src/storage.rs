@@ -11,14 +11,14 @@ use crate::{
 ///
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Contracts cannot query or modify data stored by other contracts.
-/// 
-/// Storage has persistent and temporary modes. 
-/// 
+///
+/// Storage has persistent and temporary modes.
+///
 /// For persistent mode data is stored in the ledger and is viewable outside of
 /// contracts wherever the ledger is accessible. This is the most universally
 /// useful storage mode.
-/// 
-/// For temporary mode data exists only during the execution time of the 
+///
+/// For temporary mode data exists only during the execution time of the
 /// top-level contract. It is thus only useful to store data between several
 /// cross-contract calls (e.g. to increase and then spend the token allowance
 /// from another contract).
