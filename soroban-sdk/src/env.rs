@@ -128,7 +128,7 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, Address, Bytes, BytesN, Vec,
+    storage::Storage, Address, BytesN, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, I128Object, I64Object, Object, StringObject, Symbol,
@@ -264,19 +264,23 @@ impl Env {
         unreachable!()
     }
 
-    /// Get a [Storage] for accessing and update contract data that has been stored
-    /// by the currently executing contract.
-    #[inline(always)]
-    #[deprecated(note = "use env.storage()")]
-    pub fn data(&self) -> Storage {
-        self.storage()
-    }
-
-    /// Get a [Storage] for accessing and update contract data that has been stored
-    /// by the currently executing contract.
+    /// Get a [Storage] for accessing and updating persistent data owned by the
+    /// currently executing contract.
     #[inline(always)]
     pub fn storage(&self) -> Storage {
-        Storage::new(self)
+        Storage::new_persistent(self)
+    }
+
+    /// Get a [Storage] for accessing and updating temporary data owned by the
+    /// currently executing contract.
+    ///
+    /// Temporary data only exists during a single top-level contract
+    /// invocation, so this is only useful for persisting data between several
+    /// cross-contract calls (e.g. to increase and then spend the token
+    /// allowance from another contract)
+    #[inline(always)]
+    pub fn temp_storage(&self) -> Storage {
+        Storage::new_temporary(self)
     }
 
     /// Get [Events] for publishing events associated with the
@@ -367,18 +371,6 @@ impl Env {
     pub fn call_stack(&self) -> Vec<(BytesN<32>, crate::Symbol)> {
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
         unsafe { Vec::unchecked_new(self.clone(), stack) }
-    }
-
-    #[doc(hidden)]
-    #[deprecated(note = "use env.crypto().sha256(msg)")]
-    pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
-        self.crypto().sha256(msg)
-    }
-
-    #[doc(hidden)]
-    #[deprecated(note = "use env.crypto().ed25519_verify(pk, msg, sig)")]
-    pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
-        self.crypto().ed25519_verify(pk, msg, sig);
     }
 
     /// Invokes a function of a contract that is registered in the [Env].
@@ -964,6 +956,14 @@ impl Env {
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
         self.env_impl.with_budget(|b| Budget::new(b))
+    }
+
+    /// Resets the `temp_storage()` associated with this `Env`.
+    ///
+    /// This removes all the temporary storage entries without distinguishing
+    /// between the contracts that own them.
+    pub fn reset_temp_storage(&self) {
+        self.env_impl.reset_temp_storage();
     }
 }
 

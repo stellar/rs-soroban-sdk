@@ -11,8 +11,17 @@ use crate::{
 ///
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Contracts cannot query or modify data stored by other contracts.
-/// Data is stored in the ledger and viewable outside of contracts wherever
-/// the ledger is accessible.
+///
+/// Storage has persistent and temporary modes.
+///
+/// For persistent mode data is stored in the ledger and is viewable outside of
+/// contracts wherever the ledger is accessible. This is the most universally
+/// useful storage mode.
+///
+/// For temporary mode data exists only during the execution time of the
+/// top-level contract. It is thus only useful to store data between several
+/// cross-contract calls (e.g. to increase and then spend the token allowance
+/// from another contract).
 ///
 /// ### Examples
 ///
@@ -45,7 +54,16 @@ use crate::{
 /// # fn main() { }
 /// ```
 #[derive(Clone)]
-pub struct Storage(Env);
+pub struct Storage {
+    env: Env,
+    mode: StorageMode,
+}
+
+#[derive(Clone)]
+enum StorageMode {
+    Persistent,
+    Temporary,
+}
 
 impl Debug for Storage {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -55,13 +73,19 @@ impl Debug for Storage {
 
 impl Storage {
     #[inline(always)]
-    pub(crate) fn env(&self) -> &Env {
-        &self.0
+    pub(crate) fn new_persistent(env: &Env) -> Storage {
+        Storage {
+            env: env.clone(),
+            mode: StorageMode::Persistent,
+        }
     }
 
     #[inline(always)]
-    pub(crate) fn new(env: &Env) -> Storage {
-        Storage(env.clone())
+    pub(crate) fn new_temporary(env: &Env) -> Storage {
+        Storage {
+            env: env.clone(),
+            mode: StorageMode::Temporary,
+        }
     }
 
     /// Returns if there is a value stored for the given key in the currently
@@ -71,9 +95,7 @@ impl Storage {
     where
         K: IntoVal<Env, RawVal>,
     {
-        let env = self.env();
-        let rv = internal::Env::has_contract_data(env, key.into_val(env)).unwrap_infallible();
-        rv.into()
+        self.has_internal(key.into_val(&self.env))
     }
 
     /// Returns the value stored for the given key in the currently executing
@@ -90,12 +112,10 @@ impl Storage {
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
-        let env = self.env();
-        let key = key.into_val(env);
-        let has = internal::Env::has_contract_data(env, key).unwrap_infallible();
-        if has.into() {
-            let rv = internal::Env::get_contract_data(env, key).unwrap_infallible();
-            Some(V::try_from_val(env, &rv))
+        let key = key.into_val(&self.env);
+        if self.has_internal(key) {
+            let rv = self.get_internal(key);
+            Some(V::try_from_val(&self.env, &rv))
         } else {
             None
         }
@@ -117,9 +137,8 @@ impl Storage {
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
-        let env = self.env();
-        let rv = internal::Env::get_contract_data(env, key.into_val(env)).unwrap_infallible();
-        V::try_from_val(env, &rv)
+        let rv = self.get_internal(key.into_val(&self.env));
+        V::try_from_val(&self.env, &rv)
     }
 
     /// Sets the value for the given key in the currently executing contract's
@@ -133,9 +152,17 @@ impl Storage {
         K: IntoVal<Env, RawVal>,
         V: IntoVal<Env, RawVal>,
     {
-        let env = self.env();
-        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env))
-            .unwrap_infallible();
+        let env = &self.env;
+        match self.mode {
+            StorageMode::Persistent => {
+                internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env))
+                    .unwrap_infallible();
+            }
+            StorageMode::Temporary => {
+                internal::Env::put_tmp_contract_data(env, key.into_val(env), val.into_val(env))
+                    .unwrap_infallible();
+            }
+        }
     }
 
     /// Removes the key and the corresponding value from the currently executing
@@ -147,7 +174,37 @@ impl Storage {
     where
         K: IntoVal<Env, RawVal>,
     {
-        let env = self.env();
-        internal::Env::del_contract_data(env, key.into_val(env)).unwrap_infallible();
+        let env = &self.env;
+        match self.mode {
+            StorageMode::Persistent => {
+                internal::Env::del_contract_data(env, key.into_val(env)).unwrap_infallible();
+            }
+            StorageMode::Temporary => {
+                internal::Env::del_tmp_contract_data(env, key.into_val(env)).unwrap_infallible();
+            }
+        }
+    }
+
+    fn has_internal(&self, key: RawVal) -> bool {
+        match self.mode {
+            StorageMode::Persistent => {
+                internal::Env::has_contract_data(&self.env, key).unwrap_infallible()
+            }
+            StorageMode::Temporary => {
+                internal::Env::has_tmp_contract_data(&self.env, key).unwrap_infallible()
+            }
+        }
+        .into()
+    }
+
+    fn get_internal(&self, key: RawVal) -> RawVal {
+        match self.mode {
+            StorageMode::Persistent => {
+                internal::Env::get_contract_data(&self.env, key).unwrap_infallible()
+            }
+            StorageMode::Temporary => {
+                internal::Env::get_tmp_contract_data(&self.env, key).unwrap_infallible()
+            }
+        }
     }
 }
