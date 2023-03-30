@@ -961,7 +961,7 @@ mod test {
     }
 
     #[test]
-    fn contains() {
+    fn test_contains() {
         let env = Env::default();
         let vec = vec![&env, 0, 3, 5, 7, 9, 5];
         assert_eq!(vec.contains(&2), false);
@@ -973,7 +973,7 @@ mod test {
     }
 
     #[test]
-    fn first_index_of() {
+    fn test_first_index_of() {
         let env = Env::default();
 
         let vec = vec![&env, 0, 3, 5, 7, 9, 5];
@@ -986,7 +986,7 @@ mod test {
     }
 
     #[test]
-    fn last_index_of() {
+    fn test_last_index_of() {
         let env = Env::default();
 
         let vec = vec![&env, 0, 3, 5, 7, 9, 5];
@@ -999,7 +999,7 @@ mod test {
     }
 
     #[test]
-    fn binary_search() {
+    fn test_binary_search() {
         let env = Env::default();
 
         let vec = vec![&env, 0, 3, 5, 5, 7, 9];
@@ -1036,7 +1036,7 @@ mod test {
     }
 
     #[test]
-    fn insert_and_set() {
+    fn test_insert_and_set() {
         let env = Env::default();
         let mut v = Vec::<i64>::new(&env);
         v.insert(0, 3);
@@ -1052,7 +1052,7 @@ mod test {
     }
 
     #[test]
-    fn is_empty_and_len() {
+    fn test_is_empty_and_len() {
         let env = Env::default();
 
         let mut v: Vec<i32> = vec![&env, 1, 4, 3];
@@ -1065,7 +1065,7 @@ mod test {
     }
 
     #[test]
-    fn push_pop_front() {
+    fn test_push_pop_front() {
         let env = Env::default();
 
         let mut v = Vec::<i64>::new(&env);
@@ -1083,7 +1083,7 @@ mod test {
     }
 
     #[test]
-    fn push_pop_back() {
+    fn test_push_pop_back() {
         let env = Env::default();
 
         let mut v = Vec::<i64>::new(&env);
@@ -1098,5 +1098,115 @@ mod test {
         assert_eq!(pop_unchecked, Ok(42));
         assert_eq!(v, vec![&env]);
         assert_eq!(v.pop_back(), None);
+    }
+
+    #[test]
+    fn test_get() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        // get each item
+        assert_eq!(v.get(3), Some(Ok(5)));
+        assert_eq!(v.get(0), Some(Ok(0)));
+        assert_eq!(v.get(1), Some(Ok(3)));
+        assert_eq!(v.get(2), Some(Ok(5)));
+        assert_eq!(v.get(5), Some(Ok(9)));
+        assert_eq!(v.get(4), Some(Ok(7)));
+
+        assert_eq!(v.get(v.len()), None);
+        assert_eq!(v.get(v.len() + 1), None);
+        assert_eq!(v.get(u32::MAX), None);
+
+        // tests on an empty vec
+        let v = Vec::<i64>::new(&env);
+        assert_eq!(v.get(0), None);
+        assert_eq!(v.get(v.len()), None);
+        assert_eq!(v.get(v.len() + 1), None);
+        assert_eq!(v.get(u32::MAX), None);
+    }
+
+    #[test]
+    fn test_get_unchecked() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        // get each item
+        assert_eq!(v.get_unchecked(3), Ok(5));
+        assert_eq!(v.get_unchecked(0), Ok(0));
+        assert_eq!(v.get_unchecked(1), Ok(3));
+        assert_eq!(v.get_unchecked(2), Ok(5));
+        assert_eq!(v.get_unchecked(5), Ok(9));
+        assert_eq!(v.get_unchecked(4), Ok(7));
+    }
+
+    #[test]
+    #[should_panic(expected = "HostObjectError(VecIndexOutOfBound)")]
+    fn test_get_unchecked_panics() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+        _ = v.get_unchecked(v.len()); // out of bound get
+    }
+
+    #[test]
+    fn test_remove() {
+        let env = Env::default();
+        let mut v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        assert_eq!(v.remove(0), Some(()));
+        assert_eq!(v.remove(2), Some(()));
+        assert_eq!(v.remove(3), Some(()));
+
+        assert_eq!(v, vec![&env, 3, 5, 7]);
+        assert_eq!(v.len(), 3);
+
+        // out of bound removes
+        assert_eq!(v.remove(v.len()), None);
+        assert_eq!(v.remove(v.len() + 1), None);
+        assert_eq!(v.remove(u32::MAX), None);
+
+        // remove rest of items
+        assert_eq!(v.remove(0), Some(()));
+        assert_eq!(v.remove(0), Some(()));
+        assert_eq!(v.remove(0), Some(()));
+        assert_eq!(v, vec![&env]);
+        assert_eq!(v.len(), 0);
+
+        // try remove from empty vec
+        assert_eq!(v.remove(0), None);
+        assert_eq!(v.remove(v.len()), None);
+        assert_eq!(v.remove(v.len() + 1), None);
+        assert_eq!(v.remove(u32::MAX), None);
+    }
+
+    #[test]
+    fn test_remove_unchecked() {
+        let env = Env::default();
+        let mut v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        assert_eq!(v.remove_unchecked(0), ());
+        assert_eq!(v.remove_unchecked(2), ());
+        assert_eq!(v.remove_unchecked(3), ());
+
+        assert_eq!(v, vec![&env, 3, 5, 7]);
+        assert_eq!(v.len(), 3);
+
+        // remove rest of items
+        assert_eq!(v.remove_unchecked(0), ());
+        assert_eq!(v.remove_unchecked(0), ());
+        assert_eq!(v.remove_unchecked(0), ());
+        assert_eq!(v, vec![&env]);
+        assert_eq!(v.len(), 0);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostObjectError(VecIndexOutOfBound)")]
+    fn test_remove_unchecked_panics() {
+        let env = Env::default();
+        let mut v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        v.remove_unchecked(v.len())
     }
 }
