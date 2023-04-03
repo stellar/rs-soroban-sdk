@@ -31,4 +31,4 @@ fn test() {
 }
 ```
 
-More examples are available at <https://soroban.stellar.org/docs/category/examples>.
+More examples are available at <https://soroban.stellar.org/docs/category/how-to-guides>.
