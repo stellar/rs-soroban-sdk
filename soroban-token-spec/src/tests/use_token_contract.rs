@@ -32,8 +32,8 @@ impl TestContract {
         get_token(&e)
     }
 
-    pub fn incr_allow(e: Env, from: Address, spender: Address, amount: i128) {
-        TokenClient::new(&e, &get_token(&e)).incr_allow(&from, &spender, &amount);
+    pub fn increase_allowance(e: Env, from: Address, spender: Address, amount: i128) {
+        TokenClient::new(&e, &get_token(&e)).increase_allowance(&from, &spender, &amount);
     }
 
     pub fn allowance(e: Env, from: Address, spender: Address) -> i128 {
@@ -57,14 +57,14 @@ fn test() {
     assert_eq!(token_client.decimals(), 7);
     let from = Address::random(&env);
     let spender = Address::random(&env);
-    client.incr_allow(&from, &spender, &20);
+    client.increase_allowance(&from, &spender, &20);
 
     assert_eq!(
         env.recorded_top_authorizations(),
         std::vec![(
             from.clone(),
             token_client.contract_id.clone(),
-            Symbol::new(&env, "incr_allow"),
+            Symbol::new(&env, "increase_allowance"),
             (&from, &spender, 20_i128).into_val(&env)
         )]
     );

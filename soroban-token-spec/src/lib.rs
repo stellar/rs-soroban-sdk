@@ -21,11 +21,11 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn incr_allow(env: Env, from: Address, spender: Address, amount: i128) {
+    pub fn increase_allowance(env: Env, from: Address, spender: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn decr_allow(env: Env, from: Address, spender: Address, amount: i128) {
+    pub fn decrease_allowance(env: Env, from: Address, spender: Address, amount: i128) {
         panic!("calling into interface");
     }
 
@@ -33,7 +33,7 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn spendable(env: Env, id: Address) -> i128 {
+    pub fn spendable_balance(env: Env, id: Address) -> i128 {
         panic!("calling into interface");
     }
 
@@ -41,11 +41,11 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn xfer(env: Env, from: Address, to: Address, amount: i128) {
+    pub fn transfer(env: Env, from: Address, to: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn xfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128) {
+    pub fn transfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128) {
         panic!("calling into interface");
     }
 
@@ -57,7 +57,7 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn set_auth(env: Env, id: Address, authorize: bool) {
+    pub fn set_authorized(env: Env, id: Address, authorize: bool) {
         panic!("calling into interface");
     }
 
@@ -94,19 +94,19 @@ const SPEC_XDR_INPUT: &[&[u8]] = &[
     &Token::spec_xdr_burn_from(),
     &Token::spec_xdr_clawback(),
     &Token::spec_xdr_decimals(),
-    &Token::spec_xdr_decr_allow(),
-    &Token::spec_xdr_incr_allow(),
+    &Token::spec_xdr_decrease_allowance(),
+    &Token::spec_xdr_increase_allowance(),
     &Token::spec_xdr_mint(),
     &Token::spec_xdr_name(),
     &Token::spec_xdr_set_admin(),
-    &Token::spec_xdr_set_auth(),
-    &Token::spec_xdr_spendable(),
+    &Token::spec_xdr_set_authorized(),
+    &Token::spec_xdr_spendable_balance(),
     &Token::spec_xdr_symbol(),
-    &Token::spec_xdr_xfer(),
-    &Token::spec_xdr_xfer_from(),
+    &Token::spec_xdr_transfer(),
+    &Token::spec_xdr_transfer_from(),
 ];
 
-const SPEC_XDR_LEN: usize = 1068;
+const SPEC_XDR_LEN: usize = 1108;
 
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]
