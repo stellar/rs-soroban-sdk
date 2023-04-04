@@ -670,11 +670,10 @@ impl Env {
             .unwrap()
             .try_into_val(self)
             .unwrap();
-        let issuer_address = Address::from_account_id(self, &BytesN::from_array(self, &issuer_pk));
         let _: () = self.invoke_contract(
             &token_id,
             &crate::Symbol::short("set_admin"),
-            (issuer_address, admin).try_into_val(self).unwrap(),
+            (admin,).try_into_val(self).unwrap(),
         );
 
         token_id

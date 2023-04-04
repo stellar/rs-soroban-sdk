@@ -57,19 +57,19 @@ impl Token {
         panic!("calling into interface");
     }
 
-    pub fn set_auth(env: Env, admin: Address, id: Address, authorize: bool) {
+    pub fn set_auth(env: Env, id: Address, authorize: bool) {
         panic!("calling into interface");
     }
 
-    pub fn mint(env: Env, admin: Address, to: Address, amount: i128) {
+    pub fn mint(env: Env, to: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn clawback(env: Env, admin: Address, from: Address, amount: i128) {
+    pub fn clawback(env: Env, from: Address, amount: i128) {
         panic!("calling into interface");
     }
 
-    pub fn set_admin(env: Env, admin: Address, new_admin: Address) {
+    pub fn set_admin(env: Env, new_admin: Address) {
         panic!("calling into interface");
     }
 
@@ -106,7 +106,7 @@ const SPEC_XDR_INPUT: &[&[u8]] = &[
     &Token::spec_xdr_xfer_from(),
 ];
 
-const SPEC_XDR_LEN: usize = 1148;
+const SPEC_XDR_LEN: usize = 1068;
 
 /// Returns the XDR spec for the Token contract.
 #[doc(hidden)]
