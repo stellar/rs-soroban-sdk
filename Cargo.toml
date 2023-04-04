@@ -56,7 +56,7 @@ git = "https://github.com/stellar/rs-stellar-strkey"
 [workspace.dependencies.stellar-xdr]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "4655b635c698bb3bbc628bdba456df627c42ee3a"
+rev = "bcf6f4c3a9dd32822a20af89880650a421d10e7f"
 default-features = false
 
 # [patch."https://github.com/stellar/rs-soroban-env"]
