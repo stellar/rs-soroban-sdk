@@ -1,7 +1,7 @@
 use crate as soroban_sdk;
 pub const WASM: &[u8] = soroban_sdk::contractfile!(
     file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm",
-    sha256 = "18788979ec03430c36f36986267f4535c7293258211fa25bc49b48c2a95f7fd8",
+    sha256 = "41797b764142f3cb973ac855ac74647e9e53cc881d47d5806bfae55f6ff76d76",
 );
 
 #[test]
