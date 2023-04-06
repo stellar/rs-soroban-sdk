@@ -4,7 +4,7 @@ use core::fmt::Debug;
 use crate::{
     env::internal::{self, RawVal},
     unwrap::UnwrapInfallible,
-    Env, IntoVal, TryFromVal,
+    Env, IntoVal, Symbol, TryFromVal,
 };
 
 /// Storage stores and retrieves data for the currently executing contract.
@@ -64,6 +64,8 @@ enum StorageMode {
     Persistent,
     Temporary,
 }
+
+const METADATA_KEY: Symbol = Symbol::short("METADATA");
 
 impl Debug for Storage {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -161,6 +163,46 @@ impl Storage {
             StorageMode::Temporary => {
                 internal::Env::put_tmp_contract_data(env, key.into_val(env), val.into_val(env))
                     .unwrap_infallible();
+            }
+        }
+    }
+
+    // TODO: Should we provide these methods, or should we just provide 
+    // the metadata key and have users call the regular get/set methods?
+    // These methods obfuscate the key from the user which could be
+    // dangerous with collisions.
+    #[inline(always)]
+    pub fn get_metadata_unchecked<V>(&self) -> Result<V, V::Error>
+    where
+        V::Error: Debug,
+        V: TryFromVal<Env, RawVal>,
+    {
+        let rv = self.get_internal(METADATA_KEY.into_val(&self.env));
+        V::try_from_val(&self.env, &rv)
+    }
+
+    #[inline(always)]
+    pub fn set_metadata<V>(&self, val: &V)
+    where
+        V: IntoVal<Env, RawVal>,
+    {
+        let env = &self.env;
+        match self.mode {
+            StorageMode::Persistent => {
+                internal::Env::put_contract_data(
+                    env,
+                    METADATA_KEY.into_val(env),
+                    val.into_val(env),
+                )
+                .unwrap_infallible();
+            }
+            StorageMode::Temporary => {
+                internal::Env::put_tmp_contract_data(
+                    env,
+                    METADATA_KEY.into_val(env),
+                    val.into_val(env),
+                )
+                .unwrap_infallible();
             }
         }
     }

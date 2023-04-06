@@ -1007,6 +1007,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-token-utils"
+version = "0.7.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "soroban-wasmi"
 version = "0.16.0-soroban2"
 source = "git+https://github.com/stellar/wasmi?rev=862b32f5#862b32f53f9c6223911e79e0b0fc8592fb3bb04c"
