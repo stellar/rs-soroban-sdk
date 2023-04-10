@@ -8,7 +8,7 @@ members = [
     "soroban-spec",
     "soroban-ledger-snapshot",
     "soroban-token-spec",
-    "soroban-token-utils",
+    "soroban-token-sdk",
     "tests/empty",
     "tests/empty2",
     "tests/add_u64",
@@ -34,7 +34,7 @@ soroban-auth = { version = "0.7.0", path = "soroban-auth" }
 soroban-spec = { version = "0.7.0", path = "soroban-spec" }
 soroban-ledger-snapshot = { version = "0.7.0", path = "soroban-ledger-snapshot" }
 soroban-token-spec = { version = "0.7.0", path = "soroban-token-spec" }
-soroban-token-utils = { version = "0.7.0", path = "soroban-token-utils" }
+soroban-token-sdk = { version = "0.7.0", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
 version = "0.0.15"

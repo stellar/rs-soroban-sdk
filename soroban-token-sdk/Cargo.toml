@@ -1,6 +1,6 @@
 [package]
-name = "soroban-token-utils"
-description = "Soroban token interface utils"
+name = "soroban-token-sdk"
+description = "Soroban token interface sdk"
 homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]

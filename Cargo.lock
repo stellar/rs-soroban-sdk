@@ -999,17 +999,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "soroban-token-spec"
+name = "soroban-token-sdk"
 version = "0.7.0"
 dependencies = [
- "rand 0.7.3",
  "soroban-sdk",
 ]
 
 [[package]]
-name = "soroban-token-utils"
+name = "soroban-token-spec"
 version = "0.7.0"
 dependencies = [
+ "rand 0.7.3",
  "soroban-sdk",
 ]
 
