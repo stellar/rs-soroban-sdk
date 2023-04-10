@@ -167,46 +167,6 @@ impl Storage {
         }
     }
 
-    // TODO: Should we provide these methods, or should we just provide 
-    // the metadata key and have users call the regular get/set methods?
-    // These methods obfuscate the key from the user which could be
-    // dangerous with collisions.
-    #[inline(always)]
-    pub fn get_metadata_unchecked<V>(&self) -> Result<V, V::Error>
-    where
-        V::Error: Debug,
-        V: TryFromVal<Env, RawVal>,
-    {
-        let rv = self.get_internal(METADATA_KEY.into_val(&self.env));
-        V::try_from_val(&self.env, &rv)
-    }
-
-    #[inline(always)]
-    pub fn set_metadata<V>(&self, val: &V)
-    where
-        V: IntoVal<Env, RawVal>,
-    {
-        let env = &self.env;
-        match self.mode {
-            StorageMode::Persistent => {
-                internal::Env::put_contract_data(
-                    env,
-                    METADATA_KEY.into_val(env),
-                    val.into_val(env),
-                )
-                .unwrap_infallible();
-            }
-            StorageMode::Temporary => {
-                internal::Env::put_tmp_contract_data(
-                    env,
-                    METADATA_KEY.into_val(env),
-                    val.into_val(env),
-                )
-                .unwrap_infallible();
-            }
-        }
-    }
-
     /// Removes the key and the corresponding value from the currently executing
     /// contract's storage.
     ///

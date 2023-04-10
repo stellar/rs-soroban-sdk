@@ -1,6 +1,8 @@
 #![no_std]
 
-use soroban_sdk::{contracttype, Bytes, ConversionError, Env};
+use soroban_sdk::{contracttype, Bytes, ConversionError, Env, Symbol};
+
+const METADATA_KEY: Symbol = Symbol::short("METADATA");
 
 #[derive(Clone)]
 #[contracttype]
@@ -21,11 +23,11 @@ impl TokenUtils {
 
     #[inline(always)]
     pub fn set_metadata(&self, metadata: &TokenMetadata) {
-        self.0.storage().set_metadata::<TokenMetadata>(&metadata);
+        self.0.storage().set(&METADATA_KEY, metadata);
     }
 
     #[inline(always)]
     pub fn get_metadata_unchecked(&self) -> Result<TokenMetadata, ConversionError> {
-        self.0.storage().get_metadata_unchecked::<TokenMetadata>()
+        self.0.storage().get_unchecked(&METADATA_KEY)
     }
 }
