@@ -4,7 +4,7 @@ use core::fmt::Debug;
 use crate::{
     env::internal::{self, RawVal},
     unwrap::UnwrapInfallible,
-    Env, IntoVal, Symbol, TryFromVal,
+    Env, IntoVal, TryFromVal,
 };
 
 /// Storage stores and retrieves data for the currently executing contract.
@@ -64,8 +64,6 @@ enum StorageMode {
     Persistent,
     Temporary,
 }
-
-const METADATA_KEY: Symbol = Symbol::short("METADATA");
 
 impl Debug for Storage {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
