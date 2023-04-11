@@ -341,11 +341,11 @@ impl<T> Vec<T> {
         self.obj.to_raw()
     }
 
-    pub fn as_object(&self) -> &VecObject {
+    pub(crate) fn as_object(&self) -> &VecObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> VecObject {
+    pub(crate) fn to_object(&self) -> VecObject {
         self.obj
     }
 }

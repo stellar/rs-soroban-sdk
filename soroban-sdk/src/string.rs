@@ -188,11 +188,11 @@ impl String {
         self.obj.to_raw()
     }
 
-    pub fn as_object(&self) -> &StringObject {
+    pub(crate) fn as_object(&self) -> &StringObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> StringObject {
+    pub(crate) fn to_object(&self) -> StringObject {
         self.obj
     }
 

@@ -299,11 +299,11 @@ impl Bytes {
         self.obj.to_raw()
     }
 
-    pub fn as_object(&self) -> &BytesObject {
+    pub(crate) fn as_object(&self) -> &BytesObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> BytesObject {
+    pub(crate) fn to_object(&self) -> BytesObject {
         self.obj
     }
 
@@ -886,11 +886,11 @@ impl<const N: usize> BytesN<N> {
         self.0.to_raw()
     }
 
-    pub fn as_object(&self) -> &BytesObject {
+    pub(crate) fn as_object(&self) -> &BytesObject {
         self.0.as_object()
     }
 
-    pub fn to_object(&self) -> BytesObject {
+    pub(crate) fn to_object(&self) -> BytesObject {
         self.0.to_object()
     }
 

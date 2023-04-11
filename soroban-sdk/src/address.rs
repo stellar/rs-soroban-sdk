@@ -282,11 +282,11 @@ impl Address {
         self.obj.to_raw()
     }
 
-    pub fn as_object(&self) -> &AddressObject {
+    pub(crate) fn as_object(&self) -> &AddressObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> AddressObject {
+    pub(crate) fn to_object(&self) -> AddressObject {
         self.obj
     }
 }
