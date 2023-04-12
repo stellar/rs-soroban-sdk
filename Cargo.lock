@@ -865,7 +865,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.15"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=5ef87058f07ad67eeba4c350a6b6af82bd17f916#5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=39270d6defe28d3793f620cd196831c3aed5df30#39270d6defe28d3793f620cd196831c3aed5df30"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -874,13 +874,13 @@ dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
  "static_assertions",
- "stellar-xdr",
+ "stellar-xdr 0.0.15 (git+https://github.com/stellar/rs-stellar-xdr?rev=8035c58fa4753de06ec034905d2240addf8b37a6)",
 ]
 
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.15"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=5ef87058f07ad67eeba4c350a6b6af82bd17f916#5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=39270d6defe28d3793f620cd196831c3aed5df30#39270d6defe28d3793f620cd196831c3aed5df30"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -889,7 +889,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.15"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=5ef87058f07ad67eeba4c350a6b6af82bd17f916#5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=39270d6defe28d3793f620cd196831c3aed5df30#39270d6defe28d3793f620cd196831c3aed5df30"
 dependencies = [
  "backtrace",
  "curve25519-dalek",
@@ -911,14 +911,14 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.15"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=5ef87058f07ad67eeba4c350a6b6af82bd17f916#5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=39270d6defe28d3793f620cd196831c3aed5df30#39270d6defe28d3793f620cd196831c3aed5df30"
 dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
  "serde",
  "serde_json",
- "stellar-xdr",
+ "stellar-xdr 0.0.15 (git+https://github.com/stellar/rs-stellar-xdr?rev=8035c58fa4753de06ec034905d2240addf8b37a6)",
  "syn 1.0.109",
  "thiserror",
 ]
@@ -937,7 +937,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.15"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=5ef87058f07ad67eeba4c350a6b6af82bd17f916#5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=39270d6defe28d3793f620cd196831c3aed5df30#39270d6defe28d3793f620cd196831c3aed5df30"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -959,7 +959,7 @@ dependencies = [
  "soroban-sdk-macros",
  "soroban-spec",
  "stellar-strkey",
- "stellar-xdr",
+ "stellar-xdr 0.0.15 (git+https://github.com/stellar/rs-stellar-xdr?rev=bcf6f4c3a9dd32822a20af89880650a421d10e7f)",
 ]
 
 [[package]]
@@ -973,7 +973,7 @@ dependencies = [
  "sha2 0.10.6",
  "soroban-env-common",
  "soroban-spec",
- "stellar-xdr",
+ "stellar-xdr 0.0.15 (git+https://github.com/stellar/rs-stellar-xdr?rev=bcf6f4c3a9dd32822a20af89880650a421d10e7f)",
  "syn 1.0.109",
 ]
 
@@ -992,7 +992,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "sha2 0.10.6",
- "stellar-xdr",
+ "stellar-xdr 0.0.15 (git+https://github.com/stellar/rs-stellar-xdr?rev=bcf6f4c3a9dd32822a20af89880650a421d10e7f)",
  "syn 1.0.109",
  "thiserror",
  "wasmparser",
@@ -1052,10 +1052,21 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.15"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=bcf6f4c3a9dd32822a20af89880650a421d10e7f#bcf6f4c3a9dd32822a20af89880650a421d10e7f"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=8035c58fa4753de06ec034905d2240addf8b37a6#8035c58fa4753de06ec034905d2240addf8b37a6"
 dependencies = [
  "arbitrary",
  "base64",
+ "crate-git-revision",
+ "hex",
+ "serde",
+ "serde_with",
+]
+
+[[package]]
+name = "stellar-xdr"
+version = "0.0.15"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=bcf6f4c3a9dd32822a20af89880650a421d10e7f#bcf6f4c3a9dd32822a20af89880650a421d10e7f"
+dependencies = [
  "crate-git-revision",
  "hex",
  "serde",
