@@ -483,6 +483,9 @@ impl Env {
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
         env_impl.switch_to_recording_auth();
+        env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+            xdr::Uint256(random()),
+        )));
         let env = Env {
             env_impl,
             snapshot: None,
