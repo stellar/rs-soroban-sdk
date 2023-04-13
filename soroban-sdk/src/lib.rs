@@ -617,6 +617,7 @@ pub mod data {
     pub use super::storage::Storage as Data;
 }
 mod bytes;
+pub mod token_spec;
 pub mod crypto;
 pub mod deploy;
 pub mod events;
