@@ -152,6 +152,25 @@ impl TryFromVal<Env, ScVal> for Address {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: &Address) -> Result<Self, Self::Error> {
+        match ScVal::try_from_val(&v.env, &v.obj.to_raw())? {
+            ScVal::Address(a) => Ok(a),
+            _ => Err(ConversionError),
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: Address) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
 impl Address {
     /// Ensures that this Address has authorized invocation of the current
     /// contract with the provided arguments.

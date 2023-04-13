@@ -451,7 +451,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
+use xdr::{ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -482,7 +482,7 @@ impl Env {
         let storage = internal::storage::Storage::with_recording_footprint(rf);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
-        env_impl.switch_to_recording_auth();
+        // env_impl.switch_to_recording_auth();
         env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
             xdr::Uint256(random()),
         )));
@@ -500,6 +500,12 @@ impl Env {
         });
 
         env
+    }
+
+    pub fn set_auth(&self, auth_entries: &[ContractAuth]) {
+        self.env_impl
+            .set_authorization_entries(auth_entries.to_vec())
+            .unwrap();
     }
 
     /// Register a contract with the [Env] for testing.

@@ -1134,6 +1134,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_auth"
+version = "0.7.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_contract_data"
 version = "0.7.0"
 dependencies = [
