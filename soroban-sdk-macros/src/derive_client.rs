@@ -4,7 +4,8 @@ use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath};
 
 use crate::syn_ext;
 
-pub fn derive_client(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
+pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
+    let ty_str = quote!(#ty).to_string();
     // Map the traits methods to methods for the Client.
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
@@ -85,8 +86,10 @@ pub fn derive_client(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) -> Toke
     }
 
     // Render the Client.
+    let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
     let client_ident = format_ident!("{}", name);
     quote! {
+        #[doc = #client_doc]
         pub struct #client_ident {
             pub env: #crate_path::Env,
             pub contract_id: #crate_path::BytesN<32>,

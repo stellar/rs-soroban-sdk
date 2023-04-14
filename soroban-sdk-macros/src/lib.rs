@@ -305,7 +305,7 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let input2: TokenStream2 = input.clone().into();
     let item = parse_macro_input!(input as HasFnsItem);
     let methods: Vec<_> = item.fns();
-    let client = derive_client(&args.crate_path, &args.name, &methods);
+    let client = derive_client(&args.crate_path, &item.name(), &args.name, &methods);
     quote! {
         #input2
         #client

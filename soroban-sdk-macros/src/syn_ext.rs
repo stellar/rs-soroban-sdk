@@ -71,6 +71,16 @@ pub enum HasFnsItem {
 }
 
 impl HasFnsItem {
+    pub fn name(&'_ self) -> String {
+        match self {
+            HasFnsItem::Trait(t) => t.ident.to_string(),
+            HasFnsItem::Impl(i) => {
+                let ty = &i.self_ty;
+                quote!(#ty).to_string()
+            }
+        }
+    }
+
     pub fn fns(&'_ self) -> Vec<Fn> {
         match self {
             HasFnsItem::Trait(t) => trait_methods(t)
