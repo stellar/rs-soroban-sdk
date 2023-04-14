@@ -7,8 +7,7 @@
 //! See [`Client`] for calling token contracts such as the Stellar Asset
 //! Contract.
 use crate as soroban_sdk;
-use crate::{contractclient, Address, Bytes, Env};
-
+use crate::{contractclient, contractspecfn, Address, Bytes, Env};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -20,6 +19,7 @@ use crate::{contractclient, Address, Bytes, Env};
 // 3. &Host type usage are replaced with Env
 
 /// Interface for Token contracts, such as the Stellar Asset Contract.
+#[contractspecfn(name = "Spec", export = false)]
 #[contractclient(name = "Client")]
 pub trait Interface {
     fn allowance(env: Env, from: Address, spender: Address) -> i128;
@@ -41,54 +41,52 @@ pub trait Interface {
     fn symbol(env: Env) -> Bytes;
 }
 
-// TODO: Modify the macros to still provide a way to get this spec.
+const SPEC_XDR_INPUT: &[&[u8]] = &[
+    &Spec::spec_xdr_allowance(),
+    &Spec::spec_xdr_authorized(),
+    &Spec::spec_xdr_balance(),
+    &Spec::spec_xdr_burn(),
+    &Spec::spec_xdr_burn_from(),
+    &Spec::spec_xdr_clawback(),
+    &Spec::spec_xdr_decimals(),
+    &Spec::spec_xdr_decrease_allowance(),
+    &Spec::spec_xdr_increase_allowance(),
+    &Spec::spec_xdr_mint(),
+    &Spec::spec_xdr_name(),
+    &Spec::spec_xdr_set_admin(),
+    &Spec::spec_xdr_set_authorized(),
+    &Spec::spec_xdr_spendable_balance(),
+    &Spec::spec_xdr_symbol(),
+    &Spec::spec_xdr_transfer(),
+    &Spec::spec_xdr_transfer_from(),
+];
 
-// const SPEC_XDR_INPUT: &[&[u8]] = &[
-//     &Token::spec_xdr_allowance(),
-//     &Token::spec_xdr_authorized(),
-//     &Token::spec_xdr_balance(),
-//     &Token::spec_xdr_burn(),
-//     &Token::spec_xdr_burn_from(),
-//     &Token::spec_xdr_clawback(),
-//     &Token::spec_xdr_decimals(),
-//     &Token::spec_xdr_decrease_allowance(),
-//     &Token::spec_xdr_increase_allowance(),
-//     &Token::spec_xdr_mint(),
-//     &Token::spec_xdr_name(),
-//     &Token::spec_xdr_set_admin(),
-//     &Token::spec_xdr_set_authorized(),
-//     &Token::spec_xdr_spendable_balance(),
-//     &Token::spec_xdr_symbol(),
-//     &Token::spec_xdr_transfer(),
-//     &Token::spec_xdr_transfer_from(),
-// ];
+const SPEC_XDR_LEN: usize = 1108;
 
-// const SPEC_XDR_LEN: usize = 1108;
+/// Returns the XDR spec for the Token contract.
+#[doc(hidden)]
+pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
+    let input = SPEC_XDR_INPUT;
+    // Concatenate all XDR for each item that makes up the token spec.
+    let mut output = [0u8; SPEC_XDR_LEN];
+    let mut input_i = 0;
+    let mut output_i = 0;
+    while input_i < input.len() {
+        let subinput = input[input_i];
+        let mut subinput_i = 0;
+        while subinput_i < subinput.len() {
+            output[output_i] = subinput[subinput_i];
+            output_i += 1;
+            subinput_i += 1;
+        }
+        input_i += 1;
+    }
 
-// /// Returns the XDR spec for the Token contract.
-// #[doc(hidden)]
-// pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
-//     let input = SPEC_XDR_INPUT;
-//     // Concatenate all XDR for each item that makes up the token spec.
-//     let mut output = [0u8; SPEC_XDR_LEN];
-//     let mut input_i = 0;
-//     let mut output_i = 0;
-//     while input_i < input.len() {
-//         let subinput = input[input_i];
-//         let mut subinput_i = 0;
-//         while subinput_i < subinput.len() {
-//             output[output_i] = subinput[subinput_i];
-//             output_i += 1;
-//             subinput_i += 1;
-//         }
-//         input_i += 1;
-//     }
+    // Check that the numbers of bytes written is equal to the number of bytes
+    // expected in the output.
+    if output_i != output.len() {
+        panic!("unexpected output length",);
+    }
 
-//     // Check that the numbers of bytes written is equal to the number of bytes
-//     // expected in the output.
-//     if output_i != output.len() {
-//         panic!("unexpected output length",);
-//     }
-
-//     output
-// }
+    output
+}

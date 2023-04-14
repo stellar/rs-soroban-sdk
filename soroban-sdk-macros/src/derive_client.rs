@@ -1,104 +1,10 @@
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote, ToTokens};
-use syn::{
-    parse::{Parse, ParseStream},
-    punctuated::Punctuated,
-    spanned::Spanned,
-    token::Comma,
-    AngleBracketedGenericArguments, Attribute, Error, FnArg, GenericArgument, Ident, ItemImpl,
-    ItemTrait, PathArguments, PathSegment, ReturnType, Token, Type, TypePath,
-};
+use quote::{format_ident, quote};
+use syn::{spanned::Spanned, Error, FnArg, Type, TypePath};
 
 use crate::syn_ext;
 
-pub enum ClientItem {
-    Trait(ItemTrait),
-    Impl(ItemImpl),
-}
-
-impl ClientItem {
-    pub fn fns(&'_ self) -> Vec<ClientFn> {
-        match self {
-            ClientItem::Trait(t) => syn_ext::trait_methods(t)
-                .map(|m| ClientFn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
-                })
-                .collect(),
-            ClientItem::Impl(i) => syn_ext::impl_pub_methods(i)
-                .map(|m| ClientFn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
-                })
-                .collect(),
-        }
-    }
-}
-
-impl Parse for ClientItem {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        _ = input.call(Attribute::parse_outer);
-        _ = input.parse::<Token![pub]>();
-        let lookahead = input.lookahead1();
-        if lookahead.peek(Token![trait]) {
-            input.parse().map(ClientItem::Trait)
-        } else if lookahead.peek(Token![impl]) {
-            input.parse().map(ClientItem::Impl)
-        } else {
-            Err(lookahead.error())
-        }
-    }
-}
-
-impl ToTokens for ClientItem {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        match self {
-            ClientItem::Trait(t) => t.to_tokens(tokens),
-            ClientItem::Impl(i) => i.to_tokens(tokens),
-        }
-    }
-}
-
-pub struct ClientFn<'a> {
-    pub ident: &'a Ident,
-    pub attrs: &'a [Attribute],
-    pub inputs: &'a Punctuated<FnArg, Comma>,
-    pub output: &'a ReturnType,
-}
-
-impl<'a> ClientFn<'a> {
-    pub fn output(&self) -> Type {
-        let t = match self.output {
-            ReturnType::Default => quote!(()),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => quote!(#t),
-                None => quote!(#typ),
-            },
-        };
-        Type::Verbatim(t)
-    }
-    pub fn try_output(&self) -> Type {
-        let (t, e) = match self.output {
-            ReturnType::Default => (quote!(()), quote!(soroban_sdk::Status)),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(soroban_sdk::Status)),
-            },
-        };
-        Type::Verbatim(quote! {
-            Result<
-                Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
-                Result<#e, <#e as TryFrom<soroban_sdk::Status>>::Error>
-            >
-        })
-    }
-}
-
-pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
+pub fn derive_client(name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
     // Map the traits methods to methods for the Client.
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
@@ -200,29 +106,5 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
 
             #(#fns)*
         }
-    }
-}
-
-fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
-    match &typ {
-        Type::Path(TypePath { path, .. }) => {
-            if let Some(PathSegment {
-                ident,
-                arguments:
-                    PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }),
-            }) = path.segments.last()
-            {
-                let args = args.iter().collect::<Vec<_>>();
-                match (&ident.to_string()[..], args.as_slice()) {
-                    ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
-                        Some((t.clone(), e.clone()))
-                    }
-                    _ => None,
-                }
-            } else {
-                None
-            }
-        }
-        _ => None,
     }
 }

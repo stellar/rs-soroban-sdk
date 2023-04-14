@@ -514,6 +514,13 @@ pub use soroban_sdk_macros::contracttype;
 /// # fn main() { }
 pub use soroban_sdk_macros::contractclient;
 
+/// Generates a contract spec for a trait or impl.
+///
+/// Note that [`contractimpl`] also generates a contract spec and it is in most
+/// cases not necessary to use this macro.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractspecfn;
+
 /// Import a contract from its WASM file, generating a constant holding the
 /// contract file.
 ///
@@ -617,7 +624,6 @@ pub mod data {
     pub use super::storage::Storage as Data;
 }
 mod bytes;
-pub mod token_spec;
 pub mod crypto;
 pub mod deploy;
 pub mod events;
@@ -627,6 +633,7 @@ pub mod logging;
 mod map;
 mod set;
 pub mod storage;
+pub mod token;
 mod vec;
 pub use address::Address;
 pub use bytes::{Bytes, BytesN};

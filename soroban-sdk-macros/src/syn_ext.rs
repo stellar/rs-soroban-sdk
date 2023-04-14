@@ -1,3 +1,12 @@
+use proc_macro2::TokenStream;
+use quote::{quote, ToTokens};
+use syn::{
+    parse::{Parse, ParseStream},
+    punctuated::Punctuated,
+    token::Comma,
+    AngleBracketedGenericArguments, Attribute, GenericArgument, PathArguments, PathSegment,
+    ReturnType, Token, TypePath,
+};
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemMethod, ItemImpl,
     ItemTrait, Pat, PatType, TraitItem, TraitItemMethod, Type, TypeReference, Visibility,
@@ -54,4 +63,115 @@ pub fn fn_arg_make_ref(arg: &FnArg) -> FnArg {
         }
     }
     arg.clone()
+}
+
+pub enum HasFnsItem {
+    Trait(ItemTrait),
+    Impl(ItemImpl),
+}
+
+impl HasFnsItem {
+    pub fn fns(&'_ self) -> Vec<Fn> {
+        match self {
+            HasFnsItem::Trait(t) => trait_methods(t)
+                .map(|m| Fn {
+                    ident: &m.sig.ident,
+                    attrs: &m.attrs,
+                    inputs: &m.sig.inputs,
+                    output: &m.sig.output,
+                })
+                .collect(),
+            HasFnsItem::Impl(i) => impl_pub_methods(i)
+                .map(|m| Fn {
+                    ident: &m.sig.ident,
+                    attrs: &m.attrs,
+                    inputs: &m.sig.inputs,
+                    output: &m.sig.output,
+                })
+                .collect(),
+        }
+    }
+}
+
+impl Parse for HasFnsItem {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        _ = input.call(Attribute::parse_outer);
+        _ = input.parse::<Token![pub]>();
+        let lookahead = input.lookahead1();
+        if lookahead.peek(Token![trait]) {
+            input.parse().map(HasFnsItem::Trait)
+        } else if lookahead.peek(Token![impl]) {
+            input.parse().map(HasFnsItem::Impl)
+        } else {
+            Err(lookahead.error())
+        }
+    }
+}
+
+impl ToTokens for HasFnsItem {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        match self {
+            HasFnsItem::Trait(t) => t.to_tokens(tokens),
+            HasFnsItem::Impl(i) => i.to_tokens(tokens),
+        }
+    }
+}
+
+pub struct Fn<'a> {
+    pub ident: &'a Ident,
+    pub attrs: &'a [Attribute],
+    pub inputs: &'a Punctuated<FnArg, Comma>,
+    pub output: &'a ReturnType,
+}
+
+impl<'a> Fn<'a> {
+    pub fn output(&self) -> Type {
+        let t = match self.output {
+            ReturnType::Default => quote!(()),
+            ReturnType::Type(_, typ) => match unpack_result(typ) {
+                Some((t, _)) => quote!(#t),
+                None => quote!(#typ),
+            },
+        };
+        Type::Verbatim(t)
+    }
+    pub fn try_output(&self) -> Type {
+        let (t, e) = match self.output {
+            ReturnType::Default => (quote!(()), quote!(soroban_sdk::Status)),
+            ReturnType::Type(_, typ) => match unpack_result(typ) {
+                Some((t, e)) => (quote!(#t), quote!(#e)),
+                None => (quote!(#typ), quote!(soroban_sdk::Status)),
+            },
+        };
+        Type::Verbatim(quote! {
+            Result<
+                Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
+                Result<#e, <#e as TryFrom<soroban_sdk::Status>>::Error>
+            >
+        })
+    }
+}
+
+fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
+    match &typ {
+        Type::Path(TypePath { path, .. }) => {
+            if let Some(PathSegment {
+                ident,
+                arguments:
+                    PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }),
+            }) = path.segments.last()
+            {
+                let args = args.iter().collect::<Vec<_>>();
+                match (&ident.to_string()[..], args.as_slice()) {
+                    ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
+                        Some((t.clone(), e.clone()))
+                    }
+                    _ => None,
+                }
+            } else {
+                None
+            }
+        }
+        _ => None,
+    }
 }
