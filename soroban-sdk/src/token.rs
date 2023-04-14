@@ -6,8 +6,12 @@
 //!
 //! See [`Client`] for calling token contracts such as the Stellar Asset
 //! Contract.
-use crate as soroban_sdk;
+
 use crate::{contractclient, contractspecfn, Address, Bytes, Env};
+
+// TODO: Replace with a configurable crate path on the contractclient and
+// contractspecfn macros.
+use crate as soroban_sdk;
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
