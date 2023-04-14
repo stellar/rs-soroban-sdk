@@ -303,6 +303,8 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
 
 #[derive(Debug, FromMeta)]
 struct ContractClientArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
     name: String,
 }
 
@@ -316,7 +318,7 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let input2: TokenStream2 = input.clone().into();
     let item = parse_macro_input!(input as HasFnsItem);
     let methods: Vec<_> = item.fns();
-    let client = derive_client(&args.name, &methods);
+    let client = derive_client(&args.crate_path, &args.name, &methods);
     quote! {
         #input2
         #client

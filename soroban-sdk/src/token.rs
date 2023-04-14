@@ -9,10 +9,6 @@
 
 use crate::{contractclient, contractspecfn, Address, Bytes, Env};
 
-// TODO: Replace with a configurable crate path on the contractclient and
-// contractspecfn macros.
-use crate as soroban_sdk;
-
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
 // at commit b3c188f48dec51a956c1380fb6fe92201a3f716b.
@@ -24,7 +20,7 @@ use crate as soroban_sdk;
 
 /// Interface for Token contracts, such as the Stellar Asset Contract.
 #[contractspecfn(name = "Spec", export = false)]
-#[contractclient(name = "Client")]
+#[contractclient(crate_path = "crate", name = "Client")]
 pub trait Interface {
     fn allowance(env: Env, from: Address, spender: Address) -> i128;
     fn increase_allowance(env: Env, from: Address, spender: Address, amount: i128);

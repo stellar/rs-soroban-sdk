@@ -4,7 +4,7 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, PathArguments, PathSegment,
+    AngleBracketedGenericArguments, Attribute, GenericArgument, Path, PathArguments, PathSegment,
     ReturnType, Token, TypePath,
 };
 use syn::{
@@ -135,18 +135,18 @@ impl<'a> Fn<'a> {
         };
         Type::Verbatim(t)
     }
-    pub fn try_output(&self) -> Type {
+    pub fn try_output(&self, crate_path: &Path) -> Type {
         let (t, e) = match self.output {
-            ReturnType::Default => (quote!(()), quote!(soroban_sdk::Status)),
+            ReturnType::Default => (quote!(()), quote!(#crate_path::Status)),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
                 Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(soroban_sdk::Status)),
+                None => (quote!(#typ), quote!(#crate_path::Status)),
             },
         };
         Type::Verbatim(quote! {
             Result<
-                Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
-                Result<#e, <#e as TryFrom<soroban_sdk::Status>>::Error>
+                Result<#t, <#t as #crate_path::TryFromVal<#crate_path::Env, #crate_path::RawVal>>::Error>,
+                Result<#e, <#e as TryFrom<#crate_path::Status>>::Error>
             >
         })
     }
