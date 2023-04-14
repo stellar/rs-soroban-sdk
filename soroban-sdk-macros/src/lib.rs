@@ -67,13 +67,11 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
     match derived {
         Ok(derived_ok) => quote! {
             #input2
-            pub struct #ty;
             #derived_ok
         }
         .into(),
         Err(derived_err) => quote! {
             #input2
-            pub struct #ty;
             #derived_err
         }
         .into(),
@@ -84,6 +82,7 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
+    let ty_str = quote!(#ty).to_string();
 
     // TODO: Use imp.trait_ in generating the client ident, to create a unique
     // client for each trait impl for a contract, to avoid conflicts.
@@ -96,18 +95,6 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         None
     }
     .unwrap_or_else(|| "Client".to_string());
-
-    // TODO: Use imp.trait_ in generating the client ident, to create a unique
-    // client for each trait impl for a contract, to avoid conflicts.
-    let spec_ident = if let Type::Path(path) = &**ty {
-        path.path
-            .segments
-            .last()
-            .map(|name| format!("{}Spec", name.ident))
-    } else {
-        None
-    }
-    .unwrap_or_else(|| "Spec".to_string());
 
     let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
@@ -132,7 +119,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
             quote! {
                 #[soroban_sdk::contractclient(name = #client_ident)]
-                #[soroban_sdk::contractspecfn(name = #spec_ident)]
+                #[soroban_sdk::contractspecfn(name = #ty_str)]
                 #imp
                 #derived_ok
                 #cfs

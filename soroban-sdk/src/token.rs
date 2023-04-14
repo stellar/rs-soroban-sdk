@@ -18,6 +18,10 @@ use crate::{contractclient, contractspecfn, Address, Bytes, Env};
 // 2. The implementations have been replaced with a panic.
 // 3. &Host type usage are replaced with Env
 
+/// Spec contains the contract spec of Token contracts, such as the Stellar
+/// Asset Contract.
+pub struct Spec;
+
 /// Interface for Token contracts, such as the Stellar Asset Contract.
 #[contractspecfn(name = "Spec", export = false)]
 #[contractclient(crate_path = "crate", name = "Client")]
