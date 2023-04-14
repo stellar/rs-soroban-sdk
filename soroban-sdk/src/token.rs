@@ -63,30 +63,32 @@ const SPEC_XDR_INPUT: &[&[u8]] = &[
 
 const SPEC_XDR_LEN: usize = 1108;
 
-/// Returns the XDR spec for the Token contract.
-#[doc(hidden)]
-pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
-    let input = SPEC_XDR_INPUT;
-    // Concatenate all XDR for each item that makes up the token spec.
-    let mut output = [0u8; SPEC_XDR_LEN];
-    let mut input_i = 0;
-    let mut output_i = 0;
-    while input_i < input.len() {
-        let subinput = input[input_i];
-        let mut subinput_i = 0;
-        while subinput_i < subinput.len() {
-            output[output_i] = subinput[subinput_i];
-            output_i += 1;
-            subinput_i += 1;
+impl Spec {
+    /// Returns the XDR spec for the Token contract.
+    #[doc(hidden)]
+    pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
+        let input = SPEC_XDR_INPUT;
+        // Concatenate all XDR for each item that makes up the token spec.
+        let mut output = [0u8; SPEC_XDR_LEN];
+        let mut input_i = 0;
+        let mut output_i = 0;
+        while input_i < input.len() {
+            let subinput = input[input_i];
+            let mut subinput_i = 0;
+            while subinput_i < subinput.len() {
+                output[output_i] = subinput[subinput_i];
+                output_i += 1;
+                subinput_i += 1;
+            }
+            input_i += 1;
         }
-        input_i += 1;
-    }
 
-    // Check that the numbers of bytes written is equal to the number of bytes
-    // expected in the output.
-    if output_i != output.len() {
-        panic!("unexpected output length",);
-    }
+        // Check that the numbers of bytes written is equal to the number of bytes
+        // expected in the output.
+        if output_i != output.len() {
+            panic!("unexpected output length",);
+        }
 
-    output
+        output
+    }
 }
