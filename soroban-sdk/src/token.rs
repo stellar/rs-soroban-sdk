@@ -69,7 +69,6 @@ const SPEC_XDR_LEN: usize = 1108;
 
 impl Spec {
     /// Returns the XDR spec for the Token contract.
-    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
         let input = SPEC_XDR_INPUT;
         // Concatenate all XDR for each item that makes up the token spec.
