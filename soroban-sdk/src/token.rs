@@ -4,7 +4,7 @@
 //! See [`Interface`] for the interface of token contracts such as the Stellar
 //! Asset Contract.
 //!
-//! See [`Client`] for calling token contracts such as the Stellar Asset
+//! Use [`Client`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
 use crate::{contractclient, contractspecfn, Address, Bytes, Env};
