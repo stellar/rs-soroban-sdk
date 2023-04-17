@@ -1,7 +1,7 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, testutils::Address as _, token, Address, BytesN, Env, IntoVal,
-    Symbol,
+    contractimpl, contracttype, testutils::Address as _, token::Client as TokenClient, Address,
+    BytesN, Env, IntoVal, Symbol,
 };
 
 #[contracttype]
@@ -26,11 +26,11 @@ impl TestContract {
     }
 
     pub fn increase_allowance(e: Env, from: Address, spender: Address, amount: i128) {
-        token::Client::new(&e, &get_token(&e)).increase_allowance(&from, &spender, &amount);
+        TokenClient::new(&e, &get_token(&e)).increase_allowance(&from, &spender, &amount);
     }
 
     pub fn allowance(e: Env, from: Address, spender: Address) -> i128 {
-        token::Client::new(&e, &get_token(&e)).allowance(&from, &spender)
+        TokenClient::new(&e, &get_token(&e)).allowance(&from, &spender)
     }
 }
 
@@ -46,7 +46,7 @@ fn test() {
     let client = TestContractClient::new(&env, &contract_id);
     client.init(&token_contract_id);
 
-    let token_client = token::Client::new(&env, &client.get_token());
+    let token_client = TokenClient::new(&env, &client.get_token());
     assert_eq!(token_client.decimals(), 7);
     let from = Address::random(&env);
     let spender = Address::random(&env);
