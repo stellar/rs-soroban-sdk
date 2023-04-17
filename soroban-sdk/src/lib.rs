@@ -298,6 +298,7 @@ pub use soroban_sdk_macros::contractimport;
 /// # fn main() { }
 /// ```
 pub use soroban_sdk_macros::contractimpl;
+pub use soroban_sdk_macros::metadata;
 
 /// Generates conversions from the struct/enum from/into a `RawVal`.
 ///

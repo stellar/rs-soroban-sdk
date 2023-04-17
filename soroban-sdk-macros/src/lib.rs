@@ -35,6 +35,8 @@ use self::derive_client::ClientItem;
 
 use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 
+use stellar_xdr::{ScMetaEntry, ScMetaV0, WriteXdr};
+
 fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
 }
@@ -93,6 +95,45 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         .into(),
     }
+}
+
+#[derive(Debug, FromMeta)]
+struct MetadataArgs {
+    key: String,
+    val: String,
+}
+
+#[proc_macro]
+pub fn metadata(metadata: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match MetadataArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+
+    let gen = {
+        //TODO: is key necessary?
+        let meta_v0 = ScMetaV0 {
+            key: args.key.clone().try_into().unwrap(),
+            val: args.val.try_into().unwrap(),
+        };
+        let meta_entry = ScMetaEntry::ScMetaV0(meta_v0);
+
+        let metadata_xdr = meta_entry.to_xdr().unwrap();
+        let metadata_xdr_lit = proc_macro2::Literal::byte_string(metadata_xdr.as_slice());
+        let metadata_xdr_len = metadata_xdr.len();
+
+        // TODO: Handle collisions on "metadata"?
+        quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "metadata")]
+            pub static metadata: [u8; #metadata_xdr_len] = *#metadata_xdr_lit;
+        }
+    };
+
+    quote! {
+        #gen
+    }
+    .into()
 }
 
 #[derive(Debug, FromMeta)]
