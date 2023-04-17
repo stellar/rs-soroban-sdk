@@ -1,4 +1,5 @@
 #![no_std]
+#![deprecated(note = "use soroban_sdk::token")]
 
 use soroban_sdk::{contractimpl, Address, Bytes, Env};
 
