@@ -45,7 +45,7 @@ pub trait Interface {
     fn symbol(env: Env) -> Bytes;
 }
 
-const SPEC_XDR_INPUT: &[&[u8]] = &[
+pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &Spec::spec_xdr_allowance(),
     &Spec::spec_xdr_authorized(),
     &Spec::spec_xdr_balance(),
@@ -65,7 +65,7 @@ const SPEC_XDR_INPUT: &[&[u8]] = &[
     &Spec::spec_xdr_transfer_from(),
 ];
 
-const SPEC_XDR_LEN: usize = 1108;
+pub(crate) const SPEC_XDR_LEN: usize = 1108;
 
 impl Spec {
     /// Returns the XDR spec for the Token contract.
