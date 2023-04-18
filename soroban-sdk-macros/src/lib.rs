@@ -144,7 +144,7 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
         let metadata_xdr_lit = proc_macro2::Literal::byte_string(metadata_xdr.as_slice());
         let metadata_xdr_len = metadata_xdr.len();
 
-        let ident = format_ident!("{}", args.key);
+        let ident = format_ident!("__CONTRACT_META_{}", args.key);
         quote! {
             #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractmetav0")]
