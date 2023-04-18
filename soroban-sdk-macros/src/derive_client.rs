@@ -1,104 +1,11 @@
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote, ToTokens};
-use syn::{
-    parse::{Parse, ParseStream},
-    punctuated::Punctuated,
-    spanned::Spanned,
-    token::Comma,
-    AngleBracketedGenericArguments, Attribute, Error, FnArg, GenericArgument, Ident, ItemImpl,
-    ItemTrait, PathArguments, PathSegment, ReturnType, Token, Type, TypePath,
-};
+use quote::{format_ident, quote};
+use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath};
 
 use crate::syn_ext;
 
-pub enum ClientItem {
-    Trait(ItemTrait),
-    Impl(ItemImpl),
-}
-
-impl ClientItem {
-    pub fn fns(&'_ self) -> Vec<ClientFn> {
-        match self {
-            ClientItem::Trait(t) => syn_ext::trait_methods(t)
-                .map(|m| ClientFn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
-                })
-                .collect(),
-            ClientItem::Impl(i) => syn_ext::impl_pub_methods(i)
-                .map(|m| ClientFn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
-                })
-                .collect(),
-        }
-    }
-}
-
-impl Parse for ClientItem {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        _ = input.call(Attribute::parse_outer);
-        _ = input.parse::<Token![pub]>();
-        let lookahead = input.lookahead1();
-        if lookahead.peek(Token![trait]) {
-            input.parse().map(ClientItem::Trait)
-        } else if lookahead.peek(Token![impl]) {
-            input.parse().map(ClientItem::Impl)
-        } else {
-            Err(lookahead.error())
-        }
-    }
-}
-
-impl ToTokens for ClientItem {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        match self {
-            ClientItem::Trait(t) => t.to_tokens(tokens),
-            ClientItem::Impl(i) => i.to_tokens(tokens),
-        }
-    }
-}
-
-pub struct ClientFn<'a> {
-    pub ident: &'a Ident,
-    pub attrs: &'a [Attribute],
-    pub inputs: &'a Punctuated<FnArg, Comma>,
-    pub output: &'a ReturnType,
-}
-
-impl<'a> ClientFn<'a> {
-    pub fn output(&self) -> Type {
-        let t = match self.output {
-            ReturnType::Default => quote!(()),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => quote!(#t),
-                None => quote!(#typ),
-            },
-        };
-        Type::Verbatim(t)
-    }
-    pub fn try_output(&self) -> Type {
-        let (t, e) = match self.output {
-            ReturnType::Default => (quote!(()), quote!(soroban_sdk::Status)),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(soroban_sdk::Status)),
-            },
-        };
-        Type::Verbatim(quote! {
-            Result<
-                Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
-                Result<#e, <#e as TryFrom<soroban_sdk::Status>>::Error>
-            >
-        })
-    }
-}
-
-pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
+pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
+    let ty_str = quote!(#ty).to_string();
     // Map the traits methods to methods for the Client.
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
@@ -146,26 +53,26 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 })
                 .unzip();
             let fn_output = f.output();
-            let fn_try_output = f.try_output();
+            let fn_try_output = f.try_output(crate_path);
             let fn_attrs = f.attrs;
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    use soroban_sdk::{IntoVal,FromVal};
+                    use #crate_path::{IntoVal,FromVal};
                     self.env.invoke_contract(
                         &self.contract_id,
-                        &soroban_sdk::Symbol::new(&self.env, &#fn_name),
-                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        &#crate_path::Symbol::new(&self.env, &#fn_name),
+                        #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
                 }
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
-                    use soroban_sdk::{IntoVal,FromVal};
+                    use #crate_path::{IntoVal,FromVal};
                     self.env.try_invoke_contract(
                         &self.contract_id,
-                        &soroban_sdk::Symbol::new(&self.env, &#fn_name),
-                        soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                        &#crate_path::Symbol::new(&self.env, &#fn_name),
+                        #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
                 }
             }
@@ -179,50 +86,28 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     }
 
     // Render the Client.
+    let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
     let client_ident = format_ident!("{}", name);
     quote! {
+        #[doc = #client_doc]
         pub struct #client_ident {
-            pub env: soroban_sdk::Env,
-            pub contract_id: soroban_sdk::BytesN<32>,
+            pub env: #crate_path::Env,
+            pub contract_id: #crate_path::BytesN<32>,
         }
 
         impl #client_ident {
-            pub fn new(env: &soroban_sdk::Env, contract_id: &impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
+            pub fn new(env: &#crate_path::Env, contract_id: &impl #crate_path::IntoVal<#crate_path::Env, #crate_path::BytesN<32>>) -> Self {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
                 }
             }
 
-            pub fn address(&self) -> soroban_sdk::Address {
-                soroban_sdk::Address::from_contract_id(&self.env, &self.contract_id)
+            pub fn address(&self) -> #crate_path::Address {
+                #crate_path::Address::from_contract_id(&self.env, &self.contract_id)
             }
 
             #(#fns)*
         }
-    }
-}
-
-fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
-    match &typ {
-        Type::Path(TypePath { path, .. }) => {
-            if let Some(PathSegment {
-                ident,
-                arguments:
-                    PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }),
-            }) = path.segments.last()
-            {
-                let args = args.iter().collect::<Vec<_>>();
-                match (&ident.to_string()[..], args.as_slice()) {
-                    ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
-                        Some((t.clone(), e.clone()))
-                    }
-                    _ => None,
-                }
-            } else {
-                None
-            }
-        }
-        _ => None,
     }
 }
