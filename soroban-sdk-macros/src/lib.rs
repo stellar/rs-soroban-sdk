@@ -23,7 +23,7 @@ use derive_struct_tuple::derive_type_struct_tuple;
 use darling::FromMeta;
 use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
-use quote::quote;
+use quote::{format_ident, quote};
 use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
@@ -35,7 +35,7 @@ use self::derive_client::ClientItem;
 
 use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 
-use stellar_xdr::{ScMetaEntry, ScMetaV0, WriteXdr};
+use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
@@ -104,7 +104,7 @@ struct MetadataArgs {
 }
 
 #[proc_macro]
-pub fn metadata(metadata: TokenStream) -> TokenStream {
+pub fn contractmeta(metadata: TokenStream) -> TokenStream {
     let args = parse_macro_input!(metadata as AttributeArgs);
     let args = match MetadataArgs::from_list(&args) {
         Ok(v) => v,
@@ -112,21 +112,43 @@ pub fn metadata(metadata: TokenStream) -> TokenStream {
     };
 
     let gen = {
-        //TODO: is key necessary?
-        let meta_v0 = ScMetaV0 {
-            key: args.key.clone().try_into().unwrap(),
-            val: args.val.try_into().unwrap(),
+        let key: StringM<10> = match args.key.clone().try_into() {
+            Ok(k) => k,
+            Err(e) => {
+                return Error::new(Span::call_site(), e.to_string())
+                    .into_compile_error()
+                    .into()
+            }
         };
-        let meta_entry = ScMetaEntry::ScMetaV0(meta_v0);
 
-        let metadata_xdr = meta_entry.to_xdr().unwrap();
+        let val: StringM<256> = match args.val.try_into() {
+            Ok(k) => k,
+            Err(e) => {
+                return Error::new(Span::call_site(), e.to_string())
+                    .into_compile_error()
+                    .into()
+            }
+        };
+
+        let meta_v0 = ScMetaV0 { key, val };
+        let meta_entry = ScMetaEntry::ScMetaV0(meta_v0);
+        let metadata_xdr: Vec<u8> = match meta_entry.to_xdr() {
+            Ok(v) => v,
+            Err(e) => {
+                return Error::new(Span::call_site(), e.to_string())
+                    .into_compile_error()
+                    .into()
+            }
+        };
+
         let metadata_xdr_lit = proc_macro2::Literal::byte_string(metadata_xdr.as_slice());
         let metadata_xdr_len = metadata_xdr.len();
 
-        // TODO: Handle collisions on "metadata"?
+        let ident = format_ident!("{}", args.key);
         quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "metadata")]
-            pub static metadata: [u8; #metadata_xdr_len] = *#metadata_xdr_lit;
+            #[doc(hidden)]
+            #[cfg_attr(target_family = "wasm", link_section = "contractmetav0")]
+            static #ident: [u8; #metadata_xdr_len] = *#metadata_xdr_lit;
         }
     };
 
