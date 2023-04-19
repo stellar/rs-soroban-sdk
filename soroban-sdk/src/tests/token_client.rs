@@ -1,15 +1,8 @@
+use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, testutils::Address as _, Address, BytesN, Env, IntoVal, Symbol,
+    contractimpl, contracttype, testutils::Address as _, token::Client as TokenClient, Address,
+    BytesN, Env, IntoVal, Symbol,
 };
-
-mod token_contract {
-    soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/soroban_token_spec.wasm"
-    );
-    pub type TokenClient = Client;
-}
-
-use token_contract::TokenClient;
 
 #[contracttype]
 pub enum DataKey {
