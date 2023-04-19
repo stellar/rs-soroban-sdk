@@ -298,6 +298,27 @@ pub use soroban_sdk_macros::contractimport;
 /// # fn main() { }
 /// ```
 pub use soroban_sdk_macros::contractimpl;
+
+/// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
+/// under the section name 'contractmetav0'. Contract developers can use to to
+/// append metadata to their contract.
+///
+/// ### Examples
+/// 
+/// ```
+/// use soroban_sdk::{contractimpl, contractmeta, vec, BytesN, Env, Symbol, Vec};
+///
+/// pub struct HelloContract;
+///
+/// #[contractimpl]
+/// impl HelloContract {
+///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
+///         vec![&env, Symbol::short("Hello"), to]
+///     }
+/// }
+///
+/// contractmeta!(key="desc", val="hello world contract");
+/// ```
 pub use soroban_sdk_macros::contractmeta;
 
 /// Generates conversions from the struct/enum from/into a `RawVal`.
