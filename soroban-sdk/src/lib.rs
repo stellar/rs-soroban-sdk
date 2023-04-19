@@ -304,7 +304,7 @@ pub use soroban_sdk_macros::contractimpl;
 /// append metadata to their contract.
 ///
 /// ### Examples
-/// 
+///
 /// ```
 /// use soroban_sdk::{contractimpl, contractmeta, vec, BytesN, Env, Symbol, Vec};
 ///
