@@ -7,6 +7,8 @@ use super::{
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
+#[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
+use crate::env::xdr::ScAddress;
 use crate::{
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Vec,
@@ -311,7 +313,7 @@ impl Address {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::env::xdr::{Hash, ScAddress};
+use crate::env::xdr::Hash;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
