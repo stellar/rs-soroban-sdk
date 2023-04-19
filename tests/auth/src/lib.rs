@@ -1,5 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, vec, Address, Env};
+use soroban_sdk::{contracterror, contractimpl, vec, Address, Env, RawVal};
+
+// --- THE CONTRACT
 
 pub struct Contract;
 
@@ -11,24 +13,50 @@ impl Contract {
     }
 }
 
+// --- THE AUTHONTATOR
+
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[repr(u32)]
+pub enum AuthonatorError {
+    HellNo = 1,
+}
+
+pub struct Authonator;
+
+#[contractimpl]
+impl Authonator {
+    #[allow(non_snake_case)]
+    pub fn __check_auth(
+        _signature_payload: RawVal,
+        _signatures: RawVal,
+        _auth_context: RawVal,
+    ) -> Result<(), AuthonatorError> {
+        Ok(())
+    }
+}
+
+// --- THE TESTS
+
 #[cfg(test)]
 mod test {
     use soroban_sdk::{
         testutils::Address as _,
-        xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScVec, StringM, VecM},
+        xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScVal, ScVec, StringM, VecM},
         Address, Env,
     };
 
-    use crate::{Contract, ContractClient};
+    use crate::{Authonator, Contract, ContractClient};
     extern crate std;
 
     #[test]
     fn test_add() {
         let e = Env::default();
+        let authonator_id = e.register_contract(None, Authonator);
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let a = Address::random(&e);
+        let a: Address = authonator_id.try_into().unwrap();
 
         e.set_auth(&[ContractAuth {
             address_with_nonce: Some(AddressWithNonce {
@@ -41,7 +69,7 @@ mod test {
                 args: ScVec::default(),
                 sub_invocations: VecM::default(),
             },
-            signature_args: ScVec::default(),
+            signature_args: std::vec![ScVal::Void].try_into().unwrap(),
         }]);
 
         let r = client.add(&a);
