@@ -98,7 +98,7 @@ pub mod budget {
         }
 
         pub fn reset_inputs(&mut self) {
-            self.0.reset_inputs();
+            self.0.reset_tracker();
         }
 
         /// Returns the CPU instruction cost.
@@ -122,7 +122,7 @@ pub mod budget {
         /// Note that VM cost types are likely to be underestimated when running
         /// Rust code compared to running the WASM equivalent.
         pub fn input(&self, cost_type: CostType) -> u64 {
-            self.0.get_input(cost_type)
+            self.0.get_tracker(cost_type).0
         }
 
         /// Print the budget costs and inputs to stdout.
