@@ -18,3 +18,5 @@ mod contractimport;
 mod contractimport_with_error;
 mod contractimport_with_sha256;
 mod env;
+mod token_client;
+mod token_spec;
