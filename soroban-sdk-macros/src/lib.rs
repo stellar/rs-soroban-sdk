@@ -112,7 +112,7 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
     };
 
     let gen = {
-        let key: StringM<10> = match args.key.clone().try_into() {
+        let key: StringM = match args.key.clone().try_into() {
             Ok(k) => k,
             Err(e) => {
                 return Error::new(Span::call_site(), e.to_string())
@@ -121,7 +121,7 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
             }
         };
 
-        let val: StringM<256> = match args.val.try_into() {
+        let val: StringM = match args.val.try_into() {
             Ok(k) => k,
             Err(e) => {
                 return Error::new(Span::call_site(), e.to_string())
