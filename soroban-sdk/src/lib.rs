@@ -308,6 +308,8 @@ pub use soroban_sdk_macros::contractimpl;
 /// ```
 /// use soroban_sdk::{contractimpl, contractmeta, vec, BytesN, Env, Symbol, Vec};
 ///
+/// contractmeta!(key="desc", val="hello world contract");
+///
 /// pub struct HelloContract;
 ///
 /// #[contractimpl]
@@ -317,9 +319,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///     }
 /// }
 ///
-/// contractmeta!(key="desc", val="hello world contract");
 ///
-/// ///
 /// #[test]
 /// fn test() {
 /// # }
