@@ -37,17 +37,17 @@ soroban-token-spec = { version = "0.7.0", path = "soroban-token-spec" }
 [workspace.dependencies.soroban-env-common]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+rev = "83ab1b0e2ce7e08d33d686ed4b4ea0564b454160"
 
 [workspace.dependencies.soroban-env-guest]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+rev = "83ab1b0e2ce7e08d33d686ed4b4ea0564b454160"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "5ef87058f07ad67eeba4c350a6b6af82bd17f916"
+rev = "83ab1b0e2ce7e08d33d686ed4b4ea0564b454160"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
@@ -56,15 +56,15 @@ git = "https://github.com/stellar/rs-stellar-strkey"
 [workspace.dependencies.stellar-xdr]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "bcf6f4c3a9dd32822a20af89880650a421d10e7f"
+rev = "5e7cd5792894a3f067067a868f30a62697c1dd7b"
 default-features = false
 
-[patch."https://github.com/stellar/rs-soroban-env"]
-soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
-[patch."https://github.com/stellar/rs-stellar-xdr"]
-stellar-xdr = { path = "../rs-stellar-xdr/" }
+#[patch."https://github.com/stellar/rs-soroban-env"]
+#soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+#soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+#[patch."https://github.com/stellar/rs-stellar-xdr"]
+#stellar-xdr = { path = "../rs-stellar-xdr/" }
 
 [profile.dev]
 overflow-checks = true
