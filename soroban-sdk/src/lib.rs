@@ -318,6 +318,23 @@ pub use soroban_sdk_macros::contractimpl;
 /// }
 ///
 /// contractmeta!(key="desc", val="hello world contract");
+///
+/// ///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register_contract(None, HelloContract);
+///     let client = HelloContractClient::new(&env, &contract_id);
+///
+///     let words = client.hello(&Symbol::short("Dev"));
+///
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
 /// ```
 pub use soroban_sdk_macros::contractmeta;
 
