@@ -202,7 +202,8 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases, for example to get an Address of a freshly
     /// deployed contract.
-    pub fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
+    pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
+        let env = contract_id.env();
         unsafe {
             Self::unchecked_new(
                 env.clone(),
@@ -217,7 +218,8 @@ impl Address {
     ///
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases, like for cross-chain interoperability.
-    pub fn from_account_id(env: &Env, account_pk: &BytesN<32>) -> Self {
+    pub fn from_account_id(account_pk: &BytesN<32>) -> Self {
+        let env = account_pk.env().clone();
         unsafe {
             Self::unchecked_new(
                 env.clone(),

@@ -104,7 +104,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             }
 
             pub fn address(&self) -> #crate_path::Address {
-                #crate_path::Address::from_contract_id(&self.env, &self.contract_id)
+                #crate_path::Address::from_contract_id(&self.contract_id)
             }
 
             #(#fns)*
