@@ -56,7 +56,7 @@ mod test {
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let a: Address = authonator_id.try_into().unwrap();
+        let a = Address::from_contract_id(&e, &authonator_id);
 
         e.set_auth(&[ContractAuth {
             address_with_nonce: Some(AddressWithNonce {
@@ -69,7 +69,7 @@ mod test {
                 args: ScVec::default(),
                 sub_invocations: VecM::default(),
             },
-            signature_args: std::vec![ScVal::Void].try_into().unwrap(),
+            signature_args: std::vec![].try_into().unwrap(),
         }]);
 
         let r = client.add(&a);
