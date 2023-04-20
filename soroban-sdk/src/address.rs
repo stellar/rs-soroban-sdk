@@ -329,11 +329,7 @@ impl Address {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-<<<<<<< HEAD
 use crate::env::xdr::{AccountId, Hash, PublicKey, Uint256};
-=======
-use crate::env::xdr::Hash;
->>>>>>> scaddress
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
