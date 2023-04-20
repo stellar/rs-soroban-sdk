@@ -41,7 +41,7 @@ fn test() {
     let env = Env::default();
     env.record_auth();
 
-    let admin = Address::random_contract(&env);
+    let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
 
     let contract_id = env.register_contract(None, TestContract);
@@ -50,8 +50,8 @@ fn test() {
 
     let token_client = TokenClient::new(&env, &client.get_token());
     assert_eq!(token_client.decimals(), 7);
-    let from = Address::random_contract(&env);
-    let spender = Address::random_contract(&env);
+    let from = Address::random(&env);
+    let spender = Address::random(&env);
     client.increase_allowance(&from, &spender, &20);
 
     assert_eq!(

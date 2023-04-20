@@ -29,8 +29,7 @@ use crate::{
 /// that allow customizing authentication logic and adding custom authorization
 /// rules.
 ///
-/// In tests Addresses can be generated via `Address::random_contract()` or
-/// `Address::random_account()`.
+/// In tests Addresses can be generated via `Address::random()`.
 #[derive(Clone)]
 pub struct Address {
     env: Env,

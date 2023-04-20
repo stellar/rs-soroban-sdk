@@ -32,7 +32,7 @@ mod test {
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let a = Address::random_contract(&e);
+        let a = Address::random(&e);
 
         let r = client.add(&a);
         assert_eq!(r, 2);
