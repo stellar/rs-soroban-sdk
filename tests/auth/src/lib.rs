@@ -41,8 +41,7 @@ impl Authonator {
 #[cfg(test)]
 mod test {
     use soroban_sdk::{
-        testutils::Address as _,
-        xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScVal, ScVec, StringM, VecM},
+        xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScVec, StringM, VecM},
         Address, Env,
     };
 
@@ -56,7 +55,7 @@ mod test {
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let a = Address::from_contract_id(&e, &authonator_id);
+        let a = Address::from_contract_id(&authonator_id);
 
         e.set_auth(&[ContractAuth {
             address_with_nonce: Some(AddressWithNonce {
