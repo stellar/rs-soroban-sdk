@@ -8,7 +8,7 @@ mod addcontract {
     use crate as soroban_sdk;
     soroban_sdk::contractimport!(
         file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm",
-        sha256 = "a3c977dded2fb2e117e62e8aacdd340b9f0b68ae71d85518d3ff56824fbb6e15",
+        sha256 = "2d04e781c8d1f00f257a03d143ac91187f72630c1a67b12c07d8d789e91ee258",
     );
 }
 
