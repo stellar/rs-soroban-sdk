@@ -32,7 +32,7 @@ pub trait Ledger {
 }
 
 pub mod budget {
-    use core::fmt::Display;
+    use core::fmt::{Debug, Display};
 
     #[doc(inline)]
     pub use crate::env::internal::budget::CostType;
@@ -68,14 +68,13 @@ pub mod budget {
 
     impl Display for Budget {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-            writeln!(f, "Costs:")?;
-            writeln!(f, "- CPU Instructions: {}", self.cpu_instruction_cost())?;
-            writeln!(f, "- Memory Bytes: {}", self.memory_bytes_cost())?;
-            writeln!(f, "Inputs:")?;
-            for cost_type in CostType::variants() {
-                writeln!(f, "- {cost_type:?}: {}", self.input(*cost_type))?;
-            }
-            Ok(())
+            writeln!(f, "{}", self.0)
+        }
+    }
+
+    impl Debug for Budget {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            writeln!(f, "{:?}", self.0)
         }
     }
 
@@ -97,8 +96,8 @@ pub mod budget {
             self.0.reset_limits(cpu, mem);
         }
 
-        pub fn reset_inputs(&mut self) {
-            self.0.reset_inputs();
+        pub fn reset_tracker(&mut self) {
+            self.0.reset_tracker();
         }
 
         /// Returns the CPU instruction cost.
@@ -117,12 +116,14 @@ pub mod budget {
             self.0.get_mem_bytes_count()
         }
 
-        /// Get inputs that have led to the cost.
+        /// Get the input tracker associated with the cost. The tracker tracks
+        /// the cumulative (iterations, inputs). If the underlying model is a
+        /// constant model, then inputs is `None` and only iterations matter.
         ///
         /// Note that VM cost types are likely to be underestimated when running
         /// Rust code compared to running the WASM equivalent.
-        pub fn input(&self, cost_type: CostType) -> u64 {
-            self.0.get_input(cost_type)
+        pub fn tracker(&self, cost_type: CostType) -> (u64, Option<u64>) {
+            self.0.get_tracker(cost_type)
         }
 
         /// Print the budget costs and inputs to stdout.
