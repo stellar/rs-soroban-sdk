@@ -172,6 +172,10 @@ pub(crate) fn random<const N: usize>() -> [u8; N] {
 
 pub trait Address {
     /// Create a random Address.
+    ///
+    /// Implementation note: this always builds the contract addresses now. This
+    /// shouldn't normally matter though, as contracts should be agnostic to
+    /// the underlying Address value.
     fn random(env: &Env) -> crate::Address;
 
     /// Create a random contract Address.
