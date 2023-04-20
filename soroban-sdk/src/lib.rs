@@ -300,7 +300,7 @@ pub use soroban_sdk_macros::contractimport;
 pub use soroban_sdk_macros::contractimpl;
 
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
-/// under the section name 'contractmetav0'. Contract developers can use to to
+/// under the section name 'contractmetav0'. Contract developers can use this to
 /// append metadata to their contract.
 ///
 /// ### Examples
