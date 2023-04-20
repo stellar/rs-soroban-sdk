@@ -174,6 +174,19 @@ impl TryFrom<Address> for ScAddress {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, ScAddress> for Address {
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
+        Ok(AddressObject::try_from_val(
+            env,
+            &RawVal::try_from_val(env, &ScVal::Address(val.clone()))?,
+        )?
+        .try_into_val(env)
+        .unwrap_infallible())
+    }
+}
+
 impl Address {
     /// Ensures that this Address has authorized invocation of the current
     /// contract with the provided arguments.
@@ -316,7 +329,11 @@ impl Address {
 }
 
 #[cfg(any(test, feature = "testutils"))]
+<<<<<<< HEAD
 use crate::env::xdr::{AccountId, Hash, PublicKey, Uint256};
+=======
+use crate::env::xdr::Hash;
+>>>>>>> scaddress
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
