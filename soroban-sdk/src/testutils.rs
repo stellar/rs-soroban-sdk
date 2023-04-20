@@ -171,6 +171,9 @@ pub(crate) fn random<const N: usize>() -> [u8; N] {
 }
 
 pub trait Address {
+    /// Create a random Address.
+    fn random(env: &Env) -> crate::Address;
+
     /// Create a random contract Address.
     fn random_contract(env: &Env) -> crate::Address;
 

@@ -335,6 +335,10 @@ use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
+    fn random(env: &Env) -> Self {
+        Self::random_contract(env)
+    }
+
     fn random_contract(env: &Env) -> Self {
         let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
