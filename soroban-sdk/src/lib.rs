@@ -299,6 +299,45 @@ pub use soroban_sdk_macros::contractimport;
 /// ```
 pub use soroban_sdk_macros::contractimpl;
 
+/// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
+/// under the section name 'contractmetav0'. Contract developers can use this to
+/// append metadata to their contract.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{contractimpl, contractmeta, vec, BytesN, Env, Symbol, Vec};
+///
+/// contractmeta!(key="desc", val="hello world contract");
+///
+/// pub struct HelloContract;
+///
+/// #[contractimpl]
+/// impl HelloContract {
+///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
+///         vec![&env, Symbol::short("Hello"), to]
+///     }
+/// }
+///
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register_contract(None, HelloContract);
+///     let client = HelloContractClient::new(&env, &contract_id);
+///
+///     let words = client.hello(&Symbol::short("Dev"));
+///
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+pub use soroban_sdk_macros::contractmeta;
+
 /// Generates conversions from the struct/enum from/into a `RawVal`.
 ///
 /// There are some constraints on the types that are supported:

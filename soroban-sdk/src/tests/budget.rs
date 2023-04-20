@@ -23,11 +23,10 @@ fn test_budget() {
     let b = client.add();
     e.budget().print();
 
-    assert_eq!(e.budget().input(CostType::MapNew), 1);
     // Here the cost of 5 for `MapEntry` is broken down into
     // 2 - charge for adding the two elements
     // 1 - charge for binary search of map with len == 0
     // 2 - charge for binary search of map with len == 1
-    assert_eq!(e.budget().input(CostType::MapEntry), 5);
+    assert_eq!(e.budget().tracker(CostType::MapEntry), (5, None));
     assert_eq!(b, map![&e, (1, 10), (2, 20)]);
 }

@@ -131,8 +131,8 @@ use crate::{
     storage::Storage, Address, BytesN, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, I128Object, I64Object, Object, StringObject, Symbol,
-    SymbolObject, U128Object, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, Object, StringObject,
+    Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
