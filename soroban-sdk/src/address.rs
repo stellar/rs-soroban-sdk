@@ -7,6 +7,8 @@ use super::{
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
+#[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
+use crate::env::xdr::ScAddress;
 use crate::{
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Vec,
@@ -152,6 +154,38 @@ impl TryFromVal<Env, ScVal> for Address {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: &Address) -> Result<Self, Self::Error> {
+        match ScVal::try_from_val(&v.env, &v.obj.to_raw())? {
+            ScVal::Address(a) => Ok(a),
+            _ => Err(ConversionError),
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: Address) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, ScAddress> for Address {
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
+        Ok(AddressObject::try_from_val(
+            env,
+            &RawVal::try_from_val(env, &ScVal::Address(val.clone()))?,
+        )?
+        .try_into_val(env)
+        .unwrap_infallible())
+    }
+}
+
 impl Address {
     /// Ensures that this Address has authorized invocation of the current
     /// contract with the provided arguments.
@@ -294,7 +328,7 @@ impl Address {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::env::xdr::{Hash, ScAddress};
+use crate::env::xdr::Hash;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
