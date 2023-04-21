@@ -76,6 +76,7 @@ extern crate std;
 
 // Here we provide a `#[global_allocator]` that is a minimal non-freeing bump
 // allocator, appropriate for a WASM blob that runs a single contract call.
+mod accounts;
 #[cfg(all(feature = "alloc", target_family = "wasm"))]
 mod alloc;
 

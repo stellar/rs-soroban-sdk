@@ -330,7 +330,7 @@ impl Address {
 #[cfg(any(test, feature = "testutils"))]
 use crate::env::xdr::{AccountId, Hash, PublicKey, Uint256};
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::random;
+use crate::testutils::{random, Accounts};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
@@ -347,6 +347,8 @@ impl crate::testutils::Address for Address {
         let sc_addr = ScVal::Address(ScAddress::Account(AccountId(
             PublicKey::PublicKeyTypeEd25519(Uint256(random())),
         )));
-        Self::try_from_val(env, &sc_addr).unwrap()
+        let addr = Self::try_from_val(env, &sc_addr).unwrap();
+        env.accounts().create(&addr);
+        addr
     }
 }

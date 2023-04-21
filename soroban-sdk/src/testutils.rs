@@ -184,3 +184,9 @@ pub trait Address {
     /// Create a random account Address.
     fn random_account(env: &Env) -> crate::Address;
 }
+
+/// Test utilities for [`Accounts`][crate::accounts::Accounts].
+pub(crate) trait Accounts {
+    /// Create an account.
+    fn create(&self, id: &crate::Address);
+}
