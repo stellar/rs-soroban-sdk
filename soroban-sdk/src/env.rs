@@ -444,11 +444,11 @@ impl Env {
     }
 
     /// Replaces the executable of the current contract with the provided Wasm.
-    /// 
+    ///
     /// The Wasm blob identified by the `wasm_hash` has to be already present
     /// on-chain (the upload happens via `INSTALL_CONTRACT_CODE` host function
     /// or via `install_contract_wasm` test function in unit tests).
-    /// 
+    ///
     /// The function won't do anything immediately. The contract executable
     /// will only be updated after the invocation has successfully finished.
     pub fn update_current_contract_wasm(&self, wasm_hash: &BytesN<32>) {
