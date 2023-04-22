@@ -16,7 +16,8 @@ mod test {
     use soroban_sdk::{
         testutils::Address as _,
         xdr::{
-            AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
+            AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScBytes, ScMap,
+            ScMapEntry, ScSymbol, ScVal, StringM, VecM,
         },
         Address, Env,
     };
@@ -91,7 +92,22 @@ mod test {
                 args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
                 sub_invocations: VecM::default(),
             },
-            signature_args: std::vec![].try_into().unwrap(),
+            signature_args: std::vec![ScVal::Map(Some(ScMap(
+                std::vec![
+                    ScMapEntry {
+                        key: ScVal::Symbol(ScSymbol("public_key".try_into().unwrap())),
+                        val: ScVal::Bytes(ScBytes("signature".try_into().unwrap())),
+                    },
+                    ScMapEntry {
+                        key: ScVal::Symbol(ScSymbol("signature".try_into().unwrap())),
+                        val: ScVal::Bytes(ScBytes("signature".try_into().unwrap())),
+                    }
+                ]
+                .try_into()
+                .unwrap()
+            )))]
+            .try_into()
+            .unwrap(),
         }]);
 
         let r = client.add(&a);
