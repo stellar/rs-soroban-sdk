@@ -1,6 +1,6 @@
 [package]
-name = "soroban-token-spec"
-description = "Soroban spec for the built-in token contract"
+name = "soroban-token-sdk"
+description = "Soroban token SDK containing utilities for creating custom tokens on Soroban."
 homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
@@ -8,7 +8,7 @@ readme = "../README.md"
 license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
-rust-version = "1.67"
+rust-version = "1.69"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -16,10 +16,3 @@ doctest = false
 
 [dependencies]
 soroban-sdk = { workspace = true }
-
-[target.'cfg(not(target_family="wasm"))'.dependencies]
-rand = { version = "0.7.3", optional = true }
-
-[dev_dependencies]
-rand = { version = "0.7.3" }
-soroban-sdk = { workspace = true, features = ["testutils"] }

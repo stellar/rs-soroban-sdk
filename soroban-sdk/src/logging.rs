@@ -6,7 +6,7 @@ use core::fmt::Debug;
 use crate::{
     env::internal::{self, EnvBase},
     unwrap::UnwrapInfallible,
-    Bytes, Env, IntoVal, RawVal, Vec,
+    Env, IntoVal, RawVal, Vec,
 };
 
 /// Log a debug event.
@@ -43,12 +43,12 @@ use crate::{
 /// Log a string with values:
 ///
 /// ```
-/// use soroban_sdk::{log, symbol, Env};
+/// use soroban_sdk::{log, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
+/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
 /// ```
 ///
 /// Assert on logs in tests:
@@ -56,12 +56,12 @@ use crate::{
 /// ```
 /// # #[cfg(feature = "testutils")]
 /// # {
-/// use soroban_sdk::{log, symbol, Env};
+/// use soroban_sdk::{log, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, symbol!("another"));
+/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
 ///
 /// use soroban_sdk::testutils::Logger;
 ///
@@ -129,7 +129,7 @@ impl Logger {
             // building on non-WASM environments where the environment Host is
             // directly available, use the log static variants.
             if cfg!(target_family = "wasm") {
-                let fmt: Bytes = fmt.into_val(env);
+                let fmt: crate::String = fmt.into_val(env);
                 let args: Vec<RawVal> = Vec::from_slice(env, args);
                 internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
                     .unwrap_infallible();
@@ -141,7 +141,7 @@ impl Logger {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{env::internal::events::HostEvent, testutils};
+use crate::{env::internal::events::Event, testutils};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -153,8 +153,8 @@ impl testutils::Logger for Logger {
             .unwrap()
             .0
             .into_iter()
-            .filter_map(|e| match e {
-                HostEvent::Debug(de) => Some(format!("{}", de)),
+            .filter_map(|e| match e.event {
+                Event::Debug(de) => Some(format!("{}", de)),
                 _ => None,
             })
             .collect::<std::vec::Vec<_>>()

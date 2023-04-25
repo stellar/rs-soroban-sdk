@@ -104,6 +104,7 @@ impl From<&ScSpecUdtErrorEnumCaseV0> for EnumCase {
 #[serde(tag = "type")]
 #[serde(rename_all = "camelCase")]
 pub enum Type {
+    Void,
     Val,
     U64,
     I64,
@@ -111,12 +112,16 @@ pub enum Type {
     I32,
     U128,
     I128,
+    U256,
+    I256,
     Bool,
     Symbol,
-    Bitset,
     Status,
     Bytes,
+    String,
     Address,
+    Timepoint,
+    Duration,
     Map { key: Box<Type>, value: Box<Type> },
     Option { value: Box<Type> },
     Result { value: Box<Type>, error: Box<Type> },
@@ -193,12 +198,17 @@ impl From<&ScSpecTypeDef> for Type {
             ScSpecTypeDef::I32 => Type::I32,
             ScSpecTypeDef::U128 => Type::U128,
             ScSpecTypeDef::I128 => Type::I128,
+            ScSpecTypeDef::U256 => Type::U256,
+            ScSpecTypeDef::I256 => Type::I256,
             ScSpecTypeDef::Bool => Type::Bool,
             ScSpecTypeDef::Symbol => Type::Symbol,
-            ScSpecTypeDef::Bitset => Type::Bitset,
             ScSpecTypeDef::Status => Type::Status,
             ScSpecTypeDef::Bytes => Type::Bytes,
+            ScSpecTypeDef::String => Type::String,
             ScSpecTypeDef::Address => Type::Address,
+            ScSpecTypeDef::Void => Type::Void,
+            ScSpecTypeDef::Timepoint => Type::Timepoint,
+            ScSpecTypeDef::Duration => Type::Duration,
         }
     }
 }

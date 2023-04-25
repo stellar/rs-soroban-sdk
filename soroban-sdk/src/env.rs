@@ -6,6 +6,7 @@ pub mod internal {
 
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
+    pub type MaybeEnvImpl = Guest;
 
     // In the Guest case, Env::Error is already Infallible so there is no work
     // to do to "reject an error": if an error occurs in the environment, the
@@ -21,6 +22,7 @@ pub mod internal {
 
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
+    pub type MaybeEnvImpl = Option<Host>;
 
     // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
     // `soroban-env-{common,host}/testutils` which in turn adds the helper method
@@ -84,18 +86,17 @@ pub mod testutils {
 
 pub use internal::meta;
 pub use internal::xdr;
-pub use internal::BitSet;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
-pub use internal::Object;
+pub use internal::MapObject;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
 pub use internal::Status;
-pub use internal::Symbol;
+pub use internal::SymbolStr;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
-pub use internal::Val;
+pub use internal::VecObject;
 
 pub trait IntoVal<E: internal::Env, T> {
     fn into_val(&self, e: &E) -> T;
@@ -127,8 +128,102 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, Address, Bytes, BytesN, Vec,
+    storage::Storage, Address, BytesN, Vec,
 };
+use internal::{
+    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, Object, StringObject,
+    Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
+};
+
+#[doc(hidden)]
+#[derive(Clone)]
+pub struct MaybeEnv {
+    maybe_env_impl: internal::MaybeEnvImpl,
+    #[cfg(any(test, feature = "testutils"))]
+    snapshot: Option<Rc<LedgerSnapshot>>,
+}
+
+#[cfg(target_family = "wasm")]
+impl TryFrom<MaybeEnv> for Env {
+    type Error = Infallible;
+
+    fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
+        Ok(Env {
+            env_impl: internal::EnvImpl {},
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
+        })
+    }
+}
+
+impl Default for MaybeEnv {
+    fn default() -> Self {
+        Self::none()
+    }
+}
+
+#[cfg(target_family = "wasm")]
+impl MaybeEnv {
+    // separate function to be const
+    pub const fn none() -> Self {
+        Self {
+            maybe_env_impl: internal::EnvImpl {},
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl MaybeEnv {
+    // separate function to be const
+    pub const fn none() -> Self {
+        Self {
+            maybe_env_impl: None,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
+        }
+    }
+}
+
+#[cfg(target_family = "wasm")]
+impl From<Env> for MaybeEnv {
+    fn from(value: Env) -> Self {
+        MaybeEnv {
+            maybe_env_impl: value.env_impl,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<MaybeEnv> for Env {
+    type Error = ConversionError;
+
+    fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
+        if let Some(env_impl) = value.maybe_env_impl {
+            Ok(Env {
+                env_impl,
+                #[cfg(any(test, feature = "testutils"))]
+                snapshot: value.snapshot,
+            })
+        } else {
+            Err(ConversionError)
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<Env> for MaybeEnv {
+    fn from(value: Env) -> Self {
+        MaybeEnv {
+            maybe_env_impl: Some(value.env_impl),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
+        }
+    }
+}
 
 /// The [Env] type provides access to the environment the contract is executing
 /// within.
@@ -169,19 +264,23 @@ impl Env {
         unreachable!()
     }
 
-    /// Get a [Storage] for accessing and update contract data that has been stored
-    /// by the currently executing contract.
-    #[inline(always)]
-    #[deprecated(note = "use env.storage()")]
-    pub fn data(&self) -> Storage {
-        self.storage()
-    }
-
-    /// Get a [Storage] for accessing and update contract data that has been stored
-    /// by the currently executing contract.
+    /// Get a [Storage] for accessing and updating persistent data owned by the
+    /// currently executing contract.
     #[inline(always)]
     pub fn storage(&self) -> Storage {
-        Storage::new(self)
+        Storage::new_persistent(self)
+    }
+
+    /// Get a [Storage] for accessing and updating temporary data owned by the
+    /// currently executing contract.
+    ///
+    /// Temporary data only exists during a single top-level contract
+    /// invocation, so this is only useful for persisting data between several
+    /// cross-contract calls (e.g. to increase and then spend the token
+    /// allowance from another contract)
+    #[inline(always)]
+    pub fn temp_storage(&self) -> Storage {
+        Storage::new_temporary(self)
     }
 
     /// Get [Events] for publishing events associated with the
@@ -240,7 +339,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol, symbol};
+    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
     ///
     /// pub struct Contract;
     ///
@@ -252,7 +351,7 @@ impl Env {
     ///
     ///         let outer = stack.get(0).unwrap().unwrap();
     ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
-    ///         assert_eq!(outer.1, symbol!("hello"));
+    ///         assert_eq!(outer.1, Symbol::short("hello"));
     ///     }
     /// }
     /// #[test]
@@ -269,21 +368,9 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn call_stack(&self) -> Vec<(BytesN<32>, Symbol)> {
+    pub fn call_stack(&self) -> Vec<(BytesN<32>, crate::Symbol)> {
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
         unsafe { Vec::unchecked_new(self.clone(), stack) }
-    }
-
-    #[doc(hidden)]
-    #[deprecated(note = "use env.crypto().sha256(msg)")]
-    pub fn compute_hash_sha256(&self, msg: &Bytes) -> BytesN<32> {
-        self.crypto().sha256(msg)
-    }
-
-    #[doc(hidden)]
-    #[deprecated(note = "use env.crypto().ed25519_verify(pk, msg, sig)")]
-    pub fn verify_sig_ed25519(&self, pk: &BytesN<32>, msg: &Bytes, sig: &BytesN<64>) {
-        self.crypto().ed25519_verify(pk, msg, sig);
     }
 
     /// Invokes a function of a contract that is registered in the [Env].
@@ -302,14 +389,19 @@ impl Env {
     pub fn invoke_contract<T>(
         &self,
         contract_id: &BytesN<32>,
-        func: &Symbol,
+        func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> T
     where
         T: TryFromVal<Env, RawVal>,
     {
-        let rv = internal::Env::call(self, contract_id.to_object(), *func, args.to_object())
-            .unwrap_infallible();
+        let rv = internal::Env::call(
+            self,
+            contract_id.to_object(),
+            func.to_val(),
+            args.to_object(),
+        )
+        .unwrap_infallible();
         T::try_from_val(self, &rv)
             .map_err(|_| ConversionError)
             .unwrap()
@@ -320,15 +412,20 @@ impl Env {
     pub fn try_invoke_contract<T, E>(
         &self,
         contract_id: &BytesN<32>,
-        func: &Symbol,
+        func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
     where
         T: TryFromVal<Env, RawVal>,
         E: TryFrom<Status>,
     {
-        let rv = internal::Env::try_call(self, contract_id.to_object(), *func, args.to_object())
-            .unwrap_infallible();
+        let rv = internal::Env::try_call(
+            self,
+            contract_id.to_object(),
+            func.to_val(),
+            args.to_object(),
+        )
+        .unwrap_infallible();
         match Status::try_from_val(self, &rv) {
             Ok(status) => Err(E::try_from(status)),
             Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
@@ -358,7 +455,7 @@ use xdr::{Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    pub(crate) fn host(&self) -> &internal::Host {
+    pub fn host(&self) -> &internal::Host {
         &self.env_impl
     }
 
@@ -368,15 +465,15 @@ impl Env {
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
             fn get(
                 &self,
-                _key: &xdr::LedgerKey,
-            ) -> Result<xdr::LedgerEntry, soroban_env_host::HostError> {
+                _key: &Rc<xdr::LedgerKey>,
+            ) -> Result<Rc<xdr::LedgerEntry>, soroban_env_host::HostError> {
                 use xdr::{ScHostStorageErrorCode, ScStatus};
                 let status: internal::Status =
                     ScStatus::HostStorageError(ScHostStorageErrorCode::MissingKeyInGet).into();
                 Err(status.into())
             }
 
-            fn has(&self, _key: &xdr::LedgerKey) -> Result<bool, soroban_env_host::HostError> {
+            fn has(&self, _key: &Rc<xdr::LedgerKey>) -> Result<bool, soroban_env_host::HostError> {
                 Ok(false)
             }
         }
@@ -386,6 +483,9 @@ impl Env {
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
         env_impl.switch_to_recording_auth();
+        env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+            xdr::Uint256(random()),
+        )));
         let env = Env {
             env_impl,
             snapshot: None,
@@ -420,7 +520,7 @@ impl Env {
     ///
     /// #[contractimpl]
     /// impl HelloContract {
-    ///     pub fn hello(env: Env, recipient: soroban_sdk::Symbol) -> soroban_sdk::Symbol {
+    ///     pub fn hello(env: Env, recipient: Symbol) -> Symbol {
     ///         todo!()
     ///     }
     /// }
@@ -447,7 +547,15 @@ impl Env {
                 env_impl: &internal::EnvImpl,
                 args: &[RawVal],
             ) -> Option<RawVal> {
-                self.0.call(func, Env::with_impl(env_impl.clone()), args)
+                let env = Env::with_impl(env_impl.clone());
+                self.0.call(
+                    crate::Symbol::try_from_val(&env, func)
+                        .unwrap_infallible()
+                        .to_string()
+                        .as_str(),
+                    env,
+                    args,
+                )
             }
         }
 
@@ -495,9 +603,9 @@ impl Env {
         contract_wasm: &[u8],
     ) -> BytesN<32> {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
-        self.register_contract_with_optional_contract_id_and_source(
+        self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
-            xdr::ScContractCode::WasmRef(xdr::Hash(wasm_hash.into())),
+            xdr::ScContractExecutable::WasmRef(xdr::Hash(wasm_hash.into())),
         )
     }
 
@@ -509,25 +617,27 @@ impl Env {
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
     pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
-        let issuer_id =
-            xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(random())));
+        let issuer_pk = random();
+        let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
+            issuer_pk.clone(),
+        )));
 
         self.host()
             .with_mut_storage(|storage| {
-                let k = xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
                     account_id: issuer_id.clone(),
-                });
+                }));
 
                 if !storage.has(
                     &k,
                     soroban_env_host::budget::AsBudget::as_budget(self.host()),
                 )? {
-                    let v = xdr::LedgerEntry {
+                    let v = Rc::new(xdr::LedgerEntry {
                         data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
                             account_id: issuer_id.clone(),
                             balance: 0,
                             flags: 0,
-                            home_domain: xdr::StringM::default(),
+                            home_domain: Default::default(),
                             inflation_dest: None,
                             num_sub_entries: 0,
                             seq_num: xdr::SequenceNumber(0),
@@ -537,7 +647,7 @@ impl Env {
                         }),
                         last_modified_ledger_seq: 0,
                         ext: xdr::LedgerEntryExt::V0,
-                    };
+                    });
                     storage.put(
                         &k,
                         &v,
@@ -554,7 +664,7 @@ impl Env {
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
             contract_id: xdr::ContractId::Asset(asset.clone()),
-            source: xdr::ScContractCode::Token,
+            source: xdr::ScContractExecutable::Token,
         });
 
         let token_id = self
@@ -563,41 +673,30 @@ impl Env {
             .unwrap()
             .try_into_val(self)
             .unwrap();
-        let issuer_address = Address::try_from_val(
-            self,
-            &xdr::ScVal::Object(Some(xdr::ScObject::Address(xdr::ScAddress::Account(
-                issuer_id.clone(),
-            )))),
-        )
-        .unwrap();
         let _: () = self.invoke_contract(
             &token_id,
-            &Symbol::from_str("set_admin"),
-            (issuer_address, admin).try_into_val(self).unwrap(),
+            &crate::Symbol::short("set_admin"),
+            (admin,).try_into_val(self).unwrap(),
         );
 
         token_id
     }
 
-    fn register_contract_with_optional_contract_id_and_source<'a>(
+    fn register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,
-        source: xdr::ScContractCode,
+        executable: xdr::ScContractExecutable,
     ) -> BytesN<32> {
         if let Some(contract_id) = contract_id.into() {
-            self.register_contract_with_contract_id_and_source(contract_id, source);
+            self.register_contract_with_contract_id_and_executable(contract_id, executable);
             contract_id.clone()
         } else {
-            self.register_contract_with_source(source)
+            self.register_contract_with_source(executable)
         }
     }
 
-    fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
-        let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
-            Some(prev_acc)
-        } else {
-            None
-        };
+    fn register_contract_with_source(&self, source: xdr::ScContractExecutable) -> BytesN<32> {
+        let prev_source_account = self.env_impl.source_account();
         self.env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
                 xdr::Uint256(random()),
@@ -651,7 +750,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Env, IntoVal, symbol};
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Symbol, Env, IntoVal};
     ///
     /// pub struct Contract;
     ///
@@ -681,7 +780,7 @@ impl Env {
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
-    ///             symbol!("transfer"),
+    ///             Symbol::short("transfer"),
     ///             (&address, 1000_i128,).into_val(&env)
     ///         )]
     ///     );
@@ -692,7 +791,7 @@ impl Env {
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
-    ///             symbol!("transfer2"),
+    ///             Symbol::short("transfer2"),
     ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///             (500_i128,).into_val(&env)
     ///         )]
@@ -703,8 +802,8 @@ impl Env {
     /// ```
     pub fn recorded_top_authorizations(
         &self,
-    ) -> std::vec::Vec<(Address, BytesN<32>, Symbol, Vec<RawVal>)> {
-        use xdr::{ScObject, ScVal};
+    ) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
+        use xdr::{ScBytes, ScVal};
         let authorizations = self.env_impl.get_recorded_top_authorizations().unwrap();
         authorizations
             .iter()
@@ -714,52 +813,41 @@ impl Env {
                     args.push_back(RawVal::try_from_val(self, v).unwrap());
                 }
                 (
-                    Address::try_from_val(
-                        self,
-                        &ScVal::Object(Some(ScObject::Address(a.0.clone()))),
-                    )
-                    .unwrap(),
+                    Address::try_from_val(self, &ScVal::Address(a.0.clone())).unwrap(),
                     BytesN::<32>::try_from_val(
                         self,
-                        &ScVal::Object(Some(ScObject::Bytes(
-                            a.1.as_slice().to_vec().try_into().unwrap(),
-                        ))),
+                        &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
                     )
                     .unwrap(),
-                    a.2.clone(),
+                    crate::Symbol::try_from_val(self, &a.2).unwrap(),
                     args,
                 )
             })
             .collect()
     }
 
-    fn register_contract_with_contract_id_and_source(
+    fn register_contract_with_contract_id_and_executable(
         &self,
         contract_id: &BytesN<32>,
-        source: xdr::ScContractCode,
+        executable: xdr::ScContractExecutable,
     ) {
         let contract_id_hash = Hash(contract_id.into());
-        let data_key = xdr::ScVal::Static(xdr::ScStatic::LedgerKeyContractCode);
-        let key = LedgerKey::ContractData(LedgerKeyContractData {
+        let data_key = xdr::ScVal::LedgerKeyContractExecutable;
+        let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract_id: contract_id_hash.clone(),
             key: data_key.clone(),
+        }));
+        let entry = Rc::new(LedgerEntry {
+            ext: xdr::LedgerEntryExt::V0,
+            last_modified_ledger_seq: 0,
+            data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                contract_id: contract_id_hash.clone(),
+                key: data_key,
+                val: xdr::ScVal::ContractExecutable(executable),
+            }),
         });
         self.env_impl
-            .with_mut_storage(|storage| {
-                storage.put(
-                    &key,
-                    &LedgerEntry {
-                        ext: xdr::LedgerEntryExt::V0,
-                        last_modified_ledger_seq: 0,
-                        data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                            contract_id: contract_id_hash.clone(),
-                            key: data_key,
-                            val: xdr::ScVal::Object(Some(xdr::ScObject::ContractCode(source))),
-                        }),
-                    },
-                    &self.env_impl.budget_cloned(),
-                )
-            })
+            .with_mut_storage(|storage| storage.put(&key, &entry, &self.env_impl.budget_cloned()))
             .unwrap();
     }
 
@@ -804,7 +892,7 @@ impl Env {
     /// setting up tests or asserting on internal state.
     pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
         let id: [u8; 32] = id.into();
-        let func = Symbol::from_str("");
+        let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
         self.env_impl
             .with_test_contract_frame(id.into(), func, || {
@@ -871,6 +959,14 @@ impl Env {
     pub fn budget(&self) -> Budget {
         self.env_impl.with_budget(|b| Budget::new(b))
     }
+
+    /// Resets the `temp_storage()` associated with this `Env`.
+    ///
+    /// This removes all the temporary storage entries without distinguishing
+    /// between the contracts that own them.
+    pub fn reset_temp_storage(&self) {
+        self.env_impl.reset_temp_storage();
+    }
 }
 
 #[doc(hidden)]
@@ -927,30 +1023,30 @@ impl internal::EnvBase for Env {
 
     fn bytes_copy_from_slice(
         &self,
-        b: Object,
-        b_pos: RawVal,
-        mem: &[u8],
-    ) -> Result<Object, Self::Error> {
+        b: BytesObject,
+        b_pos: U32Val,
+        slice: &[u8],
+    ) -> Result<BytesObject, Self::Error> {
         Ok(self
             .env_impl
-            .bytes_copy_from_slice(b, b_pos, mem)
+            .bytes_copy_from_slice(b, b_pos, slice)
             .unwrap_optimized())
     }
 
     fn bytes_copy_to_slice(
         &self,
-        b: Object,
-        b_pos: RawVal,
-        mem: &mut [u8],
+        b: BytesObject,
+        b_pos: U32Val,
+        slice: &mut [u8],
     ) -> Result<(), Self::Error> {
         Ok(self
             .env_impl
-            .bytes_copy_to_slice(b, b_pos, mem)
+            .bytes_copy_to_slice(b, b_pos, slice)
             .unwrap_optimized())
     }
 
-    fn bytes_new_from_slice(&self, mem: &[u8]) -> Result<Object, Self::Error> {
-        Ok(self.env_impl.bytes_new_from_slice(mem).unwrap_optimized())
+    fn bytes_new_from_slice(&self, slice: &[u8]) -> Result<BytesObject, Self::Error> {
+        Ok(self.env_impl.bytes_new_from_slice(slice).unwrap_optimized())
     }
 
     fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Self::Error> {
@@ -989,6 +1085,89 @@ impl internal::EnvBase for Env {
         Ok(self
             .env_impl
             .log_static_fmt_general(fmt, v, s)
+            .unwrap_optimized())
+    }
+
+    fn string_copy_to_slice(
+        &self,
+        b: StringObject,
+        b_pos: U32Val,
+        slice: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .string_copy_to_slice(b, b_pos, slice)
+            .unwrap_optimized())
+    }
+
+    fn symbol_copy_to_slice(
+        &self,
+        b: SymbolObject,
+        b_pos: U32Val,
+        mem: &mut [u8],
+    ) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .symbol_copy_to_slice(b, b_pos, mem)
+            .unwrap_optimized())
+    }
+
+    fn string_new_from_slice(&self, slice: &str) -> Result<StringObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .string_new_from_slice(slice)
+            .unwrap_optimized())
+    }
+
+    fn symbol_new_from_slice(&self, slice: &str) -> Result<SymbolObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .symbol_new_from_slice(slice)
+            .unwrap_optimized())
+    }
+
+    fn map_new_from_slices(
+        &self,
+        keys: &[&str],
+        vals: &[RawVal],
+    ) -> Result<MapObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .map_new_from_slices(keys, vals)
+            .unwrap_optimized())
+    }
+
+    fn map_unpack_to_slice(
+        &self,
+        map: MapObject,
+        keys: &[&str],
+        vals: &mut [RawVal],
+    ) -> Result<Void, Self::Error> {
+        Ok(self
+            .env_impl
+            .map_unpack_to_slice(map, keys, vals)
+            .unwrap_optimized())
+    }
+
+    fn vec_new_from_slice(&self, vals: &[RawVal]) -> Result<VecObject, Self::Error> {
+        Ok(self.env_impl.vec_new_from_slice(vals).unwrap_optimized())
+    }
+
+    fn vec_unpack_to_slice(
+        &self,
+        vec: VecObject,
+        vals: &mut [RawVal],
+    ) -> Result<Void, Self::Error> {
+        Ok(self
+            .env_impl
+            .vec_unpack_to_slice(vec, vals)
+            .unwrap_optimized())
+    }
+
+    fn symbol_index_in_strs(&self, key: Symbol, strs: &[&str]) -> Result<U32Val, Self::Error> {
+        Ok(self
+            .env_impl
+            .symbol_index_in_strs(key, strs)
             .unwrap_optimized())
     }
 }

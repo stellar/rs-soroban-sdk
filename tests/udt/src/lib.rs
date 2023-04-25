@@ -65,114 +65,14 @@ mod test {
             c: vec![&e, 1],
         };
         let bin = udt.to_xdr(&e);
-        assert_eq!(bin, {
-            let mut bin = Bytes::new(&e);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(4);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(3);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(5);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(97);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(10);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(5);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(98);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(12);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(5);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(99);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(4);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin
-        })
+        let expected_bytes = [
+            0u8, 0, 0, 17, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 15, 0, 0, 0, 1, 97, 0, 0, 0, 0, 0, 0,
+            6, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 15, 0, 0, 0, 1, 98, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0,
+            0, 0, 0, 0, 12, 0, 0, 0, 15, 0, 0, 0, 1, 99, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 1, 0, 0, 0,
+            1, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 1,
+        ];
+        let expected_bytes = Bytes::from_array(&e, &expected_bytes);
+        assert_eq!(bin, expected_bytes);
     }
 
     #[test]

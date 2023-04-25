@@ -5,6 +5,7 @@ mod derive_enum;
 mod derive_enum_int;
 mod derive_error_enum_int;
 mod derive_fn;
+mod derive_spec_fn;
 mod derive_struct;
 mod derive_struct_tuple;
 mod doc;
@@ -17,42 +18,65 @@ use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
 use derive_fn::{derive_contract_function_set, derive_fn};
+use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
 
 use darling::FromMeta;
 use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
-use quote::quote;
+use quote::{format_ident, quote};
 use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, AttributeArgs, Data, DeriveInput, Error,
-    Fields, ItemImpl, LitStr, Path, Type, Visibility,
+    Fields, ItemImpl, Path, Type, Visibility,
 };
-
-use self::derive_client::ClientItem;
+use syn_ext::HasFnsItem;
 
 use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
 
-use soroban_env_common::Symbol;
+use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
 }
 
-#[proc_macro]
-pub fn symbol(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
-    match Symbol::try_from_str(&input.value()) {
-        Ok(_) => quote! {{
-            const symbol: soroban_sdk::Symbol = soroban_sdk::Symbol::from_str(#input);
-            symbol
-        }}
+#[derive(Debug, FromMeta)]
+struct ContractSpecArgs {
+    name: String,
+    export: Option<bool>,
+}
+
+#[proc_macro_attribute]
+pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractSpecArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let input2: TokenStream2 = input.clone().into();
+    let item = parse_macro_input!(input as HasFnsItem);
+    let methods: Vec<_> = item.fns();
+    let export = args.export.unwrap_or(true);
+
+    let ty = format_ident!("{}", args.name);
+    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = methods
+        .iter()
+        .map(|m| derive_fn_spec(&ty, m.ident, m.attrs, m.inputs, m.output, export))
+        .collect();
+
+    match derived {
+        Ok(derived_ok) => quote! {
+            #input2
+            #derived_ok
+        }
         .into(),
-        Err(e) => Error::new(input.span(), format!("{}", e))
-            .to_compile_error()
-            .into(),
+        Err(derived_err) => quote! {
+            #input2
+            #derived_err
+        }
+        .into(),
     }
 }
 
@@ -60,6 +84,7 @@ pub fn symbol(input: TokenStream) -> TokenStream {
 pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
+    let ty_str = quote!(#ty).to_string();
 
     // TODO: Use imp.trait_ in generating the client ident, to create a unique
     // client for each trait impl for a contract, to avoid conflicts.
@@ -82,11 +107,9 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
             derive_fn(
                 &call,
-                ty,
                 ident,
                 &m.attrs,
                 &m.sig.inputs,
-                &m.sig.output,
                 trait_ident,
                 &client_ident,
             )
@@ -98,6 +121,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
             quote! {
                 #[soroban_sdk::contractclient(name = #client_ident)]
+                #[soroban_sdk::contractspecfn(name = #ty_str)]
                 #imp
                 #derived_ok
                 #cfs
@@ -110,6 +134,74 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         .into(),
     }
+}
+
+#[derive(Debug, FromMeta)]
+struct MetadataArgs {
+    key: String,
+    val: String,
+}
+
+#[proc_macro]
+pub fn contractmeta(metadata: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match MetadataArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+
+    let gen = {
+        let key: StringM = match args.key.clone().try_into() {
+            Ok(k) => k,
+            Err(e) => {
+                return Error::new(Span::call_site(), e.to_string())
+                    .into_compile_error()
+                    .into()
+            }
+        };
+
+        let val: StringM = match args.val.try_into() {
+            Ok(k) => k,
+            Err(e) => {
+                return Error::new(Span::call_site(), e.to_string())
+                    .into_compile_error()
+                    .into()
+            }
+        };
+
+        let meta_v0 = ScMetaV0 { key, val };
+        let meta_entry = ScMetaEntry::ScMetaV0(meta_v0);
+        let metadata_xdr: Vec<u8> = match meta_entry.to_xdr() {
+            Ok(v) => v,
+            Err(e) => {
+                return Error::new(Span::call_site(), e.to_string())
+                    .into_compile_error()
+                    .into()
+            }
+        };
+
+        let metadata_xdr_lit = proc_macro2::Literal::byte_string(metadata_xdr.as_slice());
+        let metadata_xdr_len = metadata_xdr.len();
+
+        let ident = format_ident!(
+            "__CONTRACT_KEY_{}",
+            args.key
+                .as_bytes()
+                .iter()
+                .map(|b| format!("{b:02x}"))
+                .collect::<String>()
+        );
+        quote! {
+            #[doc(hidden)]
+            #[cfg_attr(target_family = "wasm", link_section = "contractmetav0")]
+            static #ident: [u8; #metadata_xdr_len] = *#metadata_xdr_lit;
+        }
+    };
+
+    quote! {
+        #gen
+    }
+    .into()
 }
 
 #[derive(Debug, FromMeta)]
@@ -268,6 +360,8 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
 
 #[derive(Debug, FromMeta)]
 struct ContractClientArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
     name: String,
 }
 
@@ -279,9 +373,9 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
         Err(e) => return e.write_errors().into(),
     };
     let input2: TokenStream2 = input.clone().into();
-    let item = parse_macro_input!(input as ClientItem);
+    let item = parse_macro_input!(input as HasFnsItem);
     let methods: Vec<_> = item.fns();
-    let client = derive_client(&args.name, &methods);
+    let client = derive_client(&args.crate_path, &item.name(), &args.name, &methods);
     quote! {
         #input2
         #client

@@ -1,14 +1,18 @@
-use core::{cmp::Ordering, fmt::Debug};
+use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{Env as _, EnvBase as _},
-    xdr::ScObjectType,
-    ConversionError, Env, Object, RawVal, TryFromVal,
+    env::internal::{AddressObject, Env as _, EnvBase as _},
+    BytesN, ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
-use crate::{unwrap::UnwrapInfallible, Vec};
+#[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
+use crate::env::xdr::ScAddress;
+use crate::{
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
+    Vec,
+};
 
 /// Address is a universal opaque identifier to use in contracts.
 ///
@@ -29,7 +33,7 @@ use crate::{unwrap::UnwrapInfallible, Vec};
 #[derive(Clone)]
 pub struct Address {
     env: Env,
-    obj: Object,
+    obj: AddressObject,
 }
 
 impl Debug for Address {
@@ -41,7 +45,7 @@ impl Debug for Address {
             use crate::env::internal::xdr;
             use stellar_strkey::{ed25519, Contract, Strkey};
             let sc_val = ScVal::try_from(self).map_err(|_| core::fmt::Error)?;
-            if let ScVal::Object(Some(xdr::ScObject::Address(addr))) = sc_val {
+            if let ScVal::Address(addr) = sc_val {
                 match addr {
                     xdr::ScAddress::Account(account_id) => {
                         let xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
@@ -88,23 +92,21 @@ impl Ord for Address {
     }
 }
 
-impl TryFromVal<Env, Object> for Address {
-    type Error = ConversionError;
+impl TryFromVal<Env, AddressObject> for Address {
+    type Error = Infallible;
 
-    fn try_from_val(env: &Env, val: &Object) -> Result<Self, Self::Error> {
-        if val.is_obj_type(ScObjectType::Address) {
-            Ok(unsafe { Address::unchecked_new(env.clone(), *val) })
-        } else {
-            Err(ConversionError {})
-        }
+    fn try_from_val(env: &Env, val: &AddressObject) -> Result<Self, Self::Error> {
+        Ok(unsafe { Address::unchecked_new(env.clone(), *val) })
     }
 }
 
 impl TryFromVal<Env, RawVal> for Address {
-    type Error = <Address as TryFromVal<Env, Object>>::Error;
+    type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+        Ok(AddressObject::try_from_val(env, val)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
@@ -144,11 +146,43 @@ impl TryFrom<Address> for ScVal {
 impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        use soroban_env_host::TryIntoVal;
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            &val.try_into_val(env).map_err(|_| ConversionError)?,
+        Ok(
+            AddressObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+                .try_into_val(env)
+                .unwrap_infallible(),
         )
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: &Address) -> Result<Self, Self::Error> {
+        match ScVal::try_from_val(&v.env, &v.obj.to_raw())? {
+            ScVal::Address(a) => Ok(a),
+            _ => Err(ConversionError),
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: Address) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, ScAddress> for Address {
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
+        Ok(AddressObject::try_from_val(
+            env,
+            &RawVal::try_from_val(env, &ScVal::Address(val.clone()))?,
+        )?
+        .try_into_val(env)
+        .unwrap_infallible())
     }
 }
 
@@ -197,8 +231,77 @@ impl Address {
         self.env.require_auth(&self);
     }
 
+    /// Creates an `Address` corresponding to the provided contract identifier.
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases, for example to get an Address of a freshly
+    /// deployed contract.
+    pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
+        let env = contract_id.env();
+        unsafe {
+            Self::unchecked_new(
+                env.clone(),
+                env.contract_id_to_address(contract_id.to_object())
+                    .unwrap_optimized(),
+            )
+        }
+    }
+
+    /// Creates an `Address` corresponding to the provided Stellar account
+    /// 32-byte identifier (public key).
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases, like for cross-chain interoperability.
+    pub fn from_account_id(account_pk: &BytesN<32>) -> Self {
+        let env = account_pk.env().clone();
+        unsafe {
+            Self::unchecked_new(
+                env.clone(),
+                env.account_public_key_to_address(account_pk.to_object())
+                    .unwrap_optimized(),
+            )
+        }
+    }
+
+    /// Returns 32-byte contract identifier corresponding to this `Address`.
+    ///
+    /// Returns `None` when this `Address` does not belong to a contract.
+    ///
+    /// Avoid using the returned contract identifier for authorization purposes
+    /// and prefer using `Address` directly whenever possible. This is only
+    /// useful in special cases, for example, to be able to invoke a contract
+    /// given its `Address`.
+    pub fn contract_id(&self) -> Option<BytesN<32>> {
+        let rv = self.env.address_to_contract_id(self.obj).unwrap_optimized();
+        if let Ok(()) = rv.try_into_val(&self.env) {
+            None
+        } else {
+            Some(rv.try_into_val(&self.env).unwrap_optimized())
+        }
+    }
+
+    /// Returns 32-byte Stellar account identifier (public key) corresponding
+    /// to this `Address`.
+    ///
+    /// Returns `None` when this `Address` does not belong to an account.
+    ///
+    /// Avoid using the returned account identifier for authorization purposes
+    /// and prefer using `Address` directly whenever possible. This is only
+    /// useful in special cases, like for cross-chain interoperability.
+    pub fn account_id(&self) -> Option<BytesN<32>> {
+        let rv = self
+            .env
+            .address_to_account_public_key(self.obj)
+            .unwrap_optimized();
+        if let Ok(()) = rv.try_into_val(&self.env) {
+            None
+        } else {
+            Some(rv.try_into_val(&self.env).unwrap_optimized())
+        }
+    }
+
     #[inline(always)]
-    pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: AddressObject) -> Self {
         Self { env, obj }
     }
 
@@ -215,31 +318,24 @@ impl Address {
         self.obj.to_raw()
     }
 
-    pub fn as_object(&self) -> &Object {
+    pub fn as_object(&self) -> &AddressObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> Object {
+    pub fn to_object(&self) -> AddressObject {
         self.obj
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::env::xdr::{Hash, ScAddress, ScObject};
+use crate::env::xdr::Hash;
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils::random, BytesN};
+use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
-    fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(
-            contract_id.to_array(),
-        )))));
-        Self::try_from_val(env, &sc_addr).unwrap()
-    }
-
     fn random(env: &Env) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(random())))));
+        let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
     }
 }

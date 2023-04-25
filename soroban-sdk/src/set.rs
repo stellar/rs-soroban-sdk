@@ -1,10 +1,10 @@
-use core::{cmp::Ordering, fmt::Debug, iter::FusedIterator};
+use core::{cmp::Ordering, convert::Infallible, fmt::Debug, iter::FusedIterator};
 
 use crate::unwrap::UnwrapInfallible;
 
 use super::{
-    env::internal::Env as _, xdr::ScObjectType, ConversionError, Env, IntoVal, Map, Object, RawVal,
-    TryFromVal, Vec,
+    env::internal::{Env as _, MapObject},
+    ConversionError, Env, IntoVal, Map, RawVal, TryFromVal, TryIntoVal, Vec,
 };
 
 /// Create a [Set] with the given items.
@@ -75,7 +75,7 @@ where
         Self(map)
     }
 
-    unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+    unsafe fn unchecked_new(env: Env, obj: MapObject) -> Self {
         let map = Map::unchecked_new(env, obj);
         Self(map)
     }
@@ -165,7 +165,7 @@ where
         self.0.to_raw()
     }
 
-    pub fn to_object(&self) -> Object {
+    pub fn to_object(&self) -> MapObject {
         self.0.to_object()
     }
 
@@ -283,18 +283,14 @@ where
     }
 }
 
-impl<T> TryFromVal<Env, Object> for Set<T>
+impl<T> TryFromVal<Env, MapObject> for Set<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = ConversionError;
+    type Error = Infallible;
 
-    fn try_from_val(env: &Env, obj: &Object) -> Result<Self, Self::Error> {
-        if obj.is_obj_type(ScObjectType::Map) {
-            Ok(unsafe { Set::<T>::unchecked_new(env.clone(), obj.clone()) })
-        } else {
-            Err(ConversionError {})
-        }
+    fn try_from_val(env: &Env, obj: &MapObject) -> Result<Self, Self::Error> {
+        Ok(unsafe { Set::<T>::unchecked_new(env.clone(), obj.clone()) })
     }
 }
 
@@ -302,10 +298,12 @@ impl<T> TryFromVal<Env, RawVal> for Set<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = <Set<T> as TryFromVal<Env, Object>>::Error;
+    type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
+        Ok(MapObject::try_from_val(env, val)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
@@ -329,18 +327,18 @@ where
     }
 }
 
-impl<T> TryFromVal<Env, Set<T>> for Object
+impl<T> TryFromVal<Env, Set<T>> for MapObject
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Error = ConversionError;
+    type Error = Infallible;
 
     fn try_from_val(_env: &Env, v: &Set<T>) -> Result<Self, Self::Error> {
         Ok(v.to_object())
     }
 }
 
-impl<T> From<Set<T>> for Object
+impl<T> From<Set<T>> for MapObject
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -572,16 +570,16 @@ mod test {
         let env = Env::default();
         let s1 = set![&env, 1, 2, 3];
         let raw = s1.to_raw();
-        let s2: Result<Set<i64>, ConversionError> = raw.try_into_val(&env);
+        let s2: Result<Set<i64>, _> = raw.try_into_val(&env);
         assert_eq!(s2, Ok(s1));
 
         let s3 = set![&env, 1, 2, 3, 4, 5];
         let obj = s3.to_object();
-        let s4: Result<Set<i64>, ConversionError> = obj.try_into_val(&env);
+        let s4: Result<Set<i64>, _> = obj.try_into_val(&env);
         assert_eq!(s4, Ok(s3));
 
         // Sanity check
-        assert_ne!(s2, s4);
+        assert_ne!(s2.unwrap(), s4.unwrap());
     }
 
     #[test]
