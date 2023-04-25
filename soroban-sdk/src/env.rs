@@ -507,51 +507,6 @@ impl Env {
         env
     }
 
-    /// Mock all calls to `require_auth` functions in invoked contracts having
-    /// them succeed.
-    ///
-    /// To undo mocking, call `env.set_auth(&[])`.
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{contractimpl, Env, Address, testutils::Address as _};
-    ///
-    /// pub struct HelloContract;
-    ///
-    /// #[contractimpl]
-    /// impl HelloContract {
-    ///     pub fn hello(env: Env, from: Address) {
-    ///         from.require_auth();
-    ///         // TODO
-    ///     }
-    /// }
-    ///
-    /// #[test]
-    /// fn test() {
-    /// # }
-    /// # fn main() {
-    ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, HelloContract);
-    ///
-    ///     env.mock_all_auths();
-    ///
-    ///     let client = HelloContractClient::new(&env, &contract_id);
-    ///     let addr = Address::random(&env);
-    ///     client.hello(&addr);
-    /// }
-    /// ```
-    pub fn mock_all_auths(&self) {
-        self.env_impl.switch_to_recording_auth();
-    }
-
-    /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke `require_auth` functions.
-    pub fn set_auths(&self, auths: &[ContractAuth]) {
-        self.env_impl
-            .set_authorization_entries(auths.to_vec())
-            .unwrap();
-    }
-
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -770,8 +725,57 @@ impl Env {
         contract_id
     }
 
-    /// Returns the recorded top-level `require_auth` or `require_auth_for_args`
-    /// calls that have happened during the last contract invocation.    
+    /// Mock all calls to `require_auth` and `require_auth_for_args` functions
+    /// in invoked contracts, having them succeed.
+    ///
+    /// To undo mocking, call `env.set_auth(&[])`.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, Env, Address, testutils::Address as _};
+    ///
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn hello(env: Env, from: Address) {
+    ///         from.require_auth();
+    ///         // TODO
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///
+    ///     env.mock_all_auths();
+    ///
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///     let addr = Address::random(&env);
+    ///     client.hello(&addr);
+    /// }
+    /// ```
+    pub fn mock_all_auths(&self) {
+        self.env_impl.switch_to_recording_auth();
+    }
+
+    /// Set authorizations in the environment which will be consumed by
+    /// contracts when they invoke `require_auth` or `require_auth_for_args`
+    /// functions.
+    ///
+    /// If mocking of auths is enabled, calling `set_auths` disables any
+    /// mocking.
+    pub fn set_auths(&self, auths: &[ContractAuth]) {
+        self.env_impl
+            .set_authorization_entries(auths.to_vec())
+            .unwrap();
+    }
+
+    /// Returns a list of `require_auth` or `require_auth_for_args` calls that
+    /// have happened during the last contract invocation.
     ///
     /// Use this in tests to verify that the expected authorizations with the
     /// expected arguments are required.
@@ -783,18 +787,9 @@ impl Env {
     /// of the function invocation).
     ///
     /// The order of the returned vector is defined by the order of
-    /// `require_auth` calls. It is recommended though to do unordered
-    /// comparison in case if multiple entries are returned.
-    ///
-    /// 'Top-level call' here means that this is the first call of
-    /// `require_auth` for a given address in the call stack; it doesn't have
-    /// to coincide with the actual top-level contract invocation. For example,
-    /// if contract A doesn't use `require_auth` and then it calls contract B
-    /// that uses `require_auth`, then `verify_top_authorization` will return
-    /// `true` when verifying the contract B's `require_auth` call, but it will
-    /// return `false` if contract A makes a `require_auth` call.
-    ///
-    /// It is possible for a single address to be present multiple times in the
+    /// `require_auth` calls. Repeated calls to `require_auth` in the same tree
+    /// of contract invocations will appear only once in the vector. It is
+    /// possible for a single address to be present multiple times in the
     /// output, as long as there are multiple disjoint call trees for that
     /// address.
     ///
@@ -827,7 +822,7 @@ impl Env {
     ///     let address = Address::random(&env);
     ///     client.transfer(&address, &1000_i128);
     ///     assert_eq!(
-    ///         env.recorded_top_authorizations(),
+    ///         env.mocked_auths(),
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
@@ -838,7 +833,7 @@ impl Env {
     ///
     ///     client.transfer2(&address, &1000_i128);
     ///     assert_eq!(
-    ///         env.recorded_top_authorizations(),
+    ///         env.mocked_auths(),
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
@@ -851,9 +846,7 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn recorded_top_authorizations(
-        &self,
-    ) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
+    pub fn mocked_auths(&self) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
         use xdr::{ScBytes, ScVal};
         let authorizations = self.env_impl.get_recorded_top_authorizations().unwrap();
         authorizations

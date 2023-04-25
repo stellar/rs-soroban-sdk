@@ -37,7 +37,7 @@ mod test {
 
         let r = client.add(&a);
         assert_eq!(r, 2);
-        let auths = e.recorded_top_authorizations();
+        let auths = e.mocked_auths();
         std::println!("auths: {:?}", auths);
     }
 
