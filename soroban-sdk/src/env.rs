@@ -448,6 +448,19 @@ impl Env {
     pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
         internal::Env::log_value(self, v.into_val(self)).unwrap_infallible();
     }
+
+    /// Replaces the executable of the current contract with the provided Wasm.
+    ///
+    /// The Wasm blob identified by the `wasm_hash` has to be already present
+    /// on-chain (the upload happens via `INSTALL_CONTRACT_CODE` host function
+    /// or via `install_contract_wasm` test function in unit tests).
+    ///
+    /// The function won't do anything immediately. The contract executable
+    /// will only be updated after the invocation has successfully finished.
+    pub fn update_current_contract_wasm(&self, wasm_hash: &BytesN<32>) {
+        internal::Env::update_current_contract_wasm(self, wasm_hash.to_object())
+            .unwrap_infallible();
+    }
 }
 
 #[cfg(any(test, feature = "testutils"))]
@@ -461,6 +474,7 @@ use xdr::{ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
+    #[doc(hidden)]
     pub fn host(&self) -> &internal::Host {
         &self.env_impl
     }
