@@ -468,6 +468,7 @@ use xdr::{Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
+    #[doc(hidden)]
     pub fn host(&self) -> &internal::Host {
         &self.env_impl
     }
