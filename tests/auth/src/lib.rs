@@ -28,7 +28,7 @@ mod test {
     #[test]
     fn test_with_mocked_auth() {
         let e = Env::default();
-        e.record_auth();
+        e.mock_all_auths();
 
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
@@ -52,7 +52,7 @@ mod test {
         let a = Address::from_contract_id(&authonator_id);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
-        e.set_auth(&[ContractAuth {
+        e.set_auths(&[ContractAuth {
             address_with_nonce: Some(AddressWithNonce {
                 address: a_xdr.clone(),
                 nonce: 0,
@@ -81,7 +81,7 @@ mod test {
         let a = Address::random_account(&e);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
-        e.set_auth(&[ContractAuth {
+        e.set_auths(&[ContractAuth {
             address_with_nonce: Some(AddressWithNonce {
                 address: a_xdr.clone(),
                 nonce: 0,

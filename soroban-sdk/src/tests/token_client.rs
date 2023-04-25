@@ -39,7 +39,7 @@ fn test() {
     extern crate std;
 
     let env = Env::default();
-    env.record_auth();
+    env.mock_all_auths();
 
     let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);

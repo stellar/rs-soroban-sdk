@@ -507,13 +507,48 @@ impl Env {
         env
     }
 
-    pub fn record_auth(&self) {
+    /// Mock all calls to `require_auth` functions in invoked contracts having
+    /// them succeed.
+    ///
+    /// To undo mocking, call `env.set_auth(&[])`.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, Env, Address, testutils::Address as _};
+    ///
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn hello(env: Env, from: Address) {
+    ///         from.require_auth();
+    ///         // TODO
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///
+    ///     env.mock_all_auths();
+    ///
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///     let addr = Address::random(&env);
+    ///     client.hello(&addr);
+    /// }
+    /// ```
+    pub fn mock_all_auths(&self) {
         self.env_impl.switch_to_recording_auth();
     }
 
-    pub fn set_auth(&self, auth_entries: &[ContractAuth]) {
+    /// Set authorizations in the environment which will be consumed by
+    /// contracts when they invoke `require_auth` functions.
+    pub fn set_auths(&self, auths: &[ContractAuth]) {
         self.env_impl
-            .set_authorization_entries(auth_entries.to_vec())
+            .set_authorization_entries(auths.to_vec())
             .unwrap();
     }
 
@@ -788,6 +823,7 @@ impl Env {
     ///     let env = Env::default();
     ///     let contract_id = env.register_contract(None, Contract);
     ///     let client = ContractClient::new(&env, &contract_id);
+    ///     env.mock_all_auths();
     ///     let address = Address::random(&env);
     ///     client.transfer(&address, &1000_i128);
     ///     assert_eq!(
