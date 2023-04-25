@@ -739,10 +739,35 @@ impl Env {
         contract_id
     }
 
-    /// Mock all calls to `require_auth` and `require_auth_for_args` functions
-    /// in invoked contracts, having them succeed.
+    /// Set authorizations in the environment which will be consumed by
+    /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
+    /// functions.
     ///
-    /// To undo mocking, call `env.set_auth(&[])`.
+    /// To mock auth for testing, use [`mock_all_auths`]. If mocking of auths is
+    /// enabled, calling [`set_auths`] disables any mocking.
+    pub fn set_auths(&self, auths: &[ContractAuth]) {
+        self.env_impl
+            .set_authorization_entries(auths.to_vec())
+            .unwrap();
+    }
+
+    /// Mock all calls to the [`require_auth`] and [`require_auth_for_args`]
+    /// functions in invoked contracts, having them succeed as if authorization
+    /// was provided.
+    ///
+    /// When mocking is enabled, if the [`Address`] being authorized is the
+    /// address of a contract, that contract's `__check_auth` function will not
+    /// be called, and the contract does not need to exist or be registered in
+    /// the test.
+    ///
+    /// When mocking is enabled, if the [`Address`] being authorized is the
+    /// address of an account, the account does not need to exist.
+    ///
+    /// To disable mocking, see [`set_auth`].
+    ///
+    /// To access a recording of mocked auths, see [`mocked_auths`].
+    ///
+    /// It is not currently possible to mock a subset of auths.
     ///
     /// ### Examples
     /// ```
@@ -776,22 +801,10 @@ impl Env {
         self.env_impl.switch_to_recording_auth();
     }
 
-    /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke `require_auth` or `require_auth_for_args`
-    /// functions.
+    /// Returns a list of calls to [`require_auth`] or [`require_auth_for_args`] that
+    /// were mocked during the last contract invocation.
     ///
-    /// If mocking of auths is enabled, calling `set_auths` disables any
-    /// mocking.
-    pub fn set_auths(&self, auths: &[ContractAuth]) {
-        self.env_impl
-            .set_authorization_entries(auths.to_vec())
-            .unwrap();
-    }
-
-    /// Returns a list of `require_auth` or `require_auth_for_args` calls that
-    /// have happened during the last contract invocation.
-    ///
-    /// Use this in tests to verify that the expected authorizations with the
+    /// Use in tests to verify that the expected authorizations with the
     /// expected arguments are required.
     ///
     /// The return value is a vector of authorizations represented by tuples of
@@ -801,11 +814,10 @@ impl Env {
     /// of the function invocation).
     ///
     /// The order of the returned vector is defined by the order of
-    /// `require_auth` calls. Repeated calls to `require_auth` in the same tree
-    /// of contract invocations will appear only once in the vector. It is
-    /// possible for a single address to be present multiple times in the
-    /// output, as long as there are multiple disjoint call trees for that
-    /// address.
+    /// [`require_auth`] calls. Repeated calls to [`require_auth`] in the same
+    /// tree of contract invocations will appear only once in the vector. Calls
+    /// to [`require_auth`] in disjoint call trees for the same address will
+    /// present in the list.
     ///
     /// ### Examples
     /// ```
