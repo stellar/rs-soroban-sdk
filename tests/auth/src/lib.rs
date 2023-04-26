@@ -16,13 +16,14 @@ mod test {
     use super::*;
     use soroban_sdk::{
         contracterror,
-        testutils::Address as _,
+        testutils::{Accounts, Address as _},
         vec,
         xdr::{
-            AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScBytes, ScMap,
-            ScMapEntry, ScSymbol, ScVal, StringM, VecM,
+            AddressWithNonce, AuthorizedInvocation, ContractAuth, Hash, HashIdPreimage,
+            HashIdPreimageContractAuth, ScAddress, ScMap, ScMapEntry, ScSymbol, ScVal, ScVec,
+            StringM, VecM, WriteXdr,
         },
-        Address, Env, RawVal, Symbol,
+        Address, BytesN, Env, RawVal, Symbol,
     };
     extern crate std;
 
@@ -115,31 +116,65 @@ mod test {
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let a = Address::random_account(&e);
+        use ed25519_dalek::Signer;
+        let account_sk = ed25519_dalek::SecretKey::from_bytes(
+            &hex::decode("5acc7253295dfc356c046297925a369f3d2762d00afdf2583ecbe92180b07c37")
+                .unwrap(),
+        )
+        .unwrap();
+        let account_pk = ed25519_dalek::PublicKey::from(&account_sk);
+        let account_kp = ed25519_dalek::Keypair {
+            secret: account_sk,
+            public: account_pk,
+        };
+
+        let a = Address::from_account_id(&BytesN::from_array(&e, account_pk.as_bytes()));
+        e.accounts().create(&a);
+        let a_bytes = a.account_id().unwrap();
         let a_xdr: ScAddress = (&a).try_into().unwrap();
+
+        let auth = AuthorizedInvocation {
+            contract_id: contract_id.to_array().into(),
+            function_name: StringM::try_from("add").unwrap().into(),
+            args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+            sub_invocations: VecM::default(),
+        };
+
+        let sig_payload = {
+            let preimage = HashIdPreimage::ContractAuth(HashIdPreimageContractAuth {
+                network_id: Hash(e.ledger().network_id().to_array()),
+                invocation: auth.clone(),
+                nonce: 0,
+            });
+
+            use sha2::Digest;
+            let mut hasher = sha2::Sha256::new();
+            hasher.update(preimage.to_xdr().unwrap());
+            hasher.finalize()
+        };
+        let sig = account_kp.sign(sig_payload.as_slice()).to_bytes();
 
         e.set_auths(&[ContractAuth {
             address_with_nonce: Some(AddressWithNonce {
                 address: a_xdr.clone(),
                 nonce: 0,
             }),
-            root_invocation: AuthorizedInvocation {
-                contract_id: contract_id.to_array().into(),
-                function_name: StringM::try_from("add").unwrap().into(),
-                args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
-                sub_invocations: VecM::default(),
-            },
-            signature_args: std::vec![ScVal::Map(Some(ScMap(
-                std::vec![
-                    ScMapEntry {
-                        key: ScVal::Symbol(ScSymbol("public_key".try_into().unwrap())),
-                        val: ScVal::Bytes(ScBytes("signature".try_into().unwrap())),
-                    },
-                    ScMapEntry {
-                        key: ScVal::Symbol(ScSymbol("signature".try_into().unwrap())),
-                        val: ScVal::Bytes(ScBytes("signature".try_into().unwrap())),
-                    }
-                ]
+            root_invocation: auth,
+            signature_args: std::vec![ScVal::Vec(Some(ScVec(
+                [ScVal::Map(Some(ScMap(
+                    std::vec![
+                        ScMapEntry {
+                            key: ScVal::Symbol(ScSymbol("public_key".try_into().unwrap())),
+                            val: a_bytes.try_into().unwrap(),
+                        },
+                        ScMapEntry {
+                            key: ScVal::Symbol(ScSymbol("signature".try_into().unwrap())),
+                            val: sig.try_into().unwrap(),
+                        }
+                    ]
+                    .try_into()
+                    .unwrap()
+                )))]
                 .try_into()
                 .unwrap()
             )))]

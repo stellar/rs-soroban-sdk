@@ -1136,6 +1136,9 @@ dependencies = [
 name = "test_auth"
 version = "0.7.0"
 dependencies = [
+ "ed25519-dalek",
+ "hex",
+ "sha2 0.10.6",
  "soroban-sdk",
 ]
 

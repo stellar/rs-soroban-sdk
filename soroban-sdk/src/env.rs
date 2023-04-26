@@ -266,7 +266,7 @@ impl Env {
 
     /// Get an [Accounts] for accessing accounts in the current ledger.
     #[inline(always)]
-    pub(crate) fn accounts(&self) -> Accounts {
+    pub fn accounts(&self) -> Accounts {
         Accounts::new(self)
     }
 

@@ -13,8 +13,6 @@ pub trait Sign<MSG> {
 // interface.
 
 pub mod ed25519 {
-    use xdr::WriteXdr;
-
     use crate::xdr;
 
     #[derive(Debug)]
@@ -62,18 +60,32 @@ pub mod ed25519 {
     impl<S, M> Sign<M> for S
     where
         S: ed25519_dalek::Signer<ed25519_dalek::Signature>,
-        M: TryInto<xdr::ScVal>,
-        <M as TryInto<xdr::ScVal>>::Error: std::error::Error,
+        M: xdr::WriteXdr,
     {
-        type Error = Error<<M as TryInto<xdr::ScVal>>::Error>;
+        type Error = Error<core::convert::Infallible>;
         type Signature = [u8; 64];
         fn sign(&self, m: M) -> Result<Self::Signature, Self::Error> {
             let mut buf = Vec::<u8>::new();
-            let val: xdr::ScVal = m.try_into().map_err(Self::Error::ConversionError)?;
-            val.write_xdr(&mut buf)?;
+            m.write_xdr(&mut buf)?;
             Ok(self.try_sign(&buf)?.to_bytes())
         }
     }
+
+    // impl<S, M> Sign<M> for S
+    // where
+    //     S: ed25519_dalek::Signer<ed25519_dalek::Signature>,
+    //     M: TryInto<xdr::ScVal>,
+    //     <M as TryInto<xdr::ScVal>>::Error: std::error::Error,
+    // {
+    //     type Error = Error<<M as TryInto<xdr::ScVal>>::Error>;
+    //     type Signature = [u8; 64];
+    //     fn sign(&self, m: M) -> Result<Self::Signature, Self::Error> {
+    //         let mut buf = Vec::<u8>::new();
+    //         let val: xdr::ScVal = m.try_into().map_err(Self::Error::ConversionError)?;
+    //         val.write_xdr(&mut buf)?;
+    //         Ok(self.try_sign(&buf)?.to_bytes())
+    //     }
+    // }
 
     #[cfg(test)]
     mod test {

@@ -328,27 +328,14 @@ impl Address {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::env::xdr::{AccountId, Hash, PublicKey, Uint256};
+use crate::env::xdr::Hash;
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{random, Accounts};
+use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
     fn random(env: &Env) -> Self {
-        Self::random_contract(env)
-    }
-
-    fn random_contract(env: &Env) -> Self {
         let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
-    }
-
-    fn random_account(env: &Env) -> Self {
-        let sc_addr = ScVal::Address(ScAddress::Account(AccountId(
-            PublicKey::PublicKeyTypeEd25519(Uint256(random())),
-        )));
-        let addr = Self::try_from_val(env, &sc_addr).unwrap();
-        env.accounts().create(&addr);
-        addr
     }
 }

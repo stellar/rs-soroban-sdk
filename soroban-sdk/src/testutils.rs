@@ -177,16 +177,10 @@ pub trait Address {
     /// shouldn't normally matter though, as contracts should be agnostic to
     /// the underlying Address value.
     fn random(env: &Env) -> crate::Address;
-
-    /// Create a random contract Address.
-    fn random_contract(env: &Env) -> crate::Address;
-
-    /// Create a random account Address.
-    fn random_account(env: &Env) -> crate::Address;
 }
 
 /// Test utilities for [`Accounts`][crate::accounts::Accounts].
-pub(crate) trait Accounts {
+pub trait Accounts {
     /// Create an account.
     fn create(&self, id: &crate::Address);
 }

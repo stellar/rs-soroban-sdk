@@ -5,7 +5,7 @@
 use crate::Env;
 
 #[derive(Clone)]
-pub(crate) struct Accounts(Env);
+pub struct Accounts(Env);
 
 impl Accounts {
     #[inline(always)]

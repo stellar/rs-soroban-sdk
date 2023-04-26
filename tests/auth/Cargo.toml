@@ -16,3 +16,6 @@ soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+ed25519-dalek = "1.0.1"
+hex = "0.4.3"
+sha2 = "0.10.6"
