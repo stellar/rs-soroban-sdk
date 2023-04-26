@@ -7,6 +7,10 @@ mod sign;
 
 pub use sign::ed25519;
 
+mod mock_auth;
+
+pub use mock_auth::MockAuthContract;
+
 use crate::{Env, RawVal, Vec};
 
 #[doc(hidden)]
