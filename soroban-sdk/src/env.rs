@@ -127,8 +127,8 @@ where
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
-    accounts::Accounts, crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger,
-    logging::Logger, storage::Storage, Address, BytesN, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
+    storage::Storage, Address, BytesN, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, Object, StringObject,
@@ -262,12 +262,6 @@ impl Env {
     pub fn panic_with_error(&self, error: impl Into<Status>) {
         _ = internal::Env::fail_with_status(self, error.into());
         unreachable!()
-    }
-
-    /// Get an [Accounts] for accessing accounts in the current ledger.
-    #[inline(always)]
-    pub fn accounts(&self) -> Accounts {
-        Accounts::new(self)
     }
 
     /// Get a [Storage] for accessing and updating persistent data owned by the
