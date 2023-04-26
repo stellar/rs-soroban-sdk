@@ -108,7 +108,6 @@ mod test {
         client.add(&a);
     }
 
-    // TODO: This test is broken and doesn't work because the account doesn't exist.
     #[test]
     fn test_with_real_account_auth() {
         let e = Env::default();
