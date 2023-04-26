@@ -676,15 +676,16 @@ impl Env {
             asset_code: xdr::AssetCode4(random()),
             issuer: issuer_id.clone(),
         });
-        let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-            contract_id: xdr::ContractId::Asset(asset.clone()),
-            source: xdr::ScContractExecutable::Token,
-        });
 
-        let token_id = self
-            .env_impl
-            .invoke_function(create)
-            .unwrap()
+        let create = xdr::HostFunction {
+            args: xdr::HostFunctionArgs::CreateContract(xdr::CreateContractArgs {
+                contract_id: xdr::ContractId::Asset(asset.clone()),
+                executable: xdr::ScContractExecutable::Token,
+            }),
+            auth: Default::default(),
+        };
+
+        let token_id = self.env_impl.invoke_functions(vec![create]).unwrap()[0]
             .try_into_val(self)
             .unwrap();
         let _: () = self.invoke_contract(
@@ -709,7 +710,7 @@ impl Env {
         }
     }
 
-    fn register_contract_with_source(&self, source: xdr::ScContractExecutable) -> BytesN<32> {
+    fn register_contract_with_source(&self, executable: xdr::ScContractExecutable) -> BytesN<32> {
         let prev_source_account = self.env_impl.source_account();
         self.env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
@@ -718,11 +719,14 @@ impl Env {
 
         let contract_id: BytesN<32> = self
             .env_impl
-            .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-                contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random())),
-                source,
-            }))
-            .unwrap()
+            .invoke_functions(vec![xdr::HostFunction {
+                args: xdr::HostFunctionArgs::CreateContract(xdr::CreateContractArgs {
+                    contract_id: xdr::ContractId::SourceAccount(xdr::Uint256(random())),
+                    executable,
+                }),
+                auth: Default::default(),
+            }])
+            .unwrap()[0]
             .try_into_val(self)
             .unwrap();
 
@@ -890,12 +894,13 @@ impl Env {
     /// ```
     pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
         self.env_impl
-            .invoke_function(xdr::HostFunction::InstallContractCode(
-                xdr::InstallContractCodeArgs {
-                    code: contract_wasm.clone().try_into().unwrap(),
-                },
-            ))
-            .unwrap()
+            .invoke_functions(vec![xdr::HostFunction {
+                args: xdr::HostFunctionArgs::UploadContractWasm(xdr::UploadContractWasmArgs {
+                    code: contract_wasm.try_into().unwrap(),
+                }),
+                auth: Default::default(),
+            }])
+            .unwrap()[0]
             .try_into_val(self)
             .unwrap()
     }
