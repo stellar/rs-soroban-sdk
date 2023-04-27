@@ -39,7 +39,6 @@ fn test() {
     extern crate std;
 
     let env = Env::default();
-    env.mock_all_auths();
 
     let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
@@ -52,17 +51,26 @@ fn test() {
     assert_eq!(token_client.decimals(), 7);
     let from = Address::random(&env);
     let spender = Address::random(&env);
-    client.increase_allowance(&from, &spender, &20);
 
-    assert_eq!(
-        env.mocked_auths(),
-        std::vec![(
-            from.clone(),
-            token_client.contract_id.clone(),
-            Symbol::new(&env, "increase_allowance"),
-            (&from, &spender, 20_i128).into_val(&env)
-        )]
+    e.mock_auth(
+        from.clone(), // address
+        0, // nonce
+        AuthorizedInvocation { // authorized invocation call tree
+            contract_id,
+            function_name: Symbol::short("increase_allowance"),
+            args: (&from, &spender, 20_i128).into_val(&env),
+            sub_invocations: &[
+                AuthorizedInvocation { // authorize token client called from client
+                    contract_id: token_client.contract_id,
+                    function_name: Symbol::short("increase_allowance"),
+                    args: (&from, &spender, 20_i128).into_val(&env),
+                    sub_invocations: &[],
+                },
+            ],
+        },
     );
+
+    client.increase_allowance(&from, &spender, &20);
 
     assert_eq!(client.allowance(&from, &spender), 20);
 }

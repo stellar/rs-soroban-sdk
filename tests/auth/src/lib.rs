@@ -26,26 +26,27 @@ mod test {
     extern crate std;
 
     #[test]
-    fn test_with_mock_all_auth() {
+    fn test_with_mock_auth() {
         let e = Env::default();
-        e.mock_all_auths();
 
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let a = Address::random(&e);
 
+        e.mock_auth(
+            a.clone(), // address
+            0, // nonce
+            AuthorizedInvocation { // authorized invocation
+                contract_id,
+                function_name: Symbol::short("add"),
+                args: (a).into_val(&e),
+                sub_invocations: &[],
+            },
+        );
+
         let r = client.add(&a);
         assert_eq!(r, 2);
-        assert_eq!(
-            e.mocked_auths(),
-            [(
-                a.clone(),
-                contract_id,
-                Symbol::short("add"),
-                vec![&e, a.to_raw()]
-            )],
-        );
     }
 
     #[test]
