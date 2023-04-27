@@ -94,6 +94,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.write_errors().into(),
     };
     let crate_path = &args.crate_path;
+    let crate_path_str = quote!(#crate_path).to_string();
 
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
@@ -134,7 +135,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Ok(derived_ok) => {
             let cfs = derive_contract_function_set(&crate_path, ty, pub_methods.into_iter());
             quote! {
-                #[#crate_path::contractclient(name = #client_ident)]
+                #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
                 #imp
                 #derived_ok
