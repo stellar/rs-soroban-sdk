@@ -80,8 +80,20 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
     }
 }
 
+#[derive(Debug, FromMeta)]
+struct ContractImplArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
+}
+
 #[proc_macro_attribute]
-pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
+pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match ContractImplArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+
     let imp = parse_macro_input!(input as ItemImpl);
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
@@ -106,6 +118,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
             let call = quote! { <super::#ty>::#ident };
             let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
             derive_fn(
+                &args.crate_path,
                 &call,
                 ident,
                 &m.attrs,
@@ -118,7 +131,7 @@ pub fn contractimpl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let cfs = derive_contract_function_set(ty, pub_methods.into_iter());
+            let cfs = derive_contract_function_set(&args.crate_path, ty, pub_methods.into_iter());
             quote! {
                 #[soroban_sdk::contractclient(name = #client_ident)]
                 #[soroban_sdk::contractspecfn(name = #ty_str)]

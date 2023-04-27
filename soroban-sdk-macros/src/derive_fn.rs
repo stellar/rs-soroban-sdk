@@ -5,11 +5,12 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Type, TypePath,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath,
 };
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn(
+    crate_path: &Path,
     call: &TokenStream2,
     ident: &Ident,
     attrs: &[Attribute],
@@ -59,11 +60,11 @@ pub fn derive_fn(
                         subpat: None,
                     })),
                     colon_token: Colon::default(),
-                    ty: Box::new(Type::Verbatim(quote! { soroban_sdk::RawVal })),
+                    ty: Box::new(Type::Verbatim(quote! { #crate_path::RawVal })),
                 });
                 let call = quote! {
-                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::try_from_val(
+                    <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as #crate_path::TryFromVal<#crate_path::Env, #crate_path::RawVal>>::try_from_val(
                             &env,
                             &#ident
                         )
@@ -112,9 +113,9 @@ pub fn derive_fn(
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub fn invoke_raw(env: soroban_sdk::Env, #(#wrap_args),*) -> soroban_sdk::RawVal {
+            pub fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::RawVal {
                 #use_trait;
-                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::RawVal>>::into_val(
+                <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::RawVal>>::into_val(
                     #[allow(deprecated)]
                     &#call(
                         #env_call
@@ -126,9 +127,9 @@ pub fn derive_fn(
 
             #[deprecated(note = #deprecated_note)]
             pub fn invoke_raw_slice(
-                env: soroban_sdk::Env,
-                args: &[soroban_sdk::RawVal],
-            ) -> soroban_sdk::RawVal {
+                env: #crate_path::Env,
+                args: &[#crate_path::RawVal],
+            ) -> #crate_path::RawVal {
                 #[allow(deprecated)]
                 invoke_raw(env, #(#slice_args),*)
             }
@@ -140,6 +141,7 @@ pub fn derive_fn(
 
 #[allow(clippy::too_many_lines)]
 pub fn derive_contract_function_set<'a>(
+    crate_path: &Path,
     ty: &Type,
     methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
 ) -> TokenStream2 {
@@ -158,13 +160,13 @@ pub fn derive_contract_function_set<'a>(
         .multiunzip();
     quote! {
         #[cfg(any(test, feature = "testutils"))]
-        impl soroban_sdk::testutils::ContractFunctionSet for #ty {
+        impl #crate_path::testutils::ContractFunctionSet for #ty {
             fn call(
                 &self,
                 func: &str,
-                env: soroban_sdk::Env,
-                args: &[soroban_sdk::RawVal],
-            ) -> Option<soroban_sdk::RawVal> {
+                env: #crate_path::Env,
+                args: &[#crate_path::RawVal],
+            ) -> Option<#crate_path::RawVal> {
                 match func {
                     #(
                         #(#attrs)*
