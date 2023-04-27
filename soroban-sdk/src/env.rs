@@ -802,7 +802,7 @@ impl Env {
     /// Returns a list of calls to [`require_auth`] or [`require_auth_for_args`] that
     /// were mocked during the last contract invocation.
     ///
-    /// Use in tests to verify that the expected authorizations with the
+    /// Use this in tests to verify that the expected authorizations with the
     /// expected arguments are required.
     ///
     /// The return value is a vector of authorizations represented by tuples of
