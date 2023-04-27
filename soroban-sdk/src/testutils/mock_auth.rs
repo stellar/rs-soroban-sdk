@@ -1,6 +1,6 @@
 #![cfg(any(test, feature = "testutils"))]
 
-use crate::{contractimpl, contracttype, BytesN, RawVal, Symbol};
+use crate::{contractimpl, contracttype, BytesN, RawVal, Symbol, Vec};
 
 #[contracttype(crate_path = "crate")]
 #[derive(Clone)]
