@@ -39,6 +39,8 @@ fn test() {
     extern crate std;
 
     let env = Env::default();
+    env.mock_all_auths();
+
     let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
 
@@ -53,7 +55,7 @@ fn test() {
     client.increase_allowance(&from, &spender, &20);
 
     assert_eq!(
-        env.recorded_top_authorizations(),
+        env.mocked_auths(),
         std::vec![(
             from.clone(),
             token_client.contract_id.clone(),
