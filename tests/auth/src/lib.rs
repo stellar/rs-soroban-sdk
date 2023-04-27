@@ -36,8 +36,9 @@ mod test {
 
         e.mock_auth(
             a.clone(), // address
-            0, // nonce
-            AuthorizedInvocation { // authorized invocation
+            0,         // nonce
+            AuthorizedInvocation {
+                // authorized invocation
                 contract_id,
                 function_name: Symbol::short("add"),
                 args: (a).into_val(&e),

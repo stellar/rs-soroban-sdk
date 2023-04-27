@@ -58,6 +58,8 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
+                    // TODO: Set authorizations on Env based on mock auths.
+                    // TODO: Set authorization contract data based on mock auths.
                     use #crate_path::{IntoVal,FromVal};
                     self.env.invoke_contract(
                         &self.contract_id,
@@ -68,6 +70,8 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
+                    // TODO: Set authorizations on Env based on mock auths.
+                    // TODO: Set authorization contract data based on mock auths.
                     use #crate_path::{IntoVal,FromVal};
                     self.env.try_invoke_contract(
                         &self.contract_id,
@@ -88,23 +92,49 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
     // Render the Client.
     let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
     let client_ident = format_ident!("{}", name);
+    let client_deps = format_ident!("{}_mod", name);
     quote! {
-        #[doc = #client_doc]
-        pub struct #client_ident {
-            pub env: #crate_path::Env,
-            pub contract_id: #crate_path::BytesN<32>,
+        mod #client_deps {
+            #[cfg(any(test, feature = "testutils"))]
+            pub extern crate std;
         }
 
-        impl #client_ident {
+        #[doc = #client_doc]
+        pub struct #client_ident<'a> {
+            ph: core::marker::PhantomData<&'a ()>,
+            pub env: #crate_path::Env,
+            pub contract_id: #crate_path::BytesN<32>,
+            #[cfg(any(test, feature = "testutils"))]
+            mock_auths: #client_deps::std::vec::Vec<#crate_path::testutils::MockAuth<'a>>,
+        }
+
+        impl<'a> #client_ident<'a> {
             pub fn new(env: &#crate_path::Env, contract_id: &impl #crate_path::IntoVal<#crate_path::Env, #crate_path::BytesN<32>>) -> Self {
                 Self {
+                    ph: core::marker::PhantomData,
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_auths: #client_deps::std::vec::Vec::new(),
                 }
             }
 
             pub fn address(&self) -> #crate_path::Address {
                 #crate_path::Address::from_contract_id(&self.contract_id)
+            }
+
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_auth(&self, mock_auth: #crate_path::testutils::MockAuth<'a>) -> Self {
+                Self {
+                    ph: core::marker::PhantomData,
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    mock_auths: {
+                        let mut mock_auths = self.mock_auths.clone();
+                        mock_auths.push(mock_auth);
+                        mock_auths
+                    },
+                }
             }
 
             #(#fns)*

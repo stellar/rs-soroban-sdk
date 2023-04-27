@@ -1,7 +1,10 @@
-use crate as soroban_sdk;
+use crate::{
+    self as soroban_sdk,
+    testutils::{MockAuth, MockAuthSubInvoke},
+};
 use soroban_sdk::{
     contractimpl, contracttype, testutils::Address as _, token::Client as TokenClient, Address,
-    BytesN, Env, IntoVal, Symbol,
+    BytesN, Env, IntoVal,
 };
 
 #[contracttype]
@@ -52,25 +55,20 @@ fn test() {
     let from = Address::random(&env);
     let spender = Address::random(&env);
 
-    e.mock_auth(
-        from.clone(), // address
-        0, // nonce
-        AuthorizedInvocation { // authorized invocation call tree
-            contract_id,
-            function_name: Symbol::short("increase_allowance"),
+    client
+        .mock_auth(MockAuth {
+            address: &from,
+            nonce: 0,
+            fn_name: "increase_allowance",
             args: (&from, &spender, 20_i128).into_val(&env),
-            sub_invocations: &[
-                AuthorizedInvocation { // authorize token client called from client
-                    contract_id: token_client.contract_id,
-                    function_name: Symbol::short("increase_allowance"),
-                    args: (&from, &spender, 20_i128).into_val(&env),
-                    sub_invocations: &[],
-                },
-            ],
-        },
-    );
-
-    client.increase_allowance(&from, &spender, &20);
+            sub_invokes: &[MockAuthSubInvoke {
+                contract: &token_contract_id,
+                fn_name: "increase_allowance",
+                args: (&from, &spender, 20_i128).into_val(&env),
+                sub_invokes: &[],
+            }],
+        })
+        .increase_allowance(&from, &spender, &20);
 
     assert_eq!(client.allowance(&from, &spender), 20);
 }
