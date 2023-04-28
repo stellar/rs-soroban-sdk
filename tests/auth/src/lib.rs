@@ -21,7 +21,7 @@ mod test {
         xdr::{
             AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
         },
-        Address, Env, RawVal, Symbol, Status,
+        Address, Env, RawVal, Status, Symbol,
     };
     extern crate std;
 
@@ -115,6 +115,10 @@ mod test {
         let r = client.try_add(&a);
         // TODO: Update this test to assert that a general panic/trap occurred
         // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
+        // The ContractError(1) being captured here is from the
+        // auth_decline::Contract defined at the bottom of this file. The auth
+        // contract's error is leaking into the contract being called and
+        // propogating as its own contract, which should not be happening.
         assert_eq!(r, Err(Ok(Status::from_contract_error(1))));
 
         assert_eq!(e.auths(), []);
