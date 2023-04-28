@@ -97,9 +97,10 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
     quote! {
         #[doc = #client_doc]
         pub struct #client_ident<'a> {
-            ph: core::marker::PhantomData<&'a ()>,
             pub env: #crate_path::Env,
             pub contract_id: #crate_path::BytesN<32>,
+            #[cfg(not(any(test, feature = "testutils")))]
+            _phantom: core::marker::PhantomData<&'a ()>,
             #[cfg(any(test, feature = "testutils"))]
             mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
         }
