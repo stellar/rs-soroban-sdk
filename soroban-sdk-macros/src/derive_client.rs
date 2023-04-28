@@ -94,13 +94,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
     // Render the Client.
     let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
     let client_ident = format_ident!("{}", name);
-    let client_deps = format_ident!("{}_mod", name);
     quote! {
-        mod #client_deps {
-            #[cfg(any(test, feature = "testutils"))]
-            pub extern crate std;
-        }
-
         #[doc = #client_doc]
         pub struct #client_ident<'a> {
             ph: core::marker::PhantomData<&'a ()>,
