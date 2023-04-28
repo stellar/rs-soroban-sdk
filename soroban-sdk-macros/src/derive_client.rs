@@ -58,6 +58,9 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
+                    if self.mock_all_auths {
+                        self.env.mock_all_auths();
+                    }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.invoke_contract(
                         &self.contract_id,
@@ -68,6 +71,9 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
+                    if self.mock_all_auths {
+                        self.env.mock_all_auths();
+                    }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.try_invoke_contract(
                         &self.contract_id,
