@@ -9,7 +9,7 @@ pub use sign::ed25519;
 
 mod mock_auth;
 
-pub use mock_auth::{MockAuth, MockAuthContract, MockAuthSubInvoke};
+pub use mock_auth::{MockAuth, MockAuthContract, MockAuthInvoke};
 
 use crate::{Env, RawVal, Vec};
 

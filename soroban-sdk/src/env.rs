@@ -124,6 +124,7 @@ where
     }
 }
 
+use crate::testutils::MockAuthContract;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
@@ -458,7 +459,9 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{budget::Budget, random, BytesN as _, ContractFunctionSet, Ledger as _};
+use crate::testutils::{
+    budget::Budget, random, BytesN as _, ContractFunctionSet, Ledger as _, MockAuth,
+};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -687,11 +690,13 @@ impl Env {
         let token_id = self.env_impl.invoke_functions(vec![create]).unwrap()[0]
             .try_into_val(self)
             .unwrap();
+        self.env_impl.switch_to_recording_auth();
         let _: () = self.invoke_contract(
             &token_id,
             &crate::Symbol::short("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
+        _ = self.env_impl.set_authorization_entries([].into());
 
         token_id
     }
@@ -740,12 +745,27 @@ impl Env {
     /// Set authorizations in the environment which will be consumed by
     /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
     /// functions.
-    ///
-    /// To mock auth for testing, use [`Address::mock_auth`].
     pub fn set_auths(&self, auths: &[ContractAuth]) {
         self.env_impl
             .set_authorization_entries(auths.to_vec())
             .unwrap();
+    }
+
+    // Mock authorizations in the environment which will cause matching invokes of
+    // [`require_auth`] and [`require_auth_for_args`] to pass.
+    pub fn mock_auths(&self, auths: &[MockAuth]) {
+        for a in auths {
+            let Some(contract_id) = a.address.contract_id() else {
+                panic!("mocking auth is only supported with contract addresses")
+            };
+            self.register_contract(&contract_id, MockAuthContract);
+        }
+        let auths = auths
+            .iter()
+            .cloned()
+            .map(Into::into)
+            .collect::<std::vec::Vec<_>>();
+        self.env_impl.set_authorization_entries(auths).unwrap();
     }
 
     fn register_contract_with_contract_id_and_executable(

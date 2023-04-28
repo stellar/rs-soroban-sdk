@@ -1,6 +1,6 @@
 use crate::{
     self as soroban_sdk,
-    testutils::{MockAuth, MockAuthSubInvoke},
+    testutils::{MockAuth, MockAuthInvoke},
 };
 use soroban_sdk::{
     contractimpl, contracttype, testutils::Address as _, token::Client as TokenClient, Address,
@@ -56,18 +56,21 @@ fn test() {
     let spender = Address::random(&env);
 
     client
-        .mock_auth(MockAuth {
+        .mock_auths(&[MockAuth {
             address: &from,
             nonce: 0,
-            fn_name: "increase_allowance",
-            args: (&from, &spender, 20_i128).into_val(&env),
-            sub_invokes: &[MockAuthSubInvoke {
-                contract: &token_contract_id,
+            invoke: &MockAuthInvoke {
+                contract: &contract_id,
                 fn_name: "increase_allowance",
                 args: (&from, &spender, 20_i128).into_val(&env),
-                sub_invokes: &[],
-            }],
-        })
+                sub_invokes: &[MockAuthInvoke {
+                    contract: &token_contract_id,
+                    fn_name: "increase_allowance",
+                    args: (&from, &spender, 20_i128).into_val(&env),
+                    sub_invokes: &[],
+                }],
+            },
+        }])
         .increase_allowance(&from, &spender, &20);
 
     assert_eq!(client.allowance(&from, &spender), 20);

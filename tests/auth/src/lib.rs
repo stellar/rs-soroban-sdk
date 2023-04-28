@@ -16,12 +16,11 @@ mod test {
     use super::*;
     use soroban_sdk::{
         contracterror,
-        testutils::{Address as _, MockAuth},
-        vec,
+        testutils::{Address as _, MockAuth, MockAuthInvoke},
         xdr::{
             AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
         },
-        Address, Env, RawVal, Symbol,
+        Address, Env, IntoVal, RawVal,
     };
     extern crate std;
 
@@ -35,13 +34,31 @@ mod test {
         let a = Address::random(&e);
 
         let r = client
-            .mock_auth(MockAuth {
+            .mock_auths(&[MockAuth {
                 address: &a,
                 nonce: 0,
-                fn_name: "add",
-                args: vec![&e, a.to_raw()],
-                sub_invokes: &[],
-            })
+                invoke: &MockAuthInvoke {
+                    contract: &contract_id,
+                    fn_name: "add",
+                    args: (&a,).into_val(&e),
+                    sub_invokes: &[],
+                },
+            }])
+            .add(&a);
+
+        assert_eq!(r, 2);
+
+        let r = client
+            .mock_auths(&[MockAuth {
+                address: &a,
+                nonce: 1,
+                invoke: &MockAuthInvoke {
+                    contract: &contract_id,
+                    fn_name: "add",
+                    args: (&a,).into_val(&e),
+                    sub_invokes: &[],
+                },
+            }])
             .add(&a);
 
         assert_eq!(r, 2);
