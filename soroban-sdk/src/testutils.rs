@@ -68,7 +68,7 @@ pub mod budget {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub struct Budget(crate::env::internal::budget::Budget);
+    pub struct Budget(pub(crate) crate::env::internal::budget::Budget);
 
     impl Display for Budget {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
