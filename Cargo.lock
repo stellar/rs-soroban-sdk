@@ -865,7 +865,11 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "0.0.15"
+<<<<<<< HEAD
 source = "git+https://github.com/stellar/rs-soroban-env?rev=9b3ad64bd12e7747b0b6de44b686848345232311#9b3ad64bd12e7747b0b6de44b686848345232311"
+=======
+source = "git+https://github.com/stellar/rs-soroban-env?rev=ad5d6d1c3aed2976ed6126b7f68dcfd17215dc2c#ad5d6d1c3aed2976ed6126b7f68dcfd17215dc2c"
+>>>>>>> main
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -937,7 +941,11 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.15"
+<<<<<<< HEAD
 source = "git+https://github.com/stellar/rs-soroban-env?rev=9b3ad64bd12e7747b0b6de44b686848345232311#9b3ad64bd12e7747b0b6de44b686848345232311"
+=======
+source = "git+https://github.com/stellar/rs-soroban-env?rev=ad5d6d1c3aed2976ed6126b7f68dcfd17215dc2c#ad5d6d1c3aed2976ed6126b7f68dcfd17215dc2c"
+>>>>>>> main
 dependencies = [
  "itertools",
  "proc-macro2",
