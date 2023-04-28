@@ -745,32 +745,6 @@ impl Env {
         contract_id
     }
 
-    /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
-    /// functions.
-    pub fn set_auths(&self, auths: &[ContractAuth]) {
-        self.env_impl
-            .set_authorization_entries(auths.to_vec())
-            .unwrap();
-    }
-
-    // Mock authorizations in the environment which will cause matching invokes of
-    // [`require_auth`] and [`require_auth_for_args`] to pass.
-    pub fn mock_auths(&self, auths: &[MockAuth]) {
-        for a in auths {
-            let Some(contract_id) = a.address.contract_id() else {
-                panic!("mocking auth is only supported with contract addresses")
-            };
-            self.register_contract(&contract_id, MockAuthContract);
-        }
-        let auths = auths
-            .iter()
-            .cloned()
-            .map(Into::into)
-            .collect::<std::vec::Vec<_>>();
-        self.env_impl.set_authorization_entries(auths).unwrap();
-    }
-
     fn register_contract_with_contract_id_and_executable(
         &self,
         contract_id: &BytesN<32>,
@@ -830,6 +804,32 @@ impl Env {
             .unwrap()[0]
             .try_into_val(self)
             .unwrap()
+    }
+
+    /// Set authorizations in the environment which will be consumed by
+    /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
+    /// functions.
+    pub fn set_auths(&self, auths: &[ContractAuth]) {
+        self.env_impl
+            .set_authorization_entries(auths.to_vec())
+            .unwrap();
+    }
+
+    // Mock authorizations in the environment which will cause matching invokes of
+    // [`require_auth`] and [`require_auth_for_args`] to pass.
+    pub fn mock_auths(&self, auths: &[MockAuth]) {
+        for a in auths {
+            let Some(contract_id) = a.address.contract_id() else {
+                panic!("mocking auth is only supported with contract addresses")
+            };
+            self.register_contract(&contract_id, MockAuthContract);
+        }
+        let auths = auths
+            .iter()
+            .cloned()
+            .map(Into::into)
+            .collect::<std::vec::Vec<_>>();
+        self.env_impl.set_authorization_entries(auths).unwrap();
     }
 
     /// Run the function as if executed by the given contract ID.
