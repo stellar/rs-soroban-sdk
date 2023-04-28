@@ -80,7 +80,6 @@ pub mod internal {
 #[cfg(any(test, feature = "testutils"))]
 pub mod testutils {
     pub use super::internal::budget::Budget;
-    pub use super::internal::budget::CostType;
     pub use super::internal::LedgerInfo;
 }
 
