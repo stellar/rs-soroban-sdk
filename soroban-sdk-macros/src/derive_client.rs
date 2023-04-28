@@ -58,6 +58,10 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
+                    #[cfg(any(test, feature = "testutils"))]
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
                     if self.mock_all_auths {
                         self.env.mock_all_auths();
                     }
@@ -71,6 +75,10 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
+                    #[cfg(any(test, feature = "testutils"))]
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
                     if self.mock_all_auths {
                         self.env.mock_all_auths();
                     }
@@ -99,6 +107,8 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
         pub struct #client_ident {
             pub env: #crate_path::Env,
             pub contract_id: #crate_path::BytesN<32>,
+            #[cfg(any(test, feature = "testutils"))]
+            mock_all_auths: bool,
         }
 
         impl #client_ident {
@@ -106,11 +116,22 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_all_auths: false,
                 }
             }
 
             pub fn address(&self) -> #crate_path::Address {
                 #crate_path::Address::from_contract_id(&self.contract_id)
+            }
+
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_all_auths(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    mock_all_auths: true,
+                }
             }
 
             #(#fns)*

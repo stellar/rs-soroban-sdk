@@ -21,7 +21,7 @@ mod test {
         xdr::{
             AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
         },
-        Address, Env, RawVal, Symbol,
+        Address, Env, RawVal, Symbol, Status,
     };
     extern crate std;
 
@@ -38,7 +38,7 @@ mod test {
         let r = client.add(&a);
         assert_eq!(r, 2);
         assert_eq!(
-            e.mocked_auths(),
+            e.auths(),
             [(
                 a.clone(),
                 contract_id,
@@ -75,10 +75,19 @@ mod test {
 
         let r = client.add(&a);
         assert_eq!(r, 2);
+
+        assert_eq!(
+            e.auths(),
+            [(
+                a.clone(),
+                contract_id,
+                Symbol::short("add"),
+                vec![&e, a.to_raw()]
+            )],
+        );
     }
 
     #[test]
-    #[should_panic = "Status(ContractError(1))"]
     fn test_with_real_contract_auth_decline() {
         let e = Env::default();
 
@@ -103,7 +112,12 @@ mod test {
             signature_args: std::vec![].try_into().unwrap(),
         }]);
 
-        client.add(&a);
+        let r = client.try_add(&a);
+        // TODO: Update this test to assert that a general panic/trap occurred
+        // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
+        assert_eq!(r, Err(Ok(Status::from_contract_error(1))));
+
+        assert_eq!(e.auths(), []);
     }
 
     mod auth_approve {

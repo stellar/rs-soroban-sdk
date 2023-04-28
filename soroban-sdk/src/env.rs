@@ -761,9 +761,9 @@ impl Env {
     /// When mocking is enabled, if the [`Address`] being authorized is the
     /// address of an account, the account does not need to exist.
     ///
-    /// To disable mocking, see [`set_auth`].
+    /// To disable mocking, see [`set_auths`].
     ///
-    /// To access a recording of mocked auths, see [`mocked_auths`].
+    /// To access a list of auths that have occurred, see [`auths`].
     ///
     /// It is not currently possible to mock a subset of auths.
     ///
@@ -799,8 +799,8 @@ impl Env {
         self.env_impl.switch_to_recording_auth();
     }
 
-    /// Returns a list of calls to [`require_auth`] or [`require_auth_for_args`] that
-    /// were mocked during the last contract invocation.
+    /// Returns a list of authorizations that were seen during the last contract
+    /// invocation.
     ///
     /// Use this in tests to verify that the expected authorizations with the
     /// expected arguments are required.
@@ -846,7 +846,7 @@ impl Env {
     ///     let address = Address::random(&env);
     ///     client.transfer(&address, &1000_i128);
     ///     assert_eq!(
-    ///         env.mocked_auths(),
+    ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
@@ -857,7 +857,7 @@ impl Env {
     ///
     ///     client.transfer2(&address, &1000_i128);
     ///     assert_eq!(
-    ///         env.mocked_auths(),
+    ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
     ///             client.contract_id.clone(),
@@ -870,9 +870,12 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn mocked_auths(&self) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
+    pub fn auths(&self) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
         use xdr::{ScBytes, ScVal};
-        let authorizations = self.env_impl.get_recorded_top_authorizations().unwrap();
+        let authorizations = self
+            .env_impl
+            .get_authenticated_top_authorizations()
+            .unwrap();
         authorizations
             .iter()
             .map(|a| {

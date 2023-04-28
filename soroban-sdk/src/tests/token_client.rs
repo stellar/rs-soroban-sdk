@@ -55,7 +55,7 @@ fn test() {
     client.increase_allowance(&from, &spender, &20);
 
     assert_eq!(
-        env.mocked_auths(),
+        env.auths(),
         std::vec![(
             from.clone(),
             token_client.contract_id.clone(),
