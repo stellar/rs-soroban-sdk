@@ -108,9 +108,10 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
         impl<'a> #client_ident<'a> {
             pub fn new(env: &#crate_path::Env, contract_id: &impl #crate_path::IntoVal<#crate_path::Env, #crate_path::BytesN<32>>) -> Self {
                 Self {
-                    ph: core::marker::PhantomData,
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
+                    #[cfg(not(any(test, feature = "testutils")))]
+                    _phantom: core::marker::PhantomData,
                     #[cfg(any(test, feature = "testutils"))]
                     mock_auths: None,
                 }
