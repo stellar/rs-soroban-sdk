@@ -124,7 +124,6 @@ where
     }
 }
 
-use crate::testutils::MockAuthContract;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
@@ -461,6 +460,7 @@ impl Env {
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
     budget::Budget, random, BytesN as _, ContractFunctionSet, Ledger as _, MockAuth,
+    MockAuthContract,
 };
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
