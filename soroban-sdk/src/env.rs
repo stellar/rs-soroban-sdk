@@ -690,6 +690,9 @@ impl Env {
         let token_id = self.env_impl.invoke_functions(vec![create]).unwrap()[0]
             .try_into_val(self)
             .unwrap();
+        // Recording auth is used with set_admin because account auth is
+        // required with the issuer_pk, and there are currently no convenient
+        // methods to mock account auth.
         self.env_impl.switch_to_recording_auth();
         let _: () = self.invoke_contract(
             &token_id,
