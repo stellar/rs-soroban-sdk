@@ -59,21 +59,22 @@ mod test {
         let a = Address::from_contract_id(&auth_contract_id);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
-        e.set_auths(&[ContractAuth {
-            address_with_nonce: Some(AddressWithNonce {
-                address: a_xdr.clone(),
-                nonce: 0,
-            }),
-            root_invocation: AuthorizedInvocation {
-                contract_id: contract_id.to_array().into(),
-                function_name: StringM::try_from("add").unwrap().into(),
-                args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
-                sub_invocations: VecM::default(),
-            },
-            signature_args: std::vec![].try_into().unwrap(),
-        }]);
+        let r = client
+            .set_auths(&[ContractAuth {
+                address_with_nonce: Some(AddressWithNonce {
+                    address: a_xdr.clone(),
+                    nonce: 0,
+                }),
+                root_invocation: AuthorizedInvocation {
+                    contract_id: contract_id.to_array().into(),
+                    function_name: StringM::try_from("add").unwrap().into(),
+                    args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
+                    sub_invocations: VecM::default(),
+                },
+                signature_args: std::vec![].try_into().unwrap(),
+            }])
+            .add(&a);
 
-        let r = client.add(&a);
         assert_eq!(r, 2);
 
         assert_eq!(
@@ -98,21 +99,22 @@ mod test {
         let a = Address::from_contract_id(&auth_contract_id);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
-        e.set_auths(&[ContractAuth {
-            address_with_nonce: Some(AddressWithNonce {
-                address: a_xdr.clone(),
-                nonce: 0,
-            }),
-            root_invocation: AuthorizedInvocation {
-                contract_id: contract_id.to_array().into(),
-                function_name: StringM::try_from("add").unwrap().into(),
-                args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
-                sub_invocations: VecM::default(),
-            },
-            signature_args: std::vec![].try_into().unwrap(),
-        }]);
+        let r = client
+            .set_auths(&[ContractAuth {
+                address_with_nonce: Some(AddressWithNonce {
+                    address: a_xdr.clone(),
+                    nonce: 0,
+                }),
+                root_invocation: AuthorizedInvocation {
+                    contract_id: contract_id.to_array().into(),
+                    function_name: StringM::try_from("add").unwrap().into(),
+                    args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
+                    sub_invocations: VecM::default(),
+                },
+                signature_args: std::vec![].try_into().unwrap(),
+            }])
+            .try_add(&a);
 
-        let r = client.try_add(&a);
         // TODO: Update this test to assert that a general panic/trap occurred
         // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
         // The ContractError(1) being captured here is from the
