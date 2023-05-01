@@ -812,9 +812,9 @@ impl Env {
     ///
     /// The order of the returned vector is defined by the order of
     /// [`require_auth`] calls. Repeated calls to [`require_auth`] with the same
-    /// address in the same tree of contract invocations will appear only once
-    /// in the vector. Calls to [`require_auth`] in disjoint call trees for the
-    /// same address will present in the list.
+    /// address and args in the same tree of contract invocations will appear
+    /// only once in the vector. Calls to [`require_auth`] in disjoint call
+    /// trees for the same address will present in the list.
     ///
     /// ### Examples
     /// ```
