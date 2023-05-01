@@ -58,6 +58,18 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
+                    #[cfg(any(test, feature = "testutils"))]
+                    {
+                        if let Some(set_auths) = self.set_auths {
+                            self.env.set_auths(set_auths);
+                        }
+                        if self.mock_all_auths {
+                            self.env.mock_all_auths();
+                        }
+                    }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.invoke_contract(
                         &self.contract_id,
@@ -68,6 +80,19 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
+                    #[cfg(any(test, feature = "testutils"))]
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
+                    #[cfg(any(test, feature = "testutils"))]
+                    {
+                        if let Some(set_auths) = self.set_auths {
+                            self.env.set_auths(set_auths);
+                        }
+                        if self.mock_all_auths {
+                            self.env.mock_all_auths();
+                        }
+                    }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.try_invoke_contract(
                         &self.contract_id,
@@ -90,21 +115,53 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
     let client_ident = format_ident!("{}", name);
     quote! {
         #[doc = #client_doc]
-        pub struct #client_ident {
+        pub struct #client_ident<'a> {
             pub env: #crate_path::Env,
             pub contract_id: #crate_path::BytesN<32>,
+            #[cfg(not(any(test, feature = "testutils")))]
+            _phantom: core::marker::PhantomData<&'a ()>,
+            #[cfg(any(test, feature = "testutils"))]
+            set_auths: Option<&'a [#crate_path::xdr::ContractAuth]>,
+            #[cfg(any(test, feature = "testutils"))]
+            mock_all_auths: bool,
         }
 
-        impl #client_ident {
+        impl<'a> #client_ident<'a> {
             pub fn new(env: &#crate_path::Env, contract_id: &impl #crate_path::IntoVal<#crate_path::Env, #crate_path::BytesN<32>>) -> Self {
                 Self {
                     env: env.clone(),
                     contract_id: contract_id.into_val(env),
+                    #[cfg(not(any(test, feature = "testutils")))]
+                    _phantom: core::marker::PhantomData,
+                    #[cfg(any(test, feature = "testutils"))]
+                    set_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_all_auths: false,
                 }
             }
 
             pub fn address(&self) -> #crate_path::Address {
                 #crate_path::Address::from_contract_id(&self.contract_id)
+            }
+
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn set_auths(&self, auths: &'a [#crate_path::xdr::ContractAuth]) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    set_auths: Some(auths),
+                    mock_all_auths: false,
+                }
+            }
+
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_all_auths(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    set_auths: None,
+                    mock_all_auths: true,
+                }
             }
 
             #(#fns)*
