@@ -38,17 +38,17 @@ soroban-token-sdk = { version = "0.7.0", path = "soroban-token-sdk" }
 [workspace.dependencies.soroban-env-common]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "cd86a7c3fcaf8e9cfb14225fd78b1d9d63f1968b"
+rev = "312fea6cc885f9647ca4933e417f6745c715b558"
 
 [workspace.dependencies.soroban-env-guest]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "cd86a7c3fcaf8e9cfb14225fd78b1d9d63f1968b"
+rev = "312fea6cc885f9647ca4933e417f6745c715b558"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.15"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "cd86a7c3fcaf8e9cfb14225fd78b1d9d63f1968b"
+rev = "312fea6cc885f9647ca4933e417f6745c715b558"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
