@@ -871,10 +871,7 @@ impl Env {
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
         use xdr::{ScBytes, ScVal};
-        let authorizations = self
-            .env_impl
-            .get_authenticated_top_authorizations()
-            .unwrap();
+        let authorizations = self.env_impl.get_authenticated_authorizations().unwrap();
         authorizations
             .iter()
             .map(|a| {
