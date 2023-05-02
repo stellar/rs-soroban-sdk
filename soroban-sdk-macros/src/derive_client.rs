@@ -168,7 +168,6 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             #[cfg(any(test, feature = "testutils"))]
             pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
                 Self {
-                    ph: core::marker::PhantomData,
                     env: self.env.clone(),
                     contract_id: self.contract_id.clone(),
                     set_auths: self.set_auths.clone(),

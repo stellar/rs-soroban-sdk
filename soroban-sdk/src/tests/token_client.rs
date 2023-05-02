@@ -69,7 +69,6 @@ fn test_mock_all_auth() {
     assert_eq!(client.allowance(&from, &spender), 20);
 }
 
-
 #[test]
 fn test_mock_auth() {
     extern crate std;
