@@ -95,17 +95,10 @@ fn test_mock_auth() {
             address: &from,
             nonce: 0,
             invoke: &MockAuthInvoke {
-                contract: &contract_id,
+                contract: &token_contract_id,
                 fn_name: "increase_allowance",
                 args: (&from, &spender, 20_i128).into_val(&env),
-                sub_invokes: &[MockAuthInvoke {
-                    // TODO: Find and fix the bug that is causing the token
-                    // client invocation to fail.
-                    contract: &token_contract_id,
-                    fn_name: "increase_allowance",
-                    args: (&from, &spender, 20_i128).into_val(&env),
-                    sub_invokes: &[],
-                }],
+                sub_invokes: &[],
             },
         }])
         .increase_allowance(&from, &spender, &20);
