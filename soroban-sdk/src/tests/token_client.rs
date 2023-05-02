@@ -1,10 +1,10 @@
-use crate::{
-    self as soroban_sdk,
-    testutils::{MockAuth, MockAuthInvoke},
-};
+use crate as soroban_sdk;
+
 use soroban_sdk::{
-    contractimpl, contracttype, testutils::Address as _, token::Client as TokenClient, Address,
-    BytesN, Env, IntoVal,
+    contractimpl, contracttype,
+    testutils::{Address as _, MockAuth, MockAuthInvoke},
+    token::Client as TokenClient,
+    Address, BytesN, Env, IntoVal, Symbol,
 };
 
 #[contracttype]
