@@ -25,6 +25,21 @@ jobs:
     - run: rustup update
     - run: cargo fmt --all --check
 
+  cargo-deny:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        checks:
+          - advisories
+          - bans licenses sources
+    # Prevent sudden announcement of a new advisory from failing ci:
+    continue-on-error: ${{ matrix.checks == 'advisories' }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: EmbarkStudios/cargo-deny-action@e0a440755b184aa50374330fa75cca0f84fcb59a
+      with:
+        command: check ${{ matrix.checks }}
+
   rust-analyzer-compat:
     runs-on: ubuntu-latest
     steps:

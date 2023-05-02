@@ -143,7 +143,7 @@ pub fn derive_fn(
 pub fn derive_contract_function_set<'a>(
     crate_path: &Path,
     ty: &Type,
-    methods: impl Iterator<Item = &'a syn::ImplItemMethod>,
+    methods: impl Iterator<Item = &'a syn::ImplItemFn>,
 ) -> TokenStream2 {
     let (idents, wrap_idents, attrs): (Vec<_>, Vec<_>, Vec<_>) = methods
         .map(|m| {
@@ -153,7 +153,7 @@ pub fn derive_contract_function_set<'a>(
                 .attrs
                 .iter()
                 // Don't propogate doc comments into the match statement below.
-                .filter(|a| !a.path.is_ident("doc"))
+                .filter(|a| !a.path().is_ident("doc"))
                 .collect::<Vec<_>>();
             (ident, wrap_ident, attrs)
         })
