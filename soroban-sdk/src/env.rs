@@ -466,7 +466,10 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
+use xdr::{
+    AuthorizedInvocation, ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScVec,
+    StringM,
+};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -686,19 +689,43 @@ impl Env {
             auth: Default::default(),
         };
 
-        let token_id = self.env_impl.invoke_functions(vec![create]).unwrap()[0]
+        let token_id: BytesN<32> = self.env_impl.invoke_functions(vec![create]).unwrap()[0]
             .try_into_val(self)
             .unwrap();
+
+        let source_account = self.env_impl.source_account();
+        self.env_impl.set_source_account(issuer_id);
+
         // Recording auth is used with set_admin because account auth is
         // required with the issuer_pk, and there are currently no convenient
         // methods to mock account auth.
-        self.env_impl.switch_to_recording_auth();
+        _ = self.env_impl.set_authorization_entries(
+            [ContractAuth {
+                address_with_nonce: None,
+                root_invocation: AuthorizedInvocation {
+                    contract_id: Hash(token_id.to_array()),
+                    function_name: StringM::try_from("set_admin").unwrap().into(),
+                    args: ScVec([admin.clone().try_into().unwrap()].try_into().unwrap()),
+                    sub_invocations: [].try_into().unwrap(),
+                },
+                signature_args: ScVec([].try_into().unwrap()),
+            }]
+            .into(),
+        );
         let _: () = self.invoke_contract(
             &token_id,
             &crate::Symbol::short("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
+        // TODO: Restore previous auth state after
+        // https://github.com/stellar/rs-soroban-env/issues/785 is implemented.
         _ = self.env_impl.set_authorization_entries([].into());
+
+        if let Some(source_account) = source_account {
+            self.env_impl.set_source_account(source_account);
+        } else {
+            self.env_impl.remove_source_account();
+        }
 
         token_id
     }
