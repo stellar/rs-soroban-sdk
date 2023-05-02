@@ -38,7 +38,40 @@ impl TestContract {
 }
 
 #[test]
-fn test() {
+fn test_mock_all_auth() {
+    extern crate std;
+
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::random(&env);
+    let token_contract_id = env.register_stellar_asset_contract(admin);
+
+    let contract_id = env.register_contract(None, TestContract);
+    let client = TestContractClient::new(&env, &contract_id);
+    client.init(&token_contract_id);
+
+    let token_client = TokenClient::new(&env, &client.get_token());
+    assert_eq!(token_client.decimals(), 7);
+    let from = Address::random(&env);
+    let spender = Address::random(&env);
+
+    assert_eq!(
+        env.auths(),
+        std::vec![(
+            from.clone(),
+            token_client.contract_id.clone(),
+            Symbol::new(&env, "increase_allowance"),
+            (&from, &spender, 20_i128).into_val(&env)
+        )]
+    );
+
+    assert_eq!(client.allowance(&from, &spender), 20);
+}
+
+
+#[test]
+fn test_mock_auth() {
     extern crate std;
 
     let env = Env::default();

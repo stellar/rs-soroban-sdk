@@ -58,8 +58,20 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
+                    #[cfg(any(test, feature = "testutils"))]
+                    {
+                        if let Some(set_auths) = self.set_auths {
+                            self.env.set_auths(set_auths);
+                        }
+                        if let Some(mock_auths) = self.mock_auths {
+                            self.env.mock_auths(mock_auths);
+                        }
+                        if self.mock_all_auths {
+                            self.env.mock_all_auths();
+                        }
                     }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.invoke_contract(
@@ -71,8 +83,21 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
+                    #[cfg(any(test, feature = "testutils"))]
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
+                    #[cfg(any(test, feature = "testutils"))]
+                    {
+                        if let Some(set_auths) = self.set_auths {
+                            self.env.set_auths(set_auths);
+                        }
+                        if let Some(mock_auths) = self.mock_auths {
+                            self.env.mock_auths(mock_auths);
+                        }
+                        if self.mock_all_auths {
+                            self.env.mock_all_auths();
+                        }
                     }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.try_invoke_contract(
@@ -102,7 +127,11 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             #[cfg(not(any(test, feature = "testutils")))]
             _phantom: core::marker::PhantomData<&'a ()>,
             #[cfg(any(test, feature = "testutils"))]
+            set_auths: Option<&'a [#crate_path::xdr::ContractAuth]>,
+            #[cfg(any(test, feature = "testutils"))]
             mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
+            #[cfg(any(test, feature = "testutils"))]
+            mock_all_auths: bool,
         }
 
         impl<'a> #client_ident<'a> {
@@ -113,7 +142,11 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                     #[cfg(not(any(test, feature = "testutils")))]
                     _phantom: core::marker::PhantomData,
                     #[cfg(any(test, feature = "testutils"))]
+                    set_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
                     mock_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_all_auths: false,
                 }
             }
 
@@ -122,12 +155,36 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             }
 
             #[cfg(any(test, feature = "testutils"))]
+            pub fn set_auths(&self, auths: &'a [#crate_path::xdr::ContractAuth]) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    set_auths: Some(auths),
+                    mock_auths: self.mock_auths.clone(),
+                    mock_all_auths: false,
+                }
+            }
+
+            #[cfg(any(test, feature = "testutils"))]
             pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
                 Self {
                     ph: core::marker::PhantomData,
                     env: self.env.clone(),
                     contract_id: self.contract_id.clone(),
+                    set_auths: self.set_auths.clone(),
                     mock_auths: Some(mock_auths),
+                    mock_all_auths: false,
+                }
+            }
+
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_all_auths(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    set_auths: None,
+                    mock_auths: None,
+                    mock_all_auths: true,
                 }
             }
 

@@ -39,7 +39,7 @@ pub mod budget {
     use core::fmt::{Debug, Display};
 
     #[doc(inline)]
-    pub use crate::env::internal::budget::CostType;
+    pub use crate::xdr::ContractCostType;
 
     /// Budget that tracks the resources consumed for the environment.
     ///
@@ -126,7 +126,7 @@ pub mod budget {
         ///
         /// Note that VM cost types are likely to be underestimated when running
         /// Rust code compared to running the WASM equivalent.
-        pub fn tracker(&self, cost_type: CostType) -> (u64, Option<u64>) {
+        pub fn tracker(&self, cost_type: ContractCostType) -> (u64, Option<u64>) {
             self.0.get_tracker(cost_type)
         }
 
