@@ -744,6 +744,180 @@ impl Env {
         contract_id
     }
 
+    /// Set authorizations in the environment which will be consumed by
+    /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
+    /// functions.
+    ///
+    /// To mock auth for testing, use [`mock_all_auths`]. If mocking of auths is
+    /// enabled, calling [`set_auths`] disables any mocking.
+    pub fn set_auths(&self, auths: &[ContractAuth]) {
+        self.env_impl
+            .set_authorization_entries(auths.to_vec())
+            .unwrap();
+    }
+
+    // Mock authorizations in the environment which will cause matching invokes of
+    // [`require_auth`] and [`require_auth_for_args`] to pass.
+    pub fn mock_auths(&self, auths: &[MockAuth]) {
+        for a in auths {
+            let Some(contract_id) = a.address.contract_id() else {
+                panic!("mocking auth is only supported with contract addresses")
+            };
+            self.register_contract(&contract_id, MockAuthContract);
+        }
+        let auths = auths
+            .iter()
+            .cloned()
+            .map(Into::into)
+            .collect::<std::vec::Vec<_>>();
+        self.env_impl.set_authorization_entries(auths).unwrap();
+    }
+
+    /// Mock all calls to the [`require_auth`] and [`require_auth_for_args`]
+    /// functions in invoked contracts, having them succeed as if authorization
+    /// was provided.
+    ///
+    /// When mocking is enabled, if the [`Address`] being authorized is the
+    /// address of a contract, that contract's `__check_auth` function will not
+    /// be called, and the contract does not need to exist or be registered in
+    /// the test.
+    ///
+    /// When mocking is enabled, if the [`Address`] being authorized is the
+    /// address of an account, the account does not need to exist.
+    ///
+    /// To disable mocking, see [`set_auths`].
+    ///
+    /// To access a list of auths that have occurred, see [`auths`].
+    ///
+    /// It is not currently possible to mock a subset of auths.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, Env, Address, testutils::Address as _};
+    ///
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn hello(env: Env, from: Address) {
+    ///         from.require_auth();
+    ///         // TODO
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///
+    ///     env.mock_all_auths();
+    ///
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///     let addr = Address::random(&env);
+    ///     client.hello(&addr);
+    /// }
+    /// ```
+    pub fn mock_all_auths(&self) {
+        self.env_impl.switch_to_recording_auth();
+    }
+
+    /// Returns a list of authorizations that were seen during the last contract
+    /// invocation.
+    ///
+    /// Use this in tests to verify that the expected authorizations with the
+    /// expected arguments are required.
+    ///
+    /// The return value is a vector of authorizations represented by tuples of
+    /// `(address, contract_id, function_name, args)` corresponding to the calls
+    /// of `require_auth_for_args(address, args)` from the contract function
+    /// `(contract_id, function_name)` (or `require_auth` with all the arguments
+    /// of the function invocation).
+    ///
+    /// The order of the returned vector is defined by the order of
+    /// [`require_auth`] calls. Repeated calls to [`require_auth`] with the same
+    /// address and args in the same tree of contract invocations will appear
+    /// only once in the vector. Calls to [`require_auth`] in disjoint call
+    /// trees for the same address will present in the list.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, testutils::Address as _, Address, Symbol, Env, IntoVal};
+    ///
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn transfer(env: Env, address: Address, amount: i128) {
+    ///         address.require_auth();
+    ///     }
+    ///     pub fn transfer2(env: Env, address: Address, amount: i128) {
+    ///         address.require_auth_for_args((amount / 2,).into_val(&env));
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    ///     extern crate std;
+    ///     let env = Env::default();
+    ///     let contract_id = env.register_contract(None, Contract);
+    ///     let client = ContractClient::new(&env, &contract_id);
+    ///     env.mock_all_auths();
+    ///     let address = Address::random(&env);
+    ///     client.transfer(&address, &1000_i128);
+    ///     assert_eq!(
+    ///         env.auths(),
+    ///         std::vec![(
+    ///             address.clone(),
+    ///             client.contract_id.clone(),
+    ///             Symbol::short("transfer"),
+    ///             (&address, 1000_i128,).into_val(&env)
+    ///         )]
+    ///     );
+    ///
+    ///     client.transfer2(&address, &1000_i128);
+    ///     assert_eq!(
+    ///         env.auths(),
+    ///         std::vec![(
+    ///             address.clone(),
+    ///             client.contract_id.clone(),
+    ///             Symbol::short("transfer2"),
+    ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
+    ///             (500_i128,).into_val(&env)
+    ///         )]
+    ///     );
+    /// }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn auths(&self) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
+        use xdr::{ScBytes, ScVal};
+        let authorizations = self.env_impl.get_authenticated_authorizations().unwrap();
+        authorizations
+            .iter()
+            .map(|a| {
+                let mut args = Vec::new(self);
+                for v in a.3.iter() {
+                    args.push_back(RawVal::try_from_val(self, v).unwrap());
+                }
+                (
+                    Address::try_from_val(self, &ScVal::Address(a.0.clone())).unwrap(),
+                    BytesN::<32>::try_from_val(
+                        self,
+                        &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
+                    )
+                    .unwrap(),
+                    crate::Symbol::try_from_val(self, &a.2).unwrap(),
+                    args,
+                )
+            })
+            .collect()
+    }
+
     fn register_contract_with_contract_id_and_executable(
         &self,
         contract_id: &BytesN<32>,
@@ -803,32 +977,6 @@ impl Env {
             .unwrap()[0]
             .try_into_val(self)
             .unwrap()
-    }
-
-    /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
-    /// functions.
-    pub fn set_auths(&self, auths: &[ContractAuth]) {
-        self.env_impl
-            .set_authorization_entries(auths.to_vec())
-            .unwrap();
-    }
-
-    // Mock authorizations in the environment which will cause matching invokes of
-    // [`require_auth`] and [`require_auth_for_args`] to pass.
-    pub fn mock_auths(&self, auths: &[MockAuth]) {
-        for a in auths {
-            let Some(contract_id) = a.address.contract_id() else {
-                panic!("mocking auth is only supported with contract addresses")
-            };
-            self.register_contract(&contract_id, MockAuthContract);
-        }
-        let auths = auths
-            .iter()
-            .cloned()
-            .map(Into::into)
-            .collect::<std::vec::Vec<_>>();
-        self.env_impl.set_authorization_entries(auths).unwrap();
     }
 
     /// Run the function as if executed by the given contract ID.
