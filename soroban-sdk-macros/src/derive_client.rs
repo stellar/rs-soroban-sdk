@@ -124,12 +124,16 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
         pub struct #client_ident<'a> {
             pub env: #crate_path::Env,
             pub contract_id: #crate_path::BytesN<32>,
+            #[doc(hidden)]
             #[cfg(not(any(test, feature = "testutils")))]
             _phantom: core::marker::PhantomData<&'a ()>,
+            #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
             set_auths: Option<&'a [#crate_path::xdr::ContractAuth]>,
+            #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
             mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
+            #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
             mock_all_auths: bool,
         }

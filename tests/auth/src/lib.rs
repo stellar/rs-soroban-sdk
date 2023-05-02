@@ -16,7 +16,7 @@ mod test_a {
     use super::*;
     use soroban_sdk::{
         contracterror,
-        testutils::Address as _,
+        testutils::{Address as _, MockAuth, MockAuthInvoke},
         vec,
         xdr::{
             AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
@@ -28,14 +28,13 @@ mod test_a {
     #[test]
     fn test_with_mock_all_auth() {
         let e = Env::default();
-        e.mock_all_auths();
 
         let contract_id = e.register_contract(None, ContractA);
         let client = ContractAClient::new(&e, &contract_id);
 
         let a = Address::random(&e);
 
-        let r = client.fn1(&a);
+        let r = client.mock_all_auths().fn1(&a);
         assert_eq!(r, 2);
         assert_eq!(
             e.auths(),
@@ -44,6 +43,39 @@ mod test_a {
                 contract_id,
                 Symbol::short("fn1"),
                 vec![&e, a.to_raw()]
+            )],
+        );
+    }
+
+    #[test]
+    fn test_with_mock_auth() {
+        let e = Env::default();
+
+        let contract_id = e.register_contract(None, ContractA);
+        let client = ContractAClient::new(&e, &contract_id);
+
+        let a = Address::random(&e);
+
+        let r = client
+            .mock_auths(&[MockAuth {
+                address: &a,
+                nonce: 0,
+                invoke: &MockAuthInvoke {
+                    contract: &contract_id,
+                    fn_name: "fn1",
+                    args: (&a,).into_val(&e),
+                    sub_invokes: &[],
+                },
+            }])
+            .fn1(&a);
+        assert_eq!(r, 2);
+        assert_eq!(
+            e.auths(),
+            [(
+                a.clone(),
+                contract_id,
+                Symbol::short("fn1"),
+                (&a,).into_val(&e),
             )],
         );
     }
@@ -83,7 +115,7 @@ mod test_a {
                 a.clone(),
                 contract_id,
                 Symbol::short("fn1"),
-                vec![&e, a.to_raw()]
+                (&a,).into_val(&e),
             )],
         );
     }
@@ -185,7 +217,7 @@ mod test_b {
     use super::*;
     use soroban_sdk::{
         contracterror,
-        testutils::Address as _,
+        testutils::{Address as _, MockAuth, MockAuthInvoke},
         xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM},
         Address, Env, RawVal, Status, Symbol,
     };
@@ -194,7 +226,6 @@ mod test_b {
     #[test]
     fn test_with_mock_all_auth() {
         let e = Env::default();
-        e.mock_all_auths();
 
         let contract_a_id = e.register_contract(None, ContractA);
         let contract_b_id = e.register_contract(None, ContractB);
@@ -202,7 +233,54 @@ mod test_b {
 
         let a = Address::random(&e);
 
-        let r = client.fn2(&a, &contract_a_id);
+        let r = client.mock_all_auths().fn2(&a, &contract_a_id);
+        assert_eq!(r, 2);
+        assert_eq!(
+            e.auths(),
+            [
+                (
+                    a.clone(),
+                    contract_b_id,
+                    Symbol::short("fn2"),
+                    (1, 2).into_val(&e),
+                ),
+                (
+                    a.clone(),
+                    contract_a_id,
+                    Symbol::short("fn1"),
+                    (&a,).into_val(&e),
+                )
+            ],
+        );
+    }
+
+    #[test]
+    fn test_with_mock_auth() {
+        let e = Env::default();
+
+        let contract_a_id = e.register_contract(None, ContractA);
+        let contract_b_id = e.register_contract(None, ContractB);
+        let client = ContractBClient::new(&e, &contract_b_id);
+
+        let a = Address::random(&e);
+
+        let r = client
+            .mock_auths(&[MockAuth {
+                address: &a,
+                nonce: 0,
+                invoke: &MockAuthInvoke {
+                    contract: &contract_b_id,
+                    fn_name: "fn2",
+                    args: (1, 2).into_val(&e),
+                    sub_invokes: &[MockAuthInvoke {
+                        contract: &contract_a_id,
+                        fn_name: "fn1",
+                        args: (&a,).into_val(&e),
+                        sub_invokes: &[],
+                    }],
+                },
+            }])
+            .fn2(&a, &contract_a_id);
         assert_eq!(r, 2);
         assert_eq!(
             e.auths(),
