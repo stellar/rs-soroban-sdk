@@ -42,7 +42,6 @@ fn test_mock_all_auth() {
     extern crate std;
 
     let env = Env::default();
-    env.mock_all_auths();
 
     let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
@@ -56,11 +55,15 @@ fn test_mock_all_auth() {
     let from = Address::random(&env);
     let spender = Address::random(&env);
 
+    client
+        .mock_all_auths()
+        .increase_allowance(&from, &spender, &20);
+
     assert_eq!(
         env.auths(),
         std::vec![(
             from.clone(),
-            token_client.contract_id.clone(),
+            token_contract_id.clone(),
             Symbol::new(&env, "increase_allowance"),
             (&from, &spender, 20_i128).into_val(&env)
         )]
