@@ -1,7 +1,10 @@
 use crate as soroban_sdk;
+
 use soroban_sdk::{
-    contractimpl, contracttype, testutils::Address as _, token::Client as TokenClient, Address,
-    BytesN, Env, IntoVal, Symbol,
+    contractimpl, contracttype,
+    testutils::{Address as _, MockAuth, MockAuthInvoke},
+    token::Client as TokenClient,
+    Address, BytesN, Env, IntoVal, Symbol,
 };
 
 #[contracttype]
@@ -35,11 +38,10 @@ impl TestContract {
 }
 
 #[test]
-fn test() {
+fn test_mock_all_auth() {
     extern crate std;
 
     let env = Env::default();
-    env.mock_all_auths();
 
     let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
@@ -52,17 +54,54 @@ fn test() {
     assert_eq!(token_client.decimals(), 7);
     let from = Address::random(&env);
     let spender = Address::random(&env);
-    client.increase_allowance(&from, &spender, &20);
+
+    client
+        .mock_all_auths()
+        .increase_allowance(&from, &spender, &20);
 
     assert_eq!(
         env.auths(),
         std::vec![(
             from.clone(),
-            token_client.contract_id.clone(),
+            token_contract_id.clone(),
             Symbol::new(&env, "increase_allowance"),
             (&from, &spender, 20_i128).into_val(&env)
         )]
     );
+
+    assert_eq!(client.allowance(&from, &spender), 20);
+}
+
+#[test]
+fn test_mock_auth() {
+    extern crate std;
+
+    let env = Env::default();
+
+    let admin = Address::random(&env);
+    let token_contract_id = env.register_stellar_asset_contract(admin);
+
+    let contract_id = env.register_contract(None, TestContract);
+    let client = TestContractClient::new(&env, &contract_id);
+    client.init(&token_contract_id);
+
+    let token_client = TokenClient::new(&env, &client.get_token());
+    assert_eq!(token_client.decimals(), 7);
+    let from = Address::random(&env);
+    let spender = Address::random(&env);
+
+    client
+        .mock_auths(&[MockAuth {
+            address: &from,
+            nonce: 0,
+            invoke: &MockAuthInvoke {
+                contract: &token_contract_id,
+                fn_name: "increase_allowance",
+                args: (&from, &spender, 20_i128).into_val(&env),
+                sub_invokes: &[],
+            },
+        }])
+        .increase_allowance(&from, &spender, &20);
 
     assert_eq!(client.allowance(&from, &spender), 20);
 }

@@ -4,8 +4,10 @@
 //! Utilities intended for use when testing.
 
 mod sign;
-
 pub use sign::ed25519;
+
+mod mock_auth;
+pub use mock_auth::{MockAuth, MockAuthContract, MockAuthInvoke};
 
 use crate::{Env, RawVal, Vec};
 

@@ -66,6 +66,9 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                         if let Some(set_auths) = self.set_auths {
                             self.env.set_auths(set_auths);
                         }
+                        if let Some(mock_auths) = self.mock_auths {
+                            self.env.mock_auths(mock_auths);
+                        }
                         if self.mock_all_auths {
                             self.env.mock_all_auths();
                         }
@@ -88,6 +91,9 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                     {
                         if let Some(set_auths) = self.set_auths {
                             self.env.set_auths(set_auths);
+                        }
+                        if let Some(mock_auths) = self.mock_auths {
+                            self.env.mock_auths(mock_auths);
                         }
                         if self.mock_all_auths {
                             self.env.mock_all_auths();
@@ -118,10 +124,16 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
         pub struct #client_ident<'a> {
             pub env: #crate_path::Env,
             pub contract_id: #crate_path::BytesN<32>,
+            #[doc(hidden)]
             #[cfg(not(any(test, feature = "testutils")))]
             _phantom: core::marker::PhantomData<&'a ()>,
+            #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
             set_auths: Option<&'a [#crate_path::xdr::ContractAuth]>,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
+            #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
             mock_all_auths: bool,
         }
@@ -135,6 +147,8 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                     _phantom: core::marker::PhantomData,
                     #[cfg(any(test, feature = "testutils"))]
                     set_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_auths: None,
                     #[cfg(any(test, feature = "testutils"))]
                     mock_all_auths: false,
                 }
@@ -150,6 +164,18 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                     env: self.env.clone(),
                     contract_id: self.contract_id.clone(),
                     set_auths: Some(auths),
+                    mock_auths: self.mock_auths.clone(),
+                    mock_all_auths: false,
+                }
+            }
+
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    contract_id: self.contract_id.clone(),
+                    set_auths: self.set_auths.clone(),
+                    mock_auths: Some(mock_auths),
                     mock_all_auths: false,
                 }
             }
@@ -160,6 +186,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                     env: self.env.clone(),
                     contract_id: self.contract_id.clone(),
                     set_auths: None,
+                    mock_auths: None,
                     mock_all_auths: true,
                 }
             }
