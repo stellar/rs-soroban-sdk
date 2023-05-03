@@ -1,9 +1,10 @@
-use crate::{
-    self as soroban_sdk,
+use crate as soroban_sdk;
+
+use soroban_sdk::{
+    contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
-    Address, IntoVal,
+    Address, Env, IntoVal,
 };
-use soroban_sdk::{contractimpl, Env};
 
 pub struct Contract;
 
