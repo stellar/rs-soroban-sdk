@@ -693,12 +693,10 @@ impl Env {
             .try_into_val(self)
             .unwrap();
 
+        // Call the set_admin fn as the issuer, authorized via the source
+        // account, and set the admin to the admin Address provided.
         let source_account = self.env_impl.source_account();
         self.env_impl.set_source_account(issuer_id);
-
-        // Recording auth is used with set_admin because account auth is
-        // required with the issuer_pk, and there are currently no convenient
-        // methods to mock account auth.
         _ = self.env_impl.set_authorization_entries(
             [ContractAuth {
                 address_with_nonce: None,
@@ -720,7 +718,6 @@ impl Env {
         // TODO: Restore previous auth state after
         // https://github.com/stellar/rs-soroban-env/issues/785 is implemented.
         _ = self.env_impl.set_authorization_entries([].into());
-
         if let Some(source_account) = source_account {
             self.env_impl.set_source_account(source_account);
         } else {
