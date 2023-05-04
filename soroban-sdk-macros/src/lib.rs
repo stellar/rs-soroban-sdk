@@ -22,15 +22,15 @@ use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
 
-use darling::FromMeta;
+use darling::{ast::NestedMeta, FromMeta};
 use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
-    parse_macro_input, parse_str, spanned::Spanned, AttributeArgs, Data, DeriveInput, Error,
-    Fields, ItemImpl, Path, Type, Visibility,
+    parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
+    Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
@@ -50,7 +50,12 @@ struct ContractSpecArgs {
 
 #[proc_macro_attribute]
 pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
     let args = match ContractSpecArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
@@ -88,7 +93,12 @@ struct ContractImplArgs {
 
 #[proc_macro_attribute]
 pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
     let args = match ContractImplArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
@@ -159,7 +169,12 @@ struct MetadataArgs {
 
 #[proc_macro]
 pub fn contractmeta(metadata: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
     let args = match MetadataArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
@@ -229,7 +244,12 @@ struct ContractTypeArgs {
 
 #[proc_macro_attribute]
 pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
     let args = match ContractTypeArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
@@ -289,7 +309,12 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
 #[proc_macro_attribute]
 pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
     let args = match ContractTypeArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
@@ -339,7 +364,12 @@ struct ContractFileArgs {
 
 #[proc_macro]
 pub fn contractfile(metadata: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
     let args = match ContractFileArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
@@ -382,7 +412,12 @@ struct ContractClientArgs {
 
 #[proc_macro_attribute]
 pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(metadata as AttributeArgs);
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
     let args = match ContractClientArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
@@ -406,8 +441,13 @@ struct ContractImportArgs {
 }
 #[proc_macro]
 pub fn contractimport(metadata: TokenStream) -> TokenStream {
-    let attr_args = parse_macro_input!(metadata as AttributeArgs);
-    let args = match ContractImportArgs::from_list(&attr_args) {
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
+    let args = match ContractImportArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
