@@ -1,3 +1,5 @@
+//! Demonstrates that a single contract invocation can be authorized.
+
 use crate as soroban_sdk;
 
 use soroban_sdk::{
