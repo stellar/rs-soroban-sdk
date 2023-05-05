@@ -267,19 +267,7 @@ impl Env {
     /// currently executing contract.
     #[inline(always)]
     pub fn storage(&self) -> Storage {
-        Storage::new_persistent(self)
-    }
-
-    /// Get a [Storage] for accessing and updating temporary data owned by the
-    /// currently executing contract.
-    ///
-    /// Temporary data only exists during a single top-level contract
-    /// invocation, so this is only useful for persisting data between several
-    /// cross-contract calls (e.g. to increase and then spend the token
-    /// allowance from another contract)
-    #[inline(always)]
-    pub fn temp_storage(&self) -> Storage {
-        Storage::new_temporary(self)
+        Storage::new(self)
     }
 
     /// Get [Events] for publishing events associated with the
@@ -1075,14 +1063,6 @@ impl Env {
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
         self.env_impl.with_budget(|b| Budget::new(b))
-    }
-
-    /// Resets the `temp_storage()` associated with this `Env`.
-    ///
-    /// This removes all the temporary storage entries without distinguishing
-    /// between the contracts that own them.
-    pub fn reset_temp_storage(&self) {
-        self.env_impl.reset_temp_storage();
     }
 }
 
