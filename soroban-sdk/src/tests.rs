@@ -1,6 +1,7 @@
 #![cfg(test)]
 
 mod address;
+mod auth;
 mod budget;
 mod contract_add_i32;
 mod contract_assert;
@@ -20,4 +21,3 @@ mod contractimport_with_sha256;
 mod env;
 mod token_client;
 mod token_spec;
-mod auth;

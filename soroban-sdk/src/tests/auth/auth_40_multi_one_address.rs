@@ -82,7 +82,7 @@ fn test_auth_as_tree() {
             invoke: &MockAuthInvoke {
                 contract: &contract_a_id,
                 fn_name: "fna",
-                args: (&a,).into_val(&e), // ???
+                args: (&a,).into_val(&e),
                 sub_invokes: &[MockAuthInvoke {
                     contract: &contract_b_id,
                     fn_name: "fnb",
