@@ -23,11 +23,18 @@ impl TokenUtils {
 
     #[inline(always)]
     pub fn set_metadata(&self, metadata: &TokenMetadata) {
-        self.0.storage().set(&METADATA_KEY, metadata);
+        self.0
+            .storage()
+            .mergeable()
+            .set(&METADATA_KEY, metadata, None);
     }
 
     #[inline(always)]
     pub fn get_metadata(&self) -> TokenMetadata {
-        self.0.storage().get(&METADATA_KEY).unwrap_optimized()
+        self.0
+            .storage()
+            .mergeable()
+            .get(&METADATA_KEY)
+            .unwrap_optimized()
     }
 }
