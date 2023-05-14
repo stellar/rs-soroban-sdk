@@ -107,7 +107,7 @@ macro_rules! impl_num_wrapping_val_type {
         #[cfg(not(target_family = "wasm"))]
         impl TryFrom<&$wrapper> for ScVal {
             type Error = ConversionError;
-            fn try_from(v: &$wrapper) -> Result<Self, Self::Error> {
+            fn try_from(v: &$wrapper) -> Result<Self, ConversionError> {
                 if let Ok(ss) = <$small>::try_from(v.val) {
                     ScVal::try_from(ss)
                 } else {
@@ -120,7 +120,7 @@ macro_rules! impl_num_wrapping_val_type {
         #[cfg(not(target_family = "wasm"))]
         impl TryFrom<$wrapper> for ScVal {
             type Error = ConversionError;
-            fn try_from(v: $wrapper) -> Result<Self, Self::Error> {
+            fn try_from(v: $wrapper) -> Result<Self, ConversionError> {
                 (&v).try_into()
             }
         }

@@ -134,12 +134,12 @@ impl testutils::Events for Events {
             .0
             .into_iter()
             .for_each(|e| {
-                if let internal::events::Event::Contract(xdr::ContractEvent {
+                if let xdr::ContractEvent {
                     type_: xdr::ContractEventType::Contract,
                     contract_id: Some(contract_id),
                     body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
                     ..
-                }) = e.event
+                } = e.event
                 {
                     vec.push_back((
                         Address::from_contract_id(&BytesN::from_array(env, &contract_id.0)),

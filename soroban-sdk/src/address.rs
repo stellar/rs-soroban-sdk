@@ -129,7 +129,7 @@ impl TryFromVal<Env, &Address> for RawVal {
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Address> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &Address) -> Result<Self, Self::Error> {
+    fn try_from(v: &Address) -> Result<Self, ConversionError> {
         ScVal::try_from_val(&v.env, &v.obj.to_raw())
     }
 }
@@ -137,7 +137,7 @@ impl TryFrom<&Address> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<Address> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: Address) -> Result<Self, Self::Error> {
+    fn try_from(v: Address) -> Result<Self, ConversionError> {
         (&v).try_into()
     }
 }

@@ -136,7 +136,7 @@ impl From<&String> for String {
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&String> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &String) -> Result<Self, Self::Error> {
+    fn try_from(v: &String) -> Result<Self, ConversionError> {
         ScVal::try_from_val(&v.env, &v.obj.to_raw())
     }
 }
@@ -144,7 +144,7 @@ impl TryFrom<&String> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<String> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: String) -> Result<Self, Self::Error> {
+    fn try_from(v: String) -> Result<Self, ConversionError> {
         (&v).try_into()
     }
 }

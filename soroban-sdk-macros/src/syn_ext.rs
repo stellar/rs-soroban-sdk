@@ -147,16 +147,16 @@ impl<'a> Fn<'a> {
     }
     pub fn try_output(&self, crate_path: &Path) -> Type {
         let (t, e) = match self.output {
-            ReturnType::Default => (quote!(()), quote!(#crate_path::Status)),
+            ReturnType::Default => (quote!(()), quote!(#crate_path::Error)),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
                 Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(#crate_path::Status)),
+                None => (quote!(#typ), quote!(#crate_path::Error)),
             },
         };
         Type::Verbatim(quote! {
             Result<
                 Result<#t, <#t as #crate_path::TryFromVal<#crate_path::Env, #crate_path::RawVal>>::Error>,
-                Result<#e, <#e as TryFrom<#crate_path::Status>>::Error>
+                Result<#e, <#e as TryFrom<#crate_path::Error>>::Error>
             >
         })
     }

@@ -38,8 +38,8 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use soroban_sdk::{
-        xdr::{ScStatus, ScUnknownErrorCode},
-        Env, Status, Symbol,
+        xdr::{ScErrorCode, ScErrorType},
+        Env, Symbol,
     };
 
     use crate::{Contract, ContractClient, Error};
@@ -97,9 +97,10 @@ mod test {
         let res = client.try_hello(&3);
         assert_eq!(
             res,
-            Err(Err(Status::from_status(ScStatus::UnknownError(
-                ScUnknownErrorCode::General
-            ),)))
+            Err(Err(soroban_sdk::Error::from_type_and_code(
+                ScErrorType::Context,
+                ScErrorCode::InternalError
+            )))
         );
         assert!(!client.persisted());
     }

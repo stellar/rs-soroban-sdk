@@ -21,7 +21,7 @@ mod test_a {
         xdr::{
             AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
         },
-        Address, Env, RawVal, Status, Symbol,
+        Address, Env, Error, RawVal, Symbol,
     };
     extern crate std;
 
@@ -151,7 +151,7 @@ mod test_a {
         // auth_decline::Contract defined at the bottom of this file. The auth
         // contract's error is leaking into the contract being called and
         // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Status::from_contract_error(1))));
+        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
 
         assert_eq!(e.auths(), []);
     }
@@ -217,7 +217,7 @@ mod test_b {
         contracterror,
         testutils::{Address as _, MockAuth, MockAuthInvoke},
         xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM},
-        Address, Env, RawVal, Status, Symbol,
+        Address, Env, Error, RawVal, Symbol,
     };
     extern crate std;
 
@@ -394,7 +394,7 @@ mod test_b {
         // auth_decline::Contract defined at the bottom of this file. The auth
         // contract's error is leaking into the contract being called and
         // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Status::from_contract_error(1))));
+        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
 
         assert_eq!(e.auths(), []);
     }

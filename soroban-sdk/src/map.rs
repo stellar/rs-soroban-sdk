@@ -9,7 +9,7 @@ use crate::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, MapObject},
-    ConversionError, Env, IntoVal, RawVal, Status, TryFromVal, TryIntoVal, Vec,
+    ConversionError, Env, Error, IntoVal, RawVal, TryFromVal, TryIntoVal, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -216,7 +216,7 @@ where
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &Map<K, V>) -> Result<Self, Self::Error> {
+    fn try_from(v: &Map<K, V>) -> Result<Self, ConversionError> {
         ScVal::try_from_val(&v.env, &v.obj.to_raw())
     }
 }
@@ -224,7 +224,7 @@ impl<K, V> TryFrom<&Map<K, V>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFrom<Map<K, V>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: Map<K, V>) -> Result<Self, Self::Error> {
+    fn try_from(v: Map<K, V>) -> Result<Self, ConversionError> {
         (&v).try_into()
     }
 }
@@ -232,7 +232,7 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
     type Error = ConversionError;
-    fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
+    fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, ConversionError> {
         v.try_into()
     }
 }
@@ -449,7 +449,7 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         let env = &self.0.env;
         let key = env.map_min_key(self.0.obj).unwrap_infallible();
-        if Status::try_from(key).is_ok() {
+        if Error::try_from(key).is_ok() {
             return None;
         }
         let value = env.map_get(self.0.obj, key).unwrap_infallible();
@@ -482,7 +482,7 @@ where
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = &self.0.env;
         let key = env.map_max_key(self.0.obj).unwrap_infallible();
-        if Status::try_from(key).is_ok() {
+        if Error::try_from(key).is_ok() {
             return None;
         }
         let value = env.map_get(self.0.obj, key).unwrap_infallible();
