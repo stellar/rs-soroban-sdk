@@ -158,6 +158,11 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                 #crate_path::Address::from_contract_id(&self.contract_id)
             }
 
+            /// Set authorizations in the environment which will be consumed by
+            /// contracts when they invoke `Address::require_auth` or
+            /// `Address::require_auth_for_args` functions.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
             #[cfg(any(test, feature = "testutils"))]
             pub fn set_auths(&self, auths: &'a [#crate_path::xdr::ContractAuth]) -> Self {
                 Self {
@@ -169,6 +174,11 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                 }
             }
 
+            /// Mock authorizations in the environment which will cause matching invokes
+            /// of `Address::require_auth` and `Address::require_auth_for_args` to
+            /// pass.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
             #[cfg(any(test, feature = "testutils"))]
             pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
                 Self {
@@ -180,6 +190,11 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                 }
             }
 
+            /// Mock all calls to the `Address::require_auth` and
+            /// `Address::require_auth_for_args` functions in invoked contracts,
+            /// having them succeed as if authorization was provided.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
             #[cfg(any(test, feature = "testutils"))]
             pub fn mock_all_auths(&self) -> Self {
                 Self {

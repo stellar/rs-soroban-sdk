@@ -454,10 +454,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{
-    AuthorizedInvocation, ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScVec,
-    StringM,
-};
+use xdr::{ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -681,36 +678,43 @@ impl Env {
             .try_into_val(self)
             .unwrap();
 
-        // Call the set_admin fn as the issuer, authorized via the source
-        // account, and set the admin to the admin Address provided.
-        let source_account = self.env_impl.source_account();
-        self.env_impl.set_source_account(issuer_id);
-        _ = self.env_impl.set_authorization_entries(
-            [ContractAuth {
-                address_with_nonce: None,
-                root_invocation: AuthorizedInvocation {
-                    contract_id: Hash(token_id.to_array()),
-                    function_name: StringM::try_from("set_admin").unwrap().into(),
-                    args: ScVec([admin.clone().try_into().unwrap()].try_into().unwrap()),
-                    sub_invocations: [].try_into().unwrap(),
-                },
-                signature_args: ScVec([].try_into().unwrap()),
-            }]
-            .into(),
-        );
-        let _: () = self.invoke_contract(
-            &token_id,
-            &crate::Symbol::short("set_admin"),
-            (admin,).try_into_val(self).unwrap(),
-        );
-        // TODO: Restore previous auth state after
-        // https://github.com/stellar/rs-soroban-env/issues/785 is implemented.
-        _ = self.env_impl.set_authorization_entries([].into());
-        if let Some(source_account) = source_account {
-            self.env_impl.set_source_account(source_account);
-        } else {
-            self.env_impl.remove_source_account();
-        }
+        // Set the admin of the token to the passed in address. This operation
+        // could be performed by calling the token contracts `set_admin`
+        // function, however doing so would require modifying the authorization
+        // state of the environment and tests may have setup authorization, and
+        // the environment does not provide anyway for us to snapshot the
+        // current auth setup, modify it, then reset it. This might be possible
+        // after this issue is resolved:
+        // https://github.com/stellar/rs-soroban-env/issues/785.
+        self.host()
+            .with_mut_storage(|storage| {
+                let key = xdr::ScVal::Vec(Some(xdr::ScVec(
+                    [xdr::ScVal::Symbol(xdr::ScSymbol(
+                        "Admin".try_into().unwrap(),
+                    ))]
+                    .try_into()
+                    .unwrap(),
+                )));
+                let val = xdr::ScVal::try_from(admin).unwrap();
+                storage.put(
+                    &Rc::new(xdr::LedgerKey::ContractData(xdr::LedgerKeyContractData {
+                        contract_id: Hash(token_id.to_array()),
+                        key: key.clone(),
+                    })),
+                    &Rc::new(xdr::LedgerEntry {
+                        last_modified_ledger_seq: 0,
+                        data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                            contract_id: Hash(token_id.to_array()),
+                            key,
+                            val,
+                        }),
+                        ext: xdr::LedgerEntryExt::V0,
+                    }),
+                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
+                )?;
+                Ok(())
+            })
+            .unwrap();
 
         token_id
     }
@@ -757,19 +761,67 @@ impl Env {
     }
 
     /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
-    /// functions.
+    /// contracts when they invoke [`Address::require_auth`] or
+    /// [`Address::require_auth_for_args`] functions.
     ///
-    /// To mock auth for testing, use [`mock_all_auths`]. If mocking of auths is
-    /// enabled, calling [`set_auths`] disables any mocking.
+    /// This function can also be called on contract clients.
+    ///
+    /// To mock auth for testing, use [`mock_all_auths`][Self::mock_all_auths]
+    /// or [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
+    /// calling [`set_auths`][Self::set_auths] disables any mocking.
     pub fn set_auths(&self, auths: &[ContractAuth]) {
         self.env_impl
             .set_authorization_entries(auths.to_vec())
             .unwrap();
     }
 
-    // Mock authorizations in the environment which will cause matching invokes of
-    // [`require_auth`] and [`require_auth_for_args`] to pass.
+    /// Mock authorizations in the environment which will cause matching invokes
+    /// of [`Address::require_auth`] and [`Address::require_auth_for_args`] to
+    /// pass.
+    ///
+    /// This function can also be called on contract clients.
+    ///
+    /// Authorizations not matching a mocked auth will fail.
+    ///
+    /// To mock all auths, use [`mock_all_auths`][Self::mock_all_auths].
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, Env, Address, testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+    ///
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn hello(env: Env, from: Address) {
+    ///         from.require_auth();
+    ///         // TODO
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///     let addr = Address::random(&env);
+    ///     client.mock_auths(&[
+    ///         MockAuth {
+    ///             address: &addr,
+    ///             nonce: 0,
+    ///             invoke: &MockAuthInvoke {
+    ///                 contract: &contract_id,
+    ///                 fn_name: "hello",
+    ///                 args: (&addr,).into_val(&env),
+    ///                 sub_invokes: &[],
+    ///             },
+    ///         },
+    ///     ]).hello(&addr);
+    /// }
+    /// ```
     pub fn mock_auths(&self, auths: &[MockAuth]) {
         for a in auths {
             let Some(contract_id) = a.address.contract_id() else {
@@ -785,9 +837,9 @@ impl Env {
         self.env_impl.set_authorization_entries(auths).unwrap();
     }
 
-    /// Mock all calls to the [`require_auth`] and [`require_auth_for_args`]
-    /// functions in invoked contracts, having them succeed as if authorization
-    /// was provided.
+    /// Mock all calls to the [`Address::require_auth`] and
+    /// [`Address::require_auth_for_args`] functions in invoked contracts,
+    /// having them succeed as if authorization was provided.
     ///
     /// When mocking is enabled, if the [`Address`] being authorized is the
     /// address of a contract, that contract's `__check_auth` function will not
@@ -797,9 +849,11 @@ impl Env {
     /// When mocking is enabled, if the [`Address`] being authorized is the
     /// address of an account, the account does not need to exist.
     ///
-    /// To disable mocking, see [`set_auths`].
+    /// This function can also be called on contract clients.
     ///
-    /// To access a list of auths that have occurred, see [`auths`].
+    /// To disable mocking, see [`set_auths`][Self::set_auths].
+    ///
+    /// To access a list of auths that have occurred, see [`auths`][Self::auths].
     ///
     /// It is not currently possible to mock a subset of auths.
     ///
@@ -848,10 +902,11 @@ impl Env {
     /// of the function invocation).
     ///
     /// The order of the returned vector is defined by the order of
-    /// [`require_auth`] calls. Repeated calls to [`require_auth`] with the same
-    /// address and args in the same tree of contract invocations will appear
-    /// only once in the vector. Calls to [`require_auth`] in disjoint call
-    /// trees for the same address will present in the list.
+    /// [`Address::require_auth`] calls. Repeated calls to
+    /// [`Address::require_auth`] with the same address and args in the same
+    /// tree of contract invocations will appear only once in the vector. Calls
+    /// to [`Address::require_auth`] in disjoint call trees for the same address
+    /// will present in the list.
     ///
     /// ### Examples
     /// ```
