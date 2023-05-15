@@ -1,0 +1,234 @@
+{
+  "protocol_version": 0,
+  "sequence_number": 0,
+  "timestamp": 0,
+  "network_id": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "base_reserve": 0,
+  "ledger_entries": [
+    [
+      {
+        "account": {
+          "account_id": {
+            "public_key_type_ed25519": "1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+          }
+        }
+      },
+      {
+        "last_modified_ledger_seq": 0,
+        "data": {
+          "account": {
+            "account_id": {
+              "public_key_type_ed25519": "1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+            },
+            "balance": 0,
+            "seq_num": 0,
+            "num_sub_entries": 0,
+            "inflation_dest": null,
+            "flags": 0,
+            "home_domain": "",
+            "thresholds": "01010101",
+            "signers": [],
+            "ext": "v0"
+          }
+        },
+        "ext": "v0"
+      }
+    ],
+    [
+      {
+        "contract_data": {
+          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "key": {
+            "symbol": "METADATA"
+          }
+        }
+      },
+      {
+        "last_modified_ledger_seq": 0,
+        "data": {
+          "contract_data": {
+            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "key": {
+              "symbol": "METADATA"
+            },
+            "val": {
+              "map": [
+                {
+                  "key": {
+                    "symbol": "decimal"
+                  },
+                  "val": {
+                    "u32": 7
+                  }
+                },
+                {
+                  "key": {
+                    "symbol": "name"
+                  },
+                  "val": {
+                    "bytes": "75684cf93a1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+                  }
+                },
+                {
+                  "key": {
+                    "symbol": "symbol"
+                  },
+                  "val": {
+                    "bytes": "75684cf9"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "ext": "v0"
+      }
+    ],
+    [
+      {
+        "contract_data": {
+          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "key": {
+            "vec": [
+              {
+                "symbol": "Admin"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "last_modified_ledger_seq": 0,
+        "data": {
+          "contract_data": {
+            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Admin"
+                }
+              ]
+            },
+            "val": {
+              "address": {
+                "contract": "dcb3653a21f10be7e9f95d8825c6ce9c47bade752bb9404a14e66239495648a1"
+              }
+            }
+          }
+        },
+        "ext": "v0"
+      }
+    ],
+    [
+      {
+        "contract_data": {
+          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "key": {
+            "vec": [
+              {
+                "symbol": "AssetInfo"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "last_modified_ledger_seq": 0,
+        "data": {
+          "contract_data": {
+            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "AssetInfo"
+                }
+              ]
+            },
+            "val": {
+              "vec": [
+                {
+                  "symbol": "AlphaNum4"
+                },
+                {
+                  "map": [
+                    {
+                      "key": {
+                        "symbol": "asset_code"
+                      },
+                      "val": {
+                        "bytes": "75684cf9"
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "issuer"
+                      },
+                      "val": {
+                        "bytes": "1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "ext": "v0"
+      }
+    ],
+    [
+      {
+        "contract_data": {
+          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "key": "ledger_key_contract_executable"
+        }
+      },
+      {
+        "last_modified_ledger_seq": 0,
+        "data": {
+          "contract_data": {
+            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "key": "ledger_key_contract_executable",
+            "val": {
+              "contract_executable": "token"
+            }
+          }
+        },
+        "ext": "v0"
+      }
+    ]
+  ]
+}
