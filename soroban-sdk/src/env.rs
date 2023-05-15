@@ -454,10 +454,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{
-    AuthorizedInvocation, ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScVec,
-    StringM,
-};
+use xdr::{ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
