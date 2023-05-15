@@ -1,5 +1,3 @@
-use core::panic;
-
 use crate as soroban_sdk;
 
 use soroban_sdk::{
