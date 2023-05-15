@@ -37,7 +37,7 @@
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
-use crate::{env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, BytesN, Env, IntoVal};
+use crate::{env::internal::Env as _, unwrap::UnwrapInfallible, BytesN, Env, IntoVal};
 
 /// Deployer provides access to deploying contracts.
 pub struct Deployer {
@@ -57,7 +57,7 @@ impl Deployer {
     /// from the current contract and the provided salt.
     pub fn with_current_contract(
         &self,
-        salt: &impl IntoVal<Env, Bytes>,
+        salt: &impl IntoVal<Env, BytesN<32>>,
     ) -> DeployerWithCurrentContract {
         let env = self.env();
         DeployerWithCurrentContract {
@@ -72,7 +72,7 @@ impl Deployer {
     pub fn with_other_contract(
         &self,
         contract_id: &impl IntoVal<Env, BytesN<32>>,
-        salt: &impl IntoVal<Env, Bytes>,
+        salt: &impl IntoVal<Env, BytesN<32>>,
     ) -> DeployerWithOtherContract {
         let env = self.env();
         DeployerWithOtherContract {
@@ -87,7 +87,7 @@ impl Deployer {
 /// contract ID and the provided salt.
 pub struct DeployerWithCurrentContract {
     env: Env,
-    salt: Bytes,
+    salt: BytesN<32>,
 }
 
 impl DeployerWithCurrentContract {
@@ -125,7 +125,7 @@ impl DeployerWithCurrentContract {
 pub struct DeployerWithOtherContract {
     env: Env,
     contract_id: BytesN<32>,
-    salt: Bytes,
+    salt: BytesN<32>,
 }
 
 impl DeployerWithOtherContract {
