@@ -82,8 +82,6 @@ fn test_mock_auth() {
 
     let admin = Address::random(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
-    env.to_snapshot_file("file.json");
-    panic!();
 
     let contract_id = env.register_contract(None, TestContract);
     let client = TestContractClient::new(&env, &contract_id);
