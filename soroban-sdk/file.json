@@ -42,7 +42,7 @@
       {
         "account": {
           "account_id": {
-            "public_key_type_ed25519": "1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+            "public_key_type_ed25519": "9425b849904881826bc395383dab5ee6a50b318e727868d4faa60a39cf72b755"
           }
         }
       },
@@ -51,7 +51,7 @@
         "data": {
           "account": {
             "account_id": {
-              "public_key_type_ed25519": "1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+              "public_key_type_ed25519": "9425b849904881826bc395383dab5ee6a50b318e727868d4faa60a39cf72b755"
             },
             "balance": 0,
             "seq_num": 0,
@@ -70,7 +70,7 @@
     [
       {
         "contract_data": {
-          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
           "key": {
             "symbol": "METADATA"
           }
@@ -80,7 +80,7 @@
         "last_modified_ledger_seq": 0,
         "data": {
           "contract_data": {
-            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
             "key": {
               "symbol": "METADATA"
             },
@@ -99,7 +99,7 @@
                     "symbol": "name"
                   },
                   "val": {
-                    "bytes": "75684cf93a1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+                    "bytes": "41b8de073a9425b849904881826bc395383dab5ee6a50b318e727868d4faa60a39cf72b755"
                   }
                 },
                 {
@@ -107,7 +107,7 @@
                     "symbol": "symbol"
                   },
                   "val": {
-                    "bytes": "75684cf9"
+                    "bytes": "41b8de07"
                   }
                 }
               ]
@@ -120,7 +120,7 @@
     [
       {
         "contract_data": {
-          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
           "key": {
             "vec": [
               {
@@ -134,7 +134,7 @@
         "last_modified_ledger_seq": 0,
         "data": {
           "contract_data": {
-            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
             "key": {
               "vec": [
                 {
@@ -144,7 +144,7 @@
             },
             "val": {
               "address": {
-                "contract": "dcb3653a21f10be7e9f95d8825c6ce9c47bade752bb9404a14e66239495648a1"
+                "contract": "ab414076b2616856c55702f83e73fdcb35d3829aa2f9bb68fa43b87a6621cc5f"
               }
             }
           }
@@ -155,7 +155,7 @@
     [
       {
         "contract_data": {
-          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
           "key": {
             "vec": [
               {
@@ -169,7 +169,7 @@
         "last_modified_ledger_seq": 0,
         "data": {
           "contract_data": {
-            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
             "key": {
               "vec": [
                 {
@@ -189,7 +189,7 @@
                         "symbol": "asset_code"
                       },
                       "val": {
-                        "bytes": "75684cf9"
+                        "bytes": "41b8de07"
                       }
                     },
                     {
@@ -197,7 +197,7 @@
                         "symbol": "issuer"
                       },
                       "val": {
-                        "bytes": "1af030fecee2b9dcc7a454610ae7e91225c07ed4c9c4f0c2aab9aaa7a0acd9ec"
+                        "bytes": "9425b849904881826bc395383dab5ee6a50b318e727868d4faa60a39cf72b755"
                       }
                     }
                   ]
@@ -212,7 +212,7 @@
     [
       {
         "contract_data": {
-          "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+          "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
           "key": "ledger_key_contract_executable"
         }
       },
@@ -220,7 +220,7 @@
         "last_modified_ledger_seq": 0,
         "data": {
           "contract_data": {
-            "contract_id": "f22e49c36a96d9cd65098bfcb2f47d36d6ad025397997275f52a38fbbcd93f26",
+            "contract_id": "97418a391fce7177dc8ef83644bed1749ea520c7449a3811ef1bf48ad60ea67e",
             "key": "ledger_key_contract_executable",
             "val": {
               "contract_executable": "token"

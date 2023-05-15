@@ -681,36 +681,43 @@ impl Env {
             .try_into_val(self)
             .unwrap();
 
-        // Call the set_admin fn as the issuer, authorized via the source
-        // account, and set the admin to the admin Address provided.
-        let source_account = self.env_impl.source_account();
-        self.env_impl.set_source_account(issuer_id);
-        _ = self.env_impl.set_authorization_entries(
-            [ContractAuth {
-                address_with_nonce: None,
-                root_invocation: AuthorizedInvocation {
-                    contract_id: Hash(token_id.to_array()),
-                    function_name: StringM::try_from("set_admin").unwrap().into(),
-                    args: ScVec([admin.clone().try_into().unwrap()].try_into().unwrap()),
-                    sub_invocations: [].try_into().unwrap(),
-                },
-                signature_args: ScVec([].try_into().unwrap()),
-            }]
-            .into(),
-        );
-        let _: () = self.invoke_contract(
-            &token_id,
-            &crate::Symbol::short("set_admin"),
-            (admin,).try_into_val(self).unwrap(),
-        );
-        // TODO: Restore previous auth state after
-        // https://github.com/stellar/rs-soroban-env/issues/785 is implemented.
-        _ = self.env_impl.set_authorization_entries([].into());
-        if let Some(source_account) = source_account {
-            self.env_impl.set_source_account(source_account);
-        } else {
-            self.env_impl.remove_source_account();
-        }
+        // Set the admin of the token to the passed in address. This operation
+        // could be performed by calling the token contracts `set_admin`
+        // function, however doing so would require modifying the authorization
+        // state of the environment and tests may have setup authorization, and
+        // the environment does not provide anyway for us to snapshot the
+        // current auth setup, modify it, then reset it. This might be possible
+        // after this issue is resolved:
+        // https://github.com/stellar/rs-soroban-env/issues/785.
+        self.host()
+            .with_mut_storage(|storage| {
+                let key = xdr::ScVal::Vec(Some(xdr::ScVec(
+                    [xdr::ScVal::Symbol(xdr::ScSymbol(
+                        "Admin".try_into().unwrap(),
+                    ))]
+                    .try_into()
+                    .unwrap(),
+                )));
+                let val = xdr::ScVal::try_from(admin).unwrap();
+                storage.put(
+                    &Rc::new(xdr::LedgerKey::ContractData(xdr::LedgerKeyContractData {
+                        contract_id: Hash(token_id.to_array()),
+                        key: key.clone(),
+                    })),
+                    &Rc::new(xdr::LedgerEntry {
+                        last_modified_ledger_seq: 0,
+                        data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                            contract_id: Hash(token_id.to_array()),
+                            key,
+                            val,
+                        }),
+                        ext: xdr::LedgerEntryExt::V0,
+                    }),
+                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
+                )?;
+                Ok(())
+            })
+            .unwrap();
 
         token_id
     }
