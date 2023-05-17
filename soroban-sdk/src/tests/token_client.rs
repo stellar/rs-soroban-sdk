@@ -4,7 +4,7 @@ use soroban_sdk::{
     contractimpl, contracttype,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
     token::Client as TokenClient,
-    Address, BytesN, Env, IntoVal, Symbol,
+    Address, Env, IntoVal, Symbol,
 };
 
 #[contracttype]
@@ -12,7 +12,7 @@ pub enum DataKey {
     Token,
 }
 
-fn get_token(e: &Env) -> BytesN<32> {
+fn get_token(e: &Env) -> Address {
     e.storage().get_unchecked(&DataKey::Token).unwrap()
 }
 
@@ -20,11 +20,11 @@ pub struct TestContract;
 
 #[contractimpl]
 impl TestContract {
-    pub fn init(e: Env, contract: BytesN<32>) {
+    pub fn init(e: Env, contract: Address) {
         e.storage().set(&DataKey::Token, &contract);
     }
 
-    pub fn get_token(e: Env) -> BytesN<32> {
+    pub fn get_token(e: Env) -> Address {
         get_token(&e)
     }
 

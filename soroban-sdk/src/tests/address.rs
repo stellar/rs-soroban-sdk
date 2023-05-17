@@ -12,7 +12,6 @@ fn test_account_address_conversions() {
     ))));
 
     let address = Address::try_from_val(&env, &scaddress).unwrap();
-    assert_eq!(address.contract_id(), None);
 
     let scaddress_roundtrip: ScAddress = (&address).try_into().unwrap();
     assert_eq!(scaddress, scaddress_roundtrip,);
@@ -24,7 +23,7 @@ fn test_contract_address_conversions() {
     let contract_address = Address::from_contract_id(&BytesN::from_array(&env, &[111u8; 32]));
     assert_eq!(
         contract_address.contract_id(),
-        Some(BytesN::from_array(&env, &[111u8; 32]))
+        BytesN::from_array(&env, &[111u8; 32])
     );
 
     let scaddress: ScAddress = (&contract_address).try_into().unwrap();

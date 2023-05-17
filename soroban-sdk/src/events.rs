@@ -122,12 +122,12 @@ impl Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, TryIntoVal};
+use crate::{testutils, xdr, Address, BytesN, TryIntoVal};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
+    fn all(&self) -> Vec<(crate::Address, Vec<RawVal>, RawVal)> {
         let env = self.env();
         let mut vec = Vec::new(env);
         self.env()
@@ -145,7 +145,7 @@ impl testutils::Events for Events {
                 }) = e.event
                 {
                     vec.push_back((
-                        contract_id.0.into_val(env),
+                        Address::from_contract_id(&BytesN::from_array(env, &contract_id.0)),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
                     ))

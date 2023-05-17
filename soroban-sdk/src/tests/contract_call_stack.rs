@@ -1,11 +1,11 @@
 use crate::{self as soroban_sdk, Symbol};
-use soroban_sdk::{contractimpl, BytesN, Env};
+use soroban_sdk::{contractimpl, Address, BytesN, Env};
 
 pub struct OuterContract;
 
 #[contractimpl]
 impl OuterContract {
-    pub fn outer(env: Env, contract_id: BytesN<32>) {
+    pub fn outer(env: Env, contract_id: Address) {
         let check_call_stack = || {
             let stack = env.call_stack();
             assert_eq!(stack.len(), 1);
@@ -47,10 +47,10 @@ impl InnerContract {
 fn test() {
     let e = Env::default();
 
-    let inner_contract_id = BytesN::from_array(&e, &[0; 32]);
+    let inner_contract_id = Address::from_contract_id(&BytesN::from_array(&e, &[0; 32]));
     e.register_contract(&inner_contract_id, InnerContract);
 
-    let contract_id = BytesN::from_array(&e, &[1; 32]);
+    let contract_id = Address::from_contract_id(&BytesN::from_array(&e, &[1; 32]));
     e.register_contract(&contract_id, OuterContract);
     let client = OuterContractClient::new(&e, &contract_id);
 

@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Address, BytesN, Env, IntoVal};
+use soroban_sdk::{contractimpl, Address, Env, IntoVal};
 
 pub struct ContractA;
 
@@ -84,11 +84,10 @@ mod test_a {
     fn test_with_real_contract_auth_approve() {
         let e = Env::default();
 
-        let auth_contract_id = e.register_contract(None, auth_approve::Contract);
         let contract_id = e.register_contract(None, ContractA);
         let client = ContractAClient::new(&e, &contract_id);
 
-        let a = Address::from_contract_id(&auth_contract_id);
+        let a = e.register_contract(None, auth_approve::Contract);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
@@ -98,7 +97,7 @@ mod test_a {
                     nonce: 0,
                 }),
                 root_invocation: AuthorizedInvocation {
-                    contract_id: contract_id.to_array().into(),
+                    contract_id: contract_id.contract_id().to_array().into(),
                     function_name: StringM::try_from("fn1").unwrap().into(),
                     args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
                     sub_invocations: VecM::default(),
@@ -124,11 +123,10 @@ mod test_a {
     fn test_with_real_contract_auth_decline() {
         let e = Env::default();
 
-        let auth_contract_id = e.register_contract(None, auth_decline::Contract);
         let contract_id = e.register_contract(None, ContractA);
         let client = ContractAClient::new(&e, &contract_id);
 
-        let a = Address::from_contract_id(&auth_contract_id);
+        let a = e.register_contract(None, auth_decline::Contract);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
@@ -138,7 +136,7 @@ mod test_a {
                     nonce: 0,
                 }),
                 root_invocation: AuthorizedInvocation {
-                    contract_id: contract_id.to_array().into(),
+                    contract_id: contract_id.contract_id().to_array().into(),
                     function_name: StringM::try_from("fn1").unwrap().into(),
                     args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
                     sub_invocations: VecM::default(),
@@ -205,7 +203,7 @@ pub struct ContractB;
 
 #[contractimpl]
 impl ContractB {
-    pub fn fn2(e: Env, a: Address, sub: BytesN<32>) -> u64 {
+    pub fn fn2(e: Env, a: Address, sub: Address) -> u64 {
         a.require_auth_for_args((1, 2).into_val(&e));
         let client = ContractAClient::new(&e, &sub);
         client.fn1(&a)
@@ -305,12 +303,11 @@ mod test_b {
     fn test_with_real_contract_auth_approve() {
         let e = Env::default();
 
-        let auth_contract_id = e.register_contract(None, auth_approve::Contract);
         let contract_a_id = e.register_contract(None, ContractA);
         let contract_b_id = e.register_contract(None, ContractB);
         let client = ContractBClient::new(&e, &contract_b_id);
 
-        let a = Address::from_contract_id(&auth_contract_id);
+        let a = e.register_contract(None, auth_approve::Contract);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
@@ -320,11 +317,11 @@ mod test_b {
                     nonce: 0,
                 }),
                 root_invocation: AuthorizedInvocation {
-                    contract_id: contract_b_id.to_array().into(),
+                    contract_id: contract_b_id.contract_id().to_array().into(),
                     function_name: StringM::try_from("fn2").unwrap().into(),
                     args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
                     sub_invocations: [AuthorizedInvocation {
-                        contract_id: contract_a_id.to_array().into(),
+                        contract_id: contract_a_id.contract_id().to_array().into(),
                         function_name: StringM::try_from("fn1").unwrap().into(),
                         args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
                         sub_invocations: [].try_into().unwrap(),
@@ -361,12 +358,11 @@ mod test_b {
     fn test_with_real_contract_auth_decline() {
         let e = Env::default();
 
-        let auth_contract_id = e.register_contract(None, auth_decline::Contract);
         let contract_a_id = e.register_contract(None, ContractA);
         let contract_b_id = e.register_contract(None, ContractB);
         let client = ContractBClient::new(&e, &contract_b_id);
 
-        let a = Address::from_contract_id(&auth_contract_id);
+        let a = e.register_contract(None, auth_decline::Contract);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
@@ -376,11 +372,11 @@ mod test_b {
                     nonce: 0,
                 }),
                 root_invocation: AuthorizedInvocation {
-                    contract_id: contract_b_id.to_array().into(),
+                    contract_id: contract_b_id.contract_id().to_array().into(),
                     function_name: StringM::try_from("fn2").unwrap().into(),
                     args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
                     sub_invocations: [AuthorizedInvocation {
-                        contract_id: contract_a_id.to_array().into(),
+                        contract_id: contract_a_id.contract_id().to_array().into(),
                         function_name: StringM::try_from("fn1").unwrap().into(),
                         args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
                         sub_invocations: [].try_into().unwrap(),
