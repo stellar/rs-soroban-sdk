@@ -662,6 +662,7 @@ pub mod data {
     #[deprecated(note = "use storage::Storage")]
     pub use super::storage::Storage as Data;
 }
+pub mod auth;
 mod bytes;
 pub mod crypto;
 pub mod deploy;
