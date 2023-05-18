@@ -1038,7 +1038,7 @@ impl Env {
     ///         NoopAccountContractClient::new(&e, &e.register_contract(None, NoopAccountContract {}));
     ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
-    ///         e.invoke_account_contract_check_auth::<NoopAccountError>(
+    ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
     ///             &account_contract.contract_id,
     ///             &BytesN::random(&e),
     ///             &vec![&e],
@@ -1051,7 +1051,7 @@ impl Env {
     ///     // Succesful call of `__check_auth` with a `soroban_sdk::Status`
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
-    ///         e.invoke_account_contract_check_auth::<soroban_sdk::Status>(
+    ///         e.try_invoke_contract_check_auth::<soroban_sdk::Status>(
     ///             &account_contract.contract_id,
     ///             &BytesN::random(&e),
     ///             &vec![&e, 0_i32.into()],
@@ -1061,7 +1061,7 @@ impl Env {
     ///     );
     /// }
     /// ```
-    pub fn invoke_contract_check_auth<E: TryFrom<Status>>(
+    pub fn try_invoke_contract_check_auth<E: TryFrom<Status>>(
         &self,
         contract: &BytesN<32>,
         signature_payload: &BytesN<32>,
