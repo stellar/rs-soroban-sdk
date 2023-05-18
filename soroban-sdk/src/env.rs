@@ -317,7 +317,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, log, BytesN, Env, Symbol};
     ///
     /// pub struct Contract;
     ///
@@ -328,8 +328,7 @@ impl Env {
     ///         assert_eq!(stack.len(), 1);
     ///
     ///         let outer = stack.get(0).unwrap().unwrap();
-    ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
-    ///         assert_eq!(outer.1, Symbol::short("hello"));
+    ///         log!(&env, "{}", outer);
     ///     }
     /// }
     /// #[test]
@@ -338,8 +337,7 @@ impl Env {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
-    ///     env.register_contract(&contract_id, Contract);
+    ///     let contract_id = env.register_contract(None, Contract);
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     client.hello();
     /// }
@@ -538,8 +536,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
-    ///     env.register_contract(&contract_id, HelloContract);
+    ///     let contract_id = env.register_contract(None, HelloContract);
     /// }
     /// ```
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
@@ -943,7 +940,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract_id.clone(),
+    ///             client.contract.clone(),
     ///             Symbol::short("transfer"),
     ///             (&address, 1000_i128,).into_val(&env)
     ///         )]
@@ -954,7 +951,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract_id.clone(),
+    ///             client.contract.clone(),
     ///             Symbol::short("transfer2"),
     ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///             (500_i128,).into_val(&env)

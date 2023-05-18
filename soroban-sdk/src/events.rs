@@ -2,11 +2,9 @@
 use core::fmt::Debug;
 
 #[cfg(doc)]
-use crate::{contracttype, Bytes, BytesN, Map};
+use crate::{contracttype, Bytes, Map};
 use crate::{
-    env::internal::{self},
-    unwrap::UnwrapInfallible,
-    ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
+    env::internal, unwrap::UnwrapInfallible, ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
 };
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
@@ -42,8 +40,7 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
-/// #     env.register_contract(&contract_id, Contract);
+/// #     let contract_id = env.register_contract(None, Contract);
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]
@@ -107,7 +104,7 @@ impl Events {
     ///
     /// - [Vec]
     /// - [Map]
-    /// - [Bytes]/[BytesN] longer than 32 bytes
+    /// - [Bytes]/[BytesN][crate::BytesN] longer than 32 bytes
     /// - [contracttype]
     #[inline(always)]
     pub fn publish<T, D>(&self, topics: T, data: D)

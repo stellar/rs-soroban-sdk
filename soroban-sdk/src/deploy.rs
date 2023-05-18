@@ -28,8 +28,7 @@
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //! #     let env = Env::default();
-//! #     let contract_id = BytesN::from_array(&env, &[0; 32]);
-//! #     env.register_contract(&contract_id, Contract);
+//! #     let contract_id = env.register_contract(None, Contract);
 //! #     // Install the contract code before deploying its instance.
 //! #     let wasm_hash = env.install_contract_wasm(&[0u8; 100]);
 //! #     ContractClient::new(&env, &contract_id).f(&wasm_hash);
