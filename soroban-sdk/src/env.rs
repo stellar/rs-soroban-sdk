@@ -1063,7 +1063,7 @@ impl Env {
     /// ```
     pub fn invoke_contract_check_auth<E: TryFrom<Status>>(
         &self,
-        contract: &Address,
+        contract: &BytesN<32>,
         signature_payload: &BytesN<32>,
         signatures: &Vec<RawVal>,
         auth_context: &Vec<auth::Context>,
@@ -1078,7 +1078,7 @@ impl Env {
         );
         let res = self
             .host()
-            .call_account_contract_check_auth(contract.contract_id().to_object(), args.to_object());
+            .call_account_contract_check_auth(contract.to_object(), args.to_object());
         match res {
             Ok(rv) => Ok(rv.into_val(self)),
             Err(e) => Err(e.status.try_into()),
