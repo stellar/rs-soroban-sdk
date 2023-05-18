@@ -301,16 +301,6 @@ impl Env {
         unsafe { Address::unchecked_new(self.clone(), address) }
     }
 
-    /// Get the 32-byte hash identifier of the current executing contract.
-    ///
-    /// Prefer `current_contract_address` for the most cases, unless dealing
-    /// with contract-specific functions (like the call stacks).
-    pub fn current_contract_id(&self) -> Address {
-        let id = internal::Env::get_current_contract_id(self).unwrap_infallible();
-        let id = unsafe { BytesN::<32>::unchecked_new(self.clone(), id) };
-        Address::from_contract_id(&id)
-    }
-
     #[doc(hidden)]
     pub(crate) fn require_auth_for_args(&self, address: &Address, args: Vec<RawVal>) {
         internal::Env::require_auth_for_args(self, address.to_object(), args.to_object())
