@@ -2,7 +2,6 @@
 resolver = "2"
 
 members = [
-    "soroban-auth",
     "soroban-sdk",
     "soroban-sdk-macros",
     "soroban-spec",
@@ -30,7 +29,6 @@ version = "0.8.3"
 [workspace.dependencies]
 soroban-sdk = { version = "0.8.3", path = "soroban-sdk" }
 soroban-sdk-macros = { version = "0.8.3", path = "soroban-sdk-macros" }
-soroban-auth = { version = "0.8.3", path = "soroban-auth" }
 soroban-spec = { version = "0.8.3", path = "soroban-spec" }
 soroban-ledger-snapshot = { version = "0.8.3", path = "soroban-ledger-snapshot" }
 soroban-token-sdk = { version = "0.8.3", path = "soroban-token-sdk" }
