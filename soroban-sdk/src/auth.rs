@@ -1,4 +1,4 @@
-use crate::{contracttype, Address, BytesN, Env, IntoVal, RawVal, Status, Symbol, Vec};
+use crate::{contracttype, Address, BytesN, Env, RawVal, Status, Symbol, Vec};
 
 /// Auth context that the environment provides to account contracts. A context
 /// represents a single instance of authorization in the auth call tree.
