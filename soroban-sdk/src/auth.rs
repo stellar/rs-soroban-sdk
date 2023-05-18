@@ -16,12 +16,12 @@ impl Context {
     }
 }
 
-/// Auth interface that a contract implements to support being used for custom
-/// auth.
+/// Custom account interface that a contract implements to support being used
+/// as a custom account for auth.
 ///
 /// Once a contract implements the interface, the address of the contract can be
 /// used for addresses that have [`Address::require_auth`] called.
-pub trait Interface {
+pub trait CustomAccountInterface {
     type Error: Into<Status>;
     type Signature;
 
