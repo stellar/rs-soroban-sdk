@@ -8,7 +8,13 @@ use stellar_xdr::ScSpecEntry;
 
 use types::Entry;
 
-use crate::read::{from_wasm, FromWasmError};
+use crate::{
+    gen::ts::wrapper::type_to_js_xdr,
+    read::{from_wasm, FromWasmError},
+};
+
+mod boilerplate;
+mod wrapper;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
@@ -77,18 +83,52 @@ pub fn entry_to_ts(entry: &Entry) -> String {
             inputs,
             outputs,
         } => {
-            let inputs = inputs.iter().map(func_input_to_ts).join(", ");
-            let output = if outputs.is_empty() {
+            let sign_me = doc
+                .contains("@signme")
+                .then_some(r#""sign": true, "#)
+                .unwrap_or_default();
+            let args = inputs
+                .iter()
+                .map(|i| format!("((i) =>{})({})", type_to_js_xdr(&i.value), i.name))
+                .join(", ");
+            let input = (!inputs.is_empty())
+                .then(|| {
+                    format!(
+                        "{{{}}}: {{{}}}",
+                        inputs.iter().map(func_input_to_arg_name).join(", "),
+                        inputs.iter().map(func_input_to_ts).join(", ")
+                    )
+                })
+                .unwrap_or_default();
+            let return_type = if outputs.is_empty() {
                 "".to_owned()
             } else if outputs.len() == 1 {
-                format!(": {}", type_to_ts(&outputs[0]))
+                format!(": Promise<{}>", type_to_ts(&outputs[0]))
             } else {
-                format!("Tuple<{}>", outputs.iter().map(type_to_ts).join(", "))
+                format!(
+                    ": Promise<Tuple<{}>>",
+                    outputs.iter().map(type_to_ts).join(", ")
+                )
             };
             let ts_doc = doc_to_ts_doc(doc);
+
+            // let output_parser = outputs.get(0).map(scVal_to_type).unwrap_or_default();
+            let output = (!outputs.is_empty())
+                .then(|| {
+                    format!(
+                        r#"
+    return scValToJs(SorobanClient.xdr.ScVal.fromXDR(Buffer.from(response.xdr, 'base64'))) as {}
+"#,
+                        type_to_ts(&outputs[0])
+                    )
+                })
+                .unwrap_or_default();
             format!(
-                r#"{ts_doc}export function {name}({inputs}){output} {{
-  // Todo
+                r#"{ts_doc}export async function {name}({input}){return_type} {{
+    let invokeArgs: InvokeArgs = {{{sign_me}method: '{name}', args: [{args}]}};
+    // @ts-ignore Type does exist
+    const response = await invoke(invokeArgs);{output}
+    
 }}
 "#
             )
@@ -105,12 +145,13 @@ pub fn entry_to_ts(entry: &Entry) -> String {
         }
 
         Entry::Union { doc, name, cases } => {
-            let doc = doc_to_ts_doc(doc);
-            let cases = cases.iter().map(case_to_ts).join(" | ");
-            format!(
-                r#"{doc}export type {name} = {cases};
-"#
-            )
+            String::new()
+            // let doc = doc_to_ts_doc(doc);
+            // let cases = cases.iter().map(case_to_ts).join(" | ");
+            //             format!(
+            //                 r#"{doc}export type {name} = {cases};
+            // "#
+            //             )
         }
         Entry::Enum { doc, name, cases } => {
             let doc = doc_to_ts_doc(doc);
@@ -149,35 +190,49 @@ pub fn func_input_to_ts(input: &types::FunctionInput) -> String {
     format!("{name}: {type_}")
 }
 
+pub fn func_input_to_arg_name(input: &types::FunctionInput) -> String {
+    let types::FunctionInput { name, .. } = input;
+    name.to_string()
+}
+
 pub fn type_to_ts(value: &types::Type) -> String {
     match value {
         types::Type::Val => todo!(),
         types::Type::U64 => "u64".to_owned(),
         types::Type::I64 => "i64".to_owned(),
-        types::Type::U32 => "u32".to_owned(),
-        types::Type::I32 => "i32".to_owned(),
         types::Type::U128 => "u128".to_owned(),
         types::Type::I128 => "i128".to_owned(),
-        types::Type::Bool => "bool".to_owned(),
-        types::Type::Symbol => "symbol".to_owned(),
+        types::Type::U32 => "u32".to_owned(),
+        types::Type::I32 => "i32".to_owned(),
+        types::Type::Bool => "boolean".to_owned(),
+        types::Type::Symbol => "string".to_owned(),
         types::Type::Map { key, value } => {
             format!("Map<{}, {}>", type_to_ts(key), type_to_ts(value))
         }
-        types::Type::Option { value } => format!("Option<{}>", type_to_ts(value)),
+        types::Type::Option { value } => format!("{}?", type_to_ts(value)),
         types::Type::Result { value, error } => {
             format!("Result<{}, {}>", type_to_ts(value), type_to_ts(error))
         }
         types::Type::Set { element } => format!("Set<{}>", type_to_ts(element)),
         types::Type::Vec { element } => format!("Array<{}>", type_to_ts(element)),
         types::Type::Tuple { elements } => {
-            format!("Tuple<{}>", elements.iter().map(type_to_ts).join(", "))
+            if elements.is_empty() {
+                "void".to_owned()
+            } else {
+                format!("[{}]", elements.iter().map(type_to_ts).join(", "))
+            }
         }
         types::Type::Custom { name } => name.to_owned(),
-        types::Type::Bitset => todo!(),
         types::Type::Status => todo!(),
-        types::Type::Bytes => todo!(),
-        types::Type::Address => todo!(),
-        types::Type::BytesN { .. } => todo!(),
+        types::Type::Address => "Address".to_string(),
+        types::Type::Bytes => "Buffer".to_string(),
+        types::Type::BytesN { .. } => "".to_string(),
+        types::Type::Void => "void".to_owned(),
+        types::Type::U256 => todo!(),
+        types::Type::I256 => todo!(),
+        types::Type::String => todo!(),
+        types::Type::Timepoint => todo!(),
+        types::Type::Duration => todo!(),
     }
 }
 
@@ -186,7 +241,7 @@ mod test {
     use super::generate;
 
     const EXAMPLE_WASM: &[u8] =
-        include_bytes!("../../../target/wasm32-unknown-unknown/release/test_udt.wasm");
+        include_bytes!("../../../../soroban-abundance-token/target/wasm32-unknown-unknown/release/abundance_token.wasm");
 
     #[test]
     fn example() {
