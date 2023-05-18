@@ -13,7 +13,7 @@ use super::generate;
 
 static PROJECT_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/gen/ts/project_template");
 
-struct Project(PathBuf);
+pub struct Project(PathBuf);
 
 impl TryInto<Project> for PathBuf {
     type Error = std::io::Error;
