@@ -346,10 +346,20 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    // TODO: Change BytesN<32> to Address.
-    pub fn call_stack(&self) -> Vec<(BytesN<32>, crate::Symbol)> {
+    pub fn call_stack(&self) -> Vec<(Address, crate::Symbol)> {
+        // TODO: Change host fn to return Addresses, so that contracts do not
+        // need to iterate over the call stack and do conversion.
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
-        unsafe { Vec::unchecked_new(self.clone(), stack) }
+
+        let stack =
+            unsafe { Vec::<(BytesN<32>, crate::Symbol)>::unchecked_new(self.clone(), stack) };
+
+        let mut stack_with_addresses = Vec::new(self);
+        for (id, sym) in stack.iter_unchecked() {
+            stack_with_addresses.push_back((Address::from_contract_id(&id), sym));
+        }
+
+        stack_with_addresses
     }
 
     /// Invokes a function of a contract that is registered in the [Env].
