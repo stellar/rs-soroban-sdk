@@ -247,22 +247,6 @@ impl Address {
         }
     }
 
-    /// Creates an `Address` corresponding to the provided Stellar account
-    /// 32-byte identifier (public key).
-    ///
-    /// Prefer using the `Address` directly as input or output argument. Only
-    /// use this in special cases, like for cross-chain interoperability.
-    pub fn from_account_id(account_pk: &BytesN<32>) -> Self {
-        let env = account_pk.env().clone();
-        unsafe {
-            Self::unchecked_new(
-                env.clone(),
-                env.account_public_key_to_address(account_pk.to_object())
-                    .unwrap_optimized(),
-            )
-        }
-    }
-
     /// Returns 32-byte contract identifier corresponding to this `Address`.
     ///
     /// Returns `None` when this `Address` does not belong to a contract.
@@ -273,26 +257,6 @@ impl Address {
     /// given its `Address`.
     pub fn contract_id(&self) -> Option<BytesN<32>> {
         let rv = self.env.address_to_contract_id(self.obj).unwrap_optimized();
-        if let Ok(()) = rv.try_into_val(&self.env) {
-            None
-        } else {
-            Some(rv.try_into_val(&self.env).unwrap_optimized())
-        }
-    }
-
-    /// Returns 32-byte Stellar account identifier (public key) corresponding
-    /// to this `Address`.
-    ///
-    /// Returns `None` when this `Address` does not belong to an account.
-    ///
-    /// Avoid using the returned account identifier for authorization purposes
-    /// and prefer using `Address` directly whenever possible. This is only
-    /// useful in special cases, like for cross-chain interoperability.
-    pub fn account_id(&self) -> Option<BytesN<32>> {
-        let rv = self
-            .env
-            .address_to_account_public_key(self.obj)
-            .unwrap_optimized();
         if let Ok(()) = rv.try_into_val(&self.env) {
             None
         } else {
