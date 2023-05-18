@@ -1,5 +1,4 @@
-use crate::AuthorizationContext;
-use soroban_sdk::{vec, BytesN, Env, IntoVal, RawVal, Status, Vec};
+use soroban_sdk::{auth::AuthContext, vec, BytesN, Env, IntoVal, RawVal, Status, Vec};
 
 pub trait EnvAuthUtils {
     /// Calls the special `__check_auth` function of the custom account
@@ -82,7 +81,7 @@ pub trait EnvAuthUtils {
         contract_id: &BytesN<32>,
         signature_payload: &BytesN<32>,
         signatures: &Vec<RawVal>,
-        auth_context: &Vec<AuthorizationContext>,
+        auth_context: &Vec<AuthContext>,
     ) -> Result<(), Result<E, E::Error>>;
 }
 
@@ -92,7 +91,7 @@ impl EnvAuthUtils for Env {
         contract_id: &BytesN<32>,
         signature_payload: &BytesN<32>,
         signatures: &Vec<RawVal>,
-        auth_context: &Vec<AuthorizationContext>,
+        auth_context: &Vec<AuthContext>,
     ) -> Result<(), Result<E, E::Error>> {
         let args: Vec<RawVal> = vec![
             &self,
