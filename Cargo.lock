@@ -780,14 +780,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74233d3b3b2f6d4b006dc19dee745e73e2a6bfb6f93607cd3b02bd5b00797d7c"
 
 [[package]]
-name = "soroban-auth"
-version = "0.8.3"
-dependencies = [
- "soroban-env-host",
- "soroban-sdk",
-]
-
-[[package]]
 name = "soroban-env-common"
 version = "0.0.16"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=0c0cae6fa22b751e7fd95d7ce7556ac6d7b7010e#0c0cae6fa22b751e7fd95d7ce7556ac6d7b7010e"
