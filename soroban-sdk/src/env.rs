@@ -448,6 +448,8 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
+use crate::auth;
+#[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
     budget::Budget, random, Address as _, ContractFunctionSet, Ledger as _, MockAuth,
     MockAuthContract,
@@ -985,6 +987,102 @@ impl Env {
                 )
             })
             .collect()
+    }
+
+    /// Invokes the special `__check_auth` function of contracts that implement
+    /// the custom account interface.
+    ///
+    /// `__check_auth` can't be called outside of the host-managed `require_auth`
+    /// calls. This test utility allows testing custom account contracts without
+    /// the need to setup complex contract call trees and enabling the enforcing
+    /// auth on the host side.
+    ///
+    /// This function requires to provide the template argument for error. Use
+    /// `soroban_sdk::Status` if `__check_auth` doesn't return a special
+    /// contract error and use the error with `contracterror` attribute
+    /// otherwise.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, RawVal};
+    ///
+    /// #[contracterror]
+    /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+    /// #[repr(u32)]
+    /// pub enum NoopAccountError {
+    ///     SomeError = 1,
+    /// }
+    /// struct NoopAccountContract;
+    /// #[contractimpl]
+    /// impl NoopAccountContract {
+    ///
+    ///     #[allow(non_snake_case)]
+    ///     pub fn __check_auth(
+    ///         _env: Env,
+    ///         _signature_payload: BytesN<32>,
+    ///         signatures: Vec<RawVal>,
+    ///         _auth_context: Vec<Context>,
+    ///     ) -> Result<(), NoopAccountError> {
+    ///         if signatures.is_empty() {
+    ///             Err(NoopAccountError::SomeError)
+    ///         } else {
+    ///             Ok(())
+    ///         }
+    ///     }
+    /// }
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let e: Env = Default::default();
+    ///     let account_contract = NoopAccountContractClient::new(&e, &e.register_contract(None, NoopAccountContract));
+    ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
+    ///     assert_eq!(
+    ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
+    ///             &account_contract.contract.contract_id(),
+    ///             &BytesN::random(&e),
+    ///             &vec![&e],
+    ///             &vec![&e],
+    ///         ),
+    ///         // The inner `Result` is for conversion error and will be Ok
+    ///         // as long as a valid error type used.
+    ///         Err(Ok(NoopAccountError::SomeError))
+    ///     );
+    ///     // Succesful call of `__check_auth` with a `soroban_sdk::Status`
+    ///     // error - this should be compatible with any error type.
+    ///     assert_eq!(
+    ///         e.try_invoke_contract_check_auth::<soroban_sdk::Status>(
+    ///             &account_contract.contract.contract_id(),
+    ///             &BytesN::random(&e),
+    ///             &vec![&e, 0_i32.into()],
+    ///             &vec![&e],
+    ///         ),
+    ///         Ok(())
+    ///     );
+    /// }
+    /// ```
+    pub fn try_invoke_contract_check_auth<E: TryFrom<Status>>(
+        &self,
+        contract: &BytesN<32>,
+        signature_payload: &BytesN<32>,
+        signatures: &Vec<RawVal>,
+        auth_context: &Vec<auth::Context>,
+    ) -> Result<(), Result<E, E::Error>> {
+        let args = Vec::from_array(
+            self,
+            [
+                signature_payload.to_raw(),
+                signatures.to_raw(),
+                auth_context.to_raw(),
+            ],
+        );
+        let res = self
+            .host()
+            .call_account_contract_check_auth(contract.to_object(), args.to_object());
+        match res {
+            Ok(rv) => Ok(rv.into_val(self)),
+            Err(e) => Err(e.status.try_into()),
+        }
     }
 
     fn register_contract_with_contract_id_and_executable(
