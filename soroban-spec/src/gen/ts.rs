@@ -13,8 +13,8 @@ use crate::{
     read::{from_wasm, FromWasmError},
 };
 
-mod boilerplate;
-mod wrapper;
+pub mod boilerplate;
+pub mod wrapper;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
