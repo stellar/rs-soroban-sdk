@@ -989,7 +989,8 @@ impl Env {
             .collect()
     }
 
-    /// Invokes the special `__check_auth` function of custom account contracts.
+    /// Invokes the special `__check_auth` function of contracts that implement
+    /// the custom account interface.
     ///
     /// `__check_auth` can't be called outside of the host-managed `require_auth`
     /// calls. This test utility allows testing custom account contracts without
@@ -1003,7 +1004,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contracterror, contractimpl, testutils::BytesN as _, vec, auth::Context, BytesN, Env, Vec, RawVal};
+    /// use soroban_sdk::{contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, RawVal};
     ///
     /// #[contracterror]
     /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -1020,7 +1021,7 @@ impl Env {
     ///         _env: Env,
     ///         _signature_payload: BytesN<32>,
     ///         signatures: Vec<RawVal>,
-    ///         _auth_context: Vec<AuthorizationContext>,
+    ///         _auth_context: Vec<Context>,
     ///     ) -> Result<(), NoopAccountError> {
     ///         if signatures.is_empty() {
     ///             Err(NoopAccountError::SomeError)
@@ -1034,12 +1035,11 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let e: Env = Default::default();
-    ///     let account_contract =
-    ///         NoopAccountContractClient::new(&e, &e.register_contract(None, NoopAccountContract {}));
+    ///     let account_contract = NoopAccountContractClient::new(&e, &e.register_contract(None, NoopAccountContract));
     ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
-    ///             &account_contract.contract_id,
+    ///             &account_contract.contract.contract_id(),
     ///             &BytesN::random(&e),
     ///             &vec![&e],
     ///             &vec![&e],
@@ -1052,7 +1052,7 @@ impl Env {
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Status>(
-    ///             &account_contract.contract_id,
+    ///             &account_contract.contract.contract_id(),
     ///             &BytesN::random(&e),
     ///             &vec![&e, 0_i32.into()],
     ///             &vec![&e],
