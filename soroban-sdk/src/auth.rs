@@ -22,8 +22,8 @@ impl Context {
 /// Once a contract implements the interface, the address of the contract can be
 /// used for addresses that have [`Address::require_auth`] called.
 pub trait CustomAccountInterface {
-    type Error: Into<Status>;
     type Signature;
+    type Error: Into<Status>;
 
     /// Check that the signatures and auth contexts are valid.
     fn __check_auth(
