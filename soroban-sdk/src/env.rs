@@ -942,7 +942,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract.clone(),
+    ///             client.address.clone(),
     ///             Symbol::short("transfer"),
     ///             (&address, 1000_i128,).into_val(&env)
     ///         )]
@@ -953,7 +953,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract.clone(),
+    ///             client.address.clone(),
     ///             Symbol::short("transfer2"),
     ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///             (500_i128,).into_val(&env)
@@ -1039,7 +1039,7 @@ impl Env {
     ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
-    ///             &account_contract.contract.contract_id(),
+    ///             &account_contract.address.contract_id(),
     ///             &BytesN::random(&e),
     ///             &vec![&e],
     ///             &vec![&e],
@@ -1052,7 +1052,7 @@ impl Env {
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Status>(
-    ///             &account_contract.contract.contract_id(),
+    ///             &account_contract.address.contract_id(),
     ///             &BytesN::random(&e),
     ///             &vec![&e, 0_i32.into()],
     ///             &vec![&e],
