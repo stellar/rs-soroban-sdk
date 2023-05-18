@@ -78,7 +78,6 @@ extern crate std;
 // allocator, appropriate for a WASM blob that runs a single contract call.
 #[cfg(all(feature = "alloc", target_family = "wasm"))]
 mod alloc;
-pub mod auth;
 
 /// __link_sections returns and does nothing, but it contains link sections that
 /// should be ensured end up in the final build of any contract using the SDK.
@@ -663,6 +662,7 @@ pub mod data {
     #[deprecated(note = "use storage::Storage")]
     pub use super::storage::Storage as Data;
 }
+pub mod auth;
 mod bytes;
 pub mod crypto;
 pub mod deploy;
