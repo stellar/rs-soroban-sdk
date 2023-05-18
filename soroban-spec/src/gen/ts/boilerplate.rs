@@ -59,15 +59,16 @@ impl Project {
             .write_all(
                 format!(
                     r#"
-    /**
-     * The Soroban contract ID for the `{contract_name}` contract.
-     * 
-     * You can override this by setting a `SOROBAN_{CONTRACT_NAME}_CONTRACT_ID` or
-     * `PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID` environment variable.
-     */
-    export const CONTRACT_ID = import.meta.env.PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID
-      ?? import.meta.env.SOROBAN_{CONTRACT_NAME}_CONTRACT_ID
-      ?? '{contract_id}'"#
+/**
+ * The Soroban contract ID for the `{contract_name}` contract.
+ * 
+ * You can override this by setting a `SOROBAN_{CONTRACT_NAME}_CONTRACT_ID` or
+ * `PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID` environment variable.
+ */
+export const CONTRACT_ID = import.meta.env.PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID
+    ?? import.meta.env.SOROBAN_{CONTRACT_NAME}_CONTRACT_ID
+    ?? '{contract_id}'
+"#
                 )
                 .as_bytes(),
             )
@@ -83,20 +84,20 @@ impl Project {
             .write_all(
                 format!(
                     r#"
-    interface ImportMetaEnv {{
-        readonly PUBLIC_{CONTRACT_NAME}_CONTRACT_ID: string;
-        readonly {CONTRACT_NAME}_CONTRACT_ID: string;
-        
-        readonly PUBLIC_SOROBAN_NETWORK_NAME: string;
-        readonly SOROBAN_NETWORK_NAME: string;
-        
-        readonly PUBLIC_SOROBAN_NETWORK_PASSPHRASE: string;
-        readonly SOROBAN_NETWORK_PASSPHRASE: string;
-        
-        readonly PUBLIC_SOROBAN_RPC_URL: string;
-        readonly SOROBAN_RPC_URL: string;
-    }}
-        "#
+interface ImportMetaEnv {{
+    readonly PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID: string;
+    readonly SOROBAN_{CONTRACT_NAME}_CONTRACT_ID: string;
+    
+    readonly PUBLIC_SOROBAN_NETWORK_NAME: string;
+    readonly SOROBAN_NETWORK_NAME: string;
+    
+    readonly PUBLIC_SOROBAN_NETWORK_PASSPHRASE: string;
+    readonly SOROBAN_NETWORK_PASSPHRASE: string;
+    
+    readonly PUBLIC_SOROBAN_RPC_URL: string;
+    readonly SOROBAN_RPC_URL: string;
+}}
+"#
                 )
                 .as_bytes(),
             )
