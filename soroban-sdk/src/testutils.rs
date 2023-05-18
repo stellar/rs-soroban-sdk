@@ -180,9 +180,6 @@ pub trait Address {
     /// the underlying Address value.
     fn random(env: &Env) -> crate::Address;
 
-    /// Creates an `Address` corresponding to the provided contract identifier.
-    fn from_contract_id(contract_id: &crate::BytesN<32>) -> crate::Address;
-
     /// Get the contract ID of an Address as a BytesN<32>.
     ///
     /// ### Panics
