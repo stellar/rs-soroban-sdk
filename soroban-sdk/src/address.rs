@@ -261,26 +261,6 @@ impl Address {
         }
     }
 
-    /// Returns 32-byte Stellar account identifier (public key) corresponding
-    /// to this `Address`.
-    ///
-    /// Returns `None` when this `Address` does not belong to an account.
-    ///
-    /// Avoid using the returned account identifier for authorization purposes
-    /// and prefer using `Address` directly whenever possible. This is only
-    /// useful in special cases, like for cross-chain interoperability.
-    pub fn account_id(&self) -> Option<BytesN<32>> {
-        let rv = self
-            .env
-            .address_to_account_public_key(self.obj)
-            .unwrap_optimized();
-        if let Ok(()) = rv.try_into_val(&self.env) {
-            None
-        } else {
-            Some(rv.try_into_val(&self.env).unwrap_optimized())
-        }
-    }
-
     #[inline(always)]
     pub(crate) unsafe fn unchecked_new(env: Env, obj: AddressObject) -> Self {
         Self { env, obj }
