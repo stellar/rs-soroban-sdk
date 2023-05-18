@@ -408,9 +408,12 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
         E: TryFrom<Status>,
     {
+        let Some(contract_id) = contract_id.try_contract_id() else {
+            return Err(E::try_from(Status::from_status(xdr::ScStatus::UnknownError(xdr::ScUnknownErrorCode::General))));
+        };
         let rv = internal::Env::try_call(
             self,
-            contract_id.contract_id().to_object(),
+            contract_id.to_object(),
             func.to_val(),
             args.to_object(),
         )

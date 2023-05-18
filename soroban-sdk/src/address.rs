@@ -249,15 +249,25 @@ impl Address {
 
     /// Returns 32-byte contract identifier corresponding to this `Address`.
     ///
-    /// ### Panics
-    ///
-    /// If Address is not a contract.
-    pub(crate) fn contract_id(&self) -> BytesN<32> {
+    /// Returns None if the Address is not a contract.
+    pub(crate) fn try_contract_id(&self) -> Option<BytesN<32>> {
         let rv = self.env.address_to_contract_id(self.obj).unwrap_optimized();
         if let Ok(()) = rv.try_into_val(&self.env) {
-            panic!("Address is not a Contract ID")
+            None
         } else {
-            rv.try_into_val(&self.env).unwrap_optimized()
+            Some(rv.try_into_val(&self.env).unwrap_optimized())
+        }
+    }
+
+    /// Returns 32-byte contract identifier corresponding to this `Address`.
+    ///
+    /// ### Panics
+    ///
+    /// If Address is not a contract ID.
+    pub(crate) fn contract_id(&self) -> BytesN<32> {
+        match self.try_contract_id() {
+            Some(contract_id) => contract_id,
+            None => panic!("Address is not a Contract ID"),
         }
     }
 
