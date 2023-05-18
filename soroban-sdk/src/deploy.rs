@@ -102,7 +102,7 @@ impl DeployerWithCurrentContract {
     /// will be used to derive a contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> BytesN<32> {
+    pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> Address {
         let env = &self.env;
         let id = env
             .create_contract_from_contract(
@@ -110,7 +110,8 @@ impl DeployerWithCurrentContract {
                 self.salt.to_object(),
             )
             .unwrap_infallible();
-        unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }
+        let id = unsafe { BytesN::<32>::unchecked_new(env.clone(), id) };
+        Address::from_contract_id(&id)
     }
 }
 
