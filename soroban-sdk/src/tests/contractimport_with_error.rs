@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
+use soroban_sdk::{contractimpl, Address, Env, Symbol};
 
 mod errcontract {
     use crate as soroban_sdk;
@@ -12,7 +12,7 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn hello_with(env: Env, contract_id: BytesN<32>, flag: u32) -> Symbol {
+    pub fn hello_with(env: Env, contract_id: Address, flag: u32) -> Symbol {
         errcontract::Client::new(&env, &contract_id).hello(&flag)
     }
 }

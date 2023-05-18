@@ -20,15 +20,14 @@ impl Contract {
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    use soroban_sdk::{testutils::Events, vec, BytesN, Env, IntoVal, Symbol};
+    use soroban_sdk::{testutils::Events, vec, Env, IntoVal, Symbol};
 
     use crate::{Contract, ContractClient};
 
     #[test]
     fn test_pub_event() {
         let env = Env::default();
-        let contract_id = BytesN::from_array(&env, &[0; 32]);
-        env.register_contract(&contract_id, Contract);
+        let contract_id = env.register_contract(None, Contract);
         let client = ContractClient::new(&env, &contract_id);
 
         client.hello();

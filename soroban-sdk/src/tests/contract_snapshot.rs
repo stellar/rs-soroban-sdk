@@ -1,5 +1,5 @@
-use crate::{self as soroban_sdk, BytesN};
-use soroban_sdk::{contractimpl, Env};
+use crate::{self as soroban_sdk};
+use soroban_sdk::{contractimpl, xdr, Address, Env, TryFromVal};
 
 pub struct Contract;
 
@@ -16,8 +16,8 @@ impl Contract {
 #[test]
 fn test() {
     let e = Env::default();
-    let contract_id = [0u8; 32];
-    e.register_contract(&BytesN::from_array(&e, &contract_id), Contract);
+    let contract_id = e.register_contract(None, Contract);
+    let contract_id_xdr = xdr::ScAddress::try_from(&contract_id).unwrap();
     let client = ContractClient::new(&e, &contract_id);
 
     client.store(&2, &4);
@@ -26,7 +26,8 @@ fn test() {
     let snapshot = e.to_snapshot();
 
     let e = Env::from_snapshot(snapshot);
-    e.register_contract(&BytesN::from_array(&e, &contract_id), Contract);
+    let contract_id = Address::try_from_val(&e, &contract_id_xdr).unwrap();
+    e.register_contract(&contract_id, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
     assert_eq!(client.get(&2), 4);

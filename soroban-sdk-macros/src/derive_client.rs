@@ -75,7 +75,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                     }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.invoke_contract(
-                        &self.contract_id,
+                        &self.contract,
                         &#crate_path::Symbol::new(&self.env, &#fn_name),
                         #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
@@ -101,7 +101,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                     }
                     use #crate_path::{IntoVal,FromVal};
                     self.env.try_invoke_contract(
-                        &self.contract_id,
+                        &self.contract,
                         &#crate_path::Symbol::new(&self.env, &#fn_name),
                         #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
@@ -123,7 +123,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
         #[doc = #client_doc]
         pub struct #client_ident<'a> {
             pub env: #crate_path::Env,
-            pub contract_id: #crate_path::BytesN<32>,
+            pub contract: #crate_path::Address,
             #[doc(hidden)]
             #[cfg(not(any(test, feature = "testutils")))]
             _phantom: core::marker::PhantomData<&'a ()>,
@@ -139,10 +139,10 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
         }
 
         impl<'a> #client_ident<'a> {
-            pub fn new(env: &#crate_path::Env, contract_id: &impl #crate_path::IntoVal<#crate_path::Env, #crate_path::BytesN<32>>) -> Self {
+            pub fn new(env: &#crate_path::Env, contract: &#crate_path::Address) -> Self {
                 Self {
                     env: env.clone(),
-                    contract_id: contract_id.into_val(env),
+                    contract: contract.clone(),
                     #[cfg(not(any(test, feature = "testutils")))]
                     _phantom: core::marker::PhantomData,
                     #[cfg(any(test, feature = "testutils"))]
@@ -154,10 +154,6 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
                 }
             }
 
-            pub fn address(&self) -> #crate_path::Address {
-                #crate_path::Address::from_contract_id(&self.contract_id)
-            }
-
             /// Set authorizations in the environment which will be consumed by
             /// contracts when they invoke `Address::require_auth` or
             /// `Address::require_auth_for_args` functions.
@@ -167,7 +163,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             pub fn set_auths(&self, auths: &'a [#crate_path::xdr::ContractAuth]) -> Self {
                 Self {
                     env: self.env.clone(),
-                    contract_id: self.contract_id.clone(),
+                    contract: self.contract.clone(),
                     set_auths: Some(auths),
                     mock_auths: self.mock_auths.clone(),
                     mock_all_auths: false,
@@ -183,7 +179,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
                 Self {
                     env: self.env.clone(),
-                    contract_id: self.contract_id.clone(),
+                    contract: self.contract.clone(),
                     set_auths: self.set_auths.clone(),
                     mock_auths: Some(mock_auths),
                     mock_all_auths: false,
@@ -199,7 +195,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             pub fn mock_all_auths(&self) -> Self {
                 Self {
                     env: self.env.clone(),
-                    contract_id: self.contract_id.clone(),
+                    contract: self.contract.clone(),
                     set_auths: None,
                     mock_auths: None,
                     mock_all_auths: true,

@@ -301,15 +301,6 @@ impl Env {
         unsafe { Address::unchecked_new(self.clone(), address) }
     }
 
-    /// Get the 32-byte hash identifier of the current executing contract.
-    ///
-    /// Prefer `current_contract_address` for the most cases, unless dealing
-    /// with contract-specific functions (like the call stacks).
-    pub fn current_contract_id(&self) -> BytesN<32> {
-        let id = internal::Env::get_current_contract_id(self).unwrap_infallible();
-        unsafe { BytesN::<32>::unchecked_new(self.clone(), id) }
-    }
-
     #[doc(hidden)]
     pub(crate) fn require_auth_for_args(&self, address: &Address, args: Vec<RawVal>) {
         internal::Env::require_auth_for_args(self, address.to_object(), args.to_object())
@@ -326,7 +317,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, log, BytesN, Env, Symbol};
     ///
     /// pub struct Contract;
     ///
@@ -337,8 +328,7 @@ impl Env {
     ///         assert_eq!(stack.len(), 1);
     ///
     ///         let outer = stack.get(0).unwrap().unwrap();
-    ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
-    ///         assert_eq!(outer.1, Symbol::short("hello"));
+    ///         log!(&env, "{}", outer);
     ///     }
     /// }
     /// #[test]
@@ -347,17 +337,27 @@ impl Env {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
-    ///     env.register_contract(&contract_id, Contract);
+    ///     let contract_id = env.register_contract(None, Contract);
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     client.hello();
     /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn call_stack(&self) -> Vec<(BytesN<32>, crate::Symbol)> {
+    pub fn call_stack(&self) -> Vec<(Address, crate::Symbol)> {
+        // TODO: Change host fn to return Addresses, so that contracts do not
+        // need to iterate over the call stack and do conversion.
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
-        unsafe { Vec::unchecked_new(self.clone(), stack) }
+
+        let stack =
+            unsafe { Vec::<(BytesN<32>, crate::Symbol)>::unchecked_new(self.clone(), stack) };
+
+        let mut stack_with_addresses = Vec::new(self);
+        for (id, sym) in stack.iter_unchecked() {
+            stack_with_addresses.push_back((Address::from_contract_id(&id), sym));
+        }
+
+        stack_with_addresses
     }
 
     /// Invokes a function of a contract that is registered in the [Env].
@@ -375,7 +375,7 @@ impl Env {
     /// into the type `T`.
     pub fn invoke_contract<T>(
         &self,
-        contract_id: &BytesN<32>,
+        contract_id: &Address,
         func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> T
@@ -384,7 +384,7 @@ impl Env {
     {
         let rv = internal::Env::call(
             self,
-            contract_id.to_object(),
+            contract_id.contract_id().to_object(),
             func.to_val(),
             args.to_object(),
         )
@@ -398,7 +398,7 @@ impl Env {
     /// returns an error if the invocation fails for any reason.
     pub fn try_invoke_contract<T, E>(
         &self,
-        contract_id: &BytesN<32>,
+        contract_id: &Address,
         func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
@@ -406,6 +406,9 @@ impl Env {
         T: TryFromVal<Env, RawVal>,
         E: TryFrom<Status>,
     {
+        let Some(contract_id) = contract_id.try_contract_id() else {
+            return Err(E::try_from(Status::from_status(xdr::ScStatus::UnknownError(xdr::ScUnknownErrorCode::General))));
+        };
         let rv = internal::Env::try_call(
             self,
             contract_id.to_object(),
@@ -446,7 +449,7 @@ impl Env {
 
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, random, BytesN as _, ContractFunctionSet, Ledger as _, MockAuth,
+    budget::Budget, random, Address as _, ContractFunctionSet, Ledger as _, MockAuth,
     MockAuthContract,
 };
 #[cfg(any(test, feature = "testutils"))]
@@ -533,15 +536,14 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
-    ///     env.register_contract(&contract_id, HelloContract);
+    ///     let contract_id = env.register_contract(None, HelloContract);
     /// }
     /// ```
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_id: impl Into<Option<&'a Address>>,
         contract: T,
-    ) -> BytesN<32> {
+    ) -> Address {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
         impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
             fn call(
@@ -565,11 +567,11 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            BytesN::random(self)
+            Address::random(self)
         };
         self.env_impl
             .register_test_contract(
-                contract_id.to_object(),
+                contract_id.contract_id().to_object(),
                 Rc::new(InternalContractFunctionSet(contract)),
             )
             .unwrap();
@@ -602,9 +604,9 @@ impl Env {
     /// ```
     pub fn register_contract_wasm<'a>(
         &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_id: impl Into<Option<&'a Address>>,
         contract_wasm: &[u8],
-    ) -> BytesN<32> {
+    ) -> Address {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
@@ -619,7 +621,7 @@ impl Env {
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
+    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
         let issuer_pk = random();
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
@@ -716,14 +718,14 @@ impl Env {
             })
             .unwrap();
 
-        token_id
+        Address::from_contract_id(&token_id)
     }
 
     fn register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_id: impl Into<Option<&'a Address>>,
         executable: xdr::ScContractExecutable,
-    ) -> BytesN<32> {
+    ) -> Address {
         if let Some(contract_id) = contract_id.into() {
             self.register_contract_with_contract_id_and_executable(contract_id, executable);
             contract_id.clone()
@@ -732,7 +734,7 @@ impl Env {
         }
     }
 
-    fn register_contract_with_source(&self, executable: xdr::ScContractExecutable) -> BytesN<32> {
+    fn register_contract_with_source(&self, executable: xdr::ScContractExecutable) -> Address {
         let prev_source_account = self.env_impl.source_account();
         self.env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
@@ -757,7 +759,8 @@ impl Env {
         } else {
             self.env_impl.remove_source_account();
         }
-        contract_id
+
+        Address::from_contract_id(&contract_id)
     }
 
     /// Set authorizations in the environment which will be consumed by
@@ -824,10 +827,7 @@ impl Env {
     /// ```
     pub fn mock_auths(&self, auths: &[MockAuth]) {
         for a in auths {
-            let Some(contract_id) = a.address.contract_id() else {
-                panic!("mocking auth is only supported with contract addresses")
-            };
-            self.register_contract(&contract_id, MockAuthContract);
+            self.register_contract(a.address, MockAuthContract);
         }
         let auths = auths
             .iter()
@@ -940,7 +940,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract_id.clone(),
+    ///             client.contract.clone(),
     ///             Symbol::short("transfer"),
     ///             (&address, 1000_i128,).into_val(&env)
     ///         )]
@@ -951,7 +951,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract_id.clone(),
+    ///             client.contract.clone(),
     ///             Symbol::short("transfer2"),
     ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///             (500_i128,).into_val(&env)
@@ -961,7 +961,7 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn auths(&self) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
+    pub fn auths(&self) -> std::vec::Vec<(Address, Address, crate::Symbol, Vec<RawVal>)> {
         use xdr::{ScBytes, ScVal};
         let authorizations = self.env_impl.get_authenticated_authorizations().unwrap();
         authorizations
@@ -973,11 +973,13 @@ impl Env {
                 }
                 (
                     Address::try_from_val(self, &ScVal::Address(a.0.clone())).unwrap(),
-                    BytesN::<32>::try_from_val(
-                        self,
-                        &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
-                    )
-                    .unwrap(),
+                    Address::from_contract_id(
+                        &BytesN::<32>::try_from_val(
+                            self,
+                            &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
+                        )
+                        .unwrap(),
+                    ),
                     crate::Symbol::try_from_val(self, &a.2).unwrap(),
                     args,
                 )
@@ -987,10 +989,10 @@ impl Env {
 
     fn register_contract_with_contract_id_and_executable(
         &self,
-        contract_id: &BytesN<32>,
+        contract_id: &Address,
         executable: xdr::ScContractExecutable,
     ) {
-        let contract_id_hash = Hash(contract_id.into());
+        let contract_id_hash = Hash(contract_id.contract_id().into());
         let data_key = xdr::ScVal::LedgerKeyContractExecutable;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract_id: contract_id_hash.clone(),
@@ -1050,8 +1052,8 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
-    pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
-        let id: [u8; 32] = id.into();
+    pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
+        let id: [u8; 32] = id.contract_id().into();
         let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
         self.env_impl

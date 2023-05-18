@@ -236,7 +236,7 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases, for example to get an Address of a freshly
     /// deployed contract.
-    pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
+    pub(crate) fn from_contract_id(contract_id: &BytesN<32>) -> Self {
         let env = contract_id.env();
         unsafe {
             Self::unchecked_new(
@@ -249,18 +249,25 @@ impl Address {
 
     /// Returns 32-byte contract identifier corresponding to this `Address`.
     ///
-    /// Returns `None` when this `Address` does not belong to a contract.
-    ///
-    /// Avoid using the returned contract identifier for authorization purposes
-    /// and prefer using `Address` directly whenever possible. This is only
-    /// useful in special cases, for example, to be able to invoke a contract
-    /// given its `Address`.
-    pub fn contract_id(&self) -> Option<BytesN<32>> {
+    /// Returns None if the Address is not a contract.
+    pub(crate) fn try_contract_id(&self) -> Option<BytesN<32>> {
         let rv = self.env.address_to_contract_id(self.obj).unwrap_optimized();
         if let Ok(()) = rv.try_into_val(&self.env) {
             None
         } else {
             Some(rv.try_into_val(&self.env).unwrap_optimized())
+        }
+    }
+
+    /// Returns 32-byte contract identifier corresponding to this `Address`.
+    ///
+    /// ### Panics
+    ///
+    /// If Address is not a contract ID.
+    pub(crate) fn contract_id(&self) -> BytesN<32> {
+        match self.try_contract_id() {
+            Some(contract_id) => contract_id,
+            None => panic!("Address is not a Contract ID"),
         }
     }
 
@@ -301,5 +308,13 @@ impl crate::testutils::Address for Address {
     fn random(env: &Env) -> Self {
         let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
+    }
+
+    fn from_contract_id(contract_id: &crate::BytesN<32>) -> crate::Address {
+        Self::from_contract_id(contract_id)
+    }
+
+    fn contract_id(&self) -> crate::BytesN<32> {
+        self.contract_id()
     }
 }

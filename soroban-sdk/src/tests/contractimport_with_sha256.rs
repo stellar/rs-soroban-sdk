@@ -1,8 +1,6 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, BytesN, Env};
-use stellar_xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeBytesN, ScSpecTypeDef,
-};
+use soroban_sdk::{contractimpl, Address, Env};
+use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 mod addcontract {
     use crate as soroban_sdk;
@@ -16,7 +14,7 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn add_with(env: Env, contract_id: BytesN<32>, x: u64, y: u64) -> u64 {
+    pub fn add_with(env: Env, contract_id: Address, x: u64, y: u64) -> u64 {
         addcontract::Client::new(&env, &contract_id).add(&x, &y)
     }
 }
@@ -46,7 +44,7 @@ fn test_spec() {
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "contract_id".try_into().unwrap(),
-                type_: ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+                type_: ScSpecTypeDef::Address,
             },
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
