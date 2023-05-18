@@ -27,7 +27,7 @@ serde_json = "1.0.82"
 prettyplease = "0.2.4"
 include_dir = { version = "0.7.3", features = ["glob"] }
 heck = "0.4.1"
-assert_fs = "1.0.13"
 
 [dev-dependencies]
+assert_fs = "1.0.13"
 pretty_assertions = "1.2.1"
