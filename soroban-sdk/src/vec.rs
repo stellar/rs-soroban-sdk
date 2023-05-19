@@ -260,7 +260,7 @@ use super::xdr::{ScVal, ScVec};
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<&Vec<T>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
+    fn try_from(v: &Vec<T>) -> Result<Self, ConversionError> {
         ScVal::try_from_val(&v.env, &v.obj.to_raw())
     }
 }
@@ -268,7 +268,7 @@ impl<T> TryFrom<&Vec<T>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<&Vec<T>> for ScVec {
     type Error = ConversionError;
-    fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
+    fn try_from(v: &Vec<T>) -> Result<Self, ConversionError> {
         if let ScVal::Vec(Some(vec)) = ScVal::try_from(v)? {
             Ok(vec)
         } else {
@@ -280,7 +280,7 @@ impl<T> TryFrom<&Vec<T>> for ScVec {
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<Vec<T>> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
+    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
         (&v).try_into()
     }
 }
@@ -288,7 +288,7 @@ impl<T> TryFrom<Vec<T>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<Vec<T>> for ScVec {
     type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
+    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
         (&v).try_into()
     }
 }
@@ -299,7 +299,7 @@ where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
     type Error = ConversionError;
-    fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, ConversionError> {
         Ok(
             VecObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
                 .try_into_val(env)

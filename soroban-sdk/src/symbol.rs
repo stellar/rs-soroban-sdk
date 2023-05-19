@@ -138,7 +138,7 @@ impl TryFromVal<Env, &str> for Symbol {
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Symbol> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &Symbol) -> Result<Self, Self::Error> {
+    fn try_from(v: &Symbol) -> Result<Self, ConversionError> {
         if let Ok(ss) = SymbolSmall::try_from(v.val) {
             ScVal::try_from(ss)
         } else {
@@ -151,7 +151,7 @@ impl TryFrom<&Symbol> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<Symbol> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: Symbol) -> Result<Self, Self::Error> {
+    fn try_from(v: Symbol) -> Result<Self, ConversionError> {
         (&v).try_into()
     }
 }
@@ -159,7 +159,7 @@ impl TryFrom<Symbol> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, Symbol> for ScVal {
     type Error = ConversionError;
-    fn try_from_val(_e: &Env, v: &Symbol) -> Result<Self, Self::Error> {
+    fn try_from_val(_e: &Env, v: &Symbol) -> Result<Self, ConversionError> {
         v.try_into()
     }
 }

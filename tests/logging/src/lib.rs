@@ -8,17 +8,17 @@ impl Contract {
     pub fn hello(env: Env) {
         log!(&env, "none");
         log!(&env, "none",);
-        log!(&env, "one: {}", Symbol::short("one"));
-        log!(&env, "one: {}", Symbol::short("one"),);
+        log!(&env, "one:", Symbol::short("one"));
+        log!(&env, "one:", Symbol::short("one"),);
         log!(
             &env,
-            "one: {}, two: {}",
+            "one and two:",
             Symbol::short("one"),
             Symbol::short("two")
         );
         log!(
             &env,
-            "one: {}, two: {}",
+            "one and two:",
             Symbol::short("one"),
             Symbol::short("two"),
         );
@@ -28,7 +28,6 @@ impl Contract {
 #[cfg(test)]
 mod test {
     extern crate std;
-    use std::string::ToString;
 
     use soroban_sdk::{testutils::Logger, Env};
 
@@ -45,17 +44,17 @@ mod test {
         env.logger().print();
 
         if cfg!(debug_assertions) {
-            assert_eq!(
-                env.logger().all(),
-                std::vec![
-                    "none".to_string(),
-                    "none".to_string(),
-                    "one: Symbol(one)".to_string(),
-                    "one: Symbol(one)".to_string(),
-                    "one: Symbol(one), two: Symbol(two)".to_string(),
-                    "one: Symbol(one), two: Symbol(two)".to_string(),
-                ],
-            );
+            let pats = std::vec![
+                "\"none\"",
+                "\"none\"",
+                "[\"one:\", one]",
+                "[\"one:\", one]",
+                "[\"one and two:\", one, two]",
+                "[\"one and two:\", one, two]"
+            ];
+            for (msg, pat) in env.logger().all().iter().zip(pats.iter()) {
+                assert!(msg.contains(pat));
+            }
         } else {
             assert_eq!(env.logger().all(), std::vec![""; 0]);
         }

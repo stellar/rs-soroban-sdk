@@ -144,7 +144,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::I128 => quote! { i128 },
         ScSpecTypeDef::Bool => quote! { bool },
         ScSpecTypeDef::Symbol => quote! { soroban_sdk::Symbol },
-        ScSpecTypeDef::Status => quote! { soroban_sdk::Status },
+        ScSpecTypeDef::Error => quote! { soroban_sdk::Error },
         ScSpecTypeDef::Bytes => quote! { soroban_sdk::Bytes },
         ScSpecTypeDef::Address => quote! { soroban_sdk::Address },
         ScSpecTypeDef::String => quote! { soroban_sdk::String },

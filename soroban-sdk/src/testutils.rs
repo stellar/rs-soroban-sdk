@@ -148,9 +148,9 @@ pub trait Events {
 
 /// Test utilities for [`Logger`][crate::logging::Logger].
 pub trait Logger {
-    /// Returns all debug events that have been logged.
+    /// Returns all diagnostic events that have been logged.
     fn all(&self) -> std::vec::Vec<String>;
-    /// Prints all debug events to stdout.
+    /// Prints all diagnostic events to stdout.
     fn print(&self);
 }
 

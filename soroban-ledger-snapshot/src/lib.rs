@@ -5,9 +5,10 @@ use std::{
     rc::Rc,
 };
 
+use soroban_env_common::xdr::{ScErrorCode, ScErrorType};
 use soroban_env_host::{
     storage::SnapshotSource,
-    xdr::{LedgerEntry, LedgerKey, ScHostStorageErrorCode, ScStatus},
+    xdr::{LedgerEntry, LedgerKey, ScError},
     Host, HostError, LedgerInfo,
 };
 
@@ -165,9 +166,11 @@ impl SnapshotSource for &LedgerSnapshot {
     fn get(&self, key: &Rc<LedgerKey>) -> Result<Rc<LedgerEntry>, HostError> {
         match self.ledger_entries.iter().find(|(k, _)| &**k == &**key) {
             Some((_, v)) => Ok(Rc::new(*v.clone())),
-            None => {
-                Err(ScStatus::HostStorageError(ScHostStorageErrorCode::AccessToUnknownEntry).into())
+            None => Err(ScError {
+                type_: ScErrorType::Storage,
+                code: ScErrorCode::MissingValue,
             }
+            .into()),
         }
     }
     fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {

@@ -167,7 +167,7 @@ pub fn derive_type_enum(
         impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
                 use #path::{EnvBase,TryIntoVal,TryFromVal};
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
                 let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
@@ -183,7 +183,7 @@ pub fn derive_type_enum(
         impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
                 use #path::{TryIntoVal,TryFromVal};
                 match val {
                     #(#try_intos,)*
@@ -195,7 +195,7 @@ pub fn derive_type_enum(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVec) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVec) -> Result<Self, #path::xdr::Error> {
                 use #path::xdr::Validate;
                 use #path::TryIntoVal;
 
@@ -215,7 +215,7 @@ pub fn derive_type_enum(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
                 if let #path::xdr::ScVal::Vec(Some(vec)) = val {
                     <_ as #path::TryFromVal<_, _>>::try_from_val(env, vec)
                 } else {
@@ -228,7 +228,7 @@ pub fn derive_type_enum(
         impl TryFrom<&#enum_ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: &#enum_ident) -> Result<Self, Self::Error> {
+            fn try_from(val: &#enum_ident) -> Result<Self, #path::xdr::Error> {
                 extern crate alloc;
                 Ok(match val {
                     #(#into_xdrs,)*
@@ -240,7 +240,7 @@ pub fn derive_type_enum(
         impl TryFrom<#enum_ident> for #path::xdr::ScVec  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: #enum_ident) -> Result<Self, Self::Error> {
+            fn try_from(val: #enum_ident) -> Result<Self, #path::xdr::Error> {
                 (&val).try_into()
             }
         }
@@ -249,7 +249,7 @@ pub fn derive_type_enum(
         impl TryFrom<&#enum_ident> for #path::xdr::ScVal  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: &#enum_ident) -> Result<Self, Self::Error> {
+            fn try_from(val: &#enum_ident) -> Result<Self, #path::xdr::Error> {
                 Ok(#path::xdr::ScVal::Vec(Some(val.try_into()?)))
             }
         }
@@ -258,7 +258,7 @@ pub fn derive_type_enum(
         impl TryFrom<#enum_ident> for #path::xdr::ScVal  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: #enum_ident) -> Result<Self, Self::Error> {
+            fn try_from(val: #enum_ident) -> Result<Self, #path::xdr::Error> {
                 (&val).try_into()
             }
         }

@@ -88,10 +88,10 @@ pub use internal::xdr;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
+pub use internal::Error;
 pub use internal::MapObject;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
-pub use internal::Status;
 pub use internal::SymbolStr;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
@@ -258,8 +258,8 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
-    pub fn panic_with_error(&self, error: impl Into<Status>) {
-        _ = internal::Env::fail_with_status(self, error.into());
+    pub fn panic_with_error(&self, error: impl Into<internal::Error>) {
+        _ = internal::Env::fail_with_error(self, error.into());
         unreachable!()
     }
 
@@ -404,10 +404,10 @@ impl Env {
     ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
     where
         T: TryFromVal<Env, RawVal>,
-        E: TryFrom<Status>,
+        E: TryFrom<Error>,
     {
         let Some(contract_id) = contract_id.try_contract_id() else {
-            return Err(E::try_from(Status::from_status(xdr::ScStatus::UnknownError(xdr::ScUnknownErrorCode::General))));
+            return Err(E::try_from(Error::from_type_and_code(xdr::ScErrorType::Value, xdr::ScErrorCode::MissingValue)));
         };
         let rv = internal::Env::try_call(
             self,
@@ -416,8 +416,8 @@ impl Env {
             args.to_object(),
         )
         .unwrap_infallible();
-        match Status::try_from_val(self, &rv) {
-            Ok(status) => Err(E::try_from(status)),
+        match internal::Error::try_from_val(self, &rv) {
+            Ok(err) => Err(E::try_from(err)),
             Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
         }
     }
@@ -426,11 +426,6 @@ impl Env {
     #[inline(always)]
     pub fn logger(&self) -> Logger {
         Logger::new(self)
-    }
-
-    #[doc(hidden)]
-    pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
-        internal::Env::log_value(self, v.into_val(self)).unwrap_infallible();
     }
 
     /// Replaces the executable of the current contract with the provided Wasm.
@@ -459,7 +454,9 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
+use xdr::{
+    ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
+};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -476,10 +473,8 @@ impl Env {
                 &self,
                 _key: &Rc<xdr::LedgerKey>,
             ) -> Result<Rc<xdr::LedgerEntry>, soroban_env_host::HostError> {
-                use xdr::{ScHostStorageErrorCode, ScStatus};
-                let status: internal::Status =
-                    ScStatus::HostStorageError(ScHostStorageErrorCode::MissingKeyInGet).into();
-                Err(status.into())
+                let err: internal::Error = (ScErrorType::Storage, ScErrorCode::MissingValue).into();
+                Err(err.into())
             }
 
             fn has(&self, _key: &Rc<xdr::LedgerKey>) -> Result<bool, soroban_env_host::HostError> {
@@ -494,6 +489,7 @@ impl Env {
         env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
             xdr::Uint256(random()),
         )));
+        env_impl.set_diagnostic_level(internal::DiagnosticLevel::Debug);
         let env = Env {
             env_impl,
             snapshot: None,
@@ -998,7 +994,7 @@ impl Env {
     /// auth on the host side.
     ///
     /// This function requires to provide the template argument for error. Use
-    /// `soroban_sdk::Status` if `__check_auth` doesn't return a special
+    /// `soroban_sdk::Error` if `__check_auth` doesn't return a special
     /// contract error and use the error with `contracterror` attribute
     /// otherwise.
     ///
@@ -1048,10 +1044,10 @@ impl Env {
     ///         // as long as a valid error type used.
     ///         Err(Ok(NoopAccountError::SomeError))
     ///     );
-    ///     // Succesful call of `__check_auth` with a `soroban_sdk::Status`
+    ///     // Succesful call of `__check_auth` with a `soroban_sdk::Error`
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
-    ///         e.try_invoke_contract_check_auth::<soroban_sdk::Status>(
+    ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
     ///             &account_contract.address.contract_id(),
     ///             &BytesN::random(&e),
     ///             &vec![&e, 0_i32.into()],
@@ -1061,7 +1057,7 @@ impl Env {
     ///     );
     /// }
     /// ```
-    pub fn try_invoke_contract_check_auth<E: TryFrom<Status>>(
+    pub fn try_invoke_contract_check_auth<E: TryFrom<Error>>(
         &self,
         contract: &BytesN<32>,
         signature_payload: &BytesN<32>,
@@ -1081,7 +1077,7 @@ impl Env {
             .call_account_contract_check_auth(contract.to_object(), args.to_object());
         match res {
             Ok(rv) => Ok(rv.into_val(self)),
-            Err(e) => Err(e.status.try_into()),
+            Err(e) => Err(e.error.try_into()),
         }
     }
 
@@ -1301,43 +1297,8 @@ impl internal::EnvBase for Env {
         Ok(self.env_impl.bytes_new_from_slice(slice).unwrap_optimized())
     }
 
-    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Self::Error> {
-        Ok(self.env_impl.log_static_fmt_val(fmt, v).unwrap_optimized())
-    }
-
-    fn log_static_fmt_static_str(
-        &self,
-        fmt: &'static str,
-        s: &'static str,
-    ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .log_static_fmt_static_str(fmt, s)
-            .unwrap_optimized())
-    }
-
-    fn log_static_fmt_val_static_str(
-        &self,
-        fmt: &'static str,
-        v: RawVal,
-        s: &'static str,
-    ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .log_static_fmt_val_static_str(fmt, v, s)
-            .unwrap_optimized())
-    }
-
-    fn log_static_fmt_general(
-        &self,
-        fmt: &'static str,
-        v: &[RawVal],
-        s: &[&'static str],
-    ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .log_static_fmt_general(fmt, v, s)
-            .unwrap_optimized())
+    fn log_from_slice(&self, msg: &str, args: &[RawVal]) -> Result<Void, Self::Error> {
+        Ok(self.env_impl.log_from_slice(msg, args).unwrap_optimized())
     }
 
     fn string_copy_to_slice(

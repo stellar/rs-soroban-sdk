@@ -21,7 +21,7 @@ bytes-lit = "0.0.5"
 soroban-env-guest = { workspace = true }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { workspace = true, features = ["vm", "hostfn_log_fmt_values"] }
+soroban-env-host = { workspace = true, features = [] }
 soroban-ledger-snapshot = { workspace = true }
 stellar-strkey = { workspace = true }
 ed25519-dalek = { version = "1.0.1", optional = true }
@@ -29,7 +29,7 @@ ed25519-dalek = { version = "1.0.1", optional = true }
 rand = "0.7.3"
 
 [dev-dependencies]
-soroban-env-host = { workspace = true, features = ["vm", "hostfn_log_fmt_values", "testutils"] }
+soroban-env-host = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["next", "std"] }
 soroban-spec = { workspace = true }
 ed25519-dalek = "1.0.1"
