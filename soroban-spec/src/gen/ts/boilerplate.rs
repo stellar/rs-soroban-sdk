@@ -136,14 +136,14 @@ mod test {
     ) -> std::io::Result<Project> {
         let spec = crate::read::from_wasm(EXAMPLE_WASM).unwrap();
         let p: Project = root.as_ref().to_path_buf().try_into()?;
-        p.init(contract_name, contract_id, &spec);
+        p.init(contract_name, contract_id, &spec).unwrap();
         Ok(p)
     }
 
     #[test]
     fn test_project_dir_location() {
         let temp_dir = TempDir::new().unwrap();
-        let project: Project = init(
+        let _: Project = init(
             &temp_dir,
             "abundance-toke",
             "2c6c3b8ba9923d029d8ef7eb80080384b1da32bcf0698290119fdfbf3f2a01de",

@@ -10,13 +10,19 @@ pub fn type_to_js_xdr(value: &types::Type) -> String {
         types::Type::Bool => "xdr.ScVal.scvBool(i)".to_string(),
         types::Type::Symbol => "xdr.ScVal.scvSymbol(i)".to_string(),
         types::Type::Map { key, value } => format!(
-            "xdr.ScVal.scvMap(Array.from(myMap.entries()).map(([key, value]) => {{
-            new xdr.ScMapEntry({{key: ((i)=>{})(key), value: ((i)=>{})(value)}}
+            "xdr.ScVal.scvMap(Array.from(i.entries()).map(([key, value]) => {{
+            return new xdr.ScMapEntry({{
+                key: ((i)=>{})(key),
+                val: ((i)=>{})(value)}})
           }}))",
             type_to_js_xdr(key),
             type_to_js_xdr(value)
         ),
-        types::Type::Option { value } => type_to_js_xdr(value),
+        types::Type::Option { value } => format!(
+            "(!i) ? {} : {}",
+            type_to_js_xdr(&types::Type::Void),
+            type_to_js_xdr(value)
+        ),
         types::Type::Result { value, .. } => type_to_js_xdr(value),
         types::Type::Set { .. } => todo!(),
         types::Type::Vec { element } => format!("[...i].map({})", type_to_js_xdr(element)),
@@ -25,7 +31,7 @@ pub fn type_to_js_xdr(value: &types::Type) -> String {
             // elements.iter().map(|e| format!("[...i].map({})", type_to_js_xdr(element))
         }
 
-        types::Type::Custom { .. } => todo!(),
+        types::Type::Custom { name } => format!("{name}ToXDR(i)"),
         types::Type::Status => todo!(),
         types::Type::BytesN { .. } => "xdr.ScVal.scvBytes(i)".to_owned(),
         types::Type::Bytes => "xdr.ScVal.scvBytes(i)".to_owned(),

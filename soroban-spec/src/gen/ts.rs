@@ -1,7 +1,8 @@
 use std::{fs, io};
 
-use super::json::types;
+use super::json::types::{self, StructField, UnionCase};
 
+use heck::ToLowerCamelCase;
 use itertools::Itertools;
 use sha2::{Digest, Sha256};
 use stellar_xdr::ScSpecEntry;
@@ -9,7 +10,7 @@ use stellar_xdr::ScSpecEntry;
 use types::Entry;
 
 use crate::{
-    gen::ts::wrapper::type_to_js_xdr,
+    gen::{json::types::Type, ts::wrapper::type_to_js_xdr},
     read::{from_wasm, FromWasmError},
 };
 
@@ -85,7 +86,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
         } => {
             let sign_me = doc
                 .contains("@signme")
-                .then_some(r#""sign": true, "#)
+                .then_some("sign: true, ")
                 .unwrap_or_default();
             let args = inputs
                 .iter()
@@ -106,7 +107,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                 format!(": Promise<{}>", type_to_ts(&outputs[0]))
             } else {
                 format!(
-                    ": Promise<Tuple<{}>>",
+                    ": Promise<[{}]>>",
                     outputs.iter().map(type_to_ts).join(", ")
                 )
             };
@@ -135,36 +136,105 @@ pub fn entry_to_ts(entry: &Entry) -> String {
         }
         Entry::Struct { doc, name, fields } => {
             let docs = doc_to_ts_doc(doc);
+            let arg_name = name.to_lower_camel_case();
+            let encoded_fields = js_to_xdr_fields(&arg_name, fields);
             let fields = fields.iter().map(field_to_ts).join("\n  ");
+            let void = type_to_js_xdr(&Type::Void);
             format!(
                 r#"{docs}export interface {name} {{
   {fields}
+}}
+
+function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
+    if (!{arg_name}) {{
+        return {void};
+    }}
+    let arr = [
+        {encoded_fields}
+        ];
+    xdr.ScVal.scvMap(arr)
 }}
 "#
             )
         }
 
         Entry::Union { doc, name, cases } => {
-            String::new()
-            // let doc = doc_to_ts_doc(doc);
-            // let cases = cases.iter().map(case_to_ts).join(" | ");
-            //             format!(
-            //                 r#"{doc}export type {name} = {cases};
-            // "#
-            //             )
+            let doc = doc_to_ts_doc(doc);
+            let arg_name = name.to_lower_camel_case();
+            let encoded_cases = js_to_xdr_union_cases(cases);
+            let cases = cases.iter().map(case_to_ts).join("| ");
+            let void = type_to_js_xdr(&Type::Void);
+
+            format!(
+                r#"{doc}export type {name} = {cases};
+
+function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
+    if (!{arg_name}) {{
+        return {void};
+    }}
+    let arr = [
+        {encoded_cases}
+    ];
+    return xdr.ScVal.scvVec(arr);
+}}
+            "#
+            )
         }
         Entry::Enum { doc, name, cases } => {
+            if name == "Error" {
+                let cases = cases
+                    .iter()
+                    .map(|c| format!("{{error:\"{}\"}}", c.doc))
+                    .join("\n  ");
+                return format!(
+                    r#"const Errors = [ 
+  {cases}
+]"#
+                );
+            }
             let doc = doc_to_ts_doc(doc);
             let cases = cases.iter().map(enum_case_to_ts).join("\n  ");
+            let name = (name == "Error")
+                .then(|| format!("{name}s"))
+                .unwrap_or(name.to_string());
             format!(
                 r#"{doc}export enum {name} {{
   {cases}
 }}
+
+const Error 
 "#
             )
         }
         Entry::ErrorEnum { .. } => todo!(),
     }
+}
+
+fn js_to_xdr_fields(struct_name: &str, f: &[StructField]) -> String {
+    f.iter()
+        .map(|StructField {  name, value , .. }| {
+            format!(
+                r#"new xdr.ScMapEntry({{key: ((i)=>{})("{name}"), val: ((i)=>{})({struct_name}.{name})}})"#,
+                type_to_js_xdr(&Type::Symbol),
+                type_to_js_xdr(value),
+            )
+        })
+        .join(",\n        ")
+}
+
+fn js_to_xdr_union_cases(f: &[UnionCase]) -> String {
+    f.iter()
+        .flat_map(|UnionCase { name, values, .. }| {
+            if values.is_empty() {
+                vec![format!(
+                    "((i) => {})(\"{name}\")",
+                    type_to_js_xdr(&Type::Symbol)
+                )]
+            } else {
+                values.iter().map(type_to_js_xdr).collect()
+            }
+        })
+        .join(",\n    ")
 }
 
 fn enum_case_to_ts(case: &types::EnumCase) -> String {
@@ -173,8 +243,14 @@ fn enum_case_to_ts(case: &types::EnumCase) -> String {
 }
 
 fn case_to_ts(case: &types::UnionCase) -> String {
-    let types::UnionCase { name, .. } = case;
-    name.to_string()
+    let types::UnionCase { name, values, .. } = case;
+    if values.is_empty() {
+        format!("\"{name}\"")
+    } else {
+        type_to_ts(&Type::Tuple {
+            elements: values.clone(),
+        })
+    }
 }
 
 fn field_to_ts(field: &types::StructField) -> String {
@@ -206,12 +282,13 @@ pub fn type_to_ts(value: &types::Type) -> String {
         types::Type::I32 => "i32".to_owned(),
         types::Type::Bool => "boolean".to_owned(),
         types::Type::Symbol => "string".to_owned(),
+        types::Type::String => "string".to_owned(),
         types::Type::Map { key, value } => {
             format!("Map<{}, {}>", type_to_ts(key), type_to_ts(value))
         }
-        types::Type::Option { value } => format!("{}?", type_to_ts(value)),
-        types::Type::Result { value, error } => {
-            format!("Result<{}, {}>", type_to_ts(value), type_to_ts(error))
+        types::Type::Option { value } => format!("Option<{}>", type_to_ts(value)),
+        types::Type::Result { value, .. } => {
+            format!("Result<{}>", type_to_ts(value))
         }
         types::Type::Set { element } => format!("Set<{}>", type_to_ts(element)),
         types::Type::Vec { element } => format!("Array<{}>", type_to_ts(element)),
@@ -226,11 +303,10 @@ pub fn type_to_ts(value: &types::Type) -> String {
         types::Type::Status => todo!(),
         types::Type::Address => "Address".to_string(),
         types::Type::Bytes => "Buffer".to_string(),
-        types::Type::BytesN { .. } => "".to_string(),
+        types::Type::BytesN { .. } => "Buffer".to_string(),
         types::Type::Void => "void".to_owned(),
         types::Type::U256 => todo!(),
         types::Type::I256 => todo!(),
-        types::Type::String => todo!(),
         types::Type::Timepoint => todo!(),
         types::Type::Duration => todo!(),
     }
