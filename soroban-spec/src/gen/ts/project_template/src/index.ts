@@ -21,39 +21,47 @@ export type Option<T> = T | undefined;
 
 /// Error interface containing the error message
 export interface Error_ { message: string };
-export type Result<T, E = Error_> = Ok<T, E> | Err<T, E>;
 
-export class Ok<T, E> {
-    readonly kind: 'ok' = 'ok';
+export interface Result<T, E = Error_> {
+    unwrap(): T,
+    map<U>(f: (value: T) => U): Result<U, E>,
+};
+
+export class Ok<T> {
     constructor(readonly value: T) { }
-
     unwrap(): T {
         return this.value;
     }
 
-    map<U>(f: (value: T) => U): Result<U, E> {
-        return new Ok(f(this.value));
+    isOk(): boolean {
+        return true;
     }
 
-    mapErr<U>(_: (error: E) => U): Result<T, U> {
-        return this as unknown as Result<T, U>;
+    isErr(): boolean {
+        return !this.isOk
+    }
+
+    map<U>(f: (value: T) => U): Result<U> {
+        return new Ok(f(this.value));
     }
 }
 
-export class Err<T, E> {
-    readonly kind: 'err' = 'err';
-    constructor(readonly message: E) { }
-
+export class Err<T> {
+    constructor(readonly message: Error_) { }
     unwrap(): never {
         throw new Error(this.message as unknown as string);
     }
 
-    map<U>(_: (value: T) => U): Result<U, E> {
-        return this as unknown as Result<U, E>;
+    isOk(): boolean {
+        return false;
     }
 
-    mapErr<U>(f: (error: E) => U): Result<T, U> {
-        return new Err(f(this.message));
+    isErr(): boolean {
+        return !this.isOk
+    }
+
+    map<U>(_: (value: T) => U): Result<U> {
+        return this as unknown as Result<U>;
     }
 }
 
