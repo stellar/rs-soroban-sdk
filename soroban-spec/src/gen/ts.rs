@@ -118,15 +118,18 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                 .then(|| {
                     format!(
                         r#"
-    return scValToJs(SorobanClient.xdr.ScVal.fromXDR(Buffer.from(response.xdr, 'base64'))) as {}
+    return scValToJs(response.xdr) as {}
 "#,
                         type_to_ts(&outputs[0])
                     )
                 })
                 .unwrap_or_default();
+            let args = (!inputs.is_empty())
+                .then(|| format!("args: [{args}], "))
+                .unwrap_or_default();
             format!(
                 r#"{ts_doc}export async function {name}({input}){return_type} {{
-    let invokeArgs: InvokeArgs = {{{sign_me}method: '{name}', args: [{args}]}};
+    let invokeArgs: InvokeArgs = {{{sign_me}method: '{name}', {args}}};
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);{output}
     
