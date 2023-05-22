@@ -155,7 +155,7 @@ function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
     let arr = [
         {encoded_fields}
         ];
-    xdr.ScVal.scvMap(arr)
+    return xdr.ScVal.scvMap(arr);
 }}
 "#
             )
@@ -188,7 +188,7 @@ function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
                 let cases = cases
                     .iter()
                     .map(|c| format!("{{error:\"{}\"}}", c.doc))
-                    .join("\n  ");
+                    .join(",\n  ");
                 return format!(
                     r#"const Errors = [ 
   {cases}
