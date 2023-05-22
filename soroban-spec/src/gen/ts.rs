@@ -90,8 +90,8 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                 .unwrap_or_default();
             let args = inputs
                 .iter()
-                .map(|i| format!("((i) =>{})({})", type_to_js_xdr(&i.value), i.name))
-                .join(", ");
+                .map(|i| format!("((i) => {})({})", type_to_js_xdr(&i.value), i.name))
+                .join(",\n        ");
             let input = (!inputs.is_empty())
                 .then(|| {
                     format!(
