@@ -1,6 +1,5 @@
 #![allow(non_snake_case)]
-use heck::ToLowerCamelCase;
-use heck::ToShoutySnakeCase;
+use heck::{ToShoutySnakeCase, ToLowerCamelCase};
 use include_dir::{include_dir, Dir};
 use std::{
     fs,
