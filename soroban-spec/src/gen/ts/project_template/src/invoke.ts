@@ -41,7 +41,9 @@ export async function getAccount(): Promise<Account> {
 }
 
 /**
- * Invoke a method on the Abundance token contract.
+ * Invoke a method on the INSERT_CONTRACT_NAME_HERE contract.
+ *
+ * Uses Freighter to determine the current user and sign the transaction.
  *
  * @param {string} obj.method - The method to invoke.
  * @param {any[]} obj.args - The arguments to pass to the method.

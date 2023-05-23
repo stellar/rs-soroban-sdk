@@ -1,6 +1,6 @@
 {
     "version": "0.0.0",
-    "name": "abundance-token",
+    "name": "INSERT_CONTRACT_NAME_HERE",
     "dependencies": {
         "@stellar/freighter-api": "1.4.0",
         "buffer": "6.0.3",

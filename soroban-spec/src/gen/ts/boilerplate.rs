@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
+use heck::ToLowerCamelCase;
 use heck::ToShoutySnakeCase;
 use include_dir::{include_dir, Dir};
-use serde::Serialize;
 use std::{
     fs,
     io::Write,
@@ -37,10 +37,59 @@ impl Project {
         contract_id: &str,
         spec: &[ScSpecEntry],
     ) -> std::io::Result<()> {
-        self.add_contract_id(contract_name, contract_id)?;
-        self.add_interface(contract_name)?;
-        self.update_package_json(contract_name)?;
+        self.replace_placeholder_patterns(contract_name, contract_id)?;
         self.append_index_ts(spec)
+    }
+
+    fn replace_placeholder_patterns(
+        &self,
+        contract_name: &str,
+        contract_id: &str,
+    ) -> std::io::Result<()> {
+        let replacement_strings = &[
+            ("INSERT_CONTRACT_NAME_HERE", contract_name.to_string()),
+            (
+                "INSERT_SCREAMING_SNAKE_CASE_CONTRACT_NAME_HERE",
+                contract_name.to_shouty_snake_case(),
+            ),
+            (
+                "INSERT_CAMEL_CASE_CONTRACT_NAME_HERE",
+                contract_name.to_lower_camel_case(),
+            ),
+            ("INSERT_CONTRACT_ID_HERE", contract_id.to_string()),
+            ("INSERT_NETWORK_NAME_HERE", "FUTURENET".to_string()),
+            (
+                "INSERT_NETWORK_PASSPHRASE_HERE",
+                "Test SDF Future Network ; October 2022".to_string(),
+            ),
+            (
+                "INSERT_RPC_URL_HERE",
+                "https://rpc-futurenet.stellar.org:443/soroban/rpc".to_string(),
+            ),
+        ];
+        let root: &Path = self.as_ref();
+        [
+            "package.json",
+            "README.md",
+            "src/constants.ts",
+            "src/convert.ts",
+            "src/env.d.ts",
+            "src/index.ts",
+            "src/invoke.ts",
+            "src/server.ts",
+        ]
+        .into_iter()
+        .map(|file_name| {
+            let file = &root.join(file_name);
+            let mut contents = fs::read_to_string(file).unwrap();
+            replacement_strings
+                .iter()
+                .for_each(|(pattern, replacement)| {
+                    contents = contents.replace(pattern, replacement);
+                });
+            fs::write(file, contents)
+        })
+        .collect::<std::io::Result<()>>()
     }
 
     fn append_index_ts(&self, spec: &[ScSpecEntry]) -> std::io::Result<()> {
@@ -48,75 +97,6 @@ impl Project {
             .append(true)
             .open(self.0.join("src/index.ts"))?
             .write_all(generate(spec).as_bytes())
-    }
-
-    fn add_contract_id(&self, contract_name: &str, contract_id: &str) -> std::io::Result<()> {
-        let root: &Path = self.as_ref();
-        let CONTRACT_NAME = contract_name.to_shouty_snake_case();
-        fs::OpenOptions::new()
-            .append(true)
-            .open(root.join("src/constants.ts"))?
-            .write_all(
-                format!(
-                    r#"
-/**
- * The Soroban contract ID for the `{contract_name}` contract.
- * 
- * You can override this by setting a `SOROBAN_{CONTRACT_NAME}_CONTRACT_ID` or
- * `PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID` environment variable.
- */
-export const CONTRACT_ID = import.meta.env.PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID
-    ?? import.meta.env.SOROBAN_{CONTRACT_NAME}_CONTRACT_ID
-    ?? '{contract_id}'
-"#
-                )
-                .as_bytes(),
-            )
-    }
-
-    fn add_interface(&self, contract_name: &str) -> std::io::Result<()> {
-        let CONTRACT_NAME = contract_name.to_shouty_snake_case();
-        let root: &Path = self.as_ref();
-
-        fs::OpenOptions::new()
-            .append(true)
-            .open(root.join("src/env.d.ts"))?
-            .write_all(
-                format!(
-                    r#"
-interface ImportMetaEnv {{
-    readonly PUBLIC_SOROBAN_{CONTRACT_NAME}_CONTRACT_ID: string;
-    readonly SOROBAN_{CONTRACT_NAME}_CONTRACT_ID: string;
-    
-    readonly PUBLIC_SOROBAN_NETWORK_NAME: string;
-    readonly SOROBAN_NETWORK_NAME: string;
-    
-    readonly PUBLIC_SOROBAN_NETWORK_PASSPHRASE: string;
-    readonly SOROBAN_NETWORK_PASSPHRASE: string;
-    
-    readonly PUBLIC_SOROBAN_RPC_URL: string;
-    readonly SOROBAN_RPC_URL: string;
-}}
-"#
-                )
-                .as_bytes(),
-            )
-    }
-
-    fn update_package_json(&self, contract_name: &str) -> std::io::Result<()> {
-        let p = self.0.join("package.json");
-        let mut value: serde_json::Value = fs::read_to_string(&p)?.parse()?;
-        let obj = value.as_object_mut().unwrap();
-        obj.insert(
-            "name".to_owned(),
-            serde_json::Value::String(contract_name.to_owned()),
-        );
-        let mut buf = Vec::new();
-        let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
-        let mut ser = serde_json::Serializer::with_formatter(&mut buf, formatter);
-        obj.serialize(&mut ser).unwrap();
-        fs::write(&p, &buf)?;
-        Ok(())
     }
 }
 
