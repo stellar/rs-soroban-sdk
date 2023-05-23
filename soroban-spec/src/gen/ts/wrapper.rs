@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::gen::json::types;
 
 pub fn type_to_js_xdr(value: &types::Type) -> String {
@@ -26,9 +28,13 @@ pub fn type_to_js_xdr(value: &types::Type) -> String {
         types::Type::Result { value, .. } => type_to_js_xdr(value),
         types::Type::Set { .. } => todo!(),
         types::Type::Vec { element } => format!("[...i].map({})", type_to_js_xdr(element)),
-        types::Type::Tuple { .. } => {
-            todo!()
-            // elements.iter().map(|e| format!("[...i].map({})", type_to_js_xdr(element))
+        types::Type::Tuple { elements } => {
+            let cases = elements
+                .iter()
+                .enumerate()
+                .map(|(i, e)| format!("((i) => {})(i[{i}])", type_to_js_xdr(e)))
+                .join(",\n        ");
+            format!("[\n        {cases}\n    ]")
         }
 
         types::Type::Custom { name } => format!("{name}ToXDR(i)"),

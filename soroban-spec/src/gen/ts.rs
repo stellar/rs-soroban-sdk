@@ -161,28 +161,28 @@ function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
             )
         }
 
-        Entry::Union { .. } => {
-            String::new()
-            //             let doc = doc_to_ts_doc(doc);
-            //             let arg_name = name.to_lower_camel_case();
-            //             let encoded_cases = js_to_xdr_union_cases(cases);
-            //             let cases = cases.iter().map(case_to_ts).join("| ");
-            //             let void = type_to_js_xdr(&Type::Void);
+        Entry::Union { name, doc, cases } => {
+            let doc = doc_to_ts_doc(doc);
+            let arg_name = name.to_lower_camel_case();
+            let encoded_cases = js_to_xdr_union_cases(&arg_name, cases);
+            let cases = cases.iter().map(case_to_ts).join(" | ");
+            let void = type_to_js_xdr(&Type::Void);
 
-            //             format!(
-            //                 r#"{doc}export type {name} = {cases};
+            format!(
+                r#"{doc}export type {name} = {cases};
 
-            // function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
-            //     if (!{arg_name}) {{
-            //         return {void};
-            //     }}
-            //     let arr = [
-            //         {encoded_cases}
-            //     ];
-            //     return xdr.ScVal.scvVec(arr);
-            // }}
-            //             "#
-            //             )
+function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
+    if (!{arg_name}) {{
+        return {void};
+    }}
+    let res: xdr.ScVal[] = [];
+    switch ({arg_name}.tag) {{
+        {encoded_cases}  
+    }}
+    return xdr.ScVal.scvVec(res);
+}}
+"#
+            )
         }
         Entry::Enum { doc, name, cases } => {
             if name == "Error" {
@@ -206,7 +206,6 @@ function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
   {cases}
 }}
 
-const Error 
 "#
             )
         }
@@ -226,36 +225,44 @@ fn js_to_xdr_fields(struct_name: &str, f: &[StructField]) -> String {
         .join(",\n        ")
 }
 
-// fn js_to_xdr_union_cases(f: &[UnionCase]) -> String {
-//     f.iter()
-//         .flat_map(|UnionCase { name, values, .. }| {
-//             if values.is_empty() {
-//                 vec![format!(
-//                     "((i) => {})(\"{name}\")",
-//                     type_to_js_xdr(&Type::Symbol)
-//                 )]
-//             } else {
-//                 values.iter().map(type_to_js_xdr).collect()
-//             }
-//         })
-//         .join(",\n    ")
-// }
+fn js_to_xdr_union_cases(arg_name: &str, f: &[UnionCase]) -> String {
+    f.iter()
+        .map(|UnionCase { name, values, .. }| {
+            let mut rhs = format!(
+                "res.push(((i) => {})(\"{name}\"))",
+                type_to_js_xdr(&Type::Symbol)
+            );
+            if !values.is_empty() {
+                rhs = format!(
+                    "{rhs};\n            res.push(...((i) => {})({arg_name}.values))",
+                    type_to_js_xdr(&Type::Tuple {
+                        elements: values.clone()
+                    })
+                );
+            };
+            format!("case \"{name}\":\n            {rhs};\n            break;")
+        })
+        .join("\n    ")
+}
 
 fn enum_case_to_ts(case: &types::EnumCase) -> String {
     let types::EnumCase { name, value, .. } = case;
     format!("{name} = {value},")
 }
 
-// fn case_to_ts(case: &types::UnionCase) -> String {
-//     let types::UnionCase { name, values, .. } = case;
-//     if values.is_empty() {
-//         format!("\"{name}\"")
-//     } else {
-//         type_to_ts(&Type::Tuple {
-//             elements: values.clone(),
-//         })
-//     }
-// }
+fn case_to_ts(case: &types::UnionCase) -> String {
+    let types::UnionCase { name, values, .. } = case;
+    let mut inner: String = format!("tag: \"{name}\"");
+    if !values.is_empty() {
+        inner = format!(
+            "{inner}, values: {}",
+            type_to_ts(&Type::Tuple {
+                elements: values.clone(),
+            })
+        );
+    };
+    format!("{{{inner}}}")
+}
 
 fn field_to_ts(field: &types::StructField) -> String {
     let types::StructField { doc, name, value } = field;
