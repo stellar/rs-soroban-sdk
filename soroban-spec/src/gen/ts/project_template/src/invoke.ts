@@ -53,10 +53,7 @@ export async function getAccount(): Promise<Account> {
  * @param {boolean} obj.sign - Whether to sign the transaction with Freighter.
  * @returns The transaction response, or the simulation result if `sign` is false.
  */
-export async function invoke(args: InvokeArgs & { sign: false }): Promise<Simulation>;
-export async function invoke(args: InvokeArgs & { sign: true }): Promise<TxResponse>;
-export async function invoke(args: InvokeArgs & { sign?: undefined }): Promise<TxResponse>;
-export async function invoke({ method, args = [], sign = false, fee = 100 }: InvokeArgs): Promise<TxResponse | Simulation> {
+export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Promise<(TxResponse & { xdr: string }) | Simulation> {
   const account = await getAccount()
 
   const contract = new SorobanClient.Contract(CONTRACT_ID)
@@ -69,10 +66,14 @@ export async function invoke({ method, args = [], sign = false, fee = 100 }: Inv
     .setTimeout(SorobanClient.TimeoutInfinite)
     .build()
 
-  if (sign) {
-    let res = await invokeRpc(tx);
-    console.log(res);
-    return res;
+  const simulated = await Server.simulateTransaction(tx)
+
+  if (simulated.results?.[0]?.auth) {
+    const raw = await invokeRpc(tx, simulated);
+    return {
+      ...raw,
+      xdr: raw.resultXdr,
+    };
   }
 
   const { results } = await Server.simulateTransaction(tx)
@@ -83,11 +84,11 @@ export async function invoke({ method, args = [], sign = false, fee = 100 }: Inv
 }
 
 
-async function invokeRpc(tx: Tx): Promise<TxResponse> {
+async function invokeRpc(tx: Tx, simulation: SorobanClient.SorobanRpc.SimulateTransactionResponse): Promise<TxResponse> {
   // Simulate the tx to discover the storage footprint, and update the
   // tx to include it. If you already know the storage footprint you
   // can use `addFootprint` to add it yourself, skipping this step.
-  tx = await Server.prepareTransaction(tx, NETWORK_PASSPHRASE) as Tx
+  tx = SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulation.results) as Tx
 
   // sign with Freighter
   const signed = await signTransaction(tx.toXDR(), {
@@ -111,7 +112,7 @@ async function invokeRpc(tx: Tx): Promise<TxResponse> {
   let exponentialFactor = 1.5
 
   while ((Date.now() < waitUntil) && getTransactionResponse.status === "NOT_FOUND") {
-    // Wait a second
+    // Wait a beat
     await new Promise(resolve => setTimeout(resolve, waitTime))
     /// Exponential backoff
     waitTime = waitTime * exponentialFactor;
