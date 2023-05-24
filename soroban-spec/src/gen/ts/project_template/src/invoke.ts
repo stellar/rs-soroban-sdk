@@ -73,7 +73,7 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
   const auths = simulated.results?.[0]?.auth
 
   // is it possible for `auths` to be present but empty? Probably not, but let's be safe.
-  if (auths && auths.length > 0) {
+  if (auths?.length > 0) {
     if (auths.length > 1) {
       throw new NotImplementedError("Multiple auths not yet supported")
     }
