@@ -71,11 +71,9 @@ impl Project {
             "package.json",
             "README.md",
             "src/constants.ts",
-            "src/convert.ts",
             "src/env.d.ts",
             "src/index.ts",
             "src/invoke.ts",
-            "src/server.ts",
         ]
         .into_iter()
         .map(|file_name| {

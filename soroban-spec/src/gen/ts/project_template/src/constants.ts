@@ -1,5 +1,5 @@
 /**
- * The Soroban contract ID for the `INSERT_CONTRACT_NAME_HERE` contract.
+ * The Soroban contract ID for the INSERT_CONTRACT_NAME_HERE contract.
  *
  * You can override this by setting a `SOROBAN_INSERT_SCREAMING_SNAKE_CASE_CONTRACT_NAME_HERE_CONTRACT_ID` or
  * `PUBLIC_SOROBAN_INSERT_SCREAMING_SNAKE_CASE_CONTRACT_NAME_HERE_CONTRACT_ID` environment variable.
