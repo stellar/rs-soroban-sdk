@@ -43,6 +43,8 @@ export async function getAccount(): Promise<Account> {
   return await Server.getAccount(publicKey)
 }
 
+export class NotImplementedError extends Error {}
+
 /**
  * Invoke a method on the INSERT_CONTRACT_NAME_HERE contract.
  *
@@ -67,8 +69,25 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
     .build()
 
   const simulated = await Server.simulateTransaction(tx)
+  
+  const auths = simulated.results?.[0]?.auth
 
-  if (simulated.results?.[0]?.auth) {
+  // is it possible for `auths` to be present but empty? Probably not, but let's be safe.
+  if (auths && auths.length > 0) {
+    if (auths.length > 1) {
+      throw new NotImplementedError("Multiple auths not yet supported")
+    }
+
+    const auth = SorobanClient.xdr.ContractAuth.fromXDR(auths[0], 'base64')
+
+    if (auth.addressWithNonce() !== undefined) {
+      throw new NotImplementedError(
+        `This transaction needs to be signed by ${
+          auth.addressWithNonce()
+        }; how do we do that?`
+      )
+    }
+
     const raw = await invokeRpc(tx, simulated);
     return {
       ...raw,
