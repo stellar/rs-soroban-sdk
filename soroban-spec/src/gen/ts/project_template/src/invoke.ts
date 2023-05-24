@@ -8,7 +8,10 @@ import { Buffer } from "buffer";
 import type { Account, Memo, MemoType, Operation, Transaction } from 'soroban-client';
 import { NETWORK_NAME, NETWORK_PASSPHRASE, CONTRACT_ID } from './constants'
 import { Server } from './server'
-window.Buffer = window.Buffer || Buffer;
+
+if (typeof window !== 'undefined') {
+  window.Buffer = window.Buffer || Buffer;
+}
 
 export type Tx = Transaction<Memo<MemoType>, Operation[]>
 
