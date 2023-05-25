@@ -1,37 +1,37 @@
-import * as SorobanClient from 'soroban-client';
-let xdr = SorobanClient.xdr;
+import { xdr } from 'soroban-client';
+import { Buffer } from "buffer";
 
-export function scvalToBigInt(scval: SorobanClient.xdr.ScVal | undefined): BigInt {
+export function scvalToBigInt(scval: xdr.ScVal | undefined): BigInt {
     switch (scval?.switch()) {
         case undefined: {
             return BigInt(0);
         }
         case xdr.ScValType.scvU64(): {
             const { high, low } = scval.u64();
-            return bigIntFromBytes(false, high, low);
+            return bigIntFromBytes(false, [high, low]);
         }
         case xdr.ScValType.scvI64(): {
             const { high, low } = scval.i64();
-            return bigIntFromBytes(true, high, low);
+            return bigIntFromBytes(true, [high, low]);
         }
         case xdr.ScValType.scvU128(): {
             const parts = scval.u128();
             const a = parts.hi();
             const b = parts.lo();
-            return bigIntFromBytes(false, a.high, a.low, b.high, b.low);
+            return bigIntFromBytes(false, [a.high, a.low, b.high, b.low]);
         }
         case xdr.ScValType.scvI128(): {
             const parts = scval.i128();
             const a = parts.hi();
             const b = parts.lo();
-            return bigIntFromBytes(true, a.high, a.low, b.high, b.low);
+            return bigIntFromBytes(true, [a.high, a.low, b.high, b.low]);
         }
-        case xdr.ScValType.scvU256(): {
-            return bigIntFromBytes(false, ...scval.u256());
-        }
-        case xdr.ScValType.scvI256(): {
-            return bigIntFromBytes(true, ...scval.i256());
-        }
+        // case xdr.ScValType.scvU256(): {
+        //     return bigIntFromBytes(false, scval.u256());
+        // }
+        // case xdr.ScValType.scvI256(): {
+        //     return bigIntFromBytes(true, scval.i256());
+        // }
         default: {
             throw new Error(`Invalid type for scvalToBigInt: ${scval?.switch().name}`);
         }
@@ -39,7 +39,7 @@ export function scvalToBigInt(scval: SorobanClient.xdr.ScVal | undefined): BigIn
 }
 
 export function scValToJs<T>(base64_xdr: string): T {
-    let scval = SorobanClient.xdr.ScVal.fromXDR(Buffer.from(base64_xdr, 'base64'));
+    let scval = xdr.ScVal.fromXDR(Buffer.from(base64_xdr, 'base64'));
     switch (scval?.switch()) {
         case undefined: {
             return 0 as T;
@@ -68,7 +68,7 @@ export function scValToJs<T>(base64_xdr: string): T {
 
 }
 
-function bigIntFromBytes(signed: boolean, ...bytes: (string | number | bigint)[]): BigInt {
+function bigIntFromBytes(signed: boolean, bytes: Buffer | (string | number | bigint)[]): BigInt {
     let sign = 1;
     if (signed && bytes[0] === 0x80) {
         // top bit is set, negative number.
@@ -83,7 +83,7 @@ function bigIntFromBytes(signed: boolean, ...bytes: (string | number | bigint)[]
     return BigInt(b.toString()) * BigInt(sign);
 }
 
-// export function bigIntToI128(value: BigInt): SorobanClient.xdr.ScVal {
+// export function bigIntToI128(value: BigInt): xdr.ScVal {
 //   const buf = bigintToBuf(value);
 //   if (buf.length > 16) {
 //     throw new Error("BigInt overflows i128");
@@ -139,7 +139,7 @@ function bigIntFromBytes(signed: boolean, ...bytes: (string | number | bigint)[]
 //   return Buffer.from(u8);
 // }
 
-export function xdrUint64ToNumber(value: SorobanClient.xdr.Uint64): number {
+export function xdrUint64ToNumber(value: xdr.Uint64): number {
     let b = 0;
     b |= value.high;
     b <<= 8;
@@ -147,7 +147,7 @@ export function xdrUint64ToNumber(value: SorobanClient.xdr.Uint64): number {
     return b;
 }
 
-export function scvalToString(value: SorobanClient.xdr.ScVal): string | undefined {
+export function scvalToString(value: xdr.ScVal): string | undefined {
     return value.bytes().toString();
 }
 

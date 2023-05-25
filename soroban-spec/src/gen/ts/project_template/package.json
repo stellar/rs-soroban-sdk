@@ -7,7 +7,7 @@
         "soroban-client": "0.7.0"
     },
     "scripts": {
-      "build": "tsc"
+        "build": "tsc"
     },
     "type": "module",
     "main": "out/index.js",

@@ -66,6 +66,7 @@ export class Err<T> {
 }
 
 if (typeof window !== 'undefined') {
-  window.Buffer = window.Buffer || Buffer;
+    //@ts-ignore Buffer exists
+    window.Buffer = window.Buffer || Buffer;
 }
 

@@ -9,9 +9,6 @@ import type { Account, Memo, MemoType, Operation, Transaction } from 'soroban-cl
 import { NETWORK_NAME, NETWORK_PASSPHRASE, CONTRACT_ID } from './constants'
 import { Server } from './server'
 
-if (typeof window !== 'undefined') {
-  window.Buffer = window.Buffer || Buffer;
-}
 
 export type Tx = Transaction<Memo<MemoType>, Operation[]>
 
@@ -43,7 +40,7 @@ export async function getAccount(): Promise<Account> {
   return await Server.getAccount(publicKey)
 }
 
-export class NotImplementedError extends Error {}
+export class NotImplementedError extends Error { }
 
 /**
  * Invoke a method on the INSERT_CONTRACT_NAME_HERE contract.
@@ -69,7 +66,7 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
     .build()
 
   const simulated = await Server.simulateTransaction(tx)
-  
+
   const auths = simulated.results?.[0]?.auth
 
   // is it possible for `auths` to be present but empty? Probably not, but let's be safe.
@@ -82,8 +79,7 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
 
     if (auth.addressWithNonce() !== undefined) {
       throw new NotImplementedError(
-        `This transaction needs to be signed by ${
-          auth.addressWithNonce()
+        `This transaction needs to be signed by ${auth.addressWithNonce()
         }; how do we do that?`
       )
     }
