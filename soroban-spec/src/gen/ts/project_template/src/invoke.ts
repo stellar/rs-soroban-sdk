@@ -107,7 +107,7 @@ async function invokeRpc(tx: Tx, simulation: SorobanClient.SorobanRpc.SimulateTr
   // Simulate the tx to discover the storage footprint, and update the
   // tx to include it. If you already know the storage footprint you
   // can use `addFootprint` to add it yourself, skipping this step.
-  tx = SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulation.results) as Tx
+  tx = SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulation) as Tx
 
   // sign with Freighter
   const signed = await signTransaction(tx.toXDR(), {
