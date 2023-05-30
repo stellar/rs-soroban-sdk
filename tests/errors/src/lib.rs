@@ -30,8 +30,7 @@ impl Contract {
     pub fn persisted(env: Env) -> bool {
         env.storage()
             .get(&Symbol::short("persisted"))
-            .unwrap_or(Ok(false))
-            .unwrap()
+            .unwrap_or(false)
     }
 }
 
