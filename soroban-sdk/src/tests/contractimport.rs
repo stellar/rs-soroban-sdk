@@ -1,8 +1,6 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, BytesN, Env};
-use stellar_xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeBytesN, ScSpecTypeDef,
-};
+use soroban_sdk::{contractimpl, Address, BytesN, Env};
+use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 mod addcontract {
     use crate as soroban_sdk;
@@ -26,10 +24,10 @@ pub struct Contract;
 
 #[contractimpl(crate_path = "crate")]
 impl Contract {
-    pub fn add_with(env: Env, contract_id: BytesN<32>, x: u64, y: u64) -> u64 {
+    pub fn add_with(env: Env, contract_id: Address, x: u64, y: u64) -> u64 {
         addcontract::Client::new(&env, &contract_id).add(&x, &y)
     }
-    pub fn sub_with(env: Env, contract_id: BytesN<32>, x: u64, y: u64) -> u64 {
+    pub fn sub_with(env: Env, contract_id: Address, x: u64, y: u64) -> u64 {
         subcontract::ContractClient::new(&env, &contract_id).sub(&x, &y)
     }
 }
@@ -53,7 +51,7 @@ fn test_functional() {
 fn test_register_at_id() {
     let e = Env::default();
 
-    let add_contract_id = BytesN::from_array(&e, &[1; 32]);
+    let add_contract_id = Address::from_contract_id(&BytesN::from_array(&e, &[1; 32]));
     e.register_contract_wasm(&add_contract_id, addcontract::WASM);
 
     let contract_id = e.register_contract(None, Contract);
@@ -114,7 +112,7 @@ fn test_spec() {
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "contract_id".try_into().unwrap(),
-                type_: ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+                type_: ScSpecTypeDef::Address,
             },
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),

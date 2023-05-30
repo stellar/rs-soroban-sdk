@@ -96,7 +96,7 @@ pub fn derive_type_enum_int(
         impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
                 use #path::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -109,7 +109,7 @@ pub fn derive_type_enum_int(
         impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
                 Ok(match val {
                     #(#try_intos,)*
                 })
@@ -120,7 +120,7 @@ pub fn derive_type_enum_int(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
                 if let #path::xdr::ScVal::U32(discriminant) = val {
                     Ok(match *discriminant {
                         #(#try_froms,)*
@@ -136,7 +136,7 @@ pub fn derive_type_enum_int(
         impl TryInto<#path::xdr::ScVal> for &#enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
+            fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
                 Ok((*self as u32).into())
             }
         }
@@ -145,7 +145,7 @@ pub fn derive_type_enum_int(
         impl TryInto<#path::xdr::ScVal> for #enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
+            fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
                 Ok((self as u32).into())
             }
         }

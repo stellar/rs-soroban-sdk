@@ -2,11 +2,9 @@
 use core::fmt::Debug;
 
 #[cfg(doc)]
-use crate::{contracttype, Bytes, BytesN, Map};
+use crate::{contracttype, Bytes, Map};
 use crate::{
-    env::internal::{self},
-    unwrap::UnwrapInfallible,
-    ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
+    env::internal, unwrap::UnwrapInfallible, ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
 };
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
@@ -42,8 +40,7 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
-/// #     env.register_contract(&contract_id, Contract);
+/// #     let contract_id = env.register_contract(None, Contract);
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]
@@ -107,7 +104,7 @@ impl Events {
     ///
     /// - [Vec]
     /// - [Map]
-    /// - [Bytes]/[BytesN] longer than 32 bytes
+    /// - [Bytes]/[BytesN][crate::BytesN] longer than 32 bytes
     /// - [contracttype]
     #[inline(always)]
     pub fn publish<T, D>(&self, topics: T, data: D)
@@ -122,12 +119,12 @@ impl Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, TryIntoVal};
+use crate::{testutils, xdr, Address, BytesN, TryIntoVal};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::BytesN<32>, Vec<RawVal>, RawVal)> {
+    fn all(&self) -> Vec<(crate::Address, Vec<RawVal>, RawVal)> {
         let env = self.env();
         let mut vec = Vec::new(env);
         self.env()
@@ -137,15 +134,15 @@ impl testutils::Events for Events {
             .0
             .into_iter()
             .for_each(|e| {
-                if let internal::events::Event::Contract(xdr::ContractEvent {
+                if let xdr::ContractEvent {
                     type_: xdr::ContractEventType::Contract,
                     contract_id: Some(contract_id),
                     body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
                     ..
-                }) = e.event
+                } = e.event
                 {
                     vec.push_back((
-                        contract_id.0.into_val(env),
+                        Address::from_contract_id(&BytesN::from_array(env, &contract_id.0)),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
                     ))

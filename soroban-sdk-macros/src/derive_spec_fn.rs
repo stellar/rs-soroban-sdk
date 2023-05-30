@@ -154,6 +154,7 @@ pub fn derive_fn_spec(
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
+        #[allow(non_snake_case)]
         #(#attrs)*
         #export_attr
         pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();

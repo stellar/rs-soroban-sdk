@@ -46,8 +46,7 @@ use crate::{
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = BytesN::from_array(&env, &[0; 32]);
-/// #     env.register_contract(&contract_id, Contract);
+/// #     let contract_id = env.register_contract(None, Contract);
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]
@@ -56,13 +55,6 @@ use crate::{
 #[derive(Clone)]
 pub struct Storage {
     env: Env,
-    mode: StorageMode,
-}
-
-#[derive(Clone)]
-enum StorageMode {
-    Persistent,
-    Temporary,
 }
 
 impl Debug for Storage {
@@ -73,19 +65,8 @@ impl Debug for Storage {
 
 impl Storage {
     #[inline(always)]
-    pub(crate) fn new_persistent(env: &Env) -> Storage {
-        Storage {
-            env: env.clone(),
-            mode: StorageMode::Persistent,
-        }
-    }
-
-    #[inline(always)]
-    pub(crate) fn new_temporary(env: &Env) -> Storage {
-        Storage {
-            env: env.clone(),
-            mode: StorageMode::Temporary,
-        }
+    pub(crate) fn new(env: &Env) -> Storage {
+        Storage { env: env.clone() }
     }
 
     /// Returns if there is a value stored for the given key in the currently
@@ -153,16 +134,8 @@ impl Storage {
         V: IntoVal<Env, RawVal>,
     {
         let env = &self.env;
-        match self.mode {
-            StorageMode::Persistent => {
-                internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env))
-                    .unwrap_infallible();
-            }
-            StorageMode::Temporary => {
-                internal::Env::put_tmp_contract_data(env, key.into_val(env), val.into_val(env))
-                    .unwrap_infallible();
-            }
-        }
+        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env))
+            .unwrap_infallible();
     }
 
     /// Removes the key and the corresponding value from the currently executing
@@ -175,36 +148,16 @@ impl Storage {
         K: IntoVal<Env, RawVal>,
     {
         let env = &self.env;
-        match self.mode {
-            StorageMode::Persistent => {
-                internal::Env::del_contract_data(env, key.into_val(env)).unwrap_infallible();
-            }
-            StorageMode::Temporary => {
-                internal::Env::del_tmp_contract_data(env, key.into_val(env)).unwrap_infallible();
-            }
-        }
+        internal::Env::del_contract_data(env, key.into_val(env)).unwrap_infallible();
     }
 
     fn has_internal(&self, key: RawVal) -> bool {
-        match self.mode {
-            StorageMode::Persistent => {
-                internal::Env::has_contract_data(&self.env, key).unwrap_infallible()
-            }
-            StorageMode::Temporary => {
-                internal::Env::has_tmp_contract_data(&self.env, key).unwrap_infallible()
-            }
-        }
-        .into()
+        internal::Env::has_contract_data(&self.env, key)
+            .unwrap_infallible()
+            .into()
     }
 
     fn get_internal(&self, key: RawVal) -> RawVal {
-        match self.mode {
-            StorageMode::Persistent => {
-                internal::Env::get_contract_data(&self.env, key).unwrap_infallible()
-            }
-            StorageMode::Temporary => {
-                internal::Env::get_tmp_contract_data(&self.env, key).unwrap_infallible()
-            }
-        }
+        internal::Env::get_contract_data(&self.env, key).unwrap_infallible()
     }
 }

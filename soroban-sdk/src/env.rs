@@ -88,10 +88,10 @@ pub use internal::xdr;
 pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
+pub use internal::Error;
 pub use internal::MapObject;
 pub use internal::RawVal;
 pub use internal::RawValConvertible;
-pub use internal::Status;
 pub use internal::SymbolStr;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
@@ -258,8 +258,8 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
-    pub fn panic_with_error(&self, error: impl Into<Status>) {
-        _ = internal::Env::fail_with_status(self, error.into());
+    pub fn panic_with_error(&self, error: impl Into<internal::Error>) {
+        _ = internal::Env::fail_with_error(self, error.into());
         unreachable!()
     }
 
@@ -267,19 +267,7 @@ impl Env {
     /// currently executing contract.
     #[inline(always)]
     pub fn storage(&self) -> Storage {
-        Storage::new_persistent(self)
-    }
-
-    /// Get a [Storage] for accessing and updating temporary data owned by the
-    /// currently executing contract.
-    ///
-    /// Temporary data only exists during a single top-level contract
-    /// invocation, so this is only useful for persisting data between several
-    /// cross-contract calls (e.g. to increase and then spend the token
-    /// allowance from another contract)
-    #[inline(always)]
-    pub fn temp_storage(&self) -> Storage {
-        Storage::new_temporary(self)
+        Storage::new(self)
     }
 
     /// Get [Events] for publishing events associated with the
@@ -313,15 +301,6 @@ impl Env {
         unsafe { Address::unchecked_new(self.clone(), address) }
     }
 
-    /// Get the 32-byte hash identifier of the current executing contract.
-    ///
-    /// Prefer `current_contract_address` for the most cases, unless dealing
-    /// with contract-specific functions (like the call stacks).
-    pub fn current_contract_id(&self) -> BytesN<32> {
-        let id = internal::Env::get_current_contract_id(self).unwrap_infallible();
-        unsafe { BytesN::<32>::unchecked_new(self.clone(), id) }
-    }
-
     #[doc(hidden)]
     pub(crate) fn require_auth_for_args(&self, address: &Address, args: Vec<RawVal>) {
         internal::Env::require_auth_for_args(self, address.to_object(), args.to_object())
@@ -338,7 +317,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, log, BytesN, Env, Symbol};
     ///
     /// pub struct Contract;
     ///
@@ -349,8 +328,7 @@ impl Env {
     ///         assert_eq!(stack.len(), 1);
     ///
     ///         let outer = stack.get(0).unwrap().unwrap();
-    ///         assert_eq!(outer.0, BytesN::from_array(&env, &[0; 32]));
-    ///         assert_eq!(outer.1, Symbol::short("hello"));
+    ///         log!(&env, "{}", outer);
     ///     }
     /// }
     /// #[test]
@@ -359,17 +337,27 @@ impl Env {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
-    ///     env.register_contract(&contract_id, Contract);
+    ///     let contract_id = env.register_contract(None, Contract);
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     client.hello();
     /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn call_stack(&self) -> Vec<(BytesN<32>, crate::Symbol)> {
+    pub fn call_stack(&self) -> Vec<(Address, crate::Symbol)> {
+        // TODO: Change host fn to return Addresses, so that contracts do not
+        // need to iterate over the call stack and do conversion.
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
-        unsafe { Vec::unchecked_new(self.clone(), stack) }
+
+        let stack =
+            unsafe { Vec::<(BytesN<32>, crate::Symbol)>::unchecked_new(self.clone(), stack) };
+
+        let mut stack_with_addresses = Vec::new(self);
+        for (id, sym) in stack.iter_unchecked() {
+            stack_with_addresses.push_back((Address::from_contract_id(&id), sym));
+        }
+
+        stack_with_addresses
     }
 
     /// Invokes a function of a contract that is registered in the [Env].
@@ -387,7 +375,7 @@ impl Env {
     /// into the type `T`.
     pub fn invoke_contract<T>(
         &self,
-        contract_id: &BytesN<32>,
+        contract_id: &Address,
         func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> T
@@ -396,7 +384,7 @@ impl Env {
     {
         let rv = internal::Env::call(
             self,
-            contract_id.to_object(),
+            contract_id.contract_id().to_object(),
             func.to_val(),
             args.to_object(),
         )
@@ -410,14 +398,17 @@ impl Env {
     /// returns an error if the invocation fails for any reason.
     pub fn try_invoke_contract<T, E>(
         &self,
-        contract_id: &BytesN<32>,
+        contract_id: &Address,
         func: &crate::Symbol,
         args: Vec<RawVal>,
     ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
     where
         T: TryFromVal<Env, RawVal>,
-        E: TryFrom<Status>,
+        E: TryFrom<Error>,
     {
+        let Some(contract_id) = contract_id.try_contract_id() else {
+            return Err(E::try_from(Error::from_type_and_code(xdr::ScErrorType::Value, xdr::ScErrorCode::MissingValue)));
+        };
         let rv = internal::Env::try_call(
             self,
             contract_id.to_object(),
@@ -425,8 +416,8 @@ impl Env {
             args.to_object(),
         )
         .unwrap_infallible();
-        match Status::try_from_val(self, &rv) {
-            Ok(status) => Err(E::try_from(status)),
+        match internal::Error::try_from_val(self, &rv) {
+            Ok(err) => Err(E::try_from(err)),
             Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
         }
     }
@@ -435,11 +426,6 @@ impl Env {
     #[inline(always)]
     pub fn logger(&self) -> Logger {
         Logger::new(self)
-    }
-
-    #[doc(hidden)]
-    pub fn log_value<V: IntoVal<Env, RawVal>>(&self, v: V) {
-        internal::Env::log_value(self, v.into_val(self)).unwrap_infallible();
     }
 
     /// Replaces the executable of the current contract with the provided Wasm.
@@ -457,8 +443,10 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
+use crate::auth;
+#[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, random, BytesN as _, ContractFunctionSet, Ledger as _, MockAuth,
+    budget::Budget, random, Address as _, ContractFunctionSet, Ledger as _, MockAuth,
     MockAuthContract,
 };
 #[cfg(any(test, feature = "testutils"))]
@@ -467,8 +455,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{
-    AuthorizedInvocation, ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScVec,
-    StringM,
+    ContractAuth, Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
 };
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -486,10 +473,8 @@ impl Env {
                 &self,
                 _key: &Rc<xdr::LedgerKey>,
             ) -> Result<Rc<xdr::LedgerEntry>, soroban_env_host::HostError> {
-                use xdr::{ScHostStorageErrorCode, ScStatus};
-                let status: internal::Status =
-                    ScStatus::HostStorageError(ScHostStorageErrorCode::MissingKeyInGet).into();
-                Err(status.into())
+                let err: internal::Error = (ScErrorType::Storage, ScErrorCode::MissingValue).into();
+                Err(err.into())
             }
 
             fn has(&self, _key: &Rc<xdr::LedgerKey>) -> Result<bool, soroban_env_host::HostError> {
@@ -504,6 +489,7 @@ impl Env {
         env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
             xdr::Uint256(random()),
         )));
+        env_impl.set_diagnostic_level(internal::DiagnosticLevel::Debug);
         let env = Env {
             env_impl,
             snapshot: None,
@@ -548,15 +534,14 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = BytesN::from_array(&env, &[0; 32]);
-    ///     env.register_contract(&contract_id, HelloContract);
+    ///     let contract_id = env.register_contract(None, HelloContract);
     /// }
     /// ```
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_id: impl Into<Option<&'a Address>>,
         contract: T,
-    ) -> BytesN<32> {
+    ) -> Address {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
         impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
             fn call(
@@ -580,11 +565,11 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            BytesN::random(self)
+            Address::random(self)
         };
         self.env_impl
             .register_test_contract(
-                contract_id.to_object(),
+                contract_id.contract_id().to_object(),
                 Rc::new(InternalContractFunctionSet(contract)),
             )
             .unwrap();
@@ -617,9 +602,9 @@ impl Env {
     /// ```
     pub fn register_contract_wasm<'a>(
         &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_id: impl Into<Option<&'a Address>>,
         contract_wasm: &[u8],
-    ) -> BytesN<32> {
+    ) -> Address {
         let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
@@ -634,7 +619,7 @@ impl Env {
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
+    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
         let issuer_pk = random();
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
@@ -693,45 +678,52 @@ impl Env {
             .try_into_val(self)
             .unwrap();
 
-        // Call the set_admin fn as the issuer, authorized via the source
-        // account, and set the admin to the admin Address provided.
-        let source_account = self.env_impl.source_account();
-        self.env_impl.set_source_account(issuer_id);
-        _ = self.env_impl.set_authorization_entries(
-            [ContractAuth {
-                address_with_nonce: None,
-                root_invocation: AuthorizedInvocation {
-                    contract_id: Hash(token_id.to_array()),
-                    function_name: StringM::try_from("set_admin").unwrap().into(),
-                    args: ScVec([admin.clone().try_into().unwrap()].try_into().unwrap()),
-                    sub_invocations: [].try_into().unwrap(),
-                },
-                signature_args: ScVec([].try_into().unwrap()),
-            }]
-            .into(),
-        );
-        let _: () = self.invoke_contract(
-            &token_id,
-            &crate::Symbol::short("set_admin"),
-            (admin,).try_into_val(self).unwrap(),
-        );
-        // TODO: Restore previous auth state after
-        // https://github.com/stellar/rs-soroban-env/issues/785 is implemented.
-        _ = self.env_impl.set_authorization_entries([].into());
-        if let Some(source_account) = source_account {
-            self.env_impl.set_source_account(source_account);
-        } else {
-            self.env_impl.remove_source_account();
-        }
+        // Set the admin of the token to the passed in address. This operation
+        // could be performed by calling the token contracts `set_admin`
+        // function, however doing so would require modifying the authorization
+        // state of the environment and tests may have setup authorization, and
+        // the environment does not provide anyway for us to snapshot the
+        // current auth setup, modify it, then reset it. This might be possible
+        // after this issue is resolved:
+        // https://github.com/stellar/rs-soroban-env/issues/785.
+        self.host()
+            .with_mut_storage(|storage| {
+                let key = xdr::ScVal::Vec(Some(xdr::ScVec(
+                    [xdr::ScVal::Symbol(xdr::ScSymbol(
+                        "Admin".try_into().unwrap(),
+                    ))]
+                    .try_into()
+                    .unwrap(),
+                )));
+                let val = xdr::ScVal::try_from(admin).unwrap();
+                storage.put(
+                    &Rc::new(xdr::LedgerKey::ContractData(xdr::LedgerKeyContractData {
+                        contract_id: Hash(token_id.to_array()),
+                        key: key.clone(),
+                    })),
+                    &Rc::new(xdr::LedgerEntry {
+                        last_modified_ledger_seq: 0,
+                        data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                            contract_id: Hash(token_id.to_array()),
+                            key,
+                            val,
+                        }),
+                        ext: xdr::LedgerEntryExt::V0,
+                    }),
+                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
+                )?;
+                Ok(())
+            })
+            .unwrap();
 
-        token_id
+        Address::from_contract_id(&token_id)
     }
 
     fn register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
+        contract_id: impl Into<Option<&'a Address>>,
         executable: xdr::ScContractExecutable,
-    ) -> BytesN<32> {
+    ) -> Address {
         if let Some(contract_id) = contract_id.into() {
             self.register_contract_with_contract_id_and_executable(contract_id, executable);
             contract_id.clone()
@@ -740,7 +732,7 @@ impl Env {
         }
     }
 
-    fn register_contract_with_source(&self, executable: xdr::ScContractExecutable) -> BytesN<32> {
+    fn register_contract_with_source(&self, executable: xdr::ScContractExecutable) -> Address {
         let prev_source_account = self.env_impl.source_account();
         self.env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
@@ -765,29 +757,75 @@ impl Env {
         } else {
             self.env_impl.remove_source_account();
         }
-        contract_id
+
+        Address::from_contract_id(&contract_id)
     }
 
     /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke [`require_auth`] or [`require_auth_for_args`]
-    /// functions.
+    /// contracts when they invoke [`Address::require_auth`] or
+    /// [`Address::require_auth_for_args`] functions.
     ///
-    /// To mock auth for testing, use [`mock_all_auths`]. If mocking of auths is
-    /// enabled, calling [`set_auths`] disables any mocking.
+    /// This function can also be called on contract clients.
+    ///
+    /// To mock auth for testing, use [`mock_all_auths`][Self::mock_all_auths]
+    /// or [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
+    /// calling [`set_auths`][Self::set_auths] disables any mocking.
     pub fn set_auths(&self, auths: &[ContractAuth]) {
         self.env_impl
             .set_authorization_entries(auths.to_vec())
             .unwrap();
     }
 
-    // Mock authorizations in the environment which will cause matching invokes of
-    // [`require_auth`] and [`require_auth_for_args`] to pass.
+    /// Mock authorizations in the environment which will cause matching invokes
+    /// of [`Address::require_auth`] and [`Address::require_auth_for_args`] to
+    /// pass.
+    ///
+    /// This function can also be called on contract clients.
+    ///
+    /// Authorizations not matching a mocked auth will fail.
+    ///
+    /// To mock all auths, use [`mock_all_auths`][Self::mock_all_auths].
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contractimpl, Env, Address, testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+    ///
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn hello(env: Env, from: Address) {
+    ///         from.require_auth();
+    ///         // TODO
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///     let addr = Address::random(&env);
+    ///     client.mock_auths(&[
+    ///         MockAuth {
+    ///             address: &addr,
+    ///             nonce: 0,
+    ///             invoke: &MockAuthInvoke {
+    ///                 contract: &contract_id,
+    ///                 fn_name: "hello",
+    ///                 args: (&addr,).into_val(&env),
+    ///                 sub_invokes: &[],
+    ///             },
+    ///         },
+    ///     ]).hello(&addr);
+    /// }
+    /// ```
     pub fn mock_auths(&self, auths: &[MockAuth]) {
         for a in auths {
-            let Some(contract_id) = a.address.contract_id() else {
-                panic!("mocking auth is only supported with contract addresses")
-            };
-            self.register_contract(&contract_id, MockAuthContract);
+            self.register_contract(a.address, MockAuthContract);
         }
         let auths = auths
             .iter()
@@ -797,9 +835,9 @@ impl Env {
         self.env_impl.set_authorization_entries(auths).unwrap();
     }
 
-    /// Mock all calls to the [`require_auth`] and [`require_auth_for_args`]
-    /// functions in invoked contracts, having them succeed as if authorization
-    /// was provided.
+    /// Mock all calls to the [`Address::require_auth`] and
+    /// [`Address::require_auth_for_args`] functions in invoked contracts,
+    /// having them succeed as if authorization was provided.
     ///
     /// When mocking is enabled, if the [`Address`] being authorized is the
     /// address of a contract, that contract's `__check_auth` function will not
@@ -809,9 +847,11 @@ impl Env {
     /// When mocking is enabled, if the [`Address`] being authorized is the
     /// address of an account, the account does not need to exist.
     ///
-    /// To disable mocking, see [`set_auths`].
+    /// This function can also be called on contract clients.
     ///
-    /// To access a list of auths that have occurred, see [`auths`].
+    /// To disable mocking, see [`set_auths`][Self::set_auths].
+    ///
+    /// To access a list of auths that have occurred, see [`auths`][Self::auths].
     ///
     /// It is not currently possible to mock a subset of auths.
     ///
@@ -860,10 +900,11 @@ impl Env {
     /// of the function invocation).
     ///
     /// The order of the returned vector is defined by the order of
-    /// [`require_auth`] calls. Repeated calls to [`require_auth`] with the same
-    /// address and args in the same tree of contract invocations will appear
-    /// only once in the vector. Calls to [`require_auth`] in disjoint call
-    /// trees for the same address will present in the list.
+    /// [`Address::require_auth`] calls. Repeated calls to
+    /// [`Address::require_auth`] with the same address and args in the same
+    /// tree of contract invocations will appear only once in the vector. Calls
+    /// to [`Address::require_auth`] in disjoint call trees for the same address
+    /// will present in the list.
     ///
     /// ### Examples
     /// ```
@@ -897,7 +938,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract_id.clone(),
+    ///             client.address.clone(),
     ///             Symbol::short("transfer"),
     ///             (&address, 1000_i128,).into_val(&env)
     ///         )]
@@ -908,7 +949,7 @@ impl Env {
     ///         env.auths(),
     ///         std::vec![(
     ///             address.clone(),
-    ///             client.contract_id.clone(),
+    ///             client.address.clone(),
     ///             Symbol::short("transfer2"),
     ///             // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///             (500_i128,).into_val(&env)
@@ -918,7 +959,7 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub fn auths(&self) -> std::vec::Vec<(Address, BytesN<32>, crate::Symbol, Vec<RawVal>)> {
+    pub fn auths(&self) -> std::vec::Vec<(Address, Address, crate::Symbol, Vec<RawVal>)> {
         use xdr::{ScBytes, ScVal};
         let authorizations = self.env_impl.get_authenticated_authorizations().unwrap();
         authorizations
@@ -930,11 +971,13 @@ impl Env {
                 }
                 (
                     Address::try_from_val(self, &ScVal::Address(a.0.clone())).unwrap(),
-                    BytesN::<32>::try_from_val(
-                        self,
-                        &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
-                    )
-                    .unwrap(),
+                    Address::from_contract_id(
+                        &BytesN::<32>::try_from_val(
+                            self,
+                            &ScVal::Bytes(ScBytes(a.1.as_slice().to_vec().try_into().unwrap())),
+                        )
+                        .unwrap(),
+                    ),
                     crate::Symbol::try_from_val(self, &a.2).unwrap(),
                     args,
                 )
@@ -942,12 +985,108 @@ impl Env {
             .collect()
     }
 
+    /// Invokes the special `__check_auth` function of contracts that implement
+    /// the custom account interface.
+    ///
+    /// `__check_auth` can't be called outside of the host-managed `require_auth`
+    /// calls. This test utility allows testing custom account contracts without
+    /// the need to setup complex contract call trees and enabling the enforcing
+    /// auth on the host side.
+    ///
+    /// This function requires to provide the template argument for error. Use
+    /// `soroban_sdk::Error` if `__check_auth` doesn't return a special
+    /// contract error and use the error with `contracterror` attribute
+    /// otherwise.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, RawVal};
+    ///
+    /// #[contracterror]
+    /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+    /// #[repr(u32)]
+    /// pub enum NoopAccountError {
+    ///     SomeError = 1,
+    /// }
+    /// struct NoopAccountContract;
+    /// #[contractimpl]
+    /// impl NoopAccountContract {
+    ///
+    ///     #[allow(non_snake_case)]
+    ///     pub fn __check_auth(
+    ///         _env: Env,
+    ///         _signature_payload: BytesN<32>,
+    ///         signatures: Vec<RawVal>,
+    ///         _auth_context: Vec<Context>,
+    ///     ) -> Result<(), NoopAccountError> {
+    ///         if signatures.is_empty() {
+    ///             Err(NoopAccountError::SomeError)
+    ///         } else {
+    ///             Ok(())
+    ///         }
+    ///     }
+    /// }
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let e: Env = Default::default();
+    ///     let account_contract = NoopAccountContractClient::new(&e, &e.register_contract(None, NoopAccountContract));
+    ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
+    ///     assert_eq!(
+    ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
+    ///             &account_contract.address.contract_id(),
+    ///             &BytesN::random(&e),
+    ///             &vec![&e],
+    ///             &vec![&e],
+    ///         ),
+    ///         // The inner `Result` is for conversion error and will be Ok
+    ///         // as long as a valid error type used.
+    ///         Err(Ok(NoopAccountError::SomeError))
+    ///     );
+    ///     // Succesful call of `__check_auth` with a `soroban_sdk::Error`
+    ///     // error - this should be compatible with any error type.
+    ///     assert_eq!(
+    ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
+    ///             &account_contract.address.contract_id(),
+    ///             &BytesN::random(&e),
+    ///             &vec![&e, 0_i32.into()],
+    ///             &vec![&e],
+    ///         ),
+    ///         Ok(())
+    ///     );
+    /// }
+    /// ```
+    pub fn try_invoke_contract_check_auth<E: TryFrom<Error>>(
+        &self,
+        contract: &BytesN<32>,
+        signature_payload: &BytesN<32>,
+        signatures: &Vec<RawVal>,
+        auth_context: &Vec<auth::Context>,
+    ) -> Result<(), Result<E, E::Error>> {
+        let args = Vec::from_array(
+            self,
+            [
+                signature_payload.to_raw(),
+                signatures.to_raw(),
+                auth_context.to_raw(),
+            ],
+        );
+        let res = self
+            .host()
+            .call_account_contract_check_auth(contract.to_object(), args.to_object());
+        match res {
+            Ok(rv) => Ok(rv.into_val(self)),
+            Err(e) => Err(e.error.try_into()),
+        }
+    }
+
     fn register_contract_with_contract_id_and_executable(
         &self,
-        contract_id: &BytesN<32>,
+        contract_id: &Address,
         executable: xdr::ScContractExecutable,
     ) {
-        let contract_id_hash = Hash(contract_id.into());
+        let contract_id_hash = Hash(contract_id.contract_id().into());
         let data_key = xdr::ScVal::LedgerKeyContractExecutable;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract_id: contract_id_hash.clone(),
@@ -1007,8 +1146,8 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
-    pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
-        let id: [u8; 32] = id.into();
+    pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
+        let id: [u8; 32] = id.contract_id().into();
         let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
         self.env_impl
@@ -1075,14 +1214,6 @@ impl Env {
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
         self.env_impl.with_budget(|b| Budget::new(b))
-    }
-
-    /// Resets the `temp_storage()` associated with this `Env`.
-    ///
-    /// This removes all the temporary storage entries without distinguishing
-    /// between the contracts that own them.
-    pub fn reset_temp_storage(&self) {
-        self.env_impl.reset_temp_storage();
     }
 }
 
@@ -1166,43 +1297,8 @@ impl internal::EnvBase for Env {
         Ok(self.env_impl.bytes_new_from_slice(slice).unwrap_optimized())
     }
 
-    fn log_static_fmt_val(&self, fmt: &'static str, v: RawVal) -> Result<(), Self::Error> {
-        Ok(self.env_impl.log_static_fmt_val(fmt, v).unwrap_optimized())
-    }
-
-    fn log_static_fmt_static_str(
-        &self,
-        fmt: &'static str,
-        s: &'static str,
-    ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .log_static_fmt_static_str(fmt, s)
-            .unwrap_optimized())
-    }
-
-    fn log_static_fmt_val_static_str(
-        &self,
-        fmt: &'static str,
-        v: RawVal,
-        s: &'static str,
-    ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .log_static_fmt_val_static_str(fmt, v, s)
-            .unwrap_optimized())
-    }
-
-    fn log_static_fmt_general(
-        &self,
-        fmt: &'static str,
-        v: &[RawVal],
-        s: &[&'static str],
-    ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .log_static_fmt_general(fmt, v, s)
-            .unwrap_optimized())
+    fn log_from_slice(&self, msg: &str, args: &[RawVal]) -> Result<Void, Self::Error> {
+        Ok(self.env_impl.log_from_slice(msg, args).unwrap_optimized())
     }
 
     fn string_copy_to_slice(

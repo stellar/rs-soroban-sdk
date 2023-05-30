@@ -110,7 +110,7 @@ pub use bytes_lit::bytes as __bytes_lit_bytes;
 #[doc(hidden)]
 pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 
-/// Generates conversions from the repr(u32) enum from/into a `Status`.
+/// Generates conversions from the repr(u32) enum from/into an `Error`.
 ///
 /// There are some constraints on the types that are supported:
 /// - Enum must derive `Copy`.
@@ -647,8 +647,8 @@ pub use env::TryIntoVal;
 
 mod envhidden {
     pub use super::env::EnvBase;
+    pub use super::env::Error;
     pub use super::env::MapObject;
-    pub use super::env::Status;
     pub use super::env::SymbolStr;
     pub use super::env::VecObject;
 }
@@ -662,6 +662,7 @@ pub mod data {
     #[deprecated(note = "use storage::Storage")]
     pub use super::storage::Storage as Data;
 }
+pub mod auth;
 mod bytes;
 pub mod crypto;
 pub mod deploy;

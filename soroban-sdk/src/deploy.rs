@@ -28,8 +28,7 @@
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //! #     let env = Env::default();
-//! #     let contract_id = BytesN::from_array(&env, &[0; 32]);
-//! #     env.register_contract(&contract_id, Contract);
+//! #     let contract_id = env.register_contract(None, Contract);
 //! #     // Install the contract code before deploying its instance.
 //! #     let wasm_hash = env.install_contract_wasm(&[0u8; 100]);
 //! #     ContractClient::new(&env, &contract_id).f(&wasm_hash);
@@ -37,7 +36,7 @@
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
-use crate::{env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, BytesN, Env, IntoVal};
+use crate::{env::internal::Env as _, unwrap::UnwrapInfallible, Address, BytesN, Env, IntoVal};
 
 /// Deployer provides access to deploying contracts.
 pub struct Deployer {
@@ -57,7 +56,7 @@ impl Deployer {
     /// from the current contract and the provided salt.
     pub fn with_current_contract(
         &self,
-        salt: &impl IntoVal<Env, Bytes>,
+        salt: &impl IntoVal<Env, BytesN<32>>,
     ) -> DeployerWithCurrentContract {
         let env = self.env();
         DeployerWithCurrentContract {
@@ -71,13 +70,13 @@ impl Deployer {
     /// given contract ID and the provided salt.
     pub fn with_other_contract(
         &self,
-        contract_id: &impl IntoVal<Env, BytesN<32>>,
-        salt: &impl IntoVal<Env, Bytes>,
+        contract_id: &Address,
+        salt: &impl IntoVal<Env, BytesN<32>>,
     ) -> DeployerWithOtherContract {
         let env = self.env();
         DeployerWithOtherContract {
             env: env.clone(),
-            contract_id: contract_id.into_val(env),
+            contract_id: contract_id.clone(),
             salt: salt.into_val(env),
         }
     }
@@ -87,13 +86,13 @@ impl Deployer {
 /// contract ID and the provided salt.
 pub struct DeployerWithCurrentContract {
     env: Env,
-    salt: Bytes,
+    salt: BytesN<32>,
 }
 
 impl DeployerWithCurrentContract {
     /// Return the ID of the contract defined by the deployer.
     #[doc(hidden)]
-    pub fn id(&self) -> BytesN<32> {
+    pub fn id(&self) -> Address {
         todo!()
     }
 
@@ -103,7 +102,7 @@ impl DeployerWithCurrentContract {
     /// will be used to derive a contract ID for the deployed contract.
     ///
     /// Returns the deployed contract's ID.
-    pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> BytesN<32> {
+    pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> Address {
         let env = &self.env;
         let id = env
             .create_contract_from_contract(
@@ -111,7 +110,8 @@ impl DeployerWithCurrentContract {
                 self.salt.to_object(),
             )
             .unwrap_infallible();
-        unsafe { BytesN::<32>::unchecked_new(env.clone(), id) }
+        let id = unsafe { BytesN::<32>::unchecked_new(env.clone(), id) };
+        Address::from_contract_id(&id)
     }
 }
 
@@ -124,14 +124,14 @@ impl DeployerWithCurrentContract {
 /// contract ID or an ed25519 public key.
 pub struct DeployerWithOtherContract {
     env: Env,
-    contract_id: BytesN<32>,
-    salt: Bytes,
+    contract_id: Address,
+    salt: BytesN<32>,
 }
 
 impl DeployerWithOtherContract {
     #[doc(hidden)]
     /// Return the ID of the contract defined by the deployer.
-    pub fn id(&self) -> BytesN<32> {
+    pub fn id(&self) -> Address {
         todo!()
     }
 }

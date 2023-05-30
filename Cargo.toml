@@ -2,7 +2,6 @@
 resolver = "2"
 
 members = [
-    "soroban-auth",
     "soroban-sdk",
     "soroban-sdk-macros",
     "soroban-spec",
@@ -25,39 +24,38 @@ members = [
 ]
 
 [workspace.package]
-version = "0.7.0"
+version = "0.8.4"
 
 [workspace.dependencies]
-soroban-sdk = { version = "0.7.0", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "0.7.0", path = "soroban-sdk-macros" }
-soroban-auth = { version = "0.7.0", path = "soroban-auth" }
-soroban-spec = { version = "0.7.0", path = "soroban-spec" }
-soroban-ledger-snapshot = { version = "0.7.0", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "0.7.0", path = "soroban-token-sdk" }
+soroban-sdk = { version = "0.8.4", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "0.8.4", path = "soroban-sdk-macros" }
+soroban-spec = { version = "0.8.4", path = "soroban-spec" }
+soroban-ledger-snapshot = { version = "0.8.4", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "0.8.4", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
-version = "0.0.15"
+version = "0.0.16"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "bad318a9805cf25ae64afb5122cb37af67a2edbd"
+rev = "3762edfe52aafc6c0935619211d76d2d05fe87e6"
 
 [workspace.dependencies.soroban-env-guest]
-version = "0.0.15"
+version = "0.0.16"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "bad318a9805cf25ae64afb5122cb37af67a2edbd"
+rev = "3762edfe52aafc6c0935619211d76d2d05fe87e6"
 
 [workspace.dependencies.soroban-env-host]
-version = "0.0.15"
+version = "0.0.16"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "bad318a9805cf25ae64afb5122cb37af67a2edbd"
+rev = "3762edfe52aafc6c0935619211d76d2d05fe87e6"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
 git = "https://github.com/stellar/rs-stellar-strkey"
 
 [workspace.dependencies.stellar-xdr]
-version = "0.0.15"
+version = "0.0.16"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "df3a145bfaf75504bc85f20eceb49b4536836e18"
+rev = "b283ec0bcb791610013107b9eab7d7ff07a65db1"
 default-features = false
 
 #[patch."https://github.com/stellar/rs-soroban-env"]

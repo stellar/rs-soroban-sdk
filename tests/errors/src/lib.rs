@@ -38,8 +38,8 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use soroban_sdk::{
-        xdr::{ScStatus, ScUnknownErrorCode},
-        BytesN, Env, Status, Symbol,
+        xdr::{ScErrorCode, ScErrorType},
+        Env, Symbol,
     };
 
     use crate::{Contract, ContractClient, Error};
@@ -47,8 +47,7 @@ mod test {
     #[test]
     fn hello_ok() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.hello(&0);
@@ -59,8 +58,7 @@ mod test {
     #[test]
     fn try_hello_ok() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&0);
@@ -71,8 +69,7 @@ mod test {
     #[test]
     fn try_hello_error() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&1);
@@ -83,8 +80,7 @@ mod test {
     #[test]
     fn try_hello_error_panic() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&2);
@@ -95,16 +91,16 @@ mod test {
     #[test]
     fn try_hello_error_panic_string() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&3);
         assert_eq!(
             res,
-            Err(Err(Status::from_status(ScStatus::UnknownError(
-                ScUnknownErrorCode::General
-            ),)))
+            Err(Err(soroban_sdk::Error::from_type_and_code(
+                ScErrorType::Context,
+                ScErrorCode::InternalError
+            )))
         );
         assert!(!client.persisted());
     }

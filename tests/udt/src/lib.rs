@@ -53,7 +53,7 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, TryFromVal};
+    use soroban_sdk::{vec, xdr::ScVal, Bytes, Env, TryFromVal};
 
     #[test]
     fn test_serializing() {
@@ -78,8 +78,7 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let udt = UdtStruct {

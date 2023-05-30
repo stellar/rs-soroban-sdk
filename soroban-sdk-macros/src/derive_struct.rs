@@ -106,7 +106,7 @@ pub fn derive_type_struct(
 
         impl #path::TryFromVal<#path::Env, #path::RawVal> for #ident {
             type Error = #path::ConversionError;
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
                 use #path::{TryIntoVal,EnvBase,ConversionError,RawVal,MapObject};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let mut vals: [RawVal; #field_count_usize] = [RawVal::VOID.to_raw(); #field_count_usize];
@@ -120,7 +120,7 @@ pub fn derive_type_struct(
 
         impl #path::TryFromVal<#path::Env, #ident> for #path::RawVal {
             type Error = #path::ConversionError;
-            fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
                 use #path::{TryIntoVal,EnvBase,ConversionError,RawVal};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let vals: [RawVal; #field_count_usize] = [
@@ -134,7 +134,7 @@ pub fn derive_type_struct(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScMap) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScMap) -> Result<Self, #path::xdr::Error> {
                 use #path::xdr::Validate;
                 use #path::TryIntoVal;
                 let map = val;
@@ -152,7 +152,7 @@ pub fn derive_type_struct(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
                 if let #path::xdr::ScVal::Map(Some(map)) = val {
                     <_ as #path::TryFromVal<_, _>>::try_from_val(env, map)
                 } else {
@@ -165,7 +165,7 @@ pub fn derive_type_struct(
         impl TryFrom<&#ident> for #path::xdr::ScMap  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: &#ident) -> Result<Self, Self::Error> {
+            fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
                 extern crate alloc;
                 use #path::TryFromVal;
                 #path::xdr::ScMap::sorted_from(alloc::vec![
@@ -178,7 +178,7 @@ pub fn derive_type_struct(
         impl TryFrom<#ident> for #path::xdr::ScMap {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: #ident) -> Result<Self, Self::Error> {
+            fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
                 (&val).try_into()
             }
         }
@@ -187,7 +187,7 @@ pub fn derive_type_struct(
         impl TryFrom<&#ident> for #path::xdr::ScVal  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: &#ident) -> Result<Self, Self::Error> {
+            fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
                 Ok(#path::xdr::ScVal::Map(Some(val.try_into()?)))
             }
         }
@@ -196,7 +196,7 @@ pub fn derive_type_struct(
         impl TryFrom<#ident> for #path::xdr::ScVal {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from(val: #ident) -> Result<Self, Self::Error> {
+            fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
                 (&val).try_into()
             }
         }

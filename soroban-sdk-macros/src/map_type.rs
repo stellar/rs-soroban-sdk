@@ -31,7 +31,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     "bool" => Ok(ScSpecTypeDef::Bool),
                     "Symbol" => Ok(ScSpecTypeDef::Symbol),
                     "String" => Ok(ScSpecTypeDef::String),
-                    "Status" => Ok(ScSpecTypeDef::Status),
+                    "Error" => Ok(ScSpecTypeDef::Error),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
                     "Address" => Ok(ScSpecTypeDef::Address),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
