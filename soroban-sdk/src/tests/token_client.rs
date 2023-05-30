@@ -13,7 +13,7 @@ pub enum DataKey {
 }
 
 fn get_token(e: &Env) -> Address {
-    e.storage().get_unchecked(&DataKey::Token).unwrap()
+    e.storage().get(&DataKey::Token).unwrap()
 }
 
 pub struct TestContract;

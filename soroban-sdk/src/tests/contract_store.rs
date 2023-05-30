@@ -20,6 +20,6 @@ fn test_storage() {
 
     assert_eq!(
         e.as_contract(&contract_id, || e.storage().get::<_, i32>(&2)),
-        Some(Ok(4))
+        Some(4)
     );
 }

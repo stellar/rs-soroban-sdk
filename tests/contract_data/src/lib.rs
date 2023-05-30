@@ -10,7 +10,7 @@ impl Contract {
     }
 
     pub fn get(e: Env, key: Symbol) -> Option<Symbol> {
-        e.storage().get(&key).map(|v| v.unwrap())
+        e.storage().get(&key)
     }
 
     pub fn del(e: Env, key: Symbol) {
