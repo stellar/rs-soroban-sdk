@@ -395,8 +395,7 @@ pub use soroban_sdk_macros::contractmeta;
 ///     pub fn get_state(env: Env) -> State {
 ///         env.storage()
 ///             .get(&Symbol::short("STATE"))
-///             .unwrap_or_else(|| Ok(State::default())) // If no value set, assume 0.
-///             .unwrap() // Panic if the value of COUNTER is not a State.
+///             .unwrap_or_else(|| State::default()) // If no value set, assume 0.
 ///     }
 /// }
 ///
@@ -470,7 +469,6 @@ pub use soroban_sdk_macros::contractmeta;
 ///     pub fn get(env: Env) -> Option<Color> {
 ///         env.storage()
 ///             .get(&Symbol::short("COLOR"))
-///             .map(Result::unwrap) // Panic if the value of COLOR is not a Color.
 ///     }
 /// }
 ///
