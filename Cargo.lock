@@ -869,7 +869,6 @@ dependencies = [
  "soroban-sdk-macros",
  "soroban-spec",
  "stellar-strkey",
- "stellar-xdr",
 ]
 
 [[package]]

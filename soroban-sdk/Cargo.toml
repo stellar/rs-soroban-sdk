@@ -30,7 +30,6 @@ rand = "0.7.3"
 
 [dev-dependencies]
 soroban-env-host = { workspace = true, features = ["testutils"] }
-stellar-xdr = { workspace = true, features = ["next", "std"] }
 soroban-spec = { workspace = true }
 ed25519-dalek = "1.0.1"
 rand = "0.7.3"

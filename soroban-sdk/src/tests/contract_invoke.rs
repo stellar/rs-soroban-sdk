@@ -1,6 +1,9 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Env};
-use stellar_xdr::{ScErrorCode, ScErrorType};
+use soroban_sdk::{
+    contractimpl,
+    xdr::{ScErrorCode, ScErrorType},
+    Env,
+};
 
 pub struct Contract;
 

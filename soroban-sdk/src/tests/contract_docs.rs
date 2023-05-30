@@ -1,7 +1,10 @@
 mod fn_ {
     use crate as soroban_sdk;
-    use soroban_sdk::{contractimpl, Env};
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0};
+    use soroban_sdk::{
+        contractimpl,
+        xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0},
+        Env,
+    };
 
     pub struct Contract;
 
@@ -36,8 +39,10 @@ mod fn_ {
 
 mod struct_ {
     use crate as soroban_sdk;
-    use soroban_sdk::contracttype;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+    use soroban_sdk::{
+        contracttype,
+        xdr::{ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0},
+    };
 
     /// S holds a and
     // TODO: Implement.
@@ -62,12 +67,12 @@ mod struct_ {
                 ScSpecUdtStructFieldV0 {
                     doc: "a is\na".try_into().unwrap(),
                     name: "a".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
+                    type_: ScSpecTypeDef::U64,
                 },
                 ScSpecUdtStructFieldV0 {
                     doc: "b is b".try_into().unwrap(),
                     name: "b".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
+                    type_: ScSpecTypeDef::U64,
                 },
             ]
             .try_into()
@@ -79,8 +84,10 @@ mod struct_ {
 
 mod struct_tuple {
     use crate as soroban_sdk;
-    use soroban_sdk::contracttype;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+    use soroban_sdk::{
+        contracttype,
+        xdr::{ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0},
+    };
 
     /// S holds two u64s.
     #[contracttype]
@@ -103,12 +110,12 @@ mod struct_tuple {
                 ScSpecUdtStructFieldV0 {
                     doc: "first\nline".try_into().unwrap(),
                     name: "0".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
+                    type_: ScSpecTypeDef::U64,
                 },
                 ScSpecUdtStructFieldV0 {
                     doc: "second".try_into().unwrap(),
                     name: "1".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
+                    type_: ScSpecTypeDef::U64,
                 },
             ]
             .try_into()
@@ -120,10 +127,12 @@ mod struct_tuple {
 
 mod enum_ {
     use crate as soroban_sdk;
-    use soroban_sdk::contracttype;
-    use stellar_xdr::{
-        ReadXdr, ScSpecEntry, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-        ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0,
+    use soroban_sdk::{
+        contracttype,
+        xdr::{
+            ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
+            ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0,
+        },
     };
 
     /// E has variants A and B.
@@ -155,8 +164,8 @@ mod enum_ {
                     name: "B".try_into().unwrap(),
                     type_: [
                         // TODO: Add docs for tuple values in union cases.
-                        stellar_xdr::ScSpecTypeDef::U64,
-                        stellar_xdr::ScSpecTypeDef::U64,
+                        ScSpecTypeDef::U64,
+                        ScSpecTypeDef::U64,
                     ]
                     .try_into()
                     .unwrap(),
@@ -171,8 +180,10 @@ mod enum_ {
 
 mod enum_int {
     use crate as soroban_sdk;
-    use soroban_sdk::contracttype;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0};
+    use soroban_sdk::{
+        contracttype,
+        xdr::{ReadXdr, ScSpecEntry, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0},
+    };
 
     /// E has variants A and B.
     #[contracttype]
@@ -213,8 +224,10 @@ mod enum_int {
 
 mod enum_error_int {
     use crate as soroban_sdk;
-    use soroban_sdk::contracterror;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0};
+    use soroban_sdk::{
+        contracterror,
+        xdr::{ReadXdr, ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0},
+    };
 
     /// E has variants A and B.
     #[contracterror]

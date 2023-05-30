@@ -1,6 +1,9 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Env};
-use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
+use soroban_sdk::{
+    contractimpl,
+    xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef},
+    Env,
+};
 
 pub struct Contract;
 

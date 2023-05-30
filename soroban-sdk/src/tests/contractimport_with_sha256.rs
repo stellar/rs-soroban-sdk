@@ -1,6 +1,9 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Address, Env};
-use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
+use soroban_sdk::{
+    contractimpl,
+    xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef},
+    Address, Env,
+};
 
 mod addcontract {
     use crate as soroban_sdk;
