@@ -3,7 +3,7 @@ use core::fmt::Debug;
 
 use crate::{
     env::internal::{self, RawVal},
-    unwrap::UnwrapInfallible,
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
     Env, IntoVal, TryFromVal,
 };
 
@@ -39,7 +39,7 @@ use crate::{
 /// let key = Symbol::short("key");
 /// env.storage().set(&key, &1);
 /// assert_eq!(storage.has(&key), true);
-/// assert_eq!(storage.get::<_, i32>(&key), Some(Ok(1)));
+/// assert_eq!(storage.get::<_, i32>(&key), Some(1));
 /// #     }
 /// # }
 /// #
@@ -85,41 +85,21 @@ impl Storage {
     /// Returns `None` when the value is missing.
     ///
     /// If the value is present, then the returned value will be a result of
-    /// converting the internal value representation to `V`.
+    /// converting the internal value representation to `V`, or will panic if
+    /// the conversion to `V` fails.
     #[inline(always)]
-    pub fn get<K, V>(&self, key: &K) -> Option<Result<V, V::Error>>
+    pub fn get<K, V>(&self, key: &K) -> Option<V>
     where
-        V::Error: Debug,
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
         let key = key.into_val(&self.env);
         if self.has_internal(key) {
             let rv = self.get_internal(key);
-            Some(V::try_from_val(&self.env, &rv))
+            Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {
             None
         }
-    }
-
-    /// Returns the value there is a value stored for the given key in the
-    /// currently executing contract's storage.
-    ///
-    /// The returned value is a result of converting the internal value
-    /// representation to `V`.
-    ///
-    /// ### Panics
-    ///
-    /// When the key does not have a value stored.
-    #[inline(always)]
-    pub fn get_unchecked<K, V>(&self, key: &K) -> Result<V, V::Error>
-    where
-        V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
-    {
-        let rv = self.get_internal(key.into_val(&self.env));
-        V::try_from_val(&self.env, &rv)
     }
 
     /// Sets the value for the given key in the currently executing contract's

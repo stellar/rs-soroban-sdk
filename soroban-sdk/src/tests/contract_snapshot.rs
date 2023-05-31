@@ -9,7 +9,7 @@ impl Contract {
         env.storage().set(&k, &v)
     }
     pub fn get(env: Env, k: i32) -> i32 {
-        env.storage().get(&k).unwrap().unwrap()
+        env.storage().get(&k).unwrap()
     }
 }
 
