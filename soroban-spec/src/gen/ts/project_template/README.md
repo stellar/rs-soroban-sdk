@@ -26,12 +26,6 @@ It uses these settings by default, but you can override them with environment va
 
   Override with environment variable `SOROBAN_NETWORK_PASSPHRASE` or `PUBLIC_SOROBAN_NETWORK_PASSPHRASE`
 
-- **Freighter Network Name**: `INSERT_NETWORK_NAME_HERE`
-
-  What's this? [Freighter](https://www.freighter.app/) is the only signer/wallet supported for now. The [`signTransaction` method](https://docs.freighter.app/docs/guide/usingfreighternode/#signtransaction) requires a [specific naming convention](https://github.com/stellar/freighter/blob/7158e5f3b0bcb6b8d9086312955d1ce94352410e/%40shared/constants/stellar.ts#L12) for different networks.
-
-  Override with environment variable `SOROBAN_NETWORK_NAME` or `PUBLIC_SOROBAN_NETWORK_NAME`
-
 # Use it
 
 You don't need to publish this library to NPM to use it. You can add it to your project's `package.json` using a file path:

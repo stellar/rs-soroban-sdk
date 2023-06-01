@@ -6,7 +6,7 @@ import {
 import * as SorobanClient from 'soroban-client'
 import { Buffer } from "buffer";
 import type { Account, Memo, MemoType, Operation, Transaction } from 'soroban-client';
-import { NETWORK_NAME, NETWORK_PASSPHRASE, CONTRACT_ID } from './constants'
+import { NETWORK_PASSPHRASE, CONTRACT_ID } from './constants'
 import { Server } from './server'
 
 
@@ -107,7 +107,6 @@ async function invokeRpc(tx: Tx, simulation: SorobanClient.SorobanRpc.SimulateTr
 
   // sign with Freighter
   const signed = await signTransaction(tx.toXDR(), {
-    network: NETWORK_NAME,
     networkPassphrase: NETWORK_PASSPHRASE,
   })
 

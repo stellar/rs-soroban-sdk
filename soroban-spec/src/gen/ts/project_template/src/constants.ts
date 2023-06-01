@@ -9,16 +9,6 @@ export const CONTRACT_ID = import.meta.env.PUBLIC_SOROBAN_INSERT_SCREAMING_SNAKE
     ?? 'INSERT_CONTRACT_ID_HERE'
 
 /**
- * Matches the name given by Freighter's `getNetworkDetails().network` for the network used to initialize this library.
- *
- * You can override this by setting a `SOROBAN_NETWORK_NAME` or
- * `PUBLIC_SOROBAN_NETWORK_NAME` environment variable.
- */
-export const NETWORK_NAME = import.meta.env.PUBLIC_SOROBAN_NETWORK_NAME
-  ?? import.meta.env.SOROBAN_NETWORK_NAME
-  ?? 'INSERT_NETWORK_NAME_HERE'
-
-/**
  * The Soroban network passphrase used to initialize this library.
  *
  * You can override this by setting a `SOROBAN_NETWORK_PASSPHRASE` or

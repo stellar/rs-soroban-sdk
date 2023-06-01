@@ -38,7 +38,6 @@ impl Project {
     /// * `contract_name` - The colloquial name of this contract that will be used in the README and package.json
     /// * `contract_id` - The ID/address of the contract on the network. Will be overridable with environment variables.
     /// * `rpc_url` - The RPC URL of the network where this contract is deployed. Will be overridable with environment variables.
-    /// * `network_name` - The name of the network where this contract is deployed used by Freighter, such as all-caps "FUTURENET". Will be overridable with environment variables.
     /// * `network_passphrase` - The passphrase of the network where this contract is deployed. Will be overridable with environment variables.
     /// * `spec` - The contract specification.
     pub fn init(
@@ -46,17 +45,10 @@ impl Project {
         contract_name: &str,
         contract_id: &str,
         rpc_url: &str,
-        network_name: &str,
         network_passphrase: &str,
         spec: &[ScSpecEntry],
     ) -> std::io::Result<()> {
-        self.replace_placeholder_patterns(
-            contract_name,
-            contract_id,
-            rpc_url,
-            network_name,
-            network_passphrase,
-        )?;
+        self.replace_placeholder_patterns(contract_name, contract_id, rpc_url, network_passphrase)?;
         self.append_index_ts(spec)
     }
 
@@ -65,7 +57,6 @@ impl Project {
         contract_name: &str,
         contract_id: &str,
         rpc_url: &str,
-        network_name: &str,
         network_passphrase: &str,
     ) -> std::io::Result<()> {
         let replacement_strings = &[
@@ -79,7 +70,6 @@ impl Project {
                 &contract_name.to_lower_camel_case(),
             ),
             ("INSERT_CONTRACT_ID_HERE", contract_id),
-            ("INSERT_NETWORK_NAME_HERE", network_name),
             ("INSERT_NETWORK_PASSPHRASE_HERE", network_passphrase),
             ("INSERT_RPC_URL_HERE", rpc_url),
         ];
@@ -130,7 +120,6 @@ mod test {
             "contract-data-example",
             "C…",
             "https://rpc-futurenet.stellar.org:443/soroban/rpc",
-            "FUTURENET",
             "Test SDF Future Network ; October 2022",
             &spec,
         )
