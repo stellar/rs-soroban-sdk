@@ -19,7 +19,8 @@ mod test_a {
         testutils::{Address as _, MockAuth, MockAuthInvoke},
         vec,
         xdr::{
-            AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
+            AddressWithNonce, AuthorizedInvocation, ScAddress, ScVal, SorobanAuthorizationEntry,
+            StringM, VecM,
         },
         Address, Env, Error, RawVal, Symbol,
     };
@@ -91,7 +92,7 @@ mod test_a {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
+            .set_auths(&[SorobanAuthorizationEntry {
                 address_with_nonce: Some(AddressWithNonce {
                     address: a_xdr.clone(),
                     nonce: 0,
@@ -130,7 +131,7 @@ mod test_a {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
+            .set_auths(&[SorobanAuthorizationEntry {
                 address_with_nonce: Some(AddressWithNonce {
                     address: a_xdr.clone(),
                     nonce: 0,
@@ -216,7 +217,10 @@ mod test_b {
     use soroban_sdk::{
         contracterror,
         testutils::{Address as _, MockAuth, MockAuthInvoke},
-        xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM},
+        xdr::{
+            AddressWithNonce, AuthorizedInvocation, ScAddress, ScVal, SorobanAuthorizationEntry,
+            StringM,
+        },
         Address, Env, Error, RawVal, Symbol,
     };
     extern crate std;
@@ -311,7 +315,7 @@ mod test_b {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
+            .set_auths(&[SorobanAuthorizationEntry {
                 address_with_nonce: Some(AddressWithNonce {
                     address: a_xdr.clone(),
                     nonce: 0,
@@ -366,7 +370,7 @@ mod test_b {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
+            .set_auths(&[SorobanAuthorizationEntry {
                 address_with_nonce: Some(AddressWithNonce {
                     address: a_xdr.clone(),
                     nonce: 0,

@@ -7,7 +7,9 @@ mod sign;
 pub use sign::ed25519;
 
 mod mock_auth;
-pub use mock_auth::{MockAuth, MockAuthContract, MockAuthInvoke};
+pub use mock_auth::{
+    AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
+};
 
 use crate::{Env, RawVal, Vec};
 
