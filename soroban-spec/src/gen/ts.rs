@@ -328,7 +328,7 @@ mod test {
     use super::generate;
 
     const EXAMPLE_WASM: &[u8] =
-        include_bytes!("../../../../soroban-abundance-token/target/wasm32-unknown-unknown/release/abundance_token.wasm");
+        include_bytes!("../../../target/wasm32-unknown-unknown/release/test_contract_data.wasm");
 
     #[test]
     fn example() {
