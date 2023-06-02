@@ -1,7 +1,7 @@
 import * as SorobanClient from 'soroban-client';
 import { xdr } from 'soroban-client';
 import { Buffer } from "buffer";
-import { scValToJs } from './convert';
+import { scValStrToJs } from './convert';
 import { invoke, InvokeArgs } from './invoke';
 
 export * from './constants'
