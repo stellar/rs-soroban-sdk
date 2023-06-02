@@ -27,7 +27,9 @@ pub fn type_to_js_xdr(value: &types::Type) -> String {
         ),
         types::Type::Result { value, .. } => type_to_js_xdr(value),
         types::Type::Set { .. } => todo!(),
-        types::Type::Vec { element } => format!("[...i].map({})", type_to_js_xdr(element)),
+        types::Type::Vec { element } => {
+            format!("xdr.ScVal.scvVec(i.map({}))", type_to_js_xdr(element))
+        }
         types::Type::Tuple { elements } => {
             let cases = elements
                 .iter()
