@@ -1200,6 +1200,7 @@ dependencies = [
  "stellar-xdr",
  "syn 2.0.15",
  "thiserror",
+ "walkdir",
  "wasmparser",
 ]
 

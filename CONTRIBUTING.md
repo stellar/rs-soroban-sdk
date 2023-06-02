@@ -64,3 +64,8 @@ Build and test on changes:
 ```
 make watch
 ```
+
+Build the snapshot for testing project generation:
+```
+make build-snapshot
+```

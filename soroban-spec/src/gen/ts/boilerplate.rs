@@ -106,6 +106,7 @@ impl Project {
 #[cfg(test)]
 mod test {
     use assert_fs::TempDir;
+    use walkdir::WalkDir;
 
     use super::*;
 
@@ -130,18 +131,55 @@ mod test {
     fn test_project_dir_location() {
         let temp_dir = TempDir::new().unwrap();
         let _: Project = init(&temp_dir).unwrap();
+        let fixture = PathBuf::from("./fixtures/ts");
+        assert_dirs_equal(temp_dir.to_path_buf(), fixture);
     }
 
     #[test]
-    fn test_project_dir_location_non_temp() {
-        let root = PathBuf::from("./root");
+    fn build_package() {
+        if std::env::var("SNAPSHOT").is_err() {
+            return;
+        }
+        let root = PathBuf::from("./fixtures/ts");
         std::fs::remove_dir_all(&root).unwrap_or_default();
-        std::fs::create_dir(&root).unwrap();
-        let project: Project = init(&root).unwrap();
-        println!(
-            "{}",
-            fs::read_to_string(project.0.join("package.json")).unwrap()
+        std::fs::create_dir_all(&root).unwrap();
+        let _: Project = init(&root).unwrap();
+    }
+
+    fn assert_dirs_equal<P: AsRef<Path>>(dir1: P, dir2: P) {
+        let walker1 = WalkDir::new(&dir1);
+        let walker2 = WalkDir::new(&dir2);
+
+        let mut paths1: Vec<_> = walker1.into_iter().collect::<Result<_, _>>().unwrap();
+        let mut paths2: Vec<_> = walker2.into_iter().collect::<Result<_, _>>().unwrap();
+
+        paths1
+            .sort_unstable_by_key(|entry| entry.path().strip_prefix(&dir1).unwrap().to_path_buf());
+        paths2
+            .sort_unstable_by_key(|entry| entry.path().strip_prefix(&dir2).unwrap().to_path_buf());
+
+        assert_eq!(
+            paths1.len(),
+            paths2.len(),
+            "{paths1:?}.len() != {paths2:?}.len()"
         );
-        std::fs::remove_dir_all(&root).unwrap();
+
+        for (entry1, entry2) in paths1.iter().zip(paths2.iter()) {
+            let path1 = entry1.path();
+            let path2 = entry2.path();
+
+            if path1.is_file() && path2.is_file() {
+                let content1 = fs::read_to_string(path1).unwrap();
+                let content2 = fs::read_to_string(path2).unwrap();
+                pretty_assertions::assert_eq!(content1, content2, "{:?} != {:?}", path1, path2);
+            } else if path1.is_dir() && path2.is_dir() {
+                continue;
+            } else {
+                panic!(
+                    "{:?} is not a file",
+                    if path1.is_file() { path2 } else { path1 }
+                );
+            }
+        }
     }
 }
