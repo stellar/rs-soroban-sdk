@@ -84,10 +84,6 @@ pub fn entry_to_ts(entry: &Entry) -> String {
             inputs,
             outputs,
         } => {
-            let sign_me = doc
-                .contains("@signme")
-                .then_some("sign: true, ")
-                .unwrap_or_default();
             let args = inputs
                 .iter()
                 .map(|i| format!("((i) => {})({})", type_to_js_xdr(&i.value), i.name))
