@@ -83,7 +83,7 @@ impl Project {
             "src/invoke.ts",
         ]
         .into_iter()
-        .map(|file_name| {
+        .try_for_each(|file_name| {
             let file = &root.join(file_name);
             let mut contents = fs::read_to_string(file).unwrap();
             replacement_strings
@@ -93,7 +93,6 @@ impl Project {
                 });
             fs::write(file, contents)
         })
-        .collect::<std::io::Result<()>>()
     }
 
     fn append_index_ts(&self, spec: &[ScSpecEntry]) -> std::io::Result<()> {

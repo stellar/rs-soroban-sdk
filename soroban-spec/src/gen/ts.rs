@@ -157,7 +157,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                 .unwrap_or_default();
             format!(
                 r#"{ts_doc}export async function {name}({input}){return_type} {{
-    let invokeArgs: InvokeArgs = {{{sign_me}method: '{name}', {args}}};
+    let invokeArgs: InvokeArgs = {{method: '{name}', {args}}};
     {output}
     
 }}
@@ -347,15 +347,5 @@ pub fn type_to_ts(value: &types::Type) -> String {
         types::Type::I256 => todo!(),
         types::Type::Timepoint => todo!(),
         types::Type::Duration => todo!(),
-    }
-}
-
-fn find_contents_between_angle_brackets(s: &str) -> Option<&str> {
-    let start = s.find('<')? + 1;
-    let end = s.rfind('>')?;
-    if start < end {
-        Some(&s[start..end])
-    } else {
-        None
     }
 }
