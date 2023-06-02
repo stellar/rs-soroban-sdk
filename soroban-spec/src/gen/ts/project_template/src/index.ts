@@ -24,11 +24,16 @@ export interface Error_ { message: string };
 
 export interface Result<T, E = Error_> {
     unwrap(): T,
-    map<U>(f: (value: T) => U): Result<U, E>,
+    unrap_err(): E,
+    isOk(): boolean,
+    isErr(): boolean,
 };
 
-export class Ok<T> {
+export class Ok<T> implements Result<T> {
     constructor(readonly value: T) { }
+    unrap_err(): Error_ {
+        throw new Error('No error');
+    }
     unwrap(): T {
         return this.value;
     }
@@ -38,18 +43,17 @@ export class Ok<T> {
     }
 
     isErr(): boolean {
-        return !this.isOk
-    }
-
-    map<U>(f: (value: T) => U): Result<U> {
-        return new Ok(f(this.value));
+        return !this.isOk()
     }
 }
 
-export class Err<T> {
-    constructor(readonly message: Error_) { }
+export class Err<T> implements Result<T> {
+    constructor(readonly error: Error_) { }
+    unrap_err(): Error_ {
+        return this.error;
+    }
     unwrap(): never {
-        throw new Error(this.message as unknown as string);
+        throw new Error(this.error.message);
     }
 
     isOk(): boolean {
@@ -57,16 +61,27 @@ export class Err<T> {
     }
 
     isErr(): boolean {
-        return !this.isOk
-    }
-
-    map<U>(_: (value: T) => U): Result<U> {
-        return this as unknown as Result<U>;
+        return !this.isOk()
     }
 }
 
 if (typeof window !== 'undefined') {
     //@ts-ignore Buffer exists
     window.Buffer = window.Buffer || Buffer;
+}
+
+const regex = /ContractError\((\d+)\)/;
+
+function get_error(err: string): Err<Error_> | undefined {
+    const match = err.match(regex);
+    if (!match) {
+        return undefined;
+    }
+    // @ts-ignore
+    let i = parseInt(match[1], 10);
+    if (i < Errors.length) {
+        return new Err(Errors[i]!);
+    }
+    return undefined;
 }
 

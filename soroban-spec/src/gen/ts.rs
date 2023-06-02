@@ -101,10 +101,14 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                     )
                 })
                 .unwrap_or_default();
+            let mut is_result = false;
+            let mut inner_return_type = String::new();
             let return_type = if outputs.is_empty() {
                 "".to_owned()
             } else if outputs.len() == 1 {
-                format!(": Promise<{}>", type_to_ts(&outputs[0]))
+                inner_return_type = type_to_ts(&outputs[0]);
+                is_result = inner_return_type.starts_with("Result<");
+                format!(": Promise<{inner_return_type}>")
             } else {
                 format!(
                     ": Promise<[{}]>>",
@@ -114,24 +118,51 @@ pub fn entry_to_ts(entry: &Entry) -> String {
             let ts_doc = doc_to_ts_doc(doc);
 
             // let output_parser = outputs.get(0).map(scVal_to_type).unwrap_or_default();
-            let output = (!outputs.is_empty())
-                .then(|| {
-                    format!(
-                        r#"
-    return scValToJs(response.xdr) as {}
-"#,
-                        type_to_ts(&outputs[0])
-                    )
-                })
+            if is_result {
+                inner_return_type = inner_return_type
+                    .strip_prefix("Result<")
+                    .unwrap()
+                    .strip_suffix('>')
+                    .unwrap()
+                    .to_owned();
+            }
+
+            let mut output = (!outputs.is_empty())
+                .then(|| format!("scValStrToJs(response.xdr) as {inner_return_type}"))
                 .unwrap_or_default();
+            if is_result {
+                output = format!("new Ok({output})");
+            }
+            let mut output = format!(
+                r#"
+    // @ts-ignore Type does exist
+    const response = await invoke(invokeArgs);
+    return {output};
+    "#
+            );
+            if is_result {
+                output = format!(
+                    r#"
+    try {{
+        {output}
+    }} catch (e) {{
+        //@ts-ignore
+        let err = get_error(e.message);
+        if (err) {{
+            return err;
+        }} else {{
+            throw e;
+        }}
+    }}"#
+                );
+            }
             let args = (!inputs.is_empty())
                 .then(|| format!("args: [{args}], "))
                 .unwrap_or_default();
             format!(
                 r#"{ts_doc}export async function {name}({input}){return_type} {{
     let invokeArgs: InvokeArgs = {{{sign_me}method: '{name}', {args}}};
-    // @ts-ignore Type does exist
-    const response = await invoke(invokeArgs);{output}
+    {output}
     
 }}
 "#
@@ -188,7 +219,7 @@ function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
             if name == "Error" {
                 let cases = cases
                     .iter()
-                    .map(|c| format!("{{error:\"{}\"}}", c.doc))
+                    .map(|c| format!("{{message:\"{}\"}}", c.doc))
                     .join(",\n  ");
                 return format!(
                     r#"const Errors = [ 
@@ -323,17 +354,12 @@ pub fn type_to_ts(value: &types::Type) -> String {
     }
 }
 
-#[cfg(test)]
-mod test {
-    use super::generate;
-
-    const EXAMPLE_WASM: &[u8] =
-        include_bytes!("../../../target/wasm32-unknown-unknown/release/test_contract_data.wasm");
-
-    #[test]
-    fn example() {
-        let entries = crate::read::from_wasm(EXAMPLE_WASM).unwrap();
-        let ts = generate(&entries);
-        println!("{ts}");
+fn find_contents_between_angle_brackets(s: &str) -> Option<&str> {
+    let start = s.find('<')? + 1;
+    let end = s.rfind('>')?;
+    if start < end {
+        Some(&s[start..end])
+    } else {
+        None
     }
 }

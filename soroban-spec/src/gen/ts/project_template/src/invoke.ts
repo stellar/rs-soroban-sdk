@@ -93,7 +93,10 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
 
   const { results } = await Server.simulateTransaction(tx)
   if (!results || results[0] === undefined) {
-    throw new Error("Invalid response from simulateTransaction")
+    if (simulated.error) {
+      throw new Error(simulated.error as unknown as string)
+    }
+    throw new Error(`Invalid response from simulateTransaction:\n{simulated}`)
   }
   return results[0]
 }
