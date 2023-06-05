@@ -129,7 +129,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             _phantom: core::marker::PhantomData<&'a ()>,
             #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
-            set_auths: Option<&'a [#crate_path::xdr::ContractAuth]>,
+            set_auths: Option<&'a [#crate_path::xdr::SorobanAuthorizationEntry]>,
             #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
             mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
@@ -160,7 +160,7 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
             ///
             /// See `soroban_sdk::Env::set_auths` for more details and examples.
             #[cfg(any(test, feature = "testutils"))]
-            pub fn set_auths(&self, auths: &'a [#crate_path::xdr::ContractAuth]) -> Self {
+            pub fn set_auths(&self, auths: &'a [#crate_path::xdr::SorobanAuthorizationEntry]) -> Self {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),

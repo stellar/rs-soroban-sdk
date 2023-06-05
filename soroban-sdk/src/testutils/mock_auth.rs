@@ -1,6 +1,7 @@
 #![cfg(any(test, feature = "testutils"))]
 
-use crate::{contractimpl, xdr, Address, RawVal, Vec};
+use crate::{contractimpl, xdr, Address, Env, RawVal, Symbol, Vec};
+use soroban_env_host::TryFromVal;
 
 #[doc(hidden)]
 pub struct MockAuthContract;
@@ -26,31 +27,37 @@ pub struct MockAuthInvoke<'a> {
     pub sub_invokes: &'a [MockAuthInvoke<'a>],
 }
 
-impl<'a> From<&MockAuth<'a>> for xdr::ContractAuth {
+impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
     fn from(value: &MockAuth) -> Self {
         Self {
-            address_with_nonce: Some(xdr::AddressWithNonce {
+            root_invocation: value.invoke.into(),
+            credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
                 address: value.address.try_into().unwrap(),
                 nonce: value.nonce,
+                signature_args: xdr::ScVec::default(),
             }),
-            root_invocation: value.invoke.into(),
-            signature_args: xdr::ScVec::default(),
         }
     }
 }
 
-impl<'a> From<MockAuth<'a>> for xdr::ContractAuth {
+impl<'a> From<MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
     fn from(value: MockAuth<'a>) -> Self {
         (&value).into()
     }
 }
 
-impl<'a> From<&MockAuthInvoke<'a>> for xdr::AuthorizedInvocation {
+impl<'a> From<&MockAuthInvoke<'a>> for xdr::SorobanAuthorizedInvocation {
     fn from(value: &MockAuthInvoke<'a>) -> Self {
         Self {
-            contract_id: xdr::Hash(value.contract.contract_id().to_array()),
-            function_name: value.fn_name.try_into().unwrap(),
-            args: value.args.clone().try_into().unwrap(),
+            function: xdr::SorobanAuthorizedFunction::ContractFn(
+                xdr::SorobanAuthorizedContractFunction {
+                    contract_address: xdr::ScAddress::Contract(xdr::Hash(
+                        value.contract.contract_id().to_array(),
+                    )),
+                    function_name: value.fn_name.try_into().unwrap(),
+                    args: value.args.clone().try_into().unwrap(),
+                },
+            ),
             sub_invocations: value
                 .sub_invokes
                 .iter()
@@ -62,8 +69,72 @@ impl<'a> From<&MockAuthInvoke<'a>> for xdr::AuthorizedInvocation {
     }
 }
 
-impl<'a> From<MockAuthInvoke<'a>> for xdr::AuthorizedInvocation {
+impl<'a> From<MockAuthInvoke<'a>> for xdr::SorobanAuthorizedInvocation {
     fn from(value: MockAuthInvoke<'a>) -> Self {
         (&value).into()
+    }
+}
+
+/// Describes an authorized invocation tree from the perspective of a single
+/// address.
+///
+/// The authorized invocation tree for a given address is different from a
+/// regular call tree: it only has nodes for the contract calls that called
+/// `require_auth[_for_args]` for that address.
+#[derive(Eq, PartialEq, Debug)]
+pub struct AuthorizedInvocation {
+    /// Function that has called `require_auth`.
+    pub function: AuthorizedFunction,
+    /// Authorized invocations originating from `function`.
+    pub sub_invocations: std::vec::Vec<AuthorizedInvocation>,
+}
+
+/// A single node in `AuthorizedInvocation` tree.
+#[derive(Eq, PartialEq, Debug)]
+pub enum AuthorizedFunction {
+    /// Contract function defined by the contract address, function name and
+    /// `require_auth[_for_args]` arguments (these don't necessarily need to
+    /// match the actual invocation arguments).
+    Contract((Address, Symbol, Vec<RawVal>)),
+    /// Create contract host function with arguments specified as the respective
+    /// XDR.
+    CreateContractHostFn(xdr::CreateContractArgs),
+}
+
+impl AuthorizedFunction {
+    pub fn from_xdr(env: &Env, v: &xdr::SorobanAuthorizedFunction) -> Self {
+        match v {
+            xdr::SorobanAuthorizedFunction::ContractFn(contract_fn) => {
+                let mut args = Vec::new(env);
+                for v in contract_fn.args.iter() {
+                    args.push_back(RawVal::try_from_val(env, v).unwrap());
+                }
+                Self::Contract((
+                    Address::try_from_val(
+                        env,
+                        &xdr::ScVal::Address(contract_fn.contract_address.clone()),
+                    )
+                    .unwrap(),
+                    Symbol::try_from_val(env, &contract_fn.function_name).unwrap(),
+                    args,
+                ))
+            }
+            xdr::SorobanAuthorizedFunction::CreateContractHostFn(create_contract) => {
+                Self::CreateContractHostFn(create_contract.clone())
+            }
+        }
+    }
+}
+
+impl AuthorizedInvocation {
+    pub fn from_xdr(env: &Env, v: &xdr::SorobanAuthorizedInvocation) -> Self {
+        Self {
+            function: AuthorizedFunction::from_xdr(env, &v.function),
+            sub_invocations: v
+                .sub_invocations
+                .iter()
+                .map(|si| AuthorizedInvocation::from_xdr(env, si))
+                .collect(),
+        }
     }
 }
