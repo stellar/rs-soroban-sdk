@@ -1172,7 +1172,7 @@ impl Env {
 
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
-        self.env_impl.with_budget(|b| Budget::new(b))
+        Budget::new(self.env_impl.budget_cloned())
     }
 }
 
