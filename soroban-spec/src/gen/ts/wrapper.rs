@@ -5,8 +5,8 @@ use crate::gen::json::types;
 pub fn type_to_js_xdr(value: &types::Type) -> String {
     match value {
         types::Type::Val => todo!(),
-        types::Type::U64 => "xdr.ScVal.scvU64(xdr.Uint64.fromString(i))".to_string(),
-        types::Type::I64 => "xdr.ScVal.scvI64(xdr.Int64.fromString(i))".to_string(),
+        types::Type::U64 => "xdr.ScVal.scvU64(xdr.Uint64.fromString(i.toString()))".to_string(),
+        types::Type::I64 => "xdr.ScVal.scvI64(xdr.Int64.fromString(i.toString()))".to_string(),
         types::Type::U32 => "xdr.ScVal.scvU32(i)".to_string(),
         types::Type::I32 => "xdr.ScVal.scvI32(i)".to_string(),
         types::Type::Bool => "xdr.ScVal.scvBool(i)".to_string(),
