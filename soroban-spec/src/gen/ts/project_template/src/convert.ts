@@ -26,12 +26,6 @@ export function scvalToBigInt(scval: xdr.ScVal | undefined): BigInt {
             const b = parts.lo();
             return bigIntFromBytes(true, [a.high, a.low, b.high, b.low]);
         }
-        // case xdr.ScValType.scvU256(): {
-        //     return bigIntFromBytes(false, scval.u256());
-        // }
-        // case xdr.ScValType.scvI256(): {
-        //     return bigIntFromBytes(true, scval.i256());
-        // }
         default: {
             throw new Error(`Invalid type for scvalToBigInt: ${scval?.switch().name}`);
         }
@@ -47,6 +41,7 @@ export function scValToJs<T>(val: xdr.ScVal): T {
     switch (val?.switch()) {
         case xdr.ScValType.scvBool():
             return val.b() as T;
+        case xdr.ScValType.scvVoid():
         case undefined: {
             return 0 as T;
         }
@@ -68,7 +63,7 @@ export function scValToJs<T>(val: xdr.ScVal): T {
         case xdr.ScValType.scvString():
             return val.str().toString() as T;
         case xdr.ScValType.scvSymbol():
-            return val.sym().toString as T;
+            return val.sym().toString() as T;
         case xdr.ScValType.scvBytes():
             return val.bytes() as T;
         case xdr.ScValType.scvVec(): {
@@ -87,6 +82,16 @@ export function scValToJs<T>(val: xdr.ScVal): T {
 
             return res as T
         }
+        case xdr.ScValType.scvContractExecutable():
+            return val.exec() as T;
+        case xdr.ScValType.scvLedgerKeyNonce():
+            return val.nonceKey() as T;
+        case xdr.ScValType.scvTimepoint():
+            return val.timepoint() as T;
+        case xdr.ScValType.scvDuration():
+            return val.duration() as T;
+        // TODO: Add this case when merged
+        // case xdr.ScValType.scvError():
         default: {
             throw new Error(`type not implemented yet: ${val?.switch().name}`);
         }
@@ -94,7 +99,6 @@ export function scValToJs<T>(val: xdr.ScVal): T {
 }
 
 type ElementType<T> = T extends Array<infer U> ? U : never;
-
 type KeyType<T> = T extends Map<infer K, any> ? K : never;
 type ValueType<T> = T extends Map<any, infer V> ? V : never;
 
@@ -112,8 +116,6 @@ function bigIntFromBytes(signed: boolean, bytes: Buffer | (string | number | big
     }
     return BigInt(b.toString()) * BigInt(sign);
 }
-
-
 
 export function xdrUint64ToNumber(value: xdr.Uint64): number {
     let b = 0;
