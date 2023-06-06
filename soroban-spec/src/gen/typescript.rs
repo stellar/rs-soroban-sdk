@@ -10,7 +10,7 @@ use stellar_xdr::ScSpecEntry;
 use types::Entry;
 
 use crate::{
-    gen::{json::types::Type, ts::wrapper::type_to_js_xdr},
+    gen::{json::types::Type, typescript::wrapper::type_to_js_xdr},
     read::{from_wasm, FromWasmError},
 };
 

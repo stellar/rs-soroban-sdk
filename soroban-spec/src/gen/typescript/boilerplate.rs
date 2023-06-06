@@ -10,7 +10,8 @@ use stellar_xdr::ScSpecEntry;
 
 use super::generate;
 
-static PROJECT_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/gen/ts/project_template");
+static PROJECT_DIR: Dir<'_> =
+    include_dir!("$CARGO_MANIFEST_DIR/src/gen/typescript/project_template");
 
 pub struct Project(PathBuf);
 

@@ -1,3 +1,3 @@
 pub mod json;
 pub mod rust;
-pub mod ts;
+pub mod typescript;
