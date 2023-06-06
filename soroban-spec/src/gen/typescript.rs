@@ -100,7 +100,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
             let mut is_result = false;
             let mut inner_return_type = String::new();
             let return_type = if outputs.is_empty() {
-                "".to_owned()
+                ": Promise<void>".to_owned()
             } else if outputs.len() == 1 {
                 inner_return_type = type_to_ts(&outputs[0]);
                 is_result = inner_return_type.starts_with("Result<");

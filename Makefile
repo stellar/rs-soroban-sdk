@@ -10,7 +10,7 @@ doc: fmt
 	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 build-snapshot:
-	SNAPSHOT=true cargo test --package soroban-spec --lib -- gen::ts::boilerplate::test::build_package --exact --nocapture
+	cargo test --package soroban-spec --lib -- gen::ts::boilerplate::test::build_package --exact --nocapture
 
 test: fmt build
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs $(CARGO_TEST_SUBCOMMAND)

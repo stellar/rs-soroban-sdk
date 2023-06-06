@@ -136,15 +136,15 @@ mod test {
         assert_dirs_equal(temp_dir.to_path_buf(), fixture);
     }
 
+    #[ignore]
     #[test]
     fn build_package() {
-        if std::env::var("SNAPSHOT").is_err() {
-            return;
-        }
         let root = PathBuf::from("./fixtures/ts");
         std::fs::remove_dir_all(&root).unwrap_or_default();
         std::fs::create_dir_all(&root).unwrap();
+        println!("About to write");
         let _: Project = init(&root).unwrap();
+        println!("wrote");
     }
 
     fn assert_dirs_equal<P: AsRef<Path>>(dir1: P, dir2: P) {
