@@ -24,14 +24,14 @@ export interface Error_ { message: string };
 
 export interface Result<T, E = Error_> {
     unwrap(): T,
-    unrap_err(): E,
+    unwrapErr(): E,
     isOk(): boolean,
     isErr(): boolean,
 };
 
 export class Ok<T> implements Result<T> {
     constructor(readonly value: T) { }
-    unrap_err(): Error_ {
+    unwrapErr(): Error_ {
         throw new Error('No error');
     }
     unwrap(): T {
@@ -49,7 +49,7 @@ export class Ok<T> implements Result<T> {
 
 export class Err<T> implements Result<T> {
     constructor(readonly error: Error_) { }
-    unrap_err(): Error_ {
+    unwrapErr(): Error_ {
         return this.error;
     }
     unwrap(): never {
@@ -72,7 +72,7 @@ if (typeof window !== 'undefined') {
 
 const regex = /ContractError\((\d+)\)/;
 
-function get_error(err: string): Err<Error_> | undefined {
+function getError(err: string): Err<Error_> | undefined {
     const match = err.match(regex);
     if (!match) {
         return undefined;
