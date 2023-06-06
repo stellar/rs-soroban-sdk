@@ -144,7 +144,7 @@ mod test {
         std::fs::create_dir_all(&root).unwrap();
         println!("About to write");
         let _: Project = init(&root).unwrap();
-        println!("wrote");
+        println!("Wrote");
     }
 
     fn assert_dirs_equal<P: AsRef<Path>>(dir1: P, dir2: P) {

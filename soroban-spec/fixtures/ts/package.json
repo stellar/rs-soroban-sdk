@@ -10,8 +10,8 @@
         "build": "tsc"
     },
     "type": "module",
-    "main": "out/index.js",
-    "typings": "out/index.d.ts",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
     "devDependencies": {
         "typescript": "5.0.4"
     }

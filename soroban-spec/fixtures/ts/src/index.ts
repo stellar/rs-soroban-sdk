@@ -85,35 +85,33 @@ function get_error(err: string): Err<Error_> | undefined {
     return undefined;
 }
 
-export async function put({ key, val }: { key: string, val: string }): Promise<void> {
-    let invokeArgs: InvokeArgs = {
-        method: 'put', args: [((i) => xdr.ScVal.scvSymbol(i))(key),
-        ((i) => xdr.ScVal.scvSymbol(i))(val)],
-    };
-
+export async function put({key, val}: {key: string, val: string}): Promise<void> {
+    let invokeArgs: InvokeArgs = {method: 'put', args: [((i) => xdr.ScVal.scvSymbol(i))(key),
+        ((i) => xdr.ScVal.scvSymbol(i))(val)], };
+    
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);
-    return;
-
-
+    return ;
+    
+    
 }
 
-export async function get({ key }: { key: string }): Promise<Option<string>> {
-    let invokeArgs: InvokeArgs = { method: 'get', args: [((i) => xdr.ScVal.scvSymbol(i))(key)], };
-
+export async function get({key}: {key: string}): Promise<Option<string>> {
+    let invokeArgs: InvokeArgs = {method: 'get', args: [((i) => xdr.ScVal.scvSymbol(i))(key)], };
+    
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);
     return scValStrToJs(response.xdr) as Option<string>;
-
-
+    
+    
 }
 
-export async function del({ key }: { key: string }): Promise<void> {
-    let invokeArgs: InvokeArgs = { method: 'del', args: [((i) => xdr.ScVal.scvSymbol(i))(key)], };
-
+export async function del({key}: {key: string}): Promise<void> {
+    let invokeArgs: InvokeArgs = {method: 'del', args: [((i) => xdr.ScVal.scvSymbol(i))(key)], };
+    
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);
-    return;
-
-
+    return ;
+    
+    
 }
