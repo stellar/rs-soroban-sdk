@@ -253,7 +253,7 @@ pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &Spec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const SPEC_XDR_LEN: usize = 1108;
+pub(crate) const SPEC_XDR_LEN: usize = 5900;
 
 impl Spec {
     /// Returns the XDR spec for the Token contract.
