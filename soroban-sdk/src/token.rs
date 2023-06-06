@@ -30,8 +30,8 @@ pub trait Interface {
     ///
     /// # Arguments
     ///
-    /// * `from` - The address holding the balance of funds to be drawn from.
-    /// * `spender` - The address spending the funds held by `from`.
+    /// * `from` - The address holding the balance of tokens to be drawn from.
+    /// * `spender` - The address spending the tokens held by `from`.
     fn allowance(env: Env, from: Address, spender: Address) -> i128;
 
     /// Increase the allowance by `amount` for `spender` to transfer/burn from
@@ -39,10 +39,10 @@ pub trait Interface {
     ///
     /// # Arguments
     ///
-    /// * `from` - The address holding the balance of funds to be drawn from.
-    /// * `spender` - The address being authorized to spend the funds held by
+    /// * `from` - The address holding the balance of tokens to be drawn from.
+    /// * `spender` - The address being authorized to spend the tokens held by
     ///   `from`.
-    /// * `amount` - The additional funds to be made availabe to `spender`.
+    /// * `amount` - The additional tokens to be made availabe to `spender`.
     ///
     /// # Events
     ///
@@ -55,10 +55,10 @@ pub trait Interface {
     ///
     /// # Arguments
     ///
-    /// * `from` - The address holding the balance of funds to be drawn from.
-    /// * `spender` - The address being (de-)authorized to spend the funds held
+    /// * `from` - The address holding the balance of tokens to be drawn from.
+    /// * `spender` - The address being (de-)authorized to spend the tokens held
     ///   by `from`.
-    /// * `amount` - The funds which are no longer availabe for use by
+    /// * `amount` - The tokens which are no longer availabe for use by
     ///   `spender`. If `amount` is greater than the current allowance, set the
     ///   allowance to 0.
     ///
@@ -97,10 +97,10 @@ pub trait Interface {
     ///
     /// # Arguments
     ///
-    /// * `from` - The address holding the balance of funds which will be
+    /// * `from` - The address holding the balance of tokens which will be
     ///   withdrawn from.
-    /// * `to` - The address which will receive the transferred funds.
-    /// * `amount` - The amount of funds to be transferred.
+    /// * `to` - The address which will receive the transferred tokens.
+    /// * `amount` - The amount of tokens to be transferred.
     ///
     /// # Events
     ///
@@ -115,10 +115,10 @@ pub trait Interface {
     ///
     /// * `spender` - The address authorizing the transfer, and having its
     ///   allowance consumed during the transfer.
-    /// * `from` - The address holding the balance of funds which will be
+    /// * `from` - The address holding the balance of tokens which will be
     ///   withdrawn from.
-    /// * `to` - The address which will receive the transferred funds.
-    /// * `amount` - The amount of funds to be transferred.
+    /// * `to` - The address which will receive the transferred tokens.
+    /// * `amount` - The amount of tokens to be transferred.
     ///
     /// # Events
     ///
@@ -130,9 +130,9 @@ pub trait Interface {
     ///
     /// # Arguments
     ///
-    /// * `from` - The address holding the balance of funds which will be
+    /// * `from` - The address holding the balance of tokens which will be
     ///   burned from.
-    /// * `amount` - The amount of funds to be burned.
+    /// * `amount` - The amount of tokens to be burned.
     ///
     /// # Events
     ///
@@ -146,9 +146,9 @@ pub trait Interface {
     ///
     /// * `spender` - The address authorizing the burn, and having its allowance
     ///   consumed during the burn.
-    /// * `from` - The address holding the balance of funds which will be
+    /// * `from` - The address holding the balance of tokens which will be
     ///   burned from.
-    /// * `amount` - The amount of funds to be burned.
+    /// * `amount` - The amount of tokens to be burned.
     ///
     /// # Events
     ///
@@ -174,8 +174,8 @@ pub trait Interface {
     ///
     /// # Arguments
     ///
-    /// * `to` - The address which will receive the minted funds.
-    /// * `amount` - The amount of funds to be minted.
+    /// * `to` - The address which will receive the minted tokens.
+    /// * `amount` - The amount of tokens to be minted.
     ///
     /// # Events
     ///
@@ -189,8 +189,8 @@ pub trait Interface {
     /// # Arguments
     ///
     /// * `from` - The address holding the balance from which the clawback will
-    ///   take funds.
-    /// * `amount` - The amount of funds to be clawed back.
+    ///   take tokens.
+    /// * `amount` - The amount of tokens to be clawed back.
     ///
     /// # Events
     ///
