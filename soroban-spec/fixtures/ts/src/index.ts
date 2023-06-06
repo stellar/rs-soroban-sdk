@@ -92,8 +92,6 @@ export async function put({key, val}: {key: string, val: string}): Promise<void>
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);
     return ;
-    
-    
 }
 
 export async function get({key}: {key: string}): Promise<Option<string>> {
@@ -102,8 +100,6 @@ export async function get({key}: {key: string}): Promise<Option<string>> {
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);
     return scValStrToJs(response.xdr) as Option<string>;
-    
-    
 }
 
 export async function del({key}: {key: string}): Promise<void> {
@@ -112,6 +108,4 @@ export async function del({key}: {key: string}): Promise<void> {
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);
     return ;
-    
-    
 }

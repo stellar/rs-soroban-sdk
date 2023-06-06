@@ -133,8 +133,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                 r#"
     // @ts-ignore Type does exist
     const response = await invoke(invokeArgs);
-    return {output};
-    "#
+    return {output};"#
             );
             if is_result {
                 output = format!(
@@ -159,7 +158,6 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                 r#"{ts_doc}export async function {name}({input}){return_type} {{
     let invokeArgs: InvokeArgs = {{method: '{name}', {args}}};
     {output}
-    
 }}
 "#
             )
