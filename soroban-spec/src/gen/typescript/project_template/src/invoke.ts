@@ -4,11 +4,9 @@ import {
   signTransaction,
 } from "@stellar/freighter-api";
 import * as SorobanClient from 'soroban-client'
-import { Buffer } from "buffer";
 import type { Account, Memo, MemoType, Operation, Transaction } from 'soroban-client';
 import { NETWORK_PASSPHRASE, CONTRACT_ID } from './constants'
 import { Server } from './server'
-
 
 export type Tx = Transaction<Memo<MemoType>, Operation[]>
 
@@ -83,7 +81,12 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
       )
     }
 
-    const raw = await invokeRpc(tx, simulated);
+    // Simulate the tx to discover the storage footprint, and update the
+    // tx to include it. If you already know the storage footprint you
+    // can use `addFootprint` to add it yourself, skipping this step.
+    tx = SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulated) as Tx
+
+    const raw = await signAndSendTx(tx);
     return {
       ...raw,
       xdr: raw.resultXdr,
@@ -100,19 +103,20 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
   return results[0]
 }
 
-
-async function invokeRpc(tx: Tx, simulation: SorobanClient.SorobanRpc.SimulateTransactionResponse): Promise<TxResponse> {
-  // Simulate the tx to discover the storage footprint, and update the
-  // tx to include it. If you already know the storage footprint you
-  // can use `addFootprint` to add it yourself, skipping this step.
-  tx = SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulation) as Tx
-
-  // sign with Freighter
+/**
+ * Sign a transaction with Freighter and send it to the Soroban network.
+ *
+ * Wait `secondsToWait` seconds for the transaction to complete (default: 10).
+ *
+ * If you need to construct a transaction yourself rather than using `invoke`
+ * or one of the exported contract methods, you may want to use this function
+ * for its timeout/`secondsToWait` logic, rather than implementing your own.
+ */
+export async function signAndSendTx(tx: Tx, secondsToWait = 10): Promise<TxResponse> {
   const signed = await signTransaction(tx.toXDR(), {
     networkPassphrase: NETWORK_PASSPHRASE,
   })
 
-  // re-assemble with signed tx
   tx = SorobanClient.TransactionBuilder.fromXDR(
     signed,
     NETWORK_PASSPHRASE
@@ -121,7 +125,6 @@ async function invokeRpc(tx: Tx, simulation: SorobanClient.SorobanRpc.SimulateTr
   const sendTransactionResponse = await Server.sendTransaction(tx);
   let getTransactionResponse = await Server.getTransaction(sendTransactionResponse.hash);
 
-  const secondsToWait = 10
   const waitUntil = new Date((Date.now() + secondsToWait * 1000)).valueOf()
 
   let waitTime = 1000;
