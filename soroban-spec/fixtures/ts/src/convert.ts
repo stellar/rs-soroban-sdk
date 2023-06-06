@@ -68,12 +68,12 @@ export function scValToJs<T>(val: xdr.ScVal): T {
         case xdr.ScValType.scvString():
             return val.str().toString() as T;
         case xdr.ScValType.scvSymbol():
-            return val.sym().toString as T;
+            return val.sym().toString() as T;
         case xdr.ScValType.scvBytes():
             return val.bytes() as T;
         case xdr.ScValType.scvVec(): {
             type Element = ElementType<T>;
-            return val.vec().map(scValToJs<Element>) as T
+            return val.vec().map(scValToJs<Element>) as T;
         }
         case xdr.ScValType.scvMap(): {
             type Key = KeyType<T>;
@@ -85,7 +85,7 @@ export function scValToJs<T>(val: xdr.ScVal): T {
                 res.set(key as Key, value as Value);
             });
 
-            return res as T
+            return res as T;
         }
         default: {
             throw new Error(`type not implemented yet: ${val?.switch().name}`);
