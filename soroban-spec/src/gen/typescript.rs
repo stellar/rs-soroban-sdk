@@ -143,7 +143,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
         {output}
     }} catch (e) {{
         //@ts-ignore
-        let err = get_error(e.message);
+        let err = getError(e.message);
         if (err) {{
             return err;
         }} else {{
