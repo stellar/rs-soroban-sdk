@@ -81,19 +81,18 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
       )
     }
 
-    // Simulate the tx to discover the storage footprint, and update the
-    // tx to include it. If you already know the storage footprint you
-    // can use `addFootprint` to add it yourself, skipping this step.
-    tx = SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulated) as Tx
+    tx = await signTx(
+      SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulated) as Tx
+    );
 
-    const raw = await signAndSendTx(tx);
+    const raw = await sendTx(tx);
     return {
       ...raw,
       xdr: raw.resultXdr,
     };
   }
 
-  const { results } = await Server.simulateTransaction(tx)
+  const { results } = simulated
   if (!results || results[0] === undefined) {
     if (simulated.error) {
       throw new Error(simulated.error as unknown as string)
@@ -104,24 +103,35 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
 }
 
 /**
- * Sign a transaction with Freighter and send it to the Soroban network.
- *
- * Wait `secondsToWait` seconds for the transaction to complete (default: 10).
+ * Sign a transaction with Freighter and return the fully-reconstructed
+ * transaction ready to send with {@link sendTx}.
  *
  * If you need to construct a transaction yourself rather than using `invoke`
  * or one of the exported contract methods, you may want to use this function
- * for its timeout/`secondsToWait` logic, rather than implementing your own.
+ * to sign the transaction with Freighter.
  */
-export async function signAndSendTx(tx: Tx, secondsToWait = 10): Promise<TxResponse> {
+export async function signTx(tx: Tx): Promise<Tx> {
   const signed = await signTransaction(tx.toXDR(), {
     networkPassphrase: NETWORK_PASSPHRASE,
   })
 
-  tx = SorobanClient.TransactionBuilder.fromXDR(
+  return SorobanClient.TransactionBuilder.fromXDR(
     signed,
     NETWORK_PASSPHRASE
   ) as Tx
+}
 
+/**
+ * Send a transaction to the Soroban network.
+ *
+ * Wait `secondsToWait` seconds for the transaction to complete (default: 10).
+ *
+ * If you need to construct or sign a transaction yourself rather than using
+ * `invoke` or one of the exported contract methods, you may want to use this
+ * function for its timeout/`secondsToWait` logic, rather than implementing
+ * your own.
+ */
+export async function sendTx(tx: Tx, secondsToWait = 10): Promise<TxResponse> {
   const sendTransactionResponse = await Server.sendTransaction(tx);
   let getTransactionResponse = await Server.getTransaction(sendTransactionResponse.hash);
 
