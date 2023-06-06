@@ -36,6 +36,8 @@ Install binaryen (for `wasm-opt`):
 brew install binaryen
 ```
 
+If any changes to typescript bindings. You need to rebuild the snapshot example. `make build-snapshot`
+
 ## Command Cheatsheet
 
 See the `Makefile` for all the common commands you might need.
