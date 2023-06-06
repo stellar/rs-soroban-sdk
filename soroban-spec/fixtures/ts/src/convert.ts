@@ -1,5 +1,6 @@
 import { Address, xdr } from 'soroban-client';
 import { Buffer } from "buffer";
+import { bufToBigint } from 'bigint-conversion';
 
 export function scvalToBigInt(scval: xdr.ScVal | undefined): BigInt {
     switch (scval?.switch()) {
@@ -8,23 +9,23 @@ export function scvalToBigInt(scval: xdr.ScVal | undefined): BigInt {
         }
         case xdr.ScValType.scvU64(): {
             const { high, low } = scval.u64();
-            return bigIntFromBytes(false, [high, low]);
+            return bufToBigint(new Uint32Array([high, low]));
         }
         case xdr.ScValType.scvI64(): {
             const { high, low } = scval.i64();
-            return bigIntFromBytes(true, [high, low]);
+            return bufToBigint(new Int32Array([high, low]));
         }
         case xdr.ScValType.scvU128(): {
             const parts = scval.u128();
             const a = parts.hi();
             const b = parts.lo();
-            return bigIntFromBytes(false, [a.high, a.low, b.high, b.low]);
+            return bufToBigint(new Uint32Array([a.high, a.low, b.high, b.low]));
         }
         case xdr.ScValType.scvI128(): {
             const parts = scval.i128();
             const a = parts.hi();
             const b = parts.lo();
-            return bigIntFromBytes(true, [a.high, a.low, b.high, b.low]);
+            return bufToBigint(new Int32Array([a.high, a.low, b.high, b.low]));
         }
         default: {
             throw new Error(`Invalid type for scvalToBigInt: ${scval?.switch().name}`);
@@ -106,19 +107,3 @@ export function scValToJs<T>(val: xdr.ScVal): T {
 type ElementType<T> = T extends Array<infer U> ? U : never;
 type KeyType<T> = T extends Map<infer K, any> ? K : never;
 type ValueType<T> = T extends Map<any, infer V> ? V : never;
-
-function bigIntFromBytes(signed: boolean, bytes: Buffer | (string | number | bigint)[]): BigInt {
-    let sign = 1;
-    if (signed && bytes[0] === 0x80) {
-        // top bit is set, negative number.
-        sign = -1;
-        bytes[0] &= 0x7f;
-    }
-    let b = BigInt(0);
-    for (let byte of bytes) {
-        b <<= BigInt(8);
-        b |= BigInt(byte);
-    }
-    return BigInt(b.toString()) * BigInt(sign);
-}
-

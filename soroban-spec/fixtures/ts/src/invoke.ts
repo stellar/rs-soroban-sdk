@@ -45,12 +45,11 @@ export class NotImplementedError extends Error { }
 /**
  * Invoke a method on the contract-data-example contract.
  *
- * Uses Freighter to determine the current user and sign the transaction.
+ * Uses Freighter to determine the current user and if necessary sign the transaction.
  *
  * @param {string} obj.method - The method to invoke.
  * @param {any[]} obj.args - The arguments to pass to the method.
- * @param {boolean} obj.sign - Whether to sign the transaction with Freighter.
- * @returns The transaction response, or the simulation result if `sign` is false.
+ * @returns The transaction response, or the simulation result if signing isn't required.
  */
 export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Promise<(TxResponse & { xdr: string }) | Simulation> {
   const account = await getAccount()
