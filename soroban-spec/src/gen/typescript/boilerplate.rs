@@ -106,7 +106,7 @@ impl Project {
 
 #[cfg(test)]
 mod test {
-    use assert_fs::TempDir;
+    use tempdir::TempDir;
     use walkdir::WalkDir;
 
     use super::*;
@@ -130,10 +130,10 @@ mod test {
 
     #[test]
     fn test_project_dir_location() {
-        let temp_dir = TempDir::new().unwrap();
+        let temp_dir = TempDir::new("fixture").unwrap();
         let _: Project = init(&temp_dir).unwrap();
         let fixture = PathBuf::from("./fixtures/ts");
-        assert_dirs_equal(temp_dir.to_path_buf(), fixture);
+        assert_dirs_equal(temp_dir.into_path(), fixture);
     }
 
     #[ignore]
