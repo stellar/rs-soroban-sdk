@@ -3,17 +3,17 @@
     "name": "INSERT_CONTRACT_NAME_HERE",
     "dependencies": {
         "@stellar/freighter-api": "1.4.0",
+        "bigint-conversion": "2.4.1",
         "buffer": "6.0.3",
-        "soroban-client": "0.7.2",
-        "bigint-conversion": "2.4.1"
+        "soroban-client": "0.7.2"
     },
     "scripts": {
         "build": "tsc"
     },
-    "type": "module",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "devDependencies": {
+        "@types/node": "^20.2.5",
         "typescript": "5.0.4"
     }
 }
