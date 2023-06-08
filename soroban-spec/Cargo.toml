@@ -29,6 +29,6 @@ include_dir = { version = "0.7.3", features = ["glob"] }
 heck = "0.4.1"
 
 [dev-dependencies]
-tempdir = "0.3"
+temp-dir = "0.1.11"
 pretty_assertions = "1.2.1"
 walkdir = "2.3.3"
