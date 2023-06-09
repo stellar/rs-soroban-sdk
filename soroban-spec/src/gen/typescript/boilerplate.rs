@@ -142,9 +142,8 @@ mod test {
         let root = PathBuf::from("./fixtures/ts");
         std::fs::remove_dir_all(&root).unwrap_or_default();
         std::fs::create_dir_all(&root).unwrap();
-        println!("About to write");
         let _: Project = init(&root).unwrap();
-        println!("Wrote");
+        println!("Updated Snapshot!");
     }
 
     fn assert_dirs_equal<P: AsRef<Path>>(dir1: P, dir2: P) {

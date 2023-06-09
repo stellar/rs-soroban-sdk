@@ -47,9 +47,11 @@ export class NotImplementedError extends Error { }
  *
  * @param {string} obj.method - The method to invoke.
  * @param {any[]} obj.args - The arguments to pass to the method.
+ * @param {boolean} obj.signAndSend - Whether to sign and send the transaction, or just simulate it. Unless the method requires authentication.
+ * @param {number} obj.fee - The fee to pay for the transaction.
  * @returns The transaction response, or the simulation result if signing isn't required.
  */
-export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Promise<(TxResponse & { xdr: string }) | Simulation> {
+export async function invoke({ method, args = [], fee = 100, signAndSend = false }: InvokeArgs): Promise<(TxResponse & { xdr: string }) | Simulation> {
   const account = await getAccount()
 
   const contract = new SorobanClient.Contract(CONTRACT_ID)
@@ -63,11 +65,9 @@ export async function invoke({ method, args = [], fee = 100 }: InvokeArgs): Prom
     .build()
 
   const simulated = await Server.simulateTransaction(tx)
-
   const auths = simulated.results?.[0]?.auth
-
   // is it possible for `auths` to be present but empty? Probably not, but let's be safe.
-  if (auths?.length > 0) {
+  if (signAndSend) {
     if (auths.length > 1) {
       throw new NotImplementedError("Multiple auths not yet supported")
     }
