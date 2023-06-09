@@ -1,12 +1,12 @@
 import * as SorobanClient from 'soroban-client';
 import { xdr } from 'soroban-client';
 import { Buffer } from "buffer";
-import { scValStrToJs } from './convert';
-import { invoke, InvokeArgs } from './invoke';
+import { scValStrToJs } from './convert.js';
+import { invoke, InvokeArgs } from './invoke.js';
 
-export * from './constants'
-export * from './server'
-export * from './invoke'
+export * from './constants.js'
+export * from './server.js'
+export * from './invoke.js'
 
 export type u32 = number;
 export type i32 = number;

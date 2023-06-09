@@ -1,12 +1,14 @@
-import {
+import freighter from "@stellar/freighter-api";
+// working around ESM compatibility issues
+const {
   isConnected,
   getPublicKey,
   signTransaction,
-} from "@stellar/freighter-api";
+} = freighter;
 import * as SorobanClient from 'soroban-client'
 import type { Account, Memo, MemoType, Operation, Transaction } from 'soroban-client';
-import { NETWORK_PASSPHRASE, CONTRACT_ID } from './constants'
-import { Server } from './server'
+import { NETWORK_PASSPHRASE, CONTRACT_ID } from './constants.js'
+import { Server } from './server.js'
 
 export type Tx = Transaction<Memo<MemoType>, Operation[]>
 
