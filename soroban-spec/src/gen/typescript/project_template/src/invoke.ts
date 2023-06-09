@@ -17,7 +17,7 @@ export type TxResponse = SorobanClient.SorobanRpc.GetTransactionResponse;
 export type InvokeArgs = {
   method: string
   args?: any[]
-  sign?: boolean
+  signAndSend?: boolean
   fee?: number
 }
 

@@ -77,6 +77,9 @@ function getError(err: string): Err<Error_> | undefined {
     if (!match) {
         return undefined;
     }
+    if (Errors == undefined) {
+        return undefined;
+    }
     // @ts-ignore
     let i = parseInt(match[1], 10);
     if (i < Errors.length) {
