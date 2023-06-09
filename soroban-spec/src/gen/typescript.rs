@@ -91,7 +91,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
             let input = (!inputs.is_empty())
                 .then(|| {
                     format!(
-                        "{{{}}}: {{{}}}",
+                        "{{{}}}: {{{}}},",
                         inputs.iter().map(func_input_to_arg_name).join(", "),
                         inputs.iter().map(func_input_to_ts).join(", ")
                     )
@@ -155,7 +155,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                 .then(|| format!("args: [{args}], "))
                 .unwrap_or_default();
             format!(
-                r#"{ts_doc}export async function {name}({input}, {{signAndSend = false, fee = 100}}: {{signAndSend: boolean, fee: number}}){return_type} {{
+                r#"{ts_doc}export async function {name}({input} {{signAndSend = false, fee = 100}}: {{signAndSend: boolean, fee: number}}){return_type} {{
     let invokeArgs: InvokeArgs = {{
         signAndSend,
         fee,
