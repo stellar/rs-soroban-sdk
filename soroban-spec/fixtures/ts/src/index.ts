@@ -1,12 +1,14 @@
 import * as SorobanClient from 'soroban-client';
 import { xdr } from 'soroban-client';
 import { Buffer } from "buffer";
-import { scValStrToJs } from './convert';
-import { invoke, InvokeArgs } from './invoke';
+import { scValStrToJs, scValToJs, addressToScVal } from './convert.js';
+import { invoke, InvokeArgs } from './invoke.js';
 
-export * from './constants'
-export * from './server'
-export * from './invoke'
+declare const Errors: { message: string }[]
+
+export * from './constants.js'
+export * from './server.js'
+export * from './invoke.js'
 
 export type u32 = number;
 export type i32 = number;
@@ -88,7 +90,7 @@ function getError(err: string): Err<Error_> | undefined {
     return undefined;
 }
 
-export async function put({key, val}: {key: string, val: string}, {signAndSend = false, fee = 100}: {signAndSend: boolean, fee: number}): Promise<void> {
+export async function put({key, val}: {key: string, val: string}, {signAndSend, fee}?: {signAndSend: boolean, fee: number} = {signAndSend: false, fee: 100}): Promise<void> {
     let invokeArgs: InvokeArgs = {
         signAndSend,
         fee,
@@ -102,7 +104,7 @@ export async function put({key, val}: {key: string, val: string}, {signAndSend =
     return ;
 }
 
-export async function get({key}: {key: string}, {signAndSend = false, fee = 100}: {signAndSend: boolean, fee: number}): Promise<Option<string>> {
+export async function get({key}: {key: string}, {signAndSend, fee}?: {signAndSend: boolean, fee: number} = {signAndSend: false, fee: 100}): Promise<Option<string>> {
     let invokeArgs: InvokeArgs = {
         signAndSend,
         fee,
@@ -115,7 +117,7 @@ export async function get({key}: {key: string}, {signAndSend = false, fee = 100}
     return scValStrToJs(response.xdr) as Option<string>;
 }
 
-export async function del({key}: {key: string}, {signAndSend = false, fee = 100}: {signAndSend: boolean, fee: number}): Promise<void> {
+export async function del({key}: {key: string}, {signAndSend, fee}?: {signAndSend: boolean, fee: number} = {signAndSend: false, fee: 100}): Promise<void> {
     let invokeArgs: InvokeArgs = {
         signAndSend,
         fee,

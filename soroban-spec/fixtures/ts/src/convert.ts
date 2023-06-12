@@ -1,4 +1,4 @@
-import { Address, xdr } from 'soroban-client';
+import { Address, Contract, xdr } from 'soroban-client';
 import { Buffer } from "buffer";
 import { bufToBigint } from 'bigint-conversion';
 
@@ -80,13 +80,30 @@ export function scValToJs<T>(val: xdr.ScVal): T {
         case xdr.ScValType.scvMap(): {
             type Key = KeyType<T>;
             type Value = ValueType<T>;
-            let res = new Map<Key, Value>();
+            let res: any = {};
             val.map().forEach((e) => {
                 let key = scValToJs<Key>(e.key());
-                let value = scValToJs<Value>(e.val());
-                res.set(key as Key, value as Value);
+                let value;
+                let v: xdr.ScVal = e.val();
+                // For now we assume second level maps are real maps. Not perfect but better.
+                switch (v?.switch()) {
+                    case xdr.ScValType.scvMap(): {
+                        let inner_map = new Map() as Map<any, any>;
+                        v.map().forEach((e) => {
+                            let key = scValToJs<Key>(e.key());
+                            let value = scValToJs<Value>(e.val());
+                            inner_map.set(key, value);
+                        });
+                        value = inner_map;
+                        break;
+                    }
+                    default: {
+                        value = scValToJs<Value>(e.val());
+                    }
+                }
+                //@ts-ignore
+                res[key as Key] = value as Value;
             });
-
             return res as unknown as T
         }
         case xdr.ScValType.scvContractExecutable():
@@ -108,3 +125,8 @@ export function scValToJs<T>(val: xdr.ScVal): T {
 type ElementType<T> = T extends Array<infer U> ? U : never;
 type KeyType<T> = T extends Map<infer K, any> ? K : never;
 type ValueType<T> = T extends Map<any, infer V> ? V : never;
+
+export function addressToScVal(addr: string): xdr.ScVal {
+    let addrObj = Address.fromString(addr);
+    return addrObj.toScVal();
+}

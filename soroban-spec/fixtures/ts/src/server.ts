@@ -1,5 +1,5 @@
 import * as SorobanClient from 'soroban-client'
-import { RPC_URL } from './constants'
+import { RPC_URL } from './constants.js'
 
 /**
  * SorobanClient.Server instance, initialized using {@link RPC_URL} used to

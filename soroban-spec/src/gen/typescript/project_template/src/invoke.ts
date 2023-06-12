@@ -79,7 +79,7 @@ export async function invoke({ method, args = [], fee = 100, signAndSend = false
     if (auth.addressWithNonce() !== undefined) {
       throw new NotImplementedError(
         `This transaction needs to be signed by ${auth.addressWithNonce()
-        }; how do we do that?`
+        }; Not yet supported`
       )
     }
 

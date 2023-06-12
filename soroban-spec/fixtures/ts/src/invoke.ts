@@ -1,12 +1,14 @@
-import {
+import freighter from "@stellar/freighter-api";
+// working around ESM compatibility issues
+const {
   isConnected,
   getPublicKey,
   signTransaction,
-} from "@stellar/freighter-api";
+} = freighter;
 import * as SorobanClient from 'soroban-client'
 import type { Account, Memo, MemoType, Operation, Transaction } from 'soroban-client';
-import { NETWORK_PASSPHRASE, CONTRACT_ID } from './constants'
-import { Server } from './server'
+import { NETWORK_PASSPHRASE, CONTRACT_ID } from './constants.js'
+import { Server } from './server.js'
 
 export type Tx = Transaction<Memo<MemoType>, Operation[]>
 
@@ -77,7 +79,7 @@ export async function invoke({ method, args = [], fee = 100, signAndSend = false
     if (auth.addressWithNonce() !== undefined) {
       throw new NotImplementedError(
         `This transaction needs to be signed by ${auth.addressWithNonce()
-        }; how do we do that?`
+        }; Not yet supported`
       )
     }
 
