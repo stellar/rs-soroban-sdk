@@ -128,11 +128,5 @@ type ValueType<T> = T extends Map<any, infer V> ? V : never;
 
 export function addressToScVal(addr: string): xdr.ScVal {
     let addrObj = Address.fromString(addr);
-    let addrStr = addrObj.toString();
-    if (addrStr.startsWith('C')) {
-        return Address.fromString(
-            addrObj.toScAddress().toXDR('hex')
-        ).toScVal();
-    }
     return addrObj.toScVal();
 }
