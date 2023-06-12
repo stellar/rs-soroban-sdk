@@ -1,7 +1,7 @@
 import * as SorobanClient from 'soroban-client';
 import { xdr } from 'soroban-client';
 import { Buffer } from "buffer";
-import { scValStrToJs, scValToJs } from './convert.js';
+import { scValStrToJs, scValToJs, addressToScVal } from './convert.js';
 import { invoke, InvokeArgs } from './invoke.js';
 
 declare const Errors: { message: string }[]

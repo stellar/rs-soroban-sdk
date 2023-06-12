@@ -175,7 +175,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
             let docs = doc_to_ts_doc(doc);
             let arg_name = name.to_lower_camel_case();
             let encoded_fields = js_to_xdr_fields(&arg_name, fields);
-            let decoded_fields = js_from_xdr_fields(&arg_name, fields);
+            let decoded_fields = js_from_xdr_fields(fields);
             let fields = fields.iter().map(field_to_ts).join("\n  ");
             let void = type_to_js_xdr(&Type::Void);
             format!(
@@ -371,7 +371,7 @@ pub fn type_to_ts(value: &types::Type) -> String {
     }
 }
 
-fn js_from_xdr_fields(struct_name: &str, f: &[StructField]) -> String {
+fn js_from_xdr_fields(f: &[StructField]) -> String {
     f.iter()
         .map(|StructField { name, value, .. }| {
             format!(

@@ -1,4 +1,4 @@
-import { Address, xdr } from 'soroban-client';
+import { Address, Contract, xdr } from 'soroban-client';
 import { Buffer } from "buffer";
 import { bufToBigint } from 'bigint-conversion';
 
@@ -125,3 +125,12 @@ export function scValToJs<T>(val: xdr.ScVal): T {
 type ElementType<T> = T extends Array<infer U> ? U : never;
 type KeyType<T> = T extends Map<infer K, any> ? K : never;
 type ValueType<T> = T extends Map<any, infer V> ? V : never;
+
+export function addressToScVal(addr: string): xdr.ScVal {
+    let addrObj = Address.fromString(addr);
+    let addrStr = addrObj.toString();
+    if (addrStr.startsWith('C')) {
+        return new Contract(addrStr).address().toScVal();
+    }
+    return addrObj.toScVal();
+}
