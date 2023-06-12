@@ -67,41 +67,44 @@ export async function invoke({ method, args = [], fee = 100, signAndSend = false
     .build()
 
   const simulated = await Server.simulateTransaction(tx)
-  const auths = simulated.results?.[0]?.auth
+
+  if (!signAndSend) {
+    const { results } = simulated
+    if (!results || results[0] === undefined) {
+      if (simulated.error) {
+        throw new Error(simulated.error as unknown as string)
+      }
+      throw new Error(`Invalid response from simulateTransaction:\n{simulated}`)
+    }
+    return results[0]
+  }
+
   // is it possible for `auths` to be present but empty? Probably not, but let's be safe.
-  if (signAndSend) {
-    if (auths.length > 1) {
-      throw new NotImplementedError("Multiple auths not yet supported")
-    }
+  const auths = simulated.results?.[0]?.auth
 
-    const auth = SorobanClient.xdr.ContractAuth.fromXDR(auths[0], 'base64')
-
-    if (auth.addressWithNonce() !== undefined) {
-      throw new NotImplementedError(
-        `This transaction needs to be signed by ${auth.addressWithNonce()
-        }; Not yet supported`
-      )
-    }
-
-    tx = await signTx(
-      SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulated) as Tx
-    );
-
-    const raw = await sendTx(tx);
-    return {
-      ...raw,
-      xdr: raw.resultXdr,
-    };
+  if (auths.length > 1) {
+    throw new NotImplementedError("Multiple auths not yet supported")
   }
 
-  const { results } = simulated
-  if (!results || results[0] === undefined) {
-    if (simulated.error) {
-      throw new Error(simulated.error as unknown as string)
-    }
-    throw new Error(`Invalid response from simulateTransaction:\n{simulated}`)
+  const auth = SorobanClient.xdr.ContractAuth.fromXDR(auths[0], 'base64')
+
+  if (auth.addressWithNonce() !== undefined) {
+    throw new NotImplementedError(
+      `This transaction needs to be signed by ${auth.addressWithNonce()
+      }; Not yet supported`
+    )
   }
-  return results[0]
+
+  tx = await signTx(
+    SorobanClient.assembleTransaction(tx, NETWORK_PASSPHRASE, simulated) as Tx
+  );
+
+  const raw = await sendTx(tx);
+  return {
+    ...raw,
+    xdr: raw.resultXdr,
+  };
+
 }
 
 /**

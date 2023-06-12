@@ -90,7 +90,7 @@ function getError(err: string): Err<Error_> | undefined {
     return undefined;
 }
 
-export async function put({key, val}: {key: string, val: string}, {signAndSend, fee}?: {signAndSend: boolean, fee: number} = {signAndSend: false, fee: 100}): Promise<void> {
+export async function put({key, val}: {key: string, val: string}, {signAndSend, fee}: {signAndSend?: boolean, fee?: number} = {signAndSend: false, fee: 100}): Promise<void> {
     let invokeArgs: InvokeArgs = {
         signAndSend,
         fee,
@@ -104,7 +104,7 @@ export async function put({key, val}: {key: string, val: string}, {signAndSend, 
     return ;
 }
 
-export async function get({key}: {key: string}, {signAndSend, fee}?: {signAndSend: boolean, fee: number} = {signAndSend: false, fee: 100}): Promise<Option<string>> {
+export async function get({key}: {key: string}, {signAndSend, fee}: {signAndSend?: boolean, fee?: number} = {signAndSend: false, fee: 100}): Promise<Option<string>> {
     let invokeArgs: InvokeArgs = {
         signAndSend,
         fee,
@@ -117,7 +117,7 @@ export async function get({key}: {key: string}, {signAndSend, fee}?: {signAndSen
     return scValStrToJs(response.xdr) as Option<string>;
 }
 
-export async function del({key}: {key: string}, {signAndSend, fee}?: {signAndSend: boolean, fee: number} = {signAndSend: false, fee: 100}): Promise<void> {
+export async function del({key}: {key: string}, {signAndSend, fee}: {signAndSend?: boolean, fee?: number} = {signAndSend: false, fee: 100}): Promise<void> {
     let invokeArgs: InvokeArgs = {
         signAndSend,
         fee,
