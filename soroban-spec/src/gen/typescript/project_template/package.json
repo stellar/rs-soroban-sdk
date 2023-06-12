@@ -1,0 +1,21 @@
+{
+    "version": "0.0.0",
+    "name": "INSERT_CONTRACT_NAME_HERE",
+    "dependencies": {
+        "@stellar/freighter-api": "1.4.0",
+        "buffer": "6.0.3",
+        "soroban-client": "0.8.0",
+        "bigint-conversion": "2.4.1"
+    },
+    "scripts": {
+        "build": "node ./scripts/build.mjs"
+    },
+    "exports": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "typings": "dist/types/index.d.ts",
+    "devDependencies": {
+        "typescript": "5.0.4"
+    }
+}
