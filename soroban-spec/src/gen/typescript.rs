@@ -123,8 +123,12 @@ pub fn entry_to_ts(entry: &Entry) -> String {
                     .to_owned();
             }
 
-            let mut output = (!outputs.is_empty())
-                .then(|| format!("scValStrToJs(response.xdr) as {inner_return_type}"))
+            let mut output = outputs
+                .get(0)
+                .map(|type_| match type_ {
+                    Type::Custom { name } => format!("{name}FromXdr(response.xdr)"),
+                    _ => format!("scValStrToJs(response.xdr) as {inner_return_type}"),
+                })
                 .unwrap_or_default();
             if is_result {
                 output = format!("new Ok({output})");
@@ -171,6 +175,7 @@ pub fn entry_to_ts(entry: &Entry) -> String {
             let docs = doc_to_ts_doc(doc);
             let arg_name = name.to_lower_camel_case();
             let encoded_fields = js_to_xdr_fields(&arg_name, fields);
+            let decoded_fields = js_from_xdr_fields(&arg_name, fields);
             let fields = fields.iter().map(field_to_ts).join("\n  ");
             let void = type_to_js_xdr(&Type::Void);
             format!(
@@ -186,6 +191,19 @@ function {name}ToXDR({arg_name}?: {name}): xdr.ScVal {{
         {encoded_fields}
         ];
     return xdr.ScVal.scvMap(arr);
+}}
+
+
+function {name}FromXDR(base64Xdr: string): {name} {{
+    let scVal = xdr.ScVal.fromXDR(Buffer.from(base64Xdr, 'base64'));
+    let obj: [string, any][] = scVal.map().map(e => [e.key().str() as string, e.val()]);
+    let map = new Map<string, any>(obj);
+    if (!obj) {{
+        throw new Error('Invalid XDR');
+    }}
+    return {{
+        {decoded_fields}
+    }};
 }}
 "#
             )
@@ -351,4 +369,15 @@ pub fn type_to_ts(value: &types::Type) -> String {
         types::Type::Timepoint => todo!(),
         types::Type::Duration => todo!(),
     }
+}
+
+fn js_from_xdr_fields(struct_name: &str, f: &[StructField]) -> String {
+    f.iter()
+        .map(|StructField { name, value, .. }| {
+            format!(
+                r#"{name}: scValToJs(map.get("{name}")) as unknown as {}"#,
+                type_to_ts(value)
+            )
+        })
+        .join(",\n        ")
 }
