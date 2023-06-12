@@ -130,7 +130,9 @@ export function addressToScVal(addr: string): xdr.ScVal {
     let addrObj = Address.fromString(addr);
     let addrStr = addrObj.toString();
     if (addrStr.startsWith('C')) {
-        return new Contract(addrStr).address().toScVal();
+        return Address.fromString(
+            addrObj.toScAddress().toXDR('hex')
+        ).toScVal();
     }
     return addrObj.toScVal();
 }
