@@ -79,7 +79,6 @@ impl Project {
             "package.json",
             "README.md",
             "src/constants.ts",
-            "src/env.d.ts",
             "src/index.ts",
             "src/invoke.ts",
         ]

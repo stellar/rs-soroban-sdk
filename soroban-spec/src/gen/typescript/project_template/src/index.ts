@@ -4,6 +4,8 @@ import { Buffer } from "buffer";
 import { scValStrToJs, scValToJs } from './convert.js';
 import { invoke, InvokeArgs } from './invoke.js';
 
+declare const Errors: { message: string }[]
+
 export * from './constants.js'
 export * from './server.js'
 export * from './invoke.js'
