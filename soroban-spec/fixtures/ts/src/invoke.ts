@@ -69,7 +69,19 @@ export async function invoke({ method, args = [], fee = 100, signAndSend = false
   const simulated = await Server.simulateTransaction(tx)
   const auths = simulated.results?.[0]?.auth
   // is it possible for `auths` to be present but empty? Probably not, but let's be safe.
-  if (signAndSend) {
+  if (!signAndSend) {
+    const { results } = simulated
+    if (!results || results[0] === undefined) {
+      if (simulated.error) {
+        throw new Error(simulated.error as unknown as string)
+      }
+      throw new Error(`Invalid response from simulateTransaction:\n{simulated}`)
+    }
+    return results[0]
+  }
+  
+  const auths = simulates.results?.[0]?.auth
+  // .. The rest of signing & sending
     if (auths.length > 1) {
       throw new NotImplementedError("Multiple auths not yet supported")
     }
