@@ -1142,7 +1142,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "HostObjectError(VecIndexOutOfBound)")]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
     fn test_get_unchecked_panics() {
         let env = Env::default();
 
@@ -1202,7 +1202,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "HostObjectError(VecIndexOutOfBound)")]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
     fn test_remove_unchecked_panics() {
         let env = Env::default();
         let mut v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];

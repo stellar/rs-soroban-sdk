@@ -1433,7 +1433,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "HostObjectError(VecIndexOutOfBound)")]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
     fn test_insert_panic() {
         let env = Env::default();
         let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
@@ -1462,7 +1462,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "HostObjectError(VecIndexOutOfBound")]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
     fn test_slice_panic() {
         let env = Env::default();
         let bin = bytes![&env, [0, 1, 2, 3, 4]];
