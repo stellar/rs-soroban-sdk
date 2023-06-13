@@ -34,7 +34,7 @@ use syn::{
 };
 use syn_ext::HasFnsItem;
 
-use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
+use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
 use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 

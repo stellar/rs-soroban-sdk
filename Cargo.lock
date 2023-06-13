@@ -885,6 +885,7 @@ dependencies = [
  "sha2",
  "soroban-env-common",
  "soroban-spec",
+ "soroban-spec-rust",
  "stellar-xdr",
  "syn 2.0.15",
 ]
@@ -894,15 +895,8 @@ name = "soroban-spec"
 version = "0.8.4"
 dependencies = [
  "base64 0.13.1",
- "darling",
- "itertools",
  "pretty_assertions",
- "prettyplease",
- "proc-macro2",
- "quote",
- "sha2",
  "stellar-xdr",
- "syn 2.0.15",
  "thiserror",
  "wasmparser",
 ]
