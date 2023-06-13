@@ -57,6 +57,7 @@ pub fn generate(spec: &[ScSpecEntry]) -> String {
 #[cfg(test)]
 mod test {
     use pretty_assertions::assert_eq;
+    use soroban_spec::read::from_wasm;
 
     use super::generate;
 
@@ -65,7 +66,7 @@ mod test {
 
     #[test]
     fn example() {
-        let entries = soroban_spec::read::from_wasm(EXAMPLE_WASM).unwrap();
+        let entries = from_wasm(EXAMPLE_WASM).unwrap();
         let json = generate(&entries);
         assert_eq!(
             json,
