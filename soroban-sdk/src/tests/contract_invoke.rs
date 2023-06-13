@@ -1,6 +1,5 @@
 use crate as soroban_sdk;
 use soroban_sdk::{contractimpl, Env};
-use stellar_xdr::{ScErrorCode, ScErrorType};
 
 pub struct Contract;
 
@@ -31,6 +30,8 @@ fn test_invoke_expect_error() {
 
 #[test]
 fn test_try_invoke() {
+    use soroban_env_host::xdr::{ScErrorCode, ScErrorType};
+
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
 

@@ -201,11 +201,6 @@ impl Address {
     /// will allow the contract callers to easily build the required signature
     /// payloads and prevent potential authorization failures.
     ///
-    /// When called in the tests, the `require_auth` calls are just recorded and
-    /// no signatures are required. In order to make sure that the contract
-    /// has indeed called `require_auth` for this Address with expected arguments
-    /// use `env.verify_top_authorization`.
-    ///
     /// ### Panics
     ///
     /// If the invocation is not authorized.

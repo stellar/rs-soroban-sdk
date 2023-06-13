@@ -69,7 +69,7 @@ fn test_reregister_wasm() {
 
     // Register a contract with code that will fail, to ensure this code isn't
     // the code that gets activated when invoked.
-    let add_contract_id = e.register_contract_wasm(None, &[]);
+    let add_contract_id = e.register_contract_wasm(None, []);
     // Reregister the contract with different code replacing the code. This is
     // the contract we expect to be executed.
     e.register_contract_wasm(&add_contract_id, addcontract::WASM);

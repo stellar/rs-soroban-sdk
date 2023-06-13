@@ -20,8 +20,8 @@
 //! # impl Contract {
 //! #     pub fn f(env: Env, wasm_hash: BytesN<32>) {
 //! #         let salt = [0u8; 32];
-//! let deployer = env.deployer().with_current_contract(&salt);
-//! let contract_address = deployer.deploy(&wasm_hash);
+//! let deployer = env.deployer().with_current_contract();
+//! let contract_address = deployer.deploy(&salt, &wasm_hash);
 //! #     }
 //! # }
 //! #
@@ -30,14 +30,17 @@
 //! #     let env = Env::default();
 //! #     let contract_address = env.register_contract(None, Contract);
 //! #     // Install the contract code before deploying its instance.
-//! #     let wasm_hash = env.install_contract_wasm(&[0u8; 100]);
+//! #     let mock_wasm = [0u8; 100];
+//! #     let wasm_hash = env.deployer().upload_contract_wasm(mock_wasm.as_slice());
 //! #     ContractClient::new(&env, &contract_address).f(&wasm_hash);
 //! # }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
 
-use crate::{env::internal::Env as _, unwrap::UnwrapInfallible, Address, BytesN, Env, IntoVal};
+use crate::{
+    env::internal::Env as _, unwrap::UnwrapInfallible, Address, Bytes, BytesN, Env, IntoVal,
+};
 
 /// Deployer provides access to deploying contracts.
 pub struct Deployer {
@@ -54,85 +57,76 @@ impl Deployer {
     }
 
     /// Get a deployer that deploys contracts that derive their contract IDs
-    /// from the current contract and the provided salt.
-    pub fn with_current_contract(
-        &self,
-        salt: &impl IntoVal<Env, BytesN<32>>,
-    ) -> DeployerWithCurrentContract {
-        let env = self.env();
-        DeployerWithCurrentContract {
-            env: env.clone(),
-            salt: salt.into_val(env),
+    /// from the current contract.
+    pub fn with_current_contract(&self) -> DeployerWithAddress {
+        DeployerWithAddress {
+            env: self.env.clone(),
+            address: self.env.current_contract_address(),
         }
     }
 
-    #[doc(hidden)]
-    /// Get a deployer for contracts that derive their contract IDs from the
-    /// given contract ID and the provided salt.
-    pub fn with_other_contract(
-        &self,
-        contract_id: &Address,
-        salt: &impl IntoVal<Env, BytesN<32>>,
-    ) -> DeployerWithOtherContract {
-        let env = self.env();
-        DeployerWithOtherContract {
-            env: env.clone(),
-            contract_id: contract_id.clone(),
-            salt: salt.into_val(env),
+    /// Get a deployer that deploys contracts that derive their contract IDs
+    /// from the provided address.
+    ///
+    /// The deployer address must authorize all the deployments.
+    pub fn with_address(&self, address: Address) -> DeployerWithAddress {
+        DeployerWithAddress {
+            env: self.env.clone(),
+            address,
         }
+    }
+
+    /// Deploys a new instance of Stellar Asset Contract corresponding to
+    /// provided serialized asset.
+    ///
+    /// `serialized_asset` is the Stellar `Asset` XDR serialized to bytes. Refer
+    /// to `stellar-xdr` create for the exact definition.
+    pub fn deploy_stellar_asset(&self, serialized_asset: impl IntoVal<Env, Bytes>) -> Address {
+        self.env
+            .create_asset_contract(serialized_asset.into_val(&self.env).to_object())
+            .unwrap_infallible()
+            .into_val(&self.env)
+    }
+
+    /// Upload the contract Wasm code to the network.
+    ///
+    /// Returns the hash of the uploaded Wasm that can be then used for
+    /// the contract deployment.
+    pub fn upload_contract_wasm(&self, contract_wasm: impl IntoVal<Env, Bytes>) -> BytesN<32> {
+        self.env
+            .upload_wasm(contract_wasm.into_val(&self.env).to_object())
+            .unwrap_infallible()
+            .into_val(&self.env)
     }
 }
 
-/// A deployer that deploys a contract that has its ID derived from the current
-/// contract ID and the provided salt.
-pub struct DeployerWithCurrentContract {
+/// A deployer that deploys a contract that has its ID derived from the provided
+/// address and salt.
+pub struct DeployerWithAddress {
     env: Env,
-    salt: BytesN<32>,
+    address: Address,
 }
 
-impl DeployerWithCurrentContract {
-    /// Return the ID of the contract defined by the deployer.
-    #[doc(hidden)]
-    pub fn id(&self) -> Address {
-        todo!()
-    }
-
-    /// Deploy a contract.
+impl DeployerWithAddress {
+    /// Deploy a contract that uses Wasm executable with provided hash.
     ///
-    /// The contract ID from the currently executing contract and the given salt
-    /// will be used to derive a contract ID for the deployed contract.
+    /// The address of the deployed contract is defined by the deployer address
+    /// and provided salt.
     ///
-    /// Returns the deployed contract's ID.
-    pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> Address {
+    /// Returns the deployed contract's address.
+    pub fn deploy(
+        &self,
+        salt: &impl IntoVal<Env, BytesN<32>>,
+        wasm_hash: &impl IntoVal<Env, BytesN<32>>,
+    ) -> Address {
         let env = &self.env;
         let address_obj = env
             .create_contract(
-                env.current_contract_address().to_object(),
+                self.address.to_object(),
                 wasm_hash.into_val(env).to_object(),
-                self.salt.to_object(),
+                salt.into_val(env).to_object(),
             )
             .unwrap_infallible();
         unsafe { Address::unchecked_new(env.clone(), address_obj) }
-    }
-}
-
-#[doc(hidden)]
-/// A deployer for contracts that derive their contract IDs from the
-/// given contract ID and the provided salt.
-///
-/// This deployer is unable to actually deploy contracts because the currently
-/// executing contract can only deploy contracts with IDs derived from its own
-/// contract ID or an ed25519 public key.
-pub struct DeployerWithOtherContract {
-    env: Env,
-    contract_id: Address,
-    salt: BytesN<32>,
-}
-
-impl DeployerWithOtherContract {
-    #[doc(hidden)]
-    /// Return the ID of the contract defined by the deployer.
-    pub fn id(&self) -> Address {
-        todo!()
     }
 }
