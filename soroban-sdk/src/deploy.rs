@@ -21,21 +21,22 @@
 //! #     pub fn f(env: Env, wasm_hash: BytesN<32>) {
 //! #         let salt = [0u8; 32];
 //! let deployer = env.deployer().with_current_contract(&salt);
-//! let contract_id = deployer.deploy(&wasm_hash);
+//! let contract_address = deployer.deploy(&wasm_hash);
 //! #     }
 //! # }
 //! #
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //! #     let env = Env::default();
-//! #     let contract_id = env.register_contract(None, Contract);
+//! #     let contract_address = env.register_contract(None, Contract);
 //! #     // Install the contract code before deploying its instance.
 //! #     let wasm_hash = env.install_contract_wasm(&[0u8; 100]);
-//! #     ContractClient::new(&env, &contract_id).f(&wasm_hash);
+//! #     ContractClient::new(&env, &contract_address).f(&wasm_hash);
 //! # }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
+
 use crate::{env::internal::Env as _, unwrap::UnwrapInfallible, Address, BytesN, Env, IntoVal};
 
 /// Deployer provides access to deploying contracts.
@@ -104,14 +105,14 @@ impl DeployerWithCurrentContract {
     /// Returns the deployed contract's ID.
     pub fn deploy(&self, wasm_hash: &impl IntoVal<Env, BytesN<32>>) -> Address {
         let env = &self.env;
-        let id = env
-            .create_contract_from_contract(
+        let address_obj = env
+            .create_contract(
+                env.current_contract_address().to_object(),
                 wasm_hash.into_val(env).to_object(),
                 self.salt.to_object(),
             )
             .unwrap_infallible();
-        let id = unsafe { BytesN::<32>::unchecked_new(env.clone(), id) };
-        Address::from_contract_id(&id)
+        unsafe { Address::unchecked_new(env.clone(), address_obj) }
     }
 }
 

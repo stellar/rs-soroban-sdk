@@ -1,4 +1,7 @@
-use crate as soroban_sdk;
+use crate::{
+    self as soroban_sdk,
+    testutils::{AuthorizedFunction, AuthorizedInvocation},
+};
 
 use soroban_sdk::{
     contractimpl, contracttype,
@@ -63,9 +66,14 @@ fn test_mock_all_auth() {
         env.auths(),
         std::vec![(
             from.clone(),
-            token_contract_id.clone(),
-            Symbol::new(&env, "increase_allowance"),
-            (&from, &spender, 20_i128).into_val(&env)
+            AuthorizedInvocation {
+                function: AuthorizedFunction::Contract((
+                    token_contract_id.clone(),
+                    Symbol::new(&env, "increase_allowance"),
+                    (&from, &spender, 20_i128).into_val(&env)
+                )),
+                sub_invocations: std::vec![]
+            }
         )]
     );
 
