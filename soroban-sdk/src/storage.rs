@@ -43,7 +43,7 @@ use crate::{
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
 /// let key = Symbol::short("key");
-/// storage.mergeable().set(&key, &1);
+/// storage.mergeable().set(&key, &1, None);
 /// assert_eq!(storage.mergeable().has(&key), true);
 /// assert_eq!(storage.mergeable().get::<_, i32>(&key), Some(1));
 /// #     }

@@ -385,7 +385,7 @@ pub use soroban_sdk_macros::contractmeta;
 ///         state.last_incr = incr;
 ///
 ///         // Save the count.
-///         env.storage().mergeable().set(&Symbol::short("STATE"), &state);
+///         env.storage().mergeable().set(&Symbol::short("STATE"), &state, None);
 ///
 ///         // Return the count to the caller.
 ///         state.count
@@ -462,7 +462,7 @@ pub use soroban_sdk_macros::contractmeta;
 /// impl Contract {
 ///     /// Set the color.
 ///     pub fn set(env: Env, c: Color) {
-///         env.storage().mergeable().set(&Symbol::short("COLOR"), &c);
+///         env.storage().mergeable().set(&Symbol::short("COLOR"), &c, None);
 ///     }
 ///
 ///     /// Get the color.
