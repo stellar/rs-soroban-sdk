@@ -922,6 +922,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-spec-rust"
+version = "0.8.4"
+dependencies = [
+ "pretty_assertions",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "sha2",
+ "soroban-spec",
+ "stellar-xdr",
+ "syn 2.0.15",
+ "thiserror",
+]
+
+[[package]]
 name = "soroban-token-sdk"
 version = "0.8.4"
 dependencies = [
