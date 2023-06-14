@@ -697,10 +697,9 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "HostError: Error(Object, MissingValue)")]
     fn test_get_unchecked_panic() {
         let env = Env::default();
-
         let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
         let _ = map.get_unchecked(100); // key does not exist
     }
@@ -751,10 +750,9 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "HostError: Error(Object, MissingValue)")]
     fn test_remove_unchecked_panic() {
         let env = Env::default();
-
         let mut map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
         map.remove_unchecked(100); // key does not exist
     }

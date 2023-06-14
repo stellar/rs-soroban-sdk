@@ -1258,7 +1258,6 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
     fn test_first_unchecked() {
         let env = Env::default();
         let mut bin = bytes![&env, [1, 2, 3, 4]];
@@ -1266,8 +1265,12 @@ mod test {
         assert_eq!(bin.first_unchecked(), 1);
         bin.remove(0);
         assert_eq!(bin.first_unchecked(), 2);
+    }
 
-        // first on empty bytes should panic
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_first_unchecked_panics() {
+        let env = Env::default();
         let bin = bytes![&env];
         bin.first_unchecked();
     }
@@ -1287,7 +1290,6 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
     fn test_last_unchecked() {
         let env = Env::default();
         let mut bin = bytes![&env, [1, 2, 3, 4]];
@@ -1295,10 +1297,14 @@ mod test {
         assert_eq!(bin.last_unchecked(), 4);
         bin.remove(0);
         assert_eq!(bin.last_unchecked(), 3);
+    }
 
-        // first on empty bytes should panic
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_last_unchecked_panics() {
+        let env = Env::default();
         let bin = bytes![&env];
-        bin.first_unchecked();
+        bin.last_unchecked();
     }
 
     #[test]
@@ -1325,7 +1331,6 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
     fn test_get_unchecked() {
         let env = Env::default();
         let bin = bytes![&env, [0, 1, 5, 2, 8]];
@@ -1335,8 +1340,12 @@ mod test {
         assert_eq!(bin.get_unchecked(2), 5);
         assert_eq!(bin.get_unchecked(3), 2);
         assert_eq!(bin.get_unchecked(4), 8);
+    }
 
-        // get unchecked should panic
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_get_unchecked_panics() {
+        let env = Env::default();
         let bin = bytes![&env];
         bin.get_unchecked(0);
     }
@@ -1371,7 +1380,6 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
     fn test_remove_unchecked() {
         let env = Env::default();
         let mut bin = bytes![&env, [1, 2, 3, 4]];
@@ -1379,8 +1387,13 @@ mod test {
         assert_eq!(bin.remove_unchecked(2), ());
         assert_eq!(bin, bytes![&env, [1, 2, 4]]);
         assert_eq!(bin.len(), 3);
+    }
 
-        // out of bound remove panic
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_remove_unchecked_panics() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
         bin.remove_unchecked(bin.len());
     }
 
@@ -1400,7 +1413,6 @@ mod test {
     }
 
     #[test]
-    #[should_panic]
     fn test_pop_unchecked() {
         let env = Env::default();
         let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
@@ -1409,8 +1421,12 @@ mod test {
         assert_eq!(bin.pop_unchecked(), 3);
         assert_eq!(bin.len(), 3);
         assert_eq!(bin, bytes![&env, [0, 1, 2]]);
+    }
 
-        // pop on empty bytes
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_pop_unchecked_panics() {
+        let env = Env::default();
         let mut bin = bytes![&env];
         bin.pop_unchecked();
     }
@@ -1437,7 +1453,6 @@ mod test {
     fn test_insert_panic() {
         let env = Env::default();
         let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
-
         bin.insert(80, 44);
     }
 
@@ -1466,7 +1481,6 @@ mod test {
     fn test_slice_panic() {
         let env = Env::default();
         let bin = bytes![&env, [0, 1, 2, 3, 4]];
-
         let _ = bin.slice(..=bin.len());
     }
 }

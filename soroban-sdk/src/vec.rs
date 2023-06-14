@@ -1145,7 +1145,6 @@ mod test {
     #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
     fn test_get_unchecked_panics() {
         let env = Env::default();
-
         let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
         _ = v.get_unchecked(v.len()); // out of bound get
     }
@@ -1206,7 +1205,6 @@ mod test {
     fn test_remove_unchecked_panics() {
         let env = Env::default();
         let mut v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
-
         v.remove_unchecked(v.len())
     }
 }
