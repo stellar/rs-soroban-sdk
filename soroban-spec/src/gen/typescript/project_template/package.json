@@ -5,14 +5,15 @@
         "@stellar/freighter-api": "1.4.0",
         "buffer": "6.0.3",
         "soroban-client": "0.8.0",
-        "bigint-conversion": "2.4.1"
+        "bigint-conversion": "2.4.1",
+        "stellar-base": "9.0.0-soroban.3"
     },
     "scripts": {
         "build": "node ./scripts/build.mjs"
     },
     "exports": {
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+        "require": "./dist/cjs/index.js",
+        "import": "./dist/esm/index.js"
     },
     "typings": "dist/types/index.d.ts",
     "devDependencies": {
