@@ -45,12 +45,8 @@ pub fn type_to_js_xdr(value: &types::Type) -> String {
         types::Type::Bytes => "xdr.ScVal.scvBytes(i)".to_owned(),
         types::Type::Address => "addressToScVal(i)".to_owned(),
         types::Type::Void => "xdr.ScVal.scvVoid()".to_owned(),
-        types::Type::U128 => {
-            "xdr.ScVal.scvU128(xdr.Int128Parts.fromXDR(i.toString(16), 'hex'))".to_owned()
-        }
-        types::Type::I128 => {
-            "xdr.ScVal.scvI128(xdr.Int128Parts.fromXDR(i.toString(16), 'hex'))".to_owned()
-        }
+        types::Type::U128 => "u128ToScVal(i)".to_owned(),
+        types::Type::I128 => "i128ToScVal(i)".to_owned(),
         types::Type::I256 => todo!(),
         types::Type::U256 => todo!(),
         types::Type::String => "xdr.ScVal.scvString(i)".to_owned(),
