@@ -130,8 +130,8 @@ use crate::{
     storage::Storage, Address, BytesN, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, Object, StringObject,
-    Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, Object, StorageType,
+    StringObject, Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -499,6 +499,8 @@ impl Env {
             timestamp: 0,
             network_id: [0; 32],
             base_reserve: 0,
+            min_restorable_entry_expiration: 4096,
+            min_temp_entry_expiration: 16,
         });
 
         env
@@ -1053,14 +1055,24 @@ impl Env {
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract_id: contract_id_hash.clone(),
             key: data_key.clone(),
+            type_: xdr::ContractDataType::Mergeable,
+            le_type: xdr::ContractLedgerEntryType::DataEntry,
         }));
+
+        let body = xdr::ContractDataEntryBody::DataEntry(xdr::ContractDataEntryData {
+            val: xdr::ScVal::ContractExecutable(executable),
+            flags: 0,
+        });
+
         let entry = Rc::new(LedgerEntry {
             ext: xdr::LedgerEntryExt::V0,
             last_modified_ledger_seq: 0,
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
                 contract_id: contract_id_hash.clone(),
                 key: data_key,
-                val: xdr::ScVal::ContractExecutable(executable),
+                body,
+                expiration_ledger_seq: 0,
+                type_: xdr::ContractDataType::Mergeable,
             }),
         });
         self.env_impl

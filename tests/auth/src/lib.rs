@@ -20,9 +20,10 @@ mod test_a {
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
         xdr::{
-            ScAddress, ScVal, SorobanAddressCredentials, SorobanAuthorizationEntry,
-            SorobanAuthorizedContractFunction, SorobanAuthorizedFunction,
-            SorobanAuthorizedInvocation, SorobanCredentials, StringM, VecM,
+            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
+            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
+            VecM,
         },
         Address, Env, Error, RawVal, Symbol,
     };
@@ -170,13 +171,13 @@ mod test_a {
             }])
             .try_fn1(&a);
 
-        // TODO: Update this test to assert that a general panic/trap occurred
-        // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
-        // The ContractError(1) being captured here is from the
-        // auth_decline::Contract defined at the bottom of this file. The auth
-        // contract's error is leaking into the contract being called and
-        // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
+        assert_eq!(
+            r,
+            Err(Ok(Error::from_scerror(ScError {
+                type_: ScErrorType::Auth,
+                code: ScErrorCode::InvalidAction
+            })))
+        );
 
         assert_eq!(e.auths(), []);
     }
@@ -244,9 +245,9 @@ mod test_b {
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
         xdr::{
-            ScAddress, ScVal, SorobanAddressCredentials, SorobanAuthorizationEntry,
-            SorobanAuthorizedContractFunction, SorobanAuthorizedFunction,
-            SorobanAuthorizedInvocation, SorobanCredentials, StringM,
+            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
+            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
         },
         Address, Env, Error, RawVal, Symbol,
     };
@@ -446,13 +447,13 @@ mod test_b {
             }])
             .try_fn2(&a, &contract_a_id);
 
-        // TODO: Update this test to assert that a general panic/trap occurred
-        // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
-        // The ContractError(1) being captured here is from the
-        // auth_decline::Contract defined at the bottom of this file. The auth
-        // contract's error is leaking into the contract being called and
-        // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
+        assert_eq!(
+            r,
+            Err(Ok(Error::from_scerror(ScError {
+                type_: ScErrorType::Auth,
+                code: ScErrorCode::InvalidAction
+            })))
+        );
 
         assert_eq!(e.auths(), []);
     }
