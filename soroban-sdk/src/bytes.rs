@@ -1233,4 +1233,254 @@ mod test {
         let arr_bin: BytesN<3> = bin.clone().try_into().unwrap();
         assert_eq!(format!("{:?}", arr_bin), "BytesN<3>(10, 20, 30)");
     }
+
+    #[test]
+    fn test_is_empty() {
+        let env = Env::default();
+        let mut bin = Bytes::new(&env);
+        assert_eq!(bin.is_empty(), true);
+        bin.push(10);
+        assert_eq!(bin.is_empty(), false);
+    }
+
+    #[test]
+    fn test_first() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
+
+        assert_eq!(bin.first(), Some(1));
+        bin.remove(0);
+        assert_eq!(bin.first(), Some(2));
+
+        // first on empty bytes
+        let bin = bytes![&env];
+        assert_eq!(bin.first(), None);
+    }
+
+    #[test]
+    fn test_first_unchecked() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
+
+        assert_eq!(bin.first_unchecked(), 1);
+        bin.remove(0);
+        assert_eq!(bin.first_unchecked(), 2);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_first_unchecked_panics() {
+        let env = Env::default();
+        let bin = bytes![&env];
+        bin.first_unchecked();
+    }
+
+    #[test]
+    fn test_last() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
+
+        assert_eq!(bin.last(), Some(4));
+        bin.remove(3);
+        assert_eq!(bin.last(), Some(3));
+
+        // last on empty bytes
+        let bin = bytes![&env];
+        assert_eq!(bin.last(), None);
+    }
+
+    #[test]
+    fn test_last_unchecked() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
+
+        assert_eq!(bin.last_unchecked(), 4);
+        bin.remove(3);
+        assert_eq!(bin.last_unchecked(), 3);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_last_unchecked_panics() {
+        let env = Env::default();
+        let bin = bytes![&env];
+        bin.last_unchecked();
+    }
+
+    #[test]
+    fn test_get() {
+        let env = Env::default();
+        let bin = bytes![&env, [0, 1, 5, 2, 8]];
+
+        assert_eq!(bin.get(0), Some(0));
+        assert_eq!(bin.get(1), Some(1));
+        assert_eq!(bin.get(2), Some(5));
+        assert_eq!(bin.get(3), Some(2));
+        assert_eq!(bin.get(4), Some(8));
+
+        assert_eq!(bin.get(bin.len()), None);
+        assert_eq!(bin.get(bin.len() + 1), None);
+        assert_eq!(bin.get(u32::MAX), None);
+
+        // tests on an empty vec
+        let bin = bytes![&env];
+        assert_eq!(bin.get(0), None);
+        assert_eq!(bin.get(bin.len()), None);
+        assert_eq!(bin.get(bin.len() + 1), None);
+        assert_eq!(bin.get(u32::MAX), None);
+    }
+
+    #[test]
+    fn test_get_unchecked() {
+        let env = Env::default();
+        let bin = bytes![&env, [0, 1, 5, 2, 8]];
+
+        assert_eq!(bin.get_unchecked(0), 0);
+        assert_eq!(bin.get_unchecked(1), 1);
+        assert_eq!(bin.get_unchecked(2), 5);
+        assert_eq!(bin.get_unchecked(3), 2);
+        assert_eq!(bin.get_unchecked(4), 8);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_get_unchecked_panics() {
+        let env = Env::default();
+        let bin = bytes![&env];
+        bin.get_unchecked(0);
+    }
+
+    #[test]
+    fn test_remove() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
+
+        assert_eq!(bin.remove(2), Some(()));
+        assert_eq!(bin, bytes![&env, [1, 2, 4]]);
+        assert_eq!(bin.len(), 3);
+
+        // out of bound removes
+        assert_eq!(bin.remove(bin.len()), None);
+        assert_eq!(bin.remove(bin.len() + 1), None);
+        assert_eq!(bin.remove(u32::MAX), None);
+
+        // remove rest of items
+        assert_eq!(bin.remove(0), Some(()));
+        assert_eq!(bin.remove(0), Some(()));
+        assert_eq!(bin.remove(0), Some(()));
+        assert_eq!(bin, bytes![&env]);
+        assert_eq!(bin.len(), 0);
+
+        // try remove from empty bytes
+        let mut bin = bytes![&env];
+        assert_eq!(bin.remove(0), None);
+        assert_eq!(bin.remove(bin.len()), None);
+        assert_eq!(bin.remove(bin.len() + 1), None);
+        assert_eq!(bin.remove(u32::MAX), None);
+    }
+
+    #[test]
+    fn test_remove_unchecked() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
+
+        assert_eq!(bin.remove_unchecked(2), ());
+        assert_eq!(bin, bytes![&env, [1, 2, 4]]);
+        assert_eq!(bin.len(), 3);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_remove_unchecked_panics() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [1, 2, 3, 4]];
+        bin.remove_unchecked(bin.len());
+    }
+
+    #[test]
+    fn test_pop() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
+
+        assert_eq!(bin.pop(), Some(4));
+        assert_eq!(bin.pop(), Some(3));
+        assert_eq!(bin.len(), 3);
+        assert_eq!(bin, bytes![&env, [0, 1, 2]]);
+
+        // pop on empty bytes
+        let mut bin = bytes![&env];
+        assert_eq!(bin.pop(), None);
+    }
+
+    #[test]
+    fn test_pop_unchecked() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
+
+        assert_eq!(bin.pop_unchecked(), 4);
+        assert_eq!(bin.pop_unchecked(), 3);
+        assert_eq!(bin.len(), 3);
+        assert_eq!(bin, bytes![&env, [0, 1, 2]]);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_pop_unchecked_panics() {
+        let env = Env::default();
+        let mut bin = bytes![&env];
+        bin.pop_unchecked();
+    }
+
+    #[test]
+    fn test_insert() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
+
+        bin.insert(3, 42);
+        assert_eq!(bin, bytes![&env, [0, 1, 2, 42, 3, 4]]);
+
+        // insert at start
+        bin.insert(0, 43);
+        assert_eq!(bin, bytes![&env, [43, 0, 1, 2, 42, 3, 4]]);
+
+        // insert at end
+        bin.insert(bin.len(), 44);
+        assert_eq!(bin, bytes![&env, [43, 0, 1, 2, 42, 3, 4, 44]]);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_insert_panic() {
+        let env = Env::default();
+        let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
+        bin.insert(80, 44);
+    }
+
+    #[test]
+    fn test_slice() {
+        let env = Env::default();
+        let bin = bytes![&env, [0, 1, 2, 3, 4]];
+
+        let bin2 = bin.slice(2..);
+        assert_eq!(bin2, bytes![&env, [2, 3, 4]]);
+
+        let bin3 = bin.slice(3..3);
+        assert_eq!(bin3, bytes![&env]);
+
+        let bin4 = bin.slice(0..3);
+        assert_eq!(bin4, bytes![&env, [0, 1, 2]]);
+
+        let bin4 = bin.slice(3..5);
+        assert_eq!(bin4, bytes![&env, [3, 4]]);
+
+        assert_eq!(bin, bytes![&env, [0, 1, 2, 3, 4]]); // makes sure original bytes is unchanged
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_slice_panic() {
+        let env = Env::default();
+        let bin = bytes![&env, [0, 1, 2, 3, 4]];
+        let _ = bin.slice(..=bin.len());
+    }
 }
