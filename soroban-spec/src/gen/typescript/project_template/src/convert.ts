@@ -1,4 +1,4 @@
-import { Address, Contract, xdr } from 'soroban-client';
+import { Address, xdr } from 'soroban-client';
 import { Buffer } from "buffer";
 import { bufToBigint } from 'bigint-conversion';
 
@@ -75,13 +75,13 @@ export function scValToJs<T>(val: xdr.ScVal): T {
         }
         case xdr.ScValType.scvVec(): {
             type Element = ElementType<T>;
-            return val.vec().map(v => scValToJs<Element>(v)) as unknown as T;
+            return val.vec()!.map(v => scValToJs<Element>(v)) as unknown as T;
         }
         case xdr.ScValType.scvMap(): {
             type Key = KeyType<T>;
             type Value = ValueType<T>;
             let res: any = {};
-            val.map().forEach((e) => {
+            val.map()!.forEach((e) => {
                 let key = scValToJs<Key>(e.key());
                 let value;
                 let v: xdr.ScVal = e.val();
@@ -89,7 +89,7 @@ export function scValToJs<T>(val: xdr.ScVal): T {
                 switch (v?.switch()) {
                     case xdr.ScValType.scvMap(): {
                         let inner_map = new Map() as Map<any, any>;
-                        v.map().forEach((e) => {
+                        v.map()!.forEach((e) => {
                             let key = scValToJs<Key>(e.key());
                             let value = scValToJs<Value>(e.val());
                             inner_map.set(key, value);
