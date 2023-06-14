@@ -80,7 +80,12 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// transmitted back and converted from [RawVal] back into their type.
 ///
 /// The values in a Vec are not guaranteed to be of type `T` and conversion will
-/// fail if they are not. Most functions on Vec return a `Result` due to this.
+/// fail if they are not. Most functions on Vec have a `try_` variation that
+/// returns a `Result` that will be `Err` if the conversion fails. Functions
+/// that are not prefixed with `try_` will panic if conversion fails.
+///
+/// Functions with an `_unchecked` suffix will panic if called with indexes that
+/// are out-of-bounds.
 ///
 /// To store `u8`s and binary data, use [Bytes]/[BytesN] instead.
 ///
@@ -354,11 +359,13 @@ impl<T> Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
+    /// Create an empty Vec.
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
         unsafe { Self::unchecked_new(env.clone(), env.vec_new(().into()).unwrap_infallible()) }
     }
 
+    /// Create a Vec from the array of items.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
         let mut tmp: [RawVal; N] = [RawVal::VOID.to_raw(); N];
@@ -369,6 +376,7 @@ where
         unsafe { Self::unchecked_new(env.clone(), vec) }
     }
 
+    /// Create a Vec from the slice of items.
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[T]) -> Vec<T>
     where
@@ -379,11 +387,21 @@ where
         vec
     }
 
+    /// Returns the item at the position or None if out-of-bounds.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the position cannot be converted to type T.
     #[inline(always)]
     pub fn get(&self, i: u32) -> Option<T> {
         self.try_get(i).unwrap_optimized()
     }
 
+    /// Returns the item at the position or None if out-of-bounds.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the position cannot be converted to type T.
     #[inline(always)]
     pub fn try_get(&self, i: u32) -> Result<Option<T>, T::Error> {
         if i < self.len() {
@@ -393,11 +411,27 @@ where
         }
     }
 
+    /// Returns the item at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
+    ///
+    /// If the value at the position cannot be converted to type T.
     #[inline(always)]
     pub fn get_unchecked(&self, i: u32) -> T {
         self.try_get_unchecked(i).unwrap_optimized()
     }
 
+    /// Returns the item at the position.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn try_get_unchecked(&self, i: u32) -> Result<T, T::Error> {
         let env = self.env();
