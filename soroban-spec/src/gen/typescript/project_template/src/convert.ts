@@ -133,14 +133,14 @@ export function addressToScVal(addr: string): xdr.ScVal {
 
 export function i128ToScVal(i: bigint): xdr.ScVal {
     return xdr.ScVal.scvI128(new xdr.Int128Parts({
-        lo: xdr.Uint64.fromString((Number(i & BigInt(0xFFFFFFFFFFFFFFFFn))).toString()),
-        hi: xdr.Int64.fromString((Number((i >> BigInt(64)) & BigInt(0xFFFFFFFFFFFFFFFFn))).toString()),
+        lo: xdr.Uint64.fromString((i & BigInt(0xFFFFFFFFFFFFFFFFn)).toString()),
+        hi: xdr.Int64.fromString(((i >> BigInt(64)) & BigInt(0xFFFFFFFFFFFFFFFFn)).toString()),
     }))
 }
 
 export function u128ToScVal(i: bigint): xdr.ScVal {
     return xdr.ScVal.scvU128(new xdr.UInt128Parts({
-        lo: xdr.Uint64.fromString((Number(i & BigInt(0xFFFFFFFFFFFFFFFFn))).toString()),
-        hi: xdr.Int64.fromString((Number((i >> BigInt(64)) & BigInt(0xFFFFFFFFFFFFFFFFn))).toString()),
+        lo: xdr.Uint64.fromString((i & BigInt(0xFFFFFFFFFFFFFFFFn)).toString()),
+        hi: xdr.Int64.fromString(((i >> BigInt(64)) & BigInt(0xFFFFFFFFFFFFFFFFn)).toString()),
     }))
 }
