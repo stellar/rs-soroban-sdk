@@ -1295,7 +1295,7 @@ mod test {
         let mut bin = bytes![&env, [1, 2, 3, 4]];
 
         assert_eq!(bin.last_unchecked(), 4);
-        bin.remove(0);
+        bin.remove(3);
         assert_eq!(bin.last_unchecked(), 3);
     }
 
