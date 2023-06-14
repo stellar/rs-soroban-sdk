@@ -10,7 +10,7 @@ use core::{
 
 use crate::{
     iter::{UncheckedEnumerable, UncheckedIter},
-    unwrap::UnwrapInfallible,
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
 };
 
 use super::{
@@ -380,21 +380,26 @@ where
     }
 
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
+    pub fn get(&self, i: u32) -> Option<T> {
+        self.try_get(i).unwrap_optimized()
+    }
+
+    #[inline(always)]
+    pub fn try_get(&self, i: u32) -> Result<Option<T>, T::Error> {
         if i < self.len() {
-            let env = self.env();
-            let val = env.vec_get(self.obj, i.into()).unwrap_infallible();
-            Some(T::try_from_val(env, &val))
+            self.try_get_unchecked(i).map(|val| Some(val))
         } else {
-            None
+            Ok(None)
         }
     }
 
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error>
-    where
-        T::Error: Debug,
-    {
+    pub fn get_unchecked(&self, i: u32) -> T {
+        self.try_get_unchecked(i).unwrap_optimized()
+    }
+
+    #[inline(always)]
+    pub fn try_get_unchecked(&self, i: u32) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_get(self.obj, i.into()).unwrap_infallible();
         T::try_from_val(env, &val)
@@ -1107,12 +1112,12 @@ mod test {
         let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
 
         // get each item
-        assert_eq!(v.get(3), Some(Ok(5)));
-        assert_eq!(v.get(0), Some(Ok(0)));
-        assert_eq!(v.get(1), Some(Ok(3)));
-        assert_eq!(v.get(2), Some(Ok(5)));
-        assert_eq!(v.get(5), Some(Ok(9)));
-        assert_eq!(v.get(4), Some(Ok(7)));
+        assert_eq!(v.get(3), Some(5));
+        assert_eq!(v.get(0), Some(0));
+        assert_eq!(v.get(1), Some(3));
+        assert_eq!(v.get(2), Some(5));
+        assert_eq!(v.get(5), Some(9));
+        assert_eq!(v.get(4), Some(7));
 
         assert_eq!(v.get(v.len()), None);
         assert_eq!(v.get(v.len() + 1), None);
@@ -1127,26 +1132,101 @@ mod test {
     }
 
     #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_get_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        // panic because element one is not of the expected type
+        assert_eq!(v.get(1), Some(5));
+    }
+
+    #[test]
+    fn test_try_get() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        // get each item
+        assert_eq!(v.try_get(3), Ok(Some(5)));
+        assert_eq!(v.try_get(0), Ok(Some(0)));
+        assert_eq!(v.try_get(1), Ok(Some(3)));
+        assert_eq!(v.try_get(2), Ok(Some(5)));
+        assert_eq!(v.try_get(5), Ok(Some(9)));
+        assert_eq!(v.try_get(4), Ok(Some(7)));
+
+        assert_eq!(v.try_get(v.len()), Ok(None));
+        assert_eq!(v.try_get(v.len() + 1), Ok(None));
+        assert_eq!(v.try_get(u32::MAX), Ok(None));
+
+        // tests on an empty vec
+        let v = Vec::<i64>::new(&env);
+        assert_eq!(v.try_get(0), Ok(None));
+        assert_eq!(v.try_get(v.len()), Ok(None));
+        assert_eq!(v.try_get(v.len() + 1), Ok(None));
+        assert_eq!(v.try_get(u32::MAX), Ok(None));
+    }
+
+    #[test]
     fn test_get_unchecked() {
         let env = Env::default();
 
         let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
 
         // get each item
-        assert_eq!(v.get_unchecked(3), Ok(5));
-        assert_eq!(v.get_unchecked(0), Ok(0));
-        assert_eq!(v.get_unchecked(1), Ok(3));
-        assert_eq!(v.get_unchecked(2), Ok(5));
-        assert_eq!(v.get_unchecked(5), Ok(9));
-        assert_eq!(v.get_unchecked(4), Ok(7));
+        assert_eq!(v.get_unchecked(3), 5);
+        assert_eq!(v.get_unchecked(0), 0);
+        assert_eq!(v.get_unchecked(1), 3);
+        assert_eq!(v.get_unchecked(2), 5);
+        assert_eq!(v.get_unchecked(5), 9);
+        assert_eq!(v.get_unchecked(4), 7);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_get_unchecked_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        // panic because element one is not of the expected type
+        v.get_unchecked(1);
     }
 
     #[test]
     #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
-    fn test_get_unchecked_panics() {
+    fn test_get_unchecked_panics_on_out_of_bounds() {
         let env = Env::default();
+
         let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
         _ = v.get_unchecked(v.len()); // out of bound get
+    }
+
+    #[test]
+    fn test_try_get_unchecked() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        // get each item
+        assert_eq!(v.try_get_unchecked(3), Ok(5));
+        assert_eq!(v.try_get_unchecked(0), Ok(0));
+        assert_eq!(v.try_get_unchecked(1), Ok(3));
+        assert_eq!(v.try_get_unchecked(2), Ok(5));
+        assert_eq!(v.try_get_unchecked(5), Ok(9));
+        assert_eq!(v.try_get_unchecked(4), Ok(7));
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_try_get_unchecked_panics() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+        _ = v.try_get_unchecked(v.len()); // out of bound get
     }
 
     #[test]
