@@ -327,7 +327,7 @@ impl Env {
     ///         let stack = env.call_stack();
     ///         assert_eq!(stack.len(), 1);
     ///
-    ///         let outer = stack.get(0).unwrap().unwrap();
+    ///         let outer = stack.get_unchecked(0);
     ///         log!(&env, "{}", outer);
     ///     }
     /// }
