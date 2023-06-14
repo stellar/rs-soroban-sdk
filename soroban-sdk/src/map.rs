@@ -633,4 +633,127 @@ mod test {
         let values = map.values();
         assert_eq!(values, vec![&env, 0, 10, 20, 30, 40]);
     }
+
+    #[test]
+    fn test_from_array() {
+        let env = Env::default();
+
+        let map = Map::from_array(&env, [(0, 0), (1, 10), (2, 20), (3, 30), (4, 40)]);
+        assert_eq!(map, map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)]);
+
+        let map: Map<u32, u32> = Map::from_array(&env, []);
+        assert_eq!(map, map![&env]);
+    }
+
+    #[test]
+    fn test_contains_key() {
+        let env = Env::default();
+
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+
+        // contains all assigned keys
+        for i in 0..map.len() {
+            assert_eq!(true, map.contains_key(i));
+        }
+
+        // does not contain keys outside range
+        assert_eq!(map.contains_key(6), false);
+        assert_eq!(map.contains_key(u32::MAX), false);
+        assert_eq!(map.contains_key(8), false);
+    }
+
+    #[test]
+    fn test_is_empty() {
+        let env = Env::default();
+
+        let mut map: Map<u32, u32> = Map::new(&env);
+        assert_eq!(map.is_empty(), true);
+        map.set(0, 0);
+        assert_eq!(map.is_empty(), false);
+    }
+
+    #[test]
+    fn test_get() {
+        let env = Env::default();
+
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+        for i in 0..map.len() {
+            assert_eq!(map.get(i), Some(Ok(i * 10)));
+        }
+
+        // getting from empty map
+        let map: Map<u32, u32> = map![&env];
+        assert_eq!(map.get(2), None);
+    }
+
+    #[test]
+    fn test_get_unchecked() {
+        let env = Env::default();
+
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+        for i in 0..map.len() {
+            assert_eq!(map.get_unchecked(i), Ok(i * 10));
+        }
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, MissingValue)")]
+    fn test_get_unchecked_panic() {
+        let env = Env::default();
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+        let _ = map.get_unchecked(100); // key does not exist
+    }
+
+    #[test]
+    fn test_remove() {
+        let env = Env::default();
+
+        let mut map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+
+        assert_eq!(map.len(), 5);
+        assert_eq!(map.get(2), Some(Ok(20)),);
+        assert_eq!(map.remove(2), Some(()));
+        assert_eq!(map.get(2), None);
+        assert_eq!(map.len(), 4);
+
+        // remove all items
+        map.remove(0);
+        map.remove(1);
+        map.remove(3);
+        map.remove(4);
+        assert_eq!(map![&env], map);
+
+        // removing from empty map
+        let mut map: Map<u32, u32> = map![&env];
+        assert_eq!(map.remove(0), None);
+        assert_eq!(map.remove(u32::MAX), None);
+    }
+
+    #[test]
+    fn test_remove_unchecked() {
+        let env = Env::default();
+
+        let mut map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+
+        assert_eq!(map.len(), 5);
+        assert_eq!(map.get(2), Some(Ok(20)));
+        assert_eq!(map.remove_unchecked(2), ());
+        assert_eq!(map.get(2), None);
+        assert_eq!(map.len(), 4);
+
+        // remove all items
+        map.remove_unchecked(0);
+        map.remove_unchecked(1);
+        map.remove_unchecked(3);
+        map.remove_unchecked(4);
+        assert_eq!(map![&env], map);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, MissingValue)")]
+    fn test_remove_unchecked_panic() {
+        let env = Env::default();
+        let mut map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
+        map.remove_unchecked(100); // key does not exist
+    }
 }
