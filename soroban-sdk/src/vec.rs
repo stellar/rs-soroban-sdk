@@ -1115,6 +1115,61 @@ mod test {
         let env = Env::default();
 
         let vec: Vec<()> = vec![&env];
+        let mut iter = vec.iter();
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+
+        let mut iter = vec.iter();
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let mut iter = vec.iter();
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.next_back(), Some(4));
+        assert_eq!(iter.next_back(), Some(3));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let mut iter = vec.iter().rev();
+        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next_back(), Some(0));
+        assert_eq!(iter.next_back(), Some(1));
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_vec_iter_panic_on_conversion() {
+        let env = Env::default();
+
+        let vec: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let vec: Vec<i64> = vec.try_into_val(&env).unwrap();
+
+        let mut iter = vec.iter();
+        iter.next();
+    }
+
+    #[test]
+    fn test_vec_try_iter() {
+        let env = Env::default();
+
+        let vec: Vec<()> = vec![&env];
         let mut iter = vec.try_iter();
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
@@ -1151,6 +1206,18 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_vec_try_iter_error_on_conversion() {
+        let env = Env::default();
+
+        let vec: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let vec: Vec<i64> = vec.try_into_val(&env).unwrap();
+
+        let mut iter = vec.try_iter();
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Err(ConversionError)));
     }
 
     #[test]
