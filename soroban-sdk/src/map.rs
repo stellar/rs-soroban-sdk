@@ -690,6 +690,32 @@ mod test {
     }
 
     #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_iter_panic_on_key_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+
+        let mut iter = map.iter();
+        iter.next();
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_iter_panic_on_value_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+
+        let mut iter = map.iter();
+        iter.next();
+    }
+
+    #[test]
     fn test_try_iter() {
         let env = Env::default();
 
@@ -730,6 +756,40 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_iter_error_on_key_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![
+            &env,
+            (1i32.into_val(&env), 2i32.into_val(&env)),
+            (3i64.into_val(&env), 4i32.into_val(&env)),
+        ];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+
+        let mut iter = map.try_iter();
+        assert_eq!(iter.next(), Some(Ok((1, 2))));
+        assert_eq!(iter.next(), Some(Err(ConversionError)));
+    }
+
+    #[test]
+    fn test_iter_error_on_value_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![
+            &env,
+            (1i32.into_val(&env), 2i32.into_val(&env)),
+            (3i32.into_val(&env), 4i64.into_val(&env)),
+        ];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+
+        let mut iter = map.try_iter();
+        assert_eq!(iter.next(), Some(Ok((1, 2))));
+        assert_eq!(iter.next(), Some(Err(ConversionError)));
     }
 
     #[test]
@@ -792,32 +852,142 @@ mod test {
     fn test_get() {
         let env = Env::default();
 
-        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
-        for i in 0..map.len() {
-            assert_eq!(map.get(i), Some(i * 10));
-        }
-
-        // getting from empty map
-        let map: Map<u32, u32> = map![&env];
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10)];
+        assert_eq!(map.get(0), Some(0));
+        assert_eq!(map.get(1), Some(10));
         assert_eq!(map.get(2), None);
+    }
+
+    #[test]
+    fn test_get_none_on_key_type_mismatch() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![
+            &env,
+            (1i32.into_val(&env), 2i32.into_val(&env)),
+            (3i64.into_val(&env), 4i32.into_val(&env)),
+        ];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        assert_eq!(map.get(1), Some(2));
+        assert_eq!(map.get(3), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_get_panics_on_value_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        let _ = map.get(1);
+    }
+
+    #[test]
+    fn test_try_get() {
+        let env = Env::default();
+
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10)];
+        assert_eq!(map.try_get(0), Ok(Some(0)));
+        assert_eq!(map.try_get(1), Ok(Some(10)));
+        assert_eq!(map.try_get(2), Ok(None));
+    }
+
+    #[test]
+    fn test_try_get_none_on_key_type_mismatch() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![
+            &env,
+            (1i32.into_val(&env), 2i32.into_val(&env)),
+            (3i64.into_val(&env), 4i32.into_val(&env)),
+        ];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        assert_eq!(map.try_get(1), Ok(Some(2)));
+        assert_eq!(map.try_get(3), Ok(None));
+    }
+
+    #[test]
+    fn test_try_get_errors_on_value_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![
+            &env,
+            (1i32.into_val(&env), 2i32.into_val(&env)),
+            (3i32.into_val(&env), 4i64.into_val(&env)),
+        ];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        assert_eq!(map.try_get(1), Ok(Some(2)));
+        assert_eq!(map.try_get(3), Err(ConversionError));
     }
 
     #[test]
     fn test_get_unchecked() {
         let env = Env::default();
 
-        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
-        for i in 0..map.len() {
-            assert_eq!(map.get_unchecked(i), i * 10);
-        }
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10)];
+        assert_eq!(map.get_unchecked(0), 0);
+        assert_eq!(map.get_unchecked(1), 10);
     }
 
     #[test]
     #[should_panic(expected = "HostError: Error(Object, MissingValue)")]
-    fn test_get_unchecked_panic() {
+    fn test_get_unchecked_panics_on_key_type_mismatch() {
         let env = Env::default();
-        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10), (2, 20), (3, 30), (4, 40)];
-        let _ = map.get_unchecked(100); // key does not exist
+
+        let map: Map<RawVal, RawVal> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        let _ = map.get_unchecked(1);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_get_unchecked_panics_on_value_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        let _ = map.get_unchecked(1);
+    }
+
+    #[test]
+    fn test_try_get_unchecked() {
+        let env = Env::default();
+
+        let map: Map<u32, u32> = map![&env, (0, 0), (1, 10)];
+        assert_eq!(map.get_unchecked(0), 0);
+        assert_eq!(map.get_unchecked(1), 10);
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, MissingValue)")]
+    fn test_try_get_unchecked_panics_on_key_type_mismatch() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        let _ = map.try_get_unchecked(1);
+    }
+
+    #[test]
+    fn test_try_get_unchecked_errors_on_value_conversion() {
+        let env = Env::default();
+
+        let map: Map<RawVal, RawVal> = map![
+            &env,
+            (1i32.into_val(&env), 2i32.into_val(&env)),
+            (3i32.into_val(&env), 4i64.into_val(&env)),
+        ];
+        let map: RawVal = map.into();
+        let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
+        assert_eq!(map.try_get_unchecked(1), Ok(2));
+        assert_eq!(map.try_get_unchecked(3), Err(ConversionError));
     }
 
     #[test]
