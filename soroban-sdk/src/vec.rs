@@ -112,18 +112,6 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// let vec = vec![&env, 0, 1, 2, 3];
 /// assert_eq!(vec.len(), 4);
 /// ```
-///
-/// ### Implementation Details
-///
-/// The following information is implementation details that has no consistency
-/// guarantee.
-///
-/// Values are stored in the environment backed by a [RRB-vector][rrb] using
-/// [im_rc::Vector]. Most operations are O(log n). Push/pop are O(1)
-/// amortised, and O(log n) in the worst case.
-///
-/// [im_rc::Vector]: https://docs.rs/im-rc/latest/im_rc/struct.Vector.html
-/// [rrb]: https://infoscience.epfl.ch/record/213452/files/rrbvector.pdf
 #[derive(Clone)]
 pub struct Vec<T> {
     env: Env,
