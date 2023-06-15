@@ -16,7 +16,7 @@ pub enum DataKey {
 }
 
 fn get_token(e: &Env) -> Address {
-    e.storage().get(&DataKey::Token).unwrap()
+    e.storage().mergeable().get(&DataKey::Token).unwrap()
 }
 
 pub struct TestContract;
@@ -24,7 +24,9 @@ pub struct TestContract;
 #[contractimpl]
 impl TestContract {
     pub fn init(e: Env, contract: Address) {
-        e.storage().set(&DataKey::Token, &contract);
+        e.storage()
+            .mergeable()
+            .set(&DataKey::Token, &contract, None);
     }
 
     pub fn get_token(e: Env) -> Address {
