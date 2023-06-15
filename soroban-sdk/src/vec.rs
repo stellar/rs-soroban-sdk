@@ -9,7 +9,7 @@ use core::{
 };
 
 use crate::{
-    iter::{UncheckedEnumerable, UncheckedIter},
+    iter::{UnwrappedEnumerable, UnwrappedIter},
     unwrap::{UnwrapInfallible, UnwrapOptimized},
 };
 
@@ -161,7 +161,7 @@ where
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Vec(")?;
-        let mut iter = self.iter();
+        let mut iter = self.try_iter();
         if let Some(x) = iter.next() {
             write!(f, "{:?}", x)?;
         }
@@ -755,31 +755,6 @@ where
             .unwrap_infallible();
         unsafe { Self::unchecked_new(env.clone(), obj) }
     }
-
-    pub fn iter(&self) -> VecIter<T>
-    where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-    {
-        self.clone().into_iter()
-    }
-
-    #[inline(always)]
-    pub fn iter_unchecked(&self) -> UncheckedIter<VecIter<T>, T, T::Error>
-    where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        T::Error: Debug,
-    {
-        self.iter().unchecked()
-    }
-
-    #[inline(always)]
-    pub fn into_iter_unchecked(self) -> UncheckedIter<VecIter<T>, T, T::Error>
-    where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        T::Error: Debug,
-    {
-        self.into_iter().unchecked()
-    }
 }
 
 impl<T> Vec<T>
@@ -854,7 +829,7 @@ where
     #[inline(always)]
     pub fn concat(&self) -> Vec<T> {
         let mut concatenated = vec![self.env()];
-        for vec in self.iter_unchecked() {
+        for vec in self.iter() {
             concatenated.append(&vec);
         }
         concatenated
@@ -865,24 +840,55 @@ impl<T> IntoIterator for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Item = Result<T, T::Error>;
-    type IntoIter = VecIter<T>;
+    type Item = T;
+    type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
 
     fn into_iter(self) -> Self::IntoIter {
-        VecIter(self)
+        VecTryIter(self).unwrapped()
+    }
+}
+
+impl<T> Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    #[inline(always)]
+    pub fn iter(&self) -> UnwrappedIter<VecTryIter<T>, T, T::Error>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T::Error: Debug,
+    {
+        self.try_iter().unwrapped()
+    }
+
+    #[inline(always)]
+    pub fn try_iter(&self) -> VecTryIter<T>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+    {
+        VecTryIter(self.clone())
+    }
+
+    #[inline(always)]
+    pub fn into_try_iter(self) -> VecTryIter<T>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T::Error: Debug,
+    {
+        VecTryIter(self.clone())
     }
 }
 
 #[derive(Clone)]
-pub struct VecIter<T>(Vec<T>);
+pub struct VecTryIter<T>(Vec<T>);
 
-impl<T> VecIter<T> {
+impl<T> VecTryIter<T> {
     fn into_vec(self) -> Vec<T> {
         self.0
     }
 }
 
-impl<T> Iterator for VecIter<T>
+impl<T> Iterator for VecTryIter<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -908,7 +914,7 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> DoubleEndedIterator for VecIter<T>
+impl<T> DoubleEndedIterator for VecTryIter<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -927,9 +933,9 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> FusedIterator for VecIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+impl<T> FusedIterator for VecTryIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
-impl<T> ExactSizeIterator for VecIter<T>
+impl<T> ExactSizeIterator for VecTryIter<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -1093,13 +1099,13 @@ mod test {
         let env = Env::default();
 
         let vec: Vec<()> = vec![&env];
-        let mut iter = vec.iter();
+        let mut iter = vec.try_iter();
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let vec = vec![&env, 0, 1, 2, 3, 4];
 
-        let mut iter = vec.iter();
+        let mut iter = vec.try_iter();
         assert_eq!(iter.next(), Some(Ok(0)));
         assert_eq!(iter.next(), Some(Ok(1)));
         assert_eq!(iter.next(), Some(Ok(2)));
@@ -1108,7 +1114,7 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
-        let mut iter = vec.iter();
+        let mut iter = vec.try_iter();
         assert_eq!(iter.next(), Some(Ok(0)));
         assert_eq!(iter.next_back(), Some(Ok(4)));
         assert_eq!(iter.next_back(), Some(Ok(3)));
@@ -1119,7 +1125,7 @@ mod test {
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
 
-        let mut iter = vec.iter().rev();
+        let mut iter = vec.try_iter().rev();
         assert_eq!(iter.next(), Some(Ok(4)));
         assert_eq!(iter.next_back(), Some(Ok(0)));
         assert_eq!(iter.next_back(), Some(Ok(1)));
