@@ -14,14 +14,7 @@ rust-version = "1.70"
 stellar-xdr = { workspace = true, features = ["next", "std", "serde"] }
 base64 = "0.13.0"
 thiserror = "1.0.32"
-syn = {version="2.0",features=["full"]}
-quote = "1.0"
-proc-macro2 = "1.0"
-itertools = "0.10.3"
-darling = "0.20.0"
-sha2 = "0.9.9"
 wasmparser = "0.88.0"
-prettyplease = "0.2.4"
 
 [dev_dependencies]
 pretty_assertions = "1.2.1"

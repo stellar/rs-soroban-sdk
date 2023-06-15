@@ -5,6 +5,7 @@ members = [
     "soroban-sdk",
     "soroban-sdk-macros",
     "soroban-spec",
+    "soroban-spec-rust",
     "soroban-spec-json",
     "soroban-ledger-snapshot",
     "soroban-token-sdk",
@@ -31,6 +32,7 @@ version = "0.8.4"
 soroban-sdk = { version = "0.8.4", path = "soroban-sdk" }
 soroban-sdk-macros = { version = "0.8.4", path = "soroban-sdk-macros" }
 soroban-spec = { version = "0.8.4", path = "soroban-spec" }
+soroban-spec-rust = { version = "0.8.4", path = "soroban-spec-rust" }
 soroban-ledger-snapshot = { version = "0.8.4", path = "soroban-ledger-snapshot" }
 soroban-token-sdk = { version = "0.8.4", path = "soroban-token-sdk" }
 
