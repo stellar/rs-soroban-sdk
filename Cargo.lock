@@ -885,6 +885,7 @@ dependencies = [
  "sha2",
  "soroban-env-common",
  "soroban-spec",
+ "soroban-spec-rust",
  "stellar-xdr",
  "syn 2.0.15",
 ]
@@ -894,20 +895,39 @@ name = "soroban-spec"
 version = "0.8.4"
 dependencies = [
  "base64 0.13.1",
- "darling",
- "itertools",
  "pretty_assertions",
- "prettyplease",
- "proc-macro2",
- "quote",
+ "stellar-xdr",
+ "thiserror",
+ "wasmparser",
+]
+
+[[package]]
+name = "soroban-spec-json"
+version = "0.8.4"
+dependencies = [
+ "pretty_assertions",
  "serde",
  "serde_derive",
  "serde_json",
  "sha2",
+ "soroban-spec",
+ "stellar-xdr",
+ "thiserror",
+]
+
+[[package]]
+name = "soroban-spec-rust"
+version = "0.8.4"
+dependencies = [
+ "pretty_assertions",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "sha2",
+ "soroban-spec",
  "stellar-xdr",
  "syn 2.0.15",
  "thiserror",
- "wasmparser",
 ]
 
 [[package]]

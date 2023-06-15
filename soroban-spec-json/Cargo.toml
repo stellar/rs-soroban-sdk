@@ -1,6 +1,6 @@
 [package]
-name = "soroban-spec"
-description = "Soroban contract spec utilities."
+name = "soroban-spec-json"
+description = "Soroban contract spec utilities for generating JSON."
 homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
@@ -12,9 +12,12 @@ rust-version = "1.70"
 
 [dependencies]
 stellar-xdr = { workspace = true, features = ["next", "std", "serde"] }
-base64 = "0.13.0"
+soroban-spec = { workspace = true }
 thiserror = "1.0.32"
-wasmparser = "0.88.0"
+serde = "1.0.82"
+serde_derive = "1.0.82"
+serde_json = "1.0.82"
+sha2 = "0.9.9"
 
 [dev_dependencies]
 pretty_assertions = "1.2.1"

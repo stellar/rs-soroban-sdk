@@ -1,6 +1,6 @@
 [package]
-name = "soroban-sdk-macros"
-description = "Soroban SDK macros."
+name = "soroban-spec-rust"
+description = "Soroban contract spec utilities for generating Rust."
 homepage = "https://github.com/stellar/rs-soroban-sdk"
 repository = "https://github.com/stellar/rs-soroban-sdk"
 authors = ["Stellar Development Foundation <info@stellar.org>"]
@@ -10,18 +10,15 @@ version.workspace = true
 edition = "2021"
 rust-version = "1.70"
 
-[lib]
-proc-macro = true
-doctest = false
-
 [dependencies]
+stellar-xdr = { workspace = true, features = ["next", "std", "serde"] }
 soroban-spec = { workspace = true }
-soroban-spec-rust = { workspace = true }
-soroban-env-common = { workspace = true }
-stellar-xdr = { workspace = true, features = ["next", "std"] }
+thiserror = "1.0.32"
 syn = {version="2.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
-itertools = "0.10.3"
-darling = "0.20.0"
 sha2 = "0.9.9"
+prettyplease = "0.2.4"
+
+[dev_dependencies]
+pretty_assertions = "1.2.1"
