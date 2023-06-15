@@ -9,8 +9,8 @@ use core::{
 };
 
 use crate::{
-    iter::{UncheckedEnumerable, UncheckedIter},
-    unwrap::UnwrapInfallible,
+    iter::{UnwrappedEnumerable, UnwrappedIter},
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
 };
 
 use super::{
@@ -80,7 +80,23 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// transmitted back and converted from [RawVal] back into their type.
 ///
 /// The values in a Vec are not guaranteed to be of type `T` and conversion will
-/// fail if they are not. Most functions on Vec return a `Result` due to this.
+/// fail if they are not. Most functions on Vec have a `try_` variation that
+/// returns a `Result` that will be `Err` if the conversion fails. Functions
+/// that are not prefixed with `try_` will panic if conversion fails.
+///
+/// There are some cases where this lack of guarantee is important:
+///
+/// - When storing a Vec that has been provided externally as a contract
+/// function argument, be aware there is no guarantee that all items in the Vec
+/// will be of type `T`. It may be necessary to validate all values, either
+/// before storing, or when loading with `try_` variation functions.
+///
+/// - When accessing and iterating over a Vec that has been provided externally
+/// as a contract function input, and the contract needs to be resilient to
+/// failure, use the `try_` variation functions.
+///
+/// Functions with an `_unchecked` suffix will panic if called with indexes that
+/// are out-of-bounds.
 ///
 /// To store `u8`s and binary data, use [Bytes]/[BytesN] instead.
 ///
@@ -96,18 +112,6 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// let vec = vec![&env, 0, 1, 2, 3];
 /// assert_eq!(vec.len(), 4);
 /// ```
-///
-/// ### Implementation Details
-///
-/// The following information is implementation details that has no consistency
-/// guarantee.
-///
-/// Values are stored in the environment backed by a [RRB-vector][rrb] using
-/// [im_rc::Vector]. Most operations are O(log n). Push/pop are O(1)
-/// amortised, and O(log n) in the worst case.
-///
-/// [im_rc::Vector]: https://docs.rs/im-rc/latest/im_rc/struct.Vector.html
-/// [rrb]: https://infoscience.epfl.ch/record/213452/files/rrbvector.pdf
 #[derive(Clone)]
 pub struct Vec<T> {
     env: Env,
@@ -156,7 +160,7 @@ where
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Vec(")?;
-        let mut iter = self.iter();
+        let mut iter = self.try_iter();
         if let Some(x) = iter.next() {
             write!(f, "{:?}", x)?;
         }
@@ -341,11 +345,13 @@ impl<T> Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
+    /// Create an empty Vec.
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
         unsafe { Self::unchecked_new(env.clone(), env.vec_new(().into()).unwrap_infallible()) }
     }
 
+    /// Create a Vec from the array of items.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
         let mut tmp: [RawVal; N] = [RawVal::VOID.to_raw(); N];
@@ -356,6 +362,7 @@ where
         unsafe { Self::unchecked_new(env.clone(), vec) }
     }
 
+    /// Create a Vec from the slice of items.
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[T]) -> Vec<T>
     where
@@ -366,27 +373,63 @@ where
         vec
     }
 
+    /// Returns the item at the position or None if out-of-bounds.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the position cannot be converted to type T.
     #[inline(always)]
-    pub fn get(&self, i: u32) -> Option<Result<T, T::Error>> {
+    pub fn get(&self, i: u32) -> Option<T> {
+        self.try_get(i).unwrap_optimized()
+    }
+
+    /// Returns the item at the position or None if out-of-bounds.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the position cannot be converted to type T.
+    #[inline(always)]
+    pub fn try_get(&self, i: u32) -> Result<Option<T>, T::Error> {
         if i < self.len() {
-            let env = self.env();
-            let val = env.vec_get(self.obj, i.into()).unwrap_infallible();
-            Some(T::try_from_val(env, &val))
+            self.try_get_unchecked(i).map(|val| Some(val))
         } else {
-            None
+            Ok(None)
         }
     }
 
+    /// Returns the item at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
+    ///
+    /// If the value at the position cannot be converted to type T.
     #[inline(always)]
-    pub fn get_unchecked(&self, i: u32) -> Result<T, T::Error>
-    where
-        T::Error: Debug,
-    {
+    pub fn get_unchecked(&self, i: u32) -> T {
+        self.try_get_unchecked(i).unwrap_optimized()
+    }
+
+    /// Returns the item at the position.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
+    #[inline(always)]
+    pub fn try_get_unchecked(&self, i: u32) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_get(self.obj, i.into()).unwrap_infallible();
         T::try_from_val(env, &val)
     }
 
+    /// Sets the item at the position with new value.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn set(&mut self, i: u32, v: T) {
         let env = self.env();
@@ -395,6 +438,9 @@ where
             .unwrap_infallible();
     }
 
+    /// Removes the item at the position.
+    ///
+    /// Returns `None` if out-of-bounds.
     #[inline(always)]
     pub fn remove(&mut self, i: u32) -> Option<()> {
         if i < self.len() {
@@ -405,22 +451,33 @@ where
         }
     }
 
+    /// Removes the item at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
         let env = self.env();
         self.obj = env.vec_del(self.obj, i.into()).unwrap_infallible();
     }
 
+    /// Returns true if the vec is empty and contains no items.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Returns the number of items in the vec.
     #[inline(always)]
     pub fn len(&self) -> u32 {
         self.env.vec_len(self.obj).unwrap_infallible().into()
     }
 
+    /// Adds the item to the front.
+    ///
+    /// Increases the length by one, shifts all items up by one, and puts the
+    /// item in the first position.
     #[inline(always)]
     pub fn push_front(&mut self, x: T) {
         let env = self.env();
@@ -429,22 +486,62 @@ where
             .unwrap_infallible();
     }
 
+    /// Removes and returns the first item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the first position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_front(&mut self) -> Option<Result<T, T::Error>> {
-        let last = self.first()?;
-        let env = self.env();
-        self.obj = env.vec_pop_front(self.obj).unwrap_infallible();
-        Some(last)
+    pub fn pop_front(&mut self) -> Option<T> {
+        self.try_pop_front().unwrap_optimized()
     }
 
+    /// Removes and returns the first item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_front_unchecked(&mut self) -> Result<T, T::Error> {
-        let last = self.first_unchecked();
-        let env = self.env();
-        self.obj = env.vec_pop_front(self.obj).unwrap_infallible();
-        last
+    pub fn try_pop_front(&mut self) -> Result<Option<T>, T::Error> {
+        if self.is_empty() {
+            Ok(None)
+        } else {
+            self.try_pop_front_unchecked().map(|val| Some(val))
+        }
     }
 
+    /// Removes and returns the first item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn pop_front_unchecked(&mut self) -> T {
+        self.try_pop_front_unchecked().unwrap_optimized()
+    }
+
+    /// Removes and returns the first item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_pop_front_unchecked(&mut self) -> Result<T, T::Error> {
+        let last = self.try_first_unchecked()?;
+        let env = self.env();
+        self.obj = env.vec_pop_front(self.obj).unwrap_infallible();
+        Ok(last)
+    }
+
+    /// Adds the item to the back.
+    ///
+    /// Increases the length by one and puts the item in the last position.
     #[inline(always)]
     pub fn push_back(&mut self, x: T) {
         let env = self.env();
@@ -453,76 +550,168 @@ where
             .unwrap_infallible();
     }
 
+    /// Removes and returns the last item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_back(&mut self) -> Option<Result<T, T::Error>> {
-        let last = self.last()?;
-        let env = self.env();
-        self.obj = env.vec_pop_back(self.obj).unwrap_infallible();
-        Some(last)
+    pub fn pop_back(&mut self) -> Option<T> {
+        self.try_pop_back().unwrap_optimized()
     }
 
+    /// Removes and returns the last item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_back_unchecked(&mut self) -> Result<T, T::Error> {
-        let last = self.last_unchecked();
-        let env = self.env();
-        self.obj = env.vec_pop_back(self.obj).unwrap_infallible();
-        last
-    }
-
-    #[deprecated(note = "use [Vec::push_back]")]
-    #[inline(always)]
-    pub fn push(&mut self, x: T) {
-        self.push_back(x)
-    }
-
-    #[deprecated(note = "use [Vec::pop_back]")]
-    #[inline(always)]
-    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
-        self.pop_back()
-    }
-
-    #[deprecated(note = "use [Vec::push_back_unchecked]")]
-    #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
-        self.pop_back_unchecked()
-    }
-
-    #[inline(always)]
-    pub fn first(&self) -> Option<Result<T, T::Error>> {
+    pub fn try_pop_back(&mut self) -> Result<Option<T>, T::Error> {
         if self.is_empty() {
-            None
+            Ok(None)
         } else {
-            let env = &self.env;
-            let val = env.vec_front(self.obj).unwrap_infallible();
-            Some(T::try_from_val(env, &val))
+            self.try_pop_back_unchecked().map(|val| Some(val))
         }
     }
 
+    /// Removes and returns the last item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn first_unchecked(&self) -> Result<T, T::Error> {
+    pub fn pop_back_unchecked(&mut self) -> T {
+        self.try_pop_back_unchecked().unwrap_optimized()
+    }
+
+    /// Removes and returns the last item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_pop_back_unchecked(&mut self) -> Result<T, T::Error> {
+        let last = self.try_last_unchecked()?;
+        let env = self.env();
+        self.obj = env.vec_pop_back(self.obj).unwrap_infallible();
+        Ok(last)
+    }
+
+    /// Returns the first item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn first(&self) -> Option<T> {
+        self.try_first().unwrap_optimized()
+    }
+
+    /// Returns the first item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn try_first(&self) -> Result<Option<T>, T::Error> {
+        if self.is_empty() {
+            Ok(None)
+        } else {
+            self.try_first_unchecked().map(|val| Some(val))
+        }
+    }
+
+    /// Returns the first item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn first_unchecked(&self) -> T {
+        self.try_first_unchecked().unwrap_optimized()
+    }
+
+    /// Returns the first item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_first_unchecked(&self) -> Result<T, T::Error> {
         let env = &self.env;
         let val = env.vec_front(self.obj).unwrap_infallible();
         T::try_from_val(env, &val)
     }
 
+    /// Returns the last item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn last(&self) -> Option<Result<T, T::Error>> {
+    pub fn last(&self) -> Option<T> {
+        self.try_last().unwrap_optimized()
+    }
+
+    /// Returns the last item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
+    #[inline(always)]
+    pub fn try_last(&self) -> Result<Option<T>, T::Error> {
         if self.is_empty() {
-            None
+            Ok(None)
         } else {
-            let env = self.env();
-            let val = env.vec_back(self.obj).unwrap_infallible();
-            Some(T::try_from_val(env, &val))
+            self.try_last_unchecked().map(|val| Some(val))
         }
     }
 
+    /// Returns the last item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn last_unchecked(&self) -> Result<T, T::Error> {
+    pub fn last_unchecked(&self) -> T {
+        self.try_last_unchecked().unwrap_optimized()
+    }
+
+    /// Returns the last item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_last_unchecked(&self) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_back(self.obj).unwrap_infallible();
         T::try_from_val(env, &val)
     }
 
+    /// Inserts an item at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn insert(&mut self, i: u32, x: T) {
         let env = self.env();
@@ -569,31 +758,6 @@ where
             .vec_slice(self.obj, start_bound.into(), end_bound.into())
             .unwrap_infallible();
         unsafe { Self::unchecked_new(env.clone(), obj) }
-    }
-
-    pub fn iter(&self) -> VecIter<T>
-    where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-    {
-        self.clone().into_iter()
-    }
-
-    #[inline(always)]
-    pub fn iter_unchecked(&self) -> UncheckedIter<VecIter<T>, T, T::Error>
-    where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        T::Error: Debug,
-    {
-        self.iter().unchecked()
-    }
-
-    #[inline(always)]
-    pub fn into_iter_unchecked(self) -> UncheckedIter<VecIter<T>, T, T::Error>
-    where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        T::Error: Debug,
-    {
-        self.into_iter().unchecked()
     }
 }
 
@@ -669,7 +833,7 @@ where
     #[inline(always)]
     pub fn concat(&self) -> Vec<T> {
         let mut concatenated = vec![self.env()];
-        for vec in self.iter_unchecked() {
+        for vec in self.iter() {
             concatenated.append(&vec);
         }
         concatenated
@@ -680,24 +844,55 @@ impl<T> IntoIterator for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
-    type Item = Result<T, T::Error>;
-    type IntoIter = VecIter<T>;
+    type Item = T;
+    type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
 
     fn into_iter(self) -> Self::IntoIter {
-        VecIter(self)
+        VecTryIter(self).unwrapped()
+    }
+}
+
+impl<T> Vec<T>
+where
+    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+{
+    #[inline(always)]
+    pub fn iter(&self) -> UnwrappedIter<VecTryIter<T>, T, T::Error>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T::Error: Debug,
+    {
+        self.try_iter().unwrapped()
+    }
+
+    #[inline(always)]
+    pub fn try_iter(&self) -> VecTryIter<T>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+    {
+        VecTryIter(self.clone())
+    }
+
+    #[inline(always)]
+    pub fn into_try_iter(self) -> VecTryIter<T>
+    where
+        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T::Error: Debug,
+    {
+        VecTryIter(self.clone())
     }
 }
 
 #[derive(Clone)]
-pub struct VecIter<T>(Vec<T>);
+pub struct VecTryIter<T>(Vec<T>);
 
-impl<T> VecIter<T> {
+impl<T> VecTryIter<T> {
     fn into_vec(self) -> Vec<T> {
         self.0
     }
 }
 
-impl<T> Iterator for VecIter<T>
+impl<T> Iterator for VecTryIter<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -723,7 +918,7 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> DoubleEndedIterator for VecIter<T>
+impl<T> DoubleEndedIterator for VecTryIter<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -742,9 +937,9 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> FusedIterator for VecIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+impl<T> FusedIterator for VecTryIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
 
-impl<T> ExactSizeIterator for VecIter<T>
+impl<T> ExactSizeIterator for VecTryIter<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
 {
@@ -915,6 +1110,61 @@ mod test {
         let vec = vec![&env, 0, 1, 2, 3, 4];
 
         let mut iter = vec.iter();
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let mut iter = vec.iter();
+        assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.next_back(), Some(4));
+        assert_eq!(iter.next_back(), Some(3));
+        assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let mut iter = vec.iter().rev();
+        assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.next_back(), Some(0));
+        assert_eq!(iter.next_back(), Some(1));
+        assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_vec_iter_panic_on_conversion() {
+        let env = Env::default();
+
+        let vec: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let vec: Vec<i64> = vec.try_into_val(&env).unwrap();
+
+        let mut iter = vec.iter();
+        iter.next();
+    }
+
+    #[test]
+    fn test_vec_try_iter() {
+        let env = Env::default();
+
+        let vec: Vec<()> = vec![&env];
+        let mut iter = vec.try_iter();
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+
+        let mut iter = vec.try_iter();
         assert_eq!(iter.next(), Some(Ok(0)));
         assert_eq!(iter.next(), Some(Ok(1)));
         assert_eq!(iter.next(), Some(Ok(2)));
@@ -923,7 +1173,7 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
-        let mut iter = vec.iter();
+        let mut iter = vec.try_iter();
         assert_eq!(iter.next(), Some(Ok(0)));
         assert_eq!(iter.next_back(), Some(Ok(4)));
         assert_eq!(iter.next_back(), Some(Ok(3)));
@@ -934,7 +1184,7 @@ mod test {
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
 
-        let mut iter = vec.iter().rev();
+        let mut iter = vec.try_iter().rev();
         assert_eq!(iter.next(), Some(Ok(4)));
         assert_eq!(iter.next_back(), Some(Ok(0)));
         assert_eq!(iter.next_back(), Some(Ok(1)));
@@ -944,6 +1194,18 @@ mod test {
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_vec_try_iter_error_on_conversion() {
+        let env = Env::default();
+
+        let vec: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let vec: Vec<i64> = vec.try_into_val(&env).unwrap();
+
+        let mut iter = vec.try_iter();
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Err(ConversionError)));
     }
 
     #[test]
@@ -1046,13 +1308,92 @@ mod test {
         assert_eq!(v, vec![&env, 42]);
         v.push_front(1);
         assert_eq!(v, vec![&env, 1, 42]);
-        let pop_checked = v.pop_front();
-        assert_eq!(pop_checked, Some(Ok(1)));
+        v.push_front(5);
+        assert_eq!(v, vec![&env, 5, 1, 42]);
+        v.push_front(7);
+        assert_eq!(v, vec![&env, 7, 5, 1, 42]);
+
+        let popped = v.pop_front();
+        assert_eq!(popped, Some(7));
+        assert_eq!(v, vec![&env, 5, 1, 42]);
+
+        let popped = v.try_pop_front();
+        assert_eq!(popped, Ok(Some(5)));
+        assert_eq!(v, vec![&env, 1, 42]);
+
+        let popped = v.pop_front_unchecked();
+        assert_eq!(popped, 1);
         assert_eq!(v, vec![&env, 42]);
-        let pop_unchecked = v.pop_front_unchecked();
-        assert_eq!(pop_unchecked, Ok(42));
+
+        let popped = v.try_pop_front_unchecked();
+        assert_eq!(popped, Ok(42));
         assert_eq!(v, vec![&env]);
+
         assert_eq!(v.pop_front(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_front_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_front();
+    }
+
+    #[test]
+    fn test_try_pop_front_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_front(), Ok(Some(1)));
+        assert_eq!(v.try_pop_front(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_front_unchecked_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_front_unchecked();
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_pop_front_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        v.pop_front_unchecked();
+    }
+
+    #[test]
+    fn test_try_pop_front_unchecked_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_front_unchecked(), Ok(1));
+        assert_eq!(v.try_pop_front_unchecked(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_try_pop_front_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        let _ = v.try_pop_front_unchecked();
     }
 
     #[test]
@@ -1064,13 +1405,92 @@ mod test {
         assert_eq!(v, vec![&env, 42]);
         v.push_back(1);
         assert_eq!(v, vec![&env, 42, 1]);
-        let pop_checked = v.pop_back();
-        assert_eq!(pop_checked, Some(Ok(1)));
+        v.push_back(5);
+        assert_eq!(v, vec![&env, 42, 1, 5]);
+        v.push_back(7);
+        assert_eq!(v, vec![&env, 42, 1, 5, 7]);
+
+        let popped = v.pop_back();
+        assert_eq!(popped, Some(7));
+        assert_eq!(v, vec![&env, 42, 1, 5]);
+
+        let popped = v.try_pop_back();
+        assert_eq!(popped, Ok(Some(5)));
+        assert_eq!(v, vec![&env, 42, 1]);
+
+        let popped = v.pop_back_unchecked();
+        assert_eq!(popped, 1);
         assert_eq!(v, vec![&env, 42]);
-        let pop_unchecked = v.pop_back_unchecked();
-        assert_eq!(pop_unchecked, Ok(42));
+
+        let popped = v.try_pop_back_unchecked();
+        assert_eq!(popped, Ok(42));
         assert_eq!(v, vec![&env]);
+
         assert_eq!(v.pop_back(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_back_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_back();
+    }
+
+    #[test]
+    fn test_try_pop_back_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32, 2i64).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_back(), Ok(Some(2)));
+        assert_eq!(v.try_pop_back(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_back_unchecked_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_back_unchecked();
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_pop_back_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        v.pop_back_unchecked();
+    }
+
+    #[test]
+    fn test_try_pop_back_unchecked_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32, 2i64).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_back_unchecked(), Ok(2));
+        assert_eq!(v.try_pop_back_unchecked(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_try_pop_back_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        let _ = v.try_pop_back_unchecked();
     }
 
     #[test]
@@ -1080,12 +1500,12 @@ mod test {
         let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
 
         // get each item
-        assert_eq!(v.get(3), Some(Ok(5)));
-        assert_eq!(v.get(0), Some(Ok(0)));
-        assert_eq!(v.get(1), Some(Ok(3)));
-        assert_eq!(v.get(2), Some(Ok(5)));
-        assert_eq!(v.get(5), Some(Ok(9)));
-        assert_eq!(v.get(4), Some(Ok(7)));
+        assert_eq!(v.get(3), Some(5));
+        assert_eq!(v.get(0), Some(0));
+        assert_eq!(v.get(1), Some(3));
+        assert_eq!(v.get(2), Some(5));
+        assert_eq!(v.get(5), Some(9));
+        assert_eq!(v.get(4), Some(7));
 
         assert_eq!(v.get(v.len()), None);
         assert_eq!(v.get(v.len() + 1), None);
@@ -1100,26 +1520,113 @@ mod test {
     }
 
     #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_get_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        // panic because element one is not of the expected type
+        assert_eq!(v.get(1), Some(5));
+    }
+
+    #[test]
+    fn test_try_get() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        // get each item
+        assert_eq!(v.try_get(3), Ok(Some(5)));
+        assert_eq!(v.try_get(0), Ok(Some(0)));
+        assert_eq!(v.try_get(1), Ok(Some(3)));
+        assert_eq!(v.try_get(2), Ok(Some(5)));
+        assert_eq!(v.try_get(5), Ok(Some(9)));
+        assert_eq!(v.try_get(4), Ok(Some(7)));
+
+        assert_eq!(v.try_get(v.len()), Ok(None));
+        assert_eq!(v.try_get(v.len() + 1), Ok(None));
+        assert_eq!(v.try_get(u32::MAX), Ok(None));
+
+        // tests on an empty vec
+        let v = Vec::<i64>::new(&env);
+        assert_eq!(v.try_get(0), Ok(None));
+        assert_eq!(v.try_get(v.len()), Ok(None));
+        assert_eq!(v.try_get(v.len() + 1), Ok(None));
+        assert_eq!(v.try_get(u32::MAX), Ok(None));
+
+        // errors
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+        assert_eq!(v.try_get(0), Ok(Some(1)));
+        assert_eq!(v.try_get(1), Err(ConversionError));
+    }
+
+    #[test]
     fn test_get_unchecked() {
         let env = Env::default();
 
         let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
 
         // get each item
-        assert_eq!(v.get_unchecked(3), Ok(5));
-        assert_eq!(v.get_unchecked(0), Ok(0));
-        assert_eq!(v.get_unchecked(1), Ok(3));
-        assert_eq!(v.get_unchecked(2), Ok(5));
-        assert_eq!(v.get_unchecked(5), Ok(9));
-        assert_eq!(v.get_unchecked(4), Ok(7));
+        assert_eq!(v.get_unchecked(3), 5);
+        assert_eq!(v.get_unchecked(0), 0);
+        assert_eq!(v.get_unchecked(1), 3);
+        assert_eq!(v.get_unchecked(2), 5);
+        assert_eq!(v.get_unchecked(5), 9);
+        assert_eq!(v.get_unchecked(4), 7);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_get_unchecked_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        // panic because element one is not of the expected type
+        v.get_unchecked(1);
     }
 
     #[test]
     #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
-    fn test_get_unchecked_panics() {
+    fn test_get_unchecked_panics_on_out_of_bounds() {
         let env = Env::default();
+
         let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
         _ = v.get_unchecked(v.len()); // out of bound get
+    }
+
+    #[test]
+    fn test_try_get_unchecked() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+
+        // get each item
+        assert_eq!(v.try_get_unchecked(3), Ok(5));
+        assert_eq!(v.try_get_unchecked(0), Ok(0));
+        assert_eq!(v.try_get_unchecked(1), Ok(3));
+        assert_eq!(v.try_get_unchecked(2), Ok(5));
+        assert_eq!(v.try_get_unchecked(5), Ok(9));
+        assert_eq!(v.try_get_unchecked(4), Ok(7));
+
+        // errors
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+        assert_eq!(v.try_get_unchecked(0), Ok(1));
+        assert_eq!(v.try_get_unchecked(1), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_try_get_unchecked_panics() {
+        let env = Env::default();
+
+        let v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
+        _ = v.try_get_unchecked(v.len()); // out of bound get
     }
 
     #[test]

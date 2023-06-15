@@ -89,7 +89,7 @@ impl Deployer {
     /// corresponding to the provided serialized asset.
     ///
     /// `serialized_asset` is the Stellar `Asset` XDR serialized to bytes. Refer
-    /// to `stellar-xdr` create for the exact definition.
+    /// to `[soroban_sdk::xdr::Asset]`
     pub fn with_stellar_asset(
         &self,
         serialized_asset: impl IntoVal<Env, Bytes>,
@@ -150,7 +150,8 @@ pub struct DeployerWithAddress {
 impl DeployerWithAddress {
     /// Return the address of the contract defined by the deployer.
     #[doc(hidden)]
-    pub fn contract_address(&self) -> Address {
+    /// Returns what the address of the contract will be once deployed.
+    pub fn deployed_address(&self) -> Address {
         todo!()
     }
 
