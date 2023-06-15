@@ -3,7 +3,7 @@ use core::{
 };
 
 use crate::{
-    iter::{UncheckedEnumerable, UncheckedIter},
+    iter::{UnwrappedEnumerable, UnwrappedIter},
     unwrap::UnwrapInfallible,
 };
 
@@ -395,25 +395,25 @@ where
     }
 
     #[inline(always)]
-    pub fn iter_unchecked(&self) -> UncheckedIter<MapIter<K, V>, (K, V), ConversionError>
+    pub fn iter_unchecked(&self) -> UnwrappedIter<MapIter<K, V>, (K, V), ConversionError>
     where
         K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
         K::Error: Debug,
         V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
         V::Error: Debug,
     {
-        self.iter().unchecked()
+        self.iter().unwrapped()
     }
 
     #[inline(always)]
-    pub fn into_iter_unchecked(self) -> UncheckedIter<MapIter<K, V>, (K, V), ConversionError>
+    pub fn into_iter_unchecked(self) -> UnwrappedIter<MapIter<K, V>, (K, V), ConversionError>
     where
         K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
         K::Error: Debug,
         V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
         V::Error: Debug,
     {
-        self.into_iter().unchecked()
+        self.into_iter().unwrapped()
     }
 }
 
