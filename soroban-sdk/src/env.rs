@@ -445,18 +445,6 @@ impl Env {
     pub fn logger(&self) -> Logger {
         Logger::new(self)
     }
-
-    /// Replaces the executable of the current contract with the provided Wasm.
-    ///
-    /// The Wasm blob identified by the `wasm_hash` has to be already present
-    /// in the ledger (uploaded via `[Deployer::upload_contract_wasm]`).
-    ///
-    /// The function won't do anything immediately. The contract executable
-    /// will only be updated after the invocation has successfully finished.
-    pub fn update_current_contract_wasm(&self, wasm_hash: &BytesN<32>) {
-        internal::Env::update_current_contract_wasm(self, wasm_hash.to_object())
-            .unwrap_infallible();
-    }
 }
 
 #[cfg(any(test, feature = "testutils"))]
