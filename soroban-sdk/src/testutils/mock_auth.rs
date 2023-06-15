@@ -1,6 +1,7 @@
 #![cfg(any(test, feature = "testutils"))]
 
 use crate::{contractimpl, xdr, Address, Env, RawVal, Symbol, Vec};
+use rand::{thread_rng, Rng};
 use soroban_env_host::TryFromVal;
 
 #[doc(hidden)]
@@ -15,7 +16,6 @@ impl MockAuthContract {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MockAuth<'a> {
     pub address: &'a Address,
-    pub nonce: u64,
     pub invoke: &'a MockAuthInvoke<'a>,
 }
 
@@ -33,7 +33,8 @@ impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
             root_invocation: value.invoke.into(),
             credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
                 address: value.address.try_into().unwrap(),
-                nonce: value.nonce,
+                nonce: thread_rng().gen(),
+                signature_expiration_ledger: u32::MAX,
                 signature_args: xdr::ScVec::default(),
             }),
         }

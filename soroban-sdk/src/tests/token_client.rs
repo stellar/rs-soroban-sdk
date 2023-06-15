@@ -103,7 +103,6 @@ fn test_mock_auth() {
     client
         .mock_auths(&[MockAuth {
             address: &from,
-            nonce: 0,
             invoke: &MockAuthInvoke {
                 contract: &token_contract_id,
                 fn_name: "increase_allowance",

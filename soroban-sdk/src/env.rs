@@ -123,6 +123,7 @@ where
     }
 }
 
+use crate::auth::InvokerContractAuthEntry;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
@@ -419,23 +420,30 @@ impl Env {
         }
     }
 
+    /// Authorizes sub-contract calls on behalf of the current contract.
+    ///
+    /// All the direct calls that the current contract performs are always
+    /// considered to have been authorized. This is only needed to authorize
+    /// deeper calls that originate from the next contract call from the current
+    /// contract.
+    ///
+    /// For example, if the contract A calls contract B, contract
+    /// B calls contract C and contract C calls `A.require_auth()`, then an
+    /// entry corresponding to C call has to be passed in `auth_entries`. It
+    /// doesn't matter if contract B called `require_auth` or not. If contract A
+    /// calls contract B again, then `authorize_as_current_contract` has to be
+    /// called again with the respective entries.
+    ///
+    ///
+    pub fn authorize_as_current_contract(&self, auth_entries: Vec<InvokerContractAuthEntry>) {
+        internal::Env::authorize_as_curr_contract(self, auth_entries.to_object())
+            .unwrap_infallible();
+    }
+
     /// Get the [Logger] for logging debug events.
     #[inline(always)]
     pub fn logger(&self) -> Logger {
         Logger::new(self)
-    }
-
-    /// Replaces the executable of the current contract with the provided Wasm.
-    ///
-    /// The Wasm blob identified by the `wasm_hash` has to be already present
-    /// on-chain (the upload happens via `INSTALL_CONTRACT_CODE` host function
-    /// or via `install_contract_wasm` test function in unit tests).
-    ///
-    /// The function won't do anything immediately. The contract executable
-    /// will only be updated after the invocation has successfully finished.
-    pub fn update_current_contract_wasm(&self, wasm_hash: &BytesN<32>) {
-        internal::Env::update_current_contract_wasm(self, wasm_hash.to_object())
-            .unwrap_infallible();
     }
 }
 
@@ -446,6 +454,8 @@ use crate::testutils::{
     budget::Budget, random, Address as _, AuthorizedInvocation, ContractFunctionSet, Ledger as _,
     MockAuth, MockAuthContract,
 };
+#[cfg(any(test, feature = "testutils"))]
+use crate::Bytes;
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -603,9 +613,9 @@ impl Env {
     pub fn register_contract_wasm<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
-        contract_wasm: &[u8],
+        contract_wasm: impl IntoVal<Env, Bytes>,
     ) -> Address {
-        let wasm_hash: BytesN<32> = self.install_contract_wasm(contract_wasm);
+        let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
             xdr::ScContractExecutable::WasmRef(xdr::Hash(wasm_hash.into())),
@@ -776,7 +786,6 @@ impl Env {
     ///     client.mock_auths(&[
     ///         MockAuth {
     ///             address: &addr,
-    ///             nonce: 0,
     ///             invoke: &MockAuthInvoke {
     ///                 contract: &contract_id,
     ///                 fn_name: "hello",
@@ -1053,7 +1062,7 @@ impl Env {
         let contract_id_hash = Hash(contract_id.contract_id().into());
         let data_key = xdr::ScVal::LedgerKeyContractExecutable;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
-            contract_id: contract_id_hash.clone(),
+            contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
             key: data_key.clone(),
             type_: xdr::ContractDataType::Mergeable,
             le_type: xdr::ContractLedgerEntryType::DataEntry,
@@ -1068,7 +1077,7 @@ impl Env {
             ext: xdr::LedgerEntryExt::V0,
             last_modified_ledger_seq: 0,
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                contract_id: contract_id_hash.clone(),
+                contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
                 key: data_key,
                 body,
                 expiration_ledger_seq: 0,
@@ -1078,39 +1087,6 @@ impl Env {
         self.env_impl
             .with_mut_storage(|storage| storage.put(&key, &entry, &self.env_impl.budget_cloned()))
             .unwrap();
-    }
-
-    /// Install the contract WASM code to the [Env] for testing.
-    ///
-    /// Returns the hash of the installed code that can be then used for
-    /// the contract deployment.
-    ///
-    /// Useful for contract factory testing, otherwise use
-    /// `register_contract_wasm` function that installs and deploys the contract
-    /// in a single call.
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{BytesN, Env};
-    ///
-    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
-    ///
-    /// #[test]
-    /// fn test() {
-    /// # }
-    /// # fn main() {
-    ///     let env = Env::default();
-    ///     env.install_contract_wasm(WASM);
-    /// }
-    /// ```
-    pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
-        self.env_impl
-            .invoke_function(xdr::HostFunction::UploadContractWasm(
-                contract_wasm.try_into().unwrap(),
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap()
     }
 
     /// Run the function as if executed by the given contract ID.
