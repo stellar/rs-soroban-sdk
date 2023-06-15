@@ -7,7 +7,7 @@ use stellar_xdr::ScSpecEntry;
 
 use types::Entry;
 
-use crate::read::{from_wasm, FromWasmError};
+use soroban_spec::read::{from_wasm, FromWasmError};
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
@@ -57,15 +57,16 @@ pub fn generate(spec: &[ScSpecEntry]) -> String {
 #[cfg(test)]
 mod test {
     use pretty_assertions::assert_eq;
+    use soroban_spec::read::from_wasm;
 
     use super::generate;
 
     const EXAMPLE_WASM: &[u8] =
-        include_bytes!("../../../target/wasm32-unknown-unknown/release/test_udt.wasm");
+        include_bytes!("../../target/wasm32-unknown-unknown/release/test_udt.wasm");
 
     #[test]
     fn example() {
-        let entries = crate::read::from_wasm(EXAMPLE_WASM).unwrap();
+        let entries = from_wasm(EXAMPLE_WASM).unwrap();
         let json = generate(&entries);
         assert_eq!(
             json,
