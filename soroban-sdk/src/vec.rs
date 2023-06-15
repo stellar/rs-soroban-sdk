@@ -1201,6 +1201,12 @@ mod test {
         assert_eq!(v.try_get(v.len()), Ok(None));
         assert_eq!(v.try_get(v.len() + 1), Ok(None));
         assert_eq!(v.try_get(u32::MAX), Ok(None));
+
+        // errors
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+        assert_eq!(v.try_get(0), Ok(Some(1)));
+        assert_eq!(v.try_get(1), Err(ConversionError));
     }
 
     #[test]
@@ -1252,6 +1258,12 @@ mod test {
         assert_eq!(v.try_get_unchecked(2), Ok(5));
         assert_eq!(v.try_get_unchecked(5), Ok(9));
         assert_eq!(v.try_get_unchecked(4), Ok(7));
+
+        // errors
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Vec<i64> = v.try_into_val(&env).unwrap();
+        assert_eq!(v.try_get_unchecked(0), Ok(1));
+        assert_eq!(v.try_get_unchecked(1), Err(ConversionError));
     }
 
     #[test]
