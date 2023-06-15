@@ -447,6 +447,9 @@ where
             .unwrap_infallible();
     }
 
+    /// Removes the item at the position.
+    ///
+    /// Returns `None` if out-of-bounds.
     #[inline(always)]
     pub fn remove(&mut self, i: u32) -> Option<()> {
         if i < self.len() {
@@ -457,22 +460,33 @@ where
         }
     }
 
+    /// Removes the item at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
         let env = self.env();
         self.obj = env.vec_del(self.obj, i.into()).unwrap_infallible();
     }
 
+    /// Returns true if the vec is empty and contains no items.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Returns the number of items in the vec.
     #[inline(always)]
     pub fn len(&self) -> u32 {
         self.env.vec_len(self.obj).unwrap_infallible().into()
     }
 
+    /// Adds the item to the front.
+    ///
+    /// Increases the length by one, shifts all items up by one, and puts the
+    /// item in the first position.
     #[inline(always)]
     pub fn push_front(&mut self, x: T) {
         let env = self.env();
@@ -481,22 +495,62 @@ where
             .unwrap_infallible();
     }
 
+    /// Removes and returns the first item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the first position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_front(&mut self) -> Option<Result<T, T::Error>> {
-        let last = self.first()?;
-        let env = self.env();
-        self.obj = env.vec_pop_front(self.obj).unwrap_infallible();
-        Some(last)
+    pub fn pop_front(&mut self) -> Option<T> {
+        self.try_pop_front().unwrap_optimized()
     }
 
+    /// Removes and returns the first item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_front_unchecked(&mut self) -> Result<T, T::Error> {
-        let last = self.first_unchecked();
-        let env = self.env();
-        self.obj = env.vec_pop_front(self.obj).unwrap_infallible();
-        last
+    pub fn try_pop_front(&mut self) -> Result<Option<T>, T::Error> {
+        if self.is_empty() {
+            Ok(None)
+        } else {
+            self.try_pop_front_unchecked().map(|val| Some(val))
+        }
     }
 
+    /// Removes and returns the first item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn pop_front_unchecked(&mut self) -> T {
+        self.try_pop_front_unchecked().unwrap_optimized()
+    }
+
+    /// Removes and returns the first item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_pop_front_unchecked(&mut self) -> Result<T, T::Error> {
+        let last = self.try_first_unchecked()?;
+        let env = self.env();
+        self.obj = env.vec_pop_front(self.obj).unwrap_infallible();
+        Ok(last)
+    }
+
+    /// Adds the item to the back.
+    ///
+    /// Increases the length by one and puts the item in the last position.
     #[inline(always)]
     pub fn push_back(&mut self, x: T) {
         let env = self.env();
@@ -505,76 +559,168 @@ where
             .unwrap_infallible();
     }
 
+    /// Removes and returns the last item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_back(&mut self) -> Option<Result<T, T::Error>> {
-        let last = self.last()?;
-        let env = self.env();
-        self.obj = env.vec_pop_back(self.obj).unwrap_infallible();
-        Some(last)
+    pub fn pop_back(&mut self) -> Option<T> {
+        self.try_pop_back().unwrap_optimized()
     }
 
+    /// Removes and returns the last item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn pop_back_unchecked(&mut self) -> Result<T, T::Error> {
-        let last = self.last_unchecked();
-        let env = self.env();
-        self.obj = env.vec_pop_back(self.obj).unwrap_infallible();
-        last
-    }
-
-    #[deprecated(note = "use [Vec::push_back]")]
-    #[inline(always)]
-    pub fn push(&mut self, x: T) {
-        self.push_back(x)
-    }
-
-    #[deprecated(note = "use [Vec::pop_back]")]
-    #[inline(always)]
-    pub fn pop(&mut self) -> Option<Result<T, T::Error>> {
-        self.pop_back()
-    }
-
-    #[deprecated(note = "use [Vec::push_back_unchecked]")]
-    #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> Result<T, T::Error> {
-        self.pop_back_unchecked()
-    }
-
-    #[inline(always)]
-    pub fn first(&self) -> Option<Result<T, T::Error>> {
+    pub fn try_pop_back(&mut self) -> Result<Option<T>, T::Error> {
         if self.is_empty() {
-            None
+            Ok(None)
         } else {
-            let env = &self.env;
-            let val = env.vec_front(self.obj).unwrap_infallible();
-            Some(T::try_from_val(env, &val))
+            self.try_pop_back_unchecked().map(|val| Some(val))
         }
     }
 
+    /// Removes and returns the last item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn first_unchecked(&self) -> Result<T, T::Error> {
+    pub fn pop_back_unchecked(&mut self) -> T {
+        self.try_pop_back_unchecked().unwrap_optimized()
+    }
+
+    /// Removes and returns the last item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_pop_back_unchecked(&mut self) -> Result<T, T::Error> {
+        let last = self.try_last_unchecked()?;
+        let env = self.env();
+        self.obj = env.vec_pop_back(self.obj).unwrap_infallible();
+        Ok(last)
+    }
+
+    /// Returns the first item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn first(&self) -> Option<T> {
+        self.try_first().unwrap_optimized()
+    }
+
+    /// Returns the first item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn try_first(&self) -> Result<Option<T>, T::Error> {
+        if self.is_empty() {
+            Ok(None)
+        } else {
+            self.try_first_unchecked().map(|val| Some(val))
+        }
+    }
+
+    /// Returns the first item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    #[inline(always)]
+    pub fn first_unchecked(&self) -> T {
+        self.try_first_unchecked().unwrap_optimized()
+    }
+
+    /// Returns the first item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the first position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_first_unchecked(&self) -> Result<T, T::Error> {
         let env = &self.env;
         let val = env.vec_front(self.obj).unwrap_infallible();
         T::try_from_val(env, &val)
     }
 
+    /// Returns the last item or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn last(&self) -> Option<Result<T, T::Error>> {
+    pub fn last(&self) -> Option<T> {
+        self.try_last().unwrap_optimized()
+    }
+
+    /// Returns the last item or None if empty.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
+    #[inline(always)]
+    pub fn try_last(&self) -> Result<Option<T>, T::Error> {
         if self.is_empty() {
-            None
+            Ok(None)
         } else {
-            let env = self.env();
-            let val = env.vec_back(self.obj).unwrap_infallible();
-            Some(T::try_from_val(env, &val))
+            self.try_last_unchecked().map(|val| Some(val))
         }
     }
 
+    /// Returns the last item.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    ///
+    /// If the value at the last position cannot be converted to type T.
     #[inline(always)]
-    pub fn last_unchecked(&self) -> Result<T, T::Error> {
+    pub fn last_unchecked(&self) -> T {
+        self.try_last_unchecked().unwrap_optimized()
+    }
+
+    /// Returns the last item.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the last position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the vec is empty.
+    #[inline(always)]
+    pub fn try_last_unchecked(&self) -> Result<T, T::Error> {
         let env = self.env();
         let val = env.vec_back(self.obj).unwrap_infallible();
         T::try_from_val(env, &val)
     }
 
+    /// Inserts an item at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn insert(&mut self, i: u32, x: T) {
         let env = self.env();
@@ -1112,13 +1258,92 @@ mod test {
         assert_eq!(v, vec![&env, 42]);
         v.push_front(1);
         assert_eq!(v, vec![&env, 1, 42]);
-        let pop_checked = v.pop_front();
-        assert_eq!(pop_checked, Some(Ok(1)));
+        v.push_front(5);
+        assert_eq!(v, vec![&env, 5, 1, 42]);
+        v.push_front(7);
+        assert_eq!(v, vec![&env, 7, 5, 1, 42]);
+
+        let popped = v.pop_front();
+        assert_eq!(popped, Some(7));
+        assert_eq!(v, vec![&env, 5, 1, 42]);
+
+        let popped = v.try_pop_front();
+        assert_eq!(popped, Ok(Some(5)));
+        assert_eq!(v, vec![&env, 1, 42]);
+
+        let popped = v.pop_front_unchecked();
+        assert_eq!(popped, 1);
         assert_eq!(v, vec![&env, 42]);
-        let pop_unchecked = v.pop_front_unchecked();
-        assert_eq!(pop_unchecked, Ok(42));
+
+        let popped = v.try_pop_front_unchecked();
+        assert_eq!(popped, Ok(42));
         assert_eq!(v, vec![&env]);
+
         assert_eq!(v.pop_front(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_front_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_front();
+    }
+
+    #[test]
+    fn test_try_pop_front_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_front(), Ok(Some(1)));
+        assert_eq!(v.try_pop_front(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_front_unchecked_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_front_unchecked();
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_pop_front_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        v.pop_front_unchecked();
+    }
+
+    #[test]
+    fn test_try_pop_front_unchecked_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_front_unchecked(), Ok(1));
+        assert_eq!(v.try_pop_front_unchecked(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_try_pop_front_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        let _ = v.try_pop_front_unchecked();
     }
 
     #[test]
@@ -1130,13 +1355,92 @@ mod test {
         assert_eq!(v, vec![&env, 42]);
         v.push_back(1);
         assert_eq!(v, vec![&env, 42, 1]);
-        let pop_checked = v.pop_back();
-        assert_eq!(pop_checked, Some(Ok(1)));
+        v.push_back(5);
+        assert_eq!(v, vec![&env, 42, 1, 5]);
+        v.push_back(7);
+        assert_eq!(v, vec![&env, 42, 1, 5, 7]);
+
+        let popped = v.pop_back();
+        assert_eq!(popped, Some(7));
+        assert_eq!(v, vec![&env, 42, 1, 5]);
+
+        let popped = v.try_pop_back();
+        assert_eq!(popped, Ok(Some(5)));
+        assert_eq!(v, vec![&env, 42, 1]);
+
+        let popped = v.pop_back_unchecked();
+        assert_eq!(popped, 1);
         assert_eq!(v, vec![&env, 42]);
-        let pop_unchecked = v.pop_back_unchecked();
-        assert_eq!(pop_unchecked, Ok(42));
+
+        let popped = v.try_pop_back_unchecked();
+        assert_eq!(popped, Ok(42));
         assert_eq!(v, vec![&env]);
+
         assert_eq!(v.pop_back(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_back_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_back();
+    }
+
+    #[test]
+    fn test_try_pop_back_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32, 2i64).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_back(), Ok(Some(2)));
+        assert_eq!(v.try_pop_back(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "ConversionError")]
+    fn test_pop_back_unchecked_panics_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        v.pop_back_unchecked();
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_pop_back_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        v.pop_back_unchecked();
+    }
+
+    #[test]
+    fn test_try_pop_back_unchecked_errors_on_conversion() {
+        let env = Env::default();
+
+        let v: RawVal = (1i32, 2i64).try_into_val(&env).unwrap();
+        let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
+
+        assert_eq!(v.try_pop_back_unchecked(), Ok(2));
+        assert_eq!(v.try_pop_back_unchecked(), Err(ConversionError));
+    }
+
+    #[test]
+    #[should_panic(expected = "HostError: Error(Object, IndexBounds)")]
+    fn test_try_pop_back_unchecked_panics_on_out_of_bounds() {
+        let env = Env::default();
+
+        let mut v = Vec::<i64>::new(&env);
+
+        let _ = v.try_pop_back_unchecked();
     }
 
     #[test]
