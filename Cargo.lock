@@ -900,14 +900,25 @@ dependencies = [
  "prettyplease",
  "proc-macro2",
  "quote",
- "serde",
- "serde_derive",
- "serde_json",
  "sha2",
  "stellar-xdr",
  "syn 2.0.15",
  "thiserror",
  "wasmparser",
+]
+
+[[package]]
+name = "soroban-spec-json"
+version = "0.8.4"
+dependencies = [
+ "pretty_assertions",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "sha2",
+ "soroban-spec",
+ "stellar-xdr",
+ "thiserror",
 ]
 
 [[package]]
