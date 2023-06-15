@@ -81,18 +81,18 @@ export async function invoke({ method, args = [], fee = 100, signAndSend = false
 
   // is it possible for `auths` to be present but empty? Probably not, but let's be safe.
   const auths = simulated.results?.[0]?.auth
+  let auth_len =  auths?.length ?? 0;
 
-  if (auths.length > 1) {
+  if (auth_len > 1) {
     throw new NotImplementedError("Multiple auths not yet supported")
-  }
-
-  const auth = SorobanClient.xdr.ContractAuth.fromXDR(auths[0], 'base64')
-
-  if (auth.addressWithNonce() !== undefined) {
-    throw new NotImplementedError(
-      `This transaction needs to be signed by ${auth.addressWithNonce()
-      }; Not yet supported`
-    )
+  } else if (auth_len == 1) {
+    const auth = SorobanClient.xdr.ContractAuth.fromXDR(auths![0]!, 'base64')
+    if (auth.addressWithNonce() !== undefined) {
+      throw new NotImplementedError(
+        `This transaction needs to be signed by ${auth.addressWithNonce()
+        }; Not yet supported`
+      )
+    }
   }
 
   tx = await signTx(
