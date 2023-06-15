@@ -83,7 +83,7 @@ macro_rules! map {
 /// let env = Env::default();
 /// let map = map![&env, (2, 20), (1, 10)];
 /// assert_eq!(map.len(), 2);
-/// assert_eq!(map.iter().next(), Some(Ok((1, 10))));
+/// assert_eq!(map.iter().next(), Some((1, 10)));
 /// ```
 ///
 /// Maps are ordered and so maps created with elements in different order will
