@@ -4,8 +4,13 @@ import path from "node:path"
 
 const buildDir = "./dist"
 
-spawnSync("rm", ["-rf", buildDir], { stdio: "inherit" })
-spawnSync("tsc", ["-b", "./scripts/tsconfig.cjs.json", "./scripts/tsconfig.esm.json", "./scripts/tsconfig.types.json"], { stdio: "inherit" })
+const { error, stderr } = spawnSync("tsc", ["-b", "./scripts/tsconfig.cjs.json", "./scripts/tsconfig.esm.json", "./scripts/tsconfig.types.json"], { stdio: "inherit" })
+
+if (error) {
+  console.error(stderr)
+  console.error(error)
+  throw error
+}
 
 function createEsmModulePackageJson() {
   fs.readdir(buildDir, function (err, dirs) {
