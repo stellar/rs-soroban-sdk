@@ -13,7 +13,7 @@ pub enum Error {
 impl Contract {
     pub fn hello(env: Env, flag: u32) -> Result<Symbol, Error> {
         env.storage()
-            .mergeable()
+            .persistent()
             .set(&Symbol::short("persisted"), &true, None);
         if flag == 0 {
             Ok(Symbol::short("hello"))
@@ -31,7 +31,7 @@ impl Contract {
     #[cfg(test)]
     pub fn persisted(env: Env) -> bool {
         env.storage()
-            .mergeable()
+            .persistent()
             .get(&Symbol::short("persisted"))
             .unwrap_or(false)
     }

@@ -43,9 +43,9 @@ use crate::{
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
 /// let key = Symbol::short("key");
-/// storage.mergeable().set(&key, &1, None);
-/// assert_eq!(storage.mergeable().has(&key), true);
-/// assert_eq!(storage.mergeable().get::<_, i32>(&key), Some(1));
+/// storage.persistent().set(&key, &1, None);
+/// assert_eq!(storage.persistent().has(&key), true);
+/// assert_eq!(storage.persistent().get::<_, i32>(&key), Some(1));
 /// #     }
 /// # }
 /// #
@@ -75,14 +75,8 @@ impl Storage {
         Storage { env: env.clone() }
     }
 
-    pub fn exclusive(&self) -> Exclusive {
-        Exclusive {
-            storage: self.clone(),
-        }
-    }
-
-    pub fn mergeable(&self) -> Mergeable {
-        Mergeable {
+    pub fn persistent(&self) -> Persistent {
+        Persistent {
             storage: self.clone(),
         }
     }
@@ -188,16 +182,16 @@ impl Storage {
     }
 }
 
-pub struct Exclusive {
+pub struct Persistent {
     storage: Storage,
 }
 
-impl Exclusive {
+impl Persistent {
     pub fn has<K>(&self, key: &K) -> bool
     where
         K: IntoVal<Env, RawVal>,
     {
-        self.storage.has(key, StorageType::EXCLUSIVE)
+        self.storage.has(key, StorageType::PERSISTENT)
     }
 
     pub fn get<K, V>(&self, key: &K) -> Option<V>
@@ -206,7 +200,7 @@ impl Exclusive {
         K: IntoVal<Env, RawVal>,
         V: TryFromVal<Env, RawVal>,
     {
-        self.storage.get(key, StorageType::EXCLUSIVE)
+        self.storage.get(key, StorageType::PERSISTENT)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
@@ -214,7 +208,7 @@ impl Exclusive {
         K: IntoVal<Env, RawVal>,
         V: IntoVal<Env, RawVal>,
     {
-        self.storage.set(key, val, StorageType::EXCLUSIVE, flags)
+        self.storage.set(key, val, StorageType::PERSISTENT, flags)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -222,7 +216,7 @@ impl Exclusive {
         K: IntoVal<Env, RawVal>,
     {
         self.storage
-            .bump(key, StorageType::EXCLUSIVE, min_ledgers_to_live)
+            .bump(key, StorageType::PERSISTENT, min_ledgers_to_live)
     }
 
     #[inline(always)]
@@ -230,53 +224,7 @@ impl Exclusive {
     where
         K: IntoVal<Env, RawVal>,
     {
-        self.storage.remove(key, StorageType::EXCLUSIVE)
-    }
-}
-
-pub struct Mergeable {
-    storage: Storage,
-}
-
-impl Mergeable {
-    pub fn has<K>(&self, key: &K) -> bool
-    where
-        K: IntoVal<Env, RawVal>,
-    {
-        self.storage.has(key, StorageType::MERGEABLE)
-    }
-
-    pub fn get<K, V>(&self, key: &K) -> Option<V>
-    where
-        V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
-    {
-        self.storage.get(key, StorageType::MERGEABLE)
-    }
-
-    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
-    where
-        K: IntoVal<Env, RawVal>,
-        V: IntoVal<Env, RawVal>,
-    {
-        self.storage.set(key, val, StorageType::MERGEABLE, flags)
-    }
-
-    pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
-    where
-        K: IntoVal<Env, RawVal>,
-    {
-        self.storage
-            .bump(key, StorageType::MERGEABLE, min_ledgers_to_live)
-    }
-
-    #[inline(always)]
-    pub fn remove<K>(&self, key: &K)
-    where
-        K: IntoVal<Env, RawVal>,
-    {
-        self.storage.remove(key, StorageType::MERGEABLE)
+        self.storage.remove(key, StorageType::PERSISTENT)
     }
 }
 

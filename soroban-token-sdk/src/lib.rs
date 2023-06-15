@@ -25,7 +25,7 @@ impl TokenUtils {
     pub fn set_metadata(&self, metadata: &TokenMetadata) {
         self.0
             .storage()
-            .mergeable()
+            .persistent()
             .set(&METADATA_KEY, metadata, None);
     }
 
@@ -33,7 +33,7 @@ impl TokenUtils {
     pub fn get_metadata(&self) -> TokenMetadata {
         self.0
             .storage()
-            .mergeable()
+            .persistent()
             .get(&METADATA_KEY)
             .unwrap_optimized()
     }
