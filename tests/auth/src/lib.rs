@@ -68,7 +68,6 @@ mod test_a {
         let r = client
             .mock_auths(&[MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_id,
                     fn_name: "fn1",
@@ -108,7 +107,8 @@ mod test_a {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 123,
+                    signature_expiration_ledger: 100,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
@@ -155,7 +155,8 @@ mod test_a {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 456,
+                    signature_expiration_ledger: u32::MAX,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
@@ -301,7 +302,6 @@ mod test_b {
         let r = client
             .mock_auths(&[MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_b_id,
                     fn_name: "fn2",
@@ -354,7 +354,8 @@ mod test_b {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 543,
+                    signature_expiration_ledger: 100,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
@@ -420,7 +421,8 @@ mod test_b {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 789,
+                    signature_expiration_ledger: 150,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {

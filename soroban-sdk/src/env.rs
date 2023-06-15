@@ -798,7 +798,6 @@ impl Env {
     ///     client.mock_auths(&[
     ///         MockAuth {
     ///             address: &addr,
-    ///             nonce: 0,
     ///             invoke: &MockAuthInvoke {
     ///                 contract: &contract_id,
     ///                 fn_name: "hello",
@@ -1075,7 +1074,7 @@ impl Env {
         let contract_id_hash = Hash(contract_id.contract_id().into());
         let data_key = xdr::ScVal::LedgerKeyContractExecutable;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
-            contract_id: contract_id_hash.clone(),
+            contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
             key: data_key.clone(),
             type_: xdr::ContractDataType::Mergeable,
             le_type: xdr::ContractLedgerEntryType::DataEntry,
@@ -1090,7 +1089,7 @@ impl Env {
             ext: xdr::LedgerEntryExt::V0,
             last_modified_ledger_seq: 0,
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                contract_id: contract_id_hash.clone(),
+                contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
                 key: data_key,
                 body,
                 expiration_ledger_seq: 0,
