@@ -437,6 +437,11 @@ where
         T::try_from_val(env, &val)
     }
 
+    /// Sets the item at the position with new value.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn set(&mut self, i: u32, v: T) {
         let env = self.env();
