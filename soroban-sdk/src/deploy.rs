@@ -92,6 +92,20 @@ impl Deployer {
     ///
     /// Returns the hash of the uploaded Wasm that can be then used for
     /// the contract deployment.
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.deployer().upload_contract_wasm(WASM);
+    /// }
+    /// ```
     pub fn upload_contract_wasm(&self, contract_wasm: impl IntoVal<Env, Bytes>) -> BytesN<32> {
         self.env
             .upload_wasm(contract_wasm.into_val(&self.env).to_object())

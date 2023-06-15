@@ -44,7 +44,7 @@ pub enum ContractExecutable {
 /// A node in the tree of authorizations performed on behalf of the current
 /// contract as invoker of the contracts deeper in the call stack.
 ///
-/// This is used as an argument of `authorize_as_curr_contract` host function.
+/// This is used as an argument of `authorize_as_current_contract` host function.
 ///
 /// This tree corresponds `require_auth[_for_args]` calls on behalf of the
 /// current contract.

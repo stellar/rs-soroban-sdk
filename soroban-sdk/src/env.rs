@@ -431,11 +431,11 @@ impl Env {
     /// B calls contract C and contract C calls `A.require_auth()`, then an
     /// entry corresponding to C call has to be passed in `auth_entries`. It
     /// doesn't matter if contract B called `require_auth` or not. If contract A
-    /// calls contract B again, then `authorize_as_curr_contract` has to be
+    /// calls contract B again, then `authorize_as_current_contract` has to be
     /// called again with the respective entries.
     ///
     ///
-    pub fn authorize_as_curr_contract(&self, auth_entries: Vec<InvokerContractAuthEntry>) {
+    pub fn authorize_as_current_contract(&self, auth_entries: Vec<InvokerContractAuthEntry>) {
         internal::Env::authorize_as_curr_contract(self, auth_entries.to_object())
             .unwrap_infallible();
     }
@@ -449,7 +449,7 @@ impl Env {
     /// Replaces the executable of the current contract with the provided Wasm.
     ///
     /// The Wasm blob identified by the `wasm_hash` has to be already present
-    /// on-chain (uploaded via `upload_contract_wasm` host function).
+    /// in the ledger (uploaded via `[Deployer::upload_contract_wasm]`).
     ///
     /// The function won't do anything immediately. The contract executable
     /// will only be updated after the invocation has successfully finished.
