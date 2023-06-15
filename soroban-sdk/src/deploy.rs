@@ -89,7 +89,7 @@ impl Deployer {
     /// corresponding to the provided serialized asset.
     ///
     /// `serialized_asset` is the Stellar `Asset` XDR serialized to bytes. Refer
-    /// to `stellar-xdr` create for the exact definition.
+    /// to `[soroban_sdk::xdr::Asset]`
     pub fn with_stellar_asset(
         &self,
         serialized_asset: impl IntoVal<Env, Bytes>,
