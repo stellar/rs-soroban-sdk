@@ -84,6 +84,17 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// returns a `Result` that will be `Err` if the conversion fails. Functions
 /// that are not prefixed with `try_` will panic if conversion fails.
 ///
+/// There are some cases where this lack of guarantee is important:
+///
+/// - When storing a Vec that has been provided externally as a contract
+/// function argument, be aware there is no guarantee that all items in the Vec
+/// will be of type `T`. It may be necessary to validate all values, either
+/// before storing, or when loading with `try_` variation functions.
+///
+/// - When accessing and iterating over a Vec that has been provided externally
+/// as a contract function input, and the contract needs to be resilient to
+/// failure, use the `try_` variation functions.
+///
 /// Functions with an `_unchecked` suffix will panic if called with indexes that
 /// are out-of-bounds.
 ///
