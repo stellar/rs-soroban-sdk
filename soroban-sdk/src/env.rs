@@ -328,7 +328,7 @@ impl Env {
     ///         let stack = env.call_stack();
     ///         assert_eq!(stack.len(), 1);
     ///
-    ///         let outer = stack.get(0).unwrap().unwrap();
+    ///         let outer = stack.get_unchecked(0);
     ///         log!(&env, "{}", outer);
     ///     }
     /// }
@@ -354,7 +354,7 @@ impl Env {
             unsafe { Vec::<(BytesN<32>, crate::Symbol)>::unchecked_new(self.clone(), stack) };
 
         let mut stack_with_addresses = Vec::new(self);
-        for (id, sym) in stack.iter_unchecked() {
+        for (id, sym) in stack.iter() {
             stack_with_addresses.push_back((Address::from_contract_id(&id), sym));
         }
 

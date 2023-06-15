@@ -171,7 +171,7 @@ pub fn derive_type_enum(
                 use #path::{EnvBase,TryIntoVal,TryFromVal};
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
                 let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
-                let mut iter = vec.iter();
+                let mut iter = vec.try_iter();
                 let discriminant: #path::Symbol = iter.next().ok_or(#path::ConversionError)??.try_into_val(env).map_err(|_|#path::ConversionError)?;
                 Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_val(), CASES)?) as usize {
                     #(#try_froms,)*
