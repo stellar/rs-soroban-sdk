@@ -20,8 +20,8 @@
 //! # impl Contract {
 //! #     pub fn f(env: Env, wasm_hash: BytesN<32>) {
 //! #         let salt = [0u8; 32];
-//! let deployer = env.deployer().with_current_contract();
-//! let contract_address = deployer.deploy(&salt, &wasm_hash);
+//! #         let deployer = env.deployer().with_current_contract(salt);
+//! #         let contract_address = deployer.deploy(wasm_hash);
 //! #     }
 //! # }
 //! #
@@ -56,36 +56,48 @@ impl Deployer {
         &self.env
     }
 
-    /// Get a deployer that deploys contracts that derive their contract IDs
-    /// from the current contract.
-    pub fn with_current_contract(&self) -> DeployerWithAddress {
+    /// Get a deployer that deploys contract that derive the contract IDs
+    /// from the current contract and provided salt.
+    pub fn with_current_contract(
+        &self,
+        salt: impl IntoVal<Env, BytesN<32>>,
+    ) -> DeployerWithAddress {
         DeployerWithAddress {
             env: self.env.clone(),
             address: self.env.current_contract_address(),
+            salt: salt.into_val(&self.env),
         }
     }
 
-    /// Get a deployer that deploys contracts that derive their contract IDs
-    /// from the provided address.
+    /// Get a deployer that deploys contracts that derive the contract ID
+    /// from the provided address and salt.
     ///
     /// The deployer address must authorize all the deployments.
-    pub fn with_address(&self, address: Address) -> DeployerWithAddress {
+    pub fn with_address(
+        &self,
+        address: Address,
+        salt: impl IntoVal<Env, BytesN<32>>,
+    ) -> DeployerWithAddress {
         DeployerWithAddress {
             env: self.env.clone(),
             address,
+            salt: salt.into_val(&self.env),
         }
     }
 
-    /// Deploys a new instance of Stellar Asset Contract corresponding to
-    /// provided serialized asset.
+    /// Get a deployer that deploys an instance of Stellar Asset Contract
+    /// corresponding to the provided serialized asset.
     ///
     /// `serialized_asset` is the Stellar `Asset` XDR serialized to bytes. Refer
     /// to `stellar-xdr` create for the exact definition.
-    pub fn deploy_stellar_asset(&self, serialized_asset: impl IntoVal<Env, Bytes>) -> Address {
-        self.env
-            .create_asset_contract(serialized_asset.into_val(&self.env).to_object())
-            .unwrap_infallible()
-            .into_val(&self.env)
+    pub fn with_stellar_asset(
+        &self,
+        serialized_asset: impl IntoVal<Env, Bytes>,
+    ) -> DeployerWithAsset {
+        DeployerWithAsset {
+            env: self.env.clone(),
+            serialized_asset: serialized_asset.into_val(&self.env),
+        }
     }
 
     /// Upload the contract Wasm code to the network.
@@ -119,28 +131,51 @@ impl Deployer {
 pub struct DeployerWithAddress {
     env: Env,
     address: Address,
+    salt: BytesN<32>,
 }
 
 impl DeployerWithAddress {
+    /// Return the address of the contract defined by the deployer.
+    #[doc(hidden)]
+    pub fn contract_address(&self) -> Address {
+        todo!()
+    }
+
     /// Deploy a contract that uses Wasm executable with provided hash.
     ///
     /// The address of the deployed contract is defined by the deployer address
     /// and provided salt.
     ///
     /// Returns the deployed contract's address.
-    pub fn deploy(
-        &self,
-        salt: &impl IntoVal<Env, BytesN<32>>,
-        wasm_hash: &impl IntoVal<Env, BytesN<32>>,
-    ) -> Address {
+    pub fn deploy(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) -> Address {
         let env = &self.env;
         let address_obj = env
             .create_contract(
                 self.address.to_object(),
                 wasm_hash.into_val(env).to_object(),
-                salt.into_val(env).to_object(),
+                self.salt.to_object(),
             )
             .unwrap_infallible();
         unsafe { Address::unchecked_new(env.clone(), address_obj) }
+    }
+}
+
+pub struct DeployerWithAsset {
+    env: Env,
+    serialized_asset: Bytes,
+}
+
+impl DeployerWithAsset {
+    /// Return the address of the contract defined by the deployer.
+    #[doc(hidden)]
+    pub fn contract_address(&self) -> Address {
+        todo!()
+    }
+
+    pub fn deploy(&self) -> Address {
+        self.env
+            .create_asset_contract(self.serialized_asset.to_object())
+            .unwrap_infallible()
+            .into_val(&self.env)
     }
 }
