@@ -1,6 +1,6 @@
-//! Iterators for use with collections like [Map], [Set], [Vec].
+//! Iterators for use with collections like [Map], [Vec].
 #[cfg(doc)]
-use crate::{Map, Set, Vec};
+use crate::{Map, Vec};
 
 use core::fmt::Debug;
 use core::iter::FusedIterator;
