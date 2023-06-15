@@ -246,19 +246,6 @@ where
     }
 }
 
-impl<T> From<Vec<T>> for Set<T>
-where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-{
-    fn from(v: Vec<T>) -> Self {
-        let mut s: Set<T> = Set::new(v.env());
-        for i in v.into_iter().flatten() {
-            s.insert(i);
-        }
-        s
-    }
-}
-
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::{ScVal, ScVec};
 
