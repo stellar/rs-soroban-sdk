@@ -1,6 +1,6 @@
 #![no_std]
 
-use soroban_sdk::{contracttype, unwrap::UnwrapOptimized, Bytes, Env, Symbol};
+use soroban_sdk::{contracttype, unwrap::UnwrapOptimized, Env, String, Symbol};
 
 const METADATA_KEY: Symbol = Symbol::short("METADATA");
 
@@ -8,8 +8,8 @@ const METADATA_KEY: Symbol = Symbol::short("METADATA");
 #[contracttype]
 pub struct TokenMetadata {
     pub decimal: u32,
-    pub name: Bytes,
-    pub symbol: Bytes,
+    pub name: String,
+    pub symbol: String,
 }
 
 #[derive(Clone)]
@@ -25,7 +25,7 @@ impl TokenUtils {
     pub fn set_metadata(&self, metadata: &TokenMetadata) {
         self.0
             .storage()
-            .mergeable()
+            .persistent()
             .set(&METADATA_KEY, metadata, None);
     }
 
@@ -33,7 +33,7 @@ impl TokenUtils {
     pub fn get_metadata(&self) -> TokenMetadata {
         self.0
             .storage()
-            .mergeable()
+            .persistent()
             .get(&METADATA_KEY)
             .unwrap_optimized()
     }

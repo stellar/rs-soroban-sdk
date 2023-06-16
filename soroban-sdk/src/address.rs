@@ -201,11 +201,6 @@ impl Address {
     /// will allow the contract callers to easily build the required signature
     /// payloads and prevent potential authorization failures.
     ///
-    /// When called in the tests, the `require_auth` calls are just recorded and
-    /// no signatures are required. In order to make sure that the contract
-    /// has indeed called `require_auth` for this Address with expected arguments
-    /// use `env.verify_top_authorization`.
-    ///
     /// ### Panics
     ///
     /// If the invocation is not authorized.
@@ -236,7 +231,10 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases, for example to get an Address of a freshly
     /// deployed contract.
-    pub(crate) fn from_contract_id(contract_id: &BytesN<32>) -> Self {
+    ///
+    /// TODO: Replace this function in its pub form with a function that accepts
+    /// a strkey instead. Dependent on https://github.com/stellar/rs-stellar-strkey/issues/56.
+    pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
         let env = contract_id.env();
         unsafe {
             Self::unchecked_new(
@@ -308,10 +306,6 @@ impl crate::testutils::Address for Address {
     fn random(env: &Env) -> Self {
         let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
-    }
-
-    fn from_contract_id(contract_id: &crate::BytesN<32>) -> crate::Address {
-        Self::from_contract_id(contract_id)
     }
 
     fn contract_id(&self) -> crate::BytesN<32> {
