@@ -939,7 +939,7 @@ impl Env {
     ///                 )),
     ///                 sub_invocations: std::vec![]
     ///             }
-    ///         )]         
+    ///         )]
     ///     );
     /// }
     /// # #[cfg(not(feature = "testutils"))]
