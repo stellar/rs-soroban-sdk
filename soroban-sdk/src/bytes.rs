@@ -268,7 +268,7 @@ impl TryFromVal<Env, &[u8]> for Bytes {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, v: &&[u8]) -> Result<Self, Self::Error> {
-        Ok(Bytes::from_slice(env, *v))
+        Ok(Bytes::from_slice(env, v))
     }
 }
 
@@ -1384,7 +1384,7 @@ mod test {
         let env = Env::default();
         let mut bin = bytes![&env, [1, 2, 3, 4]];
 
-        assert_eq!(bin.remove_unchecked(2), ());
+        bin.remove_unchecked(2);
         assert_eq!(bin, bytes![&env, [1, 2, 4]]);
         assert_eq!(bin.len(), 3);
     }
