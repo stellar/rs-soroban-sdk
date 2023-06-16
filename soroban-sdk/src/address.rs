@@ -205,7 +205,7 @@ impl Address {
     ///
     /// If the invocation is not authorized.
     pub fn require_auth_for_args(&self, args: Vec<RawVal>) {
-        self.env.require_auth_for_args(&self, args);
+        self.env.require_auth_for_args(self, args);
     }
 
     /// Ensures that this Address has authorized invocation of the current
@@ -221,9 +221,9 @@ impl Address {
     ///
     /// ### Panics
     ///
-    /// If the invocation is not authorized.    
+    /// If the invocation is not authorized.
     pub fn require_auth(&self) {
-        self.env.require_auth(&self);
+        self.env.require_auth(self);
     }
 
     /// Creates an `Address` corresponding to the provided contract identifier.

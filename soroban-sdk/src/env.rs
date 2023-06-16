@@ -98,7 +98,7 @@ pub use internal::TryIntoVal;
 pub use internal::VecObject;
 
 pub trait IntoVal<E: internal::Env, T> {
-    fn into_val(&self, e: &E) -> T;
+    fn into_val(self, e: &E) -> T;
 }
 
 pub trait FromVal<E: internal::Env, T> {
@@ -939,7 +939,7 @@ impl Env {
     ///                 )),
     ///                 sub_invocations: std::vec![]
     ///             }
-    ///         )]         
+    ///         )]
     ///     );
     /// }
     /// # #[cfg(not(feature = "testutils"))]
