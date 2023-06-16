@@ -720,17 +720,20 @@ where
             .unwrap_infallible();
     }
 
+    /// Append the items.
     #[inline(always)]
     pub fn append(&mut self, other: &Vec<T>) {
         let env = self.env();
         self.obj = env.vec_append(self.obj, other.obj).unwrap_infallible();
     }
 
+    /// Extend with the items in the array.
     #[inline(always)]
     pub fn extend_from_array<const N: usize>(&mut self, items: [T; N]) {
         self.append(&Self::from_array(&self.env, items))
     }
 
+    /// Extend with the items in the slice.
     #[inline(always)]
     pub fn extend_from_slice(&mut self, items: &[T])
     where
@@ -741,6 +744,12 @@ where
         }
     }
 
+    /// Returns a subset of the bytes as defined by the start and end bounds of
+    /// the range.
+    ///
+    /// ### Panics
+    ///
+    /// If the range is out-of-bounds.
     #[must_use]
     pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
         let start_bound = match r.start_bound() {
