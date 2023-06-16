@@ -509,7 +509,7 @@ impl Env {
             timestamp: 0,
             network_id: [0; 32],
             base_reserve: 0,
-            min_restorable_entry_expiration: 4096,
+            min_persistent_entry_expiration: 4096,
             min_temp_entry_expiration: 16,
         });
 
@@ -672,7 +672,7 @@ impl Env {
             .unwrap();
 
         let asset = xdr::Asset::CreditAlphanum4(xdr::AlphaNum4 {
-            asset_code: xdr::AssetCode4(random()),
+            asset_code: xdr::AssetCode4([b'a', b'a', b'a', b'a']),
             issuer: issuer_id.clone(),
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
@@ -1064,7 +1064,7 @@ impl Env {
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
             key: data_key.clone(),
-            type_: xdr::ContractDataType::Mergeable,
+            type_: xdr::ContractDataType::Persistent,
             le_type: xdr::ContractLedgerEntryType::DataEntry,
         }));
 
@@ -1081,7 +1081,7 @@ impl Env {
                 key: data_key,
                 body,
                 expiration_ledger_seq: 0,
-                type_: xdr::ContractDataType::Mergeable,
+                type_: xdr::ContractDataType::Persistent,
             }),
         });
         self.env_impl

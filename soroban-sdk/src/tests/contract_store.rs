@@ -6,7 +6,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn store(env: Env, k: i32, v: i32) {
-        env.storage().mergeable().set(&k, &v, None)
+        env.storage().persistent().set(&k, &v, None)
     }
 }
 
@@ -19,7 +19,7 @@ fn test_storage() {
     client.store(&2, &4);
 
     assert_eq!(
-        e.as_contract(&contract_id, || e.storage().mergeable().get::<_, i32>(&2)),
+        e.as_contract(&contract_id, || e.storage().persistent().get::<_, i32>(&2)),
         Some(4)
     );
 }

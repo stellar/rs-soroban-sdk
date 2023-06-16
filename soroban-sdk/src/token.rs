@@ -7,7 +7,7 @@
 //! Use [`Client`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractspecfn, Address, Bytes, Env};
+use crate::{contractclient, contractspecfn, Address, Env, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -41,8 +41,8 @@ pub trait Interface {
     fn clawback(env: Env, from: Address, amount: i128);
     fn set_admin(env: Env, new_admin: Address);
     fn decimals(env: Env) -> u32;
-    fn name(env: Env) -> Bytes;
-    fn symbol(env: Env) -> Bytes;
+    fn name(env: Env) -> String;
+    fn symbol(env: Env) -> String;
 }
 
 pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
