@@ -6,7 +6,6 @@ members = [
     "soroban-sdk-macros",
     "soroban-spec",
     "soroban-spec-rust",
-    "soroban-spec-json",
     "soroban-ledger-snapshot",
     "soroban-token-sdk",
     "tests/empty",
