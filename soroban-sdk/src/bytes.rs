@@ -8,7 +8,7 @@ use core::{
 };
 
 use super::{
-    env::internal::{BytesObject, Env as _, EnvBase as _, RawValConvertible},
+    env::internal::{BytesObject, Env as _, EnvBase as _},
     env::IntoVal,
     ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
 };
@@ -306,7 +306,9 @@ impl Bytes {
     pub fn to_object(&self) -> BytesObject {
         self.obj
     }
+}
 
+impl Bytes {
     /// Create an empty Bytes.
     #[inline(always)]
     pub fn new(env: &Env) -> Bytes {
@@ -314,12 +316,13 @@ impl Bytes {
         unsafe { Self::unchecked_new(env.clone(), obj) }
     }
 
-    /// Create a Bytes from the given `[u8]`.
+    /// Create a Bytes from the array.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: &[u8; N]) -> Bytes {
         Self::from_slice(env, items)
     }
 
+    /// Create a Bytes from the slice.
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[u8]) -> Bytes {
         Bytes {
@@ -328,6 +331,11 @@ impl Bytes {
         }
     }
 
+    /// Sets the byte at the position with new value.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn set(&mut self, i: u32, v: u8) {
         let v32: u32 = v.into();
@@ -337,6 +345,7 @@ impl Bytes {
             .unwrap_infallible()
     }
 
+    /// Returns the byte at the position or None if out-of-bounds.
     #[inline(always)]
     pub fn get(&self, i: u32) -> Option<u8> {
         if i < self.len() {
@@ -346,28 +355,31 @@ impl Bytes {
         }
     }
 
+    /// Returns the byte at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn get_unchecked(&self, i: u32) -> u8 {
-        let res = self
-            .env()
-            .bytes_get(self.obj, i.into())
-            .unwrap_infallible()
-            .try_into()
-            .unwrap_optimized();
-        let res32: u32 = unsafe { <_ as RawValConvertible>::unchecked_from_val(res) };
+        let res32_val = self.env().bytes_get(self.obj, i.into()).unwrap_infallible();
+        let res32: u32 = res32_val.into();
         res32 as u8
     }
 
+    /// Returns true if the Bytes is empty and has a length of zero.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Returns the number of bytes are in the Bytes.
     #[inline(always)]
     pub fn len(&self) -> u32 {
         self.env().bytes_len(self.obj).unwrap_infallible().into()
     }
 
+    /// Returns the first byte or None if empty.
     #[inline(always)]
     pub fn first(&self) -> Option<u8> {
         if !self.is_empty() {
@@ -377,12 +389,18 @@ impl Bytes {
         }
     }
 
+    /// Returns the first byte.
+    ///
+    /// ### Panics
+    ///
+    /// If the Bytes is empty.
     #[inline(always)]
     pub fn first_unchecked(&self) -> u8 {
         let res: u32 = self.env().bytes_front(self.obj).unwrap_infallible().into();
         res as u8
     }
 
+    /// Returns the last byte or None if empty.
     #[inline(always)]
     pub fn last(&self) -> Option<u8> {
         if !self.is_empty() {
@@ -392,12 +410,20 @@ impl Bytes {
         }
     }
 
+    /// Returns the last byte.
+    ///
+    /// ### Panics
+    ///
+    /// If the Bytes is empty.
     #[inline(always)]
     pub fn last_unchecked(&self) -> u8 {
         let res: u32 = self.env().bytes_back(self.obj).unwrap_infallible().into();
         res as u8
     }
 
+    /// Removes the byte at the position.
+    ///
+    /// Returns `None` if out-of-bounds.
     #[inline(always)]
     pub fn remove(&mut self, i: u32) -> Option<()> {
         if i < self.len() {
@@ -408,13 +434,21 @@ impl Bytes {
         }
     }
 
+    /// Removes the byte at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn remove_unchecked(&mut self, i: u32) {
         self.obj = self.env().bytes_del(self.obj, i.into()).unwrap_infallible()
     }
 
+    /// Adds the byte to the back.
+    ///
+    /// Increases the length by one and puts the byte in the last position.
     #[inline(always)]
-    pub fn push(&mut self, x: u8) {
+    pub fn push_back(&mut self, x: u8) {
         let x32: u32 = x.into();
         self.obj = self
             .env()
@@ -422,26 +456,31 @@ impl Bytes {
             .unwrap_infallible()
     }
 
+    /// Removes and returns the last byte or None if empty.
     #[inline(always)]
-    pub fn pop(&mut self) -> Option<u8> {
+    pub fn pop_back(&mut self) -> Option<u8> {
         let last = self.last()?;
         self.obj = self.env().bytes_pop(self.obj).unwrap_infallible();
         Some(last)
     }
 
+    /// Removes and returns the last byte or None if empty.
+    ///
+    /// ### Panics
+    ///
+    /// If the Bytes is empty.
     #[inline(always)]
-    pub fn pop_unchecked(&mut self) -> u8 {
+    pub fn pop_back_unchecked(&mut self) -> u8 {
         let last = self.last_unchecked();
         self.obj = self.env().bytes_pop(self.obj).unwrap_infallible();
         last
     }
 
-    /// Insert the byte into this [Bytes] at position indicated by `i`, and
-    /// growing the size of [Bytes] by 1.
+    /// Insert the byte at the position.
     ///
     /// ### Panics
     ///
-    /// When `i` is greater than the length of [Bytes].
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn insert(&mut self, i: u32, b: u8) {
         let b32: u32 = b.into();
@@ -451,13 +490,11 @@ impl Bytes {
             .unwrap_infallible()
     }
 
-    /// Insert the bytes in `bytes` into this [Bytes] starting at position
-    /// indicated by `i`, and growing the size of [Bytes] by the length of
-    /// `bytes.
+    /// Insert the bytes at the position.
     ///
     /// ### Panics
     ///
-    /// When `i` is greater than the length of [Bytes].
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn insert_from_bytes(&mut self, i: u32, bytes: Bytes) {
         let mut result = self.slice(..i);
@@ -466,30 +503,27 @@ impl Bytes {
         *self = result
     }
 
-    /// Insert the bytes in `array` into this [Bytes] starting at position
-    /// indicated by `i`, and growing the size of [Bytes] by the length of
-    /// `bytes.
+    /// Insert the bytes at the position.
     ///
     /// ### Panics
     ///
-    /// When `i` is greater than the length of [Bytes].
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn insert_from_array<const N: usize>(&mut self, i: u32, array: &[u8; N]) {
         self.insert_from_slice(i, array)
     }
 
-    /// Insert the bytes in `slice` into this [Bytes] starting at position
-    /// indicated by `i`, and growing the size of [Bytes] by the length of
-    /// `bytes.
+    /// Insert the bytes at the position.
     ///
     /// ### Panics
     ///
-    /// When `i` is greater than the length of [Bytes].
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn insert_from_slice(&mut self, i: u32, slice: &[u8]) {
         self.insert_from_bytes(i, Bytes::from_slice(self.env(), slice))
     }
 
+    /// Append the bytes.
     #[inline(always)]
     pub fn append(&mut self, other: &Bytes) {
         self.obj = self
@@ -498,11 +532,13 @@ impl Bytes {
             .unwrap_infallible()
     }
 
+    /// Extend with the bytes in the array.
     #[inline(always)]
     pub fn extend_from_array<const N: usize>(&mut self, array: &[u8; N]) {
         self.extend_from_slice(array)
     }
 
+    /// Extend with the bytes in the slice.
     #[inline(always)]
     pub fn extend_from_slice(&mut self, slice: &[u8]) {
         self.obj = self
@@ -511,7 +547,7 @@ impl Bytes {
             .unwrap_optimized()
     }
 
-    /// Copy the bytes from slice into [Bytes].
+    /// Copy the bytes from slice.
     ///
     /// The full number of bytes in slice are always copied and [Bytes] is grown
     /// if necessary.
@@ -523,7 +559,7 @@ impl Bytes {
             .unwrap_optimized()
     }
 
-    /// Copy the bytes in [Bytes] into the given slice.
+    /// Copy the bytes into the given slice.
     ///
     /// The minimum number of bytes are copied to either exhaust [Bytes] or fill
     /// slice.
@@ -534,6 +570,12 @@ impl Bytes {
             .unwrap_optimized();
     }
 
+    /// Returns a subset of the bytes as defined by the start and end bounds of
+    /// the range.
+    ///
+    /// ### Panics
+    ///
+    /// If the range is out-of-bounds.
     #[must_use]
     pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
         let start_bound = match r.start_bound() {
@@ -553,30 +595,30 @@ impl Bytes {
         unsafe { Self::unchecked_new(env.clone(), bin) }
     }
 
-    pub fn iter(&self) -> BinIter {
+    pub fn iter(&self) -> BytesIter {
         self.clone().into_iter()
     }
 }
 
 impl IntoIterator for Bytes {
     type Item = u8;
-    type IntoIter = BinIter;
+    type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BinIter(self)
+        BytesIter(self)
     }
 }
 
 #[derive(Clone)]
-pub struct BinIter(Bytes);
+pub struct BytesIter(Bytes);
 
-impl BinIter {
+impl BytesIter {
     fn into_bin(self) -> Bytes {
         self.0
     }
 }
 
-impl Iterator for BinIter {
+impl Iterator for BytesIter {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -600,7 +642,7 @@ impl Iterator for BinIter {
     }
 }
 
-impl DoubleEndedIterator for BinIter {
+impl DoubleEndedIterator for BytesIter {
     fn next_back(&mut self) -> Option<Self::Item> {
         let len = self.0.len();
         if len == 0 {
@@ -618,9 +660,9 @@ impl DoubleEndedIterator for BinIter {
     }
 }
 
-impl FusedIterator for BinIter {}
+impl FusedIterator for BytesIter {}
 
-impl ExactSizeIterator for BinIter {
+impl ExactSizeIterator for BytesIter {
     fn len(&self) -> usize {
         self.0.len() as usize
     }
@@ -894,60 +936,86 @@ impl<const N: usize> BytesN<N> {
         self.0.to_object()
     }
 
+    /// Create a BytesN from the slice.
     #[inline(always)]
     pub fn from_array(env: &Env, items: &[u8; N]) -> BytesN<N> {
         BytesN(Bytes::from_slice(env, items))
     }
 
+    /// Sets the byte at the position with new value.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn set(&mut self, i: u32, v: u8) {
         self.0.set(i, v);
     }
 
+    /// Returns the byte at the position or None if out-of-bounds.
     #[inline(always)]
     pub fn get(&self, i: u32) -> Option<u8> {
         self.0.get(i)
     }
 
+    /// Returns the byte at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn get_unchecked(&self, i: u32) -> u8 {
         self.0.get_unchecked(i)
     }
 
+    /// Returns true if the Bytes is empty and has a length of zero.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         false
     }
 
+    /// Returns the number of bytes are in the Bytes.
     #[inline(always)]
     pub fn len(&self) -> u32 {
         N as u32
     }
 
+    /// Returns the first byte or None if empty.
     #[inline(always)]
     pub fn first(&self) -> Option<u8> {
         self.0.first()
     }
 
+    /// Returns the first byte.
+    ///
+    /// ### Panics
+    ///
+    /// If the Bytes is empty.
     #[inline(always)]
     pub fn first_unchecked(&self) -> u8 {
         self.0.first_unchecked()
     }
 
+    /// Returns the last byte or None if empty.
     #[inline(always)]
     pub fn last(&self) -> Option<u8> {
         self.0.last()
     }
 
+    /// Returns the last byte.
+    ///
+    /// ### Panics
+    ///
+    /// If the Bytes is empty.
     #[inline(always)]
     pub fn last_unchecked(&self) -> u8 {
         self.0.last_unchecked()
     }
 
-    /// Copy the bytes in [BytesN] into the given slice.
+    /// Copy the bytes into the given slice.
     ///
-    /// The minimum number of bytes are copied to either exhaust [BytesN] or
-    /// fill slice.
+    /// The minimum number of bytes are copied to either exhaust [BytesN] or fill
+    /// slice.
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
@@ -963,7 +1031,7 @@ impl<const N: usize> BytesN<N> {
         array
     }
 
-    pub fn iter(&self) -> BinIter {
+    pub fn iter(&self) -> BytesIter {
         self.clone().into_iter()
     }
 }
@@ -979,10 +1047,10 @@ impl<const N: usize> crate::testutils::BytesN<N> for BytesN<N> {
 impl<const N: usize> IntoIterator for BytesN<N> {
     type Item = u8;
 
-    type IntoIter = BinIter;
+    type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BinIter(self.0)
+        BytesIter(self.0)
     }
 }
 
@@ -1065,19 +1133,19 @@ mod test {
         assert_eq!(bytes!(&env), Bytes::new(&env));
         assert_eq!(bytes!(&env, 1), {
             let mut b = Bytes::new(&env);
-            b.push(1);
+            b.push_back(1);
             b
         });
         assert_eq!(bytes!(&env, 1,), {
             let mut b = Bytes::new(&env);
-            b.push(1);
+            b.push_back(1);
             b
         });
         assert_eq!(bytes!(&env, [3, 2, 1,]), {
             let mut b = Bytes::new(&env);
-            b.push(3);
-            b.push(2);
-            b.push(1);
+            b.push_back(3);
+            b.push_back(2);
+            b.push_back(1);
             b
         });
     }
@@ -1088,19 +1156,19 @@ mod test {
         assert_eq!(bytes!(&env), Bytes::new(&env));
         assert_eq!(bytes!(&env, 1), {
             let mut b = Bytes::new(&env);
-            b.push(1);
+            b.push_back(1);
             b
         });
         assert_eq!(bytes!(&env, 1,), {
             let mut b = Bytes::new(&env);
-            b.push(1);
+            b.push_back(1);
             b
         });
         assert_eq!(bytes!(&env, 0x30201), {
             let mut b = Bytes::new(&env);
-            b.push(3);
-            b.push(2);
-            b.push(1);
+            b.push_back(3);
+            b.push_back(2);
+            b.push_back(1);
             b
         });
         assert_eq!(bytes!(&env, 0x0000030201), {
@@ -1135,11 +1203,11 @@ mod test {
 
         let mut bin = Bytes::new(&env);
         assert_eq!(bin.len(), 0);
-        bin.push(10);
+        bin.push_back(10);
         assert_eq!(bin.len(), 1);
-        bin.push(20);
+        bin.push_back(20);
         assert_eq!(bin.len(), 2);
-        bin.push(30);
+        bin.push_back(30);
         assert_eq!(bin.len(), 3);
         println!("{:?}", bin);
 
@@ -1149,14 +1217,14 @@ mod test {
         let mut bin_copy = bin.clone();
         assert!(bin == bin_copy);
         assert_eq!(bin_copy.len(), 3);
-        bin_copy.push(40);
+        bin_copy.push_back(40);
         assert_eq!(bin_copy.len(), 4);
         assert!(bin != bin_copy);
 
         assert_eq!(bin.len(), 3);
         assert_eq!(bin_ref.len(), 3);
 
-        bin_copy.pop();
+        bin_copy.pop_back();
         assert!(bin == bin_copy);
 
         let bad_fixed: Result<BytesN<4>, ConversionError> = bin.try_into();
@@ -1169,9 +1237,9 @@ mod test {
     fn test_bin_iter() {
         let env = Env::default();
         let mut bin = Bytes::new(&env);
-        bin.push(10);
-        bin.push(20);
-        bin.push(30);
+        bin.push_back(10);
+        bin.push_back(20);
+        bin.push_back(30);
         let mut iter = bin.iter();
         assert_eq!(iter.next(), Some(10));
         assert_eq!(iter.next(), Some(20));
@@ -1209,9 +1277,9 @@ mod test {
 
         let env = Env::default();
         let mut bin = Bytes::new(&env);
-        bin.push(10);
-        bin.push(20);
-        bin.push(30);
+        bin.push_back(10);
+        bin.push_back(20);
+        bin.push_back(30);
         assert_eq!(bin.len(), 3);
 
         let arr_bin: BytesN<3> = bin.clone().try_into().unwrap();
@@ -1227,9 +1295,9 @@ mod test {
     fn bytesn_debug() {
         let env = Env::default();
         let mut bin = Bytes::new(&env);
-        bin.push(10);
-        bin.push(20);
-        bin.push(30);
+        bin.push_back(10);
+        bin.push_back(20);
+        bin.push_back(30);
         let arr_bin: BytesN<3> = bin.clone().try_into().unwrap();
         assert_eq!(format!("{:?}", arr_bin), "BytesN<3>(10, 20, 30)");
     }
@@ -1239,7 +1307,7 @@ mod test {
         let env = Env::default();
         let mut bin = Bytes::new(&env);
         assert_eq!(bin.is_empty(), true);
-        bin.push(10);
+        bin.push_back(10);
         assert_eq!(bin.is_empty(), false);
     }
 
@@ -1402,14 +1470,14 @@ mod test {
         let env = Env::default();
         let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
 
-        assert_eq!(bin.pop(), Some(4));
-        assert_eq!(bin.pop(), Some(3));
+        assert_eq!(bin.pop_back(), Some(4));
+        assert_eq!(bin.pop_back(), Some(3));
         assert_eq!(bin.len(), 3);
         assert_eq!(bin, bytes![&env, [0, 1, 2]]);
 
         // pop on empty bytes
         let mut bin = bytes![&env];
-        assert_eq!(bin.pop(), None);
+        assert_eq!(bin.pop_back(), None);
     }
 
     #[test]
@@ -1417,8 +1485,8 @@ mod test {
         let env = Env::default();
         let mut bin = bytes![&env, [0, 1, 2, 3, 4]];
 
-        assert_eq!(bin.pop_unchecked(), 4);
-        assert_eq!(bin.pop_unchecked(), 3);
+        assert_eq!(bin.pop_back_unchecked(), 4);
+        assert_eq!(bin.pop_back_unchecked(), 3);
         assert_eq!(bin.len(), 3);
         assert_eq!(bin, bytes![&env, [0, 1, 2]]);
     }
@@ -1428,7 +1496,7 @@ mod test {
     fn test_pop_unchecked_panics() {
         let env = Env::default();
         let mut bin = bytes![&env];
-        bin.pop_unchecked();
+        bin.pop_back_unchecked();
     }
 
     #[test]
