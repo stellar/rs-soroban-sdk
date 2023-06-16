@@ -231,6 +231,9 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases, for example to get an Address of a freshly
     /// deployed contract.
+    ///
+    /// TODO: Replace this function in its pub form with a function that accepts
+    /// a strkey instead.
     pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
         let env = contract_id.env();
         unsafe {
