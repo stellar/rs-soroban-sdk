@@ -595,30 +595,30 @@ impl Bytes {
         unsafe { Self::unchecked_new(env.clone(), bin) }
     }
 
-    pub fn iter(&self) -> BinIter {
+    pub fn iter(&self) -> BytesIter {
         self.clone().into_iter()
     }
 }
 
 impl IntoIterator for Bytes {
     type Item = u8;
-    type IntoIter = BinIter;
+    type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BinIter(self)
+        BytesIter(self)
     }
 }
 
 #[derive(Clone)]
-pub struct BinIter(Bytes);
+pub struct BytesIter(Bytes);
 
-impl BinIter {
+impl BytesIter {
     fn into_bin(self) -> Bytes {
         self.0
     }
 }
 
-impl Iterator for BinIter {
+impl Iterator for BytesIter {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -642,7 +642,7 @@ impl Iterator for BinIter {
     }
 }
 
-impl DoubleEndedIterator for BinIter {
+impl DoubleEndedIterator for BytesIter {
     fn next_back(&mut self) -> Option<Self::Item> {
         let len = self.0.len();
         if len == 0 {
@@ -660,9 +660,9 @@ impl DoubleEndedIterator for BinIter {
     }
 }
 
-impl FusedIterator for BinIter {}
+impl FusedIterator for BytesIter {}
 
-impl ExactSizeIterator for BinIter {
+impl ExactSizeIterator for BytesIter {
     fn len(&self) -> usize {
         self.0.len() as usize
     }
@@ -936,60 +936,86 @@ impl<const N: usize> BytesN<N> {
         self.0.to_object()
     }
 
+    /// Create a BytesN from the slice.
     #[inline(always)]
     pub fn from_array(env: &Env, items: &[u8; N]) -> BytesN<N> {
         BytesN(Bytes::from_slice(env, items))
     }
 
+    /// Sets the byte at the position with new value.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn set(&mut self, i: u32, v: u8) {
         self.0.set(i, v);
     }
 
+    /// Returns the byte at the position or None if out-of-bounds.
     #[inline(always)]
     pub fn get(&self, i: u32) -> Option<u8> {
         self.0.get(i)
     }
 
+    /// Returns the byte at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
     #[inline(always)]
     pub fn get_unchecked(&self, i: u32) -> u8 {
         self.0.get_unchecked(i)
     }
 
+    /// Returns true if the Bytes is empty and has a length of zero.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         false
     }
 
+    /// Returns the number of bytes are in the Bytes.
     #[inline(always)]
     pub fn len(&self) -> u32 {
         N as u32
     }
 
+    /// Returns the first byte or None if empty.
     #[inline(always)]
     pub fn first(&self) -> Option<u8> {
         self.0.first()
     }
 
+    /// Returns the first byte.
+    ///
+    /// ### Panics
+    ///
+    /// If the Bytes is empty.
     #[inline(always)]
     pub fn first_unchecked(&self) -> u8 {
         self.0.first_unchecked()
     }
 
+    /// Returns the last byte or None if empty.
     #[inline(always)]
     pub fn last(&self) -> Option<u8> {
         self.0.last()
     }
 
+    /// Returns the last byte.
+    ///
+    /// ### Panics
+    ///
+    /// If the Bytes is empty.
     #[inline(always)]
     pub fn last_unchecked(&self) -> u8 {
         self.0.last_unchecked()
     }
 
-    /// Copy the bytes in [BytesN] into the given slice.
+    /// Copy the bytes into the given slice.
     ///
-    /// The minimum number of bytes are copied to either exhaust [BytesN] or
-    /// fill slice.
+    /// The minimum number of bytes are copied to either exhaust [BytesN] or fill
+    /// slice.
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
@@ -1005,7 +1031,7 @@ impl<const N: usize> BytesN<N> {
         array
     }
 
-    pub fn iter(&self) -> BinIter {
+    pub fn iter(&self) -> BytesIter {
         self.clone().into_iter()
     }
 }
@@ -1021,10 +1047,10 @@ impl<const N: usize> crate::testutils::BytesN<N> for BytesN<N> {
 impl<const N: usize> IntoIterator for BytesN<N> {
     type Item = u8;
 
-    type IntoIter = BinIter;
+    type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BinIter(self.0)
+        BytesIter(self.0)
     }
 }
 
