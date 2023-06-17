@@ -155,7 +155,7 @@ impl<'a> Fn<'a> {
         };
         Type::Verbatim(quote! {
             Result<
-                Result<#t, <#t as #crate_path::TryFromVal<#crate_path::Env, #crate_path::RawVal>>::Error>,
+                Result<#t, <#t as #crate_path::TryFromVal<#crate_path::Env, #crate_path::Val>>::Error>,
                 Result<#e, <#e as TryFrom<#crate_path::Error>>::Error>
             >
         })

@@ -3,12 +3,12 @@
 //! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-use crate::{env::internal::EnvBase, Env, RawVal};
+use crate::{env::internal::EnvBase, Env, Val};
 
 /// Log a debug event.
 ///
 /// Takes a [Env], a literal string, and an optional trailing sequence of
-/// arguments that may be any value that are convertible to [`RawVal`]. The
+/// arguments that may be any value that are convertible to [`Val`]. The
 /// string and arguments are appended as-is to the log, as the body of a
 /// structured diagnostic event. Such events may be emitted from the host as
 /// auxiliary diagnostic XDR, or converted to strings later for debugging.
@@ -78,7 +78,7 @@ macro_rules! log {
         if cfg!(debug_assertions) {
             $env.logger().log($fmt, &[
                 $(
-                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val(&$args, $env)
+                    <_ as $crate::IntoVal<Env, $crate::Val>>::into_val(&$args, $env)
                 ),*
             ]);
         }
@@ -115,7 +115,7 @@ impl Logger {
     ///
     /// See [`log`][crate::log] for how to conveniently log debug events.
     #[inline(always)]
-    pub fn log(&self, msg: &'static str, args: &[RawVal]) {
+    pub fn log(&self, msg: &'static str, args: &[Val]) {
         if cfg!(debug_assertions) {
             let env = self.env();
             env.log_from_slice(msg, args).unwrap();

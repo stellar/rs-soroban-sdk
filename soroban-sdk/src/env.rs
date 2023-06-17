@@ -90,11 +90,10 @@ pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::Error;
 pub use internal::MapObject;
-pub use internal::RawVal;
-pub use internal::RawValConvertible;
 pub use internal::SymbolStr;
 pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
+pub use internal::Val;
 pub use internal::VecObject;
 
 pub trait IntoVal<E: internal::Env, T> {
@@ -131,8 +130,8 @@ use crate::{
     storage::Storage, Address, BytesN, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, Object, StorageType,
-    StringObject, Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, StorageType, StringObject,
+    Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -303,7 +302,7 @@ impl Env {
     }
 
     #[doc(hidden)]
-    pub(crate) fn require_auth_for_args(&self, address: &Address, args: Vec<RawVal>) {
+    pub(crate) fn require_auth_for_args(&self, address: &Address, args: Vec<Val>) {
         internal::Env::require_auth_for_args(self, address.to_object(), args.to_object())
             .unwrap_infallible();
     }
@@ -378,10 +377,10 @@ impl Env {
         &self,
         contract_address: &Address,
         func: &crate::Symbol,
-        args: Vec<RawVal>,
+        args: Vec<Val>,
     ) -> T
     where
-        T: TryFromVal<Env, RawVal>,
+        T: TryFromVal<Env, Val>,
     {
         let rv = internal::Env::call(
             self,
@@ -401,10 +400,10 @@ impl Env {
         &self,
         contract_address: &Address,
         func: &crate::Symbol,
-        args: Vec<RawVal>,
+        args: Vec<Val>,
     ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
     where
-        T: TryFromVal<Env, RawVal>,
+        T: TryFromVal<Env, Val>,
         E: TryFrom<Error>,
     {
         let rv = internal::Env::try_call(
@@ -558,8 +557,8 @@ impl Env {
                 &self,
                 func: &Symbol,
                 env_impl: &internal::EnvImpl,
-                args: &[RawVal],
-            ) -> Option<RawVal> {
+                args: &[Val],
+            ) -> Option<Val> {
                 let env = Env::with_impl(env_impl.clone());
                 self.0.call(
                     crate::Symbol::try_from_val(&env, func)
@@ -973,7 +972,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, RawVal};
+    /// use soroban_sdk::{contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, Val};
     ///
     /// #[contracterror]
     /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -989,7 +988,7 @@ impl Env {
     ///     pub fn __check_auth(
     ///         _env: Env,
     ///         _signature_payload: BytesN<32>,
-    ///         signatures: Vec<RawVal>,
+    ///         signatures: Vec<Val>,
     ///         _auth_context: Vec<Context>,
     ///     ) -> Result<(), NoopAccountError> {
     ///         if signatures.is_empty() {
@@ -1034,7 +1033,7 @@ impl Env {
         &self,
         contract: &BytesN<32>,
         signature_payload: &BytesN<32>,
-        signatures: &Vec<RawVal>,
+        signatures: &Vec<Val>,
         auth_context: &Vec<auth::Context>,
     ) -> Result<(), Result<E, E::Error>> {
         let args = Vec::from_array(
@@ -1244,7 +1243,7 @@ impl internal::EnvBase for Env {
         Ok(self.env_impl.bytes_new_from_slice(slice).unwrap_optimized())
     }
 
-    fn log_from_slice(&self, msg: &str, args: &[RawVal]) -> Result<Void, Self::Error> {
+    fn log_from_slice(&self, msg: &str, args: &[Val]) -> Result<Void, Self::Error> {
         Ok(self.env_impl.log_from_slice(msg, args).unwrap_optimized())
     }
 
@@ -1286,11 +1285,7 @@ impl internal::EnvBase for Env {
             .unwrap_optimized())
     }
 
-    fn map_new_from_slices(
-        &self,
-        keys: &[&str],
-        vals: &[RawVal],
-    ) -> Result<MapObject, Self::Error> {
+    fn map_new_from_slices(&self, keys: &[&str], vals: &[Val]) -> Result<MapObject, Self::Error> {
         Ok(self
             .env_impl
             .map_new_from_slices(keys, vals)
@@ -1301,7 +1296,7 @@ impl internal::EnvBase for Env {
         &self,
         map: MapObject,
         keys: &[&str],
-        vals: &mut [RawVal],
+        vals: &mut [Val],
     ) -> Result<Void, Self::Error> {
         Ok(self
             .env_impl
@@ -1309,15 +1304,11 @@ impl internal::EnvBase for Env {
             .unwrap_optimized())
     }
 
-    fn vec_new_from_slice(&self, vals: &[RawVal]) -> Result<VecObject, Self::Error> {
+    fn vec_new_from_slice(&self, vals: &[Val]) -> Result<VecObject, Self::Error> {
         Ok(self.env_impl.vec_new_from_slice(vals).unwrap_optimized())
     }
 
-    fn vec_unpack_to_slice(
-        &self,
-        vec: VecObject,
-        vals: &mut [RawVal],
-    ) -> Result<Void, Self::Error> {
+    fn vec_unpack_to_slice(&self, vec: VecObject, vals: &mut [Val]) -> Result<Void, Self::Error> {
         Ok(self
             .env_impl
             .vec_unpack_to_slice(vec, vals)

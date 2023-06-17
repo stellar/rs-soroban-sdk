@@ -2,7 +2,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{AddressObject, Env as _, EnvBase as _},
-    BytesN, ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
+    BytesN, ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -100,17 +100,17 @@ impl TryFromVal<Env, AddressObject> for Address {
     }
 }
 
-impl TryFromVal<Env, RawVal> for Address {
+impl TryFromVal<Env, Val> for Address {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         Ok(AddressObject::try_from_val(env, val)?
             .try_into_val(env)
             .unwrap_infallible())
     }
 }
 
-impl TryFromVal<Env, Address> for RawVal {
+impl TryFromVal<Env, Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Address) -> Result<Self, Self::Error> {
@@ -118,7 +118,7 @@ impl TryFromVal<Env, Address> for RawVal {
     }
 }
 
-impl TryFromVal<Env, &Address> for RawVal {
+impl TryFromVal<Env, &Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &&Address) -> Result<Self, Self::Error> {
@@ -147,7 +147,7 @@ impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(
-            AddressObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+            AddressObject::try_from_val(env, &Val::try_from_val(env, val)?)?
                 .try_into_val(env)
                 .unwrap_infallible(),
         )
@@ -179,7 +179,7 @@ impl TryFromVal<Env, ScAddress> for Address {
     fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
         Ok(AddressObject::try_from_val(
             env,
-            &RawVal::try_from_val(env, &ScVal::Address(val.clone()))?,
+            &Val::try_from_val(env, &ScVal::Address(val.clone()))?,
         )?
         .try_into_val(env)
         .unwrap_infallible())
@@ -204,7 +204,7 @@ impl Address {
     /// ### Panics
     ///
     /// If the invocation is not authorized.
-    pub fn require_auth_for_args(&self, args: Vec<RawVal>) {
+    pub fn require_auth_for_args(&self, args: Vec<Val>) {
         self.env.require_auth_for_args(self, args);
     }
 
@@ -279,11 +279,11 @@ impl Address {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &RawVal {
+    pub fn as_raw(&self) -> &Val {
         self.obj.as_raw()
     }
 
-    pub fn to_raw(&self) -> RawVal {
+    pub fn to_raw(&self) -> Val {
         self.obj.to_raw()
     }
 

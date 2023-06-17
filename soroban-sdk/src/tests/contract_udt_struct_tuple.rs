@@ -1,6 +1,6 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
     Vec,
 };
 use stellar_xdr::{
@@ -25,7 +25,7 @@ impl Contract {
 fn test_conversion() {
     let env = Env::default();
     let a = Udt(5, 7);
-    let r: RawVal = a.into_val(&env);
+    let r: Val = a.into_val(&env);
     let v: Vec<i32> = r.try_into_val(&env).unwrap();
     assert_eq!(v, vec![&env, 5, 7]);
 }

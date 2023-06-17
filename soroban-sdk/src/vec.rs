@@ -15,7 +15,7 @@ use crate::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, VecObject},
-    ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
 };
 
 #[cfg(doc)]
@@ -47,9 +47,9 @@ macro_rules! vec {
 
 macro_rules! impl_into_vec_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {
-        impl<$($typ),*> TryFromVal<Env, ($($typ,)*)> for Vec<RawVal>
+        impl<$($typ),*> TryFromVal<Env, ($($typ,)*)> for Vec<Val>
         where
-            $($typ: IntoVal<Env, RawVal>),*
+            $($typ: IntoVal<Env, Val>),*
         {
             type Error = ConversionError;
             fn try_from_val(env: &Env, v: &($($typ,)*)) -> Result<Self, Self::Error> {
@@ -76,8 +76,8 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 ///
 /// Values are stored in the environment and are available to contract through
 /// the functions defined on Vec.  Values stored in the Vec are transmitted to
-/// the environment as [RawVal]s, and when retrieved from the Vec are
-/// transmitted back and converted from [RawVal] back into their type.
+/// the environment as [Val]s, and when retrieved from the Vec are
+/// transmitted back and converted from [Val] back into their type.
 ///
 /// The values in a Vec are not guaranteed to be of type `T` and conversion will
 /// fail if they are not. Most functions on Vec have a `try_` variation that
@@ -119,11 +119,11 @@ pub struct Vec<T> {
     _t: PhantomData<T>,
 }
 
-impl<T> Eq for Vec<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+impl<T> Eq for Vec<T> where T: IntoVal<Env, Val> + TryFromVal<Env, Val> {}
 
 impl<T> PartialEq for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
@@ -132,7 +132,7 @@ where
 
 impl<T> PartialOrd for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
@@ -141,7 +141,7 @@ where
 
 impl<T> Ord for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.env.check_same_env(&other.env);
@@ -155,7 +155,7 @@ where
 
 impl<T> Debug for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Debug + Clone,
     T::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -172,7 +172,7 @@ where
     }
 }
 
-impl<T> TryFromVal<Env, Vec<T>> for Vec<RawVal> {
+impl<T> TryFromVal<Env, Vec<T>> for Vec<Val> {
     type Error = Infallible;
 
     fn try_from_val(env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
@@ -183,17 +183,17 @@ impl<T> TryFromVal<Env, Vec<T>> for Vec<RawVal> {
 // This conflicts with the previous definition unless we add the spurious &,
 // which is not .. great. Maybe don't define this particular blanket, or add
 // a to_other<T>() method?
-impl<T> TryFromVal<Env, &Vec<RawVal>> for Vec<T> {
+impl<T> TryFromVal<Env, &Vec<Val>> for Vec<T> {
     type Error = Infallible;
 
-    fn try_from_val(env: &Env, v: &&Vec<RawVal>) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, v: &&Vec<Val>) -> Result<Self, Self::Error> {
         Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
     }
 }
 
 impl<T> TryFromVal<Env, VecObject> for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = Infallible;
 
@@ -203,21 +203,21 @@ where
     }
 }
 
-impl<T> TryFromVal<Env, RawVal> for Vec<T>
+impl<T> TryFromVal<Env, Val> for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = ConversionError;
 
     #[inline(always)]
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         Ok(VecObject::try_from_val(env, val)?
             .try_into_val(env)
             .unwrap_infallible())
     }
 }
 
-impl<T> TryFromVal<Env, Vec<T>> for RawVal {
+impl<T> TryFromVal<Env, Vec<T>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
@@ -225,9 +225,9 @@ impl<T> TryFromVal<Env, Vec<T>> for RawVal {
     }
 }
 
-impl<T> From<Vec<T>> for RawVal
+impl<T> From<Vec<T>> for Val
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
@@ -237,7 +237,7 @@ where
 
 impl<T> From<Vec<T>> for VecObject
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     #[inline(always)]
     fn from(v: Vec<T>) -> Self {
@@ -287,22 +287,20 @@ impl<T> TryFrom<Vec<T>> for ScVec {
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFromVal<Env, ScVal> for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, ConversionError> {
-        Ok(
-            VecObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
-                .try_into_val(env)
-                .unwrap_infallible(),
-        )
+        Ok(VecObject::try_from_val(env, &Val::try_from_val(env, val)?)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFromVal<Env, ScVec> for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVec) -> Result<Self, Self::Error> {
@@ -324,11 +322,11 @@ impl<T> Vec<T> {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &RawVal {
+    pub fn as_raw(&self) -> &Val {
         self.obj.as_raw()
     }
 
-    pub fn to_raw(&self) -> RawVal {
+    pub fn to_raw(&self) -> Val {
         self.obj.to_raw()
     }
 
@@ -343,7 +341,7 @@ impl<T> Vec<T> {
 
 impl<T> Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     /// Create an empty Vec.
     #[inline(always)]
@@ -354,7 +352,7 @@ where
     /// Create a Vec from the array of items.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
-        let mut tmp: [RawVal; N] = [RawVal::VOID.to_raw(); N];
+        let mut tmp: [Val; N] = [Val::VOID.to_raw(); N];
         for (dst, src) in tmp.iter_mut().zip(items.iter()) {
             *dst = src.into_val(env)
         }
@@ -772,7 +770,7 @@ where
 
 impl<T> Vec<T>
 where
-    T: IntoVal<Env, RawVal>,
+    T: IntoVal<Env, Val>,
 {
     /// Returns true if the Vec contains the item.
     #[inline(always)]
@@ -836,7 +834,7 @@ where
 
 impl<T> Vec<Vec<T>>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
     T: Clone,
 {
     #[inline(always)]
@@ -851,7 +849,7 @@ where
 
 impl<T> IntoIterator for Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Item = T;
     type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
@@ -863,12 +861,12 @@ where
 
 impl<T> Vec<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     #[inline(always)]
     pub fn iter(&self) -> UnwrappedIter<VecTryIter<T>, T, T::Error>
     where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
         self.try_iter().unwrapped()
@@ -877,7 +875,7 @@ where
     #[inline(always)]
     pub fn try_iter(&self) -> VecTryIter<T>
     where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
         VecTryIter(self.clone())
     }
@@ -885,7 +883,7 @@ where
     #[inline(always)]
     pub fn into_try_iter(self) -> VecTryIter<T>
     where
-        T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
         VecTryIter(self.clone())
@@ -903,7 +901,7 @@ impl<T> VecTryIter<T> {
 
 impl<T> Iterator for VecTryIter<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Item = Result<T, T::Error>;
 
@@ -929,7 +927,7 @@ where
 
 impl<T> DoubleEndedIterator for VecTryIter<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let len = self.0.len();
@@ -946,11 +944,11 @@ where
     // backed by an indexable collection.
 }
 
-impl<T> FusedIterator for VecTryIter<T> where T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> {}
+impl<T> FusedIterator for VecTryIter<T> where T: IntoVal<Env, Val> + TryFromVal<Env, Val> {}
 
 impl<T> ExactSizeIterator for VecTryIter<T>
 where
-    T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
         self.0.len() as usize
@@ -1155,7 +1153,7 @@ mod test {
     fn test_vec_iter_panic_on_conversion() {
         let env = Env::default();
 
-        let vec: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let vec: Val = (1i32,).try_into_val(&env).unwrap();
         let vec: Vec<i64> = vec.try_into_val(&env).unwrap();
 
         let mut iter = vec.iter();
@@ -1209,7 +1207,7 @@ mod test {
     fn test_vec_try_iter_error_on_conversion() {
         let env = Env::default();
 
-        let vec: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let vec: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let vec: Vec<i64> = vec.try_into_val(&env).unwrap();
 
         let mut iter = vec.try_iter();
@@ -1346,7 +1344,7 @@ mod test {
     fn test_pop_front_panics_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let v: Val = (1i32,).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         v.pop_front();
@@ -1356,7 +1354,7 @@ mod test {
     fn test_try_pop_front_errors_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_front(), Ok(Some(1)));
@@ -1368,7 +1366,7 @@ mod test {
     fn test_pop_front_unchecked_panics_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let v: Val = (1i32,).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         v.pop_front_unchecked();
@@ -1388,7 +1386,7 @@ mod test {
     fn test_try_pop_front_unchecked_errors_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_front_unchecked(), Ok(1));
@@ -1443,7 +1441,7 @@ mod test {
     fn test_pop_back_panics_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let v: Val = (1i32,).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         v.pop_back();
@@ -1453,7 +1451,7 @@ mod test {
     fn test_try_pop_back_errors_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i32, 2i64).try_into_val(&env).unwrap();
+        let v: Val = (1i32, 2i64).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_back(), Ok(Some(2)));
@@ -1465,7 +1463,7 @@ mod test {
     fn test_pop_back_unchecked_panics_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i32,).try_into_val(&env).unwrap();
+        let v: Val = (1i32,).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         v.pop_back_unchecked();
@@ -1485,7 +1483,7 @@ mod test {
     fn test_try_pop_back_unchecked_errors_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i32, 2i64).try_into_val(&env).unwrap();
+        let v: Val = (1i32, 2i64).try_into_val(&env).unwrap();
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_back_unchecked(), Ok(2));
@@ -1533,7 +1531,7 @@ mod test {
     fn test_get_panics_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         // panic because element one is not of the expected type
@@ -1566,7 +1564,7 @@ mod test {
         assert_eq!(v.try_get(u32::MAX), Ok(None));
 
         // errors
-        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let v: Vec<i64> = v.try_into_val(&env).unwrap();
         assert_eq!(v.try_get(0), Ok(Some(1)));
         assert_eq!(v.try_get(1), Err(ConversionError));
@@ -1592,7 +1590,7 @@ mod test {
     fn test_get_unchecked_panics_on_conversion() {
         let env = Env::default();
 
-        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         // panic because element one is not of the expected type
@@ -1623,7 +1621,7 @@ mod test {
         assert_eq!(v.try_get_unchecked(4), Ok(7));
 
         // errors
-        let v: RawVal = (1i64, 2i32).try_into_val(&env).unwrap();
+        let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let v: Vec<i64> = v.try_into_val(&env).unwrap();
         assert_eq!(v.try_get_unchecked(0), Ok(1));
         assert_eq!(v.try_get_unchecked(1), Err(ConversionError));

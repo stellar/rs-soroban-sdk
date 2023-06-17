@@ -1,4 +1,4 @@
-use crate::{contracttype, Address, BytesN, RawVal, Symbol, Vec};
+use crate::{contracttype, Address, BytesN, Symbol, Val, Vec};
 
 /// Context of a single authorized call peformed by an address.
 ///
@@ -21,7 +21,7 @@ pub enum Context {
 pub struct ContractContext {
     pub contract: Address,
     pub fn_name: Symbol,
-    pub args: Vec<RawVal>,
+    pub args: Vec<Val>,
 }
 
 /// Authorization context for `create_contract` host function that creates a

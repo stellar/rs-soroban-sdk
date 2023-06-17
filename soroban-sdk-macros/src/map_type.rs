@@ -19,7 +19,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     ident,
                     arguments: PathArguments::None,
                 }) => match &ident.to_string()[..] {
-                    "RawVal" => Ok(ScSpecTypeDef::Val),
+                    "Val" => Ok(ScSpecTypeDef::Val),
                     "u64" => Ok(ScSpecTypeDef::U64),
                     "i64" => Ok(ScSpecTypeDef::I64),
                     "u32" => Ok(ScSpecTypeDef::U32),

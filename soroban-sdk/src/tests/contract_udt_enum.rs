@@ -1,7 +1,7 @@
 use crate::{self as soroban_sdk, Symbol};
 use soroban_sdk::xdr::ScVec;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, RawVal, TryFromVal, TryIntoVal,
+    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
     Vec,
 };
 
@@ -49,10 +49,10 @@ fn test_error_on_partial_decode() {
     // Success case, a vec will decode to a Udt if the first element is the
     // variant name as a Symbol, and following elements are tuple-like values
     // for the variant.
-    let vec: Vec<RawVal> = vec![&env, Symbol::short("Aaa").into_val(&env)];
+    let vec: Vec<Val> = vec![&env, Symbol::short("Aaa").into_val(&env)];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Ok(Udt::Aaa));
-    let vec: Vec<RawVal> = vec![&env, Symbol::short("Bbb").into_val(&env), 8.into()];
+    let vec: Vec<Val> = vec![&env, Symbol::short("Bbb").into_val(&env), 8.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Ok(Udt::Bbb(8)));
 
@@ -60,10 +60,10 @@ fn test_error_on_partial_decode() {
     // multiple values, it is an error. It is an error because decoding and
     // encoding will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
-    let vec: Vec<RawVal> = vec![&env, Symbol::short("Aaa").into_val(&env), 8.into()];
+    let vec: Vec<Val> = vec![&env, Symbol::short("Aaa").into_val(&env), 8.into()];
     let udt = Udt::try_from_val(&env, &vec.to_raw());
     assert_eq!(udt, Err(ConversionError));
-    let vec: Vec<RawVal> = vec![
+    let vec: Vec<Val> = vec![
         &env,
         Symbol::short("Bbb").into_val(&env),
         8.into(),
@@ -78,24 +78,24 @@ fn round_trips() {
     let env = Env::default();
 
     let before = Udt::Nested(Udt2 { a: 1 }, Udt2 { a: 2 });
-    let rawval: RawVal = before.try_into_val(&env).unwrap();
-    let after: Udt = rawval.try_into_val(&env).unwrap();
+    let val: Val = before.try_into_val(&env).unwrap();
+    let after: Udt = val.try_into_val(&env).unwrap();
     assert_eq!(before, after);
     let scvec: ScVec = before.try_into().unwrap();
     let after: Udt = scvec.try_into_val(&env).unwrap();
     assert_eq!(before, after);
 
     let before = Udt::MaxFields(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-    let rawval: RawVal = before.try_into_val(&env).unwrap();
-    let after: Udt = rawval.try_into_val(&env).unwrap();
+    let val: Val = before.try_into_val(&env).unwrap();
+    let after: Udt = val.try_into_val(&env).unwrap();
     assert_eq!(before, after);
     let scvec: ScVec = before.try_into().unwrap();
     let after: Udt = scvec.try_into_val(&env).unwrap();
     assert_eq!(before, after);
 
     let before = Udt::ThisIsAVeryLongName1234567890;
-    let rawval: RawVal = before.try_into_val(&env).unwrap();
-    let after: Udt = rawval.try_into_val(&env).unwrap();
+    let val: Val = before.try_into_val(&env).unwrap();
+    let after: Udt = val.try_into_val(&env).unwrap();
     assert_eq!(before, after);
     let scvec: ScVec = before.try_into().unwrap();
     let after: Udt = scvec.try_into_val(&env).unwrap();

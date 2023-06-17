@@ -2,7 +2,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{Env as _, EnvBase as _, I256Small, I256Val, U256Small, U256Val},
-    ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
+    ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -78,17 +78,17 @@ macro_rules! impl_num_wrapping_val_type {
             }
         }
 
-        impl TryFromVal<Env, RawVal> for $wrapper {
+        impl TryFromVal<Env, Val> for $wrapper {
             type Error = ConversionError;
 
-            fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
                 Ok(<$val>::try_from_val(env, val)?
                     .try_into_val(env)
                     .unwrap_infallible())
             }
         }
 
-        impl TryFromVal<Env, $wrapper> for RawVal {
+        impl TryFromVal<Env, $wrapper> for Val {
             type Error = ConversionError;
 
             fn try_from_val(_env: &Env, v: &$wrapper) -> Result<Self, Self::Error> {
@@ -96,7 +96,7 @@ macro_rules! impl_num_wrapping_val_type {
             }
         }
 
-        impl TryFromVal<Env, &$wrapper> for RawVal {
+        impl TryFromVal<Env, &$wrapper> for Val {
             type Error = ConversionError;
 
             fn try_from_val(_env: &Env, v: &&$wrapper) -> Result<Self, Self::Error> {
@@ -129,7 +129,7 @@ macro_rules! impl_num_wrapping_val_type {
         impl TryFromVal<Env, ScVal> for $wrapper {
             type Error = ConversionError;
             fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-                Ok(<$val>::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+                Ok(<$val>::try_from_val(env, &Val::try_from_val(env, val)?)?
                     .try_into_val(env)
                     .unwrap_infallible())
             }
@@ -144,11 +144,11 @@ macro_rules! impl_num_wrapping_val_type {
                 }
             }
 
-            pub fn as_raw(&self) -> &RawVal {
+            pub fn as_raw(&self) -> &Val {
                 self.val.as_raw()
             }
 
-            pub fn to_raw(&self) -> RawVal {
+            pub fn to_raw(&self) -> Val {
                 self.val.to_raw()
             }
 
