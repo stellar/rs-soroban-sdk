@@ -338,7 +338,7 @@ pub use soroban_sdk_macros::contractimpl;
 /// ```
 pub use soroban_sdk_macros::contractmeta;
 
-/// Generates conversions from the struct/enum from/into a `RawVal`.
+/// Generates conversions from the struct/enum from/into a `Val`.
 ///
 /// There are some constraints on the types that are supported:
 /// - Enums with integer values must have an explicit integer literal for every
@@ -346,10 +346,10 @@ pub use soroban_sdk_macros::contractmeta;
 /// - Enums with unit variants are supported.
 /// - Enums with tuple-like variants with a maximum of one tuple field are
 /// supported. The tuple field must be of a type that is also convertible to and
-/// from `RawVal`.
+/// from `Val`.
 /// - Enums with struct-like variants are not supported.
 /// - Structs are supported. All fields must be of a type that is also
-/// convertible to and from `RawVal`.
+/// convertible to and from `Val`.
 /// - All variant names, field names, and type names must be 10-characters or
 /// less in length.
 ///
@@ -632,7 +632,7 @@ pub use env::Env;
 /// Raw value of the Soroban smart contract platform that types can be converted
 /// to and from for storing, or passing between contracts.
 ///
-pub use env::RawVal;
+pub use env::Val;
 
 /// Used to do conversions between values in the Soroban environment.
 pub use env::FromVal;

@@ -135,7 +135,7 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
 
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
     match spec {
-        ScSpecTypeDef::Val => quote! { soroban_sdk::RawVal },
+        ScSpecTypeDef::Val => quote! { soroban_sdk::Val },
         ScSpecTypeDef::U64 => quote! { u64 },
         ScSpecTypeDef::I64 => quote! { i64 },
         ScSpecTypeDef::U32 => quote! { u32 },

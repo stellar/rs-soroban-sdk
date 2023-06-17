@@ -11,11 +11,11 @@ pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
 
-use crate::{Env, RawVal, Vec};
+use crate::{Env, Val, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
-    fn call(&self, func: &str, env: Env, args: &[RawVal]) -> Option<RawVal>;
+    fn call(&self, func: &str, env: Env, args: &[Val]) -> Option<Val>;
 }
 
 #[doc(inline)]
@@ -143,9 +143,9 @@ pub trait Events {
     ///
     /// Returns a [`Vec`] of three element tuples containing:
     /// - Contract ID
-    /// - Event Topics as a [`Vec<RawVal>`]
-    /// - Event Data as a [`RawVal`]
-    fn all(&self) -> Vec<(crate::Address, Vec<RawVal>, RawVal)>;
+    /// - Event Topics as a [`Vec<Val>`]
+    /// - Event Data as a [`Val`]
+    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
 }
 
 /// Test utilities for [`Logger`][crate::logging::Logger].

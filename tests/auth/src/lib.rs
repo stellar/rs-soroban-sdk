@@ -25,7 +25,7 @@ mod test_a {
             SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
             VecM,
         },
-        Address, Env, Error, RawVal, Symbol,
+        Address, Env, Error, Symbol, Val,
     };
     extern crate std;
 
@@ -191,12 +191,7 @@ mod test_a {
         #[contractimpl]
         impl Contract {
             #[allow(non_snake_case)]
-            pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
-            ) {
-            }
+            pub fn __check_auth(_signature_payload: Val, _signatures: Val, _auth_context: Val) {}
         }
     }
 
@@ -216,9 +211,9 @@ mod test_a {
         impl Contract {
             #[allow(non_snake_case)]
             pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
+                _signature_payload: Val,
+                _signatures: Val,
+                _auth_context: Val,
             ) -> Result<(), Error> {
                 Err(Error::Decline)
             }
@@ -250,7 +245,7 @@ mod test_b {
             SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
             SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
         },
-        Address, Env, Error, RawVal, Symbol,
+        Address, Env, Error, Symbol, Val,
     };
     extern crate std;
 
@@ -468,12 +463,7 @@ mod test_b {
         #[contractimpl]
         impl Contract {
             #[allow(non_snake_case)]
-            pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
-            ) {
-            }
+            pub fn __check_auth(_signature_payload: Val, _signatures: Val, _auth_context: Val) {}
         }
     }
 
@@ -493,9 +483,9 @@ mod test_b {
         impl Contract {
             #[allow(non_snake_case)]
             pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
+                _signature_payload: Val,
+                _signatures: Val,
+                _auth_context: Val,
             ) -> Result<(), Error> {
                 Err(Error::Decline)
             }

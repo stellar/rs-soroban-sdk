@@ -9,7 +9,7 @@ use crate::{
 
 use super::{
     env::internal::{Env as _, EnvBase as _, MapObject},
-    ConversionError, Env, Error, IntoVal, RawVal, TryFromVal, TryIntoVal, Vec,
+    ConversionError, Env, Error, IntoVal, TryFromVal, TryIntoVal, Val, Vec,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -49,8 +49,8 @@ macro_rules! map {
 ///
 /// The map is stored in the Host and available to the Guest through the
 /// functions defined on Map. Values stored in the Map are transmitted to the
-/// Host as [RawVal]s, and when retrieved from the Map are transmitted back and
-/// converted from [RawVal] back into their type.
+/// Host as [Val]s, and when retrieved from the Map are transmitted back and
+/// converted from [Val] back into their type.
 ///
 /// The pairs of keys and values in a Map are not guaranteed to be of type
 /// `K`/`V` and conversion will fail if they are not. Most functions on Map
@@ -108,15 +108,15 @@ pub struct Map<K, V> {
 
 impl<K, V> Eq for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
 }
 
 impl<K, V> PartialEq for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn eq(&self, other: &Self) -> bool {
         self.partial_cmp(other) == Some(Ordering::Equal)
@@ -125,8 +125,8 @@ where
 
 impl<K, V> PartialOrd for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(Ord::cmp(self, other))
@@ -135,14 +135,14 @@ where
 
 impl<K, V> Ord for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.env.check_same_env(&other.env);
         let v = self
             .env
-            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .obj_cmp(self.obj.to_val(), other.obj.to_val())
             .unwrap_infallible();
         v.cmp(&0)
     }
@@ -150,9 +150,9 @@ where
 
 impl<K, V> Debug for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val> + Debug + Clone,
     K::Error: Debug,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Debug + Clone,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val> + Debug + Clone,
     V::Error: Debug,
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -171,8 +171,8 @@ where
 
 impl<K, V> TryFromVal<Env, MapObject> for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = Infallible;
 
@@ -187,36 +187,36 @@ where
     }
 }
 
-impl<K, V> TryFromVal<Env, RawVal> for Map<K, V>
+impl<K, V> TryFromVal<Env, Val> for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         Ok(MapObject::try_from_val(env, val)?
             .try_into_val(env)
             .unwrap_infallible())
     }
 }
 
-impl<K, V> TryFromVal<Env, Map<K, V>> for RawVal
+impl<K, V> TryFromVal<Env, Map<K, V>> for Val
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = Infallible;
 
     fn try_from_val(_env: &Env, v: &Map<K, V>) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
-impl<K, V> From<Map<K, V>> for RawVal
+impl<K, V> From<Map<K, V>> for Val
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     #[inline(always)]
     fn from(m: Map<K, V>) -> Self {
@@ -228,7 +228,7 @@ where
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Map<K, V>) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
@@ -251,16 +251,14 @@ impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFromVal<Env, ScVal> for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        Ok(
-            MapObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
-                .try_into_val(env)
-                .unwrap_infallible(),
-        )
+        Ok(MapObject::try_from_val(env, &Val::try_from_val(env, val)?)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
@@ -281,13 +279,13 @@ impl<K, V> Map<K, V> {
     }
 
     #[inline(always)]
-    pub fn as_raw(&self) -> &RawVal {
-        self.obj.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.obj.as_val()
     }
 
     #[inline(always)]
-    pub fn to_raw(&self) -> RawVal {
-        self.obj.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.obj.to_val()
     }
 
     #[inline(always)]
@@ -303,8 +301,8 @@ impl<K, V> Map<K, V> {
 
 impl<K, V> Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     /// Create an empty Map.
     #[inline(always)]
@@ -460,8 +458,8 @@ where
 
 impl<K, V> IntoIterator for Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Item = (K, V);
     type IntoIter = UnwrappedIter<MapTryIter<K, V>, (K, V), ConversionError>;
@@ -473,8 +471,8 @@ where
 
 impl<K, V> Map<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     pub fn iter(&self) -> UnwrappedIter<MapTryIter<K, V>, (K, V), ConversionError>
     where
@@ -487,8 +485,8 @@ where
     #[inline(always)]
     pub fn try_iter(&self) -> MapTryIter<K, V>
     where
-        K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        K: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
+        V: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
         MapTryIter(self.clone())
     }
@@ -496,8 +494,8 @@ where
     #[inline(always)]
     pub fn into_try_iter(self) -> MapTryIter<K, V>
     where
-        K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
-        V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal> + Clone,
+        K: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
+        V: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
         MapTryIter(self.clone())
     }
@@ -514,8 +512,8 @@ impl<K, V> MapTryIter<K, V> {
 
 impl<K, V> Iterator for MapTryIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     type Item = Result<(K, V), ConversionError>;
 
@@ -549,8 +547,8 @@ where
 
 impl<K, V> DoubleEndedIterator for MapTryIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = &self.0.env;
@@ -577,15 +575,15 @@ where
 
 impl<K, V> FusedIterator for MapTryIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
 }
 
 impl<K, V> ExactSizeIterator for MapTryIter<K, V>
 where
-    K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
-    V: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
         self.0.len() as usize
@@ -694,8 +692,8 @@ mod test {
     fn test_iter_panic_on_key_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
-        let map: RawVal = map.into();
+        let map: Map<Val, Val> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
 
         let mut iter = map.iter();
@@ -707,8 +705,8 @@ mod test {
     fn test_iter_panic_on_value_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
-        let map: RawVal = map.into();
+        let map: Map<Val, Val> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
 
         let mut iter = map.iter();
@@ -762,12 +760,12 @@ mod test {
     fn test_iter_error_on_key_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![
+        let map: Map<Val, Val> = map![
             &env,
             (1i32.into_val(&env), 2i32.into_val(&env)),
             (3i64.into_val(&env), 4i32.into_val(&env)),
         ];
-        let map: RawVal = map.into();
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
 
         let mut iter = map.try_iter();
@@ -779,12 +777,12 @@ mod test {
     fn test_iter_error_on_value_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![
+        let map: Map<Val, Val> = map![
             &env,
             (1i32.into_val(&env), 2i32.into_val(&env)),
             (3i32.into_val(&env), 4i64.into_val(&env)),
         ];
-        let map: RawVal = map.into();
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
 
         let mut iter = map.try_iter();
@@ -862,12 +860,12 @@ mod test {
     fn test_get_none_on_key_type_mismatch() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![
+        let map: Map<Val, Val> = map![
             &env,
             (1i32.into_val(&env), 2i32.into_val(&env)),
             (3i64.into_val(&env), 4i32.into_val(&env)),
         ];
-        let map: RawVal = map.into();
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         assert_eq!(map.get(1), Some(2));
         assert_eq!(map.get(3), None);
@@ -878,8 +876,8 @@ mod test {
     fn test_get_panics_on_value_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
-        let map: RawVal = map.into();
+        let map: Map<Val, Val> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         let _ = map.get(1);
     }
@@ -898,12 +896,12 @@ mod test {
     fn test_try_get_none_on_key_type_mismatch() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![
+        let map: Map<Val, Val> = map![
             &env,
             (1i32.into_val(&env), 2i32.into_val(&env)),
             (3i64.into_val(&env), 4i32.into_val(&env)),
         ];
-        let map: RawVal = map.into();
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         assert_eq!(map.try_get(1), Ok(Some(2)));
         assert_eq!(map.try_get(3), Ok(None));
@@ -913,12 +911,12 @@ mod test {
     fn test_try_get_errors_on_value_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![
+        let map: Map<Val, Val> = map![
             &env,
             (1i32.into_val(&env), 2i32.into_val(&env)),
             (3i32.into_val(&env), 4i64.into_val(&env)),
         ];
-        let map: RawVal = map.into();
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         assert_eq!(map.try_get(1), Ok(Some(2)));
         assert_eq!(map.try_get(3), Err(ConversionError));
@@ -938,8 +936,8 @@ mod test {
     fn test_get_unchecked_panics_on_key_type_mismatch() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
-        let map: RawVal = map.into();
+        let map: Map<Val, Val> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         let _ = map.get_unchecked(1);
     }
@@ -949,8 +947,8 @@ mod test {
     fn test_get_unchecked_panics_on_value_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
-        let map: RawVal = map.into();
+        let map: Map<Val, Val> = map![&env, (1i32.into_val(&env), 2i64.into_val(&env)),];
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         let _ = map.get_unchecked(1);
     }
@@ -969,8 +967,8 @@ mod test {
     fn test_try_get_unchecked_panics_on_key_type_mismatch() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
-        let map: RawVal = map.into();
+        let map: Map<Val, Val> = map![&env, (1i64.into_val(&env), 2i32.into_val(&env)),];
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         let _ = map.try_get_unchecked(1);
     }
@@ -979,12 +977,12 @@ mod test {
     fn test_try_get_unchecked_errors_on_value_conversion() {
         let env = Env::default();
 
-        let map: Map<RawVal, RawVal> = map![
+        let map: Map<Val, Val> = map![
             &env,
             (1i32.into_val(&env), 2i32.into_val(&env)),
             (3i32.into_val(&env), 4i64.into_val(&env)),
         ];
-        let map: RawVal = map.into();
+        let map: Val = map.into();
         let map: Map<i32, i32> = map.try_into_val(&env).unwrap();
         assert_eq!(map.try_get_unchecked(1), Ok(2));
         assert_eq!(map.try_get_unchecked(3), Err(ConversionError));

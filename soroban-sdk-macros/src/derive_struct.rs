@@ -54,7 +54,7 @@ pub fn derive_type_struct(
                 #field_ident: {
                     let key = &#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?;
                     let idx = map.binary_search_by_key(key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
-                    let rv: #path::RawVal = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                    let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
                     rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
@@ -104,12 +104,12 @@ pub fn derive_type_struct(
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
-                use #path::{TryIntoVal,EnvBase,ConversionError,RawVal,MapObject};
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                use #path::{TryIntoVal,EnvBase,ConversionError,Val,MapObject};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
-                let mut vals: [RawVal; #field_count_usize] = [RawVal::VOID.to_raw(); #field_count_usize];
+                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
                 env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self {
@@ -118,12 +118,12 @@ pub fn derive_type_struct(
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
-                use #path::{TryIntoVal,EnvBase,ConversionError,RawVal};
+                use #path::{TryIntoVal,EnvBase,ConversionError,Val};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
-                let vals: [RawVal; #field_count_usize] = [
+                let vals: [Val; #field_count_usize] = [
                     #((&val.#field_idents).try_into_val(env).map_err(|_| ConversionError)?),*
                 ];
                 Ok(env.map_new_from_slices(&KEYS, &vals).map_err(|_| ConversionError)?.into())

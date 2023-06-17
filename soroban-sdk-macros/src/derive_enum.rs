@@ -164,23 +164,23 @@ pub fn derive_type_enum(
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
                 use #path::{EnvBase,TryIntoVal,TryFromVal};
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
-                let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
+                let vec: #path::Vec<#path::Val> = val.try_into_val(env)?;
                 let mut iter = vec.try_iter();
                 let discriminant: #path::Symbol = iter.next().ok_or(#path::ConversionError)??.try_into_val(env).map_err(|_|#path::ConversionError)?;
-                Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_val(), CASES)?) as usize {
+                Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize {
                     #(#try_froms,)*
                     _ => Err(#path::ConversionError{})?,
                 })
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
@@ -296,7 +296,7 @@ fn map_empty_variant(
     };
     let try_into = quote! {
         #enum_ident::#case_ident => {
-            let tup: (#path::RawVal,) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_raw(),);
+            let tup: (#path::Val,) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(),);
             tup.try_into_val(env)
         }
     };
@@ -400,7 +400,7 @@ fn map_tuple_variant(
                     #binding_name.try_into_val(env)?
                 };
                 let tup_elem_type = quote! {
-                    #path::RawVal
+                    #path::Val
                 };
                 (binding_name, field_conv, tup_elem_type)
             })
@@ -408,29 +408,29 @@ fn map_tuple_variant(
         let (binding_names, field_convs, tup_elem_types): (Vec<_>, Vec<_>, Vec<_>) = fragments;
         quote! {
             #enum_ident::#case_ident(#(ref #binding_names,)* ) => {
-                let tup: (#path::RawVal, #(#tup_elem_types,)* ) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_raw(), #(#field_convs,)* );
+                let tup: (#path::Val, #(#tup_elem_types,)* ) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(), #(#field_convs,)* );
                 tup.try_into_val(env)
             }
         }
     };
     let try_from_xdr = {
         let fragments = fields.iter().enumerate().map(|(i, _f)| {
-            let rawval_name = format_ident!("rv{i}");
-            let rawval_binding = quote! {
-                let #rawval_name: #path::RawVal = iter.next().ok_or(#path::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+            let val_name = format_ident!("rv{i}");
+            let val_binding = quote! {
+                let #val_name: #path::Val = iter.next().ok_or(#path::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
             };
             let into_field = quote! {
-                #rawval_name.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
+                #val_name.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
             };
-            (rawval_binding, into_field)
+            (val_binding, into_field)
         }).multiunzip();
-        let (rawval_bindings, into_fields): (Vec<_>, Vec<_>) = fragments;
+        let (val_bindings, into_fields): (Vec<_>, Vec<_>) = fragments;
         quote! {
             #case_name => {
                 if iter.len() > #num_fields {
                     return Err(#path::xdr::Error::Invalid);
                 }
-                #(#rawval_bindings)*
+                #(#val_bindings)*
                 Self::#case_ident( #(#into_fields,)* )
             }
         }

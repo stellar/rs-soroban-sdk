@@ -93,10 +93,10 @@ pub fn derive_type_enum_int(
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
                 use #path::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -106,7 +106,7 @@ pub fn derive_type_enum_int(
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {

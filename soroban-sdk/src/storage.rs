@@ -2,7 +2,7 @@
 use core::fmt::Debug;
 
 use crate::{
-    env::internal::{self, RawVal, StorageType},
+    env::internal::{self, StorageType, Val},
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Env, IntoVal, TryFromVal,
 };
@@ -92,7 +92,7 @@ impl Storage {
     #[inline(always)]
     pub(crate) fn has<K>(&self, key: &K, storage_type: StorageType) -> bool
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         self.has_internal(key.into_val(&self.env), storage_type)
     }
@@ -108,8 +108,8 @@ impl Storage {
     #[inline(always)]
     pub fn get<K, V>(&self, key: &K, storage_type: StorageType) -> Option<V>
     where
-        K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
     {
         let key = key.into_val(&self.env);
         if self.has_internal(key, storage_type) {
@@ -126,10 +126,10 @@ impl Storage {
     /// The returned value is a result of converting the internal value
     pub(crate) fn set<K, V>(&self, key: &K, val: &V, storage_type: StorageType, flags: Option<u32>)
     where
-        K: IntoVal<Env, RawVal>,
-        V: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
     {
-        let f: RawVal = match flags {
+        let f: Val = match flags {
             None => ().into(),
             Some(i) => i.into(),
         };
@@ -146,7 +146,7 @@ impl Storage {
 
     pub(crate) fn bump<K>(&self, key: &K, storage_type: StorageType, min_ledgers_to_live: u32)
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         let env = &self.env;
         internal::Env::bump_contract_data(
@@ -165,19 +165,19 @@ impl Storage {
     #[inline(always)]
     pub(crate) fn remove<K>(&self, key: &K, storage_type: StorageType)
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         let env = &self.env;
         internal::Env::del_contract_data(env, key.into_val(env), storage_type).unwrap_infallible();
     }
 
-    fn has_internal(&self, key: RawVal, storage_type: StorageType) -> bool {
+    fn has_internal(&self, key: Val, storage_type: StorageType) -> bool {
         internal::Env::has_contract_data(&self.env, key, storage_type)
             .unwrap_infallible()
             .into()
     }
 
-    fn get_internal(&self, key: RawVal, storage_type: StorageType) -> RawVal {
+    fn get_internal(&self, key: Val, storage_type: StorageType) -> Val {
         internal::Env::get_contract_data(&self.env, key, storage_type).unwrap_infallible()
     }
 }
@@ -189,7 +189,7 @@ pub struct Persistent {
 impl Persistent {
     pub fn has<K>(&self, key: &K) -> bool
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         self.storage.has(key, StorageType::PERSISTENT)
     }
@@ -197,23 +197,23 @@ impl Persistent {
     pub fn get<K, V>(&self, key: &K) -> Option<V>
     where
         V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
     {
         self.storage.get(key, StorageType::PERSISTENT)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
     where
-        K: IntoVal<Env, RawVal>,
-        V: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
     {
         self.storage.set(key, val, StorageType::PERSISTENT, flags)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         self.storage
             .bump(key, StorageType::PERSISTENT, min_ledgers_to_live)
@@ -222,7 +222,7 @@ impl Persistent {
     #[inline(always)]
     pub fn remove<K>(&self, key: &K)
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         self.storage.remove(key, StorageType::PERSISTENT)
     }
@@ -235,7 +235,7 @@ pub struct Temporary {
 impl Temporary {
     pub fn has<K>(&self, key: &K) -> bool
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         self.storage.has(key, StorageType::TEMPORARY)
     }
@@ -243,23 +243,23 @@ impl Temporary {
     pub fn get<K, V>(&self, key: &K) -> Option<V>
     where
         V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
     {
         self.storage.get(key, StorageType::TEMPORARY)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
     where
-        K: IntoVal<Env, RawVal>,
-        V: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
     {
         self.storage.set(key, val, StorageType::TEMPORARY, flags)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         self.storage
             .bump(key, StorageType::TEMPORARY, min_ledgers_to_live)
@@ -268,7 +268,7 @@ impl Temporary {
     #[inline(always)]
     pub fn remove<K>(&self, key: &K)
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         self.storage.remove(key, StorageType::TEMPORARY)
     }
