@@ -385,7 +385,7 @@ impl Env {
         let rv = internal::Env::call(
             self,
             contract_address.to_object(),
-            func.to_val(),
+            func.to_symbol_val(),
             args.to_object(),
         )
         .unwrap_infallible();
@@ -409,7 +409,7 @@ impl Env {
         let rv = internal::Env::try_call(
             self,
             contract_address.to_object(),
-            func.to_val(),
+            func.to_symbol_val(),
             args.to_object(),
         )
         .unwrap_infallible();
@@ -1039,9 +1039,9 @@ impl Env {
         let args = Vec::from_array(
             self,
             [
-                signature_payload.to_raw(),
-                signatures.to_raw(),
-                auth_context.to_raw(),
+                signature_payload.to_val(),
+                signatures.to_val(),
+                auth_context.to_val(),
             ],
         );
         let res = self

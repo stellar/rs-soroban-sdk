@@ -86,7 +86,7 @@ impl Ord for Address {
         self.env.check_same_env(&other.env);
         let v = self
             .env
-            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .obj_cmp(self.obj.to_val(), other.obj.to_val())
             .unwrap_infallible();
         v.cmp(&0)
     }
@@ -114,7 +114,7 @@ impl TryFromVal<Env, Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Address) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -122,7 +122,7 @@ impl TryFromVal<Env, &Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &&Address) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -130,7 +130,7 @@ impl TryFromVal<Env, &Address> for Val {
 impl TryFrom<&Address> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Address) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
@@ -158,7 +158,7 @@ impl TryFromVal<Env, ScVal> for Address {
 impl TryFrom<&Address> for ScAddress {
     type Error = ConversionError;
     fn try_from(v: &Address) -> Result<Self, Self::Error> {
-        match ScVal::try_from_val(&v.env, &v.obj.to_raw())? {
+        match ScVal::try_from_val(&v.env, &v.obj.to_val())? {
             ScVal::Address(a) => Ok(a),
             _ => Err(ConversionError),
         }
@@ -279,12 +279,12 @@ impl Address {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &Val {
-        self.obj.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.obj.as_val()
     }
 
-    pub fn to_raw(&self) -> Val {
-        self.obj.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.obj.to_val()
     }
 
     pub fn as_object(&self) -> &AddressObject {

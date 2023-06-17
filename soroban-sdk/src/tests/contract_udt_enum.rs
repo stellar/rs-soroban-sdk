@@ -50,10 +50,10 @@ fn test_error_on_partial_decode() {
     // variant name as a Symbol, and following elements are tuple-like values
     // for the variant.
     let vec: Vec<Val> = vec![&env, Symbol::short("Aaa").into_val(&env)];
-    let udt = Udt::try_from_val(&env, &vec.to_raw());
+    let udt = Udt::try_from_val(&env, &vec.to_val());
     assert_eq!(udt, Ok(Udt::Aaa));
     let vec: Vec<Val> = vec![&env, Symbol::short("Bbb").into_val(&env), 8.into()];
-    let udt = Udt::try_from_val(&env, &vec.to_raw());
+    let udt = Udt::try_from_val(&env, &vec.to_val());
     assert_eq!(udt, Ok(Udt::Bbb(8)));
 
     // If an enum has a tuple like variant with one value, but the vec has
@@ -61,7 +61,7 @@ fn test_error_on_partial_decode() {
     // encoding will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
     let vec: Vec<Val> = vec![&env, Symbol::short("Aaa").into_val(&env), 8.into()];
-    let udt = Udt::try_from_val(&env, &vec.to_raw());
+    let udt = Udt::try_from_val(&env, &vec.to_val());
     assert_eq!(udt, Err(ConversionError));
     let vec: Vec<Val> = vec![
         &env,
@@ -69,7 +69,7 @@ fn test_error_on_partial_decode() {
         8.into(),
         9.into(),
     ];
-    let udt = Udt::try_from_val(&env, &vec.to_raw());
+    let udt = Udt::try_from_val(&env, &vec.to_val());
     assert_eq!(udt, Err(ConversionError));
 }
 

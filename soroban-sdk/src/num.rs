@@ -20,7 +20,7 @@ macro_rules! impl_num_wrapping_val_type {
         impl Debug for $wrapper {
             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                 // FIXME: properly print it when we have the conversion functions
-                write!(f, "{:?}", self.val.as_raw())
+                write!(f, "{:?}", self.val.as_val())
             }
         }
 
@@ -40,8 +40,8 @@ macro_rules! impl_num_wrapping_val_type {
 
         impl Ord for $wrapper {
             fn cmp(&self, other: &Self) -> Ordering {
-                let self_raw = self.val.to_raw();
-                let other_raw = other.val.to_raw();
+                let self_raw = self.val.to_val();
+                let other_raw = other.val.to_val();
 
                 match (<$small>::try_from(self_raw), <$small>::try_from(other_raw)) {
                     // Compare small numbers.
@@ -92,7 +92,7 @@ macro_rules! impl_num_wrapping_val_type {
             type Error = ConversionError;
 
             fn try_from_val(_env: &Env, v: &$wrapper) -> Result<Self, Self::Error> {
-                Ok(v.to_raw())
+                Ok(v.to_val())
             }
         }
 
@@ -100,7 +100,7 @@ macro_rules! impl_num_wrapping_val_type {
             type Error = ConversionError;
 
             fn try_from_val(_env: &Env, v: &&$wrapper) -> Result<Self, Self::Error> {
-                Ok(v.to_raw())
+                Ok(v.to_val())
             }
         }
 
@@ -112,7 +112,7 @@ macro_rules! impl_num_wrapping_val_type {
                     ScVal::try_from(ss)
                 } else {
                     let e: Env = v.env.clone().try_into()?;
-                    ScVal::try_from_val(&e, &v.to_raw())
+                    ScVal::try_from_val(&e, &v.to_val())
                 }
             }
         }
@@ -144,15 +144,15 @@ macro_rules! impl_num_wrapping_val_type {
                 }
             }
 
-            pub fn as_raw(&self) -> &Val {
-                self.val.as_raw()
+            pub fn as_val(&self) -> &Val {
+                self.val.as_val()
             }
 
-            pub fn to_raw(&self) -> Val {
-                self.val.to_raw()
+            pub fn to_val(&self) -> Val {
+                self.val.to_val()
             }
 
-            pub fn to_val(&self) -> $val {
+            pub fn to_val_type(&self) -> $val {
                 self.val
             }
         }

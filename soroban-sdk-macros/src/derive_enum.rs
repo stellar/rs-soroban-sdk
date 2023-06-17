@@ -173,7 +173,7 @@ pub fn derive_type_enum(
                 let vec: #path::Vec<#path::Val> = val.try_into_val(env)?;
                 let mut iter = vec.try_iter();
                 let discriminant: #path::Symbol = iter.next().ok_or(#path::ConversionError)??.try_into_val(env).map_err(|_|#path::ConversionError)?;
-                Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_val(), CASES)?) as usize {
+                Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize {
                     #(#try_froms,)*
                     _ => Err(#path::ConversionError{})?,
                 })
@@ -296,7 +296,7 @@ fn map_empty_variant(
     };
     let try_into = quote! {
         #enum_ident::#case_ident => {
-            let tup: (#path::Val,) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_raw(),);
+            let tup: (#path::Val,) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(),);
             tup.try_into_val(env)
         }
     };
@@ -408,7 +408,7 @@ fn map_tuple_variant(
         let (binding_names, field_convs, tup_elem_types): (Vec<_>, Vec<_>, Vec<_>) = fragments;
         quote! {
             #enum_ident::#case_ident(#(ref #binding_names,)* ) => {
-                let tup: (#path::Val, #(#tup_elem_types,)* ) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_raw(), #(#field_convs,)* );
+                let tup: (#path::Val, #(#tup_elem_types,)* ) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(), #(#field_convs,)* );
                 tup.try_into_val(env)
             }
         }

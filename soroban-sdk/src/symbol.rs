@@ -58,8 +58,8 @@ impl PartialOrd for Symbol {
 
 impl Ord for Symbol {
     fn cmp(&self, other: &Self) -> Ordering {
-        let self_raw = self.val.to_raw();
-        let other_raw = other.val.to_raw();
+        let self_raw = self.val.to_val();
+        let other_raw = other.val.to_val();
 
         match (
             SymbolSmall::try_from(self_raw),
@@ -113,7 +113,7 @@ impl TryFromVal<Env, Symbol> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Symbol) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -121,7 +121,7 @@ impl TryFromVal<Env, &Symbol> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &&Symbol) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -143,7 +143,7 @@ impl TryFrom<&Symbol> for ScVal {
             ScVal::try_from(ss)
         } else {
             let e: Env = v.env.clone().try_into()?;
-            ScVal::try_from_val(&e, &v.to_raw())
+            ScVal::try_from_val(&e, &v.to_val())
         }
     }
 }
@@ -231,15 +231,15 @@ impl Symbol {
         }
     }
 
-    pub fn as_raw(&self) -> &Val {
-        self.val.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.val.as_val()
     }
 
-    pub fn to_raw(&self) -> Val {
-        self.val.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.val.to_val()
     }
 
-    pub fn to_val(&self) -> SymbolVal {
+    pub fn to_symbol_val(&self) -> SymbolVal {
         self.val
     }
 }

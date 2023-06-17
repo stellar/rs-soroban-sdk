@@ -160,7 +160,7 @@ impl Ord for Bytes {
         self.env.check_same_env(&other.env);
         let v = self
             .env
-            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .obj_cmp(self.obj.to_val(), other.obj.to_val())
             .unwrap_infallible();
         v.cmp(&0)
     }
@@ -196,7 +196,7 @@ impl TryFromVal<Env, Bytes> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Bytes) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -232,7 +232,7 @@ impl From<&Bytes> for Bytes {
 impl TryFrom<&Bytes> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Bytes) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
@@ -291,12 +291,12 @@ impl Bytes {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &Val {
-        self.obj.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.obj.as_val()
     }
 
-    pub fn to_raw(&self) -> Val {
-        self.obj.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.obj.to_val()
     }
 
     pub fn as_object(&self) -> &BytesObject {
@@ -839,7 +839,7 @@ impl<const N: usize> TryFromVal<Env, BytesN<N>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &BytesN<N>) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -890,7 +890,7 @@ impl<const N: usize> From<&BytesN<N>> for Bytes {
 impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &BytesN<N>) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.0.env, &v.0.obj.to_raw())
+        ScVal::try_from_val(&v.0.env, &v.0.obj.to_val())
     }
 }
 
@@ -920,12 +920,12 @@ impl<const N: usize> BytesN<N> {
         self.0.env()
     }
 
-    pub fn as_raw(&self) -> &Val {
-        self.0.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.0.as_val()
     }
 
-    pub fn to_raw(&self) -> Val {
-        self.0.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.0.to_val()
     }
 
     pub fn as_object(&self) -> &BytesObject {

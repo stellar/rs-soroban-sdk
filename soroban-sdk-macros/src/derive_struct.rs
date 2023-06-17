@@ -109,7 +109,7 @@ pub fn derive_type_struct(
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
                 use #path::{TryIntoVal,EnvBase,ConversionError,Val,MapObject};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
-                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_raw(); #field_count_usize];
+                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
                 env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self {

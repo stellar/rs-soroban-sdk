@@ -97,7 +97,7 @@ pub fn derive_type_struct_tuple(
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
                 use #path::{TryIntoVal,EnvBase,ConversionError,VecObject,Val};
                 let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
-                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_raw(); #field_count_usize];
+                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
                 env.vec_unpack_to_slice(vec, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self{
                     #(#field_idx_lits: vals[#field_idx_lits].try_into_val(env).map_err(|_| ConversionError)?),*

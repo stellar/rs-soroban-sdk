@@ -49,14 +49,14 @@ fn test_error_on_partial_decode() {
     let env = Env::default();
 
     // Success case, a vec will decode to a Udt.
-    let vec = vec![&env, 5, 7].to_raw();
+    let vec = vec![&env, 5, 7].to_val();
     let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Ok(Udt(5, 7)));
 
     // If a struct has 2 fields, and a vec is decoded into it where the vec has
     // 1 element, it is an error. It is an error because all fields must be
     // assigned values.
-    let vec = vec![&env, 5].to_raw();
+    let vec = vec![&env, 5].to_val();
     let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Err(ConversionError));
 
@@ -64,7 +64,7 @@ fn test_error_on_partial_decode() {
     // 3 elements, it is an error. It is an error because decoding and encoding
     // will not round trip the data, and therefore partial decoding is
     // relatively difficult to use safely.
-    let vec = vec![&env, 5, 7, 9].to_raw();
+    let vec = vec![&env, 5, 7, 9].to_val();
     let udt = Udt::try_from_val(&env, &vec);
     assert_eq!(udt, Err(ConversionError));
 }

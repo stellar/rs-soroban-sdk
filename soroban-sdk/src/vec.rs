@@ -147,7 +147,7 @@ where
         self.env.check_same_env(&other.env);
         let v = self
             .env
-            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .obj_cmp(self.obj.to_val(), other.obj.to_val())
             .unwrap_infallible();
         v.cmp(&0)
     }
@@ -221,7 +221,7 @@ impl<T> TryFromVal<Env, Vec<T>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -252,7 +252,7 @@ use super::xdr::{ScVal, ScVec};
 impl<T> TryFrom<&Vec<T>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Vec<T>) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
@@ -322,12 +322,12 @@ impl<T> Vec<T> {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &Val {
-        self.obj.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.obj.as_val()
     }
 
-    pub fn to_raw(&self) -> Val {
-        self.obj.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.obj.to_val()
     }
 
     pub fn as_object(&self) -> &VecObject {
@@ -352,7 +352,7 @@ where
     /// Create a Vec from the array of items.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
-        let mut tmp: [Val; N] = [Val::VOID.to_raw(); N];
+        let mut tmp: [Val; N] = [Val::VOID.to_val(); N];
         for (dst, src) in tmp.iter_mut().zip(items.iter()) {
             *dst = src.into_val(env)
         }
