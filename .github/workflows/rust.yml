@@ -47,7 +47,7 @@ jobs:
     - run: rustup update
     - run: rustup +nightly component add rust-analyzer
     - name: Check if rust-analyzer encounters any errors parsing project
-      run: rustup run nightly rust-analyzer analysis-stats . 2>&1 | (! grep ERROR)
+      run: rustup run nightly rust-analyzer analysis-stats . 2>&1 | (! grep '^\[ERROR')
 
   build-and-test:
     strategy:
