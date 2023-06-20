@@ -71,11 +71,8 @@
 
 use libfuzzer_sys::fuzz_target;
 
+use arbitrary::Arbitrary;
 use soroban_sdk::{
-    // We need to import `arbitrary` because the `derive(Arbitrary)` code seems
-    // to need it. TODO: Is there a way to remove it from being imported?
-    arbitrary,
-    arbitrary::Arbitrary,
     arbitrary::SorobanArbitrary,
     Env,
     IntoVal,

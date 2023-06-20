@@ -8,6 +8,11 @@ edition = "2021"
 cargo-fuzz = true
 
 [dependencies]
+# The soroban-sdk re-exports arbitrary, so importing arbitrary shouldn't be
+# required.  However, I was getting a few compile errors without it.
+# TODO: Revisit the re-export to figure out what's missing so we don't need to
+# import arbitrary.
+arbitrary = "1.3.0"
 libfuzzer-sys = "0.4"
 soroban-sdk = { path = "../../../soroban-sdk", features = [ "testutils" ]}
 test_fuzz = { path = "..", features = [ "testutils" ] }
