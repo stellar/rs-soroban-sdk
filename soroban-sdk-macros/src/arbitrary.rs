@@ -312,6 +312,9 @@ fn quote_arbitrary(
     arbitrary_type_decl: TokenStream2,
     arbitrary_ctor: TokenStream2,
 ) -> TokenStream2 {
+    if !cfg!(any(test, feature = "testutils")) {
+        return quote!();
+    }
     quote! {
         // This allows us to create a scope to import std and arbitrary, while
         // also keeping everything from the current scope. This is better than a

@@ -42,7 +42,7 @@ proptest-arbitrary-interop = "0.1.0"
 
 [features]
 alloc = []
-testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary"]
+testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary"]
 docs = []
 
 [package.metadata.docs.rs]
