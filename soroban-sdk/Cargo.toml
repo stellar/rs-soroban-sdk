@@ -16,7 +16,6 @@ doctest = false
 [dependencies]
 soroban-sdk-macros = { workspace = true }
 bytes-lit = "0.0.5"
-arbitrary = { version = "1.1.3", features = ["derive"], optional = true }
 
 [target.'cfg(target_family="wasm")'.dependencies]
 soroban-env-guest = { workspace = true }
@@ -25,6 +24,7 @@ soroban-env-guest = { workspace = true }
 soroban-env-host = { workspace = true, features = [] }
 soroban-ledger-snapshot = { workspace = true }
 stellar-strkey = { workspace = true }
+arbitrary = { version = "1.1.3", features = ["derive"], optional = true }
 ed25519-dalek = { version = "1.0.1", optional = true }
 # match the version of rand used in dalek
 rand = "0.7.3"
@@ -36,6 +36,7 @@ soroban-spec = { workspace = true }
 ed25519-dalek = "1.0.1"
 rand = "0.7.3"
 hex = "0.4.3"
+arbitrary = { version = "1.1.3", features = ["derive"] }
 proptest  = "1.2.0"
 proptest-arbitrary-interop = "0.1.0"
 

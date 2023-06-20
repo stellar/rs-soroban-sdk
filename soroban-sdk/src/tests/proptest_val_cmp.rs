@@ -1,8 +1,6 @@
 //! Check that Val and ScVal can be converted between each other,
 //! and that their comparison functions are equivalent.
 
-#![cfg(feature = "testutils")]
-
 use crate::arbitrary::SorobanArbitrary;
 use crate::xdr::ScVal;
 use crate::Env;

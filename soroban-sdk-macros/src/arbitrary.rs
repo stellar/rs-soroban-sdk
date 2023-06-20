@@ -317,7 +317,7 @@ fn quote_arbitrary(
         // also keeping everything from the current scope. This is better than a
         // module because: modules inside functions have surprisingly
         // inconsistent scoping rules and visibility management is harder.
-        #[cfg(feature = "testutils")]
+        #[cfg(any(test, feature = "testutils"))]
         const _: () = {
             // derive(Arbitrary) expects these two to be in scope
             use #path::arbitrary::std;

@@ -167,7 +167,8 @@
 //! });
 //! ```
 
-#![cfg(feature = "testutils")]
+#![cfg(any(test, feature = "testutils"))]
+#![cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 
 /// A reexport of the `arbitrary` crate.
 ///
