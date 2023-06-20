@@ -45,9 +45,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update
-    - run: rustup component add rust-analyzer
+    - run: rustup +nightly component add rust-analyzer
     - name: Check if rust-analyzer encounters any errors parsing project
-      run: rustup run stable rust-analyzer analysis-stats . 2>&1 | (! grep '^\[ERROR')
+      run: rustup run nightly rust-analyzer analysis-stats . 2>&1 | (! grep '^\[ERROR')
 
   build-and-test:
     strategy:
