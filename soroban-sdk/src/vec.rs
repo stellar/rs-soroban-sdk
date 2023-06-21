@@ -1228,6 +1228,18 @@ mod test {
     }
 
     #[test]
+    fn test_vec_iter_into_vec() {
+        let env = Env::default();
+
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+
+        let mut iter = vec.try_iter();
+        assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.into_vec(), vec![&env, 2, 3, 4]);
+    }
+
+    #[test]
     fn test_contains() {
         let env = Env::default();
         let vec = vec![&env, 0, 3, 5, 7, 9, 5];
