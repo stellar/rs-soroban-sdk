@@ -1123,26 +1123,39 @@ mod test {
 
         let vec: Vec<()> = vec![&env];
         let mut iter = vec.iter();
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let vec = vec![&env, 0, 1, 2, 3, 4];
 
         let mut iter = vec.iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let mut iter = vec.iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next_back(), Some(4));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next_back(), Some(3));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
@@ -1178,26 +1191,39 @@ mod test {
 
         let vec: Vec<()> = vec![&env];
         let mut iter = vec.try_iter();
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let vec = vec![&env, 0, 1, 2, 3, 4];
 
         let mut iter = vec.try_iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(Ok(4)));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let mut iter = vec.try_iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next_back(), Some(Ok(4)));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next_back(), Some(Ok(3)));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
