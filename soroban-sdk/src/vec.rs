@@ -460,18 +460,6 @@ where
         self.obj = env.vec_del(self.obj, i.into()).unwrap_infallible();
     }
 
-    /// Returns true if the vec is empty and contains no items.
-    #[inline(always)]
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
-    /// Returns the number of items in the vec.
-    #[inline(always)]
-    pub fn len(&self) -> u32 {
-        self.env.vec_len(self.obj).unwrap_infallible().into()
-    }
-
     /// Adds the item to the front.
     ///
     /// Increases the length by one, shifts all items up by one, and puts the
@@ -741,7 +729,9 @@ where
             self.push_back(item.clone());
         }
     }
+}
 
+impl<T> Vec<T> {
     /// Returns a subset of the bytes as defined by the start and end bounds of
     /// the range.
     ///
@@ -765,6 +755,18 @@ where
             .vec_slice(self.obj, start_bound.into(), end_bound.into())
             .unwrap_infallible();
         unsafe { Self::unchecked_new(env.clone(), obj) }
+    }
+
+    /// Returns true if the vec is empty and contains no items.
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    /// Returns the number of items in the vec.
+    #[inline(always)]
+    pub fn len(&self) -> u32 {
+        self.env.vec_len(self.obj).unwrap_infallible().into()
     }
 }
 
@@ -855,7 +857,7 @@ where
     type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
 
     fn into_iter(self) -> Self::IntoIter {
-        VecTryIter(self).unwrapped()
+        VecTryIter::new(self).unwrapped()
     }
 }
 
@@ -877,7 +879,7 @@ where
     where
         T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
-        VecTryIter(self.clone())
+        VecTryIter::new(self.clone())
     }
 
     #[inline(always)]
@@ -886,16 +888,28 @@ where
         T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
-        VecTryIter(self.clone())
+        VecTryIter::new(self.clone())
     }
 }
 
 #[derive(Clone)]
-pub struct VecTryIter<T>(Vec<T>);
+pub struct VecTryIter<T> {
+    vec: Vec<T>,
+    start: u32, // inclusive
+    end: u32,   // exclusive
+}
 
 impl<T> VecTryIter<T> {
+    fn new(vec: Vec<T>) -> Self {
+        Self {
+            start: 0,
+            end: vec.len(),
+            vec,
+        }
+    }
+
     fn into_vec(self) -> Vec<T> {
-        self.0
+        self.vec.slice(self.start..self.end)
     }
 }
 
@@ -906,18 +920,17 @@ where
     type Item = Result<T, T::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
-        if len == 0 {
-            None
+        if self.start < self.end {
+            let val = self.vec.try_get_unchecked(self.start);
+            self.start += 1;
+            Some(val)
         } else {
-            let val = self.0.env().vec_front(self.0.obj).unwrap_infallible();
-            self.0 = self.0.slice(1..);
-            Some(T::try_from_val(self.0.env(), &val))
+            None
         }
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
+        let len = (self.end - self.start) as usize;
         (len, Some(len))
     }
 
@@ -930,13 +943,12 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
-        if len == 0 {
-            None
+        if self.start < self.end {
+            let val = self.vec.try_get_unchecked(self.end - 1);
+            self.end -= 1;
+            Some(val)
         } else {
-            let val = self.0.env().vec_back(self.0.obj).unwrap_infallible();
-            self.0 = self.0.slice(..len - 1);
-            Some(T::try_from_val(self.0.env(), &val))
+            None
         }
     }
 
@@ -951,7 +963,7 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
-        self.0.len() as usize
+        (self.end - self.start) as usize
     }
 }
 
@@ -1111,26 +1123,39 @@ mod test {
 
         let vec: Vec<()> = vec![&env];
         let mut iter = vec.iter();
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let vec = vec![&env, 0, 1, 2, 3, 4];
 
         let mut iter = vec.iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(3));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(4));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let mut iter = vec.iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(0));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next_back(), Some(4));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next_back(), Some(3));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(1));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(2));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
@@ -1166,26 +1191,39 @@ mod test {
 
         let vec: Vec<()> = vec![&env];
         let mut iter = vec.try_iter();
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let vec = vec![&env, 0, 1, 2, 3, 4];
 
         let mut iter = vec.try_iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(Ok(4)));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
 
         let mut iter = vec.try_iter();
+        assert_eq!(iter.len(), 5);
         assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.len(), 4);
         assert_eq!(iter.next_back(), Some(Ok(4)));
+        assert_eq!(iter.len(), 3);
         assert_eq!(iter.next_back(), Some(Ok(3)));
+        assert_eq!(iter.len(), 2);
         assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.len(), 1);
         assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.len(), 0);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next_back(), None);
@@ -1213,6 +1251,18 @@ mod test {
         let mut iter = vec.try_iter();
         assert_eq!(iter.next(), Some(Ok(1)));
         assert_eq!(iter.next(), Some(Err(ConversionError)));
+    }
+
+    #[test]
+    fn test_vec_iter_into_vec() {
+        let env = Env::default();
+
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+
+        let mut iter = vec.try_iter();
+        assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.into_vec(), vec![&env, 2, 3, 4]);
     }
 
     #[test]
