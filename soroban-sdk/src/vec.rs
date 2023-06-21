@@ -729,7 +729,9 @@ where
             self.push_back(item.clone());
         }
     }
+}
 
+impl<T> Vec<T> {
     /// Returns a subset of the bytes as defined by the start and end bounds of
     /// the range.
     ///
@@ -754,9 +756,7 @@ where
             .unwrap_infallible();
         unsafe { Self::unchecked_new(env.clone(), obj) }
     }
-}
 
-impl<T> Vec<T> {
     /// Returns true if the vec is empty and contains no items.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
@@ -909,7 +909,7 @@ impl<T> VecTryIter<T> {
     }
 
     fn into_vec(self) -> Vec<T> {
-        self.vec
+        self.vec.slice(self.start..self.end)
     }
 }
 
