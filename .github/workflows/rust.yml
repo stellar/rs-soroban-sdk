@@ -70,6 +70,18 @@ jobs:
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
 
+  build-fuzz:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - run: rustup install nightly
+    - uses: stellar/binaries@v15
+      with:
+        name: cargo-fuzz
+        version: 0.11.2
+    - run: make build-fuzz
+
   docs:
     runs-on: ubuntu-latest
     steps:
