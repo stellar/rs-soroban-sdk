@@ -460,18 +460,6 @@ where
         self.obj = env.vec_del(self.obj, i.into()).unwrap_infallible();
     }
 
-    /// Returns true if the vec is empty and contains no items.
-    #[inline(always)]
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
-    /// Returns the number of items in the vec.
-    #[inline(always)]
-    pub fn len(&self) -> u32 {
-        self.env.vec_len(self.obj).unwrap_infallible().into()
-    }
-
     /// Adds the item to the front.
     ///
     /// Increases the length by one, shifts all items up by one, and puts the
@@ -768,6 +756,20 @@ where
     }
 }
 
+impl<T> Vec<T> {
+    /// Returns true if the vec is empty and contains no items.
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    /// Returns the number of items in the vec.
+    #[inline(always)]
+    pub fn len(&self) -> u32 {
+        self.env.vec_len(self.obj).unwrap_infallible().into()
+    }
+}
+
 impl<T> Vec<T>
 where
     T: IntoVal<Env, Val>,
@@ -855,7 +857,7 @@ where
     type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
 
     fn into_iter(self) -> Self::IntoIter {
-        VecTryIter(self).unwrapped()
+        VecTryIter::new(self).unwrapped()
     }
 }
 
@@ -877,7 +879,7 @@ where
     where
         T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
-        VecTryIter(self.clone())
+        VecTryIter::new(self.clone())
     }
 
     #[inline(always)]
@@ -886,16 +888,28 @@ where
         T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
-        VecTryIter(self.clone())
+        VecTryIter::new(self.clone())
     }
 }
 
 #[derive(Clone)]
-pub struct VecTryIter<T>(Vec<T>);
+pub struct VecTryIter<T> {
+    vec: Vec<T>,
+    start: u32,
+    len: u32,
+}
 
 impl<T> VecTryIter<T> {
+    fn new(vec: Vec<T>) -> Self {
+        Self {
+            start: 0,
+            len: vec.len(),
+            vec,
+        }
+    }
+
     fn into_vec(self) -> Vec<T> {
-        self.0
+        self.vec
     }
 }
 
@@ -906,18 +920,17 @@ where
     type Item = Result<T, T::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
-        if len == 0 {
+        if self.len == 0 {
             None
         } else {
-            let val = self.0.env().vec_front(self.0.obj).unwrap_infallible();
-            self.0 = self.0.slice(1..);
-            Some(T::try_from_val(self.0.env(), &val))
+            let val = self.vec.try_get_unchecked(self.start);
+            self.start += 1;
+            Some(val)
         }
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
+        let len = self.len as usize;
         (len, Some(len))
     }
 
@@ -930,13 +943,13 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
+        let len = self.len;
         if len == 0 {
             None
         } else {
-            let val = self.0.env().vec_back(self.0.obj).unwrap_infallible();
-            self.0 = self.0.slice(..len - 1);
-            Some(T::try_from_val(self.0.env(), &val))
+            let val = self.vec.try_get_unchecked(len - 1);
+            self.len -= 1;
+            Some(val)
         }
     }
 
@@ -951,7 +964,7 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
-        self.0.len() as usize
+        self.len as usize
     }
 }
 
