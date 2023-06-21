@@ -895,15 +895,15 @@ where
 #[derive(Clone)]
 pub struct VecTryIter<T> {
     vec: Vec<T>,
-    start: u32,
-    len: u32,
+    start: u32, // inclusive
+    end: u32,   // exclusive
 }
 
 impl<T> VecTryIter<T> {
     fn new(vec: Vec<T>) -> Self {
         Self {
             start: 0,
-            len: vec.len(),
+            end: vec.len(),
             vec,
         }
     }
@@ -920,17 +920,17 @@ where
     type Item = Result<T, T::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.len == 0 {
-            None
-        } else {
+        if self.start < self.end {
             let val = self.vec.try_get_unchecked(self.start);
             self.start += 1;
             Some(val)
+        } else {
+            None
         }
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.len as usize;
+        let len = (self.end - self.start) as usize;
         (len, Some(len))
     }
 
@@ -943,13 +943,12 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        let len = self.len;
-        if len == 0 {
-            None
-        } else {
-            let val = self.vec.try_get_unchecked(len - 1);
-            self.len -= 1;
+        if self.start < self.end {
+            let val = self.vec.try_get_unchecked(self.end - 1);
+            self.end -= 1;
             Some(val)
+        } else {
+            None
         }
     }
 
@@ -964,7 +963,7 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
-        self.len as usize
+        (self.end - self.start) as usize
     }
 }
 
