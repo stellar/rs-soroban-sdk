@@ -423,6 +423,24 @@ where
         T::try_from_val(env, &val)
     }
 
+    /// Returns the items in the range starting at the position.
+    ///
+    /// ### Panics
+    ///
+    /// If the position and length is out-of-bounds.
+    ///
+    /// If the value at any position in the range cannot be converted to type T.
+    #[inline(always)]
+    pub fn get_many_unchecked<const N: usize>(&self, i: u32) -> [T; N] {
+        let mut vals: [Val; N] = [Val::VOID.to_val(); N];
+
+        let env = self.env();
+        env.vec_unpack_range_to_slice(self.obj, i, i + N, &mut vals)
+            .unwrap_infallible();
+
+        vals.map(|v| v.try_into_val(env).unwrap_optimized())
+    }
+
     /// Sets the item at the position with new value.
     ///
     /// ### Panics
