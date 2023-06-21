@@ -1192,7 +1192,6 @@ dependencies = [
 name = "test_fuzz-fuzz"
 version = "0.0.0"
 dependencies = [
- "arbitrary",
  "libfuzzer-sys",
  "soroban-sdk",
  "test_fuzz",

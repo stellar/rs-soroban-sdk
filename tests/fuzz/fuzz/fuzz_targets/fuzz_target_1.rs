@@ -2,8 +2,7 @@
 
 use libfuzzer_sys::fuzz_target;
 
-use arbitrary::Arbitrary;
-use soroban_sdk::{arbitrary::SorobanArbitrary, Env, IntoVal, U256};
+use soroban_sdk::{arbitrary::{arbitrary,Arbitrary,SorobanArbitrary}, Env, IntoVal, U256};
 
 use test_fuzz::{Contract, ContractClient};
 
