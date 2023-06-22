@@ -1151,11 +1151,14 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 [[package]]
 name = "soroban-env-common"
 version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=c43bbd47959dde2e39eeeb5b7207868a44e96c7d#c43bbd47959dde2e39eeeb5b7207868a44e96c7d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b#bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
  "ethnum",
+ "num-derive",
+ "num-integer",
+ "num-traits",
  "serde",
  "soroban-env-macros",
  "soroban-wasmi",
@@ -1166,7 +1169,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=c43bbd47959dde2e39eeeb5b7207868a44e96c7d#c43bbd47959dde2e39eeeb5b7207868a44e96c7d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b#bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1175,7 +1178,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=c43bbd47959dde2e39eeeb5b7207868a44e96c7d#c43bbd47959dde2e39eeeb5b7207868a44e96c7d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b#bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b"
 dependencies = [
  "backtrace",
  "curve25519-dalek",
@@ -1201,7 +1204,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=c43bbd47959dde2e39eeeb5b7207868a44e96c7d#c43bbd47959dde2e39eeeb5b7207868a44e96c7d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b#bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1228,7 +1231,7 @@ dependencies = [
 [[package]]
 name = "soroban-native-sdk-macros"
 version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=c43bbd47959dde2e39eeeb5b7207868a44e96c7d#c43bbd47959dde2e39eeeb5b7207868a44e96c7d"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b#bf09e81fe1b00d674a6cb1ce3f31034c0b1d5d8b"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1363,7 +1366,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "0.0.16"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=50c7a57e55603bc57719b1d096091b3239ea6859#50c7a57e55603bc57719b1d096091b3239ea6859"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=518171b12025283cac1233c7de8e4c20088d95b5#518171b12025283cac1233c7de8e4c20088d95b5"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
