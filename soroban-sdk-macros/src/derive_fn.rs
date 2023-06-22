@@ -113,7 +113,7 @@ pub fn derive_fn(
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+            pub extern fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
                 #use_trait;
                 <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
                     #[allow(deprecated)]
