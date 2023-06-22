@@ -12,22 +12,22 @@ use crate::{
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Contracts cannot query or modify data stored by other contracts.
 ///
-/// There are three types of storage - Exclusive, Mergeable, and Temporary.
+/// There are two types of storage - Persistent and Temporary.
 ///
-/// Temporary entries are the cheapest storage option and are never in the Expired State Stack (ESS). Whenever
+/// Temporary entries are the cheaper storage option and are never in the Expired State Stack (ESS). Whenever
 /// a TemporaryEntry expires, the entry is permanently deleted and cannot be recovered.
 /// This storage type is best for entries that are only relevant for short periods of
 /// time or for entries that can be arbitrarily recreated.
 ///
-/// Recreateable entries are in between temporary and exclusive entries when it comes to fees.
+/// Recreateable entries are in between temporary and persistent entries when it comes to fees.
 /// Whenever a recreateable entry expires, it is deleted from the ledger, but sent to an
 /// ESS. The entry can then be recovered later through an operation in Stellar Core issued for the
 /// expired entry.
 ///
-/// Exclusive entries are the most expensive storage type. Like mergeable entries, whenever
-/// a exclusive entry expires, it is sent to the ESS and can be recovered via an operation in Stellar Core.
-/// Unlike recreateable entries, only a single version of a exclusive entry can exist at a time.
-/// This extra security guarantee adds cost to the exclusive entry making it the most expensive.
+/// Persistent entries are the more expensive storage type. Whenever
+/// a persistent entry expires, it is deleted from the ledger, sent to the ESS
+/// and can be recovered via an operation in Stellar Core. only a single version of a
+/// persistent entry can exist at a time.
 ///
 /// ### Examples
 ///
@@ -112,7 +112,7 @@ impl Storage {
         V: TryFromVal<Env, Val>,
     {
         let key = key.into_val(&self.env);
-        if self.has_internal(key, storage_type) {
+        if self.has_internal(key, storage_type.clone()) {
             let rv = self.get_internal(key, storage_type);
             Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {
@@ -191,7 +191,7 @@ impl Persistent {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.has(key, StorageType::PERSISTENT)
+        self.storage.has(key, StorageType::Persistent)
     }
 
     pub fn get<K, V>(&self, key: &K) -> Option<V>
@@ -200,7 +200,7 @@ impl Persistent {
         K: IntoVal<Env, Val>,
         V: TryFromVal<Env, Val>,
     {
-        self.storage.get(key, StorageType::PERSISTENT)
+        self.storage.get(key, StorageType::Persistent)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
@@ -208,7 +208,7 @@ impl Persistent {
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::PERSISTENT, flags)
+        self.storage.set(key, val, StorageType::Persistent, flags)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -216,7 +216,7 @@ impl Persistent {
         K: IntoVal<Env, Val>,
     {
         self.storage
-            .bump(key, StorageType::PERSISTENT, min_ledgers_to_live)
+            .bump(key, StorageType::Persistent, min_ledgers_to_live)
     }
 
     #[inline(always)]
@@ -224,7 +224,7 @@ impl Persistent {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.remove(key, StorageType::PERSISTENT)
+        self.storage.remove(key, StorageType::Persistent)
     }
 }
 
@@ -237,7 +237,7 @@ impl Temporary {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.has(key, StorageType::TEMPORARY)
+        self.storage.has(key, StorageType::Temporary)
     }
 
     pub fn get<K, V>(&self, key: &K) -> Option<V>
@@ -246,7 +246,7 @@ impl Temporary {
         K: IntoVal<Env, Val>,
         V: TryFromVal<Env, Val>,
     {
-        self.storage.get(key, StorageType::TEMPORARY)
+        self.storage.get(key, StorageType::Temporary)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
@@ -254,7 +254,7 @@ impl Temporary {
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::TEMPORARY, flags)
+        self.storage.set(key, val, StorageType::Temporary, flags)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -262,7 +262,7 @@ impl Temporary {
         K: IntoVal<Env, Val>,
     {
         self.storage
-            .bump(key, StorageType::TEMPORARY, min_ledgers_to_live)
+            .bump(key, StorageType::Temporary, min_ledgers_to_live)
     }
 
     #[inline(always)]
@@ -270,6 +270,6 @@ impl Temporary {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.remove(key, StorageType::TEMPORARY)
+        self.storage.remove(key, StorageType::Temporary)
     }
 }

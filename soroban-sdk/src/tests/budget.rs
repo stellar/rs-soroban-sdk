@@ -27,6 +27,6 @@ fn test_budget() {
     // 2 - charge for adding the two elements
     // 1 - charge for binary search of map with len == 0
     // 2 - charge for binary search of map with len == 1
-    assert_eq!(e.budget().tracker(ContractCostType::MapEntry), (5, None));
+    assert_eq!(e.budget().tracker(ContractCostType::MapEntry), (8, None));
     assert_eq!(b, map![&e, (1, 10), (2, 20)]);
 }

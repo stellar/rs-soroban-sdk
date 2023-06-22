@@ -127,11 +127,12 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, Address, BytesN, Vec,
+    storage::Storage, Address, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, StorageType, StringObject,
-    Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I64Object,
+    StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
+    U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -317,7 +318,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, log, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, log, Env, Symbol};
     ///
     /// pub struct Contract;
     ///
@@ -350,11 +351,13 @@ impl Env {
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
 
         let stack =
-            unsafe { Vec::<(BytesN<32>, crate::Symbol)>::unchecked_new(self.clone(), stack) };
+            unsafe { Vec::<(AddressObject, crate::Symbol)>::unchecked_new(self.clone(), stack) };
 
         let mut stack_with_addresses = Vec::new(self);
-        for (id, sym) in stack.iter() {
-            stack_with_addresses.push_back((Address::from_contract_id(&id), sym));
+        for (ao, sym) in stack.iter() {
+            unsafe {
+                stack_with_addresses.push_back((Address::unchecked_new(self.clone(), ao), sym))
+            };
         }
 
         stack_with_addresses
@@ -454,7 +457,7 @@ use crate::testutils::{
     MockAuth, MockAuthContract,
 };
 #[cfg(any(test, feature = "testutils"))]
-use crate::Bytes;
+use crate::{Bytes, BytesN};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -617,7 +620,7 @@ impl Env {
         let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
-            xdr::ScContractExecutable::WasmRef(xdr::Hash(wasm_hash.into())),
+            xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
         )
     }
 
@@ -676,7 +679,7 @@ impl Env {
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
             contract_id_preimage: xdr::ContractIdPreimage::Asset(asset),
-            executable: xdr::ScContractExecutable::Token,
+            executable: xdr::ContractExecutable::Token,
         });
 
         let token_id: Address = self
@@ -700,7 +703,7 @@ impl Env {
     fn register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
-        executable: xdr::ScContractExecutable,
+        executable: xdr::ContractExecutable,
     ) -> Address {
         if let Some(contract_id) = contract_id.into() {
             self.register_contract_with_contract_id_and_executable(contract_id, executable);
@@ -710,7 +713,7 @@ impl Env {
         }
     }
 
-    fn register_contract_with_source(&self, executable: xdr::ScContractExecutable) -> Address {
+    fn register_contract_with_source(&self, executable: xdr::ContractExecutable) -> Address {
         let prev_auth_manager = self.env_impl.snapshot_auth_manager();
         self.env_impl.switch_to_recording_auth();
 
@@ -1056,19 +1059,23 @@ impl Env {
     fn register_contract_with_contract_id_and_executable(
         &self,
         contract_id: &Address,
-        executable: xdr::ScContractExecutable,
+        executable: xdr::ContractExecutable,
     ) {
         let contract_id_hash = Hash(contract_id.contract_id().into());
-        let data_key = xdr::ScVal::LedgerKeyContractExecutable;
+        let data_key = xdr::ScVal::LedgerKeyContractInstance;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
             key: data_key.clone(),
-            type_: xdr::ContractDataType::Persistent,
-            le_type: xdr::ContractLedgerEntryType::DataEntry,
+            durability: xdr::ContractDataDurability::Persistent,
+            body_type: xdr::ContractEntryBodyType::DataEntry,
         }));
 
+        let instance = xdr::ScContractInstance {
+            executable,
+            storage: Default::default(),
+        };
         let body = xdr::ContractDataEntryBody::DataEntry(xdr::ContractDataEntryData {
-            val: xdr::ScVal::ContractExecutable(executable),
+            val: xdr::ScVal::ContractInstance(instance),
             flags: 0,
         });
 
@@ -1080,7 +1087,7 @@ impl Env {
                 key: data_key,
                 body,
                 expiration_ledger_seq: 0,
-                type_: xdr::ContractDataType::Persistent,
+                durability: xdr::ContractDataDurability::Persistent,
             }),
         });
         self.env_impl
