@@ -62,8 +62,8 @@ use crate::{env::internal::EnvBase, Env, Val};
 /// let value = 5;
 /// log!(&env, "a log entry", value, Symbol::short("another"));
 ///
-/// use soroban_sdk::testutils::Logger;
-/// let logentry = env.logger().all().last().unwrap().clone();
+/// use soroban_sdk::testutils::Logs;
+/// let logentry = env.logs().all().last().unwrap().clone();
 /// assert!(logentry.contains("[\"a log entry\", 5, another]"));
 /// # }
 /// ```
@@ -71,12 +71,12 @@ use crate::{env::internal::EnvBase, Env, Val};
 macro_rules! log {
     ($env:expr, $fmt:literal $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logger().log($fmt, &[]);
+            $env.logs().log($fmt, &[]);
         }
     };
     ($env:expr, $fmt:literal, $($args:expr),* $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logger().log($fmt, &[
+            $env.logs().log($fmt, &[
                 $(
                     <_ as $crate::IntoVal<Env, $crate::Val>>::into_val(&$args, $env)
                 ),*
@@ -85,27 +85,27 @@ macro_rules! log {
     };
 }
 
-/// Logger logs debug events.
+/// Logs logs debug events.
 ///
 /// See [`log`][crate::log] for how to conveniently log debug events.
 #[derive(Clone)]
-pub struct Logger(Env);
+pub struct Logs(Env);
 
-impl Debug for Logger {
+impl Debug for Logs {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Logger")
+        write!(f, "Logs")
     }
 }
 
-impl Logger {
+impl Logs {
     #[inline(always)]
     pub(crate) fn env(&self) -> &Env {
         &self.0
     }
 
     #[inline(always)]
-    pub(crate) fn new(env: &Env) -> Logger {
-        Logger(env.clone())
+    pub(crate) fn new(env: &Env) -> Logs {
+        Logs(env.clone())
     }
 
     /// Log a debug event.
@@ -128,7 +128,7 @@ use crate::testutils;
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-impl testutils::Logger for Logger {
+impl testutils::Logs for Logs {
     fn all(&self) -> std::vec::Vec<String> {
         use crate::xdr::{
             ContractEventBody, ContractEventType, ScSymbol, ScVal, ScVec, StringM, VecM,
