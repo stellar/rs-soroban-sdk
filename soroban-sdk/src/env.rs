@@ -127,7 +127,7 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, Address, BytesN, Vec,
+    storage::Storage, Address, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I64Object,
@@ -318,7 +318,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, log, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contractimpl, log, Env, Symbol};
     ///
     /// pub struct Contract;
     ///
@@ -351,11 +351,13 @@ impl Env {
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
 
         let stack =
-            unsafe { Vec::<(BytesN<32>, crate::Symbol)>::unchecked_new(self.clone(), stack) };
+            unsafe { Vec::<(AddressObject, crate::Symbol)>::unchecked_new(self.clone(), stack) };
 
         let mut stack_with_addresses = Vec::new(self);
-        for (id, sym) in stack.iter() {
-            stack_with_addresses.push_back((Address::from_contract_id(&id), sym));
+        for (ao, sym) in stack.iter() {
+            unsafe {
+                stack_with_addresses.push_back((Address::unchecked_new(self.clone(), ao), sym))
+            };
         }
 
         stack_with_addresses
@@ -455,7 +457,7 @@ use crate::testutils::{
     MockAuth, MockAuthContract,
 };
 #[cfg(any(test, feature = "testutils"))]
-use crate::Bytes;
+use crate::{Bytes, BytesN};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
