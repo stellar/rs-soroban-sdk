@@ -163,8 +163,16 @@ pub fn derive_contract_function_registration_ctor<'a>(
         #[cfg(any(test, feature = "testutils"))]
         #[doc(hidden)]
         #[ctor::ctor]
-        fn #ctor_ident {
-            #(#fn_set_registry_ident::register_fn(#idents, |env, args| #wrap_idents::invoke_raw_slice(env, args)));*
+        fn #ctor_ident() {
+            #(
+                #fn_set_registry_ident::register_fn(
+                    #idents,
+                    |env, args| {
+                        #[allow(deprecated)]
+                        #wrap_idents::invoke_raw_slice(env, args)
+                    },
+                );
+            )*
         }
     }
 }
