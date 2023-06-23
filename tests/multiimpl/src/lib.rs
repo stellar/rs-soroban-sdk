@@ -14,6 +14,15 @@ impl Contract {
     pub fn empty2() {}
 }
 
+trait Trait {
+    fn empty3() {}
+}
+
+#[contractimpl]
+impl Trait for Contract {
+    fn empty3() {}
+}
+
 #[cfg(test)]
 mod test {
     use soroban_sdk::Env;
@@ -28,5 +37,6 @@ mod test {
 
         client.empty();
         client.empty2();
+        client.empty3();
     }
 }
