@@ -8,8 +8,9 @@ use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 /// ```
 /// use soroban_sdk::Env;
 ///
-/// # use soroban_sdk::{contractimpl, BytesN};
+/// # use soroban_sdk::{contract, contractimpl, BytesN};
 /// #
+/// # #[contract]
 /// # pub struct Contract;
 /// #
 /// # #[contractimpl]

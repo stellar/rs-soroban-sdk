@@ -126,7 +126,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// Defining an error and capturing errors using the `try_` variant.
 ///
 /// ```
-/// use soroban_sdk::{contracterror, contractimpl, Env};
+/// use soroban_sdk::{contract, contracterror, contractimpl, Env};
 ///
 /// #[contracterror]
 /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -136,6 +136,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 ///     AnotherError = 2,
 /// }
 ///
+/// #[contract]
 /// pub struct Contract;
 ///
 /// #[contractimpl]
@@ -170,7 +171,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// Testing invocations that cause errors with `should_panic` instead of `try_`.
 ///
 /// ```should_panic
-/// # use soroban_sdk::{contracterror, contractimpl, Env};
+/// # use soroban_sdk::{contract, contracterror, contractimpl, Env};
 /// #
 /// # #[contracterror]
 /// # #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -180,6 +181,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// #     AnotherError = 2,
 /// # }
 /// #
+/// # #[contract]
 /// # pub struct Contract;
 /// #
 /// # #[contractimpl]
@@ -276,7 +278,7 @@ pub use soroban_sdk_macros::contractimport;
 /// using the generated client.
 ///
 /// ```
-/// use soroban_sdk::{contractimpl, vec, BytesN, Env, Symbol, Vec};
+/// use soroban_sdk::{contract, contractimpl, vec, BytesN, Env, Symbol, Vec};
 ///
 /// #[contract]
 /// pub struct HelloContract;
