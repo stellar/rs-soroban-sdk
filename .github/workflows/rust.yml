@@ -10,7 +10,7 @@ env:
 
 defaults:
   run:
-    shell: bashs
+    shell: bash
 
 jobs:
 
