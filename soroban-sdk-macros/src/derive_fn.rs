@@ -146,17 +146,11 @@ pub fn derive_contract_function_registration_ctor<'a>(
     trait_ident: Option<&Ident>,
     methods: impl Iterator<Item = &'a syn::ImplItemFn>,
 ) -> TokenStream2 {
-    let (idents, wrap_idents, _attrs): (Vec<_>, Vec<_>, Vec<_>) = methods
+    let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
             let wrap_ident = format_ident!("__{}", m.sig.ident);
-            let attrs = m
-                .attrs
-                .iter()
-                // Don't propogate doc comments into the match statement below.
-                .filter(|a| !a.path().is_ident("doc"))
-                .collect::<Vec<_>>();
-            (ident, wrap_ident, attrs)
+            (ident, wrap_ident)
         })
         .multiunzip();
 
