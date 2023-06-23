@@ -235,6 +235,9 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
 #[proc_macro]
 pub fn contractmetasdkversion(_metadata: TokenStream) -> TokenStream {
+    // The following two lines assume that the soroban-sdk-macros crate always
+    // has the same version as the soroban-sdk, and lives in the same
+    // repository.
     let pkg_version = env!("CARGO_PKG_VERSION");
     let git_revision = env!("GIT_REVISION");
     quote! {
