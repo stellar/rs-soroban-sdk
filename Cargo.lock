@@ -1258,7 +1258,6 @@ dependencies = [
  "ctor 0.2.2",
  "ed25519-dalek",
  "hex",
- "once_cell",
  "proptest",
  "proptest-arbitrary-interop",
  "rand 0.7.3",
