@@ -246,7 +246,7 @@ pub fn contractmetasdkversion(_metadata: TokenStream) -> TokenStream {
             val = #pkg_version,
         );
         contractmeta!(
-            key = "build.dep.rust.soroban-sdk.git.revision",
+            key = "build.dep.rust.soroban-sdk.git.rev",
             val = #git_revision,
         );
     }
