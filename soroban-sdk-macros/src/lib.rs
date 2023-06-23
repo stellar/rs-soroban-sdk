@@ -138,7 +138,8 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
             }
 
             pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
-                FUNCS.lock().unwrap().get(name).map(|f| f(env, args))
+                let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
+                fopt.map(|f| f(env, args))
             }
         }
 
