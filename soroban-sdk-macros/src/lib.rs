@@ -242,8 +242,15 @@ pub fn contractmetasdkversion(_metadata: TokenStream) -> TokenStream {
     let git_revision = env!("GIT_REVISION");
     let version = format!("{pkg_version}#{git_revision}");
     quote! {
+        // TODO:
+        // contractmeta!(
+        //     // Rustc version.
+        //     key = "rsver",
+        //     val = #version,
+        // );
         contractmeta!(
-            key = "build.dep.rust.soroban-sdk.version",
+            // Rust Soroban SDK version.
+            key = "rssdkver",
             val = #version,
         );
     }
