@@ -104,7 +104,7 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
         });
         quote! {
             #[soroban_sdk::contracttype(export = false)]
-            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         }
     }
