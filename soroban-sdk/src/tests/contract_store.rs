@@ -1,17 +1,18 @@
-use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Env};
+use crate::{self as soroban_sdk};
+use soroban_sdk::{contract, contractimpl, Env};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
     pub fn store(env: Env, k: i32, v: i32) {
-        env.storage().set(&k, &v)
+        env.storage().persistent().set(&k, &v, None)
     }
 }
 
 #[test]
-fn test() {
+fn test_storage() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
@@ -19,7 +20,7 @@ fn test() {
     client.store(&2, &4);
 
     assert_eq!(
-        e.as_contract(&contract_id, || e.storage().get::<_, i32>(&2)),
-        Some(Ok(4))
+        e.as_contract(&contract_id, || e.storage().persistent().get::<_, i32>(&2)),
+        Some(4)
     );
 }

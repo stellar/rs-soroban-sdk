@@ -1,14 +1,18 @@
-use core::{cmp::Ordering, fmt::Debug};
+use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{Env as _, EnvBase as _},
-    xdr::ScObjectType,
-    ConversionError, Env, Object, RawVal, TryFromVal,
+    env::internal::{AddressObject, Env as _, EnvBase as _},
+    BytesN, ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
-use crate::{unwrap::UnwrapInfallible, Vec};
+#[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
+use crate::env::xdr::ScAddress;
+use crate::{
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
+    Vec,
+};
 
 /// Address is a universal opaque identifier to use in contracts.
 ///
@@ -29,7 +33,7 @@ use crate::{unwrap::UnwrapInfallible, Vec};
 #[derive(Clone)]
 pub struct Address {
     env: Env,
-    obj: Object,
+    obj: AddressObject,
 }
 
 impl Debug for Address {
@@ -41,7 +45,7 @@ impl Debug for Address {
             use crate::env::internal::xdr;
             use stellar_strkey::{ed25519, Contract, Strkey};
             let sc_val = ScVal::try_from(self).map_err(|_| core::fmt::Error)?;
-            if let ScVal::Object(Some(xdr::ScObject::Address(addr))) = sc_val {
+            if let ScVal::Address(addr) = sc_val {
                 match addr {
                     xdr::ScAddress::Account(account_id) => {
                         let xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
@@ -82,60 +86,58 @@ impl Ord for Address {
         self.env.check_same_env(&other.env);
         let v = self
             .env
-            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .obj_cmp(self.obj.to_val(), other.obj.to_val())
             .unwrap_infallible();
         v.cmp(&0)
     }
 }
 
-impl TryFromVal<Env, Object> for Address {
+impl TryFromVal<Env, AddressObject> for Address {
+    type Error = Infallible;
+
+    fn try_from_val(env: &Env, val: &AddressObject) -> Result<Self, Self::Error> {
+        Ok(unsafe { Address::unchecked_new(env.clone(), *val) })
+    }
+}
+
+impl TryFromVal<Env, Val> for Address {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, val: &Object) -> Result<Self, Self::Error> {
-        if val.is_obj_type(ScObjectType::Address) {
-            Ok(unsafe { Address::unchecked_new(env.clone(), *val) })
-        } else {
-            Err(ConversionError {})
-        }
+    fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
+        Ok(AddressObject::try_from_val(env, val)?
+            .try_into_val(env)
+            .unwrap_infallible())
     }
 }
 
-impl TryFromVal<Env, RawVal> for Address {
-    type Error = <Address as TryFromVal<Env, Object>>::Error;
-
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
-        <_ as TryFromVal<_, Object>>::try_from_val(env, &val.try_into()?)
-    }
-}
-
-impl TryFromVal<Env, Address> for RawVal {
+impl TryFromVal<Env, Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Address) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
-impl TryFromVal<Env, &Address> for RawVal {
+impl TryFromVal<Env, &Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &&Address) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Address> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: &Address) -> Result<Self, Self::Error> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+    fn try_from(v: &Address) -> Result<Self, ConversionError> {
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<Address> for ScVal {
     type Error = ConversionError;
-    fn try_from(v: Address) -> Result<Self, Self::Error> {
+    fn try_from(v: Address) -> Result<Self, ConversionError> {
         (&v).try_into()
     }
 }
@@ -144,11 +146,43 @@ impl TryFrom<Address> for ScVal {
 impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        use soroban_env_host::TryIntoVal;
-        <_ as TryFromVal<_, Object>>::try_from_val(
-            env,
-            &val.try_into_val(env).map_err(|_| ConversionError)?,
+        Ok(
+            AddressObject::try_from_val(env, &Val::try_from_val(env, val)?)?
+                .try_into_val(env)
+                .unwrap_infallible(),
         )
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: &Address) -> Result<Self, Self::Error> {
+        match ScVal::try_from_val(&v.env, &v.obj.to_val())? {
+            ScVal::Address(a) => Ok(a),
+            _ => Err(ConversionError),
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Address> for ScAddress {
+    type Error = ConversionError;
+    fn try_from(v: Address) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFromVal<Env, ScAddress> for Address {
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
+        Ok(AddressObject::try_from_val(
+            env,
+            &Val::try_from_val(env, &ScVal::Address(val.clone()))?,
+        )?
+        .try_into_val(env)
+        .unwrap_infallible())
     }
 }
 
@@ -167,16 +201,11 @@ impl Address {
     /// will allow the contract callers to easily build the required signature
     /// payloads and prevent potential authorization failures.
     ///
-    /// When called in the tests, the `require_auth` calls are just recorded and
-    /// no signatures are required. In order to make sure that the contract
-    /// has indeed called `require_auth` for this Address with expected arguments
-    /// use `env.verify_top_authorization`.
-    ///
     /// ### Panics
     ///
     /// If the invocation is not authorized.
-    pub fn require_auth_for_args(&self, args: Vec<RawVal>) {
-        self.env.require_auth_for_args(&self, args);
+    pub fn require_auth_for_args(&self, args: Vec<Val>) {
+        self.env.require_auth_for_args(self, args);
     }
 
     /// Ensures that this Address has authorized invocation of the current
@@ -192,13 +221,56 @@ impl Address {
     ///
     /// ### Panics
     ///
-    /// If the invocation is not authorized.    
+    /// If the invocation is not authorized.
     pub fn require_auth(&self) {
-        self.env.require_auth(&self);
+        self.env.require_auth(self);
+    }
+
+    /// Creates an `Address` corresponding to the provided contract identifier.
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases, for example to get an Address of a freshly
+    /// deployed contract.
+    ///
+    /// TODO: Replace this function in its pub form with a function that accepts
+    /// a strkey instead. Dependent on <https://github.com/stellar/rs-stellar-strkey/issues/56>.
+    pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
+        let env = contract_id.env();
+        unsafe {
+            Self::unchecked_new(
+                env.clone(),
+                env.contract_id_to_address(contract_id.to_object())
+                    .unwrap_optimized(),
+            )
+        }
+    }
+
+    /// Returns 32-byte contract identifier corresponding to this `Address`.
+    ///
+    /// Returns None if the Address is not a contract.
+    pub(crate) fn try_contract_id(&self) -> Option<BytesN<32>> {
+        let rv = self.env.address_to_contract_id(self.obj).unwrap_optimized();
+        if let Ok(()) = rv.try_into_val(&self.env) {
+            None
+        } else {
+            Some(rv.try_into_val(&self.env).unwrap_optimized())
+        }
+    }
+
+    /// Returns 32-byte contract identifier corresponding to this `Address`.
+    ///
+    /// ### Panics
+    ///
+    /// If Address is not a contract ID.
+    pub(crate) fn contract_id(&self) -> BytesN<32> {
+        match self.try_contract_id() {
+            Some(contract_id) => contract_id,
+            None => panic!("Address is not a Contract ID"),
+        }
     }
 
     #[inline(always)]
-    pub(crate) unsafe fn unchecked_new(env: Env, obj: Object) -> Self {
+    pub(crate) unsafe fn unchecked_new(env: Env, obj: AddressObject) -> Self {
         Self { env, obj }
     }
 
@@ -207,39 +279,36 @@ impl Address {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &RawVal {
-        self.obj.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.obj.as_val()
     }
 
-    pub fn to_raw(&self) -> RawVal {
-        self.obj.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.obj.to_val()
     }
 
-    pub fn as_object(&self) -> &Object {
+    pub fn as_object(&self) -> &AddressObject {
         &self.obj
     }
 
-    pub fn to_object(&self) -> Object {
+    pub fn to_object(&self) -> AddressObject {
         self.obj
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::env::xdr::{Hash, ScAddress, ScObject};
+use crate::env::xdr::Hash;
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils::random, BytesN};
+use crate::testutils::random;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
-    fn from_contract_id(env: &Env, contract_id: &BytesN<32>) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(
-            contract_id.to_array(),
-        )))));
+    fn random(env: &Env) -> Self {
+        let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
     }
 
-    fn random(env: &Env) -> Self {
-        let sc_addr = ScVal::Object(Some(ScObject::Address(ScAddress::Contract(Hash(random())))));
-        Self::try_from_val(env, &sc_addr).unwrap()
+    fn contract_id(&self) -> crate::BytesN<32> {
+        self.contract_id()
     }
 }

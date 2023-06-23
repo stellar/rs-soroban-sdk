@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{spanned::Spanned, Attribute, DataStruct, Error, Ident, Path};
+use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
@@ -11,6 +11,7 @@ use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
+    vis: &Visibility,
     ident: &Ident,
     attrs: &[Attribute],
     data: &DataStruct,
@@ -22,25 +23,19 @@ pub fn derive_type_struct_tuple(
 
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
-    let field_count_u32: u32 = fields.len().try_into().unwrap_or_else(|_| {
-        errors.push(Error::new(
-            data.struct_token.span(),
-            "struct has too many fields exceeding u32::MAX",
-        ));
-        0
-    });
-    let (spec_fields, try_froms, try_intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+
+    let (field_specs, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .enumerate()
-        .map(|(i, f)| {
+        .map(|(field_idx, field)| {
             // For tuple structs that have unnamed fields, use the field index
             // as the token to reference the field.
-            let ident = Literal::usize_unsuffixed(i);
-            let name = format!("{}", i);
-            let spec_field = ScSpecUdtStructFieldV0 {
-                doc: docs_from_attrs(&f.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
-                name: name.try_into().unwrap_or_else(|_| StringM::default()),
-                type_: match map_type(&f.ty) {
+            let field_idx_lit = Literal::usize_unsuffixed(field_idx);
+            let field_name = format!("{}", field_idx);
+            let field_spec = ScSpecUdtStructFieldV0 {
+                doc: docs_from_attrs(&field.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+                name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
+                type_: match map_type(&field.ty) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);
@@ -48,24 +43,16 @@ pub fn derive_type_struct_tuple(
                     }
                 },
             };
-            let try_from = quote! {
-                #ident: if let Some(Ok(val)) = vec.get(#ident) {
-                    val.try_into_val(env)?
-                } else {
-                    Err(#path::ConversionError)?
-                }
-            };
-            let try_into = quote! { vec.push_back((&val.#ident).try_into_val(env)?) };
             let try_from_xdr = quote! {
-                #ident: {
-                    let rv: #path::RawVal = (&vec[#ident].clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                #field_idx_lit: {
+                    let rv: #path::Val = (&vec[#field_idx_lit].clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
                     rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
-            let into_xdr = quote! {
-                (&self.#ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?
+            let try_into_xdr = quote! {
+                (&val.#field_idx_lit).try_into().map_err(|_| #path::xdr::Error::Invalid)?
             };
-            (spec_field, try_from, try_into, try_from_xdr, into_xdr)
+            (field_spec, field_idx_lit, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -81,7 +68,7 @@ pub fn derive_type_struct_tuple(
             doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
-            fields: spec_fields.try_into().unwrap(),
+            fields: field_specs.try_into().unwrap(),
         });
         let spec_xdr = spec_entry.to_xdr().unwrap();
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
@@ -101,33 +88,35 @@ pub fn derive_type_struct_tuple(
         None
     };
 
+    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct_tuple(path, vis, ident, data);
+
     // Output.
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
-                use #path::TryIntoVal;
-                let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
-                if vec.len() != #field_count_u32 {
-                    return Err(#path::ConversionError);
-                }
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                use #path::{TryIntoVal,EnvBase,ConversionError,VecObject,Val};
+                let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
+                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
+                env.vec_unpack_to_slice(vec, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self{
-                    #(#try_froms,)*
+                    #(#field_idx_lits: vals[#field_idx_lits].try_into_val(env).map_err(|_| ConversionError)?),*
                 })
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, Self::Error> {
-                use #path::TryIntoVal;
-                let mut vec = #path::Vec::<#path::RawVal>::new(env);
-                #(#try_intos;)*
-                Ok(vec.into())
+            fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
+                use #path::{TryIntoVal,EnvBase,ConversionError,Val};
+                let vals: [Val; #field_count_usize] = [
+                    #((&val.#field_idx_lits).try_into_val(env).map_err(|_| ConversionError)?),*
+                ];
+                Ok(env.vec_new_from_slice(&vals).map_err(|_| ConversionError)?.into())
             }
         }
 
@@ -135,7 +124,7 @@ pub fn derive_type_struct_tuple(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVec) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVec) -> Result<Self, #path::xdr::Error> {
                 use #path::xdr::Validate;
                 use #path::TryIntoVal;
                 let vec = val;
@@ -149,25 +138,12 @@ pub fn derive_type_struct_tuple(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScObject> for #ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScObject) -> Result<Self, Self::Error> {
-                if let #path::xdr::ScObject::Vec(map) = val {
-                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, map)
-                } else {
-                    Err(#path::xdr::Error::Invalid)
-                }
-            }
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, Self::Error> {
-                if let #path::xdr::ScVal::Object(Some(obj)) = val {
-                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, obj)
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
+                if let #path::xdr::ScVal::Vec(Some(vec)) = val {
+                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, vec)
                 } else {
                     Err(#path::xdr::Error::Invalid)
                 }
@@ -175,61 +151,45 @@ pub fn derive_type_struct_tuple(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVec> for &#ident {
+        impl TryFrom<&#ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVec, Self::Error> {
+            fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
                 extern crate alloc;
                 use #path::TryFromVal;
                 Ok(#path::xdr::ScVec(alloc::vec![
-                    #(#into_xdrs,)*
+                    #(#try_into_xdrs,)*
                 ].try_into()?))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVec> for #ident {
+        impl TryFrom<#ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVec, Self::Error> {
-                (&self).try_into()
+            fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
+                (&val).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScObject> for &#ident {
+        impl TryFrom<&#ident> for #path::xdr::ScVal {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScObject, Self::Error> {
-                Ok(#path::xdr::ScObject::Vec(self.try_into()?))
+            fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
+                Ok(#path::xdr::ScVal::Vec(Some(val.try_into()?)))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScObject> for #ident {
+        impl TryFrom<#ident> for #path::xdr::ScVal {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScObject, Self::Error> {
-                (&self).try_into()
+            fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
+                (&val).try_into()
             }
         }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for &#ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
-                Ok(#path::xdr::ScVal::Object(Some(self.try_into()?)))
-            }
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for #ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
-                (&self).try_into()
-            }
-        }
+        #arbitrary_tokens
     }
 }

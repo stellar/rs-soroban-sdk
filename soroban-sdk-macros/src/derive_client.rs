@@ -1,104 +1,101 @@
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote, ToTokens};
-use syn::{
-    parse::{Parse, ParseStream},
-    punctuated::Punctuated,
-    spanned::Spanned,
-    token::Comma,
-    AngleBracketedGenericArguments, Attribute, Error, FnArg, GenericArgument, Ident, ItemImpl,
-    ItemTrait, PathArguments, PathSegment, ReturnType, Token, Type, TypePath,
-};
+use quote::{format_ident, quote};
+use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath};
 
 use crate::syn_ext;
 
-pub enum ClientItem {
-    Trait(ItemTrait),
-    Impl(ItemImpl),
-}
+pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
+    let ty_str = quote!(#ty).to_string();
+    // Render the Client.
+    let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
+    let client_ident = format_ident!("{}", name);
+    quote! {
+        #[doc = #client_doc]
+        pub struct #client_ident<'a> {
+            pub env: #crate_path::Env,
+            pub address: #crate_path::Address,
+            #[doc(hidden)]
+            #[cfg(not(any(test, feature = "testutils")))]
+            _phantom: core::marker::PhantomData<&'a ()>,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            set_auths: Option<&'a [#crate_path::xdr::SorobanAuthorizationEntry]>,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            mock_all_auths: bool,
+        }
 
-impl ClientItem {
-    pub fn fns(&'_ self) -> Vec<ClientFn> {
-        match self {
-            ClientItem::Trait(t) => syn_ext::trait_methods(t)
-                .map(|m| ClientFn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
-                })
-                .collect(),
-            ClientItem::Impl(i) => syn_ext::impl_pub_methods(i)
-                .map(|m| ClientFn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
-                })
-                .collect(),
+        impl<'a> #client_ident<'a> {
+            pub fn new(env: &#crate_path::Env, address: &#crate_path::Address) -> Self {
+                Self {
+                    env: env.clone(),
+                    address: address.clone(),
+                    #[cfg(not(any(test, feature = "testutils")))]
+                    _phantom: core::marker::PhantomData,
+                    #[cfg(any(test, feature = "testutils"))]
+                    set_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_all_auths: false,
+                }
+            }
+
+            /// Set authorizations in the environment which will be consumed by
+            /// contracts when they invoke `Address::require_auth` or
+            /// `Address::require_auth_for_args` functions.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn set_auths(&self, auths: &'a [#crate_path::xdr::SorobanAuthorizationEntry]) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    set_auths: Some(auths),
+                    mock_auths: self.mock_auths.clone(),
+                    mock_all_auths: false,
+                }
+            }
+
+            /// Mock authorizations in the environment which will cause matching invokes
+            /// of `Address::require_auth` and `Address::require_auth_for_args` to
+            /// pass.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    set_auths: self.set_auths.clone(),
+                    mock_auths: Some(mock_auths),
+                    mock_all_auths: false,
+                }
+            }
+
+            /// Mock all calls to the `Address::require_auth` and
+            /// `Address::require_auth_for_args` functions in invoked contracts,
+            /// having them succeed as if authorization was provided.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_all_auths(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    set_auths: None,
+                    mock_auths: None,
+                    mock_all_auths: true,
+                }
+            }
         }
     }
 }
 
-impl Parse for ClientItem {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        _ = input.call(Attribute::parse_outer);
-        _ = input.parse::<Token![pub]>();
-        let lookahead = input.lookahead1();
-        if lookahead.peek(Token![trait]) {
-            input.parse().map(ClientItem::Trait)
-        } else if lookahead.peek(Token![impl]) {
-            input.parse().map(ClientItem::Impl)
-        } else {
-            Err(lookahead.error())
-        }
-    }
-}
-
-impl ToTokens for ClientItem {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        match self {
-            ClientItem::Trait(t) => t.to_tokens(tokens),
-            ClientItem::Impl(i) => i.to_tokens(tokens),
-        }
-    }
-}
-
-pub struct ClientFn<'a> {
-    pub ident: &'a Ident,
-    pub attrs: &'a [Attribute],
-    pub inputs: &'a Punctuated<FnArg, Comma>,
-    pub output: &'a ReturnType,
-}
-
-impl<'a> ClientFn<'a> {
-    pub fn output(&self) -> Type {
-        let t = match self.output {
-            ReturnType::Default => quote!(()),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, _)) => quote!(#t),
-                None => quote!(#typ),
-            },
-        };
-        Type::Verbatim(t)
-    }
-    pub fn try_output(&self) -> Type {
-        let (t, e) = match self.output {
-            ReturnType::Default => (quote!(()), quote!(soroban_sdk::Status)),
-            ReturnType::Type(_, typ) => match unpack_result(typ) {
-                Some((t, e)) => (quote!(#t), quote!(#e)),
-                None => (quote!(#typ), quote!(soroban_sdk::Status)),
-            },
-        };
-        Type::Verbatim(quote! {
-            Result<
-                Result<#t, <#t as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::RawVal>>::Error>,
-                Result<#e, <#e as TryFrom<soroban_sdk::Status>>::Error>
-            >
-        })
-    }
-}
-
-pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
+pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
     // Map the traits methods to methods for the Client.
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
@@ -146,30 +143,57 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
                 })
                 .unzip();
             let fn_output = f.output();
-            let fn_try_output = f.try_output();
+            let fn_try_output = f.try_output(crate_path);
             let fn_attrs = f.attrs;
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    use soroban_sdk::IntoVal;
-                    self.with_env(|env|
-                        env.invoke_contract(
-                            &self.contract_id,
-                            &soroban_sdk::symbol!(#fn_name),
-                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
-                        )
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
+                    #[cfg(any(test, feature = "testutils"))]
+                    {
+                        if let Some(set_auths) = self.set_auths {
+                            self.env.set_auths(set_auths);
+                        }
+                        if let Some(mock_auths) = self.mock_auths {
+                            self.env.mock_auths(mock_auths);
+                        }
+                        if self.mock_all_auths {
+                            self.env.mock_all_auths();
+                        }
+                    }
+                    use #crate_path::{IntoVal,FromVal};
+                    self.env.invoke_contract(
+                        &self.address,
+                        &#crate_path::Symbol::new(&self.env, &#fn_name),
+                        #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
                 }
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
-                    use soroban_sdk::IntoVal;
-                    self.with_env(|env|
-                        env.try_invoke_contract(
-                            &self.contract_id,
-                            &soroban_sdk::symbol!(#fn_name),
-                            soroban_sdk::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
-                        )
+                    #[cfg(any(test, feature = "testutils"))]
+                    // TODO: Undo the mock and restore previous auth state after
+                    // https://github.com/stellar/rs-soroban-env/issues/785 is
+                    // implemented.
+                    #[cfg(any(test, feature = "testutils"))]
+                    {
+                        if let Some(set_auths) = self.set_auths {
+                            self.env.set_auths(set_auths);
+                        }
+                        if let Some(mock_auths) = self.mock_auths {
+                            self.env.mock_auths(mock_auths);
+                        }
+                        if self.mock_all_auths {
+                            self.env.mock_all_auths();
+                        }
+                    }
+                    use #crate_path::{IntoVal,FromVal};
+                    self.env.try_invoke_contract(
+                        &self.address,
+                        &#crate_path::Symbol::new(&self.env, &#fn_name),
+                        #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     )
                 }
             }
@@ -185,49 +209,8 @@ pub fn derive_client(name: &str, fns: &[ClientFn]) -> TokenStream {
     // Render the Client.
     let client_ident = format_ident!("{}", name);
     quote! {
-        pub struct #client_ident {
-            pub env: soroban_sdk::Env,
-            pub contract_id: soroban_sdk::BytesN<32>,
-        }
-
-        impl #client_ident {
-            pub fn new(env: &soroban_sdk::Env, contract_id: &impl soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::BytesN<32>>) -> Self {
-                Self {
-                    env: env.clone(),
-                    contract_id: contract_id.into_val(env),
-                }
-            }
-
-            fn with_env<R>(&self, f: impl FnOnce(&soroban_sdk::Env) -> R) -> R {
-                let env = &self.env;
-                f(env)
-            }
-
+        impl<'a> #client_ident<'a> {
             #(#fns)*
         }
-    }
-}
-
-fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
-    match &typ {
-        Type::Path(TypePath { path, .. }) => {
-            if let Some(PathSegment {
-                ident,
-                arguments:
-                    PathArguments::AngleBracketed(AngleBracketedGenericArguments { args, .. }),
-            }) = path.segments.last()
-            {
-                let args = args.iter().collect::<Vec<_>>();
-                match (&ident.to_string()[..], args.as_slice()) {
-                    ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
-                        Some((t.clone(), e.clone()))
-                    }
-                    _ => None,
-                }
-            } else {
-                None
-            }
-        }
-        _ => None,
     }
 }

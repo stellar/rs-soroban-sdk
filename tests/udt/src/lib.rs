@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, contracttype, Vec};
+use soroban_sdk::{contract, contractimpl, contracttype, Vec};
 
 #[contracttype]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -29,6 +29,7 @@ pub struct UdtStruct {
     pub c: Vec<i64>,
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
@@ -38,13 +39,13 @@ impl Contract {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
             UdtEnum::UdtC(val) => val as i64,
-            UdtEnum::UdtD(tup) => tup.0 + tup.1.iter().fold(0i64, |sum, i| sum + i.unwrap()),
+            UdtEnum::UdtD(tup) => tup.0 + tup.1.try_iter().fold(0i64, |sum, i| sum + i.unwrap()),
         };
         let b = match b {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
             UdtEnum::UdtC(val) => val as i64,
-            UdtEnum::UdtD(tup) => tup.0 + tup.1.iter().fold(0i64, |sum, i| sum + i.unwrap()),
+            UdtEnum::UdtD(tup) => tup.0 + tup.1.try_iter().fold(0i64, |sum, i| sum + i.unwrap()),
         };
         a + b
     }
@@ -53,133 +54,32 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{vec, xdr::ScVal, Bytes, BytesN, Env, TryFromVal};
+    use soroban_sdk::{vec, xdr::ScVal, Bytes, Env, TryFromVal};
 
     #[test]
     fn test_serializing() {
-        use soroban_sdk::serde::Serialize;
+        use soroban_sdk::xdr::ToXdr;
         let e = Env::default();
         let udt = UdtStruct {
             a: 10,
             b: 12,
             c: vec![&e, 1],
         };
-        let bin = udt.serialize(&e);
-        assert_eq!(bin, {
-            let mut bin = Bytes::new(&e);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(4);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(3);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(5);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(97);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(10);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(5);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(98);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(12);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(5);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(99);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(4);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(0);
-            bin.push(1);
-            bin
-        })
+        let bin = udt.to_xdr(&e);
+        let expected_bytes = [
+            0u8, 0, 0, 17, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 15, 0, 0, 0, 1, 97, 0, 0, 0, 0, 0, 0,
+            6, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 15, 0, 0, 0, 1, 98, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0,
+            0, 0, 0, 0, 12, 0, 0, 0, 15, 0, 0, 0, 1, 99, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 1, 0, 0, 0,
+            1, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 1,
+        ];
+        let expected_bytes = Bytes::from_array(&e, &expected_bytes);
+        assert_eq!(bin, expected_bytes);
     }
 
     #[test]
     fn test_add() {
         let e = Env::default();
-        let contract_id = BytesN::from_array(&e, &[0; 32]);
-        e.register_contract(&contract_id, Contract);
+        let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
         let udt = UdtStruct {

@@ -34,8 +34,8 @@ impl Crypto {
         let env = self.env();
         let _ = internal::Env::verify_sig_ed25519(
             env,
-            message.to_object(),
             public_key.to_object(),
+            message.to_object(),
             signature.to_object(),
         );
     }

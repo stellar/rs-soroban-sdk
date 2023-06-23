@@ -8,14 +8,15 @@
 //! ### Examples
 //!
 //! ```rust
-//! use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+//! use soroban_sdk::{contract, contractimpl, vec, BytesN, Env, Symbol, Vec};
 //!
+//! #[contract]
 //! pub struct HelloContract;
 //!
 //! #[contractimpl]
 //! impl HelloContract {
 //!     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-//!         vec![&env, symbol!("Hello"), to]
+//!         vec![&env, Symbol::short("Hello"), to]
 //!     }
 //! }
 //!
@@ -28,15 +29,15 @@
 //!     let contract_id = env.register_contract(None, HelloContract);
 //!     let client = HelloContractClient::new(&env, &contract_id);
 //!
-//!     let words = client.hello(&symbol!("Dev"));
+//!     let words = client.hello(&Symbol::short("Dev"));
 //!
-//!     assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+//!     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
 //!
-//! More examples are available at <https://soroban.stellar.org/docs/category/examples>.
+//! More examples are available at <https://soroban.stellar.org/docs/category/how-to-guides>.
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
@@ -105,12 +106,15 @@ fn __link_sections() {
     static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
 }
 
+// Re-exports of dependencies used by macros.
 #[doc(hidden)]
-pub use bytes_lit::bytes as __bytes_lit_bytes;
-#[doc(hidden)]
-pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
+pub mod reexports_for_macros {
+    pub use ::bytes_lit;
+    #[cfg(any(test, feature = "testutils"))]
+    pub use ::ctor;
+}
 
-/// Generates conversions from the repr(u32) enum from/into a `Status`.
+/// Generates conversions from the repr(u32) enum from/into an `Error`.
 ///
 /// There are some constraints on the types that are supported:
 /// - Enum must derive `Copy`.
@@ -125,7 +129,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// Defining an error and capturing errors using the `try_` variant.
 ///
 /// ```
-/// use soroban_sdk::{contracterror, contractimpl, Env};
+/// use soroban_sdk::{contract, contracterror, contractimpl, Env};
 ///
 /// #[contracterror]
 /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -135,6 +139,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 ///     AnotherError = 2,
 /// }
 ///
+/// #[contract]
 /// pub struct Contract;
 ///
 /// #[contractimpl]
@@ -169,7 +174,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// Testing invocations that cause errors with `should_panic` instead of `try_`.
 ///
 /// ```should_panic
-/// # use soroban_sdk::{contracterror, contractimpl, Env};
+/// # use soroban_sdk::{contract, contracterror, contractimpl, Env};
 /// #
 /// # #[contracterror]
 /// # #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -179,6 +184,7 @@ pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 /// #     AnotherError = 2,
 /// # }
 /// #
+/// # #[contract]
 /// # pub struct Contract;
 /// #
 /// # #[contractimpl]
@@ -259,10 +265,15 @@ pub use soroban_sdk_macros::contracterror;
 /// ```
 pub use soroban_sdk_macros::contractimport;
 
-/// Exports the publicly accessible functions to the Soroban environment.
+/// Marks a type as being the type that contract functions are attached for.
 ///
-/// Functions that are publicly accessible in the implementation are invocable
-/// by other contracts, or directly by transactions, when deployed.
+/// Use `#[contractimpl]` on impl blocks of this type to make those functions
+/// contract functions.
+///
+/// Note that a crate only ever exports a single contract. While there can be
+/// multiple types in a crate with `#[contract]`, when built as a wasm file and
+/// deployed the combination of all contract functions and all contracts within
+/// a crate will be seen as a single contract.
 ///
 /// ### Examples
 ///
@@ -270,14 +281,15 @@ pub use soroban_sdk_macros::contractimport;
 /// using the generated client.
 ///
 /// ```
-/// use soroban_sdk::{contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+/// use soroban_sdk::{contract, contractimpl, vec, BytesN, Env, Symbol, Vec};
 ///
+/// #[contract]
 /// pub struct HelloContract;
 ///
 /// #[contractimpl]
 /// impl HelloContract {
 ///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-///         vec![&env, symbol!("Hello"), to]
+///         vec![&env, Symbol::short("Hello"), to]
 ///     }
 /// }
 ///
@@ -290,16 +302,97 @@ pub use soroban_sdk_macros::contractimport;
 ///     let contract_id = env.register_contract(None, HelloContract);
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
-///     let words = client.hello(&symbol!("Dev"));
+///     let words = client.hello(&Symbol::short("Dev"));
 ///
-///     assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+pub use soroban_sdk_macros::contract;
+
+/// Exports the publicly accessible functions to the Soroban environment.
+///
+/// Functions that are publicly accessible in the implementation are invocable
+/// by other contracts, or directly by transactions, when deployed.
+///
+/// ### Examples
+///
+/// Define a contract with one function, `hello`, and call it from within a test
+/// using the generated client.
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, vec, BytesN, Env, Symbol, Vec};
+///
+/// #[contract]
+/// pub struct HelloContract;
+///
+/// #[contractimpl]
+/// impl HelloContract {
+///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
+///         vec![&env, Symbol::short("Hello"), to]
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register_contract(None, HelloContract);
+///     let client = HelloContractClient::new(&env, &contract_id);
+///
+///     let words = client.hello(&Symbol::short("Dev"));
+///
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
 /// }
 /// # #[cfg(not(feature = "testutils"))]
 /// # fn main() { }
 /// ```
 pub use soroban_sdk_macros::contractimpl;
 
-/// Generates conversions from the struct/enum from/into a `RawVal`.
+/// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
+/// under the section name 'contractmetav0'. Contract developers can use this to
+/// append metadata to their contract.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, contractmeta, vec, BytesN, Env, Symbol, Vec};
+///
+/// contractmeta!(key="desc", val="hello world contract");
+///
+/// #[contract]
+/// pub struct HelloContract;
+///
+/// #[contractimpl]
+/// impl HelloContract {
+///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
+///         vec![&env, Symbol::short("Hello"), to]
+///     }
+/// }
+///
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register_contract(None, HelloContract);
+///     let client = HelloContractClient::new(&env, &contract_id);
+///
+///     let words = client.hello(&Symbol::short("Dev"));
+///
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+pub use soroban_sdk_macros::contractmeta;
+
+/// Generates conversions from the struct/enum from/into a `Val`.
 ///
 /// There are some constraints on the types that are supported:
 /// - Enums with integer values must have an explicit integer literal for every
@@ -307,10 +400,10 @@ pub use soroban_sdk_macros::contractimpl;
 /// - Enums with unit variants are supported.
 /// - Enums with tuple-like variants with a maximum of one tuple field are
 /// supported. The tuple field must be of a type that is also convertible to and
-/// from `RawVal`.
+/// from `Val`.
 /// - Enums with struct-like variants are not supported.
 /// - Structs are supported. All fields must be of a type that is also
-/// convertible to and from `RawVal`.
+/// convertible to and from `Val`.
 /// - All variant names, field names, and type names must be 10-characters or
 /// less in length.
 ///
@@ -323,7 +416,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 /// ```
 /// #![no_std]
-/// use soroban_sdk::{contractimpl, contracttype, symbol, Env, Symbol};
+/// use soroban_sdk::{contract, contractimpl, contracttype, Env, Symbol};
 ///
 /// #[contracttype]
 /// #[derive(Clone, Default, Debug, Eq, PartialEq)]
@@ -332,6 +425,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///     pub last_incr: u32,
 /// }
 ///
+/// #[contract]
 /// pub struct Contract;
 ///
 /// #[contractimpl]
@@ -346,7 +440,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///         state.last_incr = incr;
 ///
 ///         // Save the count.
-///         env.storage().set(&symbol!("STATE"), &state);
+///         env.storage().persistent().set(&Symbol::short("STATE"), &state, None);
 ///
 ///         // Return the count to the caller.
 ///         state.count
@@ -354,10 +448,9 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 ///     /// Return the current state.
 ///     pub fn get_state(env: Env) -> State {
-///         env.storage()
-///             .get(&symbol!("STATE"))
-///             .unwrap_or_else(|| Ok(State::default())) // If no value set, assume 0.
-///             .unwrap() // Panic if the value of COUNTER is not a State.
+///         env.storage().persistent()
+///             .get(&Symbol::short("STATE"))
+///             .unwrap_or_else(|| State::default()) // If no value set, assume 0.
 ///     }
 /// }
 ///
@@ -389,7 +482,7 @@ pub use soroban_sdk_macros::contractimpl;
 ///
 /// ```
 /// #![no_std]
-/// use soroban_sdk::{contractimpl, contracttype, symbol, Env};
+/// use soroban_sdk::{contract, contractimpl, contracttype, Symbol, Env};
 ///
 /// /// A tuple enum is stored as a two-element vector containing the name of
 /// /// the enum variant as a Symbol, then the value in the tuple.
@@ -418,20 +511,20 @@ pub use soroban_sdk_macros::contractimpl;
 ///     High = 2,
 /// }
 ///
+/// #[contract]
 /// pub struct Contract;
 ///
 /// #[contractimpl]
 /// impl Contract {
 ///     /// Set the color.
 ///     pub fn set(env: Env, c: Color) {
-///         env.storage().set(&symbol!("COLOR"), &c);
+///         env.storage().persistent().set(&Symbol::short("COLOR"), &c, None);
 ///     }
 ///
 ///     /// Get the color.
 ///     pub fn get(env: Env) -> Option<Color> {
-///         env.storage()
-///             .get(&symbol!("COLOR"))
-///             .map(Result::unwrap) // Panic if the value of COLOR is not a Color.
+///         env.storage().persistent()
+///             .get(&Symbol::short("COLOR"))
 ///     }
 /// }
 ///
@@ -476,19 +569,20 @@ pub use soroban_sdk_macros::contracttype;
 /// ### Examples
 ///
 /// ```
-/// use soroban_sdk::{contractclient, contractimpl, symbol, vec, BytesN, Env, Symbol, Vec};
+/// use soroban_sdk::{contract, contractclient, contractimpl, vec, BytesN, Env, Symbol, Vec};
 ///
 /// #[contractclient(name = "Client")]
 /// pub trait HelloInteface {
 ///     fn hello(env: Env, to: Symbol) -> Vec<Symbol>;
 /// }
 ///
+/// #[contract]
 /// pub struct HelloContract;
 ///
 /// #[contractimpl]
 /// impl HelloContract {
 ///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-///         vec![&env, symbol!("Hello"), to]
+///         vec![&env, Symbol::short("Hello"), to]
 ///     }
 /// }
 ///
@@ -506,13 +600,20 @@ pub use soroban_sdk_macros::contracttype;
 ///     // the trait.
 ///     let client = Client::new(&env, &contract_id);
 ///
-///     let words = client.hello(&symbol!("Dev"));
+///     let words = client.hello(&Symbol::short("Dev"));
 ///
-///     assert_eq!(words, vec![&env, symbol!("Hello"), symbol!("Dev"),]);
+///     assert_eq!(words, vec![&env, Symbol::short("Hello"), Symbol::short("Dev"),]);
 /// }
 /// # #[cfg(not(feature = "testutils"))]
 /// # fn main() { }
 pub use soroban_sdk_macros::contractclient;
+
+/// Generates a contract spec for a trait or impl.
+///
+/// Note that [`contractimpl`] also generates a contract spec and it is in most
+/// cases not necessary to use this macro.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractspecfn;
 
 /// Import a contract from its WASM file, generating a constant holding the
 /// contract file.
@@ -522,31 +623,6 @@ pub use soroban_sdk_macros::contractclient;
 /// directly, unless you specifically want to only load the contract file
 /// without generating a client for it.
 pub use soroban_sdk_macros::contractfile;
-
-/// Create a [Symbol] with the given string.
-///
-/// A symbol's maximum length is 10 characters.
-///
-/// Valid characters are `a-zA-Z0-9_`.
-///
-/// The [Symbol] is generated at compile time and returned as a const.
-///
-/// ### Examples
-///
-/// ```
-/// use soroban_sdk::{symbol, Symbol};
-///
-/// let symbol = symbol!("a_str");
-/// assert_eq!(symbol, Symbol::from_str("a_str"));
-/// ```
-///
-/// ```
-/// use soroban_sdk::{symbol, Symbol};
-///
-/// const symbol: Symbol = symbol!("a_str");
-/// assert_eq!(symbol, Symbol::from_str("a_str"));
-/// ```
-pub use soroban_sdk_macros::symbol;
 
 /// Panic with the given error.
 ///
@@ -605,7 +681,7 @@ pub mod unwrap;
 mod env;
 
 mod address;
-pub use env::xdr;
+mod symbol;
 
 pub use env::ConversionError;
 
@@ -613,7 +689,7 @@ pub use env::Env;
 /// Raw value of the Soroban smart contract platform that types can be converted
 /// to and from for storing, or passing between contracts.
 ///
-pub use env::RawVal;
+pub use env::Val;
 
 /// Used to do conversions between values in the Soroban environment.
 pub use env::FromVal;
@@ -624,11 +700,12 @@ pub use env::TryFromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryIntoVal;
 
-pub use env::Symbol;
-
 mod envhidden {
-    pub use super::env::Object;
-    pub use super::env::Status;
+    pub use super::env::EnvBase;
+    pub use super::env::Error;
+    pub use super::env::MapObject;
+    pub use super::env::SymbolStr;
+    pub use super::env::VecObject;
 }
 #[doc(hidden)]
 pub use envhidden::*;
@@ -640,25 +717,33 @@ pub mod data {
     #[deprecated(note = "use storage::Storage")]
     pub use super::storage::Storage as Data;
 }
+pub mod auth;
 mod bytes;
 pub mod crypto;
 pub mod deploy;
 pub mod events;
 pub mod iter;
 pub mod ledger;
-pub mod logging;
+pub mod logs;
 mod map;
-mod set;
 pub mod storage;
+pub mod token;
 mod vec;
 pub use address::Address;
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
-pub use set::Set;
+pub use symbol::Symbol;
 pub use vec::Vec;
+mod num;
+pub use num::{I256, U256};
+mod string;
+pub use string::String;
 
-pub mod serde;
+pub mod xdr;
 
 pub mod testutils;
+
+pub mod arbitrary;
+mod arbitrary_extra;
 
 mod tests;

@@ -5,9 +5,10 @@ use std::{
     rc::Rc,
 };
 
+use soroban_env_common::xdr::{ScErrorCode, ScErrorType};
 use soroban_env_host::{
     storage::SnapshotSource,
-    xdr::{LedgerEntry, LedgerKey, ScHostStorageErrorCode, ScStatus},
+    xdr::{LedgerEntry, LedgerKey, ScError},
     Host, HostError, LedgerInfo,
 };
 
@@ -29,6 +30,8 @@ pub struct LedgerSnapshot {
     pub timestamp: u64,
     pub network_id: [u8; 32],
     pub base_reserve: u32,
+    pub min_persistent_entry_expiration: u32,
+    pub min_temp_entry_expiration: u32,
     pub ledger_entries: Vec<(Box<LedgerKey>, Box<LedgerEntry>)>,
 }
 
@@ -67,8 +70,10 @@ impl LedgerSnapshot {
             protocol_version: self.protocol_version,
             sequence_number: self.sequence_number,
             timestamp: self.timestamp,
-            network_id: self.network_id.clone(),
+            network_id: self.network_id,
             base_reserve: self.base_reserve,
+            min_persistent_entry_expiration: self.min_persistent_entry_expiration,
+            min_temp_entry_expiration: self.min_temp_entry_expiration,
         }
     }
 
@@ -157,29 +162,33 @@ impl Default for LedgerSnapshot {
             network_id: Default::default(),
             base_reserve: Default::default(),
             ledger_entries: Vec::default(),
+            min_persistent_entry_expiration: Default::default(),
+            min_temp_entry_expiration: Default::default(),
         }
     }
 }
 
 impl SnapshotSource for &LedgerSnapshot {
-    fn get(&self, key: &LedgerKey) -> Result<LedgerEntry, HostError> {
-        match self.ledger_entries.iter().find(|(k, _)| k.as_ref() == key) {
-            Some((_, v)) => Ok(*v.clone()),
-            None => {
-                Err(ScStatus::HostStorageError(ScHostStorageErrorCode::AccessToUnknownEntry).into())
+    fn get(&self, key: &Rc<LedgerKey>) -> Result<Rc<LedgerEntry>, HostError> {
+        match self.ledger_entries.iter().find(|(k, _)| **k == **key) {
+            Some((_, v)) => Ok(Rc::new(*v.clone())),
+            None => Err(ScError {
+                type_: ScErrorType::Storage,
+                code: ScErrorCode::MissingValue,
             }
+            .into()),
         }
     }
-    fn has(&self, key: &LedgerKey) -> Result<bool, HostError> {
-        Ok(self.ledger_entries.iter().any(|(k, _)| k.as_ref() == key))
+    fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {
+        Ok(self.ledger_entries.iter().any(|(k, _)| **k == **key))
     }
 }
 
 impl SnapshotSource for LedgerSnapshot {
-    fn get(&self, key: &LedgerKey) -> Result<LedgerEntry, HostError> {
+    fn get(&self, key: &Rc<LedgerKey>) -> Result<Rc<LedgerEntry>, HostError> {
         <_ as SnapshotSource>::get(&self, key)
     }
-    fn has(&self, key: &LedgerKey) -> Result<bool, HostError> {
+    fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {
         <_ as SnapshotSource>::has(&self, key)
     }
 }

@@ -23,6 +23,9 @@ check: build fmt
 	cargo hack --feature-powerset --exclude-features docs check
 	cargo hack check --release --target wasm32-unknown-unknown
 
+build-fuzz:
+	cd tests/fuzz/fuzz && cargo +nightly fuzz check
+
 readme:
 	cd soroban-sdk \
 		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \

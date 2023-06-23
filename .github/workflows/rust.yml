@@ -25,6 +25,21 @@ jobs:
     - run: rustup update
     - run: cargo fmt --all --check
 
+  cargo-deny:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        checks:
+          - advisories
+          - bans licenses sources
+    # Prevent sudden announcement of a new advisory from failing ci:
+    continue-on-error: ${{ matrix.checks == 'advisories' }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: EmbarkStudios/cargo-deny-action@e0a440755b184aa50374330fa75cca0f84fcb59a
+      with:
+        command: check ${{ matrix.checks }}
+
   rust-analyzer-compat:
     runs-on: ubuntu-latest
     steps:
@@ -32,7 +47,7 @@ jobs:
     - run: rustup update
     - run: rustup +nightly component add rust-analyzer
     - name: Check if rust-analyzer encounters any errors parsing project
-      run: rustup run nightly rust-analyzer analysis-stats . 2>&1 | (! grep ERROR)
+      run: rustup run nightly rust-analyzer analysis-stats . 2>&1 | (! grep '^\[ERROR')
 
   build-and-test:
     strategy:
@@ -54,6 +69,18 @@ jobs:
     - run: cargo hack build --target wasm32-unknown-unknown --profile release
     - run: cargo hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - run: cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
+
+  build-fuzz:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - run: rustup install nightly
+    - uses: stellar/binaries@v15
+      with:
+        name: cargo-fuzz
+        version: 0.11.2
+    - run: make build-fuzz
 
   docs:
     runs-on: ubuntu-latest

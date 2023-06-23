@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, log, symbol, Env};
+use soroban_sdk::{contract, contractimpl, log, Env, Symbol};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
@@ -8,47 +9,55 @@ impl Contract {
     pub fn hello(env: Env) {
         log!(&env, "none");
         log!(&env, "none",);
-        log!(&env, "one: {}", symbol!("one"));
-        log!(&env, "one: {}", symbol!("one"),);
-        log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"));
-        log!(&env, "one: {}, two: {}", symbol!("one"), symbol!("two"),);
+        log!(&env, "one:", Symbol::short("one"));
+        log!(&env, "one:", Symbol::short("one"),);
+        log!(
+            &env,
+            "one and two:",
+            Symbol::short("one"),
+            Symbol::short("two")
+        );
+        log!(
+            &env,
+            "one and two:",
+            Symbol::short("one"),
+            Symbol::short("two"),
+        );
     }
 }
 
 #[cfg(test)]
 mod test {
     extern crate std;
-    use std::string::ToString;
 
-    use soroban_sdk::{testutils::Logger, BytesN, Env};
+    use soroban_sdk::{testutils::Logs, Env};
 
     use crate::{Contract, ContractClient};
 
     #[test]
     fn test_logging() {
         let env = Env::default();
-        let contract_id = BytesN::from_array(&env, &[0; 32]);
-        env.register_contract(&contract_id, Contract);
+        let contract_id = env.register_contract(None, Contract);
         let client = ContractClient::new(&env, &contract_id);
 
         client.hello();
 
-        env.logger().print();
+        env.logs().print();
 
         if cfg!(debug_assertions) {
-            assert_eq!(
-                env.logger().all(),
-                std::vec![
-                    "none".to_string(),
-                    "none".to_string(),
-                    "one: Symbol(one)".to_string(),
-                    "one: Symbol(one)".to_string(),
-                    "one: Symbol(one), two: Symbol(two)".to_string(),
-                    "one: Symbol(one), two: Symbol(two)".to_string(),
-                ],
-            );
+            let pats = std::vec![
+                "\"none\"",
+                "\"none\"",
+                "[\"one:\", one]",
+                "[\"one:\", one]",
+                "[\"one and two:\", one, two]",
+                "[\"one and two:\", one, two]"
+            ];
+            for (msg, pat) in env.logs().all().iter().zip(pats.iter()) {
+                assert!(msg.contains(pat));
+            }
         } else {
-            assert_eq!(env.logger().all(), std::vec![""; 0]);
+            assert_eq!(env.logs().all(), std::vec![""; 0]);
         }
     }
 }

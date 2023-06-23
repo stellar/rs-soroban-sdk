@@ -1,22 +1,22 @@
-//! Iterators for use with collections like [Map], [Set], [Vec].
+//! Iterators for use with collections like [Map], [Vec].
 #[cfg(doc)]
-use crate::{Map, Set, Vec};
+use crate::{Map, Vec};
 
 use core::fmt::Debug;
 use core::iter::FusedIterator;
 use core::marker::PhantomData;
 
-pub trait UncheckedEnumerable<I, T, E> {
-    fn unchecked(self) -> UncheckedIter<I, T, E>;
+pub trait UnwrappedEnumerable<I, T, E> {
+    fn unwrapped(self) -> UnwrappedIter<I, T, E>;
 }
 
-impl<I, T, E> UncheckedEnumerable<I, T, E> for I
+impl<I, T, E> UnwrappedEnumerable<I, T, E> for I
 where
     I: Iterator<Item = Result<T, E>>,
     E: Debug,
 {
-    fn unchecked(self) -> UncheckedIter<I, T, E> {
-        UncheckedIter {
+    fn unwrapped(self) -> UnwrappedIter<I, T, E> {
+        UnwrappedIter {
             iter: self,
             item_type: PhantomData,
             error_type: PhantomData,
@@ -25,13 +25,13 @@ where
 }
 
 #[derive(Clone)]
-pub struct UncheckedIter<I, T, E> {
+pub struct UnwrappedIter<I, T, E> {
     iter: I,
     item_type: PhantomData<T>,
     error_type: PhantomData<E>,
 }
 
-impl<I, T, E> Iterator for UncheckedIter<I, T, E>
+impl<I, T, E> Iterator for UnwrappedIter<I, T, E>
 where
     I: Iterator<Item = Result<T, E>>,
     E: Debug,
@@ -49,7 +49,7 @@ where
     }
 }
 
-impl<I, T, E> DoubleEndedIterator for UncheckedIter<I, T, E>
+impl<I, T, E> DoubleEndedIterator for UnwrappedIter<I, T, E>
 where
     I: Iterator<Item = Result<T, E>> + DoubleEndedIterator,
     E: Debug,
@@ -60,14 +60,14 @@ where
     }
 }
 
-impl<I, T, E> FusedIterator for UncheckedIter<I, T, E>
+impl<I, T, E> FusedIterator for UnwrappedIter<I, T, E>
 where
     I: Iterator<Item = Result<T, E>> + FusedIterator,
     E: Debug,
 {
 }
 
-impl<I, T, E> ExactSizeIterator for UncheckedIter<I, T, E>
+impl<I, T, E> ExactSizeIterator for UnwrappedIter<I, T, E>
 where
     I: Iterator<Item = Result<T, E>> + ExactSizeIterator,
     E: Debug,

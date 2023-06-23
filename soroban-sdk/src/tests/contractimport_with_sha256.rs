@@ -1,22 +1,21 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, BytesN, Env};
-use stellar_xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeBytesN, ScSpecTypeDef,
-};
+use soroban_sdk::{contract, contractimpl, Address, Env};
+use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 mod addcontract {
     use crate as soroban_sdk;
     soroban_sdk::contractimport!(
         file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm",
-        sha256 = "8defec8d424eb76db7e1d66a7d19e31ff34afae5dafdf5fca9ec59ed53ab9a63",
+        sha256 = "b7f7064dcffbd203fac4cb2b8503495a4c0d0d57324609affc753f5594523a69",
     );
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn add_with(env: Env, contract_id: BytesN<32>, x: u64, y: u64) -> u64 {
+    pub fn add_with(env: Env, contract_id: Address, x: u64, y: u64) -> u64 {
         addcontract::Client::new(&env, &contract_id).add(&x, &y)
     }
 }
@@ -46,7 +45,7 @@ fn test_spec() {
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "contract_id".try_into().unwrap(),
-                type_: ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+                type_: ScSpecTypeDef::Address,
             },
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),

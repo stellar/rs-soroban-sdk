@@ -1,5 +1,6 @@
 #![cfg(test)]
 
+mod address;
 mod budget;
 mod contract_add_i32;
 mod contract_assert;
@@ -16,3 +17,8 @@ mod contractfile_with_sha256;
 mod contractimport;
 mod contractimport_with_error;
 mod contractimport_with_sha256;
+mod env;
+mod proptest_scval_cmp;
+mod proptest_val_cmp;
+mod token_client;
+mod token_spec;

@@ -1,18 +1,18 @@
 use itertools::MultiUnzip;
-use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use soroban_env_common::Symbol;
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path};
+use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path, Visibility};
 
 use stellar_xdr::{
     Error as XdrError, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr,
+    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_enum(
     path: &Path,
+    vis: &Visibility,
     enum_ident: &Ident,
     attrs: &[Attribute],
     data: &DataEnum,
@@ -29,69 +29,102 @@ pub fn derive_type_enum(
             format!("enum {} must have variants", enum_ident),
         ));
     }
-    let (spec_cases, discriminant_consts, try_froms, try_intos, try_from_xdrs, into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
+    let (spec_cases, case_name_str_lits, try_froms, try_intos, try_from_xdrs, into_xdrs): (
+        Vec<_>,
+        Vec<_>,
+        Vec<_>,
+        Vec<_>,
+        Vec<_>,
+        Vec<_>,
+    ) = variants
         .iter()
-        .map(|v| {
+        .enumerate()
+        .map(|(case_num, variant)| {
             // TODO: Choose discriminant type based on repr type of enum.
             // TODO: Use attributes tagged on variant to control whether field is included.
-            // TODO: Handle field names longer than a symbol. Hash the name? Truncate the name?
-            let ident = &v.ident;
-            let name = &ident.to_string();
-            if let Err(e) = Symbol::try_from_str(name) {
-                errors.push(Error::new(ident.span(), format!("enum variant name {}", e)));
+            let case_ident = &variant.ident;
+            let case_name = &case_ident.to_string();
+            let case_name_str_lit = Literal::string(case_name);
+            let case_num_lit = Literal::usize_unsuffixed(case_num);
+            if case_name.len() > SCSYMBOL_LIMIT as usize {
+                errors.push(Error::new(
+                    case_ident.span(),
+                    format!(
+                        "enum field name is too long: {}, max is {}",
+                        case_name.len(),
+                        SCSYMBOL_LIMIT
+                    ),
+                ));
             }
-            match v.fields {
+
+            match variant.fields {
                 Fields::Named(_) => {
-                    errors.push(Error::new(v.fields.span(), format!("enum variant {} has unsupported named fields", ident)));
+                    errors.push(Error::new(
+                        variant.fields.span(),
+                        format!("enum variant {} has unsupported named fields", case_ident),
+                    ));
                 }
-                Fields::Unnamed(_) if v.fields.is_empty() => {
+                Fields::Unnamed(_) if variant.fields.is_empty() => {
                     // Empty tuples are unsupported because it would require extra complexity
                     // to distinguish them from unit-style variants.
-                    errors.push(Error::new(v.fields.span(), format!("enum variant {} is unsupported 0-element tuple", ident)));
+                    errors.push(Error::new(
+                        variant.fields.span(),
+                        format!("enum variant {} is unsupported 0-element tuple", case_ident),
+                    ));
                 }
-                _ => { }
+                _ => {}
             }
-            let discriminant_const_sym_ident = format_ident!("DISCRIMINANT_SYM_{}", name.to_uppercase());
-            let discriminant_const_u64_ident = format_ident!("DISCRIMINANT_U64_{}", name.to_uppercase());
-            let discriminant_const_sym = quote! {
-                const #discriminant_const_sym_ident: #path::Symbol = #path::Symbol::from_str(#name);
-            };
-            let discriminant_const_u64 = quote! {
-                const #discriminant_const_u64_ident: u64 = #discriminant_const_sym_ident.to_raw().get_payload();
-            };
-            let discriminant_const = quote! {
-                #discriminant_const_sym
-                #discriminant_const_u64
-            };
-            let is_unit_variant = v.fields == Fields::Unit;
+            let is_unit_variant = variant.fields == Fields::Unit;
             if !is_unit_variant {
                 let VariantTokens {
-                    spec_case, try_from, try_into, try_from_xdr, into_xdr
+                    spec_case,
+                    try_from,
+                    try_into,
+                    try_from_xdr,
+                    into_xdr,
                 } = map_tuple_variant(
                     path,
                     enum_ident,
-                    &name,
-                    ident,
-                    &v.attrs,
-                    &discriminant_const_sym_ident,
-                    &discriminant_const_u64_ident,
-                    &v.fields,
+                    &case_num_lit,
+                    &case_name_str_lit,
+                    &case_name,
+                    case_ident,
+                    &variant.attrs,
+                    &variant.fields,
                     &mut errors,
                 );
-                (spec_case, discriminant_const, try_from, try_into, try_from_xdr, into_xdr)
+                (
+                    spec_case,
+                    case_name_str_lit,
+                    try_from,
+                    try_into,
+                    try_from_xdr,
+                    into_xdr,
+                )
             } else {
                 let VariantTokens {
-                    spec_case, try_from, try_into, try_from_xdr, into_xdr
+                    spec_case,
+                    try_from,
+                    try_into,
+                    try_from_xdr,
+                    into_xdr,
                 } = map_empty_variant(
                     path,
                     enum_ident,
-                    &name,
-                    ident,
-                    &v.attrs,
-                    &discriminant_const_sym_ident,
-                    &discriminant_const_u64_ident,
+                    &case_num_lit,
+                    &case_name_str_lit,
+                    &case_name,
+                    case_ident,
+                    &variant.attrs,
                 );
-                (spec_case, discriminant_const, try_from, try_into, try_from_xdr, into_xdr)
+                (
+                    spec_case,
+                    case_name_str_lit,
+                    try_from,
+                    try_into,
+                    try_from_xdr,
+                    into_xdr,
+                )
             }
         })
         .multiunzip();
@@ -128,32 +161,33 @@ pub fn derive_type_enum(
         None
     };
 
+    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_enum(path, vis, enum_ident, data);
+
     // Output.
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
-                use #path::TryIntoVal;
-                #(#discriminant_consts)*
-                let vec: #path::Vec<#path::RawVal> = val.try_into_val(env)?;
-                let mut iter = vec.iter();
-                let discriminant = iter.next().ok_or(#path::ConversionError)??;
-                Ok(match discriminant.get_payload() {
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                use #path::{EnvBase,TryIntoVal,TryFromVal};
+                const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
+                let vec: #path::Vec<#path::Val> = val.try_into_val(env)?;
+                let mut iter = vec.try_iter();
+                let discriminant: #path::Symbol = iter.next().ok_or(#path::ConversionError)??.try_into_val(env).map_err(|_|#path::ConversionError)?;
+                Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize {
                     #(#try_froms,)*
                     _ => Err(#path::ConversionError{})?,
                 })
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, Self::Error> {
-                use #path::TryIntoVal;
-                #(#discriminant_consts)*
+            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
+                use #path::{TryIntoVal,TryFromVal};
                 match val {
                     #(#try_intos,)*
                 }
@@ -164,7 +198,7 @@ pub fn derive_type_enum(
         impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVec) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVec) -> Result<Self, #path::xdr::Error> {
                 use #path::xdr::Validate;
                 use #path::TryIntoVal;
 
@@ -181,11 +215,11 @@ pub fn derive_type_enum(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScObject> for #enum_ident {
+        impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScObject) -> Result<Self, Self::Error> {
-                if let #path::xdr::ScObject::Vec(vec) = val {
+            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
+                if let #path::xdr::ScVal::Vec(Some(vec)) = val {
                     <_ as #path::TryFromVal<_, _>>::try_from_val(env, vec)
                 } else {
                     Err(#path::xdr::Error::Invalid)
@@ -194,74 +228,45 @@ pub fn derive_type_enum(
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
+        impl TryFrom<&#enum_ident> for #path::xdr::ScVec {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, Self::Error> {
-                if let #path::xdr::ScVal::Object(Some(obj)) = val {
-                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, obj)
-                } else {
-                    Err(#path::xdr::Error::Invalid)
-                }
-            }
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVec> for &#enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVec, Self::Error> {
+            fn try_from(val: &#enum_ident) -> Result<Self, #path::xdr::Error> {
                 extern crate alloc;
-                Ok(match self {
+                Ok(match val {
                     #(#into_xdrs,)*
                 })
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVec> for #enum_ident {
+        impl TryFrom<#enum_ident> for #path::xdr::ScVec  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVec, Self::Error> {
-                (&self).try_into()
+            fn try_from(val: #enum_ident) -> Result<Self, #path::xdr::Error> {
+                (&val).try_into()
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScObject> for &#enum_ident {
+        impl TryFrom<&#enum_ident> for #path::xdr::ScVal  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScObject, Self::Error> {
-                Ok(#path::xdr::ScObject::Vec(self.try_into()?))
+            fn try_from(val: &#enum_ident) -> Result<Self, #path::xdr::Error> {
+                Ok(#path::xdr::ScVal::Vec(Some(val.try_into()?)))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScObject> for #enum_ident {
+        impl TryFrom<#enum_ident> for #path::xdr::ScVal  {
             type Error = #path::xdr::Error;
             #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScObject, Self::Error> {
-                (&self).try_into()
+            fn try_from(val: #enum_ident) -> Result<Self, #path::xdr::Error> {
+                (&val).try_into()
             }
         }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for &#enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
-                Ok(#path::xdr::ScVal::Object(Some(self.try_into()?)))
-            }
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for #enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, Self::Error> {
-                (&self).try_into()
-            }
-        }
+        #arbitrary_tokens
     }
 }
 
@@ -276,39 +281,39 @@ struct VariantTokens {
 fn map_empty_variant(
     path: &Path,
     enum_ident: &Ident,
-    name: &str,
-    ident: &Ident,
+    case_num_lit: &Literal,
+    case_name_str_lit: &Literal,
+    case_name: &str,
+    case_ident: &Ident,
     attrs: &[Attribute],
-    discriminant_const_sym_ident: &Ident,
-    discriminant_const_u64_ident: &Ident,
 ) -> VariantTokens {
     let spec_case = ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
         doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
-        name: name.try_into().unwrap_or_else(|_| StringM::default()),
+        name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
     });
     let try_from = quote! {
-        #discriminant_const_u64_ident => {
+        #case_num_lit => {
             if iter.len() > 0 {
                 return Err(#path::ConversionError);
             }
-            Self::#ident
+            Self::#case_ident
         }
     };
     let try_into = quote! {
-        #enum_ident::#ident => {
-            let tup: (#path::RawVal,) = (#discriminant_const_sym_ident.into(),);
+        #enum_ident::#case_ident => {
+            let tup: (#path::Val,) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(),);
             tup.try_into_val(env)
         }
     };
     let try_from_xdr = quote! {
-        #name => {
+        #case_name => {
             if iter.len() > 0 {
                 return Err(#path::xdr::Error::Invalid);
             }
-            Self::#ident
+            Self::#case_ident
         }
     };
-    let into_xdr = quote! { #enum_ident::#ident => (#name,).try_into().map_err(|_| #path::xdr::Error::Invalid)? };
+    let into_xdr = quote! { #enum_ident::#case_ident => (#case_name,).try_into().map_err(|_| #path::xdr::Error::Invalid)? };
 
     VariantTokens {
         spec_case,
@@ -322,11 +327,11 @@ fn map_empty_variant(
 fn map_tuple_variant(
     path: &Path,
     enum_ident: &Ident,
-    name: &str,
-    ident: &Ident,
+    case_num_lit: &Literal,
+    case_name_str_lit: &Literal,
+    case_name: &str,
+    case_ident: &Ident,
     attrs: &[Attribute],
-    discriminant_const_sym_ident: &Ident,
-    discriminant_const_u64_ident: &Ident,
     fields: &Fields,
     errors: &mut Vec<Error>,
 ) -> VariantTokens {
@@ -352,7 +357,7 @@ fn map_tuple_variant(
                             fields.span(),
                             format!(
                                 "enum variant name {} has too many tuple values, max {} supported",
-                                ident, max_len
+                                case_ident, max_len
                             ),
                         ));
                     }
@@ -365,10 +370,11 @@ fn map_tuple_variant(
         };
         ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
             doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
-            name: name.try_into().unwrap_or_else(|_| StringM::default()),
+            name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
             type_: field_types.try_into().unwrap(),
         })
     };
+
     let num_fields = fields.iter().len();
     let try_from = {
         let field_convs = fields
@@ -381,11 +387,11 @@ fn map_tuple_variant(
             })
             .collect::<Vec<_>>();
         quote! {
-            #discriminant_const_u64_ident => {
+            #case_num_lit => {
                 if iter.len() > #num_fields {
                     return Err(#path::ConversionError);
                 }
-                Self::#ident( #(#field_convs,)* )
+                Self::#case_ident( #(#field_convs,)* )
             }
         }
     };
@@ -399,38 +405,38 @@ fn map_tuple_variant(
                     #binding_name.try_into_val(env)?
                 };
                 let tup_elem_type = quote! {
-                    #path::RawVal
+                    #path::Val
                 };
                 (binding_name, field_conv, tup_elem_type)
             })
             .multiunzip();
         let (binding_names, field_convs, tup_elem_types): (Vec<_>, Vec<_>, Vec<_>) = fragments;
         quote! {
-            #enum_ident::#ident(#(ref #binding_names,)* ) => {
-                let tup: (#path::RawVal, #(#tup_elem_types,)* ) = (#discriminant_const_sym_ident.into(), #(#field_convs,)* );
+            #enum_ident::#case_ident(#(ref #binding_names,)* ) => {
+                let tup: (#path::Val, #(#tup_elem_types,)* ) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(), #(#field_convs,)* );
                 tup.try_into_val(env)
             }
         }
     };
     let try_from_xdr = {
         let fragments = fields.iter().enumerate().map(|(i, _f)| {
-            let rawval_name = format_ident!("rv{i}");
-            let rawval_binding = quote! {
-                let #rawval_name: #path::RawVal = iter.next().ok_or(#path::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+            let val_name = format_ident!("rv{i}");
+            let val_binding = quote! {
+                let #val_name: #path::Val = iter.next().ok_or(#path::xdr::Error::Invalid)?.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
             };
             let into_field = quote! {
-                #rawval_name.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
+                #val_name.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
             };
-            (rawval_binding, into_field)
+            (val_binding, into_field)
         }).multiunzip();
-        let (rawval_bindings, into_fields): (Vec<_>, Vec<_>) = fragments;
+        let (val_bindings, into_fields): (Vec<_>, Vec<_>) = fragments;
         quote! {
-            #name => {
+            #case_name => {
                 if iter.len() > #num_fields {
                     return Err(#path::xdr::Error::Invalid);
                 }
-                #(#rawval_bindings)*
-                Self::#ident( #(#into_fields,)* )
+                #(#val_bindings)*
+                Self::#case_ident( #(#into_fields,)* )
             }
         }
     };
@@ -441,7 +447,7 @@ fn map_tuple_variant(
             .map(|(i, _f)| format_ident!("value{i}"))
             .collect::<Vec<_>>();
         quote! {
-            #enum_ident::#ident( #(#binding_names,)* ) => (#name, #(#binding_names,)* ).try_into().map_err(|_| #path::xdr::Error::Invalid)?
+            #enum_ident::#case_ident( #(#binding_names,)* ) => (#case_name, #(#binding_names,)* ).try_into().map_err(|_| #path::xdr::Error::Invalid)?
         }
     };
 
