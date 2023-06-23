@@ -121,7 +121,6 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
         #client
 
         #[cfg(any(test, feature = "testutils"))]
-        #[doc(hidden)]
         mod #fn_set_registry_ident {
             use super::*;
 
@@ -151,8 +150,6 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
             }
         }
     }
-    .into()
-}
 
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
