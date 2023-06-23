@@ -55,6 +55,7 @@ jobs:
 
   build-and-test:
     strategy:
+      fail-fast: false
       matrix:
         sys:
         - os: ubuntu-latest
