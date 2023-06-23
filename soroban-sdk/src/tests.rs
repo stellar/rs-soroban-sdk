@@ -18,6 +18,7 @@ mod contractimport;
 mod contractimport_with_error;
 mod crypto_ed25519;
 mod crypto_sha256;
+mod crypto;
 mod env;
 mod prng;
 mod proptest_scval_cmp;
