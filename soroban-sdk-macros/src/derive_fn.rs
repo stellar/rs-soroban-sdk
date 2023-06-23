@@ -140,12 +140,13 @@ pub fn derive_fn(
 }
 
 #[allow(clippy::too_many_lines)]
-pub fn derive_contract_function_set<'a>(
-    crate_path: &Path,
+pub fn derive_contract_function_registration_ctor<'a>(
+    _crate_path: &Path,
     ty: &Type,
+    trait_ident: Option<&Ident>,
     methods: impl Iterator<Item = &'a syn::ImplItemFn>,
 ) -> TokenStream2 {
-    let (idents, wrap_idents, attrs): (Vec<_>, Vec<_>, Vec<_>) = methods
+    let (idents, wrap_idents, _attrs): (Vec<_>, Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
             let wrap_ident = format_ident!("__{}", m.sig.ident);
@@ -158,28 +159,18 @@ pub fn derive_contract_function_set<'a>(
             (ident, wrap_ident, attrs)
         })
         .multiunzip();
+
+    let ty_str = quote!(#ty).to_string();
+    let trait_str = quote!(#trait_ident).to_string();
+    let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
+    let ctor_ident = format_ident!("__{ty_str}_{trait_str}_ctor");
+
     quote! {
         #[cfg(any(test, feature = "testutils"))]
-        impl #crate_path::testutils::ContractFunctionSet for #ty {
-            fn call(
-                &self,
-                func: &str,
-                env: #crate_path::Env,
-                args: &[#crate_path::Val],
-            ) -> Option<#crate_path::Val> {
-                match func {
-                    #(
-                        #(#attrs)*
-                        #idents => {
-                            #[allow(deprecated)]
-                            Some(#wrap_idents::invoke_raw_slice(env, args))
-                        }
-                    )*
-                    _ => {
-                        None
-                    }
-                }
-            }
+        #[doc(hidden)]
+        #[ctor::ctor]
+        fn #ctor_ident {
+            #(#fn_set_registry_ident::register_fn(#idents, |env, args| #wrap_idents::invoke_raw_slice(env, args)));*
         }
     }
 }
