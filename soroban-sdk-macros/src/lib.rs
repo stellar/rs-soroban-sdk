@@ -123,26 +123,30 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
         #[cfg(any(test, feature = "testutils"))]
         #[doc(hidden)]
         mod #fn_set_registry_ident {
+            use super::*;
+
             extern crate std;
             use std::sync::Mutex;
             use std::collections::BTreeMap;
 
             type F = dyn Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val + Send + Sync;
 
-            pub(crate) static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
+            static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
 
-            pub(crate) fn register_fn(name: &'static str, func: &'static F)
-            {
+            pub(crate) fn register(name: &'static str, func: &'static F) {
                 FUNCS.lock().unwrap().insert(name, func);
+            }
+
+            pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                FUNCS.lock().unwrap().get(name).map(|f| f(env, args))
             }
         }
 
         #[cfg(any(test, feature = "testutils"))]
         #[doc(hidden)]
         impl #crate_path::testutils::ContractFunctionSet for #ty {
-            fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val>
-            {
-                #fn_set_registry_ident::FUNCS.lock().unwrap().get(func).map(|f| f(env, args))
+            fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                #fn_set_registry_ident::call(func, env, args)
             }
         }
     }

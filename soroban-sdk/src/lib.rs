@@ -108,11 +108,11 @@ fn __link_sections() {
 
 // Re-exports of dependencies used by macros.
 #[doc(hidden)]
-pub use bytes_lit::bytes as __bytes_lit_bytes;
-#[doc(hidden)]
-pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
-#[doc(hidden)]
-pub use ctor;
+pub mod reexports_for_macros {
+    pub use ::bytes_lit;
+    #[cfg(any(test, feature = "testutils"))]
+    pub use ::ctor;
+}
 
 /// Generates conversions from the repr(u32) enum from/into an `Error`.
 ///

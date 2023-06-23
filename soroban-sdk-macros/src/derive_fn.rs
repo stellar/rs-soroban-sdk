@@ -162,10 +162,10 @@ pub fn derive_contract_function_registration_ctor<'a>(
     quote! {
         #[cfg(any(test, feature = "testutils"))]
         #[doc(hidden)]
-        #[#crate_path::ctor::ctor]
+        #[#crate_path::reexports_for_macros::ctor::ctor]
         fn #ctor_ident() {
             #(
-                #fn_set_registry_ident::register_fn(
+                #fn_set_registry_ident::register(
                     #idents,
                     #[allow(deprecated)]
                     &#wrap_idents::invoke_raw_slice,
