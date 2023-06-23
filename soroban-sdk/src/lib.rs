@@ -721,7 +721,7 @@ pub mod deploy;
 pub mod events;
 pub mod iter;
 pub mod ledger;
-pub mod logging;
+pub mod logs;
 mod map;
 pub mod storage;
 pub mod token;

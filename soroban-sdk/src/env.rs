@@ -126,8 +126,8 @@ use crate::auth::InvokerContractAuthEntry;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
-    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, Address, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, storage::Storage,
+    Address, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I64Object,
@@ -443,10 +443,18 @@ impl Env {
             .unwrap_infallible();
     }
 
-    /// Get the [Logger] for logging debug events.
+    /// Get the [Logs] for logging debug events.
     #[inline(always)]
-    pub fn logger(&self) -> Logger {
-        Logger::new(self)
+    #[deprecated(note = "use [Env::logs]")]
+    #[doc(hidden)]
+    pub fn logger(&self) -> Logs {
+        self.logs()
+    }
+
+    /// Get the [Logs] for logging debug events.
+    #[inline(always)]
+    pub fn logs(&self) -> Logs {
+        Logs::new(self)
     }
 }
 
