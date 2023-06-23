@@ -1,4 +1,4 @@
-use crate::{contracttype, Address, BytesN, Symbol, Val, Vec};
+use crate::{contracttype, Address, BytesN, Env, Error, Symbol, Val, Vec};
 
 /// Context of a single authorized call peformed by an address.
 ///
@@ -70,7 +70,7 @@ pub struct SubContractInvocation {
 /// used for addresses that have [`Address::require_auth`] called.
 pub trait CustomAccountInterface {
     type Signature;
-    type Error: Into<Status>;
+    type Error: Into<Error>;
 
     /// Check that the signatures and auth contexts are valid.
     fn __check_auth(
