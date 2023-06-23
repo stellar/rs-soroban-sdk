@@ -1,10 +1,9 @@
 use crate as soroban_sdk;
 
 use soroban_sdk::{
-    contract,
-    contractimpl,
+    contract, contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
-    Address, BytesN, Env, IntoVal,
+    Address, Env, IntoVal,
 };
 
 #[contract]
@@ -12,12 +11,13 @@ pub struct ContractA;
 
 #[contractimpl]
 impl ContractA {
-    pub fn fna(e: Env, contract: BytesN<32>, a: Address) -> i32 {
+    pub fn fna(e: Env, contract: Address, a: Address) -> i32 {
         let client = ContractBClient::new(&e, &contract);
         client.fnb(&a)
     }
 }
 
+#[contract]
 pub struct ContractB;
 
 #[contractimpl]
@@ -58,7 +58,7 @@ fn test() {
 // This test panics with not authorized because it does not appear to be
 // possible to constrain an auth to a specific call tree, unless the top-level
 // of that call tree also calls require_auth with the same address.
-#[should_panic = "NotAuthorized"]
+#[should_panic = "HostError: Error(Auth, InvalidAction)"]
 fn test_auth_tree() {
     let e = Env::default();
     let contract_a_id = e.register_contract(None, ContractA);

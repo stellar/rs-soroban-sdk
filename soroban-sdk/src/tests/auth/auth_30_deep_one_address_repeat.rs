@@ -1,10 +1,9 @@
 use crate as soroban_sdk;
 
 use soroban_sdk::{
-    contract,
-    contractimpl,
+    contract, contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
-    Address, BytesN, Env, IntoVal,
+    Address, Env, IntoVal,
 };
 
 #[contract]
@@ -12,12 +11,13 @@ pub struct ContractA;
 
 #[contractimpl]
 impl ContractA {
-    pub fn fna(e: Env, contract: BytesN<32>, a: Address) -> i32 {
+    pub fn fna(e: Env, contract: Address, a: Address) -> i32 {
         let client = ContractBClient::new(&e, &contract);
         client.fnb(&a)
     }
 }
 
+#[contract]
 pub struct ContractB;
 
 #[contractimpl]
@@ -73,7 +73,7 @@ fn test() {
 //
 // It also doesn't appear to be possible to group auths that occur at the same
 // level, again unless a higher level also require_auth's the same addresses.
-#[should_panic = "NotAuthorized"]
+#[should_panic = "HostError: Error(Auth, InvalidAction)"]
 fn test_auth_tree() {
     let e = Env::default();
     let contract_a_id = e.register_contract(None, ContractA);

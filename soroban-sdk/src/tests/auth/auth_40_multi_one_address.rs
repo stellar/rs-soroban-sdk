@@ -1,10 +1,9 @@
 use crate as soroban_sdk;
 
 use soroban_sdk::{
-    contract,
-    contractimpl,
+    contract, contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
-    Address, BytesN, Env, IntoVal,
+    Address, Env, IntoVal,
 };
 
 #[contract]
@@ -12,13 +11,14 @@ pub struct ContractA;
 
 #[contractimpl]
 impl ContractA {
-    pub fn fna(e: Env, contract: BytesN<32>, a: Address) -> i32 {
+    pub fn fna(e: Env, contract: Address, a: Address) -> i32 {
         a.require_auth_for_args((&a,).into_val(&e));
         let client = ContractBClient::new(&e, &contract);
         client.fnb(&a)
     }
 }
 
+#[contract]
 pub struct ContractB;
 
 #[contractimpl]

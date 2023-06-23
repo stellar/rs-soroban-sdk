@@ -12,10 +12,9 @@
 use crate as soroban_sdk;
 
 use soroban_sdk::{
-    contract,
-    contractimpl,
+    contract, contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
-    xdr, Address, Env, IntoVal,
+    Address, Env, IntoVal,
 };
 
 #[contract]
