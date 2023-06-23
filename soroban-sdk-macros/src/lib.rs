@@ -240,14 +240,11 @@ pub fn contractmetasdkversion(_metadata: TokenStream) -> TokenStream {
     // repository.
     let pkg_version = env!("CARGO_PKG_VERSION");
     let git_revision = env!("GIT_REVISION");
+    let version = format!("{pkg_version}#{git_revision}");
     quote! {
         contractmeta!(
             key = "build.dep.rust.soroban-sdk.version",
-            val = #pkg_version,
-        );
-        contractmeta!(
-            key = "build.dep.rust.soroban-sdk.git.rev",
-            val = #git_revision,
+            val = #version,
         );
     }
     .into()
