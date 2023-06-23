@@ -18,8 +18,10 @@ use crate::{contractclient, contractspecfn, Address, Env, String};
 // 2. The implementations have been replaced with a panic.
 // 3. &Host type usage are replaced with Env
 
-/// Spec contains the contract spec of Token contracts, such as the Stellar
-/// Asset Contract.
+/// Spec contains the contract spec of Token contracts, including the general
+/// interface, as well as the admin interface, such as the Stellar Asset
+/// Contract.
+#[doc(hidden)]
 pub struct Spec;
 
 /// Interface for Token contracts, such as the Stellar Asset Contract.
@@ -156,6 +158,46 @@ pub trait Interface {
     /// i128]`
     fn burn_from(env: Env, spender: Address, from: Address, amount: i128);
 
+    /// Returns the number of decimals used to represent amounts of this token.
+    ///
+    /// # Panics
+    ///
+    /// If the contract has not yet been initialized.
+    fn decimals(env: Env) -> u32;
+
+    /// Returns the name for this token.
+    ///
+    /// # Panics
+    ///
+    /// If the contract has not yet been initialized.
+    fn name(env: Env) -> String;
+
+    /// Returns the symbol for this token.
+    ///
+    /// # Panics
+    ///
+    /// If the contract has not yet been initialized.
+    fn symbol(env: Env) -> String;
+}
+
+/// Interface for admin capabilities for Token contracts, such as the Stellar
+/// Asset Contract.
+#[contractspecfn(name = "Spec", export = false)]
+#[contractclient(crate_path = "crate", name = "AdminClient")]
+pub trait AdminInterface {
+    /// Sets the administrator to the specified address `new_admin`.
+    ///
+    /// # Arguments
+    ///
+    /// * `new_admin` - The address which will henceforth be the administrator
+    ///   of this token contract.
+    ///
+    /// # Events
+    ///
+    /// Emits an event with topics `["set_admin", admin: Address], data =
+    /// [new_admin: Address]`
+    fn set_admin(env: Env, new_admin: Address);
+
     /// Sets whether the account is authorized to use its balance. If
     /// `authorized` is true, `id` should be able to use its balance.
     ///
@@ -197,40 +239,6 @@ pub trait Interface {
     /// Emits an event with topics `["clawback", admin: Address, to: Address],
     /// data = [amount: i128]`
     fn clawback(env: Env, from: Address, amount: i128);
-
-    /// Sets the administrator to the specified address `new_admin`.
-    ///
-    /// # Arguments
-    ///
-    /// * `new_admin` - The address which will henceforth be the administrator
-    ///   of this token contract.
-    ///
-    /// # Events
-    ///
-    /// Emits an event with topics `["set_admin", admin: Address], data =
-    /// [new_admin: Address]`
-    fn set_admin(env: Env, new_admin: Address);
-
-    /// Returns the number of decimals used to represent amounts of this token.
-    ///
-    /// # Panics
-    ///
-    /// If the contract has not yet been initialized.
-    fn decimals(env: Env) -> u32;
-
-    /// Returns the name for this token.
-    ///
-    /// # Panics
-    ///
-    /// If the contract has not yet been initialized.
-    fn name(env: Env) -> String;
-
-    /// Returns the symbol for this token.
-    ///
-    /// # Panics
-    ///
-    /// If the contract has not yet been initialized.
-    fn symbol(env: Env) -> String;
 }
 
 pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
