@@ -66,8 +66,8 @@ pub struct SubContractInvocation {
 /// Custom account interface that a contract implements to support being used
 /// as a custom account for auth.
 ///
-/// Once a contract implements the interface, the address of the contract can be
-/// used for addresses that have [`Address::require_auth`] called.
+/// Once a contract implements the interface, call to [`Address::require_auth`]
+/// for the contract's address will call its `__check_auth` implementation.
 pub trait CustomAccountInterface {
     type Signature;
     type Error: Into<Error>;
