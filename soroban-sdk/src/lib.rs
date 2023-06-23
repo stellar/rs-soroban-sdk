@@ -110,7 +110,7 @@ pub use bytes_lit::bytes as __bytes_lit_bytes;
 #[doc(hidden)]
 pub use bytes_lit::bytesmin as __bytes_lit_bytesmin;
 
-/// Generates conversions from the repr(u32) enum from/into a `Status`.
+/// Generates conversions from the repr(u32) enum from/into an `Error`.
 ///
 /// There are some constraints on the types that are supported:
 /// - Enum must derive `Copy`.
@@ -338,7 +338,7 @@ pub use soroban_sdk_macros::contractimpl;
 /// ```
 pub use soroban_sdk_macros::contractmeta;
 
-/// Generates conversions from the struct/enum from/into a `RawVal`.
+/// Generates conversions from the struct/enum from/into a `Val`.
 ///
 /// There are some constraints on the types that are supported:
 /// - Enums with integer values must have an explicit integer literal for every
@@ -346,10 +346,10 @@ pub use soroban_sdk_macros::contractmeta;
 /// - Enums with unit variants are supported.
 /// - Enums with tuple-like variants with a maximum of one tuple field are
 /// supported. The tuple field must be of a type that is also convertible to and
-/// from `RawVal`.
+/// from `Val`.
 /// - Enums with struct-like variants are not supported.
 /// - Structs are supported. All fields must be of a type that is also
-/// convertible to and from `RawVal`.
+/// convertible to and from `Val`.
 /// - All variant names, field names, and type names must be 10-characters or
 /// less in length.
 ///
@@ -385,7 +385,7 @@ pub use soroban_sdk_macros::contractmeta;
 ///         state.last_incr = incr;
 ///
 ///         // Save the count.
-///         env.storage().set(&Symbol::short("STATE"), &state);
+///         env.storage().persistent().set(&Symbol::short("STATE"), &state, None);
 ///
 ///         // Return the count to the caller.
 ///         state.count
@@ -393,10 +393,9 @@ pub use soroban_sdk_macros::contractmeta;
 ///
 ///     /// Return the current state.
 ///     pub fn get_state(env: Env) -> State {
-///         env.storage()
+///         env.storage().persistent()
 ///             .get(&Symbol::short("STATE"))
-///             .unwrap_or_else(|| Ok(State::default())) // If no value set, assume 0.
-///             .unwrap() // Panic if the value of COUNTER is not a State.
+///             .unwrap_or_else(|| State::default()) // If no value set, assume 0.
 ///     }
 /// }
 ///
@@ -463,14 +462,13 @@ pub use soroban_sdk_macros::contractmeta;
 /// impl Contract {
 ///     /// Set the color.
 ///     pub fn set(env: Env, c: Color) {
-///         env.storage().set(&Symbol::short("COLOR"), &c);
+///         env.storage().persistent().set(&Symbol::short("COLOR"), &c, None);
 ///     }
 ///
 ///     /// Get the color.
 ///     pub fn get(env: Env) -> Option<Color> {
-///         env.storage()
+///         env.storage().persistent()
 ///             .get(&Symbol::short("COLOR"))
-///             .map(Result::unwrap) // Panic if the value of COLOR is not a Color.
 ///     }
 /// }
 ///
@@ -634,7 +632,7 @@ pub use env::Env;
 /// Raw value of the Soroban smart contract platform that types can be converted
 /// to and from for storing, or passing between contracts.
 ///
-pub use env::RawVal;
+pub use env::Val;
 
 /// Used to do conversions between values in the Soroban environment.
 pub use env::FromVal;
@@ -647,8 +645,8 @@ pub use env::TryIntoVal;
 
 mod envhidden {
     pub use super::env::EnvBase;
+    pub use super::env::Error;
     pub use super::env::MapObject;
-    pub use super::env::Status;
     pub use super::env::SymbolStr;
     pub use super::env::VecObject;
 }
@@ -671,14 +669,12 @@ pub mod iter;
 pub mod ledger;
 pub mod logging;
 mod map;
-mod set;
 pub mod storage;
 pub mod token;
 mod vec;
 pub use address::Address;
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
-pub use set::Set;
 pub use symbol::Symbol;
 pub use vec::Vec;
 mod num;
@@ -689,5 +685,8 @@ pub use string::String;
 pub mod xdr;
 
 pub mod testutils;
+
+pub mod arbitrary;
+mod arbitrary_extra;
 
 mod tests;

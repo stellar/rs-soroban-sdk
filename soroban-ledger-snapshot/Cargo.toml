@@ -8,10 +8,11 @@ readme = "../README.md"
 license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
-rust-version = "1.69"
+rust-version = "1.70"
 
 [dependencies]
-soroban-env-host = { workspace = true, features = ["serde"] }
+soroban-env-host = { workspace = true }
+soroban-env-common = {workspace = true, features = ["serde"]}
 serde = { version = "1.0.0", features = ["derive"] }
 serde_json = "1.0.0"
 thiserror = "1.0"

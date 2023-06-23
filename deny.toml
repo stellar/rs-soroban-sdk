@@ -249,13 +249,28 @@ deny = [
 # Certain crates/versions that will be skipped when doing duplicate detection.
 skip = [
     #{ name = "ansi_term", version = "=0.11.0" },
+
+    # ed25519-dalek and proptest have conflicting rand deps,
+    # where ed25519-dalek is on an older revision.
+    # proptest is only used as a dev-dependency,
+    # so this conflict should not cause extra bloat to contracts.
+    # Below are the newer version numbers required by proptest.
+    { name = "rand", version = "0.8" },
+    { name = "rand_chacha", version = "0.3" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive
 # dependencies starting at the specified crate, up to a certain depth, which is
 # by default infinite.
 skip-tree = [
-   # { name = "textplots" },
+    # while we're waiting for dalek to go to 2.0 we have
+    # duplicates of a whole lot of ECC dependencies due
+    # to k256
+    { name = "block-buffer", version = "=0.9.0" },
+    { name = "sha2", version = "=0.9.9" },
+    { name = "signature", version = "=1.6.4" },
+    { name = "rand_core", version = "=0.5.1"},
+    { name = "digest", version = "=0.9.0" }
 ]
 
 # This section is considered when running `cargo deny check sources`.

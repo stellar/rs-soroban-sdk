@@ -79,7 +79,7 @@ fn test_out_of_order_functional() {
         (Symbol::short("ba"), 9),
         (Symbol::short("bb"), 11)
     ]
-    .to_raw();
+    .to_val();
     let udt = UdtWithNonAlphabeticallyOrderedFields::try_from_val(&env, &map);
     assert_eq!(
         udt,
@@ -101,7 +101,7 @@ fn test_error_on_partial_decode() {
 
     // Success case, a map will decode to a Udt if the symbol keys match the
     // fields.
-    let map = map![&env, (Symbol::short("a"), 5), (Symbol::short("b"), 7)].to_raw();
+    let map = map![&env, (Symbol::short("a"), 5), (Symbol::short("b"), 7)].to_val();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
 
@@ -115,7 +115,7 @@ fn test_error_on_partial_decode() {
         (Symbol::short("b"), 7),
         (Symbol::short("c"), 9)
     ]
-    .to_raw();
+    .to_val();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Err(ConversionError));
 }

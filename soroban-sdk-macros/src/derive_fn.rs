@@ -60,11 +60,11 @@ pub fn derive_fn(
                         subpat: None,
                     })),
                     colon_token: Colon::default(),
-                    ty: Box::new(Type::Verbatim(quote! { #crate_path::RawVal })),
+                    ty: Box::new(Type::Verbatim(quote! { #crate_path::Val })),
                 });
                 let call = quote! {
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as #crate_path::TryFromVal<#crate_path::Env, #crate_path::RawVal>>::try_from_val(
+                        <_ as #crate_path::TryFromVal<#crate_path::Env, #crate_path::Val>>::try_from_val(
                             &env,
                             &#ident
                         )
@@ -113,9 +113,9 @@ pub fn derive_fn(
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::RawVal {
+            pub extern fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
                 #use_trait;
-                <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::RawVal>>::into_val(
+                <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
                     #[allow(deprecated)]
                     &#call(
                         #env_call
@@ -128,8 +128,8 @@ pub fn derive_fn(
             #[deprecated(note = #deprecated_note)]
             pub fn invoke_raw_slice(
                 env: #crate_path::Env,
-                args: &[#crate_path::RawVal],
-            ) -> #crate_path::RawVal {
+                args: &[#crate_path::Val],
+            ) -> #crate_path::Val {
                 #[allow(deprecated)]
                 invoke_raw(env, #(#slice_args),*)
             }
@@ -165,8 +165,8 @@ pub fn derive_contract_function_set<'a>(
                 &self,
                 func: &str,
                 env: #crate_path::Env,
-                args: &[#crate_path::RawVal],
-            ) -> Option<#crate_path::RawVal> {
+                args: &[#crate_path::Val],
+            ) -> Option<#crate_path::Val> {
                 match func {
                     #(
                         #(#attrs)*

@@ -3,17 +3,15 @@
 //! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-use crate::{
-    env::internal::{self, EnvBase},
-    unwrap::UnwrapInfallible,
-    Env, IntoVal, RawVal, Vec,
-};
+use crate::{env::internal::EnvBase, Env, Val};
 
 /// Log a debug event.
 ///
-/// Takes a [Env], and a literal format string that containing `{}` for each
-/// additional argument. Arguments may be any value that are convertible to
-/// [`RawVal`].
+/// Takes a [Env], a literal string, and an optional trailing sequence of
+/// arguments that may be any value that are convertible to [`Val`]. The
+/// string and arguments are appended as-is to the log, as the body of a
+/// structured diagnostic event. Such events may be emitted from the host as
+/// auxiliary diagnostic XDR, or converted to strings later for debugging.
 ///
 /// `log!` statements are only enabled in non optimized builds that have
 /// `debug-assertions` enabled. To enable `debug-assertions` add the following
@@ -26,7 +24,8 @@ use crate::{
 /// debug-assertions = true
 /// ```
 ///
-/// [custom profiles]: https://doc.rust-lang.org/cargo/reference/profiles.html#custom-profiles
+/// [custom profiles]:
+///     https://doc.rust-lang.org/cargo/reference/profiles.html#custom-profiles
 ///
 /// ### Examples
 ///
@@ -48,7 +47,7 @@ use crate::{
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
+/// log!(&env, "a log entry", value, Symbol::short("another"));
 /// ```
 ///
 /// Assert on logs in tests:
@@ -61,16 +60,11 @@ use crate::{
 /// let env = Env::default();
 ///
 /// let value = 5;
-/// log!(&env, "a log entry: {}, {}", value, Symbol::short("another"));
+/// log!(&env, "a log entry", value, Symbol::short("another"));
 ///
 /// use soroban_sdk::testutils::Logger;
-///
-/// assert_eq!(
-///     env.logger().all(),
-///     std::vec![
-///         "a log entry: I32(5), Symbol(another)".to_string(),
-///     ],
-/// );
+/// let logentry = env.logger().all().last().unwrap().clone();
+/// assert!(logentry.contains("[\"a log entry\", 5, another]"));
 /// # }
 /// ```
 #[macro_export]
@@ -84,7 +78,7 @@ macro_rules! log {
         if cfg!(debug_assertions) {
             $env.logger().log($fmt, &[
                 $(
-                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val(&$args, $env)
+                    <_ as $crate::IntoVal<Env, $crate::Val>>::into_val(&$args, $env)
                 ),*
             ]);
         }
@@ -116,45 +110,43 @@ impl Logger {
 
     /// Log a debug event.
     ///
-    /// Takes a literal format string that containing `{}` for each argument in
-    /// the args slice.
+    /// Takes a literal string and a sequence of trailing values to add
+    /// as a log entry in the diagnostic event stream.
     ///
     /// See [`log`][crate::log] for how to conveniently log debug events.
     #[inline(always)]
-    pub fn log(&self, fmt: &'static str, args: &[RawVal]) {
+    pub fn log(&self, msg: &'static str, args: &[Val]) {
         if cfg!(debug_assertions) {
             let env = self.env();
-            // If building for WASM logging will be transmitted through the
-            // guest interface via host types. This is very inefficient. When
-            // building on non-WASM environments where the environment Host is
-            // directly available, use the log static variants.
-            if cfg!(target_family = "wasm") {
-                let fmt: crate::String = fmt.into_val(env);
-                let args: Vec<RawVal> = Vec::from_slice(env, args);
-                internal::Env::log_fmt_values(env, fmt.to_object(), args.to_object())
-                    .unwrap_infallible();
-            } else {
-                env.log_static_fmt_general(fmt, args, &[]).unwrap();
-            }
+            env.log_from_slice(msg, args).unwrap();
         }
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{env::internal::events::Event, testutils};
+use crate::testutils;
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Logger for Logger {
     fn all(&self) -> std::vec::Vec<String> {
+        use crate::xdr::{
+            ContractEventBody, ContractEventType, ScSymbol, ScVal, ScVec, StringM, VecM,
+        };
         let env = self.env();
+        let log_sym = ScSymbol(StringM::try_from("log").unwrap());
+        let log_topics = ScVec(VecM::try_from(vec![ScVal::Symbol(log_sym)]).unwrap());
         env.host()
             .get_events()
             .unwrap()
             .0
             .into_iter()
-            .filter_map(|e| match e.event {
-                Event::Debug(de) => Some(format!("{}", de)),
+            .filter_map(|e| match (&e.event.type_, &e.event.body) {
+                (ContractEventType::Diagnostic, ContractEventBody::V0(ce))
+                    if &ce.topics == &log_topics =>
+                {
+                    Some(format!("{}", &e))
+                }
                 _ => None,
             })
             .collect::<std::vec::Vec<_>>()

@@ -8,7 +8,7 @@ readme = "../README.md"
 license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
-rust-version = "1.69"
+rust-version = "1.70"
 
 [lib]
 proc-macro = true
@@ -16,6 +16,7 @@ doctest = false
 
 [dependencies]
 soroban-spec = { workspace = true }
+soroban-spec-rust = { workspace = true }
 soroban-env-common = { workspace = true }
 stellar-xdr = { workspace = true, features = ["next", "std"] }
 syn = {version="2.0",features=["full"]}
@@ -24,3 +25,6 @@ proc-macro2 = "1.0"
 itertools = "0.10.3"
 darling = "0.20.0"
 sha2 = "0.9.9"
+
+[features]
+testutils = []

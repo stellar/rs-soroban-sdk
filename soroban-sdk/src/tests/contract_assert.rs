@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, xdr::ScStatusType, Env, Status};
+use soroban_sdk::{contractimpl, Env};
 use soroban_sdk_macros::contracterror;
 
 pub struct Contract;
@@ -19,8 +19,8 @@ impl Contract {
 }
 
 #[test]
-#[should_panic(expected = "Status(ContractError(1)")]
-fn test_invoke_expect_status() {
+#[should_panic(expected = "Error(Contract, #1")]
+fn test_invoke_expect_error() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
 
@@ -33,11 +33,5 @@ fn test_try_invoke() {
     let contract_id = e.register_contract(None, Contract);
 
     let res = ContractClient::new(&e, &contract_id).try_assert(&0);
-    assert_eq!(
-        res,
-        Err(Ok(Status::from_type_and_code(
-            ScStatusType::ContractError,
-            1,
-        )))
-    );
+    assert_eq!(res, Err(Ok(soroban_sdk::Error::from_contract_error(1))));
 }

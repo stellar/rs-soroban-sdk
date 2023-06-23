@@ -12,7 +12,9 @@ pub enum Error {
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env, flag: u32) -> Result<Symbol, Error> {
-        env.storage().set(&Symbol::short("persisted"), &true);
+        env.storage()
+            .persistent()
+            .set(&Symbol::short("persisted"), &true, None);
         if flag == 0 {
             Ok(Symbol::short("hello"))
         } else if flag == 1 {
@@ -29,17 +31,17 @@ impl Contract {
     #[cfg(test)]
     pub fn persisted(env: Env) -> bool {
         env.storage()
+            .persistent()
             .get(&Symbol::short("persisted"))
-            .unwrap_or(Ok(false))
-            .unwrap()
+            .unwrap_or(false)
     }
 }
 
 #[cfg(test)]
 mod test {
     use soroban_sdk::{
-        xdr::{ScStatus, ScUnknownErrorCode},
-        Env, Status, Symbol,
+        xdr::{ScErrorCode, ScErrorType},
+        Env, Symbol,
     };
 
     use crate::{Contract, ContractClient, Error};
@@ -97,9 +99,10 @@ mod test {
         let res = client.try_hello(&3);
         assert_eq!(
             res,
-            Err(Err(Status::from_status(ScStatus::UnknownError(
-                ScUnknownErrorCode::General
-            ),)))
+            Err(Err(soroban_sdk::Error::from_type_and_code(
+                ScErrorType::Context,
+                ScErrorCode::InternalError
+            )))
         );
         assert!(!client.persisted());
     }

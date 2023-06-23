@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, xdr::ScStatusType, Env, Status};
+use soroban_sdk::{contractimpl, Env};
 
 pub struct Contract;
 
@@ -20,8 +20,8 @@ fn test_invoke_expect_string() {
 }
 
 #[test]
-#[should_panic(expected = "Status(UnknownError(0)")]
-fn test_invoke_expect_status() {
+#[should_panic(expected = "Error(Context, InternalError)")]
+fn test_invoke_expect_error() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
 
@@ -30,15 +30,17 @@ fn test_invoke_expect_status() {
 
 #[test]
 fn test_try_invoke() {
+    use soroban_env_host::xdr::{ScErrorCode, ScErrorType};
+
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
 
     let res = ContractClient::new(&e, &contract_id).try_panic();
     assert_eq!(
         res,
-        Err(Ok(Status::from_type_and_code(
-            ScStatusType::UnknownError,
-            0,
+        Err(Ok(soroban_sdk::Error::from_type_and_code(
+            ScErrorType::Context,
+            ScErrorCode::InternalError
         )))
     );
 }

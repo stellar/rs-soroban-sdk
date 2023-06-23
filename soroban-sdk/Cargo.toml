@@ -8,7 +8,7 @@ readme = "README.md"
 license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
-rust-version = "1.69"
+rust-version = "1.70"
 
 [lib]
 doctest = false
@@ -21,24 +21,29 @@ bytes-lit = "0.0.5"
 soroban-env-guest = { workspace = true }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-host = { workspace = true, features = ["vm", "hostfn_log_fmt_values"] }
+soroban-env-host = { workspace = true, features = [] }
 soroban-ledger-snapshot = { workspace = true }
 stellar-strkey = { workspace = true }
+arbitrary = { version = "1.1.3", features = ["derive"], optional = true }
 ed25519-dalek = { version = "1.0.1", optional = true }
 # match the version of rand used in dalek
 rand = "0.7.3"
 
 [dev-dependencies]
-soroban-env-host = { workspace = true, features = ["vm", "hostfn_log_fmt_values", "testutils"] }
+soroban-sdk-macros = { workspace = true, features = ["testutils"] }
+soroban-env-host = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["next", "std"] }
 soroban-spec = { workspace = true }
 ed25519-dalek = "1.0.1"
 rand = "0.7.3"
 hex = "0.4.3"
+arbitrary = { version = "1.1.3", features = ["derive"] }
+proptest  = "1.2.0"
+proptest-arbitrary-interop = "0.1.0"
 
 [features]
 alloc = []
-testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
+testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary"]
 docs = []
 
 [package.metadata.docs.rs]

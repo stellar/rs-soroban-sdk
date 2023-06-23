@@ -49,7 +49,7 @@ pub fn derive_type_error_enum_int(
             };
             let try_from = quote! { #discriminant => Self::#ident };
             let into =
-                quote! { #enum_ident::#ident => #path::Status::from_contract_error(#discriminant) };
+                quote! { #enum_ident::#ident => #path::Error::from_contract_error(#discriminant) };
             (spec_case, try_from, into)
         })
         .multiunzip();
@@ -90,61 +90,61 @@ pub fn derive_type_error_enum_int(
     quote! {
         #spec_gen
 
-        impl TryFrom<#path::Status> for #enum_ident {
-            type Error = #path::Status;
+        impl TryFrom<#path::Error> for #enum_ident {
+            type Error = #path::Error;
             #[inline(always)]
-            fn try_from(status: #path::Status) -> Result<Self, Self::Error> {
-                if status.is_type(#path::xdr::ScStatusType::ContractError) {
-                    let discriminant = status.get_code();
+            fn try_from(error: #path::Error) -> Result<Self, #path::Error> {
+                if error.is_type(#path::xdr::ScErrorType::Contract) {
+                    let discriminant = error.get_code();
                     Ok(match discriminant {
                         #(#try_froms,)*
-                        _ => return Err(status),
+                        _ => return Err(error),
                     })
                 } else {
-                    Err(status)
+                    Err(error)
                 }
             }
         }
 
-        impl TryFrom<&#path::Status> for #enum_ident {
-            type Error = #path::Status;
+        impl TryFrom<&#path::Error> for #enum_ident {
+            type Error = #path::Error;
             #[inline(always)]
-            fn try_from(status: &#path::Status) -> Result<Self, Self::Error> {
-                <_ as TryFrom<#path::Status>>::try_from(*status)
+            fn try_from(error: &#path::Error) -> Result<Self, #path::Error> {
+                <_ as TryFrom<#path::Error>>::try_from(*error)
             }
         }
 
-        impl From<#enum_ident> for #path::Status {
+        impl From<#enum_ident> for #path::Error {
             #[inline(always)]
-            fn from(val: #enum_ident) -> #path::Status {
+            fn from(val: #enum_ident) -> #path::Error {
                 match val {
                     #(#intos,)*
                 }
             }
         }
 
-        impl From<&#enum_ident> for #path::Status {
+        impl From<&#enum_ident> for #path::Error {
             #[inline(always)]
-            fn from(val: &#enum_ident) -> #path::Status {
+            fn from(val: &#enum_ident) -> #path::Error {
                 <_ as From<#enum_ident>>::from(*val)
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, Self::Error> {
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
                 use #path::TryIntoVal;
-                let status: #path::Status = val.try_into_val(env)?;
-                status.try_into().map_err(|_| #path::ConversionError)
+                let error: #path::Error = val.try_into_val(env)?;
+                error.try_into().map_err(|_| #path::ConversionError)
             }
         }
-        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, Self::Error> {
-                let status: #path::Status = val.into();
-                Ok(status.into())
+            fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
+                let error: #path::Error = val.into();
+                Ok(error.into())
             }
         }
     }

@@ -1,0 +1,25 @@
+[package]
+name = "test_fuzz"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version = "1.70"
+
+[lib]
+# Adding rlib is required so that the test_fuzz crate can be imported as a
+# library into the fuzzing crate. However, having multiple crate types is a
+# problem, it'll cause LTO optimizations to be disabled for the cdylib build.
+# TODO: Figure out what to do about this.
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[features]
+testutils = ["soroban-sdk/testutils"]
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+
+[dev-dependencies]
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}

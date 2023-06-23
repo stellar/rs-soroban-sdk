@@ -135,7 +135,7 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
 
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
     match spec {
-        ScSpecTypeDef::Val => quote! { soroban_sdk::RawVal },
+        ScSpecTypeDef::Val => quote! { soroban_sdk::Val },
         ScSpecTypeDef::U64 => quote! { u64 },
         ScSpecTypeDef::I64 => quote! { i64 },
         ScSpecTypeDef::U32 => quote! { u32 },
@@ -144,7 +144,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::I128 => quote! { i128 },
         ScSpecTypeDef::Bool => quote! { bool },
         ScSpecTypeDef::Symbol => quote! { soroban_sdk::Symbol },
-        ScSpecTypeDef::Status => quote! { soroban_sdk::Status },
+        ScSpecTypeDef::Error => quote! { soroban_sdk::Error },
         ScSpecTypeDef::Bytes => quote! { soroban_sdk::Bytes },
         ScSpecTypeDef::Address => quote! { soroban_sdk::Address },
         ScSpecTypeDef::String => quote! { soroban_sdk::String },
