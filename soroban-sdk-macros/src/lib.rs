@@ -233,6 +233,23 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
 }
 
+#[proc_macro]
+pub fn contractmetasdkversion(_metadata: TokenStream) -> TokenStream {
+    let pkg_version = env!("CARGO_PKG_VERSION");
+    let git_revision = env!("GIT_REVISION");
+    quote! {
+        contractmeta!(
+            key = "build.dep.rust.soroban-sdk.version",
+            val = #pkg_version,
+        );
+        contractmeta!(
+            key = "build.dep.rust.soroban-sdk.git.revision",
+            val = #git_revision,
+        );
+    }
+    .into()
+}
+
 #[derive(Debug, FromMeta)]
 struct MetadataArgs {
     key: String,

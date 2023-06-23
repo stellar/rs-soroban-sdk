@@ -104,6 +104,8 @@ mod alloc;
 fn __link_sections() {
     #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
+
+    soroban_sdk_macros::contractmetasdkversion!();
 }
 
 // Re-exports of dependencies used by macros.
