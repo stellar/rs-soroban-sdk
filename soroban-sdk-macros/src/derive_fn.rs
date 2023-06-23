@@ -141,7 +141,7 @@ pub fn derive_fn(
 
 #[allow(clippy::too_many_lines)]
 pub fn derive_contract_function_registration_ctor<'a>(
-    _crate_path: &Path,
+    crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Ident>,
     methods: impl Iterator<Item = &'a syn::ImplItemFn>,
@@ -162,15 +162,13 @@ pub fn derive_contract_function_registration_ctor<'a>(
     quote! {
         #[cfg(any(test, feature = "testutils"))]
         #[doc(hidden)]
-        #[ctor::ctor]
+        #[#crate_path::ctor::ctor]
         fn #ctor_ident() {
             #(
                 #fn_set_registry_ident::register_fn(
                     #idents,
-                    |env, args| {
-                        #[allow(deprecated)]
-                        #wrap_idents::invoke_raw_slice(env, args)
-                    },
+                    #[allow(deprecated)]
+                    &#wrap_idents::invoke_raw_slice,
                 );
             )*
         }

@@ -28,7 +28,7 @@ arbitrary = { version = "1.1.3", features = ["derive"], optional = true }
 ed25519-dalek = { version = "1.0.1", optional = true }
 # match the version of rand used in dalek
 rand = "0.7.3"
-ctor ="0.2.2"
+ctor = { version = "0.2.1", optional = true }
 
 [dev-dependencies]
 soroban-sdk-macros = { workspace = true, features = ["testutils"] }
@@ -37,6 +37,7 @@ stellar-xdr = { workspace = true, features = ["next", "std"] }
 soroban-spec = { workspace = true }
 ed25519-dalek = "1.0.1"
 rand = "0.7.3"
+ctor = "0.2.1"
 hex = "0.4.3"
 arbitrary = { version = "1.1.3", features = ["derive"] }
 proptest  = "1.2.0"
@@ -44,7 +45,7 @@ proptest-arbitrary-interop = "0.1.0"
 
 [features]
 alloc = []
-testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary"]
+testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:ctor"]
 docs = []
 
 [package.metadata.docs.rs]
