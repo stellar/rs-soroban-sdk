@@ -129,7 +129,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
             use std::sync::Mutex;
             use std::collections::BTreeMap;
 
-            type F = dyn Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val + Send + Sync;
+            type F = dyn Send + Sync + Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val;
 
             static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
 

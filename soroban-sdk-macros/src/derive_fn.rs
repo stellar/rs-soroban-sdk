@@ -1,6 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
+use sha2::{Digest, Sha256};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
@@ -157,7 +158,8 @@ pub fn derive_contract_function_registration_ctor<'a>(
     let ty_str = quote!(#ty).to_string();
     let trait_str = quote!(#trait_ident).to_string();
     let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
-    let ctor_ident = format_ident!("__{ty_str}_{trait_str}_ctor");
+    let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
+    let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
 
     quote! {
         #[cfg(any(test, feature = "testutils"))]

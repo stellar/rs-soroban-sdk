@@ -1534,6 +1534,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_multiimpl"
+version = "0.8.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_udt"
 version = "0.8.4"
 dependencies = [
