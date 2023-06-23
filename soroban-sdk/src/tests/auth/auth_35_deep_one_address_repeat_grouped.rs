@@ -73,7 +73,7 @@ fn test() {
 //
 // It also isn't possible to group auths that occur at the same level, again
 // unless a higher level also require_auth's the same addresses.
-#[should_panic = "HostError: Error(Auth, InvalidAction) "]
+#[should_panic = "HostError: Error(Auth, InvalidAction)"]
 fn test_auth_tree() {
     let e = Env::default();
     let contract_a_id = e.register_contract(None, ContractA);
