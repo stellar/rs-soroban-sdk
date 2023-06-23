@@ -23,6 +23,7 @@ members = [
     "tests/alloc",
     "tests/auth",
     "tests/fuzz",
+    "tests/multiimpl",
 ]
 
 [workspace.package]

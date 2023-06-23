@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, vec, Address, Env, IntoVal, Symbol};
+use soroban_sdk::{contract, contractimpl, vec, Address, Env, IntoVal, Symbol};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
@@ -15,6 +16,7 @@ impl Contract {
     }
 }
 
+#[contract]
 pub struct AddContract;
 
 #[contractimpl]

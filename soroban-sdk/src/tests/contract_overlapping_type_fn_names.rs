@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, contracttype, Env};
+use soroban_sdk::{contract, contractimpl, contracttype, Env};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[contracttype]
@@ -7,6 +7,7 @@ pub struct State {
     pub a: i32,
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

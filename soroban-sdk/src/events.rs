@@ -15,8 +15,9 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// ```
 /// use soroban_sdk::Env;
 ///
-/// # use soroban_sdk::{contractimpl, vec, map, Val, BytesN};
+/// # use soroban_sdk::{contract, contractimpl, vec, map, Val, BytesN};
 /// #
+/// # #[contract]
 /// # pub struct Contract;
 /// #
 /// # #[contractimpl]

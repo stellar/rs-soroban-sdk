@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, U256};
+use soroban_sdk::{contract, contractimpl, U256};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

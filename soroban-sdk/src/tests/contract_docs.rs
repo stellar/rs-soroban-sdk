@@ -1,8 +1,9 @@
 mod fn_ {
     use crate as soroban_sdk;
-    use soroban_sdk::{contractimpl, Env};
+    use soroban_sdk::{contract, contractimpl, Env};
     use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0};
 
+    #[contract]
     pub struct Contract;
 
     #[contractimpl]

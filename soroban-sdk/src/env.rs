@@ -126,8 +126,8 @@ use crate::auth::InvokerContractAuthEntry;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
-    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, Address, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, storage::Storage,
+    Address, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I64Object,
@@ -318,8 +318,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, log, Env, Symbol};
+    /// use soroban_sdk::{contract, contractimpl, log, Env, Symbol};
     ///
+    /// #[contract]
     /// pub struct Contract;
     ///
     /// #[contractimpl]
@@ -442,10 +443,18 @@ impl Env {
             .unwrap_infallible();
     }
 
-    /// Get the [Logger] for logging debug events.
+    /// Get the [Logs] for logging debug events.
     #[inline(always)]
-    pub fn logger(&self) -> Logger {
-        Logger::new(self)
+    #[deprecated(note = "use [Env::logs]")]
+    #[doc(hidden)]
+    pub fn logger(&self) -> Logs {
+        self.logs()
+    }
+
+    /// Get the [Logs] for logging debug events.
+    #[inline(always)]
+    pub fn logs(&self) -> Logs {
+        Logs::new(self)
     }
 }
 
@@ -530,8 +539,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
     ///
+    /// #[contract]
     /// pub struct HelloContract;
     ///
     /// #[contractimpl]
@@ -764,8 +774,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, Env, Address, testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, Env, Address, testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
     ///
+    /// #[contract]
     /// pub struct HelloContract;
     ///
     /// #[contractimpl]
@@ -832,8 +843,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, Env, Address, testutils::Address as _};
+    /// use soroban_sdk::{contract, contractimpl, Env, Address, testutils::Address as _};
     ///
+    /// #[contract]
     /// pub struct HelloContract;
     ///
     /// #[contractimpl]
@@ -886,8 +898,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, Address, Symbol, Env, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, Address, Symbol, Env, IntoVal};
     ///
+    /// #[contract]
     /// pub struct Contract;
     ///
     /// #[contractimpl]
@@ -975,7 +988,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, Val};
+    /// use soroban_sdk::{contract, contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, Val};
     ///
     /// #[contracterror]
     /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -983,6 +996,7 @@ impl Env {
     /// pub enum NoopAccountError {
     ///     SomeError = 1,
     /// }
+    /// #[contract]
     /// struct NoopAccountContract;
     /// #[contractimpl]
     /// impl NoopAccountContract {
