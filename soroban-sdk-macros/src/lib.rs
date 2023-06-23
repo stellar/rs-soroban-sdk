@@ -134,7 +134,6 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 FUNCS.lock().unwrap().insert(name, func);
             }
 
-            #[cfg(any(test, feature = "testutils"))]
             impl #crate_path::testutils::ContractFunctionSet for #ty {
                 fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val>
                 {
