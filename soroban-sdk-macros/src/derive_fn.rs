@@ -1,6 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
+use sha2::{Digest, Sha256};
 use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
@@ -140,46 +141,38 @@ pub fn derive_fn(
 }
 
 #[allow(clippy::too_many_lines)]
-pub fn derive_contract_function_set<'a>(
+pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
+    trait_ident: Option<&Ident>,
     methods: impl Iterator<Item = &'a syn::ImplItemFn>,
 ) -> TokenStream2 {
-    let (idents, wrap_idents, attrs): (Vec<_>, Vec<_>, Vec<_>) = methods
+    let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
             let wrap_ident = format_ident!("__{}", m.sig.ident);
-            let attrs = m
-                .attrs
-                .iter()
-                // Don't propogate doc comments into the match statement below.
-                .filter(|a| !a.path().is_ident("doc"))
-                .collect::<Vec<_>>();
-            (ident, wrap_ident, attrs)
+            (ident, wrap_ident)
         })
         .multiunzip();
+
+    let ty_str = quote!(#ty).to_string();
+    let trait_str = quote!(#trait_ident).to_string();
+    let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
+    let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
+    let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
+
     quote! {
         #[cfg(any(test, feature = "testutils"))]
-        impl #crate_path::testutils::ContractFunctionSet for #ty {
-            fn call(
-                &self,
-                func: &str,
-                env: #crate_path::Env,
-                args: &[#crate_path::Val],
-            ) -> Option<#crate_path::Val> {
-                match func {
-                    #(
-                        #(#attrs)*
-                        #idents => {
-                            #[allow(deprecated)]
-                            Some(#wrap_idents::invoke_raw_slice(env, args))
-                        }
-                    )*
-                    _ => {
-                        None
-                    }
-                }
-            }
+        #[doc(hidden)]
+        #[#crate_path::reexports_for_macros::ctor::ctor]
+        fn #ctor_ident() {
+            #(
+                #fn_set_registry_ident::register(
+                    #idents,
+                    #[allow(deprecated)]
+                    &#wrap_idents::invoke_raw_slice,
+                );
+            )*
         }
     }
 }

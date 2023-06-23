@@ -18,7 +18,7 @@ use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
-use derive_fn::{derive_contract_function_set, derive_fn};
+use derive_fn::{derive_contract_function_registration_ctor, derive_fn};
 use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
@@ -113,12 +113,43 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
 
     let client_ident = format!("{ty_str}Client");
+    let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
+    let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
     quote! {
         #input2
         #client
-    }
-    .into()
+
+        #[cfg(any(test, feature = "testutils"))]
+        mod #fn_set_registry_ident {
+            use super::*;
+
+            extern crate std;
+            use std::sync::Mutex;
+            use std::collections::BTreeMap;
+
+            type F = dyn Send + Sync + Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val;
+
+            static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
+
+            pub(crate) fn register(name: &'static str, func: &'static F) {
+                FUNCS.lock().unwrap().insert(name, func);
+            }
+
+            pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
+                fopt.map(|f| f(env, args))
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        #[doc(hidden)]
+        impl #crate_path::testutils::ContractFunctionSet for #ty {
+            fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                #fn_set_registry_ident::call(func, env, args)
+            }
+        }
+    }.into()
 }
 
 #[derive(Debug, FromMeta)]
@@ -143,6 +174,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let crate_path_str = quote!(#crate_path).to_string();
 
     let imp = parse_macro_input!(input as ItemImpl);
+    let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
 
@@ -164,7 +196,6 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         .map(|m| {
             let ident = &m.sig.ident;
             let call = quote! { <super::#ty>::#ident };
-            let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
             derive_fn(
                 &crate_path,
                 &call,
@@ -179,7 +210,12 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let cfs = derive_contract_function_set(&crate_path, ty, pub_methods.into_iter());
+            let cfs = derive_contract_function_registration_ctor(
+                &crate_path,
+                ty,
+                trait_ident,
+                pub_methods.into_iter(),
+            );
             quote! {
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
