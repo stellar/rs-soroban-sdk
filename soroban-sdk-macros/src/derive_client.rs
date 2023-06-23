@@ -27,6 +27,71 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
             #[cfg(any(test, feature = "testutils"))]
             mock_all_auths: bool,
         }
+
+        impl<'a> #client_ident<'a> {
+            pub fn new(env: &#crate_path::Env, address: &#crate_path::Address) -> Self {
+                Self {
+                    env: env.clone(),
+                    address: address.clone(),
+                    #[cfg(not(any(test, feature = "testutils")))]
+                    _phantom: core::marker::PhantomData,
+                    #[cfg(any(test, feature = "testutils"))]
+                    set_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_auths: None,
+                    #[cfg(any(test, feature = "testutils"))]
+                    mock_all_auths: false,
+                }
+            }
+
+            /// Set authorizations in the environment which will be consumed by
+            /// contracts when they invoke `Address::require_auth` or
+            /// `Address::require_auth_for_args` functions.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn set_auths(&self, auths: &'a [#crate_path::xdr::SorobanAuthorizationEntry]) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    set_auths: Some(auths),
+                    mock_auths: self.mock_auths.clone(),
+                    mock_all_auths: false,
+                }
+            }
+
+            /// Mock authorizations in the environment which will cause matching invokes
+            /// of `Address::require_auth` and `Address::require_auth_for_args` to
+            /// pass.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    set_auths: self.set_auths.clone(),
+                    mock_auths: Some(mock_auths),
+                    mock_all_auths: false,
+                }
+            }
+
+            /// Mock all calls to the `Address::require_auth` and
+            /// `Address::require_auth_for_args` functions in invoked contracts,
+            /// having them succeed as if authorization was provided.
+            ///
+            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_all_auths(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    set_auths: None,
+                    mock_auths: None,
+                    mock_all_auths: true,
+                }
+            }
+        }
     }
 }
 
@@ -145,69 +210,6 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
     let client_ident = format_ident!("{}", name);
     quote! {
         impl<'a> #client_ident<'a> {
-            pub fn new(env: &#crate_path::Env, address: &#crate_path::Address) -> Self {
-                Self {
-                    env: env.clone(),
-                    address: address.clone(),
-                    #[cfg(not(any(test, feature = "testutils")))]
-                    _phantom: core::marker::PhantomData,
-                    #[cfg(any(test, feature = "testutils"))]
-                    set_auths: None,
-                    #[cfg(any(test, feature = "testutils"))]
-                    mock_auths: None,
-                    #[cfg(any(test, feature = "testutils"))]
-                    mock_all_auths: false,
-                }
-            }
-
-            /// Set authorizations in the environment which will be consumed by
-            /// contracts when they invoke `Address::require_auth` or
-            /// `Address::require_auth_for_args` functions.
-            ///
-            /// See `soroban_sdk::Env::set_auths` for more details and examples.
-            #[cfg(any(test, feature = "testutils"))]
-            pub fn set_auths(&self, auths: &'a [#crate_path::xdr::SorobanAuthorizationEntry]) -> Self {
-                Self {
-                    env: self.env.clone(),
-                    address: self.address.clone(),
-                    set_auths: Some(auths),
-                    mock_auths: self.mock_auths.clone(),
-                    mock_all_auths: false,
-                }
-            }
-
-            /// Mock authorizations in the environment which will cause matching invokes
-            /// of `Address::require_auth` and `Address::require_auth_for_args` to
-            /// pass.
-            ///
-            /// See `soroban_sdk::Env::set_auths` for more details and examples.
-            #[cfg(any(test, feature = "testutils"))]
-            pub fn mock_auths(&self, mock_auths: &'a [#crate_path::testutils::MockAuth<'a>]) -> Self {
-                Self {
-                    env: self.env.clone(),
-                    address: self.address.clone(),
-                    set_auths: self.set_auths.clone(),
-                    mock_auths: Some(mock_auths),
-                    mock_all_auths: false,
-                }
-            }
-
-            /// Mock all calls to the `Address::require_auth` and
-            /// `Address::require_auth_for_args` functions in invoked contracts,
-            /// having them succeed as if authorization was provided.
-            ///
-            /// See `soroban_sdk::Env::set_auths` for more details and examples.
-            #[cfg(any(test, feature = "testutils"))]
-            pub fn mock_all_auths(&self) -> Self {
-                Self {
-                    env: self.env.clone(),
-                    address: self.address.clone(),
-                    set_auths: None,
-                    mock_auths: None,
-                    mock_all_auths: true,
-                }
-            }
-
             #(#fns)*
         }
     }
