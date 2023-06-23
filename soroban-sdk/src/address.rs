@@ -233,7 +233,7 @@ impl Address {
     /// deployed contract.
     ///
     /// TODO: Replace this function in its pub form with a function that accepts
-    /// a strkey instead. Dependent on https://github.com/stellar/rs-stellar-strkey/issues/56.
+    /// a strkey instead. Dependent on <https://github.com/stellar/rs-stellar-strkey/issues/56>.
     pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
         let env = contract_id.env();
         unsafe {
