@@ -4,8 +4,33 @@ use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath};
 
 use crate::syn_ext;
 
-pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
+pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
+    // Render the Client.
+    let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
+    let client_ident = format_ident!("{}", name);
+    quote! {
+        #[doc = #client_doc]
+        pub struct #client_ident<'a> {
+            pub env: #crate_path::Env,
+            pub address: #crate_path::Address,
+            #[doc(hidden)]
+            #[cfg(not(any(test, feature = "testutils")))]
+            _phantom: core::marker::PhantomData<&'a ()>,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            set_auths: Option<&'a [#crate_path::xdr::SorobanAuthorizationEntry]>,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            mock_all_auths: bool,
+        }
+    }
+}
+
+pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
     // Map the traits methods to methods for the Client.
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
@@ -117,27 +142,8 @@ pub fn derive_client(crate_path: &Path, ty: &str, name: &str, fns: &[syn_ext::Fn
     }
 
     // Render the Client.
-    let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
     let client_ident = format_ident!("{}", name);
     quote! {
-        #[doc = #client_doc]
-        pub struct #client_ident<'a> {
-            pub env: #crate_path::Env,
-            pub address: #crate_path::Address,
-            #[doc(hidden)]
-            #[cfg(not(any(test, feature = "testutils")))]
-            _phantom: core::marker::PhantomData<&'a ()>,
-            #[doc(hidden)]
-            #[cfg(any(test, feature = "testutils"))]
-            set_auths: Option<&'a [#crate_path::xdr::SorobanAuthorizationEntry]>,
-            #[doc(hidden)]
-            #[cfg(any(test, feature = "testutils"))]
-            mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
-            #[doc(hidden)]
-            #[cfg(any(test, feature = "testutils"))]
-            mock_all_auths: bool,
-        }
-
         impl<'a> #client_ident<'a> {
             pub fn new(env: &#crate_path::Env, address: &#crate_path::Address) -> Self {
                 Self {

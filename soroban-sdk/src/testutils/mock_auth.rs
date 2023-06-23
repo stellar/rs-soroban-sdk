@@ -1,10 +1,10 @@
 #![cfg(any(test, feature = "testutils"))]
 
-use crate::{contractimpl, xdr, Address, Env, Symbol, Val, Vec};
+use crate::{contract, contractimpl, xdr, Address, Env, Symbol, TryFromVal, Val, Vec};
 use rand::{thread_rng, Rng};
-use soroban_env_host::TryFromVal;
 
 #[doc(hidden)]
+#[contract(crate_path = "crate")]
 pub struct MockAuthContract;
 
 #[contractimpl(crate_path = "crate")]

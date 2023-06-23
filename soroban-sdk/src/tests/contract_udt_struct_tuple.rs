@@ -1,7 +1,7 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
-    Vec,
+    contract, contractimpl, contracttype, vec, ConversionError, Env, IntoVal, TryFromVal,
+    TryIntoVal, Val, Vec,
 };
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
@@ -12,6 +12,7 @@ use stellar_xdr::{
 #[contracttype]
 pub struct Udt(pub i32, pub i32);
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

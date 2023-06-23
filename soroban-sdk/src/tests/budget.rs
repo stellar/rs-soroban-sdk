@@ -1,6 +1,7 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, map, xdr::ContractCostType, Env, Map};
+use soroban_sdk::{contract, contractimpl, map, xdr::ContractCostType, Env, Map};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

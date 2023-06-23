@@ -1,8 +1,8 @@
 use crate::{self as soroban_sdk, Symbol};
 use soroban_sdk::xdr::ScVec;
 use soroban_sdk::{
-    contractimpl, contracttype, vec, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
-    Vec,
+    contract, contractimpl, contracttype, vec, ConversionError, Env, IntoVal, TryFromVal,
+    TryIntoVal, Val, Vec,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -21,6 +21,7 @@ pub struct Udt2 {
     a: u32,
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

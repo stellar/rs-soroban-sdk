@@ -4,7 +4,7 @@ use crate::{
 };
 
 use soroban_sdk::{
-    contractimpl, contracttype,
+    contract, contractimpl, contracttype,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
     token::Client as TokenClient,
     Address, Env, IntoVal, Symbol,
@@ -19,6 +19,7 @@ fn get_token(e: &Env) -> Address {
     e.storage().persistent().get(&DataKey::Token).unwrap()
 }
 
+#[contract]
 pub struct TestContract;
 
 #[contractimpl]

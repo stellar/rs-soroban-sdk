@@ -1,6 +1,7 @@
 use crate::{self as soroban_sdk, Symbol};
-use soroban_sdk::{contractimpl, Address, BytesN, Env};
+use soroban_sdk::{contract, contractimpl, Address, BytesN, Env};
 
+#[contract]
 pub struct OuterContract;
 
 #[contractimpl]
@@ -28,6 +29,7 @@ impl OuterContract {
     }
 }
 
+#[contract]
 pub struct InnerContract;
 
 #[contractimpl]
