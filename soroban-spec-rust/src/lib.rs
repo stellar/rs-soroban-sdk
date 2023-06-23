@@ -150,7 +150,7 @@ pub enum UdtEnum {
     UdtD(UdtTuple),
 }
 #[soroban_sdk::contracttype(export = false)]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum UdtEnum2 {
     A = 10,
     B = 15,
