@@ -1,11 +1,13 @@
 use crate as soroban_sdk;
 
 use soroban_sdk::{
+    contract,
     contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
     Address, BytesN, Env, IntoVal,
 };
 
+#[contract]
 pub struct ContractA;
 
 #[contractimpl]
@@ -38,7 +40,6 @@ fn test() {
     let c = client
         .mock_auths(&[MockAuth {
             address: &a,
-            nonce: 0,
             invoke: &MockAuthInvoke {
                 contract: &contract_b_id,
                 fn_name: "fnb",
@@ -69,7 +70,6 @@ fn test_auth_tree() {
     let c = client
         .mock_auths(&[MockAuth {
             address: &a,
-            nonce: 0,
             invoke: &MockAuthInvoke {
                 contract: &contract_a_id,
                 fn_name: "fna",

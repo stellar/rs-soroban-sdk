@@ -1,17 +1,18 @@
 //! Demonstrates how an address can be required auth multiple times in a single
-//! invocation, and it must be authorized multiple times to match, with
-//! different nonces.
+//! invocation.
 //!
 //! The authorizations cannot be grouped into a single authorization.
 
 use crate as soroban_sdk;
 
 use soroban_sdk::{
+    contract,
     contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
     Address, Env, IntoVal,
 };
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
@@ -35,7 +36,6 @@ fn test() {
         .mock_auths(&[
             MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_id,
                     fn_name: "add",
@@ -45,7 +45,6 @@ fn test() {
             },
             MockAuth {
                 address: &a,
-                nonce: 1,
                 invoke: &MockAuthInvoke {
                     contract: &contract_id,
                     fn_name: "add",

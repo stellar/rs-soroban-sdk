@@ -1,11 +1,13 @@
 use crate as soroban_sdk;
 
 use soroban_sdk::{
+    contract,
     contractimpl,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
     Address, BytesN, Env, IntoVal,
 };
 
+#[contract]
 pub struct ContractA;
 
 #[contractimpl]
@@ -40,7 +42,6 @@ fn test() {
         .mock_auths(&[
             MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_b_id,
                     fn_name: "fnb",
@@ -50,7 +51,6 @@ fn test() {
             },
             MockAuth {
                 address: &a,
-                nonce: 1,
                 invoke: &MockAuthInvoke {
                     contract: &contract_b_id,
                     fn_name: "fnb",
@@ -67,12 +67,12 @@ fn test() {
 }
 
 #[test]
-// This test panics with not authorized because it does not appear to be
-// possible to constrain an auth to a specific call tree, unless the top-level
-// of that call tree also calls require_auth with the same address.
+// This test panics with not authorized because it is not possible to constrain
+// an auth to a specific call tree, unless the top-level of that call tree also
+// calls require_auth with the same address.
 //
-// It also doesn't appear to be possible to group auths that occur at the same
-// level, again unless a higher level also require_auth's the same addresses.
+// It also isn't possible to group auths that occur at the same level, again
+// unless a higher level also require_auth's the same addresses.
 #[should_panic = "NotAuthorized"]
 fn test_auth_tree() {
     let e = Env::default();
@@ -85,7 +85,6 @@ fn test_auth_tree() {
     let c = client
         .mock_auths(&[MockAuth {
             address: &a,
-            nonce: 0,
             invoke: &MockAuthInvoke {
                 contract: &contract_a_id,
                 fn_name: "fna",
