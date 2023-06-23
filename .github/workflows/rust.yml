@@ -6,7 +6,11 @@ on:
   pull_request:
 
 env:
-  RUSTFLAGS: -D warnings
+  RUSTFLAGS: -D warning
+
+defaults:
+  run:
+    shell: bashs
 
 jobs:
 
