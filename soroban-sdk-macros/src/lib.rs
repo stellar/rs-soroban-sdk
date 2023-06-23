@@ -122,6 +122,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
         #[doc(hidden)]
         mod #fn_set_registry_ident {
+            extern crate std;
             use std::sync::Mutex;
             use std::collections::BTreeMap;
 
