@@ -1,15 +1,16 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::{contractimpl, xdr, Address, Env, TryFromVal};
+use soroban_sdk::{contract, contractimpl, xdr, Address, Env, TryFromVal};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
     pub fn store(env: Env, k: i32, v: i32) {
-        env.storage().set(&k, &v)
+        env.storage().persistent().set(&k, &v, None)
     }
     pub fn get(env: Env, k: i32) -> i32 {
-        env.storage().get(&k).unwrap().unwrap()
+        env.storage().persistent().get(&k).unwrap()
     }
 }
 

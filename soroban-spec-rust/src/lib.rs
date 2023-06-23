@@ -9,7 +9,7 @@ use sha2::{Digest, Sha256};
 use stellar_xdr::{self, ScSpecEntry};
 use syn::Error;
 
-use crate::read::{from_wasm, FromWasmError};
+use soroban_spec::read::{from_wasm, FromWasmError};
 
 use types::{generate_enum, generate_error_enum, generate_struct, generate_union};
 
@@ -112,16 +112,15 @@ impl ToFormattedString for TokenStream {
 mod test {
     use pretty_assertions::assert_eq;
 
-    use crate::gen::rust::ToFormattedString;
-
-    use super::generate;
+    use super::{generate, ToFormattedString};
+    use soroban_spec::read::from_wasm;
 
     const EXAMPLE_WASM: &[u8] =
-        include_bytes!("../../../target/wasm32-unknown-unknown/release/test_udt.wasm");
+        include_bytes!("../../target/wasm32-unknown-unknown/release/test_udt.wasm");
 
     #[test]
     fn example() {
-        let entries = crate::read::from_wasm(EXAMPLE_WASM).unwrap();
+        let entries = from_wasm(EXAMPLE_WASM).unwrap();
         let rust = generate(&entries, "<file>", "<sha256>")
             .to_formatted_string()
             .unwrap();

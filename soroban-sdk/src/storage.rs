@@ -2,8 +2,8 @@
 use core::fmt::Debug;
 
 use crate::{
-    env::internal::{self, RawVal},
-    unwrap::UnwrapInfallible,
+    env::internal::{self, StorageType, Val},
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
     Env, IntoVal, TryFromVal,
 };
 
@@ -12,24 +12,31 @@ use crate::{
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Contracts cannot query or modify data stored by other contracts.
 ///
-/// Storage has persistent and temporary modes.
+/// There are two types of storage - Persistent and Temporary.
 ///
-/// For persistent mode data is stored in the ledger and is viewable outside of
-/// contracts wherever the ledger is accessible. This is the most universally
-/// useful storage mode.
+/// Temporary entries are the cheaper storage option and are never in the Expired State Stack (ESS). Whenever
+/// a TemporaryEntry expires, the entry is permanently deleted and cannot be recovered.
+/// This storage type is best for entries that are only relevant for short periods of
+/// time or for entries that can be arbitrarily recreated.
 ///
-/// For temporary mode data exists only during the execution time of the
-/// top-level contract. It is thus only useful to store data between several
-/// cross-contract calls (e.g. to increase and then spend the token allowance
-/// from another contract).
+/// Recreateable entries are in between temporary and persistent entries when it comes to fees.
+/// Whenever a recreateable entry expires, it is deleted from the ledger, but sent to an
+/// ESS. The entry can then be recovered later through an operation in Stellar Core issued for the
+/// expired entry.
+///
+/// Persistent entries are the more expensive storage type. Whenever
+/// a persistent entry expires, it is deleted from the ledger, sent to the ESS
+/// and can be recovered via an operation in Stellar Core. only a single version of a
+/// persistent entry can exist at a time.
 ///
 /// ### Examples
 ///
 /// ```
 /// use soroban_sdk::{Env, Symbol};
 ///
-/// # use soroban_sdk::{contractimpl, BytesN};
+/// # use soroban_sdk::{contract, contractimpl, BytesN};
 /// #
+/// # #[contract]
 /// # pub struct Contract;
 /// #
 /// # #[contractimpl]
@@ -37,9 +44,9 @@ use crate::{
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
 /// let key = Symbol::short("key");
-/// env.storage().set(&key, &1);
-/// assert_eq!(storage.has(&key), true);
-/// assert_eq!(storage.get::<_, i32>(&key), Some(Ok(1)));
+/// storage.persistent().set(&key, &1, None);
+/// assert_eq!(storage.persistent().has(&key), true);
+/// assert_eq!(storage.persistent().get::<_, i32>(&key), Some(1));
 /// #     }
 /// # }
 /// #
@@ -69,14 +76,26 @@ impl Storage {
         Storage { env: env.clone() }
     }
 
+    pub fn persistent(&self) -> Persistent {
+        Persistent {
+            storage: self.clone(),
+        }
+    }
+
+    pub fn temporary(&self) -> Temporary {
+        Temporary {
+            storage: self.clone(),
+        }
+    }
+
     /// Returns if there is a value stored for the given key in the currently
     /// executing contracts storage.
     #[inline(always)]
-    pub fn has<K>(&self, key: &K) -> bool
+    pub(crate) fn has<K>(&self, key: &K, storage_type: StorageType) -> bool
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
-        self.has_internal(key.into_val(&self.env))
+        self.has_internal(key.into_val(&self.env), storage_type)
     }
 
     /// Returns the value stored for the given key in the currently executing
@@ -85,18 +104,18 @@ impl Storage {
     /// Returns `None` when the value is missing.
     ///
     /// If the value is present, then the returned value will be a result of
-    /// converting the internal value representation to `V`.
+    /// converting the internal value representation to `V`, or will panic if
+    /// the conversion to `V` fails.
     #[inline(always)]
-    pub fn get<K, V>(&self, key: &K) -> Option<Result<V, V::Error>>
+    pub fn get<K, V>(&self, key: &K, storage_type: StorageType) -> Option<V>
     where
-        V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
     {
         let key = key.into_val(&self.env);
-        if self.has_internal(key) {
-            let rv = self.get_internal(key);
-            Some(V::try_from_val(&self.env, &rv))
+        if self.has_internal(key, storage_type.clone()) {
+            let rv = self.get_internal(key, storage_type);
+            Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {
             None
         }
@@ -106,36 +125,38 @@ impl Storage {
     /// currently executing contract's storage.
     ///
     /// The returned value is a result of converting the internal value
-    /// representation to `V`.
-    ///
-    /// ### Panics
-    ///
-    /// When the key does not have a value stored.
-    #[inline(always)]
-    pub fn get_unchecked<K, V>(&self, key: &K) -> Result<V, V::Error>
+    pub(crate) fn set<K, V>(&self, key: &K, val: &V, storage_type: StorageType, flags: Option<u32>)
     where
-        V::Error: Debug,
-        K: IntoVal<Env, RawVal>,
-        V: TryFromVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
     {
-        let rv = self.get_internal(key.into_val(&self.env));
-        V::try_from_val(&self.env, &rv)
+        let f: Val = match flags {
+            None => ().into(),
+            Some(i) => i.into(),
+        };
+        let env = &self.env;
+        internal::Env::put_contract_data(
+            env,
+            key.into_val(env),
+            val.into_val(env),
+            storage_type,
+            f,
+        )
+        .unwrap_infallible();
     }
 
-    /// Sets the value for the given key in the currently executing contract's
-    /// storage.
-    ///
-    /// If the key already has a value associated with it, the old value is
-    /// replaced by the new value.
-    #[inline(always)]
-    pub fn set<K, V>(&self, key: &K, val: &V)
+    pub(crate) fn bump<K>(&self, key: &K, storage_type: StorageType, min_ledgers_to_live: u32)
     where
-        K: IntoVal<Env, RawVal>,
-        V: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         let env = &self.env;
-        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env))
-            .unwrap_infallible();
+        internal::Env::bump_contract_data(
+            env,
+            key.into_val(env),
+            storage_type,
+            min_ledgers_to_live.into(),
+        )
+        .unwrap_infallible();
     }
 
     /// Removes the key and the corresponding value from the currently executing
@@ -143,21 +164,113 @@ impl Storage {
     ///
     /// No-op if the key does not exist.
     #[inline(always)]
-    pub fn remove<K>(&self, key: &K)
+    pub(crate) fn remove<K>(&self, key: &K, storage_type: StorageType)
     where
-        K: IntoVal<Env, RawVal>,
+        K: IntoVal<Env, Val>,
     {
         let env = &self.env;
-        internal::Env::del_contract_data(env, key.into_val(env)).unwrap_infallible();
+        internal::Env::del_contract_data(env, key.into_val(env), storage_type).unwrap_infallible();
     }
 
-    fn has_internal(&self, key: RawVal) -> bool {
-        internal::Env::has_contract_data(&self.env, key)
+    fn has_internal(&self, key: Val, storage_type: StorageType) -> bool {
+        internal::Env::has_contract_data(&self.env, key, storage_type)
             .unwrap_infallible()
             .into()
     }
 
-    fn get_internal(&self, key: RawVal) -> RawVal {
-        internal::Env::get_contract_data(&self.env, key).unwrap_infallible()
+    fn get_internal(&self, key: Val, storage_type: StorageType) -> Val {
+        internal::Env::get_contract_data(&self.env, key, storage_type).unwrap_infallible()
+    }
+}
+
+pub struct Persistent {
+    storage: Storage,
+}
+
+impl Persistent {
+    pub fn has<K>(&self, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.has(key, StorageType::Persistent)
+    }
+
+    pub fn get<K, V>(&self, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.get(key, StorageType::Persistent)
+    }
+
+    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+    {
+        self.storage.set(key, val, StorageType::Persistent, flags)
+    }
+
+    pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage
+            .bump(key, StorageType::Persistent, min_ledgers_to_live)
+    }
+
+    #[inline(always)]
+    pub fn remove<K>(&self, key: &K)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.remove(key, StorageType::Persistent)
+    }
+}
+
+pub struct Temporary {
+    storage: Storage,
+}
+
+impl Temporary {
+    pub fn has<K>(&self, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.has(key, StorageType::Temporary)
+    }
+
+    pub fn get<K, V>(&self, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.get(key, StorageType::Temporary)
+    }
+
+    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+    {
+        self.storage.set(key, val, StorageType::Temporary, flags)
+    }
+
+    pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage
+            .bump(key, StorageType::Temporary, min_ledgers_to_live)
+    }
+
+    #[inline(always)]
+    pub fn remove<K>(&self, key: &K)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.remove(key, StorageType::Temporary)
     }
 }

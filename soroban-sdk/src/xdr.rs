@@ -1,6 +1,6 @@
 //! Convert values to and from [Bytes].
 //!
-//! All types that are convertible to and from [RawVal] implement the
+//! All types that are convertible to and from [Val] implement the
 //! [ToXdr] and [FromXdr] traits, and serialize to the ScVal XDR form.
 //!
 //! ### Examples
@@ -23,7 +23,7 @@
 //! ```
 
 use crate::{
-    env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, RawVal, TryFromVal,
+    env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryFromVal, Val,
 };
 
 // Re-export all the XDR from the environment.
@@ -31,14 +31,14 @@ pub use crate::env::xdr::*;
 
 /// Implemented by types that can be serialized to [Bytes].
 ///
-/// All types that are convertible to [RawVal] are implemented.
+/// All types that are convertible to [Val] are implemented.
 pub trait ToXdr {
     fn to_xdr(self, env: &Env) -> Bytes;
 }
 
 /// Implemented by types that can be deserialized from [Bytes].
 ///
-/// All types that are convertible from [RawVal] are implemented.
+/// All types that are convertible from [Val] are implemented.
 pub trait FromXdr: Sized {
     type Error;
     fn from_xdr(env: &Env, b: &Bytes) -> Result<Self, Self::Error>;
@@ -46,10 +46,10 @@ pub trait FromXdr: Sized {
 
 impl<T> ToXdr for T
 where
-    T: IntoVal<Env, RawVal>,
+    T: IntoVal<Env, Val>,
 {
     fn to_xdr(self, env: &Env) -> Bytes {
-        let val: RawVal = self.into_val(env);
+        let val: Val = self.into_val(env);
         let bin = env.serialize_to_bytes(val).unwrap_infallible();
         unsafe { Bytes::unchecked_new(env.clone(), bin) }
     }
@@ -57,7 +57,7 @@ where
 
 impl<T> FromXdr for T
 where
-    T: TryFromVal<Env, RawVal>,
+    T: TryFromVal<Env, Val>,
 {
     type Error = T::Error;
 

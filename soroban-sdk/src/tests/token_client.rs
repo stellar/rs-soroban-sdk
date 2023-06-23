@@ -1,7 +1,10 @@
-use crate as soroban_sdk;
+use crate::{
+    self as soroban_sdk,
+    testutils::{AuthorizedFunction, AuthorizedInvocation},
+};
 
 use soroban_sdk::{
-    contractimpl, contracttype,
+    contract, contractimpl, contracttype,
     testutils::{Address as _, MockAuth, MockAuthInvoke},
     token::Client as TokenClient,
     Address, Env, IntoVal, Symbol,
@@ -13,15 +16,18 @@ pub enum DataKey {
 }
 
 fn get_token(e: &Env) -> Address {
-    e.storage().get_unchecked(&DataKey::Token).unwrap()
+    e.storage().persistent().get(&DataKey::Token).unwrap()
 }
 
+#[contract]
 pub struct TestContract;
 
 #[contractimpl]
 impl TestContract {
     pub fn init(e: Env, contract: Address) {
-        e.storage().set(&DataKey::Token, &contract);
+        e.storage()
+            .persistent()
+            .set(&DataKey::Token, &contract, None);
     }
 
     pub fn get_token(e: Env) -> Address {
@@ -63,9 +69,14 @@ fn test_mock_all_auth() {
         env.auths(),
         std::vec![(
             from.clone(),
-            token_contract_id.clone(),
-            Symbol::new(&env, "increase_allowance"),
-            (&from, &spender, 20_i128).into_val(&env)
+            AuthorizedInvocation {
+                function: AuthorizedFunction::Contract((
+                    token_contract_id.clone(),
+                    Symbol::new(&env, "increase_allowance"),
+                    (&from, &spender, 20_i128).into_val(&env)
+                )),
+                sub_invocations: std::vec![]
+            }
         )]
     );
 
@@ -93,7 +104,6 @@ fn test_mock_auth() {
     client
         .mock_auths(&[MockAuth {
             address: &from,
-            nonce: 0,
             invoke: &MockAuthInvoke {
                 contract: &token_contract_id,
                 fn_name: "increase_allowance",

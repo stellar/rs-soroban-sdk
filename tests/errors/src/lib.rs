@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contracterror, contractimpl, panic_with_error, Env, Symbol};
+use soroban_sdk::{contract, contracterror, contractimpl, panic_with_error, Env, Symbol};
 
+#[contract]
 pub struct Contract;
 
 #[contracterror]
@@ -12,7 +13,9 @@ pub enum Error {
 #[contractimpl]
 impl Contract {
     pub fn hello(env: Env, flag: u32) -> Result<Symbol, Error> {
-        env.storage().set(&Symbol::short("persisted"), &true);
+        env.storage()
+            .persistent()
+            .set(&Symbol::short("persisted"), &true, None);
         if flag == 0 {
             Ok(Symbol::short("hello"))
         } else if flag == 1 {
@@ -29,9 +32,9 @@ impl Contract {
     #[cfg(test)]
     pub fn persisted(env: Env) -> bool {
         env.storage()
+            .persistent()
             .get(&Symbol::short("persisted"))
-            .unwrap_or(Ok(false))
-            .unwrap()
+            .unwrap_or(false)
     }
 }
 

@@ -1,0 +1,24 @@
+[package]
+name = "soroban-spec-rust"
+description = "Soroban contract spec utilities for generating Rust."
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version.workspace = true
+edition = "2021"
+rust-version = "1.70"
+
+[dependencies]
+stellar-xdr = { workspace = true, features = ["next", "std", "serde"] }
+soroban-spec = { workspace = true }
+thiserror = "1.0.32"
+syn = {version="2.0",features=["full"]}
+quote = "1.0"
+proc-macro2 = "1.0"
+sha2 = "0.9.9"
+prettyplease = "0.2.4"
+
+[dev_dependencies]
+pretty_assertions = "1.2.1"

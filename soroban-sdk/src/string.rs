@@ -2,7 +2,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{Env as _, EnvBase as _, StringObject},
-    ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
+    ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -65,7 +65,7 @@ impl Ord for String {
         self.env.check_same_env(&other.env);
         let v = self
             .env
-            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .obj_cmp(self.obj.to_val(), other.obj.to_val())
             .unwrap_infallible();
         v.cmp(&0)
     }
@@ -87,25 +87,25 @@ impl TryFromVal<Env, StringObject> for String {
     }
 }
 
-impl TryFromVal<Env, RawVal> for String {
+impl TryFromVal<Env, Val> for String {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         Ok(StringObject::try_from_val(env, val)?
             .try_into_val(env)
             .unwrap_infallible())
     }
 }
 
-impl TryFromVal<Env, String> for RawVal {
+impl TryFromVal<Env, String> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &String) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
-impl From<String> for RawVal {
+impl From<String> for Val {
     #[inline(always)]
     fn from(v: String) -> Self {
         v.obj.into()
@@ -137,7 +137,7 @@ impl From<&String> for String {
 impl TryFrom<&String> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &String) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
@@ -154,7 +154,7 @@ impl TryFromVal<Env, ScVal> for String {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(
-            StringObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+            StringObject::try_from_val(env, &Val::try_from_val(env, val)?)?
                 .try_into_val(env)
                 .unwrap_infallible(),
         )
@@ -180,12 +180,12 @@ impl String {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &RawVal {
-        self.obj.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.obj.as_val()
     }
 
-    pub fn to_raw(&self) -> RawVal {
-        self.obj.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.obj.to_val()
     }
 
     pub fn as_object(&self) -> &StringObject {
@@ -216,7 +216,7 @@ impl String {
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
-        env.string_copy_to_slice(self.to_object(), RawVal::U32_ZERO, slice)
+        env.string_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
     }
 }

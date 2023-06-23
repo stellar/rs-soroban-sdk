@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{Attribute, DataStruct, Error, Ident, Path};
+use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
@@ -11,6 +11,7 @@ use crate::{doc::docs_from_attrs, map_type::map_type};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
+    vis: &Visibility,
     ident: &Ident,
     attrs: &[Attribute],
     data: &DataStruct,
@@ -44,7 +45,7 @@ pub fn derive_type_struct_tuple(
             };
             let try_from_xdr = quote! {
                 #field_idx_lit: {
-                    let rv: #path::RawVal = (&vec[#field_idx_lit].clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                    let rv: #path::Val = (&vec[#field_idx_lit].clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
                     rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
@@ -87,17 +88,19 @@ pub fn derive_type_struct_tuple(
         None
     };
 
+    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct_tuple(path, vis, ident, data);
+
     // Output.
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
-                use #path::{TryIntoVal,EnvBase,ConversionError,VecObject,RawVal};
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                use #path::{TryIntoVal,EnvBase,ConversionError,VecObject,Val};
                 let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
-                let mut vals: [RawVal; #field_count_usize] = [RawVal::VOID.to_raw(); #field_count_usize];
+                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
                 env.vec_unpack_to_slice(vec, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self{
                     #(#field_idx_lits: vals[#field_idx_lits].try_into_val(env).map_err(|_| ConversionError)?),*
@@ -105,12 +108,12 @@ pub fn derive_type_struct_tuple(
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
-                use #path::{TryIntoVal,EnvBase,ConversionError,RawVal};
-                let vals: [RawVal; #field_count_usize] = [
+                use #path::{TryIntoVal,EnvBase,ConversionError,Val};
+                let vals: [Val; #field_count_usize] = [
                     #((&val.#field_idx_lits).try_into_val(env).map_err(|_| ConversionError)?),*
                 ];
                 Ok(env.vec_new_from_slice(&vals).map_err(|_| ConversionError)?.into())
@@ -186,5 +189,7 @@ pub fn derive_type_struct_tuple(
                 (&val).try_into()
             }
         }
+
+        #arbitrary_tokens
     }
 }

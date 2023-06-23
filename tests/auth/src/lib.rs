@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Address, Env, IntoVal};
+use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
 
+#[contract]
 pub struct ContractA;
 
 #[contractimpl]
@@ -16,12 +17,16 @@ mod test_a {
     use super::*;
     use soroban_sdk::{
         contracterror,
-        testutils::{Address as _, MockAuth, MockAuthInvoke},
-        vec,
-        xdr::{
-            AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM, VecM,
+        testutils::{
+            Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
-        Address, Env, Error, RawVal, Symbol,
+        xdr::{
+            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
+            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
+            VecM,
+        },
+        Address, Env, Error, Symbol, Val,
     };
     extern crate std;
 
@@ -38,12 +43,17 @@ mod test_a {
         assert_eq!(r, 2);
         assert_eq!(
             e.auths(),
-            [(
+            std::vec![(
                 a.clone(),
-                contract_id,
-                Symbol::short("fn1"),
-                vec![&e, a.to_raw()]
-            )],
+                AuthorizedInvocation {
+                    function: AuthorizedFunction::Contract((
+                        contract_id.clone(),
+                        Symbol::new(&e, "fn1"),
+                        (&a,).into_val(&e)
+                    )),
+                    sub_invocations: std::vec![]
+                }
+            )]
         );
     }
 
@@ -59,7 +69,6 @@ mod test_a {
         let r = client
             .mock_auths(&[MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_id,
                     fn_name: "fn1",
@@ -71,12 +80,17 @@ mod test_a {
         assert_eq!(r, 2);
         assert_eq!(
             e.auths(),
-            [(
+            std::vec![(
                 a.clone(),
-                contract_id,
-                Symbol::short("fn1"),
-                (&a,).into_val(&e),
-            )],
+                AuthorizedInvocation {
+                    function: AuthorizedFunction::Contract((
+                        contract_id.clone(),
+                        Symbol::new(&e, "fn1"),
+                        (&a,).into_val(&e)
+                    )),
+                    sub_invocations: std::vec![]
+                }
+            )]
         );
     }
 
@@ -91,31 +105,40 @@ mod test_a {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
-                address_with_nonce: Some(AddressWithNonce {
+            .set_auths(&[SorobanAuthorizationEntry {
+                credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 123,
+                    signature_expiration_ledger: 100,
+                    signature_args: Default::default(),
                 }),
-                root_invocation: AuthorizedInvocation {
-                    contract_id: contract_id.contract_id().to_array().into(),
-                    function_name: StringM::try_from("fn1").unwrap().into(),
-                    args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
+                root_invocation: SorobanAuthorizedInvocation {
+                    function: SorobanAuthorizedFunction::ContractFn(
+                        SorobanAuthorizedContractFunction {
+                            contract_address: contract_id.clone().try_into().unwrap(),
+                            function_name: StringM::try_from("fn1").unwrap().into(),
+                            args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                        },
+                    ),
                     sub_invocations: VecM::default(),
                 },
-                signature_args: std::vec![].try_into().unwrap(),
             }])
             .fn1(&a);
 
         assert_eq!(r, 2);
-
         assert_eq!(
             e.auths(),
-            [(
+            std::vec![(
                 a.clone(),
-                contract_id,
-                Symbol::short("fn1"),
-                (&a,).into_val(&e),
-            )],
+                AuthorizedInvocation {
+                    function: AuthorizedFunction::Contract((
+                        contract_id.clone(),
+                        Symbol::new(&e, "fn1"),
+                        (&a,).into_val(&e)
+                    )),
+                    sub_invocations: std::vec![]
+                }
+            )]
         );
     }
 
@@ -130,28 +153,33 @@ mod test_a {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
-                address_with_nonce: Some(AddressWithNonce {
+            .set_auths(&[SorobanAuthorizationEntry {
+                credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 456,
+                    signature_expiration_ledger: u32::MAX,
+                    signature_args: Default::default(),
                 }),
-                root_invocation: AuthorizedInvocation {
-                    contract_id: contract_id.contract_id().to_array().into(),
-                    function_name: StringM::try_from("fn1").unwrap().into(),
-                    args: std::vec![ScVal::Address(a_xdr)].try_into().unwrap(),
+                root_invocation: SorobanAuthorizedInvocation {
+                    function: SorobanAuthorizedFunction::ContractFn(
+                        SorobanAuthorizedContractFunction {
+                            contract_address: contract_id.try_into().unwrap(),
+                            function_name: StringM::try_from("fn1").unwrap().into(),
+                            args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                        },
+                    ),
                     sub_invocations: VecM::default(),
                 },
-                signature_args: std::vec![].try_into().unwrap(),
             }])
             .try_fn1(&a);
 
-        // TODO: Update this test to assert that a general panic/trap occurred
-        // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
-        // The ContractError(1) being captured here is from the
-        // auth_decline::Contract defined at the bottom of this file. The auth
-        // contract's error is leaking into the contract being called and
-        // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
+        assert_eq!(
+            r,
+            Err(Ok(Error::from_scerror(ScError {
+                type_: ScErrorType::Auth,
+                code: ScErrorCode::InvalidAction
+            })))
+        );
 
         assert_eq!(e.auths(), []);
     }
@@ -159,23 +187,20 @@ mod test_a {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
         impl Contract {
             #[allow(non_snake_case)]
-            pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
-            ) {
-            }
+            pub fn __check_auth(_signature_payload: Val, _signatures: Val, _auth_context: Val) {}
         }
     }
 
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]
@@ -189,9 +214,9 @@ mod test_a {
         impl Contract {
             #[allow(non_snake_case)]
             pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
+                _signature_payload: Val,
+                _signatures: Val,
+                _auth_context: Val,
             ) -> Result<(), Error> {
                 Err(Error::Decline)
             }
@@ -199,6 +224,7 @@ mod test_a {
     }
 }
 
+#[contract]
 pub struct ContractB;
 
 #[contractimpl]
@@ -215,9 +241,15 @@ mod test_b {
     use super::*;
     use soroban_sdk::{
         contracterror,
-        testutils::{Address as _, MockAuth, MockAuthInvoke},
-        xdr::{AddressWithNonce, AuthorizedInvocation, ContractAuth, ScAddress, ScVal, StringM},
-        Address, Env, Error, RawVal, Symbol,
+        testutils::{
+            Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
+        },
+        xdr::{
+            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
+            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
+        },
+        Address, Env, Error, Symbol, Val,
     };
     extern crate std;
 
@@ -235,20 +267,24 @@ mod test_b {
         assert_eq!(r, 2);
         assert_eq!(
             e.auths(),
-            [
-                (
-                    a.clone(),
-                    contract_b_id,
-                    Symbol::short("fn2"),
-                    (1, 2).into_val(&e),
-                ),
-                (
-                    a.clone(),
-                    contract_a_id,
-                    Symbol::short("fn1"),
-                    (&a,).into_val(&e),
-                )
-            ],
+            [(
+                a.clone(),
+                AuthorizedInvocation {
+                    function: AuthorizedFunction::Contract((
+                        contract_b_id.clone(),
+                        Symbol::short("fn2"),
+                        (1, 2).into_val(&e),
+                    )),
+                    sub_invocations: std::vec![AuthorizedInvocation {
+                        function: AuthorizedFunction::Contract((
+                            contract_a_id.clone(),
+                            Symbol::short("fn1"),
+                            (&a,).into_val(&e),
+                        )),
+                        sub_invocations: std::vec![]
+                    }]
+                }
+            ),],
         );
     }
 
@@ -265,7 +301,6 @@ mod test_b {
         let r = client
             .mock_auths(&[MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_b_id,
                     fn_name: "fn2",
@@ -282,20 +317,24 @@ mod test_b {
         assert_eq!(r, 2);
         assert_eq!(
             e.auths(),
-            [
-                (
-                    a.clone(),
-                    contract_b_id,
-                    Symbol::short("fn2"),
-                    (1, 2).into_val(&e),
-                ),
-                (
-                    a.clone(),
-                    contract_a_id,
-                    Symbol::short("fn1"),
-                    (&a,).into_val(&e),
-                )
-            ],
+            [(
+                a.clone(),
+                AuthorizedInvocation {
+                    function: AuthorizedFunction::Contract((
+                        contract_b_id.clone(),
+                        Symbol::short("fn2"),
+                        (1, 2).into_val(&e),
+                    )),
+                    sub_invocations: std::vec![AuthorizedInvocation {
+                        function: AuthorizedFunction::Contract((
+                            contract_a_id.clone(),
+                            Symbol::short("fn1"),
+                            (&a,).into_val(&e),
+                        )),
+                        sub_invocations: std::vec![]
+                    }]
+                }
+            ),],
         );
     }
 
@@ -311,46 +350,58 @@ mod test_b {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
-                address_with_nonce: Some(AddressWithNonce {
+            .set_auths(&[SorobanAuthorizationEntry {
+                credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 543,
+                    signature_expiration_ledger: 100,
+                    signature_args: Default::default(),
                 }),
-                root_invocation: AuthorizedInvocation {
-                    contract_id: contract_b_id.contract_id().to_array().into(),
-                    function_name: StringM::try_from("fn2").unwrap().into(),
-                    args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
-                    sub_invocations: [AuthorizedInvocation {
-                        contract_id: contract_a_id.contract_id().to_array().into(),
-                        function_name: StringM::try_from("fn1").unwrap().into(),
-                        args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
-                        sub_invocations: [].try_into().unwrap(),
+                root_invocation: SorobanAuthorizedInvocation {
+                    function: SorobanAuthorizedFunction::ContractFn(
+                        SorobanAuthorizedContractFunction {
+                            contract_address: contract_b_id.clone().try_into().unwrap(),
+                            function_name: StringM::try_from("fn2").unwrap().into(),
+                            args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
+                        },
+                    ),
+                    sub_invocations: std::vec![SorobanAuthorizedInvocation {
+                        function: SorobanAuthorizedFunction::ContractFn(
+                            SorobanAuthorizedContractFunction {
+                                contract_address: contract_a_id.clone().try_into().unwrap(),
+                                function_name: StringM::try_from("fn1").unwrap().into(),
+                                args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                            },
+                        ),
+                        sub_invocations: Default::default()
                     }]
                     .try_into()
                     .unwrap(),
                 },
-                signature_args: std::vec![].try_into().unwrap(),
             }])
             .fn2(&a, &contract_a_id);
 
         assert_eq!(r, 2);
-
         assert_eq!(
             e.auths(),
-            [
-                (
-                    a.clone(),
-                    contract_b_id,
-                    Symbol::short("fn2"),
-                    (1, 2).into_val(&e),
-                ),
-                (
-                    a.clone(),
-                    contract_a_id,
-                    Symbol::short("fn1"),
-                    (&a,).into_val(&e),
-                )
-            ],
+            [(
+                a.clone(),
+                AuthorizedInvocation {
+                    function: AuthorizedFunction::Contract((
+                        contract_b_id.clone(),
+                        Symbol::short("fn2"),
+                        (1, 2).into_val(&e),
+                    )),
+                    sub_invocations: std::vec![AuthorizedInvocation {
+                        function: AuthorizedFunction::Contract((
+                            contract_a_id.clone(),
+                            Symbol::short("fn1"),
+                            (&a,).into_val(&e),
+                        )),
+                        sub_invocations: std::vec![]
+                    }]
+                }
+            ),],
         );
     }
 
@@ -366,35 +417,44 @@ mod test_b {
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
-            .set_auths(&[ContractAuth {
-                address_with_nonce: Some(AddressWithNonce {
+            .set_auths(&[SorobanAuthorizationEntry {
+                credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 789,
+                    signature_expiration_ledger: 150,
+                    signature_args: Default::default(),
                 }),
-                root_invocation: AuthorizedInvocation {
-                    contract_id: contract_b_id.contract_id().to_array().into(),
-                    function_name: StringM::try_from("fn2").unwrap().into(),
-                    args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
-                    sub_invocations: [AuthorizedInvocation {
-                        contract_id: contract_a_id.contract_id().to_array().into(),
-                        function_name: StringM::try_from("fn1").unwrap().into(),
-                        args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
-                        sub_invocations: [].try_into().unwrap(),
+                root_invocation: SorobanAuthorizedInvocation {
+                    function: SorobanAuthorizedFunction::ContractFn(
+                        SorobanAuthorizedContractFunction {
+                            contract_address: contract_b_id.try_into().unwrap(),
+                            function_name: StringM::try_from("fn2").unwrap().into(),
+                            args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
+                        },
+                    ),
+                    sub_invocations: std::vec![SorobanAuthorizedInvocation {
+                        function: SorobanAuthorizedFunction::ContractFn(
+                            SorobanAuthorizedContractFunction {
+                                contract_address: contract_a_id.clone().try_into().unwrap(),
+                                function_name: StringM::try_from("fn1").unwrap().into(),
+                                args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                            },
+                        ),
+                        sub_invocations: Default::default()
                     }]
                     .try_into()
                     .unwrap(),
                 },
-                signature_args: std::vec![].try_into().unwrap(),
             }])
             .try_fn2(&a, &contract_a_id);
 
-        // TODO: Update this test to assert that a general panic/trap occurred
-        // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
-        // The ContractError(1) being captured here is from the
-        // auth_decline::Contract defined at the bottom of this file. The auth
-        // contract's error is leaking into the contract being called and
-        // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
+        assert_eq!(
+            r,
+            Err(Ok(Error::from_scerror(ScError {
+                type_: ScErrorType::Auth,
+                code: ScErrorCode::InvalidAction
+            })))
+        );
 
         assert_eq!(e.auths(), []);
     }
@@ -402,23 +462,20 @@ mod test_b {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
         impl Contract {
             #[allow(non_snake_case)]
-            pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
-            ) {
-            }
+            pub fn __check_auth(_signature_payload: Val, _signatures: Val, _auth_context: Val) {}
         }
     }
 
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]
@@ -432,9 +489,9 @@ mod test_b {
         impl Contract {
             #[allow(non_snake_case)]
             pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
+                _signature_payload: Val,
+                _signatures: Val,
+                _auth_context: Val,
             ) -> Result<(), Error> {
                 Err(Error::Decline)
             }

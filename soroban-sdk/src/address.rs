@@ -2,7 +2,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{AddressObject, Env as _, EnvBase as _},
-    BytesN, ConversionError, Env, RawVal, TryFromVal, TryIntoVal,
+    BytesN, ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
 
 #[cfg(not(target_family = "wasm"))]
@@ -86,7 +86,7 @@ impl Ord for Address {
         self.env.check_same_env(&other.env);
         let v = self
             .env
-            .obj_cmp(self.obj.to_raw(), other.obj.to_raw())
+            .obj_cmp(self.obj.to_val(), other.obj.to_val())
             .unwrap_infallible();
         v.cmp(&0)
     }
@@ -100,29 +100,29 @@ impl TryFromVal<Env, AddressObject> for Address {
     }
 }
 
-impl TryFromVal<Env, RawVal> for Address {
+impl TryFromVal<Env, Val> for Address {
     type Error = ConversionError;
 
-    fn try_from_val(env: &Env, val: &RawVal) -> Result<Self, Self::Error> {
+    fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         Ok(AddressObject::try_from_val(env, val)?
             .try_into_val(env)
             .unwrap_infallible())
     }
 }
 
-impl TryFromVal<Env, Address> for RawVal {
+impl TryFromVal<Env, Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &Address) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
-impl TryFromVal<Env, &Address> for RawVal {
+impl TryFromVal<Env, &Address> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &&Address) -> Result<Self, Self::Error> {
-        Ok(v.to_raw())
+        Ok(v.to_val())
     }
 }
 
@@ -130,7 +130,7 @@ impl TryFromVal<Env, &Address> for RawVal {
 impl TryFrom<&Address> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Address) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_raw())
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
@@ -147,7 +147,7 @@ impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(
-            AddressObject::try_from_val(env, &RawVal::try_from_val(env, val)?)?
+            AddressObject::try_from_val(env, &Val::try_from_val(env, val)?)?
                 .try_into_val(env)
                 .unwrap_infallible(),
         )
@@ -158,7 +158,7 @@ impl TryFromVal<Env, ScVal> for Address {
 impl TryFrom<&Address> for ScAddress {
     type Error = ConversionError;
     fn try_from(v: &Address) -> Result<Self, Self::Error> {
-        match ScVal::try_from_val(&v.env, &v.obj.to_raw())? {
+        match ScVal::try_from_val(&v.env, &v.obj.to_val())? {
             ScVal::Address(a) => Ok(a),
             _ => Err(ConversionError),
         }
@@ -179,7 +179,7 @@ impl TryFromVal<Env, ScAddress> for Address {
     fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
         Ok(AddressObject::try_from_val(
             env,
-            &RawVal::try_from_val(env, &ScVal::Address(val.clone()))?,
+            &Val::try_from_val(env, &ScVal::Address(val.clone()))?,
         )?
         .try_into_val(env)
         .unwrap_infallible())
@@ -201,16 +201,11 @@ impl Address {
     /// will allow the contract callers to easily build the required signature
     /// payloads and prevent potential authorization failures.
     ///
-    /// When called in the tests, the `require_auth` calls are just recorded and
-    /// no signatures are required. In order to make sure that the contract
-    /// has indeed called `require_auth` for this Address with expected arguments
-    /// use `env.verify_top_authorization`.
-    ///
     /// ### Panics
     ///
     /// If the invocation is not authorized.
-    pub fn require_auth_for_args(&self, args: Vec<RawVal>) {
-        self.env.require_auth_for_args(&self, args);
+    pub fn require_auth_for_args(&self, args: Vec<Val>) {
+        self.env.require_auth_for_args(self, args);
     }
 
     /// Ensures that this Address has authorized invocation of the current
@@ -226,9 +221,9 @@ impl Address {
     ///
     /// ### Panics
     ///
-    /// If the invocation is not authorized.    
+    /// If the invocation is not authorized.
     pub fn require_auth(&self) {
-        self.env.require_auth(&self);
+        self.env.require_auth(self);
     }
 
     /// Creates an `Address` corresponding to the provided contract identifier.
@@ -236,7 +231,10 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases, for example to get an Address of a freshly
     /// deployed contract.
-    pub(crate) fn from_contract_id(contract_id: &BytesN<32>) -> Self {
+    ///
+    /// TODO: Replace this function in its pub form with a function that accepts
+    /// a strkey instead. Dependent on <https://github.com/stellar/rs-stellar-strkey/issues/56>.
+    pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
         let env = contract_id.env();
         unsafe {
             Self::unchecked_new(
@@ -281,12 +279,12 @@ impl Address {
         &self.env
     }
 
-    pub fn as_raw(&self) -> &RawVal {
-        self.obj.as_raw()
+    pub fn as_val(&self) -> &Val {
+        self.obj.as_val()
     }
 
-    pub fn to_raw(&self) -> RawVal {
-        self.obj.to_raw()
+    pub fn to_val(&self) -> Val {
+        self.obj.to_val()
     }
 
     pub fn as_object(&self) -> &AddressObject {
@@ -308,10 +306,6 @@ impl crate::testutils::Address for Address {
     fn random(env: &Env) -> Self {
         let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
-    }
-
-    fn from_contract_id(contract_id: &crate::BytesN<32>) -> crate::Address {
-        Self::from_contract_id(contract_id)
     }
 
     fn contract_id(&self) -> crate::BytesN<32> {
