@@ -149,7 +149,8 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #fn_set_registry_ident::call(func, env, args)
             }
         }
-    }
+    }.into()
+}
 
 #[derive(Debug, FromMeta)]
 struct ContractImplArgs {
