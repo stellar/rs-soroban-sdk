@@ -71,12 +71,12 @@ use crate::{env::internal::EnvBase, Env, Val};
 macro_rules! log {
     ($env:expr, $fmt:literal $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logs().log($fmt, &[]);
+            $env.logs().add($fmt, &[]);
         }
     };
     ($env:expr, $fmt:literal, $($args:expr),* $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logs().log($fmt, &[
+            $env.logs().add($fmt, &[
                 $(
                     <_ as $crate::IntoVal<Env, $crate::Val>>::into_val(&$args, $env)
                 ),*
@@ -108,6 +108,12 @@ impl Logs {
         Logs(env.clone())
     }
 
+    #[deprecated(note = "use [Logs::add]")]
+    #[inline(always)]
+    pub fn log(&self, msg: &'static str, args: &[Val]) {
+        self.add(msg, args);
+    }
+
     /// Log a debug event.
     ///
     /// Takes a literal string and a sequence of trailing values to add
@@ -115,7 +121,7 @@ impl Logs {
     ///
     /// See [`log`][crate::log] for how to conveniently log debug events.
     #[inline(always)]
-    pub fn log(&self, msg: &'static str, args: &[Val]) {
+    pub fn add(&self, msg: &'static str, args: &[Val]) {
         if cfg!(debug_assertions) {
             let env = self.env();
             env.log_from_slice(msg, args).unwrap();
