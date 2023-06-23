@@ -76,14 +76,55 @@ impl Storage {
         Storage { env: env.clone() }
     }
 
+    /// Storage for data that can stay in the ledger forever until deleted.
+    ///
+    /// Persistent entries might be 'evicted' from the ledger if they run out
+    /// of the rent balance. However, evicted entries can be restored and also
+    /// they cannot be recreated. This means that semantically these entries
+    /// behave 'as if' they were stored in the ledger forever.
+    ///
+    /// This should be used for data that requires persistency, such as token
+    /// balances, user properties etc.
     pub fn persistent(&self) -> Persistent {
         Persistent {
             storage: self.clone(),
         }
     }
 
+    /// Storage for data that may stay in ledger only for a limited amount of
+    /// time.
+    ///
+    /// This is cheaper than `persistent()` storage.
+    ///
+    /// Temporary entries will be removed from the ledger after their lifetime
+    /// ends. Removed entries can be created again, potentially with different
+    /// values.
+    ///
+    /// This should be used for data that needs to only exist for a limited
+    /// period of time, such as oracle data, claimable balances, offerc etc.
     pub fn temporary(&self) -> Temporary {
         Temporary {
+            storage: self.clone(),
+        }
+    }
+
+    /// Storage for a **small amount** of persistent data associated with
+    /// the current contract's instance.
+    ///
+    /// All the `instance` entries are stored in a single `persistent()` ledger
+    /// entry. That makes it cheap to use this, but also limits the total
+    /// size of the stored data.
+    ///
+    /// This has the same lifetime properties as `persistent()` storage (i.e.
+    /// the data semantically stays in the ledger forever and can be
+    ///  evicted/restored).
+    ///
+    /// This should be used for data directly associated with the current
+    /// contract, such as its admin, configuration settings, tokens the contract
+    /// operates on etc. Do not use this with any data that can scale in
+    /// unbounded fashion (such as user balances).
+    pub fn instance(&self) -> Instance {
+        Instance {
             storage: self.clone(),
         }
     }
@@ -272,5 +313,51 @@ impl Temporary {
         K: IntoVal<Env, Val>,
     {
         self.storage.remove(key, StorageType::Temporary)
+    }
+}
+
+pub struct Instance {
+    storage: Storage,
+}
+
+impl Instance {
+    pub fn has<K>(&self, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.has(key, StorageType::Instance)
+    }
+
+    pub fn get<K, V>(&self, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.get(key, StorageType::Instance)
+    }
+
+    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+    {
+        self.storage.set(key, val, StorageType::Instance, flags)
+    }
+
+    #[inline(always)]
+    pub fn remove<K>(&self, key: &K)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.remove(key, StorageType::Instance)
+    }
+
+    pub fn bump(&self, min_ledgers_to_live: u32) {
+        internal::Env::bump_current_contract_instance_and_code(
+            &self.storage.env,
+            min_ledgers_to_live.into(),
+        )
+        .unwrap_infallible();
     }
 }
