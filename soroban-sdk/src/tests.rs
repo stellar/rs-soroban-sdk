@@ -16,6 +16,7 @@ mod contract_udt_struct;
 mod contract_udt_struct_tuple;
 mod contractimport;
 mod contractimport_with_error;
+mod crypto;
 mod env;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;

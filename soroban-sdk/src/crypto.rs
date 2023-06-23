@@ -1,5 +1,5 @@
 //! Crypto contains functions for cryptographic functions.
-use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env};
+use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, VecObject};
 
 /// Crypto provides access to cryptographic functions.
 pub struct Crypto {
@@ -20,6 +20,28 @@ impl Crypto {
         let env = self.env();
         let bin = internal::Env::compute_hash_sha256(env, data.into()).unwrap_infallible();
         unsafe { BytesN::unchecked_new(env.clone(), bin) }
+    }
+
+    // Reseeds the pseudorandom number generator (PRNG) with the provided `seed` value.
+    pub fn prng_reseed(&self, seed: &Bytes) {
+        let env = self.env();
+        internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
+    }
+
+    // Returns a random u64 in the range between `lower` and `upper` inclusive.
+    pub fn u64_in_inclusive_range(&self, lower: u64, upper: u64) -> u64 {
+        let env = self.env();
+        internal::Env::prng_u64_in_inclusive_range(env, lower.into(), upper.into())
+            .unwrap_infallible()
+            .into()
+    }
+
+    // Shuffles a given vector v using the Fisher-Yates algorithm.
+    pub fn vec_shuffle(&self, v: VecObject) -> VecObject {
+        let env = self.env();
+        internal::Env::prng_vec_shuffle(env, v.into())
+            .unwrap_infallible()
+            .into()
     }
 
     /// Verifies an ed25519 signature.
