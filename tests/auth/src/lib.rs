@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Address, Env, IntoVal};
+use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
 
+#[contract]
 pub struct ContractA;
 
 #[contractimpl]
@@ -186,6 +187,7 @@ mod test_a {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
@@ -198,6 +200,7 @@ mod test_a {
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]
@@ -221,6 +224,7 @@ mod test_a {
     }
 }
 
+#[contract]
 pub struct ContractB;
 
 #[contractimpl]
@@ -458,6 +462,7 @@ mod test_b {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
@@ -470,6 +475,7 @@ mod test_b {
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]

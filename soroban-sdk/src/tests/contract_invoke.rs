@@ -1,6 +1,7 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Env};
+use soroban_sdk::{contract, contractimpl, Env};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

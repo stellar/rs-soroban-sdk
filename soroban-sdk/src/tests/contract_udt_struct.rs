@@ -1,5 +1,7 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, contracttype, map, ConversionError, Env, Symbol, TryFromVal};
+use soroban_sdk::{
+    contract, contractimpl, contracttype, map, ConversionError, Env, Symbol, TryFromVal,
+};
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
     ScSpecTypeUdt,
@@ -27,6 +29,7 @@ pub struct UdtWithNonAlphabeticallyOrderedFields {
     pub a: i32,
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Address, Env};
+use soroban_sdk::{contract, contractimpl, Address, Env};
 
 mod addcontract {
     soroban_sdk::contractimport!(
@@ -7,6 +7,7 @@ mod addcontract {
     );
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

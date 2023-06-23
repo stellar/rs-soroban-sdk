@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contracterror, contractimpl, panic_with_error, Env, Symbol};
+use soroban_sdk::{contract, contracterror, contractimpl, panic_with_error, Env, Symbol};
 
+#[contract]
 pub struct Contract;
 
 #[contracterror]

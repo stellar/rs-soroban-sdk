@@ -1,6 +1,7 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::{contractimpl, xdr, Address, Env, TryFromVal};
+use soroban_sdk::{contract, contractimpl, xdr, Address, Env, TryFromVal};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
