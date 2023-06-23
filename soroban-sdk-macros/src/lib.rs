@@ -120,6 +120,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
         #input2
         #client
 
+        #[cfg(any(test, feature = "testutils"))]
         #[doc(hidden)]
         mod #fn_set_registry_ident {
             extern crate std;
