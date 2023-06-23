@@ -21,6 +21,7 @@ use crate::{contractclient, contractspecfn, Address, Env, String};
 /// Spec contains the contract spec of Token contracts, including the general
 /// interface, as well as the admin interface, such as the Stellar Asset
 /// Contract.
+#[doc(hidden)]
 pub struct Spec;
 
 /// Interface for Token contracts, such as the Stellar Asset Contract.
