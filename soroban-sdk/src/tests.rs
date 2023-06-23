@@ -1,6 +1,7 @@
 #![cfg(test)]
 
 mod address;
+mod auth;
 mod budget;
 mod contract_add_i32;
 mod contract_assert;
