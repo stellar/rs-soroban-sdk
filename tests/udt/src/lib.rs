@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, contracttype, Vec};
+use soroban_sdk::{contract, contractimpl, contracttype, Vec};
 
 #[contracttype]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -29,6 +29,7 @@ pub struct UdtStruct {
     pub c: Vec<i64>,
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
@@ -38,13 +39,13 @@ impl Contract {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
             UdtEnum::UdtC(val) => val as i64,
-            UdtEnum::UdtD(tup) => tup.0 + tup.1.iter().fold(0i64, |sum, i| sum + i.unwrap()),
+            UdtEnum::UdtD(tup) => tup.0 + tup.1.try_iter().fold(0i64, |sum, i| sum + i.unwrap()),
         };
         let b = match b {
             UdtEnum::UdtA => 0,
             UdtEnum::UdtB(udt) => udt.a + udt.b,
             UdtEnum::UdtC(val) => val as i64,
-            UdtEnum::UdtD(tup) => tup.0 + tup.1.iter().fold(0i64, |sum, i| sum + i.unwrap()),
+            UdtEnum::UdtD(tup) => tup.0 + tup.1.try_iter().fold(0i64, |sum, i| sum + i.unwrap()),
         };
         a + b
     }

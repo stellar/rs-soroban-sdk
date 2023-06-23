@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Address, Env, IntoVal};
+use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
 
+#[contract]
 pub struct ContractA;
 
 #[contractimpl]
@@ -20,11 +21,12 @@ mod test_a {
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
         xdr::{
-            ScAddress, ScVal, SorobanAddressCredentials, SorobanAuthorizationEntry,
-            SorobanAuthorizedContractFunction, SorobanAuthorizedFunction,
-            SorobanAuthorizedInvocation, SorobanCredentials, StringM, VecM,
+            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
+            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
+            VecM,
         },
-        Address, Env, Error, RawVal, Symbol,
+        Address, Env, Error, Symbol, Val,
     };
     extern crate std;
 
@@ -67,7 +69,6 @@ mod test_a {
         let r = client
             .mock_auths(&[MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_id,
                     fn_name: "fn1",
@@ -107,7 +108,8 @@ mod test_a {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 123,
+                    signature_expiration_ledger: 100,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
@@ -154,7 +156,8 @@ mod test_a {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 456,
+                    signature_expiration_ledger: u32::MAX,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
@@ -170,13 +173,13 @@ mod test_a {
             }])
             .try_fn1(&a);
 
-        // TODO: Update this test to assert that a general panic/trap occurred
-        // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
-        // The ContractError(1) being captured here is from the
-        // auth_decline::Contract defined at the bottom of this file. The auth
-        // contract's error is leaking into the contract being called and
-        // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
+        assert_eq!(
+            r,
+            Err(Ok(Error::from_scerror(ScError {
+                type_: ScErrorType::Auth,
+                code: ScErrorCode::InvalidAction
+            })))
+        );
 
         assert_eq!(e.auths(), []);
     }
@@ -184,23 +187,20 @@ mod test_a {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
         impl Contract {
             #[allow(non_snake_case)]
-            pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
-            ) {
-            }
+            pub fn __check_auth(_signature_payload: Val, _signatures: Val, _auth_context: Val) {}
         }
     }
 
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]
@@ -214,9 +214,9 @@ mod test_a {
         impl Contract {
             #[allow(non_snake_case)]
             pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
+                _signature_payload: Val,
+                _signatures: Val,
+                _auth_context: Val,
             ) -> Result<(), Error> {
                 Err(Error::Decline)
             }
@@ -224,6 +224,7 @@ mod test_a {
     }
 }
 
+#[contract]
 pub struct ContractB;
 
 #[contractimpl]
@@ -244,11 +245,11 @@ mod test_b {
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
         xdr::{
-            ScAddress, ScVal, SorobanAddressCredentials, SorobanAuthorizationEntry,
-            SorobanAuthorizedContractFunction, SorobanAuthorizedFunction,
-            SorobanAuthorizedInvocation, SorobanCredentials, StringM,
+            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
+            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
         },
-        Address, Env, Error, RawVal, Symbol,
+        Address, Env, Error, Symbol, Val,
     };
     extern crate std;
 
@@ -300,7 +301,6 @@ mod test_b {
         let r = client
             .mock_auths(&[MockAuth {
                 address: &a,
-                nonce: 0,
                 invoke: &MockAuthInvoke {
                     contract: &contract_b_id,
                     fn_name: "fn2",
@@ -353,7 +353,8 @@ mod test_b {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 543,
+                    signature_expiration_ledger: 100,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
@@ -419,7 +420,8 @@ mod test_b {
             .set_auths(&[SorobanAuthorizationEntry {
                 credentials: SorobanCredentials::Address(SorobanAddressCredentials {
                     address: a_xdr.clone(),
-                    nonce: 0,
+                    nonce: 789,
+                    signature_expiration_ledger: 150,
                     signature_args: Default::default(),
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
@@ -446,13 +448,13 @@ mod test_b {
             }])
             .try_fn2(&a, &contract_a_id);
 
-        // TODO: Update this test to assert that a general panic/trap occurred
-        // once https://github.com/stellar/rs-soroban-env/issues/771 is fixed.
-        // The ContractError(1) being captured here is from the
-        // auth_decline::Contract defined at the bottom of this file. The auth
-        // contract's error is leaking into the contract being called and
-        // propogating as its own contract, which should not be happening.
-        assert_eq!(r, Err(Ok(Error::from_contract_error(1))));
+        assert_eq!(
+            r,
+            Err(Ok(Error::from_scerror(ScError {
+                type_: ScErrorType::Auth,
+                code: ScErrorCode::InvalidAction
+            })))
+        );
 
         assert_eq!(e.auths(), []);
     }
@@ -460,23 +462,20 @@ mod test_b {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
         impl Contract {
             #[allow(non_snake_case)]
-            pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
-            ) {
-            }
+            pub fn __check_auth(_signature_payload: Val, _signatures: Val, _auth_context: Val) {}
         }
     }
 
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]
@@ -490,9 +489,9 @@ mod test_b {
         impl Contract {
             #[allow(non_snake_case)]
             pub fn __check_auth(
-                _signature_payload: RawVal,
-                _signatures: RawVal,
-                _auth_context: RawVal,
+                _signature_payload: Val,
+                _signatures: Val,
+                _auth_context: Val,
             ) -> Result<(), Error> {
                 Err(Error::Decline)
             }

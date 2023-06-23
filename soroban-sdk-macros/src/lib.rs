@@ -1,5 +1,6 @@
 extern crate proc_macro;
 
+mod arbitrary;
 mod derive_client;
 mod derive_enum;
 mod derive_enum_int;
@@ -13,11 +14,11 @@ mod map_type;
 mod path;
 mod syn_ext;
 
-use derive_client::derive_client;
+use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
-use derive_fn::{derive_contract_function_set, derive_fn};
+use derive_fn::{derive_contract_function_registration_ctor, derive_fn};
 use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
@@ -30,11 +31,11 @@ use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
-    Path, Type, Visibility,
+    ItemStruct, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
-use soroban_spec::gen::rust::{generate_from_wasm, GenerateFromFileError};
+use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
 use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
@@ -86,6 +87,72 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
 }
 
 #[derive(Debug, FromMeta)]
+struct ContractArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
+}
+
+#[proc_macro_attribute]
+pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
+    let args = match ContractArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+
+    let input2: TokenStream2 = input.clone().into();
+
+    let item = parse_macro_input!(input as ItemStruct);
+
+    let ty = &item.ident;
+    let ty_str = quote!(#ty).to_string();
+
+    let client_ident = format!("{ty_str}Client");
+    let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
+    let crate_path = &args.crate_path;
+    let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
+    quote! {
+        #input2
+        #client
+
+        #[cfg(any(test, feature = "testutils"))]
+        mod #fn_set_registry_ident {
+            use super::*;
+
+            extern crate std;
+            use std::sync::Mutex;
+            use std::collections::BTreeMap;
+
+            type F = dyn Send + Sync + Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val;
+
+            static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
+
+            pub(crate) fn register(name: &'static str, func: &'static F) {
+                FUNCS.lock().unwrap().insert(name, func);
+            }
+
+            pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
+                fopt.map(|f| f(env, args))
+            }
+        }
+
+        #[cfg(any(test, feature = "testutils"))]
+        #[doc(hidden)]
+        impl #crate_path::testutils::ContractFunctionSet for #ty {
+            fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                #fn_set_registry_ident::call(func, env, args)
+            }
+        }
+    }.into()
+}
+
+#[derive(Debug, FromMeta)]
 struct ContractImplArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
@@ -107,6 +174,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let crate_path_str = quote!(#crate_path).to_string();
 
     let imp = parse_macro_input!(input as ItemImpl);
+    let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
 
@@ -128,7 +196,6 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         .map(|m| {
             let ident = &m.sig.ident;
             let call = quote! { <super::#ty>::#ident };
-            let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
             derive_fn(
                 &crate_path,
                 &call,
@@ -143,9 +210,14 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let cfs = derive_contract_function_set(&crate_path, ty, pub_methods.into_iter());
+            let cfs = derive_contract_function_registration_ctor(
+                &crate_path,
+                ty,
+                trait_ident,
+                pub_methods.into_iter(),
+            );
             quote! {
-                #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident)]
+                #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
                 #imp
                 #derived_ok
@@ -255,6 +327,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.write_errors().into(),
     };
     let input = parse_macro_input!(input as DeriveInput);
+    let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
@@ -267,11 +340,17 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
             Fields::Named(_) => {
-                derive_type_struct(&args.crate_path, ident, attrs, s, gen_spec, &args.lib)
+                derive_type_struct(&args.crate_path, vis, ident, attrs, s, gen_spec, &args.lib)
             }
-            Fields::Unnamed(_) => {
-                derive_type_struct_tuple(&args.crate_path, ident, attrs, s, gen_spec, &args.lib)
-            }
+            Fields::Unnamed(_) => derive_type_struct_tuple(
+                &args.crate_path,
+                vis,
+                ident,
+                attrs,
+                s,
+                gen_spec,
+                &args.lib,
+            ),
             Fields::Unit => Error::new(
                 s.fields.span(),
                 "unit structs are not supported as contract types",
@@ -286,9 +365,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()
@@ -408,6 +487,8 @@ struct ContractClientArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     name: String,
+    #[darling(default)]
+    impl_only: bool,
 }
 
 #[proc_macro_attribute]
@@ -425,10 +506,13 @@ pub fn contractclient(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let input2: TokenStream2 = input.clone().into();
     let item = parse_macro_input!(input as HasFnsItem);
     let methods: Vec<_> = item.fns();
-    let client = derive_client(&args.crate_path, &item.name(), &args.name, &methods);
+    let client_type =
+        (!args.impl_only).then(|| derive_client_type(&args.crate_path, &item.name(), &args.name));
+    let client_impl = derive_client_impl(&args.crate_path, &args.name, &methods);
     quote! {
         #input2
-        #client
+        #client_type
+        #client_impl
     }
     .into()
 }

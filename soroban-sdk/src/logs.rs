@@ -3,12 +3,12 @@
 //! See [`log`][crate::log] for how to conveniently log debug events.
 use core::fmt::Debug;
 
-use crate::{env::internal::EnvBase, Env, RawVal};
+use crate::{env::internal::EnvBase, Env, Val};
 
 /// Log a debug event.
 ///
 /// Takes a [Env], a literal string, and an optional trailing sequence of
-/// arguments that may be any value that are convertible to [`RawVal`]. The
+/// arguments that may be any value that are convertible to [`Val`]. The
 /// string and arguments are appended as-is to the log, as the body of a
 /// structured diagnostic event. Such events may be emitted from the host as
 /// auxiliary diagnostic XDR, or converted to strings later for debugging.
@@ -62,8 +62,8 @@ use crate::{env::internal::EnvBase, Env, RawVal};
 /// let value = 5;
 /// log!(&env, "a log entry", value, Symbol::short("another"));
 ///
-/// use soroban_sdk::testutils::Logger;
-/// let logentry = env.logger().all().last().unwrap().clone();
+/// use soroban_sdk::testutils::Logs;
+/// let logentry = env.logs().all().last().unwrap().clone();
 /// assert!(logentry.contains("[\"a log entry\", 5, another]"));
 /// # }
 /// ```
@@ -71,41 +71,47 @@ use crate::{env::internal::EnvBase, Env, RawVal};
 macro_rules! log {
     ($env:expr, $fmt:literal $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logger().log($fmt, &[]);
+            $env.logs().add($fmt, &[]);
         }
     };
     ($env:expr, $fmt:literal, $($args:expr),* $(,)?) => {
         if cfg!(debug_assertions) {
-            $env.logger().log($fmt, &[
+            $env.logs().add($fmt, &[
                 $(
-                    <_ as $crate::IntoVal<Env, $crate::RawVal>>::into_val(&$args, $env)
+                    <_ as $crate::IntoVal<Env, $crate::Val>>::into_val(&$args, $env)
                 ),*
             ]);
         }
     };
 }
 
-/// Logger logs debug events.
+/// Logs logs debug events.
 ///
 /// See [`log`][crate::log] for how to conveniently log debug events.
 #[derive(Clone)]
-pub struct Logger(Env);
+pub struct Logs(Env);
 
-impl Debug for Logger {
+impl Debug for Logs {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Logger")
+        write!(f, "Logs")
     }
 }
 
-impl Logger {
+impl Logs {
     #[inline(always)]
     pub(crate) fn env(&self) -> &Env {
         &self.0
     }
 
     #[inline(always)]
-    pub(crate) fn new(env: &Env) -> Logger {
-        Logger(env.clone())
+    pub(crate) fn new(env: &Env) -> Logs {
+        Logs(env.clone())
+    }
+
+    #[deprecated(note = "use [Logs::add]")]
+    #[inline(always)]
+    pub fn log(&self, msg: &'static str, args: &[Val]) {
+        self.add(msg, args);
     }
 
     /// Log a debug event.
@@ -115,7 +121,7 @@ impl Logger {
     ///
     /// See [`log`][crate::log] for how to conveniently log debug events.
     #[inline(always)]
-    pub fn log(&self, msg: &'static str, args: &[RawVal]) {
+    pub fn add(&self, msg: &'static str, args: &[Val]) {
         if cfg!(debug_assertions) {
             let env = self.env();
             env.log_from_slice(msg, args).unwrap();
@@ -128,7 +134,7 @@ use crate::testutils;
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-impl testutils::Logger for Logger {
+impl testutils::Logs for Logs {
     fn all(&self) -> std::vec::Vec<String> {
         use crate::xdr::{
             ContractEventBody, ContractEventType, ScSymbol, ScVal, ScVec, StringM, VecM,

@@ -11,11 +11,11 @@ pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
 
-use crate::{Env, RawVal, Vec};
+use crate::{Env, Val, Vec};
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
-    fn call(&self, func: &str, env: Env, args: &[RawVal]) -> Option<RawVal>;
+    fn call(&self, func: &str, env: Env, args: &[Val]) -> Option<Val>;
 }
 
 #[doc(inline)]
@@ -68,7 +68,7 @@ pub mod budget {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
-    pub struct Budget(crate::env::internal::budget::Budget);
+    pub struct Budget(pub(crate) crate::env::internal::budget::Budget);
 
     impl Display for Budget {
         fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -143,13 +143,13 @@ pub trait Events {
     ///
     /// Returns a [`Vec`] of three element tuples containing:
     /// - Contract ID
-    /// - Event Topics as a [`Vec<RawVal>`]
-    /// - Event Data as a [`RawVal`]
-    fn all(&self) -> Vec<(crate::Address, Vec<RawVal>, RawVal)>;
+    /// - Event Topics as a [`Vec<Val>`]
+    /// - Event Data as a [`Val`]
+    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
 }
 
-/// Test utilities for [`Logger`][crate::logging::Logger].
-pub trait Logger {
+/// Test utilities for [`Logs`][crate::logs::Logs].
+pub trait Logs {
     /// Returns all diagnostic events that have been logged.
     fn all(&self) -> std::vec::Vec<String>;
     /// Prints all diagnostic events to stdout.
@@ -181,9 +181,6 @@ pub trait Address {
     /// shouldn't normally matter though, as contracts should be agnostic to
     /// the underlying Address value.
     fn random(env: &Env) -> crate::Address;
-
-    /// Creates an `Address` corresponding to the provided contract identifier.
-    fn from_contract_id(contract_id: &crate::BytesN<32>) -> crate::Address;
 
     /// Get the contract ID of an Address as a BytesN<32>.
     ///

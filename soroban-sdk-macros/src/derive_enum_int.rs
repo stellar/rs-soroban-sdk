@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{ScSpecUdtEnumV0, StringM};
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path};
+use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path, Visibility};
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
@@ -12,6 +12,7 @@ use crate::doc::docs_from_attrs;
 
 pub fn derive_type_enum_int(
     path: &Path,
+    vis: &Visibility,
     enum_ident: &Ident,
     attrs: &[Attribute],
     data: &DataEnum,
@@ -89,14 +90,16 @@ pub fn derive_type_enum_int(
         None
     };
 
+    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_enum_int(path, vis, enum_ident, data);
+
     // Output.
     quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::RawVal> for #enum_ident {
+        impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::RawVal) -> Result<Self, #path::ConversionError> {
+            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
                 use #path::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -106,7 +109,7 @@ pub fn derive_type_enum_int(
             }
         }
 
-        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::RawVal {
+        impl #path::TryFromVal<#path::Env, #enum_ident> for #path::Val {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
@@ -149,5 +152,7 @@ pub fn derive_type_enum_int(
                 Ok((self as u32).into())
             }
         }
+
+        #arbitrary_tokens
     }
 }

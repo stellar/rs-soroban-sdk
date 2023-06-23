@@ -1,21 +1,21 @@
 #![cfg(any(test, feature = "testutils"))]
 
-use crate::{contractimpl, xdr, Address, Env, RawVal, Symbol, Vec};
-use soroban_env_host::TryFromVal;
+use crate::{contract, contractimpl, xdr, Address, Env, Symbol, TryFromVal, Val, Vec};
+use rand::{thread_rng, Rng};
 
 #[doc(hidden)]
+#[contract(crate_path = "crate")]
 pub struct MockAuthContract;
 
 #[contractimpl(crate_path = "crate")]
 impl MockAuthContract {
     #[allow(non_snake_case)]
-    pub fn __check_auth(_signature_payload: RawVal, _signatures: RawVal, _auth_context: RawVal) {}
+    pub fn __check_auth(_signature_payload: Val, _signatures: Val, _auth_context: Val) {}
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MockAuth<'a> {
     pub address: &'a Address,
-    pub nonce: u64,
     pub invoke: &'a MockAuthInvoke<'a>,
 }
 
@@ -23,7 +23,7 @@ pub struct MockAuth<'a> {
 pub struct MockAuthInvoke<'a> {
     pub contract: &'a Address,
     pub fn_name: &'a str,
-    pub args: Vec<RawVal>,
+    pub args: Vec<Val>,
     pub sub_invokes: &'a [MockAuthInvoke<'a>],
 }
 
@@ -33,7 +33,8 @@ impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
             root_invocation: value.invoke.into(),
             credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
                 address: value.address.try_into().unwrap(),
-                nonce: value.nonce,
+                nonce: thread_rng().gen(),
+                signature_expiration_ledger: u32::MAX,
                 signature_args: xdr::ScVec::default(),
             }),
         }
@@ -95,7 +96,7 @@ pub enum AuthorizedFunction {
     /// Contract function defined by the contract address, function name and
     /// `require_auth[_for_args]` arguments (these don't necessarily need to
     /// match the actual invocation arguments).
-    Contract((Address, Symbol, Vec<RawVal>)),
+    Contract((Address, Symbol, Vec<Val>)),
     /// Create contract host function with arguments specified as the respective
     /// XDR.
     CreateContractHostFn(xdr::CreateContractArgs),
@@ -107,7 +108,7 @@ impl AuthorizedFunction {
             xdr::SorobanAuthorizedFunction::ContractFn(contract_fn) => {
                 let mut args = Vec::new(env);
                 for v in contract_fn.args.iter() {
-                    args.push_back(RawVal::try_from_val(env, v).unwrap());
+                    args.push_back(Val::try_from_val(env, v).unwrap());
                 }
                 Self::Contract((
                     Address::try_from_val(

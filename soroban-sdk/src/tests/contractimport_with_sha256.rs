@@ -1,15 +1,16 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Address, Env};
+use soroban_sdk::{contract, contractimpl, Address, Env};
 use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
 mod addcontract {
     use crate as soroban_sdk;
     soroban_sdk::contractimport!(
         file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm",
-        sha256 = "c88c56ae1ba2b4d81b7bd8a0ab17c0ccb717db46eac707536059a626108bf5ae",
+        sha256 = "b7f7064dcffbd203fac4cb2b8503495a4c0d0d57324609affc753f5594523a69",
     );
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

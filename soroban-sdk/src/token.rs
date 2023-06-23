@@ -7,7 +7,7 @@
 //! Use [`Client`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractspecfn, Address, Bytes, Env};
+use crate::{contractclient, contractspecfn, Address, Env, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -223,14 +223,14 @@ pub trait Interface {
     /// # Panics
     ///
     /// If the contract has not yet been initialized.
-    fn name(env: Env) -> Bytes;
+    fn name(env: Env) -> String;
 
     /// Returns the symbol for this token.
     ///
     /// # Panics
     ///
     /// If the contract has not yet been initialized.
-    fn symbol(env: Env) -> Bytes;
+    fn symbol(env: Env) -> String;
 }
 
 pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[

@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Address, Env, Symbol};
+use soroban_sdk::{contract, contractimpl, Address, Env, Symbol};
 
 mod errcontract {
     use crate as soroban_sdk;
@@ -8,6 +8,7 @@ mod errcontract {
     );
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

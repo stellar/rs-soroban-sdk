@@ -4,7 +4,7 @@ use core::fmt::Debug;
 #[cfg(doc)]
 use crate::{contracttype, Bytes, Map};
 use crate::{
-    env::internal, unwrap::UnwrapInfallible, ConversionError, Env, IntoVal, RawVal, TryFromVal, Vec,
+    env::internal, unwrap::UnwrapInfallible, ConversionError, Env, IntoVal, TryFromVal, Val, Vec,
 };
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
@@ -15,8 +15,9 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// ```
 /// use soroban_sdk::Env;
 ///
-/// # use soroban_sdk::{contractimpl, vec, map, RawVal, BytesN};
+/// # use soroban_sdk::{contract, contractimpl, vec, map, Val, BytesN};
 /// #
+/// # #[contract]
 /// # pub struct Contract;
 /// #
 /// # #[contractimpl]
@@ -56,13 +57,13 @@ impl Debug for Events {
     }
 }
 
-pub trait Topics: IntoVal<Env, Vec<RawVal>> {}
+pub trait Topics: IntoVal<Env, Vec<Val>> {}
 
-impl TryFromVal<Env, ()> for Vec<RawVal> {
+impl TryFromVal<Env, ()> for Vec<Val> {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, _v: &()) -> Result<Self, Self::Error> {
-        Ok(Vec::<RawVal>::new(env))
+        Ok(Vec::<Val>::new(env))
     }
 }
 
@@ -70,7 +71,7 @@ macro_rules! impl_topics_for_tuple {
     ( $($typ:ident $idx:tt)* ) => {
         impl<$($typ),*> Topics for ($($typ,)*)
         where
-            $($typ: IntoVal<Env, RawVal>),*
+            $($typ: IntoVal<Env, Val>),*
         {
         }
     };
@@ -110,7 +111,7 @@ impl Events {
     pub fn publish<T, D>(&self, topics: T, data: D)
     where
         T: Topics,
-        D: IntoVal<Env, RawVal>,
+        D: IntoVal<Env, Val>,
     {
         let env = self.env();
         internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env))
@@ -124,7 +125,7 @@ use crate::{testutils, xdr, Address, BytesN, TryIntoVal};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::Address, Vec<RawVal>, RawVal)> {
+    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)> {
         let env = self.env();
         let mut vec = Vec::new(env);
         self.env()
