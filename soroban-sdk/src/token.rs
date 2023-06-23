@@ -18,14 +18,8 @@ use crate::{contractclient, contractspecfn, Address, Env, String};
 // 2. The implementations have been replaced with a panic.
 // 3. &Host type usage are replaced with Env
 
-/// Spec contains the contract spec of Token contracts, including the general
-/// interface, as well as the admin interface, such as the Stellar Asset
-/// Contract.
-#[doc(hidden)]
-pub struct Spec;
-
 /// Interface for Token contracts, such as the Stellar Asset Contract.
-#[contractspecfn(name = "Spec", export = false)]
+#[contractspecfn(name = "StellarAssetSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "Client")]
 pub trait Interface {
     /// Returns the allowance for `spender` to transfer from `from`.
@@ -182,9 +176,9 @@ pub trait Interface {
 
 /// Interface for admin capabilities for Token contracts, such as the Stellar
 /// Asset Contract.
-#[contractspecfn(name = "Spec", export = false)]
+#[contractspecfn(name = "StellarAssetSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "AdminClient")]
-pub trait AdminInterface {
+pub trait StellarAssetAdminInterface {
     /// Sets the administrator to the specified address `new_admin`.
     ///
     /// # Arguments
@@ -241,29 +235,35 @@ pub trait AdminInterface {
     fn clawback(env: Env, from: Address, amount: i128);
 }
 
+/// Spec contains the contract spec of Token contracts, including the general
+/// interface, as well as the admin interface, such as the Stellar Asset
+/// Contract.
+#[doc(hidden)]
+pub struct StellarAssetSpec;
+
 pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
-    &Spec::spec_xdr_allowance(),
-    &Spec::spec_xdr_authorized(),
-    &Spec::spec_xdr_balance(),
-    &Spec::spec_xdr_burn(),
-    &Spec::spec_xdr_burn_from(),
-    &Spec::spec_xdr_clawback(),
-    &Spec::spec_xdr_decimals(),
-    &Spec::spec_xdr_decrease_allowance(),
-    &Spec::spec_xdr_increase_allowance(),
-    &Spec::spec_xdr_mint(),
-    &Spec::spec_xdr_name(),
-    &Spec::spec_xdr_set_admin(),
-    &Spec::spec_xdr_set_authorized(),
-    &Spec::spec_xdr_spendable_balance(),
-    &Spec::spec_xdr_symbol(),
-    &Spec::spec_xdr_transfer(),
-    &Spec::spec_xdr_transfer_from(),
+    &StellarAssetSpec::spec_xdr_allowance(),
+    &StellarAssetSpec::spec_xdr_authorized(),
+    &StellarAssetSpec::spec_xdr_balance(),
+    &StellarAssetSpec::spec_xdr_burn(),
+    &StellarAssetSpec::spec_xdr_burn_from(),
+    &StellarAssetSpec::spec_xdr_clawback(),
+    &StellarAssetSpec::spec_xdr_decimals(),
+    &StellarAssetSpec::spec_xdr_decrease_allowance(),
+    &StellarAssetSpec::spec_xdr_increase_allowance(),
+    &StellarAssetSpec::spec_xdr_mint(),
+    &StellarAssetSpec::spec_xdr_name(),
+    &StellarAssetSpec::spec_xdr_set_admin(),
+    &StellarAssetSpec::spec_xdr_set_authorized(),
+    &StellarAssetSpec::spec_xdr_spendable_balance(),
+    &StellarAssetSpec::spec_xdr_symbol(),
+    &StellarAssetSpec::spec_xdr_transfer(),
+    &StellarAssetSpec::spec_xdr_transfer_from(),
 ];
 
 pub(crate) const SPEC_XDR_LEN: usize = 5900;
 
-impl Spec {
+impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
     pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
         let input = SPEC_XDR_INPUT;
