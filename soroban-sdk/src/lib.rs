@@ -639,6 +639,9 @@ pub use soroban_sdk_macros::contractfile;
 macro_rules! panic_with_error {
     ($env:expr, $error:expr) => {{
         $env.panic_with_error($error);
+        #[cfg(target_family = "wasm")]
+        core::arch::wasm32::unreachable();
+        #[cfg(not(target_family = "wasm"))]
         unreachable!();
     }};
 }

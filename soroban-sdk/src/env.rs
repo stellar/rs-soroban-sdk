@@ -261,7 +261,10 @@ impl Env {
     #[doc(hidden)]
     pub fn panic_with_error(&self, error: impl Into<internal::Error>) {
         _ = internal::Env::fail_with_error(self, error.into());
-        unreachable!()
+        #[cfg(target_family = "wasm")]
+        core::arch::wasm32::unreachable();
+        #[cfg(not(target_family = "wasm"))]
+        unreachable!();
     }
 
     /// Get a [Storage] for accessing and updating persistent data owned by the
