@@ -747,14 +747,17 @@ impl Env {
         contract_id
     }
 
-    /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke [`Address::require_auth`] or
+    /// Set authorizations and signatures in the environment which will be
+    /// consumed by contracts when they invoke [`Address::require_auth`] or
     /// [`Address::require_auth_for_args`] functions.
+    ///
+    /// Requires valid signatures for the authorization to be successful.
     ///
     /// This function can also be called on contract clients.
     ///
-    /// To mock auth for testing, use [`mock_all_auths`][Self::mock_all_auths]
-    /// or [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
+    /// To mock auth for testing, without requiring valid signatures, use
+    /// [`mock_all_auths`][Self::mock_all_auths] or
+    /// [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
     /// calling [`set_auths`][Self::set_auths] disables any mocking.
     pub fn set_auths(&self, auths: &[SorobanAuthorizationEntry]) {
         self.env_impl
