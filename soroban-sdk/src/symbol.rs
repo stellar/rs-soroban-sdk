@@ -190,6 +190,8 @@ impl Symbol {
     /// Valid characters are `a-zA-Z0-9_` and maximum string length is 32
     /// characters.
     ///
+    /// Use `symbol_short!` for constant symbols that are 9 characters or less.
+    ///
     /// Use `Symbol::try_from_val(env, s)`/`s.try_into_val(env)` in case if
     /// failures need to be handled gracefully.
     ///
