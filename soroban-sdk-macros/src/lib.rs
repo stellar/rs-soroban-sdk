@@ -42,16 +42,27 @@ use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 use soroban_env_common::Symbol;
 
 #[proc_macro]
+pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+    _symbol_short("crate", &input)
+}
+
+#[proc_macro]
 pub fn symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
-    match Symbol::try_from_small_str(&input.value()) {
+    _symbol_short("soroban_sdk", &input)
+}
+
+fn _symbol_short(crate_path: &str, s: &LitStr) -> TokenStream {
+    let crate_path = format_ident!("{crate_path}");
+    match Symbol::try_from_small_str(&s.value()) {
         Ok(_) => quote! {{
             #[allow(deprecated)]
-            const symbol: soroban_sdk::Symbol = soroban_sdk::Symbol::short(#input);
+            const symbol: #crate_path::Symbol = #crate_path::Symbol::short(#s);
             symbol
         }}
         .into(),
-        Err(e) => Error::new(input.span(), format!("{e}"))
+        Err(e) => Error::new(s.span(), format!("{e}"))
             .to_compile_error()
             .into(),
     }

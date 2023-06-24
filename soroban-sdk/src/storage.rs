@@ -34,7 +34,7 @@ use crate::{
 /// ```
 /// use soroban_sdk::{Env, Symbol};
 ///
-/// # use soroban_sdk::{contract, contractimpl, BytesN};
+/// # use soroban_sdk::{contract, contractimpl, symbol_short, BytesN};
 /// #
 /// # #[contract]
 /// # pub struct Contract;

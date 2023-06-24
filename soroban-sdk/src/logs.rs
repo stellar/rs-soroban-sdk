@@ -42,7 +42,7 @@ use crate::{env::internal::EnvBase, Env, Val};
 /// Log a string with values:
 ///
 /// ```
-/// use soroban_sdk::{log, Symbol, Env};
+/// use soroban_sdk::{log, symbol_short, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
@@ -55,7 +55,7 @@ use crate::{env::internal::EnvBase, Env, Val};
 /// ```
 /// # #[cfg(feature = "testutils")]
 /// # {
-/// use soroban_sdk::{log, Symbol, Env};
+/// use soroban_sdk::{log, symbol_short, Symbol, Env};
 ///
 /// let env = Env::default();
 ///
