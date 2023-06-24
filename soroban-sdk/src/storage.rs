@@ -76,14 +76,65 @@ impl Storage {
         Storage { env: env.clone() }
     }
 
+    /// Storage for data that can stay in the ledger forever until deleted.
+    ///
+    /// Persistent entries might expire and be removed from the ledger if they run out
+    /// of the rent balance. However, expired entries can be restored and
+    /// they cannot be recreated. This means these entries
+    /// behave 'as if' they were stored in the ledger forever.
+    ///
+    /// This should be used for data that requires persistency, such as token
+    /// balances, user properties etc.
     pub fn persistent(&self) -> Persistent {
         Persistent {
             storage: self.clone(),
         }
     }
 
+    /// Storage for data that may stay in ledger only for a limited amount of
+    /// time.
+    ///
+    /// Temporary storage is cheaper than Persistent storage.
+    ///
+    /// Temporary entries will be removed from the ledger after their lifetime
+    /// ends. Removed entries can be created again, potentially with different
+    /// values.
+    ///
+    /// This should be used for data that needs to only exist for a limited
+    /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
         Temporary {
+            storage: self.clone(),
+        }
+    }
+
+    /// Storage for a **small amount** of persistent data associated with
+    /// the current contract's instance.
+    ///
+    /// Storing a small amount of frequently used data in instance storage is
+    /// likely cheaper than storing it separately in Persistent storage.
+    ///
+    /// Instance storage is tightly coupled with the contract instance: it will
+    /// be loaded from the ledger every time the contract instance itself is
+    /// loaded. It also won't appear in the ledger footprint. *All*
+    /// the data stored in the instance storage is read from ledger every time
+    /// the contract is used and it doesn't matter whether contract uses the
+    /// storage or not.
+    ///
+    /// This has the same lifetime properties as Persistent storage, i.e.
+    /// the data semantically stays in the ledger forever and can be
+    /// expired/restored.
+    ///
+    /// The amount of data that can be stored in the instance storage is limited
+    /// by the ledger entry size (a network-defined parameter). It is
+    /// in the order of 100 KB serialized.
+    ///
+    /// This should be used for small data directly associated with the current
+    /// contract, such as its admin, configuration settings, tokens the contract
+    /// operates on etc. Do not use this with any data that can scale in
+    /// unbounded fashion (such as user balances).
+    pub fn instance(&self) -> Instance {
+        Instance {
             storage: self.clone(),
         }
     }
@@ -272,5 +323,51 @@ impl Temporary {
         K: IntoVal<Env, Val>,
     {
         self.storage.remove(key, StorageType::Temporary)
+    }
+}
+
+pub struct Instance {
+    storage: Storage,
+}
+
+impl Instance {
+    pub fn has<K>(&self, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.has(key, StorageType::Instance)
+    }
+
+    pub fn get<K, V>(&self, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.get(key, StorageType::Instance)
+    }
+
+    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+    {
+        self.storage.set(key, val, StorageType::Instance, flags)
+    }
+
+    #[inline(always)]
+    pub fn remove<K>(&self, key: &K)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.remove(key, StorageType::Instance)
+    }
+
+    pub fn bump(&self, min_ledgers_to_live: u32) {
+        internal::Env::bump_current_contract_instance_and_code(
+            &self.storage.env,
+            min_ledgers_to_live.into(),
+        )
+        .unwrap_infallible();
     }
 }
