@@ -123,7 +123,7 @@ impl Storage {
     /// 
     /// This has the same lifetime properties as Persistent storage, i.e.
     /// the data semantically stays in the ledger forever and can be
-    /// evicted/restored.
+    /// expired/restored.
     /// 
     /// The amount of data that can be stored in the instance storage is limited
     /// by the ledger entry size (a network-defined parameter). It is
