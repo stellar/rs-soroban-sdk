@@ -113,22 +113,22 @@ impl Storage {
     ///
     /// Storing a small amount of frequently used data in instance storage is
     /// likely cheaper than storing it separately in Persistent storage.
-    /// 
+    ///
     /// Instance storage is tightly coupled with the contract instance: it will
-    /// be loaded from the ledger every time the contract instance itself is 
+    /// be loaded from the ledger every time the contract instance itself is
     /// loaded. It also won't appear in the ledger footprint. *All*
     /// the data stored in the instance storage is read from ledger every time
     /// the contract is used and it doesn't matter whether contract uses the
     /// storage or not.
-    /// 
+    ///
     /// This has the same lifetime properties as Persistent storage, i.e.
     /// the data semantically stays in the ledger forever and can be
     /// expired/restored.
-    /// 
+    ///
     /// The amount of data that can be stored in the instance storage is limited
     /// by the ledger entry size (a network-defined parameter). It is
     /// in the order of 100 KB serialized.
-    /// 
+    ///
     /// This should be used for small data directly associated with the current
     /// contract, such as its admin, configuration settings, tokens the contract
     /// operates on etc. Do not use this with any data that can scale in
