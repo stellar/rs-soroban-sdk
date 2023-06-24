@@ -272,13 +272,13 @@ mod test_b {
                 AuthorizedInvocation {
                     function: AuthorizedFunction::Contract((
                         contract_b_id.clone(),
-                        Symbol::short("fn2"),
+                        symbol_short!("fn2"),
                         (1, 2).into_val(&e),
                     )),
                     sub_invocations: std::vec![AuthorizedInvocation {
                         function: AuthorizedFunction::Contract((
                             contract_a_id.clone(),
-                            Symbol::short("fn1"),
+                            symbol_short!("fn1"),
                             (&a,).into_val(&e),
                         )),
                         sub_invocations: std::vec![]
@@ -322,13 +322,13 @@ mod test_b {
                 AuthorizedInvocation {
                     function: AuthorizedFunction::Contract((
                         contract_b_id.clone(),
-                        Symbol::short("fn2"),
+                        symbol_short!("fn2"),
                         (1, 2).into_val(&e),
                     )),
                     sub_invocations: std::vec![AuthorizedInvocation {
                         function: AuthorizedFunction::Contract((
                             contract_a_id.clone(),
-                            Symbol::short("fn1"),
+                            symbol_short!("fn1"),
                             (&a,).into_val(&e),
                         )),
                         sub_invocations: std::vec![]
@@ -389,13 +389,13 @@ mod test_b {
                 AuthorizedInvocation {
                     function: AuthorizedFunction::Contract((
                         contract_b_id.clone(),
-                        Symbol::short("fn2"),
+                        symbol_short!("fn2"),
                         (1, 2).into_val(&e),
                     )),
                     sub_invocations: std::vec![AuthorizedInvocation {
                         function: AuthorizedFunction::Contract((
                             contract_a_id.clone(),
-                            Symbol::short("fn1"),
+                            symbol_short!("fn1"),
                             (&a,).into_val(&e),
                         )),
                         sub_invocations: std::vec![]

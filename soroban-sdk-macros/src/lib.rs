@@ -31,13 +31,30 @@ use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
-    ItemStruct, Path, Type, Visibility,
+    ItemStruct, LitStr, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
 use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
 use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
+
+use soroban_env_common::Symbol;
+
+#[proc_macro]
+pub fn symbol_short(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+    match Symbol::try_from_small_str(&input.value()) {
+        Ok(_) => quote! {{
+            const symbol: soroban_sdk::Symbol = soroban_sdk::Symbol::short(#input);
+            symbol
+        }}
+        .into(),
+        Err(e) => Error::new(input.span(), format!("{e}"))
+            .to_compile_error()
+            .into(),
+    }
+}
 
 fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()

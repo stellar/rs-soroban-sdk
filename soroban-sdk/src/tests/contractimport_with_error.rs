@@ -28,5 +28,5 @@ fn test_functional() {
     let client = ContractClient::new(&e, &contract_id);
 
     let z = client.hello_with(&err_contract_id, &0);
-    assert!(z == Symbol::short("hello"));
+    assert!(z == symbol_short!("hello"));
 }
