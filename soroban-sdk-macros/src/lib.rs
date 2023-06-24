@@ -234,7 +234,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
-pub fn contractmetasdkversion(_metadata: TokenStream) -> TokenStream {
+pub fn contractmetabuiltin(_metadata: TokenStream) -> TokenStream {
     // The following two lines assume that the soroban-sdk-macros crate always
     // has the same version as the soroban-sdk, and lives in the same
     // repository.
