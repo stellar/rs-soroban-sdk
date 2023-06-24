@@ -46,6 +46,7 @@ pub fn symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
     match Symbol::try_from_small_str(&input.value()) {
         Ok(_) => quote! {{
+            #[allow(deprecated)]
             const symbol: soroban_sdk::Symbol = soroban_sdk::Symbol::short(#input);
             symbol
         }}

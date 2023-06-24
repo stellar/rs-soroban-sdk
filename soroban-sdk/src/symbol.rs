@@ -213,6 +213,7 @@ impl Symbol {
     ///
     /// When the input string is not representable by Symbol.
     #[doc(hidden)]
+    #[deprecated(note = "use [symbol_short!()]")]
     pub const fn short(s: &str) -> Self {
         if let Ok(sym) = SymbolSmall::try_from_str(s) {
             Symbol {
