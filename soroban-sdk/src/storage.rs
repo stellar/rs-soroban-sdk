@@ -78,9 +78,9 @@ impl Storage {
 
     /// Storage for data that can stay in the ledger forever until deleted.
     ///
-    /// Persistent entries might be 'evicted' from the ledger if they run out
-    /// of the rent balance. However, evicted entries can be restored and also
-    /// they cannot be recreated. This means that semantically these entries
+    /// Persistent entries might expire and be removed from the ledger if they run out
+    /// of the rent balance. However, expired entries can be restored and
+    /// they cannot be recreated. This means these entries
     /// behave 'as if' they were stored in the ledger forever.
     ///
     /// This should be used for data that requires persistency, such as token
@@ -101,7 +101,7 @@ impl Storage {
     /// values.
     ///
     /// This should be used for data that needs to only exist for a limited
-    /// period of time, such as oracle data, claimable balances, offerc etc.
+    /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
         Temporary {
             storage: self.clone(),
