@@ -238,20 +238,20 @@ pub fn contractmetasdkversion(_metadata: TokenStream) -> TokenStream {
     // The following two lines assume that the soroban-sdk-macros crate always
     // has the same version as the soroban-sdk, and lives in the same
     // repository.
-    let pkg_version = env!("CARGO_PKG_VERSION");
-    let git_revision = env!("GIT_REVISION");
-    let version = format!("{pkg_version}#{git_revision}");
+    let rustc_version = env!("RUSTC_VERSION");
+    let sdk_pkg_version = env!("CARGO_PKG_VERSION");
+    let sdk_git_revision = env!("GIT_REVISION");
+    let sdk_version = format!("{sdk_pkg_version}#{sdk_git_revision}");
     quote! {
-        // TODO:
-        // contractmeta!(
-        //     // Rustc version.
-        //     key = "rsver",
-        //     val = #version,
-        // );
+        contractmeta!(
+            // Rustc version.
+            key = "rsver",
+            val = #rustc_version,
+        );
         contractmeta!(
             // Rust Soroban SDK version.
             key = "rssdkver",
-            val = #version,
+            val = #sdk_version,
         );
     }
     .into()
