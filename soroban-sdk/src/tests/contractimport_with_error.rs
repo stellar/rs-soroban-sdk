@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Address, Env, Symbol};
+use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env, Symbol};
 
 mod errcontract {
     use crate as soroban_sdk;
@@ -8,6 +8,7 @@ mod errcontract {
     );
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
@@ -27,5 +28,5 @@ fn test_functional() {
     let client = ContractClient::new(&e, &contract_id);
 
     let z = client.hello_with(&err_contract_id, &0);
-    assert!(z == Symbol::short("hello"));
+    assert!(z == symbol_short!("hello"));
 }

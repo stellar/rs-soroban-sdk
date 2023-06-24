@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Address, Env, IntoVal};
+use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
 
+#[contract]
 pub struct ContractA;
 
 #[contractimpl]
@@ -186,6 +187,7 @@ mod test_a {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
@@ -198,6 +200,7 @@ mod test_a {
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]
@@ -221,6 +224,7 @@ mod test_a {
     }
 }
 
+#[contract]
 pub struct ContractB;
 
 #[contractimpl]
@@ -236,7 +240,7 @@ impl ContractB {
 mod test_b {
     use super::*;
     use soroban_sdk::{
-        contracterror,
+        contracterror, symbol_short,
         testutils::{
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
@@ -245,7 +249,7 @@ mod test_b {
             SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
             SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
         },
-        Address, Env, Error, Symbol, Val,
+        Address, Env, Error, Val,
     };
     extern crate std;
 
@@ -268,13 +272,13 @@ mod test_b {
                 AuthorizedInvocation {
                     function: AuthorizedFunction::Contract((
                         contract_b_id.clone(),
-                        Symbol::short("fn2"),
+                        symbol_short!("fn2"),
                         (1, 2).into_val(&e),
                     )),
                     sub_invocations: std::vec![AuthorizedInvocation {
                         function: AuthorizedFunction::Contract((
                             contract_a_id.clone(),
-                            Symbol::short("fn1"),
+                            symbol_short!("fn1"),
                             (&a,).into_val(&e),
                         )),
                         sub_invocations: std::vec![]
@@ -318,13 +322,13 @@ mod test_b {
                 AuthorizedInvocation {
                     function: AuthorizedFunction::Contract((
                         contract_b_id.clone(),
-                        Symbol::short("fn2"),
+                        symbol_short!("fn2"),
                         (1, 2).into_val(&e),
                     )),
                     sub_invocations: std::vec![AuthorizedInvocation {
                         function: AuthorizedFunction::Contract((
                             contract_a_id.clone(),
-                            Symbol::short("fn1"),
+                            symbol_short!("fn1"),
                             (&a,).into_val(&e),
                         )),
                         sub_invocations: std::vec![]
@@ -385,13 +389,13 @@ mod test_b {
                 AuthorizedInvocation {
                     function: AuthorizedFunction::Contract((
                         contract_b_id.clone(),
-                        Symbol::short("fn2"),
+                        symbol_short!("fn2"),
                         (1, 2).into_val(&e),
                     )),
                     sub_invocations: std::vec![AuthorizedInvocation {
                         function: AuthorizedFunction::Contract((
                             contract_a_id.clone(),
-                            Symbol::short("fn1"),
+                            symbol_short!("fn1"),
                             (&a,).into_val(&e),
                         )),
                         sub_invocations: std::vec![]
@@ -458,6 +462,7 @@ mod test_b {
     mod auth_approve {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contractimpl]
@@ -470,6 +475,7 @@ mod test_b {
     mod auth_decline {
         use super::*;
 
+        #[contract]
         pub struct Contract;
 
         #[contracterror]

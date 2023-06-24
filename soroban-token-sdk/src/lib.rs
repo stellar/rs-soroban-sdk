@@ -1,8 +1,8 @@
 #![no_std]
 
-use soroban_sdk::{contracttype, unwrap::UnwrapOptimized, Env, String, Symbol};
+use soroban_sdk::{contracttype, symbol_short, unwrap::UnwrapOptimized, Env, String, Symbol};
 
-const METADATA_KEY: Symbol = Symbol::short("METADATA");
+const METADATA_KEY: Symbol = symbol_short!("METADATA");
 
 #[derive(Clone)]
 #[contracttype]

@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contractimpl, contracttype, Vec};
+use soroban_sdk::{contract, contractimpl, contracttype, Vec};
 
 #[contracttype]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -29,6 +29,7 @@ pub struct UdtStruct {
     pub c: Vec<i64>,
 }
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

@@ -1,7 +1,7 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contractimpl, Env};
-use soroban_sdk_macros::contracterror;
+use soroban_sdk::{contract, contracterror, contractimpl, Env};
 
+#[contract]
 pub struct Contract;
 
 #[contracterror]

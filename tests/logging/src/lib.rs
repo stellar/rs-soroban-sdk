@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contractimpl, log, Env, Symbol};
+use soroban_sdk::{contract, contractimpl, log, symbol_short, Env};
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]
@@ -8,19 +9,19 @@ impl Contract {
     pub fn hello(env: Env) {
         log!(&env, "none");
         log!(&env, "none",);
-        log!(&env, "one:", Symbol::short("one"));
-        log!(&env, "one:", Symbol::short("one"),);
+        log!(&env, "one:", symbol_short!("one"));
+        log!(&env, "one:", symbol_short!("one"),);
         log!(
             &env,
             "one and two:",
-            Symbol::short("one"),
-            Symbol::short("two")
+            symbol_short!("one"),
+            symbol_short!("two")
         );
         log!(
             &env,
             "one and two:",
-            Symbol::short("one"),
-            Symbol::short("two"),
+            symbol_short!("one"),
+            symbol_short!("two"),
         );
     }
 }
@@ -29,7 +30,7 @@ impl Contract {
 mod test {
     extern crate std;
 
-    use soroban_sdk::{testutils::Logger, Env};
+    use soroban_sdk::{testutils::Logs, Env};
 
     use crate::{Contract, ContractClient};
 
@@ -41,7 +42,7 @@ mod test {
 
         client.hello();
 
-        env.logger().print();
+        env.logs().print();
 
         if cfg!(debug_assertions) {
             let pats = std::vec![
@@ -52,11 +53,11 @@ mod test {
                 "[\"one and two:\", one, two]",
                 "[\"one and two:\", one, two]"
             ];
-            for (msg, pat) in env.logger().all().iter().zip(pats.iter()) {
+            for (msg, pat) in env.logs().all().iter().zip(pats.iter()) {
                 assert!(msg.contains(pat));
             }
         } else {
-            assert_eq!(env.logger().all(), std::vec![""; 0]);
+            assert_eq!(env.logs().all(), std::vec![""; 0]);
         }
     }
 }

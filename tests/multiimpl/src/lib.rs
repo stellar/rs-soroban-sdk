@@ -6,9 +6,21 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn add(a: u64, b: u64) -> u64 {
-        a + b
-    }
+    pub fn empty() {}
+}
+
+#[contractimpl]
+impl Contract {
+    pub fn empty2() {}
+}
+
+trait Trait {
+    fn empty3() {}
+}
+
+#[contractimpl]
+impl Trait for Contract {
+    fn empty3() {}
 }
 
 #[cfg(test)]
@@ -18,14 +30,13 @@ mod test {
     use crate::{Contract, ContractClient};
 
     #[test]
-    fn test_add() {
+    fn test_hello() {
         let e = Env::default();
         let contract_id = e.register_contract(None, Contract);
         let client = ContractClient::new(&e, &contract_id);
 
-        let x = 10u64;
-        let y = 12u64;
-        let z = client.add(&x, &y);
-        assert!(z == 22);
+        client.empty();
+        client.empty2();
+        client.empty3();
     }
 }

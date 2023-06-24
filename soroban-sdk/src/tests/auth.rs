@@ -1,0 +1,7 @@
+mod auth_10_one;
+mod auth_15_one_repeat;
+mod auth_17_no_consume_requirement;
+mod auth_20_deep_one_address;
+mod auth_30_deep_one_address_repeat;
+mod auth_35_deep_one_address_repeat_grouped;
+mod auth_40_multi_one_address;

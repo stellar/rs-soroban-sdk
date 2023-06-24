@@ -126,12 +126,13 @@ use crate::auth::InvokerContractAuthEntry;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
-    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logging::Logger,
-    storage::Storage, Address, BytesN, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, storage::Storage,
+    Address, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, I128Object, I256Object, I64Object, StorageType, StringObject,
-    Symbol, SymbolObject, U128Object, U256Object, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
+    StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
+    U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -258,9 +259,13 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
-    pub fn panic_with_error(&self, error: impl Into<internal::Error>) {
+    #[inline(always)]
+    pub fn panic_with_error(&self, error: impl Into<internal::Error>) -> ! {
         _ = internal::Env::fail_with_error(self, error.into());
-        unreachable!()
+        #[cfg(target_family = "wasm")]
+        core::arch::wasm32::unreachable();
+        #[cfg(not(target_family = "wasm"))]
+        unreachable!();
     }
 
     /// Get a [Storage] for accessing and updating persistent data owned by the
@@ -317,8 +322,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, log, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contract, contractimpl, log, Env, Symbol};
     ///
+    /// #[contract]
     /// pub struct Contract;
     ///
     /// #[contractimpl]
@@ -350,11 +356,13 @@ impl Env {
         let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
 
         let stack =
-            unsafe { Vec::<(BytesN<32>, crate::Symbol)>::unchecked_new(self.clone(), stack) };
+            unsafe { Vec::<(AddressObject, crate::Symbol)>::unchecked_new(self.clone(), stack) };
 
         let mut stack_with_addresses = Vec::new(self);
-        for (id, sym) in stack.iter() {
-            stack_with_addresses.push_back((Address::from_contract_id(&id), sym));
+        for (ao, sym) in stack.iter() {
+            unsafe {
+                stack_with_addresses.push_back((Address::unchecked_new(self.clone(), ao), sym))
+            };
         }
 
         stack_with_addresses
@@ -439,10 +447,18 @@ impl Env {
             .unwrap_infallible();
     }
 
-    /// Get the [Logger] for logging debug events.
+    /// Get the [Logs] for logging debug events.
     #[inline(always)]
-    pub fn logger(&self) -> Logger {
-        Logger::new(self)
+    #[deprecated(note = "use [Env::logs]")]
+    #[doc(hidden)]
+    pub fn logger(&self) -> Logs {
+        self.logs()
+    }
+
+    /// Get the [Logs] for logging debug events.
+    #[inline(always)]
+    pub fn logs(&self) -> Logs {
+        Logs::new(self)
     }
 }
 
@@ -454,7 +470,7 @@ use crate::testutils::{
     MockAuth, MockAuthContract,
 };
 #[cfg(any(test, feature = "testutils"))]
-use crate::Bytes;
+use crate::{Bytes, BytesN};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -527,8 +543,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
+    /// use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
     ///
+    /// #[contract]
     /// pub struct HelloContract;
     ///
     /// #[contractimpl]
@@ -617,7 +634,7 @@ impl Env {
         let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
-            xdr::ScContractExecutable::WasmRef(xdr::Hash(wasm_hash.into())),
+            xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
         )
     }
 
@@ -676,7 +693,7 @@ impl Env {
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
             contract_id_preimage: xdr::ContractIdPreimage::Asset(asset),
-            executable: xdr::ScContractExecutable::Token,
+            executable: xdr::ContractExecutable::Token,
         });
 
         let token_id: Address = self
@@ -690,7 +707,7 @@ impl Env {
         self.env_impl.switch_to_recording_auth();
         self.invoke_contract::<()>(
             &token_id,
-            &crate::Symbol::short("set_admin"),
+            &soroban_sdk_macros::internal_symbol_short!("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager);
@@ -700,7 +717,7 @@ impl Env {
     fn register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
-        executable: xdr::ScContractExecutable,
+        executable: xdr::ContractExecutable,
     ) -> Address {
         if let Some(contract_id) = contract_id.into() {
             self.register_contract_with_contract_id_and_executable(contract_id, executable);
@@ -710,7 +727,7 @@ impl Env {
         }
     }
 
-    fn register_contract_with_source(&self, executable: xdr::ScContractExecutable) -> Address {
+    fn register_contract_with_source(&self, executable: xdr::ContractExecutable) -> Address {
         let prev_auth_manager = self.env_impl.snapshot_auth_manager();
         self.env_impl.switch_to_recording_auth();
 
@@ -734,14 +751,17 @@ impl Env {
         contract_id
     }
 
-    /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke [`Address::require_auth`] or
+    /// Set authorizations and signatures in the environment which will be
+    /// consumed by contracts when they invoke [`Address::require_auth`] or
     /// [`Address::require_auth_for_args`] functions.
+    ///
+    /// Requires valid signatures for the authorization to be successful.
     ///
     /// This function can also be called on contract clients.
     ///
-    /// To mock auth for testing, use [`mock_all_auths`][Self::mock_all_auths]
-    /// or [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
+    /// To mock auth for testing, without requiring valid signatures, use
+    /// [`mock_all_auths`][Self::mock_all_auths] or
+    /// [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
     /// calling [`set_auths`][Self::set_auths] disables any mocking.
     pub fn set_auths(&self, auths: &[SorobanAuthorizationEntry]) {
         self.env_impl
@@ -761,8 +781,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, Env, Address, testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, Env, Address, testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
     ///
+    /// #[contract]
     /// pub struct HelloContract;
     ///
     /// #[contractimpl]
@@ -829,8 +850,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, Env, Address, testutils::Address as _};
+    /// use soroban_sdk::{contract, contractimpl, Env, Address, testutils::Address as _};
     ///
+    /// #[contract]
     /// pub struct HelloContract;
     ///
     /// #[contractimpl]
@@ -883,8 +905,9 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, Address, Symbol, Env, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, symbol_short, Address, Symbol, Env, IntoVal};
     ///
+    /// #[contract]
     /// pub struct Contract;
     ///
     /// #[contractimpl]
@@ -916,7 +939,7 @@ impl Env {
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
     ///                     client.address.clone(),
-    ///                     Symbol::short("transfer"),
+    ///                     symbol_short!("transfer"),
     ///                     (&address, 1000_i128,).into_val(&env)
     ///                 )),
     ///                 sub_invocations: std::vec![]
@@ -932,7 +955,7 @@ impl Env {
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
     ///                     client.address.clone(),
-    ///                     Symbol::short("transfer2"),
+    ///                     symbol_short!("transfer2"),
     ///                     // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///                     (500_i128,).into_val(&env)
     ///                 )),
@@ -972,7 +995,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, Val};
+    /// use soroban_sdk::{contract, contracterror, contractimpl, testutils::{Address as _, BytesN as _}, vec, auth::Context, BytesN, Env, Vec, Val};
     ///
     /// #[contracterror]
     /// #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -980,6 +1003,7 @@ impl Env {
     /// pub enum NoopAccountError {
     ///     SomeError = 1,
     /// }
+    /// #[contract]
     /// struct NoopAccountContract;
     /// #[contractimpl]
     /// impl NoopAccountContract {
@@ -1056,19 +1080,23 @@ impl Env {
     fn register_contract_with_contract_id_and_executable(
         &self,
         contract_id: &Address,
-        executable: xdr::ScContractExecutable,
+        executable: xdr::ContractExecutable,
     ) {
         let contract_id_hash = Hash(contract_id.contract_id().into());
-        let data_key = xdr::ScVal::LedgerKeyContractExecutable;
+        let data_key = xdr::ScVal::LedgerKeyContractInstance;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
             contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
             key: data_key.clone(),
-            type_: xdr::ContractDataType::Persistent,
-            le_type: xdr::ContractLedgerEntryType::DataEntry,
+            durability: xdr::ContractDataDurability::Persistent,
+            body_type: xdr::ContractEntryBodyType::DataEntry,
         }));
 
+        let instance = xdr::ScContractInstance {
+            executable,
+            storage: Default::default(),
+        };
         let body = xdr::ContractDataEntryBody::DataEntry(xdr::ContractDataEntryData {
-            val: xdr::ScVal::ContractExecutable(executable),
+            val: xdr::ScVal::ContractInstance(instance),
             flags: 0,
         });
 
@@ -1080,7 +1108,7 @@ impl Env {
                 key: data_key,
                 body,
                 expiration_ledger_seq: 0,
-                type_: xdr::ContractDataType::Persistent,
+                durability: xdr::ContractDataDurability::Persistent,
             }),
         });
         self.env_impl

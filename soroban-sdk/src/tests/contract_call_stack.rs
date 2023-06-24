@@ -1,6 +1,7 @@
-use crate::{self as soroban_sdk, Symbol};
-use soroban_sdk::{contractimpl, Address, BytesN, Env};
+use crate::{self as soroban_sdk};
+use soroban_sdk::{contract, contractimpl, symbol_short, Address, BytesN, Env};
 
+#[contract]
 pub struct OuterContract;
 
 #[contractimpl]
@@ -14,7 +15,7 @@ impl OuterContract {
                 outer.0,
                 Address::from_contract_id(&BytesN::from_array(&env, &[1u8; 32]))
             );
-            assert_eq!(outer.1, Symbol::short("outer"));
+            assert_eq!(outer.1, symbol_short!("outer"));
         };
 
         // Check before the inner call
@@ -28,6 +29,7 @@ impl OuterContract {
     }
 }
 
+#[contract]
 pub struct InnerContract;
 
 #[contractimpl]
@@ -41,14 +43,14 @@ impl InnerContract {
             outer.0,
             Address::from_contract_id(&BytesN::from_array(&env, &[1u8; 32]))
         );
-        assert_eq!(outer.1, Symbol::short("outer"));
+        assert_eq!(outer.1, symbol_short!("outer"));
 
         let inner = stack.get_unchecked(1);
         assert_eq!(
             inner.0,
             Address::from_contract_id(&BytesN::from_array(&env, &[0u8; 32]))
         );
-        assert_eq!(inner.1, Symbol::short("inner"));
+        assert_eq!(inner.1, symbol_short!("inner"));
     }
 }
 

@@ -148,8 +148,8 @@ pub trait Events {
     fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
 }
 
-/// Test utilities for [`Logger`][crate::logging::Logger].
-pub trait Logger {
+/// Test utilities for [`Logs`][crate::logs::Logs].
+pub trait Logs {
     /// Returns all diagnostic events that have been logged.
     fn all(&self) -> std::vec::Vec<String>;
     /// Prints all diagnostic events to stdout.

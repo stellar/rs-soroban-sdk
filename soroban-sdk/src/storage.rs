@@ -12,37 +12,38 @@ use crate::{
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Contracts cannot query or modify data stored by other contracts.
 ///
-/// There are three types of storage - Exclusive, Mergeable, and Temporary.
+/// There are two types of storage - Persistent and Temporary.
 ///
-/// Temporary entries are the cheapest storage option and are never in the Expired State Stack (ESS). Whenever
+/// Temporary entries are the cheaper storage option and are never in the Expired State Stack (ESS). Whenever
 /// a TemporaryEntry expires, the entry is permanently deleted and cannot be recovered.
 /// This storage type is best for entries that are only relevant for short periods of
 /// time or for entries that can be arbitrarily recreated.
 ///
-/// Recreateable entries are in between temporary and exclusive entries when it comes to fees.
+/// Recreateable entries are in between temporary and persistent entries when it comes to fees.
 /// Whenever a recreateable entry expires, it is deleted from the ledger, but sent to an
 /// ESS. The entry can then be recovered later through an operation in Stellar Core issued for the
 /// expired entry.
 ///
-/// Exclusive entries are the most expensive storage type. Like mergeable entries, whenever
-/// a exclusive entry expires, it is sent to the ESS and can be recovered via an operation in Stellar Core.
-/// Unlike recreateable entries, only a single version of a exclusive entry can exist at a time.
-/// This extra security guarantee adds cost to the exclusive entry making it the most expensive.
+/// Persistent entries are the more expensive storage type. Whenever
+/// a persistent entry expires, it is deleted from the ledger, sent to the ESS
+/// and can be recovered via an operation in Stellar Core. only a single version of a
+/// persistent entry can exist at a time.
 ///
 /// ### Examples
 ///
 /// ```
 /// use soroban_sdk::{Env, Symbol};
 ///
-/// # use soroban_sdk::{contractimpl, BytesN};
+/// # use soroban_sdk::{contract, contractimpl, symbol_short, BytesN};
 /// #
+/// # #[contract]
 /// # pub struct Contract;
 /// #
 /// # #[contractimpl]
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
-/// let key = Symbol::short("key");
+/// let key = symbol_short!("key");
 /// storage.persistent().set(&key, &1, None);
 /// assert_eq!(storage.persistent().has(&key), true);
 /// assert_eq!(storage.persistent().get::<_, i32>(&key), Some(1));
@@ -75,14 +76,65 @@ impl Storage {
         Storage { env: env.clone() }
     }
 
+    /// Storage for data that can stay in the ledger forever until deleted.
+    ///
+    /// Persistent entries might expire and be removed from the ledger if they run out
+    /// of the rent balance. However, expired entries can be restored and
+    /// they cannot be recreated. This means these entries
+    /// behave 'as if' they were stored in the ledger forever.
+    ///
+    /// This should be used for data that requires persistency, such as token
+    /// balances, user properties etc.
     pub fn persistent(&self) -> Persistent {
         Persistent {
             storage: self.clone(),
         }
     }
 
+    /// Storage for data that may stay in ledger only for a limited amount of
+    /// time.
+    ///
+    /// Temporary storage is cheaper than Persistent storage.
+    ///
+    /// Temporary entries will be removed from the ledger after their lifetime
+    /// ends. Removed entries can be created again, potentially with different
+    /// values.
+    ///
+    /// This should be used for data that needs to only exist for a limited
+    /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
         Temporary {
+            storage: self.clone(),
+        }
+    }
+
+    /// Storage for a **small amount** of persistent data associated with
+    /// the current contract's instance.
+    ///
+    /// Storing a small amount of frequently used data in instance storage is
+    /// likely cheaper than storing it separately in Persistent storage.
+    ///
+    /// Instance storage is tightly coupled with the contract instance: it will
+    /// be loaded from the ledger every time the contract instance itself is
+    /// loaded. It also won't appear in the ledger footprint. *All*
+    /// the data stored in the instance storage is read from ledger every time
+    /// the contract is used and it doesn't matter whether contract uses the
+    /// storage or not.
+    ///
+    /// This has the same lifetime properties as Persistent storage, i.e.
+    /// the data semantically stays in the ledger forever and can be
+    /// expired/restored.
+    ///
+    /// The amount of data that can be stored in the instance storage is limited
+    /// by the ledger entry size (a network-defined parameter). It is
+    /// in the order of 100 KB serialized.
+    ///
+    /// This should be used for small data directly associated with the current
+    /// contract, such as its admin, configuration settings, tokens the contract
+    /// operates on etc. Do not use this with any data that can scale in
+    /// unbounded fashion (such as user balances).
+    pub fn instance(&self) -> Instance {
+        Instance {
             storage: self.clone(),
         }
     }
@@ -112,7 +164,7 @@ impl Storage {
         V: TryFromVal<Env, Val>,
     {
         let key = key.into_val(&self.env);
-        if self.has_internal(key, storage_type) {
+        if self.has_internal(key, storage_type.clone()) {
             let rv = self.get_internal(key, storage_type);
             Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {
@@ -191,7 +243,7 @@ impl Persistent {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.has(key, StorageType::PERSISTENT)
+        self.storage.has(key, StorageType::Persistent)
     }
 
     pub fn get<K, V>(&self, key: &K) -> Option<V>
@@ -200,7 +252,7 @@ impl Persistent {
         K: IntoVal<Env, Val>,
         V: TryFromVal<Env, Val>,
     {
-        self.storage.get(key, StorageType::PERSISTENT)
+        self.storage.get(key, StorageType::Persistent)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
@@ -208,7 +260,7 @@ impl Persistent {
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::PERSISTENT, flags)
+        self.storage.set(key, val, StorageType::Persistent, flags)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -216,7 +268,7 @@ impl Persistent {
         K: IntoVal<Env, Val>,
     {
         self.storage
-            .bump(key, StorageType::PERSISTENT, min_ledgers_to_live)
+            .bump(key, StorageType::Persistent, min_ledgers_to_live)
     }
 
     #[inline(always)]
@@ -224,7 +276,7 @@ impl Persistent {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.remove(key, StorageType::PERSISTENT)
+        self.storage.remove(key, StorageType::Persistent)
     }
 }
 
@@ -237,7 +289,7 @@ impl Temporary {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.has(key, StorageType::TEMPORARY)
+        self.storage.has(key, StorageType::Temporary)
     }
 
     pub fn get<K, V>(&self, key: &K) -> Option<V>
@@ -246,7 +298,7 @@ impl Temporary {
         K: IntoVal<Env, Val>,
         V: TryFromVal<Env, Val>,
     {
-        self.storage.get(key, StorageType::TEMPORARY)
+        self.storage.get(key, StorageType::Temporary)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
@@ -254,7 +306,7 @@ impl Temporary {
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::TEMPORARY, flags)
+        self.storage.set(key, val, StorageType::Temporary, flags)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -262,7 +314,7 @@ impl Temporary {
         K: IntoVal<Env, Val>,
     {
         self.storage
-            .bump(key, StorageType::TEMPORARY, min_ledgers_to_live)
+            .bump(key, StorageType::Temporary, min_ledgers_to_live)
     }
 
     #[inline(always)]
@@ -270,6 +322,52 @@ impl Temporary {
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.remove(key, StorageType::TEMPORARY)
+        self.storage.remove(key, StorageType::Temporary)
+    }
+}
+
+pub struct Instance {
+    storage: Storage,
+}
+
+impl Instance {
+    pub fn has<K>(&self, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.has(key, StorageType::Instance)
+    }
+
+    pub fn get<K, V>(&self, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.get(key, StorageType::Instance)
+    }
+
+    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+    {
+        self.storage.set(key, val, StorageType::Instance, flags)
+    }
+
+    #[inline(always)]
+    pub fn remove<K>(&self, key: &K)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.remove(key, StorageType::Instance)
+    }
+
+    pub fn bump(&self, min_ledgers_to_live: u32) {
+        internal::Env::bump_current_contract_instance_and_code(
+            &self.storage.env,
+            min_ledgers_to_live.into(),
+        )
+        .unwrap_infallible();
     }
 }

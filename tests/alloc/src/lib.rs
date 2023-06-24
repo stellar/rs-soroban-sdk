@@ -1,8 +1,9 @@
 #![no_std]
-use soroban_sdk::{contractimpl, Env};
+use soroban_sdk::{contract, contractimpl, Env};
 
 extern crate alloc;
 
+#[contract]
 pub struct Contract;
 
 #[contractimpl]

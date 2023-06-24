@@ -10,7 +10,8 @@ use crate::env::internal::xdr::ScVal;
 use crate::{env::MaybeEnv, unwrap::UnwrapInfallible};
 
 macro_rules! impl_num_wrapping_val_type {
-    ($wrapper:ident, $val:ty, $small:ty) => {
+    (#[doc = $doc:expr] $wrapper:ident, $val:ty, $small:ty) => {
+        #[doc = $doc]
         #[derive(Clone)]
         pub struct $wrapper {
             env: MaybeEnv,
@@ -159,5 +160,16 @@ macro_rules! impl_num_wrapping_val_type {
     };
 }
 
-impl_num_wrapping_val_type!(U256, U256Val, U256Small);
-impl_num_wrapping_val_type!(I256, I256Val, I256Small);
+impl_num_wrapping_val_type!(
+    /// U256 holds a 256-bit unsigned integer.
+    U256,
+    U256Val,
+    U256Small
+);
+
+impl_num_wrapping_val_type!(
+    /// I256 holds a 256-bit signed integer.
+    I256,
+    I256Val,
+    I256Small
+);

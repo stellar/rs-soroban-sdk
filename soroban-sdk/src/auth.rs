@@ -1,4 +1,4 @@
-use crate::{contracttype, Address, BytesN, Symbol, Val, Vec};
+use crate::{contracttype, Address, BytesN, Env, Error, Symbol, Val, Vec};
 
 /// Context of a single authorized call peformed by an address.
 ///
@@ -61,4 +61,22 @@ pub enum InvokerContractAuthEntry {
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: Vec<InvokerContractAuthEntry>,
+}
+
+/// Custom account interface that a contract implements to support being used
+/// as a custom account for auth.
+///
+/// Once a contract implements the interface, call to [`Address::require_auth`]
+/// for the contract's address will call its `__check_auth` implementation.
+pub trait CustomAccountInterface {
+    type Signature;
+    type Error: Into<Error>;
+
+    /// Check that the signatures and auth contexts are valid.
+    fn __check_auth(
+        env: Env,
+        signature_payload: BytesN<32>,
+        signatures: Vec<Self::Signature>,
+        auth_contexts: Vec<Context>,
+    ) -> Result<(), Self::Error>;
 }
