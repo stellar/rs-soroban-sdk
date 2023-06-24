@@ -34,7 +34,7 @@ use crate::{
 /// ```
 /// use soroban_sdk::{Env, Symbol};
 ///
-/// # use soroban_sdk::{contract, contractimpl, BytesN};
+/// # use soroban_sdk::{contract, contractimpl, symbol_short, BytesN};
 /// #
 /// # #[contract]
 /// # pub struct Contract;
@@ -43,7 +43,7 @@ use crate::{
 /// # impl Contract {
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
-/// let key = Symbol::short("key");
+/// let key = symbol_short!("key");
 /// storage.persistent().set(&key, &1, None);
 /// assert_eq!(storage.persistent().has(&key), true);
 /// assert_eq!(storage.persistent().get::<_, i32>(&key), Some(1));
