@@ -260,8 +260,12 @@ impl Env {
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
     #[inline(always)]
-    pub fn panic_with_error(&self, error: impl Into<internal::Error>) {
+    pub fn panic_with_error(&self, error: impl Into<internal::Error>) -> ! {
         _ = internal::Env::fail_with_error(self, error.into());
+        #[cfg(target_family = "wasm")]
+        core::arch::wasm32::unreachable();
+        #[cfg(not(target_family = "wasm"))]
+        unreachable!();
     }
 
     /// Get a [Storage] for accessing and updating persistent data owned by the
