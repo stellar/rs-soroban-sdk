@@ -1,8 +1,8 @@
-use crate::{self as soroban_sdk, Symbol};
+use crate::{self as soroban_sdk};
 use soroban_sdk::xdr::ScVec;
 use soroban_sdk::{
-    contract, contractimpl, contracttype, vec, ConversionError, Env, IntoVal, TryFromVal,
-    TryIntoVal, Val, Vec,
+    contract, contractimpl, contracttype, symbol_short, vec, ConversionError, Env, IntoVal,
+    TryFromVal, TryIntoVal, Val, Vec,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]

@@ -1,5 +1,5 @@
-use crate::{self as soroban_sdk, Symbol};
-use soroban_sdk::{contract, contractimpl, Address, BytesN, Env};
+use crate::{self as soroban_sdk};
+use soroban_sdk::{contract, contractimpl, symbol_short, Address, BytesN, Env};
 
 #[contract]
 pub struct OuterContract;

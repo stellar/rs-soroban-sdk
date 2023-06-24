@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contract, contractimpl, Address, Env, Symbol};
+use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env, Symbol};
 
 mod errcontract {
     use crate as soroban_sdk;
