@@ -240,7 +240,7 @@ impl ContractB {
 mod test_b {
     use super::*;
     use soroban_sdk::{
-        contracterror,
+        contracterror, symbol_short,
         testutils::{
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
@@ -249,7 +249,7 @@ mod test_b {
             SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
             SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
         },
-        Address, Env, Error, Symbol, Val,
+        Address, Env, Error, Val,
     };
     extern crate std;
 

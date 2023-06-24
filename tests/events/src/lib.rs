@@ -21,7 +21,7 @@ impl Contract {
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    use soroban_sdk::{testutils::Events, vec, Env, IntoVal, Symbol};
+    use soroban_sdk::{symbol_short, testutils::Events, vec, Env, IntoVal};
 
     use crate::{Contract, ContractClient};
 

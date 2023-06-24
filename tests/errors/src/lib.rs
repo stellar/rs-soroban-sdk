@@ -43,8 +43,9 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use soroban_sdk::{
+        symbol_short,
         xdr::{ScErrorCode, ScErrorType},
-        Env, Symbol,
+        Env,
     };
 
     use crate::{Contract, ContractClient, Error};
