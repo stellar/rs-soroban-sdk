@@ -31,13 +31,42 @@ use sha2::{Digest, Sha256};
 use std::fs;
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
-    ItemStruct, Path, Type, Visibility,
+    ItemStruct, LitStr, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
 use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
 use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
+
+use soroban_env_common::Symbol;
+
+#[proc_macro]
+pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+    _symbol_short("crate", &input)
+}
+
+#[proc_macro]
+pub fn symbol_short(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+    _symbol_short("soroban_sdk", &input)
+}
+
+fn _symbol_short(crate_path: &str, s: &LitStr) -> TokenStream {
+    let crate_path = format_ident!("{crate_path}");
+    match Symbol::try_from_small_str(&s.value()) {
+        Ok(_) => quote! {{
+            #[allow(deprecated)]
+            const symbol: #crate_path::Symbol = #crate_path::Symbol::short(#s);
+            symbol
+        }}
+        .into(),
+        Err(e) => Error::new(s.span(), format!("{e}"))
+            .to_compile_error()
+            .into(),
+    }
+}
 
 fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
@@ -231,6 +260,30 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         .into(),
     }
+}
+
+#[proc_macro]
+pub fn contractmetabuiltin(_metadata: TokenStream) -> TokenStream {
+    // The following two lines assume that the soroban-sdk-macros crate always
+    // has the same version as the soroban-sdk, and lives in the same
+    // repository.
+    let rustc_version = env!("RUSTC_VERSION");
+    let sdk_pkg_version = env!("CARGO_PKG_VERSION");
+    let sdk_git_revision = env!("GIT_REVISION");
+    let sdk_version = format!("{sdk_pkg_version}#{sdk_git_revision}");
+    quote! {
+        contractmeta!(
+            // Rustc version.
+            key = "rsver",
+            val = #rustc_version,
+        );
+        contractmeta!(
+            // Rust Soroban SDK version.
+            key = "rssdkver",
+            val = #sdk_version,
+        );
+    }
+    .into()
 }
 
 #[derive(Debug, FromMeta)]

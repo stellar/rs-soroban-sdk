@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, log, Env, Symbol};
+use soroban_sdk::{contract, contractimpl, log, symbol_short, Env};
 
 #[contract]
 pub struct Contract;
@@ -9,19 +9,19 @@ impl Contract {
     pub fn hello(env: Env) {
         log!(&env, "none");
         log!(&env, "none",);
-        log!(&env, "one:", Symbol::short("one"));
-        log!(&env, "one:", Symbol::short("one"),);
+        log!(&env, "one:", symbol_short!("one"));
+        log!(&env, "one:", symbol_short!("one"),);
         log!(
             &env,
             "one and two:",
-            Symbol::short("one"),
-            Symbol::short("two")
+            symbol_short!("one"),
+            symbol_short!("two")
         );
         log!(
             &env,
             "one and two:",
-            Symbol::short("one"),
-            Symbol::short("two"),
+            symbol_short!("one"),
+            symbol_short!("two"),
         );
     }
 }

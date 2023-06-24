@@ -703,7 +703,7 @@ impl Env {
         self.env_impl.switch_to_recording_auth();
         self.invoke_contract::<()>(
             &token_id,
-            &crate::Symbol::short("set_admin"),
+            &soroban_sdk_macros::internal_symbol_short!("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager);
@@ -747,14 +747,17 @@ impl Env {
         contract_id
     }
 
-    /// Set authorizations in the environment which will be consumed by
-    /// contracts when they invoke [`Address::require_auth`] or
+    /// Set authorizations and signatures in the environment which will be
+    /// consumed by contracts when they invoke [`Address::require_auth`] or
     /// [`Address::require_auth_for_args`] functions.
+    ///
+    /// Requires valid signatures for the authorization to be successful.
     ///
     /// This function can also be called on contract clients.
     ///
-    /// To mock auth for testing, use [`mock_all_auths`][Self::mock_all_auths]
-    /// or [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
+    /// To mock auth for testing, without requiring valid signatures, use
+    /// [`mock_all_auths`][Self::mock_all_auths] or
+    /// [`mock_auths`][Self::mock_auths]. If mocking of auths is enabled,
     /// calling [`set_auths`][Self::set_auths] disables any mocking.
     pub fn set_auths(&self, auths: &[SorobanAuthorizationEntry]) {
         self.env_impl
@@ -898,7 +901,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contract, contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, Address, Symbol, Env, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, symbol_short, Address, Symbol, Env, IntoVal};
     ///
     /// #[contract]
     /// pub struct Contract;
@@ -932,7 +935,7 @@ impl Env {
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
     ///                     client.address.clone(),
-    ///                     Symbol::short("transfer"),
+    ///                     symbol_short!("transfer"),
     ///                     (&address, 1000_i128,).into_val(&env)
     ///                 )),
     ///                 sub_invocations: std::vec![]
@@ -948,7 +951,7 @@ impl Env {
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
     ///                     client.address.clone(),
-    ///                     Symbol::short("transfer2"),
+    ///                     symbol_short!("transfer2"),
     ///                     // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///                     (500_i128,).into_val(&env)
     ///                 )),
