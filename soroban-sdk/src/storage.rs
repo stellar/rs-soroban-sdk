@@ -101,7 +101,7 @@ impl Storage {
     /// values.
     ///
     /// This should be used for data that needs to only exist for a limited
-    /// period of time, such as oracle data, claimable balances, offerc etc.
+    /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
         Temporary {
             storage: self.clone(),
