@@ -660,7 +660,6 @@ pub use soroban_sdk_macros::contractfile;
 macro_rules! panic_with_error {
     ($env:expr, $error:expr) => {{
         $env.panic_with_error($error);
-        unreachable!();
     }};
 }
 
