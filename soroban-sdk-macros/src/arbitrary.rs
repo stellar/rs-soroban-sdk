@@ -326,7 +326,8 @@ fn quote_arbitrary(
             use #path::arbitrary::std;
             use #path::arbitrary::arbitrary;
 
-            #[derive(#path::arbitrary::arbitrary::Arbitrary, Debug)]
+            #[derive(#path::arbitrary::arbitrary::Arbitrary)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             #vis #arbitrary_type_decl
 
             impl #path::arbitrary::SorobanArbitrary for #ident {
