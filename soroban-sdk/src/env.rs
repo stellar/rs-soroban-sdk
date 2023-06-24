@@ -130,9 +130,9 @@ use crate::{
     Address, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I64Object,
+    AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
     StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
-    U32Val, U64Object, U64Val, Void,
+    U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -707,7 +707,7 @@ impl Env {
         self.env_impl.switch_to_recording_auth();
         self.invoke_contract::<()>(
             &token_id,
-            &crate::Symbol::short("set_admin"),
+            &soroban_sdk_macros::internal_symbol_short!("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager);
@@ -905,7 +905,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contract, contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, Address, Symbol, Env, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation}, symbol_short, Address, Symbol, Env, IntoVal};
     ///
     /// #[contract]
     /// pub struct Contract;
@@ -939,7 +939,7 @@ impl Env {
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
     ///                     client.address.clone(),
-    ///                     Symbol::short("transfer"),
+    ///                     symbol_short!("transfer"),
     ///                     (&address, 1000_i128,).into_val(&env)
     ///                 )),
     ///                 sub_invocations: std::vec![]
@@ -955,7 +955,7 @@ impl Env {
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
     ///                     client.address.clone(),
-    ///                     Symbol::short("transfer2"),
+    ///                     symbol_short!("transfer2"),
     ///                     // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///                     (500_i128,).into_val(&env)
     ///                 )),

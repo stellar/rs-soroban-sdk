@@ -1,6 +1,6 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    contract, contractimpl, contracttype, map, ConversionError, Env, Symbol, TryFromVal,
+    contract, contractimpl, contracttype, map, symbol_short, ConversionError, Env, TryFromVal,
 };
 use stellar_xdr::{
     ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
@@ -77,10 +77,10 @@ fn test_out_of_order_functional() {
 
     let map = map![
         &env,
-        (Symbol::short("a"), 5),
-        (Symbol::short("b"), 7),
-        (Symbol::short("ba"), 9),
-        (Symbol::short("bb"), 11)
+        (symbol_short!("a"), 5),
+        (symbol_short!("b"), 7),
+        (symbol_short!("ba"), 9),
+        (symbol_short!("bb"), 11)
     ]
     .to_val();
     let udt = UdtWithNonAlphabeticallyOrderedFields::try_from_val(&env, &map);
@@ -104,7 +104,7 @@ fn test_error_on_partial_decode() {
 
     // Success case, a map will decode to a Udt if the symbol keys match the
     // fields.
-    let map = map![&env, (Symbol::short("a"), 5), (Symbol::short("b"), 7)].to_val();
+    let map = map![&env, (symbol_short!("a"), 5), (symbol_short!("b"), 7)].to_val();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
 
@@ -114,9 +114,9 @@ fn test_error_on_partial_decode() {
     // is relatively difficult to use safely.
     let map = map![
         &env,
-        (Symbol::short("a"), 5),
-        (Symbol::short("b"), 7),
-        (Symbol::short("c"), 9)
+        (symbol_short!("a"), 5),
+        (symbol_short!("b"), 7),
+        (symbol_short!("c"), 9)
     ]
     .to_val();
     let udt = Udt::try_from_val(&env, &map);
