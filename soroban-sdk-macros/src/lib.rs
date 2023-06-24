@@ -233,6 +233,30 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
 }
 
+#[proc_macro]
+pub fn contractmetabuiltin(_metadata: TokenStream) -> TokenStream {
+    // The following two lines assume that the soroban-sdk-macros crate always
+    // has the same version as the soroban-sdk, and lives in the same
+    // repository.
+    let rustc_version = env!("RUSTC_VERSION");
+    let sdk_pkg_version = env!("CARGO_PKG_VERSION");
+    let sdk_git_revision = env!("GIT_REVISION");
+    let sdk_version = format!("{sdk_pkg_version}#{sdk_git_revision}");
+    quote! {
+        contractmeta!(
+            // Rustc version.
+            key = "rsver",
+            val = #rustc_version,
+        );
+        contractmeta!(
+            // Rust Soroban SDK version.
+            key = "rssdkver",
+            val = #sdk_version,
+        );
+    }
+    .into()
+}
+
 #[derive(Debug, FromMeta)]
 struct MetadataArgs {
     key: String,
