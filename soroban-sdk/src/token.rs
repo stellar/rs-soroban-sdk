@@ -30,7 +30,7 @@ pub trait Interface {
     /// * `spender` - The address spending the tokens held by `from`.
     fn allowance(env: Env, from: Address, spender: Address) -> i128;
 
-    /// Increase the allowance by `amount` for `spender` to transfer/burn from
+    /// Set the allowance by `amount` for `spender` to transfer/burn from
     /// `from`.
     ///
     /// # Arguments
@@ -38,31 +38,17 @@ pub trait Interface {
     /// * `from` - The address holding the balance of tokens to be drawn from.
     /// * `spender` - The address being authorized to spend the tokens held by
     ///   `from`.
-    /// * `amount` - The additional tokens to be made availabe to `spender`.
+    /// * `amount` - The tokens to be made availabe to `spender`.
+    /// * `expiration_ledger` - The ledger number where this allowance expires. Cannot
+    ///    be less than the current ledger number unless the amount is being set to 0.
+    ///    An expired entry (where expiration_ledger < the current ledger number)
+    ///    should be treated as a 0 amount allowance.
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["increase_allowance", from: Address,
-    /// spender: Address], data = [amount: i128]`
-    fn increase_allowance(env: Env, from: Address, spender: Address, amount: i128);
-
-    /// Decrease the allowance by `amount` for `spender` to transfer/burn from
-    /// `from`.
-    ///
-    /// # Arguments
-    ///
-    /// * `from` - The address holding the balance of tokens to be drawn from.
-    /// * `spender` - The address being (de-)authorized to spend the tokens held
-    ///   by `from`.
-    /// * `amount` - The tokens which are no longer availabe for use by
-    ///   `spender`. If `amount` is greater than the current allowance, set the
-    ///   allowance to 0.
-    ///
-    /// # Events
-    ///
-    /// Emits an event with topics `["decrease_allowance", from: Address,
-    /// spender: Address], data = [amount: i128]`
-    fn decrease_allowance(env: Env, from: Address, spender: Address, amount: i128);
+    /// Emits an event with topics `["approve", from: Address,
+    /// spender: Address], data = [amount: i128, expiration_ledger: u32]`
+    fn approve(env: Env, from: Address, spender: Address, amount: i128, expiration_ledger: u32);
 
     /// Returns the balance of `id`.
     ///
@@ -244,13 +230,12 @@ pub struct StellarAssetSpec;
 pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_allowance(),
     &StellarAssetSpec::spec_xdr_authorized(),
+    &StellarAssetSpec::spec_xdr_approve(),
     &StellarAssetSpec::spec_xdr_balance(),
     &StellarAssetSpec::spec_xdr_burn(),
     &StellarAssetSpec::spec_xdr_burn_from(),
     &StellarAssetSpec::spec_xdr_clawback(),
     &StellarAssetSpec::spec_xdr_decimals(),
-    &StellarAssetSpec::spec_xdr_decrease_allowance(),
-    &StellarAssetSpec::spec_xdr_increase_allowance(),
     &StellarAssetSpec::spec_xdr_mint(),
     &StellarAssetSpec::spec_xdr_name(),
     &StellarAssetSpec::spec_xdr_set_admin(),
@@ -261,7 +246,7 @@ pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const SPEC_XDR_LEN: usize = 5900;
+pub(crate) const SPEC_XDR_LEN: usize = 5572;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.

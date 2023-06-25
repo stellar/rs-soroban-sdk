@@ -526,6 +526,7 @@ impl Env {
             base_reserve: 0,
             min_persistent_entry_expiration: 4096,
             min_temp_entry_expiration: 16,
+            max_entry_expiration: 6_312_000,
         });
 
         env
