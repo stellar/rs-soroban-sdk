@@ -32,6 +32,7 @@ pub struct LedgerSnapshot {
     pub base_reserve: u32,
     pub min_persistent_entry_expiration: u32,
     pub min_temp_entry_expiration: u32,
+    pub max_entry_expiration: u32,
     pub ledger_entries: Vec<(Box<LedgerKey>, Box<LedgerEntry>)>,
 }
 
@@ -74,6 +75,7 @@ impl LedgerSnapshot {
             base_reserve: self.base_reserve,
             min_persistent_entry_expiration: self.min_persistent_entry_expiration,
             min_temp_entry_expiration: self.min_temp_entry_expiration,
+            max_entry_expiration: self.max_entry_expiration,
         }
     }
 
@@ -164,6 +166,7 @@ impl Default for LedgerSnapshot {
             ledger_entries: Vec::default(),
             min_persistent_entry_expiration: Default::default(),
             min_temp_entry_expiration: Default::default(),
+            max_entry_expiration: Default::default(),
         }
     }
 }

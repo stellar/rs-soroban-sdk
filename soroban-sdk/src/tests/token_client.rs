@@ -34,8 +34,8 @@ impl TestContract {
         get_token(&e)
     }
 
-    pub fn increase_allowance(e: Env, from: Address, spender: Address, amount: i128) {
-        TokenClient::new(&e, &get_token(&e)).increase_allowance(&from, &spender, &amount);
+    pub fn approve(e: Env, from: Address, spender: Address, amount: i128, expiration_ledger: u32) {
+        TokenClient::new(&e, &get_token(&e)).approve(&from, &spender, &amount, &expiration_ledger);
     }
 
     pub fn allowance(e: Env, from: Address, spender: Address) -> i128 {
@@ -61,9 +61,7 @@ fn test_mock_all_auth() {
     let from = Address::random(&env);
     let spender = Address::random(&env);
 
-    client
-        .mock_all_auths()
-        .increase_allowance(&from, &spender, &20);
+    client.mock_all_auths().approve(&from, &spender, &20, &200);
 
     assert_eq!(
         env.auths(),
@@ -72,8 +70,8 @@ fn test_mock_all_auth() {
             AuthorizedInvocation {
                 function: AuthorizedFunction::Contract((
                     token_contract_id.clone(),
-                    Symbol::new(&env, "increase_allowance"),
-                    (&from, &spender, 20_i128).into_val(&env)
+                    Symbol::new(&env, "approve"),
+                    (&from, &spender, 20_i128, 200_u32).into_val(&env)
                 )),
                 sub_invocations: std::vec![]
             }
@@ -106,12 +104,12 @@ fn test_mock_auth() {
             address: &from,
             invoke: &MockAuthInvoke {
                 contract: &token_contract_id,
-                fn_name: "increase_allowance",
-                args: (&from, &spender, 20_i128).into_val(&env),
+                fn_name: "approve",
+                args: (&from, &spender, 20_i128, 200_u32).into_val(&env),
                 sub_invokes: &[],
             },
         }])
-        .increase_allowance(&from, &spender, &20);
+        .approve(&from, &spender, &20, &200);
 
     assert_eq!(client.allowance(&from, &spender), 20);
 }
