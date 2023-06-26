@@ -183,9 +183,9 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             quote! { #ident }
         }
         ScSpecTypeDef::Void => quote! { () },
-        ScSpecTypeDef::Timepoint => todo!(),
-        ScSpecTypeDef::Duration => todo!(),
-        ScSpecTypeDef::U256 => todo!(),
-        ScSpecTypeDef::I256 => todo!(),
+        ScSpecTypeDef::Timepoint => quote! { soroban_sdk::Timepoint },
+        ScSpecTypeDef::Duration => quote! { soroban_sdk::Duration },
+        ScSpecTypeDef::U256 => quote! { soroban_sdk::U256 },
+        ScSpecTypeDef::I256 => quote! { soroban_sdk::I256 },
     }
 }
