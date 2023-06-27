@@ -203,9 +203,9 @@ dependencies = [
 
 [[package]]
 name = "crate-git-revision"
-version = "0.0.4"
+version = "0.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f998aef136a4e7833b0e4f0fc0939a59c40140b28e0ffbf524ad84fb2cc568c8"
+checksum = "c521bf1f43d31ed2f73441775ed31935d77901cb3451e44b38a1c1612fcbaf98"
 dependencies = [
  "serde",
  "serde_derive",
@@ -1175,8 +1175,8 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "soroban-env-common"
-version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=7ed0c2903049092b70e6e4f366e70e677ce134ea#7ed0c2903049092b70e6e4f366e70e677ce134ea"
+version = "0.0.17"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=400d806387140553e4e685d232deb3a807ec0e36#400d806387140553e4e685d232deb3a807ec0e36"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1193,8 +1193,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=7ed0c2903049092b70e6e4f366e70e677ce134ea#7ed0c2903049092b70e6e4f366e70e677ce134ea"
+version = "0.0.17"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=400d806387140553e4e685d232deb3a807ec0e36#400d806387140553e4e685d232deb3a807ec0e36"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1202,8 +1202,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=7ed0c2903049092b70e6e4f366e70e677ce134ea#7ed0c2903049092b70e6e4f366e70e677ce134ea"
+version = "0.0.17"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=400d806387140553e4e685d232deb3a807ec0e36#400d806387140553e4e685d232deb3a807ec0e36"
 dependencies = [
  "backtrace",
  "curve25519-dalek",
@@ -1228,8 +1228,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=7ed0c2903049092b70e6e4f366e70e677ce134ea#7ed0c2903049092b70e6e4f366e70e677ce134ea"
+version = "0.0.17"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=400d806387140553e4e685d232deb3a807ec0e36#400d806387140553e4e685d232deb3a807ec0e36"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1243,7 +1243,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1255,8 +1255,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-native-sdk-macros"
-version = "0.0.16"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=7ed0c2903049092b70e6e4f366e70e677ce134ea#7ed0c2903049092b70e6e4f366e70e677ce134ea"
+version = "0.0.17"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=400d806387140553e4e685d232deb3a807ec0e36#400d806387140553e4e685d232deb3a807ec0e36"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1266,7 +1266,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1287,7 +1287,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "crate-git-revision",
  "darling",
@@ -1305,7 +1305,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "base64 0.13.1",
  "pretty_assertions",
@@ -1316,7 +1316,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1331,7 +1331,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1382,8 +1382,8 @@ dependencies = [
 
 [[package]]
 name = "stellar-xdr"
-version = "0.0.16"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=6750a11325a7c4eed1e79372d136106e5bfecaff#6750a11325a7c4eed1e79372d136106e5bfecaff"
+version = "0.0.17"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=0f16673441898162c9996da6117be2280ef8fd84#0f16673441898162c9996da6117be2280ef8fd84"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
@@ -1443,112 +1443,112 @@ dependencies = [
 
 [[package]]
 name = "test_add_i128"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "0.8.4"
+version = "0.9.0"
 dependencies = [
  "soroban-sdk",
 ]
