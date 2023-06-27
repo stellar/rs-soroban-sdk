@@ -203,17 +203,6 @@ dependencies = [
 
 [[package]]
 name = "crate-git-revision"
-version = "0.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f998aef136a4e7833b0e4f0fc0939a59c40140b28e0ffbf524ad84fb2cc568c8"
-dependencies = [
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
-name = "crate-git-revision"
 version = "0.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c521bf1f43d31ed2f73441775ed31935d77901cb3451e44b38a1c1612fcbaf98"
@@ -1190,7 +1179,7 @@ version = "0.0.17"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=400d806387140553e4e685d232deb3a807ec0e36#400d806387140553e4e685d232deb3a807ec0e36"
 dependencies = [
  "arbitrary",
- "crate-git-revision 0.0.6",
+ "crate-git-revision",
  "ethnum",
  "num-derive",
  "num-integer",
@@ -1300,7 +1289,7 @@ dependencies = [
 name = "soroban-sdk-macros"
 version = "0.9.0"
 dependencies = [
- "crate-git-revision 0.0.4",
+ "crate-git-revision",
  "darling",
  "itertools",
  "proc-macro2",
@@ -1398,7 +1387,7 @@ source = "git+https://github.com/stellar/rs-stellar-xdr?rev=0f16673441898162c999
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
- "crate-git-revision 0.0.6",
+ "crate-git-revision",
  "hex",
  "serde",
  "serde_with",
