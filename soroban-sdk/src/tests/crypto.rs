@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk};
-use crate::{bytes, bytesn, vec, Bytes, BytesN, Env, IntoVal, Vec};
+use crate::{bytes, bytesn, vec, Bytes, BytesN, Env, IntoVal, Val, Vec};
 use soroban_sdk::{contract, contractimpl};
 
 #[contract]
@@ -19,8 +19,10 @@ impl TestCryptoContract {
         env.crypto().u64_in_inclusive_range(min, max)
     }
 
-    pub fn vec_shuffle(env: Env, vec: Vec<u32>) -> Vec<u32> {
-        env.crypto().vec_shuffle(vec.into()).into_val(&env)
+    pub fn vec_shuffle(env: Env, vec: Vec<u32>) -> Vec<Val> {
+        env.crypto()
+            .vec_shuffle::<Vec<u32>>(vec.into())
+            .into_val(&env)
     }
 
     pub fn verify_sig_ed25519(
@@ -60,7 +62,13 @@ fn test_sha256() {
 
     let bytes = bytes!(&env, 0x01);
 
-    assert_eq!(client.sha256(&bytes), bytesn!(&env, 0x4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a));
+    assert_eq!(
+        client.sha256(&bytes),
+        bytesn!(
+            &env,
+            0x4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a
+        )
+    );
 }
 
 #[test]
@@ -72,7 +80,10 @@ fn test_vec_shuffle() {
 
     let vec = vec![&env, 1, 2, 3];
 
-    assert_eq!(client.vec_shuffle(&vec), vec![&env, 2, 3, 1]);
+    assert_eq!(
+        client.vec_shuffle(&vec),
+        vec![&env, Val::from(2u32), Val::from(3u32), Val::from(1u32)]
+    );
 }
 
 #[test]
@@ -104,7 +115,10 @@ fn test_verify_sig_ed25519() {
     );
     let message = bytes!(&env, 0x72);
 
-    assert_eq!(client.verify_sig_ed25519(&public_key, &message, &signature), ());
+    assert_eq!(
+        client.verify_sig_ed25519(&public_key, &message, &signature),
+        ()
+    );
 }
 
 #[test]

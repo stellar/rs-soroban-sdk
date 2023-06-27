@@ -1,10 +1,14 @@
 //! Crypto contains functions for cryptographic functions.
-use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, VecObject};
+use crate::{
+    env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, IntoVal,
+    TryIntoVal, Val, Vec,
+};
 
 /// Crypto provides access to cryptographic functions.
 pub struct Crypto {
     env: Env,
 }
+
 
 impl Crypto {
     pub(crate) fn new(env: &Env) -> Crypto {
@@ -37,13 +41,16 @@ impl Crypto {
     }
 
     // Shuffles a given vector v using the Fisher-Yates algorithm.
-    pub fn vec_shuffle(&self, v: VecObject) -> VecObject {
+    pub fn vec_shuffle<V>(&self, v: V) -> Vec<Val>
+    where
+        V: IntoVal<Env, Vec<Val>>,
+    {
         let env = self.env();
-        internal::Env::prng_vec_shuffle(env, v.into())
+        internal::Env::prng_vec_shuffle(env, v.into_val(env).to_object())
             .unwrap_infallible()
-            .into()
+            .try_into_val(env)
+            .unwrap_infallible()
     }
-
     /// Verifies an ed25519 signature.
     ///
     /// The signature is verified as a valid signature of the message by the
