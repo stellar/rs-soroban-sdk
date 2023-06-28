@@ -44,7 +44,7 @@ use crate::{
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
 /// let key = symbol_short!("key");
-/// storage.persistent().set(&key, &1, None);
+/// storage.persistent().set(&key, &1);
 /// assert_eq!(storage.persistent().has(&key), true);
 /// assert_eq!(storage.persistent().get::<_, i32>(&key), Some(1));
 /// #     }
