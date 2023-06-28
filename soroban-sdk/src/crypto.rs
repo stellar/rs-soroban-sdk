@@ -1,14 +1,13 @@
 //! Crypto contains functions for cryptographic functions.
 use crate::{
-    env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, IntoVal,
-    TryIntoVal, Val, Vec,
+    env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, EnvBase, IntoVal, TryIntoVal, Val,
+    Vec,
 };
 
 /// Crypto provides access to cryptographic functions.
 pub struct Crypto {
     env: Env,
 }
-
 
 impl Crypto {
     pub(crate) fn new(env: &Env) -> Crypto {
@@ -22,6 +21,7 @@ impl Crypto {
     /// Returns the SHA-256 hash of the data.
     pub fn sha256(&self, data: &Bytes) -> BytesN<32> {
         let env = self.env();
+        env.check_same_env(data.env());
         let bin = internal::Env::compute_hash_sha256(env, data.into()).unwrap_infallible();
         unsafe { BytesN::unchecked_new(env.clone(), bin) }
     }
@@ -29,6 +29,7 @@ impl Crypto {
     // Reseeds the pseudorandom number generator (PRNG) with the provided `seed` value.
     pub fn prng_reseed(&self, seed: &Bytes) {
         let env = self.env();
+        env.check_same_env(seed.env());
         internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
     }
 
@@ -46,7 +47,10 @@ impl Crypto {
         V: IntoVal<Env, Vec<Val>>,
     {
         let env = self.env();
-        internal::Env::prng_vec_shuffle(env, v.into_val(env).to_object())
+        let v_val = v.into_val(env);
+        env.check_same_env(v_val.env());
+
+        internal::Env::prng_vec_shuffle(env, v_val.to_object())
             .unwrap_infallible()
             .try_into_val(env)
             .unwrap_infallible()
@@ -61,6 +65,9 @@ impl Crypto {
     /// If the signature verification fails.
     pub fn ed25519_verify(&self, public_key: &BytesN<32>, message: &Bytes, signature: &BytesN<64>) {
         let env = self.env();
+        env.check_same_env(public_key.env());
+        env.check_same_env(message.env());
+        env.check_same_env(signature.env());
         let _ = internal::Env::verify_sig_ed25519(
             env,
             public_key.to_object(),
