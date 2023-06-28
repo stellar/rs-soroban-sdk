@@ -44,7 +44,7 @@ use crate::{
 /// #     pub fn f(env: Env) {
 /// let storage = env.storage();
 /// let key = symbol_short!("key");
-/// storage.persistent().set(&key, &1, None);
+/// storage.persistent().set(&key, &1);
 /// assert_eq!(storage.persistent().has(&key), true);
 /// assert_eq!(storage.persistent().get::<_, i32>(&key), Some(1));
 /// #     }
@@ -255,12 +255,12 @@ impl Persistent {
         self.storage.get(key, StorageType::Persistent)
     }
 
-    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    pub fn set<K, V>(&self, key: &K, val: &V)
     where
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::Persistent, flags)
+        self.storage.set(key, val, StorageType::Persistent, None)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -301,12 +301,12 @@ impl Temporary {
         self.storage.get(key, StorageType::Temporary)
     }
 
-    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    pub fn set<K, V>(&self, key: &K, val: &V)
     where
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::Temporary, flags)
+        self.storage.set(key, val, StorageType::Temporary, None)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -347,12 +347,12 @@ impl Instance {
         self.storage.get(key, StorageType::Instance)
     }
 
-    pub fn set<K, V>(&self, key: &K, val: &V, flags: Option<u32>)
+    pub fn set<K, V>(&self, key: &K, val: &V)
     where
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::Instance, flags)
+        self.storage.set(key, val, StorageType::Instance, None)
     }
 
     #[inline(always)]

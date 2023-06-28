@@ -461,7 +461,7 @@ pub use soroban_sdk_macros::contractmeta;
 ///         state.last_incr = incr;
 ///
 ///         // Save the count.
-///         env.storage().persistent().set(&symbol_short!("STATE"), &state, None);
+///         env.storage().persistent().set(&symbol_short!("STATE"), &state);
 ///
 ///         // Return the count to the caller.
 ///         state.count
@@ -539,7 +539,7 @@ pub use soroban_sdk_macros::contractmeta;
 /// impl Contract {
 ///     /// Set the color.
 ///     pub fn set(env: Env, c: Color) {
-///         env.storage().persistent().set(&symbol_short!("COLOR"), &c, None);
+///         env.storage().persistent().set(&symbol_short!("COLOR"), &c);
 ///     }
 ///
 ///     /// Get the color.

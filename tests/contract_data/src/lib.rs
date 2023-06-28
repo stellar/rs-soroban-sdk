@@ -7,7 +7,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn put(e: Env, key: Symbol, val: Symbol) {
-        e.storage().persistent().set(&key, &val, None)
+        e.storage().persistent().set(&key, &val)
     }
 
     pub fn get(e: Env, key: Symbol) -> Option<Symbol> {

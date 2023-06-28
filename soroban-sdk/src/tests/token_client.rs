@@ -25,9 +25,7 @@ pub struct TestContract;
 #[contractimpl]
 impl TestContract {
     pub fn init(e: Env, contract: Address) {
-        e.storage()
-            .persistent()
-            .set(&DataKey::Token, &contract, None);
+        e.storage().persistent().set(&DataKey::Token, &contract);
     }
 
     pub fn get_token(e: Env) -> Address {
