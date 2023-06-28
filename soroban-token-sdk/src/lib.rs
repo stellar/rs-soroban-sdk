@@ -23,10 +23,7 @@ impl TokenUtils {
 
     #[inline(always)]
     pub fn set_metadata(&self, metadata: &TokenMetadata) {
-        self.0
-            .storage()
-            .persistent()
-            .set(&METADATA_KEY, metadata, None);
+        self.0.storage().persistent().set(&METADATA_KEY, metadata);
     }
 
     #[inline(always)]
