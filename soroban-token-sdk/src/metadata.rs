@@ -21,14 +21,14 @@ impl Metadata {
 
     #[inline(always)]
     pub fn set_metadata(&self, metadata: &TokenMetadata) {
-        self.env.storage().persistent().set(&METADATA_KEY, metadata);
+        self.env.storage().instance().set(&METADATA_KEY, metadata);
     }
 
     #[inline(always)]
     pub fn get_metadata(&self) -> TokenMetadata {
         self.env
             .storage()
-            .persistent()
+            .instance()
             .get(&METADATA_KEY)
             .unwrap_optimized()
     }
