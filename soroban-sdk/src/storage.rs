@@ -12,22 +12,22 @@ use crate::{
 /// All data stored can only be queried and modified by the contract that stores
 /// it. Contracts cannot query or modify data stored by other contracts.
 ///
-/// There are two types of storage - Persistent and Temporary.
+/// There are three types of storage - Temporary, Persistent, and Instance.
 ///
 /// Temporary entries are the cheaper storage option and are never in the Expired State Stack (ESS). Whenever
 /// a TemporaryEntry expires, the entry is permanently deleted and cannot be recovered.
 /// This storage type is best for entries that are only relevant for short periods of
 /// time or for entries that can be arbitrarily recreated.
 ///
-/// Recreateable entries are in between temporary and persistent entries when it comes to fees.
-/// Whenever a recreateable entry expires, it is deleted from the ledger, but sent to an
-/// ESS. The entry can then be recovered later through an operation in Stellar Core issued for the
-/// expired entry.
-///
 /// Persistent entries are the more expensive storage type. Whenever
 /// a persistent entry expires, it is deleted from the ledger, sent to the ESS
-/// and can be recovered via an operation in Stellar Core. only a single version of a
+/// and can be recovered via an operation in Stellar Core. Only a single version of a
 /// persistent entry can exist at a time.
+///
+/// Instance storage is used to store entries within the Persistent contract
+/// instance entry, allowing users to tie that data directly to the expiration
+/// on the instance. Instance storage is good for global contract data like
+/// metadata, admin accounts, or pool reserves.
 ///
 /// ### Examples
 ///
