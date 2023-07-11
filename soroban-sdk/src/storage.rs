@@ -363,10 +363,14 @@ impl Instance {
         self.storage.remove(key, StorageType::Instance)
     }
 
-    pub fn bump(&self, min_ledgers_to_live: u32) {
+    pub fn bump(&self, _min_ledgers_to_live: u32) {
+        // This is required because register_contract
+        // doesn't create an instance. This guard can be
+        // removed once that is fixed.
+        #[cfg(not(any(test, feature = "testutils")))]
         internal::Env::bump_current_contract_instance_and_code(
             &self.storage.env,
-            min_ledgers_to_live.into(),
+            _min_ledgers_to_live.into(),
         )
         .unwrap_infallible();
     }
