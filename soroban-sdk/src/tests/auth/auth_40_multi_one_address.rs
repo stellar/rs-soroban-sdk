@@ -30,7 +30,7 @@ impl ContractB {
 }
 
 #[test]
-fn test_auth_separately() {
+fn test_auth_not_allowed_with_separated_tree() {
     let e = Env::default();
     let contract_a_id = e.register_contract(None, ContractA);
     let contract_b_id = e.register_contract(None, ContractB);
@@ -38,7 +38,7 @@ fn test_auth_separately() {
 
     let a = Address::random(&e);
 
-    let c = client
+    assert!(client
         .mock_auths(&[
             MockAuth {
                 address: &a,
@@ -59,11 +59,8 @@ fn test_auth_separately() {
                 },
             },
         ])
-        .fna(&contract_b_id, &a);
-
-    assert_eq!(c, 1);
-
-    println!("{:?}", e.auths());
+        .try_fna(&contract_b_id, &a)
+        .is_err());
 }
 
 #[test]

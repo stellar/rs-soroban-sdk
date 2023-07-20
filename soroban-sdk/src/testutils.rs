@@ -89,19 +89,19 @@ pub mod budget {
 
         /// Reset the budget.
         pub fn reset_default(&mut self) {
-            self.0.reset_default();
+            self.0.reset_default().unwrap();
         }
 
         pub fn reset_unlimited(&mut self) {
-            self.0.reset_unlimited();
+            self.0.reset_unlimited().unwrap();
         }
 
         pub fn reset_limits(&mut self, cpu: u64, mem: u64) {
-            self.0.reset_limits(cpu, mem);
+            self.0.reset_limits(cpu, mem).unwrap();
         }
 
         pub fn reset_tracker(&mut self) {
-            self.0.reset_tracker();
+            self.0.reset_tracker().unwrap();
         }
 
         /// Returns the CPU instruction cost.

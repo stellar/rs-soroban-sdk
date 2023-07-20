@@ -246,7 +246,7 @@ where
 }
 
 #[cfg(not(target_family = "wasm"))]
-use super::xdr::{ScVal, ScVec};
+use super::xdr::{ScVal, ScVec, VecM};
 
 #[cfg(not(target_family = "wasm"))]
 impl<T> TryFrom<&Vec<T>> for ScVal {
@@ -265,6 +265,14 @@ impl<T> TryFrom<&Vec<T>> for ScVec {
         } else {
             Err(ConversionError)
         }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFrom<Vec<T>> for VecM<ScVal> {
+    type Error = ConversionError;
+    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
+        Ok(ScVec::try_from(v)?.0)
     }
 }
 
@@ -305,6 +313,17 @@ where
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVec) -> Result<Self, Self::Error> {
         ScVal::Vec(Some(val.clone())).try_into_val(env)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T> TryFromVal<Env, VecM<ScVal>> for Vec<T>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &VecM<ScVal>) -> Result<Self, Self::Error> {
+        ScVec(val.clone()).try_into_val(env)
     }
 }
 
