@@ -1,16 +1,11 @@
 #![no_std]
 
-use soroban_sdk::{contracttype, symbol_short, unwrap::UnwrapOptimized, Env, String, Symbol};
+use crate::event::Events;
+use crate::metadata::Metadata;
+use soroban_sdk::Env;
 
-const METADATA_KEY: Symbol = symbol_short!("METADATA");
-
-#[derive(Clone)]
-#[contracttype]
-pub struct TokenMetadata {
-    pub decimal: u32,
-    pub name: String,
-    pub symbol: String,
-}
+pub mod event;
+pub mod metadata;
 
 #[derive(Clone)]
 pub struct TokenUtils(Env);
@@ -21,17 +16,11 @@ impl TokenUtils {
         TokenUtils(env.clone())
     }
 
-    #[inline(always)]
-    pub fn set_metadata(&self, metadata: &TokenMetadata) {
-        self.0.storage().persistent().set(&METADATA_KEY, metadata);
+    pub fn metadata(&self) -> Metadata {
+        Metadata::new(&self.0)
     }
 
-    #[inline(always)]
-    pub fn get_metadata(&self) -> TokenMetadata {
-        self.0
-            .storage()
-            .persistent()
-            .get(&METADATA_KEY)
-            .unwrap_optimized()
+    pub fn events(&self) -> Events {
+        Events::new(&self.0)
     }
 }
