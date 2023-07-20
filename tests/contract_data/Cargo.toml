@@ -4,7 +4,7 @@ version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"
-rust-version = "1.70"
+rust-version = "1.71"
 publish = false
 
 [lib]
