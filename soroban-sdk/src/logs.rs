@@ -149,7 +149,7 @@ impl testutils::Logs for Logs {
             .into_iter()
             .filter_map(|e| match (&e.event.type_, &e.event.body) {
                 (ContractEventType::Diagnostic, ContractEventBody::V0(ce))
-                    if &ce.topics == &log_topics =>
+                    if &ce.topics == &log_topics.0 =>
                 {
                     Some(format!("{}", &e))
                 }

@@ -4,6 +4,7 @@ use soroban_sdk::{
     token::{StellarAssetSpec, SPEC_XDR_INPUT, SPEC_XDR_LEN},
     xdr::{Error, ReadXdr, ScSpecEntry},
 };
+use stellar_xdr::DepthLimitedRead;
 
 extern crate std;
 
@@ -16,8 +17,8 @@ fn test_spec_xdr_len() {
 #[test]
 fn test_spec_xdr() -> Result<(), Error> {
     let xdr = StellarAssetSpec::spec_xdr();
-    let mut cursor = std::io::Cursor::new(xdr);
-    for spec_entry in ScSpecEntry::read_xdr_iter(&mut cursor) {
+    let cursor = std::io::Cursor::new(xdr);
+    for spec_entry in ScSpecEntry::read_xdr_iter(&mut DepthLimitedRead::new(cursor, 1000)) {
         spec_entry?;
     }
     Ok(())

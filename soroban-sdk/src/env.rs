@@ -704,7 +704,7 @@ impl Env {
             .try_into_val(self)
             .unwrap();
 
-        let prev_auth_manager = self.env_impl.snapshot_auth_manager();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl.switch_to_recording_auth();
         self.invoke_contract::<()>(
             &token_id,
@@ -729,7 +729,7 @@ impl Env {
     }
 
     fn register_contract_with_source(&self, executable: xdr::ContractExecutable) -> Address {
-        let prev_auth_manager = self.env_impl.snapshot_auth_manager();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl.switch_to_recording_auth();
 
         let contract_id: Address = self

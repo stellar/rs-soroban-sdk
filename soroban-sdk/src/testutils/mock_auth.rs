@@ -35,7 +35,7 @@ impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
                 address: value.address.try_into().unwrap(),
                 nonce: thread_rng().gen(),
                 signature_expiration_ledger: u32::MAX,
-                signature_args: xdr::ScVec::default(),
+                signature: xdr::ScVal::Void,
             }),
         }
     }
@@ -51,7 +51,7 @@ impl<'a> From<&MockAuthInvoke<'a>> for xdr::SorobanAuthorizedInvocation {
     fn from(value: &MockAuthInvoke<'a>) -> Self {
         Self {
             function: xdr::SorobanAuthorizedFunction::ContractFn(
-                xdr::SorobanAuthorizedContractFunction {
+                xdr::InvokeContractArgs {
                     contract_address: xdr::ScAddress::Contract(xdr::Hash(
                         value.contract.contract_id().to_array(),
                     )),

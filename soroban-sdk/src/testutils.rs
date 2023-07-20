@@ -109,7 +109,7 @@ pub mod budget {
         /// Note that CPU instructions are likely to be underestimated when
         /// running Rust code compared to running the WASM equivalent.
         pub fn cpu_instruction_cost(&self) -> u64 {
-            self.0.get_cpu_insns_consumed()
+            self.0.get_cpu_insns_consumed().unwrap()
         }
 
         /// Returns the memory cost.
@@ -117,7 +117,7 @@ pub mod budget {
         /// Note that memory is likely to be underestimated when running Rust
         /// code compared to running the WASM equivalent.
         pub fn memory_bytes_cost(&self) -> u64 {
-            self.0.get_cpu_insns_consumed()
+            self.0.get_cpu_insns_consumed().unwrap()
         }
 
         /// Get the input tracker associated with the cost. The tracker tracks
@@ -127,7 +127,7 @@ pub mod budget {
         /// Note that VM cost types are likely to be underestimated when running
         /// Rust code compared to running the WASM equivalent.
         pub fn tracker(&self, cost_type: ContractCostType) -> (u64, Option<u64>) {
-            self.0.get_tracker(cost_type)
+            self.0.get_tracker(cost_type).unwrap()
         }
 
         /// Print the budget costs and inputs to stdout.

@@ -13,6 +13,7 @@ pub trait Sign<MSG> {
 // interface.
 
 pub mod ed25519 {
+    use stellar_xdr::DepthLimitedWrite;
     use xdr::WriteXdr;
 
     use crate::xdr;
@@ -68,9 +69,9 @@ pub mod ed25519 {
         type Error = Error<<M as TryInto<xdr::ScVal>>::Error>;
         type Signature = [u8; 64];
         fn sign(&self, m: M) -> Result<Self::Signature, Self::Error> {
-            let mut buf = Vec::<u8>::new();
+            let buf = Vec::<u8>::new();
             let val: xdr::ScVal = m.try_into().map_err(Self::Error::ConversionError)?;
-            val.write_xdr(&mut buf)?;
+            val.write_xdr(&mut DepthLimitedWrite::new(buf, 1000))?;
             Ok(self.try_sign(&buf)?.to_bytes())
         }
     }

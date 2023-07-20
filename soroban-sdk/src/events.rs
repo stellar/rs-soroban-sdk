@@ -144,8 +144,8 @@ impl testutils::Events for Events {
                 {
                     vec.push_back((
                         Address::from_contract_id(&BytesN::from_array(env, &contract_id.0)),
-                        topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
+                        topics.to_vec().try_into_val(env).unwrap(),
+                        data.to_vec().try_into_val(env).unwrap(),
                     ))
                 }
             });
