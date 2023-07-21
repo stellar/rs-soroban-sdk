@@ -509,10 +509,14 @@ impl Env {
         let storage = internal::storage::Storage::with_recording_footprint(rf);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
-        env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
-            xdr::Uint256(random()),
-        ))).unwrap();
-        env_impl.set_diagnostic_level(internal::DiagnosticLevel::Debug).unwrap();
+        env_impl
+            .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+                xdr::Uint256(random()),
+            )))
+            .unwrap();
+        env_impl
+            .set_diagnostic_level(internal::DiagnosticLevel::Debug)
+            .unwrap();
         let env = Env {
             env_impl,
             snapshot: None,

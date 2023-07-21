@@ -88,8 +88,8 @@ impl Ledger {
     pub fn network_id(&self) -> BytesN<32> {
         let env = self.env();
         let bin_obj = internal::Env::get_ledger_network_id(env).unwrap_infallible();
-        unsafe { BytesN::<32>::unchecked_new(env.clone(), bin_obj) }    }
-
+        unsafe { BytesN::<32>::unchecked_new(env.clone(), bin_obj) }
+    }
 }
 
 #[cfg(any(test, feature = "testutils"))]

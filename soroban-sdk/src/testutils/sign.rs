@@ -13,10 +13,8 @@ pub trait Sign<MSG> {
 // interface.
 
 pub mod ed25519 {
-    use stellar_xdr::DepthLimitedWrite;
-    use xdr::WriteXdr;
-
     use crate::xdr;
+    use xdr::{DepthLimitedWrite, WriteXdr};
 
     #[derive(Debug)]
     pub enum Error<E: std::error::Error> {
