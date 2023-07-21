@@ -21,7 +21,7 @@ fn test_invoke_expect_string() {
 }
 
 #[test]
-#[should_panic(expected = "Error(Context, InternalError)")]
+#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
 fn test_invoke_expect_error() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
@@ -40,8 +40,8 @@ fn test_try_invoke() {
     assert_eq!(
         res,
         Err(Ok(soroban_sdk::Error::from_type_and_code(
-            ScErrorType::Context,
-            ScErrorCode::InternalError
+            ScErrorType::WasmVm,
+            ScErrorCode::InvalidAction
         )))
     );
 }

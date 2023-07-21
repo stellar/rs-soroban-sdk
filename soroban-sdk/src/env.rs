@@ -509,10 +509,14 @@ impl Env {
         let storage = internal::storage::Storage::with_recording_footprint(rf);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
-        env_impl.set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
-            xdr::Uint256(random()),
-        )));
-        env_impl.set_diagnostic_level(internal::DiagnosticLevel::Debug);
+        env_impl
+            .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+                xdr::Uint256(random()),
+            )))
+            .unwrap();
+        env_impl
+            .set_diagnostic_level(internal::DiagnosticLevel::Debug)
+            .unwrap();
         let env = Env {
             env_impl,
             snapshot: None,
@@ -704,14 +708,14 @@ impl Env {
             .try_into_val(self)
             .unwrap();
 
-        let prev_auth_manager = self.env_impl.snapshot_auth_manager();
-        self.env_impl.switch_to_recording_auth();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
+        self.env_impl.switch_to_recording_auth().unwrap();
         self.invoke_contract::<()>(
             &token_id,
             &soroban_sdk_macros::internal_symbol_short!("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
-        self.env_impl.set_auth_manager(prev_auth_manager);
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
         token_id
     }
 
@@ -729,8 +733,8 @@ impl Env {
     }
 
     fn register_contract_with_source(&self, executable: xdr::ContractExecutable) -> Address {
-        let prev_auth_manager = self.env_impl.snapshot_auth_manager();
-        self.env_impl.switch_to_recording_auth();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
+        self.env_impl.switch_to_recording_auth().unwrap();
 
         let contract_id: Address = self
             .env_impl
@@ -747,7 +751,7 @@ impl Env {
             .try_into_val(self)
             .unwrap();
 
-        self.env_impl.set_auth_manager(prev_auth_manager);
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
         contract_id
     }
@@ -879,7 +883,7 @@ impl Env {
     /// }
     /// ```
     pub fn mock_all_auths(&self) {
-        self.env_impl.switch_to_recording_auth();
+        self.env_impl.switch_to_recording_auth().unwrap();
     }
 
     /// Returns a list of authorization trees that were seen during the last
@@ -1144,7 +1148,7 @@ impl Env {
         let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
-        env_impl.switch_to_recording_auth();
+        env_impl.switch_to_recording_auth().unwrap();
 
         let env = Env {
             env_impl,

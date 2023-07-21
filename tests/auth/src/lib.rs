@@ -21,10 +21,9 @@ mod test_a {
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
         xdr::{
-            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
-            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
-            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
-            VecM,
+            InvokeContractArgs, ScAddress, ScError, ScErrorCode, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedFunction, SorobanAuthorizedInvocation,
+            SorobanCredentials, StringM, VecM,
         },
         Address, Env, Error, Symbol, Val,
     };
@@ -110,16 +109,14 @@ mod test_a {
                     address: a_xdr.clone(),
                     nonce: 123,
                     signature_expiration_ledger: 100,
-                    signature_args: Default::default(),
+                    signature: ScVal::Void,
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
-                    function: SorobanAuthorizedFunction::ContractFn(
-                        SorobanAuthorizedContractFunction {
-                            contract_address: contract_id.clone().try_into().unwrap(),
-                            function_name: StringM::try_from("fn1").unwrap().into(),
-                            args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
-                        },
-                    ),
+                    function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
+                        contract_address: contract_id.clone().try_into().unwrap(),
+                        function_name: StringM::try_from("fn1").unwrap().into(),
+                        args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                    }),
                     sub_invocations: VecM::default(),
                 },
             }])
@@ -158,16 +155,14 @@ mod test_a {
                     address: a_xdr.clone(),
                     nonce: 456,
                     signature_expiration_ledger: u32::MAX,
-                    signature_args: Default::default(),
+                    signature: ScVal::Void,
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
-                    function: SorobanAuthorizedFunction::ContractFn(
-                        SorobanAuthorizedContractFunction {
-                            contract_address: contract_id.try_into().unwrap(),
-                            function_name: StringM::try_from("fn1").unwrap().into(),
-                            args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
-                        },
-                    ),
+                    function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
+                        contract_address: contract_id.try_into().unwrap(),
+                        function_name: StringM::try_from("fn1").unwrap().into(),
+                        args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                    }),
                     sub_invocations: VecM::default(),
                 },
             }])
@@ -175,10 +170,9 @@ mod test_a {
 
         assert_eq!(
             r,
-            Err(Ok(Error::from_scerror(ScError {
-                type_: ScErrorType::Auth,
-                code: ScErrorCode::InvalidAction
-            })))
+            Err(Ok(Error::from_scerror(ScError::Auth(
+                ScErrorCode::InvalidAction
+            ))))
         );
 
         assert_eq!(e.auths(), []);
@@ -245,9 +239,9 @@ mod test_b {
             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthInvoke,
         },
         xdr::{
-            ScAddress, ScError, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
-            SorobanAuthorizationEntry, SorobanAuthorizedContractFunction,
-            SorobanAuthorizedFunction, SorobanAuthorizedInvocation, SorobanCredentials, StringM,
+            InvokeContractArgs, ScAddress, ScError, ScErrorCode, ScVal, SorobanAddressCredentials,
+            SorobanAuthorizationEntry, SorobanAuthorizedFunction, SorobanAuthorizedInvocation,
+            SorobanCredentials, StringM,
         },
         Address, Env, Error, Val,
     };
@@ -355,24 +349,20 @@ mod test_b {
                     address: a_xdr.clone(),
                     nonce: 543,
                     signature_expiration_ledger: 100,
-                    signature_args: Default::default(),
+                    signature: ScVal::Void,
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
-                    function: SorobanAuthorizedFunction::ContractFn(
-                        SorobanAuthorizedContractFunction {
-                            contract_address: contract_b_id.clone().try_into().unwrap(),
-                            function_name: StringM::try_from("fn2").unwrap().into(),
-                            args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
-                        },
-                    ),
+                    function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
+                        contract_address: contract_b_id.clone().try_into().unwrap(),
+                        function_name: StringM::try_from("fn2").unwrap().into(),
+                        args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
+                    }),
                     sub_invocations: std::vec![SorobanAuthorizedInvocation {
-                        function: SorobanAuthorizedFunction::ContractFn(
-                            SorobanAuthorizedContractFunction {
-                                contract_address: contract_a_id.clone().try_into().unwrap(),
-                                function_name: StringM::try_from("fn1").unwrap().into(),
-                                args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
-                            },
-                        ),
+                        function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
+                            contract_address: contract_a_id.clone().try_into().unwrap(),
+                            function_name: StringM::try_from("fn1").unwrap().into(),
+                            args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                        },),
                         sub_invocations: Default::default()
                     }]
                     .try_into()
@@ -422,24 +412,20 @@ mod test_b {
                     address: a_xdr.clone(),
                     nonce: 789,
                     signature_expiration_ledger: 150,
-                    signature_args: Default::default(),
+                    signature: ScVal::Void,
                 }),
                 root_invocation: SorobanAuthorizedInvocation {
-                    function: SorobanAuthorizedFunction::ContractFn(
-                        SorobanAuthorizedContractFunction {
-                            contract_address: contract_b_id.try_into().unwrap(),
-                            function_name: StringM::try_from("fn2").unwrap().into(),
-                            args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
-                        },
-                    ),
+                    function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
+                        contract_address: contract_b_id.try_into().unwrap(),
+                        function_name: StringM::try_from("fn2").unwrap().into(),
+                        args: std::vec![ScVal::I32(1), ScVal::I32(2),].try_into().unwrap(),
+                    }),
                     sub_invocations: std::vec![SorobanAuthorizedInvocation {
-                        function: SorobanAuthorizedFunction::ContractFn(
-                            SorobanAuthorizedContractFunction {
-                                contract_address: contract_a_id.clone().try_into().unwrap(),
-                                function_name: StringM::try_from("fn1").unwrap().into(),
-                                args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
-                            },
-                        ),
+                        function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
+                            contract_address: contract_a_id.clone().try_into().unwrap(),
+                            function_name: StringM::try_from("fn1").unwrap().into(),
+                            args: std::vec![ScVal::Address(a_xdr.clone())].try_into().unwrap(),
+                        },),
                         sub_invocations: Default::default()
                     }]
                     .try_into()
@@ -450,10 +436,9 @@ mod test_b {
 
         assert_eq!(
             r,
-            Err(Ok(Error::from_scerror(ScError {
-                type_: ScErrorType::Auth,
-                code: ScErrorCode::InvalidAction
-            })))
+            Err(Ok(Error::from_scerror(ScError::Auth(
+                ScErrorCode::InvalidAction
+            ))))
         );
 
         assert_eq!(e.auths(), []);

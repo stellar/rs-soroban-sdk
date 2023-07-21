@@ -104,8 +104,8 @@ mod test {
         assert_eq!(
             res,
             Err(Err(soroban_sdk::Error::from_type_and_code(
-                ScErrorType::Context,
-                ScErrorCode::InternalError
+                ScErrorType::WasmVm,
+                ScErrorCode::InvalidAction
             )))
         );
         assert!(!client.persisted());
