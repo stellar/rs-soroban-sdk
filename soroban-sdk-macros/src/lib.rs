@@ -58,8 +58,8 @@ fn _symbol_short(crate_path: &str, s: &LitStr) -> TokenStream {
     match Symbol::try_from_small_str(&s.value()) {
         Ok(_) => quote! {{
             #[allow(deprecated)]
-            const symbol: #crate_path::Symbol = #crate_path::Symbol::short(#s);
-            symbol
+            const SYMBOL: #crate_path::Symbol = #crate_path::Symbol::short(#s);
+            SYMBOL
         }}
         .into(),
         Err(e) => Error::new(s.span(), format!("{e}"))
