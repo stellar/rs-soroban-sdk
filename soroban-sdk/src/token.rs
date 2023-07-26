@@ -178,6 +178,13 @@ pub trait StellarAssetAdminInterface {
     /// [new_admin: Address]`
     fn set_admin(env: Env, new_admin: Address);
 
+    /// Returns the admin of the contract.
+    ///
+    /// # Panics
+    ///
+    /// If the admin is not set.
+    fn admin(env: Env) -> Address;
+
     /// Sets whether the account is authorized to use its balance. If
     /// `authorized` is true, `id` should be able to use its balance.
     ///
@@ -239,6 +246,7 @@ pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_mint(),
     &StellarAssetSpec::spec_xdr_name(),
     &StellarAssetSpec::spec_xdr_set_admin(),
+    &StellarAssetSpec::spec_xdr_admin(),
     &StellarAssetSpec::spec_xdr_set_authorized(),
     &StellarAssetSpec::spec_xdr_spendable_balance(),
     &StellarAssetSpec::spec_xdr_symbol(),
@@ -246,7 +254,7 @@ pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const SPEC_XDR_LEN: usize = 5572;
+pub(crate) const SPEC_XDR_LEN: usize = 5676;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
