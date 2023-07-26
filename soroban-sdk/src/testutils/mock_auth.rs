@@ -3,6 +3,8 @@
 use crate::{contract, contractimpl, xdr, Address, Env, Symbol, TryFromVal, Val, Vec};
 use rand::{thread_rng, Rng};
 
+use super::Ledger;
+
 #[doc(hidden)]
 #[contract(crate_path = "crate")]
 pub struct MockAuthContract;
@@ -29,13 +31,16 @@ pub struct MockAuthInvoke<'a> {
 
 impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
     fn from(value: &MockAuth) -> Self {
+        let env = value.address.env();
+        let curr_ledger = env.ledger().sequence();
+        let max_expiration = env.ledger().get().max_entry_expiration;
         Self {
             root_invocation: value.invoke.into(),
             credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
                 address: value.address.try_into().unwrap(),
                 nonce: thread_rng().gen(),
-                signature_expiration_ledger: u32::MAX,
-                signature_args: xdr::ScVec::default(),
+                signature_expiration_ledger: curr_ledger + max_expiration - 1,
+                signature: xdr::ScVal::Void,
             }),
         }
     }
@@ -50,15 +55,13 @@ impl<'a> From<MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
 impl<'a> From<&MockAuthInvoke<'a>> for xdr::SorobanAuthorizedInvocation {
     fn from(value: &MockAuthInvoke<'a>) -> Self {
         Self {
-            function: xdr::SorobanAuthorizedFunction::ContractFn(
-                xdr::SorobanAuthorizedContractFunction {
-                    contract_address: xdr::ScAddress::Contract(xdr::Hash(
-                        value.contract.contract_id().to_array(),
-                    )),
-                    function_name: value.fn_name.try_into().unwrap(),
-                    args: value.args.clone().try_into().unwrap(),
-                },
-            ),
+            function: xdr::SorobanAuthorizedFunction::ContractFn(xdr::InvokeContractArgs {
+                contract_address: xdr::ScAddress::Contract(xdr::Hash(
+                    value.contract.contract_id().to_array(),
+                )),
+                function_name: value.fn_name.try_into().unwrap(),
+                args: value.args.clone().try_into().unwrap(),
+            }),
             sub_invocations: value
                 .sub_invokes
                 .iter()

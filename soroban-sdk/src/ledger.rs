@@ -100,7 +100,7 @@ use crate::testutils;
 impl testutils::Ledger for Ledger {
     fn set(&self, li: testutils::LedgerInfo) {
         let env = self.env();
-        env.host().set_ledger_info(li);
+        env.host().set_ledger_info(li).unwrap();
     }
 
     fn get(&self) -> testutils::LedgerInfo {

@@ -13,9 +13,8 @@ pub trait Sign<MSG> {
 // interface.
 
 pub mod ed25519 {
-    use xdr::WriteXdr;
-
     use crate::xdr;
+    use xdr::{DepthLimitedWrite, WriteXdr};
 
     #[derive(Debug)]
     pub enum Error<E: std::error::Error> {
@@ -70,7 +69,7 @@ pub mod ed25519 {
         fn sign(&self, m: M) -> Result<Self::Signature, Self::Error> {
             let mut buf = Vec::<u8>::new();
             let val: xdr::ScVal = m.try_into().map_err(Self::Error::ConversionError)?;
-            val.write_xdr(&mut buf)?;
+            val.write_xdr(&mut DepthLimitedWrite::new(&mut buf, 1000))?;
             Ok(self.try_sign(&buf)?.to_bytes())
         }
     }
