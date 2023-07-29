@@ -12,6 +12,7 @@ pub struct BumpPointerLocal {
 impl BumpPointerLocal {
     const LOG_PAGE_SIZE: usize = 16;
     const PAGE_SIZE: usize = 1 << Self::LOG_PAGE_SIZE; // 64KB
+    const MEM: u32 = 0; // Memory 0 is the only legal one currently
 
     pub const fn new() -> Self {
         Self {
@@ -27,7 +28,24 @@ impl BumpPointerLocal {
     }
 
     #[inline(always)]
+    fn maybe_init_inline(&mut self) {
+        if self.limit as usize == 0 {
+            // This is a slight over-estimate and ideally we would use __heap_base
+            // but that seems not to be easy to access and in any case it is just a
+            // convention whereas this is more guaranteed by the wasm spec to work.
+            self.cursor = (core::arch::wasm32::memory_size(Self::MEM) * Self::PAGE_SIZE) as _;
+            self.limit = self.cursor;
+        }
+    }
+
+    #[inline(never)]
+    fn maybe_init(&mut self) {
+        self.maybe_init_inline()
+    }
+
+    #[inline(always)]
     pub fn alloc(&mut self, bytes: usize, align: usize) -> *mut u8 {
+        self.maybe_init();
         let start = Self::align_allocation(self.cursor, align);
         let new_cursor = unsafe { start.add(bytes) };
         if new_cursor <= self.limit {
@@ -41,10 +59,10 @@ impl BumpPointerLocal {
     #[inline(always)]
     fn alloc_slow_inline(&mut self, bytes: usize, align: usize) -> *mut u8 {
         let pages = (bytes + Self::PAGE_SIZE - 1) / Self::PAGE_SIZE;
-        if core::arch::wasm32::memory_grow(0, pages) == usize::MAX {
+        if core::arch::wasm32::memory_grow(Self::MEM, pages) == usize::MAX {
             panic!()
         }
-        self.limit = unsafe { self.cursor.add(pages * Self::PAGE_SIZE) };
+        self.limit = unsafe { self.limit.add(pages * Self::PAGE_SIZE) };
         self.alloc(bytes, align)
     }
 
