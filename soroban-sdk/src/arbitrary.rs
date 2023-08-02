@@ -316,7 +316,9 @@ mod objects {
     use crate::{Env, IntoVal, TryFromVal};
 
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
-    use crate::{Address, Bytes, BytesN, Map, String, Symbol, Val, Vec, I256, U256};
+    use crate::{
+        Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
+    };
     use soroban_env_host::TryIntoVal;
 
     use std::string::String as RustString;
@@ -541,6 +543,44 @@ mod objects {
             Ok(sc_addr.into_val(env))
         }
     }
+
+    //////////////////////////////////
+
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryTimepoint {
+        inner: u64,
+    }
+
+    impl SorobanArbitrary for Timepoint {
+        type Prototype = ArbitraryTimepoint;
+    }
+
+    impl TryFromVal<Env, ArbitraryTimepoint> for Timepoint {
+        type Error = ConversionError;
+        fn try_from_val(env: &Env, v: &ArbitraryTimepoint) -> Result<Self, Self::Error> {
+            let sc_timepoint = ScVal::Timepoint(crate::xdr::TimePoint::from(v.inner));
+            Ok(sc_timepoint.into_val(env))
+        }
+    }
+
+    //////////////////////////////////
+
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryDuration {
+        inner: u64,
+    }
+
+    impl SorobanArbitrary for Duration {
+        type Prototype = ArbitraryDuration;
+    }
+
+    impl TryFromVal<Env, ArbitraryDuration> for Duration {
+        type Error = ConversionError;
+        fn try_from_val(env: &Env, v: &ArbitraryDuration) -> Result<Self, Self::Error> {
+            let sc_duration = ScVal::Duration(crate::xdr::Duration::from(v.inner));
+            Ok(sc_duration.into_val(env))
+        }
+    }
 }
 
 /// Implementations of `soroban_sdk::arbitrary::api` for `Val`.
@@ -553,7 +593,9 @@ mod composite {
 
     use super::objects::*;
     use super::simple::*;
-    use crate::{Address, Bytes, Map, String, Symbol, Val, Vec, I256, U256};
+    use crate::{
+        Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
+    };
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub enum ArbitraryVal {
@@ -573,7 +615,9 @@ mod composite {
         Symbol(ArbitrarySymbol),
         Vec(ArbitraryValVec),
         Map(ArbitraryValMap),
-        Address(<Address as SorobanArbitrary>::Prototype),
+        Address(ArbitraryAddress),
+        Timepoint(ArbitraryTimepoint),
+        Duration(ArbitraryDuration),
     }
 
     impl SorobanArbitrary for Val {
@@ -619,6 +663,14 @@ mod composite {
                     let v: Address = v.into_val(env);
                     v.into_val(env)
                 }
+                ArbitraryVal::Timepoint(v) => {
+                    let v: Timepoint = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryVal::Duration(v) => {
+                    let v: Duration = v.into_val(env);
+                    v.into_val(env)
+                }
             })
         }
     }
@@ -637,11 +689,14 @@ mod composite {
         U256(<Vec<U256> as SorobanArbitrary>::Prototype),
         I256(<Vec<I256> as SorobanArbitrary>::Prototype),
         Bytes(<Vec<Bytes> as SorobanArbitrary>::Prototype),
+        BytesN(<Vec<BytesN<32>> as SorobanArbitrary>::Prototype),
         String(<Vec<String> as SorobanArbitrary>::Prototype),
         Symbol(<Vec<Symbol> as SorobanArbitrary>::Prototype),
         Vec(<Vec<Vec<u32>> as SorobanArbitrary>::Prototype),
         Map(<Map<u32, u32> as SorobanArbitrary>::Prototype),
         Address(<Vec<Address> as SorobanArbitrary>::Prototype),
+        Timepoint(<Vec<Timepoint> as SorobanArbitrary>::Prototype),
+        Duration(<Vec<Duration> as SorobanArbitrary>::Prototype),
         Val(<Vec<Val> as SorobanArbitrary>::Prototype),
     }
 
@@ -697,6 +752,10 @@ mod composite {
                     let v: Vec<Bytes> = v.into_val(env);
                     v.into_val(env)
                 }
+                ArbitraryValVec::BytesN(v) => {
+                    let v: Vec<BytesN<32>> = v.into_val(env);
+                    v.into_val(env)
+                }
                 ArbitraryValVec::String(v) => {
                     let v: Vec<String> = v.into_val(env);
                     v.into_val(env)
@@ -715,6 +774,14 @@ mod composite {
                 }
                 ArbitraryValVec::Address(v) => {
                     let v: Vec<Address> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValVec::Timepoint(v) => {
+                    let v: Vec<Timepoint> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValVec::Duration(v) => {
+                    let v: Vec<Duration> = v.into_val(env);
                     v.into_val(env)
                 }
                 ArbitraryValVec::Val(v) => {
@@ -739,11 +806,14 @@ mod composite {
         U256ToU256(<Map<U256, U256> as SorobanArbitrary>::Prototype),
         I256ToI256(<Map<I256, I256> as SorobanArbitrary>::Prototype),
         BytesToBytes(<Map<Bytes, Bytes> as SorobanArbitrary>::Prototype),
+        BytesNToBytesN(<Map<BytesN<32>, BytesN<32>> as SorobanArbitrary>::Prototype),
         StringToString(<Map<String, String> as SorobanArbitrary>::Prototype),
         SymbolToSymbol(<Map<Symbol, Symbol> as SorobanArbitrary>::Prototype),
         VecToVec(<Map<Vec<u32>, Vec<u32>> as SorobanArbitrary>::Prototype),
         MapToMap(<Map<Map<u32, u32>, Map<u32, u32>> as SorobanArbitrary>::Prototype),
         AddressToAddress(<Map<Address, Address> as SorobanArbitrary>::Prototype),
+        TimepointToTimepoint(<Map<Timepoint, Timepoint> as SorobanArbitrary>::Prototype),
+        DurationToDuration(<Map<Duration, Duration> as SorobanArbitrary>::Prototype),
         ValToVal(<Map<Val, Val> as SorobanArbitrary>::Prototype),
     }
 
@@ -799,6 +869,10 @@ mod composite {
                     let v: Map<Bytes, Bytes> = v.into_val(env);
                     v.into_val(env)
                 }
+                ArbitraryValMap::BytesNToBytesN(v) => {
+                    let v: Map<BytesN<32>, BytesN<32>> = v.into_val(env);
+                    v.into_val(env)
+                }
                 ArbitraryValMap::StringToString(v) => {
                     let v: Map<String, String> = v.into_val(env);
                     v.into_val(env)
@@ -817,6 +891,14 @@ mod composite {
                 }
                 ArbitraryValMap::AddressToAddress(v) => {
                     let v: Map<Address, Address> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValMap::TimepointToTimepoint(v) => {
+                    let v: Map<Timepoint, Timepoint> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValMap::DurationToDuration(v) => {
+                    let v: Map<Duration, Duration> = v.into_val(env);
                     v.into_val(env)
                 }
                 ArbitraryValMap::ValToVal(v) => {
@@ -882,7 +964,10 @@ mod fuzz_test_helpers {
 #[cfg(test)]
 mod tests {
     use crate::arbitrary::*;
-    use crate::{Bytes, BytesN, Map, String, Symbol, Val, Vec, I256, U256};
+    use crate::{
+        Address, Bytes, BytesN, Duration, Error, Map, String, Symbol, Timepoint, Val, Vec, I256,
+        U256,
+    };
     use crate::{Env, IntoVal};
     use arbitrary::{Arbitrary, Unstructured};
     use rand::RngCore;
@@ -902,6 +987,16 @@ mod tests {
             let input = T::Prototype::arbitrary(&mut unstructured).expect("SorobanArbitrary");
             let _val: T = input.into_val(&env);
         }
+    }
+
+    #[test]
+    fn test_unit() {
+        run_test::<()>()
+    }
+
+    #[test]
+    fn test_bool() {
+        run_test::<bool>()
     }
 
     #[test]
@@ -955,13 +1050,38 @@ mod tests {
     }
 
     #[test]
+    fn test_bytes_n() {
+        run_test::<BytesN<32>>()
+    }
+
+    #[test]
     fn test_symbol() {
         run_test::<Symbol>()
     }
 
     #[test]
-    fn test_bytes_n() {
-        run_test::<BytesN<64>>()
+    fn test_address() {
+        run_test::<Address>()
+    }
+
+    #[test]
+    fn test_val() {
+        run_test::<Val>()
+    }
+
+    #[test]
+    fn test_vec_void() {
+        run_test::<Vec<()>>()
+    }
+
+    #[test]
+    fn test_vec_bool() {
+        run_test::<Vec<bool>>()
+    }
+
+    #[test]
+    fn test_vec_error() {
+        run_test::<Vec<Error>>()
     }
 
     #[test]
@@ -975,6 +1095,36 @@ mod tests {
     }
 
     #[test]
+    fn test_vec_u64() {
+        run_test::<Vec<u64>>()
+    }
+
+    #[test]
+    fn test_vec_i64() {
+        run_test::<Vec<i64>>()
+    }
+
+    #[test]
+    fn test_vec_u128() {
+        run_test::<Vec<u128>>()
+    }
+
+    #[test]
+    fn test_vec_i128() {
+        run_test::<Vec<i128>>()
+    }
+
+    #[test]
+    fn test_vec_u256() {
+        run_test::<Vec<U256>>()
+    }
+
+    #[test]
+    fn test_vec_i256() {
+        run_test::<Vec<I256>>()
+    }
+
+    #[test]
     fn test_vec_bytes() {
         run_test::<Vec<Bytes>>()
     }
@@ -985,8 +1135,63 @@ mod tests {
     }
 
     #[test]
+    fn test_vec_string() {
+        run_test::<Vec<String>>()
+    }
+
+    #[test]
+    fn test_vec_symbol() {
+        run_test::<Vec<Symbol>>()
+    }
+
+    #[test]
+    fn test_vec_vec_u32() {
+        run_test::<Vec<Vec<u32>>>()
+    }
+
+    #[test]
     fn test_vec_vec_bytes() {
         run_test::<Vec<Vec<Bytes>>>()
+    }
+
+    #[test]
+    fn test_vec_timepoint() {
+        run_test::<Vec<Timepoint>>()
+    }
+
+    #[test]
+    fn test_vec_duration() {
+        run_test::<Vec<Duration>>()
+    }
+
+    #[test]
+    fn test_vec_map_u32() {
+        run_test::<Vec<Map<u32, u32>>>()
+    }
+
+    #[test]
+    fn test_vec_address() {
+        run_test::<Vec<Address>>()
+    }
+
+    #[test]
+    fn test_vec_val() {
+        run_test::<Vec<Val>>()
+    }
+
+    #[test]
+    fn test_map_void() {
+        run_test::<Map<(), ()>>()
+    }
+
+    #[test]
+    fn test_map_bool() {
+        run_test::<Map<bool, bool>>()
+    }
+
+    #[test]
+    fn test_map_error() {
+        run_test::<Map<Error, Error>>()
     }
 
     #[test]
@@ -1000,6 +1205,36 @@ mod tests {
     }
 
     #[test]
+    fn test_map_u64() {
+        run_test::<Map<u64, Vec<u64>>>()
+    }
+
+    #[test]
+    fn test_map_i64() {
+        run_test::<Map<i64, Vec<i64>>>()
+    }
+
+    #[test]
+    fn test_map_u128() {
+        run_test::<Map<u128, Vec<u128>>>()
+    }
+
+    #[test]
+    fn test_map_i128() {
+        run_test::<Map<i128, Vec<i128>>>()
+    }
+
+    #[test]
+    fn test_map_u256() {
+        run_test::<Map<U256, Vec<U256>>>()
+    }
+
+    #[test]
+    fn test_map_i256() {
+        run_test::<Map<I256, Vec<I256>>>()
+    }
+
+    #[test]
     fn test_map_bytes() {
         run_test::<Map<Bytes, Bytes>>()
     }
@@ -1010,19 +1245,65 @@ mod tests {
     }
 
     #[test]
-    fn test_map_vec() {
+    fn test_map_string() {
+        run_test::<Map<String, String>>()
+    }
+
+    #[test]
+    fn test_map_symbol() {
+        run_test::<Map<Symbol, Symbol>>()
+    }
+
+    #[test]
+    fn test_map_vec_u32() {
+        run_test::<Map<Vec<u32>, Vec<u32>>>()
+    }
+
+    #[test]
+    fn test_map_vec_bytes() {
         run_test::<Map<Vec<Bytes>, Vec<Bytes>>>()
     }
 
     #[test]
-    fn test_raw_val() {
-        run_test::<Val>()
+    fn test_map_timepoint() {
+        run_test::<Map<Timepoint, Timepoint>>()
+    }
+
+    #[test]
+    fn test_map_duration() {
+        run_test::<Map<Duration, Duration>>()
+    }
+
+    fn test_map_map_u32() {
+        run_test::<Map<Map<u32, u32>, Map<u32, u32>>>()
+    }
+
+    #[test]
+    fn test_map_address() {
+        run_test::<Map<Address, Address>>()
+    }
+
+    #[test]
+    fn test_map_val() {
+        run_test::<Map<Val, Val>>()
+    }
+
+    #[test]
+    fn test_timepoint() {
+        run_test::<Timepoint>()
+    }
+
+    #[test]
+    fn test_duration() {
+        run_test::<Duration>()
     }
 
     mod user_defined_types {
         use crate as soroban_sdk;
         use crate::arbitrary::tests::run_test;
-        use crate::{Address, Bytes, BytesN, Error, Map, Symbol, Vec, I256, U256};
+        use crate::{
+            Address, Bytes, BytesN, Duration, Error, Map, Symbol, Timepoint, Vec, I256, U256,
+        };
         use soroban_sdk::contracttype;
 
         #[contracttype]
@@ -1038,6 +1319,8 @@ mod tests {
             error: Error,
             address: Address,
             symbol: Symbol,
+            duration: Duration,
+            timepoint: Timepoint,
         }
 
         #[test]
