@@ -117,7 +117,7 @@ pub mod budget {
         /// Note that memory is likely to be underestimated when running Rust
         /// code compared to running the WASM equivalent.
         pub fn memory_bytes_cost(&self) -> u64 {
-            self.0.get_cpu_insns_consumed().unwrap()
+            self.0.get_mem_bytes_consumed().unwrap()
         }
 
         /// Get the input tracker associated with the cost. The tracker tracks
