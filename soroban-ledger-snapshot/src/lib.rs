@@ -33,6 +33,7 @@ pub struct LedgerSnapshot {
     pub min_temp_entry_expiration: u32,
     pub max_entry_expiration: u32,
     pub ledger_entries: Vec<(Box<LedgerKey>, Box<LedgerEntry>)>,
+    pub autobump_ledgers: u32,
 }
 
 impl LedgerSnapshot {
@@ -75,6 +76,7 @@ impl LedgerSnapshot {
             min_persistent_entry_expiration: self.min_persistent_entry_expiration,
             min_temp_entry_expiration: self.min_temp_entry_expiration,
             max_entry_expiration: self.max_entry_expiration,
+            autobump_ledgers: self.autobump_ledgers,
         }
     }
 
@@ -85,6 +87,7 @@ impl LedgerSnapshot {
         self.timestamp = info.timestamp;
         self.network_id = info.network_id;
         self.base_reserve = info.base_reserve;
+        self.autobump_ledgers = info.autobump_ledgers;
     }
 
     /// Get the entries in the snapshot.
@@ -166,6 +169,7 @@ impl Default for LedgerSnapshot {
             min_persistent_entry_expiration: Default::default(),
             min_temp_entry_expiration: Default::default(),
             max_entry_expiration: Default::default(),
+            autobump_ledgers: Default::default(),
         }
     }
 }

@@ -40,17 +40,17 @@ soroban-token-sdk = { version = "0.9.2", path = "soroban-token-sdk" }
 [workspace.dependencies.soroban-env-common]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "63cf7fe3d5ffc60db57fba97e9fc9c5778cd559c"
+rev = "c5607a2e9e296b2636b46dc910387aa3446b3e29"
 
 [workspace.dependencies.soroban-env-guest]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "63cf7fe3d5ffc60db57fba97e9fc9c5778cd559c"
+rev = "c5607a2e9e296b2636b46dc910387aa3446b3e29"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "63cf7fe3d5ffc60db57fba97e9fc9c5778cd559c"
+rev = "c5607a2e9e296b2636b46dc910387aa3446b3e29"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
@@ -60,7 +60,7 @@ rev = "e6ba45c60c16de28c7522586b80ed0150157df73"
 [workspace.dependencies.stellar-xdr]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "4eaf2388c1de6fc295ed5f7df8174c199923df5b"
+rev = "d6e02584ac9f4046bf38eaf445ced0d4f33631fd"
 default-features = false
 
 #[patch."https://github.com/stellar/rs-soroban-env"]
