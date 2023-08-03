@@ -262,7 +262,7 @@ impl Address {
     /// ### Panics
     ///
     /// If Address is not a contract ID.
-    pub(crate) fn contract_id(&self) -> BytesN<32> {
+    pub fn contract_id(&self) -> BytesN<32> {
         match self.try_contract_id() {
             Some(contract_id) => contract_id,
             None => panic!("Address is not a Contract ID"),
