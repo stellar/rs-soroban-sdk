@@ -49,7 +49,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
             /// `Address::require_auth_for_args` functions.
             ///
             /// Requires valid signatures for the authorization to be successful.
-            /// To mock auth without requiring valid sigantures, use `mock_auths`.
+            /// To mock auth without requiring valid signatures, use `mock_auths`.
             ///
             /// See `soroban_sdk::Env::set_auths` for more details and examples.
             #[cfg(any(test, feature = "testutils"))]
