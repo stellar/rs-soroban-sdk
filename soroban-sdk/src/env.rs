@@ -1046,7 +1046,7 @@ impl Env {
     ///         // as long as a valid error type used.
     ///         Err(Ok(NoopAccountError::SomeError))
     ///     );
-    ///     // Succesful call of `__check_auth` with a `soroban_sdk::Error`
+    ///     // Successful call of `__check_auth` with a `soroban_sdk::Error`
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
