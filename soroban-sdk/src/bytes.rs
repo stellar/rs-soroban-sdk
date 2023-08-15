@@ -561,11 +561,15 @@ impl Bytes {
 
     /// Copy the bytes into the given slice.
     ///
-    /// The minimum number of bytes are copied to either exhaust [Bytes] or fill
-    /// slice.
+    /// ### Panics
+    ///
+    /// If the output slice and bytes are of different lengths.
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
+        if self.len() as usize != slice.len() {
+            sdk_panic!("Bytes::copy_into_slice with mismatched slice length")
+        }
         env.bytes_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
     }
@@ -1013,11 +1017,8 @@ impl<const N: usize> BytesN<N> {
     }
 
     /// Copy the bytes into the given slice.
-    ///
-    /// The minimum number of bytes are copied to either exhaust [BytesN] or fill
-    /// slice.
     #[inline(always)]
-    pub fn copy_into_slice(&self, slice: &mut [u8]) {
+    pub fn copy_into_slice(&self, slice: &mut [u8; N]) {
         let env = self.env();
         env.bytes_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
@@ -1125,6 +1126,24 @@ mod test {
         let mut out = [0u8; 4];
         b.copy_into_slice(&mut out);
         assert_eq!([1, 2, 3, 4], out);
+    }
+
+    #[test]
+    #[should_panic]
+    fn bytes_to_short_slice() {
+        let env = Env::default();
+        let b = Bytes::from_slice(&env, &[1, 2, 3, 4]);
+        let mut out = [0u8; 3];
+        b.copy_into_slice(&mut out);
+    }
+
+    #[test]
+    #[should_panic]
+    fn bytes_to_long_slice() {
+        let env = Env::default();
+        let b = Bytes::from_slice(&env, &[1, 2, 3, 4]);
+        let mut out = [0u8; 5];
+        b.copy_into_slice(&mut out);
     }
 
     #[test]
