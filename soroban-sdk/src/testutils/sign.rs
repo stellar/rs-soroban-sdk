@@ -76,23 +76,18 @@ pub mod ed25519 {
 
     #[cfg(test)]
     mod test {
-        use ed25519_dalek::{Keypair, PublicKey, SecretKey};
-
         use super::Sign;
+        use ed25519_dalek::SigningKey;
 
         #[test]
         fn sign() {
-            let sk = SecretKey::from_bytes(
+            let sk = SigningKey::from_bytes(
                 &hex::decode("5acc7253295dfc356c046297925a369f3d2762d00afdf2583ecbe92180b07c37")
+                    .unwrap()
+                    .try_into()
                     .unwrap(),
-            )
-            .unwrap();
-            let pk = PublicKey::from(&sk);
-            let kp = Keypair {
-                secret: sk,
-                public: pk,
-            };
-            let sig = kp.sign(128i64).unwrap();
+            );
+            let sig = sk.sign(128i64).unwrap();
             assert_eq!(
                 hex::encode(sig),
                 // Verified with https://go.dev/play/p/XiK8sOmvPsh
