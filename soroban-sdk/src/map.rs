@@ -508,18 +508,15 @@ where
 #[derive(Clone)]
 pub struct MapTryIter<K, V> {
     map: Map<K, V>,
-    len: u32,
-    min_key: Val,
-    max_key: Val,
+    front_pos: u32,
+    back_pos: u32,
 }
 
 impl<K, V> MapTryIter<K, V> {
     fn new(map: Map<K, V>) -> Self {
-        let env = map.env();
         Self {
-            len: map.len(),
-            min_key: env.map_min_key(map.to_object()).unwrap_infallible(),
-            max_key: env.map_max_key(map.to_object()).unwrap_infallible(),
+            front_pos: 0,
+            back_pos: map.len(),
             map,
         }
     }
@@ -534,15 +531,16 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.len == 0 {
+        if self.front_pos == self.back_pos {
             return None;
         }
-        let key = self.min_key;
-        self.min_key = env
-            .map_next_key(self.map.to_object(), key)
+        let key = env
+            .map_key_by_pos(self.map.to_object(), self.front_pos.into())
             .unwrap_infallible();
-        self.len -= 1;
-        let value = env.map_get(self.map.to_object(), key).unwrap_infallible();
+        let value = env
+            .map_val_by_pos(self.map.to_object(), self.front_pos.into())
+            .unwrap_infallible();
+        self.front_pos += 1;
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -556,7 +554,7 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.len as usize;
+        let len = (self.back_pos - self.front_pos) as usize;
         (len, Some(len))
     }
 
@@ -570,15 +568,16 @@ where
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.len == 0 {
+        if self.front_pos == self.back_pos {
             return None;
         }
-        let key = self.max_key;
-        self.max_key = env
-            .map_prev_key(self.map.to_object(), key)
+        self.back_pos -= 1;
+        let key = env
+            .map_key_by_pos(self.map.to_object(), self.back_pos.into())
             .unwrap_infallible();
-        self.len -= 1;
-        let value = env.map_get(self.map.to_object(), key).unwrap_infallible();
+        let value = env
+            .map_val_by_pos(self.map.to_object(), self.back_pos.into())
+            .unwrap_infallible();
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -607,7 +606,7 @@ where
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
-        self.len as usize
+        (self.back_pos - self.front_pos) as usize
     }
 }
 

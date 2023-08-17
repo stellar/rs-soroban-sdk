@@ -63,10 +63,10 @@ git = "https://github.com/stellar/rs-stellar-xdr"
 rev = "4876e5eb20016caebbd13bcf6401626dc6073b8e"
 default-features = false
 
-#[patch."https://github.com/stellar/rs-soroban-env"]
-#soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-#soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+[patch."https://github.com/stellar/rs-soroban-env"]
+soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
 #[patch."https://github.com/stellar/rs-stellar-xdr"]
 #stellar-xdr = { path = "../rs-stellar-xdr/" }
 
