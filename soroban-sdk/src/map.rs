@@ -508,15 +508,15 @@ where
 #[derive(Clone)]
 pub struct MapTryIter<K, V> {
     map: Map<K, V>,
-    front_pos: u32,
-    back_pos: u32,
+    pos: u32,
+    len: u32,
 }
 
 impl<K, V> MapTryIter<K, V> {
     fn new(map: Map<K, V>) -> Self {
         Self {
-            front_pos: 0,
-            back_pos: map.len(),
+            pos: 0,
+            len: map.len(),
             map,
         }
     }
@@ -531,16 +531,16 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.front_pos == self.back_pos {
+        if self.pos == self.len {
             return None;
         }
         let key = env
-            .map_key_by_pos(self.map.to_object(), self.front_pos.into())
+            .map_key_by_pos(self.map.to_object(), self.pos.into())
             .unwrap_infallible();
         let value = env
-            .map_val_by_pos(self.map.to_object(), self.front_pos.into())
+            .map_val_by_pos(self.map.to_object(), self.pos.into())
             .unwrap_infallible();
-        self.front_pos += 1;
+        self.pos += 1;
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -554,7 +554,7 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = (self.back_pos - self.front_pos) as usize;
+        let len = (self.len - self.pos) as usize;
         (len, Some(len))
     }
 
@@ -568,15 +568,15 @@ where
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.front_pos == self.back_pos {
+        if self.pos == self.len {
             return None;
         }
-        self.back_pos -= 1;
+        self.len -= 1;
         let key = env
-            .map_key_by_pos(self.map.to_object(), self.back_pos.into())
+            .map_key_by_pos(self.map.to_object(), self.len.into())
             .unwrap_infallible();
         let value = env
-            .map_val_by_pos(self.map.to_object(), self.back_pos.into())
+            .map_val_by_pos(self.map.to_object(), self.len.into())
             .unwrap_infallible();
         Some(Ok((
             match K::try_from_val(env, &key) {
@@ -606,7 +606,7 @@ where
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
-        (self.back_pos - self.front_pos) as usize
+        (self.len - self.pos) as usize
     }
 }
 
