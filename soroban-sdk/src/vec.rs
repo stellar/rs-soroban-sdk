@@ -365,7 +365,7 @@ where
     /// Create an empty Vec.
     #[inline(always)]
     pub fn new(env: &Env) -> Vec<T> {
-        unsafe { Self::unchecked_new(env.clone(), env.vec_new(().into()).unwrap_infallible()) }
+        unsafe { Self::unchecked_new(env.clone(), env.vec_new().unwrap_infallible()) }
     }
 
     /// Create a Vec from the array of items.
