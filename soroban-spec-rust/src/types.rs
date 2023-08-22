@@ -166,10 +166,6 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             let value_ident = generate_type_ident(&m.value_type);
             quote! { soroban_sdk::Map<#key_ident, #value_ident> }
         }
-        ScSpecTypeDef::Set(s) => {
-            let element_ident = generate_type_ident(&s.element_type);
-            quote! { soroban_sdk::Set<#element_ident> }
-        }
         ScSpecTypeDef::Tuple(t) => {
             let type_idents = t.value_types.iter().map(generate_type_ident);
             quote! { (#(#type_idents,)*) }
