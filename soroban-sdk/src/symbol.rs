@@ -209,7 +209,27 @@ impl Symbol {
     ///
     /// Valid characters are `a-zA-Z0-9_` and maximum length is 9 characters.
     ///
-    /// The conversion can happen at compile time.
+    /// The conversion can happen at compile time if called in a const context,
+    /// such as:
+    ///
+    /// ```rust
+    /// const SYMBOL: Symbol = Symbol::short("abcde");
+    /// ```
+    ///
+    /// Note that when called from a non-const context the conversion will occur
+    /// at runtime and the conversion logic will add considerable number of
+    /// bytes to built wasm file. For this reason the function should be generally
+    /// avoided:
+    ///
+    /// ```rust
+    /// let SYMBOL: Symbol = Symbol::short("abcde"); // AVOID!
+    /// ```
+    ///
+    /// Instead use the `symbol_short!()` macro that will ensure the conversion always occurs in a const-context:
+    ///
+    /// ```rust
+    /// let SYMBOL: Symbol = symbol_short!("abcde"); // 👍
+    /// ```
     ///
     /// ### Panics
     ///
