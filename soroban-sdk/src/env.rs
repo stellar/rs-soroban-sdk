@@ -887,6 +887,61 @@ impl Env {
         self.env_impl.switch_to_recording_auth(true).unwrap();
     }
 
+    /// A version of `mock_all_auths` that allows authorizations that are not
+    /// present in the root invocation.
+    ///
+    /// Refer to `mock_all_auths` documentation for general information and
+    /// prefer using `mock_all_auths` unless non-root authorization is required.
+    ///
+    /// The only difference from `mock_all_auths` is that this won't return an
+    /// error when `require_auth` hasn't been called in the root invocation for
+    /// any given address. This is useful to test contracts that bundle calls to
+    /// another contract without atomicity requirements (i.e. any contract call
+    /// can be frontrun).
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env, Address, testutils::Address as _};
+    ///
+    /// #[contract]
+    /// pub struct ContractA;
+    ///
+    /// #[contractimpl]
+    /// impl ContractA {
+    ///     pub fn do_auth(env: Env, addr: Address) {
+    ///         addr.require_auth();
+    ///     }
+    /// }
+    /// #[contract]
+    /// pub struct ContractB;
+    ///
+    /// #[contractimpl]
+    /// impl ContractB {
+    ///     pub fn call_a(env: Env, contract_a: Address, addr: Address) {
+    ///         // Notice there is no `require_auth` call here.
+    ///         ContractAClient::new(&env, &contract_a).do_auth(&addr);
+    ///     }
+    /// }
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_a = env.register_contract(None, ContractA);
+    ///     let contract_b = env.register_contract(None, ContractB);
+    ///     // The regular `env.mock_all_auths()` would result in the call
+    ///     // failure.
+    ///     env.mock_all_auths_allowing_non_root_auth();
+    ///
+    ///     let client = ContractBClient::new(&env, &contract_b);
+    ///     let addr = Address::random(&env);
+    ///     client.call_a(&contract_a, &addr);
+    /// }
+    /// ```
+    pub fn mock_all_auths_allowing_non_root_auth(&self) {
+        self.env_impl.switch_to_recording_auth(false).unwrap();
+    }
+
     /// Returns a list of authorization trees that were seen during the last
     /// contract or authorized host function invocation.
     ///
