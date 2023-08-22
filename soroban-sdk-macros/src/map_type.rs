@@ -1,6 +1,6 @@
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
-    ScSpecTypeSet, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
+    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
 use syn::{
     spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
@@ -83,18 +83,6 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
-                                element_type: Box::new(map_type(t)?),
-                            })))
-                        }
-                        "Set" => {
-                            let t = match args.as_slice() {
-                                [GenericArgument::Type(t)] => t,
-                                [..] => Err(Error::new(
-                                    t.span(),
-                                    "incorrect number of generic arguments, expect one for Set<T>",
-                                ))?,
-                            };
-                            Ok(ScSpecTypeDef::Set(Box::new(ScSpecTypeSet {
                                 element_type: Box::new(map_type(t)?),
                             })))
                         }
