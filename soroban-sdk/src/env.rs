@@ -495,7 +495,8 @@ impl Env {
             fn get(
                 &self,
                 _key: &Rc<xdr::LedgerKey>,
-            ) -> Result<Rc<xdr::LedgerEntry>, soroban_env_host::HostError> {
+            ) -> Result<(Rc<xdr::LedgerEntry>, Option<u32>), soroban_env_host::HostError>
+            {
                 let err: internal::Error = (ScErrorType::Storage, ScErrorCode::MissingValue).into();
                 Err(err.into())
             }
@@ -531,7 +532,6 @@ impl Env {
             min_persistent_entry_expiration: 4096,
             min_temp_entry_expiration: 16,
             max_entry_expiration: 6_312_000,
-            autobump_ledgers: 0,
         });
 
         env
@@ -686,6 +686,7 @@ impl Env {
                     storage.put(
                         &k,
                         &v,
+                        None,
                         soroban_env_host::budget::AsBudget::as_budget(self.host()),
                     )?
                 }
@@ -885,6 +886,61 @@ impl Env {
     /// ```
     pub fn mock_all_auths(&self) {
         self.env_impl.switch_to_recording_auth(true).unwrap();
+    }
+
+    /// A version of `mock_all_auths` that allows authorizations that are not
+    /// present in the root invocation.
+    ///
+    /// Refer to `mock_all_auths` documentation for general information and
+    /// prefer using `mock_all_auths` unless non-root authorization is required.
+    ///
+    /// The only difference from `mock_all_auths` is that this won't return an
+    /// error when `require_auth` hasn't been called in the root invocation for
+    /// any given address. This is useful to test contracts that bundle calls to
+    /// another contract without atomicity requirements (i.e. any contract call
+    /// can be frontrun).
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env, Address, testutils::Address as _};
+    ///
+    /// #[contract]
+    /// pub struct ContractA;
+    ///
+    /// #[contractimpl]
+    /// impl ContractA {
+    ///     pub fn do_auth(env: Env, addr: Address) {
+    ///         addr.require_auth();
+    ///     }
+    /// }
+    /// #[contract]
+    /// pub struct ContractB;
+    ///
+    /// #[contractimpl]
+    /// impl ContractB {
+    ///     pub fn call_a(env: Env, contract_a: Address, addr: Address) {
+    ///         // Notice there is no `require_auth` call here.
+    ///         ContractAClient::new(&env, &contract_a).do_auth(&addr);
+    ///     }
+    /// }
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_a = env.register_contract(None, ContractA);
+    ///     let contract_b = env.register_contract(None, ContractB);
+    ///     // The regular `env.mock_all_auths()` would result in the call
+    ///     // failure.
+    ///     env.mock_all_auths_allowing_non_root_auth();
+    ///
+    ///     let client = ContractBClient::new(&env, &contract_b);
+    ///     let addr = Address::random(&env);
+    ///     client.call_a(&contract_a, &addr);
+    /// }
+    /// ```
+    pub fn mock_all_auths_allowing_non_root_auth(&self) {
+        self.env_impl.switch_to_recording_auth(false).unwrap();
     }
 
     /// Returns a list of authorization trees that were seen during the last
@@ -1094,17 +1150,12 @@ impl Env {
             contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
             key: data_key.clone(),
             durability: xdr::ContractDataDurability::Persistent,
-            body_type: xdr::ContractEntryBodyType::DataEntry,
         }));
 
         let instance = xdr::ScContractInstance {
             executable,
             storage: Default::default(),
         };
-        let body = xdr::ContractDataEntryBody::DataEntry(xdr::ContractDataEntryData {
-            val: xdr::ScVal::ContractInstance(instance),
-            flags: 0,
-        });
 
         let entry = Rc::new(LedgerEntry {
             ext: xdr::LedgerEntryExt::V0,
@@ -1112,13 +1163,21 @@ impl Env {
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
                 contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
                 key: data_key,
-                body,
-                expiration_ledger_seq: 0,
+                val: xdr::ScVal::ContractInstance(instance),
                 durability: xdr::ContractDataDurability::Persistent,
+                ext: xdr::ExtensionPoint::V0,
             }),
         });
+        let expiration_ledger = self.ledger().sequence() + 1;
         self.env_impl
-            .with_mut_storage(|storage| storage.put(&key, &entry, &self.env_impl.budget_cloned()))
+            .with_mut_storage(|storage| {
+                storage.put(
+                    &key,
+                    &entry,
+                    Some(expiration_ledger),
+                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
+                )
+            })
             .unwrap();
     }
 

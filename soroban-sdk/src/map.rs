@@ -8,7 +8,7 @@ use crate::{
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, MapObject},
+    env::internal::{Env as _, EnvBase as _, MapObject, U32Val},
     ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val, Vec,
 };
 
@@ -508,18 +508,15 @@ where
 #[derive(Clone)]
 pub struct MapTryIter<K, V> {
     map: Map<K, V>,
-    len: u32,
-    min_key: Val,
-    max_key: Val,
+    begin: u32,
+    end: u32,
 }
 
 impl<K, V> MapTryIter<K, V> {
     fn new(map: Map<K, V>) -> Self {
-        let env = map.env();
         Self {
-            len: map.len(),
-            min_key: env.map_min_key(map.to_object()).unwrap_infallible(),
-            max_key: env.map_max_key(map.to_object()).unwrap_infallible(),
+            begin: 0,
+            end: map.len(),
             map,
         }
     }
@@ -534,15 +531,15 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.len == 0 {
+        if self.begin >= self.end {
             return None;
         }
-        let key = self.min_key;
-        self.min_key = env
-            .map_next_key(self.map.to_object(), key)
-            .unwrap_infallible();
-        self.len -= 1;
-        let value = env.map_get(self.map.to_object(), key).unwrap_infallible();
+        let map_obj = self.map.to_object();
+        let index_val: U32Val = self.begin.into();
+        let key = env.map_key_by_pos(map_obj, index_val).unwrap_infallible();
+        let value = env.map_val_by_pos(map_obj, index_val).unwrap_infallible();
+        self.begin += 1;
+
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -556,7 +553,7 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.len as usize;
+        let len = (self.end - self.begin) as usize;
         (len, Some(len))
     }
 
@@ -570,15 +567,15 @@ where
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.len == 0 {
+        if self.begin >= self.end {
             return None;
         }
-        let key = self.max_key;
-        self.max_key = env
-            .map_prev_key(self.map.to_object(), key)
-            .unwrap_infallible();
-        self.len -= 1;
-        let value = env.map_get(self.map.to_object(), key).unwrap_infallible();
+        self.end -= 1;
+        let map_obj = self.map.to_object();
+        let index_val: U32Val = self.end.into();
+        let key = env.map_key_by_pos(map_obj, index_val).unwrap_infallible();
+        let value = env.map_val_by_pos(map_obj, index_val).unwrap_infallible();
+
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -607,7 +604,7 @@ where
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
-        self.len as usize
+        (self.end - self.begin) as usize
     }
 }
 
