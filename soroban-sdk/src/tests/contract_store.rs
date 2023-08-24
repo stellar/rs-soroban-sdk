@@ -36,15 +36,15 @@ impl Contract {
     }
 
     pub fn bump_persistent(env: Env, k: i32) {
-        env.storage().persistent().bump(&DataKey::Key(k), 100);
+        env.storage().persistent().bump(&DataKey::Key(k), 100, 100);
     }
 
     pub fn bump_temporary(env: Env, k: i32) {
-        env.storage().temporary().bump(&DataKey::Key(k), 100);
+        env.storage().temporary().bump(&DataKey::Key(k), 100, 100);
     }
 
     pub fn bump_instance(env: Env) {
-        env.storage().instance().bump(100);
+        env.storage().instance().bump(100, 100);
     }
 }
 
