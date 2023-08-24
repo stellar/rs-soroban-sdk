@@ -62,6 +62,12 @@ jobs:
           target: x86_64-unknown-linux-gnu
         - os: ubuntu-latest
           target: aarch64-unknown-linux-gnu
+          # Fix #1011 by avoiding the use of crate-type = ["cdylib"] in native
+          # builds that cross-compile. It causes linker errors. The root cause
+          # is rust-lang/cargo#4133. This workaround uses rustc to build for a
+          # specific crate-type, lib, such that the Cargo.toml crate-type is
+          # ignored.
+          cdylib-cross-compile-workaround: true
         - os: macos-latest
           target: x86_64-apple-darwin
         - os: macos-latest
@@ -82,7 +88,10 @@ jobs:
         name: cargo-hack
         version: 0.5.16
     - run: cargo-hack hack build --target wasm32-unknown-unknown --profile release
-    - run: cargo-hack hack --feature-powerset --exclude-features docs rustc --exclude soroban-sdk-macros --workspace --crate-type lib --target ${{ matrix.sys.target }}
+    - if: "!matrix.sys.cdylib-cross-compile-workaround"
+      run: cargo-hack hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
+    - if: "matrix.sys.cdylib-cross-compile-workaround"
+      run: cargo-hack hack --feature-powerset --exclude-features docs rustc --exclude soroban-sdk-macros --crate-type lib --target ${{ matrix.sys.target }}
     - if: startsWith(matrix.sys.target, 'x86_64')
       run: cargo-hack hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
 
