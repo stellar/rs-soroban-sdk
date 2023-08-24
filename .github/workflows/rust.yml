@@ -91,7 +91,7 @@ jobs:
     - if: "!matrix.sys.cdylib-cross-compile-workaround"
       run: cargo-hack hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
     - if: "matrix.sys.cdylib-cross-compile-workaround"
-      run: cargo-hack hack --feature-powerset --exclude-features docs rustc --exclude soroban-sdk-macros --crate-type lib --target ${{ matrix.sys.target }}
+      run: cargo-hack hack --feature-powerset --exclude-features docs rustc --workspace --exclude soroban-sdk-macros --crate-type lib --target ${{ matrix.sys.target }}
     - if: startsWith(matrix.sys.target, 'x86_64')
       run: cargo-hack hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
 
