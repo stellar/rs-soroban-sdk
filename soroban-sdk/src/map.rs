@@ -8,7 +8,7 @@ use crate::{
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, MapObject},
+    env::internal::{Env as _, EnvBase as _, MapObject, U32Val},
     ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val, Vec,
 };
 
@@ -508,15 +508,15 @@ where
 #[derive(Clone)]
 pub struct MapTryIter<K, V> {
     map: Map<K, V>,
-    pos: u32,
-    len: u32,
+    begin: u32,
+    end: u32,
 }
 
 impl<K, V> MapTryIter<K, V> {
     fn new(map: Map<K, V>) -> Self {
         Self {
-            pos: 0,
-            len: map.len(),
+            begin: 0,
+            end: map.len(),
             map,
         }
     }
@@ -531,16 +531,15 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.pos == self.len {
+        if self.begin >= self.end {
             return None;
         }
-        let key = env
-            .map_key_by_pos(self.map.to_object(), self.pos.into())
-            .unwrap_infallible();
-        let value = env
-            .map_val_by_pos(self.map.to_object(), self.pos.into())
-            .unwrap_infallible();
-        self.pos += 1;
+        let map_obj = self.map.to_object();
+        let index_val: U32Val = self.begin.into();
+        let key = env.map_key_by_pos(map_obj, index_val).unwrap_infallible();
+        let value = env.map_val_by_pos(map_obj, index_val).unwrap_infallible();
+        self.begin += 1;
+
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -554,7 +553,7 @@ where
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = (self.len - self.pos) as usize;
+        let len = (self.end - self.begin) as usize;
         (len, Some(len))
     }
 
@@ -568,16 +567,15 @@ where
 {
     fn next_back(&mut self) -> Option<Self::Item> {
         let env = self.map.env();
-        if self.pos == self.len {
+        if self.begin >= self.end {
             return None;
         }
-        self.len -= 1;
-        let key = env
-            .map_key_by_pos(self.map.to_object(), self.len.into())
-            .unwrap_infallible();
-        let value = env
-            .map_val_by_pos(self.map.to_object(), self.len.into())
-            .unwrap_infallible();
+        self.end -= 1;
+        let map_obj = self.map.to_object();
+        let index_val: U32Val = self.end.into();
+        let key = env.map_key_by_pos(map_obj, index_val).unwrap_infallible();
+        let value = env.map_val_by_pos(map_obj, index_val).unwrap_infallible();
+
         Some(Ok((
             match K::try_from_val(env, &key) {
                 Ok(k) => k,
@@ -606,7 +604,7 @@ where
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn len(&self) -> usize {
-        (self.len - self.pos) as usize
+        (self.end - self.begin) as usize
     }
 }
 

@@ -176,24 +176,14 @@ impl Storage {
     /// currently executing contract's storage.
     ///
     /// The returned value is a result of converting the internal value
-    pub(crate) fn set<K, V>(&self, key: &K, val: &V, storage_type: StorageType, flags: Option<u32>)
+    pub(crate) fn set<K, V>(&self, key: &K, val: &V, storage_type: StorageType)
     where
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        let f: Val = match flags {
-            None => ().into(),
-            Some(i) => i.into(),
-        };
         let env = &self.env;
-        internal::Env::put_contract_data(
-            env,
-            key.into_val(env),
-            val.into_val(env),
-            storage_type,
-            f,
-        )
-        .unwrap_infallible();
+        internal::Env::put_contract_data(env, key.into_val(env), val.into_val(env), storage_type)
+            .unwrap_infallible();
     }
 
     pub(crate) fn bump<K>(&self, key: &K, storage_type: StorageType, min_ledgers_to_live: u32)
@@ -260,7 +250,7 @@ impl Persistent {
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::Persistent, None)
+        self.storage.set(key, val, StorageType::Persistent)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -306,7 +296,7 @@ impl Temporary {
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::Temporary, None)
+        self.storage.set(key, val, StorageType::Temporary)
     }
 
     pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
@@ -352,7 +342,7 @@ impl Instance {
         K: IntoVal<Env, Val>,
         V: IntoVal<Env, Val>,
     {
-        self.storage.set(key, val, StorageType::Instance, None)
+        self.storage.set(key, val, StorageType::Instance)
     }
 
     #[inline(always)]
@@ -363,14 +353,10 @@ impl Instance {
         self.storage.remove(key, StorageType::Instance)
     }
 
-    pub fn bump(&self, _min_ledgers_to_live: u32) {
-        // This is required because register_contract
-        // doesn't create an instance. This guard can be
-        // removed once that is fixed.
-        #[cfg(not(any(test, feature = "testutils")))]
+    pub fn bump(&self, min_ledgers_to_live: u32) {
         internal::Env::bump_current_contract_instance_and_code(
             &self.storage.env,
-            _min_ledgers_to_live.into(),
+            min_ledgers_to_live.into(),
         )
         .unwrap_infallible();
     }
