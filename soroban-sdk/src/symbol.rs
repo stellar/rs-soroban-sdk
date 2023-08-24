@@ -213,6 +213,7 @@ impl Symbol {
     /// such as:
     ///
     /// ```rust
+    /// # use soroban_sdk::Symbol;
     /// const SYMBOL: Symbol = Symbol::short("abcde");
     /// ```
     ///
@@ -222,12 +223,14 @@ impl Symbol {
     /// avoided:
     ///
     /// ```rust
+    /// # use soroban_sdk::Symbol;
     /// let SYMBOL: Symbol = Symbol::short("abcde"); // AVOID!
     /// ```
     ///
     /// Instead use the `symbol_short!()` macro that will ensure the conversion always occurs in a const-context:
     ///
     /// ```rust
+    /// # use soroban_sdk::{symbol_short, Symbol};
     /// let SYMBOL: Symbol = symbol_short!("abcde"); // 👍
     /// ```
     ///
