@@ -32,15 +32,14 @@ pub struct LedgerSnapshot {
     pub min_persistent_entry_expiration: u32,
     pub min_temp_entry_expiration: u32,
     pub max_entry_expiration: u32,
-    pub ledger_entries: Vec<(Box<LedgerKey>, Box<LedgerEntry>)>,
-    pub autobump_ledgers: u32,
+    pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
 }
 
 impl LedgerSnapshot {
     // Create a ledger snapshot from ledger info and a set of entries.
     pub fn from<'a>(
         info: LedgerInfo,
-        entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)>,
+        entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, (&'a Box<LedgerEntry>, Option<u32>))>,
     ) -> Self {
         let mut s = Self::default();
         s.set_ledger_info(info);
@@ -76,7 +75,6 @@ impl LedgerSnapshot {
             min_persistent_entry_expiration: self.min_persistent_entry_expiration,
             min_temp_entry_expiration: self.min_temp_entry_expiration,
             max_entry_expiration: self.max_entry_expiration,
-            autobump_ledgers: self.autobump_ledgers,
         }
     }
 
@@ -87,22 +85,23 @@ impl LedgerSnapshot {
         self.timestamp = info.timestamp;
         self.network_id = info.network_id;
         self.base_reserve = info.base_reserve;
-        self.autobump_ledgers = info.autobump_ledgers;
     }
 
     /// Get the entries in the snapshot.
-    pub fn entries(&self) -> impl IntoIterator<Item = (&Box<LedgerKey>, &Box<LedgerEntry>)> {
+    pub fn entries(
+        &self,
+    ) -> impl IntoIterator<Item = (&Box<LedgerKey>, &(Box<LedgerEntry>, Option<u32>))> {
         self.ledger_entries.iter().map(|(k, v)| (k, v))
     }
 
     /// Replace the entries in the snapshot with the entries in the iterator.
     pub fn set_entries<'a>(
         &mut self,
-        entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, &'a Box<LedgerEntry>)>,
+        entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, (&'a Box<LedgerEntry>, Option<u32>))>,
     ) {
         self.ledger_entries.clear();
         for (k, e) in entries {
-            self.ledger_entries.push((k.clone(), e.clone()));
+            self.ledger_entries.push((k.clone(), (e.0.clone(), e.1)));
         }
     }
 
@@ -111,12 +110,15 @@ impl LedgerSnapshot {
     /// entry.
     pub fn update_entries<'a>(
         &mut self,
-        entries: impl IntoIterator<Item = &'a (Rc<LedgerKey>, Option<Rc<LedgerEntry>>)>,
+        entries: impl IntoIterator<Item = &'a (Rc<LedgerKey>, Option<(Rc<LedgerEntry>, Option<u32>)>)>,
     ) {
         for (k, e) in entries {
             let i = self.ledger_entries.iter().position(|(ik, _)| **ik == **k);
-            if let Some(e) = e {
-                let new = (Box::new((**k).clone()), Box::new((**e).clone()));
+            if let Some((entry, expiration)) = e {
+                let new = (
+                    Box::new((**k).clone()),
+                    (Box::new((**entry).clone()), *expiration),
+                );
                 if let Some(i) = i {
                     self.ledger_entries[i] = new;
                 } else {
@@ -169,15 +171,14 @@ impl Default for LedgerSnapshot {
             min_persistent_entry_expiration: Default::default(),
             min_temp_entry_expiration: Default::default(),
             max_entry_expiration: Default::default(),
-            autobump_ledgers: Default::default(),
         }
     }
 }
 
 impl SnapshotSource for &LedgerSnapshot {
-    fn get(&self, key: &Rc<LedgerKey>) -> Result<Rc<LedgerEntry>, HostError> {
+    fn get(&self, key: &Rc<LedgerKey>) -> Result<(Rc<LedgerEntry>, Option<u32>), HostError> {
         match self.ledger_entries.iter().find(|(k, _)| **k == **key) {
-            Some((_, v)) => Ok(Rc::new(*v.clone())),
+            Some((_, v)) => Ok((Rc::new(*v.0.clone()), v.1)),
             None => Err(ScError::Storage(ScErrorCode::MissingValue).into()),
         }
     }
@@ -187,7 +188,7 @@ impl SnapshotSource for &LedgerSnapshot {
 }
 
 impl SnapshotSource for LedgerSnapshot {
-    fn get(&self, key: &Rc<LedgerKey>) -> Result<Rc<LedgerEntry>, HostError> {
+    fn get(&self, key: &Rc<LedgerKey>) -> Result<(Rc<LedgerEntry>, Option<u32>), HostError> {
         <_ as SnapshotSource>::get(&self, key)
     }
     fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {

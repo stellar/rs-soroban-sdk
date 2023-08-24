@@ -495,7 +495,8 @@ impl Env {
             fn get(
                 &self,
                 _key: &Rc<xdr::LedgerKey>,
-            ) -> Result<Rc<xdr::LedgerEntry>, soroban_env_host::HostError> {
+            ) -> Result<(Rc<xdr::LedgerEntry>, Option<u32>), soroban_env_host::HostError>
+            {
                 let err: internal::Error = (ScErrorType::Storage, ScErrorCode::MissingValue).into();
                 Err(err.into())
             }
@@ -531,7 +532,6 @@ impl Env {
             min_persistent_entry_expiration: 4096,
             min_temp_entry_expiration: 16,
             max_entry_expiration: 6_312_000,
-            autobump_ledgers: 0,
         });
 
         env
@@ -686,6 +686,7 @@ impl Env {
                     storage.put(
                         &k,
                         &v,
+                        None,
                         soroban_env_host::budget::AsBudget::as_budget(self.host()),
                     )?
                 }
@@ -1149,17 +1150,12 @@ impl Env {
             contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
             key: data_key.clone(),
             durability: xdr::ContractDataDurability::Persistent,
-            body_type: xdr::ContractEntryBodyType::DataEntry,
         }));
 
         let instance = xdr::ScContractInstance {
             executable,
             storage: Default::default(),
         };
-        let body = xdr::ContractDataEntryBody::DataEntry(xdr::ContractDataEntryData {
-            val: xdr::ScVal::ContractInstance(instance),
-            flags: 0,
-        });
 
         let entry = Rc::new(LedgerEntry {
             ext: xdr::LedgerEntryExt::V0,
@@ -1167,13 +1163,21 @@ impl Env {
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
                 contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
                 key: data_key,
-                body,
-                expiration_ledger_seq: 0,
+                val: xdr::ScVal::ContractInstance(instance),
                 durability: xdr::ContractDataDurability::Persistent,
+                ext: xdr::ExtensionPoint::V0,
             }),
         });
+        let expiration_ledger = self.ledger().sequence() + 1;
         self.env_impl
-            .with_mut_storage(|storage| storage.put(&key, &entry, &self.env_impl.budget_cloned()))
+            .with_mut_storage(|storage| {
+                storage.put(
+                    &key,
+                    &entry,
+                    Some(expiration_ledger),
+                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
+                )
+            })
             .unwrap();
     }
 
