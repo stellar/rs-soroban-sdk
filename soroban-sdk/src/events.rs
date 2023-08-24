@@ -125,30 +125,24 @@ use crate::{testutils, xdr, Address, BytesN, TryIntoVal};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)> {
+    fn all(&self) -> Result<Vec<(crate::Address, Vec<Val>, Val)>, soroban_env_host::HostError> {
         let env = self.env();
         let mut vec = Vec::new(env);
-        self.env()
-            .host()
-            .get_events()
-            .unwrap()
-            .0
-            .into_iter()
-            .for_each(|e| {
-                if let xdr::ContractEvent {
-                    type_: xdr::ContractEventType::Contract,
-                    contract_id: Some(contract_id),
-                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
-                    ..
-                } = e.event
-                {
-                    vec.push_back((
-                        Address::from_contract_id(&BytesN::from_array(env, &contract_id.0)),
-                        topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
-                    ))
-                }
-            });
-        vec
+        self.env().host().get_events()?.0.into_iter().for_each(|e| {
+            if let xdr::ContractEvent {
+                type_: xdr::ContractEventType::Contract,
+                contract_id: Some(contract_id),
+                body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
+                ..
+            } = e.event
+            {
+                vec.push_back((
+                    Address::from_contract_id(&BytesN::from_array(env, &contract_id.0)),
+                    topics.try_into_val(env).unwrap(),
+                    data.try_into_val(env).unwrap(),
+                ))
+            }
+        });
+        Ok(vec)
     }
 }

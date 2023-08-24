@@ -34,7 +34,7 @@ mod test {
         client.hello();
 
         assert_eq!(
-            env.events().all(),
+            env.events().all().unwrap(),
             vec![
                 &env,
                 // Expect 2 events.

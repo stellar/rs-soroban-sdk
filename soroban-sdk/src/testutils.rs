@@ -145,13 +145,13 @@ pub trait Events {
     /// - Contract ID
     /// - Event Topics as a [`Vec<Val>`]
     /// - Event Data as a [`Val`]
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
+    fn all(&self) -> Result<Vec<(crate::Address, Vec<Val>, Val)>, soroban_env_host::HostError>;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].
 pub trait Logs {
     /// Returns all diagnostic events that have been logged.
-    fn all(&self) -> std::vec::Vec<String>;
+    fn all(&self) -> Result<std::vec::Vec<String>, soroban_env_host::HostError>;
     /// Prints all diagnostic events to stdout.
     fn print(&self);
 }

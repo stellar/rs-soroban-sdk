@@ -135,16 +135,16 @@ use crate::testutils;
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Logs for Logs {
-    fn all(&self) -> std::vec::Vec<String> {
+    fn all(&self) -> Result<std::vec::Vec<String>, soroban_env_host::HostError> {
         use crate::xdr::{
             ContractEventBody, ContractEventType, ScSymbol, ScVal, ScVec, StringM, VecM,
         };
         let env = self.env();
         let log_sym = ScSymbol(StringM::try_from("log").unwrap());
         let log_topics = ScVec(VecM::try_from(vec![ScVal::Symbol(log_sym)]).unwrap());
-        env.host()
-            .get_events()
-            .unwrap()
+        Ok(env
+            .host()
+            .get_events()?
             .0
             .into_iter()
             .filter_map(|e| match (&e.event.type_, &e.event.body) {
@@ -155,10 +155,17 @@ impl testutils::Logs for Logs {
                 }
                 _ => None,
             })
-            .collect::<std::vec::Vec<_>>()
+            .collect::<std::vec::Vec<_>>())
     }
 
     fn print(&self) {
-        std::println!("{}", self.all().join("\n"))
+        match self.all() {
+            Ok(events) => {
+                std::println!("{}", events.join("\n"))
+            }
+            Err(e) => {
+                std::println!("error retrieving events: {e}");
+            }
+        }
     }
 }

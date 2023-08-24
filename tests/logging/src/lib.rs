@@ -53,11 +53,11 @@ mod test {
                 "[\"one and two:\", one, two]",
                 "[\"one and two:\", one, two]"
             ];
-            for (msg, pat) in env.logs().all().iter().zip(pats.iter()) {
+            for (msg, pat) in env.logs().all().unwrap().iter().zip(pats.iter()) {
                 assert!(msg.contains(pat));
             }
         } else {
-            assert_eq!(env.logs().all(), std::vec![""; 0]);
+            assert_eq!(env.logs().all().unwrap(), std::vec![""; 0]);
         }
     }
 }
