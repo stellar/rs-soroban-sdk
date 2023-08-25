@@ -265,7 +265,7 @@ impl Address {
     pub(crate) fn contract_id(&self) -> BytesN<32> {
         match self.try_contract_id() {
             Some(contract_id) => contract_id,
-            None => panic!("Address is not a Contract ID"),
+            None => sdk_panic!("Address is not a Contract ID"),
         }
     }
 
