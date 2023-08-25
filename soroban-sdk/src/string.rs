@@ -211,11 +211,15 @@ impl String {
 
     /// Copy the bytes in [String] into the given slice.
     ///
-    /// The minimum number of bytes are copied to either exhaust [String] or fill
-    /// slice.
+    /// ### Panics
+    ///
+    /// If the output slice and string are of different lengths.
     #[inline(always)]
     pub fn copy_into_slice(&self, slice: &mut [u8]) {
         let env = self.env();
+        if self.len() as usize != slice.len() {
+            sdk_panic!("String::copy_into_slice with mismatched slice length")
+        }
         env.string_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
     }
@@ -234,5 +238,25 @@ mod test {
         let mut out = [0u8; 9];
         s.copy_into_slice(&mut out);
         assert_eq!(msg.as_bytes(), out)
+    }
+
+    #[test]
+    #[should_panic]
+    fn string_to_short_slice() {
+        let env = Env::default();
+        let msg = "a message";
+        let s = String::from_slice(&env, msg);
+        let mut out = [0u8; 8];
+        s.copy_into_slice(&mut out);
+    }
+
+    #[test]
+    #[should_panic]
+    fn string_to_long_slice() {
+        let env = Env::default();
+        let msg = "a message";
+        let s = String::from_slice(&env, msg);
+        let mut out = [0u8; 10];
+        s.copy_into_slice(&mut out);
     }
 }
