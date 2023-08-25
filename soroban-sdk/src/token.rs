@@ -38,7 +38,7 @@ pub trait Interface {
     /// * `from` - The address holding the balance of tokens to be drawn from.
     /// * `spender` - The address being authorized to spend the tokens held by
     ///   `from`.
-    /// * `amount` - The tokens to be made availabe to `spender`.
+    /// * `amount` - The tokens to be made available to `spender`.
     /// * `expiration_ledger` - The ledger number where this allowance expires. Cannot
     ///    be less than the current ledger number unless the amount is being set to 0.
     ///    An expired entry (where expiration_ledger < the current ledger number)
@@ -254,7 +254,7 @@ pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const SPEC_XDR_LEN: usize = 5676;
+pub(crate) const SPEC_XDR_LEN: usize = 5680;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
