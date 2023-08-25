@@ -1,11 +1,11 @@
 [package]
-name = "test_add_u64"
+name = "test_workspace_contract"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"
 publish = false
-rust-version = "1.72"
+rust-version = "1.71"
 
 [lib]
 crate-type = ["cdylib"]
@@ -13,6 +13,8 @@ doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
+test_workspace_lib = {path = "../workspace_lib"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+test_workspace_lib = {path = "../workspace_lib", features = ["testutils"]}

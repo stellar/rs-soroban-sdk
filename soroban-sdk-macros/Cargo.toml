@@ -8,7 +8,7 @@ readme = "../README.md"
 license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
-rust-version = "1.71"
+rust-version = "1.72"
 
 [lib]
 proc-macro = true
@@ -28,7 +28,7 @@ quote = "1.0"
 proc-macro2 = "1.0"
 itertools = "0.10.3"
 darling = "0.20.0"
-sha2 = "0.9.9"
+sha2 = "0.10.7"
 
 [features]
 testutils = []

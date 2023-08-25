@@ -26,6 +26,9 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
             #[doc(hidden)]
             #[cfg(any(test, feature = "testutils"))]
             mock_all_auths: bool,
+            #[doc(hidden)]
+            #[cfg(any(test, feature = "testutils"))]
+            allow_non_root_auth: bool,
         }
 
         impl<'a> #client_ident<'a> {
@@ -41,6 +44,8 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     mock_auths: None,
                     #[cfg(any(test, feature = "testutils"))]
                     mock_all_auths: false,
+                    #[cfg(any(test, feature = "testutils"))]
+                    allow_non_root_auth: false,
                 }
             }
 
@@ -60,6 +65,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     set_auths: Some(auths),
                     mock_auths: self.mock_auths.clone(),
                     mock_all_auths: false,
+                    allow_non_root_auth: false,
                 }
             }
 
@@ -76,6 +82,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     set_auths: self.set_auths.clone(),
                     mock_auths: Some(mock_auths),
                     mock_all_auths: false,
+                    allow_non_root_auth: false,
                 }
             }
 
@@ -83,7 +90,8 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
             /// `Address::require_auth_for_args` functions in invoked contracts,
             /// having them succeed as if authorization was provided.
             ///
-            /// See `soroban_sdk::Env::set_auths` for more details and examples.
+            /// See `soroban_sdk::Env::mock_all_auths` for more details and
+            /// examples.
             #[cfg(any(test, feature = "testutils"))]
             pub fn mock_all_auths(&self) -> Self {
                 Self {
@@ -92,6 +100,28 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     set_auths: None,
                     mock_auths: None,
                     mock_all_auths: true,
+                    allow_non_root_auth: false,
+                }
+            }
+
+            /// A version of `mock_all_auths` that allows authorizations that
+            /// are not present in the root invocation.
+            ///
+            /// Refer to `mock_all_auths` documentation for details and
+            /// prefer using `mock_all_auths` unless non-root authorization is
+            /// required.
+            ///
+            /// See `soroban_sdk::Env::mock_all_auths_allowing_non_root_auth`
+            /// for more details and examples.
+            #[cfg(any(test, feature = "testutils"))]
+            pub fn mock_all_auths_allowing_non_root_auth(&self) -> Self {
+                Self {
+                    env: self.env.clone(),
+                    address: self.address.clone(),
+                    set_auths: None,
+                    mock_auths: None,
+                    mock_all_auths: true,
+                    allow_non_root_auth: true,
                 }
             }
         }
@@ -163,7 +193,11 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                             self.env.mock_auths(mock_auths);
                         }
                         if self.mock_all_auths {
-                            self.env.mock_all_auths();
+                            if self.allow_non_root_auth {
+                                self.env.mock_all_auths_allowing_non_root_auth();
+                            } else {
+                                self.env.mock_all_auths();
+                            }
                         }
                     }
                     use #crate_path::{IntoVal,FromVal};

@@ -24,6 +24,8 @@ members = [
     "tests/auth",
     "tests/fuzz",
     "tests/multiimpl",
+    "tests/workspace_contract",
+    "tests/workspace_lib",
 ]
 
 [workspace.package]
@@ -40,17 +42,17 @@ soroban-token-sdk = { version = "0.9.2", path = "soroban-token-sdk" }
 [workspace.dependencies.soroban-env-common]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "048be90e10dfda6486141f96ea86e32fb91681f4"
+rev = "3be35df3061d08cf3e207b3eb546aa29adf32c01"
 
 [workspace.dependencies.soroban-env-guest]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "048be90e10dfda6486141f96ea86e32fb91681f4"
+rev = "3be35df3061d08cf3e207b3eb546aa29adf32c01"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "048be90e10dfda6486141f96ea86e32fb91681f4"
+rev = "3be35df3061d08cf3e207b3eb546aa29adf32c01"
 
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
@@ -60,7 +62,7 @@ rev = "e6ba45c60c16de28c7522586b80ed0150157df73"
 [workspace.dependencies.stellar-xdr]
 version = "0.0.17"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "4876e5eb20016caebbd13bcf6401626dc6073b8e"
+rev = "936273b737b99d79eee7a28dd4823436d0bd0abb"
 default-features = false
 
 #[patch."https://github.com/stellar/rs-soroban-env"]

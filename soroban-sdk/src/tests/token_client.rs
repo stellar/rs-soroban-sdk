@@ -59,7 +59,16 @@ fn test_mock_all_auth() {
     let from = Address::random(&env);
     let spender = Address::random(&env);
 
-    client.mock_all_auths().approve(&from, &spender, &20, &200);
+    // `TestContract` doesn't call `require_auth` before calling into token,
+    // thus we need to allow non-root auth and regular `mock_all_auths` will
+    // fail.
+    assert!(client
+        .mock_all_auths()
+        .try_approve(&from, &spender, &20, &200)
+        .is_err());
+    client
+        .mock_all_auths_allowing_non_root_auth()
+        .approve(&from, &spender, &20, &200);
 
     assert_eq!(
         env.auths(),
