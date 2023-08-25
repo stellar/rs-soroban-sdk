@@ -672,6 +672,27 @@ macro_rules! panic_error {
     }};
 }
 
+/// An internal panic! variant that avoids including the string
+/// when building for wasm (since it's just pointless baggage).
+#[cfg(target_family = "wasm")]
+macro_rules! sdk_panic {
+    ($_msg:literal) => {
+        panic!()
+    };
+    () => {
+        panic!()
+    };
+}
+#[cfg(not(target_family = "wasm"))]
+macro_rules! sdk_panic {
+    ($msg:literal) => {
+        panic!($msg)
+    };
+    () => {
+        panic!()
+    };
+}
+
 /// Assert a condition and panic with the given error if it is false.
 ///
 /// The first argument in the list must be a reference to an [Env].
