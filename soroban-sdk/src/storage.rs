@@ -186,8 +186,13 @@ impl Storage {
             .unwrap_infallible();
     }
 
-    pub(crate) fn bump<K>(&self, key: &K, storage_type: StorageType, min_ledgers_to_live: u32)
-    where
+    pub(crate) fn bump<K>(
+        &self,
+        key: &K,
+        storage_type: StorageType,
+        low_expiration_watermark: u32,
+        high_expiration_watermark: u32,
+    ) where
         K: IntoVal<Env, Val>,
     {
         let env = &self.env;
@@ -195,7 +200,8 @@ impl Storage {
             env,
             key.into_val(env),
             storage_type,
-            min_ledgers_to_live.into(),
+            low_expiration_watermark.into(),
+            high_expiration_watermark.into(),
         )
         .unwrap_infallible();
     }
@@ -253,12 +259,16 @@ impl Persistent {
         self.storage.set(key, val, StorageType::Persistent)
     }
 
-    pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
+    pub fn bump<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage
-            .bump(key, StorageType::Persistent, min_ledgers_to_live)
+        self.storage.bump(
+            key,
+            StorageType::Persistent,
+            low_expiration_watermark,
+            high_expiration_watermark,
+        )
     }
 
     #[inline(always)]
@@ -299,12 +309,16 @@ impl Temporary {
         self.storage.set(key, val, StorageType::Temporary)
     }
 
-    pub fn bump<K>(&self, key: &K, min_ledgers_to_live: u32)
+    pub fn bump<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage
-            .bump(key, StorageType::Temporary, min_ledgers_to_live)
+        self.storage.bump(
+            key,
+            StorageType::Temporary,
+            low_expiration_watermark,
+            high_expiration_watermark,
+        )
     }
 
     #[inline(always)]
@@ -353,10 +367,11 @@ impl Instance {
         self.storage.remove(key, StorageType::Instance)
     }
 
-    pub fn bump(&self, min_ledgers_to_live: u32) {
+    pub fn bump(&self, low_expiration_watermark: u32, high_expiration_watermark: u32) {
         internal::Env::bump_current_contract_instance_and_code(
             &self.storage.env,
-            min_ledgers_to_live.into(),
+            low_expiration_watermark.into(),
+            high_expiration_watermark.into(),
         )
         .unwrap_infallible();
     }
