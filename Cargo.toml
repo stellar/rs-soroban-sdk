@@ -24,6 +24,8 @@ members = [
     "tests/auth",
     "tests/fuzz",
     "tests/multiimpl",
+    "tests/workspace_contract",
+    "tests/workspace_lib",
 ]
 
 [workspace.package]
