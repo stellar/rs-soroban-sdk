@@ -1,6 +1,6 @@
 use crate::{contracttype, Address, BytesN, Env, Error, Symbol, Val, Vec};
 
-/// Context of a single authorized call peformed by an address.
+/// Context of a single authorized call performed by an address.
 ///
 /// Custom account contracts that implement `__check_auth` special function
 /// receive a list of `Context` values corresponding to all the calls that
