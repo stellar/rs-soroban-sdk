@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: stellar/actions/rust-check-git-rev-deps@i55
+    - uses: stellar/actions/rust-check-git-rev-deps@main
 
   rust-analyzer-compat:
     runs-on: ubuntu-latest
