@@ -163,7 +163,7 @@ pub trait Interface {
 /// Interface for admin capabilities for Token contracts, such as the Stellar
 /// Asset Contract.
 #[contractspecfn(name = "StellarAssetSpec", export = false)]
-#[contractclient(crate_path = "crate", name = "AdminClient")]
+#[contractclient(crate_path = "crate", name = "StellarAssetAdminClient")]
 pub trait StellarAssetAdminInterface {
     /// Sets the administrator to the specified address `new_admin`.
     ///
