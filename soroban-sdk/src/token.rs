@@ -68,13 +68,6 @@ pub trait Interface {
     ///   reserves/liabilities.
     fn spendable_balance(env: Env, id: Address) -> i128;
 
-    /// Returns true if `id` is authorized to use its balance.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - The address for which token authorization is being checked.
-    fn authorized(env: Env, id: Address) -> bool;
-
     /// Transfer `amount` from `from` to `to`.
     ///
     /// # Arguments
@@ -163,8 +156,8 @@ pub trait Interface {
 /// Interface for admin capabilities for Token contracts, such as the Stellar
 /// Asset Contract.
 #[contractspecfn(name = "StellarAssetSpec", export = false)]
-#[contractclient(crate_path = "crate", name = "StellarAssetAdminClient")]
-pub trait StellarAssetAdminInterface {
+#[contractclient(crate_path = "crate", name = "StellarAssetClient")]
+pub trait StellarAssetInterface {
     /// Sets the administrator to the specified address `new_admin`.
     ///
     /// # Arguments
@@ -198,6 +191,13 @@ pub trait StellarAssetAdminInterface {
     /// Emits an event with topics `["set_authorized", id: Address], data =
     /// [authorize: bool]`
     fn set_authorized(env: Env, id: Address, authorize: bool);
+
+    /// Returns true if `id` is authorized to use its balance.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The address for which token authorization is being checked.
+    fn authorized(env: Env, id: Address) -> bool;
 
     /// Mints `amount` to `to`.
     ///
