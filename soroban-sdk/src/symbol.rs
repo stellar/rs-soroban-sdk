@@ -140,7 +140,7 @@ impl TryFrom<&Symbol> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Symbol) -> Result<Self, ConversionError> {
         if let Ok(ss) = SymbolSmall::try_from(v.val) {
-            ScVal::try_from(ss)
+            Ok(ScVal::try_from(ss)?)
         } else {
             let e: Env = v.env.clone().try_into()?;
             ScVal::try_from_val(&e, &v.to_val())
