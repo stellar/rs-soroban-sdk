@@ -302,7 +302,7 @@ fn map_empty_variant(
     let try_into = quote! {
         #enum_ident::#case_ident => {
             let tup: (#path::Val,) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(),);
-            tup.try_into_val(env)
+            tup.try_into_val(env).map_err(Into::into)
         }
     };
     let try_from_xdr = quote! {
@@ -414,7 +414,7 @@ fn map_tuple_variant(
         quote! {
             #enum_ident::#case_ident(#(ref #binding_names,)* ) => {
                 let tup: (#path::Val, #(#tup_elem_types,)* ) = (#path::Symbol::try_from_val(env, &#case_name_str_lit)?.to_val(), #(#field_convs,)* );
-                tup.try_into_val(env)
+                tup.try_into_val(env).map_err(Into::into)
             }
         }
     };
