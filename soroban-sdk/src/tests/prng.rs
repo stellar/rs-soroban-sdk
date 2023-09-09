@@ -39,7 +39,7 @@ fn test_prng_reseed() {
 }
 
 #[test]
-fn test_vec_shuffle() {
+fn test_prng_vec_shuffle() {
     let env = Env::default();
     env.host().set_base_prng_seed([0; 32]).unwrap();
     let contract_id = env.register_contract(None, TestPrngContract);
@@ -54,7 +54,7 @@ fn test_vec_shuffle() {
 }
 
 #[test]
-fn test_u64_in_inclusive_range() {
+fn test_prng_u64_in_inclusive_range() {
     let env = Env::default();
     env.host().set_base_prng_seed([0; 32]).unwrap();
     let contract_id = env.register_contract(None, TestPrngContract);
