@@ -1,6 +1,6 @@
 //! Prng contains functions for pseudo-random functions.
 use crate::{
-    env::internal, unwrap::UnwrapInfallible, Bytes, Env, EnvBase, IntoVal, TryIntoVal, Val,
+    env::internal, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryIntoVal, Val,
     Vec,
 };
 
@@ -21,7 +21,6 @@ impl Prng {
     // Reseeds the pseudorandom number generator (PRNG) with the provided `seed` value.
     pub fn prng_reseed(&self, seed: &Bytes) {
         let env = self.env();
-        env.check_same_env(seed.env());
         internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
     }
 
@@ -40,7 +39,6 @@ impl Prng {
     {
         let env = self.env();
         let v_val = v.into_val(env);
-        env.check_same_env(v_val.env());
 
         internal::Env::prng_vec_shuffle(env, v_val.to_object())
             .unwrap_infallible()
