@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk};
-use crate::{bytes, bytesn, vec, Bytes, BytesN, Env, IntoVal, Val, Vec};
+use crate::{bytes, bytesn, Bytes, BytesN, Env};
 use soroban_sdk::{contract, contractimpl};
 
 #[contract]
@@ -11,20 +11,6 @@ impl TestCryptoContract {
         env.crypto().sha256(&bytes)
     }
 
-    pub fn prng_reseed(env: Env, bytes: Bytes) {
-        env.crypto().prng_reseed(&bytes);
-    }
-
-    pub fn u64_in_inclusive_range(env: Env, min: u64, max: u64) -> u64 {
-        env.crypto().u64_in_inclusive_range(min, max)
-    }
-
-    pub fn vec_shuffle(env: Env, vec: Vec<u32>) -> Vec<Val> {
-        env.crypto()
-            .vec_shuffle::<Vec<u32>>(vec.into())
-            .into_val(&env)
-    }
-
     pub fn verify_sig_ed25519(
         env: Env,
         public_key: BytesN<32>,
@@ -34,24 +20,6 @@ impl TestCryptoContract {
         env.crypto()
             .ed25519_verify(&public_key, &message, &signature);
     }
-}
-
-#[test]
-fn test_prng_reseed() {
-    let env = Env::default();
-    let contract_id = env.register_contract(None, TestCryptoContract);
-    env.host().set_base_prng_seed([0; 32]);
-    let client = TestCryptoContractClient::new(&env, &contract_id);
-
-    let seed = bytes!(
-        &env,
-        0x0000000000000000000000000000000000000000000000000000000000000001
-    );
-    assert_eq!(client.u64_in_inclusive_range(&0, &9), 6);
-
-    client.prng_reseed(&seed);
-
-    assert_eq!(client.u64_in_inclusive_range(&0, &9), 8);
 }
 
 #[test]
@@ -72,34 +40,9 @@ fn test_sha256() {
 }
 
 #[test]
-fn test_vec_shuffle() {
-    let env = Env::default();
-    env.host().set_base_prng_seed([0; 32]);
-    let contract_id = env.register_contract(None, TestCryptoContract);
-    let client = TestCryptoContractClient::new(&env, &contract_id);
-
-    let vec = vec![&env, 1, 2, 3];
-
-    assert_eq!(
-        client.vec_shuffle(&vec),
-        vec![&env, Val::from(2u32), Val::from(3u32), Val::from(1u32)]
-    );
-}
-
-#[test]
-fn test_u64_in_inclusive_range() {
-    let env = Env::default();
-    env.host().set_base_prng_seed([0; 32]);
-    let contract_id = env.register_contract(None, TestCryptoContract);
-    let client = TestCryptoContractClient::new(&env, &contract_id);
-
-    assert_eq!(client.u64_in_inclusive_range(&0, &9), 6);
-}
-
-#[test]
 fn test_verify_sig_ed25519() {
     let env = Env::default();
-    env.host().set_base_prng_seed([0; 32]);
+    env.host().set_base_prng_seed([0; 32]).unwrap();
     let contract_id = env.register_contract(None, TestCryptoContract);
     let client = TestCryptoContractClient::new(&env, &contract_id);
     // From https://datatracker.ietf.org/doc/html/rfc8032#section-7.1
@@ -125,7 +68,7 @@ fn test_verify_sig_ed25519() {
 #[should_panic]
 fn test_verify_sig_ed25519_invalid_sig() {
     let env = Env::default();
-    env.host().set_base_prng_seed([0; 32]);
+    env.host().set_base_prng_seed([0; 32]).unwrap();
     let contract_id = env.register_contract(None, TestCryptoContract);
     let client = TestCryptoContractClient::new(&env, &contract_id);
     // From https://datatracker.ietf.org/doc/html/rfc8032#section-7.1

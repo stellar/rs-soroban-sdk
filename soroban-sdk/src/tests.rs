@@ -18,6 +18,7 @@ mod contractimport;
 mod contractimport_with_error;
 mod crypto;
 mod env;
+mod prng;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod token_client;

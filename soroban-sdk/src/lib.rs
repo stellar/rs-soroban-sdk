@@ -767,6 +767,7 @@ pub mod iter;
 pub mod ledger;
 pub mod logs;
 mod map;
+pub mod prng;
 pub mod storage;
 pub mod token;
 mod vec;

@@ -1,7 +1,6 @@
 //! Crypto contains functions for cryptographic functions.
 use crate::{
-    env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, EnvBase, IntoVal, TryIntoVal, Val,
-    Vec,
+    env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, EnvBase,
 };
 
 /// Crypto provides access to cryptographic functions.
@@ -26,35 +25,6 @@ impl Crypto {
         unsafe { BytesN::unchecked_new(env.clone(), bin) }
     }
 
-    // Reseeds the pseudorandom number generator (PRNG) with the provided `seed` value.
-    pub fn prng_reseed(&self, seed: &Bytes) {
-        let env = self.env();
-        env.check_same_env(seed.env());
-        internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
-    }
-
-    // Returns a random u64 in the range between `lower` and `upper` inclusive.
-    pub fn u64_in_inclusive_range(&self, lower: u64, upper: u64) -> u64 {
-        let env = self.env();
-        internal::Env::prng_u64_in_inclusive_range(env, lower.into(), upper.into())
-            .unwrap_infallible()
-            .into()
-    }
-
-    // Shuffles a given vector v using the Fisher-Yates algorithm.
-    pub fn vec_shuffle<V>(&self, v: V) -> Vec<Val>
-    where
-        V: IntoVal<Env, Vec<Val>>,
-    {
-        let env = self.env();
-        let v_val = v.into_val(env);
-        env.check_same_env(v_val.env());
-
-        internal::Env::prng_vec_shuffle(env, v_val.to_object())
-            .unwrap_infallible()
-            .try_into_val(env)
-            .unwrap_infallible()
-    }
     /// Verifies an ed25519 signature.
     ///
     /// The signature is verified as a valid signature of the message by the
