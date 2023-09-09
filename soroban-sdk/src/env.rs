@@ -300,7 +300,7 @@ impl Env {
         Crypto::new(self)
     }
 
-    /// Get a [Prng] for accessing the current pseudo-random functions.
+    /// Get a [Prng] for accessing the current functions which provide pseudo-randomness.
     #[inline(always)]
     pub fn prng(&self) -> Prng {
         Prng::new(self)
