@@ -1,6 +1,6 @@
 //! Prng contains functions for pseudo-random functions.
 use crate::{
-    env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env, EnvBase, IntoVal, TryIntoVal, Val,
+    env::internal, unwrap::UnwrapInfallible, Bytes, Env, EnvBase, IntoVal, TryIntoVal, Val,
     Vec,
 };
 
@@ -46,25 +46,5 @@ impl Prng {
             .unwrap_infallible()
             .try_into_val(env)
             .unwrap_infallible()
-    }
-    /// Verifies an ed25519 signature.
-    ///
-    /// The signature is verified as a valid signature of the message by the
-    /// ed25519 public key.
-    ///
-    /// ### Panics
-    ///
-    /// If the signature verification fails.
-    pub fn ed25519_verify(&self, public_key: &BytesN<32>, message: &Bytes, signature: &BytesN<64>) {
-        let env = self.env();
-        env.check_same_env(public_key.env());
-        env.check_same_env(message.env());
-        env.check_same_env(signature.env());
-        let _ = internal::Env::verify_sig_ed25519(
-            env,
-            public_key.to_object(),
-            message.to_object(),
-            signature.to_object(),
-        );
     }
 }
