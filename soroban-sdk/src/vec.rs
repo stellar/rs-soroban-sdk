@@ -1193,7 +1193,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "ConversionError")]
+    #[should_panic(expected = "Error(Value, UnexpectedType)")]
     fn test_vec_iter_panic_on_conversion() {
         let env = Env::default();
 
@@ -1269,7 +1269,7 @@ mod test {
 
         let mut iter = vec.try_iter();
         assert_eq!(iter.next(), Some(Ok(1)));
-        assert_eq!(iter.next(), Some(Err(ConversionError)));
+        assert_eq!(iter.next(), Some(Err(ConversionError.into())));
     }
 
     #[test]
@@ -1409,7 +1409,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "ConversionError")]
+    #[should_panic(expected = "Error(Value, UnexpectedType)")]
     fn test_pop_front_panics_on_conversion() {
         let env = Env::default();
 
@@ -1427,11 +1427,11 @@ mod test {
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_front(), Ok(Some(1)));
-        assert_eq!(v.try_pop_front(), Err(ConversionError));
+        assert_eq!(v.try_pop_front(), Err(ConversionError.into()));
     }
 
     #[test]
-    #[should_panic(expected = "ConversionError")]
+    #[should_panic(expected = "Error(Value, UnexpectedType)")]
     fn test_pop_front_unchecked_panics_on_conversion() {
         let env = Env::default();
 
@@ -1459,7 +1459,7 @@ mod test {
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_front_unchecked(), Ok(1));
-        assert_eq!(v.try_pop_front_unchecked(), Err(ConversionError));
+        assert_eq!(v.try_pop_front_unchecked(), Err(ConversionError.into()));
     }
 
     #[test]
@@ -1506,7 +1506,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "ConversionError")]
+    #[should_panic(expected = "Error(Value, UnexpectedType)")]
     fn test_pop_back_panics_on_conversion() {
         let env = Env::default();
 
@@ -1524,11 +1524,11 @@ mod test {
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_back(), Ok(Some(2)));
-        assert_eq!(v.try_pop_back(), Err(ConversionError));
+        assert_eq!(v.try_pop_back(), Err(ConversionError.into()));
     }
 
     #[test]
-    #[should_panic(expected = "ConversionError")]
+    #[should_panic(expected = "Error(Value, UnexpectedType)")]
     fn test_pop_back_unchecked_panics_on_conversion() {
         let env = Env::default();
 
@@ -1556,7 +1556,7 @@ mod test {
         let mut v: Vec<i64> = v.try_into_val(&env).unwrap();
 
         assert_eq!(v.try_pop_back_unchecked(), Ok(2));
-        assert_eq!(v.try_pop_back_unchecked(), Err(ConversionError));
+        assert_eq!(v.try_pop_back_unchecked(), Err(ConversionError.into()));
     }
 
     #[test]
@@ -1596,7 +1596,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "ConversionError")]
+    #[should_panic(expected = "Error(Value, UnexpectedType)")]
     fn test_get_panics_on_conversion() {
         let env = Env::default();
 
@@ -1636,7 +1636,7 @@ mod test {
         let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let v: Vec<i64> = v.try_into_val(&env).unwrap();
         assert_eq!(v.try_get(0), Ok(Some(1)));
-        assert_eq!(v.try_get(1), Err(ConversionError));
+        assert_eq!(v.try_get(1), Err(ConversionError.into()));
     }
 
     #[test]
@@ -1655,7 +1655,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "ConversionError")]
+    #[should_panic(expected = "Error(Value, UnexpectedType)")]
     fn test_get_unchecked_panics_on_conversion() {
         let env = Env::default();
 
@@ -1693,7 +1693,7 @@ mod test {
         let v: Val = (1i64, 2i32).try_into_val(&env).unwrap();
         let v: Vec<i64> = v.try_into_val(&env).unwrap();
         assert_eq!(v.try_get_unchecked(0), Ok(1));
-        assert_eq!(v.try_get_unchecked(1), Err(ConversionError));
+        assert_eq!(v.try_get_unchecked(1), Err(ConversionError.into()));
     }
 
     #[test]
