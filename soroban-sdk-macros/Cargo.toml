@@ -22,7 +22,7 @@ crate-git-revision = "0.0.6"
 soroban-spec = { workspace = true }
 soroban-spec-rust = { workspace = true }
 soroban-env-common = { workspace = true }
-stellar-xdr = { workspace = true, features = ["next", "std"] }
+stellar-xdr = { workspace = true, features = ["curr", "std"] }
 syn = {version="2.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
