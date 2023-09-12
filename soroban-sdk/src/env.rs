@@ -524,7 +524,7 @@ impl Env {
         };
 
         env.ledger().set(internal::LedgerInfo {
-            protocol_version: 0,
+            protocol_version: 20,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],
