@@ -31,7 +31,7 @@
 //! #     let env = Env::default();
 //! #     let contract_address = env.register_contract(None, Contract);
 //! #     // Install the contract code before deploying its instance.
-//! #     let mock_wasm = [0u8; 100];
+//! #     let mock_wasm = [0u8; 0];
 //! #     let wasm_hash = env.deployer().upload_contract_wasm(mock_wasm.as_slice());
 //! #     ContractClient::new(&env, &contract_address).f(&wasm_hash);
 //! # }
