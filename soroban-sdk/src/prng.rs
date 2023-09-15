@@ -1,8 +1,7 @@
 //! Prng contains functions for pseudo-random functions.
-use crate::{
-    env::internal, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryIntoVal, Val,
-    Vec,
-};
+use core::ops::{Bound, RangeBounds};
+
+use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryIntoVal, Val, Vec};
 
 /// Prng provides access to pseudo-random  functions.
 pub struct Prng {
@@ -19,21 +18,35 @@ impl Prng {
     }
 
     // Reseeds the pseudorandom number generator (PRNG) with the provided `seed` value.
-    pub fn prng_reseed(&self, seed: &Bytes) {
+    pub fn seed(&self, seed: Bytes) {
         let env = self.env();
         internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
     }
 
     // Returns a random u64 in the range between `lower` and `upper` inclusive.
-    pub fn prng_u64_in_inclusive_range(&self, lower: u64, upper: u64) -> u64 {
+    //
+    // ### Panics
+    //
+    // If the range is empty.
+    pub fn u64_in_range(&self, r: impl RangeBounds<u64>) -> u64 {
+        let start_bound = match r.start_bound() {
+            Bound::Included(b) => *b,
+            Bound::Excluded(b) => *b + 1,
+            Bound::Unbounded => 0,
+        };
+        let end_bound = match r.end_bound() {
+            Bound::Included(b) => *b,
+            Bound::Excluded(b) => *b - 1,
+            Bound::Unbounded => u64::MAX,
+        };
         let env = self.env();
-        internal::Env::prng_u64_in_inclusive_range(env, lower.into(), upper.into())
+        internal::Env::prng_u64_in_inclusive_range(env, start_bound.into(), end_bound.into())
             .unwrap_infallible()
             .into()
     }
 
     // Shuffles a given vector v using the Fisher-Yates algorithm.
-    pub fn prng_vec_shuffle<V>(&self, v: V) -> Vec<Val>
+    pub fn shuffle<V>(&self, v: V) -> Vec<Val>
     where
         V: IntoVal<Env, Vec<Val>>,
     {

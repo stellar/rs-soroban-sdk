@@ -1,64 +1,62 @@
 use crate::{self as soroban_sdk};
-use crate::{bytes, vec, Bytes, Env, Val, Vec};
-use soroban_sdk::{contract, contractimpl};
+use crate::{bytes, vec, Env};
+use soroban_sdk::contract;
 
 #[contract]
 pub struct TestPrngContract;
 
-#[contractimpl]
-impl TestPrngContract {
-    pub fn prng_reseed(env: Env, bytes: Bytes) {
-        env.prng().prng_reseed(&bytes);
-    }
-
-    pub fn prng_u64_in_inclusive_range(env: Env, min: u64, max: u64) -> u64 {
-        env.prng().prng_u64_in_inclusive_range(min, max)
-    }
-
-    pub fn prng_vec_shuffle(env: Env, vec: Vec<u32>) -> Vec<Val> {
-        env.prng().prng_vec_shuffle::<Vec<u32>>(vec.into())
-    }
-}
-
 #[test]
-fn test_prng_reseed() {
-    let env = Env::default();
-    let contract_id = env.register_contract(None, TestPrngContract);
-    env.host().set_base_prng_seed([0; 32]).unwrap();
-    let client = TestPrngContractClient::new(&env, &contract_id);
+fn test_prng_seed() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
 
-    let seed = bytes!(
-        &env,
-        0x0000000000000000000000000000000000000000000000000000000000000001
-    );
-    assert_eq!(client.prng_u64_in_inclusive_range(&0, &9), 6);
-
-    client.prng_reseed(&seed);
-
-    assert_eq!(client.prng_u64_in_inclusive_range(&0, &9), 8);
+    e.as_contract(&id, || {
+        assert_eq!(e.prng().u64_in_range(0..=9), 6);
+        e.prng().seed(bytes!(
+            &e,
+            0x0000000000000000000000000000000000000000000000000000000000000001
+        ));
+        assert_eq!(e.prng().u64_in_range(0..=9), 5);
+    });
 }
 
 #[test]
 fn test_prng_vec_shuffle() {
-    let env = Env::default();
-    env.host().set_base_prng_seed([0; 32]).unwrap();
-    let contract_id = env.register_contract(None, TestPrngContract);
-    let client = TestPrngContractClient::new(&env, &contract_id);
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
 
-    let vec = vec![&env, 1, 2, 3];
-
-    assert_eq!(
-        client.prng_vec_shuffle(&vec),
-        vec![&env, Val::from(2u32), Val::from(3u32), Val::from(1u32)]
-    );
+    e.as_contract(&id, || {
+        let v = vec![&e, 1, 2, 3];
+        assert_eq!(e.prng().shuffle(v), vec![&e, 2, 3, 1].to_vals());
+    });
 }
 
 #[test]
-fn test_prng_u64_in_inclusive_range() {
-    let env = Env::default();
-    env.host().set_base_prng_seed([0; 32]).unwrap();
-    let contract_id = env.register_contract(None, TestPrngContract);
-    let client = TestPrngContractClient::new(&env, &contract_id);
+fn test_prng_u64_in_range() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
 
-    assert_eq!(client.prng_u64_in_inclusive_range(&0, &9), 6);
+    e.as_contract(&id, || {
+        assert_eq!(e.prng().u64_in_range(..), 11654647981089815984);
+        assert_eq!(e.prng().u64_in_range(u64::MAX..), u64::MAX);
+        assert_eq!(
+            e.prng().u64_in_range(u64::MAX - 1..u64::MAX),
+            18446744073709551614
+        );
+        assert_eq!(e.prng().u64_in_range(u64::MAX..=u64::MAX), u64::MAX);
+        assert_eq!(e.prng().u64_in_range(0..1), 0);
+        assert_eq!(e.prng().u64_in_range(0..=0), 0);
+        assert_eq!(e.prng().u64_in_range(..=0), 0);
+    });
+}
+
+#[test]
+#[should_panic(expected = "low > high")]
+fn test_prng_u64_in_range_panic_on_empty_range() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        e.prng().u64_in_range(u64::MAX..u64::MAX);
+    });
 }

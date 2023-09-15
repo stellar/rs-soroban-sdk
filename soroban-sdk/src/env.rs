@@ -524,6 +524,7 @@ impl Env {
         env_impl
             .set_diagnostic_level(internal::DiagnosticLevel::Debug)
             .unwrap();
+        env_impl.set_base_prng_seed([0; 32]).unwrap();
         let env = Env {
             env_impl,
             snapshot: None,
