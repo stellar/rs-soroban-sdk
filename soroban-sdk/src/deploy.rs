@@ -25,7 +25,7 @@
 //! #         // Deployed contract address is deterministic and can be accessed
 //! #         // before deploying the contract.
 //! #         let _ = deployer.deployed_address();
-//! #         }
+//! #         let contract_address = deployer.deploy(wasm_hash);
 //! #     }
 //! # }
 //! #
@@ -154,8 +154,8 @@ pub struct DeployerWithAddress {
 impl DeployerWithAddress {
     /// Return the address of the contract defined by the deployer.
     ///
-    /// The contract doesn't have to actually be deployed in order for this to
-    /// work.
+    /// This function can be called at anytime, before or after the contract is
+    /// deployed, because contract addresses are deterministic.
     pub fn deployed_address(&self) -> Address {
         self.env
             .get_contract_id(self.address.to_object(), self.salt.to_object())
@@ -190,8 +190,8 @@ pub struct DeployerWithAsset {
 impl DeployerWithAsset {
     /// Return the address of the contract defined by the deployer.
     ///
-    /// The contract doesn't have to actually be deployed in order for this to
-    /// work.
+    /// This function can be called at anytime, before or after the contract is
+    /// deployed, because contract addresses are deterministic.
     pub fn deployed_address(&self) -> Address {
         self.env
             .get_asset_contract_id(self.serialized_asset.to_object())
