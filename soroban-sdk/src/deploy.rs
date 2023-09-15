@@ -22,7 +22,13 @@
 //! #     pub fn f(env: Env, wasm_hash: BytesN<32>) {
 //! #         let salt = [0u8; 32];
 //! #         let deployer = env.deployer().with_current_contract(salt);
-//! #         let contract_address = deployer.deploy(wasm_hash);
+//! #         // Deployed contract address is deterministic and can be accessed
+//! #         // without actually deploying the contract.
+//! #         let computed_deployed_address = deployer.deployed_address();
+//! #         let deployed_address = deployer.deploy(wasm_hash);
+//! #         if computed_deployed_address != deployed_address {
+//! #             panic!("computed deployed contract address has to be consistent with actual deployed address");
+//! #         }
 //! #     }
 //! # }
 //! #
@@ -150,10 +156,14 @@ pub struct DeployerWithAddress {
 
 impl DeployerWithAddress {
     /// Return the address of the contract defined by the deployer.
-    #[doc(hidden)]
-    /// Returns what the address of the contract will be once deployed.
+    ///
+    /// The contract doesn't have to actually be deployed in order for this to
+    /// work.
     pub fn deployed_address(&self) -> Address {
-        todo!()
+        self.env
+            .get_contract_id(self.address.to_object(), self.salt.to_object())
+            .unwrap_infallible()
+            .into_val(&self.env)
     }
 
     /// Deploy a contract that uses Wasm executable with provided hash.
@@ -182,9 +192,14 @@ pub struct DeployerWithAsset {
 
 impl DeployerWithAsset {
     /// Return the address of the contract defined by the deployer.
-    #[doc(hidden)]
-    pub fn contract_address(&self) -> Address {
-        todo!()
+    ///
+    /// The contract doesn't have to actually be deployed in order for this to
+    /// work.
+    pub fn deployed_address(&self) -> Address {
+        self.env
+            .get_asset_contract_id(self.serialized_asset.to_object())
+            .unwrap_infallible()
+            .into_val(&self.env)
     }
 
     pub fn deploy(&self) -> Address {
