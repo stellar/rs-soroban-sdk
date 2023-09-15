@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk};
-use crate::{bytes, vec, Env};
+use crate::{bytes, vec, Env, Val, Vec};
 use soroban_sdk::contract;
 
 #[contract]
@@ -21,13 +21,38 @@ fn test_prng_seed() {
 }
 
 #[test]
-fn test_prng_vec_shuffle() {
+fn test_prng_shuffle() {
     let e = Env::default();
     let id = e.register_contract(None, TestPrngContract);
 
     e.as_contract(&id, || {
         let v = vec![&e, 1, 2, 3];
         assert_eq!(e.prng().shuffle(v), vec![&e, 2, 3, 1].to_vals());
+    });
+
+    e.as_contract(&id, || {
+        let v = Vec::<i64>::new(&e);
+        assert_eq!(e.prng().shuffle(v), Vec::<Val>::new(&e).to_vals());
+    });
+}
+
+#[test]
+fn test_vec_shuffle() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        let v = vec![&e, 1, 2, 3];
+        let s = v.shuffle();
+        assert_eq!(s, vec![&e, 2, 3, 1]);
+        assert_eq!(v, vec![&e, 1, 2, 3]);
+    });
+
+    e.as_contract(&id, || {
+        let v = Vec::<i64>::new(&e);
+        let s = v.shuffle();
+        assert_eq!(s, vec![&e]);
+        assert_eq!(v, vec![&e]);
     });
 }
 
