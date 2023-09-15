@@ -301,6 +301,11 @@ impl Env {
     }
 
     /// Get a [Prng] for accessing the current functions which provide pseudo-randomness.
+    ///
+    /// # Warning
+    ///
+    /// **The pseudo-random generator returned is not suitable for
+    /// security-sensitive work.**
     #[inline(always)]
     pub fn prng(&self) -> Prng {
         Prng::new(self)
