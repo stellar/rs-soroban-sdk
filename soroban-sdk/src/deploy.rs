@@ -22,6 +22,9 @@
 //! #     pub fn f(env: Env, wasm_hash: BytesN<32>) {
 //! #         let salt = [0u8; 32];
 //! #         let deployer = env.deployer().with_current_contract(salt);
+//! #         // Deployed contract address is deterministic and can be accessed
+//! #         // before deploying the contract.
+//! #         let _ = deployer.deployed_address();
 //! #         let contract_address = deployer.deploy(wasm_hash);
 //! #     }
 //! # }
@@ -31,7 +34,7 @@
 //! #     let env = Env::default();
 //! #     let contract_address = env.register_contract(None, Contract);
 //! #     // Install the contract code before deploying its instance.
-//! #     let mock_wasm = [0u8; 100];
+//! #     let mock_wasm = [0u8; 0];
 //! #     let wasm_hash = env.deployer().upload_contract_wasm(mock_wasm.as_slice());
 //! #     ContractClient::new(&env, &contract_address).f(&wasm_hash);
 //! # }
@@ -150,10 +153,14 @@ pub struct DeployerWithAddress {
 
 impl DeployerWithAddress {
     /// Return the address of the contract defined by the deployer.
-    #[doc(hidden)]
-    /// Returns what the address of the contract will be once deployed.
+    ///
+    /// This function can be called at anytime, before or after the contract is
+    /// deployed, because contract addresses are deterministic.
     pub fn deployed_address(&self) -> Address {
-        todo!()
+        self.env
+            .get_contract_id(self.address.to_object(), self.salt.to_object())
+            .unwrap_infallible()
+            .into_val(&self.env)
     }
 
     /// Deploy a contract that uses Wasm executable with provided hash.
@@ -182,9 +189,14 @@ pub struct DeployerWithAsset {
 
 impl DeployerWithAsset {
     /// Return the address of the contract defined by the deployer.
-    #[doc(hidden)]
-    pub fn contract_address(&self) -> Address {
-        todo!()
+    ///
+    /// This function can be called at anytime, before or after the contract is
+    /// deployed, because contract addresses are deterministic.
+    pub fn deployed_address(&self) -> Address {
+        self.env
+            .get_asset_contract_id(self.serialized_asset.to_object())
+            .unwrap_infallible()
+            .into_val(&self.env)
     }
 
     pub fn deploy(&self) -> Address {
