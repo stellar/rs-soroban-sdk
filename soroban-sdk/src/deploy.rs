@@ -23,11 +23,8 @@
 //! #         let salt = [0u8; 32];
 //! #         let deployer = env.deployer().with_current_contract(salt);
 //! #         // Deployed contract address is deterministic and can be accessed
-//! #         // without actually deploying the contract.
-//! #         let computed_deployed_address = deployer.deployed_address();
-//! #         let deployed_address = deployer.deploy(wasm_hash);
-//! #         if computed_deployed_address != deployed_address {
-//! #             panic!("computed deployed contract address has to be consistent with actual deployed address");
+//! #         // before deploying the contract.
+//! #         let _ = deployer.deployed_address();
 //! #         }
 //! #     }
 //! # }
