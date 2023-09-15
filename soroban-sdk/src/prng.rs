@@ -6,10 +6,15 @@
 //! security-sensitive work.**
 //!
 //! The entropy used to seed the generator is not strong. Every node in the
-//! network executing a contract get exactly the same output. The value is hard
-//! to predict, but trivial to derive once the network has determined the
-//! transaction set for the ledger the invocation occurs in. The value is also
-//! controllable by the node nominating.
+//! network executing a contract get exactly the same output.  The value is hard
+//! to predict, but trivial to derive once the network has determined the inputs
+//! into the ledger the invocation occurs in. The value is also controllable by
+//! the node nominating. Therefore, the results of the pseudo-random number
+//! generator are determinable once the inputs to a ledger are known.
+//!
+//! Every contract invocation gets its own, independent seed. If a contract
+//! invocation fails, the seed from the failed invocation is not reused for the
+//! next invocation of the contract.
 use core::ops::{Bound, RangeBounds};
 
 use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryIntoVal, Val, Vec};
