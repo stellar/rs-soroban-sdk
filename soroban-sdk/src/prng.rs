@@ -14,7 +14,7 @@ use core::ops::{Bound, RangeBounds};
 
 use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryIntoVal, Val, Vec};
 
-/// Prng provides access to pseudo-random  functions.
+/// Prng contains a pseudo-random generator.
 pub struct Prng {
     env: Env,
 }
