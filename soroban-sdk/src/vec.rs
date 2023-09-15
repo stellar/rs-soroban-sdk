@@ -356,6 +356,10 @@ impl<T> Vec<T> {
     pub fn to_object(&self) -> VecObject {
         self.obj
     }
+
+    pub fn to_vals(&self) -> Vec<Val> {
+        unsafe { Vec::<Val>::unchecked_new(self.env().clone(), self.obj) }
+    }
 }
 
 impl<T> Vec<T>
@@ -1072,6 +1076,24 @@ mod test {
 
         _ = vec_copy.pop_back_unchecked();
         assert!(vec == vec_copy);
+    }
+
+    #[test]
+    fn test_vec_to_vals() {
+        let env = Env::default();
+        let vec = vec![&env, 0, 1, 2, 3, 4];
+        let vals = vec.to_vals();
+        assert_eq!(
+            vals,
+            vec![
+                &env,
+                Val::from_i32(0).to_val(),
+                Val::from_i32(1).to_val(),
+                Val::from_i32(2).to_val(),
+                Val::from_i32(3).to_val(),
+                Val::from_i32(4).to_val(),
+            ]
+        );
     }
 
     #[test]
