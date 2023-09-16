@@ -780,6 +780,21 @@ impl<T> Vec<T> {
         unsafe { Self::unchecked_new(env.clone(), obj) }
     }
 
+    /// Returns copy of the vec shuffled using the NOT-SECURE PRNG.
+    ///
+    /// In tests, must be called from within a running contract.
+    ///
+    /// # Warning
+    ///
+    /// **The pseudo-random generator used to perform the shuffle is not
+    /// suitable for security-sensitive work.**
+    #[must_use]
+    pub fn shuffle(&self) -> Self {
+        let env = self.env();
+        let shuffled = env.prng().shuffle(self.to_vals());
+        unsafe { Self::unchecked_new(env.clone(), shuffled.obj) }
+    }
+
     /// Returns true if the vec is empty and contains no items.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {

@@ -126,8 +126,8 @@ use crate::auth::InvokerContractAuthEntry;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::{
-    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, storage::Storage,
-    Address, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, prng::Prng,
+    storage::Storage, Address, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
@@ -298,6 +298,17 @@ impl Env {
     #[inline(always)]
     pub fn crypto(&self) -> Crypto {
         Crypto::new(self)
+    }
+
+    /// Get a [Prng] for accessing the current functions which provide pseudo-randomness.
+    ///
+    /// # Warning
+    ///
+    /// **The pseudo-random generator returned is not suitable for
+    /// security-sensitive work.**
+    #[inline(always)]
+    pub fn prng(&self) -> Prng {
+        Prng::new(self)
     }
 
     /// Get the Address object corresponding to the current executing contract.
@@ -518,6 +529,7 @@ impl Env {
         env_impl
             .set_diagnostic_level(internal::DiagnosticLevel::Debug)
             .unwrap();
+        env_impl.set_base_prng_seed([0; 32]).unwrap();
         let env = Env {
             env_impl,
             snapshot: None,
