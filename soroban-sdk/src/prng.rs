@@ -15,11 +15,19 @@
 //! Every contract invocation gets its own, independent seed. If a contract
 //! invocation fails, the seed from the failed invocation is not reused for the
 //! next invocation of the contract.
+//!
+//! In tests, the contract invocation seed is consistently zero, and tests will
+//! receive consistent results from the PRNG.
 use core::ops::{Bound, RangeBounds};
 
 use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryIntoVal, Val, Vec};
 
-/// Prng contains a pseudo-random generator.
+/// Prng is a pseudo-random generator.
+///
+/// # Warning
+///
+/// **The pseudo-random generator contained in this module is not suitable for
+/// security-sensitive work.**
 pub struct Prng {
     env: Env,
 }
@@ -33,7 +41,7 @@ impl Prng {
         &self.env
     }
 
-    /// Reseeds the PRNG with the provided `seed` value.
+    /// Reseeds the PRNG with the provided value.
     ///
     /// The seed is combined with the seed assigned to the contract invocation.
     ///
@@ -46,9 +54,9 @@ impl Prng {
         internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
     }
 
-    /// Returns a random u64 in the range between `lower` and `upper` inclusive.
+    /// Returns a random u64 in the range specified.
     ///
-    /// ### Panics
+    /// # Panics
     ///
     /// If the range is empty.
     ///
@@ -56,6 +64,35 @@ impl Prng {
     ///
     /// **The pseudo-random generator contained in this module is not suitable for
     /// security-sensitive work.**
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use soroban_sdk::{Env};
+    ///
+    /// # use soroban_sdk::{contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// // Get values in the range of 1 to 100, inclusive.
+    /// let value = env.prng().u64_in_range(1..=100);
+    /// assert_eq!(value, 77);
+    /// let value = env.prng().u64_in_range(1..=100);
+    /// assert_eq!(value, 66);
+    /// let value = env.prng().u64_in_range(1..=100);
+    /// assert_eq!(value, 72);
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
     pub fn u64_in_range(&self, r: impl RangeBounds<u64>) -> u64 {
         let start_bound = match r.start_bound() {
             Bound::Included(b) => *b,
