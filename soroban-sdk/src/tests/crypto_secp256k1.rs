@@ -4,7 +4,7 @@ use crate::{bytesn, Env};
 fn test_recover_key_ecdsa_secp256k1() {
     let env = Env::default();
 
-    // From ethereum: https://github.com/ethereum/go-ethereum/blob/master/crypto/secp256k1/secp256_test.go
+    // From: https://github.com/ethereum/go-ethereum/blob/90d5bd85bcf2919ac2735a47fde675213348a0a6/crypto/secp256k1/secp256_test.go#L204-L217
     let message_digest = bytesn!(
         &env,
         0xce0677bb30baa8cf067c88db9811f4333d131bf8bcf12fe7065d211dce971008
