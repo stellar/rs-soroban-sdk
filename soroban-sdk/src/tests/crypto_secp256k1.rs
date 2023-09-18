@@ -20,7 +20,7 @@ fn test_recover_key_ecdsa_secp256k1() {
     );
     assert_eq!(
         env.crypto()
-            .ecdsa_secp256k1_recover_public_key(&message_digest, &signature, recovery_id),
+            .secp256k1_recover(&message_digest, &signature, recovery_id),
         expected_public_key
     );
 }
