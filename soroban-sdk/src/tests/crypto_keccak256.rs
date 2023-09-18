@@ -1,6 +1,4 @@
-use crate::{self as soroban_sdk};
-use crate::{bytes, bytesn, env::internal::U32Val, Bytes, BytesN, Env, IntoVal, Val};
-use soroban_sdk::{contract, contractimpl};
+use crate::{bytesn, Env, IntoVal};
 
 #[test]
 fn test_keccak256() {

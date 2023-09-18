@@ -1,9 +1,5 @@
 //! Crypto contains functions for cryptographic functions.
-use crate::{
-    env::internal::{self, U32Val},
-    unwrap::UnwrapInfallible,
-    Bytes, BytesN, Env, TryIntoVal,
-};
+use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env};
 
 /// Crypto provides access to cryptographic functions.
 pub struct Crypto {
@@ -53,23 +49,23 @@ impl Crypto {
 
     /// Recovers the ECDSA secp256k1 public key.
     ///
-    /// The public key is recovered by using the ECDSA secp256k1 algorithm, using the provided
-    /// message digest (hash), signature, and recovery ID.
-    pub fn recover_key_ecdsa_secp256k1(
+    /// The public key returned is the SEC-1-encoded ECDSA secp256k1 public key
+    /// that produced the 64-byte signature over a given 32-byte message digest,
+    /// for a given recovery_id byte.
+    pub fn ecdsa_secp256k1_recover_public_key(
         &self,
-        message_digest: &Bytes,
+        message_digest: &BytesN<32>,
         signature: &BytesN<64>,
-        recorvery_id: U32Val,
-    ) -> Bytes {
+        recorvery_id: u32,
+    ) -> BytesN<65> {
         let env = self.env();
-        internal::Env::recover_key_ecdsa_secp256k1(
+        let bytes = internal::Env::recover_key_ecdsa_secp256k1(
             env,
             message_digest.to_object(),
             signature.to_object(),
-            recorvery_id,
+            recorvery_id.into(),
         )
-        .unwrap_infallible()
-        .try_into_val(env)
-        .unwrap_infallible()
+        .unwrap_infallible();
+        unsafe { BytesN::unchecked_new(env.clone(), bytes) }
     }
 }
