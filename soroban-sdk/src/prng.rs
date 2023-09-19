@@ -40,10 +40,19 @@
 //!
 //! The host has a single hidden "base" PRNG that is seeded by the network. The
 //! base PRNG is then used to seed separate, independent "local" PRNGs for each
-//! contract invocation. Contracts can only access (use or reseed) their local
-//! PRNG, and cannot influence any other contract instance's local PRNGs nor the
-//! base PRNG. If a contract invocation fails, the seed from the failed
-//! invocation is also not reused for the next invocation of the contract.
+//! contract invocation. This independence has the following characteristics:
+//!
+//!   - Contract invocations can only access (use or reseed) their local PRNG.
+//!   - Contract invocations cannot influence any other invocation's local PRNG,
+//!     except by influencing the other invocation to make a call to its PRNG.
+//!   - Contracts cannot influence the base PRNG that seeds local PRNGs, except
+//!     by making calls and thereby creating new local PRNGs with new seeds.
+//!   - A contract invocation's local PRNG maintains state through the life of
+//!     the invocation.
+//!   - That state is advanced by each call from the invocation to a PRNG
+//!     function in this module.
+//!   - A contract invocation's local PRNG is destroyed after the invocation.
+//!   - Any re-entry of a contract counts as a separate invocation.
 //!
 //! ## Testing
 //!
