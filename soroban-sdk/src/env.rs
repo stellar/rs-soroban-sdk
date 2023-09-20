@@ -1283,6 +1283,27 @@ impl Env {
 impl internal::EnvBase for Env {
     type Error = Infallible;
 
+    // This exists to allow code in conversion paths to upgrade an Error to an
+    // Env::Error with some control granted to the underlying Env (and panic
+    // paths kept out of the host). We delegate this to our env_impl and then,
+    // since our own Error type is Infallible, immediately throw it into either
+    // the env_impl's Error escalation path (if testing), or just plain panic.
+    #[cfg(not(target_family = "wasm"))]
+    fn error_from_error_val(&self, e: crate::Error) -> Self::Error {
+        let host_err = self.env_impl.error_from_error_val(e);
+        #[cfg(any(test, feature = "testutils"))]
+        self.env_impl.escalate_error_to_panic(host_err);
+        #[cfg(not(any(test, feature = "testutils")))]
+        panic!("{:?}", host_err);
+    }
+
+    // When targeting wasm we don't even need to do that, just delegate to
+    // the Guest's impl, which calls core::arch::wasm32::unreachable.
+    #[cfg(target_family = "wasm")]
+    fn error_from_error_val(&self, e: crate::Error) -> Self::Error {
+        self.env_impl.error_from_error_val(e)
+    }
+
     // Note: the function `escalate_error_to_panic` only exists _on the `Env`
     // trait_ when the feature `soroban-env-common/testutils` is enabled. This
     // is because the host wants to never have this function even _compiled in_
