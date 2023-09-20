@@ -1325,8 +1325,11 @@ impl internal::EnvBase for Env {
         match e {}
     }
 
-    fn check_same_env(&self, other: &Self) {
-        self.env_impl.check_same_env(&other.env_impl);
+    fn check_same_env(&self, other: &Self) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .check_same_env(&other.env_impl)
+            .unwrap_optimized())
     }
 
     fn bytes_copy_from_slice(

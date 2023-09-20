@@ -76,7 +76,7 @@ impl Ord for Symbol {
                         (Err(_), Ok(e)) => Some(e),
                         (Ok(e), Err(_)) => Some(e),
                         (Ok(e1), Ok(e2)) => {
-                            e1.check_same_env(&e2);
+                            e1.check_same_env(&e2).unwrap_infallible();
                             Some(e1)
                         }
                     };

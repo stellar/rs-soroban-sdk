@@ -144,7 +144,7 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
