@@ -203,11 +203,16 @@ mod api {
     /// Types that implement `SorabanArbitrary` have an associated "prototype"
     /// type that implements [`Arbitrary`].
     ///
-    /// This exists partly that the prototype can be named like
+    /// This exists partly so that the prototype can be named like
     ///
-    /// ```ignore
-    /// fuzz_target!(|input: <Bytes as SorobanArbitrary>::Arbitrary| {
-    ///   ...
+    /// ```
+    /// # macro_rules! fuzz_target {
+    /// #     (|$data:ident: $dty: ty| $body:block) => { };
+    /// # }
+    /// # use soroban_sdk::{Address, Env, Vec, Bytes};
+    /// # use soroban_sdk::arbitrary::SorobanArbitrary;
+    /// fuzz_target!(|input: <Bytes as SorobanArbitrary>::Prototype| {
+    ///     // ...
     /// });
     /// ```
     // This also makes derivation of `SorobanArbitrary` for custom types easier
