@@ -1325,20 +1325,8 @@ impl internal::EnvBase for Env {
         match e {}
     }
 
-    fn as_mut_any(&mut self) -> &mut dyn core::any::Any {
-        self
-    }
-
     fn check_same_env(&self, other: &Self) {
         self.env_impl.check_same_env(&other.env_impl);
-    }
-
-    fn deep_clone(&self) -> Self {
-        Env {
-            env_impl: self.env_impl.deep_clone(),
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: self.snapshot.clone(),
-        }
     }
 
     fn bytes_copy_from_slice(
