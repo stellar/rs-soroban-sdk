@@ -46,7 +46,7 @@ macro_rules! impl_num_wrapping_val_type {
                     // The object-to-small number comparisons are handled by `obj_cmp`,
                     // so it's safe to handle all the other cases using it.
                     _ => {
-                        self.env.check_same_env(&other.env);
+                        self.env.check_same_env(&other.env).unwrap_infallible();
                         let v = self.env.obj_cmp(self_raw, other_raw).unwrap_infallible();
                         v.cmp(&0)
                     }
@@ -183,7 +183,7 @@ impl U256 {
     }
 
     pub fn from_be_bytes(env: &Env, bytes: &Bytes) -> Self {
-        env.check_same_env(bytes.env());
+        env.check_same_env(bytes.env()).unwrap_infallible();
         let val = env
             .u256_val_from_be_bytes(bytes.to_object())
             .unwrap_infallible();
@@ -202,7 +202,7 @@ impl U256 {
     }
 
     pub fn add(&self, other: &U256) -> U256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.u256_add(self.val, other.val).unwrap_infallible();
         U256 {
             env: self.env.clone(),
@@ -211,7 +211,7 @@ impl U256 {
     }
 
     pub fn sub(&self, other: &U256) -> U256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.u256_sub(self.val, other.val).unwrap_infallible();
         U256 {
             env: self.env.clone(),
@@ -220,7 +220,7 @@ impl U256 {
     }
 
     pub fn mul(&self, other: &U256) -> U256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.u256_mul(self.val, other.val).unwrap_infallible();
         U256 {
             env: self.env.clone(),
@@ -229,7 +229,7 @@ impl U256 {
     }
 
     pub fn div(&self, other: &U256) -> U256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.u256_div(self.val, other.val).unwrap_infallible();
         U256 {
             env: self.env.clone(),
@@ -302,7 +302,7 @@ impl I256 {
     }
 
     pub fn from_be_bytes(env: &Env, bytes: &Bytes) -> Self {
-        env.check_same_env(bytes.env());
+        env.check_same_env(bytes.env()).unwrap_infallible();
         let val = env
             .i256_val_from_be_bytes(bytes.to_object())
             .unwrap_infallible();
@@ -321,7 +321,7 @@ impl I256 {
     }
 
     pub fn add(&self, other: &I256) -> I256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.i256_add(self.val, other.val).unwrap_infallible();
         I256 {
             env: self.env.clone(),
@@ -330,7 +330,7 @@ impl I256 {
     }
 
     pub fn sub(&self, other: &I256) -> I256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.i256_sub(self.val, other.val).unwrap_infallible();
         I256 {
             env: self.env.clone(),
@@ -339,7 +339,7 @@ impl I256 {
     }
 
     pub fn mul(&self, other: &I256) -> I256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.i256_mul(self.val, other.val).unwrap_infallible();
         I256 {
             env: self.env.clone(),
@@ -348,7 +348,7 @@ impl I256 {
     }
 
     pub fn div(&self, other: &I256) -> I256 {
-        self.env.check_same_env(&other.env);
+        self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.i256_div(self.val, other.val).unwrap_infallible();
         I256 {
             env: self.env.clone(),
