@@ -1,6 +1,7 @@
 use std::io::Cursor;
 
-use stellar_xdr::{self, DepthLimitedRead, ReadXdr, ScSpecEntry};
+use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::{DepthLimitedRead, ReadXdr, ScSpecEntry};
 use wasmparser::{BinaryReaderError, Parser, Payload};
 
 // TODO: Move these functions into stellar_xdr.

@@ -6,7 +6,8 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::{self, ScSpecEntry};
+use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::ScSpecEntry;
 use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};

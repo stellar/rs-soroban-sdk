@@ -104,7 +104,7 @@ mod test {
         assert_eq!(
             res,
             Err(Err(soroban_sdk::Error::from_type_and_code(
-                ScErrorType::WasmVm,
+                ScErrorType::Context,
                 ScErrorCode::InvalidAction
             )))
         );

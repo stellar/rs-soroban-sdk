@@ -170,7 +170,7 @@ mod test_a {
 
         assert_eq!(
             r,
-            Err(Ok(Error::from_scerror(ScError::Auth(
+            Err(Ok(Error::from_scerror(ScError::Context(
                 ScErrorCode::InvalidAction
             ))))
         );
@@ -436,7 +436,7 @@ mod test_b {
 
         assert_eq!(
             r,
-            Err(Ok(Error::from_scerror(ScError::Auth(
+            Err(Ok(Error::from_scerror(ScError::Context(
                 ScErrorCode::InvalidAction
             ))))
         );

@@ -40,7 +40,7 @@ fn test_try_invoke() {
     assert_eq!(
         res,
         Err(Ok(soroban_sdk::Error::from_type_and_code(
-            ScErrorType::WasmVm,
+            ScErrorType::Context,
             ScErrorCode::InvalidAction
         )))
     );

@@ -328,57 +328,6 @@ impl Env {
         internal::Env::require_auth(self, address.to_object()).unwrap_infallible();
     }
 
-    /// Returns the contract call stack as a [`Vec`]
-    /// of `(contract_id, function_name)`.
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{contract, contractimpl, log, Env, Symbol};
-    ///
-    /// #[contract]
-    /// pub struct Contract;
-    ///
-    /// #[contractimpl]
-    /// impl Contract {
-    ///     pub fn hello(env: Env) {
-    ///         let stack = env.call_stack();
-    ///         assert_eq!(stack.len(), 1);
-    ///
-    ///         let outer = stack.get_unchecked(0);
-    ///         log!(&env, "{}", outer);
-    ///     }
-    /// }
-    /// #[test]
-    /// fn test() {
-    /// # }
-    /// # #[cfg(feature = "testutils")]
-    /// # fn main() {
-    ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, Contract);
-    ///     let client = ContractClient::new(&env, &contract_id);
-    ///     client.hello();
-    /// }
-    /// # #[cfg(not(feature = "testutils"))]
-    /// # fn main() { }
-    /// ```
-    pub fn call_stack(&self) -> Vec<(Address, crate::Symbol)> {
-        // TODO: Change host fn to return Addresses, so that contracts do not
-        // need to iterate over the call stack and do conversion.
-        let stack = internal::Env::get_current_call_stack(self).unwrap_infallible();
-
-        let stack =
-            unsafe { Vec::<(AddressObject, crate::Symbol)>::unchecked_new(self.clone(), stack) };
-
-        let mut stack_with_addresses = Vec::new(self);
-        for (ao, sym) in stack.iter() {
-            unsafe {
-                stack_with_addresses.push_back((Address::unchecked_new(self.clone(), ao), sym))
-            };
-        }
-
-        stack_with_addresses
-    }
-
     /// Invokes a function of a contract that is registered in the [Env].
     ///
     /// # Panics
