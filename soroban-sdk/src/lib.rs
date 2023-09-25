@@ -37,7 +37,8 @@
 //! # fn main() { }
 //! ```
 //!
-//! More examples are available at <https://soroban.stellar.org/docs/category/how-to-guides>.
+//! More examples are available at <https://soroban.stellar.org/docs/category/basic-tutorials>
+//! and <https://soroban.stellar.org/docs/category/advanced-tutorials>.
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
