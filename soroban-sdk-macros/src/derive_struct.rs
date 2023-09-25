@@ -3,6 +3,7 @@ use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
 
+use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
     SCSYMBOL_LIMIT,

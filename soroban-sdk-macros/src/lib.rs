@@ -37,6 +37,7 @@ use syn_ext::HasFnsItem;
 
 use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
+use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 use soroban_env_common::Symbol;
