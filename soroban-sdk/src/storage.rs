@@ -158,7 +158,7 @@ impl Storage {
     /// converting the internal value representation to `V`, or will panic if
     /// the conversion to `V` fails.
     #[inline(always)]
-    pub fn get<K, V>(&self, key: &K, storage_type: StorageType) -> Option<V>
+    pub(crate) fn get<K, V>(&self, key: &K, storage_type: StorageType) -> Option<V>
     where
         K: IntoVal<Env, Val>,
         V: TryFromVal<Env, Val>,
