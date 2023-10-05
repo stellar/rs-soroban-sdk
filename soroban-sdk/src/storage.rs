@@ -139,6 +139,14 @@ impl Storage {
         }
     }
 
+    /// Returns the maximum ledger sequence that an entry can live to
+    /// (inclusive).
+    pub fn max_expiration(&self) -> u32 {
+        internal::Env::get_max_expiration_ledger(&self.env)
+            .unwrap_infallible()
+            .into()
+    }
+
     /// Returns if there is a value stored for the given key in the currently
     /// executing contracts storage.
     #[inline(always)]
