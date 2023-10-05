@@ -15,6 +15,6 @@ fn max() {
     e.ledger().set(ledger_info);
 
     e.as_contract(&contract_id, || {
-        assert_eq!(e.storage().max_expiration(), 4);
+        assert_eq!(e.storage().max_expiration(), 5);
     });
 }
