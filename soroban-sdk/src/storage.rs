@@ -142,9 +142,7 @@ impl Storage {
     /// Returns the maximum number of ledgers that an entry can live.
     pub fn max_expiration(&self) -> u32 {
         let seq = self.env.ledger().sequence();
-        let max: u32 = internal::Env::get_max_expiration_ledger(&self.env)
-            .unwrap_infallible()
-            .into();
+        let max = self.env.ledger().max_expiration_sequence();
         max - seq
     }
 
