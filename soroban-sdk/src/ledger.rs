@@ -66,6 +66,7 @@ impl Ledger {
     }
 
     /// Returns the maximum ledger sequence number that data can live to.
+    #[doc(hidden)]
     pub fn max_expiration_sequence(&self) -> u32 {
         internal::Env::get_ledger_sequence(self.env())
             .unwrap_infallible()
