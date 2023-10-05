@@ -65,6 +65,13 @@ impl Ledger {
             .into()
     }
 
+    /// Returns the maximum ledger sequence number that data can live to.
+    pub fn max_expiration_sequence(&self) -> u32 {
+        internal::Env::get_ledger_sequence(self.env())
+            .unwrap_infallible()
+            .into()
+    }
+
     /// Returns a unix timestamp for when the ledger was closed.
     ///
     /// The timestamp is the number of seconds, excluding leap seconds,

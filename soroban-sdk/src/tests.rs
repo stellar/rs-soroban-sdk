@@ -25,3 +25,4 @@ mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod token_client;
 mod token_spec;
+mod max_expiration;
