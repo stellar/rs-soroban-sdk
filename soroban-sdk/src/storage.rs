@@ -139,6 +139,21 @@ impl Storage {
         }
     }
 
+    /// Returns the maximum number of ledgers that an entry can have rent paid
+    /// for it in one moment.
+    ///
+    /// When counting the number of ledgers an entry is active for, the current
+    /// ledger is included. If an entry is created it the current ledger, its
+    /// maximum expiration duration in ledgers will be the value returned from
+    /// the function including the current ledger. This means the last ledger
+    /// that the entry will be accessible will be the current ledger sequence
+    /// plus the max expiration minus one.
+    pub fn max_expiration(&self) -> u32 {
+        let seq = self.env.ledger().sequence();
+        let max = self.env.ledger().max_expiration_sequence();
+        max - seq + 1
+    }
+
     /// Returns if there is a value stored for the given key in the currently
     /// executing contracts storage.
     #[inline(always)]
