@@ -8,7 +8,7 @@ readme = "../README.md"
 license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
-rust-version = "1.72"
+rust-version = "1.73"
 
 [dependencies]
 soroban-env-host = { workspace = true }
