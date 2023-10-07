@@ -1035,10 +1035,10 @@ impl Env {
     ///     pub fn __check_auth(
     ///         _env: Env,
     ///         _signature_payload: BytesN<32>,
-    ///         signatures: Vec<Val>,
+    ///         signature: Val,
     ///         _auth_context: Vec<Context>,
     ///     ) -> Result<(), NoopAccountError> {
-    ///         if signatures.is_empty() {
+    ///         if signature.is_void() {
     ///             Err(NoopAccountError::SomeError)
     ///         } else {
     ///             Ok(())
@@ -1056,7 +1056,7 @@ impl Env {
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
     ///             &account_contract.address.contract_id(),
     ///             &BytesN::random(&e),
-    ///             &vec![&e],
+    ///             ().into(),
     ///             &vec![&e],
     ///         ),
     ///         // The inner `Result` is for conversion error and will be Ok
@@ -1069,7 +1069,7 @@ impl Env {
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
     ///             &account_contract.address.contract_id(),
     ///             &BytesN::random(&e),
-    ///             &vec![&e, 0_i32.into()],
+    ///             0_i32.into(),
     ///             &vec![&e],
     ///         ),
     ///         Ok(())
