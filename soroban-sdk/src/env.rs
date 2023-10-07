@@ -1080,14 +1080,14 @@ impl Env {
         &self,
         contract: &BytesN<32>,
         signature_payload: &BytesN<32>,
-        signatures: &Vec<Val>,
+        signature: Val,
         auth_context: &Vec<auth::Context>,
     ) -> Result<(), Result<E, E::Error>> {
         let args = Vec::from_array(
             self,
             [
                 signature_payload.to_val(),
-                signatures.to_val(),
+                signature,
                 auth_context.to_val(),
             ],
         );
