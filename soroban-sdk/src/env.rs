@@ -1085,11 +1085,7 @@ impl Env {
     ) -> Result<(), Result<E, E::Error>> {
         let args = Vec::from_array(
             self,
-            [
-                signature_payload.to_val(),
-                signature,
-                auth_context.to_val(),
-            ],
+            [signature_payload.to_val(), signature, auth_context.to_val()],
         );
         let res = self
             .host()
