@@ -1055,7 +1055,7 @@ impl Env {
     ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
-    ///             &account_contract.address.contract_id(),
+    ///             &account_contract.address,
     ///             &BytesN::random(&e),
     ///             &vec![&e],
     ///             &vec![&e],
@@ -1068,7 +1068,7 @@ impl Env {
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
-    ///             &account_contract.address.contract_id(),
+    ///             &account_contract.address,
     ///             &BytesN::random(&e),
     ///             &vec![&e, 0_i32.into()],
     ///             &vec![&e],
@@ -1079,7 +1079,7 @@ impl Env {
     /// ```
     pub fn try_invoke_contract_check_auth<E: TryFrom<Error>>(
         &self,
-        contract: &BytesN<32>,
+        contract: &Address,
         signature_payload: &BytesN<32>,
         signatures: &Vec<Val>,
         auth_context: &Vec<auth::Context>,
