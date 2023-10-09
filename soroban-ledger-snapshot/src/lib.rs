@@ -85,6 +85,9 @@ impl LedgerSnapshot {
         self.timestamp = info.timestamp;
         self.network_id = info.network_id;
         self.base_reserve = info.base_reserve;
+        self.min_persistent_entry_expiration = info.min_persistent_entry_expiration;
+        self.min_temp_entry_expiration = info.min_temp_entry_expiration;
+        self.max_entry_expiration = info.max_entry_expiration;
     }
 
     /// Get the entries in the snapshot.
