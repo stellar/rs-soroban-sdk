@@ -47,7 +47,6 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// # #[cfg(not(feature = "testutils"))]
 /// # fn main() { }
 /// ```
-
 #[derive(Clone)]
 pub struct Events(Env);
 
@@ -120,7 +119,7 @@ impl Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, Address, BytesN, TryIntoVal};
+use crate::{testutils, xdr, Address, TryIntoVal};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -143,7 +142,7 @@ impl testutils::Events for Events {
                 } = e.event
                 {
                     vec.push_back((
-                        Address::from_contract_id(&BytesN::from_array(env, &contract_id.0)),
+                        Address::from_contract_id(env, contract_id.0),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
                     ))

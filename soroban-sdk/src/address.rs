@@ -2,17 +2,14 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{AddressObject, Env as _, EnvBase as _},
-    BytesN, ConversionError, Env, TryFromVal, TryIntoVal, Val,
+    ConversionError, Env, String, TryFromVal, TryIntoVal, Val,
 };
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
 #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
 use crate::env::xdr::ScAddress;
-use crate::{
-    unwrap::{UnwrapInfallible, UnwrapOptimized},
-    Vec,
-};
+use crate::{unwrap::UnwrapInfallible, Bytes, Vec};
 
 /// Address is a universal opaque identifier to use in contracts.
 ///
@@ -226,47 +223,53 @@ impl Address {
         self.env.require_auth(self);
     }
 
-    /// Creates an `Address` corresponding to the provided contract identifier.
+    /// Creates an `Address` corresponding to the provided Stellar strkey.
+    ///
+    /// The only supported strkey types are account keys (`G...`) and contract keys (`C...`). Any
+    /// other valid or invalid strkey will cause this to panic.
     ///
     /// Prefer using the `Address` directly as input or output argument. Only
-    /// use this in special cases, for example to get an Address of a freshly
-    /// deployed contract.
-    ///
-    /// TODO: Replace this function in its pub form with a function that accepts
-    /// a strkey instead. Dependent on <https://github.com/stellar/rs-stellar-strkey/issues/56>.
-    pub fn from_contract_id(contract_id: &BytesN<32>) -> Self {
-        let env = contract_id.env();
+    /// use this in special cases when addresses need to be shared between
+    /// different environments (e.g. different chains).
+    pub fn from_strkey(strkey: &String) -> Self {
+        let env = strkey.env();
         unsafe {
             Self::unchecked_new(
                 env.clone(),
-                env.contract_id_to_address(contract_id.to_object())
-                    .unwrap_optimized(),
+                env.strkey_to_address(strkey.to_object().to_val())
+                    .unwrap_infallible(),
             )
         }
     }
 
-    /// Returns 32-byte contract identifier corresponding to this `Address`.
+    /// Creates an `Address` corresponding to the provided Stellar strkey bytes.
     ///
-    /// Returns None if the Address is not a contract.
-    pub(crate) fn try_contract_id(&self) -> Option<BytesN<32>> {
-        let rv = self.env.address_to_contract_id(self.obj).unwrap_optimized();
-        if let Ok(()) = rv.try_into_val(&self.env) {
-            None
-        } else {
-            Some(rv.try_into_val(&self.env).unwrap_optimized())
+    /// This behaves exactly in the same fashion as `from_strkey`, i.e. the bytes should contain
+    /// exactly the same contents as `String` would (i.e. base-32 ASCII string).
+    ///
+    /// The only supported strkey types are account keys (`G...`) and contract keys (`C...`). Any
+    /// other valid or invalid strkey will cause this to panic.
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases when addresses need to be shared between
+    /// different environments (e.g. different chains).
+    pub fn from_strkey_bytes(strkey: &Bytes) -> Self {
+        let env = strkey.env();
+        unsafe {
+            Self::unchecked_new(
+                env.clone(),
+                env.strkey_to_address(strkey.to_object().to_val())
+                    .unwrap_infallible(),
+            )
         }
     }
 
-    /// Returns 32-byte contract identifier corresponding to this `Address`.
-    ///
-    /// ### Panics
-    ///
-    /// If Address is not a contract ID.
-    pub(crate) fn contract_id(&self) -> BytesN<32> {
-        match self.try_contract_id() {
-            Some(contract_id) => contract_id,
-            None => sdk_panic!("Address is not a Contract ID"),
-        }
+    pub fn to_strkey(&self) -> String {
+        String::try_from_val(
+            &self.env,
+            &self.env.address_to_strkey(self.obj).unwrap_infallible(),
+        )
+        .unwrap_optimized()
     }
 
     #[inline(always)]
@@ -296,10 +299,12 @@ impl Address {
     }
 }
 
-#[cfg(any(test, feature = "testutils"))]
+#[cfg(not(target_family = "wasm"))]
 use crate::env::xdr::Hash;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::random;
+use crate::unwrap::UnwrapOptimized;
+
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
@@ -307,8 +312,20 @@ impl crate::testutils::Address for Address {
         let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
         Self::try_from_val(env, &sc_addr).unwrap()
     }
+}
 
-    fn contract_id(&self) -> crate::BytesN<32> {
-        self.contract_id()
+#[cfg(not(target_family = "wasm"))]
+impl Address {
+    pub(crate) fn contract_id(&self) -> Hash {
+        let sc_address: ScAddress = self.try_into().unwrap();
+        if let ScAddress::Contract(c) = sc_address {
+            c
+        } else {
+            panic!("address is not a contract {:?}", self);
+        }
+    }
+
+    pub(crate) fn from_contract_id(env: &Env, contract_id: [u8; 32]) -> Self {
+        Self::try_from_val(env, &ScAddress::Contract(Hash(contract_id))).unwrap()
     }
 }

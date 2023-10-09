@@ -56,9 +56,7 @@ impl<'a> From<&MockAuthInvoke<'a>> for xdr::SorobanAuthorizedInvocation {
     fn from(value: &MockAuthInvoke<'a>) -> Self {
         Self {
             function: xdr::SorobanAuthorizedFunction::ContractFn(xdr::InvokeContractArgs {
-                contract_address: xdr::ScAddress::Contract(xdr::Hash(
-                    value.contract.contract_id().to_array(),
-                )),
+                contract_address: xdr::ScAddress::Contract(value.contract.contract_id()),
                 function_name: value.fn_name.try_into().unwrap(),
                 args: value.args.clone().try_into().unwrap(),
             }),

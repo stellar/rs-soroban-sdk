@@ -181,11 +181,4 @@ pub trait Address {
     /// shouldn't normally matter though, as contracts should be agnostic to
     /// the underlying Address value.
     fn random(env: &Env) -> crate::Address;
-
-    /// Get the contract ID of an Address as a BytesN<32>.
-    ///
-    /// ### Panics
-    ///
-    /// If the Address is not a Contract.
-    fn contract_id(&self) -> crate::BytesN<32>;
 }

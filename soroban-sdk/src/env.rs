@@ -437,9 +437,10 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{
-    Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
+    LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
     SorobanAuthorizationEntry,
 };
+
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -1102,13 +1103,13 @@ impl Env {
 
     fn register_contract_with_contract_id_and_executable(
         &self,
-        contract_id: &Address,
+        contract_address: &Address,
         executable: xdr::ContractExecutable,
     ) {
-        let contract_id_hash = Hash(contract_id.contract_id().into());
+        let contract_id = contract_address.contract_id();
         let data_key = xdr::ScVal::LedgerKeyContractInstance;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
-            contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
+            contract: xdr::ScAddress::Contract(contract_id.clone()),
             key: data_key.clone(),
             durability: xdr::ContractDataDurability::Persistent,
         }));
@@ -1122,7 +1123,7 @@ impl Env {
             ext: xdr::LedgerEntryExt::V0,
             last_modified_ledger_seq: 0,
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
+                contract: xdr::ScAddress::Contract(contract_id.clone()),
                 key: data_key,
                 val: xdr::ScVal::ContractInstance(instance),
                 durability: xdr::ContractDataDurability::Persistent,

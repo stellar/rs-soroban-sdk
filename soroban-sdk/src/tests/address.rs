@@ -1,34 +1,44 @@
-use crate::{
-    xdr::{AccountId, Hash, PublicKey, ScAddress, Uint256},
-    Address, BytesN, Env, TryFromVal, TryIntoVal,
-};
+use crate::{Address, Bytes, Env, String, TryIntoVal};
 
 #[test]
 fn test_account_address_conversions() {
     let env = Env::default();
 
-    let scaddress = ScAddress::Account(AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
-        [222u8; 32],
-    ))));
+    let strkey: String = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
+        .try_into_val(&env)
+        .unwrap();
 
-    let address = Address::try_from_val(&env, &scaddress).unwrap();
+    let address = Address::from_strkey(&strkey);
+    assert_eq!(
+        address.to_strkey().to_string(),
+        "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
+    );
+}
 
-    let scaddress_roundtrip: ScAddress = (&address).try_into().unwrap();
-    assert_eq!(scaddress, scaddress_roundtrip,);
+#[test]
+fn test_account_address_conversions_from_bytes() {
+    let env = Env::default();
+
+    let strkey: Bytes = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
+        .as_bytes()
+        .try_into_val(&env)
+        .unwrap();
+
+    let address = Address::from_strkey_bytes(&strkey);
+    assert_eq!(
+        address.to_strkey().to_string(),
+        "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
+    );
 }
 
 #[test]
 fn test_contract_address_conversions() {
     let env = Env::default();
-    let contract_address = Address::from_contract_id(&BytesN::from_array(&env, &[111u8; 32]));
-    assert_eq!(
-        contract_address.contract_id(),
-        BytesN::from_array(&env, &[111u8; 32])
-    );
 
-    let scaddress: ScAddress = (&contract_address).try_into().unwrap();
-    assert_eq!(scaddress, ScAddress::Contract(Hash([111u8; 32])));
+    let strkey: String = "CA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUWDA"
+        .try_into_val(&env)
+        .unwrap();
 
-    let contract_address_rt: Address = scaddress.try_into_val(&env).unwrap();
-    assert_eq!(contract_address_rt, contract_address);
+    let address = Address::from_strkey(&strkey);
+    assert_eq!(address.to_strkey(), strkey);
 }

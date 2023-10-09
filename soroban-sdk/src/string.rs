@@ -10,7 +10,7 @@ use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
 use crate::{storage::Storage, Map, Vec};
 
 #[cfg(not(target_family = "wasm"))]
-use super::xdr::ScVal;
+use super::xdr::{ScString, ScVal};
 
 /// String is a contiguous growable array type containing `u8`s.
 ///
@@ -166,6 +166,18 @@ impl TryFromVal<Env, &str> for String {
 
     fn try_from_val(env: &Env, v: &&str) -> Result<Self, Self::Error> {
         Ok(String::from_slice(env, v))
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl ToString for String {
+    fn to_string(&self) -> std::string::String {
+        let sc_val: ScVal = self.try_into().unwrap();
+        if let ScVal::String(ScString(s)) = sc_val {
+            s.to_string().unwrap()
+        } else {
+            panic!("value is not a string");
+        }
     }
 }
 

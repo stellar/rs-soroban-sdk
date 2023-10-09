@@ -1,5 +1,5 @@
 use crate as soroban_sdk;
-use soroban_sdk::{contract, contractimpl, Address, BytesN, Env};
+use soroban_sdk::{contract, contractimpl, Address, Env};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
 
@@ -54,7 +54,7 @@ fn test_functional() {
 fn test_register_at_id() {
     let e = Env::default();
 
-    let add_contract_id = Address::from_contract_id(&BytesN::from_array(&e, &[1; 32]));
+    let add_contract_id = Address::from_contract_id(&e, [1; 32]);
     e.register_contract_wasm(&add_contract_id, addcontract::WASM);
 
     let contract_id = e.register_contract(None, Contract);
