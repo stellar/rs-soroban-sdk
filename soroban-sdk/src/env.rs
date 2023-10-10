@@ -437,9 +437,10 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{
-    Hash, LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
+    LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
     SorobanAuthorizationEntry,
 };
+
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -1054,7 +1055,7 @@ impl Env {
     ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
-    ///             &account_contract.address.contract_id(),
+    ///             &account_contract.address,
     ///             &BytesN::random(&e),
     ///             &vec![&e],
     ///             &vec![&e],
@@ -1067,7 +1068,7 @@ impl Env {
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
-    ///             &account_contract.address.contract_id(),
+    ///             &account_contract.address,
     ///             &BytesN::random(&e),
     ///             &vec![&e, 0_i32.into()],
     ///             &vec![&e],
@@ -1078,7 +1079,7 @@ impl Env {
     /// ```
     pub fn try_invoke_contract_check_auth<E: TryFrom<Error>>(
         &self,
-        contract: &BytesN<32>,
+        contract: &Address,
         signature_payload: &BytesN<32>,
         signatures: &Vec<Val>,
         auth_context: &Vec<auth::Context>,
@@ -1102,13 +1103,13 @@ impl Env {
 
     fn register_contract_with_contract_id_and_executable(
         &self,
-        contract_id: &Address,
+        contract_address: &Address,
         executable: xdr::ContractExecutable,
     ) {
-        let contract_id_hash = Hash(contract_id.contract_id().into());
+        let contract_id = contract_address.contract_id();
         let data_key = xdr::ScVal::LedgerKeyContractInstance;
         let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
-            contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
+            contract: xdr::ScAddress::Contract(contract_id.clone()),
             key: data_key.clone(),
             durability: xdr::ContractDataDurability::Persistent,
         }));
@@ -1122,7 +1123,7 @@ impl Env {
             ext: xdr::LedgerEntryExt::V0,
             last_modified_ledger_seq: 0,
             data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                contract: xdr::ScAddress::Contract(contract_id_hash.clone()),
+                contract: xdr::ScAddress::Contract(contract_id.clone()),
                 key: data_key,
                 val: xdr::ScVal::ContractInstance(instance),
                 durability: xdr::ContractDataDurability::Persistent,
