@@ -231,7 +231,7 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases when addresses need to be shared between
     /// different environments (e.g. different chains).
-    pub fn from_strkey(strkey: &String) -> Self {
+    pub fn from_str(strkey: &String) -> Self {
         let env = strkey.env();
         unsafe {
             Self::unchecked_new(
@@ -253,7 +253,7 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases when addresses need to be shared between
     /// different environments (e.g. different chains).
-    pub fn from_strkey_bytes(strkey: &Bytes) -> Self {
+    pub fn from_str_bytes(strkey: &Bytes) -> Self {
         let env = strkey.env();
         unsafe {
             Self::unchecked_new(
@@ -264,7 +264,7 @@ impl Address {
         }
     }
 
-    pub fn to_strkey(&self) -> String {
+    pub fn to_str(&self) -> String {
         String::try_from_val(
             &self.env,
             &self.env.address_to_strkey(self.obj).unwrap_infallible(),

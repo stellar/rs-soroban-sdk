@@ -8,9 +8,9 @@ fn test_account_address_conversions() {
         .try_into_val(&env)
         .unwrap();
 
-    let address = Address::from_strkey(&strkey);
+    let address = Address::from_str(&strkey);
     assert_eq!(
-        address.to_strkey().to_string(),
+        address.to_str().to_string(),
         "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
     );
 }
@@ -24,9 +24,9 @@ fn test_account_address_conversions_from_bytes() {
         .try_into_val(&env)
         .unwrap();
 
-    let address = Address::from_strkey_bytes(&strkey);
+    let address = Address::from_str_bytes(&strkey);
     assert_eq!(
-        address.to_strkey().to_string(),
+        address.to_str().to_string(),
         "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
     );
 }
@@ -39,6 +39,6 @@ fn test_contract_address_conversions() {
         .try_into_val(&env)
         .unwrap();
 
-    let address = Address::from_strkey(&strkey);
-    assert_eq!(address.to_strkey(), strkey);
+    let address = Address::from_str(&strkey);
+    assert_eq!(address.to_str(), strkey);
 }
