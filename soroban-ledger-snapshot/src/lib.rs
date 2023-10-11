@@ -29,9 +29,9 @@ pub struct LedgerSnapshot {
     pub timestamp: u64,
     pub network_id: [u8; 32],
     pub base_reserve: u32,
-    pub min_persistent_entry_expiration: u32,
-    pub min_temp_entry_expiration: u32,
-    pub max_entry_expiration: u32,
+    pub min_persistent_entry_ttl: u32,
+    pub min_temp_entry_ttl: u32,
+    pub max_entry_ttl: u32,
     pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
 }
 
@@ -72,9 +72,9 @@ impl LedgerSnapshot {
             timestamp: self.timestamp,
             network_id: self.network_id,
             base_reserve: self.base_reserve,
-            min_persistent_entry_expiration: self.min_persistent_entry_expiration,
-            min_temp_entry_expiration: self.min_temp_entry_expiration,
-            max_entry_expiration: self.max_entry_expiration,
+            min_persistent_entry_ttl: self.min_persistent_entry_ttl,
+            min_temp_entry_ttl: self.min_temp_entry_ttl,
+            max_entry_ttl: self.max_entry_ttl,
         }
     }
 
@@ -85,9 +85,9 @@ impl LedgerSnapshot {
         self.timestamp = info.timestamp;
         self.network_id = info.network_id;
         self.base_reserve = info.base_reserve;
-        self.min_persistent_entry_expiration = info.min_persistent_entry_expiration;
-        self.min_temp_entry_expiration = info.min_temp_entry_expiration;
-        self.max_entry_expiration = info.max_entry_expiration;
+        self.min_persistent_entry_ttl = info.min_persistent_entry_ttl;
+        self.min_temp_entry_ttl = info.min_temp_entry_ttl;
+        self.max_entry_ttl = info.max_entry_ttl;
     }
 
     /// Get the entries in the snapshot.
@@ -171,9 +171,9 @@ impl Default for LedgerSnapshot {
             network_id: Default::default(),
             base_reserve: Default::default(),
             ledger_entries: Vec::default(),
-            min_persistent_entry_expiration: Default::default(),
-            min_temp_entry_expiration: Default::default(),
-            max_entry_expiration: Default::default(),
+            min_persistent_entry_ttl: Default::default(),
+            min_temp_entry_ttl: Default::default(),
+            max_entry_ttl: Default::default(),
         }
     }
 }

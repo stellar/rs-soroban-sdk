@@ -491,9 +491,9 @@ impl Env {
             timestamp: 0,
             network_id: [0; 32],
             base_reserve: 0,
-            min_persistent_entry_expiration: 4096,
-            min_temp_entry_expiration: 16,
-            max_entry_expiration: 6_312_000,
+            min_persistent_entry_ttl: 4096,
+            min_temp_entry_ttl: 16,
+            max_entry_ttl: 6_312_000,
         });
 
         env

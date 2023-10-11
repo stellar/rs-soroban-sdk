@@ -25,8 +25,8 @@ use crate::{
 /// persistent entry can exist at a time.
 ///
 /// Instance storage is used to store entries within the Persistent contract
-/// instance entry, allowing users to tie that data directly to the expiration
-/// on the instance. Instance storage is good for global contract data like
+/// instance entry, allowing users to tie that data directly to the TTL
+/// of the instance. Instance storage is good for global contract data like
 /// metadata, admin accounts, or pool reserves.
 ///
 /// ### Examples
@@ -139,16 +139,16 @@ impl Storage {
         }
     }
 
-    /// Returns the maximum number of ledgers that an entry can have rent paid
-    /// for it in one moment.
+    /// Returns the maximum TTL (number of ledgers that an entry can have rent paid
+    /// for it in one moment).
     ///
     /// When counting the number of ledgers an entry is active for, the current
-    /// ledger is included. If an entry is created it the current ledger, its
-    /// maximum expiration duration in ledgers will be the value returned from
-    /// the function including the current ledger. This means the last ledger
+    /// ledger is included. If an entry is created in the current ledger, its
+    /// maximum live_until ledger will be the TTL (value returned from
+    /// the function) plus the current ledger. This means the last ledger
     /// that the entry will be accessible will be the current ledger sequence
-    /// plus the max expiration minus one.
-    pub fn max_live_until_ledger(&self) -> u32 {
+    /// plus the max TTL minus one.
+    pub fn max_ttl(&self) -> u32 {
         let seq = self.env.ledger().sequence();
         let max = self.env.ledger().max_live_until_ledger();
         max - seq + 1
@@ -205,8 +205,8 @@ impl Storage {
         &self,
         key: &K,
         storage_type: StorageType,
-        low_expiration_watermark: u32,
-        high_expiration_watermark: u32,
+        threshold: u32,
+        extend_to: u32,
     ) where
         K: IntoVal<Env, Val>,
     {
@@ -215,8 +215,8 @@ impl Storage {
             env,
             key.into_val(env),
             storage_type,
-            low_expiration_watermark.into(),
-            high_expiration_watermark.into(),
+            threshold.into(),
+            extend_to.into(),
         )
         .unwrap_infallible();
     }
@@ -274,16 +274,12 @@ impl Persistent {
         self.storage.set(key, val, StorageType::Persistent)
     }
 
-    pub fn extend<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
+    pub fn extend<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.extend(
-            key,
-            StorageType::Persistent,
-            low_expiration_watermark,
-            high_expiration_watermark,
-        )
+        self.storage
+            .extend(key, StorageType::Persistent, threshold, extend_to)
     }
 
     #[inline(always)]
@@ -324,16 +320,12 @@ impl Temporary {
         self.storage.set(key, val, StorageType::Temporary)
     }
 
-    pub fn extend<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
+    pub fn extend<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.extend(
-            key,
-            StorageType::Temporary,
-            low_expiration_watermark,
-            high_expiration_watermark,
-        )
+        self.storage
+            .extend(key, StorageType::Temporary, threshold, extend_to)
     }
 
     #[inline(always)]
@@ -382,11 +374,11 @@ impl Instance {
         self.storage.remove(key, StorageType::Instance)
     }
 
-    pub fn extend(&self, low_expiration_watermark: u32, high_expiration_watermark: u32) {
+    pub fn extend(&self, threshold: u32, extend_to: u32) {
         internal::Env::extend_current_contract_instance_and_code(
             &self.storage.env,
-            low_expiration_watermark.into(),
-            high_expiration_watermark.into(),
+            threshold.into(),
+            extend_to.into(),
         )
         .unwrap_infallible();
     }
