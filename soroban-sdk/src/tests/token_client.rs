@@ -32,8 +32,8 @@ impl TestContract {
         get_token(&e)
     }
 
-    pub fn approve(e: Env, from: Address, spender: Address, amount: i128, expiration_ledger: u32) {
-        TokenClient::new(&e, &get_token(&e)).approve(&from, &spender, &amount, &expiration_ledger);
+    pub fn approve(e: Env, from: Address, spender: Address, amount: i128, live_until_ledger: u32) {
+        TokenClient::new(&e, &get_token(&e)).approve(&from, &spender, &amount, &live_until_ledger);
     }
 
     pub fn allowance(e: Env, from: Address, spender: Address) -> i128 {
