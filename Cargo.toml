@@ -62,14 +62,14 @@ rev = "e6ba45c60c16de28c7522586b80ed0150157df73"
 [workspace.dependencies.stellar-xdr]
 version = "20.0.0-rc1"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "c9d24eb4fae1f9968f6620e06750c1fce7a5d6c3"
+rev = "4bf4911f0f6ba44e482674a7a9090c22ee97511f"
 default-features = false
 features = ["curr"]
 
-#[patch."https://github.com/stellar/rs-soroban-env"]
-#soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-#soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+[patch."https://github.com/stellar/rs-soroban-env"]
+soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
 #[patch."https://github.com/stellar/rs-stellar-xdr"]
 #stellar-xdr = { path = "../rs-stellar-xdr/" }
 

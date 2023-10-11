@@ -148,9 +148,9 @@ impl Storage {
     /// the function including the current ledger. This means the last ledger
     /// that the entry will be accessible will be the current ledger sequence
     /// plus the max expiration minus one.
-    pub fn max_expiration(&self) -> u32 {
+    pub fn max_live_until_ledger(&self) -> u32 {
         let seq = self.env.ledger().sequence();
-        let max = self.env.ledger().max_expiration_sequence();
+        let max = self.env.ledger().max_live_until_ledger();
         max - seq + 1
     }
 
@@ -201,7 +201,7 @@ impl Storage {
             .unwrap_infallible();
     }
 
-    pub(crate) fn bump<K>(
+    pub(crate) fn extend<K>(
         &self,
         key: &K,
         storage_type: StorageType,
@@ -211,7 +211,7 @@ impl Storage {
         K: IntoVal<Env, Val>,
     {
         let env = &self.env;
-        internal::Env::bump_contract_data(
+        internal::Env::extend_contract_data(
             env,
             key.into_val(env),
             storage_type,
@@ -274,11 +274,11 @@ impl Persistent {
         self.storage.set(key, val, StorageType::Persistent)
     }
 
-    pub fn bump<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
+    pub fn extend<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.bump(
+        self.storage.extend(
             key,
             StorageType::Persistent,
             low_expiration_watermark,
@@ -324,11 +324,11 @@ impl Temporary {
         self.storage.set(key, val, StorageType::Temporary)
     }
 
-    pub fn bump<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
+    pub fn extend<K>(&self, key: &K, low_expiration_watermark: u32, high_expiration_watermark: u32)
     where
         K: IntoVal<Env, Val>,
     {
-        self.storage.bump(
+        self.storage.extend(
             key,
             StorageType::Temporary,
             low_expiration_watermark,
@@ -382,8 +382,8 @@ impl Instance {
         self.storage.remove(key, StorageType::Instance)
     }
 
-    pub fn bump(&self, low_expiration_watermark: u32, high_expiration_watermark: u32) {
-        internal::Env::bump_current_contract_instance_and_code(
+    pub fn extend(&self, low_expiration_watermark: u32, high_expiration_watermark: u32) {
+        internal::Env::extend_current_contract_instance_and_code(
             &self.storage.env,
             low_expiration_watermark.into(),
             high_expiration_watermark.into(),
