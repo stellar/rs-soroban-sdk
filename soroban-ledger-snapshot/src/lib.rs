@@ -117,10 +117,10 @@ impl LedgerSnapshot {
     ) {
         for (k, e) in entries {
             let i = self.ledger_entries.iter().position(|(ik, _)| **ik == **k);
-            if let Some((entry, expiration)) = e {
+            if let Some((entry, live_until_ledger)) = e {
                 let new = (
                     Box::new((**k).clone()),
-                    (Box::new((**entry).clone()), *expiration),
+                    (Box::new((**entry).clone()), *live_until_ledger),
                 );
                 if let Some(i) = i {
                     self.ledger_entries[i] = new;

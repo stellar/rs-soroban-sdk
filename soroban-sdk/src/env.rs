@@ -1130,13 +1130,13 @@ impl Env {
                 ext: xdr::ExtensionPoint::V0,
             }),
         });
-        let expiration_ledger = self.ledger().sequence() + 1;
+        let live_until_ledger = self.ledger().sequence() + 1;
         self.env_impl
             .with_mut_storage(|storage| {
                 storage.put(
                     &key,
                     &entry,
-                    Some(expiration_ledger),
+                    Some(live_until_ledger),
                     soroban_env_host::budget::AsBudget::as_budget(self.host()),
                 )
             })
