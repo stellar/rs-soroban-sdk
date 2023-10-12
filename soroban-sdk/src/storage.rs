@@ -201,7 +201,7 @@ impl Storage {
             .unwrap_infallible();
     }
 
-    pub(crate) fn extend<K>(
+    pub(crate) fn extend_ttl<K>(
         &self,
         key: &K,
         storage_type: StorageType,
@@ -274,12 +274,12 @@ impl Persistent {
         self.storage.set(key, val, StorageType::Persistent)
     }
 
-    pub fn extend<K>(&self, key: &K, threshold: u32, extend_to: u32)
+    pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
     {
         self.storage
-            .extend(key, StorageType::Persistent, threshold, extend_to)
+            .extend_ttl(key, StorageType::Persistent, threshold, extend_to)
     }
 
     #[inline(always)]
@@ -320,12 +320,12 @@ impl Temporary {
         self.storage.set(key, val, StorageType::Temporary)
     }
 
-    pub fn extend<K>(&self, key: &K, threshold: u32, extend_to: u32)
+    pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
     {
         self.storage
-            .extend(key, StorageType::Temporary, threshold, extend_to)
+            .extend_ttl(key, StorageType::Temporary, threshold, extend_to)
     }
 
     #[inline(always)]
@@ -374,7 +374,7 @@ impl Instance {
         self.storage.remove(key, StorageType::Instance)
     }
 
-    pub fn extend(&self, threshold: u32, extend_to: u32) {
+    pub fn extend_ttl(&self, threshold: u32, extend_to: u32) {
         internal::Env::extend_current_contract_instance_and_code(
             &self.storage.env,
             threshold.into(),

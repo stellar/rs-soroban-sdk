@@ -35,18 +35,20 @@ impl Contract {
         env.storage().instance().set(&DataKey::Key(k), &v);
     }
 
-    pub fn bump_persistent(env: Env, k: i32) {
+    pub fn extend_ttl_persistent(env: Env, k: i32) {
         env.storage()
             .persistent()
-            .extend(&DataKey::Key(k), 100, 100);
+            .extend_ttl(&DataKey::Key(k), 100, 100);
     }
 
-    pub fn bump_temporary(env: Env, k: i32) {
-        env.storage().temporary().extend(&DataKey::Key(k), 100, 100);
+    pub fn extend_ttl_temporary(env: Env, k: i32) {
+        env.storage()
+            .temporary()
+            .extend_ttl(&DataKey::Key(k), 100, 100);
     }
 
-    pub fn bump_instance(env: Env) {
-        env.storage().instance().extend(100, 100);
+    pub fn extend_ttl_instance(env: Env) {
+        env.storage().instance().extend_ttl(100, 100);
     }
 }
 
@@ -57,7 +59,7 @@ fn test_storage() {
     let client = ContractClient::new(&e, &contract_id);
 
     // Smoke test instance bump before putting any data into it.
-    client.bump_instance();
+    client.extend_ttl_instance();
 
     assert!(client.get_persistent(&11).is_none());
     assert!(client.get_temporary(&11).is_none());
@@ -105,6 +107,6 @@ fn test_storage() {
 
     // Smoke test temp/persistent bumps. This can be enhanced when we provided
     // expiration ledger getter for tests.
-    client.bump_persistent(&11);
-    client.bump_temporary(&11);
+    client.extend_ttl_persistent(&11);
+    client.extend_ttl_temporary(&11);
 }
