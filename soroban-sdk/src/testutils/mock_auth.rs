@@ -33,13 +33,13 @@ impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
     fn from(value: &MockAuth) -> Self {
         let env = value.address.env();
         let curr_ledger = env.ledger().sequence();
-        let max_expiration = env.ledger().get().max_entry_expiration;
+        let max_entry_ttl = env.ledger().get().max_entry_ttl;
         Self {
             root_invocation: value.invoke.into(),
             credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
                 address: value.address.try_into().unwrap(),
                 nonce: thread_rng().gen(),
-                signature_expiration_ledger: curr_ledger + max_expiration - 1,
+                signature_expiration_ledger: curr_ledger + max_entry_ttl - 1,
                 signature: xdr::ScVal::Void,
             }),
         }

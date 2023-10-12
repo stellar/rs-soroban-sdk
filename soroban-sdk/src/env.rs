@@ -491,9 +491,9 @@ impl Env {
             timestamp: 0,
             network_id: [0; 32],
             base_reserve: 0,
-            min_persistent_entry_expiration: 4096,
-            min_temp_entry_expiration: 16,
-            max_entry_expiration: 6_312_000,
+            min_persistent_entry_ttl: 4096,
+            min_temp_entry_ttl: 16,
+            max_entry_ttl: 6_312_000,
         });
 
         env
@@ -662,7 +662,7 @@ impl Env {
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
             contract_id_preimage: xdr::ContractIdPreimage::Asset(asset),
-            executable: xdr::ContractExecutable::Token,
+            executable: xdr::ContractExecutable::StellarAsset,
         });
 
         let token_id: Address = self
@@ -1130,13 +1130,13 @@ impl Env {
                 ext: xdr::ExtensionPoint::V0,
             }),
         });
-        let expiration_ledger = self.ledger().sequence() + 1;
+        let live_until_ledger = self.ledger().sequence() + 1;
         self.env_impl
             .with_mut_storage(|storage| {
                 storage.put(
                     &key,
                     &entry,
-                    Some(expiration_ledger),
+                    Some(live_until_ledger),
                     soroban_env_host::budget::AsBudget::as_budget(self.host()),
                 )
             })
