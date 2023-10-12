@@ -10,11 +10,11 @@ impl Events {
         Events { env: env.clone() }
     }
 
-    pub fn approve(&self, from: Address, to: Address, amount: i128, live_until_ledger: u32) {
+    pub fn approve(&self, from: Address, to: Address, amount: i128, expiration_ledger: u32) {
         let topics = (Symbol::new(&self.env, "approve"), from, to);
         self.env
             .events()
-            .publish(topics, (amount, live_until_ledger));
+            .publish(topics, (amount, expiration_ledger));
     }
 
     pub fn transfer(&self, from: Address, to: Address, amount: i128) {
