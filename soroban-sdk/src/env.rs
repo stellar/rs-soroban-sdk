@@ -662,7 +662,7 @@ impl Env {
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
             contract_id_preimage: xdr::ContractIdPreimage::Asset(asset),
-            executable: xdr::ContractExecutable::Token,
+            executable: xdr::ContractExecutable::StellarAsset,
         });
 
         let token_id: Address = self
