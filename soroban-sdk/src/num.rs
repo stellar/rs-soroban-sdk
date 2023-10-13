@@ -200,14 +200,14 @@ impl U256 {
         }
     }
 
-    pub fn to_u128(&self) -> Result<u128, ConversionError> {
+    pub fn to_u128(&self) -> Option<u128> {
         let be_bytes = self.to_be_bytes();
         let be_bytes_hi: [u8; 16] = be_bytes.slice(0..16).try_into().unwrap();
         let be_bytes_lo: [u8; 16] = be_bytes.slice(16..32).try_into().unwrap();
         if u128::from_be_bytes(be_bytes_hi) == 0 {
-            Ok(u128::from_be_bytes(be_bytes_lo))
+            Some(u128::from_be_bytes(be_bytes_lo))
         } else {
-            Err(ConversionError)
+            None
         }
     }
 
@@ -355,16 +355,16 @@ impl I256 {
         }
     }
 
-    pub fn to_i128(&self) -> Result<i128, ConversionError> {
+    pub fn to_i128(&self) -> Option<i128> {
         let be_bytes = self.to_be_bytes();
         let be_bytes_hi: [u8; 16] = be_bytes.slice(0..16).try_into().unwrap();
         let be_bytes_lo: [u8; 16] = be_bytes.slice(16..32).try_into().unwrap();
         let i128_hi = i128::from_be_bytes(be_bytes_hi);
         let i128_lo = i128::from_be_bytes(be_bytes_lo);
         if (i128_hi == 0 && i128_lo >= 0) || (i128_hi == -1 && i128_lo < 0) {
-            Ok(i128_lo)
+            Some(i128_lo)
         } else {
-            Err(ConversionError)
+            None
         }
     }
 
@@ -513,6 +513,7 @@ mod test {
     fn test_u256_u128_conversion() {
         let env = Env::default();
 
+        // positive
         let start = u128::MAX / 7;
         let from = U256::from_u128(&env, start);
         let end = from.to_u128().unwrap();
@@ -520,7 +521,13 @@ mod test {
 
         let over_u128 = from.mul(&U256::from_u32(&env, 8));
         let failure = over_u128.to_u128();
-        assert_eq!(failure, Err(ConversionError));
+        assert_eq!(failure, None);
+
+        // zero
+        let start = 0_u128;
+        let from = U256::from_u128(&env, start);
+        let end = from.to_u128().unwrap();
+        assert_eq!(start, end);
     }
 
     #[test]
@@ -545,7 +552,7 @@ mod test {
 
         let over_i128 = from.mul(&I256::from_i32(&env, 8));
         let failure = over_i128.to_i128();
-        assert_eq!(failure, Err(ConversionError));
+        assert_eq!(failure, None);
 
         // negative
         let start = i128::MIN / 7;
@@ -555,7 +562,13 @@ mod test {
 
         let over_i128 = from.mul(&I256::from_i32(&env, 8));
         let failure = over_i128.to_i128();
-        assert_eq!(failure, Err(ConversionError));
+        assert_eq!(failure, None);
+
+        // zero
+        let start = 0_i128;
+        let from = I256::from_i128(&env, start);
+        let end = from.to_i128().unwrap();
+        assert_eq!(start, end);
     }
 
     #[test]
