@@ -172,6 +172,13 @@ impl U256 {
         }
     }
 
+    pub fn from_u128(env: &Env, u: u128) -> Self {
+        let lo: Bytes = Bytes::from_array(env, &u.to_be_bytes());
+        let mut bytes: Bytes = Bytes::from_array(env, &[0u8; 16]);
+        bytes.append(&lo);
+        Self::from_be_bytes(env, &bytes)
+    }
+
     pub fn from_parts(env: &Env, hi_hi: u64, hi_lo: u64, lo_hi: u64, lo_lo: u64) -> Self {
         let obj = env
             .obj_from_u256_pieces(hi_hi, hi_lo, lo_hi, lo_lo)
@@ -190,6 +197,17 @@ impl U256 {
         U256 {
             env: env.clone(),
             val,
+        }
+    }
+
+    pub fn to_u128(&self) -> Option<u128> {
+        let be_bytes = self.to_be_bytes();
+        let be_bytes_hi: [u8; 16] = be_bytes.slice(0..16).try_into().unwrap();
+        let be_bytes_lo: [u8; 16] = be_bytes.slice(16..32).try_into().unwrap();
+        if u128::from_be_bytes(be_bytes_hi) == 0 {
+            Some(u128::from_be_bytes(be_bytes_lo))
+        } else {
+            None
         }
     }
 
@@ -231,6 +249,18 @@ impl U256 {
     pub fn div(&self, other: &U256) -> U256 {
         self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.u256_div(self.val, other.val).unwrap_infallible();
+        U256 {
+            env: self.env.clone(),
+            val,
+        }
+    }
+
+    pub fn rem_euclid(&self, other: &U256) -> U256 {
+        self.env.check_same_env(&other.env).unwrap_infallible();
+        let val = self
+            .env
+            .u256_rem_euclid(self.val, other.val)
+            .unwrap_infallible();
         U256 {
             env: self.env.clone(),
             val,
@@ -291,6 +321,19 @@ impl I256 {
         }
     }
 
+    pub fn from_i128(env: &Env, i: i128) -> Self {
+        let lo: Bytes = Bytes::from_array(env, &i.to_be_bytes());
+        if i < 0 {
+            let mut i256_bytes: Bytes = Bytes::from_array(env, &[255_u8; 16]);
+            i256_bytes.append(&lo);
+            Self::from_be_bytes(env, &i256_bytes)
+        } else {
+            let mut i256_bytes: Bytes = Bytes::from_array(env, &[0_u8; 16]);
+            i256_bytes.append(&lo);
+            Self::from_be_bytes(env, &i256_bytes)
+        }
+    }
+
     pub fn from_parts(env: &Env, hi_hi: i64, hi_lo: u64, lo_hi: u64, lo_lo: u64) -> Self {
         let obj = env
             .obj_from_i256_pieces(hi_hi, hi_lo, lo_hi, lo_lo)
@@ -309,6 +352,19 @@ impl I256 {
         I256 {
             env: env.clone(),
             val,
+        }
+    }
+
+    pub fn to_i128(&self) -> Option<i128> {
+        let be_bytes = self.to_be_bytes();
+        let be_bytes_hi: [u8; 16] = be_bytes.slice(0..16).try_into().unwrap();
+        let be_bytes_lo: [u8; 16] = be_bytes.slice(16..32).try_into().unwrap();
+        let i128_hi = i128::from_be_bytes(be_bytes_hi);
+        let i128_lo = i128::from_be_bytes(be_bytes_lo);
+        if (i128_hi == 0 && i128_lo >= 0) || (i128_hi == -1 && i128_lo < 0) {
+            Some(i128_lo)
+        } else {
+            None
         }
     }
 
@@ -350,6 +406,18 @@ impl I256 {
     pub fn div(&self, other: &I256) -> I256 {
         self.env.check_same_env(&other.env).unwrap_infallible();
         let val = self.env.i256_div(self.val, other.val).unwrap_infallible();
+        I256 {
+            env: self.env.clone(),
+            val,
+        }
+    }
+
+    pub fn rem_euclid(&self, other: &I256) -> I256 {
+        self.env.check_same_env(&other.env).unwrap_infallible();
+        let val = self
+            .env
+            .i256_rem_euclid(self.val, other.val)
+            .unwrap_infallible();
         I256 {
             env: self.env.clone(),
             val,
@@ -442,6 +510,27 @@ mod test {
     }
 
     #[test]
+    fn test_u256_u128_conversion() {
+        let env = Env::default();
+
+        // positive
+        let start = u128::MAX / 7;
+        let from = U256::from_u128(&env, start);
+        let end = from.to_u128().unwrap();
+        assert_eq!(start, end);
+
+        let over_u128 = from.mul(&U256::from_u32(&env, 8));
+        let failure = over_u128.to_u128();
+        assert_eq!(failure, None);
+
+        // zero
+        let start = 0_u128;
+        let from = U256::from_u128(&env, start);
+        let end = from.to_u128().unwrap();
+        assert_eq!(start, end);
+    }
+
+    #[test]
     fn test_i256_roundtrip() {
         let env = Env::default();
 
@@ -449,6 +538,37 @@ mod test {
         let bytes = i1.to_be_bytes();
         let i2 = I256::from_be_bytes(&env, &bytes);
         assert_eq!(i1, i2);
+    }
+
+    #[test]
+    fn test_i256_i128_conversion() {
+        let env = Env::default();
+
+        // positive
+        let start = i128::MAX / 7;
+        let from = I256::from_i128(&env, start);
+        let end = from.to_i128().unwrap();
+        assert_eq!(start, end);
+
+        let over_i128 = from.mul(&I256::from_i32(&env, 8));
+        let failure = over_i128.to_i128();
+        assert_eq!(failure, None);
+
+        // negative
+        let start = i128::MIN / 7;
+        let from = I256::from_i128(&env, start);
+        let end = from.to_i128().unwrap();
+        assert_eq!(start, end);
+
+        let over_i128 = from.mul(&I256::from_i32(&env, 8));
+        let failure = over_i128.to_i128();
+        assert_eq!(failure, None);
+
+        // zero
+        let start = 0_i128;
+        let from = I256::from_i128(&env, start);
+        let end = from.to_i128().unwrap();
+        assert_eq!(start, end);
     }
 
     #[test]
@@ -482,6 +602,10 @@ mod test {
         assert_eq!(u1.pow(2), U256::from_u32(&env, 36));
         assert_eq!(u1.shl(2), U256::from_u32(&env, 24));
         assert_eq!(u1.shr(1), U256::from_u32(&env, 3));
+
+        let u3 = U256::from_u32(&env, 7);
+        let u4 = U256::from_u32(&env, 4);
+        assert_eq!(u3.rem_euclid(&u4), U256::from_u32(&env, 3));
     }
 
     #[test]
@@ -497,5 +621,9 @@ mod test {
         assert_eq!(i1.pow(2), I256::from_i32(&env, 36));
         assert_eq!(i1.shl(2), I256::from_i32(&env, -24));
         assert_eq!(i1.shr(1), I256::from_i32(&env, -3));
+
+        let u3 = I256::from_i32(&env, -7);
+        let u4 = I256::from_i32(&env, 4);
+        assert_eq!(u3.rem_euclid(&u4), I256::from_i32(&env, 1));
     }
 }
