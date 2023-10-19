@@ -11,6 +11,8 @@ pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
 
+pub mod storage;
+
 use crate::{Env, Val, Vec};
 
 #[doc(hidden)]
