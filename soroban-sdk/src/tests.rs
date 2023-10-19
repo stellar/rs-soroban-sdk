@@ -24,6 +24,6 @@ mod max_ttl;
 mod prng;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
+mod storage_testutils;
 mod token_client;
 mod token_spec;
-mod storage_testutils;
