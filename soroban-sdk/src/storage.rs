@@ -7,6 +7,9 @@ use crate::{
     Env, IntoVal, TryFromVal,
 };
 
+#[cfg(any(test, feature = "testutils"))]
+use crate::{testutils, xdr, Map, TryIntoVal};
+
 /// Storage stores and retrieves data for the currently executing contract.
 ///
 /// All data stored can only be queried and modified by the contract that stores
@@ -291,6 +294,42 @@ impl Persistent {
     }
 }
 
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl testutils::storage::Persistent for Persistent {
+    fn all(&self) -> Map<Val, Val> {
+        let env = &self.storage.env;
+        let storage = env.host().with_mut_storage(|s| Ok(s.map.clone())).unwrap();
+        let mut map = Map::<Val, Val>::new(env);
+        for entry in storage {
+            let (_, Some((v, _))) = entry else {
+                continue;
+            };
+            let xdr::LedgerEntry {
+                data:
+                    xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                        ref key,
+                        ref val,
+                        durability: xdr::ContractDataDurability::Persistent,
+                        ..
+                    }),
+                ..
+            } = *v
+            else {
+                continue;
+            };
+            let Ok(key) = Val::try_from_val(env, key) else {
+                continue;
+            };
+            let Ok(val) = Val::try_from_val(env, val) else {
+                continue;
+            };
+            map.set(key, val);
+        }
+        map
+    }
+}
+
 pub struct Temporary {
     storage: Storage,
 }
@@ -334,6 +373,42 @@ impl Temporary {
         K: IntoVal<Env, Val>,
     {
         self.storage.remove(key, StorageType::Temporary)
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl testutils::storage::Temporary for Temporary {
+    fn all(&self) -> Map<Val, Val> {
+        let env = &self.storage.env;
+        let storage = env.host().with_mut_storage(|s| Ok(s.map.clone())).unwrap();
+        let mut map = Map::<Val, Val>::new(env);
+        for entry in storage {
+            let (_, Some((v, _))) = entry else {
+                continue;
+            };
+            let xdr::LedgerEntry {
+                data:
+                    xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                        ref key,
+                        ref val,
+                        durability: xdr::ContractDataDurability::Temporary,
+                        ..
+                    }),
+                ..
+            } = *v
+            else {
+                continue;
+            };
+            let Ok(key) = Val::try_from_val(env, key) else {
+                continue;
+            };
+            let Ok(val) = Val::try_from_val(env, val) else {
+                continue;
+            };
+            map.set(key, val);
+        }
+        map
     }
 }
 
@@ -381,5 +456,51 @@ impl Instance {
             extend_to.into(),
         )
         .unwrap_infallible();
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+impl testutils::storage::Instance for Instance {
+    fn all(&self) -> Map<Val, Val> {
+        let env = &self.storage.env;
+        let storage = env.host().with_mut_storage(|s| Ok(s.map.clone())).unwrap();
+        let address: xdr::ScAddress = env.current_contract_address().try_into().unwrap();
+        for entry in storage {
+            let (k, Some((v, _))) = entry else {
+                continue;
+            };
+            let xdr::LedgerKey::ContractData(xdr::LedgerKeyContractData { ref contract, .. }) = *k
+            else {
+                continue;
+            };
+            if contract != &address {
+                continue;
+            }
+            let xdr::LedgerEntry {
+                data:
+                    xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                        key: xdr::ScVal::LedgerKeyContractInstance,
+                        val:
+                            xdr::ScVal::ContractInstance(xdr::ScContractInstance {
+                                ref storage, ..
+                            }),
+                        ..
+                    }),
+                ..
+            } = *v
+            else {
+                continue;
+            };
+            return match storage {
+                Some(map) => {
+                    let map: Val =
+                        Val::try_from_val(env, &xdr::ScVal::Map(Some(map.clone()))).unwrap();
+                    map.try_into_val(env).unwrap()
+                }
+                None => Map::new(env),
+            };
+        }
+        panic!("contract instance for current contract address not found");
     }
 }
