@@ -76,7 +76,7 @@ pub trait CustomAccountInterface {
     fn __check_auth(
         env: Env,
         signature_payload: BytesN<32>,
-        signatures: Vec<Self::Signature>,
+        signatures: Self::Signature,
         auth_contexts: Vec<Context>,
     ) -> Result<(), Self::Error>;
 }
