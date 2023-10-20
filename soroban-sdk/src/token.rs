@@ -58,16 +58,6 @@ pub trait Interface {
     ///   address has no existing balance, returns 0.
     fn balance(env: Env, id: Address) -> i128;
 
-    /// Returns the spendable balance of `id`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - The address for which a spendable balance is being queried.
-    ///   This will return the same value as `balance()` unless this is called
-    ///   on the Stellar Asset Contract, in which case this can be less due to
-    ///   reserves/liabilities.
-    fn spendable_balance(env: Env, id: Address) -> i128;
-
     /// Transfer `amount` from `from` to `to`.
     ///
     /// # Arguments
@@ -248,13 +238,12 @@ pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_set_admin(),
     &StellarAssetSpec::spec_xdr_admin(),
     &StellarAssetSpec::spec_xdr_set_authorized(),
-    &StellarAssetSpec::spec_xdr_spendable_balance(),
     &StellarAssetSpec::spec_xdr_symbol(),
     &StellarAssetSpec::spec_xdr_transfer(),
     &StellarAssetSpec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const SPEC_XDR_LEN: usize = 5680;
+pub(crate) const SPEC_XDR_LEN: usize = 5336;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
