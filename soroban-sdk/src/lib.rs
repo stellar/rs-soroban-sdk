@@ -104,7 +104,7 @@ mod alloc;
 #[export_name = "_"]
 fn __link_sections() {
     #[link_section = "contractenvmetav0"]
-    static __ENV_META_XDR: [u8; env::meta::XDR.len()] = env::meta::XDR;
+    static __ENV_META_XDR: [u8; env::internal::meta::XDR.len()] = env::internal::meta::XDR;
 
     soroban_sdk_macros::contractmetabuiltin!();
 }
