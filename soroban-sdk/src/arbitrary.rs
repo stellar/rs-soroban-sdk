@@ -972,7 +972,7 @@ mod tests {
     };
     use crate::{Env, IntoVal};
     use arbitrary::{Arbitrary, Unstructured};
-    use rand::RngCore;
+    use rand::{RngCore, SeedableRng};
 
     fn run_test<T>()
     where
@@ -980,7 +980,7 @@ mod tests {
         T::Prototype: for<'a> Arbitrary<'a>,
     {
         let env = Env::default();
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rngs::StdRng::seed_from_u64(0);
         let mut rng_data = [0u8; 64];
 
         for _ in 0..100 {
