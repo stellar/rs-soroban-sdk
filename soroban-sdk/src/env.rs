@@ -83,7 +83,6 @@ pub mod testutils {
     pub use super::internal::LedgerInfo;
 }
 
-pub use internal::meta;
 pub use internal::xdr;
 pub use internal::Compare;
 pub use internal::ConversionError;

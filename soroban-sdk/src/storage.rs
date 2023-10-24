@@ -483,6 +483,3 @@ mod testutils {
         map
     }
 }
-#[cfg(any(test, feature = "testutils"))]
-#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-pub use testutils::*;
