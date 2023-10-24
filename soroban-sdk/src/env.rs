@@ -75,14 +75,6 @@ pub mod internal {
     }
 }
 
-// Testutils from the environment are pub here, and then pub re-exported out of
-// the SDK in the crate::testutils mod.
-#[cfg(any(test, feature = "testutils"))]
-pub mod testutils {
-    pub use super::internal::budget::Budget;
-    pub use super::internal::LedgerInfo;
-}
-
 pub use internal::xdr;
 pub use internal::Compare;
 pub use internal::ConversionError;

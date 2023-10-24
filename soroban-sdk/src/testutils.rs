@@ -21,7 +21,7 @@ pub trait ContractFunctionSet {
 }
 
 #[doc(inline)]
-pub use crate::env::testutils::*;
+pub use crate::env::internal::LedgerInfo;
 
 /// Test utilities for [`Ledger`][crate::ledger::Ledger].
 pub trait Ledger {
