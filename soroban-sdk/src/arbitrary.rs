@@ -317,6 +317,8 @@ mod objects {
     use arbitrary::{Arbitrary, Result as ArbitraryResult, Unstructured};
 
     use crate::arbitrary::api::*;
+    use crate::arbitrary::composite::ArbitraryVal;
+    use crate::env::FromVal;
     use crate::ConversionError;
     use crate::{Env, IntoVal, TryFromVal};
 
@@ -469,9 +471,27 @@ mod objects {
 
     //////////////////////////////////
 
-    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryVec<T> {
-        vec: RustVec<T>,
+    #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub enum ArbitraryVec<T> {
+        Good(RustVec<T>),
+        // Vec<T> can be constructed with non-T values.
+        Wrong(RustVec<ArbitraryVal>),
+    }
+
+    impl<'a, T> Arbitrary<'a> for ArbitraryVec<T>
+    where
+        T: Arbitrary<'a>,
+    {
+        fn arbitrary(u: &mut Unstructured<'a>) -> ArbitraryResult<ArbitraryVec<T>> {
+            // How frequently we provide ArbitraryVec::Wrong
+            const WRONG_TYPE_RATIO: (u16, u16) = (1, 1000);
+
+            if u.ratio(WRONG_TYPE_RATIO.0, WRONG_TYPE_RATIO.1)? {
+                Ok(ArbitraryVec::Wrong(Arbitrary::arbitrary(u)?))
+            } else {
+                Ok(ArbitraryVec::Good(Arbitrary::arbitrary(u)?))
+            }
+        }
     }
 
     impl<T> SorobanArbitrary for Vec<T>
@@ -487,19 +507,54 @@ mod objects {
     {
         type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryVec<T::Prototype>) -> Result<Self, Self::Error> {
-            let mut buf: Vec<T> = Vec::new(env);
-            for item in v.vec.iter() {
-                buf.push_back(item.into_val(env));
+            match v {
+                ArbitraryVec::Good(vec) => {
+                    let mut buf: Vec<T> = Vec::new(env);
+                    for item in vec.iter() {
+                        buf.push_back(item.into_val(env));
+                    }
+                    Ok(buf)
+                }
+                ArbitraryVec::Wrong(vec) => {
+                    let mut buf: Vec<Val> = Vec::new(env);
+                    for item in vec.iter() {
+                        buf.push_back(item.into_val(env));
+                    }
+                    Ok(Vec::<T>::from_val(env, &buf.to_val()))
+                }
             }
-            Ok(buf)
         }
     }
 
     //////////////////////////////////
 
-    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryMap<K, V> {
-        map: RustVec<(K, V)>,
+    #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub enum ArbitraryMap<K, V> {
+        Good(RustVec<(K, V)>),
+        // Maps can be constructed with non-T K/Vs
+        WrongKey(RustVec<(ArbitraryVal, V)>),
+        WrongValue(RustVec<(K, ArbitraryVal)>),
+    }
+
+    impl<'a, K, V> Arbitrary<'a> for ArbitraryMap<K, V>
+    where
+        K: Arbitrary<'a>,
+        V: Arbitrary<'a>,
+    {
+        fn arbitrary(u: &mut Unstructured<'a>) -> ArbitraryResult<ArbitraryMap<K, V>> {
+            // How frequently we provide ArbitraryMap::Wrong*
+            const WRONG_TYPE_RATIO: (u16, u16) = (1, 1000);
+
+            if u.ratio(WRONG_TYPE_RATIO.0, WRONG_TYPE_RATIO.1)? {
+                if u.arbitrary::<bool>()? {
+                    Ok(ArbitraryMap::WrongKey(Arbitrary::arbitrary(u)?))
+                } else {
+                    Ok(ArbitraryMap::WrongValue(Arbitrary::arbitrary(u)?))
+                }
+            } else {
+                Ok(ArbitraryMap::Good(Arbitrary::arbitrary(u)?))
+            }
+        }
     }
 
     impl<K, V> SorobanArbitrary for Map<K, V>
@@ -520,11 +575,29 @@ mod objects {
             env: &Env,
             v: &ArbitraryMap<K::Prototype, V::Prototype>,
         ) -> Result<Self, Self::Error> {
-            let mut map: Map<K, V> = Map::new(env);
-            for (k, v) in v.map.iter() {
-                map.set(k.into_val(env), v.into_val(env));
+            match v {
+                ArbitraryMap::Good(vec) => {
+                    let mut map: Map<K, V> = Map::new(env);
+                    for (k, v) in vec.iter() {
+                        map.set(k.into_val(env), v.into_val(env));
+                    }
+                    Ok(map)
+                }
+                ArbitraryMap::WrongKey(vec) => {
+                    let mut map: Map<Val, V> = Map::new(env);
+                    for (k, v) in vec.iter() {
+                        map.set(k.into_val(env), v.into_val(env));
+                    }
+                    Ok(Map::<K, V>::from_val(env, &map.to_val()))
+                }
+                ArbitraryMap::WrongValue(vec) => {
+                    let mut map: Map<K, Val> = Map::new(env);
+                    for (k, v) in vec.iter() {
+                        map.set(k.into_val(env), v.into_val(env));
+                    }
+                    Ok(Map::<K, V>::from_val(env, &map.to_val()))
+                }
             }
-            Ok(map)
         }
     }
 
@@ -1298,6 +1371,101 @@ mod tests {
     #[test]
     fn test_duration() {
         run_test::<Duration>()
+    }
+
+    // Test that sometimes generated vecs have the wrong element types.
+    #[test]
+    fn test_vec_wrong_types() {
+        // These number are tuned for StdRng.
+        // If StdRng ever changes the test could break.
+        let iterations = 1000;
+        let seed = 3;
+        let acceptable_ratio = 900;
+
+        let (mut seen_good, mut seen_bad, mut seen_empty) = (0, 0, 0);
+
+        let env = Env::default();
+        let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
+        let mut rng_data = [0u8; 64];
+
+        for _ in 0..iterations {
+            rng.fill_bytes(&mut rng_data);
+            let mut unstructured = Unstructured::new(&rng_data);
+            let input = <Vec<u32> as SorobanArbitrary>::Prototype::arbitrary(&mut unstructured)
+                .expect("SorobanArbitrary");
+            let vec: Vec<u32> = input.into_val(&env);
+
+            let has_good_elts = (0..vec.len()).all(|i| vec.try_get(i).is_ok()) && !vec.is_empty();
+            // Look for elements that cause an error.
+            let has_bad_elt = (0..vec.len()).any(|i| vec.try_get(i).is_err());
+
+            if has_bad_elt {
+                seen_bad += 1;
+            } else if has_good_elts {
+                seen_good += 1;
+            } else {
+                seen_empty += 1;
+            }
+        }
+
+        assert!(seen_good > 0);
+        assert!(seen_bad > 0);
+
+        // sanity check the ratio of good to bad
+        assert!(seen_good * seen_empty > seen_bad * acceptable_ratio);
+    }
+
+    // Test that sometimes generated maps have the wrong element types.
+    #[test]
+    fn test_map_wrong_types() {
+        // These number are tuned for StdRng.
+        // If StdRng ever changes the test could break.
+        let iterations = 4000;
+        let seed = 13;
+        let acceptable_ratio = 900;
+
+        let (mut seen_good, mut seen_bad_key, mut seen_bad_value, mut seen_empty) = (0, 0, 0, 0);
+
+        let env = Env::default();
+        let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
+        let mut rng_data = [0u8; 128];
+
+        for _ in 0..iterations {
+            rng.fill_bytes(&mut rng_data);
+            let mut unstructured = Unstructured::new(&rng_data);
+            let input =
+                <Map<u32, u32> as SorobanArbitrary>::Prototype::arbitrary(&mut unstructured)
+                    .expect("SorobanArbitrary");
+            let map: Map<u32, u32> = input.into_val(&env);
+
+            // Look for elements that cause an error.
+            let keys = map.keys();
+            let values = map.values();
+
+            let has_good_keys =
+                (0..keys.len()).all(|i| keys.try_get(i).is_ok()) && !keys.is_empty();
+            let has_good_values =
+                (0..values.len()).all(|i| values.try_get(i).is_ok()) && !keys.is_empty();
+            let has_bad_key = (0..keys.len()).any(|i| keys.try_get(i).is_err());
+            let has_bad_value = (0..values.len()).any(|i| values.try_get(i).is_err());
+
+            if has_bad_key {
+                seen_bad_key += 1;
+            } else if has_bad_value {
+                seen_bad_value += 1;
+            } else if has_good_keys && has_good_values {
+                seen_good += 1;
+            } else {
+                seen_empty += 1;
+            }
+        }
+
+        assert!(seen_good > 0);
+        assert!(seen_bad_key > 0);
+        assert!(seen_bad_value > 0);
+
+        // sanity check the ratio of good to bad
+        assert!(seen_good * seen_empty > (seen_bad_key + seen_bad_value) * acceptable_ratio);
     }
 
     mod user_defined_types {
