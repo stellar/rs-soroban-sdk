@@ -658,6 +658,83 @@ mod objects {
     }
 }
 
+/// Implementations of `soroban_sdk::arbitrary::api` for tuples of Soroban types.
+///
+/// The implementation is similar to objects, but macroized.
+mod tuples {
+    use crate::arbitrary::api::*;
+    use crate::ConversionError;
+    use crate::{Env, IntoVal, TryFromVal, TryIntoVal, Val};
+    use arbitrary::Arbitrary;
+
+    macro_rules! impl_tuple {
+        ($name: ident, $($ty: ident),+ ) => {
+            #[allow(non_snake_case)] // naming fields T1, etc.
+            #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct $name<$($ty,)*> {
+                $($ty: $ty,)*
+            }
+
+            impl<$($ty,)*> SorobanArbitrary for ($($ty,)*)
+            where $($ty: SorobanArbitrary + TryIntoVal<Env, Val>,)*
+            {
+                type Prototype = $name<$($ty::Prototype,)*>;
+            }
+
+            impl<$($ty,)*> TryFromVal<Env, $name<$($ty::Prototype,)*>> for ($($ty,)*)
+            where $($ty: SorobanArbitrary,)*
+            {
+                type Error = ConversionError;
+                fn try_from_val(env: &Env, v: &$name<$($ty::Prototype,)*>) -> Result<Self, Self::Error> {
+                    Ok(($(
+                        v.$ty.into_val(env),
+                    )*))
+                }
+            }
+        }
+    }
+
+    impl_tuple!(ArbitraryTuple1, T1);
+    impl_tuple!(ArbitraryTuple2, T1, T2);
+    impl_tuple!(ArbitraryTuple3, T1, T2, T3);
+    impl_tuple!(ArbitraryTuple4, T1, T2, T3, T4);
+    impl_tuple!(ArbitraryTuple5, T1, T2, T3, T4, T5);
+    impl_tuple!(ArbitraryTuple6, T1, T2, T3, T4, T5, T6);
+    impl_tuple!(ArbitraryTuple7, T1, T2, T3, T4, T5, T6, T7);
+    impl_tuple!(ArbitraryTuple8, T1, T2, T3, T4, T5, T6, T7, T8);
+    impl_tuple!(ArbitraryTuple9, T1, T2, T3, T4, T5, T6, T7, T8, T9);
+    impl_tuple!(ArbitraryTuple10, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10);
+    impl_tuple!(
+        ArbitraryTuple11,
+        T1,
+        T2,
+        T3,
+        T4,
+        T5,
+        T6,
+        T7,
+        T8,
+        T9,
+        T10,
+        T11
+    );
+    impl_tuple!(
+        ArbitraryTuple12,
+        T1,
+        T2,
+        T3,
+        T4,
+        T5,
+        T6,
+        T7,
+        T8,
+        T9,
+        T10,
+        T11,
+        T12
+    );
+}
+
 /// Implementations of `soroban_sdk::arbitrary::api` for `Val`.
 mod composite {
     use arbitrary::Arbitrary;
@@ -1373,6 +1450,24 @@ mod tests {
         run_test::<Duration>()
     }
 
+    #[test]
+    fn test_tuples() {
+        run_test::<(u32,)>();
+        run_test::<(u32, u32)>();
+        run_test::<(u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32, u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32)>();
+        run_test::<(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32)>();
+
+        run_test::<(u32, Address, Vec<Timepoint>, Map<Duration, u64>)>();
+    }
+
     // Test that sometimes generated vecs have the wrong element types.
     #[test]
     fn test_vec_wrong_types() {
@@ -1491,6 +1586,8 @@ mod tests {
             symbol: Symbol,
             duration: Duration,
             timepoint: Timepoint,
+            nil: (),
+            vec_tuple: Vec<(u32, Address)>,
         }
 
         #[test]
@@ -1545,7 +1642,14 @@ mod tests {
 
         #[contracttype]
         #[derive(Clone, Debug, Eq, PartialEq)]
-        struct PrivTupleStruct(u32, i32, BytesN<32>, Vec<Bytes>, Map<Bytes, Vec<i32>>);
+        struct PrivTupleStruct(
+            u32,
+            i32,
+            BytesN<32>,
+            Vec<Bytes>,
+            Map<Bytes, Vec<i32>>,
+            Vec<(u32, Address)>,
+        );
 
         #[test]
         fn test_user_defined_priv_tuple_struct() {
@@ -1560,6 +1664,7 @@ mod tests {
             pub BytesN<32>,
             pub Vec<Bytes>,
             pub Map<Bytes, Vec<i32>>,
+            pub Vec<(u32, Address)>,
         );
 
         #[test]
@@ -1584,6 +1689,7 @@ mod tests {
             pub BytesN<32>,
             pub Vec<Bytes>,
             pub Map<Bytes, Vec<i32>>,
+            pub Vec<(u32, Address)>,
         );
 
         #[test]
@@ -1607,6 +1713,7 @@ mod tests {
             Aa(u32, u32),
             C,
             D,
+            E(Vec<(u32, Address)>),
         }
 
         #[test]
@@ -1681,6 +1788,18 @@ mod tests {
 
             run_test::<Foo>();
             run_test::<Bar>();
+        }
+
+        fn test_structs_and_enums_inside_tuples() {
+            #[contracttype]
+            struct Foo(u32);
+
+            #[contracttype]
+            enum Bar {
+                Baz,
+            }
+
+            run_test::<(Foo, Bar)>();
         }
     }
 }
