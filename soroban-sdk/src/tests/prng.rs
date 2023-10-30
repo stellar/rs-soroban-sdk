@@ -11,7 +11,7 @@ fn test_prng_seed() {
     let id = e.register_contract(None, TestPrngContract);
 
     e.as_contract(&id, || {
-        assert_eq!(e.prng().u64_in_range(0..=9), 6);
+        assert_eq!(e.prng().u64_in_range(0..=9), 8);
         e.prng().seed(bytes!(
             &e,
             0x0000000000000000000000000000000000000000000000000000000000000001
@@ -27,7 +27,7 @@ fn test_prng_shuffle() {
 
     e.as_contract(&id, || {
         let v = vec![&e, 1, 2, 3];
-        assert_eq!(e.prng().shuffle(v), vec![&e, 2, 3, 1].to_vals());
+        assert_eq!(e.prng().shuffle(v), vec![&e, 3, 2, 1].to_vals());
     });
 
     e.as_contract(&id, || {
@@ -44,7 +44,7 @@ fn test_vec_shuffle() {
     e.as_contract(&id, || {
         let v = vec![&e, 1, 2, 3];
         let s = v.shuffle();
-        assert_eq!(s, vec![&e, 2, 3, 1]);
+        assert_eq!(s, vec![&e, 3, 2, 1]);
         assert_eq!(v, vec![&e, 1, 2, 3]);
     });
 
@@ -62,7 +62,7 @@ fn test_prng_u64_in_range() {
     let id = e.register_contract(None, TestPrngContract);
 
     e.as_contract(&id, || {
-        assert_eq!(e.prng().u64_in_range(..), 11654647981089815984);
+        assert_eq!(e.prng().u64_in_range(..), 15905370036469238889);
         assert_eq!(e.prng().u64_in_range(u64::MAX..), u64::MAX);
         assert_eq!(
             e.prng().u64_in_range(u64::MAX - 1..u64::MAX),
