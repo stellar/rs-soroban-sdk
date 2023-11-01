@@ -86,8 +86,6 @@ impl Prng {
 
     /// Reseeds the PRNG with the provided value.
     ///
-    /// The seed is combined with the seed assigned to the contract invocation.
-    ///
     /// # Warning
     ///
     /// **The PRNG is unsuitable for generating secrets or use in applications with
