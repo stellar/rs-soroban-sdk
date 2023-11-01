@@ -8,10 +8,20 @@ pub struct TestPrngContract;
 #[test]
 fn test_prng_seed() {
     let e = Env::default();
+    e.host().set_base_prng_seed([0; 32]).unwrap();
     let id = e.register_contract(None, TestPrngContract);
-
     e.as_contract(&id, || {
-        assert_eq!(e.prng().u64_in_range(0..=9), 8);
+        e.prng().seed(bytes!(
+            &e,
+            0x0000000000000000000000000000000000000000000000000000000000000001
+        ));
+        assert_eq!(e.prng().u64_in_range(0..=9), 5);
+    });
+
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+    e.host().set_base_prng_seed([2; 32]).unwrap();
+    e.as_contract(&id, || {
         e.prng().seed(bytes!(
             &e,
             0x0000000000000000000000000000000000000000000000000000000000000001
