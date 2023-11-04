@@ -95,6 +95,117 @@ impl Prng {
         internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
     }
 
+    /// Fills the type with a random value.
+    ///
+    /// # Warning
+    ///
+    /// **The PRNG is unsuitable for generating secrets or use in applications with
+    /// low risk tolerance, see the module-level comment.**
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// let mut value: u64 = 0;
+    /// env.prng().fill(&mut value);
+    /// assert_eq!(value, 14156542310752927490);
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn fill<T>(&self, v: &mut T)
+    where
+        T: Fill + ?Sized,
+    {
+        v.fill(self);
+    }
+
+    /// Returns a random value of the given type.
+    ///
+    /// # Warning
+    ///
+    /// **The PRNG is unsuitable for generating secrets or use in applications with
+    /// low risk tolerance, see the module-level comment.**
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// let value: u64 = env.prng().gen();
+    /// assert_eq!(value, 14156542310752927490);
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn gen<T>(&self) -> T
+    where
+        T: Gen,
+    {
+        T::gen(self)
+    }
+
+    /// Returns a random value of the given type in the range specified.
+    ///
+    /// # Panics
+    ///
+    /// If the start of the range is greater than the end.
+    ///
+    /// # Warning
+    ///
+    /// **The PRNG is unsuitable for generating secrets or use in applications with
+    /// low risk tolerance, see the module-level comment.**
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// // Get a value in the range of 1 to 100, inclusive.
+    /// let value: u64 = env.prng().gen_range(1..=100);
+    /// assert_eq!(value, 77);
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn gen_range<T>(&self, r: impl RangeBounds<T::RangeBound>) -> T
+    where
+        T: GenRange,
+    {
+        T::gen_range(self, r)
+    }
+
     /// Returns a random u64 in the range specified.
     ///
     /// # Panics
@@ -109,9 +220,7 @@ impl Prng {
     /// # Examples
     ///
     /// ```
-    /// use soroban_sdk::{Env};
-    ///
-    /// # use soroban_sdk::{contract, contractimpl, symbol_short, Bytes};
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
     /// #
     /// # #[contract]
     /// # pub struct Contract;
@@ -122,33 +231,17 @@ impl Prng {
     /// #     let contract_id = env.register_contract(None, Contract);
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
-    /// // Get values in the range of 1 to 100, inclusive.
+    /// // Get a value in the range of 1 to 100, inclusive.
     /// let value = env.prng().u64_in_range(1..=100);
     /// assert_eq!(value, 77);
-    /// let value = env.prng().u64_in_range(1..=100);
-    /// assert_eq!(value, 66);
-    /// let value = env.prng().u64_in_range(1..=100);
-    /// assert_eq!(value, 72);
     /// #     })
     /// # }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
+    #[deprecated(note = "use env.prng().gen_range(...)")]
     pub fn u64_in_range(&self, r: impl RangeBounds<u64>) -> u64 {
-        let start_bound = match r.start_bound() {
-            Bound::Included(b) => *b,
-            Bound::Excluded(b) => *b + 1,
-            Bound::Unbounded => 0,
-        };
-        let end_bound = match r.end_bound() {
-            Bound::Included(b) => *b,
-            Bound::Excluded(b) => *b - 1,
-            Bound::Unbounded => u64::MAX,
-        };
-        let env = self.env();
-        internal::Env::prng_u64_in_inclusive_range(env, start_bound.into(), end_bound.into())
-            .unwrap_infallible()
-            .into()
+        self.gen_range(r)
     }
 
     /// Shuffles a given vector v using the Fisher-Yates algorithm.
@@ -168,5 +261,67 @@ impl Prng {
             .unwrap_infallible()
             .try_into_val(env)
             .unwrap_infallible()
+    }
+}
+
+/// Implemented by types that support being filled by a Prng.
+pub trait Fill {
+    /// Fills the given value with the Prng.
+    fn fill(&mut self, prng: &Prng);
+}
+
+/// Implemented by types that support being generated by a Prng.
+pub trait Gen {
+    /// Generates a value of the implementing type with the Prng.
+    fn gen(prng: &Prng) -> Self;
+}
+
+/// Implemented by types that support being generated in a specific range by a
+/// Prng.
+pub trait GenRange {
+    type RangeBound;
+
+    /// Generates a value of the implementing type with the Prng in the
+    /// specified range.
+    ///
+    /// # Panics
+    ///
+    /// If the range is empty.
+    fn gen_range(prng: &Prng, r: impl RangeBounds<Self::RangeBound>) -> Self;
+}
+
+impl Fill for u64 {
+    fn fill(&mut self, prng: &Prng) {
+        *self = Self::gen(prng);
+    }
+}
+
+impl Gen for u64 {
+    fn gen(prng: &Prng) -> Self {
+        let env = prng.env();
+        internal::Env::prng_u64_in_inclusive_range(env, u64::MIN.into(), u64::MAX.into())
+            .unwrap_infallible()
+            .into()
+    }
+}
+
+impl GenRange for u64 {
+    type RangeBound = u64;
+
+    fn gen_range(prng: &Prng, r: impl RangeBounds<Self::RangeBound>) -> Self {
+        let env = prng.env();
+        let start_bound = match r.start_bound() {
+            Bound::Included(b) => *b,
+            Bound::Excluded(b) => *b + 1,
+            Bound::Unbounded => u64::MIN,
+        };
+        let end_bound = match r.end_bound() {
+            Bound::Included(b) => *b,
+            Bound::Excluded(b) => *b - 1,
+            Bound::Unbounded => u64::MAX,
+        };
+        internal::Env::prng_u64_in_inclusive_range(env, start_bound.into(), end_bound.into())
+            .unwrap_infallible()
+            .into()
     }
 }

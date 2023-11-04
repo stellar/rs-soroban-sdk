@@ -15,7 +15,7 @@ fn test_prng_seed() {
             &e,
             0x0000000000000000000000000000000000000000000000000000000000000001
         ));
-        assert_eq!(e.prng().u64_in_range(0..=9), 5);
+        assert_eq!(e.prng().gen_range::<u64>(0..=9), 5);
     });
 
     let e = Env::default();
@@ -26,7 +26,7 @@ fn test_prng_seed() {
             &e,
             0x0000000000000000000000000000000000000000000000000000000000000001
         ));
-        assert_eq!(e.prng().u64_in_range(0..=9), 5);
+        assert_eq!(e.prng().gen_range::<u64>(0..=9), 5);
     });
 }
 
@@ -67,31 +67,56 @@ fn test_vec_shuffle() {
 }
 
 #[test]
-fn test_prng_u64_in_range() {
+fn test_prng_fill_u64() {
     let e = Env::default();
     let id = e.register_contract(None, TestPrngContract);
 
     e.as_contract(&id, || {
-        assert_eq!(e.prng().u64_in_range(..), 15905370036469238889);
-        assert_eq!(e.prng().u64_in_range(u64::MAX..), u64::MAX);
+        let mut v: u64 = 0;
+        e.prng().fill(&mut v);
+        assert_eq!(v, 15905370036469238889);
+        e.prng().fill(&mut v);
+        assert_eq!(v, 9820564573332354559);
+    });
+}
+
+#[test]
+fn test_prng_gen_u64() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        assert_eq!(e.prng().gen::<u64>(), 15905370036469238889);
+        assert_eq!(e.prng().gen::<u64>(), 9820564573332354559);
+    });
+}
+
+#[test]
+fn test_prng_gen_range_u64() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        assert_eq!(e.prng().gen_range::<u64>(..), 15905370036469238889);
+        assert_eq!(e.prng().gen_range::<u64>(u64::MAX..), u64::MAX);
         assert_eq!(
-            e.prng().u64_in_range(u64::MAX - 1..u64::MAX),
+            e.prng().gen_range::<u64>(u64::MAX - 1..u64::MAX),
             18446744073709551614
         );
-        assert_eq!(e.prng().u64_in_range(u64::MAX..=u64::MAX), u64::MAX);
-        assert_eq!(e.prng().u64_in_range(0..1), 0);
-        assert_eq!(e.prng().u64_in_range(0..=0), 0);
-        assert_eq!(e.prng().u64_in_range(..=0), 0);
+        assert_eq!(e.prng().gen_range::<u64>(u64::MAX..=u64::MAX), u64::MAX);
+        assert_eq!(e.prng().gen_range::<u64>(0..1), 0);
+        assert_eq!(e.prng().gen_range::<u64>(0..=0), 0);
+        assert_eq!(e.prng().gen_range::<u64>(..=0), 0);
     });
 }
 
 #[test]
 #[should_panic(expected = "low > high")]
-fn test_prng_u64_in_range_panic_on_empty_range() {
+fn test_prng_gen_range_u64_panic_on_invalid_range() {
     let e = Env::default();
     let id = e.register_contract(None, TestPrngContract);
 
     e.as_contract(&id, || {
-        e.prng().u64_in_range(u64::MAX..u64::MAX);
+        e.prng().gen_range::<u64>(u64::MAX..u64::MAX);
     });
 }
