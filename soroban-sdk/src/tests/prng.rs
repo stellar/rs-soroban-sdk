@@ -87,7 +87,7 @@ fn test_prng_u64_in_range() {
 
 #[test]
 #[should_panic(expected = "low > high")]
-fn test_prng_u64_in_range_panic_on_empty_range() {
+fn test_prng_u64_in_range_panic_on_invalid_range() {
     let e = Env::default();
     let id = e.register_contract(None, TestPrngContract);
 
