@@ -126,7 +126,7 @@ impl Prng {
     /// ```
     pub fn fill<T>(&self, v: &mut T)
     where
-        T: Fill,
+        T: Fill + ?Sized,
     {
         v.fill(self);
     }
