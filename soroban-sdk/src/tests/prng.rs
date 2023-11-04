@@ -1,4 +1,4 @@
-use crate::{self as soroban_sdk};
+use crate::{self as soroban_sdk, Bytes, BytesN};
 use crate::{bytes, vec, Env, Val, Vec};
 use soroban_sdk::contract;
 
@@ -118,5 +118,203 @@ fn test_prng_gen_range_u64_panic_on_invalid_range() {
 
     e.as_contract(&id, || {
         e.prng().gen_range::<u64>(u64::MAX..u64::MAX);
+    });
+}
+
+#[test]
+fn test_prng_fill_bytes() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        let mut v = Bytes::from_array(&e, &[0u8; 32]);
+        e.prng().fill(&mut v);
+        assert_eq!(
+            v,
+            Bytes::from_array(
+                &e,
+                &[
+                    105, 12, 228, 36, 199, 57, 187, 220, 255, 181, 66, 167, 114, 167, 73, 136, 126,
+                    229, 99, 124, 156, 9, 231, 42, 211, 148, 110, 234, 189, 179, 224, 119
+                ]
+            )
+        );
+        e.prng().fill(&mut v);
+        assert_eq!(
+            v,
+            Bytes::from_array(
+                &e,
+                &[
+                    12, 120, 166, 125, 4, 130, 72, 67, 232, 216, 155, 171, 240, 65, 91, 25, 149,
+                    135, 147, 217, 131, 98, 2, 123, 78, 144, 194, 14, 36, 113, 79, 193
+                ]
+            )
+        );
+    });
+}
+
+#[test]
+fn test_prng_gen_len_bytes() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        assert_eq!(
+            e.prng().gen_len::<Bytes>(32),
+            Bytes::from_array(
+                &e,
+                &[
+                    105, 12, 228, 36, 199, 57, 187, 220, 255, 181, 66, 167, 114, 167, 73, 136, 126,
+                    229, 99, 124, 156, 9, 231, 42, 211, 148, 110, 234, 189, 179, 224, 119
+                ]
+            )
+        );
+        assert_eq!(
+            e.prng().gen_len::<Bytes>(32),
+            Bytes::from_array(
+                &e,
+                &[
+                    12, 120, 166, 125, 4, 130, 72, 67, 232, 216, 155, 171, 240, 65, 91, 25, 149,
+                    135, 147, 217, 131, 98, 2, 123, 78, 144, 194, 14, 36, 113, 79, 193
+                ]
+            )
+        );
+    });
+}
+
+#[test]
+fn test_prng_fill_bytesn() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        let mut v = BytesN::from_array(&e, &[0u8; 32]);
+        e.prng().fill(&mut v);
+        assert_eq!(
+            v,
+            BytesN::from_array(
+                &e,
+                &[
+                    105, 12, 228, 36, 199, 57, 187, 220, 255, 181, 66, 167, 114, 167, 73, 136, 126,
+                    229, 99, 124, 156, 9, 231, 42, 211, 148, 110, 234, 189, 179, 224, 119
+                ]
+            )
+        );
+        e.prng().fill(&mut v);
+        assert_eq!(
+            v,
+            BytesN::from_array(
+                &e,
+                &[
+                    12, 120, 166, 125, 4, 130, 72, 67, 232, 216, 155, 171, 240, 65, 91, 25, 149,
+                    135, 147, 217, 131, 98, 2, 123, 78, 144, 194, 14, 36, 113, 79, 193
+                ]
+            )
+        );
+    });
+}
+
+#[test]
+fn test_prng_gen_bytesn() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        assert_eq!(
+            e.prng().gen::<BytesN<32>>(),
+            BytesN::from_array(
+                &e,
+                &[
+                    105, 12, 228, 36, 199, 57, 187, 220, 255, 181, 66, 167, 114, 167, 73, 136, 126,
+                    229, 99, 124, 156, 9, 231, 42, 211, 148, 110, 234, 189, 179, 224, 119
+                ]
+            )
+        );
+        assert_eq!(
+            e.prng().gen::<BytesN<32>>(),
+            BytesN::from_array(
+                &e,
+                &[
+                    12, 120, 166, 125, 4, 130, 72, 67, 232, 216, 155, 171, 240, 65, 91, 25, 149,
+                    135, 147, 217, 131, 98, 2, 123, 78, 144, 194, 14, 36, 113, 79, 193
+                ]
+            )
+        );
+    });
+}
+
+#[test]
+fn test_prng_fill_slice() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        let mut buf = [0u8; 32];
+        let v: &mut [u8] = &mut buf;
+        e.prng().fill(v);
+        assert_eq!(
+            v,
+            [
+                105, 12, 228, 36, 199, 57, 187, 220, 255, 181, 66, 167, 114, 167, 73, 136, 126,
+                229, 99, 124, 156, 9, 231, 42, 211, 148, 110, 234, 189, 179, 224, 119
+            ]
+        );
+        e.prng().fill(v);
+        assert_eq!(
+            v,
+            [
+                12, 120, 166, 125, 4, 130, 72, 67, 232, 216, 155, 171, 240, 65, 91, 25, 149, 135,
+                147, 217, 131, 98, 2, 123, 78, 144, 194, 14, 36, 113, 79, 193
+            ]
+        );
+    });
+}
+
+#[test]
+fn test_prng_fill_array() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        let mut v = [0u8; 32];
+        e.prng().fill(&mut v);
+        assert_eq!(
+            v,
+            [
+                105, 12, 228, 36, 199, 57, 187, 220, 255, 181, 66, 167, 114, 167, 73, 136, 126,
+                229, 99, 124, 156, 9, 231, 42, 211, 148, 110, 234, 189, 179, 224, 119
+            ]
+        );
+        e.prng().fill(&mut v);
+        assert_eq!(
+            v,
+            [
+                12, 120, 166, 125, 4, 130, 72, 67, 232, 216, 155, 171, 240, 65, 91, 25, 149, 135,
+                147, 217, 131, 98, 2, 123, 78, 144, 194, 14, 36, 113, 79, 193
+            ]
+        );
+    });
+}
+
+#[test]
+fn test_prng_gen_array() {
+    let e = Env::default();
+    let id = e.register_contract(None, TestPrngContract);
+
+    e.as_contract(&id, || {
+        assert_eq!(
+            e.prng().gen::<[u8; 32]>(),
+            [
+                105, 12, 228, 36, 199, 57, 187, 220, 255, 181, 66, 167, 114, 167, 73, 136, 126,
+                229, 99, 124, 156, 9, 231, 42, 211, 148, 110, 234, 189, 179, 224, 119
+            ]
+        );
+        assert_eq!(
+            e.prng().gen::<[u8; 32]>(),
+            [
+                12, 120, 166, 125, 4, 130, 72, 67, 232, 216, 155, 171, 240, 65, 91, 25, 149, 135,
+                147, 217, 131, 98, 2, 123, 78, 144, 194, 14, 36, 113, 79, 193
+            ]
+        );
     });
 }
