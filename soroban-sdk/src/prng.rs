@@ -108,7 +108,7 @@ impl Prng {
     ///
     /// # Examples
     ///
-    /// ## u64
+    /// ## `u64`
     ///
     /// ```
     /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
@@ -130,6 +130,35 @@ impl Prng {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
+    ///
+    /// ## `[u8]`
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// let mut value = [0u8; 32];
+    /// env.prng().fill(&mut value);
+    /// assert_eq!(
+    ///   value,
+    ///   [
+    ///     2, 63, 55, 32, 58, 36, 118, 196, 37, 102, 166, 28, 197, 92, 60, 168, 117, 219,
+    ///     180, 204, 65, 192, 222, 183, 137, 248, 231, 191, 136, 24, 54, 56
+    ///   ],
+    /// );
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
     pub fn fill<T>(&self, v: &mut T)
     where
         T: Fill + ?Sized,
@@ -146,6 +175,8 @@ impl Prng {
     ///
     /// # Examples
     ///
+    /// ## `u64`
+    ///
     /// ```
     /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
     /// #
@@ -160,6 +191,34 @@ impl Prng {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// let value: u64 = env.prng().gen();
     /// assert_eq!(value, 14156542310752927490);
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    ///
+    /// ## `[u8; N]`
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// let value: [u8; 32] = env.prng().gen();
+    /// assert_eq!(
+    ///   value,
+    ///   [
+    ///     2, 63, 55, 32, 58, 36, 118, 196, 37, 102, 166, 28, 197, 92, 60, 168, 117, 219,
+    ///     180, 204, 65, 192, 222, 183, 137, 248, 231, 191, 136, 24, 54, 56
+    ///   ],
+    /// );
     /// #     })
     /// # }
     /// # #[cfg(not(feature = "testutils"))]
@@ -184,6 +243,8 @@ impl Prng {
     /// low risk tolerance, see the module-level comment.**
     ///
     /// # Examples
+    ///
+    /// ## `Bytes`
     ///
     /// ```
     /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
@@ -230,6 +291,8 @@ impl Prng {
     /// low risk tolerance, see the module-level comment.**
     ///
     /// # Examples
+    ///
+    /// ## `u64`
     ///
     /// ```
     /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
