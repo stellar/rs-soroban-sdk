@@ -429,10 +429,12 @@ pub trait Shuffle {
 
 /// Implemented by types that support being shuffled by a Prng.
 pub trait ToShuffled {
-    fn to_shuffled(&self, prng: &Prng) -> Self;
+    type Shuffled;
+    fn to_shuffled(&self, prng: &Prng) -> Self::Shuffled;
 }
 
 impl<T: Shuffle + Clone> ToShuffled for T {
+    type Shuffled = Self;
     fn to_shuffled(&self, prng: &Prng) -> Self {
         let mut copy = self.clone();
         copy.shuffle(prng);
