@@ -63,7 +63,11 @@
 //! output from the local PRNG.
 use core::ops::{Bound, RangeBounds};
 
-use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, Env, IntoVal, TryIntoVal, Val, Vec};
+use crate::{
+    env::internal,
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
+    Bytes, BytesN, Env, IntoVal, TryIntoVal, Val, Vec,
+};
 
 /// Prng is a pseudo-random generator.
 ///
@@ -104,6 +108,8 @@ impl Prng {
     ///
     /// # Examples
     ///
+    /// ## `u64`
+    ///
     /// ```
     /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
     /// #
@@ -119,6 +125,35 @@ impl Prng {
     /// let mut value: u64 = 0;
     /// env.prng().fill(&mut value);
     /// assert_eq!(value, 14156542310752927490);
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    ///
+    /// ## `[u8]`
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// let mut value = [0u8; 32];
+    /// env.prng().fill(&mut value);
+    /// assert_eq!(
+    ///   value,
+    ///   [
+    ///     2, 63, 55, 32, 58, 36, 118, 196, 37, 102, 166, 28, 197, 92, 60, 168, 117, 219,
+    ///     180, 204, 65, 192, 222, 183, 137, 248, 231, 191, 136, 24, 54, 56
+    ///   ],
+    /// );
     /// #     })
     /// # }
     /// # #[cfg(not(feature = "testutils"))]
@@ -140,6 +175,8 @@ impl Prng {
     ///
     /// # Examples
     ///
+    /// ## `u64`
+    ///
     /// ```
     /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
     /// #
@@ -159,11 +196,87 @@ impl Prng {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
+    ///
+    /// ## `[u8; N]`
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// let value: [u8; 32] = env.prng().gen();
+    /// assert_eq!(
+    ///   value,
+    ///   [
+    ///     2, 63, 55, 32, 58, 36, 118, 196, 37, 102, 166, 28, 197, 92, 60, 168, 117, 219,
+    ///     180, 204, 65, 192, 222, 183, 137, 248, 231, 191, 136, 24, 54, 56
+    ///   ],
+    /// );
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
     pub fn gen<T>(&self) -> T
     where
         T: Gen,
     {
         T::gen(self)
+    }
+
+    /// Returns a random value of the given type with the given length.
+    ///
+    /// # Panics
+    ///
+    /// If the length is greater than u32::MAX.
+    ///
+    /// # Warning
+    ///
+    /// **The PRNG is unsuitable for generating secrets or use in applications with
+    /// low risk tolerance, see the module-level comment.**
+    ///
+    /// # Examples
+    ///
+    /// ## `Bytes`
+    ///
+    /// ```
+    /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
+    /// #
+    /// # #[contract]
+    /// # pub struct Contract;
+    /// #
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    /// #     let env = Env::default();
+    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     env.as_contract(&contract_id, || {
+    /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
+    /// // Get a value of length 32 bytes.
+    /// let value: Bytes = env.prng().gen_len(32);
+    /// assert_eq!(value, Bytes::from_slice(
+    ///   &env,
+    ///   &[
+    ///     2, 63, 55, 32, 58, 36, 118, 196, 37, 102, 166, 28, 197, 92, 60, 168, 117, 219,
+    ///     180, 204, 65, 192, 222, 183, 137, 248, 231, 191, 136, 24, 54, 56
+    ///   ],
+    /// ));
+    /// #     })
+    /// # }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
+    pub fn gen_len<T>(&self, len: T::Len) -> T
+    where
+        T: GenLen,
+    {
+        T::gen_len(self, len)
     }
 
     /// Returns a random value of the given type in the range specified.
@@ -178,6 +291,8 @@ impl Prng {
     /// low risk tolerance, see the module-level comment.**
     ///
     /// # Examples
+    ///
+    /// ## `u64`
     ///
     /// ```
     /// # use soroban_sdk::{Env, contract, contractimpl, symbol_short, Bytes};
@@ -276,6 +391,20 @@ pub trait Gen {
     fn gen(prng: &Prng) -> Self;
 }
 
+/// Implemented by types that support being generated of specific length by a
+/// Prng.
+pub trait GenLen {
+    type Len;
+
+    /// Generates a value of the given implementing type with length with the
+    /// Prng.
+    ///
+    /// # Panics
+    ///
+    /// If the length is greater than u32::MAX.
+    fn gen_len(prng: &Prng, len: Self::Len) -> Self;
+}
+
 /// Implemented by types that support being generated in a specific range by a
 /// Prng.
 pub trait GenRange {
@@ -323,5 +452,100 @@ impl GenRange for u64 {
         internal::Env::prng_u64_in_inclusive_range(env, start_bound.into(), end_bound.into())
             .unwrap_infallible()
             .into()
+    }
+}
+
+impl Fill for Bytes {
+    /// Fills the Bytes with the Prng.
+    ///
+    /// # Panics
+    ///
+    /// If the length of Bytes is greater than u32::MAX in length.
+    fn fill(&mut self, prng: &Prng) {
+        let env = prng.env();
+        let len: u32 = self.len().try_into().unwrap_optimized();
+        let obj = internal::Env::prng_bytes_new(env, len.into()).unwrap_infallible();
+        *self = unsafe { Bytes::unchecked_new(env.clone(), obj) };
+    }
+}
+
+impl GenLen for Bytes {
+    type Len = u32;
+    /// Generates the Bytes with the Prng of the given length.
+    fn gen_len(prng: &Prng, len: u32) -> Self {
+        let env = prng.env();
+        let obj = internal::Env::prng_bytes_new(env, len.into()).unwrap_infallible();
+        unsafe { Bytes::unchecked_new(env.clone(), obj) }
+    }
+}
+
+impl<const N: usize> Fill for BytesN<N> {
+    /// Fills the BytesN with the Prng.
+    ///
+    /// # Panics
+    ///
+    /// If the length of BytesN is greater than u32::MAX in length.
+    fn fill(&mut self, prng: &Prng) {
+        let bytesn = Self::gen(prng);
+        *self = bytesn;
+    }
+}
+
+impl<const N: usize> Gen for BytesN<N> {
+    /// Generates the BytesN with the Prng.
+    ///
+    /// # Panics
+    ///
+    /// If the length of BytesN is greater than u32::MAX in length.
+    fn gen(prng: &Prng) -> Self {
+        let env = prng.env();
+        let len: u32 = N.try_into().unwrap_optimized();
+        let obj = internal::Env::prng_bytes_new(env, len.into()).unwrap_infallible();
+        unsafe { BytesN::unchecked_new(env.clone(), obj) }
+    }
+}
+
+impl Fill for [u8] {
+    /// Fills the slice with the Prng.
+    ///
+    /// # Panics
+    ///
+    /// If the slice is greater than u32::MAX in length.
+    fn fill(&mut self, prng: &Prng) {
+        let env = prng.env();
+        let len: u32 = self.len().try_into().unwrap_optimized();
+        let bytes: Bytes = internal::Env::prng_bytes_new(env, len.into())
+            .unwrap_infallible()
+            .into_val(env);
+        bytes.copy_into_slice(self);
+    }
+}
+
+impl<const N: usize> Fill for [u8; N] {
+    /// Fills the array with the Prng.
+    ///
+    /// # Panics
+    ///
+    /// If the array is greater than u32::MAX in length.
+    fn fill(&mut self, prng: &Prng) {
+        let env = prng.env();
+        let len: u32 = N.try_into().unwrap_optimized();
+        let bytes: Bytes = internal::Env::prng_bytes_new(env, len.into())
+            .unwrap_infallible()
+            .into_val(env);
+        bytes.copy_into_slice(self);
+    }
+}
+
+impl<const N: usize> Gen for [u8; N] {
+    /// Generates the array with the Prng.
+    ///
+    /// # Panics
+    ///
+    /// If the array is greater than u32::MAX in length.
+    fn gen(prng: &Prng) -> Self {
+        let mut v = [0u8; N];
+        v.fill(prng);
+        v
     }
 }
