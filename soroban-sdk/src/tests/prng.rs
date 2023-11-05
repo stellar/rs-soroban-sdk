@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk, Bytes, BytesN};
-use crate::{bytes, vec, Env, Val, Vec};
+use crate::{bytes, vec, Env, Vec};
 use soroban_sdk::contract;
 
 #[contract]
@@ -37,12 +37,12 @@ fn test_prng_shuffle() {
 
     e.as_contract(&id, || {
         let v = vec![&e, 1, 2, 3];
-        assert_eq!(e.prng().shuffle(v), vec![&e, 3, 2, 1].to_vals());
+        assert_eq!(v.to_shuffled(), vec![&e, 3, 2, 1]);
     });
 
     e.as_contract(&id, || {
         let v = Vec::<i64>::new(&e);
-        assert_eq!(e.prng().shuffle(v), Vec::<Val>::new(&e).to_vals());
+        assert_eq!(v.to_shuffled(), Vec::new(&e));
     });
 }
 
@@ -53,14 +53,14 @@ fn test_vec_shuffle() {
 
     e.as_contract(&id, || {
         let v = vec![&e, 1, 2, 3];
-        let s = v.shuffle();
+        let s = v.to_shuffled();
         assert_eq!(s, vec![&e, 3, 2, 1]);
         assert_eq!(v, vec![&e, 1, 2, 3]);
     });
 
     e.as_contract(&id, || {
         let v = Vec::<i64>::new(&e);
-        let s = v.shuffle();
+        let s = v.to_shuffled();
         assert_eq!(s, vec![&e]);
         assert_eq!(v, vec![&e]);
     });

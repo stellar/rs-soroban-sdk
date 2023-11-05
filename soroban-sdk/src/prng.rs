@@ -66,7 +66,7 @@ use core::ops::{Bound, RangeBounds};
 use crate::{
     env::internal,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
-    Bytes, BytesN, Env, IntoVal, TryIntoVal, Val, Vec,
+    Bytes, BytesN, Env, IntoVal, Vec,
 };
 
 /// Prng is a pseudo-random generator.
@@ -359,23 +359,25 @@ impl Prng {
         self.gen_range(r)
     }
 
-    /// Shuffles a given vector v using the Fisher-Yates algorithm.
+    /// Shuffles a value using the Fisher-Yates algorithm.
     ///
     /// # Warning
     ///
     /// **The PRNG is unsuitable for generating secrets or use in applications with
     /// low risk tolerance, see the module-level comment.**
-    pub fn shuffle<V>(&self, v: V) -> Vec<Val>
+    pub fn shuffle<T>(&self, v: &mut T)
     where
-        V: IntoVal<Env, Vec<Val>>,
+        T: Shuffle,
     {
-        let env = self.env();
-        let v_val = v.into_val(env);
+        v.shuffle(&self);
+    }
+}
 
-        internal::Env::prng_vec_shuffle(env, v_val.to_object())
-            .unwrap_infallible()
-            .try_into_val(env)
-            .unwrap_infallible()
+impl<T> Shuffle for Vec<T> {
+    fn shuffle(&mut self, prng: &Prng) {
+        let env = prng.env();
+        let obj = internal::Env::prng_vec_shuffle(env, self.to_object()).unwrap_infallible();
+        *self = unsafe { Self::unchecked_new(env.clone(), obj) };
     }
 }
 
@@ -417,6 +419,12 @@ pub trait GenRange {
     ///
     /// If the range is empty.
     fn gen_range(prng: &Prng, r: impl RangeBounds<Self::RangeBound>) -> Self;
+}
+
+/// Implemented by types that support being shuffled by a Prng.
+pub trait Shuffle {
+    /// Shuffles the value with the Prng.
+    fn shuffle(&mut self, prng: &Prng);
 }
 
 impl Fill for u64 {
