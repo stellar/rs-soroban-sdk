@@ -112,11 +112,20 @@ impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10
 /// let vec = vec![&env, 0, 1, 2, 3];
 /// assert_eq!(vec.len(), 4);
 /// ```
-#[derive(Clone)]
 pub struct Vec<T> {
     env: Env,
     obj: VecObject,
     _t: PhantomData<T>,
+}
+
+impl<T> Clone for Vec<T> {
+    fn clone(&self) -> Self {
+        Self {
+            env: self.env.clone(),
+            obj: self.obj.clone(),
+            _t: self._t.clone(),
+        }
+    }
 }
 
 impl<T> Eq for Vec<T> where T: IntoVal<Env, Val> + TryFromVal<Env, Val> {}
@@ -788,11 +797,24 @@ impl<T> Vec<T> {
     ///
     /// **The pseudo-random generator used to perform the shuffle is not
     /// suitable for security-sensitive work.**
-    #[must_use]
-    pub fn shuffle(&self) -> Self {
+    pub fn shuffle(&mut self) {
         let env = self.env();
-        let shuffled = env.prng().shuffle(self.to_vals());
-        unsafe { Self::unchecked_new(env.clone(), shuffled.obj) }
+        env.prng().shuffle(self);
+    }
+
+    /// Returns copy of the vec shuffled using the NOT-SECURE PRNG.
+    ///
+    /// In tests, must be called from within a running contract.
+    ///
+    /// # Warning
+    ///
+    /// **The pseudo-random generator used to perform the shuffle is not
+    /// suitable for security-sensitive work.**
+    #[must_use]
+    pub fn to_shuffled(&self) -> Self {
+        let mut copy = self.clone();
+        copy.shuffle();
+        copy
     }
 
     /// Returns true if the vec is empty and contains no items.
