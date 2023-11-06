@@ -167,9 +167,6 @@
 //! });
 //! ```
 
-#![cfg(any(test, feature = "testutils"))]
-#![cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
-
 /// A reexport of the `arbitrary` crate.
 ///
 /// Used by the `contracttype` macro to derive `Arbitrary`.
@@ -245,7 +242,7 @@ mod api {
 ///
 /// - `u32`
 mod scalars {
-    use crate::arbitrary::api::*;
+    use super::api::*;
 
     impl SorobanArbitrary for () {
         type Prototype = ();
@@ -294,7 +291,7 @@ mod scalars {
 ///
 /// - `Error`
 mod simple {
-    use crate::arbitrary::api::*;
+    use super::api::*;
     pub use crate::Error;
 
     impl SorobanArbitrary for Error {
@@ -316,8 +313,8 @@ mod simple {
 mod objects {
     use arbitrary::{Arbitrary, Result as ArbitraryResult, Unstructured};
 
-    use crate::arbitrary::api::*;
-    use crate::arbitrary::composite::ArbitraryVal;
+    use super::api::*;
+    use super::composite::ArbitraryVal;
     use crate::env::FromVal;
     use crate::ConversionError;
     use crate::{Env, IntoVal, TryFromVal};
@@ -662,7 +659,7 @@ mod objects {
 ///
 /// The implementation is similar to objects, but macroized.
 mod tuples {
-    use crate::arbitrary::api::*;
+    use super::api::*;
     use crate::ConversionError;
     use crate::{Env, IntoVal, TryFromVal, TryIntoVal, Val};
     use arbitrary::Arbitrary;
@@ -739,7 +736,7 @@ mod tuples {
 mod composite {
     use arbitrary::Arbitrary;
 
-    use crate::arbitrary::api::*;
+    use super::api::*;
     use crate::ConversionError;
     use crate::{Env, IntoVal, TryFromVal};
 
@@ -1115,7 +1112,7 @@ mod fuzz_test_helpers {
 
 #[cfg(test)]
 mod tests {
-    use crate::arbitrary::*;
+    use super::*;
     use crate::{
         Address, Bytes, BytesN, Duration, Error, Map, String, Symbol, Timepoint, Val, Vec, I256,
         U256,
@@ -1564,8 +1561,8 @@ mod tests {
     }
 
     mod user_defined_types {
+        use super::run_test;
         use crate as soroban_sdk;
-        use crate::arbitrary::tests::run_test;
         use crate::{
             Address, Bytes, BytesN, Duration, Error, Map, Symbol, Timepoint, Vec, I256, U256,
         };
