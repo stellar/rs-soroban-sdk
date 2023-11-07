@@ -131,9 +131,9 @@ use internal::{
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    snapshot: Option<Rc<LedgerSnapshot>>,
-    #[cfg(any(test, feature = "testutils"))]
     generators: Option<Rc<RefCell<Generators>>>,
+    #[cfg(any(test, feature = "testutils"))]
+    snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
 #[cfg(target_family = "wasm")]
@@ -144,9 +144,9 @@ impl TryFrom<MaybeEnv> for Env {
         Ok(Env {
             env_impl: internal::EnvImpl {},
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot,
-            #[cfg(any(test, feature = "testutils"))]
             generators: value.generators,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
         })
     }
 }
@@ -164,9 +164,9 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: internal::EnvImpl {},
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-            #[cfg(any(test, feature = "testutils"))]
             generators: None,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
         }
     }
 }
@@ -178,9 +178,9 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: None,
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-            #[cfg(any(test, feature = "testutils"))]
             generators: None,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
         }
     }
 }
@@ -191,9 +191,9 @@ impl From<Env> for MaybeEnv {
         MaybeEnv {
             maybe_env_impl: value.env_impl,
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot,
-            #[cfg(any(test, feature = "testutils"))]
             generators: Some(value.generators),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
         }
     }
 }
@@ -207,9 +207,9 @@ impl TryFrom<MaybeEnv> for Env {
             Ok(Env {
                 env_impl,
                 #[cfg(any(test, feature = "testutils"))]
-                snapshot: value.snapshot,
-                #[cfg(any(test, feature = "testutils"))]
                 generators: value.generators.unwrap_or_default(),
+                #[cfg(any(test, feature = "testutils"))]
+                snapshot: value.snapshot,
             })
         } else {
             Err(ConversionError)
@@ -223,9 +223,9 @@ impl From<Env> for MaybeEnv {
         MaybeEnv {
             maybe_env_impl: Some(value.env_impl),
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot,
-            #[cfg(any(test, feature = "testutils"))]
             generators: Some(value.generators),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot,
         }
     }
 }
@@ -242,9 +242,9 @@ impl From<Env> for MaybeEnv {
 pub struct Env {
     env_impl: internal::EnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    snapshot: Option<Rc<LedgerSnapshot>>,
-    #[cfg(any(test, feature = "testutils"))]
     generators: Rc<RefCell<Generators>>,
+    #[cfg(any(test, feature = "testutils"))]
+    snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
 impl Default for Env {
@@ -500,9 +500,9 @@ impl Env {
     /// Used by multiple constructors to configure test environments consistently.
     fn new_for_testutils(
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
+        generators: Option<Rc<RefCell<Generators>>>,
         ledger_info: internal::LedgerInfo,
         snapshot: Option<Rc<LedgerSnapshot>>,
-        generators: Option<Rc<RefCell<Generators>>>,
     ) -> Env {
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
@@ -518,8 +518,8 @@ impl Env {
         env_impl.set_base_prng_seed([0; 32]).unwrap();
         let env = Env {
             env_impl,
-            snapshot,
             generators: generators.unwrap_or_default(),
+            snapshot,
         };
 
         env.ledger().set(ledger_info);
@@ -1192,9 +1192,9 @@ impl Env {
     pub fn from_snapshot(s: Snapshot) -> Env {
         Env::new_for_testutils(
             Rc::new(s.ledger.clone()),
+            Some(Rc::new(RefCell::new(s.generators))),
             s.ledger.ledger_info(),
             Some(Rc::new(s.ledger.clone())),
-            Some(Rc::new(RefCell::new(s.generators))),
         )
     }
 
@@ -1210,8 +1210,8 @@ impl Env {
     /// Create a snapshot from the Env's current state.
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
-            ledger: self.to_ledger_snapshot(),
             generators: (*self.generators).borrow().clone(),
+            ledger: self.to_ledger_snapshot(),
         }
     }
 
@@ -1280,9 +1280,9 @@ impl Env {
         Env {
             env_impl,
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-            #[cfg(any(test, feature = "testutils"))]
             generators: Default::default(),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
         }
     }
 }
