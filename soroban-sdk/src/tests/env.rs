@@ -72,8 +72,8 @@ fn default_and_from_snapshot_same_settings() {
 
     let logs1 = env1.logs().all();
     let logs2 = env2.logs().all();
-    assert!(!logs1.is_empty());
-    assert!(!logs2.is_empty());
+    assert_eq!(logs1, &["[Diagnostic Event] contract:0000000000000000000000000000000000000000000000000000000000000001, topics:[log], data:\"test\""]);
+    assert_eq!(logs2, &["[Diagnostic Event] contract:0000000000000000000000000000000000000000000000000000000000000001, topics:[log], data:\"test\""]);
 }
 
 #[test]
