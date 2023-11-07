@@ -132,6 +132,8 @@ pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
     snapshot: Option<Rc<LedgerSnapshot>>,
+    #[cfg(any(test, feature = "testutils"))]
+    generators: Option<Rc<RefCell<Generators>>>,
 }
 
 #[cfg(target_family = "wasm")]
@@ -143,6 +145,8 @@ impl TryFrom<MaybeEnv> for Env {
             env_impl: internal::EnvImpl {},
             #[cfg(any(test, feature = "testutils"))]
             snapshot: value.snapshot,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: value.generators,
         })
     }
 }
@@ -161,6 +165,8 @@ impl MaybeEnv {
             maybe_env_impl: internal::EnvImpl {},
             #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: None,
         }
     }
 }
@@ -173,6 +179,8 @@ impl MaybeEnv {
             maybe_env_impl: None,
             #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: None,
         }
     }
 }
@@ -184,6 +192,8 @@ impl From<Env> for MaybeEnv {
             maybe_env_impl: value.env_impl,
             #[cfg(any(test, feature = "testutils"))]
             snapshot: value.snapshot,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: Some(value.generators),
         }
     }
 }
@@ -198,6 +208,10 @@ impl TryFrom<MaybeEnv> for Env {
                 env_impl,
                 #[cfg(any(test, feature = "testutils"))]
                 snapshot: value.snapshot,
+                #[cfg(any(test, feature = "testutils"))]
+                generators: value
+                    .generators
+                    .unwrap_or_else(|| Rc::new(RefCell::new(Generators::new()))),
             })
         } else {
             Err(ConversionError)
@@ -212,6 +226,8 @@ impl From<Env> for MaybeEnv {
             maybe_env_impl: Some(value.env_impl),
             #[cfg(any(test, feature = "testutils"))]
             snapshot: value.snapshot,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: Some(value.generators),
         }
     }
 }
@@ -229,6 +245,8 @@ pub struct Env {
     env_impl: internal::EnvImpl,
     #[cfg(any(test, feature = "testutils"))]
     snapshot: Option<Rc<LedgerSnapshot>>,
+    #[cfg(any(test, feature = "testutils"))]
+    generators: Rc<RefCell<Generators>>,
 }
 
 impl Default for Env {
@@ -417,11 +435,13 @@ impl Env {
 use crate::auth;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, random, Address as _, AuthorizedInvocation, ContractFunctionSet, Ledger as _,
-    MockAuth, MockAuthContract,
+    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, Generators,
+    Ledger as _, MockAuth, MockAuthContract,
 };
 #[cfg(any(test, feature = "testutils"))]
 use crate::{Bytes, BytesN};
+#[cfg(any(test, feature = "testutils"))]
+use core::{cell::RefCell, cell::RefMut};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -438,6 +458,12 @@ impl Env {
     #[doc(hidden)]
     pub fn host(&self) -> &internal::Host {
         &self.env_impl
+    }
+
+    #[doc(hidden)]
+    pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
+        let g = (*self.generators).borrow_mut();
+        f(g)
     }
 
     fn default_with_testutils() -> Env {
@@ -464,7 +490,7 @@ impl Env {
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
         env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
-                xdr::Uint256(random()),
+                xdr::Uint256([0; 32]),
             )))
             .unwrap();
         env_impl
@@ -474,6 +500,7 @@ impl Env {
         let env = Env {
             env_impl,
             snapshot: None,
+            generators: Rc::new(RefCell::new(Generators::new())),
         };
 
         env.ledger().set(internal::LedgerInfo {
@@ -493,8 +520,8 @@ impl Env {
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
-    /// with that contract ID. Providing `None` causes a random ID to be
-    /// assigned to the contract.
+    /// with that contract ID. Providing `None` causes the Env to generate a new
+    /// contract ID that is assigned to the contract.
     ///
     /// Registering a contract that is already registered replaces it.
     ///
@@ -550,7 +577,7 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            Address::random(self)
+            Address::generate(self)
         };
         self.env_impl
             .register_test_contract(
@@ -564,8 +591,8 @@ impl Env {
     /// Register a contract in a WASM file with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
-    /// with that contract ID. Providing `None` causes a random ID to be
-    /// assigned to the contract.
+    /// with that contract ID. Providing `None` causes the Env to generate a new
+    /// contract ID that is assigned to the contract.
     ///
     /// Registering a contract that is already registered replaces it.
     ///
@@ -605,7 +632,7 @@ impl Env {
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
     pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
-        let issuer_pk = random();
+        let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
         )));
@@ -648,7 +675,7 @@ impl Env {
             .unwrap();
 
         let asset = xdr::Asset::CreditAlphanum4(xdr::AlphaNum4 {
-            asset_code: xdr::AssetCode4([b'a', b'a', b'a', b'a']),
+            asset_code: xdr::AssetCode4([b'a', b'a', b'a', 0]),
             issuer: issuer_id.clone(),
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
@@ -696,8 +723,10 @@ impl Env {
             .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
                 contract_id_preimage: xdr::ContractIdPreimage::Address(
                     xdr::ContractIdPreimageFromAddress {
-                        address: xdr::ScAddress::Contract(xdr::Hash(random())),
-                        salt: xdr::Uint256(random()),
+                        address: xdr::ScAddress::Contract(xdr::Hash(
+                            self.with_generator(|mut g| g.address()),
+                        )),
+                        salt: xdr::Uint256([0; 32]),
                     },
                 ),
                 executable,
@@ -762,7 +791,7 @@ impl Env {
     ///     let contract_id = env.register_contract(None, HelloContract);
     ///
     ///     let client = HelloContractClient::new(&env, &contract_id);
-    ///     let addr = Address::random(&env);
+    ///     let addr = Address::generate(&env);
     ///     client.mock_auths(&[
     ///         MockAuth {
     ///             address: &addr,
@@ -833,7 +862,7 @@ impl Env {
     ///     env.mock_all_auths();
     ///
     ///     let client = HelloContractClient::new(&env, &contract_id);
-    ///     let addr = Address::random(&env);
+    ///     let addr = Address::generate(&env);
     ///     client.hello(&addr);
     /// }
     /// ```
@@ -888,7 +917,7 @@ impl Env {
     ///     env.mock_all_auths_allowing_non_root_auth();
     ///
     ///     let client = ContractBClient::new(&env, &contract_b);
-    ///     let addr = Address::random(&env);
+    ///     let addr = Address::generate(&env);
     ///     client.call_a(&contract_a, &addr);
     /// }
     /// ```
@@ -945,7 +974,7 @@ impl Env {
     ///     let contract_id = env.register_contract(None, Contract);
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     env.mock_all_auths();
-    ///     let address = Address::random(&env);
+    ///     let address = Address::generate(&env);
     ///     client.transfer(&address, &1000_i128);
     ///     assert_eq!(
     ///         env.auths(),
@@ -1047,7 +1076,7 @@ impl Env {
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
     ///             &account_contract.address,
-    ///             &BytesN::random(&e),
+    ///             &BytesN::from_array(&e, &[0; 32]),
     ///             ().into(),
     ///             &vec![&e],
     ///         ),
@@ -1060,7 +1089,7 @@ impl Env {
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
     ///             &account_contract.address,
-    ///             &BytesN::random(&e),
+    ///             &BytesN::from_array(&e, &[0; 32]),
     ///             0_i32.into(),
     ///             &vec![&e],
     ///         ),
@@ -1162,6 +1191,7 @@ impl Env {
         let env = Env {
             env_impl,
             snapshot: Some(rs.clone()),
+            generators: Rc::new(RefCell::new(Generators::new())),
         };
         env.ledger().set(info);
         env
@@ -1212,6 +1242,8 @@ impl Env {
             env_impl,
             #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: Rc::new(RefCell::new(Generators::new())),
         }
     }
 }

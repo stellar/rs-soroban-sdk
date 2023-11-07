@@ -25,7 +25,7 @@ fn test() {
     let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
-    let a = Address::random(&e);
+    let a = Address::generate(&e);
 
     let c = client
         .mock_auths(&[MockAuth {
