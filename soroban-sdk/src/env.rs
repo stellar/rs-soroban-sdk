@@ -209,9 +209,7 @@ impl TryFrom<MaybeEnv> for Env {
                 #[cfg(any(test, feature = "testutils"))]
                 snapshot: value.snapshot,
                 #[cfg(any(test, feature = "testutils"))]
-                generators: value
-                    .generators
-                    .unwrap_or_else(|| Rc::new(RefCell::new(Generators::new()))),
+                generators: value.generators.unwrap_or_default(),
             })
         } else {
             Err(ConversionError)
@@ -436,7 +434,7 @@ use crate::auth;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
     budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, Generators,
-    Ledger as _, MockAuth, MockAuthContract,
+    Ledger as _, MockAuth, MockAuthContract, Snapshot,
 };
 #[cfg(any(test, feature = "testutils"))]
 use crate::{Bytes, BytesN};
@@ -496,14 +494,15 @@ impl Env {
             max_entry_ttl: 6_312_000,
         };
 
-        Env::new_for_testutils(rf, None, info)
+        Env::new_for_testutils(rf, info, None, None)
     }
 
     /// Used by multiple constructors to configure test environments consistently.
     fn new_for_testutils(
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
-        snapshot: Option<Rc<LedgerSnapshot>>,
         ledger_info: internal::LedgerInfo,
+        snapshot: Option<Rc<LedgerSnapshot>>,
+        generators: Option<Rc<RefCell<Generators>>>,
     ) -> Env {
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
@@ -520,7 +519,7 @@ impl Env {
         let env = Env {
             env_impl,
             snapshot,
-            generators: Rc::new(RefCell::new(Generators::new())),
+            generators: generators.unwrap_or_default(),
         };
 
         env.ledger().set(ledger_info);
@@ -1187,14 +1186,16 @@ impl Env {
         t.unwrap()
     }
 
-    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    /// Creates a new Env loaded with the [`Snapshot`].
     ///
     /// The ledger info and state in the snapshot are loaded into the Env.
-    pub fn from_snapshot(s: LedgerSnapshot) -> Env {
-        let rf = Rc::new(s.clone());
-        let snapshot = rf.clone();
-        let info = s.ledger_info();
-        Env::new_for_testutils(rf, Some(snapshot), info)
+    pub fn from_snapshot(s: Snapshot) -> Env {
+        Env::new_for_testutils(
+            Rc::new(s.ledger.clone()),
+            s.ledger.ledger_info(),
+            Some(Rc::new(s.ledger.clone())),
+            Some(Rc::new(RefCell::new(s.generators))),
+        )
     }
 
     /// Creates a new Env loaded with the ledger snapshot loaded from the file.
@@ -1203,11 +1204,49 @@ impl Env {
     ///
     /// If there is any error reading the file.
     pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
-        Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
+        Self::from_snapshot(Snapshot::read_file(p).unwrap())
     }
 
     /// Create a snapshot from the Env's current state.
-    pub fn to_snapshot(&self) -> LedgerSnapshot {
+    pub fn to_snapshot(&self) -> Snapshot {
+        Snapshot {
+            ledger: self.to_ledger_snapshot(),
+            generators: (*self.generators).borrow().clone(),
+        }
+    }
+
+    /// Create a snapshot file from the Env's current state.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_snapshot().write_file(p).unwrap();
+    }
+
+    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    ///
+    /// The ledger info and state in the snapshot are loaded into the Env.
+    pub fn from_ledger_snapshot(s: LedgerSnapshot) -> Env {
+        Env::new_for_testutils(
+            Rc::new(s.clone()),
+            s.ledger_info(),
+            Some(Rc::new(s.clone())),
+            None,
+        )
+    }
+
+    /// Creates a new Env loaded with the ledger snapshot loaded from the file.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error reading the file.
+    pub fn from_ledger_snapshot_file(p: impl AsRef<Path>) -> Env {
+        Self::from_ledger_snapshot(LedgerSnapshot::read_file(p).unwrap())
+    }
+
+    /// Create a snapshot from the Env's current state.
+    pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
         let snapshot = self.snapshot.clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
@@ -1225,8 +1264,8 @@ impl Env {
     /// ### Panics
     ///
     /// If there is any error writing the file.
-    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
-        self.to_snapshot().write_file(p).unwrap();
+    pub fn to_ledger_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_ledger_snapshot().write_file(p).unwrap();
     }
 
     /// Get the budget that tracks the resources consumed for the environment.
@@ -1243,7 +1282,7 @@ impl Env {
             #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
             #[cfg(any(test, feature = "testutils"))]
-            generators: Rc::new(RefCell::new(Generators::new())),
+            generators: Default::default(),
         }
     }
 }
