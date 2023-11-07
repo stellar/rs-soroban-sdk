@@ -73,7 +73,7 @@
 //! [`SorobanArbitrary::Prototype`]:
 //!
 //! ```
-//! # use soroban_sdk::arbitrary::Arbitrary;
+//! # use soroban_sdk::testutils::arbitrary::Arbitrary;
 //! # use soroban_sdk::{TryFromVal, IntoVal, Val, Env};
 //! pub trait SorobanArbitrary:
 //!     TryFromVal<Env, Self::Prototype> + IntoVal<Env, Val> + TryFromVal<Env, Val>
@@ -119,7 +119,7 @@
 //! #     (|$data:ident: $dty: ty| $body:block) => { };
 //! # }
 //! use soroban_sdk::{Address, Env, Vec};
-//! use soroban_sdk::arbitrary::SorobanArbitrary;
+//! use soroban_sdk::testutils::arbitrary::SorobanArbitrary;
 //!
 //! fuzz_target!(|input: <Vec<Address> as SorobanArbitrary>::Prototype| {
 //!     let env = Env::default();
@@ -137,7 +137,7 @@
 //! # }
 //! use soroban_sdk::{Address, Env, Vec};
 //! use soroban_sdk::contracttype;
-//! use soroban_sdk::arbitrary::{Arbitrary, SorobanArbitrary};
+//! use soroban_sdk::testutils::arbitrary::{Arbitrary, SorobanArbitrary};
 //! use std::vec::Vec as RustVec;
 //!
 //! #[derive(Arbitrary, Debug)]
@@ -207,7 +207,7 @@ mod api {
     /// #     (|$data:ident: $dty: ty| $body:block) => { };
     /// # }
     /// # use soroban_sdk::{Address, Env, Vec, Bytes};
-    /// # use soroban_sdk::arbitrary::SorobanArbitrary;
+    /// # use soroban_sdk::testutils::arbitrary::SorobanArbitrary;
     /// fuzz_target!(|input: <Bytes as SorobanArbitrary>::Prototype| {
     ///     // ...
     /// });
@@ -229,7 +229,7 @@ mod api {
     }
 }
 
-/// Implementations of `soroban_sdk::arbitrary::api` for Rust scalar types.
+/// Implementations of `soroban_sdk::testutils::arbitrary::api` for Rust scalar types.
 ///
 /// These types
 ///
@@ -277,7 +277,7 @@ mod scalars {
     }
 }
 
-/// Implementations of `soroban_sdk::arbitrary::api` for Soroban types that do not
+/// Implementations of `soroban_sdk::testutils::arbitrary::api` for Soroban types that do not
 /// need access to the Soroban host environment.
 ///
 /// These types
@@ -299,7 +299,7 @@ mod simple {
     }
 }
 
-/// Implementations of `soroban_sdk::arbitrary::api` for Soroban types that do
+/// Implementations of `soroban_sdk::testutils::arbitrary::api` for Soroban types that do
 /// need access to the Soroban host environment.
 ///
 /// These types
@@ -655,7 +655,7 @@ mod objects {
     }
 }
 
-/// Implementations of `soroban_sdk::arbitrary::api` for tuples of Soroban types.
+/// Implementations of `soroban_sdk::testutils::arbitrary::api` for tuples of Soroban types.
 ///
 /// The implementation is similar to objects, but macroized.
 mod tuples {
@@ -732,7 +732,7 @@ mod tuples {
     );
 }
 
-/// Implementations of `soroban_sdk::arbitrary::api` for `Val`.
+/// Implementations of `soroban_sdk::testutils::arbitrary::api` for `Val`.
 mod composite {
     use arbitrary::Arbitrary;
 
@@ -1083,7 +1083,7 @@ mod fuzz_test_helpers {
     /// #   fn deposit(&self, a: soroban_sdk::Address, n: i128) { }
     /// # }
     /// use soroban_sdk::{Address, Env};
-    /// use soroban_sdk::arbitrary::{Arbitrary, SorobanArbitrary};
+    /// use soroban_sdk::testutils::arbitrary::{Arbitrary, SorobanArbitrary};
     ///
     /// #[derive(Arbitrary, Debug)]
     /// struct FuzzDeposit {
