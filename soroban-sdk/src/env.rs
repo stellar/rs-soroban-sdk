@@ -459,7 +459,27 @@ impl Env {
         }
 
         let rf = Rc::new(EmptySnapshotSource());
-        let storage = internal::storage::Storage::with_recording_footprint(rf);
+        let info = internal::LedgerInfo {
+            protocol_version: 20,
+            sequence_number: 0,
+            timestamp: 0,
+            network_id: [0; 32],
+            base_reserve: 0,
+            min_persistent_entry_ttl: 4096,
+            min_temp_entry_ttl: 16,
+            max_entry_ttl: 6_312_000,
+        };
+
+        Env::new_for_testutils(rf, None, info)
+    }
+
+    /// Used by multiple constructors to configure test environments consistently.
+    fn new_for_testutils(
+        recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
+        snapshot: Option<Rc<LedgerSnapshot>>,
+        ledger_info: internal::LedgerInfo,
+    ) -> Env {
+        let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
         env_impl
@@ -471,21 +491,9 @@ impl Env {
             .set_diagnostic_level(internal::DiagnosticLevel::Debug)
             .unwrap();
         env_impl.set_base_prng_seed([0; 32]).unwrap();
-        let env = Env {
-            env_impl,
-            snapshot: None,
-        };
+        let env = Env { env_impl, snapshot };
 
-        env.ledger().set(internal::LedgerInfo {
-            protocol_version: 20,
-            sequence_number: 0,
-            timestamp: 0,
-            network_id: [0; 32],
-            base_reserve: 0,
-            min_persistent_entry_ttl: 4096,
-            min_temp_entry_ttl: 16,
-            max_entry_ttl: 6_312_000,
-        });
+        env.ledger().set(ledger_info);
 
         env
     }
@@ -1151,20 +1159,10 @@ impl Env {
     ///
     /// The ledger info and state in the snapshot are loaded into the Env.
     pub fn from_snapshot(s: LedgerSnapshot) -> Env {
+        let rf = Rc::new(s.clone());
+        let snapshot = rf.clone();
         let info = s.ledger_info();
-
-        let rs = Rc::new(s.clone());
-        let storage = internal::storage::Storage::with_recording_footprint(rs.clone());
-        let budget = internal::budget::Budget::default();
-        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
-        env_impl.switch_to_recording_auth(true).unwrap();
-
-        let env = Env {
-            env_impl,
-            snapshot: Some(rs.clone()),
-        };
-        env.ledger().set(info);
-        env
+        Env::new_for_testutils(rf, Some(snapshot), info)
     }
 
     /// Creates a new Env loaded with the ledger snapshot loaded from the file.
