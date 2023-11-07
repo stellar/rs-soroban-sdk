@@ -75,3 +75,32 @@ fn default_and_from_snapshot_same_settings() {
     assert!(!logs1.is_empty());
     assert!(!logs2.is_empty());
 }
+
+#[test]
+fn register_contract_deploys_predictable_contract_ids() {
+    let env1 = Env::default();
+    let env2 = Env::from_snapshot(env1.to_snapshot());
+
+    let env1addr1 = env1.register_contract(None, Contract);
+    println!("env1 addr1 {:?}", env1addr1.contract_id());
+    let env1addr2 = env1.register_contract(None, Contract);
+    println!("env1 addr2 {:?}", env1addr2.contract_id());
+    let env2addr1 = env2.register_contract(None, Contract);
+    println!("env2 addr1 {:?}", env2addr1.contract_id());
+    let env2addr2 = env2.register_contract(None, Contract);
+    println!("env2 addr2 {:?}", env2addr2.contract_id());
+
+    let env3 = Env::from_snapshot(env1.to_snapshot());
+    let env1addr3 = env1.register_contract(None, Contract);
+    println!("env1 addr3 {:?}", env1addr3.contract_id());
+    let env2addr3 = env2.register_contract(None, Contract);
+    println!("env2 addr3 {:?}", env2addr3.contract_id());
+    let env3addr3 = env3.register_contract(None, Contract);
+    println!("env3 addr3 {:?}", env3addr3.contract_id());
+
+    // Check that contracts deployed in the envs are consistent and predictable.
+    assert_eq!(env2addr1.contract_id(), env1addr1.contract_id());
+    assert_eq!(env2addr2.contract_id(), env1addr2.contract_id());
+    assert_eq!(env2addr3.contract_id(), env1addr3.contract_id());
+    assert_eq!(env3addr3.contract_id(), env1addr3.contract_id());
+}
