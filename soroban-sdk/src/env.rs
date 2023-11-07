@@ -460,8 +460,7 @@ impl Env {
 
     #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
-        let g = (*self.generators).borrow_mut();
-        f(g)
+        f((*self.generators).borrow_mut())
     }
 
     fn default_with_testutils() -> Env {
