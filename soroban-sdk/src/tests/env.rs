@@ -1,6 +1,8 @@
-use crate as soroban_sdk;
-use crate::testutils::{Address as _, Logs as _};
-use crate::{contract, contractimpl, Address, Env};
+use crate::{
+    self as soroban_sdk, contract, contractimpl,
+    testutils::{Address as _, Logs as _},
+    Address, Env, Error,
+};
 
 #[test]
 // Env::default is expected to configure the underlying host with a source
@@ -53,8 +55,20 @@ fn default_and_from_snapshot_same_settings() {
     let c2addr2 = Address::random(&env2);
     let r1 = c1client.try_need_auth(&c1addr2);
     let r2 = c2client.try_need_auth(&c2addr2);
-    assert!(r1.is_err());
-    assert!(r2.is_err());
+    assert_eq!(
+        r1,
+        Err(Ok(Error::from_type_and_code(
+            stellar_xdr::curr::ScErrorType::Context,
+            stellar_xdr::curr::ScErrorCode::InvalidAction
+        )))
+    );
+    assert_eq!(
+        r2,
+        Err(Ok(Error::from_type_and_code(
+            stellar_xdr::curr::ScErrorType::Context,
+            stellar_xdr::curr::ScErrorCode::InvalidAction
+        )))
+    );
 
     let logs1 = env1.logs().all();
     let logs2 = env2.logs().all();
