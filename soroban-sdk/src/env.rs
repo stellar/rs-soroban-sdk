@@ -494,7 +494,7 @@ impl Env {
             max_entry_ttl: 6_312_000,
         };
 
-        Env::new_for_testutils(rf, info, None, None)
+        Env::new_for_testutils(rf, None, info, None)
     }
 
     /// Used by multiple constructors to configure test environments consistently.
@@ -1230,9 +1230,9 @@ impl Env {
     pub fn from_ledger_snapshot(s: LedgerSnapshot) -> Env {
         Env::new_for_testutils(
             Rc::new(s.clone()),
+            None,
             s.ledger_info(),
             Some(Rc::new(s.clone())),
-            None,
         )
     }
 
