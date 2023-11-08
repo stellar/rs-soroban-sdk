@@ -1251,7 +1251,7 @@ impl Env {
             .expect("test name to be retrieval for use as the name of the test snapshot file");
         let dir = std::path::Path::new("test_snapshots");
         let p = dir.join(test_name).with_extension("json");
-        println!("Writing test snapshot file for test {test_name:?} to {p:?}.");
+        eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
         self.to_snapshot().write_file(p).unwrap();
     }
 
