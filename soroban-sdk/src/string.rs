@@ -28,7 +28,7 @@ use super::xdr::{ScString, ScVal};
 ///
 /// let env = Env::default();
 /// let msg = "a message";
-/// let s = String::from_slice(&env, msg);
+/// let s = String::from_str(&env, msg);
 /// let mut out = [0u8; 9];
 /// s.copy_into_slice(&mut out);
 /// assert_eq!(msg.as_bytes(), out)
@@ -165,7 +165,7 @@ impl TryFromVal<Env, &str> for String {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, v: &&str) -> Result<Self, Self::Error> {
-        Ok(String::from_slice(env, v))
+        Ok(String::from_str(env, v))
     }
 }
 
@@ -209,10 +209,16 @@ impl String {
     }
 
     #[inline(always)]
+    #[deprecated(note = "use from_str")]
     pub fn from_slice(env: &Env, slice: &str) -> String {
+        Self::from_str(env, slice)
+    }
+
+    #[inline(always)]
+    pub fn from_str(env: &Env, s: &str) -> String {
         String {
             env: env.clone(),
-            obj: env.string_new_from_slice(slice).unwrap_optimized(),
+            obj: env.string_new_from_slice(s).unwrap_optimized(),
         }
     }
 
@@ -246,7 +252,7 @@ mod test {
         let env = Env::default();
 
         let msg = "a message";
-        let s = String::from_slice(&env, msg);
+        let s = String::from_str(&env, msg);
         let mut out = [0u8; 9];
         s.copy_into_slice(&mut out);
         assert_eq!(msg.as_bytes(), out)
@@ -257,7 +263,7 @@ mod test {
     fn string_to_short_slice() {
         let env = Env::default();
         let msg = "a message";
-        let s = String::from_slice(&env, msg);
+        let s = String::from_str(&env, msg);
         let mut out = [0u8; 8];
         s.copy_into_slice(&mut out);
     }
@@ -267,7 +273,7 @@ mod test {
     fn string_to_long_slice() {
         let env = Env::default();
         let msg = "a message";
-        let s = String::from_slice(&env, msg);
+        let s = String::from_str(&env, msg);
         let mut out = [0u8; 10];
         s.copy_into_slice(&mut out);
     }
