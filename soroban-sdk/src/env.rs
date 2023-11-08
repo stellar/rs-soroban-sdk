@@ -131,6 +131,8 @@ use internal::{
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
+    generators: Option<Rc<RefCell<Generators>>>,
+    #[cfg(any(test, feature = "testutils"))]
     snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
@@ -141,6 +143,8 @@ impl TryFrom<MaybeEnv> for Env {
     fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
         Ok(Env {
             env_impl: internal::EnvImpl {},
+            #[cfg(any(test, feature = "testutils"))]
+            generators: value.generators,
             #[cfg(any(test, feature = "testutils"))]
             snapshot: value.snapshot,
         })
@@ -160,6 +164,8 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: internal::EnvImpl {},
             #[cfg(any(test, feature = "testutils"))]
+            generators: None,
+            #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
         }
     }
@@ -172,6 +178,8 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: None,
             #[cfg(any(test, feature = "testutils"))]
+            generators: None,
+            #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
         }
     }
@@ -182,6 +190,8 @@ impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
         MaybeEnv {
             maybe_env_impl: value.env_impl,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: Some(value.generators),
             #[cfg(any(test, feature = "testutils"))]
             snapshot: value.snapshot,
         }
@@ -197,6 +207,8 @@ impl TryFrom<MaybeEnv> for Env {
             Ok(Env {
                 env_impl,
                 #[cfg(any(test, feature = "testutils"))]
+                generators: value.generators.unwrap_or_default(),
+                #[cfg(any(test, feature = "testutils"))]
                 snapshot: value.snapshot,
             })
         } else {
@@ -210,6 +222,8 @@ impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
         MaybeEnv {
             maybe_env_impl: Some(value.env_impl),
+            #[cfg(any(test, feature = "testutils"))]
+            generators: Some(value.generators),
             #[cfg(any(test, feature = "testutils"))]
             snapshot: value.snapshot,
         }
@@ -227,6 +241,8 @@ impl From<Env> for MaybeEnv {
 #[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
+    #[cfg(any(test, feature = "testutils"))]
+    generators: Rc<RefCell<Generators>>,
     #[cfg(any(test, feature = "testutils"))]
     snapshot: Option<Rc<LedgerSnapshot>>,
 }
@@ -417,11 +433,13 @@ impl Env {
 use crate::auth;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, random, Address as _, AuthorizedInvocation, ContractFunctionSet, Ledger as _,
-    MockAuth, MockAuthContract,
+    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, Generators,
+    Ledger as _, MockAuth, MockAuthContract, Snapshot,
 };
 #[cfg(any(test, feature = "testutils"))]
 use crate::{Bytes, BytesN};
+#[cfg(any(test, feature = "testutils"))]
+use core::{cell::RefCell, cell::RefMut};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -438,6 +456,11 @@ impl Env {
     #[doc(hidden)]
     pub fn host(&self) -> &internal::Host {
         &self.env_impl
+    }
+
+    #[doc(hidden)]
+    pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
+        f((*self.generators).borrow_mut())
     }
 
     fn default_with_testutils() -> Env {
@@ -470,28 +493,33 @@ impl Env {
             max_entry_ttl: 6_312_000,
         };
 
-        Env::new_for_testutils(rf, None, info)
+        Env::new_for_testutils(rf, None, info, None)
     }
 
     /// Used by multiple constructors to configure test environments consistently.
     fn new_for_testutils(
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
-        snapshot: Option<Rc<LedgerSnapshot>>,
+        generators: Option<Rc<RefCell<Generators>>>,
         ledger_info: internal::LedgerInfo,
+        snapshot: Option<Rc<LedgerSnapshot>>,
     ) -> Env {
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
         env_impl
             .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
-                xdr::Uint256(random()),
+                xdr::Uint256([0; 32]),
             )))
             .unwrap();
         env_impl
             .set_diagnostic_level(internal::DiagnosticLevel::Debug)
             .unwrap();
         env_impl.set_base_prng_seed([0; 32]).unwrap();
-        let env = Env { env_impl, snapshot };
+        let env = Env {
+            env_impl,
+            generators: generators.unwrap_or_default(),
+            snapshot,
+        };
 
         env.ledger().set(ledger_info);
 
@@ -501,8 +529,8 @@ impl Env {
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
-    /// with that contract ID. Providing `None` causes a random ID to be
-    /// assigned to the contract.
+    /// with that contract ID. Providing `None` causes the Env to generate a new
+    /// contract ID that is assigned to the contract.
     ///
     /// Registering a contract that is already registered replaces it.
     ///
@@ -558,7 +586,7 @@ impl Env {
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
-            Address::random(self)
+            Address::generate(self)
         };
         self.env_impl
             .register_test_contract(
@@ -572,8 +600,8 @@ impl Env {
     /// Register a contract in a WASM file with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
-    /// with that contract ID. Providing `None` causes a random ID to be
-    /// assigned to the contract.
+    /// with that contract ID. Providing `None` causes the Env to generate a new
+    /// contract ID that is assigned to the contract.
     ///
     /// Registering a contract that is already registered replaces it.
     ///
@@ -613,7 +641,7 @@ impl Env {
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
     pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
-        let issuer_pk = random();
+        let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
         )));
@@ -656,7 +684,7 @@ impl Env {
             .unwrap();
 
         let asset = xdr::Asset::CreditAlphanum4(xdr::AlphaNum4 {
-            asset_code: xdr::AssetCode4([b'a', b'a', b'a', b'a']),
+            asset_code: xdr::AssetCode4([b'a', b'a', b'a', 0]),
             issuer: issuer_id.clone(),
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
@@ -704,8 +732,10 @@ impl Env {
             .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
                 contract_id_preimage: xdr::ContractIdPreimage::Address(
                     xdr::ContractIdPreimageFromAddress {
-                        address: xdr::ScAddress::Contract(xdr::Hash(random())),
-                        salt: xdr::Uint256(random()),
+                        address: xdr::ScAddress::Contract(xdr::Hash(
+                            self.with_generator(|mut g| g.address()),
+                        )),
+                        salt: xdr::Uint256([0; 32]),
                     },
                 ),
                 executable,
@@ -770,7 +800,7 @@ impl Env {
     ///     let contract_id = env.register_contract(None, HelloContract);
     ///
     ///     let client = HelloContractClient::new(&env, &contract_id);
-    ///     let addr = Address::random(&env);
+    ///     let addr = Address::generate(&env);
     ///     client.mock_auths(&[
     ///         MockAuth {
     ///             address: &addr,
@@ -841,7 +871,7 @@ impl Env {
     ///     env.mock_all_auths();
     ///
     ///     let client = HelloContractClient::new(&env, &contract_id);
-    ///     let addr = Address::random(&env);
+    ///     let addr = Address::generate(&env);
     ///     client.hello(&addr);
     /// }
     /// ```
@@ -896,7 +926,7 @@ impl Env {
     ///     env.mock_all_auths_allowing_non_root_auth();
     ///
     ///     let client = ContractBClient::new(&env, &contract_b);
-    ///     let addr = Address::random(&env);
+    ///     let addr = Address::generate(&env);
     ///     client.call_a(&contract_a, &addr);
     /// }
     /// ```
@@ -953,7 +983,7 @@ impl Env {
     ///     let contract_id = env.register_contract(None, Contract);
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     env.mock_all_auths();
-    ///     let address = Address::random(&env);
+    ///     let address = Address::generate(&env);
     ///     client.transfer(&address, &1000_i128);
     ///     assert_eq!(
     ///         env.auths(),
@@ -1055,7 +1085,7 @@ impl Env {
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
     ///             &account_contract.address,
-    ///             &BytesN::random(&e),
+    ///             &BytesN::from_array(&e, &[0; 32]),
     ///             ().into(),
     ///             &vec![&e],
     ///         ),
@@ -1068,7 +1098,7 @@ impl Env {
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
     ///             &account_contract.address,
-    ///             &BytesN::random(&e),
+    ///             &BytesN::from_array(&e, &[0; 32]),
     ///             0_i32.into(),
     ///             &vec![&e],
     ///         ),
@@ -1155,14 +1185,16 @@ impl Env {
         t.unwrap()
     }
 
-    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    /// Creates a new Env loaded with the [`Snapshot`].
     ///
     /// The ledger info and state in the snapshot are loaded into the Env.
-    pub fn from_snapshot(s: LedgerSnapshot) -> Env {
-        let rf = Rc::new(s.clone());
-        let snapshot = rf.clone();
-        let info = s.ledger_info();
-        Env::new_for_testutils(rf, Some(snapshot), info)
+    pub fn from_snapshot(s: Snapshot) -> Env {
+        Env::new_for_testutils(
+            Rc::new(s.ledger.clone()),
+            Some(Rc::new(RefCell::new(s.generators))),
+            s.ledger.ledger_info(),
+            Some(Rc::new(s.ledger.clone())),
+        )
     }
 
     /// Creates a new Env loaded with the ledger snapshot loaded from the file.
@@ -1171,11 +1203,49 @@ impl Env {
     ///
     /// If there is any error reading the file.
     pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
-        Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
+        Self::from_snapshot(Snapshot::read_file(p).unwrap())
     }
 
     /// Create a snapshot from the Env's current state.
-    pub fn to_snapshot(&self) -> LedgerSnapshot {
+    pub fn to_snapshot(&self) -> Snapshot {
+        Snapshot {
+            generators: (*self.generators).borrow().clone(),
+            ledger: self.to_ledger_snapshot(),
+        }
+    }
+
+    /// Create a snapshot file from the Env's current state.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_snapshot().write_file(p).unwrap();
+    }
+
+    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    ///
+    /// The ledger info and state in the snapshot are loaded into the Env.
+    pub fn from_ledger_snapshot(s: LedgerSnapshot) -> Env {
+        Env::new_for_testutils(
+            Rc::new(s.clone()),
+            None,
+            s.ledger_info(),
+            Some(Rc::new(s.clone())),
+        )
+    }
+
+    /// Creates a new Env loaded with the ledger snapshot loaded from the file.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error reading the file.
+    pub fn from_ledger_snapshot_file(p: impl AsRef<Path>) -> Env {
+        Self::from_ledger_snapshot(LedgerSnapshot::read_file(p).unwrap())
+    }
+
+    /// Create a snapshot from the Env's current state.
+    pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
         let snapshot = self.snapshot.clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
@@ -1193,8 +1263,8 @@ impl Env {
     /// ### Panics
     ///
     /// If there is any error writing the file.
-    pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
-        self.to_snapshot().write_file(p).unwrap();
+    pub fn to_ledger_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_ledger_snapshot().write_file(p).unwrap();
     }
 
     /// Get the budget that tracks the resources consumed for the environment.
@@ -1208,6 +1278,8 @@ impl Env {
     pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
         Env {
             env_impl,
+            #[cfg(any(test, feature = "testutils"))]
+            generators: Default::default(),
             #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
         }

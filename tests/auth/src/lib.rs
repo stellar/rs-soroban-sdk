@@ -36,7 +36,7 @@ mod test_a {
         let contract_id = e.register_contract(None, ContractA);
         let client = ContractAClient::new(&e, &contract_id);
 
-        let a = Address::random(&e);
+        let a = Address::generate(&e);
 
         let r = client.mock_all_auths().fn1(&a);
         assert_eq!(r, 2);
@@ -63,7 +63,7 @@ mod test_a {
         let contract_id = e.register_contract(None, ContractA);
         let client = ContractAClient::new(&e, &contract_id);
 
-        let a = Address::random(&e);
+        let a = Address::generate(&e);
 
         let r = client
             .mock_auths(&[MockAuth {
@@ -255,7 +255,7 @@ mod test_b {
         let contract_b_id = e.register_contract(None, ContractB);
         let client = ContractBClient::new(&e, &contract_b_id);
 
-        let a = Address::random(&e);
+        let a = Address::generate(&e);
 
         let r = client.mock_all_auths().fn2(&a, &contract_a_id);
         assert_eq!(r, 2);
@@ -290,7 +290,7 @@ mod test_b {
         let contract_b_id = e.register_contract(None, ContractB);
         let client = ContractBClient::new(&e, &contract_b_id);
 
-        let a = Address::random(&e);
+        let a = Address::generate(&e);
 
         let r = client
             .mock_auths(&[MockAuth {

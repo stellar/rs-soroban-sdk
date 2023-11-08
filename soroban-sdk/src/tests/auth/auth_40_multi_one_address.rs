@@ -36,7 +36,7 @@ fn test_auth_not_allowed_with_separated_tree() {
     let contract_b_id = e.register_contract(None, ContractB);
     let client = ContractAClient::new(&e, &contract_a_id);
 
-    let a = Address::random(&e);
+    let a = Address::generate(&e);
 
     assert!(client
         .mock_auths(&[
@@ -70,7 +70,7 @@ fn test_auth_as_tree() {
     let contract_b_id = e.register_contract(None, ContractB);
     let client = ContractAClient::new(&e, &contract_a_id);
 
-    let a = Address::random(&e);
+    let a = Address::generate(&e);
 
     let c = client
         .mock_auths(&[MockAuth {

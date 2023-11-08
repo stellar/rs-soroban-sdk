@@ -24,9 +24,9 @@ fn test() {
     client.store(&2, &4);
     assert_eq!(client.get(&2), 4);
 
-    let snapshot = e.to_snapshot();
+    let snapshot = e.to_ledger_snapshot();
 
-    let e = Env::from_snapshot(snapshot);
+    let e = Env::from_ledger_snapshot(snapshot);
     let contract_id = Address::try_from_val(&e, &contract_id_xdr).unwrap();
     e.register_contract(&contract_id, Contract);
     let client = ContractClient::new(&e, &contract_id);

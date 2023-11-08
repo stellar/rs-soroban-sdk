@@ -47,7 +47,7 @@ fn test_mock_all_auth() {
 
     let env = Env::default();
 
-    let admin = Address::random(&env);
+    let admin = Address::generate(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
 
     let contract_id = env.register_contract(None, TestContract);
@@ -56,8 +56,8 @@ fn test_mock_all_auth() {
 
     let token_client = TokenClient::new(&env, &client.get_token());
     assert_eq!(token_client.decimals(), 7);
-    let from = Address::random(&env);
-    let spender = Address::random(&env);
+    let from = Address::generate(&env);
+    let spender = Address::generate(&env);
 
     // `TestContract` doesn't call `require_auth` before calling into token,
     // thus we need to allow non-root auth and regular `mock_all_auths` will
@@ -94,7 +94,7 @@ fn test_mock_auth() {
 
     let env = Env::default();
 
-    let admin = Address::random(&env);
+    let admin = Address::generate(&env);
     let token_contract_id = env.register_stellar_asset_contract(admin);
 
     let contract_id = env.register_contract(None, TestContract);
@@ -103,8 +103,8 @@ fn test_mock_auth() {
 
     let token_client = TokenClient::new(&env, &client.get_token());
     assert_eq!(token_client.decimals(), 7);
-    let from = Address::random(&env);
-    let spender = Address::random(&env);
+    let from = Address::generate(&env);
+    let spender = Address::generate(&env);
 
     client
         .mock_auths(&[MockAuth {

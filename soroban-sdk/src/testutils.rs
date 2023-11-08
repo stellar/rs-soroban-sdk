@@ -16,6 +16,74 @@ pub use mock_auth::{
 pub mod storage;
 
 use crate::{Env, Val, Vec};
+use soroban_ledger_snapshot::LedgerSnapshot;
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct Snapshot {
+    pub generators: Generators,
+    pub ledger: LedgerSnapshot,
+}
+
+impl Snapshot {
+    // Read in a [`Snapshot`] from a reader.
+    pub fn read(r: impl std::io::Read) -> Result<Snapshot, std::io::Error> {
+        Ok(serde_json::from_reader::<_, Snapshot>(r)?)
+    }
+
+    // Read in a [`Snapshot`] from a file.
+    pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<Snapshot, std::io::Error> {
+        Self::read(std::fs::File::open(p)?)
+    }
+
+    // Write a [`Snapshot`] to a writer.
+    pub fn write(&self, w: impl std::io::Write) -> Result<(), std::io::Error> {
+        Ok(serde_json::to_writer_pretty(w, self)?)
+    }
+
+    // Write a [`Snapshot`] to file.
+    pub fn write_file(&self, p: impl AsRef<std::path::Path>) -> Result<(), std::io::Error> {
+        let p = p.as_ref();
+        if let Some(dir) = p.parent() {
+            if !dir.exists() {
+                std::fs::create_dir_all(dir)?;
+            }
+        }
+        self.write(std::fs::File::create(p)?)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct Generators {
+    address: u64,
+    nonce: u64,
+}
+
+impl Default for Generators {
+    fn default() -> Generators {
+        Generators {
+            address: 0,
+            nonce: 0,
+        }
+    }
+}
+
+impl Generators {
+    pub fn address(&mut self) -> [u8; 32] {
+        self.address = self.address.checked_add(1).unwrap();
+        let b: [u8; 8] = self.address.to_be_bytes();
+        [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, b[0], b[1],
+            b[2], b[3], b[4], b[5], b[6], b[7],
+        ]
+    }
+
+    pub fn nonce(&mut self) -> i64 {
+        self.nonce = self.nonce.checked_add(1).unwrap();
+        self.nonce as i64
+    }
+}
 
 #[doc(hidden)]
 pub trait ContractFunctionSet {
@@ -179,10 +247,10 @@ pub(crate) fn random<const N: usize>() -> [u8; N] {
 }
 
 pub trait Address {
-    /// Create a random Address.
+    /// Generate a new Address.
     ///
     /// Implementation note: this always builds the contract addresses now. This
     /// shouldn't normally matter though, as contracts should be agnostic to
     /// the underlying Address value.
-    fn random(env: &Env) -> crate::Address;
+    fn generate(env: &Env) -> crate::Address;
 }

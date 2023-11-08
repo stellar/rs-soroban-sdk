@@ -1,7 +1,6 @@
 #![cfg(any(test, feature = "testutils"))]
 
 use crate::{contract, contractimpl, xdr, Address, Env, Symbol, TryFromVal, Val, Vec};
-use rand::{thread_rng, Rng};
 
 use super::Ledger;
 
@@ -38,7 +37,7 @@ impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
             root_invocation: value.invoke.into(),
             credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
                 address: value.address.try_into().unwrap(),
-                nonce: thread_rng().gen(),
+                nonce: env.with_generator(|mut g| g.nonce()),
                 signature_expiration_ledger: curr_ledger + max_entry_ttl - 1,
                 signature: xdr::ScVal::Void,
             }),

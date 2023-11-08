@@ -26,7 +26,7 @@ use crate::{unwrap::UnwrapInfallible, Bytes, Vec};
 /// that allow customizing authentication logic and adding custom authorization
 /// rules.
 ///
-/// In tests Addresses should be generated via `Address::random()`.
+/// In tests Addresses should be generated via `Address::generate()`.
 #[derive(Clone)]
 pub struct Address {
     env: Env,
@@ -299,18 +299,19 @@ impl Address {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(any(not(target_family = "wasm"), test, feature = "testutils"))]
 use crate::env::xdr::Hash;
-#[cfg(any(test, feature = "testutils"))]
-use crate::testutils::random;
 use crate::unwrap::UnwrapOptimized;
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::Address for Address {
-    fn random(env: &Env) -> Self {
-        let sc_addr = ScVal::Address(ScAddress::Contract(Hash(random())));
-        Self::try_from_val(env, &sc_addr).unwrap()
+    fn generate(env: &Env) -> Self {
+        Self::try_from_val(
+            env,
+            &ScAddress::Contract(Hash(env.with_generator(|mut g| g.address()))),
+        )
+        .unwrap()
     }
 }
 

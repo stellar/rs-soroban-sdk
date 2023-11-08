@@ -51,8 +51,8 @@ fn default_and_from_snapshot_same_settings() {
     c1client.test();
     c2client.test();
 
-    let c1addr2 = Address::random(&env1);
-    let c2addr2 = Address::random(&env2);
+    let c1addr2 = Address::generate(&env1);
+    let c2addr2 = Address::generate(&env2);
     let r1 = c1client.try_need_auth(&c1addr2);
     let r2 = c2client.try_need_auth(&c2addr2);
     assert_eq!(
@@ -72,6 +72,35 @@ fn default_and_from_snapshot_same_settings() {
 
     let logs1 = env1.logs().all();
     let logs2 = env2.logs().all();
-    assert!(!logs1.is_empty());
-    assert!(!logs2.is_empty());
+    assert_eq!(logs1, &["[Diagnostic Event] contract:0000000000000000000000000000000000000000000000000000000000000001, topics:[log], data:\"test\""]);
+    assert_eq!(logs2, &["[Diagnostic Event] contract:0000000000000000000000000000000000000000000000000000000000000001, topics:[log], data:\"test\""]);
+}
+
+#[test]
+fn register_contract_deploys_predictable_contract_ids() {
+    let env1 = Env::default();
+    let env2 = Env::from_snapshot(env1.to_snapshot());
+
+    let env1addr1 = env1.register_contract(None, Contract);
+    println!("env1 addr1 {:?}", env1addr1.contract_id());
+    let env1addr2 = env1.register_contract(None, Contract);
+    println!("env1 addr2 {:?}", env1addr2.contract_id());
+    let env2addr1 = env2.register_contract(None, Contract);
+    println!("env2 addr1 {:?}", env2addr1.contract_id());
+    let env2addr2 = env2.register_contract(None, Contract);
+    println!("env2 addr2 {:?}", env2addr2.contract_id());
+
+    let env3 = Env::from_snapshot(env1.to_snapshot());
+    let env1addr3 = env1.register_contract(None, Contract);
+    println!("env1 addr3 {:?}", env1addr3.contract_id());
+    let env2addr3 = env2.register_contract(None, Contract);
+    println!("env2 addr3 {:?}", env2addr3.contract_id());
+    let env3addr3 = env3.register_contract(None, Contract);
+    println!("env3 addr3 {:?}", env3addr3.contract_id());
+
+    // Check that contracts deployed in the envs are consistent and predictable.
+    assert_eq!(env2addr1.contract_id(), env1addr1.contract_id());
+    assert_eq!(env2addr2.contract_id(), env1addr2.contract_id());
+    assert_eq!(env2addr3.contract_id(), env1addr3.contract_id());
+    assert_eq!(env3addr3.contract_id(), env1addr3.contract_id());
 }

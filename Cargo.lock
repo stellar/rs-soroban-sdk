@@ -1199,6 +1199,8 @@ dependencies = [
  "proptest",
  "proptest-arbitrary-interop",
  "rand",
+ "serde",
+ "serde_json",
  "soroban-env-guest",
  "soroban-env-host",
  "soroban-ledger-snapshot",
