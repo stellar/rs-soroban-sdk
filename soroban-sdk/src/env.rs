@@ -219,13 +219,13 @@ impl TryFrom<MaybeEnv> for Env {
 
 #[cfg(not(target_family = "wasm"))]
 impl From<Env> for MaybeEnv {
-    fn from(value: Env) -> Self {
+    fn from(mut value: Env) -> Self {
         MaybeEnv {
-            maybe_env_impl: Some(value.env_impl),
+            maybe_env_impl: Some(core::mem::take(&mut value.env_impl)),
             #[cfg(any(test, feature = "testutils"))]
-            generators: Some(value.generators),
+            generators: Some(core::mem::take(&mut value.generators)),
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot,
+            snapshot: core::mem::take(&mut value.snapshot),
         }
     }
 }
@@ -449,6 +449,15 @@ use xdr::{
     LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
     SorobanAuthorizationEntry,
 };
+
+#[cfg(any(test, feature = "testutils"))]
+impl Drop for Env {
+    fn drop(&mut self) {
+        if self.env_impl.can_finish() {
+            self.to_test_snapshot_file();
+        }
+    }
+}
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -1220,6 +1229,29 @@ impl Env {
     ///
     /// If there is any error writing the file.
     pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
+        self.to_snapshot().write_file(p).unwrap();
+    }
+
+    /// Create a snapshot file for the currently executing test.
+    ///
+    /// Writes the file to the `test_snapshots/{test-name}.json` path.
+    ///
+    /// Use to record the observable behavior of a test, and changes to that
+    /// behavior over time. Commit the test snapshot file to version control and
+    /// watch for changes in it on contract change, SDK upgrade, protocol
+    /// upgrade, and other important events.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub fn to_test_snapshot_file(&self) {
+        let test = std::thread::current();
+        let test_name = test
+            .name()
+            .expect("test name to be retrieval for use as the name of the test snapshot file");
+        let dir = std::path::Path::new("test_snapshots");
+        let p = dir.join(test_name).with_extension("json");
+        println!("Writing test snapshot file for test {test_name:?} to {p:?}.");
         self.to_snapshot().write_file(p).unwrap();
     }
 
