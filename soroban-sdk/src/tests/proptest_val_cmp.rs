@@ -1,7 +1,7 @@
 //! Check that Val and ScVal can be converted between each other,
 //! and that their comparison functions are equivalent.
 
-use crate::arbitrary::SorobanArbitrary;
+use crate::testutils::arbitrary::SorobanArbitrary;
 use crate::xdr::ScVal;
 use crate::Env;
 use crate::Val;

@@ -42,12 +42,12 @@ fn derive_arbitrary_struct_common(
             match &field.ident {
                 Some(ident) => {
                     quote! {
-                        #ident: <#field_type as #path::arbitrary::SorobanArbitrary>::Prototype
+                        #ident: <#field_type as #path::testutils::arbitrary::SorobanArbitrary>::Prototype
                     }
                 }
                 None => {
                     quote! {
-                        <#field_type as #path::arbitrary::SorobanArbitrary>::Prototype
+                        <#field_type as #path::testutils::arbitrary::SorobanArbitrary>::Prototype
                     }
                 }
             }
@@ -132,13 +132,13 @@ pub fn derive_arbitrary_enum(
                         Some(ident) => {
                             field_types = Some(FieldType::Named);
                             quote! {
-                                #ident: <#field_type as #path::arbitrary::SorobanArbitrary>::Prototype
+                                #ident: <#field_type as #path::testutils::arbitrary::SorobanArbitrary>::Prototype
                             }
                         }
                         None => {
                             field_types = Some(FieldType::Unnamed);
                             quote! {
-                                <#field_type as #path::arbitrary::SorobanArbitrary>::Prototype
+                                <#field_type as #path::testutils::arbitrary::SorobanArbitrary>::Prototype
                             }
                         }
                     }
@@ -323,14 +323,14 @@ fn quote_arbitrary(
         #[cfg(any(test, feature = "testutils"))]
         const _: () = {
             // derive(Arbitrary) expects these two to be in scope
-            use #path::arbitrary::std;
-            use #path::arbitrary::arbitrary;
+            use #path::testutils::arbitrary::std;
+            use #path::testutils::arbitrary::arbitrary;
 
-            #[derive(#path::arbitrary::arbitrary::Arbitrary)]
+            #[derive(#path::testutils::arbitrary::arbitrary::Arbitrary)]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             #vis #arbitrary_type_decl
 
-            impl #path::arbitrary::SorobanArbitrary for #ident {
+            impl #path::testutils::arbitrary::SorobanArbitrary for #ident {
                 type Prototype = #arbitrary_type_ident;
             }
 

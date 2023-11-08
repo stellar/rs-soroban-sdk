@@ -3,6 +3,8 @@
 
 //! Utilities intended for use when testing.
 
+pub mod arbitrary;
+
 mod sign;
 pub use sign::ed25519;
 
