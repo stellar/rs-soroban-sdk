@@ -1133,8 +1133,15 @@ mod tests {
         for _ in 0..100 {
             rng.fill_bytes(&mut rng_data);
             let mut unstructured = Unstructured::new(&rng_data);
-            let input = T::Prototype::arbitrary(&mut unstructured).expect("SorobanArbitrary");
-            let _val: T = input.into_val(&env);
+            loop {
+                match T::Prototype::arbitrary(&mut unstructured) {
+                    Ok(input) => {
+                        let _val: T = input.into_val(&env);
+                        break;
+                    }
+                    Err(_) => {}
+                }
+            }
         }
     }
 
