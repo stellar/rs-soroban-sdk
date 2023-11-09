@@ -16,7 +16,7 @@ build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
 	cd target/wasm32-unknown-unknown/release/ && \
 		for i in *.wasm ; do \
-			ls -l "$$i"; \
+			shasum -a 256 "$$i"; \
 		done
 
 check: build fmt
