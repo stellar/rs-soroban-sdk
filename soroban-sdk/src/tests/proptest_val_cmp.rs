@@ -15,7 +15,7 @@ proptest! {
     #![proptest_config(ProptestConfig::with_cases(10000))]
 
     #[test]
-    #[ignore]
+    #[ignore] // TODO: https://github.com/stellar/rs-soroban-sdk/issues/1141
     fn test(
         rawval_proto_1 in arb::<<Val as SorobanArbitrary>::Prototype>(),
         rawval_proto_2 in arb::<<Val as SorobanArbitrary>::Prototype>(),
