@@ -1,6 +1,6 @@
 {
   "generators": {
-    "address": 2,
+    "address": 3,
     "nonce": 0
   },
   "ledger": {
@@ -52,12 +52,8 @@
             "contract": {
               "contract": "0000000000000000000000000000000000000000000000000000000000000001"
             },
-            "key": {
-              "ledger_key_nonce": {
-                "nonce": 5827323990544907992
-              }
-            },
-            "durability": "temporary"
+            "key": "ledger_key_contract_instance",
+            "durability": "persistent"
           }
         },
         [
@@ -69,18 +65,21 @@
                 "contract": {
                   "contract": "0000000000000000000000000000000000000000000000000000000000000001"
                 },
-                "key": {
-                  "ledger_key_nonce": {
-                    "nonce": 5827323990544907992
+                "key": "ledger_key_contract_instance",
+                "durability": "persistent",
+                "val": {
+                  "contract_instance": {
+                    "executable": {
+                      "wasm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                    },
+                    "storage": null
                   }
-                },
-                "durability": "temporary",
-                "val": "void"
+                }
               }
             },
             "ext": "v0"
           },
-          15
+          4095
         ]
       ],
       [
@@ -123,42 +122,7 @@
         {
           "contract_data": {
             "contract": {
-              "contract": "54ca65a58200bfffb708756d19fd134e1677063f85bb87e0c7a54abb480d375c"
-            },
-            "key": {
-              "symbol": "persisted"
-            },
-            "durability": "persistent"
-          }
-        },
-        [
-          {
-            "last_modified_ledger_seq": 0,
-            "data": {
-              "contract_data": {
-                "ext": "v0",
-                "contract": {
-                  "contract": "54ca65a58200bfffb708756d19fd134e1677063f85bb87e0c7a54abb480d375c"
-                },
-                "key": {
-                  "symbol": "persisted"
-                },
-                "durability": "persistent",
-                "val": {
-                  "bool": true
-                }
-              }
-            },
-            "ext": "v0"
-          },
-          4095
-        ]
-      ],
-      [
-        {
-          "contract_data": {
-            "contract": {
-              "contract": "54ca65a58200bfffb708756d19fd134e1677063f85bb87e0c7a54abb480d375c"
+              "contract": "0000000000000000000000000000000000000000000000000000000000000003"
             },
             "key": "ledger_key_contract_instance",
             "durability": "persistent"
@@ -171,14 +135,14 @@
               "contract_data": {
                 "ext": "v0",
                 "contract": {
-                  "contract": "54ca65a58200bfffb708756d19fd134e1677063f85bb87e0c7a54abb480d375c"
+                  "contract": "0000000000000000000000000000000000000000000000000000000000000003"
                 },
                 "key": "ledger_key_contract_instance",
                 "durability": "persistent",
                 "val": {
                   "contract_instance": {
                     "executable": {
-                      "wasm": "c09a4015cb1a9d4b3dc65c3bf6441c4da039ee5914157b2fc8a502cc80d3436b"
+                      "wasm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
                     },
                     "storage": null
                   }
@@ -192,23 +156,39 @@
       ],
       [
         {
-          "contract_code": {
-            "hash": "c09a4015cb1a9d4b3dc65c3bf6441c4da039ee5914157b2fc8a502cc80d3436b"
+          "contract_data": {
+            "contract": {
+              "contract": "0000000000000000000000000000000000000000000000000000000000000003"
+            },
+            "key": {
+              "ledger_key_nonce": {
+                "nonce": 543
+              }
+            },
+            "durability": "temporary"
           }
         },
         [
           {
             "last_modified_ledger_seq": 0,
             "data": {
-              "contract_code": {
+              "contract_data": {
                 "ext": "v0",
-                "hash": "c09a4015cb1a9d4b3dc65c3bf6441c4da039ee5914157b2fc8a502cc80d3436b",
-                "code": "0061736d0100000001100360037e7e7e017e60017e017e600000020d02016c015f0000017801350001030605010202020205030100100619037f01418080c0000b7f00418080c0000b7f00418080c0000b073105066d656d6f727902000568656c6c6f0002015f00060a5f5f646174615f656e6403010b5f5f686561705f6261736503020a9101056d01017e0240200042ff01834204520d00428ed2ea9ceec5dfd535420142011080808080001a428ee8f1d8da052101024002400240024002402000422088a70e0403020400010b108380808000000b108480808000000b42838080801021010b20010f0b1085808080000b00000b040000000b0900108380808000000b0f004283808080101081808080001a0b02000b00770e636f6e7472616374737065637630000000040000000000000000000000054572726f72000000000000010000000000000007416e4572726f72000000000100000000000000000000000568656c6c6f000000000000010000000000000004666c61670000000400000001000003e90000001100000003001e11636f6e7472616374656e766d657461763000000000000000140000004500730e636f6e74726163746d65746176300000000000000005727376657200000000000006312e37332e3000000000000000000008727373646b7665720000003332302e302e302d726332233731303965313831663738666435323539343735303136663033653833643237373933653562653100"
+                "contract": {
+                  "contract": "0000000000000000000000000000000000000000000000000000000000000003"
+                },
+                "key": {
+                  "ledger_key_nonce": {
+                    "nonce": 543
+                  }
+                },
+                "durability": "temporary",
+                "val": "void"
               }
             },
             "ext": "v0"
           },
-          4095
+          100
         ]
       ],
       [
