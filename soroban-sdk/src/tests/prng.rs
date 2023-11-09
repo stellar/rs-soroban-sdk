@@ -111,7 +111,7 @@ fn test_prng_gen_range_u64() {
 }
 
 #[test]
-#[should_panic(expected = "low > high")]
+#[should_panic(expected = "Error(Value, InvalidInput)")]
 fn test_prng_gen_range_u64_panic_on_invalid_range() {
     let e = Env::default();
     let id = e.register_contract(None, TestPrngContract);

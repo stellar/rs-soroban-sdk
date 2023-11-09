@@ -2,7 +2,7 @@ all: check test
 
 export RUSTFLAGS=-Dwarnings
 
-CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest run || echo test)
+CARGO_TEST_SUBCOMMAND:=$(shell type -p ca2rgo-nextest >/dev/null && echo nextest run || echo test)
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
