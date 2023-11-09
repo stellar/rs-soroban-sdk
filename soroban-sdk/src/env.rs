@@ -219,13 +219,13 @@ impl TryFrom<MaybeEnv> for Env {
 
 #[cfg(not(target_family = "wasm"))]
 impl From<Env> for MaybeEnv {
-    fn from(mut value: Env) -> Self {
+    fn from(value: Env) -> Self {
         MaybeEnv {
-            maybe_env_impl: Some(core::mem::take(&mut value.env_impl)),
+            maybe_env_impl: Some(value.env_impl.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            generators: Some(core::mem::take(&mut value.generators)),
+            generators: Some(value.generators.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: core::mem::take(&mut value.snapshot),
+            snapshot: value.snapshot.clone(),
         }
     }
 }
