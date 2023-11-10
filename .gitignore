@@ -9,4 +9,5 @@ lcov.info
 soroban-sdk/test_snapshots/testutils/arbitrary/
 soroban-sdk/test_snapshots/tests/contractimport/
 soroban-sdk/test_snapshots/tests/contractimport_with_error/
+soroban-sdk/test_snapshots/tests/proptest_scval_cmp
 tests/import_contract/test_snapshots/

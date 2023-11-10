@@ -112,7 +112,7 @@ fn test_snapshot_file() {
         .join("tests")
         .join("env")
         .join("test_snapshot_file")
-        .with_extension("json");
+        .with_extension("1.json");
     assert!(!path.exists());
     {
         let e1 = Env::default();
