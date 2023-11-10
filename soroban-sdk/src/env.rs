@@ -1188,6 +1188,8 @@ impl Env {
     /// Creates a new Env loaded with the [`Snapshot`].
     ///
     /// The ledger info and state in the snapshot are loaded into the Env.
+    ///
+    /// Events, as an output source only, are not loaded into the Env.
     pub fn from_snapshot(s: Snapshot) -> Env {
         Env::new_for_testutils(
             Rc::new(s.ledger.clone()),
@@ -1198,6 +1200,10 @@ impl Env {
     }
 
     /// Creates a new Env loaded with the ledger snapshot loaded from the file.
+    ///
+    /// The ledger info and state in the snapshot are loaded into the Env.
+    ///
+    /// Events, as an output source only, are not loaded into the Env.
     ///
     /// ### Panics
     ///
@@ -1211,6 +1217,18 @@ impl Env {
         Snapshot {
             generators: (*self.generators).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
+            events: self
+                .host()
+                .get_events()
+                .unwrap()
+                .0
+                .into_iter()
+                .filter(|e| match e.event.type_ {
+                    xdr::ContractEventType::System | xdr::ContractEventType::Contract => true,
+                    xdr::ContractEventType::Diagnostic => false,
+                })
+                .map(Into::into)
+                .collect(),
         }
     }
 
@@ -1346,7 +1364,7 @@ impl Env {
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
         let snapshot = self.to_snapshot();
         // Write the snapshot only if it has meaningful data in it.
-        if snapshot.ledger.entries().into_iter().count() > 0 {
+        if snapshot.ledger.entries().into_iter().count() > 0 || !snapshot.events.is_empty() {
             snapshot.write_file(p).unwrap();
         }
     }

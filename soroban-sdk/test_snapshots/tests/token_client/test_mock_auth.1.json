@@ -491,5 +491,82 @@
         ]
       ]
     ]
-  }
+  },
+  "events": [
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1",
+        "type_": "contract",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "set_admin"
+              },
+              {
+                "address": {
+                  "account": {
+                    "public_key_type_ed25519": "0000000000000000000000000000000000000000000000000000000000000002"
+                  }
+                }
+              },
+              {
+                "string": "aaa:GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF"
+              }
+            ],
+            "data": {
+              "address": {
+                "contract": "0000000000000000000000000000000000000000000000000000000000000001"
+              }
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1",
+        "type_": "contract",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "approve"
+              },
+              {
+                "address": {
+                  "contract": "0000000000000000000000000000000000000000000000000000000000000004"
+                }
+              },
+              {
+                "address": {
+                  "contract": "0000000000000000000000000000000000000000000000000000000000000005"
+                }
+              },
+              {
+                "string": "aaa:GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF"
+              }
+            ],
+            "data": {
+              "vec": [
+                {
+                  "i128": {
+                    "hi": 0,
+                    "lo": 20
+                  }
+                },
+                {
+                  "u32": 200
+                }
+              ]
+            }
+          }
+        }
+      },
+      "failed_call": false
+    }
+  ]
 }

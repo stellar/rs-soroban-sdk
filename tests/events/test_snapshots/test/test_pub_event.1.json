@@ -71,5 +71,53 @@
         ]
       ]
     ]
-  }
+  },
+  "events": [
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "contract",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "greetings"
+              },
+              {
+                "symbol": "topic2"
+              }
+            ],
+            "data": {
+              "symbol": "hello"
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "contract",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "farewells"
+              },
+              {
+                "symbol": "topic2"
+              }
+            ],
+            "data": {
+              "symbol": "bye"
+            }
+          }
+        }
+      },
+      "failed_call": false
+    }
+  ]
 }
