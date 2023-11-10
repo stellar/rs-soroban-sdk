@@ -1248,16 +1248,20 @@ impl Env {
         let test = std::thread::current();
         let test_name = test
             .name()
-            .expect("test name to be retrieval for use as the name of the test snapshot file")
-            // Replace any :: sequences in test names with -, because :: is not
-            // allowed in filenames on some operating systems (e.g. Windows).  -
-            // is a good replacement because it is allowed on all systems, but
-            // is not allowed in Rust function or module names, so replacing ::
-            // with - can never cause a collision with a function name that
-            // actually uses -.
-            .replace("::", "-");
+            .expect("test name to be retrieval for use as the name of the test snapshot file");
+        // Replace any :: sequences in test names with -, because :: is not
+        // allowed in filenames on some operating systems (e.g. Windows).  -
+        // is a good replacement because it is allowed on all systems, but
+        // is not allowed in Rust function or module names, so replacing ::
+        // with - can never cause a collision with a function name that
+        // actually uses -.
+        let test_name_parts = test_name
+            .split("::")
+            .map(|p| std::path::Path::new(p).to_path_buf())
+            .reduce(|p0, p1| p0.join(p1))
+            .expect("test name to not be empty");
         let dir = std::path::Path::new("test_snapshots");
-        let p = dir.join(&test_name).with_extension("json");
+        let p = dir.join(&test_name_parts).with_extension("json");
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
         self.to_snapshot().write_file(p).unwrap();
     }
