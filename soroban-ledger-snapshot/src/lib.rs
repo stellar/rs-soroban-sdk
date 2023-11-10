@@ -1,3 +1,4 @@
+use serde_with::serde_as;
 use std::{
     fs::{create_dir_all, File},
     io::{self, Read, Write},
@@ -21,12 +22,14 @@ pub enum Error {
 
 /// Ledger snapshot stores a snapshot of a ledger that can be restored for use
 /// in environments as a [`LedgerInfo`] and a [`SnapshotSource`].
+#[serde_as]
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct LedgerSnapshot {
     pub protocol_version: u32,
     pub sequence_number: u32,
     pub timestamp: u64,
+    #[serde_as(as = "serde_with::hex::Hex")]
     pub network_id: [u8; 32],
     pub base_reserve: u32,
     pub min_persistent_entry_ttl: u32,
