@@ -1335,7 +1335,7 @@ impl Env {
         let test = std::thread::current();
         let test_name = test
             .name()
-            .expect("test name to be retrieval for use as the name of the test snapshot file");
+            .expect("test name to be retrieved for use as the name of the test snapshot file");
         let file_number = LAST_TEST_SNAPSHOT.with_borrow_mut(|l| {
             if test_name == l.name {
                 *l = LastTestSnapshot::default();
