@@ -453,6 +453,11 @@ use xdr::{
 #[cfg(any(test, feature = "testutils"))]
 impl Drop for Env {
     fn drop(&mut self) {
+        // If the env impl (Host) is finishable, that means this Env is the last
+        // Env to hold a reference to the Host. The Env should only write a test
+        // snapshot at that point when no other references to the host exist,
+        // because it is only when there are no other references that the host
+        // is being dropped.
         if self.env_impl.can_finish() {
             self.to_test_snapshot_file();
         }
@@ -1249,12 +1254,10 @@ impl Env {
         let test_name = test
             .name()
             .expect("test name to be retrieval for use as the name of the test snapshot file");
-        // Replace any :: sequences in test names with -, because :: is not
-        // allowed in filenames on some operating systems (e.g. Windows).  -
-        // is a good replacement because it is allowed on all systems, but
-        // is not allowed in Rust function or module names, so replacing ::
-        // with - can never cause a collision with a function name that
-        // actually uses -.
+        // Break up the test name into directories, using :: as the separator.
+        // The :: module separator cannot be written into the filename because
+        // some operating systems (e.g. Windows) do not allow the : character in
+        // filenames.
         let test_name_parts = test_name
             .split("::")
             .map(|p| std::path::Path::new(p).to_path_buf())
