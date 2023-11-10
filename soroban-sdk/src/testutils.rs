@@ -213,11 +213,11 @@ pub mod budget {
 pub trait Events {
     /// Returns all events that have been published by contracts.
     ///
-    /// Returns a [`Vec`] of three element tuples containing:
+    /// Returns the events as three element tuples containing:
     /// - Contract ID
     /// - Event Topics as a [`Vec<Val>`]
     /// - Event Data as a [`Val`]
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
+    fn all(&self) -> std::vec::Vec<(crate::Address, Vec<Val>, Val)>;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].

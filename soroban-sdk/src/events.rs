@@ -124,16 +124,15 @@ use crate::{testutils, xdr, Address, TryIntoVal};
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)> {
+    fn all(&self) -> std::vec::Vec<(crate::Address, Vec<Val>, Val)> {
         let env = self.env();
-        let mut vec = Vec::new(env);
         self.env()
             .host()
             .get_events()
             .unwrap()
             .0
             .into_iter()
-            .for_each(|e| {
+            .filter_map(|e| {
                 if let xdr::ContractEvent {
                     type_: xdr::ContractEventType::Contract,
                     contract_id: Some(contract_id),
@@ -141,13 +140,15 @@ impl testutils::Events for Events {
                     ..
                 } = e.event
                 {
-                    vec.push_back((
+                    Some((
                         Address::from_contract_id(env, contract_id.0),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
                     ))
+                } else {
+                    None
                 }
-            });
-        vec
+            })
+            .collect::<std::vec::Vec<_>>()
     }
 }
