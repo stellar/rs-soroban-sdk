@@ -1223,10 +1223,6 @@ impl Env {
                 .unwrap()
                 .0
                 .into_iter()
-                .filter(|e| match e.event.type_ {
-                    xdr::ContractEventType::System | xdr::ContractEventType::Contract => true,
-                    xdr::ContractEventType::Diagnostic => false,
-                })
                 .map(Into::into)
                 .collect(),
         }
