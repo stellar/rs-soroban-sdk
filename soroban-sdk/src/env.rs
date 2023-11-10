@@ -1341,7 +1341,13 @@ impl Env {
             .join(&test_name_path)
             .with_extension(format!("{file_number}.json"));
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
-        self.to_snapshot().write_file(p).unwrap();
+        let snapshot = self.to_snapshot();
+        // Write the snapshot only if it has meaningful data in it.
+        if snapshot.generators != Generators::default()
+            || snapshot.ledger.entries().into_iter().count() > 0
+        {
+            snapshot.write_file(p).unwrap();
+        }
     }
 }
 

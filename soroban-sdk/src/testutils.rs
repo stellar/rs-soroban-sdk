@@ -18,7 +18,7 @@ pub mod storage;
 use crate::{Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Snapshot {
     pub generators: Generators,
