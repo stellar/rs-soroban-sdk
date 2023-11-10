@@ -1311,6 +1311,9 @@ impl Env {
     /// watch for changes in it on contract change, SDK upgrade, protocol
     /// upgrade, and other important events.
     ///
+    /// No file will be created if the environment has no meaningful data such
+    /// as stored entries.
+    ///
     /// ### Panics
     ///
     /// If there is any error writing the file.
