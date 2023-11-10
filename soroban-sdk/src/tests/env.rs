@@ -109,7 +109,7 @@ fn register_contract_deploys_predictable_contract_ids() {
 #[test]
 fn test_snapshot_file_do_not_commit_my_json_file() {
     let path = std::path::Path::new("test_snapshots")
-        .join("tests::env::test_snapshot_file_do_not_commit_my_json_file")
+        .join("tests-env-test_snapshot_file_do_not_commit_my_json_file")
         .with_extension("json");
     assert!(!path.exists());
     {
