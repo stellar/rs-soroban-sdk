@@ -334,9 +334,12 @@ mod objects {
     pub struct ArbitraryOption<T>(Option<T>);
 
     impl<T> SorobanArbitrary for Option<T>
-    // Problem                      ^ here
     where
         T: SorobanArbitrary,
+        Val: TryFromVal<Env, T::Prototype>,
+        Val: TryFromVal<Env, T>,
+        <T as TryFromVal<Env, Val>>::Error:
+            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
     {
         type Prototype = ArbitraryOption<T::Prototype>;
     }
@@ -344,10 +347,19 @@ mod objects {
     impl<T> TryFromVal<Env, ArbitraryOption<T::Prototype>> for Option<T>
     where
         T: SorobanArbitrary,
+        Val: TryFromVal<Env, T::Prototype>,
+        <T as TryFromVal<Env, Val>>::Error:
+            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
     {
-        type Error = ConversionError;
+        type Error = <T as TryFromVal<Env, Val>>::Error;
         fn try_from_val(env: &Env, v: &ArbitraryOption<T::Prototype>) -> Result<Self, Self::Error> {
-            Ok(v.0.into_val(env))
+            match v.0 {
+                Some(ref t) => {
+                    let v = Val::try_from_val(env, t)?;
+                    v.try_into_val(env)
+                }
+                None => Ok(None),
+            }
         }
     }
 
