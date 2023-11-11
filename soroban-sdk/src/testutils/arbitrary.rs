@@ -317,13 +317,12 @@ mod objects {
     use super::composite::ArbitraryVal;
     use crate::env::FromVal;
     use crate::ConversionError;
-    use crate::{Env, IntoVal};
+    use crate::{Env, IntoVal, TryFromVal, TryIntoVal};
 
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
     use crate::{
         Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
     };
-    use soroban_env_host::{TryFromVal, TryIntoVal};
 
     use std::string::String as RustString;
     use std::vec::Vec as RustVec;
