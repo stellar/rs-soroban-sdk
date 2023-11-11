@@ -15,14 +15,15 @@ pub use mock_auth::{
 
 pub mod storage;
 
-use crate::{Env, Val, Vec};
+use crate::{xdr, Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Snapshot {
     pub generators: Generators,
     pub ledger: LedgerSnapshot,
+    pub events: std::vec::Vec<SnapshotEvent>,
 }
 
 impl Snapshot {
@@ -50,6 +51,22 @@ impl Snapshot {
             }
         }
         self.write(std::fs::File::create(p)?)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct SnapshotEvent {
+    pub event: xdr::ContractEvent,
+    pub failed_call: bool,
+}
+
+impl From<crate::env::internal::events::HostEvent> for SnapshotEvent {
+    fn from(v: crate::env::internal::events::HostEvent) -> Self {
+        Self {
+            event: v.event,
+            failed_call: v.failed_call,
+        }
     }
 }
 

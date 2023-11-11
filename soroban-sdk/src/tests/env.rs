@@ -104,3 +104,28 @@ fn register_contract_deploys_predictable_contract_ids() {
     assert_eq!(env2addr3.contract_id(), env1addr3.contract_id());
     assert_eq!(env3addr3.contract_id(), env1addr3.contract_id());
 }
+
+/// Test that the test snapshot file is written.
+#[test]
+fn test_snapshot_file() {
+    let path = std::path::Path::new("test_snapshots")
+        .join("tests")
+        .join("env")
+        .join("test_snapshot_file")
+        .with_extension("1.json");
+    assert!(!path.exists());
+    {
+        let e1 = Env::default();
+        assert!(!path.exists());
+        let e2 = e1.clone();
+        assert!(!path.exists());
+        let c = e1.register_contract(None, Contract);
+        assert!(!path.exists());
+        e1.as_contract(&c, || {});
+        assert!(!path.exists());
+        e2.as_contract(&c, || {});
+        assert!(!path.exists());
+    }
+    assert!(path.exists());
+    let _ = std::fs::remove_file(&path);
+}
