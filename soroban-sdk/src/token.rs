@@ -18,9 +18,11 @@ use crate::{contractclient, contractspecfn, Address, Env, String};
 // 2. The implementations have been replaced with a panic.
 // 3. &Host type usage are replaced with Env
 
+#[doc(hidden)]
 #[deprecated(note = "use TokenInterface")]
 pub use TokenInterface as Interface;
 
+#[doc(hidden)]
 #[deprecated(note = "use TokenClient")]
 pub use TokenClient as Client;
 
