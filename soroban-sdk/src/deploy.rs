@@ -142,9 +142,11 @@ impl Deployer {
             .unwrap_infallible();
     }
 
-    /// If the TTL for the provided contract is below `threshold` ledgers,
-    /// extend the TTL such that TTL == `extend_to`, where TTL is defined as
-    /// (live_until_ledger_seq for the entry - current ledger).
+    /// Extend the TTL of the contract instance.
+    ///
+    /// Extends the TTL only if the TTL for the provided contract is below `threshold` ledgers.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the `live_until_ledger_seq` value for the ledger entry.
     pub fn extend_ttl(&self, contract_address: Address, threshold: u32, extend_to: u32) {
         self.env
             .extend_contract_instance_and_code(
