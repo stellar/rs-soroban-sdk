@@ -141,6 +141,19 @@ impl Deployer {
             .update_current_contract_wasm(wasm_hash.into_val(&self.env).to_object())
             .unwrap_infallible();
     }
+
+    /// If the TTL for the provided contract is below `threshold` ledgers,
+    /// extend the TTL such that TTL == `extend_to`, where TTL is defined as
+    /// (live_until_ledger_seq for the entry - current ledger).
+    pub fn extend_ttl(&self, contract_address: Address, threshold: u32, extend_to: u32) {
+        self.env
+            .extend_contract_instance_and_code(
+                contract_address.to_object(),
+                threshold.into(),
+                extend_to.into(),
+            )
+            .unwrap_infallible();
+    }
 }
 
 /// A deployer that deploys a contract that has its ID derived from the provided
