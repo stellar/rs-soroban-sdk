@@ -2,7 +2,7 @@ mod fn_ {
     use crate as soroban_sdk;
     use soroban_sdk::{contract, contractimpl, Env};
     use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecFunctionV0};
+    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecFunctionV0};
 
     #[contract]
     pub struct Contract;
@@ -25,7 +25,7 @@ mod fn_ {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD).unwrap();
+        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD, Limits::none()).unwrap();
         let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
             doc: "Add adds\nthings together.".try_into().unwrap(),
             name: "add".try_into().unwrap(),
@@ -40,7 +40,7 @@ mod struct_ {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
     use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
 
     /// S holds a and
     // TODO: Implement.
@@ -56,7 +56,7 @@ mod struct_ {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S).unwrap();
+        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds a and\nb.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
@@ -84,7 +84,7 @@ mod struct_tuple {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
     use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
 
     /// S holds two u64s.
     #[contracttype]
@@ -98,7 +98,7 @@ mod struct_tuple {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S).unwrap();
+        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds two u64s.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
@@ -127,7 +127,7 @@ mod enum_ {
     use soroban_sdk::contracttype;
     use stellar_xdr::curr as stellar_xdr;
     use stellar_xdr::{
-        ReadXdr, ScSpecEntry, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
+        Limits, ReadXdr, ScSpecEntry, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
         ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0,
     };
 
@@ -145,7 +145,7 @@ mod enum_ {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E).unwrap();
+        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             lib: "".try_into().unwrap(),
@@ -178,7 +178,7 @@ mod enum_int {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
     use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0};
+    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0};
 
     /// E has variants A and B.
     #[contracttype]
@@ -193,7 +193,7 @@ mod enum_int {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E).unwrap();
+        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),
@@ -221,7 +221,9 @@ mod enum_error_int {
     use crate as soroban_sdk;
     use soroban_sdk::contracterror;
     use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{ReadXdr, ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0};
+    use stellar_xdr::{
+        Limits, ReadXdr, ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+    };
 
     /// E has variants A and B.
     #[contracterror]
@@ -236,7 +238,7 @@ mod enum_error_int {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E).unwrap();
+        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),

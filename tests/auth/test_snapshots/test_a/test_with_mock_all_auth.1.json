@@ -16,9 +16,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
             "key": "ledger_key_contract_instance",
             "durability": "persistent"
           }
@@ -29,9 +27,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
                 "key": "ledger_key_contract_instance",
                 "durability": "persistent",
                 "val": {
@@ -52,9 +48,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
             "key": {
               "ledger_key_nonce": {
                 "nonce": 5827323990544907992
@@ -69,9 +63,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
                 "key": {
                   "ledger_key_nonce": {
                     "nonce": 5827323990544907992
@@ -129,9 +121,7 @@
               }
             ],
             "data": {
-              "address": {
-                "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-              }
+              "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
             }
           }
         }

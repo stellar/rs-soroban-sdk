@@ -42,34 +42,34 @@ soroban-token-sdk = { version = "20.0.0-rc2", path = "soroban-token-sdk" }
 [workspace.dependencies.soroban-env-common]
 version = "20.0.0-rc2"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "6d26ca68170ecf9d19b8c55bfcc157a1ad62b7e9"
+rev = "472486c9dba96e09746522df0c9052cd50568e62"
 
 [workspace.dependencies.soroban-env-guest]
 version = "20.0.0-rc2"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "6d26ca68170ecf9d19b8c55bfcc157a1ad62b7e9"
+rev = "472486c9dba96e09746522df0c9052cd50568e62"
 
 [workspace.dependencies.soroban-env-host]
 version = "20.0.0-rc2"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "6d26ca68170ecf9d19b8c55bfcc157a1ad62b7e9"
+rev = "472486c9dba96e09746522df0c9052cd50568e62"
 
 [workspace.dependencies.stellar-strkey]
-version = "0.0.7"
+version = "0.0.8"
 git = "https://github.com/stellar/rs-stellar-strkey"
-rev = "e6ba45c60c16de28c7522586b80ed0150157df73"
+rev = "79ede59c97ed80090b9af63151c9f9a15260492d"
 
 [workspace.dependencies.stellar-xdr]
 version = "20.0.0-rc1"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "9c97e4fa909a0b6455547a4f4a95800696b2a69a"
+rev = "957273d7b8092888849219a3ad2aa054059ca89d"
 default-features = false
 features = ["curr"]
 
-#[patch."https://github.com/stellar/rs-soroban-env"]
-#soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-#soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+# [patch."https://github.com/stellar/rs-soroban-env"]
+# soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+# soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+# soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
 #[patch."https://github.com/stellar/rs-stellar-xdr"]
 #stellar-xdr = { path = "../rs-stellar-xdr/" }
 
