@@ -66,10 +66,10 @@ rev = "957273d7b8092888849219a3ad2aa054059ca89d"
 default-features = false
 features = ["curr"]
 
-# [patch."https://github.com/stellar/rs-soroban-env"]
-# soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-# soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-# soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+#[patch."https://github.com/stellar/rs-soroban-env"]
+#soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+#soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
 #[patch."https://github.com/stellar/rs-stellar-xdr"]
 #stellar-xdr = { path = "../rs-stellar-xdr/" }
 
