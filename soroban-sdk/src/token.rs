@@ -1,10 +1,10 @@
 //! Token contains types for calling and accessing token contracts, including
 //! the Stellar Asset Contract.
 //!
-//! See [`Interface`] for the interface of token contracts such as the Stellar
-//! Asset Contract.
+//! See [`TokenInterface`] for the interface of token contracts such as the
+//! Stellar Asset Contract.
 //!
-//! Use [`Client`] for calling token contracts such as the Stellar Asset
+//! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
 use crate::{contractclient, contractspecfn, Address, Env, String};
@@ -18,10 +18,16 @@ use crate::{contractclient, contractspecfn, Address, Env, String};
 // 2. The implementations have been replaced with a panic.
 // 3. &Host type usage are replaced with Env
 
+#[deprecated(note = "use TokenInterface")]
+pub use TokenInterface as Interface;
+
+#[deprecated(note = "use TokenClient")]
+pub use TokenClient as Client;
+
 /// Interface for Token contracts, such as the Stellar Asset Contract.
 #[contractspecfn(name = "StellarAssetSpec", export = false)]
-#[contractclient(crate_path = "crate", name = "Client")]
-pub trait Interface {
+#[contractclient(crate_path = "crate", name = "TokenClient")]
+pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
     ///
     /// # Arguments
