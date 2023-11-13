@@ -10,7 +10,7 @@ use syn::{
     ReturnType, Type, TypePath,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type};
+use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn_spec(
@@ -134,7 +134,7 @@ pub fn derive_fn_spec(
         }),
         outputs: spec_result.try_into().unwrap(),
     });
-    let spec_xdr = spec_entry.to_xdr().unwrap();
+    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
     let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.to_string().to_uppercase());
