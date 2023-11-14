@@ -433,8 +433,8 @@ impl Env {
 use crate::auth;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
-    Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+    budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
+    EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
 };
 #[cfg(any(test, feature = "testutils"))]
 use crate::{Bytes, BytesN};
@@ -1216,6 +1216,7 @@ impl Env {
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
             generators: (*self.generators).borrow().clone(),
+            auth: self.to_auth_snapshot(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1285,6 +1286,11 @@ impl Env {
                 .map(Into::into)
                 .collect(),
         )
+    }
+
+    /// Create an auth snapshot from the Env's current state.
+    pub(crate) fn to_auth_snapshot(&self) -> AuthSnapshot {
+        AuthSnapshot(self.env_impl.get_authenticated_authorizations().unwrap())
     }
 
     /// Get the budget that tracks the resources consumed for the environment.

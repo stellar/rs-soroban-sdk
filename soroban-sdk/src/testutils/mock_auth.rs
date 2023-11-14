@@ -82,7 +82,7 @@ impl<'a> From<MockAuthInvoke<'a>> for xdr::SorobanAuthorizedInvocation {
 /// The authorized invocation tree for a given address is different from a
 /// regular call tree: it only has nodes for the contract calls that called
 /// `require_auth[_for_args]` for that address.
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Clone, Eq, PartialEq, Debug)]
 pub struct AuthorizedInvocation {
     /// Function that has called `require_auth`.
     pub function: AuthorizedFunction,
@@ -91,7 +91,7 @@ pub struct AuthorizedInvocation {
 }
 
 /// A single node in `AuthorizedInvocation` tree.
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Clone, Eq, PartialEq, Debug)]
 pub enum AuthorizedFunction {
     /// Contract function defined by the contract address, function name and
     /// `require_auth[_for_args]` arguments (these don't necessarily need to
