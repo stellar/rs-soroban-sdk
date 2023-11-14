@@ -1324,7 +1324,8 @@ thread_local! {
 impl Env {
     /// Create a snapshot file for the currently executing test.
     ///
-    /// Writes the file to the `test_snapshots/{test-name}.json` path.
+    /// Writes the file to the `test_snapshots/{test-name}.N.json` path where
+    /// `N` is incremented for each unique `Env` in the test.
     ///
     /// Use to record the observable behavior of a test, and changes to that
     /// behavior over time. Commit the test snapshot file to version control and
