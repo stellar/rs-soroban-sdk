@@ -56,7 +56,7 @@ impl Snapshot {
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct EventsSnapshot(pub std::vec::Vec<SnapshotEvent>);
+pub struct EventsSnapshot(pub std::vec::Vec<EventSnapshot>);
 
 impl EventsSnapshot {
     // Read in a [`EventsSnapshot`] from a reader.
@@ -88,12 +88,12 @@ impl EventsSnapshot {
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct SnapshotEvent {
+pub struct EventSnapshot {
     pub event: xdr::ContractEvent,
     pub failed_call: bool,
 }
 
-impl From<crate::env::internal::events::HostEvent> for SnapshotEvent {
+impl From<crate::env::internal::events::HostEvent> for EventSnapshot {
     fn from(v: crate::env::internal::events::HostEvent) -> Self {
         Self {
             event: v.event,
