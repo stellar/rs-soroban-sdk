@@ -1225,5 +1225,123 @@
       },
       "failed_call": false
     }
+  ],
+  "footprint": [
+    {
+      "ledger_key": {
+        "account": {
+          "account_id": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF",
+          "key": {
+            "ledger_key_nonce": {
+              "nonce": 5827323990544907992
+            }
+          },
+          "durability": "temporary"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
+          "key": {
+            "vec": [
+              {
+                "symbol": "Token"
+              }
+            ]
+          },
+          "durability": "persistent"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
+          "key": "ledger_key_contract_instance",
+          "durability": "persistent"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4",
+          "key": {
+            "ledger_key_nonce": {
+              "nonce": 1851768990755774890
+            }
+          },
+          "durability": "temporary"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
+          "key": {
+            "vec": [
+              {
+                "symbol": "Allowance"
+              },
+              {
+                "map": [
+                  {
+                    "key": {
+                      "symbol": "from"
+                    },
+                    "val": {
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
+                    }
+                  },
+                  {
+                    "key": {
+                      "symbol": "spender"
+                    },
+                    "val": {
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "durability": "temporary"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
+          "key": "ledger_key_contract_instance",
+          "durability": "persistent"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_code": {
+          "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "access_type": "ReadWrite"
+    }
   ]
 }

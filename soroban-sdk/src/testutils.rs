@@ -3,6 +3,9 @@
 
 //! Utilities intended for use when testing.
 
+extern crate alloc;
+use alloc::rc::Rc;
+
 pub mod arbitrary;
 
 mod sign;
@@ -12,6 +15,7 @@ mod mock_auth;
 pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
+use soroban_env_host::storage::AccessType;
 
 pub mod storage;
 
@@ -23,6 +27,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 pub struct Snapshot {
     pub generators: Generators,
     pub ledger: LedgerSnapshot,
+    pub footprint: FootprintSnapshot,
     pub events: EventsSnapshot,
 }
 
@@ -100,6 +105,62 @@ impl From<crate::env::internal::events::HostEvent> for EventSnapshot {
             failed_call: v.failed_call,
         }
     }
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct FootprintSnapshot(pub std::vec::Vec<FootprintEntrySnapshot>);
+
+impl FootprintSnapshot {
+    // Read in a [`FootprintSnapshot`] from a reader.
+    pub fn read(r: impl std::io::Read) -> Result<FootprintSnapshot, std::io::Error> {
+        Ok(serde_json::from_reader::<_, FootprintSnapshot>(r)?)
+    }
+
+    // Read in a [`FootprintSnapshot`] from a file.
+    pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<FootprintSnapshot, std::io::Error> {
+        Self::read(std::fs::File::open(p)?)
+    }
+
+    // Write a [`FootprintSnapshot`] to a writer.
+    pub fn write(&self, w: impl std::io::Write) -> Result<(), std::io::Error> {
+        Ok(serde_json::to_writer_pretty(w, self)?)
+    }
+
+    // Write a [`FootprintSnapshot`] to file.
+    pub fn write_file(&self, p: impl AsRef<std::path::Path>) -> Result<(), std::io::Error> {
+        let p = p.as_ref();
+        if let Some(dir) = p.parent() {
+            if !dir.exists() {
+                std::fs::create_dir_all(dir)?;
+            }
+        }
+        self.write(std::fs::File::create(p)?)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct FootprintEntrySnapshot {
+    pub ledger_key: xdr::LedgerKey,
+    #[serde(with = "FootprintAccessTypeSerde")]
+    pub access_type: AccessType,
+}
+
+impl From<&(Rc<xdr::LedgerKey>, AccessType)> for FootprintEntrySnapshot {
+    fn from(v: &(Rc<xdr::LedgerKey>, AccessType)) -> Self {
+        Self {
+            ledger_key: (*v.0).clone(),
+            access_type: v.1,
+        }
+    }
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(remote = "AccessType")]
+enum FootprintAccessTypeSerde {
+    ReadOnly,
+    ReadWrite,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

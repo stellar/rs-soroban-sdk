@@ -1016,5 +1016,101 @@
       },
       "failed_call": false
     }
+  ],
+  "footprint": [
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+          "key": {
+            "vec": [
+              {
+                "symbol": "Key"
+              },
+              {
+                "i32": 11
+              }
+            ]
+          },
+          "durability": "temporary"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+          "key": {
+            "vec": [
+              {
+                "symbol": "Key"
+              },
+              {
+                "i32": 11
+              }
+            ]
+          },
+          "durability": "persistent"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+          "key": {
+            "vec": [
+              {
+                "symbol": "Key"
+              },
+              {
+                "i32": 22
+              }
+            ]
+          },
+          "durability": "temporary"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+          "key": {
+            "vec": [
+              {
+                "symbol": "Key"
+              },
+              {
+                "i32": 22
+              }
+            ]
+          },
+          "durability": "persistent"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_data": {
+          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+          "key": "ledger_key_contract_instance",
+          "durability": "persistent"
+        }
+      },
+      "access_type": "ReadWrite"
+    },
+    {
+      "ledger_key": {
+        "contract_code": {
+          "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "access_type": "ReadWrite"
+    }
   ]
 }
