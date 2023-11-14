@@ -5,8 +5,8 @@ use soroban_sdk::{
 };
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple,
-    ScSpecTypeUdt,
+    Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
+    ScSpecTypeTuple, ScSpecTypeUdt,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -73,7 +73,7 @@ fn test_error_on_partial_decode() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD).unwrap();
+    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD, Limits::none()).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "add".try_into().unwrap(),

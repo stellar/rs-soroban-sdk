@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use stellar_xdr::curr as stellar_xdr;
-use stellar_xdr::{DepthLimitedRead, ReadXdr, ScSpecEntry};
+use stellar_xdr::{Limited, Limits, ReadXdr, ScSpecEntry};
 use wasmparser::{BinaryReaderError, Parser, Payload};
 
 // TODO: Move these functions into stellar_xdr.
@@ -21,8 +21,14 @@ pub fn parse_base64(spec: &[u8]) -> Result<Vec<ScSpecEntry>, ParseSpecBase64Erro
 
 pub fn parse_raw(spec: &[u8]) -> Result<Vec<ScSpecEntry>, stellar_xdr::Error> {
     let cursor = Cursor::new(spec);
-    let entries = ScSpecEntry::read_xdr_iter(&mut DepthLimitedRead::new(cursor, 1000))
-        .collect::<Result<Vec<_>, _>>()?;
+    let entries = ScSpecEntry::read_xdr_iter(&mut Limited::new(
+        cursor,
+        Limits {
+            depth: 500,
+            len: 0x1000000,
+        },
+    ))
+    .collect::<Result<Vec<_>, _>>()?;
     Ok(entries)
 }
 

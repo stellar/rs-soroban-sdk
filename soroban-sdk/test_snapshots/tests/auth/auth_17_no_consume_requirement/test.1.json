@@ -16,9 +16,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
             "key": "ledger_key_contract_instance",
             "durability": "persistent"
           }
@@ -29,9 +27,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
                 "key": "ledger_key_contract_instance",
                 "durability": "persistent",
                 "val": {
@@ -52,9 +48,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
             "key": "ledger_key_contract_instance",
             "durability": "persistent"
           }
@@ -65,9 +59,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
                 "key": "ledger_key_contract_instance",
                 "durability": "persistent",
                 "val": {
@@ -88,9 +80,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
             "key": {
               "ledger_key_nonce": {
                 "nonce": 1
@@ -105,9 +95,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
                 "key": {
                   "ledger_key_nonce": {
                     "nonce": 1
@@ -167,9 +155,7 @@
             "data": {
               "vec": [
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
                 },
                 {
                   "i32": 10
@@ -224,9 +210,7 @@
                               "val": {
                                 "vec": [
                                   {
-                                    "address": {
-                                      "contract": "0000000000000000000000000000000000000000000000000000000000000002"
-                                    }
+                                    "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
                                   },
                                   {
                                     "i32": 10
@@ -242,9 +226,7 @@
                                 "symbol": "contract"
                               },
                               "val": {
-                                "address": {
-                                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                                }
+                                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
                               }
                             },
                             {

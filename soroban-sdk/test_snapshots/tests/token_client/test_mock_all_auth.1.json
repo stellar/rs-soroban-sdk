@@ -16,9 +16,7 @@
       [
         {
           "account": {
-            "account_id": {
-              "public_key_type_ed25519": "0000000000000000000000000000000000000000000000000000000000000002"
-            }
+            "account_id": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF"
           }
         },
         [
@@ -26,9 +24,7 @@
             "last_modified_ledger_seq": 0,
             "data": {
               "account": {
-                "account_id": {
-                  "public_key_type_ed25519": "0000000000000000000000000000000000000000000000000000000000000002"
-                },
+                "account_id": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF",
                 "balance": 0,
                 "seq_num": 0,
                 "num_sub_entries": 0,
@@ -48,11 +44,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "account": {
-                "public_key_type_ed25519": "0000000000000000000000000000000000000000000000000000000000000002"
-              }
-            },
+            "contract": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF",
             "key": {
               "ledger_key_nonce": {
                 "nonce": 5827323990544907992
@@ -67,11 +59,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "account": {
-                    "public_key_type_ed25519": "0000000000000000000000000000000000000000000000000000000000000002"
-                  }
-                },
+                "contract": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF",
                 "key": {
                   "ledger_key_nonce": {
                     "nonce": 5827323990544907992
@@ -89,9 +77,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000003"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
             "key": {
               "vec": [
                 {
@@ -108,9 +94,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000003"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
                 "key": {
                   "vec": [
                     {
@@ -120,9 +104,7 @@
                 },
                 "durability": "persistent",
                 "val": {
-                  "address": {
-                    "contract": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1"
-                  }
+                  "address": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL"
                 }
               }
             },
@@ -134,9 +116,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000003"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
             "key": "ledger_key_contract_instance",
             "durability": "persistent"
           }
@@ -147,9 +127,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000003"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
                 "key": "ledger_key_contract_instance",
                 "durability": "persistent",
                 "val": {
@@ -170,9 +148,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4",
             "key": {
               "ledger_key_nonce": {
                 "nonce": 1851768990755774890
@@ -187,9 +163,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4",
                 "key": {
                   "ledger_key_nonce": {
                     "nonce": 1851768990755774890
@@ -207,9 +181,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1"
-            },
+            "contract": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
             "key": {
               "vec": [
                 {
@@ -222,9 +194,7 @@
                         "symbol": "from"
                       },
                       "val": {
-                        "address": {
-                          "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                        }
+                        "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                       }
                     },
                     {
@@ -232,9 +202,7 @@
                         "symbol": "spender"
                       },
                       "val": {
-                        "address": {
-                          "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                        }
+                        "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                       }
                     }
                   ]
@@ -250,9 +218,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1"
-                },
+                "contract": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
                 "key": {
                   "vec": [
                     {
@@ -265,9 +231,7 @@
                             "symbol": "from"
                           },
                           "val": {
-                            "address": {
-                              "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                            }
+                            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                           }
                         },
                         {
@@ -275,9 +239,7 @@
                             "symbol": "spender"
                           },
                           "val": {
-                            "address": {
-                              "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                            }
+                            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                           }
                         }
                       ]
@@ -318,9 +280,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1"
-            },
+            "contract": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
             "key": "ledger_key_contract_instance",
             "durability": "persistent"
           }
@@ -331,9 +291,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1"
-                },
+                "contract": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
                 "key": "ledger_key_contract_instance",
                 "durability": "persistent",
                 "val": {
@@ -382,9 +340,7 @@
                           ]
                         },
                         "val": {
-                          "address": {
-                            "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                          }
+                          "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
                         }
                       },
                       {
@@ -523,9 +479,7 @@
               }
             ],
             "data": {
-              "address": {
-                "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-              }
+              "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
             }
           }
         }
@@ -544,20 +498,14 @@
                 "symbol": "set_admin"
               },
               {
-                "address": {
-                  "account": {
-                    "public_key_type_ed25519": "0000000000000000000000000000000000000000000000000000000000000002"
-                  }
-                }
+                "address": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF"
               },
               {
                 "string": "aaa:GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF"
               }
             ],
             "data": {
-              "address": {
-                "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-              }
+              "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
             }
           }
         }
@@ -604,9 +552,7 @@
               }
             ],
             "data": {
-              "address": {
-                "contract": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1"
-              }
+              "address": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL"
             }
           }
         }
@@ -674,9 +620,7 @@
               }
             ],
             "data": {
-              "address": {
-                "contract": "48f1b6b8bc0d60f7140dd49b6120fbaf3cdbab2adaeea631313d9f0bae9532f1"
-              }
+              "address": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL"
             }
           }
         }
@@ -751,14 +695,10 @@
             "data": {
               "vec": [
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 },
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                 },
                 {
                   "i128": {
@@ -797,14 +737,10 @@
             "data": {
               "vec": [
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 },
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                 },
                 {
                   "i128": {
@@ -845,9 +781,7 @@
                   "string": "[recording authorization only] encountered authorization not tied to the root contract invocation for an address. Use `require_auth()` in the top invocation or enable non-root authorization."
                 },
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 }
               ]
             }
@@ -884,14 +818,10 @@
                 {
                   "vec": [
                     {
-                      "address": {
-                        "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                      }
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                     },
                     {
-                      "address": {
-                        "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                      }
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                     },
                     {
                       "i128": {
@@ -989,14 +919,10 @@
                 {
                   "vec": [
                     {
-                      "address": {
-                        "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                      }
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                     },
                     {
-                      "address": {
-                        "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                      }
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                     },
                     {
                       "i128": {
@@ -1037,14 +963,10 @@
             "data": {
               "vec": [
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 },
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                 },
                 {
                   "i128": {
@@ -1083,14 +1005,10 @@
             "data": {
               "vec": [
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 },
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                 },
                 {
                   "i128": {
@@ -1120,14 +1038,10 @@
                 "symbol": "approve"
               },
               {
-                "address": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                }
+                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
               },
               {
-                "address": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                }
+                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
               },
               {
                 "string": "aaa:GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF"
@@ -1214,14 +1128,10 @@
             "data": {
               "vec": [
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 },
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                 }
               ]
             }
@@ -1251,14 +1161,10 @@
             "data": {
               "vec": [
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000004"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 },
                 {
-                  "address": {
-                    "contract": "0000000000000000000000000000000000000000000000000000000000000005"
-                  }
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
                 }
               ]
             }

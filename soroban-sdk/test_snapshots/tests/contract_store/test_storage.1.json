@@ -16,9 +16,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
             "key": {
               "vec": [
                 {
@@ -38,9 +36,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
                 "key": {
                   "vec": [
                     {
@@ -65,9 +61,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
             "key": {
               "vec": [
                 {
@@ -87,9 +81,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
                 "key": {
                   "vec": [
                     {
@@ -114,9 +106,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
             "key": {
               "vec": [
                 {
@@ -136,9 +126,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
                 "key": {
                   "vec": [
                     {
@@ -163,9 +151,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
             "key": {
               "vec": [
                 {
@@ -185,9 +171,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
                 "key": {
                   "vec": [
                     {
@@ -212,9 +196,7 @@
       [
         {
           "contract_data": {
-            "contract": {
-              "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-            },
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
             "key": "ledger_key_contract_instance",
             "durability": "persistent"
           }
@@ -225,9 +207,7 @@
             "data": {
               "contract_data": {
                 "ext": "v0",
-                "contract": {
-                  "contract": "0000000000000000000000000000000000000000000000000000000000000001"
-                },
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
                 "key": "ledger_key_contract_instance",
                 "durability": "persistent",
                 "val": {
