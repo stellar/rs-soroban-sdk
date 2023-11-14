@@ -207,7 +207,6 @@
       ]
     ]
   },
-  "events": [],
   "footprint": [
     {
       "ledger_key": {
@@ -275,5 +274,6 @@
       },
       "access_type": "ReadWrite"
     }
-  ]
+  ],
+  "events": []
 }

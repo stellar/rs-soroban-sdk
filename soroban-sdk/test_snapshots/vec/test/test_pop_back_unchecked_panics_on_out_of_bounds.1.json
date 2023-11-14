@@ -14,6 +14,7 @@
     "max_entry_ttl": 6312000,
     "ledger_entries": []
   },
+  "footprint": [],
   "events": [
     {
       "event": {
@@ -40,6 +41,5 @@
       },
       "failed_call": false
     }
-  ],
-  "footprint": []
+  ]
 }
