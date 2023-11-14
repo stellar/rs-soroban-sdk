@@ -433,8 +433,8 @@ impl Env {
 use crate::auth;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, Generators,
-    Ledger as _, MockAuth, MockAuthContract, Snapshot,
+    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
+    Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
 };
 #[cfg(any(test, feature = "testutils"))]
 use crate::{Bytes, BytesN};
@@ -1217,14 +1217,7 @@ impl Env {
         Snapshot {
             generators: (*self.generators).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
-            events: self
-                .host()
-                .get_events()
-                .unwrap()
-                .0
-                .into_iter()
-                .map(Into::into)
-                .collect(),
+            events: self.to_events_snapshot(),
         }
     }
 
@@ -1281,6 +1274,19 @@ impl Env {
         self.to_ledger_snapshot().write_file(p).unwrap();
     }
 
+    /// Create an events snapshot from the Env's current state.
+    pub(crate) fn to_events_snapshot(&self) -> EventsSnapshot {
+        EventsSnapshot(
+            self.host()
+                .get_events()
+                .unwrap()
+                .0
+                .into_iter()
+                .map(Into::into)
+                .collect(),
+        )
+    }
+
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
         Budget::new(self.env_impl.budget_cloned())
@@ -1326,12 +1332,20 @@ impl Env {
     /// upgrade, and other important events.
     ///
     /// No file will be created if the environment has no meaningful data such
-    /// as stored entries.
+    /// as stored entries or events.
     ///
     /// ### Panics
     ///
     /// If there is any error writing the file.
     pub(crate) fn to_test_snapshot_file(&self) {
+        let snapshot = self.to_snapshot();
+
+        // Don't write a snapshot that has no data in it.
+        if snapshot.ledger.entries().into_iter().count() == 0 && snapshot.events.0.is_empty() {
+            return;
+        }
+
+        // Determine path to write test snapshots to.
         let test = std::thread::current();
         let test_name = test
             .name()
@@ -1357,12 +1371,10 @@ impl Env {
         let p = dir
             .join(&test_name_path)
             .with_extension(format!("{file_number}.json"));
+
+        // Write test snapshots to file.
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
-        let snapshot = self.to_snapshot();
-        // Write the snapshot only if it has meaningful data in it.
-        if snapshot.ledger.entries().into_iter().count() > 0 || !snapshot.events.is_empty() {
-            snapshot.write_file(p).unwrap();
-        }
+        snapshot.write_file(p).unwrap();
     }
 }
 
