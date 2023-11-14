@@ -15,10 +15,10 @@ mod mock_auth;
 pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
-use soroban_env_host::storage::AccessType;
 
 pub mod storage;
 
+use crate::env::internal::storage::AccessType;
 use crate::{xdr, Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
