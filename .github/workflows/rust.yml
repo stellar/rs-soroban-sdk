@@ -96,7 +96,7 @@ jobs:
         version: 0.5.16
     - if: startsWith(matrix.sys.target, 'x86_64')
       name: Clear test snapshots for checking no diffs exists after test run
-      run: rm -fr **/test_snapshots && git add .
+      run: rm -fr **/test_snapshots
     - name: Build for wasm
       run: cargo-hack hack build --target wasm32-unknown-unknown --profile release
     - if: "!matrix.sys.cdylib-cross-compile-workaround"
