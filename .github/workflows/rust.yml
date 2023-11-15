@@ -101,6 +101,9 @@ jobs:
       run: cargo-hack hack --feature-powerset --exclude-features docs rustc --workspace --exclude soroban-sdk-macros --crate-type lib --target ${{ matrix.sys.target }}
     - if: startsWith(matrix.sys.target, 'x86_64')
       run: cargo-hack hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
+    - if: startsWith(matrix.sys.target, 'x86_64')
+      name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
 
   build-fuzz:
     runs-on: ubuntu-latest
