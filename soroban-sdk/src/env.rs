@@ -1354,7 +1354,10 @@ impl Env {
         let snapshot = self.to_snapshot();
 
         // Don't write a snapshot that has no data in it.
-        if snapshot.ledger.entries().into_iter().count() == 0 && snapshot.events.0.is_empty() {
+        if snapshot.ledger.entries().into_iter().count() == 0
+            && snapshot.events.0.is_empty()
+            && snapshot.auth.0.is_empty()
+        {
             return;
         }
 
