@@ -1497,6 +1497,12 @@ mod tests {
         run_test::<(u32, Address, Vec<Timepoint>, Map<Duration, u64>)>();
     }
 
+    #[test]
+    fn test_option() {
+        run_test::<Option<u32>>();
+        run_test::<Option<Vec<u32>>>();
+    }
+
     // Test that sometimes generated vecs have the wrong element types.
     #[test]
     fn test_vec_wrong_types() {
@@ -1617,11 +1623,17 @@ mod tests {
             timepoint: Timepoint,
             nil: (),
             vec_tuple: Vec<(u32, Address)>,
+            option: Option<u32>,
         }
 
         #[test]
         fn test_user_defined_priv_struct() {
             run_test::<PrivStruct>();
+        }
+
+        #[test]
+        fn test_option_user_defined_priv_struct() {
+            run_test::<Option<PrivStruct>>();
         }
 
         #[contracttype]
@@ -1678,11 +1690,17 @@ mod tests {
             Vec<Bytes>,
             Map<Bytes, Vec<i32>>,
             Vec<(u32, Address)>,
+            Option<u32>,
         );
 
         #[test]
         fn test_user_defined_priv_tuple_struct() {
             run_test::<PrivTupleStruct>();
+        }
+
+        #[test]
+        fn test_option_user_defined_priv_tuple_struct() {
+            run_test::<Option<PrivTupleStruct>>();
         }
 
         #[contracttype]
@@ -1743,11 +1761,17 @@ mod tests {
             C,
             D,
             E(Vec<(u32, Address)>),
+            F(Option<u32>),
         }
 
         #[test]
         fn test_user_defined_priv_enum() {
             run_test::<PrivEnum>();
+        }
+
+        #[test]
+        fn test_option_user_defined_priv_enum() {
+            run_test::<Option<PrivEnum>>();
         }
 
         #[contracttype]
