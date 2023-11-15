@@ -108,15 +108,18 @@ fn register_contract_deploys_predictable_contract_ids() {
 /// Test that the test snapshot file is written.
 #[test]
 fn test_snapshot_file() {
-    let path = std::path::Path::new("test_snapshots")
+    let p = std::path::Path::new("test_snapshots")
         .join("tests")
         .join("env")
-        .join("test_snapshot_file")
-        .with_extension("1.json");
-    assert!(!path.exists());
+        .join("test_snapshot_file");
+    let p1 = p.with_extension("1.json");
+    let p2 = p.with_extension("2.json");
+    assert!(!p1.exists());
+    assert!(!p2.exists());
     {
         let e1 = Env::default();
-        assert!(!path.exists());
+        assert!(!p1.exists());
+        assert!(!p2.exists());
         let e2 = e1.clone();
         assert!(!p1.exists());
         assert!(!p2.exists());
