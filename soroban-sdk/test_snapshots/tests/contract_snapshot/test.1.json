@@ -3,6 +3,7 @@
     "address": 0,
     "nonce": 0
   },
+  "auth": [],
   "ledger": {
     "protocol_version": 20,
     "sequence_number": 0,
@@ -99,38 +100,6 @@
       ]
     ]
   },
-  "footprint": [
-    {
-      "ledger_key": {
-        "contract_data": {
-          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-          "key": {
-            "i32": 2
-          },
-          "durability": "persistent"
-        }
-      },
-      "access_type": "ReadOnly"
-    },
-    {
-      "ledger_key": {
-        "contract_data": {
-          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-          "key": "ledger_key_contract_instance",
-          "durability": "persistent"
-        }
-      },
-      "access_type": "ReadWrite"
-    },
-    {
-      "ledger_key": {
-        "contract_code": {
-          "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        }
-      },
-      "access_type": "ReadOnly"
-    }
-  ],
   "events": [
     {
       "event": {

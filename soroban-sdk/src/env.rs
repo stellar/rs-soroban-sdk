@@ -1290,7 +1290,13 @@ impl Env {
 
     /// Create an auth snapshot from the Env's current state.
     pub(crate) fn to_auth_snapshot(&self) -> AuthSnapshot {
-        AuthSnapshot(self.env_impl.get_authenticated_authorizations().unwrap())
+        AuthSnapshot(
+            self.env_impl
+                .get_authenticated_authorizations()
+                // If an error occurs getting the authenticated authorizations
+                // it means that no auth has occurred.
+                .unwrap_or_default(),
+        )
     }
 
     /// Get the budget that tracks the resources consumed for the environment.

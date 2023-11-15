@@ -3,6 +3,25 @@
     "address": 2,
     "nonce": 0
   },
+  "auth": [
+    [
+      "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+      {
+        "function": {
+          "contract_fn": {
+            "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "function_name": "fn1",
+            "args": [
+              {
+                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+              }
+            ]
+          }
+        },
+        "sub_invocations": []
+      }
+    ]
+  ],
   "ledger": {
     "protocol_version": 20,
     "sequence_number": 0,
@@ -133,50 +152,6 @@
       ]
     ]
   },
-  "footprint": [
-    {
-      "ledger_key": {
-        "contract_data": {
-          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-          "key": "ledger_key_contract_instance",
-          "durability": "persistent"
-        }
-      },
-      "access_type": "ReadWrite"
-    },
-    {
-      "ledger_key": {
-        "contract_data": {
-          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
-          "key": "ledger_key_contract_instance",
-          "durability": "persistent"
-        }
-      },
-      "access_type": "ReadWrite"
-    },
-    {
-      "ledger_key": {
-        "contract_data": {
-          "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
-          "key": {
-            "ledger_key_nonce": {
-              "nonce": 123
-            }
-          },
-          "durability": "temporary"
-        }
-      },
-      "access_type": "ReadWrite"
-    },
-    {
-      "ledger_key": {
-        "contract_code": {
-          "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        }
-      },
-      "access_type": "ReadWrite"
-    }
-  ],
   "events": [
     {
       "event": {

@@ -3,6 +3,7 @@
     "address": 0,
     "nonce": 0
   },
+  "auth": [],
   "ledger": {
     "protocol_version": 20,
     "sequence_number": 0,
@@ -14,7 +15,6 @@
     "max_entry_ttl": 6312000,
     "ledger_entries": []
   },
-  "footprint": [],
   "events": [
     {
       "event": {
