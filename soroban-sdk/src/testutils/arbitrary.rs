@@ -335,10 +335,7 @@ mod objects {
     impl<T> SorobanArbitrary for Option<T>
     where
         T: SorobanArbitrary,
-        Val: TryFromVal<Env, T::Prototype>,
         Val: TryFromVal<Env, T>,
-        <T as TryFromVal<Env, Val>>::Error:
-            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
     {
         type Prototype = ArbitraryOption<T::Prototype>;
     }
@@ -346,17 +343,11 @@ mod objects {
     impl<T> TryFromVal<Env, ArbitraryOption<T::Prototype>> for Option<T>
     where
         T: SorobanArbitrary,
-        Val: TryFromVal<Env, T::Prototype>,
-        <T as TryFromVal<Env, Val>>::Error:
-            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
     {
-        type Error = <T as TryFromVal<Env, Val>>::Error;
+        type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryOption<T::Prototype>) -> Result<Self, Self::Error> {
             match v.0 {
-                Some(ref t) => {
-                    let v = Val::try_from_val(env, t)?;
-                    v.try_into_val(env)
-                }
+                Some(ref t) => Ok(Some(t.into_val(env))),
                 None => Ok(None),
             }
         }
