@@ -23,7 +23,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 pub struct Snapshot {
     pub generators: Generators,
     pub ledger: LedgerSnapshot,
-    pub events: std::vec::Vec<SnapshotEvent>,
+    pub events: EventsSnapshot,
 }
 
 impl Snapshot {
@@ -54,14 +54,46 @@ impl Snapshot {
     }
 }
 
+#[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct EventsSnapshot(pub std::vec::Vec<EventSnapshot>);
+
+impl EventsSnapshot {
+    // Read in a [`EventsSnapshot`] from a reader.
+    pub fn read(r: impl std::io::Read) -> Result<EventsSnapshot, std::io::Error> {
+        Ok(serde_json::from_reader::<_, EventsSnapshot>(r)?)
+    }
+
+    // Read in a [`EventsSnapshot`] from a file.
+    pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<EventsSnapshot, std::io::Error> {
+        Self::read(std::fs::File::open(p)?)
+    }
+
+    // Write a [`EventsSnapshot`] to a writer.
+    pub fn write(&self, w: impl std::io::Write) -> Result<(), std::io::Error> {
+        Ok(serde_json::to_writer_pretty(w, self)?)
+    }
+
+    // Write a [`EventsSnapshot`] to file.
+    pub fn write_file(&self, p: impl AsRef<std::path::Path>) -> Result<(), std::io::Error> {
+        let p = p.as_ref();
+        if let Some(dir) = p.parent() {
+            if !dir.exists() {
+                std::fs::create_dir_all(dir)?;
+            }
+        }
+        self.write(std::fs::File::create(p)?)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct SnapshotEvent {
+pub struct EventSnapshot {
     pub event: xdr::ContractEvent,
     pub failed_call: bool,
 }
 
-impl From<crate::env::internal::events::HostEvent> for SnapshotEvent {
+impl From<crate::env::internal::events::HostEvent> for EventSnapshot {
     fn from(v: crate::env::internal::events::HostEvent) -> Self {
         Self {
             event: v.event,
@@ -83,6 +115,34 @@ impl Default for Generators {
             address: 0,
             nonce: 0,
         }
+    }
+}
+
+impl Generators {
+    // Read in a [`Generators`] from a reader.
+    pub fn read(r: impl std::io::Read) -> Result<Generators, std::io::Error> {
+        Ok(serde_json::from_reader::<_, Generators>(r)?)
+    }
+
+    // Read in a [`Generators`] from a file.
+    pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<Generators, std::io::Error> {
+        Self::read(std::fs::File::open(p)?)
+    }
+
+    // Write a [`Generators`] to a writer.
+    pub fn write(&self, w: impl std::io::Write) -> Result<(), std::io::Error> {
+        Ok(serde_json::to_writer_pretty(w, self)?)
+    }
+
+    // Write a [`Generators`] to file.
+    pub fn write_file(&self, p: impl AsRef<std::path::Path>) -> Result<(), std::io::Error> {
+        let p = p.as_ref();
+        if let Some(dir) = p.parent() {
+            if !dir.exists() {
+                std::fs::create_dir_all(dir)?;
+            }
+        }
+        self.write(std::fs::File::create(p)?)
     }
 }
 
