@@ -1332,10 +1332,13 @@ impl Env {
     ///
     /// If there is any error writing the file.
     pub(crate) fn to_test_snapshot_file(&self) {
-        let test = std::thread::current();
-        let test_name = test
-            .name()
-            .expect("test name to be retrieved for use as the name of the test snapshot file");
+        let thread = std::thread::current();
+        let Some(test_name) = thread.name() else {
+            // The stock unit test runner sets a thread name.
+            // If there is no thread name, assume this is not running as
+            // part of a unit test, and do nothing.
+            return;
+        };
         let file_number = LAST_TEST_SNAPSHOT.with_borrow_mut(|l| {
             if test_name == l.name {
                 *l = LastTestSnapshot::default();
