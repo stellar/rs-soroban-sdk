@@ -869,7 +869,7 @@ mod composite {
         String(<Vec<String> as SorobanArbitrary>::Prototype),
         Symbol(<Vec<Symbol> as SorobanArbitrary>::Prototype),
         Vec(<Vec<Vec<u32>> as SorobanArbitrary>::Prototype),
-        Map(<Map<u32, u32> as SorobanArbitrary>::Prototype),
+        Map(<Vec<Map<u32, u32>> as SorobanArbitrary>::Prototype),
         Address(<Vec<Address> as SorobanArbitrary>::Prototype),
         Timepoint(<Vec<Timepoint> as SorobanArbitrary>::Prototype),
         Duration(<Vec<Duration> as SorobanArbitrary>::Prototype),
@@ -945,7 +945,7 @@ mod composite {
                     v.into_val(env)
                 }
                 ArbitraryValVec::Map(v) => {
-                    let v: Map<u32, u32> = v.into_val(env);
+                    let v: Vec<Map<u32, u32>> = v.into_val(env);
                     v.into_val(env)
                 }
                 ArbitraryValVec::Address(v) => {
