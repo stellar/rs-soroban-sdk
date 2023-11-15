@@ -1354,6 +1354,13 @@ impl Env {
             // part of a unit test, and do nothing.
             return;
         };
+        if test_name == "main" {
+            // When doc tests are running they're all run with the thread name
+            // main. There's no way to detect which doc test is being run and
+            // there's little value in writing and overwriting a single file for
+            // all doc tests.
+            return;
+        }
         let file_number = LAST_TEST_SNAPSHOT.with_borrow_mut(|l| {
             if test_name == l.name {
                 *l = LastTestSnapshot::default();
