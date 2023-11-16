@@ -17,6 +17,12 @@ impl Deref for OrdVal {
     }
 }
 
+impl Debug for OrdVal {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        self.val.fmt(f)
+    }
+}
+
 impl Eq for OrdVal {}
 
 impl PartialEq for OrdVal {
