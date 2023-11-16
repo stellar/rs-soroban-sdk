@@ -139,7 +139,7 @@
               }
             ],
             "data": {
-              "string": "escalating Ok(Error) frame-exit to Err(Error)"
+              "string": "escalating Ok(ScErrorType::Contract) frame-exit to Err"
             }
           }
         }
