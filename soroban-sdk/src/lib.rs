@@ -781,6 +781,8 @@ mod num;
 pub use num::{Duration, Timepoint, I256, U256};
 mod string;
 pub use string::String;
+mod ord_val;
+pub use ord_val::OrdVal;
 
 pub mod xdr;
 

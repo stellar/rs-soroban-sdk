@@ -15,7 +15,7 @@ pub use mock_auth::{
 
 pub mod storage;
 
-use crate::{xdr, Env, Val, Vec};
+use crate::{xdr, Env, OrdVal, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -294,7 +294,7 @@ pub trait Events {
     /// - Contract ID
     /// - Event Topics as a [`Vec<Val>`]
     /// - Event Data as a [`Val`]
-    fn all(&self) -> std::vec::Vec<(crate::Address, Vec<Val>, Val)>;
+    fn all(&self) -> std::vec::Vec<(crate::Address, Vec<Val>, OrdVal)>;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].

@@ -119,12 +119,12 @@ impl Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, Address, TryIntoVal};
+use crate::{testutils, xdr, Address, OrdVal, TryIntoVal};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> std::vec::Vec<(crate::Address, Vec<Val>, Val)> {
+    fn all(&self) -> std::vec::Vec<(crate::Address, Vec<Val>, OrdVal)> {
         let env = self.env();
         self.env()
             .host()
@@ -143,7 +143,7 @@ impl testutils::Events for Events {
                     Some((
                         Address::from_contract_id(env, contract_id.0),
                         topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
+                        OrdVal::new(env, data.try_into_val(env).unwrap()),
                     ))
                 } else {
                     None
