@@ -1,7 +1,7 @@
 use crate::{
     env::internal::Env as _, unwrap::UnwrapInfallible, ConversionError, Env, TryFromVal, Val,
 };
-use core::{cmp::Ordering, ops::Deref};
+use core::{cmp::Ordering, fmt::Debug, ops::Deref};
 
 #[derive(Clone)]
 pub struct OrdVal {
