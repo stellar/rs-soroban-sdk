@@ -317,16 +317,50 @@ mod objects {
     use super::composite::ArbitraryVal;
     use crate::env::FromVal;
     use crate::ConversionError;
-    use crate::{Env, IntoVal, TryFromVal};
+    use crate::{Env, IntoVal, TryFromVal, TryIntoVal};
 
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
     use crate::{
         Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
     };
-    use soroban_env_host::TryIntoVal;
 
     use std::string::String as RustString;
     use std::vec::Vec as RustVec;
+
+    //////////////////////////////////
+
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryOption<T>(Option<T>);
+
+    impl<T> SorobanArbitrary for Option<T>
+    where
+        T: SorobanArbitrary,
+        Val: TryFromVal<Env, T::Prototype>,
+        Val: TryFromVal<Env, T>,
+        <T as TryFromVal<Env, Val>>::Error:
+            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
+    {
+        type Prototype = ArbitraryOption<T::Prototype>;
+    }
+
+    impl<T> TryFromVal<Env, ArbitraryOption<T::Prototype>> for Option<T>
+    where
+        T: SorobanArbitrary,
+        Val: TryFromVal<Env, T::Prototype>,
+        <T as TryFromVal<Env, Val>>::Error:
+            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
+    {
+        type Error = <T as TryFromVal<Env, Val>>::Error;
+        fn try_from_val(env: &Env, v: &ArbitraryOption<T::Prototype>) -> Result<Self, Self::Error> {
+            match v.0 {
+                Some(ref t) => {
+                    let v = Val::try_from_val(env, t)?;
+                    v.try_into_val(env)
+                }
+                None => Ok(None),
+            }
+        }
+    }
 
     //////////////////////////////////
 

@@ -38,9 +38,14 @@ use syn_ext::HasFnsItem;
 use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
 use stellar_xdr::curr as stellar_xdr;
-use stellar_xdr::{ScMetaEntry, ScMetaV0, StringM, WriteXdr};
+use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 use soroban_env_common::Symbol;
+
+pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
+    depth: 500,
+    len: 0x1000000,
+};
 
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
@@ -327,7 +332,7 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
 
         let meta_v0 = ScMetaV0 { key, val };
         let meta_entry = ScMetaEntry::ScMetaV0(meta_v0);
-        let metadata_xdr: Vec<u8> = match meta_entry.to_xdr() {
+        let metadata_xdr: Vec<u8> = match meta_entry.to_xdr(DEFAULT_XDR_RW_LIMITS) {
             Ok(v) => v,
             Err(e) => {
                 return Error::new(Span::call_site(), e.to_string())

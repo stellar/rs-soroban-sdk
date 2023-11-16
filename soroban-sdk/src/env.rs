@@ -221,11 +221,11 @@ impl TryFrom<MaybeEnv> for Env {
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
         MaybeEnv {
-            maybe_env_impl: Some(value.env_impl),
+            maybe_env_impl: Some(value.env_impl.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            generators: Some(value.generators),
+            generators: Some(value.generators.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot,
+            snapshot: value.snapshot.clone(),
         }
     }
 }
@@ -433,8 +433,8 @@ impl Env {
 use crate::auth;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, Generators,
-    Ledger as _, MockAuth, MockAuthContract, Snapshot,
+    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
+    Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
 };
 #[cfg(any(test, feature = "testutils"))]
 use crate::{Bytes, BytesN};
@@ -1188,6 +1188,8 @@ impl Env {
     /// Creates a new Env loaded with the [`Snapshot`].
     ///
     /// The ledger info and state in the snapshot are loaded into the Env.
+    ///
+    /// Events, as an output source only, are not loaded into the Env.
     pub fn from_snapshot(s: Snapshot) -> Env {
         Env::new_for_testutils(
             Rc::new(s.ledger.clone()),
@@ -1198,6 +1200,10 @@ impl Env {
     }
 
     /// Creates a new Env loaded with the ledger snapshot loaded from the file.
+    ///
+    /// The ledger info and state in the snapshot are loaded into the Env.
+    ///
+    /// Events, as an output source only, are not loaded into the Env.
     ///
     /// ### Panics
     ///
@@ -1211,6 +1217,7 @@ impl Env {
         Snapshot {
             generators: (*self.generators).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
+            events: self.to_events_snapshot(),
         }
     }
 
@@ -1267,9 +1274,118 @@ impl Env {
         self.to_ledger_snapshot().write_file(p).unwrap();
     }
 
+    /// Create an events snapshot from the Env's current state.
+    pub(crate) fn to_events_snapshot(&self) -> EventsSnapshot {
+        EventsSnapshot(
+            self.host()
+                .get_events()
+                .unwrap()
+                .0
+                .into_iter()
+                .map(Into::into)
+                .collect(),
+        )
+    }
+
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
         Budget::new(self.env_impl.budget_cloned())
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl Drop for Env {
+    fn drop(&mut self) {
+        // If the env impl (Host) is finishable, that means this Env is the last
+        // Env to hold a reference to the Host. The Env should only write a test
+        // snapshot at that point when no other references to the host exist,
+        // because it is only when there are no other references that the host
+        // is being dropped.
+        if self.env_impl.can_finish() {
+            self.to_test_snapshot_file();
+        }
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+#[derive(Default, Clone)]
+struct LastTestSnapshot {
+    name: String,
+    number: usize,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+thread_local! {
+    static LAST_TEST_SNAPSHOT: RefCell<LastTestSnapshot> = RefCell::new(LastTestSnapshot::default());
+}
+
+#[doc(hidden)]
+#[cfg(any(test, feature = "testutils"))]
+impl Env {
+    /// Create a snapshot file for the currently executing test.
+    ///
+    /// Writes the file to the `test_snapshots/{test-name}.N.json` path where
+    /// `N` is incremented for each unique `Env` in the test.
+    ///
+    /// Use to record the observable behavior of a test, and changes to that
+    /// behavior over time. Commit the test snapshot file to version control and
+    /// watch for changes in it on contract change, SDK upgrade, protocol
+    /// upgrade, and other important events.
+    ///
+    /// No file will be created if the environment has no meaningful data such
+    /// as stored entries or events.
+    ///
+    /// ### Panics
+    ///
+    /// If there is any error writing the file.
+    pub(crate) fn to_test_snapshot_file(&self) {
+        let snapshot = self.to_snapshot();
+
+        // Don't write a snapshot that has no data in it.
+        if snapshot.ledger.entries().into_iter().count() == 0 && snapshot.events.0.is_empty() {
+            return;
+        }
+
+        // Determine path to write test snapshots to.
+        let thread = std::thread::current();
+        let Some(test_name) = thread.name() else {
+            // The stock unit test runner sets a thread name.
+            // If there is no thread name, assume this is not running as
+            // part of a unit test, and do nothing.
+            return;
+        };
+        if test_name == "main" {
+            // When doc tests are running they're all run with the thread name
+            // main. There's no way to detect which doc test is being run and
+            // there's little value in writing and overwriting a single file for
+            // all doc tests.
+            return;
+        }
+        let file_number = LAST_TEST_SNAPSHOT.with_borrow_mut(|l| {
+            if test_name == l.name {
+                *l = LastTestSnapshot::default();
+                l.name = test_name.to_owned();
+            }
+            l.number += 1;
+            l.number
+        });
+        // Break up the test name into directories, using :: as the separator.
+        // The :: module separator cannot be written into the filename because
+        // some operating systems (e.g. Windows) do not allow the : character in
+        // filenames.
+        let test_name_path = test_name
+            .split("::")
+            .map(|p| std::path::Path::new(p).to_path_buf())
+            .reduce(|p0, p1| p0.join(p1))
+            .expect("test name to not be empty");
+        let dir = std::path::Path::new("test_snapshots");
+        let p = dir
+            .join(&test_name_path)
+            .with_extension(format!("{file_number}.json"));
+
+        // Write test snapshots to file.
+        eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
+        snapshot.write_file(p).unwrap();
     }
 }
 
