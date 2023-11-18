@@ -533,7 +533,6 @@ impl Env {
         env_impl
             .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
                 if let ContractInvocationEvent::Finish = event {
-                    println!("LEIGH This is being called");
                     let new_auths = host
                         .get_authenticated_authorizations()
                         // If an error occurs getting the authenticated authorizations
