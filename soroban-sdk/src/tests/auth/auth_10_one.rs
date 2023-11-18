@@ -33,13 +33,27 @@ fn test() {
             invoke: &MockAuthInvoke {
                 contract: &contract_id,
                 fn_name: "add",
-                args: (&a, 10, 12).into_val(&e),
+                args: (&a, 10, 11).into_val(&e),
                 sub_invokes: &[],
             },
         }])
-        .add(&a, &10, &12);
+        .add(&a, &10, &11);
 
-    assert_eq!(c, 22);
+    assert_eq!(c, 21);
+
+    let c = client
+        .mock_auths(&[MockAuth {
+            address: &a,
+            invoke: &MockAuthInvoke {
+                contract: &contract_id,
+                fn_name: "add",
+                args: (&a, 10, 13).into_val(&e),
+                sub_invokes: &[],
+            },
+        }])
+        .add(&a, &10, &13);
+
+    assert_eq!(c, 23);
 
     println!("{:?}", e.auths());
 }
