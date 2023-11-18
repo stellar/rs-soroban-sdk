@@ -335,10 +335,7 @@ mod objects {
     impl<T> SorobanArbitrary for Option<T>
     where
         T: SorobanArbitrary,
-        Val: TryFromVal<Env, T::Prototype>,
         Val: TryFromVal<Env, T>,
-        <T as TryFromVal<Env, Val>>::Error:
-            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
     {
         type Prototype = ArbitraryOption<T::Prototype>;
     }
@@ -346,17 +343,11 @@ mod objects {
     impl<T> TryFromVal<Env, ArbitraryOption<T::Prototype>> for Option<T>
     where
         T: SorobanArbitrary,
-        Val: TryFromVal<Env, T::Prototype>,
-        <T as TryFromVal<Env, Val>>::Error:
-            From<<Val as TryFromVal<Env, <T as SorobanArbitrary>::Prototype>>::Error>,
     {
-        type Error = <T as TryFromVal<Env, Val>>::Error;
+        type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryOption<T::Prototype>) -> Result<Self, Self::Error> {
             match v.0 {
-                Some(ref t) => {
-                    let v = Val::try_from_val(env, t)?;
-                    v.try_into_val(env)
-                }
+                Some(ref t) => Ok(Some(t.into_val(env))),
                 None => Ok(None),
             }
         }
@@ -801,6 +792,7 @@ mod composite {
         Address(ArbitraryAddress),
         Timepoint(ArbitraryTimepoint),
         Duration(ArbitraryDuration),
+        Option(ArbitraryValOption),
     }
 
     impl SorobanArbitrary for Val {
@@ -854,6 +846,7 @@ mod composite {
                     let v: Duration = v.into_val(env);
                     v.into_val(env)
                 }
+                ArbitraryVal::Option(v) => v.into_val(env),
             })
         }
     }
@@ -876,7 +869,7 @@ mod composite {
         String(<Vec<String> as SorobanArbitrary>::Prototype),
         Symbol(<Vec<Symbol> as SorobanArbitrary>::Prototype),
         Vec(<Vec<Vec<u32>> as SorobanArbitrary>::Prototype),
-        Map(<Map<u32, u32> as SorobanArbitrary>::Prototype),
+        Map(<Vec<Map<u32, u32>> as SorobanArbitrary>::Prototype),
         Address(<Vec<Address> as SorobanArbitrary>::Prototype),
         Timepoint(<Vec<Timepoint> as SorobanArbitrary>::Prototype),
         Duration(<Vec<Duration> as SorobanArbitrary>::Prototype),
@@ -952,7 +945,7 @@ mod composite {
                     v.into_val(env)
                 }
                 ArbitraryValVec::Map(v) => {
-                    let v: Map<u32, u32> = v.into_val(env);
+                    let v: Vec<Map<u32, u32>> = v.into_val(env);
                     v.into_val(env)
                 }
                 ArbitraryValVec::Address(v) => {
@@ -998,6 +991,7 @@ mod composite {
         TimepointToTimepoint(<Map<Timepoint, Timepoint> as SorobanArbitrary>::Prototype),
         DurationToDuration(<Map<Duration, Duration> as SorobanArbitrary>::Prototype),
         ValToVal(<Map<Val, Val> as SorobanArbitrary>::Prototype),
+        OptionToOption(<Map<Option<u32>, Option<u32>> as SorobanArbitrary>::Prototype),
     }
 
     impl TryFromVal<Env, ArbitraryValMap> for Val {
@@ -1086,6 +1080,127 @@ mod composite {
                 }
                 ArbitraryValMap::ValToVal(v) => {
                     let v: Map<Val, Val> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValMap::OptionToOption(v) => {
+                    let v: Map<Option<u32>, Option<u32>> = v.into_val(env);
+                    v.into_val(env)
+                }
+            })
+        }
+    }
+
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub enum ArbitraryValOption {
+        Void(<Option<()> as SorobanArbitrary>::Prototype),
+        Bool(<Option<bool> as SorobanArbitrary>::Prototype),
+        Error(<Option<Error> as SorobanArbitrary>::Prototype),
+        U32(<Option<u32> as SorobanArbitrary>::Prototype),
+        I32(<Option<i32> as SorobanArbitrary>::Prototype),
+        U64(<Option<u64> as SorobanArbitrary>::Prototype),
+        I64(<Option<i64> as SorobanArbitrary>::Prototype),
+        U128(<Option<u128> as SorobanArbitrary>::Prototype),
+        I128(<Option<i128> as SorobanArbitrary>::Prototype),
+        U256(<Option<U256> as SorobanArbitrary>::Prototype),
+        I256(<Option<I256> as SorobanArbitrary>::Prototype),
+        Bytes(<Option<Bytes> as SorobanArbitrary>::Prototype),
+        BytesN(<Option<BytesN<32>> as SorobanArbitrary>::Prototype),
+        String(<Option<String> as SorobanArbitrary>::Prototype),
+        Symbol(<Option<Symbol> as SorobanArbitrary>::Prototype),
+        Vec(<Option<Vec<u32>> as SorobanArbitrary>::Prototype),
+        Map(<Option<Map<u32, u32>> as SorobanArbitrary>::Prototype),
+        Address(<Option<Address> as SorobanArbitrary>::Prototype),
+        Timepoint(<Option<Timepoint> as SorobanArbitrary>::Prototype),
+        Duration(<Option<Duration> as SorobanArbitrary>::Prototype),
+        Val(Box<<Option<Val> as SorobanArbitrary>::Prototype>),
+    }
+
+    impl TryFromVal<Env, ArbitraryValOption> for Val {
+        type Error = ConversionError;
+        fn try_from_val(env: &Env, v: &ArbitraryValOption) -> Result<Self, Self::Error> {
+            Ok(match v {
+                ArbitraryValOption::Void(v) => {
+                    let v: Option<()> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Bool(v) => {
+                    let v: Option<bool> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Error(v) => {
+                    let v: Option<Error> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::U32(v) => {
+                    let v: Option<u32> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::I32(v) => {
+                    let v: Option<i32> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::U64(v) => {
+                    let v: Option<u64> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::I64(v) => {
+                    let v: Option<i64> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::U128(v) => {
+                    let v: Option<u128> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::I128(v) => {
+                    let v: Option<i128> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::U256(v) => {
+                    let v: Option<U256> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::I256(v) => {
+                    let v: Option<I256> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Bytes(v) => {
+                    let v: Option<Bytes> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::BytesN(v) => {
+                    let v: Option<BytesN<32>> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::String(v) => {
+                    let v: Option<String> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Symbol(v) => {
+                    let v: Option<Symbol> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Vec(v) => {
+                    let v: Option<Vec<u32>> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Map(v) => {
+                    let v: Option<Map<u32, u32>> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Address(v) => {
+                    let v: Option<Address> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Timepoint(v) => {
+                    let v: Option<Timepoint> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Duration(v) => {
+                    let v: Option<Duration> = v.into_val(env);
+                    v.into_val(env)
+                }
+                ArbitraryValOption::Val(v) => {
+                    let v: Option<Val> = (**v).into_val(env);
                     v.into_val(env)
                 }
             })
@@ -1506,6 +1621,12 @@ mod tests {
         run_test::<(u32, Address, Vec<Timepoint>, Map<Duration, u64>)>();
     }
 
+    #[test]
+    fn test_option() {
+        run_test::<Option<u32>>();
+        run_test::<Option<Vec<u32>>>();
+    }
+
     // Test that sometimes generated vecs have the wrong element types.
     #[test]
     fn test_vec_wrong_types() {
@@ -1626,11 +1747,17 @@ mod tests {
             timepoint: Timepoint,
             nil: (),
             vec_tuple: Vec<(u32, Address)>,
+            option: Option<u32>,
         }
 
         #[test]
         fn test_user_defined_priv_struct() {
             run_test::<PrivStruct>();
+        }
+
+        #[test]
+        fn test_option_user_defined_priv_struct() {
+            run_test::<Option<PrivStruct>>();
         }
 
         #[contracttype]
@@ -1687,11 +1814,17 @@ mod tests {
             Vec<Bytes>,
             Map<Bytes, Vec<i32>>,
             Vec<(u32, Address)>,
+            Option<u32>,
         );
 
         #[test]
         fn test_user_defined_priv_tuple_struct() {
             run_test::<PrivTupleStruct>();
+        }
+
+        #[test]
+        fn test_option_user_defined_priv_tuple_struct() {
+            run_test::<Option<PrivTupleStruct>>();
         }
 
         #[contracttype]
@@ -1752,11 +1885,17 @@ mod tests {
             C,
             D,
             E(Vec<(u32, Address)>),
+            F(Option<u32>),
         }
 
         #[test]
         fn test_user_defined_priv_enum() {
             run_test::<PrivEnum>();
+        }
+
+        #[test]
+        fn test_option_user_defined_priv_enum() {
+            run_test::<Option<PrivEnum>>();
         }
 
         #[contracttype]
