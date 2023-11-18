@@ -24,6 +24,9 @@ fn test_budget() {
     let b = client.add();
     e.budget().print();
 
-    assert_eq!(e.budget().tracker(ContractCostType::VisitObject), (4, None));
+    assert_eq!(
+        e.budget().tracker(ContractCostType::VisitObject),
+        (13, None)
+    );
     assert_eq!(b, map![&e, (1, 10), (2, 20)]);
 }

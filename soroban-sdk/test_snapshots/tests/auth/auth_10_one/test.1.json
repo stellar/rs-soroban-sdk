@@ -3,6 +3,31 @@
     "address": 2,
     "nonce": 1
   },
+  "auth": [
+    [
+      "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+      {
+        "function": {
+          "contract_fn": {
+            "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "function_name": "add",
+            "args": [
+              {
+                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+              },
+              {
+                "i32": 10
+              },
+              {
+                "i32": 12
+              }
+            ]
+          }
+        },
+        "sub_invocations": []
+      }
+    ]
+  ],
   "ledger": {
     "protocol_version": 20,
     "sequence_number": 0,

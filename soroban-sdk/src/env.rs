@@ -433,8 +433,8 @@ impl Env {
 use crate::auth;
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{
-    budget::Budget, Address as _, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
-    Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+    budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
+    EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
 };
 #[cfg(any(test, feature = "testutils"))]
 use crate::{Bytes, BytesN};
@@ -1216,6 +1216,7 @@ impl Env {
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
             generators: (*self.generators).borrow().clone(),
+            auth: self.to_auth_snapshot(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1287,6 +1288,17 @@ impl Env {
         )
     }
 
+    /// Create an auth snapshot from the Env's current state.
+    pub(crate) fn to_auth_snapshot(&self) -> AuthSnapshot {
+        AuthSnapshot(
+            self.env_impl
+                .get_authenticated_authorizations()
+                // If an error occurs getting the authenticated authorizations
+                // it means that no auth has occurred.
+                .unwrap_or_default(),
+        )
+    }
+
     /// Get the budget that tracks the resources consumed for the environment.
     pub fn budget(&self) -> Budget {
         Budget::new(self.env_impl.budget_cloned())
@@ -1342,7 +1354,10 @@ impl Env {
         let snapshot = self.to_snapshot();
 
         // Don't write a snapshot that has no data in it.
-        if snapshot.ledger.entries().into_iter().count() == 0 && snapshot.events.0.is_empty() {
+        if snapshot.ledger.entries().into_iter().count() == 0
+            && snapshot.events.0.is_empty()
+            && snapshot.auth.0.is_empty()
+        {
             return;
         }
 
