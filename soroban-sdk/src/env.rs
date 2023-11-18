@@ -182,9 +182,9 @@ impl MaybeEnv {
             #[cfg(any(test, feature = "testutils"))]
             generators: None,
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-            #[cfg(any(test, feature = "testutils"))]
             auth_snapshot: None,
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
         }
     }
 }
@@ -213,9 +213,9 @@ impl TryFrom<MaybeEnv> for Env {
                 #[cfg(any(test, feature = "testutils"))]
                 generators: value.generators.unwrap_or_default(),
                 #[cfg(any(test, feature = "testutils"))]
-                snapshot: value.snapshot,
-                #[cfg(any(test, feature = "testutils"))]
                 auth_snapshot: value.auth_snapshot.unwrap_or_default(),
+                #[cfg(any(test, feature = "testutils"))]
+                snapshot: value.snapshot,
             })
         } else {
             Err(ConversionError)
@@ -231,9 +231,9 @@ impl From<Env> for MaybeEnv {
             #[cfg(any(test, feature = "testutils"))]
             generators: Some(value.generators.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot.clone(),
-            #[cfg(any(test, feature = "testutils"))]
             auth_snapshot: Some(value.auth_snapshot.clone()),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: value.snapshot.clone(),
         }
     }
 }
@@ -1430,9 +1430,9 @@ impl Env {
             #[cfg(any(test, feature = "testutils"))]
             generators: Default::default(),
             #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-            #[cfg(any(test, feature = "testutils"))]
             auth_snapshot: Default::default(),
+            #[cfg(any(test, feature = "testutils"))]
+            snapshot: None,
         }
     }
 }
