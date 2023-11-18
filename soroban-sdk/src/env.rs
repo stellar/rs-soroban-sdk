@@ -133,6 +133,8 @@ pub struct MaybeEnv {
     #[cfg(any(test, feature = "testutils"))]
     generators: Option<Rc<RefCell<Generators>>>,
     #[cfg(any(test, feature = "testutils"))]
+    auth_snapshot: Option<Rc<RefCell<AuthSnapshot>>>,
+    #[cfg(any(test, feature = "testutils"))]
     snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
@@ -180,6 +182,8 @@ impl MaybeEnv {
             #[cfg(any(test, feature = "testutils"))]
             generators: None,
             #[cfg(any(test, feature = "testutils"))]
+            auth_snapshot: None,
+            #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
         }
     }
@@ -209,6 +213,8 @@ impl TryFrom<MaybeEnv> for Env {
                 #[cfg(any(test, feature = "testutils"))]
                 generators: value.generators.unwrap_or_default(),
                 #[cfg(any(test, feature = "testutils"))]
+                auth_snapshot: value.auth_snapshot.unwrap_or_default(),
+                #[cfg(any(test, feature = "testutils"))]
                 snapshot: value.snapshot,
             })
         } else {
@@ -224,6 +230,8 @@ impl From<Env> for MaybeEnv {
             maybe_env_impl: Some(value.env_impl.clone()),
             #[cfg(any(test, feature = "testutils"))]
             generators: Some(value.generators.clone()),
+            #[cfg(any(test, feature = "testutils"))]
+            auth_snapshot: Some(value.auth_snapshot.clone()),
             #[cfg(any(test, feature = "testutils"))]
             snapshot: value.snapshot.clone(),
         }
@@ -243,6 +251,8 @@ pub struct Env {
     env_impl: internal::EnvImpl,
     #[cfg(any(test, feature = "testutils"))]
     generators: Rc<RefCell<Generators>>,
+    #[cfg(any(test, feature = "testutils"))]
+    auth_snapshot: Rc<RefCell<AuthSnapshot>>,
     #[cfg(any(test, feature = "testutils"))]
     snapshot: Option<Rc<LedgerSnapshot>>,
 }
@@ -430,16 +440,18 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::auth;
-#[cfg(any(test, feature = "testutils"))]
-use crate::testutils::{
-    budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
-    EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+use crate::{
+    auth,
+    testutils::{
+        budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
+        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+    },
+    Bytes, BytesN,
 };
 #[cfg(any(test, feature = "testutils"))]
-use crate::{Bytes, BytesN};
-#[cfg(any(test, feature = "testutils"))]
 use core::{cell::RefCell, cell::RefMut};
+#[cfg(any(test, feature = "testutils"))]
+use internal::ContractInvocationEvent;
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -515,10 +527,27 @@ impl Env {
             .set_diagnostic_level(internal::DiagnosticLevel::Debug)
             .unwrap();
         env_impl.set_base_prng_seed([0; 32]).unwrap();
+
+        let auth_snapshot = Rc::new(RefCell::new(AuthSnapshot::default()));
+        let auth_snapshot_in_hook = auth_snapshot.clone();
+        env_impl
+            .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
+                if let ContractInvocationEvent::Finish = event {
+                    let new_auths = host
+                        .get_authenticated_authorizations()
+                        // If an error occurs getting the authenticated authorizations
+                        // it means that no auth has occurred.
+                        .unwrap_or_default();
+                    (*auth_snapshot_in_hook).borrow_mut().0.extend(new_auths);
+                }
+            })))
+            .unwrap();
+
         let env = Env {
             env_impl,
             generators: generators.unwrap_or_default(),
             snapshot,
+            auth_snapshot,
         };
 
         env.ledger().set(ledger_info);
@@ -1216,7 +1245,7 @@ impl Env {
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
             generators: (*self.generators).borrow().clone(),
-            auth: self.to_auth_snapshot(),
+            auth: (*self.auth_snapshot).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1285,17 +1314,6 @@ impl Env {
                 .into_iter()
                 .map(Into::into)
                 .collect(),
-        )
-    }
-
-    /// Create an auth snapshot from the Env's current state.
-    pub(crate) fn to_auth_snapshot(&self) -> AuthSnapshot {
-        AuthSnapshot(
-            self.env_impl
-                .get_authenticated_authorizations()
-                // If an error occurs getting the authenticated authorizations
-                // it means that no auth has occurred.
-                .unwrap_or_default(),
         )
     }
 
@@ -1411,6 +1429,8 @@ impl Env {
             env_impl,
             #[cfg(any(test, feature = "testutils"))]
             generators: Default::default(),
+            #[cfg(any(test, feature = "testutils"))]
+            auth_snapshot: Default::default(),
             #[cfg(any(test, feature = "testutils"))]
             snapshot: None,
         }

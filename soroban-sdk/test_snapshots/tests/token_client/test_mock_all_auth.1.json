@@ -3,7 +3,54 @@
     "address": 5,
     "nonce": 0
   },
-  "auth": [],
+  "auth": [
+    [
+      "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEGWF",
+      {
+        "function": {
+          "contract_fn": {
+            "contract_address": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
+            "function_name": "set_admin",
+            "args": [
+              {
+                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
+              }
+            ]
+          }
+        },
+        "sub_invocations": []
+      }
+    ],
+    [
+      "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4",
+      {
+        "function": {
+          "contract_fn": {
+            "contract_address": "CBEPDNVYXQGWB5YUBXKJWYJA7OXTZW5LFLNO5JRRGE6Z6C5OSUZPCCEL",
+            "function_name": "approve",
+            "args": [
+              {
+                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
+              },
+              {
+                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3IM"
+              },
+              {
+                "i128": {
+                  "hi": 0,
+                  "lo": 20
+                }
+              },
+              {
+                "u32": 200
+              }
+            ]
+          }
+        },
+        "sub_invocations": []
+      }
+    ]
+  ],
   "ledger": {
     "protocol_version": 20,
     "sequence_number": 0,
