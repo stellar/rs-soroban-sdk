@@ -181,9 +181,10 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    // TODO: Undo the mock and restore previous auth state after
-                    // https://github.com/stellar/rs-soroban-env/issues/785 is
-                    // implemented.
+                    #[cfg(any(test, feature = "testutils"))]
+                    let old_auth_manager = (*self.env.in_contract).borrow().then(||
+                        self.env.host().snapshot_auth_manager().unwrap()
+                    );
                     #[cfg(any(test, feature = "testutils"))]
                     {
                         if let Some(set_auths) = self.set_auths {
@@ -201,19 +202,24 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         }
                     }
                     use #crate_path::{IntoVal,FromVal};
-                    self.env.invoke_contract(
+                    let res = self.env.invoke_contract(
                         &self.address,
                         &#crate_path::Symbol::new(&self.env, &#fn_name),
                         #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
-                    )
+                    );
+                    #[cfg(any(test, feature = "testutils"))]
+                    if let Some(old_auth_manager) = old_auth_manager {
+                        self.env.host().set_auth_manager(old_auth_manager).unwrap();
+                    }
+                    res
                 }
 
                 #(#fn_attrs)*
                 pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                     #[cfg(any(test, feature = "testutils"))]
-                    // TODO: Undo the mock and restore previous auth state after
-                    // https://github.com/stellar/rs-soroban-env/issues/785 is
-                    // implemented.
+                    let old_auth_manager = (*self.env.in_contract).borrow().then(||
+                        self.env.host().snapshot_auth_manager().unwrap()
+                    );
                     #[cfg(any(test, feature = "testutils"))]
                     {
                         if let Some(set_auths) = self.set_auths {
@@ -227,11 +233,16 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         }
                     }
                     use #crate_path::{IntoVal,FromVal};
-                    self.env.try_invoke_contract(
+                    let res = self.env.try_invoke_contract(
                         &self.address,
                         &#crate_path::Symbol::new(&self.env, &#fn_name),
                         #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
-                    )
+                    );
+                    #[cfg(any(test, feature = "testutils"))]
+                    if let Some(old_auth_manager) = old_auth_manager {
+                        self.env.host().set_auth_manager(old_auth_manager).unwrap();
+                    }
+                    res
                 }
             }
         })

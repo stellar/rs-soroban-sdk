@@ -131,6 +131,8 @@ use internal::{
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
+    in_contract: Option<Rc<RefCell<bool>>>,
+    #[cfg(any(test, feature = "testutils"))]
     generators: Option<Rc<RefCell<Generators>>>,
     #[cfg(any(test, feature = "testutils"))]
     auth_snapshot: Option<Rc<RefCell<AuthSnapshot>>>,
@@ -180,6 +182,8 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: None,
             #[cfg(any(test, feature = "testutils"))]
+            in_contract: None,
+            #[cfg(any(test, feature = "testutils"))]
             generators: None,
             #[cfg(any(test, feature = "testutils"))]
             auth_snapshot: None,
@@ -211,6 +215,8 @@ impl TryFrom<MaybeEnv> for Env {
             Ok(Env {
                 env_impl,
                 #[cfg(any(test, feature = "testutils"))]
+                in_contract: value.in_contract.unwrap_or_default(),
+                #[cfg(any(test, feature = "testutils"))]
                 generators: value.generators.unwrap_or_default(),
                 #[cfg(any(test, feature = "testutils"))]
                 auth_snapshot: value.auth_snapshot.unwrap_or_default(),
@@ -228,6 +234,8 @@ impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
         MaybeEnv {
             maybe_env_impl: Some(value.env_impl.clone()),
+            #[cfg(any(test, feature = "testutils"))]
+            in_contract: Some(value.in_contract.clone()),
             #[cfg(any(test, feature = "testutils"))]
             generators: Some(value.generators.clone()),
             #[cfg(any(test, feature = "testutils"))]
@@ -249,6 +257,8 @@ impl From<Env> for MaybeEnv {
 #[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
+    #[cfg(any(test, feature = "testutils"))]
+    pub in_contract: Rc<RefCell<bool>>,
     #[cfg(any(test, feature = "testutils"))]
     generators: Rc<RefCell<Generators>>,
     #[cfg(any(test, feature = "testutils"))]
@@ -528,23 +538,32 @@ impl Env {
             .unwrap();
         env_impl.set_base_prng_seed([0; 32]).unwrap();
 
+        let in_contract = Rc::new(RefCell::new(false));
+        let in_contract_in_hook = in_contract.clone();
         let auth_snapshot = Rc::new(RefCell::new(AuthSnapshot::default()));
         let auth_snapshot_in_hook = auth_snapshot.clone();
         env_impl
             .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
-                if let ContractInvocationEvent::Finish = event {
-                    let new_auths = host
-                        .get_authenticated_authorizations()
-                        // If an error occurs getting the authenticated authorizations
-                        // it means that no auth has occurred.
-                        .unwrap_or_default();
-                    (*auth_snapshot_in_hook).borrow_mut().0.extend(new_auths);
+                match event {
+                    ContractInvocationEvent::Start => {
+                        *(*in_contract_in_hook).borrow_mut() = true;
+                    }
+                    ContractInvocationEvent::Finish => {
+                        *(*in_contract_in_hook).borrow_mut() = false;
+                        let new_auths = host
+                            .get_authenticated_authorizations()
+                            // If an error occurs getting the authenticated authorizations
+                            // it means that no auth has occurred.
+                            .unwrap_or_default();
+                        (*auth_snapshot_in_hook).borrow_mut().0.push(new_auths);
+                    }
                 }
             })))
             .unwrap();
 
         let env = Env {
             env_impl,
+            in_contract,
             generators: generators.unwrap_or_default(),
             snapshot,
             auth_snapshot,
@@ -1050,8 +1069,12 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        let authorizations = self.env_impl.get_authenticated_authorizations().unwrap();
-        authorizations
+        (*self.auth_snapshot)
+            .borrow()
+            .0
+            .last()
+            .cloned()
+            .unwrap_or_default()
             .into_iter()
             .map(|(sc_addr, invocation)| {
                 (
@@ -1427,6 +1450,8 @@ impl Env {
     pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
         Env {
             env_impl,
+            #[cfg(any(test, feature = "testutils"))]
+            in_contract: Default::default(),
             #[cfg(any(test, feature = "testutils"))]
             generators: Default::default(),
             #[cfg(any(test, feature = "testutils"))]
