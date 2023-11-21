@@ -183,7 +183,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                     use core::ops::Not;
                     #[cfg(any(test, feature = "testutils"))]
-                    let old_auth_manager = (*(*self.env.in_contract).borrow()).not().then(||
+                    let old_auth_manager = self.env.in_contract().not().then(||
                         self.env.host().snapshot_auth_manager().unwrap()
                     );
                     #[cfg(any(test, feature = "testutils"))]
@@ -220,7 +220,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     #[cfg(any(test, feature = "testutils"))]
                     use core::ops::Not;
                     #[cfg(any(test, feature = "testutils"))]
-                    let old_auth_manager = (*(*self.env.in_contract).borrow()).not().then(||
+                    let old_auth_manager = self.env.in_contract().not().then(||
                         self.env.host().snapshot_auth_manager().unwrap()
                     );
                     #[cfg(any(test, feature = "testutils"))]

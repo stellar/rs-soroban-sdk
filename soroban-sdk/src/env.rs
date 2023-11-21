@@ -131,7 +131,7 @@ use internal::{
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    in_contract: Option<Rc<RefCell<bool>>>,
+    in_contract: Option<bool>,
     #[cfg(any(test, feature = "testutils"))]
     generators: Option<Rc<RefCell<Generators>>>,
     #[cfg(any(test, feature = "testutils"))]
@@ -235,7 +235,7 @@ impl From<Env> for MaybeEnv {
         MaybeEnv {
             maybe_env_impl: Some(value.env_impl.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            in_contract: Some(value.in_contract.clone()),
+            in_contract: Some(value.in_contract),
             #[cfg(any(test, feature = "testutils"))]
             generators: Some(value.generators.clone()),
             #[cfg(any(test, feature = "testutils"))]
@@ -258,7 +258,7 @@ impl From<Env> for MaybeEnv {
 pub struct Env {
     env_impl: internal::EnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    pub in_contract: Rc<RefCell<bool>>,
+    in_contract: bool,
     #[cfg(any(test, feature = "testutils"))]
     generators: Rc<RefCell<Generators>>,
     #[cfg(any(test, feature = "testutils"))]
@@ -476,6 +476,11 @@ use xdr::{
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     #[doc(hidden)]
+    pub fn in_contract(&self) -> bool {
+        self.in_contract
+    }
+
+    #[doc(hidden)]
     pub fn host(&self) -> &internal::Host {
         &self.env_impl
     }
@@ -538,18 +543,13 @@ impl Env {
             .unwrap();
         env_impl.set_base_prng_seed([0; 32]).unwrap();
 
-        let in_contract = Rc::new(RefCell::new(false));
-        let in_contract_in_hook = in_contract.clone();
         let auth_snapshot = Rc::new(RefCell::new(AuthSnapshot::default()));
         let auth_snapshot_in_hook = auth_snapshot.clone();
         env_impl
             .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
                 match event {
-                    ContractInvocationEvent::Start => {
-                        *(*in_contract_in_hook).borrow_mut() = true;
-                    }
+                    ContractInvocationEvent::Start => {}
                     ContractInvocationEvent::Finish => {
-                        *(*in_contract_in_hook).borrow_mut() = false;
                         let new_auths = host
                             .get_authenticated_authorizations()
                             // If an error occurs getting the authenticated authorizations
@@ -563,7 +563,7 @@ impl Env {
 
         let env = Env {
             env_impl,
-            in_contract,
+            in_contract: false,
             generators: generators.unwrap_or_default(),
             snapshot,
             auth_snapshot,
@@ -621,7 +621,7 @@ impl Env {
             ) -> Option<Val> {
                 let env = Env {
                     env_impl: env_impl.clone(),
-                    in_contract: Rc::new(RefCell::new(true)),
+                    in_contract: true,
                     generators: Default::default(), // TODO: Pass through actual generators.
                     auth_snapshot: Default::default(),
                     snapshot: None,
