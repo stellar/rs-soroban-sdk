@@ -211,7 +211,7 @@ impl Storage {
         K: IntoVal<Env, Val>,
     {
         let env = &self.env;
-        internal::Env::extend_contract_data(
+        internal::Env::extend_contract_data_ttl(
             env,
             key.into_val(env),
             storage_type,
@@ -375,7 +375,7 @@ impl Instance {
     }
 
     pub fn extend_ttl(&self, threshold: u32, extend_to: u32) {
-        internal::Env::extend_current_contract_instance_and_code(
+        internal::Env::extend_current_contract_instance_and_code_ttl(
             &self.storage.env,
             threshold.into(),
             extend_to.into(),
