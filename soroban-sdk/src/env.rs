@@ -554,7 +554,7 @@ impl Env {
                             .get_authenticated_authorizations()
                             // If an error occurs getting the authenticated authorizations
                             // it means that no auth has occurred.
-                            .unwrap_or_default();
+                            .unwrap();
                         (*auth_snapshot_in_hook).borrow_mut().0.push(new_auths);
                     }
                 }
@@ -619,7 +619,13 @@ impl Env {
                 env_impl: &internal::EnvImpl,
                 args: &[Val],
             ) -> Option<Val> {
-                let env = Env::with_impl(env_impl.clone());
+                let env = Env {
+                    env_impl: env_impl.clone(),
+                    in_contract: Rc::new(RefCell::new(true)),
+                    generators: Default::default(),
+                    auth_snapshot: Default::default(),
+                    snapshot: None,
+                };
                 self.0.call(
                     crate::Symbol::try_from_val(&env, func)
                         .unwrap_infallible()
@@ -1442,23 +1448,6 @@ impl Env {
         // Write test snapshots to file.
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
         snapshot.write_file(p).unwrap();
-    }
-}
-
-#[doc(hidden)]
-impl Env {
-    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
-        Env {
-            env_impl,
-            #[cfg(any(test, feature = "testutils"))]
-            in_contract: Default::default(),
-            #[cfg(any(test, feature = "testutils"))]
-            generators: Default::default(),
-            #[cfg(any(test, feature = "testutils"))]
-            auth_snapshot: Default::default(),
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-        }
     }
 }
 

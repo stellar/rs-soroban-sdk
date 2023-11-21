@@ -181,7 +181,6 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             quote! {
                 #(#fn_attrs)*
                 pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                    #[cfg(any(test, feature = "testutils"))]
                     use core::ops::Not;
                     #[cfg(any(test, feature = "testutils"))]
                     let old_auth_manager = (*(*self.env.in_contract).borrow()).not().then(||
