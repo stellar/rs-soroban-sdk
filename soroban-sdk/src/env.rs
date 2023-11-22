@@ -131,8 +131,6 @@ use internal::{
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    in_contract: Option<bool>,
-    #[cfg(any(test, feature = "testutils"))]
     generators: Option<Rc<RefCell<Generators>>>,
     #[cfg(any(test, feature = "testutils"))]
     auth_snapshot: Option<Rc<RefCell<AuthSnapshot>>>,
@@ -182,8 +180,6 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: None,
             #[cfg(any(test, feature = "testutils"))]
-            in_contract: None,
-            #[cfg(any(test, feature = "testutils"))]
             generators: None,
             #[cfg(any(test, feature = "testutils"))]
             auth_snapshot: None,
@@ -215,8 +211,6 @@ impl TryFrom<MaybeEnv> for Env {
             Ok(Env {
                 env_impl,
                 #[cfg(any(test, feature = "testutils"))]
-                in_contract: value.in_contract.unwrap_or_default(),
-                #[cfg(any(test, feature = "testutils"))]
                 generators: value.generators.unwrap_or_default(),
                 #[cfg(any(test, feature = "testutils"))]
                 auth_snapshot: value.auth_snapshot.unwrap_or_default(),
@@ -234,8 +228,6 @@ impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
         MaybeEnv {
             maybe_env_impl: Some(value.env_impl.clone()),
-            #[cfg(any(test, feature = "testutils"))]
-            in_contract: Some(value.in_contract),
             #[cfg(any(test, feature = "testutils"))]
             generators: Some(value.generators.clone()),
             #[cfg(any(test, feature = "testutils"))]
@@ -257,8 +249,6 @@ impl From<Env> for MaybeEnv {
 #[derive(Clone)]
 pub struct Env {
     env_impl: internal::EnvImpl,
-    #[cfg(any(test, feature = "testutils"))]
-    in_contract: bool,
     #[cfg(any(test, feature = "testutils"))]
     generators: Rc<RefCell<Generators>>,
     #[cfg(any(test, feature = "testutils"))]
@@ -477,7 +467,7 @@ use xdr::{
 impl Env {
     #[doc(hidden)]
     pub fn in_contract(&self) -> bool {
-        self.in_contract
+        self.env_impl.has_frame().unwrap()
     }
 
     #[doc(hidden)]
@@ -563,7 +553,6 @@ impl Env {
 
         let env = Env {
             env_impl,
-            in_contract: false,
             generators: generators.unwrap_or_default(),
             snapshot,
             auth_snapshot,
@@ -621,7 +610,6 @@ impl Env {
             ) -> Option<Val> {
                 let env = Env {
                     env_impl: env_impl.clone(),
-                    in_contract: true,
                     generators: Default::default(),
                     auth_snapshot: Default::default(),
                     snapshot: None,
