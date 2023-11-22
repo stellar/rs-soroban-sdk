@@ -5,39 +5,41 @@
   },
   "auth": [
     [
-      "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
-      {
-        "function": {
-          "contract_fn": {
-            "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
-            "function_name": "fn2",
-            "args": [
-              {
-                "i32": 1
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
+        {
+          "function": {
+            "contract_fn": {
+              "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+              "function_name": "fn2",
+              "args": [
+                {
+                  "i32": 1
+                },
+                {
+                  "i32": 2
+                }
+              ]
+            }
+          },
+          "sub_invocations": [
+            {
+              "function": {
+                "contract_fn": {
+                  "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                  "function_name": "fn1",
+                  "args": [
+                    {
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M"
+                    }
+                  ]
+                }
               },
-              {
-                "i32": 2
-              }
-            ]
-          }
-        },
-        "sub_invocations": [
-          {
-            "function": {
-              "contract_fn": {
-                "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-                "function_name": "fn1",
-                "args": [
-                  {
-                    "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M"
-                  }
-                ]
-              }
-            },
-            "sub_invocations": []
-          }
-        ]
-      }
+              "sub_invocations": []
+            }
+          ]
+        }
+      ]
     ]
   ],
   "ledger": {

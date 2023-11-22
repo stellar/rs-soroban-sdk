@@ -466,6 +466,11 @@ use xdr::{
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     #[doc(hidden)]
+    pub fn in_contract(&self) -> bool {
+        self.env_impl.has_frame().unwrap()
+    }
+
+    #[doc(hidden)]
     pub fn host(&self) -> &internal::Host {
         &self.env_impl
     }
@@ -532,13 +537,16 @@ impl Env {
         let auth_snapshot_in_hook = auth_snapshot.clone();
         env_impl
             .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
-                if let ContractInvocationEvent::Finish = event {
-                    let new_auths = host
-                        .get_authenticated_authorizations()
-                        // If an error occurs getting the authenticated authorizations
-                        // it means that no auth has occurred.
-                        .unwrap_or_default();
-                    (*auth_snapshot_in_hook).borrow_mut().0.extend(new_auths);
+                match event {
+                    ContractInvocationEvent::Start => {}
+                    ContractInvocationEvent::Finish => {
+                        let new_auths = host
+                            .get_authenticated_authorizations()
+                            // If an error occurs getting the authenticated authorizations
+                            // it means that no auth has occurred.
+                            .unwrap();
+                        (*auth_snapshot_in_hook).borrow_mut().0.push(new_auths);
+                    }
                 }
             })))
             .unwrap();
@@ -600,7 +608,12 @@ impl Env {
                 env_impl: &internal::EnvImpl,
                 args: &[Val],
             ) -> Option<Val> {
-                let env = Env::with_impl(env_impl.clone());
+                let env = Env {
+                    env_impl: env_impl.clone(),
+                    generators: Default::default(),
+                    auth_snapshot: Default::default(),
+                    snapshot: None,
+                };
                 self.0.call(
                     crate::Symbol::try_from_val(&env, func)
                         .unwrap_infallible()
@@ -1050,8 +1063,12 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        let authorizations = self.env_impl.get_authenticated_authorizations().unwrap();
-        authorizations
+        (*self.auth_snapshot)
+            .borrow()
+            .0
+            .last()
+            .cloned()
+            .unwrap_or_default()
             .into_iter()
             .map(|(sc_addr, invocation)| {
                 (
@@ -1419,21 +1436,6 @@ impl Env {
         // Write test snapshots to file.
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
         snapshot.write_file(p).unwrap();
-    }
-}
-
-#[doc(hidden)]
-impl Env {
-    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
-        Env {
-            env_impl,
-            #[cfg(any(test, feature = "testutils"))]
-            generators: Default::default(),
-            #[cfg(any(test, feature = "testutils"))]
-            auth_snapshot: Default::default(),
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-        }
     }
 }
 
