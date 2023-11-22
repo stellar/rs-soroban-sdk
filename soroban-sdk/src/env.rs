@@ -622,7 +622,7 @@ impl Env {
                 let env = Env {
                     env_impl: env_impl.clone(),
                     in_contract: true,
-                    generators: Default::default(), // TODO: Pass through actual generators.
+                    generators: Default::default(),
                     auth_snapshot: Default::default(),
                     snapshot: None,
                 };
