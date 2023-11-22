@@ -8,8 +8,6 @@ use crate::xdr;
 pub enum InvokeError {
     /// Abort occurs if the invoke contract panicks with a [`panic!`], or a host
     /// function of the environment has a failure, or a runtime error occurs.
-    /// either induced by an explicit panic!, or a host function failure, or a
-    /// runtime error (like out-of-bounds access mentioned here).
     Abort,
     /// Contract error occurs if the invoked contract function exited returning
     /// an error or called [`panic_with_error!`][crate::panic_with_error!] with
