@@ -26,6 +26,8 @@ impl Contract {
             panic_with_error!(&env, Error::AnError)
         } else if flag == 3 {
             panic!("an error")
+        } else if flag == 4 {
+            panic_with_error!(&env, soroban_sdk::Error::from_contract_error(9))
         } else {
             unimplemented!()
         }
@@ -98,6 +100,17 @@ mod test {
 
         let res = client.try_hello(&3);
         assert_eq!(res, Err(Err(InvokeError::Abort)));
+        assert!(!client.persisted());
+    }
+
+    #[test]
+    fn try_hello_error_unexpected_contract_error() {
+        let e = Env::default();
+        let contract_id = e.register_contract(None, Contract);
+        let client = ContractClient::new(&e, &contract_id);
+
+        let res = client.try_hello(&4);
+        assert_eq!(res, Err(Err(InvokeError::Contract(9))));
         assert!(!client.persisted());
     }
 
