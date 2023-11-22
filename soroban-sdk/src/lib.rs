@@ -765,6 +765,8 @@ pub mod auth;
 mod bytes;
 pub mod crypto;
 pub mod deploy;
+mod error;
+pub use error::InvokeError;
 pub mod events;
 pub mod iter;
 pub mod ledger;

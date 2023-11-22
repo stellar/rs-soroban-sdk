@@ -19,7 +19,7 @@ pub fn derive_type_error_enum_int(
     let mut errors = Vec::<Error>::new();
 
     let variants = &data.variants;
-    let (spec_cases, try_froms, intos): (Vec<_>, Vec<_>, Vec<_>) = variants
+    let (spec_cases, try_froms, into_errors, into_invoke_errors): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .map(|v| {
             let ident = &v.ident;
@@ -49,9 +49,11 @@ pub fn derive_type_error_enum_int(
                 value: discriminant,
             };
             let try_from = quote! { #discriminant => Self::#ident };
-            let into =
+            let into_error =
                 quote! { #enum_ident::#ident => #path::Error::from_contract_error(#discriminant) };
-            (spec_case, try_from, into)
+            let into_invoke_error =
+                quote! { #enum_ident::#ident => #path::InvokeError::Contract(#discriminant) };
+            (spec_case, try_from, into_error, into_invoke_error)
         })
         .multiunzip();
 
@@ -119,7 +121,7 @@ pub fn derive_type_error_enum_int(
             #[inline(always)]
             fn from(val: #enum_ident) -> #path::Error {
                 match val {
-                    #(#intos,)*
+                    #(#into_errors,)*
                 }
             }
         }
@@ -127,6 +129,44 @@ pub fn derive_type_error_enum_int(
         impl From<&#enum_ident> for #path::Error {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::Error {
+                <_ as From<#enum_ident>>::from(*val)
+            }
+        }
+
+        impl TryFrom<#path::InvokeError> for #enum_ident {
+            type Error = #path::InvokeError;
+            #[inline(always)]
+            fn try_from(error: #path::InvokeError) -> Result<Self, #path::InvokeError> {
+                match error {
+                    #path::InvokeError::Abort => Err(error),
+                    #path::InvokeError::Contract(code) => Ok(match code {
+                        #(#try_froms,)*
+                        _ => return Err(error),
+                    }),
+                }
+            }
+        }
+
+        impl TryFrom<&#path::InvokeError> for #enum_ident {
+            type Error = #path::InvokeError;
+            #[inline(always)]
+            fn try_from(error: &#path::InvokeError) -> Result<Self, #path::InvokeError> {
+                <_ as TryFrom<#path::InvokeError>>::try_from(*error)
+            }
+        }
+
+        impl From<#enum_ident> for #path::InvokeError {
+            #[inline(always)]
+            fn from(val: #enum_ident) -> #path::InvokeError {
+                match val {
+                    #(#into_invoke_errors,)*
+                }
+            }
+        }
+
+        impl From<&#enum_ident> for #path::InvokeError {
+            #[inline(always)]
+            fn from(val: &#enum_ident) -> #path::InvokeError {
                 <_ as From<#enum_ident>>::from(*val)
             }
         }
