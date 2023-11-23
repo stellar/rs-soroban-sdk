@@ -116,6 +116,7 @@ where
 use crate::auth::InvokerContractAuthEntry;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
+use crate::InvokeError;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, prng::Prng,
     storage::Storage, Address, Vec,
@@ -386,10 +387,11 @@ impl Env {
         contract_address: &Address,
         func: &crate::Symbol,
         args: Vec<Val>,
-    ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
+    ) -> Result<Result<T, T::Error>, Result<E, InvokeError>>
     where
         T: TryFromVal<Env, Val>,
         E: TryFrom<Error>,
+        E::Error: Into<InvokeError>,
     {
         let rv = internal::Env::try_call(
             self,
@@ -399,7 +401,7 @@ impl Env {
         )
         .unwrap_infallible();
         match internal::Error::try_from_val(self, &rv) {
-            Ok(err) => Err(E::try_from(err)),
+            Ok(err) => Err(E::try_from(err).map_err(Into::into)),
             Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
         }
     }
@@ -1139,10 +1141,10 @@ impl Env {
     ///         // as long as a valid error type used.
     ///         Err(Ok(NoopAccountError::SomeError))
     ///     );
-    ///     // Successful call of `__check_auth` with a `soroban_sdk::Error`
+    ///     // Successful call of `__check_auth` with a `soroban_sdk::InvokeError`
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
-    ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
+    ///         e.try_invoke_contract_check_auth::<soroban_sdk::InvokeError>(
     ///             &account_contract.address,
     ///             &BytesN::from_array(&e, &[0; 32]),
     ///             0_i32.into(),
@@ -1152,13 +1154,17 @@ impl Env {
     ///     );
     /// }
     /// ```
-    pub fn try_invoke_contract_check_auth<E: TryFrom<Error>>(
+    pub fn try_invoke_contract_check_auth<E>(
         &self,
         contract: &Address,
         signature_payload: &BytesN<32>,
         signature: Val,
         auth_context: &Vec<auth::Context>,
-    ) -> Result<(), Result<E, E::Error>> {
+    ) -> Result<(), Result<E, InvokeError>>
+    where
+        E: TryFrom<Error>,
+        E::Error: Into<InvokeError>,
+    {
         let args = Vec::from_array(
             self,
             [signature_payload.to_val(), signature, auth_context.to_val()],
@@ -1168,7 +1174,7 @@ impl Env {
             .call_account_contract_check_auth(contract.to_object(), args.to_object());
         match res {
             Ok(rv) => Ok(rv.into_val(self)),
-            Err(e) => Err(e.error.try_into()),
+            Err(e) => Err(e.error.try_into().map_err(Into::into)),
         }
     }
 
