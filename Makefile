@@ -2,7 +2,6 @@ all: check test
 
 export RUSTFLAGS=-Dwarnings
 
-CARGO_TEST_SUBCOMMAND:=$(shell type -p cargo-nextest >/dev/null && echo nextest run || echo test)
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
@@ -10,7 +9,7 @@ doc: fmt
 	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 test: fmt build
-	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs $(CARGO_TEST_SUBCOMMAND)
+	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
 
 build: fmt
 	cargo hack build --target wasm32-unknown-unknown --release
