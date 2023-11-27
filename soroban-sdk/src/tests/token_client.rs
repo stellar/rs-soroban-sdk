@@ -70,8 +70,9 @@ fn test_mock_all_auth() {
         .mock_all_auths_allowing_non_root_auth()
         .approve(&from, &spender, &20, &200);
 
+    let auths = env.auths();
     assert_eq!(
-        env.auths(),
+        auths,
         std::vec![(
             from.clone(),
             AuthorizedInvocation {

@@ -742,15 +742,17 @@ pub use env::TryFromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryIntoVal;
 
-mod envhidden {
-    pub use super::env::EnvBase;
-    pub use super::env::Error;
-    pub use super::env::MapObject;
-    pub use super::env::SymbolStr;
-    pub use super::env::VecObject;
-}
+// Used by generated code only.
 #[doc(hidden)]
-pub use envhidden::*;
+pub use env::EnvBase;
+#[doc(hidden)]
+pub use env::Error;
+#[doc(hidden)]
+pub use env::MapObject;
+#[doc(hidden)]
+pub use env::SymbolStr;
+#[doc(hidden)]
+pub use env::VecObject;
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
@@ -763,6 +765,8 @@ pub mod auth;
 mod bytes;
 pub mod crypto;
 pub mod deploy;
+mod error;
+pub use error::InvokeError;
 pub mod events;
 pub mod iter;
 pub mod ledger;

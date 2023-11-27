@@ -4,6 +4,7 @@
     "nonce": 0
   },
   "auth": [
+    [],
     []
   ],
   "ledger": {
@@ -87,10 +88,12 @@
                 "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
               },
               {
-                "symbol": "panic"
+                "symbol": "hello"
               }
             ],
-            "data": "void"
+            "data": {
+              "u32": 4
+            }
           }
         }
       },
@@ -105,11 +108,23 @@
           "v0": {
             "topics": [
               {
-                "symbol": "log"
+                "symbol": "error"
+              },
+              {
+                "error": {
+                  "contract": 9
+                }
               }
             ],
             "data": {
-              "string": "caught panic 'I panicked' from contract function 'Symbol(panic)'"
+              "vec": [
+                {
+                  "string": "failing with contract error"
+                },
+                {
+                  "u32": 9
+                }
+              ]
             }
           }
         }
@@ -129,7 +144,32 @@
               },
               {
                 "error": {
-                  "wasm_vm": "invalid_action"
+                  "contract": 9
+                }
+              }
+            ],
+            "data": {
+              "string": "escalating error to panic"
+            }
+          }
+        }
+      },
+      "failed_call": true
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "error"
+              },
+              {
+                "error": {
+                  "contract": 9
                 }
               }
             ],
@@ -154,20 +194,24 @@
               },
               {
                 "error": {
-                  "wasm_vm": "invalid_action"
+                  "contract": 9
                 }
               }
             ],
             "data": {
               "vec": [
                 {
-                  "string": "contract call failed"
+                  "string": "contract try_call failed"
                 },
                 {
-                  "symbol": "panic"
+                  "symbol": "hello"
                 },
                 {
-                  "vec": []
+                  "vec": [
+                    {
+                      "u32": 4
+                    }
+                  ]
                 }
               ]
             }
@@ -185,16 +229,38 @@
           "v0": {
             "topics": [
               {
-                "symbol": "error"
+                "symbol": "fn_call"
               },
               {
-                "error": {
-                  "wasm_vm": "invalid_action"
-                }
+                "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "symbol": "persisted"
+              }
+            ],
+            "data": "void"
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_return"
+              },
+              {
+                "symbol": "persisted"
               }
             ],
             "data": {
-              "string": "escalating error to panic"
+              "bool": false
             }
           }
         }

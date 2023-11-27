@@ -105,7 +105,9 @@ impl From<crate::env::internal::events::HostEvent> for EventSnapshot {
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct AuthSnapshot(pub std::vec::Vec<(xdr::ScAddress, xdr::SorobanAuthorizedInvocation)>);
+pub struct AuthSnapshot(
+    pub std::vec::Vec<std::vec::Vec<(xdr::ScAddress, xdr::SorobanAuthorizedInvocation)>>,
+);
 
 impl AuthSnapshot {
     // Read in a [`AuthSnapshot`] from a reader.

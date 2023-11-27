@@ -116,6 +116,7 @@ where
 use crate::auth::InvokerContractAuthEntry;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
+use crate::InvokeError;
 use crate::{
     crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, prng::Prng,
     storage::Storage, Address, Vec,
@@ -386,10 +387,11 @@ impl Env {
         contract_address: &Address,
         func: &crate::Symbol,
         args: Vec<Val>,
-    ) -> Result<Result<T, T::Error>, Result<E, E::Error>>
+    ) -> Result<Result<T, T::Error>, Result<E, InvokeError>>
     where
         T: TryFromVal<Env, Val>,
         E: TryFrom<Error>,
+        E::Error: Into<InvokeError>,
     {
         let rv = internal::Env::try_call(
             self,
@@ -399,7 +401,7 @@ impl Env {
         )
         .unwrap_infallible();
         match internal::Error::try_from_val(self, &rv) {
-            Ok(err) => Err(E::try_from(err)),
+            Ok(err) => Err(E::try_from(err).map_err(Into::into)),
             Err(ConversionError) => Ok(T::try_from_val(self, &rv)),
         }
     }
@@ -465,6 +467,11 @@ use xdr::{
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
+    #[doc(hidden)]
+    pub fn in_contract(&self) -> bool {
+        self.env_impl.has_frame().unwrap()
+    }
+
     #[doc(hidden)]
     pub fn host(&self) -> &internal::Host {
         &self.env_impl
@@ -532,13 +539,16 @@ impl Env {
         let auth_snapshot_in_hook = auth_snapshot.clone();
         env_impl
             .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
-                if let ContractInvocationEvent::Finish = event {
-                    let new_auths = host
-                        .get_authenticated_authorizations()
-                        // If an error occurs getting the authenticated authorizations
-                        // it means that no auth has occurred.
-                        .unwrap_or_default();
-                    (*auth_snapshot_in_hook).borrow_mut().0.extend(new_auths);
+                match event {
+                    ContractInvocationEvent::Start => {}
+                    ContractInvocationEvent::Finish => {
+                        let new_auths = host
+                            .get_authenticated_authorizations()
+                            // If an error occurs getting the authenticated authorizations
+                            // it means that no auth has occurred.
+                            .unwrap();
+                        (*auth_snapshot_in_hook).borrow_mut().0.push(new_auths);
+                    }
                 }
             })))
             .unwrap();
@@ -600,7 +610,12 @@ impl Env {
                 env_impl: &internal::EnvImpl,
                 args: &[Val],
             ) -> Option<Val> {
-                let env = Env::with_impl(env_impl.clone());
+                let env = Env {
+                    env_impl: env_impl.clone(),
+                    generators: Default::default(),
+                    auth_snapshot: Default::default(),
+                    snapshot: None,
+                };
                 self.0.call(
                     crate::Symbol::try_from_val(&env, func)
                         .unwrap_infallible()
@@ -1050,8 +1065,12 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        let authorizations = self.env_impl.get_authenticated_authorizations().unwrap();
-        authorizations
+        (*self.auth_snapshot)
+            .borrow()
+            .0
+            .last()
+            .cloned()
+            .unwrap_or_default()
             .into_iter()
             .map(|(sc_addr, invocation)| {
                 (
@@ -1122,10 +1141,10 @@ impl Env {
     ///         // as long as a valid error type used.
     ///         Err(Ok(NoopAccountError::SomeError))
     ///     );
-    ///     // Successful call of `__check_auth` with a `soroban_sdk::Error`
+    ///     // Successful call of `__check_auth` with a `soroban_sdk::InvokeError`
     ///     // error - this should be compatible with any error type.
     ///     assert_eq!(
-    ///         e.try_invoke_contract_check_auth::<soroban_sdk::Error>(
+    ///         e.try_invoke_contract_check_auth::<soroban_sdk::InvokeError>(
     ///             &account_contract.address,
     ///             &BytesN::from_array(&e, &[0; 32]),
     ///             0_i32.into(),
@@ -1135,13 +1154,17 @@ impl Env {
     ///     );
     /// }
     /// ```
-    pub fn try_invoke_contract_check_auth<E: TryFrom<Error>>(
+    pub fn try_invoke_contract_check_auth<E>(
         &self,
         contract: &Address,
         signature_payload: &BytesN<32>,
         signature: Val,
         auth_context: &Vec<auth::Context>,
-    ) -> Result<(), Result<E, E::Error>> {
+    ) -> Result<(), Result<E, InvokeError>>
+    where
+        E: TryFrom<Error>,
+        E::Error: Into<InvokeError>,
+    {
         let args = Vec::from_array(
             self,
             [signature_payload.to_val(), signature, auth_context.to_val()],
@@ -1151,7 +1174,7 @@ impl Env {
             .call_account_contract_check_auth(contract.to_object(), args.to_object());
         match res {
             Ok(rv) => Ok(rv.into_val(self)),
-            Err(e) => Err(e.error.try_into()),
+            Err(e) => Err(e.error.try_into().map_err(Into::into)),
         }
     }
 
@@ -1419,21 +1442,6 @@ impl Env {
         // Write test snapshots to file.
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
         snapshot.write_file(p).unwrap();
-    }
-}
-
-#[doc(hidden)]
-impl Env {
-    pub fn with_impl(env_impl: internal::EnvImpl) -> Env {
-        Env {
-            env_impl,
-            #[cfg(any(test, feature = "testutils"))]
-            generators: Default::default(),
-            #[cfg(any(test, feature = "testutils"))]
-            auth_snapshot: Default::default(),
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
-        }
     }
 }
 
