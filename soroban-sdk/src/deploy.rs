@@ -149,7 +149,7 @@ impl Deployer {
     /// The TTL is the number of ledgers between the current ledger and the `live_until_ledger_seq` value for the ledger entry.
     pub fn extend_ttl(&self, contract_address: Address, threshold: u32, extend_to: u32) {
         self.env
-            .extend_contract_instance_and_code(
+            .extend_contract_instance_and_code_ttl(
                 contract_address.to_object(),
                 threshold.into(),
                 extend_to.into(),
