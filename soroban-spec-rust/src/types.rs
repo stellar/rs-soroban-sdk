@@ -17,17 +17,17 @@ use stellar_xdr::{
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
 pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
-    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
 
     if spec.lib.len() > 0 {
-        let lib_ident = format_ident!("{}", spec.lib.to_string().unwrap());
+        let lib_ident = format_ident!("{}", spec.lib.to_utf8_string().unwrap());
         quote! {
             type #ident = ::#lib_ident::#ident;
         }
     } else if spec
         .fields
         .iter()
-        .all(|f| f.name.to_string().unwrap().parse::<usize>().is_ok())
+        .all(|f| f.name.to_utf8_string().unwrap().parse::<usize>().is_ok())
     {
         // If all fields are numeric, generate a tuple with unnamed fields.
         let fields = spec.fields.iter().map(|f| {
@@ -42,7 +42,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
     } else {
         // Otherwise generate a struct with named fields.
         let fields = spec.fields.iter().map(|f| {
-            let f_ident = format_ident!("{}", f.name.to_string().unwrap());
+            let f_ident = format_ident!("{}", f.name.to_utf8_string().unwrap());
             let f_type = generate_type_ident(&f.type_);
             quote! { pub #f_ident: #f_type }
         });
@@ -57,9 +57,9 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec.
 pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
-    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
     if spec.lib.len() > 0 {
-        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        let lib_ident = format_ident!("{}", spec.lib.to_utf8_string_lossy());
         quote! {
             pub type #ident = ::#lib_ident::#ident;
         }
@@ -69,7 +69,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
                 stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(v) => v.name.clone(),
                 stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => t.name.clone(),
             };
-            let v_ident = format_ident!("{}", name.to_string_lossy());
+            let v_ident = format_ident!("{}", name.to_utf8_string_lossy());
             match c {
                 stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => {
                     quote! { #v_ident }
@@ -91,15 +91,15 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec.
 pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
-    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
     if spec.lib.len() > 0 {
-        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        let lib_ident = format_ident!("{}", spec.lib.to_utf8_string_lossy());
         quote! {
             pub type #ident = ::#lib_ident::#ident;
         }
     } else {
         let variants = spec.cases.iter().map(|c| {
-            let v_ident = format_ident!("{}", c.name.to_string().unwrap());
+            let v_ident = format_ident!("{}", c.name.to_utf8_string().unwrap());
             let v_value = Literal::u32_unsuffixed(c.value);
             quote! { #v_ident = #v_value }
         });
@@ -114,15 +114,15 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, that is intended for use with errors.
 pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
-    let ident = format_ident!("{}", spec.name.to_string().unwrap());
+    let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
     if spec.lib.len() > 0 {
-        let lib_ident = format_ident!("{}", spec.lib.to_string_lossy());
+        let lib_ident = format_ident!("{}", spec.lib.to_utf8_string_lossy());
         quote! {
             pub type #ident = ::#lib_ident::#ident;
         }
     } else {
         let variants = spec.cases.iter().map(|c| {
-            let v_ident = format_ident!("{}", c.name.to_string().unwrap());
+            let v_ident = format_ident!("{}", c.name.to_utf8_string().unwrap());
             let v_value = Literal::u32_unsuffixed(c.value);
             quote! { #v_ident = #v_value }
         });
@@ -176,7 +176,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             quote! { soroban_sdk::BytesN<#n> }
         }
         ScSpecTypeDef::Udt(u) => {
-            let ident = format_ident!("{}", u.name.to_string().unwrap());
+            let ident = format_ident!("{}", u.name.to_utf8_string().unwrap());
             quote! { #ident }
         }
         ScSpecTypeDef::Void => quote! { () },

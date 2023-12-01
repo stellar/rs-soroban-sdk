@@ -174,7 +174,7 @@ impl ToString for String {
     fn to_string(&self) -> std::string::String {
         let sc_val: ScVal = self.try_into().unwrap();
         if let ScVal::String(ScString(s)) = sc_val {
-            s.to_string().unwrap()
+            s.to_utf8_string().unwrap()
         } else {
             panic!("value is not a string");
         }
@@ -218,7 +218,7 @@ impl String {
     pub fn from_str(env: &Env, s: &str) -> String {
         String {
             env: env.clone(),
-            obj: env.string_new_from_slice(s).unwrap_optimized(),
+            obj: env.string_new_from_slice(s.as_bytes()).unwrap_optimized(),
         }
     }
 
