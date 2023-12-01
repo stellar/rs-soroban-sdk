@@ -2,10 +2,10 @@ use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
-use stellar_xdr::{ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM, WriteXdr};
+use stellar_xdr::{ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM};
 use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path};
 
-use crate::{doc::docs_from_attrs, DEFAULT_XDR_RW_LIMITS};
+use crate::doc::docs_from_attrs;
 
 pub fn derive_type_error_enum_int(
     path: &Path,
@@ -71,12 +71,13 @@ pub fn derive_type_error_enum_int(
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        let spec_section_name = crate::spec::SECTION_NAME;
+        let spec_xdr = crate::spec::to_xdr_gzip(&spec_entry);
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
         Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            #[cfg_attr(target_family = "wasm", link_section = #spec_section_name)]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
 
             impl #enum_ident {

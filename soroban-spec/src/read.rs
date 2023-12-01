@@ -1,4 +1,4 @@
-use std::io::Cursor;
+use std::io::{self, Cursor, Read};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limited, Limits, ReadXdr, ScSpecEntry};
@@ -40,6 +40,8 @@ pub enum FromWasmError {
     Parse(stellar_xdr::Error),
     #[error("contract spec not found")]
     NotFound,
+    #[error("decompressing")]
+    Decompress(io::Error),
 }
 
 pub fn raw_from_wasm(wasm: &[u8]) -> Result<Vec<u8>, FromWasmError> {
@@ -48,6 +50,12 @@ pub fn raw_from_wasm(wasm: &[u8]) -> Result<Vec<u8>, FromWasmError> {
         if let Payload::CustomSection(section) = payload {
             if section.name() == "contractspecv0" {
                 return Ok(section.data().to_vec());
+            }
+            if section.name() == "contractspecv0gzip" {
+                return flate2::read::MultiGzDecoder::new(section.data())
+                    .bytes()
+                    .collect::<Result<_, _>>()
+                    .map_err(FromWasmError::Decompress);
             }
         };
     }

@@ -15,6 +15,7 @@ stellar-xdr = { workspace = true, features = ["curr", "std", "serde"] }
 base64 = "0.13.0"
 thiserror = "1.0.32"
 wasmparser = "0.88.0"
+flate2 = "1.0.25"
 
 [dev_dependencies]
 pretty_assertions = "1.2.1"

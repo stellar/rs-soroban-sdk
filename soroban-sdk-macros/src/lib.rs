@@ -12,6 +12,7 @@ mod derive_struct_tuple;
 mod doc;
 mod map_type;
 mod path;
+mod spec;
 mod syn_ext;
 
 use derive_client::{derive_client_impl, derive_client_type};
