@@ -54,15 +54,15 @@ pub fn derive_type_struct(
             };
             let try_from_xdr = quote! {
                 #field_ident: {
-                    let key = &#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?;
-                    let idx = map.binary_search_by_key(key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
+                    let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
+                    let idx = map.binary_search_by_key(&key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
                     let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
                     rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
             let try_into_xdr = quote! {
                 #path::xdr::ScMapEntry {
-                    key: #field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?,
+                    key: #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into(),
                     val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };

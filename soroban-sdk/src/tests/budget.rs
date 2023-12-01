@@ -1,4 +1,5 @@
 use crate as soroban_sdk;
+use soroban_env_host::budget::CostTracker;
 use soroban_sdk::{contract, contractimpl, map, xdr::ContractCostType, Env, Map};
 
 #[contract]
@@ -26,7 +27,12 @@ fn test_budget() {
 
     assert_eq!(
         e.budget().tracker(ContractCostType::VisitObject),
-        (13, None)
+        CostTracker {
+            iterations: 13,
+            inputs: None,
+            cpu: 793,
+            mem: 0,
+        }
     );
     assert_eq!(b, map![&e, (1, 10), (2, 20)]);
 }

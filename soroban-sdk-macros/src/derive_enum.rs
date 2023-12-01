@@ -206,7 +206,7 @@ pub fn derive_type_enum(
                 let vec = val;
                 let mut iter = vec.iter();
                 let discriminant: #path::xdr::ScSymbol = iter.next().ok_or(#path::xdr::Error::Invalid)?.clone().try_into().map_err(|_| #path::xdr::Error::Invalid)?;
-                let discriminant_name: &str = &discriminant.to_string()?;
+                let discriminant_name: &str = &discriminant.to_utf8_string()?;
 
                 Ok(match discriminant_name {
                     #(#try_from_xdrs,)*
@@ -314,7 +314,13 @@ fn map_empty_variant(
             Self::#case_ident
         }
     };
-    let into_xdr = quote! { #enum_ident::#case_ident => (#case_name,).try_into().map_err(|_| #path::xdr::Error::Invalid)? };
+    let into_xdr = quote! {
+        #enum_ident::#case_ident => {
+            let symbol = #path::xdr::ScSymbol(#case_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?);
+            let val = #path::xdr::ScVal::Symbol(symbol);
+            (val,).try_into().map_err(|_| #path::xdr::Error::Invalid)?
+        }
+    };
 
     VariantTokens {
         spec_case,
@@ -448,7 +454,10 @@ fn map_tuple_variant(
             .map(|(i, _f)| format_ident!("value{i}"))
             .collect::<Vec<_>>();
         quote! {
-            #enum_ident::#case_ident( #(#binding_names,)* ) => (#case_name, #(#binding_names,)* ).try_into().map_err(|_| #path::xdr::Error::Invalid)?
+            #enum_ident::#case_ident( #(#binding_names,)* ) => (
+                #path::xdr::ScSymbol(#case_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?),
+                #(#binding_names,)*
+            ).try_into().map_err(|_| #path::xdr::Error::Invalid)?
         }
     };
 
