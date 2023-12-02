@@ -268,6 +268,17 @@ mod test {
     }
 
     #[test]
+    fn string_from_and_to_bytes() {
+        let env = Env::default();
+
+        let msg = b"a message";
+        let s = String::from_bytes(&env, msg);
+        let mut out = [0u8; 9];
+        s.copy_into_slice(&mut out);
+        assert_eq!(msg, out)
+    }
+
+    #[test]
     #[should_panic]
     fn string_to_short_slice() {
         let env = Env::default();
