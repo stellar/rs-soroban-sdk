@@ -209,9 +209,18 @@ impl String {
     }
 
     #[inline(always)]
+    #[doc(hidden)]
     #[deprecated(note = "use from_str")]
     pub fn from_slice(env: &Env, slice: &str) -> String {
         Self::from_str(env, slice)
+    }
+
+    #[inline(always)]
+    pub fn from_bytes(env: &Env, b: &[u8]) -> String {
+        String {
+            env: env.clone(),
+            obj: env.string_new_from_slice(b).unwrap_optimized(),
+        }
     }
 
     #[inline(always)]
