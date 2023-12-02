@@ -223,6 +223,8 @@ pub mod budget {
     use core::fmt::{Debug, Display};
 
     #[doc(inline)]
+    use crate::env::internal::budget::CostTracker;
+    #[doc(inline)]
     pub use crate::xdr::ContractCostType;
 
     /// Budget that tracks the resources consumed for the environment.
@@ -304,13 +306,15 @@ pub mod budget {
             self.0.get_mem_bytes_consumed().unwrap()
         }
 
-        /// Get the input tracker associated with the cost. The tracker tracks
-        /// the cumulative (iterations, inputs). If the underlying model is a
-        /// constant model, then inputs is `None` and only iterations matter.
+        /// Get the cost tracker associated with the cost type. The tracker
+        /// tracks the cumulative iterations and inputs and derived cpu and
+        /// memory. If the underlying model is a constant model, then inputs is
+        /// `None` and only iterations matter.
         ///
         /// Note that VM cost types are likely to be underestimated when running
-        /// Rust code compared to running the WASM equivalent.
-        pub fn tracker(&self, cost_type: ContractCostType) -> (u64, Option<u64>) {
+        /// natively as Rust code inside tests code compared to running the WASM
+        /// equivalent.
+        pub fn tracker(&self, cost_type: ContractCostType) -> CostTracker {
             self.0.get_tracker(cost_type).unwrap()
         }
 

@@ -1554,7 +1554,7 @@ impl internal::EnvBase for Env {
             .unwrap_optimized())
     }
 
-    fn string_new_from_slice(&self, slice: &str) -> Result<StringObject, Self::Error> {
+    fn string_new_from_slice(&self, slice: &[u8]) -> Result<StringObject, Self::Error> {
         Ok(self
             .env_impl
             .string_new_from_slice(slice)

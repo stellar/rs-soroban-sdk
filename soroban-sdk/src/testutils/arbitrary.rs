@@ -1210,7 +1210,7 @@ mod composite {
 
 /// Additional tools for writing fuzz tests.
 mod fuzz_test_helpers {
-    use soroban_env_host::call_with_suppressed_panic_hook;
+    use soroban_env_host::testutils::call_with_suppressed_panic_hook;
 
     /// Catch panics within a fuzz test.
     ///

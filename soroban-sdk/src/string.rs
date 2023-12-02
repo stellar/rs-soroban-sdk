@@ -174,7 +174,7 @@ impl ToString for String {
     fn to_string(&self) -> std::string::String {
         let sc_val: ScVal = self.try_into().unwrap();
         if let ScVal::String(ScString(s)) = sc_val {
-            s.to_string().unwrap()
+            s.to_utf8_string().unwrap()
         } else {
             panic!("value is not a string");
         }
@@ -209,16 +209,25 @@ impl String {
     }
 
     #[inline(always)]
+    #[doc(hidden)]
     #[deprecated(note = "use from_str")]
     pub fn from_slice(env: &Env, slice: &str) -> String {
         Self::from_str(env, slice)
     }
 
     #[inline(always)]
+    pub fn from_bytes(env: &Env, b: &[u8]) -> String {
+        String {
+            env: env.clone(),
+            obj: env.string_new_from_slice(b).unwrap_optimized(),
+        }
+    }
+
+    #[inline(always)]
     pub fn from_str(env: &Env, s: &str) -> String {
         String {
             env: env.clone(),
-            obj: env.string_new_from_slice(s).unwrap_optimized(),
+            obj: env.string_new_from_slice(s.as_bytes()).unwrap_optimized(),
         }
     }
 
@@ -256,6 +265,17 @@ mod test {
         let mut out = [0u8; 9];
         s.copy_into_slice(&mut out);
         assert_eq!(msg.as_bytes(), out)
+    }
+
+    #[test]
+    fn string_from_and_to_bytes() {
+        let env = Env::default();
+
+        let msg = b"a message";
+        let s = String::from_bytes(&env, msg);
+        let mut out = [0u8; 9];
+        s.copy_into_slice(&mut out);
+        assert_eq!(msg, &out)
     }
 
     #[test]

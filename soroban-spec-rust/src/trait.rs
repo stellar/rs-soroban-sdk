@@ -12,9 +12,9 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
     let fns: Vec<_> = specs
         .iter()
         .map(|s| {
-            let fn_ident = format_ident!("{}", s.name.to_string().unwrap());
+            let fn_ident = format_ident!("{}", s.name.to_utf8_string().unwrap());
             let fn_inputs = s.inputs.iter().map(|input| {
-                let name = format_ident!("{}", input.name.to_string().unwrap());
+                let name = format_ident!("{}", input.name.to_utf8_string().unwrap());
                 let type_ident = generate_type_ident(&input.type_);
                 quote! { #name: #type_ident }
             });

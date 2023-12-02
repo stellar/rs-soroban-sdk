@@ -413,7 +413,7 @@
                                 "symbol": "symbol"
                               },
                               "val": {
-                                "string": "aaa\u0000"
+                                "string": "aaa\\0"
                               }
                             }
                           ]
@@ -451,7 +451,7 @@
                                     "symbol": "asset_code"
                                   },
                                   "val": {
-                                    "string": "aaa\u0000"
+                                    "string": "aaa\\0"
                                   }
                                 },
                                 {
