@@ -16,6 +16,12 @@ soroban-env-common = {workspace = true, features = ["serde"]}
 serde = { version = "1.0.0", features = ["derive"] }
 serde_json = "1.0.0"
 thiserror = "1.0"
+# This dependency is not a direct dependency, but a transitive dependency via
+# the soroban-env-host and soroban-env-common. It is included here to ensure
+# that a specific version of the stellar-xdr in the workspace is pinned.  This
+# is because the env crates are loosely selecting any v20 of stellar-xdr, and we
+# need them and this crate to pick a specific pre-release.
+stellar-xdr = { workspace = true, features = ["curr", "std"] }
 
 [dev_dependencies]
 pretty_assertions = "1.2.1"

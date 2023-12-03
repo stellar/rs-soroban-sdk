@@ -1172,6 +1172,7 @@ dependencies = [
  "serde_json",
  "soroban-env-common",
  "soroban-env-host",
+ "stellar-xdr",
  "thiserror",
 ]
 
