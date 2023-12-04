@@ -1095,8 +1095,8 @@ checksum = "4dccd0940a2dcdf68d092b8cbab7dc0ad8fa938bf95787e1b916b0e3d0e8e970"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "20.0.0-rc2"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4aee9508153688ef984628a43dba7d9e276a0cd1#4aee9508153688ef984628a43dba7d9e276a0cd1"
+version = "20.0.0"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=9c5394083725bacf32a56107d7fa2adf643dc7b5#9c5394083725bacf32a56107d7fa2adf643dc7b5"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1106,8 +1106,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "20.0.0-rc2"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4aee9508153688ef984628a43dba7d9e276a0cd1#4aee9508153688ef984628a43dba7d9e276a0cd1"
+version = "20.0.0"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=9c5394083725bacf32a56107d7fa2adf643dc7b5#9c5394083725bacf32a56107d7fa2adf643dc7b5"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1123,8 +1123,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "20.0.0-rc2"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4aee9508153688ef984628a43dba7d9e276a0cd1#4aee9508153688ef984628a43dba7d9e276a0cd1"
+version = "20.0.0"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=9c5394083725bacf32a56107d7fa2adf643dc7b5#9c5394083725bacf32a56107d7fa2adf643dc7b5"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1132,8 +1132,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "20.0.0-rc2"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4aee9508153688ef984628a43dba7d9e276a0cd1#4aee9508153688ef984628a43dba7d9e276a0cd1"
+version = "20.0.0"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=9c5394083725bacf32a56107d7fa2adf643dc7b5#9c5394083725bacf32a56107d7fa2adf643dc7b5"
 dependencies = [
  "backtrace",
  "curve25519-dalek",
@@ -1158,8 +1158,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "20.0.0-rc2"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=4aee9508153688ef984628a43dba7d9e276a0cd1#4aee9508153688ef984628a43dba7d9e276a0cd1"
+version = "20.0.0"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=9c5394083725bacf32a56107d7fa2adf643dc7b5#9c5394083725bacf32a56107d7fa2adf643dc7b5"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1172,7 +1172,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1185,7 +1185,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1208,7 +1208,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "crate-git-revision",
  "darling",
@@ -1226,7 +1226,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "base64 0.13.1",
  "pretty_assertions",
@@ -1237,7 +1237,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1252,7 +1252,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1305,7 +1305,8 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "20.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=24dd3c1b9fada6e2b28e8456a915adc212d6c47e#24dd3c1b9fada6e2b28e8456a915adc212d6c47e"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9595b775539e475da4179fa46212b11e4575f526d57b13308989a8c1dd59238c"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
@@ -1355,119 +1356,119 @@ dependencies = [
 
 [[package]]
 name = "test_add_i128"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -1475,7 +1476,7 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "20.0.0-rc2"
+version = "20.0.0"
 dependencies = [
  "soroban-sdk",
 ]
