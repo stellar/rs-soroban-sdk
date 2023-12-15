@@ -7,6 +7,8 @@ edition = "2021"
 publish = false
 rust-version = "1.74"
 
+exclude = ["test_snapshots/"]
+
 [lib]
 crate-type = ["cdylib"]
 doctest = false
