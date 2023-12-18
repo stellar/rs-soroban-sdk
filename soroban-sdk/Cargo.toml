@@ -10,7 +10,7 @@ version.workspace = true
 edition = "2021"
 rust-version = "1.74"
 
-exclude = ["test_snapshots/", "tests/"]
+exclude = ["test_snapshots/", "src/tests/"]
 
 [lib]
 doctest = false
