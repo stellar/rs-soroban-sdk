@@ -29,15 +29,15 @@ members = [
 ]
 
 [workspace.package]
-version = "20.0.2"
+version = "20.0.3"
 
 [workspace.dependencies]
-soroban-sdk = { version = "20.0.2", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "20.0.2", path = "soroban-sdk-macros" }
-soroban-spec = { version = "20.0.2", path = "soroban-spec" }
-soroban-spec-rust = { version = "20.0.2", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "20.0.2", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "20.0.2", path = "soroban-token-sdk" }
+soroban-sdk = { version = "20.0.3", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "20.0.3", path = "soroban-sdk-macros" }
+soroban-spec = { version = "20.0.3", path = "soroban-spec" }
+soroban-spec-rust = { version = "20.0.3", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "20.0.3", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "20.0.3", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
 version = "=20.0.1"
