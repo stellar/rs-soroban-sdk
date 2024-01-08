@@ -487,7 +487,7 @@ impl_num_wrapping_val_type!(Duration, DurationVal, DurationSmall);
 
 impl Duration {
     /// Create a Duration from seconds.
-    fn from_seconds(env: &Env, seconds: u64) -> Duration {
+    pub fn from_seconds(env: &Env, seconds: u64) -> Duration {
         let val = DurationVal::try_from_val(env, &seconds).unwrap_optimized();
         Duration {
             env: env.clone(),
@@ -496,7 +496,7 @@ impl Duration {
     }
 
     /// Returns the Duration as seconds.
-    fn to_seconds(&self) -> u64 {
+    pub fn to_seconds(&self) -> u64 {
         u64::try_from_val(self.env(), &self.to_val_type()).unwrap_optimized()
     }
 }
