@@ -459,15 +459,19 @@ pub struct Timepoint {
 impl_num_wrapping_val_type!(Timepoint, TimepointVal, TimepointSmall);
 
 impl Timepoint {
-    fn from_u64(env: &Env, u: u64) -> Timepoint {
-        let val = TimepointVal::try_from_val(env, &u).unwrap_optimized();
+    /// Create a Timepoint from a unix time in seconds, the time in seconds
+    /// since January 1, 1970 UTC.
+    pub fn from_unix(env: &Env, seconds: u64) -> Timepoint {
+        let val = TimepointVal::try_from_val(env, &seconds).unwrap_optimized();
         Timepoint {
             env: env.clone(),
             val,
         }
     }
 
-    fn to_u64(&self) -> u64 {
+    /// Returns the Timepoint as unix time in seconds, the time in seconds since
+    /// January 1, 1970 UTC.
+    pub fn to_unix(&self) -> u64 {
         u64::try_from_val(self.env(), &self.to_val_type()).unwrap_optimized()
     }
 }
@@ -482,15 +486,17 @@ pub struct Duration {
 impl_num_wrapping_val_type!(Duration, DurationVal, DurationSmall);
 
 impl Duration {
-    fn from_u64(env: &Env, u: u64) -> Duration {
-        let val = DurationVal::try_from_val(env, &u).unwrap_optimized();
+    /// Create a Duration from seconds.
+    fn from_seconds(env: &Env, seconds: u64) -> Duration {
+        let val = DurationVal::try_from_val(env, &seconds).unwrap_optimized();
         Duration {
             env: env.clone(),
             val,
         }
     }
 
-    fn to_u64(&self) -> u64 {
+    /// Returns the Duration as seconds.
+    fn to_seconds(&self) -> u64 {
         u64::try_from_val(self.env(), &self.to_val_type()).unwrap_optimized()
     }
 }
@@ -575,8 +581,8 @@ mod test {
     fn test_timepoint_roundtrip() {
         let env = Env::default();
 
-        let tp = Timepoint::from_u64(&env, 123);
-        let u = tp.to_u64();
+        let tp = Timepoint::from_unix(&env, 123);
+        let u = tp.to_unix();
         assert_eq!(u, 123);
     }
 
@@ -584,8 +590,8 @@ mod test {
     fn test_duration_roundtrip() {
         let env = Env::default();
 
-        let tp = Duration::from_u64(&env, 123);
-        let u = tp.to_u64();
+        let tp = Duration::from_seconds(&env, 123);
+        let u = tp.to_seconds();
         assert_eq!(u, 123);
     }
 
