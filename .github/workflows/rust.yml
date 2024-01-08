@@ -60,7 +60,7 @@ jobs:
     - name: Check if rust-analyzer encounters any errors parsing project
       run: rustup run nightly rust-analyzer analysis-stats . 2>&1 | (! grep '^\[ERROR')
 
-  api-compat:
+  semver-checks:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
