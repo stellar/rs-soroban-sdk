@@ -76,7 +76,7 @@ pub mod internal {
 }
 
 pub use internal::xdr;
-pub use internal::Compare;
+// pub use internal::Compare;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::Error;
