@@ -1560,7 +1560,7 @@ impl internal::EnvBase for Env {
             .unwrap_optimized())
     }
 
-    fn symbol_new_from_slice(&self, slice: &str) -> Result<SymbolObject, Self::Error> {
+    fn symbol_new_from_slice(&self, slice: &[u8]) -> Result<SymbolObject, Self::Error> {
         Ok(self
             .env_impl
             .symbol_new_from_slice(slice)
