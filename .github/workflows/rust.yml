@@ -6,9 +6,6 @@ on:
   pull_request:
   merge_group:
 
-env:
-  RUSTFLAGS: -D warnings
-
 defaults:
   run:
     shell: bash
@@ -78,6 +75,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        rust: [msrv, latest]
         sys:
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
@@ -99,15 +97,27 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
+    - name: Use the minimum supported Rust version
+      if: matrix.rust == 'msrv'
+      run: |
+        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
+        rustup override set $msrv
+        rustup component add clippy --toolchain $msrv
+    - name: Error on warnings and clippy checks
+      # Only error on warnings and checks for the msrv, because new versions of
+      # Rust will frequently add new warnings and checks.
+      if: matrix.rust == 'msrv'
+      run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
     - run: rustup update
+    - run: cargo version
     - run: rustup target add ${{ matrix.sys.target }}
     - run: rustup target add wasm32-unknown-unknown
     - if: matrix.target == 'aarch64-unknown-linux-gnu'
       run: sudo apt-get update && sudo apt-get -y install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-    - uses: stellar/binaries@v12
+    - uses: stellar/binaries@v18
       with:
         name: cargo-hack
-        version: 0.5.16
+        version: 0.5.28
     - if: startsWith(matrix.sys.target, 'x86_64')
       name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
