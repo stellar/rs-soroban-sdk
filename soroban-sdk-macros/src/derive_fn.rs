@@ -6,7 +6,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
 };
 
 #[allow(clippy::too_many_arguments)]
@@ -25,14 +25,19 @@ pub fn derive_fn(
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
         FnArg::Typed(pat_type) => {
-            let ty = &*pat_type.ty;
+            let mut is_ref = false;
+            let mut ty = &*pat_type.ty;
+            if let Type::Reference(TypeReference { elem, .. }) = ty {
+                is_ref = true;
+                ty = elem;
+            }
             if let Type::Path(TypePath {
                 path: syn::Path { segments, .. },
                 ..
             }) = ty
             {
                 if segments.last().map_or(false, |s| s.ident == "Env") {
-                    Some(a)
+                    Some(is_ref)
                 } else {
                     None
                 }
@@ -87,8 +92,12 @@ pub fn derive_fn(
         "use `{}::new(&env, &contract_id).{}` instead",
         client_ident, &ident
     );
-    let env_call = if env_input.is_some() {
-        quote! { env.clone(), }
+    let env_call = if let Some(is_ref) = env_input {
+        if is_ref {
+            quote! { &env, }
+        } else {
+            quote! { env.clone(), }
+        }
     } else {
         quote! {}
     };
