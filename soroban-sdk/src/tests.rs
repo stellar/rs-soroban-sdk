@@ -7,6 +7,7 @@ mod contract_add_i32;
 mod contract_assert;
 mod contract_docs;
 mod contract_duration;
+mod contract_fn;
 mod contract_invoke;
 mod contract_overlapping_type_fn_names;
 mod contract_snapshot;

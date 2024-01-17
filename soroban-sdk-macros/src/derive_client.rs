@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath};
+use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath, TypeReference};
 
 use crate::syn_ext;
 
@@ -141,14 +141,17 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             // Check for the Env argument.
             let env_input = f.inputs.first().and_then(|a| match a {
                 FnArg::Typed(pat_type) => {
-                    let ty = &*pat_type.ty;
+                    let mut ty = &*pat_type.ty;
+                    if let Type::Reference(TypeReference { elem, .. }) = ty {
+                        ty = elem;
+                    }
                     if let Type::Path(TypePath {
                         path: syn::Path { segments, .. },
                         ..
                     }) = ty
                     {
                         if segments.last().map_or(false, |s| s.ident == "Env") {
-                            Some(a)
+                            Some(())
                         } else {
                             None
                         }

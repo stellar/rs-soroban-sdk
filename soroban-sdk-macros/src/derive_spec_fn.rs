@@ -5,6 +5,7 @@ use stellar_xdr::{
     ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM, VecM,
     WriteXdr, SCSYMBOL_LIMIT,
 };
+use syn::TypeReference;
 use syn::{
     punctuated::Punctuated, spanned::Spanned, token::Comma, Attribute, Error, FnArg, Ident, Pat,
     ReturnType, Type, TypePath,
@@ -27,14 +28,17 @@ pub fn derive_fn_spec(
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
         FnArg::Typed(pat_type) => {
-            let ty = &*pat_type.ty;
+            let mut ty = &*pat_type.ty;
+            if let Type::Reference(TypeReference { elem, .. }) = ty {
+                ty = elem;
+            }
             if let Type::Path(TypePath {
                 path: syn::Path { segments, .. },
                 ..
             }) = ty
             {
                 if segments.last().map_or(false, |s| s.ident == "Env") {
-                    Some(a)
+                    Some(())
                 } else {
                     None
                 }
