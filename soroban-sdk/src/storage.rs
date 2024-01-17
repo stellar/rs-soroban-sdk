@@ -230,7 +230,8 @@ impl Storage {
     ///
     /// Loads the value, calls the function with it, then sets the value to the
     /// returned value of the function.  If no value is stored with the key then
-    /// the function is called with None.
+    /// the function is called with None.  If the function returns an error it
+    /// will be passed through.
     ///
     /// The returned value is the value stored after updating.
     pub(crate) fn try_update<K, V, E>(
@@ -324,6 +325,43 @@ impl Persistent {
         self.storage.set(key, val, StorageType::Persistent)
     }
 
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.
+    ///
+    /// The returned value is the value stored after updating.
+    pub fn update<K, V>(&self, key: &K, f: impl FnOnce(Option<V>) -> V) -> V
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.update(key, StorageType::Persistent, f)
+    }
+
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.  If the function returns an error it
+    /// will be passed through.
+    ///
+    /// The returned value is the value stored after updating.
+    pub fn try_update<K, V, E>(
+        &self,
+        key: &K,
+        f: impl FnOnce(Option<V>) -> Result<V, E>,
+    ) -> Result<V, E>
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.try_update(key, StorageType::Persistent, f)
+    }
+
     pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
@@ -370,6 +408,43 @@ impl Temporary {
         self.storage.set(key, val, StorageType::Temporary)
     }
 
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.
+    ///
+    /// The returned value is the value stored after updating.
+    pub fn update<K, V>(&self, key: &K, f: impl FnOnce(Option<V>) -> V) -> V
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.update(key, StorageType::Temporary, f)
+    }
+
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.  If the function returns an error it
+    /// will be passed through.
+    ///
+    /// The returned value is the value stored after updating.
+    pub fn try_update<K, V, E>(
+        &self,
+        key: &K,
+        f: impl FnOnce(Option<V>) -> Result<V, E>,
+    ) -> Result<V, E>
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.try_update(key, StorageType::Temporary, f)
+    }
+
     pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
@@ -414,6 +489,43 @@ impl Instance {
         V: IntoVal<Env, Val>,
     {
         self.storage.set(key, val, StorageType::Instance)
+    }
+
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.
+    ///
+    /// The returned value is the value stored after updating.
+    pub fn update<K, V>(&self, key: &K, f: impl FnOnce(Option<V>) -> V) -> V
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.update(key, StorageType::Instance, f)
+    }
+
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.  If the function returns an error it
+    /// will be passed through.
+    ///
+    /// The returned value is the value stored after updating.
+    pub fn try_update<K, V, E>(
+        &self,
+        key: &K,
+        f: impl FnOnce(Option<V>) -> Result<V, E>,
+    ) -> Result<V, E>
+    where
+        K: IntoVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage.try_update(key, StorageType::Instance, f)
     }
 
     #[inline(always)]
