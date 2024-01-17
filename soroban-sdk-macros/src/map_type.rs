@@ -35,6 +35,8 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                     "Error" => Ok(ScSpecTypeDef::Error),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
                     "Address" => Ok(ScSpecTypeDef::Address),
+                    "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
+                    "Duration" => Ok(ScSpecTypeDef::Duration),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                         name: s.try_into().map_err(|e| {
                             Error::new(
