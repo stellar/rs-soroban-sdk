@@ -201,6 +201,56 @@ impl Storage {
             .unwrap_infallible();
     }
 
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.
+    ///
+    /// The returned value is the value stored after updating.
+    pub(crate) fn update<K, V>(
+        &self,
+        key: &K,
+        storage_type: StorageType,
+        f: impl FnOnce(Option<V>) -> V,
+    ) -> V
+    where
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+    {
+        let key = key.into_val(&self.env);
+        let val = self.get(&key, storage_type);
+        let val = f(val);
+        self.set(&key, &val, storage_type);
+        val
+    }
+
+    /// Update a value stored against a key.
+    ///
+    /// Loads the value, calls the function with it, then sets the value to the
+    /// returned value of the function.  If no value is stored with the key then
+    /// the function is called with None.
+    ///
+    /// The returned value is the value stored after updating.
+    pub(crate) fn try_update<K, V, E>(
+        &self,
+        key: &K,
+        storage_type: StorageType,
+        f: impl FnOnce(Option<V>) -> Result<V, E>,
+    ) -> Result<V, E>
+    where
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+        V: IntoVal<Env, Val>,
+    {
+        let key = key.into_val(&self.env);
+        let val = self.get(&key, storage_type);
+        let val = f(val)?;
+        self.set(&key, &val, storage_type);
+        Ok(val)
+    }
+
     pub(crate) fn extend_ttl<K>(
         &self,
         key: &K,
