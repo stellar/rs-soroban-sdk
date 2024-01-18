@@ -29,10 +29,13 @@ use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use sha2::{Digest, Sha256};
 use std::fs;
+use syn::punctuated::Punctuated;
+use syn::token::{Brace, Colon};
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
     ItemStruct, LitStr, Path, Type, Visibility,
 };
+use syn::{Field, FieldMutability, FieldsNamed};
 use syn_ext::HasFnsItem;
 
 use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
@@ -140,19 +143,51 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.write_errors().into(),
     };
 
-    let input2: TokenStream2 = input.clone().into();
-
     let item = parse_macro_input!(input as ItemStruct);
+    match &item.fields {
+        Fields::Named(_) | Fields::Unnamed(_) => {
+            return Error::new(
+                item.span(),
+                "contract type must be a unit struct with no fields",
+            )
+            .into_compile_error()
+            .into()
+        }
+        Fields::Unit => (),
+    }
+
+    let crate_path = &args.crate_path;
+
+    let mut item_modified = item.clone();
+    let mut fields = Punctuated::new();
+    fields.push(Field {
+        attrs: Vec::new(),
+        vis: Visibility::Inherited,
+        mutability: FieldMutability::None,
+        ident: Some(format_ident!("env")),
+        colon_token: Some(Colon::default()),
+        ty: Type::Verbatim(quote! { #crate_path::Env }),
+    });
+    item_modified.fields = Fields::Named(FieldsNamed {
+        brace_token: Brace::default(),
+        named: fields,
+    });
 
     let ty = &item.ident;
     let ty_str = quote!(#ty).to_string();
 
     let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
-    let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
     quote! {
-        #input2
+        #item_modified
+
+        impl #ty {
+            pub fn env(&self) -> &#crate_path::Env {
+                &self.env
+            }
+        }
+
         #client
 
         #[cfg(any(test, feature = "testutils"))]

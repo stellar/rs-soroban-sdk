@@ -6,8 +6,17 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Receiver, Type, TypePath,
+    TypeReference,
 };
+
+enum SpecialFirstInput {
+    BorrowEnv,
+    OwnedEnv,
+    BorrowMutSelf,
+    BorrowSelf,
+    OwnedSelf,
+}
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn(
@@ -23,7 +32,7 @@ pub fn derive_fn(
     let mut errors = Vec::<Error>::new();
 
     // Prepare the env input.
-    let env_input = inputs.first().and_then(|a| match a {
+    let special_first_input = inputs.first().and_then(|a| match a {
         FnArg::Typed(pat_type) => {
             let mut is_ref = false;
             let mut ty = &*pat_type.ty;
@@ -37,7 +46,11 @@ pub fn derive_fn(
             }) = ty
             {
                 if segments.last().map_or(false, |s| s.ident == "Env") {
-                    Some(is_ref)
+                    if is_ref {
+                        Some(SpecialFirstInput::BorrowEnv)
+                    } else {
+                        Some(SpecialFirstInput::OwnedEnv)
+                    }
                 } else {
                     None
                 }
@@ -45,13 +58,32 @@ pub fn derive_fn(
                 None
             }
         }
-        FnArg::Receiver(_) => None,
+        FnArg::Receiver(Receiver {
+            reference: Some(_),
+            mutability: Some(_),
+            ..
+        }) => Some(SpecialFirstInput::BorrowMutSelf),
+        FnArg::Receiver(Receiver {
+            reference: Some(_),
+            mutability: None,
+            ..
+        }) => Some(SpecialFirstInput::BorrowSelf),
+        FnArg::Receiver(Receiver {
+            reference: None,
+            mutability: None,
+            ..
+        }) => Some(SpecialFirstInput::OwnedSelf),
+        FnArg::Receiver(Receiver {
+            reference: None,
+            mutability: Some(_),
+            ..
+        }) => None,
     });
 
     // Prepare the argument inputs.
     let (wrap_args, wrap_calls): (Vec<_>, Vec<_>) = inputs
         .iter()
-        .skip(if env_input.is_some() { 1 } else { 0 })
+        .skip(if special_first_input.is_some() { 1 } else { 0 })
         .enumerate()
         .map(|(i, a)| match a {
             FnArg::Typed(_) => {
@@ -92,14 +124,13 @@ pub fn derive_fn(
         "use `{}::new(&env, &contract_id).{}` instead",
         client_ident, &ident
     );
-    let env_call = if let Some(is_ref) = env_input {
-        if is_ref {
-            quote! { &env, }
-        } else {
-            quote! { env.clone(), }
-        }
-    } else {
-        quote! {}
+    let env_call = match special_first_input {
+        None => quote! {},
+        Some(SpecialFirstInput::BorrowEnv) => quote! { &env, },
+        Some(SpecialFirstInput::OwnedEnv) => quote! { env.clone(), },
+        Some(SpecialFirstInput::BorrowSelf) => quote! { &env, },
+        Some(SpecialFirstInput::BorrowMutSelf) => quote! { &env, },
+        Some(SpecialFirstInput::OwnedSelf) => quote! { env.clone(), },
     };
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let use_trait = if let Some(t) = trait_ident {
