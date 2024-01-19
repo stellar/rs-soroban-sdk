@@ -198,6 +198,11 @@ impl Generators {
 }
 
 #[doc(hidden)]
+pub trait ContractStruct {
+    fn new(env: Env) -> Self;
+}
+
+#[doc(hidden)]
 pub trait ContractFunctionSet {
     fn call(&self, func: &str, env: Env, args: &[Val]) -> Option<Val>;
 }

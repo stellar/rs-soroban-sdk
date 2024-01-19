@@ -445,7 +445,8 @@ use crate::{
     auth,
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
-        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+        ContractStruct, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
+        Snapshot,
     },
     Bytes, BytesN,
 };
@@ -596,10 +597,9 @@ impl Env {
     ///     let contract_id = env.register_contract(None, HelloContract);
     /// }
     /// ```
-    pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
+    pub fn register_contract<'a, T: ContractStruct + ContractFunctionSet + 'static>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
-        contract: T,
     ) -> Address {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
         impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
@@ -631,6 +631,7 @@ impl Env {
         } else {
             Address::generate(self)
         };
+        let contract = T::new(self.clone());
         self.env_impl
             .register_test_contract(
                 contract_id.to_object(),
@@ -859,7 +860,7 @@ impl Env {
     /// ```
     pub fn mock_auths(&self, auths: &[MockAuth]) {
         for a in auths {
-            self.register_contract(a.address, MockAuthContract);
+            self.register_contract::<MockAuthContract>(a.address);
         }
         let auths = auths
             .iter()
