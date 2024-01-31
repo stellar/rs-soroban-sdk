@@ -95,7 +95,7 @@ macro_rules! impl_num_wrapping_val_type {
                 if let Ok(ss) = <$small>::try_from(v.val) {
                     ScVal::try_from(ss)
                 } else {
-                    ScVal::try_from_val(&v.env, &v.to_val())
+                    Ok(ScVal::try_from_val(&v.env, &v.to_val())?)
                 }
             }
         }

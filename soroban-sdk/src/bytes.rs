@@ -232,7 +232,7 @@ impl From<&Bytes> for Bytes {
 impl TryFrom<&Bytes> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Bytes) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_val())
+        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
     }
 }
 
@@ -894,7 +894,7 @@ impl<const N: usize> From<&BytesN<N>> for Bytes {
 impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &BytesN<N>) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.0.env, &v.0.obj.to_val())
+        Ok(ScVal::try_from_val(&v.0.env, &v.0.obj.to_val())?)
     }
 }
 
