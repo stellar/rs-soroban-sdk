@@ -230,23 +230,23 @@ impl From<&Bytes> for Bytes {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Bytes> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Bytes) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+    type Error = super::env::Error;
+    fn try_from(v: &Bytes) -> Result<Self, super::env::Error> {
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<Bytes> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Bytes) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from(v: Bytes) -> Result<Self, super::env::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for Bytes {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(
             BytesObject::try_from_val(env, &Val::try_from_val(env, val)?)?
@@ -892,25 +892,25 @@ impl<const N: usize> From<&BytesN<N>> for Bytes {
 
 #[cfg(not(target_family = "wasm"))]
 impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &BytesN<N>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.0.env, &v.0.obj.to_val())?)
+    type Error = super::env::Error;
+    fn try_from(v: &BytesN<N>) -> Result<Self, super::env::Error> {
+        ScVal::try_from_val(&v.0.env, &v.0.obj.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: BytesN<N>) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from(v: BytesN<N>) -> Result<Self, super::env::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl<const N: usize> TryFromVal<Env, ScVal> for BytesN<N> {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        Bytes::try_from_val(env, val)?.try_into()
+        Ok(Bytes::try_from_val(env, val)?.try_into()?)
     }
 }
 

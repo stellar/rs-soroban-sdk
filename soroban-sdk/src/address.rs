@@ -125,23 +125,23 @@ impl TryFromVal<Env, &Address> for Val {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Address> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Address) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+    type Error = super::env::Error;
+    fn try_from(v: &Address) -> Result<Self, super::env::Error> {
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<Address> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Address) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from(v: Address) -> Result<Self, super::env::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for Address {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(
             AddressObject::try_from_val(env, &Val::try_from_val(env, val)?)?
@@ -153,18 +153,18 @@ impl TryFromVal<Env, ScVal> for Address {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Address> for ScAddress {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from(v: &Address) -> Result<Self, Self::Error> {
         match ScVal::try_from_val(&v.env, &v.obj.to_val())? {
             ScVal::Address(a) => Ok(a),
-            _ => Err(ConversionError),
+            _ => Err(ConversionError.into()),
         }
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<Address> for ScAddress {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from(v: Address) -> Result<Self, Self::Error> {
         (&v).try_into()
     }
@@ -172,7 +172,7 @@ impl TryFrom<Address> for ScAddress {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScAddress> for Address {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
         Ok(AddressObject::try_from_val(
             env,

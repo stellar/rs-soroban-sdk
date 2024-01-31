@@ -90,27 +90,27 @@ macro_rules! impl_num_wrapping_val_type {
 
         #[cfg(not(target_family = "wasm"))]
         impl TryFrom<&$wrapper> for ScVal {
-            type Error = ConversionError;
-            fn try_from(v: &$wrapper) -> Result<Self, ConversionError> {
+            type Error = super::env::Error;
+            fn try_from(v: &$wrapper) -> Result<Self, super::env::Error> {
                 if let Ok(ss) = <$small>::try_from(v.val) {
-                    ScVal::try_from(ss)
+                    Ok(ScVal::try_from(ss)?)
                 } else {
-                    Ok(ScVal::try_from_val(&v.env, &v.to_val())?)
+                    ScVal::try_from_val(&v.env, &v.to_val())
                 }
             }
         }
 
         #[cfg(not(target_family = "wasm"))]
         impl TryFrom<$wrapper> for ScVal {
-            type Error = ConversionError;
-            fn try_from(v: $wrapper) -> Result<Self, ConversionError> {
+            type Error = super::env::Error;
+            fn try_from(v: $wrapper) -> Result<Self, super::env::Error> {
                 (&v).try_into()
             }
         }
 
         #[cfg(not(target_family = "wasm"))]
         impl TryFromVal<Env, ScVal> for $wrapper {
-            type Error = ConversionError;
+            type Error = super::env::Error;
             fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
                 Ok(<$val>::try_from_val(env, &Val::try_from_val(env, val)?)?
                     .try_into_val(env)

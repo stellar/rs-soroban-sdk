@@ -135,23 +135,23 @@ impl From<&String> for String {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&String> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &String) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+    type Error = super::env::Error;
+    fn try_from(v: &String) -> Result<Self, super::env::Error> {
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<String> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: String) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from(v: String) -> Result<Self, super::env::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for String {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(
             StringObject::try_from_val(env, &Val::try_from_val(env, val)?)?

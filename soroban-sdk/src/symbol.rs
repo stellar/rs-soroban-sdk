@@ -137,36 +137,36 @@ impl TryFromVal<Env, &str> for Symbol {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Symbol> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Symbol) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from(v: &Symbol) -> Result<Self, super::env::Error> {
         if let Ok(ss) = SymbolSmall::try_from(v.val) {
-            Ok(ScVal::try_from(ss)?)
+            ScVal::try_from(ss)
         } else {
             let e: Env = v.env.clone().try_into()?;
-            Ok(ScVal::try_from_val(&e, &v.to_val())?)
+            ScVal::try_from_val(&e, &v.to_val())
         }
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFrom<Symbol> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Symbol) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from(v: Symbol) -> Result<Self, super::env::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, Symbol> for ScVal {
-    type Error = ConversionError;
-    fn try_from_val(_e: &Env, v: &Symbol) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from_val(_e: &Env, v: &Symbol) -> Result<Self, super::env::Error> {
         v.try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for Symbol {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(SymbolVal::try_from_val(env, &Val::try_from_val(env, val)?)?
             .try_into_val(env)
@@ -176,7 +176,7 @@ impl TryFromVal<Env, ScVal> for Symbol {
 
 #[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScSymbol> for Symbol {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScSymbol) -> Result<Self, Self::Error> {
         Ok(SymbolVal::try_from_val(env, val)?
             .try_into_val(env)

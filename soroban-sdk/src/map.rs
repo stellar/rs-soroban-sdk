@@ -226,24 +226,24 @@ where
 
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Map<K, V>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+    type Error = super::env::Error;
+    fn try_from(v: &Map<K, V>) -> Result<Self, super::env::Error> {
+        ScVal::try_from_val(&v.env, &v.obj.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFrom<Map<K, V>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Map<K, V>) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from(v: Map<K, V>) -> Result<Self, super::env::Error> {
         (&v).try_into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
-    type Error = ConversionError;
-    fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, ConversionError> {
+    type Error = super::env::Error;
+    fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, super::env::Error> {
         v.try_into()
     }
 }
@@ -254,7 +254,7 @@ where
     K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
-    type Error = ConversionError;
+    type Error = super::env::Error;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
         Ok(MapObject::try_from_val(env, &Val::try_from_val(env, val)?)?
             .try_into_val(env)
