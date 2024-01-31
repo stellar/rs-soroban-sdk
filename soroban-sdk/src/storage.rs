@@ -362,6 +362,12 @@ impl Persistent {
         self.storage.try_update(key, StorageType::Persistent, f)
     }
 
+    /// Extend the TTL of the data under the key.
+    ///
+    /// Extends the TTL only if the TTL for the provided data is below `threshold` ledgers.
+    /// The TTL will then become `extend_to`.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
     pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
@@ -445,6 +451,12 @@ impl Temporary {
         self.storage.try_update(key, StorageType::Temporary, f)
     }
 
+    /// Extend the TTL of the data under the key.
+    ///
+    /// Extends the TTL only if the TTL for the provided data is below `threshold` ledgers.
+    /// The TTL will then become `extend_to`.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
     pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
@@ -536,6 +548,14 @@ impl Instance {
         self.storage.remove(key, StorageType::Instance)
     }
 
+    /// Extend the TTL of the contract instance and code.
+    ///
+    /// Extends the TTL of the instance and code only if the TTL for the provided contract is below `threshold` ledgers.
+    /// The TTL will then become `extend_to`. Note that the `threshold` check and TTL extensions are done for both the
+    /// contract code and contract instance, so it's possible that one is bumped but not the other depending on what the
+    /// current TTL's are.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
     pub fn extend_ttl(&self, threshold: u32, extend_to: u32) {
         internal::Env::extend_current_contract_instance_and_code_ttl(
             &self.storage.env,
