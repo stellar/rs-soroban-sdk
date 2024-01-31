@@ -382,7 +382,7 @@
                                 "symbol": "symbol"
                               },
                               "val": {
-                                "string": "aaa\\0"
+                                "string": "aaa"
                               }
                             }
                           ]
