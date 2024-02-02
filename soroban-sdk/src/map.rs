@@ -228,7 +228,7 @@ where
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Map<K, V>) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_val())
+        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
     }
 }
 

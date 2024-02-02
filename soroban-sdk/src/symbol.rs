@@ -143,7 +143,7 @@ impl TryFrom<&Symbol> for ScVal {
             Ok(ScVal::try_from(ss)?)
         } else {
             let e: Env = v.env.clone().try_into()?;
-            ScVal::try_from_val(&e, &v.to_val())
+            Ok(ScVal::try_from_val(&e, &v.to_val())?)
         }
     }
 }

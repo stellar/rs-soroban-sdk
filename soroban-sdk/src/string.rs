@@ -137,7 +137,7 @@ impl From<&String> for String {
 impl TryFrom<&String> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &String) -> Result<Self, ConversionError> {
-        ScVal::try_from_val(&v.env, &v.obj.to_val())
+        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
     }
 }
 
