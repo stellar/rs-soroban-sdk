@@ -148,7 +148,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    # nightly-2024-02-05 introduced a problem with curve-dalek crate
+    # TODO: Upgrade to latest nightly after problem that was introduced in nightly-2024-02-05 (https://github.com/dalek-cryptography/curve25519-dalek/issues/618) is resolved.
     - run: rustup install nightly-2024-02-03
     - run: make doc
 

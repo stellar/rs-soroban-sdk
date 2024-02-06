@@ -6,7 +6,7 @@ CARGO_DOC_ARGS?=--open
 
 doc: fmt
 	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils
-	# nightly-2024-02-05 introduced a problem with curve-dalek crate
+    # TODO: Upgrade to latest nightly after problem that was introduced in nightly-2024-02-05 (https://github.com/dalek-cryptography/curve25519-dalek/issues/618) is resolved.
 	cargo +nightly-2024-02-03 doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 test: fmt build
