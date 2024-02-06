@@ -136,7 +136,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly
+    - run: rustup install nightly-2024-02-03
     - uses: stellar/binaries@v15
       with:
         name: cargo-fuzz
@@ -148,7 +148,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly
+    # TODO: Upgrade to latest nightly after problem that was introduced in nightly-2024-02-05 (https://github.com/dalek-cryptography/curve25519-dalek/issues/618) is resolved.
+    - run: rustup install nightly-2024-02-03
     - run: make doc
 
   readme:
@@ -156,7 +157,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly
+    - run: rustup install nightly-2024-02-03
     - run: make readme
     - run: git add -N . && git diff HEAD --exit-code
 
