@@ -6,7 +6,8 @@ CARGO_DOC_ARGS?=--open
 
 doc: fmt
 	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils
-	cargo +nightly doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
+	# nightly-2024-02-05 introduced a problem with curve-dalek crate
+	cargo +nightly-2024-02-03 doc -p soroban-sdk --no-deps --features docs,testutils $(CARGO_DOC_ARGS)
 
 test: fmt build
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
