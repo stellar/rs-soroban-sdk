@@ -157,7 +157,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly
+    - run: rustup install nightly-2024-02-03
     - run: make readme
     - run: git add -N . && git diff HEAD --exit-code
 
