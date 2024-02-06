@@ -148,7 +148,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly
+    # nightly-2024-02-05 introduced a problem with curve-dalek crate
+    - run: rustup install nightly-2024-02-03
     - run: make doc
 
   readme:
