@@ -136,7 +136,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly
+    - run: rustup install nightly-2024-02-03
     - uses: stellar/binaries@v15
       with:
         name: cargo-fuzz
