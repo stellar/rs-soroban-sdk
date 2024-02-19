@@ -41,7 +41,10 @@ pub struct String {
 
 impl Debug for String {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "String()")?;
+        #[cfg(target_family = "wasm")]
+        write!(f, "String(..)")?;
+        #[cfg(not(target_family = "wasm"))]
+        write!(f, "String({})", self.to_string())?;
         Ok(())
     }
 }
