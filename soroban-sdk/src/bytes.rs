@@ -7,7 +7,7 @@ use core::{
     convert::Infallible,
     fmt::Debug,
     iter::FusedIterator,
-    ops::{Bound, Range, RangeBounds},
+    ops::{Bound, RangeBounds},
 };
 
 use super::{
