@@ -627,10 +627,7 @@ impl Bytes {
             let slice = &mut buffer[0..len];
             self.copy_into_slice(slice);
         }
-        BytesBuffer {
-            buffer,
-            len,
-        }
+        BytesBuffer { buffer, len }
     }
 
     /// Copy the bytes into a Rust alloc Vec of size matching the bytes.
