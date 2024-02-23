@@ -1,3 +1,6 @@
+#[cfg(feature = "alloc")]
+extern crate alloc;
+
 use core::{
     borrow::Borrow,
     cmp::Ordering,
@@ -601,6 +604,70 @@ impl Bytes {
 
     pub fn iter(&self) -> BytesIter {
         self.clone().into_iter()
+    }
+
+    /// Copy the bytes into a buffer of given size.
+    ///
+    /// Returns the buffer and a range of where the bytes live in the given
+    /// buffer.
+    ///
+    /// Suitable when the size of the bytes isn't a fixed size but it is known
+    /// to be under a certain size, or failure due to overflow is acceptable.
+    ///
+    /// ### Panics
+    ///
+    /// If the size of the bytes is larger than the size of the buffer. To avoid
+    /// this, first slice the bytes into a smaller size then convert to a
+    /// buffer.
+    #[must_use]
+    pub fn to_buffer<const B: usize>(&self) -> BytesBuffer<B> {
+        let mut buffer = [0u8; B];
+        let len = self.len() as usize;
+        {
+            let slice = &mut buffer[0..len];
+            self.copy_into_slice(slice);
+        }
+        BytesBuffer { buffer, len }
+    }
+
+    /// Copy the bytes into a Rust alloc Vec of size matching the bytes.
+    ///
+    /// Returns the Vec. Allocates using the built-in allocator.
+    ///
+    /// Suitable when the size of the bytes isn't a fixed size and the allocator
+    /// functionality of the sdk is enabled.
+    #[cfg(feature = "alloc")]
+    #[must_use]
+    pub fn to_alloc_vec(&self) -> alloc::vec::Vec<u8> {
+        let len = self.len() as usize;
+        let mut vec = alloc::vec::from_elem(0u8, len);
+        self.copy_into_slice(&mut vec);
+        vec
+    }
+}
+
+/// A `BytesBuffer` stores a variable number of bytes, up to a fixed limit `B`.
+///
+/// The bytes are stored in a fixed-size non-heap-allocated structure. It is a
+/// minimal wrapper around a fixed-size `[u8;B]` byte array and a length field
+/// indicating the amount of the byte array containing meaningful data.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BytesBuffer<const B: usize> {
+    buffer: [u8; B],
+    len: usize,
+}
+
+impl<const B: usize> Borrow<[u8]> for BytesBuffer<B> {
+    /// Returns a borrow slice of the bytes stored in the BytesBuffer.
+    fn borrow(&self) -> &[u8] {
+        self.as_slice()
+    }
+}
+
+impl<const B: usize> BytesBuffer<B> {
+    /// Returns a borrow slice of the bytes stored in the BytesBuffer.
+    pub fn as_slice(&self) -> &[u8] {
+        &self.buffer[..self.len]
     }
 }
 
