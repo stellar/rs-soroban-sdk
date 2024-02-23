@@ -629,7 +629,7 @@ impl Bytes {
         }
         BytesBuffer {
             buffer,
-            range: 0..len,
+            len,
         }
     }
 
@@ -654,7 +654,7 @@ impl Bytes {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BytesBuffer<const B: usize> {
     buffer: [u8; B],
-    range: Range<usize>,
+    len: usize,
 }
 
 impl<const B: usize> Borrow<[u8]> for BytesBuffer<B> {
@@ -667,7 +667,7 @@ impl<const B: usize> Borrow<[u8]> for BytesBuffer<B> {
 impl<const B: usize> BytesBuffer<B> {
     /// Returns a borrow slice of the bytes stored in the BytesBuffer.
     pub fn as_slice(&self) -> &[u8] {
-        &self.buffer[self.range.clone()]
+        &self.buffer[..self.len]
     }
 }
 
