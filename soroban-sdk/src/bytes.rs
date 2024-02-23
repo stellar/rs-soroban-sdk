@@ -649,8 +649,11 @@ impl Bytes {
     }
 }
 
-/// A BytesBuffer stores bytes in a buffer of given size and makes the bytes
-/// stored available.
+/// A `BytesBuffer` stores a variable number of bytes, up to a fixed limit `B`.
+///
+/// The bytes are stored in a fixed-size non-heap-allocated structure. It is a
+/// minimal wrapper around a fixed-size `[u8;B]` byte array and a length field
+/// indicating the amount of the byte array containing meaningful data.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BytesBuffer<const B: usize> {
     buffer: [u8; B],
