@@ -11,7 +11,7 @@ edition = "2021"
 rust-version.workspace = true
 
 [dependencies]
-soroban-env-host = { workspace = true }
+soroban-env-host = { workspace = true, features = ["unstable-next-api"] }
 soroban-env-common = {workspace = true, features = ["serde"]}
 serde = { version = "1.0.0", features = ["derive"] }
 serde_with = { version = "3.4.0", features = ["hex"] }

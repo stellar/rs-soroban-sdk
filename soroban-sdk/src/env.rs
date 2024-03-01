@@ -458,10 +458,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{
-    LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
-    SorobanAuthorizationEntry,
-};
+use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -487,15 +484,12 @@ impl Env {
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
             fn get(
                 &self,
-                _key: &Rc<xdr::LedgerKey>,
-            ) -> Result<(Rc<xdr::LedgerEntry>, Option<u32>), soroban_env_host::HostError>
-            {
-                let err: internal::Error = (ScErrorType::Storage, ScErrorCode::MissingValue).into();
-                Err(err.into())
-            }
-
-            fn has(&self, _key: &Rc<xdr::LedgerKey>) -> Result<bool, soroban_env_host::HostError> {
-                Ok(false)
+                _key: &Rc<LedgerKey>,
+            ) -> Result<
+                Option<soroban_env_host::storage::EntryWithLiveUntil>,
+                soroban_env_host::HostError,
+            > {
+                Ok(None)
             }
         }
 
@@ -1469,6 +1463,18 @@ impl internal::EnvBase for Env {
         self.env_impl.error_from_error_val(e)
     }
 
+    fn check_protocol_version_lower_bound(&self, v: u32) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .check_protocol_version_lower_bound(v)
+            .unwrap_optimized())
+    }
+    fn check_protocol_version_upper_bound(&self, v: u32) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .check_protocol_version_upper_bound(v)
+            .unwrap_optimized())
+    }
     // Note: the function `escalate_error_to_panic` only exists _on the `Env`
     // trait_ when the feature `soroban-env-common/testutils` is enabled. This
     // is because the host wants to never have this function even _compiled in_
@@ -1648,7 +1654,7 @@ macro_rules! impl_env_for_sdk {
                     // pattern-repetition matcher so that it will match all such
                     // descriptions.
                     $(#[$fn_attr:meta])*
-                    { $fn_str:literal, fn $fn_id:ident $args:tt -> $ret:ty }
+                    { $fn_str:literal, $($min_proto:literal)?, $($max_proto:literal)?, fn $fn_id:ident $args:tt -> $ret:ty }
                 )*
             }
         )*
