@@ -147,3 +147,20 @@ fn test_snapshot_file() {
     let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
 }
+
+/// Test that the test snapshot file is not written when disabled.
+#[test]
+fn test_snapshot_file_disabled() {
+    let p = std::path::Path::new("test_snapshots")
+        .join("tests")
+        .join("env")
+        .join("test_snapshot_file");
+    let p1 = p.with_extension("1.json");
+    assert!(!p1.exists());
+    {
+        let _ = Env::default();
+        assert!(!p1.exists());
+    }
+    assert!(p1.exists());
+    let _ = std::fs::remove_file(&p1);
+}
