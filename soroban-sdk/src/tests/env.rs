@@ -1,5 +1,6 @@
 use crate::{
     self as soroban_sdk, contract, contractimpl,
+    env::EnvTestConfig,
     testutils::{Address as _, Logs as _},
     Address, Env, Error,
 };
@@ -157,10 +158,18 @@ fn test_snapshot_file_disabled() {
         .join("test_snapshot_file");
     let p1 = p.with_extension("1.json");
     assert!(!p1.exists());
+    let p2 = p.with_extension("1.json");
+    assert!(!p2.exists());
     {
         let _ = Env::default();
+        let _ = Env::new_with_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
         assert!(!p1.exists());
+        assert!(!p2.exists());
     }
     assert!(p1.exists());
+    assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
 }
