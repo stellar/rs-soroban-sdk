@@ -235,16 +235,36 @@ impl Default for Env {
 
     #[cfg(any(test, feature = "testutils"))]
     fn default() -> Self {
-        Self::default_with_testutils()
+        Self::new_with_config(EnvTestConfig::default())
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
 #[derive(Clone, Default)]
 struct EnvTestState {
+    config: EnvTestConfig,
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
     snapshot: Option<Rc<LedgerSnapshot>>,
+}
+
+/// Config for changing the default behavior of the Env when used in tests.
+#[cfg(any(test, feature = "testutils"))]
+#[derive(Clone)]
+pub struct EnvTestConfig {
+    /// Capture a test snapshot when the Env is dropped, causing a test snapshot
+    /// JSON file to be written to disk when the Env is no longer referenced.
+    /// Defaults to true.
+    pub capture_snapshot_at_drop: bool,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl Default for EnvTestConfig {
+    fn default() -> Self {
+        Self {
+            capture_snapshot_at_drop: true,
+        }
+    }
 }
 
 impl Env {
@@ -457,7 +477,7 @@ impl Env {
         f((*self.test_state.generators).borrow_mut())
     }
 
-    fn default_with_testutils() -> Env {
+    pub fn new_with_config(config: EnvTestConfig) -> Env {
         struct EmptySnapshotSource();
 
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
@@ -487,11 +507,12 @@ impl Env {
             max_entry_ttl: 6_312_000,
         };
 
-        Env::new_for_testutils(rf, None, info, None)
+        Env::new_for_testutils(config, rf, None, info, None)
     }
 
     /// Used by multiple constructors to configure test environments consistently.
     fn new_for_testutils(
+        config: EnvTestConfig,
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
         generators: Option<Rc<RefCell<Generators>>>,
         ledger_info: internal::LedgerInfo,
@@ -531,6 +552,7 @@ impl Env {
         let env = Env {
             env_impl,
             test_state: EnvTestState {
+                config,
                 generators: generators.unwrap_or_default(),
                 snapshot,
                 auth_snapshot,
@@ -1219,6 +1241,7 @@ impl Env {
     /// Events, as an output source only, are not loaded into the Env.
     pub fn from_snapshot(s: Snapshot) -> Env {
         Env::new_for_testutils(
+            EnvTestConfig::default(), // TODO: Allow setting the config.
             Rc::new(s.ledger.clone()),
             Some(Rc::new(RefCell::new(s.generators))),
             s.ledger.ledger_info(),
@@ -1263,6 +1286,7 @@ impl Env {
     /// The ledger info and state in the snapshot are loaded into the Env.
     pub fn from_ledger_snapshot(s: LedgerSnapshot) -> Env {
         Env::new_for_testutils(
+            EnvTestConfig::default(), // TODO: Allow setting the config.
             Rc::new(s.clone()),
             None,
             s.ledger_info(),
@@ -1329,7 +1353,7 @@ impl Drop for Env {
         // snapshot at that point when no other references to the host exist,
         // because it is only when there are no other references that the host
         // is being dropped.
-        if self.env_impl.can_finish() {
+        if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
             self.to_test_snapshot_file();
         }
     }

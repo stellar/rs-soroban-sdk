@@ -725,9 +725,8 @@ mod env;
 mod address;
 mod symbol;
 
-pub use env::ConversionError;
+pub use env::{ConversionError, Env};
 
-pub use env::Env;
 /// Raw value of the Soroban smart contract platform that types can be converted
 /// to and from for storing, or passing between contracts.
 ///
