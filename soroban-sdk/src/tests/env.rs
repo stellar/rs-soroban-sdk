@@ -1,5 +1,6 @@
 use crate::{
     self as soroban_sdk, contract, contractimpl,
+    env::EnvTestConfig,
     testutils::{Address as _, Logs as _},
     Address, Env, Error,
 };
@@ -144,6 +145,33 @@ fn test_snapshot_file() {
     } // Env dropped, written to p2.
     assert!(p1.exists());
     assert!(p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
+}
+
+/// Test that the test snapshot file is not written when disabled.
+#[test]
+fn test_snapshot_file_disabled() {
+    let p = std::path::Path::new("test_snapshots")
+        .join("tests")
+        .join("env")
+        .join("test_snapshot_file_disabled");
+    let p1 = p.with_extension("1.json");
+    assert!(!p1.exists());
+    let p2 = p.with_extension("2.json");
+    assert!(!p2.exists());
+    {
+        let e1 = Env::default();
+        let _ = e1.register_contract(None, Contract);
+        let e2 = Env::new_with_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
+        let _ = e2.register_contract(None, Contract);
+        assert!(!p1.exists());
+        assert!(!p2.exists());
+    }
+    assert!(p1.exists());
+    assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
 }
