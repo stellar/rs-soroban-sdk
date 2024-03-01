@@ -267,14 +267,6 @@ impl Default for EnvTestConfig {
     }
 }
 
-#[cfg(any(test, feature = "testutils"))]
-#[derive(Clone, Default)]
-struct EnvTestState {
-    generators: Rc<RefCell<Generators>>,
-    auth_snapshot: Rc<RefCell<AuthSnapshot>>,
-    snapshot: Option<Rc<LedgerSnapshot>>,
-}
-
 impl Env {
     /// Panic with the given error.
     ///
