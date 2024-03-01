@@ -131,7 +131,7 @@ use internal::{
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    internals: Option<EnvInternals>,
+    test_state: Option<EnvTestState>,
 }
 
 #[cfg(target_family = "wasm")]
@@ -168,7 +168,7 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: None,
             #[cfg(any(test, feature = "testutils"))]
-            internals: None,
+            test_state: None,
         }
     }
 }
@@ -191,7 +191,7 @@ impl TryFrom<MaybeEnv> for Env {
             Ok(Env {
                 env_impl,
                 #[cfg(any(test, feature = "testutils"))]
-                internals: value.internals.unwrap_or_default(),
+                test_state: value.test_state.unwrap_or_default(),
             })
         } else {
             Err(ConversionError)
@@ -205,7 +205,7 @@ impl From<Env> for MaybeEnv {
         MaybeEnv {
             maybe_env_impl: Some(value.env_impl.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            internals: Some(value.internals.clone()),
+            test_state: Some(value.test_state.clone()),
         }
     }
 }
@@ -222,7 +222,7 @@ impl From<Env> for MaybeEnv {
 pub struct Env {
     env_impl: internal::EnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    internals: EnvInternals,
+    test_state: EnvTestState,
 }
 
 impl Default for Env {
@@ -241,7 +241,7 @@ impl Default for Env {
 
 #[cfg(any(test, feature = "testutils"))]
 #[derive(Clone, Default)]
-struct EnvInternals {
+struct EnvTestState {
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
     snapshot: Option<Rc<LedgerSnapshot>>,
@@ -454,7 +454,7 @@ impl Env {
 
     #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
-        f((*self.internals.generators).borrow_mut())
+        f((*self.test_state.generators).borrow_mut())
     }
 
     fn default_with_testutils() -> Env {
@@ -530,7 +530,7 @@ impl Env {
 
         let env = Env {
             env_impl,
-            internals: EnvInternals {
+            test_state: EnvTestState {
                 generators: generators.unwrap_or_default(),
                 snapshot,
                 auth_snapshot,
@@ -589,7 +589,7 @@ impl Env {
             ) -> Option<Val> {
                 let env = Env {
                     env_impl: env_impl.clone(),
-                    internals: Default::default(),
+                    test_state: Default::default(),
                 };
                 self.0.call(
                     crate::Symbol::try_from_val(&env, func)
@@ -1040,7 +1040,7 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        (*self.internals.auth_snapshot)
+        (*self.test_state.auth_snapshot)
             .borrow()
             .0
             .last()
@@ -1242,8 +1242,8 @@ impl Env {
     /// Create a snapshot from the Env's current state.
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
-            generators: (*self.internals.generators).borrow().clone(),
-            auth: (*self.internals.auth_snapshot).borrow().clone(),
+            generators: (*self.test_state.generators).borrow().clone(),
+            auth: (*self.test_state.auth_snapshot).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1281,7 +1281,7 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let snapshot = self.internals.snapshot.clone().unwrap_or_default();
+        let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
         let budget = soroban_env_host::budget::AsBudget::as_budget(&self.env_impl);
