@@ -18,7 +18,7 @@ pub struct Udt {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[contracttype]
 pub struct UdtWithLongName {
-    pub this_is_a_very_long_name_1234567: u64,
+    pub this_is_a_very_long_name_12345: u64,
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -40,7 +40,7 @@ impl Contract {
     }
 
     pub fn add_udt_with_long_name(a: UdtWithLongName, b: UdtWithLongName) -> u64 {
-        a.this_is_a_very_long_name_1234567 + b.this_is_a_very_long_name_1234567
+        a.this_is_a_very_long_name_12345 + b.this_is_a_very_long_name_12345
     }
 }
 
@@ -61,10 +61,10 @@ fn test_long_names_functional() {
     let contract_id = env.register_contract(None, Contract);
 
     let a = UdtWithLongName {
-        this_is_a_very_long_name_1234567: 1_000_000_000_000,
+        this_is_a_very_long_name_12345: 1_000_000_000_000,
     };
     let b = UdtWithLongName {
-        this_is_a_very_long_name_1234567: 5_000_000_000_000,
+        this_is_a_very_long_name_12345: 5_000_000_000_000,
     };
     assert_eq!(
         ContractClient::new(&env, &contract_id).add_udt_with_long_name(&a, &b),
