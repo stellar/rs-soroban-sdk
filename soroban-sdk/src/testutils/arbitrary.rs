@@ -627,7 +627,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryAddress {
-        inner: crate::env::xdr::ScAddress,
+        inner: [u8; 32],
     }
 
     impl SorobanArbitrary for Address {
@@ -637,7 +637,10 @@ mod objects {
     impl TryFromVal<Env, ArbitraryAddress> for Address {
         type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryAddress) -> Result<Self, Self::Error> {
-            Ok(v.inner.into_val(env))
+            use crate::env::xdr::{Hash, ScAddress};
+
+            let sc_addr = ScVal::Address(ScAddress::Contract(Hash(v.inner)));
+            Ok(sc_addr.into_val(env))
         }
     }
 
