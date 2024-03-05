@@ -131,11 +131,7 @@ use internal::{
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    generators: Option<Rc<RefCell<Generators>>>,
-    #[cfg(any(test, feature = "testutils"))]
-    auth_snapshot: Option<Rc<RefCell<AuthSnapshot>>>,
-    #[cfg(any(test, feature = "testutils"))]
-    snapshot: Option<Rc<LedgerSnapshot>>,
+    test_state: Option<EnvTestState>,
 }
 
 #[cfg(target_family = "wasm")]
@@ -145,10 +141,6 @@ impl TryFrom<MaybeEnv> for Env {
     fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
         Ok(Env {
             env_impl: internal::EnvImpl {},
-            #[cfg(any(test, feature = "testutils"))]
-            generators: value.generators,
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot,
         })
     }
 }
@@ -165,10 +157,6 @@ impl MaybeEnv {
     pub const fn none() -> Self {
         Self {
             maybe_env_impl: internal::EnvImpl {},
-            #[cfg(any(test, feature = "testutils"))]
-            generators: None,
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
         }
     }
 }
@@ -180,11 +168,7 @@ impl MaybeEnv {
         Self {
             maybe_env_impl: None,
             #[cfg(any(test, feature = "testutils"))]
-            generators: None,
-            #[cfg(any(test, feature = "testutils"))]
-            auth_snapshot: None,
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: None,
+            test_state: None,
         }
     }
 }
@@ -194,10 +178,6 @@ impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
         MaybeEnv {
             maybe_env_impl: value.env_impl,
-            #[cfg(any(test, feature = "testutils"))]
-            generators: Some(value.generators),
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot,
         }
     }
 }
@@ -211,11 +191,7 @@ impl TryFrom<MaybeEnv> for Env {
             Ok(Env {
                 env_impl,
                 #[cfg(any(test, feature = "testutils"))]
-                generators: value.generators.unwrap_or_default(),
-                #[cfg(any(test, feature = "testutils"))]
-                auth_snapshot: value.auth_snapshot.unwrap_or_default(),
-                #[cfg(any(test, feature = "testutils"))]
-                snapshot: value.snapshot,
+                test_state: value.test_state.unwrap_or_default(),
             })
         } else {
             Err(ConversionError)
@@ -229,11 +205,7 @@ impl From<Env> for MaybeEnv {
         MaybeEnv {
             maybe_env_impl: Some(value.env_impl.clone()),
             #[cfg(any(test, feature = "testutils"))]
-            generators: Some(value.generators.clone()),
-            #[cfg(any(test, feature = "testutils"))]
-            auth_snapshot: Some(value.auth_snapshot.clone()),
-            #[cfg(any(test, feature = "testutils"))]
-            snapshot: value.snapshot.clone(),
+            test_state: Some(value.test_state.clone()),
         }
     }
 }
@@ -250,11 +222,7 @@ impl From<Env> for MaybeEnv {
 pub struct Env {
     env_impl: internal::EnvImpl,
     #[cfg(any(test, feature = "testutils"))]
-    generators: Rc<RefCell<Generators>>,
-    #[cfg(any(test, feature = "testutils"))]
-    auth_snapshot: Rc<RefCell<AuthSnapshot>>,
-    #[cfg(any(test, feature = "testutils"))]
-    snapshot: Option<Rc<LedgerSnapshot>>,
+    test_state: EnvTestState,
 }
 
 impl Default for Env {
@@ -267,7 +235,35 @@ impl Default for Env {
 
     #[cfg(any(test, feature = "testutils"))]
     fn default() -> Self {
-        Self::default_with_testutils()
+        Self::new_with_config(EnvTestConfig::default())
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+#[derive(Clone, Default)]
+struct EnvTestState {
+    config: EnvTestConfig,
+    generators: Rc<RefCell<Generators>>,
+    auth_snapshot: Rc<RefCell<AuthSnapshot>>,
+    snapshot: Option<Rc<LedgerSnapshot>>,
+}
+
+/// Config for changing the default behavior of the Env when used in tests.
+#[cfg(any(test, feature = "testutils"))]
+#[derive(Clone)]
+pub struct EnvTestConfig {
+    /// Capture a test snapshot when the Env is dropped, causing a test snapshot
+    /// JSON file to be written to disk when the Env is no longer referenced.
+    /// Defaults to true.
+    pub capture_snapshot_at_drop: bool,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl Default for EnvTestConfig {
+    fn default() -> Self {
+        Self {
+            capture_snapshot_at_drop: true,
+        }
     }
 }
 
@@ -478,10 +474,10 @@ impl Env {
 
     #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
-        f((*self.generators).borrow_mut())
+        f((*self.test_state.generators).borrow_mut())
     }
 
-    fn default_with_testutils() -> Env {
+    pub fn new_with_config(config: EnvTestConfig) -> Env {
         struct EmptySnapshotSource();
 
         impl internal::storage::SnapshotSource for EmptySnapshotSource {
@@ -511,11 +507,12 @@ impl Env {
             max_entry_ttl: 6_312_000,
         };
 
-        Env::new_for_testutils(rf, None, info, None)
+        Env::new_for_testutils(config, rf, None, info, None)
     }
 
     /// Used by multiple constructors to configure test environments consistently.
     fn new_for_testutils(
+        config: EnvTestConfig,
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
         generators: Option<Rc<RefCell<Generators>>>,
         ledger_info: internal::LedgerInfo,
@@ -554,9 +551,12 @@ impl Env {
 
         let env = Env {
             env_impl,
-            generators: generators.unwrap_or_default(),
-            snapshot,
-            auth_snapshot,
+            test_state: EnvTestState {
+                config,
+                generators: generators.unwrap_or_default(),
+                snapshot,
+                auth_snapshot,
+            },
         };
 
         env.ledger().set(ledger_info);
@@ -611,9 +611,7 @@ impl Env {
             ) -> Option<Val> {
                 let env = Env {
                     env_impl: env_impl.clone(),
-                    generators: Default::default(),
-                    auth_snapshot: Default::default(),
-                    snapshot: None,
+                    test_state: Default::default(),
                 };
                 self.0.call(
                     crate::Symbol::try_from_val(&env, func)
@@ -1064,7 +1062,7 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        (*self.auth_snapshot)
+        (*self.test_state.auth_snapshot)
             .borrow()
             .0
             .last()
@@ -1243,6 +1241,7 @@ impl Env {
     /// Events, as an output source only, are not loaded into the Env.
     pub fn from_snapshot(s: Snapshot) -> Env {
         Env::new_for_testutils(
+            EnvTestConfig::default(), // TODO: Allow setting the config.
             Rc::new(s.ledger.clone()),
             Some(Rc::new(RefCell::new(s.generators))),
             s.ledger.ledger_info(),
@@ -1266,8 +1265,8 @@ impl Env {
     /// Create a snapshot from the Env's current state.
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
-            generators: (*self.generators).borrow().clone(),
-            auth: (*self.auth_snapshot).borrow().clone(),
+            generators: (*self.test_state.generators).borrow().clone(),
+            auth: (*self.test_state.auth_snapshot).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1287,6 +1286,7 @@ impl Env {
     /// The ledger info and state in the snapshot are loaded into the Env.
     pub fn from_ledger_snapshot(s: LedgerSnapshot) -> Env {
         Env::new_for_testutils(
+            EnvTestConfig::default(), // TODO: Allow setting the config.
             Rc::new(s.clone()),
             None,
             s.ledger_info(),
@@ -1305,7 +1305,7 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let snapshot = self.snapshot.clone().unwrap_or_default();
+        let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
         let budget = soroban_env_host::budget::AsBudget::as_budget(&self.env_impl);
@@ -1353,7 +1353,7 @@ impl Drop for Env {
         // snapshot at that point when no other references to the host exist,
         // because it is only when there are no other references that the host
         // is being dropped.
-        if self.env_impl.can_finish() {
+        if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
             self.to_test_snapshot_file();
         }
     }
