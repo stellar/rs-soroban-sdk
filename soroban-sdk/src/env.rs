@@ -1469,6 +1469,20 @@ impl internal::EnvBase for Env {
         self.env_impl.error_from_error_val(e)
     }
 
+    fn check_protocol_version_lower_bound(&self, v: u32) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .check_protocol_version_lower_bound(v)
+            .unwrap_optimized())
+    }
+
+    fn check_protocol_version_upper_bound(&self, v: u32) -> Result<(), Self::Error> {
+        Ok(self
+            .env_impl
+            .check_protocol_version_upper_bound(v)
+            .unwrap_optimized())
+    }
+
     // Note: the function `escalate_error_to_panic` only exists _on the `Env`
     // trait_ when the feature `soroban-env-common/testutils` is enabled. This
     // is because the host wants to never have this function even _compiled in_
@@ -1648,7 +1662,7 @@ macro_rules! impl_env_for_sdk {
                     // pattern-repetition matcher so that it will match all such
                     // descriptions.
                     $(#[$fn_attr:meta])*
-                    { $fn_str:literal, fn $fn_id:ident $args:tt -> $ret:ty }
+                    { $fn_str:literal, $($min_proto:literal)?, $($max_proto:literal)?, fn $fn_id:ident $args:tt -> $ret:ty }
                 )*
             }
         )*
