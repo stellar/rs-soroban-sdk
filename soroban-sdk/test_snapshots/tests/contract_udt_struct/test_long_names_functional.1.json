@@ -96,7 +96,7 @@
                   "map": [
                     {
                       "key": {
-                        "symbol": "this_is_a_very_long_name_1234567"
+                        "symbol": "this_is_a_very_long_name_12345"
                       },
                       "val": {
                         "u64": 1000000000000
@@ -108,7 +108,7 @@
                   "map": [
                     {
                       "key": {
-                        "symbol": "this_is_a_very_long_name_1234567"
+                        "symbol": "this_is_a_very_long_name_12345"
                       },
                       "val": {
                         "u64": 5000000000000
