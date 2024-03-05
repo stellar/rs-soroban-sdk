@@ -66,7 +66,7 @@ pub fn derive_fn_spec(
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
                             errors.push(Error::new(
-                                ident.span(),
+                                a.span(),
                                 format!("argument name too long, max length {} characters", MAX),
                             ));
                             StringM::<MAX>::default()
