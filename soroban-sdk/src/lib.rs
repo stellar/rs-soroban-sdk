@@ -242,6 +242,9 @@ pub use soroban_sdk_macros::contracterror;
 /// Import a contract from its WASM file, generating a client, types, and
 /// constant holding the contract file.
 ///
+/// The path given is relative to the workspace root, and not the current
+/// file.
+///
 /// Generates in the current module:
 /// - A `Contract` trait that matches the contracts interface.
 /// - A `ContractClient` struct that has functions for each function in the
