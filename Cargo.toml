@@ -41,19 +41,19 @@ soroban-ledger-snapshot = { version = "20.4.0", path = "soroban-ledger-snapshot"
 soroban-token-sdk = { version = "20.4.0", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
-version = "=20.2.2"
-git = "https://github.com/stellar/rs-soroban-env"
-rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
+version = "=20.3.0"
+#git = "https://github.com/stellar/rs-soroban-env"
+#rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=20.2.2"
-git = "https://github.com/stellar/rs-soroban-env"
-rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
+version = "=20.3.0"
+#git = "https://github.com/stellar/rs-soroban-env"
+#rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
 
 [workspace.dependencies.soroban-env-host]
-version = "=20.2.2"
-git = "https://github.com/stellar/rs-soroban-env"
-rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
+version = "=20.3.0"
+#git = "https://github.com/stellar/rs-soroban-env"
+#rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.8"
