@@ -1,3 +1,3 @@
 //! Release notes for releases of the soroban-sdk.
 
-pub mod v21_0_0;
+// pub mod vX_Y_Z;

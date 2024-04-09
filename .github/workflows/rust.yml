@@ -170,7 +170,8 @@ jobs:
     - run: rustup update
     - run: |
         version="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | gsub("\\.";"_") | "v"+.')"
-        git grep "pub mod #{version};"
+        git grep "pub mod #{version};" \
+          || (echo "The _releasenotes::#{version} module is missing." && exit 1)
 
   publish-dry-run:
     if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
