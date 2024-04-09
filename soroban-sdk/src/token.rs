@@ -27,10 +27,66 @@ pub use TokenInterface as Interface;
 pub use TokenClient as Client;
 
 /// Interface for Token contracts, such as the Stellar Asset Contract.
+///
+/// Defined by [SEP-41].
+///
+/// [SEP-41]: https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0041.md
+///
+/// The token interface provides the following functionality.
+///
+/// If a contract implementing the interface does not support some of the
+/// functionality, it should return an error.
+///
+/// The interface does not define any set of standard errors. Errors can be
+/// defined by the implementing contract.
+///
+/// ## Meta
+///
+/// Tokens implementing the interface expose meta functions about the token:
+/// - [`decimals`][Self::decimals]
+/// - [`name`][Self::name]
+/// - [`symbol`][Self::symbol]
+///
+/// ## Balances
+///
+/// Tokens track a balance for each address that holds the token. Tokens implementing the interface expose
+/// a single function for getting the balance that an address holds:
+/// - [`balance`][Self::balance]
+///
+/// ## Transfers
+///
+/// Tokens allow holders of the token to transfer tokens to other addresses.
+/// Tokens implementing the interface expose a single function for doing so:
+/// - [`transfer`][Self::transfer]
+///
+/// ## Burning
+///
+/// Tokens allow holders of the token to transfer tokens to other addresses.
+/// Tokens implementing the interface expose a single function for doing so:
+/// - [`burn`][Self::burn]
+///
+/// ## Allowances
+///
+/// Tokens can allow holders to permit others to transfer amounts from their
+/// balance using the following functions.
+/// - [`allowance`][Self::allowance]
+/// - [`approve`][Self::approve]
+/// - [`transfer_from`][Self::transfer_from]
+/// - [`burn_from`][Self::burn_from]
+///
+/// ## Minting
+///
+/// There are no functions in the token interface for minting tokens. Minting is
+/// an administrative function that can differ significantly from one token to
+/// the next.
 #[contractspecfn(name = "StellarAssetSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "TokenClient")]
 pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
+    ///
+    /// The amount returned is the amount that spender is allowed to transfer
+    /// out of from's balance. When the spender transfers amounts, the allowance
+    /// will be reduced by the amount transfered.
     ///
     /// # Arguments
     ///
@@ -40,6 +96,11 @@ pub trait TokenInterface {
 
     /// Set the allowance by `amount` for `spender` to transfer/burn from
     /// `from`.
+    ///
+    /// The amount set is the amount that spender is approved to transfer out of
+    /// from's balance. The spender will be allowed to transfer amounts, and
+    /// when an amount is transferred the allowance will be reduced by the
+    /// amount transfered.
     ///
     /// # Arguments
     ///
@@ -81,8 +142,14 @@ pub trait TokenInterface {
     /// data = [amount: i128]`
     fn transfer(env: Env, from: Address, to: Address, amount: i128);
 
-    /// Transfer `amount` from `from` to `to`, consuming the allowance of
-    /// `spender`. Authorized by spender (`spender.require_auth()`).
+    /// Transfer `amount` from `from` to `to`, consuming the allowance that
+    /// `spender` has on `from`'s balance. Authorized by spender
+    /// (`spender.require_auth()`).
+    ///
+    /// The spender will be allowed to transfer the amount from from's balance
+    /// if the amount is less than or equal to the allowance that the spender
+    /// has on the from's balance. The spender's allowance on from's balance
+    /// will be reduced by the amount.
     ///
     /// # Arguments
     ///
@@ -101,6 +168,9 @@ pub trait TokenInterface {
 
     /// Burn `amount` from `from`.
     ///
+    /// Reduces from's balance by the amount, without transferring the balance
+    /// to another holder's balance.
+    ///
     /// # Arguments
     ///
     /// * `from` - The address holding the balance of tokens which will be
@@ -114,6 +184,14 @@ pub trait TokenInterface {
     fn burn(env: Env, from: Address, amount: i128);
 
     /// Burn `amount` from `from`, consuming the allowance of `spender`.
+    ///
+    /// Reduces from's balance by the amount, without transferring the balance
+    /// to another holder's balance.
+    ///
+    /// The spender will be allowed to burn the amount from from's balance, if
+    /// the amount is less than or equal to the allowance that the spender has
+    /// on the from's balance. The spender's allowance on from's balance will be
+    /// reduced by the amount.
     ///
     /// # Arguments
     ///
