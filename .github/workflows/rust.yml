@@ -14,7 +14,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, docs, readme]
+    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, docs, readme, release-notes]
     runs-on: ubuntu-latest
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -160,6 +160,17 @@ jobs:
     - run: rustup install nightly-2024-02-03
     - run: make readme
     - run: git add -N . && git diff HEAD --exit-code
+
+  release-notes:
+    if: startsWith(github.head_ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - run: rustup update
+    - run: |
+        version="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | gsub("\\.";"_") | "v"+.')"
+        git grep "pub mod #{version};"
 
   publish-dry-run:
     if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
