@@ -61,8 +61,9 @@ pub use TokenClient as Client;
 ///
 /// ## Burning
 ///
-/// Tokens allow holders of the token to transfer tokens to other addresses.
-/// Tokens implementing the interface expose a single function for doing so:
+/// Tokens allow holders of the token to burn, i.e. dispose of, tokens without
+/// transferring them to another holder. Tokens implementing the interface
+/// expose a single function for doing so:
 /// - [`burn`][Self::burn]
 ///
 /// ## Allowances
