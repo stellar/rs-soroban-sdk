@@ -1124,7 +1124,7 @@ dependencies = [
  "soroban-wasmi",
  "static_assertions",
  "stellar-xdr",
- "wasmparser 0.116.1",
+ "wasmparser",
 ]
 
 [[package]]
@@ -1165,7 +1165,7 @@ dependencies = [
  "soroban-wasmi",
  "static_assertions",
  "stellar-strkey",
- "wasmparser 0.116.1",
+ "wasmparser",
 ]
 
 [[package]]
@@ -1244,7 +1244,7 @@ dependencies = [
  "pretty_assertions",
  "stellar-xdr",
  "thiserror",
- "wasmparser 0.88.0",
+ "wasmparser",
 ]
 
 [[package]]
@@ -1649,15 +1649,6 @@ dependencies = [
  "libm",
  "num-traits",
  "paste",
-]
-
-[[package]]
-name = "wasmparser"
-version = "0.88.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb8cf7dd82407fe68161bedcd57fde15596f32ebf6e9b3bdbf3ae1da20e38e5e"
-dependencies = [
- "indexmap 1.9.3",
 ]
 
 [[package]]
