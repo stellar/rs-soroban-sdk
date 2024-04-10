@@ -62,6 +62,8 @@ version = "=0.0.8"
 version = "=20.1.0"
 default-features = false
 features = ["curr"]
+git = "https://github.com/stellar/rs-stellar-xdr"
+rev = "3a001b1fbb20e4cfa2cef2c0cc450564e8528057"
 
 #[patch."https://github.com/stellar/rs-soroban-env"]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
