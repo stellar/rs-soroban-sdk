@@ -1,3 +1,5 @@
+//! Auth contains types for building custom account contracts.
+
 use crate::{contracttype, Address, BytesN, Env, Error, Symbol, Val, Vec};
 
 /// Context of a single authorized call performed by an address.
