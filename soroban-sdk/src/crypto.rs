@@ -8,11 +8,17 @@ use crate::{
 /// A wrapper type for a cryptographic hash.
 ///
 /// This struct is designed to be used in contexts where a hash value generated
-/// by a secure cryptographic function is required.
+/// by a secure cryptographic function is required.  It can only be constructed
+/// via secure manners, i.e. output from a secure hash function, or received
+/// from the host (e.g. via `CustomAccountInterface`)
 pub struct Hash<const N: usize>(BytesN<N>);
 
 impl<const N: usize> Hash<N> {
     /// Constructs a new `Hash` from a fixed-length bytes array.
+    ///
+    /// This is intended for test-only, since `Hash` type is only meant to be
+    /// constructed via secure manners.
+    #[cfg(test)]
     pub fn from_bytes(bytes: BytesN<N>) -> Self {
         Self(bytes)
     }
