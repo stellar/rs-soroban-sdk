@@ -1,5 +1,54 @@
 //! Crypto contains functions for cryptographic functions.
-use crate::{env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, Env};
+
+use crate::{
+    env::internal, unwrap::UnwrapInfallible, Bytes, BytesN, ConversionError, Env, IntoVal,
+    TryFromVal, Val,
+};
+
+/// A wrapper type for a cryptographic hash.
+///
+/// This struct is designed to be used in contexts where a hash value generated
+/// by a secure cryptographic function is required.
+pub struct Hash<const N: usize>(BytesN<N>);
+
+impl<const N: usize> Hash<N> {
+    /// Constructs a new `Hash` from a fixed-length bytes array.
+    pub fn from_bytes(bytes: BytesN<N>) -> Self {
+        Self(bytes)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, Val> for Hash<N> {
+    fn into_val(&self, e: &Env) -> Val {
+        self.0.into_val(e)
+    }
+}
+
+impl<const N: usize> IntoVal<Env, BytesN<N>> for Hash<N> {
+    fn into_val(&self, _e: &Env) -> BytesN<N> {
+        self.0.clone()
+    }
+}
+
+impl<const N: usize> Into<BytesN<N>> for Hash<N> {
+    fn into(self) -> BytesN<N> {
+        self.0
+    }
+}
+
+impl<const N: usize> Into<[u8; N]> for Hash<N> {
+    fn into(self) -> [u8; N] {
+        self.0.into()
+    }
+}
+
+impl<const N: usize> TryFromVal<Env, Val> for Hash<N> {
+    type Error = ConversionError;
+
+    fn try_from_val(env: &Env, v: &Val) -> Result<Self, Self::Error> {
+        Ok(Hash(BytesN::<N>::try_from_val(env, v)?))
+    }
+}
 
 /// Crypto provides access to cryptographic functions.
 pub struct Crypto {
@@ -16,17 +65,17 @@ impl Crypto {
     }
 
     /// Returns the SHA-256 hash of the data.
-    pub fn sha256(&self, data: &Bytes) -> BytesN<32> {
+    pub fn sha256(&self, data: &Bytes) -> Hash<32> {
         let env = self.env();
         let bin = internal::Env::compute_hash_sha256(env, data.into()).unwrap_infallible();
-        unsafe { BytesN::unchecked_new(env.clone(), bin) }
+        unsafe { Hash(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Returns the Keccak-256 hash of the data.
-    pub fn keccak256(&self, data: &Bytes) -> BytesN<32> {
+    pub fn keccak256(&self, data: &Bytes) -> Hash<32> {
         let env = self.env();
         let bin = internal::Env::compute_hash_keccak256(env, data.into()).unwrap_infallible();
-        unsafe { BytesN::unchecked_new(env.clone(), bin) }
+        unsafe { Hash(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Verifies an ed25519 signature.
