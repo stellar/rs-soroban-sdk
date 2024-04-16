@@ -54,7 +54,29 @@ pub fn derive_fn(
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
         .map(|(i, a)| match a {
-            FnArg::Typed(_) => {
+            FnArg::Typed(pat_ty) => {
+                if ident != "__check_auth" {
+                    let mut ty = &*pat_ty.ty;
+                    if let Type::Reference(TypeReference { elem, .. }) = ty {
+                        ty = elem;
+                    }
+                    if let Type::Path(TypePath {
+                        path: syn::Path { segments, .. },
+                        ..
+                    }) = ty
+                    {
+                        if segments.last().map_or(false, |s| s.ident == "Hash" && !s.arguments.is_none()) {
+                            errors.push(Error::new(a.span(), "`Hash<T>` cannot be used as argument to a public user function, 
+                                since there is no guarantee the received input is from a secure hash function. 
+                                If you still intend to use a hash with such a guarantee, please use `ByteN`"));
+                        } else {
+                            ()
+                        }
+                    } else {
+                        ()
+                    }
+                }
+
                 let ident = format_ident!("arg_{}", i);
                 let arg = FnArg::Typed(PatType {
                     attrs: vec![],

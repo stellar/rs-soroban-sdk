@@ -71,6 +71,15 @@ pub fn derive_fn_spec(
                             ));
                             StringM::<MAX>::default()
                         });
+
+                        if let ScSpecTypeDef::Hash(_) = type_ {
+                            if ident != "__check_auth" {
+                                errors.push(Error::new(a.span(), "`Hash<T>` cannot be used as argument to a public user function, 
+                                    since there is no guarantee the received input is from a secure hash function. 
+                                    If you still intend to use a hash with such a guarantee, please use `ByteN`"));
+                            }
+                        }
+
                         ScSpecFunctionInputV0 {
                             doc: "".try_into().unwrap(),
                             name,
