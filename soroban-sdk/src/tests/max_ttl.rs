@@ -9,10 +9,8 @@ fn max() {
     let e = Env::default();
     let contract_id = e.register_contract(None, Contract);
 
-    let mut ledger_info = e.ledger().get();
-    ledger_info.sequence_number = 1;
-    ledger_info.max_entry_ttl = 5;
-    e.ledger().set(ledger_info);
+    e.ledger().set_sequence_number(1);
+    e.ledger().set_max_entry_ttl(5);
 
     e.as_contract(&contract_id, || {
         assert_eq!(e.storage().max_ttl(), 5);
