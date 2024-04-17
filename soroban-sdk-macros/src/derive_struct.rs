@@ -25,7 +25,11 @@ pub fn derive_type_struct(
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
-
+    let allow_hash = if let Visibility::Public(_) = vis {
+        false
+    } else {
+        true
+    };
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
     let (spec_fields, field_idents, field_names, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
@@ -43,7 +47,7 @@ pub fn derive_type_struct(
                     errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is {MAX}", field_name.len())));
                     StringM::<MAX>::default()
                 }),
-                type_: match map_type(&field.ty) {
+                type_: match map_type(&field.ty, allow_hash) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);

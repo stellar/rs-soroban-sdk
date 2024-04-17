@@ -1,3 +1,4 @@
+use crate::map_type::map_type;
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -6,21 +7,30 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, ReturnType, Type, TypePath,
+    TypeReference,
 };
 
 #[allow(clippy::too_many_arguments)]
-pub fn derive_fn(
+pub fn derive_pub_fn(
     crate_path: &Path,
     call: &TokenStream2,
     ident: &Ident,
     attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
+    output: &ReturnType,
     trait_ident: Option<&Ident>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
+
+    let allow_hash = ident == "__check_auth";
+    if let ReturnType::Type(_, ty) = output {
+        if let Err(e) = map_type(ty, allow_hash) {
+            errors.push(e);
+        }
+    }
 
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
@@ -55,28 +65,9 @@ pub fn derive_fn(
         .enumerate()
         .map(|(i, a)| match a {
             FnArg::Typed(pat_ty) => {
-                if ident != "__check_auth" {
-                    let mut ty = &*pat_ty.ty;
-                    if let Type::Reference(TypeReference { elem, .. }) = ty {
-                        ty = elem;
-                    }
-                    if let Type::Path(TypePath {
-                        path: syn::Path { segments, .. },
-                        ..
-                    }) = ty
-                    {
-                        if segments.last().map_or(false, |s| s.ident == "Hash" && !s.arguments.is_none()) {
-                            errors.push(Error::new(a.span(), "`Hash<T>` cannot be used as argument to a public user function, 
-                                since there is no guarantee the received input is from a secure hash function. 
-                                If you still intend to use a hash with such a guarantee, please use `ByteN`"));
-                        } else {
-                            ()
-                        }
-                    } else {
-                        ()
-                    }
+                if let Err(e) = map_type(&pat_ty.ty, allow_hash) {
+                    errors.push(e);
                 }
-
                 let ident = format_ident!("arg_{}", i);
                 let arg = FnArg::Typed(PatType {
                     attrs: vec![],

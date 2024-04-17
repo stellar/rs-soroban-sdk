@@ -24,6 +24,11 @@ pub fn derive_type_struct_tuple(
 
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
+    let allow_hash = if let Visibility::Public(_) = vis {
+        false
+    } else {
+        true
+    };
 
     let (field_specs, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
@@ -36,7 +41,7 @@ pub fn derive_type_struct_tuple(
             let field_spec = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
-                type_: match map_type(&field.ty) {
+                type_: match map_type(&field.ty, allow_hash) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);

@@ -61,7 +61,7 @@ pub fn derive_fn_spec(
                     errors.push(Error::new(a.span(), "argument not supported"));
                     "".to_string()
                 };
-                match map_type(&pat_type.ty) {
+                match map_type(&pat_type.ty, ident == "__check_auth") {
                     Ok(type_) => {
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
@@ -71,15 +71,6 @@ pub fn derive_fn_spec(
                             ));
                             StringM::<MAX>::default()
                         });
-
-                        if let ScSpecTypeDef::Hash(_) = type_ {
-                            if ident != "__check_auth" {
-                                errors.push(Error::new(a.span(), "`Hash<T>` cannot be used as argument to a public user function, 
-                                    since there is no guarantee the received input is from a secure hash function. 
-                                    If you still intend to use a hash with such a guarantee, please use `ByteN`"));
-                            }
-                        }
-
                         ScSpecFunctionInputV0 {
                             doc: "".try_into().unwrap(),
                             name,
@@ -109,7 +100,7 @@ pub fn derive_fn_spec(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![match map_type(ty) {
+        ReturnType::Type(_, ty) => vec![match map_type(ty, false) {
             Ok(spec) => spec,
             Err(e) => {
                 errors.push(e);
