@@ -1136,7 +1136,7 @@ dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
  "static_assertions",
- "stellar-xdr 21.0.0",
+ "stellar-xdr",
  "wasmparser",
 ]
 
@@ -1194,7 +1194,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_json",
- "stellar-xdr 21.0.0",
+ "stellar-xdr",
  "syn",
 ]
 
@@ -1231,7 +1231,7 @@ dependencies = [
  "soroban-sdk-macros",
  "soroban-spec",
  "stellar-strkey",
- "stellar-xdr 20.1.0",
+ "stellar-xdr",
 ]
 
 [[package]]
@@ -1248,7 +1248,7 @@ dependencies = [
  "soroban-env-common",
  "soroban-spec",
  "soroban-spec-rust",
- "stellar-xdr 20.1.0",
+ "stellar-xdr",
  "syn",
 ]
 
@@ -1258,7 +1258,7 @@ version = "20.5.0"
 dependencies = [
  "base64 0.13.1",
  "pretty_assertions",
- "stellar-xdr 20.1.0",
+ "stellar-xdr",
  "thiserror",
  "wasmparser",
 ]
@@ -1273,7 +1273,7 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-spec",
- "stellar-xdr 20.1.0",
+ "stellar-xdr",
  "syn",
  "thiserror",
 ]
@@ -1329,20 +1329,6 @@ dependencies = [
  "base32",
  "crate-git-revision",
  "thiserror",
-]
-
-[[package]]
-name = "stellar-xdr"
-version = "20.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e59cdf3eb4467fb5a4b00b52e7de6dca72f67fac6f9b700f55c95a5d86f09c9d"
-dependencies = [
- "crate-git-revision",
- "escape-bytes",
- "hex",
- "serde",
- "serde_with",
- "stellar-strkey",
 ]
 
 [[package]]

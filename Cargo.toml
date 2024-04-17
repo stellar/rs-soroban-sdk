@@ -59,7 +59,7 @@ version = "=21.0.0"
 version = "=0.0.8"
 
 [workspace.dependencies.stellar-xdr]
-version = "=20.1.0"
+version = "=21.0.0"
 default-features = false
 features = ["curr"]
 # git = "https://github.com/stellar/rs-stellar-xdr"
