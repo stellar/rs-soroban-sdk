@@ -1,7 +1,7 @@
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
-    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
+    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec, ScSpectTypeHash,
 };
 use syn::{
     spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
@@ -104,13 +104,23 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                         }
                         "BytesN" => {
                             let n = match args.as_slice() {
-                            [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
-                            [..] => Err(Error::new(
-                                t.span(),
-                                "incorrect number of generic arguments, expect one for BytesN<N>",
-                            ))?,
-                        };
+                                [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect one for BytesN<N>",
+                                ))?,
+                            };
                             Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n }))
+                        }
+                        "Hash" => {
+                            let n = match args.as_slice() {
+                                [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect one for BytesN<N>",
+                                ))?,
+                            };
+                            Ok(ScSpecTypeDef::Hash(ScSpectTypeHash { n }))
                         }
                         _ => Err(Error::new(
                             angle_bracketed.span(),

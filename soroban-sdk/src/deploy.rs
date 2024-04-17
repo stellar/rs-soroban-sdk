@@ -159,6 +159,31 @@ impl Deployer {
             )
             .unwrap_infallible();
     }
+
+    pub fn extend_ttl_for_contract_instance(
+        &self,
+        contract_address: Address,
+        threshold: u32,
+        extend_to: u32,
+    ) {
+        self.env
+            .extend_contract_instance_ttl(
+                contract_address.to_object(),
+                threshold.into(),
+                extend_to.into(),
+            )
+            .unwrap_infallible();
+    }
+
+    pub fn extend_ttl_for_code(&self, contract_address: Address, threshold: u32, extend_to: u32) {
+        self.env
+            .extend_contract_code_ttl(
+                contract_address.to_object(),
+                threshold.into(),
+                extend_to.into(),
+            )
+            .unwrap_infallible();
+    }
 }
 
 /// A deployer that deploys a contract that has its ID derived from the provided
