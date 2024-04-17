@@ -1200,7 +1200,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1213,7 +1213,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1236,7 +1236,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "crate-git-revision",
  "darling",
@@ -1254,7 +1254,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "base64 0.13.1",
  "pretty_assertions",
@@ -1265,7 +1265,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1280,7 +1280,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1385,119 +1385,119 @@ dependencies = [
 
 [[package]]
 name = "test_add_i128"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -1505,7 +1505,7 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "20.5.0"
+version = "21.0.0"
 dependencies = [
  "soroban-sdk",
 ]
