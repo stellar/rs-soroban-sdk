@@ -106,7 +106,7 @@ pub fn derive_fn_spec(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![match map_type(ty, false) {
+        ReturnType::Type(_, ty) => vec![match map_type(ty, true) {
             Ok(spec) => spec,
             Err(e) => {
                 errors.push(e);
