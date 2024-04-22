@@ -1,7 +1,7 @@
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
-    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec, ScSpectTypeHash,
+    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
 use syn::{
     spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
@@ -121,7 +121,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                         "incorrect number of generic arguments, expect one for Hash<N>",
                                     ))?,
                                 };
-                                Ok(ScSpecTypeDef::Hash(ScSpectTypeHash { n }))
+                                Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n }))
                             } else {
                                 Err(Error::new(
                                     t.span(),
