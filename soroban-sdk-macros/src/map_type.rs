@@ -125,7 +125,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                             } else {
                                 Err(Error::new(
                                     t.span(),
-                                    "Hash<N> cannot be used in contexts where there is no guarantee it comes from a secure hash function",
+                                    "Hash<N> can only be used in contexts where there is a guarantee that the hash has been sourced from a secure cryptographic hash function",
                                 ))
                             }
                         }
