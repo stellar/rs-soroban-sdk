@@ -56,9 +56,15 @@ pub fn derive_pub_fn(
         .enumerate()
         .map(|(i, a)| match a {
             FnArg::Typed(pat_ty) => {
+                // If fn is a __check_auth implementation, allow the first argument,
+                // signature_payload of type Bytes (32 size), to be a Hash.
+                let allow_hash = ident == "__check_auth" && i == 0;
+
+                // Error if the type of the fn is not mappable.
                 if let Err(e) = map_type(&pat_ty.ty, allow_hash) {
                     errors.push(e);
                 }
+
                 let ident = format_ident!("arg_{}", i);
                 let arg = FnArg::Typed(PatType {
                     attrs: vec![],
