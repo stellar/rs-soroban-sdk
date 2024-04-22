@@ -118,7 +118,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                     [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
                                     [..] => Err(Error::new(
                                         t.span(),
-                                        "incorrect number of generic arguments, expect one for BytesN<N>",
+                                        "incorrect number of generic arguments, expect one for Hash<N>",
                                     ))?,
                                 };
                                 Ok(ScSpecTypeDef::Hash(ScSpectTypeHash { n }))
