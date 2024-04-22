@@ -85,7 +85,6 @@ pub fn derive_type_enum(
                     into_xdr,
                 } = map_tuple_variant(
                     path,
-                    &vis,
                     enum_ident,
                     &case_num_lit,
                     &case_name_str_lit,
@@ -334,7 +333,6 @@ fn map_empty_variant(
 
 fn map_tuple_variant(
     path: &Path,
-    vis: &Visibility,
     enum_ident: &Ident,
     case_num_lit: &Literal,
     case_name_str_lit: &Literal,
@@ -345,14 +343,9 @@ fn map_tuple_variant(
     errors: &mut Vec<Error>,
 ) -> VariantTokens {
     let spec_case = {
-        let allow_hash = if let Visibility::Public(_) = vis {
-            false
-        } else {
-            true
-        };
         let field_types = fields
             .iter()
-            .map(|f| match map_type(&f.ty, allow_hash) {
+            .map(|f| match map_type(&f.ty, false) {
                 Ok(t) => t,
                 Err(e) => {
                     errors.push(e);
