@@ -212,6 +212,30 @@ pub trait Ledger {
     /// Set ledger info.
     fn set(&self, l: LedgerInfo);
 
+    /// Sets the protocol version.
+    fn set_protocol_version(&self, protocol_version: u32);
+
+    /// Sets the sequence number.
+    fn set_sequence_number(&self, sequence_number: u32);
+
+    /// Sets the timestamp.
+    fn set_timestamp(&self, timestamp: u64);
+
+    /// Sets the network ID.
+    fn set_network_id(&self, network_id: [u8; 32]);
+
+    /// Sets the base reserve.
+    fn set_base_reserve(&self, base_reserve: u32);
+
+    /// Sets the minimum temporary entry time-to-live.
+    fn set_min_temp_entry_ttl(&self, min_temp_entry_ttl: u32);
+
+    /// Sets the minimum persistent entry time-to-live.
+    fn set_min_persistent_entry_ttl(&self, min_persistent_entry_ttl: u32);
+
+    /// Sets the maximum entry time-to-live.
+    fn set_max_entry_ttl(&self, max_entry_ttl: u32);
+
     /// Get ledger info.
     fn get(&self) -> LedgerInfo;
 
