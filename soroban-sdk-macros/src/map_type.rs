@@ -61,8 +61,8 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                                ok_type: Box::new(map_type(ok, allow_hash)?),
-                                error_type: Box::new(map_type(err, allow_hash)?),
+                                ok_type: Box::new(map_type(ok, false)?),
+                                error_type: Box::new(map_type(err, false)?),
                             })))
                         }
                         "Option" => {
@@ -74,7 +74,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                             ))?,
                         };
                             Ok(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
-                                value_type: Box::new(map_type(t, allow_hash)?),
+                                value_type: Box::new(map_type(t, false)?),
                             })))
                         }
                         "Vec" => {
@@ -86,7 +86,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
-                                element_type: Box::new(map_type(t, allow_hash)?),
+                                element_type: Box::new(map_type(t, false)?),
                             })))
                         }
                         "Map" => {
@@ -98,8 +98,8 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
-                                key_type: Box::new(map_type(k, allow_hash)?),
-                                value_type: Box::new(map_type(v, allow_hash)?),
+                                key_type: Box::new(map_type(k, false)?),
+                                value_type: Box::new(map_type(v, false)?),
                             })))
                         }
                         "BytesN" => {
