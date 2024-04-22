@@ -19,7 +19,7 @@ impl<const N: usize> Hash<N> {
     /// This is intended for test-only, since `Hash` type is only meant to be
     /// constructed via secure manners.
     #[cfg(test)]
-    pub fn from_bytes(bytes: BytesN<N>) -> Self {
+    pub(crate) fn from_bytes(bytes: BytesN<N>) -> Self {
         Self(bytes)
     }
 }
