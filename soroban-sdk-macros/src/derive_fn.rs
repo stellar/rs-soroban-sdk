@@ -7,8 +7,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, ReturnType, Type, TypePath,
-    TypeReference,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
 };
 
 #[allow(clippy::too_many_arguments)]
@@ -18,19 +17,11 @@ pub fn derive_pub_fn(
     ident: &Ident,
     attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
-    output: &ReturnType,
     trait_ident: Option<&Ident>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
-
-    let allow_hash = ident == "__check_auth";
-    if let ReturnType::Type(_, ty) = output {
-        if let Err(e) = map_type(ty, allow_hash) {
-            errors.push(e);
-        }
-    }
 
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
