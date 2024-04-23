@@ -80,7 +80,7 @@ pub fn derive_pub_fn(
                 });
                 let call = quote! {
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as #crate_path::TryFromVal<#crate_path::Env, #crate_path::Val>>::try_from_val(
+                        <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
                             &#ident
                         )

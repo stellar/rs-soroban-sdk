@@ -756,6 +756,11 @@ pub use env::SymbolStr;
 #[doc(hidden)]
 pub use env::VecObject;
 
+mod try_from_val_for_contract_fn;
+#[doc(hidden)]
+#[allow(deprecated)]
+pub use try_from_val_for_contract_fn::TryFromValForContractFn;
+
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
 pub mod data {
