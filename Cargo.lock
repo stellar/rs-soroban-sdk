@@ -1384,6 +1384,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_account"
+version = "21.0.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_add_i128"
 version = "21.0.0"
 dependencies = [

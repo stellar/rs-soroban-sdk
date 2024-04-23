@@ -1,14 +1,14 @@
-use crate::{bytesn, Env};
+use crate::{bytesn, crypto::Hash, Env};
 
 #[test]
 fn test_recover_key_ecdsa_secp256k1() {
     let env = Env::default();
 
     // From: https://github.com/ethereum/go-ethereum/blob/90d5bd85bcf2919ac2735a47fde675213348a0a6/crypto/secp256k1/secp256_test.go#L204-L217
-    let message_digest = bytesn!(
+    let message_digest = Hash::from_bytes(bytesn!(
         &env,
         0xce0677bb30baa8cf067c88db9811f4333d131bf8bcf12fe7065d211dce971008
-    );
+    ));
     let signature = bytesn!(
         &env,
         0x90f27b8b488db00b00606796d2987f6a5f59ae62ea05effe84fef5b8b0e549984a691139ad57a3f0b906637673aa2f63d1f55cb1a69199d4009eea23ceaddc93

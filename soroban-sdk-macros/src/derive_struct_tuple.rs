@@ -36,7 +36,7 @@ pub fn derive_type_struct_tuple(
             let field_spec = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
-                type_: match map_type(&field.ty) {
+                type_: match map_type(&field.ty, false) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);

@@ -345,7 +345,7 @@ fn map_tuple_variant(
     let spec_case = {
         let field_types = fields
             .iter()
-            .map(|f| match map_type(&f.ty) {
+            .map(|f| match map_type(&f.ty, false) {
                 Ok(t) => t,
                 Err(e) => {
                     errors.push(e);

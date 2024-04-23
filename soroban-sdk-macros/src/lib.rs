@@ -18,7 +18,7 @@ use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
-use derive_fn::{derive_contract_function_registration_ctor, derive_fn};
+use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn};
 use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
@@ -231,7 +231,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         .map(|m| {
             let ident = &m.sig.ident;
             let call = quote! { <super::#ty>::#ident };
-            derive_fn(
+            derive_pub_fn(
                 &crate_path,
                 &call,
                 ident,

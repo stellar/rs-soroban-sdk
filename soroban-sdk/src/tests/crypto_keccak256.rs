@@ -1,4 +1,4 @@
-use crate::{bytesn, Env, IntoVal};
+use crate::{bytesn, BytesN, Env, IntoVal};
 
 #[test]
 fn test_keccak256() {
@@ -9,5 +9,6 @@ fn test_keccak256() {
         &env,
         0x352fe2eaddf44eb02eb3eab1f8d6ff4ba426df4f1734b1e3f210d621ee8853d9
     );
-    assert_eq!(env.crypto().keccak256(&bytes), expect);
+    let hash: BytesN<32> = env.crypto().keccak256(&bytes).into();
+    assert_eq!(hash, expect);
 }

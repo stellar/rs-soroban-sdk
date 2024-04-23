@@ -1,7 +1,7 @@
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
-    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec, ScSpectTypeHash,
+    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
 use syn::{
     spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
@@ -9,7 +9,7 @@ use syn::{
 };
 
 #[allow(clippy::too_many_lines)]
-pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
+pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
     match t {
         Type::Path(TypePath {
             qself: None,
@@ -61,8 +61,8 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                                ok_type: Box::new(map_type(ok)?),
-                                error_type: Box::new(map_type(err)?),
+                                ok_type: Box::new(map_type(ok, false)?),
+                                error_type: Box::new(map_type(err, false)?),
                             })))
                         }
                         "Option" => {
@@ -74,7 +74,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             ))?,
                         };
                             Ok(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
-                                value_type: Box::new(map_type(t)?),
+                                value_type: Box::new(map_type(t, false)?),
                             })))
                         }
                         "Vec" => {
@@ -86,7 +86,7 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
-                                element_type: Box::new(map_type(t)?),
+                                element_type: Box::new(map_type(t, false)?),
                             })))
                         }
                         "Map" => {
@@ -98,8 +98,8 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
-                                key_type: Box::new(map_type(k)?),
-                                value_type: Box::new(map_type(v)?),
+                                key_type: Box::new(map_type(k, false)?),
+                                value_type: Box::new(map_type(v, false)?),
                             })))
                         }
                         "BytesN" => {
@@ -113,14 +113,21 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
                             Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n }))
                         }
                         "Hash" => {
-                            let n = match args.as_slice() {
-                                [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
-                                [..] => Err(Error::new(
+                            if allow_hash {
+                                let n = match args.as_slice() {
+                                    [GenericArgument::Const(Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))] => int.base10_parse()?,
+                                    [..] => Err(Error::new(
+                                        t.span(),
+                                        "incorrect number of generic arguments, expect one for Hash<N>",
+                                    ))?,
+                                };
+                                Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n }))
+                            } else {
+                                Err(Error::new(
                                     t.span(),
-                                    "incorrect number of generic arguments, expect one for BytesN<N>",
-                                ))?,
-                            };
-                            Ok(ScSpecTypeDef::Hash(ScSpectTypeHash { n }))
+                                    "Hash<N> can only be used in contexts where there is a guarantee that the hash has been sourced from a secure cryptographic hash function",
+                                ))
+                            }
                         }
                         _ => Err(Error::new(
                             angle_bracketed.span(),
@@ -132,10 +139,12 @@ pub fn map_type(t: &Type) -> Result<ScSpecTypeDef, Error> {
             }
         }
         Type::Tuple(TypeTuple { elems, .. }) => {
+            let map_type_reject_hash =
+                |t: &Type| -> Result<ScSpecTypeDef, Error> { map_type(t, false) };
             Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
                 value_types: elems
                     .iter()
-                    .map(map_type)
+                    .map(map_type_reject_hash)
                     .collect::<Result<Vec<ScSpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
                     .try_into()
                     .map_err(|e| {
