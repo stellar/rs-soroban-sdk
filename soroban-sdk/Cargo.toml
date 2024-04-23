@@ -48,6 +48,7 @@ proptest  = "1.2.0"
 proptest-arbitrary-interop = "0.1.0"
 
 [features]
+std = []
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:ctor"]
 docs = []

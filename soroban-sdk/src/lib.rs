@@ -48,7 +48,7 @@
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
 // When used in a no_std contract, provide a panic handler as one is required.
-#[cfg(all(not(feature = "alloc"), target_family = "wasm"))]
+#[cfg(all(not(feature = "alloc"), not(feature = "std"), target_family = "wasm"))]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
