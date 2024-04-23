@@ -172,16 +172,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         Ok(ident) => ident,
                         Err(e) => {
                             errors.push(e);
-                            if let FnArg::Typed(pat_type) = t {
-                                if let Pat::Wild(_) = *pat_type.pat.clone() {
-                                    // This will result in a clear compiler error if an underscore is used as an argument.
-                                    format_ident!("_")
-                                } else {
-                                    format_ident!("")
-                                }
-                            } else {
-                                format_ident!("")
-                            }
+                            format_ident!("_")
                         }
                     };
                     (ident, syn_ext::fn_arg_make_ref(t))
