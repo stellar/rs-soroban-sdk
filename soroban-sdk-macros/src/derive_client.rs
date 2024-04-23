@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath, TypeReference};
+use syn::{spanned::Spanned, Error, FnArg, Pat, Path, Type, TypePath, TypeReference};
 
 use crate::syn_ext;
 
@@ -172,7 +172,16 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         Ok(ident) => ident,
                         Err(_) => {
                             errors.push(Error::new(t.span(), "argument not supported"));
-                            format_ident!("")
+                            if let FnArg::Typed(pat_type) = t {
+                                if let Pat::Wild(_) = *pat_type.pat.clone() {
+                                    // This will result in a clear compiler error if an underscore is used as an argument.
+                                    format_ident!("_")
+                                } else {
+                                    format_ident!("")
+                                }
+                            } else {
+                                format_ident!("")
+                            }
                         }
                     };
                     (ident, syn_ext::fn_arg_make_ref(t))
