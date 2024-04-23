@@ -175,9 +175,6 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
             let n = Literal::u32_unsuffixed(b.n);
             quote! { soroban_sdk::BytesN<#n> }
         }
-        ScSpecTypeDef::Hash(_) => {
-            todo!("Hash type is unsupported, remove this arm when https://github.com/stellar/stellar-xdr/pull/184 is merged")
-        }
         ScSpecTypeDef::Udt(u) => {
             let ident = format_ident!("{}", u.name.to_utf8_string().unwrap());
             quote! { #ident }
