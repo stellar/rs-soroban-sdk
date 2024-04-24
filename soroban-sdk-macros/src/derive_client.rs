@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, Pat, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, Path, Type, TypePath, TypeReference};
 
 use crate::syn_ext;
 
