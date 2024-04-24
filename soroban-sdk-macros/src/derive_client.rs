@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{spanned::Spanned, Error, FnArg, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, Path, Type, TypePath, TypeReference};
 
 use crate::syn_ext;
 
@@ -170,9 +170,9 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 .map(|t| {
                     let ident = match syn_ext::fn_arg_ident(t) {
                         Ok(ident) => ident,
-                        Err(_) => {
-                            errors.push(Error::new(t.span(), "argument not supported"));
-                            format_ident!("")
+                        Err(e) => {
+                            errors.push(e);
+                            format_ident!("_")
                         }
                     };
                     (ident, syn_ext::fn_arg_make_ref(t))
