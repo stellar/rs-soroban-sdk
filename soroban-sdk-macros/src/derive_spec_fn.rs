@@ -119,7 +119,7 @@ pub fn derive_fn_spec(
     // Generated code spec.
     let name = &format!("{}", ident);
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+        doc: docs_from_attrs(attrs),
         name: name.try_into().unwrap_or_else(|_| {
             errors.push(Error::new(
                 ident.span(),
