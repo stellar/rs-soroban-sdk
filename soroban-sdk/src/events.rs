@@ -23,13 +23,13 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// #     pub fn f(env: Env) {
 /// let event = env.events();
 /// let data = map![&env, (1u32, 2u32)];
-/// // topics can be represented with tuple of size up to 4
+/// // topics can be represented with tuple up to a certain length
 /// let topics0 = ();
 /// let topics1 = (0u32,);
 /// let topics2 = (0u32, 1u32);
 /// let topics3 = (0u32, 1u32, 2u32);
 /// let topics4 = (0u32, 1u32, 2u32, 3u32);
-/// // topics (no length limit) can also be represented with a `Vec`
+/// // topics can also be represented with a `Vec` with no length limit
 /// let topics5 = vec![&env, 4u32, 5u32, 6u32, 7u32, 8u32];
 /// event.publish(topics0, data.clone());
 /// event.publish(topics1, data.clone());
