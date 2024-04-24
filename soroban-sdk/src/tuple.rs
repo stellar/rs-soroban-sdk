@@ -49,7 +49,7 @@ macro_rules! impl_topics_for_tuple {
 
 // 0 topics
 impl Topics for () {}
-// 1-4 topics
+// 1-13 topics
 impl_topics_for_tuple! { T0 0 }
 impl_topics_for_tuple! { T0 0 T1 1 }
 impl_topics_for_tuple! { T0 0 T1 1 T2 2 }
