@@ -3,9 +3,7 @@ use core::fmt::Debug;
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, Map};
-use crate::{
-    env::internal, unwrap::UnwrapInfallible, ConversionError, Env, IntoVal, TryFromVal, Val, Vec,
-};
+use crate::{env::internal, unwrap::UnwrapInfallible, Env, IntoVal, Val, Vec};
 
 // TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
 const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
@@ -25,16 +23,20 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// #     pub fn f(env: Env) {
 /// let event = env.events();
 /// let data = map![&env, (1u32, 2u32)];
+/// // topics can be represented with tuple up to a certain length
 /// let topics0 = ();
 /// let topics1 = (0u32,);
 /// let topics2 = (0u32, 1u32);
 /// let topics3 = (0u32, 1u32, 2u32);
 /// let topics4 = (0u32, 1u32, 2u32, 3u32);
+/// // topics can also be represented with a `Vec` with no length limit
+/// let topics5 = vec![&env, 4u32, 5u32, 6u32, 7u32, 8u32];
 /// event.publish(topics0, data.clone());
 /// event.publish(topics1, data.clone());
 /// event.publish(topics2, data.clone());
 /// event.publish(topics3, data.clone());
 /// event.publish(topics4, data.clone());
+/// event.publish(topics5, data.clone());
 /// #     }
 /// # }
 ///
@@ -58,31 +60,7 @@ impl Debug for Events {
 
 pub trait Topics: IntoVal<Env, Vec<Val>> {}
 
-impl TryFromVal<Env, ()> for Vec<Val> {
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, _v: &()) -> Result<Self, Self::Error> {
-        Ok(Vec::<Val>::new(env))
-    }
-}
-
-macro_rules! impl_topics_for_tuple {
-    ( $($typ:ident $idx:tt)* ) => {
-        impl<$($typ),*> Topics for ($($typ,)*)
-        where
-            $($typ: IntoVal<Env, Val>),*
-        {
-        }
-    };
-}
-
-// 0 topics
-impl Topics for () {}
-// 1-4 topics
-impl_topics_for_tuple! { T0 0 }
-impl_topics_for_tuple! { T0 0 T1 1 }
-impl_topics_for_tuple! { T0 0 T1 1 T2 2 }
-impl_topics_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
+impl<T> Topics for Vec<T> {}
 
 impl Events {
     #[inline(always)]

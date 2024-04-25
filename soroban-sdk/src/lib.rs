@@ -775,6 +775,7 @@ pub mod deploy;
 mod error;
 pub use error::InvokeError;
 pub mod events;
+pub use events::Topics;
 pub mod iter;
 pub mod ledger;
 pub mod logs;
@@ -792,6 +793,7 @@ mod num;
 pub use num::{Duration, Timepoint, I256, U256};
 mod string;
 pub use string::String;
+mod tuple;
 
 pub mod xdr;
 
