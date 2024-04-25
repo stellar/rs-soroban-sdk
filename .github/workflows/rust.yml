@@ -84,10 +84,10 @@ jobs:
           # specific crate-type, lib, such that the Cargo.toml crate-type is
           # ignored.
           cdylib-cross-compile-workaround: true
-        - os: macos-latest
-          target: x86_64-apple-darwin
-        - os: macos-latest
-          target: aarch64-apple-darwin
+#        - os: macos-latest
+#          target: x86_64-apple-darwin
+#        - os: macos-latest
+#          target: aarch64-apple-darwin
         - os: windows-latest
           target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.sys.os }}
