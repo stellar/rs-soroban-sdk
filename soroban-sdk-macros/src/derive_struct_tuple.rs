@@ -34,7 +34,7 @@ pub fn derive_type_struct_tuple(
             let field_idx_lit = Literal::usize_unsuffixed(field_idx);
             let field_name = format!("{}", field_idx);
             let field_spec = ScSpecUdtStructFieldV0 {
-                doc: docs_from_attrs(&field.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+                doc: docs_from_attrs(&field.attrs),
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
                 type_: match map_type(&field.ty, false) {
                     Ok(t) => t,
@@ -66,7 +66,7 @@ pub fn derive_type_struct_tuple(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+            doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
             fields: field_specs.try_into().unwrap(),
