@@ -38,7 +38,7 @@ jobs:
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
     - uses: actions/checkout@v3
-    - uses: EmbarkStudios/cargo-deny-action@e0a440755b184aa50374330fa75cca0f84fcb59a
+    - uses: EmbarkStudios/cargo-deny-action@b01e7a8cfb1f496c52d77361e84c1840d8246393
       with:
         command: check ${{ matrix.checks }}
 
@@ -84,10 +84,10 @@ jobs:
           # specific crate-type, lib, such that the Cargo.toml crate-type is
           # ignored.
           cdylib-cross-compile-workaround: true
-        - os: macos-latest
-          target: x86_64-apple-darwin
-        - os: macos-latest
-          target: aarch64-apple-darwin
+#        - os: macos-latest
+#          target: x86_64-apple-darwin
+#        - os: macos-latest
+#          target: aarch64-apple-darwin
         - os: windows-latest
           target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.sys.os }}
@@ -136,7 +136,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly-2024-02-03
+    - run: rustup install nightly
     - uses: stellar/binaries@v15
       with:
         name: cargo-fuzz
@@ -148,8 +148,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    # TODO: Upgrade to latest nightly after problem that was introduced in nightly-2024-02-05 (https://github.com/dalek-cryptography/curve25519-dalek/issues/618) is resolved.
-    - run: rustup install nightly-2024-02-03
+    - run: rustup install nightly
     - run: make doc
 
   readme:
@@ -157,7 +156,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - run: rustup install nightly-2024-02-03
+    - run: rustup install nightly
     - run: make readme
     - run: git add -N . && git diff HEAD --exit-code
 

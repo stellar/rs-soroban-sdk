@@ -1,4 +1,6 @@
-use crate::{contracttype, Address, BytesN, Env, Error, Symbol, Val, Vec};
+//! Auth contains types for building custom account contracts.
+
+use crate::{contracttype, crypto::Hash, Address, BytesN, Env, Error, Symbol, Val, Vec};
 
 /// Context of a single authorized call performed by an address.
 ///
@@ -75,7 +77,7 @@ pub trait CustomAccountInterface {
     /// Check that the signatures and auth contexts are valid.
     fn __check_auth(
         env: Env,
-        signature_payload: BytesN<32>,
+        signature_payload: Hash<32>,
         signatures: Self::Signature,
         auth_contexts: Vec<Context>,
     ) -> Result<(), Self::Error>;

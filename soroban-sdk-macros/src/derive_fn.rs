@@ -1,3 +1,4 @@
+use crate::map_type::map_type;
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -10,7 +11,7 @@ use syn::{
 };
 
 #[allow(clippy::too_many_arguments)]
-pub fn derive_fn(
+pub fn derive_pub_fn(
     crate_path: &Path,
     call: &TokenStream2,
     ident: &Ident,
@@ -54,7 +55,16 @@ pub fn derive_fn(
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
         .map(|(i, a)| match a {
-            FnArg::Typed(_) => {
+            FnArg::Typed(pat_ty) => {
+                // If fn is a __check_auth implementation, allow the first argument,
+                // signature_payload of type Bytes (32 size), to be a Hash.
+                let allow_hash = ident == "__check_auth" && i == 0;
+
+                // Error if the type of the fn is not mappable.
+                if let Err(e) = map_type(&pat_ty.ty, allow_hash) {
+                    errors.push(e);
+                }
+
                 let ident = format_ident!("arg_{}", i);
                 let arg = FnArg::Typed(PatType {
                     attrs: vec![],
@@ -70,7 +80,7 @@ pub fn derive_fn(
                 });
                 let call = quote! {
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as #crate_path::TryFromVal<#crate_path::Env, #crate_path::Val>>::try_from_val(
+                        <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
                             &#ident
                         )

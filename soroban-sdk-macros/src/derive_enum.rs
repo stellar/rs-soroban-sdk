@@ -139,7 +139,7 @@ pub fn derive_type_enum(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
-            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+            doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
@@ -289,7 +289,7 @@ fn map_empty_variant(
     attrs: &[Attribute],
 ) -> VariantTokens {
     let spec_case = ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
-        doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+        doc: docs_from_attrs(attrs),
         name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
     });
     let try_from = quote! {
@@ -345,7 +345,7 @@ fn map_tuple_variant(
     let spec_case = {
         let field_types = fields
             .iter()
-            .map(|f| match map_type(&f.ty) {
+            .map(|f| match map_type(&f.ty, false) {
                 Ok(t) => t,
                 Err(e) => {
                     errors.push(e);
@@ -376,7 +376,7 @@ fn map_tuple_variant(
             }
         };
         ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
-            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+            doc: docs_from_attrs(attrs),
             name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
             type_: field_types.try_into().unwrap(),
         })

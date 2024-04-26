@@ -3,13 +3,35 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{ScSpecUdtEnumV0, StringM};
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path, Visibility};
+use syn::{
+    spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Meta, Path, Visibility,
+};
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
 use crate::{doc::docs_from_attrs, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
+
+fn derives_copy(attrs: &[Attribute]) -> bool {
+    for attr in attrs {
+        if let Meta::List(ml) = &attr.meta {
+            if let Some(_ps) = ml.path.segments.iter().find(|ps| ps.ident == "derive") {
+                if let Some(_tt) = ml.tokens.clone().into_iter().find(|tt| {
+                    // match this token with what we want
+                    if let proc_macro2::TokenTree::Ident(id) = tt {
+                        id.to_string() == "Copy"
+                    } else {
+                        false
+                    }
+                }) {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
 
 pub fn derive_type_enum_int(
     path: &Path,
@@ -22,6 +44,16 @@ pub fn derive_type_enum_int(
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
+
+    if !derives_copy(attrs) {
+        errors.push(Error::new(
+            enum_ident.span(),
+            format!(
+                "enum integer {} must have `derive(Copy)`",
+                enum_ident.to_string()
+            ),
+        ));
+    }
 
     let variants = &data.variants;
     let (spec_cases, try_froms, try_intos): (Vec<_>, Vec<_>, Vec<_>) = variants
@@ -49,7 +81,7 @@ pub fn derive_type_enum_int(
                 0
             };
             let spec_case = ScSpecUdtEnumCaseV0 {
-                doc: docs_from_attrs(&v.attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+                doc: docs_from_attrs(&v.attrs),
                 name: name.try_into().unwrap_or_else(|_| StringM::default()),
                 value: discriminant,
             };
@@ -68,7 +100,7 @@ pub fn derive_type_enum_int(
     // Generated code spec.
     let spec_gen = if spec {
         let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
-            doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+            doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
