@@ -396,3 +396,17 @@ pub trait Address {
     /// the underlying Address value.
     fn generate(env: &Env) -> crate::Address;
 }
+
+pub trait Deployer {
+    /// Gets the ledger until which the given contract instance lives.
+    ///
+    /// Panics if there is no instance corresponding to the provided address,
+    /// or if the instance has expired.
+    fn get_contract_instance_live_until_ledger(&self, contract: &crate::Address) -> u32;
+
+    /// Gets the ledger until which the Wasm code of the given contract instance lives.
+    ///
+    /// Panics if there is no contract instance/code corresponding to
+    /// the provided address, or if the instance/code has expired.
+    fn get_contract_code_live_until_ledger(&self, contract: &crate::Address) -> u32;
+}
