@@ -43,7 +43,7 @@ fn all() {
 }
 
 #[test]
-fn live_until_ledger_getters() {
+fn ttl_getters() {
     let e = Env::default();
     e.ledger().set_sequence_number(1000);
     e.ledger().set_min_persistent_entry_ttl(100);
@@ -58,13 +58,12 @@ fn live_until_ledger_getters() {
     e.as_contract(&contract_a, setup);
     e.as_contract(&contract_b, setup);
 
-    // Initial live until ledgers are defined by min persistent/temp entry TTLs for the
+    // Initial TTLs are defined by min persistent/temp entry TTL settings for the
     // persistent/temp entries respectively.
-    // The current ledger is included into min TTL.
     let test_initial_storage_ttls = || {
-        assert_eq!(e.storage().instance().get_live_until_ledger(), 1099);
-        assert_eq!(e.storage().persistent().get_live_until_ledger(&1), 1099);
-        assert_eq!(e.storage().temporary().get_live_until_ledger(&2), 1009);
+        assert_eq!(e.storage().instance().get_ttl(), 100);
+        assert_eq!(e.storage().persistent().get_ttl(&1), 100);
+        assert_eq!(e.storage().temporary().get_ttl(&2), 10);
     };
     e.as_contract(&contract_a, test_initial_storage_ttls);
     e.as_contract(&contract_b, test_initial_storage_ttls);
@@ -72,26 +71,10 @@ fn live_until_ledger_getters() {
     // Instance and code have the same initial TTL as any other persistent entry.
     for from_contract in [&contract_a, &contract_b] {
         e.as_contract(from_contract, || {
-            assert_eq!(
-                e.deployer()
-                    .get_contract_instance_live_until_ledger(&contract_a),
-                1099
-            );
-            assert_eq!(
-                e.deployer()
-                    .get_contract_code_live_until_ledger(&contract_a),
-                1099
-            );
-            assert_eq!(
-                e.deployer()
-                    .get_contract_instance_live_until_ledger(&contract_b),
-                1099
-            );
-            assert_eq!(
-                e.deployer()
-                    .get_contract_code_live_until_ledger(&contract_b),
-                1099
-            );
+            assert_eq!(e.deployer().get_contract_instance_ttl(&contract_a), 100);
+            assert_eq!(e.deployer().get_contract_code_ttl(&contract_a), 100);
+            assert_eq!(e.deployer().get_contract_instance_ttl(&contract_b), 100);
+            assert_eq!(e.deployer().get_contract_code_ttl(&contract_b), 100);
         });
     }
 
@@ -105,41 +88,26 @@ fn live_until_ledger_getters() {
         e.storage().temporary().extend_ttl(&2, 10, 300);
     });
 
-    // Contract A has live until ledger increased corresponding to TTL extensions.
-    // When TTL is extended, the current ledger is not included when computing the final
-    // live_until_ledger.
+    // Contract A has TTL extended for its entries.
+    // When TTL is extended, the current ledger is not included in `extend_to`
+    // parameter, so e.g. extending an entry to live for 1000 ledgers from now
+    // means that the TTL becomes 1001 (current ledger + 1000 ledgers of extension).
     e.as_contract(&contract_a, || {
-        assert_eq!(e.storage().instance().get_live_until_ledger(), 2000);
-        assert_eq!(e.storage().persistent().get_live_until_ledger(&1), 1500);
-        assert_eq!(e.storage().temporary().get_live_until_ledger(&2), 1300);
+        assert_eq!(e.storage().instance().get_ttl(), 1001);
+        assert_eq!(e.storage().persistent().get_ttl(&1), 501);
+        assert_eq!(e.storage().temporary().get_ttl(&2), 301);
     });
     // Contract B has no TTLs extended for its own storage.
     e.as_contract(&contract_b, test_initial_storage_ttls);
 
     for from_contract in [&contract_a, &contract_b] {
         e.as_contract(from_contract, || {
-            assert_eq!(
-                e.deployer()
-                    .get_contract_instance_live_until_ledger(&contract_a),
-                2000
-            );
-            assert_eq!(
-                e.deployer()
-                    .get_contract_code_live_until_ledger(&contract_a),
-                3000
-            );
+            assert_eq!(e.deployer().get_contract_instance_ttl(&contract_a), 1001);
+            assert_eq!(e.deployer().get_contract_code_ttl(&contract_a), 2001);
             // Instance hasn't been extended for B.
-            assert_eq!(
-                e.deployer()
-                    .get_contract_instance_live_until_ledger(&contract_b),
-                1099
-            );
+            assert_eq!(e.deployer().get_contract_instance_ttl(&contract_b), 100);
             // Code has been extended for B.
-            assert_eq!(
-                e.deployer()
-                    .get_contract_code_live_until_ledger(&contract_b),
-                3000
-            );
+            assert_eq!(e.deployer().get_contract_code_ttl(&contract_b), 2001);
         });
     }
 }
@@ -167,10 +135,10 @@ fn temp_entry_expiration() {
         e.ledger().set_sequence_number(2000);
         assert!(!e.storage().temporary().has(&1));
         e.storage().temporary().set(&1, &3);
-        // The entry is written and the new `live_until_ledger` is set based on
-        // min temp entry TTL.
+        // The entry is written and the new TTL is set based on min temp entry TTL
+        // setting.
         assert_eq!(e.storage().temporary().get(&1), Some(3));
-        assert_eq!(e.storage().temporary().get_live_until_ledger(&1), 2099);
+        assert_eq!(e.storage().temporary().get_ttl(&1), 100);
     });
 }
 

@@ -618,11 +618,14 @@ mod testutils {
             panic!("contract instance for current contract address not found");
         }
 
-        fn get_live_until_ledger(&self) -> u32 {
+        fn get_ttl(&self) -> u32 {
             let env = &self.storage.env;
             env.host()
                 .get_contract_instance_live_until_ledger(env.current_contract_address().to_object())
                 .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+                + 1
         }
     }
 
@@ -631,11 +634,14 @@ mod testutils {
             all(&self.storage.env, xdr::ContractDataDurability::Persistent)
         }
 
-        fn get_live_until_ledger<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
+        fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
             let env = &self.storage.env;
             env.host()
                 .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Persistent)
                 .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+                + 1
         }
     }
 
@@ -644,11 +650,14 @@ mod testutils {
             all(&self.storage.env, xdr::ContractDataDurability::Temporary)
         }
 
-        fn get_live_until_ledger<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
+        fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
             let env = &self.storage.env;
             env.host()
                 .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Temporary)
                 .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+                + 1
         }
     }
 

@@ -257,18 +257,24 @@ mod testutils {
     use crate::Address;
 
     impl crate::testutils::Deployer for Deployer {
-        fn get_contract_instance_live_until_ledger(&self, contract: &Address) -> u32 {
+        fn get_contract_instance_ttl(&self, contract: &Address) -> u32 {
             self.env
                 .host()
                 .get_contract_instance_live_until_ledger(contract.to_object())
                 .unwrap()
+                .checked_sub(self.env.ledger().sequence())
+                .unwrap()
+                + 1
         }
 
-        fn get_contract_code_live_until_ledger(&self, contract: &Address) -> u32 {
+        fn get_contract_code_ttl(&self, contract: &Address) -> u32 {
             self.env
                 .host()
                 .get_contract_code_live_until_ledger(contract.to_object())
                 .unwrap()
+                .checked_sub(self.env.ledger().sequence())
+                .unwrap()
+                + 1
         }
     }
 }
