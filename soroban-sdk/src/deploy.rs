@@ -270,7 +270,6 @@ mod testutils {
                 .unwrap()
                 .checked_sub(self.env.ledger().sequence())
                 .unwrap()
-                + 1
         }
 
         fn get_contract_code_ttl(&self, contract: &Address) -> u32 {
@@ -280,7 +279,6 @@ mod testutils {
                 .unwrap()
                 .checked_sub(self.env.ledger().sequence())
                 .unwrap()
-                + 1
         }
     }
 }
