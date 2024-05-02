@@ -617,17 +617,47 @@ mod testutils {
             }
             panic!("contract instance for current contract address not found");
         }
+
+        fn get_ttl(&self) -> u32 {
+            let env = &self.storage.env;
+            env.host()
+                .get_contract_instance_live_until_ledger(env.current_contract_address().to_object())
+                .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+                + 1
+        }
     }
 
     impl testutils::storage::Persistent for Persistent {
         fn all(&self) -> Map<Val, Val> {
             all(&self.storage.env, xdr::ContractDataDurability::Persistent)
         }
+
+        fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
+            let env = &self.storage.env;
+            env.host()
+                .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Persistent)
+                .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+                + 1
+        }
     }
 
     impl testutils::storage::Temporary for Temporary {
         fn all(&self) -> Map<Val, Val> {
             all(&self.storage.env, xdr::ContractDataDurability::Temporary)
+        }
+
+        fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
+            let env = &self.storage.env;
+            env.host()
+                .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Temporary)
+                .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+                + 1
         }
     }
 
