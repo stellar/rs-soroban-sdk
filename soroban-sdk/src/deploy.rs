@@ -249,3 +249,32 @@ impl DeployerWithAsset {
             .into_val(&self.env)
     }
 }
+
+#[cfg(any(test, feature = "testutils"))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
+mod testutils {
+    use crate::deploy::Deployer;
+    use crate::Address;
+
+    impl crate::testutils::Deployer for Deployer {
+        fn get_contract_instance_ttl(&self, contract: &Address) -> u32 {
+            self.env
+                .host()
+                .get_contract_instance_live_until_ledger(contract.to_object())
+                .unwrap()
+                .checked_sub(self.env.ledger().sequence())
+                .unwrap()
+                + 1
+        }
+
+        fn get_contract_code_ttl(&self, contract: &Address) -> u32 {
+            self.env
+                .host()
+                .get_contract_code_live_until_ledger(contract.to_object())
+                .unwrap()
+                .checked_sub(self.env.ledger().sequence())
+                .unwrap()
+                + 1
+        }
+    }
+}
