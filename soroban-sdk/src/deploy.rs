@@ -160,6 +160,9 @@ impl Deployer {
             .unwrap_infallible();
     }
 
+    /// Extend the TTL of the contract instance.
+    ///
+    /// Same as [`extend_ttl`](Self::extend_ttl) but only for contract instance.
     pub fn extend_ttl_for_contract_instance(
         &self,
         contract_address: Address,
@@ -175,6 +178,9 @@ impl Deployer {
             .unwrap_infallible();
     }
 
+    /// Extend the TTL of the contract code.
+    ///
+    /// Same as [`extend_ttl`](Self::extend_ttl) but only for contract code.
     pub fn extend_ttl_for_code(&self, contract_address: Address, threshold: u32, extend_to: u32) {
         self.env
             .extend_contract_code_ttl(
