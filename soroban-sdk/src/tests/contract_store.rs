@@ -1,3 +1,5 @@
+use crate::testutils::storage::{Instance, Persistent, Temporary};
+use crate::testutils::Ledger;
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 
@@ -35,31 +37,39 @@ impl Contract {
         env.storage().instance().set(&DataKey::Key(k), &v);
     }
 
-    pub fn extend_ttl_persistent(env: Env, k: i32) {
+    pub fn extend_ttl_persistent(env: Env, k: i32, extend_to: u32) {
         env.storage()
             .persistent()
-            .extend_ttl(&DataKey::Key(k), 100, 100);
+            .extend_ttl(&DataKey::Key(k), extend_to, extend_to);
     }
 
-    pub fn extend_ttl_temporary(env: Env, k: i32) {
+    pub fn extend_ttl_temporary(env: Env, k: i32, extend_to: u32) {
         env.storage()
             .temporary()
-            .extend_ttl(&DataKey::Key(k), 100, 100);
+            .extend_ttl(&DataKey::Key(k), extend_to, extend_to);
     }
 
-    pub fn extend_ttl_instance(env: Env) {
-        env.storage().instance().extend_ttl(100, 100);
+    pub fn extend_ttl_instance(env: Env, extend_to: u32) {
+        env.storage().instance().extend_ttl(extend_to, extend_to);
     }
 }
 
 #[test]
 fn test_storage() {
     let e = Env::default();
+    e.ledger().set_min_persistent_entry_ttl(100);
+    e.ledger().set_min_temp_entry_ttl(50);
+    e.ledger().set_max_entry_ttl(20_000);
+
     let contract_id = e.register_contract(None, Contract);
     let client = ContractClient::new(&e, &contract_id);
 
     // Smoke test instance bump before putting any data into it.
-    client.extend_ttl_instance();
+    client.extend_ttl_instance(&1000);
+    assert_eq!(
+        e.as_contract(&contract_id, || e.storage().instance().get_ttl()),
+        1000
+    );
 
     assert!(client.get_persistent(&11).is_none());
     assert!(client.get_temporary(&11).is_none());
@@ -105,8 +115,81 @@ fn test_storage() {
         Some(333_i32)
     );
 
-    // Smoke test temp/persistent bumps. This can be enhanced when we provided
-    // expiration ledger getter for tests.
-    client.extend_ttl_persistent(&11);
-    client.extend_ttl_temporary(&11);
+    client.extend_ttl_persistent(&11, &10_000);
+    assert_eq!(
+        e.as_contract(&contract_id, || e
+            .storage()
+            .persistent()
+            .get_ttl(&DataKey::Key(11))),
+        10_000
+    );
+
+    client.extend_ttl_persistent(&11, &e.storage().max_ttl());
+    assert_eq!(
+        e.as_contract(&contract_id, || e
+            .storage()
+            .persistent()
+            .get_ttl(&DataKey::Key(11))),
+        e.storage().max_ttl()
+    );
+    // Persistent entry bumps past max TTL are clamped to be just max TTL.
+    client.extend_ttl_persistent(&11, &(e.storage().max_ttl() + 1000));
+    assert_eq!(
+        e.as_contract(&contract_id, || e
+            .storage()
+            .persistent()
+            .get_ttl(&DataKey::Key(11))),
+        e.storage().max_ttl()
+    );
+
+    client.extend_ttl_temporary(&11, &5_000);
+    assert_eq!(
+        e.as_contract(&contract_id, || e
+            .storage()
+            .temporary()
+            .get_ttl(&DataKey::Key(11))),
+        5_000
+    );
+    client.extend_ttl_temporary(&11, &e.storage().max_ttl());
+    assert_eq!(
+        e.as_contract(&contract_id, || e
+            .storage()
+            .temporary()
+            .get_ttl(&DataKey::Key(11))),
+        e.storage().max_ttl()
+    );
+    // Extending temp entry TTL past max will panic, so that's not covered in this test.
+
+    client.extend_ttl_instance(&2000);
+    assert_eq!(
+        e.as_contract(&contract_id, || e.storage().instance().get_ttl()),
+        2000
+    );
+
+    client.extend_ttl_instance(&e.storage().max_ttl());
+    assert_eq!(
+        e.as_contract(&contract_id, || e.storage().instance().get_ttl()),
+        e.storage().max_ttl()
+    );
+    // Persistent entry bumps past max TTL are clamped to be just max TTL, and
+    // the instance storage is just a persistent entry.
+    client.extend_ttl_instance(&(e.storage().max_ttl() + 1000));
+    assert_eq!(
+        e.as_contract(&contract_id, || e.storage().instance().get_ttl()),
+        e.storage().max_ttl()
+    );
+}
+
+#[test]
+#[should_panic(expected = "trying to extend past max live_until ledger")]
+fn test_temp_storage_extension_past_max_ttl_panics() {
+    let e = Env::default();
+    e.ledger().set_min_temp_entry_ttl(50);
+    e.ledger().set_max_entry_ttl(20_000);
+    let contract_id = e.register_contract(None, Contract);
+    let client = ContractClient::new(&e, &contract_id);
+    e.as_contract(&contract_id, || {
+        e.storage().temporary().set(&DataKey::Key(11), &2222_i32);
+    });
+    client.extend_ttl_temporary(&11, &(e.storage().max_ttl() + 1));
 }

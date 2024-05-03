@@ -155,7 +155,11 @@ impl testutils::Ledger for Ledger {
 
     fn set_max_entry_ttl(&self, max_entry_ttl: u32) {
         self.with_mut(|ledger_info| {
-            ledger_info.max_entry_ttl = max_entry_ttl;
+            // For the sake of consistency across SDK methods,
+            // we always make  TTL values to not include the current ledger.
+            // The actual network setting in env expects this to include
+            // the current ledger, so we need to add 1 here.
+            ledger_info.max_entry_ttl = max_entry_ttl.saturating_add(1);
         });
     }
 

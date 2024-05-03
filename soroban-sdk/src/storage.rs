@@ -139,19 +139,15 @@ impl Storage {
         }
     }
 
-    /// Returns the maximum TTL (number of ledgers that an entry can have rent paid
-    /// for it in one moment).
+    /// Returns the maximum time-to-live (TTL) for all the Soroban ledger entries.
     ///
-    /// When counting the number of ledgers an entry is active for, the current
-    /// ledger is included. If an entry is created in the current ledger, its
-    /// maximum live_until ledger will be the TTL (value returned from
-    /// the function) plus the current ledger. This means the last ledger
-    /// that the entry will be accessible will be the current ledger sequence
-    /// plus the max TTL minus one.
+    /// TTL is the number of ledgers left until the instance entry is considered
+    /// expired, excluding the current ledger. Maximum TTL represents the maximum
+    /// possible TTL of an entry and maximum extension via `extend_ttl` methods.
     pub fn max_ttl(&self) -> u32 {
         let seq = self.env.ledger().sequence();
         let max = self.env.ledger().max_live_until_ledger();
-        max - seq + 1
+        max - seq
     }
 
     /// Returns if there is a value stored for the given key in the currently
@@ -625,7 +621,6 @@ mod testutils {
                 .unwrap()
                 .checked_sub(env.ledger().sequence())
                 .unwrap()
-                + 1
         }
     }
 
@@ -641,7 +636,6 @@ mod testutils {
                 .unwrap()
                 .checked_sub(env.ledger().sequence())
                 .unwrap()
-                + 1
         }
     }
 
@@ -657,7 +651,6 @@ mod testutils {
                 .unwrap()
                 .checked_sub(env.ledger().sequence())
                 .unwrap()
-                + 1
         }
     }
 
