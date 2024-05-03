@@ -125,6 +125,12 @@ impl Logs {
         if cfg!(debug_assertions) {
             let env = self.env();
             env.log_from_slice(msg, args).unwrap();
+
+            #[cfg(any(test, feature = "testutils"))]
+            {
+                use crate::testutils::Logs;
+                std::println!("{}", self.all().last().unwrap());
+            }
         }
     }
 }
@@ -143,7 +149,7 @@ impl testutils::Logs for Logs {
         let log_sym = ScSymbol(StringM::try_from("log").unwrap());
         let log_topics = ScVec(VecM::try_from(vec![ScVal::Symbol(log_sym)]).unwrap());
         env.host()
-            .get_events()
+            .get_diagnostic_events()
             .unwrap()
             .0
             .into_iter()
