@@ -401,7 +401,7 @@ pub trait Deployer {
     /// Gets the TTL of the given contract's instance.
     ///
     /// TTL is the number of ledgers left until the instance entry is considered
-    /// expired including the current ledger.
+    /// expired, excluding the current ledger.
     ///
     /// Panics if there is no instance corresponding to the provided address,
     /// or if the instance has expired.
@@ -410,7 +410,7 @@ pub trait Deployer {
     /// Gets the TTL of the given contract's Wasm code entry.
     ///
     /// TTL is the number of ledgers left until the contract code entry
-    /// is considered expired, including the current ledger.
+    /// is considered expired, excluding the current ledger.
     ///
     /// Panics if there is no contract instance/code corresponding to
     /// the provided address, or if the instance/code has expired.

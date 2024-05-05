@@ -8,7 +8,7 @@ pub trait Persistent {
     /// Gets the TTL for the persistent storage entry corresponding to the provided key.
     ///
     /// TTL is the number of ledgers left until the persistent entry is considered
-    /// expired, including the current ledger.
+    /// expired, excluding the current ledger.
     ///
     /// Panics if there is no entry corresponding to the key, or if the entry has expired.
     fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32;
@@ -22,7 +22,7 @@ pub trait Temporary {
     /// Gets the TTL for the temporary storage entry corresponding to the provided key.
     ///
     /// TTL is the number of ledgers left until the temporary entry is considered
-    /// non-existent, including the current ledger.
+    /// non-existent, excluding the current ledger.
     ///
     /// Panics if there is no entry corresponding to the key.
     fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32;
@@ -36,6 +36,6 @@ pub trait Instance {
     /// Gets the TTL for the current contract's instance entry.
     ///
     /// TTL is the number of ledgers left until the instance entry is considered
-    /// expired, including the current ledger.
+    /// expired, excluding the current ledger.
     fn get_ttl(&self) -> u32;
 }
