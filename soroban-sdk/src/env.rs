@@ -319,7 +319,7 @@ impl Env {
         Crypto::new(self)
     }
 
-    /// Hazardous Materials
+    /// # ⚠️ Hazardous Materials
     ///
     /// Get a [CryptoHazmat] for accessing the cryptographic functions that are
     /// not generally recommended. Using them incorrectly can introduce security
