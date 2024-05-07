@@ -117,14 +117,8 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::InvokeError;
 use crate::{
-    crypto::{Crypto, CryptoHazmat},
-    deploy::Deployer,
-    events::Events,
-    ledger::Ledger,
-    logs::Logs,
-    prng::Prng,
-    storage::Storage,
-    Address, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, prng::Prng,
+    storage::Storage, Address, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
@@ -321,12 +315,15 @@ impl Env {
 
     /// # ⚠️ Hazardous Materials
     ///
-    /// Get a [CryptoHazmat] for accessing the cryptographic functions that are
-    /// not generally recommended. Using them incorrectly can introduce security
-    /// vulnerabilities. Please use [Crypto] if possible.
+    /// Get a [CryptoHazmat][crate::crypto::CryptoHazmat] for accessing the
+    /// cryptographic functions that are not generally recommended. Using them
+    /// incorrectly can introduce security vulnerabilities. Use [Crypto] if
+    /// possible.
+    #[cfg(any(test, feature = "hazmat"))]
+    #[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat")))]
     #[inline(always)]
-    pub fn crypto_hazmat(&self) -> CryptoHazmat {
-        CryptoHazmat::new(self)
+    pub fn crypto_hazmat(&self) -> crate::crypto::CryptoHazmat {
+        crate::crypto::CryptoHazmat::new(self)
     }
 
     /// Get a [Prng] for accessing the current functions which provide pseudo-randomness.
