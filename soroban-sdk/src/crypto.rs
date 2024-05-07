@@ -168,7 +168,7 @@ impl Crypto {
     }
 }
 
-/// Hazardous Materials
+/// # ⚠️ Hazardous Materials
 ///
 /// Cryptographic functions under [CryptoHazmat] are low-leveled which can be
 /// insecure if misused. They are not generally recommended. Using them
