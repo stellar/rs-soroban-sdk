@@ -71,6 +71,12 @@ impl<const N: usize> IntoVal<Env, BytesN<N>> for Hash<N> {
     }
 }
 
+impl<const N: usize> Into<Bytes> for Hash<N> {
+    fn into(self) -> Bytes {
+        self.0.into()
+    }
+}
+
 impl<const N: usize> Into<BytesN<N>> for Hash<N> {
     fn into(self) -> BytesN<N> {
         self.0
