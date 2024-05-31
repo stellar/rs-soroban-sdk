@@ -138,7 +138,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             // that start with '__', because the Soroban Env won't let those
             // functions be invoked directly as they're reserved for callbacks
             // and hooks.
-            f.ident.to_string().starts_with("__")
+            !f.ident.to_string().starts_with("__")
         })
         .map(|f| {
             let fn_ident = &f.ident;
