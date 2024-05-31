@@ -133,6 +133,13 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
         .iter()
+        .filter(|f| {
+            // Skip generating client functions for calling contract functions
+            // that start with '__', because the Soroban Env won't let those
+            // functions be invoked directly as they're reserved for callbacks
+            // and hooks.
+            !f.ident.to_string().starts_with("__")
+        })
         .map(|f| {
             let fn_ident = &f.ident;
             let fn_try_ident = format_ident!("try_{}", &f.ident);
