@@ -239,6 +239,11 @@ impl String {
         self.env().string_len(self.obj).unwrap_infallible().into()
     }
 
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Copy the bytes in [String] into the given slice.
     ///
     /// ### Panics

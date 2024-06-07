@@ -88,7 +88,7 @@ pub fn derive_type_enum(
                     enum_ident,
                     &case_num_lit,
                     &case_name_str_lit,
-                    &case_name,
+                    case_name,
                     case_ident,
                     &variant.attrs,
                     &variant.fields,
@@ -114,7 +114,7 @@ pub fn derive_type_enum(
                     enum_ident,
                     &case_num_lit,
                     &case_name_str_lit,
-                    &case_name,
+                    case_name,
                     case_ident,
                     &variant.attrs,
                 );
@@ -378,7 +378,7 @@ fn map_tuple_variant(
         ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
             doc: docs_from_attrs(attrs),
             name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
-            type_: field_types.try_into().unwrap(),
+            type_: field_types,
         })
     };
 
