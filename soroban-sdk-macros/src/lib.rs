@@ -349,7 +349,7 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
             args.key
                 .as_bytes()
                 .iter()
-                .map(|b| format!("{b:02x}"))
+                .map(|b| format!("{b:02X}"))
                 .collect::<String>()
         );
         quote! {
