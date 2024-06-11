@@ -28,7 +28,7 @@ use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use sha2::{Digest, Sha256};
-use std::fs;
+use std::{fmt::Write, fs};
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
     ItemStruct, LitStr, Path, Type, Visibility,
@@ -232,7 +232,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             let ident = &m.sig.ident;
             let call = quote! { <super::#ty>::#ident };
             derive_pub_fn(
-                &crate_path,
+                crate_path,
                 &call,
                 ident,
                 &m.attrs,
@@ -246,7 +246,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     match derived {
         Ok(derived_ok) => {
             let cfs = derive_contract_function_registration_ctor(
-                &crate_path,
+                crate_path,
                 ty,
                 trait_ident,
                 pub_methods.into_iter(),
@@ -346,11 +346,10 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
 
         let ident = format_ident!(
             "__CONTRACT_KEY_{}",
-            args.key
-                .as_bytes()
-                .iter()
-                .map(|b| format!("{b:02X}"))
-                .collect::<String>()
+            args.key.as_bytes().iter().fold(String::new(), |mut s, b| {
+                let _ = write!(s, "{b:02x}");
+                s
+            })
         );
         quote! {
             #[doc(hidden)]

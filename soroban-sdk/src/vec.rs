@@ -95,8 +95,8 @@ impl<T> Clone for Vec<T> {
     fn clone(&self) -> Self {
         Self {
             env: self.env.clone(),
-            obj: self.obj.clone(),
-            _t: self._t.clone(),
+            obj: self.obj,
+            _t: self._t,
         }
     }
 }
@@ -158,7 +158,7 @@ impl<T> TryFromVal<Env, Vec<T>> for Vec<Val> {
     type Error = Infallible;
 
     fn try_from_val(env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj) })
     }
 }
 
@@ -169,7 +169,7 @@ impl<T> TryFromVal<Env, &Vec<Val>> for Vec<T> {
     type Error = Infallible;
 
     fn try_from_val(env: &Env, v: &&Vec<Val>) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj) })
     }
 }
 
@@ -181,7 +181,7 @@ where
 
     #[inline(always)]
     fn try_from_val(env: &Env, obj: &VecObject) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), obj.clone()) })
+        Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), *obj) })
     }
 }
 

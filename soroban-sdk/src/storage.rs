@@ -175,7 +175,7 @@ impl Storage {
         V: TryFromVal<Env, Val>,
     {
         let key = key.into_val(&self.env);
-        if self.has_internal(key, storage_type.clone()) {
+        if self.has_internal(key, storage_type) {
             let rv = self.get_internal(key, storage_type);
             Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {

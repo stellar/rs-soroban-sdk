@@ -20,7 +20,7 @@ fn derives_copy(attrs: &[Attribute]) -> bool {
                 if let Some(_tt) = ml.tokens.clone().into_iter().find(|tt| {
                     // match this token with what we want
                     if let proc_macro2::TokenTree::Ident(id) = tt {
-                        id.to_string() == "Copy"
+                        id == "Copy"
                     } else {
                         false
                     }
@@ -48,10 +48,7 @@ pub fn derive_type_enum_int(
     if !derives_copy(attrs) {
         errors.push(Error::new(
             enum_ident.span(),
-            format!(
-                "enum integer {} must have `derive(Copy)`",
-                enum_ident.to_string()
-            ),
+            format!("enum integer {enum_ident} must have `derive(Copy)`"),
         ));
     }
 

@@ -372,7 +372,7 @@ impl Prng {
     where
         T: Shuffle,
     {
-        v.shuffle(&self);
+        v.shuffle(self);
     }
 }
 
@@ -454,9 +454,7 @@ impl Fill for u64 {
 impl Gen for u64 {
     fn gen(prng: &Prng) -> Self {
         let env = prng.env();
-        internal::Env::prng_u64_in_inclusive_range(env, u64::MIN.into(), u64::MAX.into())
-            .unwrap_infallible()
-            .into()
+        internal::Env::prng_u64_in_inclusive_range(env, u64::MIN, u64::MAX).unwrap_infallible()
     }
 }
 
@@ -475,9 +473,7 @@ impl GenRange for u64 {
             Bound::Excluded(b) => *b - 1,
             Bound::Unbounded => u64::MAX,
         };
-        internal::Env::prng_u64_in_inclusive_range(env, start_bound.into(), end_bound.into())
-            .unwrap_infallible()
-            .into()
+        internal::Env::prng_u64_in_inclusive_range(env, start_bound, end_bound).unwrap_infallible()
     }
 }
 
@@ -489,7 +485,7 @@ impl Fill for Bytes {
     /// If the length of Bytes is greater than u32::MAX in length.
     fn fill(&mut self, prng: &Prng) {
         let env = prng.env();
-        let len: u32 = self.len().try_into().unwrap_optimized();
+        let len: u32 = self.len();
         let obj = internal::Env::prng_bytes_new(env, len.into()).unwrap_infallible();
         *self = unsafe { Bytes::unchecked_new(env.clone(), obj) };
     }
