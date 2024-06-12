@@ -5,10 +5,10 @@ use super::{
     ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
 
-#[cfg(not(target_family = "wasm"))]
+//#[cfg(not(target_family = "wasm"))]
 use super::env::SymbolStr;
 
-#[cfg(not(target_family = "wasm"))]
+//#[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::{ScSymbol, ScVal};
 use crate::{
     env::MaybeEnv,
@@ -135,7 +135,7 @@ impl TryFromVal<Env, &str> for Symbol {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+//#[cfg(not(target_family = "wasm"))]
 impl TryFrom<&Symbol> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Symbol) -> Result<Self, ConversionError> {
@@ -148,7 +148,7 @@ impl TryFrom<&Symbol> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+//#[cfg(not(target_family = "wasm"))]
 impl TryFrom<Symbol> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Symbol) -> Result<Self, ConversionError> {
@@ -156,7 +156,7 @@ impl TryFrom<Symbol> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+//#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, Symbol> for ScVal {
     type Error = ConversionError;
     fn try_from_val(_e: &Env, v: &Symbol) -> Result<Self, ConversionError> {
@@ -164,7 +164,7 @@ impl TryFromVal<Env, Symbol> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+//#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for Symbol {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
@@ -174,7 +174,7 @@ impl TryFromVal<Env, ScVal> for Symbol {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+//#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScSymbol> for Symbol {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScSymbol) -> Result<Self, Self::Error> {
