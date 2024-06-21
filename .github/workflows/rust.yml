@@ -62,11 +62,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update
-    - uses: stellar/binaries@v18
+    - uses: stellar/binaries@v24
       with:
         name: cargo-semver-checks
-        version: 0.27.0
-    - run: cargo semver-checks --baseline-version 20.5.0
+        version: 0.32.0
+    - run: cargo semver-checks --baseline-version v21.1.0-rc.1
 
   build-and-test:
     strategy:
