@@ -3,35 +3,13 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{ScSpecUdtEnumV0, StringM};
-use syn::{
-    spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Meta, Path, Visibility,
-};
+use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path, Visibility};
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
 use crate::{doc::docs_from_attrs, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
-
-fn derives_copy(attrs: &[Attribute]) -> bool {
-    for attr in attrs {
-        if let Meta::List(ml) = &attr.meta {
-            if let Some(_ps) = ml.path.segments.iter().find(|ps| ps.ident == "derive") {
-                if let Some(_tt) = ml.tokens.clone().into_iter().find(|tt| {
-                    // match this token with what we want
-                    if let proc_macro2::TokenTree::Ident(id) = tt {
-                        id == "Copy"
-                    } else {
-                        false
-                    }
-                }) {
-                    return true;
-                }
-            }
-        }
-    }
-    false
-}
 
 pub fn derive_type_enum_int(
     path: &Path,
@@ -44,13 +22,6 @@ pub fn derive_type_enum_int(
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
-
-    if !derives_copy(attrs) {
-        errors.push(Error::new(
-            enum_ident.span(),
-            format!("enum integer {enum_ident} must have `derive(Copy)`"),
-        ));
-    }
 
     let variants = &data.variants;
     let (spec_cases, try_froms, try_intos): (Vec<_>, Vec<_>, Vec<_>) = variants
