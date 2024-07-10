@@ -86,6 +86,9 @@ impl Storage {
     /// This should be used for data that requires persistency, such as token
     /// balances, user properties etc.
     pub fn persistent(&self) -> Persistent {
+        #[cfg(any(test, feature="testutils"))]
+        self.verify_in_contract("persistent");
+
         Persistent {
             storage: self.clone(),
         }
@@ -103,6 +106,9 @@ impl Storage {
     /// This should be used for data that needs to only exist for a limited
     /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
+        #[cfg(any(test, feature="testutils"))]
+        self.verify_in_contract("persistent");
+
         Temporary {
             storage: self.clone(),
         }
@@ -134,6 +140,9 @@ impl Storage {
     /// operates on etc. Do not use this with any data that can scale in
     /// unbounded fashion (such as user balances).
     pub fn instance(&self) -> Instance {
+        #[cfg(any(test, feature="testutils"))]
+        self.verify_in_contract("persistent");
+        
         Instance {
             storage: self.clone(),
         }
@@ -289,6 +298,15 @@ impl Storage {
 
     fn get_internal(&self, key: Val, storage_type: StorageType) -> Val {
         internal::Env::get_contract_data(&self.env, key, storage_type).unwrap_infallible()
+    }
+
+    #[cfg(any(test, feature="testutils"))]
+    fn verify_in_contract(&self, storage_kind: &str) {
+        if !self.env.in_contract() {
+            panic!("'{storage_kind}' storage is not accessible outside of the \
+                    contract, wrap the call with `env.as_contract()` to \
+                    access it from a particular contract");
+        }
     }
 }
 
