@@ -158,3 +158,10 @@ fn test_persistent_entry_expiration() {
         let _ = e.storage().persistent().has(&1);
     });
 }
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_storage_access() {
+    let e = Env::default();
+    let _ = e.storage().persistent();
+}
