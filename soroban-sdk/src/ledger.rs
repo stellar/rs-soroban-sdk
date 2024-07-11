@@ -75,6 +75,11 @@ impl Ledger {
 
     /// Returns a unix timestamp for when the ledger was closed.
     ///
+    /// The close time is a UNIX timestamp indicating when the ledger closes.
+    /// Its accuracy depends on the system clock of the validator proposing the
+    /// block. Consequently, consensus may confirm a close time that lags a few
+    /// seconds behind or up to 60 seconds ahead.
+    ///
     /// The timestamp is the number of seconds, excluding leap seconds,
     /// that have elapsed since unix epoch. Unix epoch is January 1st, 1970,
     /// at 00:00:00 UTC.
