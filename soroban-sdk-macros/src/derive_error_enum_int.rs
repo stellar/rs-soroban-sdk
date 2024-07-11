@@ -120,16 +120,16 @@ pub fn derive_type_error_enum_int(
         impl From<#enum_ident> for #path::Error {
             #[inline(always)]
             fn from(val: #enum_ident) -> #path::Error {
-                match val {
-                    #(#into_errors,)*
-                }
+                <_ as From<&#enum_ident>>::from(&val)
             }
         }
 
         impl From<&#enum_ident> for #path::Error {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::Error {
-                <_ as From<#enum_ident>>::from(*val)
+                match val {
+                    #(#into_errors,)*
+                }
             }
         }
 
@@ -158,16 +158,16 @@ pub fn derive_type_error_enum_int(
         impl From<#enum_ident> for #path::InvokeError {
             #[inline(always)]
             fn from(val: #enum_ident) -> #path::InvokeError {
-                match val {
-                    #(#into_invoke_errors,)*
-                }
+                <_ as From<&#enum_ident>>::from(&val)
             }
         }
 
         impl From<&#enum_ident> for #path::InvokeError {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::InvokeError {
-                <_ as From<#enum_ident>>::from(*val)
+                match val {
+                    #(#into_invoke_errors,)*
+                }
             }
         }
 

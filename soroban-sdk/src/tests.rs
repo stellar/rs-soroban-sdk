@@ -16,6 +16,7 @@ mod contract_snapshot;
 mod contract_store;
 mod contract_timepoint;
 mod contract_udt_enum;
+mod contract_udt_enum_error;
 mod contract_udt_option;
 mod contract_udt_struct;
 mod contract_udt_struct_tuple;
