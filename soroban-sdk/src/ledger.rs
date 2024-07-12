@@ -75,14 +75,18 @@ impl Ledger {
 
     /// Returns a unix timestamp for when the ledger was closed.
     ///
-    /// The close time is a UNIX timestamp indicating when the ledger closes.
-    /// Its accuracy depends on the system clock of the validator proposing the
-    /// block. Consequently, consensus may confirm a close time that lags a few
-    /// seconds behind or up to 60 seconds ahead.
+    /// The timestamp is a UNIX timestamp indicating when the ledger closes.
     ///
-    /// The timestamp is the number of seconds, excluding leap seconds,
-    /// that have elapsed since unix epoch. Unix epoch is January 1st, 1970,
-    /// at 00:00:00 UTC.
+    /// Its accuracy depends on the system clock of the validator proposing the
+    /// block. Consequently, the close time proposed by a validator may be
+    /// earlier or later than the actual time, by a few seconds past and up to
+    /// 60 seconds ahead of other validators.
+    ///
+    /// It is guaranteed to always be greater than a timestamp for an earlier
+    /// ledger.
+    ///
+    /// It is the number of seconds, excluding leap seconds, that have elapsed
+    /// since unix epoch. Unix epoch is January 1st, 1970, at 00:00:00 UTC.
     pub fn timestamp(&self) -> u64 {
         internal::Env::get_ledger_timestamp(self.env())
             .unwrap_infallible()
