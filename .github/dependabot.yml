@@ -1,7 +1,14 @@
 version: 2
 updates:
   - package-ecosystem: "cargo"
-    directory: "/"
+    directories:
+      - "/"
+      - "/soroban-ledger-snapshot"
+      - "/soroban-sdk-macros"
+      - "/soroban-sdk"
+      - "/soroban-spec-rust"
+      - "/soroban-spec"
+      - "/soroban-token-sdk"
     schedule:
       interval: "weekly"
       day: "sunday"
@@ -17,3 +24,12 @@ updates:
         applies-to: version-updates
         update-types:
         - "major"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "02:00"
+    groups:
+      all-actions:
+        patterns: [ "*" ]
