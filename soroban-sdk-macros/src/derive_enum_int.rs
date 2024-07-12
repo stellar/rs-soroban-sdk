@@ -96,6 +96,7 @@ pub fn derive_type_enum_int(
     // Output.
     quote! {
         #spec_gen
+        const _: () = { fn assert_copy(v: #enum_ident) -> impl Copy { v } };
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
