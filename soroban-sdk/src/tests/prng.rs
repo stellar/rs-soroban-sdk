@@ -318,3 +318,76 @@ fn test_prng_gen_array() {
         );
     });
 }
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_seed() {
+    let e = Env::default();
+    e.prng().seed(crate::Bytes::from_array(&e, &[0u8; 32]));
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_shuffle() {
+    let e = Env::default();
+    e.prng().shuffle(&mut Vec::<u64>::new(&e));
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_gen_u64() {
+    let e = Env::default();
+    let _: u64 = e.prng().gen();
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_gen_bytesn() {
+    let e = Env::default();
+    let _: BytesN<32> = e.prng().gen();
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_gen_range() {
+    let e = Env::default();
+    let _: u64 = e.prng().gen_range(1..20);
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_fill_bytes() {
+    let e = Env::default();
+    e.prng().fill(&mut Bytes::new(&e));
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_fill_bytesn() {
+    let e = Env::default();
+    e.prng().fill(&mut BytesN::from_array(&e, &[0u8; 32]));
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_fill_slice() {
+    let e = Env::default();
+    let mut arr = [0u8; 32];
+    let slice = arr.as_mut();
+    e.prng().fill(slice);
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_fill_array() {
+    let e = Env::default();
+    let mut arr = [0u8; 32];
+    e.prng().fill(&mut arr);
+}
+
+#[test]
+#[should_panic(expected = "`env.as_contract()`")]
+fn useful_error_message_for_access_outside_contract_gen_len() {
+    let e = Env::default();
+    let _: Bytes = e.prng().gen_len(32);
+}
