@@ -16,5 +16,5 @@ base64 = "0.13.0"
 thiserror = "1.0.32"
 wasmparser = "0.116.1"
 
-[dev_dependencies]
+[dev-dependencies]
 pretty_assertions = "1.2.1"
