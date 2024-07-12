@@ -3,6 +3,9 @@ use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 
 /// Ledger retrieves information about the current ledger.
 ///
+/// For more details about the ledger and the ledger header that the values in the Ledger are derived from, see:
+///  - https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers
+///
 /// ### Examples
 ///
 /// ```
@@ -75,19 +78,12 @@ impl Ledger {
 
     /// Returns a unix timestamp for when the ledger was closed.
     ///
-    /// The timestamp is a UNIX timestamp indicating when the ledger closes.
-    ///
-    /// Its accuracy depends on the system clock of the validator proposing the
-    /// ledger. Consequently, the value may be earlier or later than the current
-    /// time of other validators, by a few seconds past and up to 60 seconds
-    /// ahead.
-    ///
-    /// The timestamp is guaranteed to always be greater than a timestamp for an
-    /// earlier ledger.
-    ///
     /// The timestamp is the number of seconds, excluding leap seconds, that
     /// have elapsed since unix epoch. Unix epoch is January 1st, 1970, at
     /// 00:00:00 UTC.
+    ///
+    /// For more details see:
+    ///  - https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers#close-time
     pub fn timestamp(&self) -> u64 {
         internal::Env::get_ledger_timestamp(self.env())
             .unwrap_infallible()
