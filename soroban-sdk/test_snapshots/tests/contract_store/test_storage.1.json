@@ -22,17 +22,32 @@
     [],
     [],
     [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
     []
   ],
   "ledger": {
-    "protocol_version": 20,
+    "protocol_version": 21,
     "sequence_number": 0,
     "timestamp": 0,
     "network_id": "0000000000000000000000000000000000000000000000000000000000000000",
     "base_reserve": 0,
-    "min_persistent_entry_ttl": 4096,
-    "min_temp_entry_ttl": 16,
-    "max_entry_ttl": 6312000,
+    "min_persistent_entry_ttl": 100,
+    "min_temp_entry_ttl": 50,
+    "max_entry_ttl": 20001,
     "ledger_entries": [
       [
         {
@@ -76,7 +91,7 @@
             },
             "ext": "v0"
           },
-          100
+          20000
         ]
       ],
       [
@@ -121,7 +136,7 @@
             },
             "ext": "v0"
           },
-          4095
+          20000
         ]
       ],
       [
@@ -166,7 +181,7 @@
             },
             "ext": "v0"
           },
-          15
+          49
         ]
       ],
       [
@@ -211,7 +226,7 @@
             },
             "ext": "v0"
           },
-          4095
+          99
         ]
       ],
       [
@@ -274,7 +289,7 @@
             },
             "ext": "v0"
           },
-          4095
+          20000
         ]
       ],
       [
@@ -295,7 +310,7 @@
             },
             "ext": "v0"
           },
-          4095
+          20000
         ]
       ]
     ]
@@ -319,7 +334,9 @@
                 "symbol": "extend_ttl_instance"
               }
             ],
-            "data": "void"
+            "data": {
+              "u32": 1000
+            }
           }
         }
       },
@@ -962,7 +979,122 @@
               }
             ],
             "data": {
-              "i32": 11
+              "vec": [
+                {
+                  "i32": 11
+                },
+                {
+                  "u32": 10000
+                }
+              ]
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_return"
+              },
+              {
+                "symbol": "extend_ttl_persistent"
+              }
+            ],
+            "data": "void"
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": null,
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_call"
+              },
+              {
+                "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "symbol": "extend_ttl_persistent"
+              }
+            ],
+            "data": {
+              "vec": [
+                {
+                  "i32": 11
+                },
+                {
+                  "u32": 20000
+                }
+              ]
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_return"
+              },
+              {
+                "symbol": "extend_ttl_persistent"
+              }
+            ],
+            "data": "void"
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": null,
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_call"
+              },
+              {
+                "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "symbol": "extend_ttl_persistent"
+              }
+            ],
+            "data": {
+              "vec": [
+                {
+                  "i32": 11
+                },
+                {
+                  "u32": 21000
+                }
+              ]
             }
           }
         }
@@ -1009,7 +1141,14 @@
               }
             ],
             "data": {
-              "i32": 11
+              "vec": [
+                {
+                  "i32": 11
+                },
+                {
+                  "u32": 5000
+                }
+              ]
             }
           }
         }
@@ -1029,6 +1168,201 @@
               },
               {
                 "symbol": "extend_ttl_temporary"
+              }
+            ],
+            "data": "void"
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": null,
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_call"
+              },
+              {
+                "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "symbol": "extend_ttl_temporary"
+              }
+            ],
+            "data": {
+              "vec": [
+                {
+                  "i32": 11
+                },
+                {
+                  "u32": 20000
+                }
+              ]
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_return"
+              },
+              {
+                "symbol": "extend_ttl_temporary"
+              }
+            ],
+            "data": "void"
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": null,
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_call"
+              },
+              {
+                "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "symbol": "extend_ttl_instance"
+              }
+            ],
+            "data": {
+              "u32": 2000
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_return"
+              },
+              {
+                "symbol": "extend_ttl_instance"
+              }
+            ],
+            "data": "void"
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": null,
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_call"
+              },
+              {
+                "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "symbol": "extend_ttl_instance"
+              }
+            ],
+            "data": {
+              "u32": 20000
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_return"
+              },
+              {
+                "symbol": "extend_ttl_instance"
+              }
+            ],
+            "data": "void"
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": null,
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_call"
+              },
+              {
+                "bytes": "0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "symbol": "extend_ttl_instance"
+              }
+            ],
+            "data": {
+              "u32": 21000
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
+        "type_": "diagnostic",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "fn_return"
+              },
+              {
+                "symbol": "extend_ttl_instance"
               }
             ],
             "data": "void"

@@ -8,7 +8,7 @@ use std::{
 
 use soroban_env_host::{
     storage::SnapshotSource,
-    xdr::{LedgerEntry, LedgerKey, ScError, ScErrorCode},
+    xdr::{LedgerEntry, LedgerKey},
     Host, HostError, LedgerInfo,
 };
 
@@ -182,22 +182,22 @@ impl Default for LedgerSnapshot {
 }
 
 impl SnapshotSource for &LedgerSnapshot {
-    fn get(&self, key: &Rc<LedgerKey>) -> Result<(Rc<LedgerEntry>, Option<u32>), HostError> {
+    fn get(
+        &self,
+        key: &Rc<LedgerKey>,
+    ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
         match self.ledger_entries.iter().find(|(k, _)| **k == **key) {
-            Some((_, v)) => Ok((Rc::new(*v.0.clone()), v.1)),
-            None => Err(ScError::Storage(ScErrorCode::MissingValue).into()),
+            Some((_, v)) => Ok(Some((Rc::new(*v.0.clone()), v.1))),
+            None => Ok(None),
         }
-    }
-    fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {
-        Ok(self.ledger_entries.iter().any(|(k, _)| **k == **key))
     }
 }
 
 impl SnapshotSource for LedgerSnapshot {
-    fn get(&self, key: &Rc<LedgerKey>) -> Result<(Rc<LedgerEntry>, Option<u32>), HostError> {
+    fn get(
+        &self,
+        key: &Rc<LedgerKey>,
+    ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
         <_ as SnapshotSource>::get(&self, key)
-    }
-    fn has(&self, key: &Rc<LedgerKey>) -> Result<bool, HostError> {
-        <_ as SnapshotSource>::has(&self, key)
     }
 }

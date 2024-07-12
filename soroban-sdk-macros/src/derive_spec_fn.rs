@@ -53,7 +53,8 @@ pub fn derive_fn_spec(
     let spec_args: Vec<_> = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
-        .map(|a| match a {
+        .enumerate()
+        .map(|(i, a)| match a {
             FnArg::Typed(pat_type) => {
                 let name = if let Pat::Ident(pat_ident) = *pat_type.pat.clone() {
                     pat_ident.ident.to_string()
@@ -61,7 +62,12 @@ pub fn derive_fn_spec(
                     errors.push(Error::new(a.span(), "argument not supported"));
                     "".to_string()
                 };
-                match map_type(&pat_type.ty) {
+
+                // If fn is a __check_auth implementation, allow the first argument,
+                // signature_payload of type Bytes (32 size), to be a Hash.
+                let allow_hash = ident == "__check_auth" && i == 0;
+
+                match map_type(&pat_type.ty, allow_hash) {
                     Ok(type_) => {
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
@@ -100,7 +106,7 @@ pub fn derive_fn_spec(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![match map_type(ty) {
+        ReturnType::Type(_, ty) => vec![match map_type(ty, true) {
             Ok(spec) => spec,
             Err(e) => {
                 errors.push(e);
@@ -113,7 +119,7 @@ pub fn derive_fn_spec(
     // Generated code spec.
     let name = &format!("{}", ident);
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: docs_from_attrs(attrs).try_into().unwrap(), // TODO: Truncate docs, or display friendly compile error.
+        doc: docs_from_attrs(attrs),
         name: name.try_into().unwrap_or_else(|_| {
             errors.push(Error::new(
                 ident.span(),

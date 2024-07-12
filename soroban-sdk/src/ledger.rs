@@ -111,6 +111,58 @@ impl testutils::Ledger for Ledger {
         env.host().set_ledger_info(li).unwrap();
     }
 
+    fn set_protocol_version(&self, protocol_version: u32) {
+        self.with_mut(|ledger_info| {
+            ledger_info.protocol_version = protocol_version;
+        });
+    }
+
+    fn set_sequence_number(&self, sequence_number: u32) {
+        self.with_mut(|ledger_info| {
+            ledger_info.sequence_number = sequence_number;
+        });
+    }
+
+    fn set_timestamp(&self, timestamp: u64) {
+        self.with_mut(|ledger_info| {
+            ledger_info.timestamp = timestamp;
+        });
+    }
+
+    fn set_network_id(&self, network_id: [u8; 32]) {
+        self.with_mut(|ledger_info| {
+            ledger_info.network_id = network_id;
+        });
+    }
+
+    fn set_base_reserve(&self, base_reserve: u32) {
+        self.with_mut(|ledger_info| {
+            ledger_info.base_reserve = base_reserve;
+        });
+    }
+
+    fn set_min_temp_entry_ttl(&self, min_temp_entry_ttl: u32) {
+        self.with_mut(|ledger_info| {
+            ledger_info.min_temp_entry_ttl = min_temp_entry_ttl;
+        });
+    }
+
+    fn set_min_persistent_entry_ttl(&self, min_persistent_entry_ttl: u32) {
+        self.with_mut(|ledger_info| {
+            ledger_info.min_persistent_entry_ttl = min_persistent_entry_ttl;
+        });
+    }
+
+    fn set_max_entry_ttl(&self, max_entry_ttl: u32) {
+        self.with_mut(|ledger_info| {
+            // For the sake of consistency across SDK methods,
+            // we always make  TTL values to not include the current ledger.
+            // The actual network setting in env expects this to include
+            // the current ledger, so we need to add 1 here.
+            ledger_info.max_entry_ttl = max_entry_ttl.saturating_add(1);
+        });
+    }
+
     fn get(&self) -> testutils::LedgerInfo {
         let env = self.env();
         env.host().with_ledger_info(|li| Ok(li.clone())).unwrap()

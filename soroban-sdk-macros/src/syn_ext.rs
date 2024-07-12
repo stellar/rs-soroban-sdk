@@ -41,7 +41,10 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
             return Ok(pat_ident.ident);
         }
     }
-    Err(Error::new(arg.span(), "argument not supported"))
+    Err(Error::new(
+        arg.span(),
+        "argument in this form is not supported, use simple named arguments only",
+    ))
 }
 
 /// Returns a clone of FnArg with the type as a reference if the arg is a typed

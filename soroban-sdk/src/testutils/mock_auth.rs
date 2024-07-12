@@ -2,8 +2,6 @@
 
 use crate::{contract, contractimpl, xdr, Address, Env, Symbol, TryFromVal, Val, Vec};
 
-use super::Ledger;
-
 #[doc(hidden)]
 #[contract(crate_path = "crate")]
 pub struct MockAuthContract;
@@ -32,13 +30,13 @@ impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
     fn from(value: &MockAuth) -> Self {
         let env = value.address.env();
         let curr_ledger = env.ledger().sequence();
-        let max_entry_ttl = env.ledger().get().max_entry_ttl;
+        let max_entry_ttl = env.storage().max_ttl();
         Self {
             root_invocation: value.invoke.into(),
             credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
                 address: value.address.try_into().unwrap(),
                 nonce: env.with_generator(|mut g| g.nonce()),
-                signature_expiration_ledger: curr_ledger + max_entry_ttl - 1,
+                signature_expiration_ledger: curr_ledger + max_entry_ttl,
                 signature: xdr::ScVal::Void,
             }),
         }

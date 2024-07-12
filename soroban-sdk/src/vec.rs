@@ -45,33 +45,6 @@ macro_rules! vec {
     };
 }
 
-macro_rules! impl_into_vec_for_tuple {
-    ( $($typ:ident $idx:tt)* ) => {
-        impl<$($typ),*> TryFromVal<Env, ($($typ,)*)> for Vec<Val>
-        where
-            $($typ: IntoVal<Env, Val>),*
-        {
-            type Error = ConversionError;
-            fn try_from_val(env: &Env, v: &($($typ,)*)) -> Result<Self, Self::Error> {
-                Ok(vec![&env, $(v.$idx.into_val(env), )*])
-            }
-        }
-    };
-}
-impl_into_vec_for_tuple! { T0 0 }
-impl_into_vec_for_tuple! { T0 0 T1 1 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 T11 11 }
-impl_into_vec_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 T11 11 T12 12 }
-
 /// Vec is a sequential and indexable growable collection type.
 ///
 /// Values are stored in the environment and are available to contract through
@@ -122,8 +95,8 @@ impl<T> Clone for Vec<T> {
     fn clone(&self) -> Self {
         Self {
             env: self.env.clone(),
-            obj: self.obj.clone(),
-            _t: self._t.clone(),
+            obj: self.obj,
+            _t: self._t,
         }
     }
 }
@@ -185,7 +158,7 @@ impl<T> TryFromVal<Env, Vec<T>> for Vec<Val> {
     type Error = Infallible;
 
     fn try_from_val(env: &Env, v: &Vec<T>) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj) })
     }
 }
 
@@ -196,7 +169,7 @@ impl<T> TryFromVal<Env, &Vec<Val>> for Vec<T> {
     type Error = Infallible;
 
     fn try_from_val(env: &Env, v: &&Vec<Val>) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj.clone()) })
+        Ok(unsafe { Vec::unchecked_new(env.clone(), v.obj) })
     }
 }
 
@@ -208,7 +181,7 @@ where
 
     #[inline(always)]
     fn try_from_val(env: &Env, obj: &VecObject) -> Result<Self, Self::Error> {
-        Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), obj.clone()) })
+        Ok(unsafe { Vec::<T>::unchecked_new(env.clone(), *obj) })
     }
 }
 

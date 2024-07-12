@@ -212,6 +212,30 @@ pub trait Ledger {
     /// Set ledger info.
     fn set(&self, l: LedgerInfo);
 
+    /// Sets the protocol version.
+    fn set_protocol_version(&self, protocol_version: u32);
+
+    /// Sets the sequence number.
+    fn set_sequence_number(&self, sequence_number: u32);
+
+    /// Sets the timestamp.
+    fn set_timestamp(&self, timestamp: u64);
+
+    /// Sets the network ID.
+    fn set_network_id(&self, network_id: [u8; 32]);
+
+    /// Sets the base reserve.
+    fn set_base_reserve(&self, base_reserve: u32);
+
+    /// Sets the minimum temporary entry time-to-live.
+    fn set_min_temp_entry_ttl(&self, min_temp_entry_ttl: u32);
+
+    /// Sets the minimum persistent entry time-to-live.
+    fn set_min_persistent_entry_ttl(&self, min_persistent_entry_ttl: u32);
+
+    /// Sets the maximum entry time-to-live.
+    fn set_max_entry_ttl(&self, max_entry_ttl: u32);
+
     /// Get ledger info.
     fn get(&self) -> LedgerInfo;
 
@@ -371,4 +395,24 @@ pub trait Address {
     /// shouldn't normally matter though, as contracts should be agnostic to
     /// the underlying Address value.
     fn generate(env: &Env) -> crate::Address;
+}
+
+pub trait Deployer {
+    /// Gets the TTL of the given contract's instance.
+    ///
+    /// TTL is the number of ledgers left until the instance entry is considered
+    /// expired, excluding the current ledger.
+    ///
+    /// Panics if there is no instance corresponding to the provided address,
+    /// or if the instance has expired.
+    fn get_contract_instance_ttl(&self, contract: &crate::Address) -> u32;
+
+    /// Gets the TTL of the given contract's Wasm code entry.
+    ///
+    /// TTL is the number of ledgers left until the contract code entry
+    /// is considered expired, excluding the current ledger.
+    ///
+    /// Panics if there is no contract instance/code corresponding to
+    /// the provided address, or if the instance/code has expired.
+    fn get_contract_code_ttl(&self, contract: &crate::Address) -> u32;
 }

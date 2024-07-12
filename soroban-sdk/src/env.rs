@@ -313,6 +313,19 @@ impl Env {
         Crypto::new(self)
     }
 
+    /// # ⚠️ Hazardous Materials
+    ///
+    /// Get a [CryptoHazmat][crate::crypto::CryptoHazmat] for accessing the
+    /// cryptographic functions that are not generally recommended. Using them
+    /// incorrectly can introduce security vulnerabilities. Use [Crypto] if
+    /// possible.
+    #[cfg(any(test, feature = "hazmat"))]
+    #[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat")))]
+    #[inline(always)]
+    pub fn crypto_hazmat(&self) -> crate::crypto::CryptoHazmat {
+        crate::crypto::CryptoHazmat::new(self)
+    }
+
     /// Get a [Prng] for accessing the current functions which provide pseudo-randomness.
     ///
     /// # Warning
@@ -454,10 +467,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
-use xdr::{
-    LedgerEntry, LedgerKey, LedgerKeyContractData, ScErrorCode, ScErrorType,
-    SorobanAuthorizationEntry,
-};
+use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -484,20 +494,15 @@ impl Env {
             fn get(
                 &self,
                 _key: &Rc<xdr::LedgerKey>,
-            ) -> Result<(Rc<xdr::LedgerEntry>, Option<u32>), soroban_env_host::HostError>
+            ) -> Result<Option<(Rc<xdr::LedgerEntry>, Option<u32>)>, soroban_env_host::HostError>
             {
-                let err: internal::Error = (ScErrorType::Storage, ScErrorCode::MissingValue).into();
-                Err(err.into())
-            }
-
-            fn has(&self, _key: &Rc<xdr::LedgerKey>) -> Result<bool, soroban_env_host::HostError> {
-                Ok(false)
+                Ok(None)
             }
         }
 
         let rf = Rc::new(EmptySnapshotSource());
         let info = internal::LedgerInfo {
-            protocol_version: 20,
+            protocol_version: 21,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],

@@ -8,60 +8,45 @@ members = [
     "soroban-spec-rust",
     "soroban-ledger-snapshot",
     "soroban-token-sdk",
-    "tests/empty",
-    "tests/empty2",
-    "tests/add_u64",
-    "tests/add_i128",
-    "tests/add_u128",
-    "tests/import_contract",
-    "tests/invoke_contract",
-    "tests/udt",
-    "tests/contract_data",
-    "tests/events",
-    "tests/logging",
-    "tests/errors",
-    "tests/alloc",
-    "tests/auth",
-    "tests/fuzz",
-    "tests/multiimpl",
-    "tests/workspace_contract",
-    "tests/workspace_lib",
+    "tests/*",
 ]
 
 [workspace.package]
-version = "20.5.0"
+version = "21.1.1"
 rust-version = "1.74.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "20.5.0", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "20.5.0", path = "soroban-sdk-macros" }
-soroban-spec = { version = "20.5.0", path = "soroban-spec" }
-soroban-spec-rust = { version = "20.5.0", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "20.5.0", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "20.5.0", path = "soroban-token-sdk" }
+soroban-sdk = { version = "21.1.1", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "21.1.1", path = "soroban-sdk-macros" }
+soroban-spec = { version = "21.1.1", path = "soroban-spec" }
+soroban-spec-rust = { version = "21.1.1", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "21.1.1", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "21.1.1", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
-version = "=20.3.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
+version = "=21.1.2"
+# git = "https://github.com/stellar/rs-soroban-env"
+# rev = "0c918ac2bd808ba1a850281c6b1c731e7fe50c53"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=20.3.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
+version = "=21.1.2"
+# git = "https://github.com/stellar/rs-soroban-env"
+# rev = "0c918ac2bd808ba1a850281c6b1c731e7fe50c53"
 
 [workspace.dependencies.soroban-env-host]
-version = "=20.3.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "8c9ab83c406bd86f56d52eae3e39dccf6b45b3da"
+version = "=21.1.2"
+# git = "https://github.com/stellar/rs-soroban-env"
+# rev = "0c918ac2bd808ba1a850281c6b1c731e7fe50c53"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.8"
 
 [workspace.dependencies.stellar-xdr]
-version = "=20.1.0"
+version = "=21.1.0"
 default-features = false
 features = ["curr"]
+# git = "https://github.com/stellar/rs-stellar-xdr"
+# rev = "d0138770652a615e3cd99447f2f2727658c17450"
 
 #[patch."https://github.com/stellar/rs-soroban-env"]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }

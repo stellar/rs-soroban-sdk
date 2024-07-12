@@ -759,6 +759,11 @@ pub use env::SymbolStr;
 #[doc(hidden)]
 pub use env::VecObject;
 
+mod try_from_val_for_contract_fn;
+#[doc(hidden)]
+#[allow(deprecated)]
+pub use try_from_val_for_contract_fn::TryFromValForContractFn;
+
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
 pub mod data {
@@ -773,6 +778,7 @@ pub mod deploy;
 mod error;
 pub use error::InvokeError;
 pub mod events;
+pub use events::Topics;
 pub mod iter;
 pub mod ledger;
 pub mod logs;
@@ -790,6 +796,7 @@ mod num;
 pub use num::{Duration, Timepoint, I256, U256};
 mod string;
 pub use string::String;
+mod tuple;
 
 pub mod xdr;
 

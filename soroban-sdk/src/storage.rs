@@ -86,6 +86,9 @@ impl Storage {
     /// This should be used for data that requires persistency, such as token
     /// balances, user properties etc.
     pub fn persistent(&self) -> Persistent {
+        #[cfg(any(test, feature = "testutils"))]
+        self.verify_in_contract("persistent");
+
         Persistent {
             storage: self.clone(),
         }
@@ -103,6 +106,9 @@ impl Storage {
     /// This should be used for data that needs to only exist for a limited
     /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
+        #[cfg(any(test, feature = "testutils"))]
+        self.verify_in_contract("persistent");
+
         Temporary {
             storage: self.clone(),
         }
@@ -134,24 +140,23 @@ impl Storage {
     /// operates on etc. Do not use this with any data that can scale in
     /// unbounded fashion (such as user balances).
     pub fn instance(&self) -> Instance {
+        #[cfg(any(test, feature = "testutils"))]
+        self.verify_in_contract("persistent");
+
         Instance {
             storage: self.clone(),
         }
     }
 
-    /// Returns the maximum TTL (number of ledgers that an entry can have rent paid
-    /// for it in one moment).
+    /// Returns the maximum time-to-live (TTL) for all the Soroban ledger entries.
     ///
-    /// When counting the number of ledgers an entry is active for, the current
-    /// ledger is included. If an entry is created in the current ledger, its
-    /// maximum live_until ledger will be the TTL (value returned from
-    /// the function) plus the current ledger. This means the last ledger
-    /// that the entry will be accessible will be the current ledger sequence
-    /// plus the max TTL minus one.
+    /// TTL is the number of ledgers left until the instance entry is considered
+    /// expired, excluding the current ledger. Maximum TTL represents the maximum
+    /// possible TTL of an entry and maximum extension via `extend_ttl` methods.
     pub fn max_ttl(&self) -> u32 {
         let seq = self.env.ledger().sequence();
         let max = self.env.ledger().max_live_until_ledger();
-        max - seq + 1
+        max - seq
     }
 
     /// Returns if there is a value stored for the given key in the currently
@@ -179,7 +184,7 @@ impl Storage {
         V: TryFromVal<Env, Val>,
     {
         let key = key.into_val(&self.env);
-        if self.has_internal(key, storage_type.clone()) {
+        if self.has_internal(key, storage_type) {
             let rv = self.get_internal(key, storage_type);
             Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {
@@ -293,6 +298,17 @@ impl Storage {
 
     fn get_internal(&self, key: Val, storage_type: StorageType) -> Val {
         internal::Env::get_contract_data(&self.env, key, storage_type).unwrap_infallible()
+    }
+
+    #[cfg(any(test, feature = "testutils"))]
+    fn verify_in_contract(&self, storage_kind: &str) {
+        if !self.env.in_contract() {
+            panic!(
+                "'{storage_kind}' storage is not accessible outside of the \
+                    contract, wrap the call with `env.as_contract()` to \
+                    access it from a particular contract"
+            );
+        }
     }
 }
 
@@ -617,17 +633,44 @@ mod testutils {
             }
             panic!("contract instance for current contract address not found");
         }
+
+        fn get_ttl(&self) -> u32 {
+            let env = &self.storage.env;
+            env.host()
+                .get_contract_instance_live_until_ledger(env.current_contract_address().to_object())
+                .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+        }
     }
 
     impl testutils::storage::Persistent for Persistent {
         fn all(&self) -> Map<Val, Val> {
             all(&self.storage.env, xdr::ContractDataDurability::Persistent)
         }
+
+        fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
+            let env = &self.storage.env;
+            env.host()
+                .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Persistent)
+                .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
+        }
     }
 
     impl testutils::storage::Temporary for Temporary {
         fn all(&self) -> Map<Val, Val> {
             all(&self.storage.env, xdr::ContractDataDurability::Temporary)
+        }
+
+        fn get_ttl<K: IntoVal<Env, Val>>(&self, key: &K) -> u32 {
+            let env = &self.storage.env;
+            env.host()
+                .get_contract_data_live_until_ledger(key.into_val(env), StorageType::Temporary)
+                .unwrap()
+                .checked_sub(env.ledger().sequence())
+                .unwrap()
         }
     }
 
