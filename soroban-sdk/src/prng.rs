@@ -96,6 +96,7 @@ impl Prng {
     /// low risk tolerance, see the module-level comment.**
     pub fn seed(&self, seed: Bytes) {
         let env = self.env();
+        assert_in_contract!(env);
         internal::Env::prng_reseed(env, seed.into()).unwrap_infallible();
     }
 
@@ -379,6 +380,7 @@ impl Prng {
 impl<T> Shuffle for Vec<T> {
     fn shuffle(&mut self, prng: &Prng) {
         let env = prng.env();
+        assert_in_contract!(env);
         let obj = internal::Env::prng_vec_shuffle(env, self.to_object()).unwrap_infallible();
         *self = unsafe { Self::unchecked_new(env.clone(), obj) };
     }
@@ -454,6 +456,7 @@ impl Fill for u64 {
 impl Gen for u64 {
     fn gen(prng: &Prng) -> Self {
         let env = prng.env();
+        assert_in_contract!(env);
         internal::Env::prng_u64_in_inclusive_range(env, u64::MIN, u64::MAX).unwrap_infallible()
     }
 }
@@ -463,6 +466,7 @@ impl GenRange for u64 {
 
     fn gen_range(prng: &Prng, r: impl RangeBounds<Self::RangeBound>) -> Self {
         let env = prng.env();
+        assert_in_contract!(env);
         let start_bound = match r.start_bound() {
             Bound::Included(b) => *b,
             Bound::Excluded(b) => *b + 1,
@@ -485,6 +489,7 @@ impl Fill for Bytes {
     /// If the length of Bytes is greater than u32::MAX in length.
     fn fill(&mut self, prng: &Prng) {
         let env = prng.env();
+        assert_in_contract!(env);
         let len: u32 = self.len();
         let obj = internal::Env::prng_bytes_new(env, len.into()).unwrap_infallible();
         *self = unsafe { Bytes::unchecked_new(env.clone(), obj) };
@@ -496,6 +501,7 @@ impl GenLen for Bytes {
     /// Generates the Bytes with the Prng of the given length.
     fn gen_len(prng: &Prng, len: u32) -> Self {
         let env = prng.env();
+        assert_in_contract!(env);
         let obj = internal::Env::prng_bytes_new(env, len.into()).unwrap_infallible();
         unsafe { Bytes::unchecked_new(env.clone(), obj) }
     }
@@ -521,6 +527,7 @@ impl<const N: usize> Gen for BytesN<N> {
     /// If the length of BytesN is greater than u32::MAX in length.
     fn gen(prng: &Prng) -> Self {
         let env = prng.env();
+        assert_in_contract!(env);
         let len: u32 = N.try_into().unwrap_optimized();
         let obj = internal::Env::prng_bytes_new(env, len.into()).unwrap_infallible();
         unsafe { BytesN::unchecked_new(env.clone(), obj) }
@@ -535,6 +542,7 @@ impl Fill for [u8] {
     /// If the slice is greater than u32::MAX in length.
     fn fill(&mut self, prng: &Prng) {
         let env = prng.env();
+        assert_in_contract!(env);
         let len: u32 = self.len().try_into().unwrap_optimized();
         let bytes: Bytes = internal::Env::prng_bytes_new(env, len.into())
             .unwrap_infallible()
@@ -551,6 +559,7 @@ impl<const N: usize> Fill for [u8; N] {
     /// If the array is greater than u32::MAX in length.
     fn fill(&mut self, prng: &Prng) {
         let env = prng.env();
+        assert_in_contract!(env);
         let len: u32 = N.try_into().unwrap_optimized();
         let bytes: Bytes = internal::Env::prng_bytes_new(env, len.into())
             .unwrap_infallible()
