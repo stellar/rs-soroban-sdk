@@ -20,5 +20,5 @@ proc-macro2 = "1.0"
 sha2 = "0.10.7"
 prettyplease = "0.2.4"
 
-[dev_dependencies]
+[dev-dependencies]
 pretty_assertions = "1.2.1"
