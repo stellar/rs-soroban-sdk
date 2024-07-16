@@ -1,8 +1,8 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
-use crate::syn_ext;
+use crate::{symbol, syn_ext};
 
 pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
@@ -144,6 +144,11 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             let fn_ident = &f.ident;
             let fn_try_ident = format_ident!("try_{}", &f.ident);
             let fn_name = fn_ident.to_string();
+            let fn_name_symbol = symbol::short_or_long(
+                crate_path,
+                quote!(&self.env),
+                &LitStr::new(&fn_name, fn_ident.span()),
+            );
 
             // Check for the Env argument.
             let env_input = f.inputs.first().and_then(|a| match a {
@@ -215,7 +220,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     use #crate_path::{IntoVal,FromVal};
                     let res = self.env.invoke_contract(
                         &self.address,
-                        &#crate_path::Symbol::new(&self.env, &#fn_name),
+                        &#fn_name_symbol,
                         #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     );
                     #[cfg(any(test, feature = "testutils"))]
@@ -248,7 +253,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     use #crate_path::{IntoVal,FromVal};
                     let res = self.env.try_invoke_contract(
                         &self.address,
-                        &#crate_path::Symbol::new(&self.env, &#fn_name),
+                        &#fn_name_symbol,
                         #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
                     );
                     #[cfg(any(test, feature = "testutils"))]

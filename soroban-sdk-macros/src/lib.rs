@@ -12,6 +12,7 @@ mod derive_struct_tuple;
 mod doc;
 mod map_type;
 mod path;
+mod symbol;
 mod syn_ext;
 
 use derive_client::{derive_client_impl, derive_client_type};
@@ -40,8 +41,6 @@ use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
-use soroban_env_common::Symbol;
-
 pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     depth: 500,
     len: 0x1000000,
@@ -50,28 +49,15 @@ pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
-    _symbol_short("crate", &input)
+    let crate_path: Path = syn::parse_str("crate").unwrap();
+    symbol::short(&crate_path, &input).into()
 }
 
 #[proc_macro]
 pub fn symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
-    _symbol_short("soroban_sdk", &input)
-}
-
-fn _symbol_short(crate_path: &str, s: &LitStr) -> TokenStream {
-    let crate_path = format_ident!("{crate_path}");
-    match Symbol::try_from_small_str(&s.value()) {
-        Ok(_) => quote! {{
-            #[allow(deprecated)]
-            const SYMBOL: #crate_path::Symbol = #crate_path::Symbol::short(#s);
-            SYMBOL
-        }}
-        .into(),
-        Err(e) => Error::new(s.span(), format!("{e}"))
-            .to_compile_error()
-            .into(),
-    }
+    let crate_path: Path = syn::parse_str("soroban_sdk").unwrap();
+    symbol::short(&crate_path, &input).into()
 }
 
 fn default_crate_path() -> Path {
