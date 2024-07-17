@@ -166,6 +166,10 @@ pub fn derive_contract_function_registration_ctor<'a>(
     trait_ident: Option<&Ident>,
     methods: impl Iterator<Item = &'a syn::ImplItemFn>,
 ) -> TokenStream2 {
+    if !cfg!(any(test, feature = "testutils")) {
+        return quote! {};
+    }
+
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
@@ -181,7 +185,6 @@ pub fn derive_contract_function_registration_ctor<'a>(
     let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
 
     quote! {
-        #[cfg(any(test, feature = "testutils"))]
         #[doc(hidden)]
         #[#crate_path::reexports_for_macros::ctor::ctor]
         fn #ctor_ident() {

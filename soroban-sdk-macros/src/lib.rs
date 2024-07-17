@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(unused_mut)]
+
 extern crate proc_macro;
 
 mod arbitrary;
@@ -137,40 +140,46 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
     let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
-    quote! {
-        #input2
-        #client
+    if cfg!(any(test, feature = "testutils")) {
+        quote! {
+            #input2
+            #client
 
-        #[cfg(any(test, feature = "testutils"))]
-        mod #fn_set_registry_ident {
-            use super::*;
+            mod #fn_set_registry_ident {
+                use super::*;
 
-            extern crate std;
-            use std::sync::Mutex;
-            use std::collections::BTreeMap;
+                extern crate std;
+                use std::sync::Mutex;
+                use std::collections::BTreeMap;
 
-            type F = dyn Send + Sync + Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val;
+                type F = dyn Send + Sync + Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val;
 
-            static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
+                static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
 
-            pub(crate) fn register(name: &'static str, func: &'static F) {
-                FUNCS.lock().unwrap().insert(name, func);
+                pub(crate) fn register(name: &'static str, func: &'static F) {
+                    FUNCS.lock().unwrap().insert(name, func);
+                }
+
+                pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                    let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
+                    fopt.map(|f| f(env, args))
+                }
             }
 
-            pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
-                let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
-                fopt.map(|f| f(env, args))
+            #[doc(hidden)]
+            impl #crate_path::testutils::ContractFunctionSet for #ty {
+                fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                    #fn_set_registry_ident::call(func, env, args)
+                }
             }
+        }.into()
+    } else {
+        quote! {
+            #input2
+            #client
         }
-
-        #[cfg(any(test, feature = "testutils"))]
-        #[doc(hidden)]
-        impl #crate_path::testutils::ContractFunctionSet for #ty {
-            fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
-                #fn_set_registry_ident::call(func, env, args)
-            }
-        }
-    }.into()
+        .into()
+    }
 }
 
 #[derive(Debug, FromMeta)]

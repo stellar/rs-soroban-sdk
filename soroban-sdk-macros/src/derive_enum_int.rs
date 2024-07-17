@@ -91,10 +91,8 @@ pub fn derive_type_enum_int(
         None
     };
 
-    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_enum_int(path, vis, enum_ident, data);
-
     // Output.
-    quote! {
+    let mut output = quote! {
         #spec_gen
         const _: () = { fn assert_copy(v: #enum_ident) -> impl Copy { v } };
 
@@ -120,41 +118,47 @@ pub fn derive_type_enum_int(
                 })
             }
         }
+    };
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
-                if let #path::xdr::ScVal::U32(discriminant) = val {
-                    Ok(match *discriminant {
-                        #(#try_froms,)*
-                        _ => Err(#path::xdr::Error::Invalid)?,
-                    })
-                } else {
-                    Err(#path::xdr::Error::Invalid)
+    // Additional output when testutils are enabled.
+    #[cfg(any(test, feature = "testutils"))]
+    {
+        let arbitrary_tokens =
+            crate::arbitrary::derive_arbitrary_enum_int(path, vis, enum_ident, data);
+        output.extend(quote! {
+            impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
+                    if let #path::xdr::ScVal::U32(discriminant) = val {
+                        Ok(match *discriminant {
+                            #(#try_froms,)*
+                            _ => Err(#path::xdr::Error::Invalid)?,
+                        })
+                    } else {
+                        Err(#path::xdr::Error::Invalid)
+                    }
                 }
             }
-        }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for &#enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
-                Ok((*self as u32).into())
+            impl TryInto<#path::xdr::ScVal> for &#enum_ident {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
+                    Ok((*self as u32).into())
+                }
             }
-        }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryInto<#path::xdr::ScVal> for #enum_ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
-                Ok((self as u32).into())
+            impl TryInto<#path::xdr::ScVal> for #enum_ident {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
+                    Ok((self as u32).into())
+                }
             }
-        }
 
-        #arbitrary_tokens
+            #arbitrary_tokens
+        });
     }
+    output
 }

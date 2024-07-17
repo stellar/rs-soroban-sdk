@@ -100,10 +100,8 @@ pub fn derive_type_struct(
         None
     };
 
-    let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct(path, vis, ident, data);
-
     // Output.
-    quote! {
+    let mut output = quote! {
         #spec_gen
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
@@ -131,78 +129,80 @@ pub fn derive_type_struct(
                 Ok(env.map_new_from_slices(&KEYS, &vals).map_err(|_| ConversionError)?.into())
             }
         }
+    };
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScMap) -> Result<Self, #path::xdr::Error> {
-                use #path::xdr::Validate;
-                use #path::TryIntoVal;
-                let map = val;
-                if map.len() != #field_count_usize {
-                    return Err(#path::xdr::Error::Invalid);
-                }
-                map.validate()?;
-                Ok(Self{
-                    #(#try_from_xdrs,)*
-                })
-            }
-        }
-
-        #[cfg(any(test, feature = "testutils"))]
-        impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
-                if let #path::xdr::ScVal::Map(Some(map)) = val {
-                    <_ as #path::TryFromVal<_, _>>::try_from_val(env, map)
-                } else {
-                    Err(#path::xdr::Error::Invalid)
+    // Additional output when testutils are enabled.
+    #[cfg(any(test, feature = "testutils"))]
+    {
+        let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct(path, vis, ident, data);
+        output.extend(quote!{
+            impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from_val(env: &#path::Env, val: &#path::xdr::ScMap) -> Result<Self, #path::xdr::Error> {
+                    use #path::xdr::Validate;
+                    use #path::TryIntoVal;
+                    let map = val;
+                    if map.len() != #field_count_usize {
+                        return Err(#path::xdr::Error::Invalid);
+                    }
+                    map.validate()?;
+                    Ok(Self{
+                        #(#try_from_xdrs,)*
+                    })
                 }
             }
-        }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<&#ident> for #path::xdr::ScMap  {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
-                extern crate alloc;
-                use #path::TryFromVal;
-                #path::xdr::ScMap::sorted_from(alloc::vec![
-                    #(#try_into_xdrs,)*
-                ])
+            impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
+                    if let #path::xdr::ScVal::Map(Some(map)) = val {
+                        <_ as #path::TryFromVal<_, _>>::try_from_val(env, map)
+                    } else {
+                        Err(#path::xdr::Error::Invalid)
+                    }
+                }
             }
-        }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<#ident> for #path::xdr::ScMap {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
-                (&val).try_into()
+            impl TryFrom<&#ident> for #path::xdr::ScMap  {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
+                    extern crate alloc;
+                    use #path::TryFromVal;
+                    #path::xdr::ScMap::sorted_from(alloc::vec![
+                        #(#try_into_xdrs,)*
+                    ])
+                }
             }
-        }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<&#ident> for #path::xdr::ScVal  {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
-                Ok(#path::xdr::ScVal::Map(Some(val.try_into()?)))
+            impl TryFrom<#ident> for #path::xdr::ScMap {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
+                    (&val).try_into()
+                }
             }
-        }
 
-        #[cfg(any(test, feature = "testutils"))]
-        impl TryFrom<#ident> for #path::xdr::ScVal {
-            type Error = #path::xdr::Error;
-            #[inline(always)]
-            fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
-                (&val).try_into()
+            impl TryFrom<&#ident> for #path::xdr::ScVal  {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
+                    Ok(#path::xdr::ScVal::Map(Some(val.try_into()?)))
+                }
             }
-        }
 
-        #arbitrary_tokens
+            impl TryFrom<#ident> for #path::xdr::ScVal {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
+                    (&val).try_into()
+                }
+            }
+
+            #arbitrary_tokens
+        });
     }
+    output
 }
