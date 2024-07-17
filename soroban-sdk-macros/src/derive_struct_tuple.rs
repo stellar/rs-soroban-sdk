@@ -121,8 +121,7 @@ pub fn derive_type_struct_tuple(
     };
 
     // Additional output when testutils are enabled.
-    #[cfg(any(test, feature = "testutils"))]
-    {
+    if cfg!(any(test, feature = "testutils")) {
         let arbitrary_tokens =
             crate::arbitrary::derive_arbitrary_struct_tuple(path, vis, ident, data);
         output.extend(quote! {

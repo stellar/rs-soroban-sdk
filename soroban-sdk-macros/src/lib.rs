@@ -1,6 +1,3 @@
-#![allow(unused_variables)]
-#![allow(unused_mut)]
-
 extern crate proc_macro;
 
 mod arbitrary;

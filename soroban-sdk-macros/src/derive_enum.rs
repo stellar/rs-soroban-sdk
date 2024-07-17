@@ -195,8 +195,7 @@ pub fn derive_type_enum(
     };
 
     // Additional output when testutils are enabled.
-    #[cfg(any(test, feature = "testutils"))]
-    {
+    if cfg!(any(test, feature = "testutils")) {
         let arbitrary_tokens = crate::arbitrary::derive_arbitrary_enum(path, vis, enum_ident, data);
         output.extend(quote! {
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVec> for #enum_ident {

@@ -166,7 +166,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
     trait_ident: Option<&Ident>,
     methods: impl Iterator<Item = &'a syn::ImplItemFn>,
 ) -> TokenStream2 {
-    if !cfg!(any(test, feature = "testutils")) {
+    if cfg!(not(any(test, feature = "testutils"))) {
         return quote! {};
     }
 

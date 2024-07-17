@@ -9,7 +9,26 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
     // Render the Client.
     let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
     let client_ident = format_ident!("{}", name);
-    if cfg!(any(test, feature = "testutils")) {
+    if cfg!(not(any(test, feature = "testutils"))) {
+        quote! {
+            #[doc = #client_doc]
+            pub struct #client_ident<'a> {
+                pub env: #crate_path::Env,
+                pub address: #crate_path::Address,
+                _phantom: core::marker::PhantomData<&'a ()>,
+            }
+
+            impl<'a> #client_ident<'a> {
+                pub fn new(env: &#crate_path::Env, address: &#crate_path::Address) -> Self {
+                    Self {
+                        env: env.clone(),
+                        address: address.clone(),
+                        _phantom: core::marker::PhantomData,
+                    }
+                }
+            }
+        }
+    } else {
         quote! {
             #[doc = #client_doc]
             pub struct #client_ident<'a> {
@@ -106,25 +125,6 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                 }
             }
         }
-    } else {
-        quote! {
-            #[doc = #client_doc]
-            pub struct #client_ident<'a> {
-                pub env: #crate_path::Env,
-                pub address: #crate_path::Address,
-                _phantom: core::marker::PhantomData<&'a ()>,
-            }
-
-            impl<'a> #client_ident<'a> {
-                pub fn new(env: &#crate_path::Env, address: &#crate_path::Address) -> Self {
-                    Self {
-                        env: env.clone(),
-                        address: address.clone(),
-                        _phantom: core::marker::PhantomData,
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -193,8 +193,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
             let fn_attrs = f.attrs;
-            #[allow(clippy::if_not_else)]
-            if !cfg!(any(test, feature = "testutils")) {
+            if cfg!(not(any(test, feature = "testutils"))) {
                 quote! {
                     #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
