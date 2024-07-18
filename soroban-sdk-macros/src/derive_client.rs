@@ -9,7 +9,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
     // Render the Client.
     let client_doc = format!("{name} is a client for calling the contract defined in {ty_str}.");
     let client_ident = format_ident!("{}", name);
-    if cfg!(not(any(test, feature = "testutils"))) {
+    if cfg!(not(feature = "testutils")) {
         quote! {
             #[doc = #client_doc]
             pub struct #client_ident<'a> {
@@ -193,7 +193,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
             let fn_attrs = f.attrs;
-            if cfg!(not(any(test, feature = "testutils"))) {
+            if cfg!(not(feature = "testutils")) {
                 quote! {
                     #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {

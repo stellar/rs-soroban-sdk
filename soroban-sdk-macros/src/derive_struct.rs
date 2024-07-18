@@ -132,7 +132,7 @@ pub fn derive_type_struct(
     };
 
     // Additional output when testutils are enabled.
-    if cfg!(any(test, feature = "testutils")) {
+    if cfg!(feature = "testutils") {
         let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct(path, vis, ident, data);
         output.extend(quote!{
             impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {

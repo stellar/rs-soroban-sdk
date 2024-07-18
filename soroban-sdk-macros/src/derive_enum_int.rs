@@ -121,7 +121,7 @@ pub fn derive_type_enum_int(
     };
 
     // Additional output when testutils are enabled.
-    if cfg!(any(test, feature = "testutils")) {
+    if cfg!(feature = "testutils") {
         let arbitrary_tokens =
             crate::arbitrary::derive_arbitrary_enum_int(path, vis, enum_ident, data);
         output.extend(quote! {

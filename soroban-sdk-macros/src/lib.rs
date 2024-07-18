@@ -141,7 +141,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
         #input2
         #client
     };
-    if cfg!(any(test, feature = "testutils")) {
+    if cfg!(feature = "testutils") {
         output.extend(quote! {
             mod #fn_set_registry_ident {
                 use super::*;
@@ -239,7 +239,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #imp
                 #derived_ok
             };
-            if cfg!(any(test, feature = "testutils")) {
+            if cfg!(feature = "testutils") {
                 let cfs = derive_contract_function_registration_ctor(
                     crate_path,
                     ty,
