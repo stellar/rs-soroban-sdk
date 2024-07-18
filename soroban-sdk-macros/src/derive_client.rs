@@ -15,6 +15,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
             pub struct #client_ident<'a> {
                 pub env: #crate_path::Env,
                 pub address: #crate_path::Address,
+                #[doc(hidden)]
                 _phantom: core::marker::PhantomData<&'a ()>,
             }
 
@@ -34,9 +35,13 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
             pub struct #client_ident<'a> {
                 pub env: #crate_path::Env,
                 pub address: #crate_path::Address,
+                #[doc(hidden)]
                 set_auths: Option<&'a [#crate_path::xdr::SorobanAuthorizationEntry]>,
+                #[doc(hidden)]
                 mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
+                #[doc(hidden)]
                 mock_all_auths: bool,
+                #[doc(hidden)]
                 allow_non_root_auth: bool,
             }
 
@@ -197,6 +202,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 quote! {
                     #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
+                        use core::ops::Not;
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.invoke_contract(
                             &self.address,
