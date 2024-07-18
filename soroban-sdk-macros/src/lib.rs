@@ -143,9 +143,6 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     if cfg!(any(test, feature = "testutils")) {
         output.extend(quote! {
-            #input2
-            #client
-
             mod #fn_set_registry_ident {
                 use super::*;
 
@@ -173,9 +170,9 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     #fn_set_registry_ident::call(func, env, args)
                 }
             }
-        })
+        });
     }
-    output.into();
+    output.into()
 }
 
 #[derive(Debug, FromMeta)]
