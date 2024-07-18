@@ -233,20 +233,22 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let cfs = derive_contract_function_registration_ctor(
-                crate_path,
-                ty,
-                trait_ident,
-                pub_methods.into_iter(),
-            );
-            quote! {
+            let mut output = quote! {
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
                 #imp
                 #derived_ok
-                #cfs
+            };
+            if cfg!(any(test, feature = "testutils")) {
+                let cfs = derive_contract_function_registration_ctor(
+                    crate_path,
+                    ty,
+                    trait_ident,
+                    pub_methods.into_iter(),
+                );
+                output.extend(quote! { #cfs });
             }
-            .into()
+            output.into()
         }
         Err(derived_err) => quote! {
             #imp
