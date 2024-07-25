@@ -487,6 +487,7 @@ impl Env {
         f((*self.test_state.generators).borrow_mut())
     }
 
+    /// Create an Env with the test config.
     pub fn new_with_config(config: EnvTestConfig) -> Env {
         struct EmptySnapshotSource();
 
@@ -513,6 +514,11 @@ impl Env {
         };
 
         Env::new_for_testutils(config, rf, None, info, None)
+    }
+
+    /// Change the test config of an Env.
+    pub fn set_config(&mut self, config: EnvTestConfig) {
+        self.test_state.config = config;
     }
 
     /// Used by multiple constructors to configure test environments consistently.
@@ -1246,7 +1252,7 @@ impl Env {
     /// Events, as an output source only, are not loaded into the Env.
     pub fn from_snapshot(s: Snapshot) -> Env {
         Env::new_for_testutils(
-            EnvTestConfig::default(), // TODO: Allow setting the config.
+            EnvTestConfig::default(),
             Rc::new(s.ledger.clone()),
             Some(Rc::new(RefCell::new(s.generators))),
             s.ledger.ledger_info(),
