@@ -175,3 +175,32 @@ fn test_snapshot_file_disabled() {
     let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
 }
+
+/// Test that the test snapshot file is not written when disabled after
+/// creation.
+#[test]
+fn test_snapshot_file_disabled_after_creation() {
+    let p = std::path::Path::new("test_snapshots")
+        .join("tests")
+        .join("env")
+        .join("test_snapshot_file_disabled_after_creation");
+    let p1 = p.with_extension("1.json");
+    assert!(!p1.exists());
+    let p2 = p.with_extension("2.json");
+    assert!(!p2.exists());
+    {
+        let e1 = Env::default();
+        let _ = e1.register_contract(None, Contract);
+        let mut e2 = Env::default();
+        e2.set_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
+        let _ = e2.register_contract(None, Contract);
+        assert!(!p1.exists());
+        assert!(!p2.exists());
+    }
+    assert!(p1.exists());
+    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
+}
