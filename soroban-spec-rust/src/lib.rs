@@ -57,6 +57,14 @@ pub fn generate_from_wasm(
 }
 
 pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream {
+    let generated = generate_without_file(specs);
+    quote! {
+        pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
+        #generated
+    }
+}
+
+pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
@@ -81,8 +89,6 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
     let error_enums = spec_error_enums.iter().map(|s| generate_error_enum(s));
 
     quote! {
-        pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
-
         #[soroban_sdk::contractclient(name = "Client")]
         #trait_
 
