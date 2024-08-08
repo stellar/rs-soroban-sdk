@@ -87,7 +87,7 @@ pub trait TokenInterface {
     ///
     /// The amount returned is the amount that spender is allowed to transfer
     /// out of from's balance. When the spender transfers amounts, the allowance
-    /// will be reduced by the amount transfered.
+    /// will be reduced by the amount transferred.
     ///
     /// # Arguments
     ///
@@ -101,7 +101,7 @@ pub trait TokenInterface {
     /// The amount set is the amount that spender is approved to transfer out of
     /// from's balance. The spender will be allowed to transfer amounts, and
     /// when an amount is transferred the allowance will be reduced by the
-    /// amount transfered.
+    /// amount transferred.
     ///
     /// # Arguments
     ///
