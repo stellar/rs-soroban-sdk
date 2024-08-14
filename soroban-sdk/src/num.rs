@@ -54,6 +54,27 @@ macro_rules! impl_num_wrapping_val_type {
             }
         }
 
+        impl From<$wrapper> for $val {
+            #[inline(always)]
+            fn from(v: $wrapper) -> Self {
+                v.val
+            }
+        }
+
+        impl From<&$wrapper> for $val {
+            #[inline(always)]
+            fn from(v: &$wrapper) -> Self {
+                v.val
+            }
+        }
+
+        impl From<&$wrapper> for $wrapper {
+            #[inline(always)]
+            fn from(v: &$wrapper) -> Self {
+                v.clone()
+            }
+        }
+
         impl TryFromVal<Env, $val> for $wrapper {
             type Error = Infallible;
 

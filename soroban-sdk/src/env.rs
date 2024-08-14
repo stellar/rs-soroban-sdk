@@ -113,6 +113,7 @@ where
 }
 
 use crate::auth::InvokerContractAuthEntry;
+use crate::crypto::Bls12_381;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::InvokeError;
@@ -311,6 +312,12 @@ impl Env {
     #[inline(always)]
     pub fn crypto(&self) -> Crypto {
         Crypto::new(self)
+    }
+
+    /// Get a [Bls12_381] for accessing the bls12-381 functions.
+    #[inline(always)]
+    pub fn bls12_381(&self) -> Bls12_381 {
+        Bls12_381::new(self)
     }
 
     /// # ⚠️ Hazardous Materials
