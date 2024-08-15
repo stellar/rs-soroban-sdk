@@ -64,6 +64,9 @@ impl<T> UnwrapInfallible for Result<T, Infallible> {
             // destructuring the `never` variable into an empty set of cases is
             // the most honest since it's statically checked to _be_ infallible,
             // not just an assertion of our hopes.)
+
+            // This allow and the Err can be removed once 1.82 becomes stable
+            #[allow(unreachable_patterns)]
             Err(never) => match never {},
         }
     }
