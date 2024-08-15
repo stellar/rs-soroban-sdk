@@ -140,7 +140,7 @@ pub trait TokenInterface {
     /// # Events
     ///
     /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = [amount: i128]`
+    /// data = amount: i128`
     fn transfer(env: Env, from: Address, to: Address, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
@@ -164,7 +164,7 @@ pub trait TokenInterface {
     /// # Events
     ///
     /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = [amount: i128]`
+    /// data = amount: i128`
     fn transfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128);
 
     /// Burn `amount` from `from`.
@@ -180,8 +180,8 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["burn", from: Address], data = [amount:
-    /// i128]`
+    /// Emits an event with topics `["burn", from: Address], data = amount:
+    /// i128`
     fn burn(env: Env, from: Address, amount: i128);
 
     /// Burn `amount` from `from`, consuming the allowance of `spender`.
@@ -204,8 +204,8 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["burn", from: Address], data = [amount:
-    /// i128]`
+    /// Emits an event with topics `["burn", from: Address], data = amount:
+    /// i128`
     fn burn_from(env: Env, spender: Address, from: Address, amount: i128);
 
     /// Returns the number of decimals used to represent amounts of this token.
@@ -286,7 +286,7 @@ pub trait StellarAssetInterface {
     /// # Events
     ///
     /// Emits an event with topics `["mint", admin: Address, to: Address], data
-    /// = [amount: i128]`
+    /// = amount: i128`
     fn mint(env: Env, to: Address, amount: i128);
 
     /// Clawback `amount` from `from` account. `amount` is burned in the
@@ -301,7 +301,7 @@ pub trait StellarAssetInterface {
     /// # Events
     ///
     /// Emits an event with topics `["clawback", admin: Address, to: Address],
-    /// data = [amount: i128]`
+    /// data = amount: i128`
     fn clawback(env: Env, from: Address, amount: i128);
 }
 
