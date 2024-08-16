@@ -470,6 +470,79 @@ use std::{path::Path, rc::Rc};
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
 #[cfg(any(test, feature = "testutils"))]
+pub struct TestStellarAssetContractUtil {
+    pub address: Address,
+    env: Env,
+    issuer_id: xdr::AccountId,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl TestStellarAssetContractUtil {
+    pub fn get_issuer_flags(&self) -> u32 {
+        self.env
+            .host()
+            .with_mut_storage(|storage| {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: self.issuer_id.clone(),
+                }));
+
+                let entry = storage.get(
+                    &k,
+                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                )?;
+
+                match entry.data {
+                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags.clone()),
+                    _ => panic!("Expected account entry"),
+                }
+            })
+            .unwrap()
+    }
+    /// Sets the issuer flags field.
+    /// Each flag is a bit with values corresponding to [xdr::AccountFlags]
+    ///
+    /// Use this to test interactions between trustlines/balances and the issuer flags.
+    pub fn overwrite_issuer_flags(&self, flags: u32) {
+        if u64::from(flags) > xdr::MASK_ACCOUNT_FLAGS_V17 {
+            panic!(
+                "issuer flags value must be at most {}",
+                xdr::MASK_ACCOUNT_FLAGS_V17
+            );
+        }
+
+        self.env
+            .host()
+            .with_mut_storage(|storage| {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: self.issuer_id.clone(),
+                }));
+
+                let mut entry = storage
+                    .get(
+                        &k,
+                        soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                    )?
+                    .as_ref()
+                    .clone();
+
+                match entry.data {
+                    xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
+                    _ => panic!("Expected account entry"),
+                }
+
+                storage.put(
+                    &k,
+                    &Rc::new(entry),
+                    None,
+                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                )?;
+                Ok(())
+            })
+            .unwrap();
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     #[doc(hidden)]
@@ -687,12 +760,16 @@ impl Env {
 
     /// Register the built-in Stellar Asset Contract with provided admin address.
     ///
-    /// Returns the contract ID of the registered token contract.
+    /// Returns a utility struct that contains the contract ID of the registered
+    /// token contract, as well as methods to read and update issuer flags.
     ///
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
+    pub fn register_stellar_asset_contract_v2(
+        &self,
+        admin: Address,
+    ) -> TestStellarAssetContractUtil {
         let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
@@ -759,7 +836,24 @@ impl Env {
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
-        token_id
+
+        TestStellarAssetContractUtil {
+            address: token_id,
+            env: self.clone(),
+            issuer_id,
+        }
+    }
+
+    /// Register the built-in Stellar Asset Contract with provided admin address.
+    ///
+    /// Returns the contract ID of the registered token contract.
+    ///
+    /// The contract will wrap a randomly-generated Stellar asset. This function
+    /// is useful for using in the tests when an arbitrary token contract
+    /// instance is needed.
+    #[deprecated(note = "use [Env::register_stellar_asset_contract_v2]")]
+    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
+        self.register_stellar_asset_contract_v2(admin).address
     }
 
     fn register_contract_with_optional_contract_id_and_executable<'a>(
