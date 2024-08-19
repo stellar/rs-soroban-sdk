@@ -455,6 +455,7 @@ use crate::{
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
         EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+        StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN,
 };
@@ -468,79 +469,6 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
-
-#[cfg(any(test, feature = "testutils"))]
-pub struct TestStellarAssetContractUtil {
-    pub address: Address,
-    env: Env,
-    issuer_id: xdr::AccountId,
-}
-
-#[cfg(any(test, feature = "testutils"))]
-impl TestStellarAssetContractUtil {
-    pub fn get_issuer_flags(&self) -> u32 {
-        self.env
-            .host()
-            .with_mut_storage(|storage| {
-                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: self.issuer_id.clone(),
-                }));
-
-                let entry = storage.get(
-                    &k,
-                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                )?;
-
-                match entry.data {
-                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags.clone()),
-                    _ => panic!("Expected account entry"),
-                }
-            })
-            .unwrap()
-    }
-    /// Sets the issuer flags field.
-    /// Each flag is a bit with values corresponding to [xdr::AccountFlags]
-    ///
-    /// Use this to test interactions between trustlines/balances and the issuer flags.
-    pub fn overwrite_issuer_flags(&self, flags: u32) {
-        if u64::from(flags) > xdr::MASK_ACCOUNT_FLAGS_V17 {
-            panic!(
-                "issuer flags value must be at most {}",
-                xdr::MASK_ACCOUNT_FLAGS_V17
-            );
-        }
-
-        self.env
-            .host()
-            .with_mut_storage(|storage| {
-                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: self.issuer_id.clone(),
-                }));
-
-                let mut entry = storage
-                    .get(
-                        &k,
-                        soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                    )?
-                    .as_ref()
-                    .clone();
-
-                match entry.data {
-                    xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
-                    _ => panic!("Expected account entry"),
-                }
-
-                storage.put(
-                    &k,
-                    &Rc::new(entry),
-                    None,
-                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                )?;
-                Ok(())
-            })
-            .unwrap();
-    }
-}
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -766,10 +694,7 @@ impl Env {
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    pub fn register_stellar_asset_contract_v2(
-        &self,
-        admin: Address,
-    ) -> TestStellarAssetContractUtil {
+    pub fn register_stellar_asset_contract_v2(&self, admin: Address) -> StellarAssetContract {
         let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
@@ -837,10 +762,14 @@ impl Env {
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
-        TestStellarAssetContractUtil {
-            address: token_id,
+        let issuer = StellarAssetIssuer {
             env: self.clone(),
-            issuer_id,
+            account_id: issuer_id,
+        };
+
+        StellarAssetContract {
+            address: token_id,
+            issuer: issuer,
         }
     }
 

@@ -6,6 +6,8 @@
 pub mod arbitrary;
 
 mod sign;
+use std::rc::Rc;
+
 pub use sign::ed25519;
 
 mod mock_auth;
@@ -415,4 +417,90 @@ pub trait Deployer {
     /// Panics if there is no contract instance/code corresponding to
     /// the provided address, or if the instance/code has expired.
     fn get_contract_code_ttl(&self, contract: &crate::Address) -> u32;
+}
+
+pub use xdr::AccountFlags as IssuerAccountFlags;
+
+pub struct StellarAssetIssuer {
+    pub env: Env,
+    pub account_id: xdr::AccountId,
+}
+
+impl StellarAssetIssuer {
+    pub fn flags(&self) -> u32 {
+        self.env
+            .host()
+            .with_mut_storage(|storage| {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: self.account_id.clone(),
+                }));
+
+                let entry = storage.get(
+                    &k,
+                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                )?;
+
+                match entry.data {
+                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags.clone()),
+                    _ => panic!("expected account entry but got {:?}", entry.data),
+                }
+            })
+            .unwrap()
+    }
+
+    pub fn set_flag(&self, flag: IssuerAccountFlags) {
+        self.overwrite_issuer_flags(self.flags() | (flag as u32))
+    }
+
+    pub fn clear_flag(&self, flag: IssuerAccountFlags) {
+        self.overwrite_issuer_flags(self.flags() & (!(flag as u32)))
+    }
+
+    /// Sets the issuer flags field.
+    /// Each flag is a bit with values corresponding to [xdr::AccountFlags]
+    ///
+    /// Use this to test interactions between trustlines/balances and the issuer flags.
+    fn overwrite_issuer_flags(&self, flags: u32) {
+        if u64::from(flags) > xdr::MASK_ACCOUNT_FLAGS_V17 {
+            panic!(
+                "issuer flags value must be at most {}",
+                xdr::MASK_ACCOUNT_FLAGS_V17
+            );
+        }
+
+        self.env
+            .host()
+            .with_mut_storage(|storage| {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: self.account_id.clone(),
+                }));
+
+                let mut entry = storage
+                    .get(
+                        &k,
+                        soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                    )?
+                    .as_ref()
+                    .clone();
+
+                match entry.data {
+                    xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
+                    _ => panic!("expected account entry but got {:?}", entry.data),
+                }
+
+                storage.put(
+                    &k,
+                    &Rc::new(entry),
+                    None,
+                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                )?;
+                Ok(())
+            })
+            .unwrap();
+    }
+}
+
+pub struct StellarAssetContract {
+    pub address: crate::Address,
+    pub issuer: StellarAssetIssuer,
 }

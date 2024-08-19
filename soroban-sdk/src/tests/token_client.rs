@@ -5,7 +5,7 @@ use crate::{
 
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    testutils::{Address as _, MockAuth, MockAuthInvoke},
+    testutils::{Address as _, IssuerAccountFlags, MockAuth, MockAuthInvoke},
     token::Client as TokenClient,
     Address, Env, IntoVal, Symbol,
 };
@@ -42,6 +42,28 @@ impl TestContract {
 }
 
 #[test]
+fn test_issuer_flags() {
+    extern crate std;
+
+    let env = Env::default();
+
+    let admin = Address::generate(&env);
+    let sac = env.register_stellar_asset_contract_v2(admin);
+
+    assert_eq!(sac.issuer.flags(), 0);
+
+    let required_and_revocable =
+        (IssuerAccountFlags::RequiredFlag as u32) | (IssuerAccountFlags::RevocableFlag as u32);
+    sac.issuer.set_flag(IssuerAccountFlags::RequiredFlag);
+    sac.issuer.set_flag(IssuerAccountFlags::RevocableFlag);
+
+    assert_eq!(sac.issuer.flags(), required_and_revocable);
+
+    sac.issuer.clear_flag(IssuerAccountFlags::RequiredFlag);
+    assert_eq!(sac.issuer.flags(), IssuerAccountFlags::RevocableFlag as u32);
+}
+
+#[test]
 fn test_mock_all_auth() {
     extern crate std;
 
@@ -50,10 +72,6 @@ fn test_mock_all_auth() {
     let admin = Address::generate(&env);
     let sac = env.register_stellar_asset_contract_v2(admin);
     let token_contract_id = sac.address.clone();
-
-    assert_eq!(sac.get_issuer_flags(), 0);
-    sac.overwrite_issuer_flags(1);
-    assert_eq!(sac.get_issuer_flags(), 1);
 
     let contract_id = env.register_contract(None, TestContract);
     let client = TestContractClient::new(&env, &contract_id);
