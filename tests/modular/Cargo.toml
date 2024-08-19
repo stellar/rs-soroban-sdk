@@ -1,5 +1,5 @@
 [package]
-name = "test_empty2"
+name = "test_modular"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
