@@ -427,6 +427,7 @@ pub struct StellarAssetIssuer {
 }
 
 impl StellarAssetIssuer {
+    /// Returns the flags for account_id.
     pub fn flags(&self) -> u32 {
         self.env
             .host()
@@ -448,10 +449,12 @@ impl StellarAssetIssuer {
             .unwrap()
     }
 
+    /// Adds the flag specified to the existing issuer flags
     pub fn set_flag(&self, flag: IssuerAccountFlags) {
         self.overwrite_issuer_flags(self.flags() | (flag as u32))
     }
 
+    /// Clears the flag specified from the existing issuer flags
     pub fn clear_flag(&self, flag: IssuerAccountFlags) {
         self.overwrite_issuer_flags(self.flags() & (!(flag as u32)))
     }
