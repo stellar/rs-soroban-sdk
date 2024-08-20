@@ -433,7 +433,7 @@ impl StellarAssetIssuer {
         Self { env, account_id }
     }
 
-    /// Returns the flags for account_id.
+    /// Returns the flags for the issuer.
     pub fn flags(&self) -> u32 {
         self.env
             .host()
