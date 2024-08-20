@@ -422,12 +422,17 @@ pub trait Deployer {
 
 pub use xdr::AccountFlags as IssuerAccountFlags;
 
+#[derive(Clone)]
 pub struct StellarAssetIssuer {
-    pub env: Env,
-    pub account_id: xdr::AccountId,
+    env: Env,
+    account_id: xdr::AccountId,
 }
 
 impl StellarAssetIssuer {
+    pub(crate) fn new(env: Env, account_id: xdr::AccountId) -> Self {
+        Self { env, account_id }
+    }
+
     /// Returns the flags for account_id.
     pub fn flags(&self) -> u32 {
         self.env
@@ -511,6 +516,20 @@ impl StellarAssetIssuer {
 }
 
 pub struct StellarAssetContract {
-    pub address: crate::Address,
-    pub issuer: StellarAssetIssuer,
+    address: crate::Address,
+    issuer: StellarAssetIssuer,
+}
+
+impl StellarAssetContract {
+    pub(crate) fn new(address: crate::Address, issuer: StellarAssetIssuer) -> Self {
+        Self { address, issuer }
+    }
+
+    pub fn address(&self) -> crate::Address {
+        self.address.clone()
+    }
+
+    pub fn issuer(&self) -> StellarAssetIssuer {
+        self.issuer.clone()
+    }
 }

@@ -762,15 +762,9 @@ impl Env {
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
-        let issuer = StellarAssetIssuer {
-            env: self.clone(),
-            account_id: issuer_id,
-        };
+        let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
 
-        StellarAssetContract {
-            address: token_id,
-            issuer: issuer,
-        }
+        StellarAssetContract::new(token_id, issuer)
     }
 
     /// Register the built-in Stellar Asset Contract with provided admin address.
@@ -782,7 +776,7 @@ impl Env {
     /// instance is needed.
     #[deprecated(note = "use [Env::register_stellar_asset_contract_v2]")]
     pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
-        self.register_stellar_asset_contract_v2(admin).address
+        self.register_stellar_asset_contract_v2(admin).address()
     }
 
     fn register_contract_with_optional_contract_id_and_executable<'a>(
