@@ -420,7 +420,7 @@ pub trait Deployer {
     fn get_contract_code_ttl(&self, contract: &crate::Address) -> u32;
 }
 
-pub use xdr::AccountFlags as IssuerAccountFlags;
+pub use xdr::AccountFlags as IssuerFlags;
 
 #[derive(Clone)]
 pub struct StellarAssetIssuer {
