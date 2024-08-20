@@ -53,14 +53,14 @@ fn test_issuer_flags() {
     assert_eq!(sac.issuer.flags(), 0);
 
     let required_and_revocable =
-        (IssuerAccountFlags::RequiredFlag as i32) | (IssuerAccountFlags::RevocableFlag as i32);
+        (IssuerAccountFlags::RequiredFlag as u32) | (IssuerAccountFlags::RevocableFlag as u32);
     sac.issuer.set_flag(IssuerAccountFlags::RequiredFlag);
     sac.issuer.set_flag(IssuerAccountFlags::RevocableFlag);
 
     assert_eq!(sac.issuer.flags(), required_and_revocable);
 
     sac.issuer.clear_flag(IssuerAccountFlags::RequiredFlag);
-    assert_eq!(sac.issuer.flags(), IssuerAccountFlags::RevocableFlag as i32);
+    assert_eq!(sac.issuer.flags(), IssuerAccountFlags::RevocableFlag as u32);
 }
 
 #[test]

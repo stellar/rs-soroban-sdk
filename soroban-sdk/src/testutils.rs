@@ -429,7 +429,7 @@ pub struct StellarAssetIssuer {
 
 impl StellarAssetIssuer {
     /// Returns the flags for account_id.
-    pub fn flags(&self) -> i32 {
+    pub fn flags(&self) -> u32 {
         self.env
             .host()
             .with_mut_storage(|storage| {
@@ -448,19 +448,16 @@ impl StellarAssetIssuer {
                 }
             })
             .unwrap()
-            .try_into()
-            .ok()
-            .unwrap()
     }
 
     /// Adds the flag specified to the existing issuer flags
     pub fn set_flag(&self, flag: IssuerAccountFlags) {
-        self.overwrite_issuer_flags(self.flags() | (flag as i32))
+        self.overwrite_issuer_flags(self.flags() | (flag as u32))
     }
 
     /// Clears the flag specified from the existing issuer flags
     pub fn clear_flag(&self, flag: IssuerAccountFlags) {
-        self.overwrite_issuer_flags(self.flags() & (!(flag as i32)))
+        self.overwrite_issuer_flags(self.flags() & (!(flag as u32)))
     }
 
     pub fn address(&self) -> crate::Address {
@@ -473,8 +470,8 @@ impl StellarAssetIssuer {
     /// Each flag is a bit with values corresponding to [xdr::AccountFlags]
     ///
     /// Use this to test interactions between trustlines/balances and the issuer flags.
-    fn overwrite_issuer_flags(&self, flags: i32) {
-        if u64::try_from(flags).ok().unwrap() > xdr::MASK_ACCOUNT_FLAGS_V17 || flags < 0 {
+    fn overwrite_issuer_flags(&self, flags: u32) {
+        if u64::from(flags) > xdr::MASK_ACCOUNT_FLAGS_V17 {
             panic!(
                 "issuer flags value must be at most {}",
                 xdr::MASK_ACCOUNT_FLAGS_V17
@@ -497,9 +494,7 @@ impl StellarAssetIssuer {
                     .clone();
 
                 match entry.data {
-                    xdr::LedgerEntryData::Account(ref mut e) => {
-                        e.flags = u32::try_from(flags).ok().unwrap()
-                    }
+                    xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
                     _ => panic!("expected account entry but got {:?}", entry.data),
                 }
 
