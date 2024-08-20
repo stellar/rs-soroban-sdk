@@ -456,12 +456,12 @@ impl StellarAssetIssuer {
     }
 
     /// Adds the flag specified to the existing issuer flags
-    pub fn set_flag(&self, flag: IssuerAccountFlags) {
+    pub fn set_flag(&self, flag: IssuerFlags) {
         self.overwrite_issuer_flags(self.flags() | (flag as u32))
     }
 
     /// Clears the flag specified from the existing issuer flags
-    pub fn clear_flag(&self, flag: IssuerAccountFlags) {
+    pub fn clear_flag(&self, flag: IssuerFlags) {
         self.overwrite_issuer_flags(self.flags() & (!(flag as u32)))
     }
 

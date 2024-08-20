@@ -5,7 +5,7 @@ use crate::{
 
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    testutils::{Address as _, IssuerAccountFlags, MockAuth, MockAuthInvoke},
+    testutils::{Address as _, IssuerFlags, MockAuth, MockAuthInvoke},
     token::Client as TokenClient,
     Address, Env, IntoVal, Symbol,
 };
@@ -53,17 +53,14 @@ fn test_issuer_flags() {
     assert_eq!(sac.issuer().flags(), 0);
 
     let required_and_revocable =
-        (IssuerAccountFlags::RequiredFlag as u32) | (IssuerAccountFlags::RevocableFlag as u32);
-    sac.issuer().set_flag(IssuerAccountFlags::RequiredFlag);
-    sac.issuer().set_flag(IssuerAccountFlags::RevocableFlag);
+        (IssuerFlags::RequiredFlag as u32) | (IssuerFlags::RevocableFlag as u32);
+    sac.issuer().set_flag(IssuerFlags::RequiredFlag);
+    sac.issuer().set_flag(IssuerFlags::RevocableFlag);
 
     assert_eq!(sac.issuer().flags(), required_and_revocable);
 
-    sac.issuer().clear_flag(IssuerAccountFlags::RequiredFlag);
-    assert_eq!(
-        sac.issuer().flags(),
-        IssuerAccountFlags::RevocableFlag as u32
-    );
+    sac.issuer().clear_flag(IssuerFlags::RequiredFlag);
+    assert_eq!(sac.issuer().flags(), IssuerFlags::RevocableFlag as u32);
 }
 
 #[test]
