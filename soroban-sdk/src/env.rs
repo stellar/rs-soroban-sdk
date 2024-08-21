@@ -455,6 +455,7 @@ use crate::{
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
         EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+        StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN,
 };
@@ -687,12 +688,13 @@ impl Env {
 
     /// Register the built-in Stellar Asset Contract with provided admin address.
     ///
-    /// Returns the contract ID of the registered token contract.
+    /// Returns a utility struct that contains the contract ID of the registered
+    /// token contract, as well as methods to read and update issuer flags.
     ///
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
+    pub fn register_stellar_asset_contract_v2(&self, admin: Address) -> StellarAssetContract {
         let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
@@ -759,7 +761,22 @@ impl Env {
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
-        token_id
+
+        let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
+
+        StellarAssetContract::new(token_id, issuer)
+    }
+
+    /// Register the built-in Stellar Asset Contract with provided admin address.
+    ///
+    /// Returns the contract ID of the registered token contract.
+    ///
+    /// The contract will wrap a randomly-generated Stellar asset. This function
+    /// is useful for using in the tests when an arbitrary token contract
+    /// instance is needed.
+    #[deprecated(note = "use [Env::register_stellar_asset_contract_v2]")]
+    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
+        self.register_stellar_asset_contract_v2(admin).address()
     }
 
     fn register_contract_with_optional_contract_id_and_executable<'a>(
