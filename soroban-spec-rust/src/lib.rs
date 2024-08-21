@@ -103,7 +103,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
 /// Rust code.
 pub trait ToFormattedString {
     /// Converts the value to a String that is pretty formatted. If there is any
-    /// error parsin the token stream the raw String version of the code is
+    /// error parsing the token stream the raw String version of the code is
     /// returned instead.
     fn to_formatted_string(&self) -> Result<String, Error>;
 }
