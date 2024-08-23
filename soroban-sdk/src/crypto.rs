@@ -16,7 +16,7 @@ use crate::{
 /// cryptographic hash function as its first parameter.
 ///
 /// **__Note:_** A Hash should not be used with storage, since no guarantee can
-/// be made about the Bytes stored as to whether they were infact from a secure
+/// be made about the Bytes stored as to whether they were in fact from a secure
 /// cryptographic hash function.
 #[derive(Clone)]
 #[repr(transparent)]
