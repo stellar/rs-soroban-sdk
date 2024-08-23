@@ -1485,7 +1485,7 @@ dependencies = [
 
 [[package]]
 name = "test_modular"
-version = "21.5.1"
+version = "21.6.0"
 dependencies = [
  "soroban-sdk",
 ]
