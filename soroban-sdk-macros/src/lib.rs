@@ -66,7 +66,7 @@ fn default_crate_path() -> Path {
 
 #[derive(Debug, FromMeta)]
 struct ContractSpecArgs {
-    name: String,
+    name: Type,
     export: Option<bool>,
 }
 
@@ -87,10 +87,9 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let methods: Vec<_> = item.fns();
     let export = args.export.unwrap_or(true);
 
-    let ty = format_ident!("{}", args.name);
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = methods
         .iter()
-        .map(|m| derive_fn_spec(&ty, m.ident, m.attrs, m.inputs, m.output, export))
+        .map(|m| derive_fn_spec(&args.name, m.ident, m.attrs, m.inputs, m.output, export))
         .collect();
 
     match derived {

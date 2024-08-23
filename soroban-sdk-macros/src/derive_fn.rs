@@ -174,7 +174,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
         })
         .multiunzip();
 
-    let ty_str = quote!(#ty).to_string();
+    let ty_str = quote!(#ty).to_string().replace(' ', "").replace(':', "_");
     let trait_str = quote!(#trait_ident).to_string();
     let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
     let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
