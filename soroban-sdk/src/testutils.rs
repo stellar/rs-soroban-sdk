@@ -200,10 +200,10 @@ impl Generators {
 }
 
 #[doc(hidden)]
-pub type F = dyn Send + Sync + Fn(Env, &[Val]) -> Val;
+pub type ContractFunctionF = dyn Send + Sync + Fn(Env, &[Val]) -> Val;
 #[doc(hidden)]
 pub trait ContractFunctionRegister {
-    fn register(name: &'static str, func: &'static F);
+    fn register(name: &'static str, func: &'static ContractFunctionF);
 }
 #[doc(hidden)]
 pub trait ContractFunctionSet {

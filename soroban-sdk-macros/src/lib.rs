@@ -150,20 +150,22 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 use std::sync::Mutex;
                 use std::collections::BTreeMap;
 
-                static FUNCS: Mutex<BTreeMap<&'static str, &'static #crate_path::testutils::F>> = Mutex::new(BTreeMap::new());
+                pub(crate) type F = #crate_path::testutils::ContractFunctionF;
 
-                pub(crate) fn register(name: &'static str, func: &'static #crate_path::testutils::F) {
+                static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
+
+                pub(crate) fn register(name: &'static str, func: &'static F) {
                     FUNCS.lock().unwrap().insert(name, func);
                 }
 
                 pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
-                    let fopt: Option<&'static #crate_path::testutils::F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
+                    let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
                     fopt.map(|f| f(env, args))
                 }
             }
 
             impl #crate_path::testutils::ContractFunctionRegister for #ty {
-                fn register(name: &'static str, func: &'static #crate_path::testutils::F) {
+                fn register(name: &'static str, func: &'static #fn_set_registry_ident::F) {
                     #fn_set_registry_ident::register(name, func);
                 }
             }
