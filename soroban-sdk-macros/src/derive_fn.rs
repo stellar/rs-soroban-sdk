@@ -176,7 +176,6 @@ pub fn derive_contract_function_registration_ctor<'a>(
 
     let ty_str = quote!(#ty).to_string();
     let trait_str = quote!(#trait_ident).to_string();
-    let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
     let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
     let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
 
@@ -185,7 +184,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
         #[#crate_path::reexports_for_macros::ctor::ctor]
         fn #ctor_ident() {
             #(
-                #fn_set_registry_ident::register(
+                <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
                     #idents,
                     #[allow(deprecated)]
                     &#wrap_idents::invoke_raw_slice,
