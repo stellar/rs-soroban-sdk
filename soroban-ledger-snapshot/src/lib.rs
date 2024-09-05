@@ -168,7 +168,7 @@ impl LedgerSnapshot {
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            protocol_version: 20,
+            protocol_version: 22,
             sequence_number: Default::default(),
             timestamp: Default::default(),
             network_id: Default::default(),

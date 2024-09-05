@@ -11,15 +11,18 @@
 //!
 //! ### Examples
 //!
+//! #### Deploy a contract without constructor (or 0-argument constructor)
+//!
 //! ```
 //! # use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
 //! #
+//! # const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
 //! # #[contract]
 //! # pub struct Contract;
 //! #
 //! # #[contractimpl]
 //! # impl Contract {
-//! #     pub fn f(env: Env, wasm_hash: BytesN<32>) {
+//! #     pub fn deploy(env: Env, wasm_hash: BytesN<32>) {
 //! #         let salt = [0u8; 32];
 //! #         let deployer = env.deployer().with_current_contract(salt);
 //! #         // Deployed contract address is deterministic and can be accessed
@@ -33,17 +36,53 @@
 //! # fn main() {
 //! #     let env = Env::default();
 //! #     let contract_address = env.register_contract(None, Contract);
-//! #     // Install the contract code before deploying its instance.
-//! #     let mock_wasm = [0u8; 0];
-//! #     let wasm_hash = env.deployer().upload_contract_wasm(mock_wasm.as_slice());
-//! #     ContractClient::new(&env, &contract_address).f(&wasm_hash);
+//! #     let contract = ContractClient::new(&env, &contract_address);
+//! #     // Upload the contract code before deploying its instance.
+//! #     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM);
+//! #     contract.deploy(&wasm_hash);
+//! # }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
+//! ```
+//!
+//! //! #### Deploy a contract with a multi-argument constructor
+//!
+//! ```
+//! # use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+//! #
+//! # const DEPLOYED_WASM_WITH_CTOR: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
+//! # #[contract]
+//! # pub struct Contract;
+//! #
+//! # #[contractimpl]
+//! # impl Contract {
+//! #     pub fn deploy_with_constructor(env: Env, wasm_hash: BytesN<32>) {
+//! #         let salt = [1u8; 32];
+//! #         let deployer = env.deployer().with_current_contract(salt);
+//! #         // Deployed contract address is deterministic and can be accessed
+//! #         // before deploying the contract.
+//! #         let _ = deployer.deployed_address();
+//! #         let contract_address = deployer.deploy_with_constructor(
+//! #              wasm_hash, (1_u32, 2_i64).into_val(&env));
+//! #     }
+//! # }
+//! #
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//! #     let env = Env::default();
+//! #     let contract_address = env.register_contract(None, Contract);
+//! #     let contract = ContractClient::new(&env, &contract_address);
+//! #     // Upload the contract code before deploying its instance.
+//! #     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM_WITH_CTOR);
+//! #     contract.deploy_with_constructor(&wasm_hash);
 //! # }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
 
 use crate::{
-    env::internal::Env as _, unwrap::UnwrapInfallible, Address, Bytes, BytesN, Env, IntoVal,
+    env::internal::Env as _, unwrap::UnwrapInfallible, Address, Bytes, BytesN, Env, IntoVal, Val,
+    Vec,
 };
 
 /// Deployer provides access to deploying contracts.
@@ -225,6 +264,31 @@ impl DeployerWithAddress {
                 self.address.to_object(),
                 wasm_hash.into_val(env).to_object(),
                 self.salt.to_object(),
+            )
+            .unwrap_infallible();
+        unsafe { Address::unchecked_new(env.clone(), address_obj) }
+    }
+
+    /// Deploy a contract that uses Wasm executable with provided hash.
+    ///
+    /// `constructor_args` will be passed to the contract's constructor.
+    ///
+    /// The address of the deployed contract is defined by the deployer address
+    /// and provided salt.
+    ///
+    /// Returns the deployed contract's address.
+    pub fn deploy_with_constructor(
+        &self,
+        wasm_hash: impl IntoVal<Env, BytesN<32>>,
+        constructor_args: Vec<Val>,
+    ) -> Address {
+        let env = &self.env;
+        let address_obj = env
+            .create_contract_with_constructor(
+                self.address.to_object(),
+                wasm_hash.into_val(env).to_object(),
+                self.salt.to_object(),
+                constructor_args.to_object(),
             )
             .unwrap_infallible();
         unsafe { Address::unchecked_new(env.clone(), address_obj) }

@@ -10,6 +10,13 @@ mod addcontract {
     );
 }
 
+mod addcontract_u128 {
+    use crate as soroban_sdk;
+    soroban_sdk::contractimport!(
+        file = "../target/wasm32-unknown-unknown/release/test_add_u128.wasm"
+    );
+}
+
 mod subcontract {
     use crate as soroban_sdk;
     #[soroban_sdk::contract]
@@ -69,10 +76,7 @@ fn test_register_at_id() {
 #[test]
 fn test_reregister_wasm() {
     let e = Env::default();
-
-    // Register a contract with code that will fail, to ensure this code isn't
-    // the code that gets activated when invoked.
-    let add_contract_id = e.register_contract_wasm(None, []);
+    let add_contract_id = e.register_contract_wasm(None, addcontract_u128::WASM);
     // Reregister the contract with different code replacing the code. This is
     // the contract we expect to be executed.
     e.register_contract_wasm(&add_contract_id, addcontract::WASM);
