@@ -1421,6 +1421,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_auth_approve"
+version = "21.6.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_auth_decline"
+version = "21.6.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_contract_data"
 version = "21.6.0"
 dependencies = [
