@@ -902,7 +902,7 @@ where
     type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.to_owned().into_iter()
+        self.clone().into_iter()
     }
 }
 
