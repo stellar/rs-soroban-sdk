@@ -156,7 +156,7 @@ pub fn derive_pub_fn(
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub extern fn invoke_raw_extern(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+            pub extern "C" fn invoke_raw_extern(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
                 #[allow(deprecated)]
                 invoke_raw(env, #(#passthrough_calls),*)
             }
