@@ -894,6 +894,18 @@ where
     }
 }
 
+impl<T> IntoIterator for &Vec<T>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Item = T;
+    type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.clone().into_iter()
+    }
+}
+
 impl<T> Vec<T>
 where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
