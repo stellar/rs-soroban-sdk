@@ -1484,6 +1484,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_modular"
+version = "21.6.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_multiimpl"
 version = "21.6.0"
 dependencies = [
