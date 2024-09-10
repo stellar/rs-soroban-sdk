@@ -50,7 +50,7 @@ pub fn derive_pub_fn(
     });
 
     // Prepare the argument inputs.
-    let (wrap_args, wrap_calls): (Vec<_>, Vec<_>) = inputs
+    let (wrap_args, passthrough_calls, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
@@ -78,6 +78,7 @@ pub fn derive_pub_fn(
                     colon_token: Colon::default(),
                     ty: Box::new(Type::Verbatim(quote! { #crate_path::Val })),
                 });
+                let passthrough_call = quote! { #ident };
                 let call = quote! {
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
@@ -86,11 +87,11 @@ pub fn derive_pub_fn(
                         )
                     )
                 };
-                (arg, call)
+                (arg, passthrough_call, call)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                (a.clone(), quote! {})
+                (a.clone(), quote! {}, quote! {})
             }
         })
         .multiunzip();
@@ -132,8 +133,7 @@ pub fn derive_pub_fn(
             use super::*;
 
             #[deprecated(note = #deprecated_note)]
-            #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub extern fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+            pub fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
                 #use_trait;
                 <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
                     #[allow(deprecated)]
@@ -152,6 +152,13 @@ pub fn derive_pub_fn(
             ) -> #crate_path::Val {
                 #[allow(deprecated)]
                 invoke_raw(env, #(#slice_args),*)
+            }
+
+            #[deprecated(note = #deprecated_note)]
+            #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
+            pub extern fn invoke_raw_extern(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+                #[allow(deprecated)]
+                invoke_raw(env, #(#passthrough_calls),*)
             }
 
             use super::*;

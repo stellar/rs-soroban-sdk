@@ -48,10 +48,10 @@ features = ["curr"]
 # git = "https://github.com/stellar/rs-stellar-xdr"
 # rev = "d0138770652a615e3cd99447f2f2727658c17450"
 
-#[patch."https://github.com/stellar/rs-soroban-env"]
-#soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
-#soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+[patch.crates-io]
+soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
+soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
+soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
 #[patch."https://github.com/stellar/rs-stellar-xdr"]
 #stellar-xdr = { path = "../rs-stellar-xdr/" }
 
