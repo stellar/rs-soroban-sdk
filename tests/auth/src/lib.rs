@@ -403,14 +403,7 @@ mod test_b {
         let contract_b_id = e.register_contract(None, ContractB);
         let client = ContractBClient::new(&e, &contract_b_id);
 
-        mod asdf {
-            soroban_sdk::contractimport!(
-                file = "../../target/wasm32-unknown-unknown/release/test_auth.wasm"
-            );
-        }
-
-        // let a = e.register_contract_wasm(None, asdf::WASM);
-        let a = e.register_contract(None, auth_approve::Contract);
+        let a = e.register_contract(None, auth_decline::Contract);
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
