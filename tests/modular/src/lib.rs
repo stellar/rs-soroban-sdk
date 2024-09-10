@@ -3,13 +3,14 @@ use soroban_sdk::{contract, contractimpl};
 
 mod feat1;
 mod feat2;
+mod test;
 
 #[contract]
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn base() -> u32 {
+    pub fn zero() -> u32 {
         0
     }
 }
