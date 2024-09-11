@@ -1422,14 +1422,14 @@ dependencies = [
 
 [[package]]
 name = "test_auth_approve"
-version = "21.6.0"
+version = "21.7.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth_decline"
-version = "21.6.0"
+version = "21.7.0"
 dependencies = [
  "soroban-sdk",
 ]
