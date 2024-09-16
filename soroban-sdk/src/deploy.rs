@@ -14,70 +14,65 @@
 //! #### Deploy a contract without constructor (or 0-argument constructor)
 //!
 //! ```
-//! # use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
-//! #
-//! # const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
-//! # #[contract]
-//! # pub struct Contract;
-//! #
-//! # #[contractimpl]
-//! # impl Contract {
-//! #     pub fn deploy(env: Env, wasm_hash: BytesN<32>) {
-//! #         let salt = [0u8; 32];
-//! #         let deployer = env.deployer().with_current_contract(salt);
-//! #         // Deployed contract address is deterministic and can be accessed
-//! #         // before deploying the contract.
-//! #         let _ = deployer.deployed_address();
-//! #         let contract_address = deployer.deploy(wasm_hash);
-//! #     }
-//! # }
-//! #
-//! # #[cfg(feature = "testutils")]
-//! # fn main() {
-//! #     let env = Env::default();
-//! #     let contract_address = env.register_contract(None, Contract);
-//! #     let contract = ContractClient::new(&env, &contract_address);
-//! #     // Upload the contract code before deploying its instance.
-//! #     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM);
-//! #     contract.deploy(&wasm_hash);
-//! # }
-//! # #[cfg(not(feature = "testutils"))]
-//! # fn main() { }
+//! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
+//!
+//! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+//! #[contract]
+//! pub struct Contract;
+//! #[contractimpl]
+//! impl Contract {
+//!     pub fn deploy(env: Env, wasm_hash: BytesN<32>) {
+//!         let salt = [0u8; 32];
+//!         let deployer = env.deployer().with_current_contract(salt);
+//!         // Deployed contract address is deterministic and can be accessed
+//!         // before deploying the contract.
+//!         let _ = deployer.deployed_address();
+//!         let contract_address = deployer.deploy(wasm_hash);
+//!     }
+//! }
+//! #[cfg(feature = "testutils")]
+//! fn main() {
+//!     let env = Env::default();
+//!     let contract_address = env.register_contract(None, Contract);
+//!     let contract = ContractClient::new(&env, &contract_address);
+//!     // Upload the contract code before deploying its instance.
+//!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM);
+//!     contract.deploy(&wasm_hash);
+//! }
+//! #[cfg(not(feature = "testutils"))]
+//! fn main() { }
 //! ```
 //!
 //! //! #### Deploy a contract with a multi-argument constructor
 //!
 //! ```
-//! # use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
-//! #
-//! # const DEPLOYED_WASM_WITH_CTOR: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
-//! # #[contract]
-//! # pub struct Contract;
-//! #
-//! # #[contractimpl]
-//! # impl Contract {
-//! #     pub fn deploy_with_constructor(env: Env, wasm_hash: BytesN<32>) {
-//! #         let salt = [1u8; 32];
-//! #         let deployer = env.deployer().with_current_contract(salt);
-//! #         // Deployed contract address is deterministic and can be accessed
-//! #         // before deploying the contract.
-//! #         let _ = deployer.deployed_address();
-//! #         let contract_address = deployer.deploy_with_constructor(
-//! #              wasm_hash, (1_u32, 2_i64).into_val(&env));
-//! #     }
-//! # }
-//! #
-//! # #[cfg(feature = "testutils")]
-//! # fn main() {
-//! #     let env = Env::default();
-//! #     let contract_address = env.register_contract(None, Contract);
-//! #     let contract = ContractClient::new(&env, &contract_address);
-//! #     // Upload the contract code before deploying its instance.
-//! #     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM_WITH_CTOR);
-//! #     contract.deploy_with_constructor(&wasm_hash);
-//! # }
-//! # #[cfg(not(feature = "testutils"))]
-//! # fn main() { }
+//! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+//! const DEPLOYED_WASM_WITH_CTOR: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
+//! #[contract]
+//! pub struct Contract;
+//! #[contractimpl]
+//! impl Contract {
+//!     pub fn deploy_with_constructor(env: Env, wasm_hash: BytesN<32>) {
+//!         let salt = [1u8; 32];
+//!         let deployer = env.deployer().with_current_contract(salt);
+//!         // Deployed contract address is deterministic and can be accessed
+//!         // before deploying the contract.
+//!         let _ = deployer.deployed_address();
+//!         let contract_address = deployer.deploy_with_constructor(
+//!              wasm_hash, (1_u32, 2_i64).into_val(&env));
+//!     }
+//! }
+//! #[cfg(feature = "testutils")]
+//! fn main() {
+//!     let env = Env::default();
+//!     let contract_address = env.register_contract(None, Contract);
+//!     let contract = ContractClient::new(&env, &contract_address);
+//!     // Upload the contract code before deploying its instance.
+//!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM_WITH_CTOR);
+//!     contract.deploy_with_constructor(&wasm_hash);
+//! }
+//! #[cfg(not(feature = "testutils"))]
+//! fn main() { }
 //! ```
 
 use crate::{

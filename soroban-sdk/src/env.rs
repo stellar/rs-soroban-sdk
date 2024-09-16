@@ -583,15 +583,15 @@ impl Env {
     /// contract ID that is assigned to the contract.
     ///
     /// If a contract has a constructor defined, then it will be called with
-    /// no arguments. In case if constructor has to take some arguments, use
+    /// no arguments. If a constructor takes arguments, use
     /// `register_contract_with_constructor`.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
-    /// (on-chain) environment. Specifically, new contract's constructor will be
-    /// called again during re-registration. That behavior only exists for this
-    /// test utility and is not reproducible on-chain, where contract Wasm
-    /// updates don't cause constructor to be called.
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
     ///
@@ -636,10 +636,10 @@ impl Env {
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
-    /// (on-chain) environment. Specifically, new contract's constructor will be
-    /// called again during re-registration. That behavior only exists for this
-    /// test utility and is not reproducible on-chain, where contract Wasm
-    /// updates don't cause constructor to be called.
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
     ///
@@ -717,10 +717,10 @@ impl Env {
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
-    /// (on-chain) environment. Specifically, new contract's constructor will be
-    /// called again during re-registration. That behavior only exists for this
-    /// test utility and is not reproducible on-chain, where contract Wasm
-    /// updates don't cause constructor to be called.
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
     ///
@@ -762,10 +762,10 @@ impl Env {
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
-    /// (on-chain) environment. Specifically, new contract's constructor will be
-    /// called again during re-registration. That behavior only exists for this
-    /// test utility and is not reproducible on-chain, where contract Wasm
-    /// updates don't cause constructor to be called.
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
     ///
