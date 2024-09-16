@@ -30,8 +30,11 @@
 //!         let contract_address = deployer.deploy(wasm_hash);
 //!     }
 //! }
-//! #[cfg(feature = "testutils")]
-//! fn main() {
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
 //!     let env = Env::default();
 //!     let contract_address = env.register_contract(None, Contract);
 //!     let contract = ContractClient::new(&env, &contract_address);
@@ -39,8 +42,8 @@
 //!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM);
 //!     contract.deploy(&wasm_hash);
 //! }
-//! #[cfg(not(feature = "testutils"))]
-//! fn main() { }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
 //! ```
 //!
 //! //! #### Deploy a contract with a multi-argument constructor
@@ -62,8 +65,11 @@
 //!              wasm_hash, (1_u32, 2_i64).into_val(&env));
 //!     }
 //! }
-//! #[cfg(feature = "testutils")]
-//! fn main() {
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
 //!     let env = Env::default();
 //!     let contract_address = env.register_contract(None, Contract);
 //!     let contract = ContractClient::new(&env, &contract_address);
@@ -71,8 +77,8 @@
 //!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM_WITH_CTOR);
 //!     contract.deploy_with_constructor(&wasm_hash);
 //! }
-//! #[cfg(not(feature = "testutils"))]
-//! fn main() { }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
 //! ```
 
 use crate::{
