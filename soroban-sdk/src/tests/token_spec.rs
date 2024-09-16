@@ -2,10 +2,8 @@ use crate as soroban_sdk;
 
 use soroban_sdk::{
     token::{StellarAssetSpec, SPEC_XDR_INPUT, SPEC_XDR_LEN},
-    xdr::{Error, ReadXdr, ScSpecEntry},
+    xdr::{Error, Limited, Limits, ReadXdr, ScSpecEntry},
 };
-use stellar_xdr::curr as stellar_xdr;
-use stellar_xdr::{Limited, Limits};
 
 extern crate std;
 

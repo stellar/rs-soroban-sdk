@@ -10,8 +10,12 @@ use crate::{contracttype, crypto::Hash, Address, BytesN, Env, Error, Symbol, Val
 #[derive(Clone)]
 #[contracttype(crate_path = "crate", export = false)]
 pub enum Context {
+    /// Contract invocation.
     Contract(ContractContext),
+    /// Contract that has a constructor with no arguments is created.
     CreateContractHostFn(CreateContractHostFnContext),
+    /// Contract that has a constructor with 1 or more arguments is created.
+    CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
 
 /// Authorization context of a single contract call.
@@ -35,6 +39,18 @@ pub struct CreateContractHostFnContext {
     pub salt: BytesN<32>,
 }
 
+/// Authorization context for `create_contract` host function that creates a
+/// new contract on behalf of authorizer address.
+/// This is the same as `CreateContractHostFnContext`, but also has
+/// contract constructor arguments.
+#[derive(Clone)]
+#[contracttype(crate_path = "crate", export = false)]
+pub struct CreateContractWithConstructorHostFnContext {
+    pub executable: ContractExecutable,
+    pub salt: BytesN<32>,
+    pub constructor_args: Vec<Val>,
+}
+
 /// Contract executable used for creating a new contract and used in
 /// `CreateContractHostFnContext`.
 #[derive(Clone)]
@@ -53,8 +69,12 @@ pub enum ContractExecutable {
 #[derive(Clone)]
 #[contracttype(crate_path = "crate", export = false)]
 pub enum InvokerContractAuthEntry {
+    /// Invoke a contract.
     Contract(SubContractInvocation),
+    /// Create a contract passing 0 arguments to constructor.
     CreateContractHostFn(CreateContractHostFnContext),
+    /// Create a contract passing 0 or more arguments to constructor.
+    CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
 
 /// Value of contract node in InvokerContractAuthEntry tree.
