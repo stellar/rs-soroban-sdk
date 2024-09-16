@@ -146,7 +146,7 @@ pub fn derive_pub_fn(
                 )
             }
 
-            #[cfg(feature = "testutils")]
+            #[cfg(any(test, feature = "testutils"))]
             #[deprecated(note = #deprecated_note)]
             pub fn invoke_raw_slice(
                 env: #crate_path::Env,
