@@ -113,6 +113,7 @@ pub fn derive_pub_fn(
         quote! {}
     };
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
+    let arg_count = slice_args.len();
     let use_trait = if let Some(t) = trait_ident {
         quote! { use super::#t }
     } else {
@@ -145,11 +146,15 @@ pub fn derive_pub_fn(
                 )
             }
 
+            #[cfg(any(test, feature = "testutils"))]
             #[deprecated(note = #deprecated_note)]
             pub fn invoke_raw_slice(
                 env: #crate_path::Env,
                 args: &[#crate_path::Val],
             ) -> #crate_path::Val {
+                if args.len() != #arg_count {
+                    panic!("invalid number of input arguments: {} expected, got {}", #arg_count, args.len());
+                }
                 #[allow(deprecated)]
                 invoke_raw(env, #(#slice_args),*)
             }
