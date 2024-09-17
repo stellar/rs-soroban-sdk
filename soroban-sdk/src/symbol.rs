@@ -136,23 +136,26 @@ impl TryFromVal<Env, &str> for Symbol {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Symbol> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Symbol) -> Result<Self, ConversionError> {
+impl From<&Symbol> for ScVal {
+    fn from(v: &Symbol) -> Self {
+        // This conversion occurs only in test utilities, and theroetically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
         if let Ok(ss) = SymbolSmall::try_from(v.val) {
-            Ok(ScVal::try_from(ss)?)
+            ScVal::try_from(ss).unwrap()
         } else {
-            let e: Env = v.env.clone().try_into()?;
-            Ok(ScVal::try_from_val(&e, &v.to_val())?)
+            let e: Env = v.env.clone().try_into().unwrap();
+            ScVal::try_from_val(&e, &v.to_val()).unwrap()
         }
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Symbol> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Symbol) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl From<Symbol> for ScVal {
+    fn from(v: Symbol) -> Self {
+        (&v).into()
     }
 }
 
@@ -160,7 +163,7 @@ impl TryFrom<Symbol> for ScVal {
 impl TryFromVal<Env, Symbol> for ScVal {
     type Error = ConversionError;
     fn try_from_val(_e: &Env, v: &Symbol) -> Result<Self, ConversionError> {
-        v.try_into()
+        Ok(v.into())
     }
 }
 
