@@ -261,10 +261,9 @@ impl<T> From<Vec<T>> for VecM<ScVal> {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<Vec<T>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<T> From<Vec<T>> for ScVal {
+    fn from(v: Vec<T>) -> Self {
+        (&v).into()
     }
 }
 

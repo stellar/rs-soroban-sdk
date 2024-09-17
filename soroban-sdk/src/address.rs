@@ -5,10 +5,10 @@ use super::{
     ConversionError, Env, String, TryFromVal, TryIntoVal, Val,
 };
 
+#[cfg(not(target_family = "wasm"))]
+use crate::env::internal::xdr::ScVal;
 #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
 use crate::env::xdr::ScAddress;
-#[cfg(not(target_family = "wasm"))]
-use crate::{env::internal::xdr::ScVal, FromVal};
 use crate::{unwrap::UnwrapInfallible, Bytes, Vec};
 
 /// Address is a universal opaque identifier to use in contracts.
