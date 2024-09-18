@@ -61,24 +61,19 @@ fn test_passing_no_constructor_arguments_causes_panic() {
 #[should_panic(expected = "constructor invocation has failed with error")]
 fn test_missing_constructor_arguments_causes_panic() {
     let env = Env::default();
-    let _ = env.register_contract_with_constructor(None, Contract, (100_u32,).into_val(&env));
+    let _ = env.register_contract_with_constructor(None, Contract, (100_u32,));
 }
 
 #[test]
 #[should_panic(expected = "constructor invocation has failed with error")]
 fn test_passing_extra_constructor_arguments_causes_panic() {
     let env = Env::default();
-    let _ = env.register_contract_with_constructor(
-        None,
-        Contract,
-        (100_u32, 1000_i64, 123_u32).into_val(&env),
-    );
+    let _ = env.register_contract_with_constructor(None, Contract, (100_u32, 1000_i64, 123_u32));
 }
 
 #[test]
 #[should_panic(expected = "constructor invocation has failed with error")]
 fn test_passing_incorrectly_typed_constructor_arguments_causes_panic() {
     let env = Env::default();
-    let _ =
-        env.register_contract_with_constructor(None, Contract, (100_u32, 1000_u32).into_val(&env));
+    let _ = env.register_contract_with_constructor(None, Contract, (100_u32, 1000_u32));
 }
