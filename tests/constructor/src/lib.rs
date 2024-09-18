@@ -1,6 +1,4 @@
 #![no_std]
-#[cfg(test)]
-use soroban_sdk::IntoVal;
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 
 #[contract]
@@ -39,8 +37,7 @@ impl Contract {
 #[test]
 fn test_constructor() {
     let env = Env::default();
-    let contract_id =
-        env.register_contract_with_constructor(None, Contract, (100_u32, 1000_i64).into_val(&env));
+    let contract_id = env.register_contract_with_constructor(None, Contract, (100_u32, 1000_i64));
     let client = ContractClient::new(&env, &contract_id);
     assert_eq!(client.get_data(&DataKey::Persistent(100)), Some(1000));
     assert_eq!(client.get_data(&DataKey::Temp(200)), Some(2000));
@@ -62,24 +59,19 @@ fn test_passing_no_constructor_arguments_causes_panic() {
 #[should_panic(expected = "constructor invocation has failed with error")]
 fn test_missing_constructor_arguments_causes_panic() {
     let env = Env::default();
-    let _ = env.register_contract_with_constructor(None, Contract, (100_u32,).into_val(&env));
+    let _ = env.register_contract_with_constructor(None, Contract, (100_u32,));
 }
 
 #[test]
 #[should_panic(expected = "constructor invocation has failed with error")]
 fn test_passing_extra_constructor_arguments_causes_panic() {
     let env = Env::default();
-    let _ = env.register_contract_with_constructor(
-        None,
-        Contract,
-        (100_u32, 1000_i64, 123_u32).into_val(&env),
-    );
+    let _ = env.register_contract_with_constructor(None, Contract, (100_u32, 1000_i64, 123_u32));
 }
 
 #[test]
 #[should_panic(expected = "constructor invocation has failed with error")]
 fn test_passing_incorrectly_typed_constructor_arguments_causes_panic() {
     let env = Env::default();
-    let _ =
-        env.register_contract_with_constructor(None, Contract, (100_u32, 1000_u32).into_val(&env));
+    let _ = env.register_contract_with_constructor(None, Contract, (100_u32, 1000_u32));
 }
