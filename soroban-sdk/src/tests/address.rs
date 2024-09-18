@@ -1,6 +1,19 @@
 use crate::{Address, Bytes, Env, String, TryIntoVal};
 
 #[test]
+fn test_account_address_str_conversions() {
+    let env = Env::default();
+
+    let strkey = "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ";
+
+    let address = Address::from_str(&env, &strkey);
+    assert_eq!(
+        address.to_string().to_string(),
+        "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ"
+    );
+}
+
+#[test]
 fn test_account_address_conversions() {
     let env = Env::default();
 
