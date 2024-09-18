@@ -14,7 +14,7 @@ rust-version.workspace = true
 proc-macro = true
 doctest = false
 
-[build_dependencies]
+[build-dependencies]
 rustc_version = "0.4.0"
 crate-git-revision = "0.0.6"
 

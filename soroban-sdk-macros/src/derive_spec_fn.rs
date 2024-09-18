@@ -15,7 +15,7 @@ use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn_spec(
-    ty: &Ident,
+    ty: &Type,
     ident: &Ident,
     attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,

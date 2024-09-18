@@ -11,6 +11,7 @@ mod contract_docs;
 mod contract_duration;
 mod contract_fn;
 mod contract_invoke;
+mod contract_invoke_arg_count;
 mod contract_overlapping_type_fn_names;
 mod contract_snapshot;
 mod contract_store;

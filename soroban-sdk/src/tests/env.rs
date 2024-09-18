@@ -2,6 +2,7 @@ use crate::{
     self as soroban_sdk, contract, contractimpl,
     env::EnvTestConfig,
     testutils::{Address as _, Logs as _},
+    xdr::{ScErrorCode, ScErrorType},
     Address, Env, Error,
 };
 
@@ -59,15 +60,15 @@ fn default_and_from_snapshot_same_settings() {
     assert_eq!(
         r1,
         Err(Ok(Error::from_type_and_code(
-            stellar_xdr::curr::ScErrorType::Context,
-            stellar_xdr::curr::ScErrorCode::InvalidAction
+            ScErrorType::Context,
+            ScErrorCode::InvalidAction
         )))
     );
     assert_eq!(
         r2,
         Err(Ok(Error::from_type_and_code(
-            stellar_xdr::curr::ScErrorType::Context,
-            stellar_xdr::curr::ScErrorCode::InvalidAction
+            ScErrorType::Context,
+            ScErrorCode::InvalidAction
         )))
     );
 
@@ -115,8 +116,8 @@ fn test_snapshot_file() {
         .join("test_snapshot_file");
     let p1 = p.with_extension("1.json");
     let p2 = p.with_extension("2.json");
-    assert!(!p1.exists());
-    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
     {
         let e1 = Env::default();
         assert!(!p1.exists());
@@ -157,9 +158,9 @@ fn test_snapshot_file_disabled() {
         .join("env")
         .join("test_snapshot_file_disabled");
     let p1 = p.with_extension("1.json");
-    assert!(!p1.exists());
     let p2 = p.with_extension("2.json");
-    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
     {
         let e1 = Env::default();
         let _ = e1.register_contract(None, Contract);
@@ -173,5 +174,32 @@ fn test_snapshot_file_disabled() {
     assert!(p1.exists());
     assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
+}
+
+/// Test that the test snapshot file is not written when disabled after
+/// creation.
+#[test]
+fn test_snapshot_file_disabled_after_creation() {
+    let p = std::path::Path::new("test_snapshots")
+        .join("tests")
+        .join("env")
+        .join("test_snapshot_file_disabled_after_creation");
+    let p1 = p.with_extension("1.json");
+    let p2 = p.with_extension("2.json");
+    let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
+    {
+        let e1 = Env::default();
+        let _ = e1.register_contract(None, Contract);
+        let mut e2 = Env::default();
+        e2.set_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
+        let _ = e2.register_contract(None, Contract);
+        assert!(!p1.exists());
+        assert!(!p2.exists());
+    }
+    assert!(p1.exists());
+    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
 }

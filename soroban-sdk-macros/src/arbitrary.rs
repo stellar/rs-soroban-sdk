@@ -312,15 +312,11 @@ fn quote_arbitrary(
     arbitrary_type_decl: TokenStream2,
     arbitrary_ctor: TokenStream2,
 ) -> TokenStream2 {
-    if !cfg!(any(test, feature = "testutils")) {
-        return quote!();
-    }
     quote! {
         // This allows us to create a scope to import std and arbitrary, while
         // also keeping everything from the current scope. This is better than a
         // module because: modules inside functions have surprisingly
         // inconsistent scoping rules and visibility management is harder.
-        #[cfg(any(test, feature = "testutils"))]
         const _: () = {
             // derive(Arbitrary) expects these two to be in scope
             use #path::testutils::arbitrary::std;

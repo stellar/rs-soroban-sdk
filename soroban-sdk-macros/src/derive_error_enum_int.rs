@@ -92,6 +92,7 @@ pub fn derive_type_error_enum_int(
     // Output.
     quote! {
         #spec_gen
+        const _: () = { fn assert_copy(v: #enum_ident) -> impl Copy { v } };
 
         impl TryFrom<#path::Error> for #enum_ident {
             type Error = #path::Error;
