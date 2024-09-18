@@ -1,6 +1,4 @@
 #![no_std]
-#[cfg(test)]
-use soroban_sdk::IntoVal;
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 
 #[contract]

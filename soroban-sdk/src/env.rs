@@ -645,7 +645,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
     ///
     /// #[contract]
     /// pub struct Contract;
@@ -662,7 +662,7 @@ impl Env {
     /// # fn main() {
     ///     let env = Env::default();
     ///     let contract_id = env.register_contract_with_constructor(
-    ///         None, Contract, (123_u32,).into_val(&env));
+    ///         None, Contract, (123_u32,));
     /// }
     /// ```
     pub fn register_contract_with_constructor<
