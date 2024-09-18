@@ -231,6 +231,18 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases when addresses need to be shared between
     /// different environments (e.g. different chains).
+    pub fn from_str(env: &Env, strkey: &str) -> Address {
+        Address::from_string(&String::from_str(env, strkey))
+    }
+
+    /// Creates an `Address` corresponding to the provided Stellar strkey.
+    ///
+    /// The only supported strkey types are account keys (`G...`) and contract keys (`C...`). Any
+    /// other valid or invalid strkey will cause this to panic.
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases when addresses need to be shared between
+    /// different environments (e.g. different chains).
     pub fn from_string(strkey: &String) -> Self {
         let env = strkey.env();
         unsafe {
