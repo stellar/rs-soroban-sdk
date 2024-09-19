@@ -62,7 +62,7 @@ dependencies = [
  "ark-std",
  "derivative",
  "hashbrown 0.13.2",
- "itertools 0.10.5",
+ "itertools",
  "num-traits",
  "zeroize",
 ]
@@ -79,7 +79,7 @@ dependencies = [
  "ark-std",
  "derivative",
  "digest",
- "itertools 0.10.5",
+ "itertools",
  "num-bigint",
  "num-traits",
  "paste",
@@ -173,12 +173,6 @@ name = "base16ct"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c7f02d4ea65f2c1853089ffd8d2787bdbc63de2f0d29dedbcf8ccdfa0ccd4cf"
-
-[[package]]
-name = "base32"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23ce669cd6c8588f79e15cf450314f9638f967fc5770ff1c7c1deb0925ea7cfa"
 
 [[package]]
 name = "base64"
@@ -746,15 +740,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "itertools"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1c173a5686ce8bfa551b3563d0c2170bf24ca44da99c7ca4bfdab5418c3fe57"
-dependencies = [
- "either",
-]
-
-[[package]]
 name = "itoa"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1234,7 +1219,7 @@ name = "soroban-builtin-sdk-macros"
 version = "22.0.0"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=0497816694bef2b103494c8c61b7c8a06a72c7d3#0497816694bef2b103494c8c61b7c8a06a72c7d3"
 dependencies = [
- "itertools 0.10.5",
+ "itertools",
  "proc-macro2",
  "quote",
  "syn 2.0.77",
@@ -1298,7 +1283,7 @@ dependencies = [
  "soroban-env-common",
  "soroban-wasmi",
  "static_assertions",
- "stellar-strkey 0.0.9",
+ "stellar-strkey",
  "wasmparser",
 ]
 
@@ -1307,7 +1292,7 @@ name = "soroban-env-macros"
 version = "22.0.0"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=0497816694bef2b103494c8c61b7c8a06a72c7d3#0497816694bef2b103494c8c61b7c8a06a72c7d3"
 dependencies = [
- "itertools 0.10.5",
+ "itertools",
  "proc-macro2",
  "quote",
  "serde",
@@ -1349,7 +1334,7 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
- "stellar-strkey 0.0.8",
+ "stellar-strkey",
  "stellar-xdr",
 ]
 
@@ -1359,7 +1344,7 @@ version = "22.0.0-rc.1"
 dependencies = [
  "crate-git-revision",
  "darling",
- "itertools 0.11.0",
+ "itertools",
  "proc-macro2",
  "quote",
  "rustc_version",
@@ -1444,17 +1429,6 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-strkey"
-version = "0.0.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12d2bf45e114117ea91d820a846fd1afbe3ba7d717988fee094ce8227a3bf8bd"
-dependencies = [
- "base32",
- "crate-git-revision",
- "thiserror",
-]
-
-[[package]]
-name = "stellar-strkey"
 version = "0.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e3aa3ed00e70082cb43febc1c2afa5056b9bb3e348bbb43d0cd0aa88a611144"
@@ -1476,7 +1450,7 @@ dependencies = [
  "hex",
  "serde",
  "serde_with",
- "stellar-strkey 0.0.9",
+ "stellar-strkey",
 ]
 
 [[package]]

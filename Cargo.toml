@@ -39,7 +39,7 @@ git = "https://github.com/stellar/rs-soroban-env"
 rev = "0497816694bef2b103494c8c61b7c8a06a72c7d3"
 
 [workspace.dependencies.stellar-strkey]
-version = "=0.0.8"
+version = "=0.0.9"
 
 [workspace.dependencies.stellar-xdr]
 version = "=22.0.0"
