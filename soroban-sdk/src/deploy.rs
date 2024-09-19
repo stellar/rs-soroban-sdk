@@ -36,7 +36,7 @@
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //!     let env = Env::default();
-//!     let contract_address = env.register_contract(None, Contract);
+//!     let contract_address = env.register(Contract, ());
 //!     let contract = ContractClient::new(&env, &contract_address);
 //!     // Upload the contract code before deploying its instance.
 //!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM);
@@ -71,7 +71,7 @@
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //!     let env = Env::default();
-//!     let contract_address = env.register_contract(None, Contract);
+//!     let contract_address = env.register(Contract, ());
 //!     let contract = ContractClient::new(&env, &contract_address);
 //!     // Upload the contract code before deploying its instance.
 //!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM_WITH_CTOR);

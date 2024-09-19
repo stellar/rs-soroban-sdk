@@ -471,75 +471,41 @@ use std::{path::Path, rc::Rc};
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
 #[cfg(any(test, feature = "testutils"))]
-pub enum Registrant<'a, C: ContractFunctionSet> {
-    Native(C),
-    Wasm(&'a [u8]),
+pub trait Register {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> Address
+    where
+        I: Into<Option<&'i Address>>,
+        A: ConstructorArgs;
 }
 
 #[cfg(any(test, feature = "testutils"))]
-impl<'a, C: ContractFunctionSet> From<C> for Registrant<'a, C> {
-    fn from(value: C) -> Self {
-        Registrant::Native(value)
+impl<C> Register for C
+where
+    C: ContractFunctionSet + 'static,
+{
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> Address
+    where
+        I: Into<Option<&'i Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_with_constructor(id, self, args)
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
-struct NoContractFunctionSet;
-
-#[cfg(any(test, feature = "testutils"))]
-impl ContractFunctionSet for NoContractFunctionSet {
-    fn call(&self, _: &str, _: Env, _: &[Val]) -> Option<Val> {
-        unreachable!()
-    }
-}
-
-#[cfg(any(test, feature = "testutils"))]
-impl<'a> From<&'a [u8]> for Registrant<'a, NoContractFunctionSet> {
-    fn from(value: &'a [u8]) -> Self {
-        Registrant::Wasm(value)
+impl<'w> Register for &'w [u8] {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> Address
+    where
+        I: Into<Option<&'i Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_wasm_with_constructor(id, self, args)
     }
 }
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    pub fn register<'a, C, R, A>(&self, contract: R, constructor_args: A) -> Address
-    where
-        C: ContractFunctionSet + 'static,
-        R: Into<Registrant<'a, C>>,
-        A: ConstructorArgs,
-    {
-        match contract.into() {
-            Registrant::Native(contract) => {
-                self.register_contract_with_constructor(None, contract, constructor_args)
-            }
-            Registrant::Wasm(wasm) => {
-                self.register_contract_wasm_with_constructor(None, wasm, constructor_args)
-            }
-        }
-    }
-
-    pub fn register_at<'a, C, R, A>(
-        &self,
-        contract_id: &Address,
-        contract: R,
-        constructor_args: A,
-    ) -> Address
-    where
-        C: ContractFunctionSet + 'static,
-        R: Into<Registrant<'a, C>>,
-        A: ConstructorArgs,
-    {
-        match contract.into() {
-            Registrant::Native(contract) => {
-                self.register_contract_with_constructor(contract_id, contract, constructor_args)
-            }
-            Registrant::Wasm(wasm) => {
-                self.register_contract_wasm_with_constructor(contract_id, wasm, constructor_args)
-            }
-        }
-    }
-
     #[doc(hidden)]
     pub fn in_contract(&self) -> bool {
         self.env_impl.has_frame().unwrap()
@@ -645,13 +611,142 @@ impl Env {
 
     /// Register a contract with the [Env] for testing.
     ///
+    /// Pass the contract type when the contract is defined in the current crate
+    /// and is being registered natively. Pass the contract wasm bytes when the
+    /// contract has been loaded as wasm.
+    ///
+    /// Pass the arguments for the contract's constructor, or `()` if none.
+    ///
+    /// Returns the address of the registered contract that is the same as the
+    /// contract id passed in.
+    ///
+    /// If you need to specify the address the contract should be registered at,
+    /// use [`register_at`].
+    ///
+    /// ### Examples
+    /// Register a contract defined in the current crate, by specifying the type
+    /// name:
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, BytesN, Env, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn __constructor(_env: Env, _input: u32) {
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(Contract, (123_u32,));
+    /// }
+    /// ```
+    /// Register a contract wasm, by specifying the wasm bytes:
+    /// ```
+    /// use soroban_sdk::{testutils::Address as _, Address, BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(WASM, ());
+    /// }
+    /// ```
+    pub fn register<'a, C, A>(&self, contract: C, constructor_args: A) -> Address
+    where
+        C: Register,
+        A: ConstructorArgs,
+    {
+        contract.register(self, None, constructor_args)
+    }
+
+    /// Register a contract with the [Env] for testing.
+    ///
+    /// Passing a contract ID for the first arguments registers the contract
+    /// with that contract ID.
+    ///
+    /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
+    ///
+    /// Pass the contract type when the contract is defined in the current crate
+    /// and is being registered natively. Pass the contract wasm bytes when the
+    /// contract has been loaded as wasm.
+    ///
+    /// Returns the address of the registered contract that is the same as the
+    /// contract id passed in.
+    ///
+    /// ### Examples
+    /// Register a contract defined in the current crate, by specifying the type
+    /// name:
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, BytesN, Env, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn __constructor(_env: Env, _input: u32) {
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = Address::generate(&env);
+    ///     env.register_at(&contract_id, Contract, (123_u32,));
+    /// }
+    /// ```
+    /// Register a contract wasm, by specifying the wasm bytes:
+    /// ```
+    /// use soroban_sdk::{testutils::Address as _, Address, BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = Address::generate(&env);
+    ///     env.register_at(&contract_id, WASM, ());
+    /// }
+    /// ```
+    pub fn register_at<C, A>(
+        &self,
+        contract_id: &Address,
+        contract: C,
+        constructor_args: A,
+    ) -> Address
+    where
+        C: Register,
+        A: ConstructorArgs,
+    {
+        contract.register(self, contract_id, constructor_args)
+    }
+
+    /// Register a contract with the [Env] for testing.
+    ///
     /// Passing a contract ID for the first arguments registers the contract
     /// with that contract ID. Providing `None` causes the Env to generate a new
     /// contract ID that is assigned to the contract.
     ///
     /// If a contract has a constructor defined, then it will be called with
-    /// no arguments. If a constructor takes arguments, use
-    /// `register_contract_with_constructor`.
+    /// no arguments. If a constructor takes arguments, use `register`.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
@@ -684,6 +779,7 @@ impl Env {
     ///     let contract_id = env.register_contract(None, HelloContract);
     /// }
     /// ```
+    #[deprecated(note = "use `register`")]
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
@@ -709,30 +805,7 @@ impl Env {
     /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
-    ///
-    /// #[contract]
-    /// pub struct Contract;
-    ///
-    /// #[contractimpl]
-    /// impl Contract {
-    ///     pub fn __constructor(_env: Env, _input: u32) {
-    ///     }
-    /// }
-    ///
-    /// #[test]
-    /// fn test() {
-    /// # }
-    /// # fn main() {
-    ///     let env = Env::default();
-    ///     let contract_id = env.register_contract_with_constructor(
-    ///         None, Contract, (123_u32,));
-    /// }
-    /// ```
-    pub fn register_contract_with_constructor<
+    pub(crate) fn register_contract_with_constructor<
         'a,
         T: ContractFunctionSet + 'static,
         A: ConstructorArgs,
@@ -809,6 +882,7 @@ impl Env {
     ///     env.register_contract_wasm(None, WASM);
     /// }
     /// ```
+    #[deprecated(note = "use `register`")]
     pub fn register_contract_wasm<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
@@ -839,23 +913,7 @@ impl Env {
     /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
-    ///
-    /// ### Examples
-    /// ```
-    /// use soroban_sdk::{BytesN, Env, IntoVal};
-    /// // This is Wasm for `constructor` test contract from this repo.
-    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
-    ///
-    /// #[test]
-    /// fn test() {
-    /// # }
-    /// # fn main() {
-    ///     let env = Env::default();
-    ///     env.register_contract_wasm_with_constructor(
-    ///         None, WASM, (10_u32, 100_i64).into_val(&env));
-    /// }
-    /// ```
-    pub fn register_contract_wasm_with_constructor<'a>(
+    pub(crate) fn register_contract_wasm_with_constructor<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
         contract_wasm: impl IntoVal<Env, Bytes>,
@@ -1062,7 +1120,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///     let contract_id = env.register(HelloContract, ());
     ///
     ///     let client = HelloContractClient::new(&env, &contract_id);
     ///     let addr = Address::generate(&env);
@@ -1081,7 +1139,7 @@ impl Env {
     /// ```
     pub fn mock_auths(&self, auths: &[MockAuth]) {
         for a in auths {
-            self.register_contract(a.address, MockAuthContract);
+            self.register_at(a.address, MockAuthContract, ());
         }
         let auths = auths
             .iter()
@@ -1131,7 +1189,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///     let contract_id = env.register(HelloContract, ());
     ///
     ///     env.mock_all_auths();
     ///
@@ -1184,8 +1242,8 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_a = env.register_contract(None, ContractA);
-    ///     let contract_b = env.register_contract(None, ContractB);
+    ///     let contract_a = env.register(ContractA, ());
+    ///     let contract_b = env.register(ContractB, ());
     ///     // The regular `env.mock_all_auths()` would result in the call
     ///     // failure.
     ///     env.mock_all_auths_allowing_non_root_auth();
@@ -1245,7 +1303,7 @@ impl Env {
     /// # fn main() {
     ///     extern crate std;
     ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, Contract);
+    ///     let contract_id = env.register(Contract, ());
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     env.mock_all_auths();
     ///     let address = Address::generate(&env);
@@ -1349,7 +1407,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let e: Env = Default::default();
-    ///     let account_contract = NoopAccountContractClient::new(&e, &e.register_contract(None, NoopAccountContract));
+    ///     let account_contract = NoopAccountContractClient::new(&e, &e.register(NoopAccountContract, ()));
     ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
