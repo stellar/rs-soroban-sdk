@@ -471,8 +471,75 @@ use std::{path::Path, rc::Rc};
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
 #[cfg(any(test, feature = "testutils"))]
+pub enum Registrant<'a, C: ContractFunctionSet> {
+    Native(C),
+    Wasm(&'a [u8]),
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl<'a, C: ContractFunctionSet> From<C> for Registrant<'a, C> {
+    fn from(value: C) -> Self {
+        Registrant::Native(value)
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+struct NoContractFunctionSet;
+
+#[cfg(any(test, feature = "testutils"))]
+impl ContractFunctionSet for NoContractFunctionSet {
+    fn call(&self, _: &str, _: Env, _: &[Val]) -> Option<Val> {
+        unreachable!()
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl<'a> From<&'a [u8]> for Registrant<'a, NoContractFunctionSet> {
+    fn from(value: &'a [u8]) -> Self {
+        Registrant::Wasm(value)
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
+    pub fn register<'a, C, R, A>(&self, contract: R, constructor_args: A) -> Address
+    where
+        C: ContractFunctionSet + 'static,
+        R: Into<Registrant<'a, C>>,
+        A: ConstructorArgs,
+    {
+        match contract.into() {
+            Registrant::Native(contract) => {
+                self.register_contract_with_constructor(None, contract, constructor_args)
+            }
+            Registrant::Wasm(wasm) => {
+                self.register_contract_wasm_with_constructor(None, wasm, constructor_args)
+            }
+        }
+    }
+
+    pub fn register_at<'a, C, R, A>(
+        &self,
+        contract_id: &Address,
+        contract: R,
+        constructor_args: A,
+    ) -> Address
+    where
+        C: ContractFunctionSet + 'static,
+        R: Into<Registrant<'a, C>>,
+        A: ConstructorArgs,
+    {
+        match contract.into() {
+            Registrant::Native(contract) => {
+                self.register_contract_with_constructor(contract_id, contract, constructor_args)
+            }
+            Registrant::Wasm(wasm) => {
+                self.register_contract_wasm_with_constructor(contract_id, wasm, constructor_args)
+            }
+        }
+    }
+
     #[doc(hidden)]
     pub fn in_contract(&self) -> bool {
         self.env_impl.has_frame().unwrap()
@@ -792,13 +859,13 @@ impl Env {
         &self,
         contract_id: impl Into<Option<&'a Address>>,
         contract_wasm: impl IntoVal<Env, Bytes>,
-        constructor_args: Vec<Val>,
+        constructor_args: impl ConstructorArgs,
     ) -> Address {
         let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
             xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
-            constructor_args,
+            constructor_args.into_val(self),
         )
     }
 
