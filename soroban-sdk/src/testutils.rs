@@ -23,6 +23,36 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
 
+pub trait Register {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs;
+}
+
+impl<C> Register for C
+where
+    C: ContractFunctionSet + 'static,
+{
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_with_constructor(id, self, args)
+    }
+}
+
+impl<'w> Register for &'w [u8] {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_wasm_with_constructor(id, self, args)
+    }
+}
+
 pub trait ConstructorArgs: IntoVal<Env, Vec<Val>> {}
 
 impl<T> ConstructorArgs for Vec<T> {}

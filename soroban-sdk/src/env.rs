@@ -455,7 +455,7 @@ use crate::{
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ConstructorArgs,
         ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
-        Snapshot, StellarAssetContract, StellarAssetIssuer,
+        Register, Snapshot, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN,
 };
@@ -469,39 +469,6 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
-
-#[cfg(any(test, feature = "testutils"))]
-pub trait Register {
-    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> Address
-    where
-        I: Into<Option<&'i Address>>,
-        A: ConstructorArgs;
-}
-
-#[cfg(any(test, feature = "testutils"))]
-impl<C> Register for C
-where
-    C: ContractFunctionSet + 'static,
-{
-    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> Address
-    where
-        I: Into<Option<&'i Address>>,
-        A: ConstructorArgs,
-    {
-        env.register_contract_with_constructor(id, self, args)
-    }
-}
-
-#[cfg(any(test, feature = "testutils"))]
-impl<'w> Register for &'w [u8] {
-    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> Address
-    where
-        I: Into<Option<&'i Address>>,
-        A: ConstructorArgs,
-    {
-        env.register_contract_wasm_with_constructor(id, self, args)
-    }
-}
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
