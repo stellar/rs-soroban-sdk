@@ -194,6 +194,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
     quote! {
         #[doc(hidden)]
         #[#crate_path::reexports_for_macros::ctor::ctor]
+        #[allow(non_snake_case)]
         fn #ctor_ident() {
             #(
                 <#ty as #crate_path::testutils::ContractFunctionRegister>::register(

@@ -133,7 +133,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
 
     let client_ident = format!("{ty_str}Client");
-    let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
+    let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
     let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
     let mut output = quote! {
