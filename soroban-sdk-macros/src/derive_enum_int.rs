@@ -143,7 +143,9 @@ pub fn derive_type_enum_int(
                 type Error = #path::xdr::Error;
                 #[inline(always)]
                 fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
-                    Ok((*self as u32).into())
+                    Ok(match self {
+                        #(#try_intos,)*
+                    })
                 }
             }
 
@@ -151,7 +153,9 @@ pub fn derive_type_enum_int(
                 type Error = #path::xdr::Error;
                 #[inline(always)]
                 fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
-                    Ok((self as u32).into())
+                    Ok(match self {
+                        #(#try_intos,)*
+                    })
                 }
             }
 

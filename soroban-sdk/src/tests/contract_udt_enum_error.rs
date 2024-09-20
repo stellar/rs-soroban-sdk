@@ -1,8 +1,14 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::{contract, contracterror, contractimpl, Env};
+use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Env};
 
 #[contract]
 pub struct Contract;
+
+#[contracttype]
+pub enum Flag {
+    A = 0,
+    B = 1,
+}
 
 #[contracterror]
 pub enum Error {
@@ -11,11 +17,10 @@ pub enum Error {
 
 #[contractimpl]
 impl Contract {
-    pub fn f(flag: u32) -> Result<(), Error> {
-        if flag == 0 {
-            Ok(())
-        } else {
-            Err(Error::AnError)
+    pub fn f(flag: Flag) -> Result<(), Error> {
+        match flag {
+            Flag::A => Ok(()),
+            Flag::B => Err(Error::AnError),
         }
     }
 }
@@ -34,7 +39,7 @@ fn test_success() {
     let client = ContractClient::new(&env, &contract_id);
 
     // See comment above about why this assertion is a match.
-    let Ok(Ok(())) = client.try_f(&0) else {
+    let Ok(Ok(())) = client.try_f(&Flag::A) else {
         panic!("unexpected value returned");
     };
 }
@@ -46,7 +51,7 @@ fn test_error() {
     let client = ContractClient::new(&env, &contract_id);
 
     // See comment above about why this assertion is a match.
-    let Err(Ok(Error::AnError)) = client.try_f(&1) else {
+    let Err(Ok(Error::AnError)) = client.try_f(&Flag::B) else {
         panic!("unexpected value returned");
     };
 }
