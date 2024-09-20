@@ -20,6 +20,10 @@ fn test_bls_g1() {
     let res = bls12_381.g1_add(&zero, &one);
     assert_eq!(res, one);
 
+    // checked_add
+    let res = bls12_381.g1_checked_add(&zero, &one);
+    assert!(res.is_some_and(|v| v == one));
+
     // mul
     let res = bls12_381.g1_mul(&one, &U256::from_u32(&env, 0));
     assert_eq!(res, zero);
@@ -59,6 +63,10 @@ fn test_bls_g2() {
     // add
     let res = bls12_381.g2_add(&zero, &one);
     assert_eq!(res, one);
+
+    // checked_add
+    let res = bls12_381.g2_checked_add(&zero, &one);
+    assert!(res.is_some_and(|v| v == one));
 
     // mul
     let res = bls12_381.g2_mul(&one, &U256::from_u32(&env, 0));

@@ -3,7 +3,7 @@
 use crate::{
     env::internal::{self, BytesObject, U64Val},
     unwrap::{UnwrapInfallible, UnwrapOptimized},
-    Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val, Vec, U256,
+    Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
 use core::{cmp::Ordering, fmt::Debug};
 
@@ -456,22 +456,26 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        G1Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G1Affine::from_bytes(bin.into_val(env))
     }
 
-    /// Adds two points `p0` and `p1` in G1, ensuring that the result is in the correct subgroup.
-    pub fn g1_checked_add(&self, p0: &G1Affine, p1: &G1Affine) -> G1Affine {
+    /// Adds two points `p0` and `p1` in G1, ensuring that the result is in the
+    /// correct subgroup. Note the subgroup check is computationally expensive,
+    /// so if want to perform a series of additions i.e. `agg = p0 + p1 + .. + pn`,
+    /// it may make sense to only call g1_checked_add on the final addition,
+    /// while using `g1_add` (non-checked version) on the intermediate ones.
+    pub fn g1_checked_add(&self, p0: &G1Affine, p1: &G1Affine) -> Option<G1Affine> {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        let res = G1Affine::from_bytes(bin.try_into_val(env).unwrap_optimized());
+        let res = G1Affine::from_bytes(bin.into_val(env));
         let is_in_correct_subgroup: bool =
             internal::Env::bls12_381_check_g1_is_in_subgroup(env, res.to_object())
                 .unwrap_optimized()
                 .into();
         match is_in_correct_subgroup {
-            true => res,
-            false => panic!("result G1 point not in the correct subgroup"),
+            true => Some(res),
+            false => None,
         }
     }
 
@@ -480,22 +484,21 @@ impl Bls12_381 {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g1_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
-        G1Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G1Affine::from_bytes(bin.into_val(env))
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G1.
     pub fn g1_msm(&self, vp: Vec<G1Affine>, vs: Vec<U256>) -> G1Affine {
-        assert!(vp.len() == vs.len() && vp.len() != 0);
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_msm(env, vp.into(), vs.into()).unwrap_infallible();
-        G1Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G1Affine::from_bytes(bin.into_val(env))
     }
 
     /// Maps an element in the base field `Fp` to a point in G1.
     pub fn map_fp_to_g1(&self, fp: &Fp) -> G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_map_fp_to_g1(env, fp.to_object()).unwrap_infallible();
-        G1Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G1Affine::from_bytes(bin.into_val(env))
     }
 
     /// Hashes a message `msg` to a point in G1, using a domain separation tag `dst`.
@@ -503,7 +506,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_hash_to_g1(env, msg.into(), dst.to_object())
             .unwrap_infallible();
-        G1Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G1Affine::from_bytes(bin.into_val(env))
     }
 
     // g2
@@ -521,22 +524,26 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        G2Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G2Affine::from_bytes(bin.into_val(env))
     }
 
-    /// Adds two points `p0` and `p1` in G2, ensuring that the result is in the correct subgroup.
-    pub fn g2_checked_add(&self, p0: &G2Affine, p1: &G2Affine) -> G2Affine {
+    /// Adds two points `p0` and `p1` in G2, ensuring that the result is in the
+    /// correct subgroup. Note the subgroup check is computationally expensive,
+    /// so if want to perform a series of additions i.e. `agg = p0 + p1 + .. +pn`,     
+    /// it may make sense to only call g2_checked_add on the final addition,
+    /// while using `g2_add` (non-checked version) on the intermediate ones.
+    pub fn g2_checked_add(&self, p0: &G2Affine, p1: &G2Affine) -> Option<G2Affine> {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        let res = G2Affine::from_bytes(bin.try_into_val(env).unwrap_optimized());
+        let res = G2Affine::from_bytes(bin.into_val(env));
         let is_in_correct_subgroup: bool =
             internal::Env::bls12_381_check_g2_is_in_subgroup(env, res.to_object())
                 .unwrap_optimized()
                 .into();
         match is_in_correct_subgroup {
-            true => res,
-            false => panic!("result G2 point not in the correct subgroup"),
+            true => Some(res),
+            false => None,
         }
     }
 
@@ -545,22 +552,21 @@ impl Bls12_381 {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g2_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
-        G2Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G2Affine::from_bytes(bin.into_val(env))
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G2.
     pub fn g2_msm(&self, vp: Vec<G2Affine>, vs: Vec<U256>) -> G2Affine {
-        assert!(vp.len() == vs.len() && vp.len() != 0);
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_msm(env, vp.into(), vs.into()).unwrap_infallible();
-        G2Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G2Affine::from_bytes(bin.into_val(env))
     }
 
     /// Maps an element in the base field `Fp2` to a point in G2.
     pub fn map_fp2_to_g2(&self, fp2: &Fp2) -> G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_map_fp2_to_g2(env, fp2.to_object()).unwrap_infallible();
-        G2Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G2Affine::from_bytes(bin.into_val(env))
     }
 
     /// Hashes a message `msg` to a point in G2, using a domain separation tag `dst`.
@@ -568,7 +574,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_hash_to_g2(env, msg.into(), dst.to_object())
             .unwrap_infallible();
-        G2Affine::from_bytes(bin.try_into_val(env).unwrap_optimized())
+        G2Affine::from_bytes(bin.into_val(env))
     }
 
     // pairing
@@ -586,7 +592,6 @@ impl Bls12_381 {
     /// # Panics:
     /// - If the lengths of `vp1` and `vp2` are not equal or if they are empty.
     pub fn pairing_check(&self, vp1: Vec<G1Affine>, vp2: Vec<G2Affine>) -> bool {
-        assert!(vp1.len() == vp2.len() && vp1.len() != 0);
         let env = self.env();
         internal::Env::bls12_381_multi_pairing_check(env, vp1.into(), vp2.into())
             .unwrap_infallible()
