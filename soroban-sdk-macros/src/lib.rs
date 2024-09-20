@@ -244,15 +244,13 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #imp
                 #derived_ok
             };
-            if cfg!(feature = "testutils") {
-                let cfs = derive_contract_function_registration_ctor(
-                    crate_path,
-                    ty,
-                    trait_ident,
-                    pub_methods.into_iter(),
-                );
-                output.extend(quote! { #cfs });
-            }
+            let cfs = derive_contract_function_registration_ctor(
+                crate_path,
+                ty,
+                trait_ident,
+                pub_methods.into_iter(),
+            );
+            output.extend(quote! { #cfs });
             output.into()
         }
         Err(derived_err) => quote! {
