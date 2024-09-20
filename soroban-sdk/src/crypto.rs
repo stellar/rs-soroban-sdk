@@ -2,6 +2,7 @@
 
 use crate::{
     env::internal::{self, BytesObject, U64Val},
+    impl_bytesn_repr,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
@@ -176,6 +177,11 @@ impl Crypto {
         let env = self.env();
         CryptoHazmat::new(env).secp256r1_verify(public_key, &message_digest.0, signature)
     }
+
+    /// Get a [Bls12_381] for accessing the bls12-381 functions.
+    pub fn bls12_381(&self) -> Bls12_381 {
+        Bls12_381::new(self.env())
+    }
 }
 
 /// # ⚠️ Hazardous Materials
@@ -332,105 +338,10 @@ pub struct Fp(BytesN<48>);
 #[repr(transparent)]
 pub struct Fp2(BytesN<96>);
 
-macro_rules! impl_bls_elements_bytes_repr {
-    ($elem: ident, $size: literal, $name: literal) => {
-        // #[derive(Clone)]
-        // #[repr(transparent)]
-        // pub struct $elem(BytesN<$size>);
-        impl $elem {
-            pub fn from_bytes(bytes: BytesN<$size>) -> Self {
-                Self(bytes)
-            }
-
-            pub fn to_bytes(&self) -> BytesN<$size> {
-                self.0.clone()
-            }
-
-            pub fn as_bytes(&self) -> &BytesN<$size> {
-                &self.0
-            }
-
-            pub fn to_array(&self) -> [u8; $size] {
-                self.0.to_array()
-            }
-
-            pub fn as_val(&self) -> &Val {
-                self.0.as_val()
-            }
-
-            pub fn to_val(&self) -> Val {
-                self.0.to_val()
-            }
-
-            pub fn as_object(&self) -> &BytesObject {
-                self.0.as_object()
-            }
-
-            pub fn to_object(&self) -> BytesObject {
-                self.0.to_object()
-            }
-        }
-
-        impl IntoVal<Env, Val> for $elem {
-            fn into_val(&self, e: &Env) -> Val {
-                self.0.into_val(e)
-            }
-        }
-
-        impl TryFromVal<Env, Val> for $elem {
-            type Error = ConversionError;
-
-            fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
-                let bytes = <BytesN<$size>>::try_from_val(env, val)?;
-                Ok($elem(bytes))
-            }
-        }
-
-        impl IntoVal<Env, BytesN<$size>> for $elem {
-            fn into_val(&self, _e: &Env) -> BytesN<$size> {
-                self.0.clone()
-            }
-        }
-
-        impl From<$elem> for Bytes {
-            fn from(v: $elem) -> Self {
-                v.0.into()
-            }
-        }
-
-        impl From<$elem> for BytesN<$size> {
-            fn from(v: $elem) -> Self {
-                v.0
-            }
-        }
-
-        impl Into<[u8; $size]> for $elem {
-            fn into(self) -> [u8; $size] {
-                self.0.into()
-            }
-        }
-
-        impl Eq for $elem {}
-
-        impl PartialEq for $elem {
-            fn eq(&self, other: &Self) -> bool {
-                self.0.partial_cmp(other.as_bytes()) == Some(Ordering::Equal)
-            }
-        }
-
-        impl Debug for $elem {
-            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                write!(f, "{}({:?})", $name, self.to_array())?;
-                Ok(())
-            }
-        }
-    };
-}
-
-impl_bls_elements_bytes_repr!(G1Affine, 96, "G1Affine");
-impl_bls_elements_bytes_repr!(G2Affine, 192, "G2Affine");
-impl_bls_elements_bytes_repr!(Fp, 48, "Fp");
-impl_bls_elements_bytes_repr!(Fp2, 96, "Fp2");
+impl_bytesn_repr!(G1Affine, 96);
+impl_bytesn_repr!(G2Affine, 192);
+impl_bytesn_repr!(Fp, 48);
+impl_bytesn_repr!(Fp2, 96);
 
 impl Bls12_381 {
     pub(crate) fn new(env: &Env) -> Bls12_381 {
