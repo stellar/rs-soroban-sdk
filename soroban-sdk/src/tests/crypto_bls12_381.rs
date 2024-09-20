@@ -1,6 +1,6 @@
 use crate::{
     bytes, bytesn,
-    crypto::{Bls12_381, Fp, Fp2, G1Affine, G2Affine},
+    crypto::bls12_381::{Bls12_381, Fp, Fp2, G1Affine, G2Affine},
     vec, Bytes, Env, Vec, U256,
 };
 
