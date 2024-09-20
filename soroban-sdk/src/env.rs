@@ -453,9 +453,9 @@ impl Env {
 use crate::{
     auth,
     testutils::{
-        budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
-        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
-        StellarAssetContract, StellarAssetIssuer,
+        budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ConstructorArgs,
+        ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
+        Snapshot, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN,
 };
@@ -622,7 +622,7 @@ impl Env {
         contract_id: impl Into<Option<&'a Address>>,
         contract: T,
     ) -> Address {
-        self.register_contract_with_constructor(contract_id, contract, crate::vec![&self])
+        self.register_contract_with_constructor(contract_id, contract, ())
     }
 
     /// Register a contract with the [Env] for testing.
@@ -645,7 +645,7 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+    /// use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
     ///
     /// #[contract]
     /// pub struct Contract;
@@ -662,14 +662,18 @@ impl Env {
     /// # fn main() {
     ///     let env = Env::default();
     ///     let contract_id = env.register_contract_with_constructor(
-    ///         None, Contract, (123_u32,).into_val(&env));
+    ///         None, Contract, (123_u32,));
     /// }
     /// ```
-    pub fn register_contract_with_constructor<'a, T: ContractFunctionSet + 'static>(
+    pub fn register_contract_with_constructor<
+        'a,
+        T: ContractFunctionSet + 'static,
+        A: ConstructorArgs,
+    >(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
         contract: T,
-        constructor_args: Vec<Val>,
+        constructor_args: A,
     ) -> Address {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
         impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
@@ -703,7 +707,7 @@ impl Env {
             .register_test_contract_with_constructor(
                 contract_id.to_object(),
                 Rc::new(InternalContractFunctionSet(contract)),
-                constructor_args.to_object(),
+                constructor_args.into_val(self).to_object(),
             )
             .unwrap();
         contract_id
