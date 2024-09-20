@@ -43,7 +43,7 @@ const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = env.register_contract(None, Contract);
+/// #     let contract_id = env.register(Contract, ());
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]

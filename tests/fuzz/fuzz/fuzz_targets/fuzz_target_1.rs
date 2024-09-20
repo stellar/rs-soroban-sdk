@@ -2,7 +2,10 @@
 
 use libfuzzer_sys::fuzz_target;
 
-use soroban_sdk::{testutils::arbitrary::{arbitrary,Arbitrary,SorobanArbitrary}, Env, IntoVal, U256};
+use soroban_sdk::{
+    testutils::arbitrary::{arbitrary, Arbitrary, SorobanArbitrary},
+    Env, IntoVal, U256,
+};
 
 use test_fuzz::{Contract, ContractClient};
 
@@ -18,7 +21,7 @@ fuzz_target!(|input: Input| {
     let a: U256 = input.a.into_val(&env);
     let b: U256 = input.b.into_val(&env);
 
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
     let client = ContractClient::new(&env, &contract_id);
 
     let _ = client.run(&a, &b);

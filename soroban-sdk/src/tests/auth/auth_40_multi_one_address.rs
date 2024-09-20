@@ -32,8 +32,8 @@ impl ContractB {
 #[test]
 fn test_auth_not_allowed_with_separated_tree() {
     let e = Env::default();
-    let contract_a_id = e.register_contract(None, ContractA);
-    let contract_b_id = e.register_contract(None, ContractB);
+    let contract_a_id = e.register(ContractA, ());
+    let contract_b_id = e.register(ContractB, ());
     let client = ContractAClient::new(&e, &contract_a_id);
 
     let a = Address::generate(&e);
@@ -66,8 +66,8 @@ fn test_auth_not_allowed_with_separated_tree() {
 #[test]
 fn test_auth_as_tree() {
     let e = Env::default();
-    let contract_a_id = e.register_contract(None, ContractA);
-    let contract_b_id = e.register_contract(None, ContractB);
+    let contract_a_id = e.register(ContractA, ());
+    let contract_b_id = e.register(ContractB, ());
     let client = ContractAClient::new(&e, &contract_a_id);
 
     let a = Address::generate(&e);

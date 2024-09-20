@@ -12,7 +12,7 @@ pub struct Contract;
 #[test]
 fn all() {
     let e = Env::default();
-    let id = e.register_contract(None, Contract);
+    let id = e.register(Contract, ());
 
     e.as_contract(&id, || {
         e.storage().instance().set(&1, &2);
@@ -49,8 +49,8 @@ fn ttl_getters() {
     e.ledger().set_min_persistent_entry_ttl(100);
     e.ledger().set_min_temp_entry_ttl(10);
 
-    let contract_a = e.register_contract(None, Contract);
-    let contract_b = e.register_contract(None, Contract);
+    let contract_a = e.register(Contract, ());
+    let contract_b = e.register(Contract, ());
     let setup = || {
         e.storage().persistent().set(&1, &3);
         e.storage().temporary().set(&2, &4);
@@ -113,7 +113,7 @@ fn temp_entry_expiration() {
     let e = Env::default();
     e.ledger().set_sequence_number(1000);
     e.ledger().set_min_temp_entry_ttl(100);
-    let contract = e.register_contract(None, Contract);
+    let contract = e.register(Contract, ());
     e.as_contract(&contract, || {
         e.storage().temporary().set(&1, &2);
 
@@ -145,7 +145,7 @@ fn test_persistent_entry_expiration() {
     e.ledger().set_sequence_number(1000);
     e.ledger().set_min_persistent_entry_ttl(100);
 
-    let contract = e.register_contract(None, Contract);
+    let contract = e.register(Contract, ());
     e.as_contract(&contract, || {
         e.storage().persistent().set(&1, &2);
 

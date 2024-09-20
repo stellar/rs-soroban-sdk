@@ -9,7 +9,7 @@ pub struct TestPrngContract;
 fn test_prng_seed() {
     let e = Env::default();
     e.host().set_base_prng_seed([0; 32]).unwrap();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
     e.as_contract(&id, || {
         e.prng().seed(bytes!(
             &e,
@@ -19,7 +19,7 @@ fn test_prng_seed() {
     });
 
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
     e.host().set_base_prng_seed([2; 32]).unwrap();
     e.as_contract(&id, || {
         e.prng().seed(bytes!(
@@ -33,7 +33,7 @@ fn test_prng_seed() {
 #[test]
 fn test_prng_shuffle() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         let v = vec![&e, 1, 2, 3];
@@ -49,7 +49,7 @@ fn test_prng_shuffle() {
 #[test]
 fn test_vec_shuffle() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         let v = vec![&e, 1, 2, 3];
@@ -69,7 +69,7 @@ fn test_vec_shuffle() {
 #[test]
 fn test_prng_fill_u64() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         let mut v: u64 = 0;
@@ -83,7 +83,7 @@ fn test_prng_fill_u64() {
 #[test]
 fn test_prng_gen_u64() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         assert_eq!(e.prng().gen::<u64>(), 6775509081846337106);
@@ -94,7 +94,7 @@ fn test_prng_gen_u64() {
 #[test]
 fn test_prng_gen_range_u64() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         assert_eq!(e.prng().gen_range::<u64>(..), 6775509081846337106);
@@ -114,7 +114,7 @@ fn test_prng_gen_range_u64() {
 #[should_panic(expected = "Error(Value, InvalidInput)")]
 fn test_prng_gen_range_u64_panic_on_invalid_range() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         e.prng().gen_range::<u64>(u64::MAX..u64::MAX);
@@ -124,7 +124,7 @@ fn test_prng_gen_range_u64_panic_on_invalid_range() {
 #[test]
 fn test_prng_fill_bytes() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         let mut v = Bytes::from_array(&e, &[0u8; 32]);
@@ -156,7 +156,7 @@ fn test_prng_fill_bytes() {
 #[test]
 fn test_prng_gen_len_bytes() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         assert_eq!(
@@ -185,7 +185,7 @@ fn test_prng_gen_len_bytes() {
 #[test]
 fn test_prng_fill_bytesn() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         let mut v = BytesN::from_array(&e, &[0u8; 32]);
@@ -217,7 +217,7 @@ fn test_prng_fill_bytesn() {
 #[test]
 fn test_prng_gen_bytesn() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         assert_eq!(
@@ -246,7 +246,7 @@ fn test_prng_gen_bytesn() {
 #[test]
 fn test_prng_fill_slice() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         let mut buf = [0u8; 32];
@@ -273,7 +273,7 @@ fn test_prng_fill_slice() {
 #[test]
 fn test_prng_fill_array() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         let mut v = [0u8; 32];
@@ -299,7 +299,7 @@ fn test_prng_fill_array() {
 #[test]
 fn test_prng_gen_array() {
     let e = Env::default();
-    let id = e.register_contract(None, TestPrngContract);
+    let id = e.register(TestPrngContract, ());
 
     e.as_contract(&id, || {
         assert_eq!(

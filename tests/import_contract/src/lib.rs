@@ -26,9 +26,9 @@ mod test {
     #[test]
     fn test_add() {
         let e = Env::default();
-        let add_contract_id = e.register_contract_wasm(None, addcontract::WASM);
+        let add_contract_id = e.register(addcontract::WASM, ());
 
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let x = 10u64;

@@ -36,9 +36,9 @@ mod test {
     fn test_add() {
         let e = Env::default();
 
-        let add_contract_id = e.register_contract(None, AddContract);
+        let add_contract_id = e.register(AddContract, ());
 
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let x = 10i32;

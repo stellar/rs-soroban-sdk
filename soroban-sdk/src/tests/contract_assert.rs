@@ -22,7 +22,7 @@ impl Contract {
 #[should_panic(expected = "Error(Contract, #1")]
 fn test_invoke_expect_error() {
     let e = Env::default();
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
 
     ContractClient::new(&e, &contract_id).assert(&0);
 }
@@ -30,7 +30,7 @@ fn test_invoke_expect_error() {
 #[test]
 fn test_try_invoke() {
     let e = Env::default();
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
 
     let res = ContractClient::new(&e, &contract_id).try_assert(&0);
     assert_eq!(res, Err(Ok(soroban_sdk::Error::from_contract_error(1))));

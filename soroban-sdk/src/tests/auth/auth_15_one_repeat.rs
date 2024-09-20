@@ -26,7 +26,7 @@ impl Contract {
 #[test]
 fn test() {
     let e = Env::default();
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     let a = Address::generate(&e);

@@ -18,7 +18,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let e = Env::default();
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
 
     let a = 10i32;
     let b = 12i32;

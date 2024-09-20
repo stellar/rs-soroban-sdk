@@ -7,7 +7,7 @@ use soroban_sdk::Env;
 fn test() {
     let env = Env::default();
 
-    let id = env.register_contract(None, Contract);
+    let id = env.register(Contract, ());
     let client = ContractClient::new(&env, &id);
 
     assert_eq!(client.zero(), 0);

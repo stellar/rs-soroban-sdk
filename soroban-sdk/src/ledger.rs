@@ -31,7 +31,7 @@ use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = env.register_contract(None, Contract);
+/// #     let contract_id = env.register(Contract, ());
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]

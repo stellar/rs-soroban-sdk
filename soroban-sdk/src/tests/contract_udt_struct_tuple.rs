@@ -35,7 +35,7 @@ fn test_conversion() {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
 
     let a = Udt(5, 7);
     let b = Udt(10, 14);

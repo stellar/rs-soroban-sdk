@@ -73,7 +73,7 @@ fn test_mock_all_auth() {
     let sac = env.register_stellar_asset_contract_v2(admin);
     let token_contract_id = sac.address();
 
-    let contract_id = env.register_contract(None, TestContract);
+    let contract_id = env.register(TestContract, ());
     let client = TestContractClient::new(&env, &contract_id);
     client.init(&token_contract_id);
 
@@ -121,7 +121,7 @@ fn test_mock_auth() {
     let admin = Address::generate(&env);
     let token_contract_id = env.register_stellar_asset_contract_v2(admin).address();
 
-    let contract_id = env.register_contract(None, TestContract);
+    let contract_id = env.register(TestContract, ());
     let client = TestContractClient::new(&env, &contract_id);
     client.init(&token_contract_id);
 
