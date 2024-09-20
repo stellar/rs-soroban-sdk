@@ -57,7 +57,7 @@ impl Contract {
 mod test {
     use soroban_sdk::{symbol_short, xdr, Env, InvokeError};
 
-    use crate::{Contract, ContractClient, Error};
+    use crate::{Contract, ContractClient, Error, Flag};
 
     #[test]
     fn hello_ok() {
