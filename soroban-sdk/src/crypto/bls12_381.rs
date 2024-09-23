@@ -112,7 +112,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        unsafe { G1Affine::from_bytes(<BytesN<96>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Adds two points `p0` and `p1` in G1, ensuring that the result is in the
@@ -124,7 +124,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        let res = unsafe { G1Affine::from_bytes(<BytesN<96>>::unchecked_new(env.clone(), bin)) };
+        let res = unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) };
         let is_in_correct_subgroup: bool =
             internal::Env::bls12_381_check_g1_is_in_subgroup(env, res.to_object())
                 .unwrap_optimized()
@@ -140,21 +140,21 @@ impl Bls12_381 {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g1_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
-        unsafe { G1Affine::from_bytes(<BytesN<96>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G1.
     pub fn g1_msm(&self, vp: Vec<G1Affine>, vs: Vec<U256>) -> G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_msm(env, vp.into(), vs.into()).unwrap_infallible();
-        unsafe { G1Affine::from_bytes(<BytesN<96>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Maps an element in the base field `Fp` to a point in G1.
     pub fn map_fp_to_g1(&self, fp: &Fp) -> G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_map_fp_to_g1(env, fp.to_object()).unwrap_infallible();
-        unsafe { G1Affine::from_bytes(<BytesN<96>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Hashes a message `msg` to a point in G1, using a domain separation tag `dst`.
@@ -162,7 +162,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_hash_to_g1(env, msg.into(), dst.to_object())
             .unwrap_infallible();
-        unsafe { G1Affine::from_bytes(<BytesN<96>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     // g2
@@ -180,7 +180,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        unsafe { G2Affine::from_bytes(<BytesN<192>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Adds two points `p0` and `p1` in G2, ensuring that the result is in the
@@ -192,7 +192,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        let res = unsafe { G2Affine::from_bytes(<BytesN<192>>::unchecked_new(env.clone(), bin)) };
+        let res = unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) };
         let is_in_correct_subgroup: bool =
             internal::Env::bls12_381_check_g2_is_in_subgroup(env, res.to_object())
                 .unwrap_optimized()
@@ -208,21 +208,21 @@ impl Bls12_381 {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g2_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
-        unsafe { G2Affine::from_bytes(<BytesN<192>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G2.
     pub fn g2_msm(&self, vp: Vec<G2Affine>, vs: Vec<U256>) -> G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_msm(env, vp.into(), vs.into()).unwrap_infallible();
-        unsafe { G2Affine::from_bytes(<BytesN<192>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Maps an element in the base field `Fp2` to a point in G2.
     pub fn map_fp2_to_g2(&self, fp2: &Fp2) -> G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_map_fp2_to_g2(env, fp2.to_object()).unwrap_infallible();
-        unsafe { G2Affine::from_bytes(<BytesN<192>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Hashes a message `msg` to a point in G2, using a domain separation tag `dst`.
@@ -230,7 +230,7 @@ impl Bls12_381 {
         let env = self.env();
         let bin = internal::Env::bls12_381_hash_to_g2(env, msg.into(), dst.to_object())
             .unwrap_infallible();
-        unsafe { G2Affine::from_bytes(<BytesN<192>>::unchecked_new(env.clone(), bin)) }
+        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     // pairing
