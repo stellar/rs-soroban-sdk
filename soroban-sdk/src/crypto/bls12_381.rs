@@ -11,7 +11,7 @@ pub struct Bls12_381 {
     env: Env,
 }
 
-/// # `G1Affine` is a point in the G1 group (subgroup defined over the base field
+/// `G1Affine` is a point in the G1 group (subgroup defined over the base field
 ///  `Fq`) of the BLS12-381 elliptic curve
 ///
 /// # Serialization:
