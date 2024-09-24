@@ -61,7 +61,7 @@ pub struct G1Affine(BytesN<96>);
 #[repr(transparent)]
 pub struct G2Affine(BytesN<192>);
 
-/// # `Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
+/// `Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
 /// curve
 ///
 /// # Serialization:
