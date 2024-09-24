@@ -88,6 +88,58 @@ impl_bytesn_repr!(G2Affine, 192);
 impl_bytesn_repr!(Fp, 48);
 impl_bytesn_repr!(Fp2, 96);
 
+impl G1Affine {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub fn is_in_subgroup(&self) -> bool {
+        self.env().crypto().bls12_381().g1_is_in_subgroup(self)
+    }
+
+    pub fn checked_add(&self, rhs: &Self) -> Option<Self> {
+        self.env().crypto().bls12_381().g1_checked_add(self, rhs)
+    }
+
+    pub fn mul(&self, scalar: &U256) -> Self {
+        self.env().crypto().bls12_381().g1_mul(self, &scalar)
+    }
+}
+
+impl core::ops::Add for G1Affine {
+    type Output = G1Affine;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        self.env().crypto().bls12_381().g1_add(&self, &rhs)
+    }
+}
+
+impl G2Affine {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub fn is_in_subgroup(&self) -> bool {
+        self.env().crypto().bls12_381().g2_is_in_subgroup(self)
+    }
+
+    pub fn checked_add(&self, rhs: &Self) -> Option<Self> {
+        self.env().crypto().bls12_381().g2_checked_add(self, rhs)
+    }
+
+    pub fn mul(&self, scalar: &U256) -> Self {
+        self.env().crypto().bls12_381().g2_mul(self, &scalar)
+    }
+}
+
+impl core::ops::Add for G2Affine {
+    type Output = G2Affine;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        self.env().crypto().bls12_381().g2_add(&self, &rhs)
+    }
+}
+
 impl Bls12_381 {
     pub(crate) fn new(env: &Env) -> Bls12_381 {
         Bls12_381 { env: env.clone() }
