@@ -101,10 +101,6 @@ impl G1Affine {
     pub fn checked_add(&self, rhs: &Self) -> Option<Self> {
         self.env().crypto().bls12_381().g1_checked_add(self, rhs)
     }
-
-    pub fn mul(&self, scalar: &U256) -> Self {
-        self.env().crypto().bls12_381().g1_mul(self, &scalar)
-    }
 }
 
 impl core::ops::Add for G1Affine {
@@ -112,6 +108,14 @@ impl core::ops::Add for G1Affine {
 
     fn add(self, rhs: Self) -> Self::Output {
         self.env().crypto().bls12_381().g1_add(&self, &rhs)
+    }
+}
+
+impl core::ops::Mul<U256> for G1Affine {
+    type Output = G1Affine;
+
+    fn mul(self, rhs: U256) -> Self::Output {
+        self.env().crypto().bls12_381().g1_mul(&self, &rhs)
     }
 }
 
@@ -127,10 +131,6 @@ impl G2Affine {
     pub fn checked_add(&self, rhs: &Self) -> Option<Self> {
         self.env().crypto().bls12_381().g2_checked_add(self, rhs)
     }
-
-    pub fn mul(&self, scalar: &U256) -> Self {
-        self.env().crypto().bls12_381().g2_mul(self, &scalar)
-    }
 }
 
 impl core::ops::Add for G2Affine {
@@ -138,6 +138,14 @@ impl core::ops::Add for G2Affine {
 
     fn add(self, rhs: Self) -> Self::Output {
         self.env().crypto().bls12_381().g2_add(&self, &rhs)
+    }
+}
+
+impl core::ops::Mul<U256> for G2Affine {
+    type Output = G2Affine;
+
+    fn mul(self, rhs: U256) -> Self::Output {
+        self.env().crypto().bls12_381().g2_mul(&self, &rhs)
     }
 }
 
