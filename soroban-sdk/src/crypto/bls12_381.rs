@@ -5,6 +5,7 @@ use crate::{
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
 use core::{cmp::Ordering, fmt::Debug};
+
 /// Bls12_381 provides access to curve and field arithmetics on the BLS12-381
 /// curve.
 pub struct Bls12_381 {
