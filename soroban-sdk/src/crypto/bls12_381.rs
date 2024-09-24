@@ -41,7 +41,7 @@ pub struct Bls12_381 {
 #[repr(transparent)]
 pub struct G1Affine(BytesN<96>);
 
-/// # `G2Affine` is a point in the G2 group (subgroup defined over the quadratic
+/// `G2Affine` is a point in the G2 group (subgroup defined over the quadratic
 /// extension field `Fq2`) of the BLS12-381 elliptic curve
 ///
 /// # Serialization:
