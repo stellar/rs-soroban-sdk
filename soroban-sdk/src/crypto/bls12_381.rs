@@ -72,7 +72,7 @@ pub struct G2Affine(BytesN<192>);
 #[repr(transparent)]
 pub struct Fp(BytesN<48>);
 
-/// # `Fp2` represents an element of the quadratic extension field `Fq2` of the
+/// `Fp2` represents an element of the quadratic extension field `Fq2` of the
 /// BLS12-381 elliptic curve
 ///
 /// # Serialization:
