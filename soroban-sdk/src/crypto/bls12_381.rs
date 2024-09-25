@@ -149,6 +149,26 @@ impl core::ops::Mul<U256> for G2Affine {
     }
 }
 
+impl Fp {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub fn map_to_g1(&self) -> G1Affine {
+        self.env().crypto().bls12_381().map_fp_to_g1(self)
+    }
+}
+
+impl Fp2 {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub fn map_to_g2(&self) -> G2Affine {
+        self.env().crypto().bls12_381().map_fp2_to_g2(self)
+    }
+}
+
 impl Bls12_381 {
     pub(crate) fn new(env: &Env) -> Bls12_381 {
         Bls12_381 { env: env.clone() }
