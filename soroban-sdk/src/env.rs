@@ -453,11 +453,11 @@ impl Env {
 use crate::{
     auth,
     testutils::{
-        budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ConstructorArgs,
-        ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
-        Register, Snapshot, StellarAssetContract, StellarAssetIssuer,
+        budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
+        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
+        StellarAssetContract, StellarAssetIssuer,
     },
-    Bytes, BytesN,
+    Bytes, BytesN, ConstructorArgs,
 };
 #[cfg(any(test, feature = "testutils"))]
 use core::{cell::RefCell, cell::RefMut};
@@ -588,7 +588,7 @@ impl Env {
     /// contract id passed in.
     ///
     /// If you need to specify the address the contract should be registered at,
-    /// use [`register_at`].
+    /// use [`Env::register_at`].
     ///
     /// ### Examples
     /// Register a contract defined in the current crate, by specifying the type
