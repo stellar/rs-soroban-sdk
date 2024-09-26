@@ -126,7 +126,7 @@ impl TryFromVal<Env, &Address> for Val {
 #[cfg(not(target_family = "wasm"))]
 impl From<&Address> for ScVal {
     fn from(v: &Address) -> Self {
-        // This conversion occurs only in test utilities, and theroetically all
+        // This conversion occurs only in test utilities, and theoretically all
         // values should convert to an ScVal because the Env won't let the host
         // type to exist otherwise, unwrapping. Even if there are edge cases
         // that don't, this is a trade off for a better test developer
