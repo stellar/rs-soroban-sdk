@@ -51,7 +51,7 @@ mod test {
     #[test]
     fn hello_ok() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.hello(&0);
@@ -62,7 +62,7 @@ mod test {
     #[test]
     fn try_hello_ok() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&0);
@@ -73,7 +73,7 @@ mod test {
     #[test]
     fn try_hello_error() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&1);
@@ -84,7 +84,7 @@ mod test {
     #[test]
     fn try_hello_error_panic() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&2);
@@ -95,7 +95,7 @@ mod test {
     #[test]
     fn try_hello_error_panic_string() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&3);
@@ -106,7 +106,7 @@ mod test {
     #[test]
     fn try_hello_error_unexpected_contract_error() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
         let res = client.try_hello(&4);
