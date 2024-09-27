@@ -7,7 +7,7 @@ pub struct Contract;
 #[test]
 fn max() {
     let e = Env::default();
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
 
     e.ledger().set_sequence_number(1);
     e.ledger().set_max_entry_ttl(5);

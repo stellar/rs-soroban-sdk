@@ -47,7 +47,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
 
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };
@@ -58,7 +58,7 @@ fn test_functional() {
 #[test]
 fn test_long_names_functional() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
 
     let a = UdtWithLongName {
         this_is_a_very_long_name_12345: 1_000_000_000_000,

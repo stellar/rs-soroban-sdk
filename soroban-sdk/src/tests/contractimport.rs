@@ -10,6 +10,13 @@ mod addcontract {
     );
 }
 
+mod addcontract_u128 {
+    use crate as soroban_sdk;
+    soroban_sdk::contractimport!(
+        file = "../target/wasm32-unknown-unknown/release/test_add_u128.wasm"
+    );
+}
+
 mod subcontract {
     use crate as soroban_sdk;
     #[soroban_sdk::contract]
@@ -39,9 +46,9 @@ impl Contract {
 fn test_functional() {
     let e = Env::default();
 
-    let add_contract_id = e.register_contract_wasm(None, addcontract::WASM);
+    let add_contract_id = e.register(addcontract::WASM, ());
 
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     let x = 10u64;
@@ -55,9 +62,9 @@ fn test_register_at_id() {
     let e = Env::default();
 
     let add_contract_id = Address::from_contract_id(&e, [1; 32]);
-    e.register_contract_wasm(&add_contract_id, addcontract::WASM);
+    e.register_at(&add_contract_id, addcontract::WASM, ());
 
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     let x = 10u64;
@@ -69,15 +76,12 @@ fn test_register_at_id() {
 #[test]
 fn test_reregister_wasm() {
     let e = Env::default();
-
-    // Register a contract with code that will fail, to ensure this code isn't
-    // the code that gets activated when invoked.
-    let add_contract_id = e.register_contract_wasm(None, []);
+    let add_contract_id = e.register(addcontract_u128::WASM, ());
     // Reregister the contract with different code replacing the code. This is
     // the contract we expect to be executed.
-    e.register_contract_wasm(&add_contract_id, addcontract::WASM);
+    e.register_at(&add_contract_id, addcontract::WASM, ());
 
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     let x = 10u64;
@@ -91,12 +95,12 @@ fn test_reregister_over_wasm_with_rust_impl() {
     let e = Env::default();
 
     // Register a contract with wasm.
-    let other_contract_id = e.register_contract_wasm(None, addcontract::WASM);
+    let other_contract_id = e.register(addcontract::WASM, ());
     // Reregister the contract with a rust impl instead that does something
     // different.
-    e.register_contract(&other_contract_id, subcontract::Contract);
+    e.register_at(&other_contract_id, subcontract::Contract, ());
 
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     let x = 12u64;

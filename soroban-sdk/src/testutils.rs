@@ -18,10 +18,71 @@ use soroban_env_host::TryIntoVal;
 
 pub mod storage;
 
-use crate::{xdr, Env, Val, Vec};
+use crate::{xdr, Env, IntoVal, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
+
+pub trait Register {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs;
+}
+
+impl<C> Register for C
+where
+    C: ContractFunctionSet + 'static,
+{
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_with_constructor(id, self, args)
+    }
+}
+
+impl<'w> Register for &'w [u8] {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_wasm_with_constructor(id, self, args)
+    }
+}
+
+pub trait ConstructorArgs: IntoVal<Env, Vec<Val>> {}
+
+impl<T> ConstructorArgs for Vec<T> {}
+
+macro_rules! impl_constructor_args_for_tuple {
+    ( $($typ:ident $idx:tt)* ) => {
+        impl<$($typ),*> ConstructorArgs for ($($typ,)*)
+        where
+            $($typ: IntoVal<Env, Val>),*
+        {
+        }
+    };
+}
+
+// 0 topics
+impl ConstructorArgs for () {}
+// 1-13 topics
+impl_constructor_args_for_tuple! { T0 0 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 T11 11 }
+impl_constructor_args_for_tuple! { T0 0 T1 1 T2 2 T3 3 T4 4 T5 5 T6 6 T7 7 T8 8 T9 9 T10 10 T11 11 T12 12 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]

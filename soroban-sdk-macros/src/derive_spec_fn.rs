@@ -166,11 +166,13 @@ pub fn derive_fn_spec(
     Ok(quote! {
         #[doc(hidden)]
         #[allow(non_snake_case)]
+        #[allow(non_upper_case_globals)]
         #(#attrs)*
         #export_attr
         pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
 
         impl #ty {
+            #[allow(non_snake_case)]
             #(#attrs)*
             pub const fn #spec_fn_ident() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
