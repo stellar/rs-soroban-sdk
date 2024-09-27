@@ -490,8 +490,8 @@ mod test_b {
         fn test_with_real_contract_wasm_auth_approve() {
             let e = Env::default();
 
-            let contract_a_id = e.register_contract(None, ContractA);
-            let contract_b_id = e.register_contract(None, ContractB);
+            let contract_a_id = e.register(ContractA, ());
+            let contract_b_id = e.register(ContractB, ());
             let client = ContractBClient::new(&e, &contract_b_id);
 
             mod imported_auth_approve {
@@ -500,7 +500,7 @@ mod test_b {
                 );
             }
 
-            let a = e.register_contract_wasm(None, imported_auth_approve::WASM);
+            let a = e.register(imported_auth_approve::WASM, ());
             let a_xdr: ScAddress = (&a).try_into().unwrap();
 
             let r = client
@@ -560,8 +560,8 @@ mod test_b {
         fn test_with_real_contract_wasm_auth_decline() {
             let e = Env::default();
 
-            let contract_a_id = e.register_contract(None, ContractA);
-            let contract_b_id = e.register_contract(None, ContractB);
+            let contract_a_id = e.register(ContractA, ());
+            let contract_b_id = e.register(ContractB, ());
             let client = ContractBClient::new(&e, &contract_b_id);
 
             mod imported_auth_decline {
@@ -570,7 +570,7 @@ mod test_b {
                 );
             }
 
-            let a = e.register_contract_wasm(None, imported_auth_decline::WASM);
+            let a = e.register(imported_auth_decline::WASM, ());
             let a_xdr: ScAddress = (&a).try_into().unwrap();
 
             let r = client
