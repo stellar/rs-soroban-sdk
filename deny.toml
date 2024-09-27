@@ -243,14 +243,14 @@ deny = [
 
 # Certain crates/versions that will be skipped when doing duplicate detection.
 skip = [
-    #{ name = "ansi_term", version = "=0.11.0" },
+    { name = "hashbrown", version = "=0.13.2" },
+    { name = "syn", version = "=1.0.109" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive
 # dependencies starting at the specified crate, up to a certain depth, which is
 # by default infinite.
 skip-tree = [
-   { name = "soroban-wasmi" }
 ]
 
 # This section is considered when running `cargo deny check sources`.
