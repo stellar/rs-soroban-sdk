@@ -250,6 +250,7 @@ skip = [
 # dependencies starting at the specified crate, up to a certain depth, which is
 # by default infinite.
 skip-tree = [
+   { name = "soroban-wasmi" }
 ]
 
 # This section is considered when running `cargo deny check sources`.
