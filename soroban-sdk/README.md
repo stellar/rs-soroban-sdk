@@ -26,7 +26,7 @@ fn test() {
 # #[cfg(feature = "testutils")]
 # fn main() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, HelloContract);
+    let contract_id = env.register(HelloContract, ());
     let client = HelloContractClient::new(&env, &contract_id);
 
     let words = client.hello(&symbol_short!("Dev"));

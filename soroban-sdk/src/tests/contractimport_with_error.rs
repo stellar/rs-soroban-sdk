@@ -22,9 +22,9 @@ impl Contract {
 fn test_functional() {
     let e = Env::default();
 
-    let err_contract_id = e.register_contract_wasm(None, errcontract::WASM);
+    let err_contract_id = e.register(errcontract::WASM, ());
 
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     let z = client.hello_with(&err_contract_id, &errcontract::Flag::A);

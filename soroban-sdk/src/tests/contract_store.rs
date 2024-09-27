@@ -61,7 +61,7 @@ fn test_storage() {
     e.ledger().set_min_temp_entry_ttl(50);
     e.ledger().set_max_entry_ttl(20_000);
 
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     // Smoke test instance bump before putting any data into it.
@@ -186,7 +186,7 @@ fn test_temp_storage_extension_past_max_ttl_panics() {
     let e = Env::default();
     e.ledger().set_min_temp_entry_ttl(50);
     e.ledger().set_max_entry_ttl(20_000);
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
     e.as_contract(&contract_id, || {
         e.storage().temporary().set(&DataKey::Key(11), &2222_i32);
