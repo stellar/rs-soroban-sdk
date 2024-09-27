@@ -13,7 +13,7 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn hello_with(env: Env, contract_id: Address, flag: u32) -> Symbol {
+    pub fn hello_with(env: Env, contract_id: Address, flag: errcontract::Flag) -> Symbol {
         errcontract::Client::new(&env, &contract_id).hello(&flag)
     }
 }
@@ -27,6 +27,6 @@ fn test_functional() {
     let contract_id = e.register(Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
-    let z = client.hello_with(&err_contract_id, &0);
+    let z = client.hello_with(&err_contract_id, &errcontract::Flag::A);
     assert!(z == symbol_short!("hello"));
 }
