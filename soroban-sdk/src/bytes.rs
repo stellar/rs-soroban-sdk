@@ -328,18 +328,21 @@ impl From<&Bytes> for Bytes {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Bytes> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Bytes) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl From<&Bytes> for ScVal {
+    fn from(v: &Bytes) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Bytes> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Bytes) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl From<Bytes> for ScVal {
+    fn from(v: Bytes) -> Self {
+        (&v).into()
     }
 }
 

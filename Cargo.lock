@@ -1217,7 +1217,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "22.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0497816694bef2b103494c8c61b7c8a06a72c7d3#0497816694bef2b103494c8c61b7c8a06a72c7d3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=60e9be87a157cc9b5132056e1314faabd485b5fb#60e9be87a157cc9b5132056e1314faabd485b5fb"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1228,7 +1228,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "22.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0497816694bef2b103494c8c61b7c8a06a72c7d3#0497816694bef2b103494c8c61b7c8a06a72c7d3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=60e9be87a157cc9b5132056e1314faabd485b5fb#60e9be87a157cc9b5132056e1314faabd485b5fb"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1246,7 +1246,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "22.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0497816694bef2b103494c8c61b7c8a06a72c7d3#0497816694bef2b103494c8c61b7c8a06a72c7d3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=60e9be87a157cc9b5132056e1314faabd485b5fb#60e9be87a157cc9b5132056e1314faabd485b5fb"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1255,7 +1255,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "22.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0497816694bef2b103494c8c61b7c8a06a72c7d3#0497816694bef2b103494c8c61b7c8a06a72c7d3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=60e9be87a157cc9b5132056e1314faabd485b5fb#60e9be87a157cc9b5132056e1314faabd485b5fb"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -1290,7 +1290,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "22.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=0497816694bef2b103494c8c61b7c8a06a72c7d3#0497816694bef2b103494c8c61b7c8a06a72c7d3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=60e9be87a157cc9b5132056e1314faabd485b5fb#60e9be87a157cc9b5132056e1314faabd485b5fb"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1391,8 +1391,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-wasmi"
-version = "0.36.0-soroban.22.0.0"
-source = "git+https://github.com/stellar/wasmi?rev=122a74a7c491929e5ac9de876099154ef7c06d06#122a74a7c491929e5ac9de876099154ef7c06d06"
+version = "0.36.1-soroban.22.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7044ea0ee6ff67039df1f232f0d3d98121f69a0409e944774912fc5f043c280f"
 dependencies = [
  "arrayvec",
  "multi-stash",
@@ -1441,7 +1442,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "22.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=b5516843b6379e4e29520bf2ba156484f62edc46#b5516843b6379e4e29520bf2ba156484f62edc46"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=67be5955a15f1d3a4df83fe86e6ae107f687141b#67be5955a15f1d3a4df83fe86e6ae107f687141b"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
@@ -1806,8 +1807,9 @@ checksum = "c62a0a307cb4a311d3a07867860911ca130c3494e8c2719593806c08bc5d0484"
 
 [[package]]
 name = "wasmi_collections"
-version = "0.36.0-soroban.22.0.0"
-source = "git+https://github.com/stellar/wasmi?rev=122a74a7c491929e5ac9de876099154ef7c06d06#122a74a7c491929e5ac9de876099154ef7c06d06"
+version = "0.36.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4d1ff23df2c456c8b5d9a0ae7eed03a40f0c4520466b4aa87135c5fc557476e8"
 dependencies = [
  "ahash",
  "hashbrown 0.14.5",
@@ -1816,8 +1818,9 @@ dependencies = [
 
 [[package]]
 name = "wasmi_core"
-version = "0.36.0-soroban.22.0.0"
-source = "git+https://github.com/stellar/wasmi?rev=122a74a7c491929e5ac9de876099154ef7c06d06#122a74a7c491929e5ac9de876099154ef7c06d06"
+version = "0.36.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac1b21ded145eb313d44a5895442c28e18904fb95718dc83893779f55945d342"
 dependencies = [
  "downcast-rs",
  "libm",

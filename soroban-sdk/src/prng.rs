@@ -120,7 +120,7 @@ impl Prng {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     let contract_id = env.register(Contract, ());
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// let mut value: u64 = 0;
@@ -143,7 +143,7 @@ impl Prng {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     let contract_id = env.register(Contract, ());
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// let mut value = [0u8; 32];
@@ -188,7 +188,7 @@ impl Prng {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     let contract_id = env.register(Contract, ());
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// let value: u64 = env.prng().gen();
@@ -210,7 +210,7 @@ impl Prng {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     let contract_id = env.register(Contract, ());
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// let value: [u8; 32] = env.prng().gen();
@@ -258,7 +258,7 @@ impl Prng {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     let contract_id = env.register(Contract, ());
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// // Get a value of length 32 bytes.
@@ -307,7 +307,7 @@ impl Prng {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     let contract_id = env.register(Contract, ());
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// // Get a value in the range of 1 to 100, inclusive.
@@ -347,7 +347,7 @@ impl Prng {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// #     let contract_id = env.register_contract(None, Contract);
+    /// #     let contract_id = env.register(Contract, ());
     /// #     env.as_contract(&contract_id, || {
     /// #         env.prng().seed(Bytes::from_array(&env, &[1; 32]));
     /// // Get a value in the range of 1 to 100, inclusive.

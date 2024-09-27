@@ -44,8 +44,8 @@ mod test {
     #[test]
     fn test() {
         let e = Env::default();
-        let test_contract_id = e.register_contract(None, TestContract);
-        let contract_id = e.register_contract(None, Contract);
+        let test_contract_id = e.register(TestContract, ());
+        let contract_id = e.register(Contract, ());
 
         e.set_auths(&[MockAuth {
             address: &contract_id,

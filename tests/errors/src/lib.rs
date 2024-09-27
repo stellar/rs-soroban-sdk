@@ -1,32 +1,43 @@
 #![no_std]
 use soroban_sdk::{
-    contract, contracterror, contractimpl, panic_with_error, symbol_short, Env, Symbol,
+    contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Env,
+    Symbol,
 };
 
 #[contract]
 pub struct Contract;
 
+#[contracttype]
+#[derive(PartialEq)]
+pub enum Flag {
+    A = 0,
+    B = 1,
+    C = 2,
+    D = 3,
+    E = 4,
+}
+
 #[contracterror]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum Error {
     AnError = 1,
 }
 
 #[contractimpl]
 impl Contract {
-    pub fn hello(env: Env, flag: u32) -> Result<Symbol, Error> {
+    pub fn hello(env: Env, flag: Flag) -> Result<Symbol, Error> {
         env.storage()
             .persistent()
             .set(&symbol_short!("persisted"), &true);
-        if flag == 0 {
+        if flag == Flag::A {
             Ok(symbol_short!("hello"))
-        } else if flag == 1 {
+        } else if flag == Flag::B {
             Err(Error::AnError)
-        } else if flag == 2 {
+        } else if flag == Flag::C {
             panic_with_error!(&env, Error::AnError)
-        } else if flag == 3 {
+        } else if flag == Flag::D {
             panic!("an error")
-        } else if flag == 4 {
+        } else if flag == Flag::E {
             panic_with_error!(&env, soroban_sdk::Error::from_contract_error(9))
         } else {
             unimplemented!()
@@ -46,15 +57,15 @@ impl Contract {
 mod test {
     use soroban_sdk::{symbol_short, xdr, Env, InvokeError};
 
-    use crate::{Contract, ContractClient, Error};
+    use crate::{Contract, ContractClient, Error, Flag};
 
     #[test]
     fn hello_ok() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.hello(&0);
+        let res = client.hello(&Flag::A);
         assert_eq!(res, symbol_short!("hello"));
         assert!(client.persisted());
     }
@@ -62,10 +73,10 @@ mod test {
     #[test]
     fn try_hello_ok() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.try_hello(&0);
+        let res = client.try_hello(&Flag::A);
         assert_eq!(res, Ok(Ok(symbol_short!("hello"))));
         assert!(client.persisted());
     }
@@ -73,10 +84,10 @@ mod test {
     #[test]
     fn try_hello_error() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.try_hello(&1);
+        let res = client.try_hello(&Flag::B);
         assert_eq!(res, Err(Ok(Error::AnError)));
         assert!(!client.persisted());
     }
@@ -84,10 +95,10 @@ mod test {
     #[test]
     fn try_hello_error_panic() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.try_hello(&2);
+        let res = client.try_hello(&Flag::C);
         assert_eq!(res, Err(Ok(Error::AnError)));
         assert!(!client.persisted());
     }
@@ -95,10 +106,10 @@ mod test {
     #[test]
     fn try_hello_error_panic_string() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.try_hello(&3);
+        let res = client.try_hello(&Flag::D);
         assert_eq!(res, Err(Err(InvokeError::Abort)));
         assert!(!client.persisted());
     }
@@ -106,10 +117,10 @@ mod test {
     #[test]
     fn try_hello_error_unexpected_contract_error() {
         let e = Env::default();
-        let contract_id = e.register_contract(None, Contract);
+        let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.try_hello(&4);
+        let res = client.try_hello(&Flag::E);
         assert_eq!(res, Err(Err(InvokeError::Contract(9))));
         assert!(!client.persisted());
     }
