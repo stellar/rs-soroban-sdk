@@ -35,7 +35,7 @@ impl Contract {
 #[test]
 fn test_success() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
     let client = ContractClient::new(&env, &contract_id);
 
     // See comment above about why this assertion is a match.
@@ -47,7 +47,7 @@ fn test_success() {
 #[test]
 fn test_error() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
     let client = ContractClient::new(&env, &contract_id);
 
     // See comment above about why this assertion is a match.
