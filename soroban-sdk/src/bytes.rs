@@ -102,6 +102,102 @@ macro_rules! bytesn {
     };
 }
 
+#[macro_export]
+macro_rules! impl_bytesn_repr {
+    ($elem: ident, $size: literal) => {
+        impl $elem {
+            pub fn from_bytes(bytes: BytesN<$size>) -> Self {
+                Self(bytes)
+            }
+
+            pub fn to_bytes(&self) -> BytesN<$size> {
+                self.0.clone()
+            }
+
+            pub fn as_bytes(&self) -> &BytesN<$size> {
+                &self.0
+            }
+
+            pub fn to_array(&self) -> [u8; $size] {
+                self.0.to_array()
+            }
+
+            pub fn from_array(&self, env: &Env, array: &[u8; $size]) -> Self {
+                Self(<BytesN<$size>>::from_array(env, array))
+            }
+
+            pub fn as_val(&self) -> &Val {
+                self.0.as_val()
+            }
+
+            pub fn to_val(&self) -> Val {
+                self.0.to_val()
+            }
+
+            pub fn as_object(&self) -> &BytesObject {
+                self.0.as_object()
+            }
+
+            pub fn to_object(&self) -> BytesObject {
+                self.0.to_object()
+            }
+        }
+
+        impl IntoVal<Env, Val> for $elem {
+            fn into_val(&self, e: &Env) -> Val {
+                self.0.into_val(e)
+            }
+        }
+
+        impl TryFromVal<Env, Val> for $elem {
+            type Error = ConversionError;
+
+            fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
+                let bytes = <BytesN<$size>>::try_from_val(env, val)?;
+                Ok($elem(bytes))
+            }
+        }
+
+        impl IntoVal<Env, BytesN<$size>> for $elem {
+            fn into_val(&self, _e: &Env) -> BytesN<$size> {
+                self.0.clone()
+            }
+        }
+
+        impl From<$elem> for Bytes {
+            fn from(v: $elem) -> Self {
+                v.0.into()
+            }
+        }
+
+        impl From<$elem> for BytesN<$size> {
+            fn from(v: $elem) -> Self {
+                v.0
+            }
+        }
+
+        impl Into<[u8; $size]> for $elem {
+            fn into(self) -> [u8; $size] {
+                self.0.into()
+            }
+        }
+
+        impl Eq for $elem {}
+
+        impl PartialEq for $elem {
+            fn eq(&self, other: &Self) -> bool {
+                self.0.partial_cmp(other.as_bytes()) == Some(Ordering::Equal)
+            }
+        }
+
+        impl Debug for $elem {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}({:?})", stringify!($elem), self.to_array())
+            }
+        }
+    };
+}
+
 /// Bytes is a contiguous growable array type containing `u8`s.
 ///
 /// The array is stored in the Host and available to the Guest through the
