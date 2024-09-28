@@ -262,7 +262,15 @@ impl DeployerWithAddress {
     /// Returns the deployed contract's address.
     #[deprecated(note = "use deploy_v2")]
     pub fn deploy(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) -> Address {
-        self.deploy_v2(wasm_hash, ())
+        let env = &self.env;
+        let address_obj = env
+            .create_contract(
+                self.address.to_object(),
+                wasm_hash.into_val(env).to_object(),
+                self.salt.to_object(),
+            )
+            .unwrap_infallible();
+        unsafe { Address::unchecked_new(env.clone(), address_obj) }
     }
 
     /// Deploy a contract that uses Wasm executable with provided hash.
