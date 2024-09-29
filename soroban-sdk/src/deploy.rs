@@ -27,7 +27,7 @@
 //!         // Deployed contract address is deterministic and can be accessed
 //!         // before deploying the contract.
 //!         let _ = deployer.deployed_address();
-//!         let contract_address = deployer.deploy(wasm_hash);
+//!         let contract_address = deployer.deploy_v2(wasm_hash, ());
 //!     }
 //! }
 //! #[test]
@@ -61,8 +61,10 @@
 //!         // Deployed contract address is deterministic and can be accessed
 //!         // before deploying the contract.
 //!         let _ = deployer.deployed_address();
-//!         let contract_address = deployer.deploy_with_constructor(
-//!              wasm_hash, (1_u32, 2_i64).into_val(&env));
+//!         let contract_address = deployer.deploy_v2(
+//!              wasm_hash,
+//!              (1_u32, 2_i64),
+//!         );
 //!     }
 //! }
 //! #[test]
@@ -82,8 +84,8 @@
 //! ```
 
 use crate::{
-    env::internal::Env as _, unwrap::UnwrapInfallible, Address, Bytes, BytesN, Env, IntoVal, Val,
-    Vec,
+    env::internal::Env as _, unwrap::UnwrapInfallible, Address, Bytes, BytesN, ConstructorArgs,
+    Env, IntoVal,
 };
 
 /// Deployer provides access to deploying contracts.
@@ -258,6 +260,7 @@ impl DeployerWithAddress {
     /// and provided salt.
     ///
     /// Returns the deployed contract's address.
+    #[deprecated(note = "use deploy_v2")]
     pub fn deploy(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) -> Address {
         let env = &self.env;
         let address_obj = env
@@ -272,24 +275,29 @@ impl DeployerWithAddress {
 
     /// Deploy a contract that uses Wasm executable with provided hash.
     ///
-    /// `constructor_args` will be passed to the contract's constructor.
+    /// The constructor args will be passed to the contract's constructor. Pass
+    /// `()` for contract's with no constructor or a constructor with zero
+    /// arguments.
     ///
     /// The address of the deployed contract is defined by the deployer address
     /// and provided salt.
     ///
     /// Returns the deployed contract's address.
-    pub fn deploy_with_constructor(
+    pub fn deploy_v2<A>(
         &self,
         wasm_hash: impl IntoVal<Env, BytesN<32>>,
-        constructor_args: Vec<Val>,
-    ) -> Address {
+        constructor_args: A,
+    ) -> Address
+    where
+        A: ConstructorArgs,
+    {
         let env = &self.env;
         let address_obj = env
             .create_contract_with_constructor(
                 self.address.to_object(),
                 wasm_hash.into_val(env).to_object(),
                 self.salt.to_object(),
-                constructor_args.to_object(),
+                constructor_args.into_val(env).to_object(),
             )
             .unwrap_infallible();
         unsafe { Address::unchecked_new(env.clone(), address_obj) }

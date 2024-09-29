@@ -819,6 +819,9 @@ mod string;
 pub use string::String;
 mod tuple;
 
+mod constructor_args;
+pub use constructor_args::ConstructorArgs;
+
 pub mod xdr;
 
 pub mod testutils;
