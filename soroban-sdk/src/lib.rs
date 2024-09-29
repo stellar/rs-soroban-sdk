@@ -47,10 +47,10 @@
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
-#[cfg(all(target_family = "wasm", target_feature = "reference-types",))]
+#[cfg(all(target_family = "wasm", target_feature = "reference-types"))]
 compile_error!("Compiler configuration is unsupported by Soroban Environment, because a Wasm target-feature is enabled that is not yet supported: reference-types. Use Rust 1.81 or older to get a compatible default configuration.");
 
-#[cfg(all(target_family = "wasm", target_feature = "multivalue",))]
+#[cfg(all(target_family = "wasm", target_feature = "multivalue"))]
 compile_error!("Compiler configuration is unsupported by Soroban Environment, because a Wasm target-feature is enabled that is not yet supported: multivalue. Use Rust 1.81 or older to get a compatible default configuration.");
 
 // When used in a no_std contract, provide a panic handler as one is required.
