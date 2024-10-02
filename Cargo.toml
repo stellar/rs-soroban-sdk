@@ -12,16 +12,16 @@ members = [
 ]
 
 [workspace.package]
-version = "22.0.0-rc.1"
+version = "22.0.0-rc.1.1"
 rust-version = "1.79.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "22.0.0-rc.1", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "22.0.0-rc.1", path = "soroban-sdk-macros" }
-soroban-spec = { version = "22.0.0-rc.1", path = "soroban-spec" }
-soroban-spec-rust = { version = "22.0.0-rc.1", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "22.0.0-rc.1", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "22.0.0-rc.1", path = "soroban-token-sdk" }
+soroban-sdk = { version = "22.0.0-rc.1.1", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "22.0.0-rc.1.1", path = "soroban-sdk-macros" }
+soroban-spec = { version = "22.0.0-rc.1.1", path = "soroban-spec" }
+soroban-spec-rust = { version = "22.0.0-rc.1.1", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "22.0.0-rc.1.1", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "22.0.0-rc.1.1", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
 version = "=22.0.0-rc.1.1"
