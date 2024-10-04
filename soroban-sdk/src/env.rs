@@ -1587,6 +1587,7 @@ impl Env {
                 .unwrap()
                 .0
                 .into_iter()
+                .filter(|e| e.event.type_ == xdr::ContractEventType::Contract)
                 .map(Into::into)
                 .collect(),
         )
