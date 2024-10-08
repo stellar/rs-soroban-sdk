@@ -126,6 +126,24 @@ pub fn derive_pub_fn(
         return Err(quote! { #(#compile_errors)* });
     }
 
+    let testutils_only_code = if cfg!(not(feature = "testutils")) {
+        Some(quote! {
+            #[deprecated(note = #deprecated_note)]
+            pub fn invoke_raw_slice(
+                env: #crate_path::Env,
+                args: &[#crate_path::Val],
+            ) -> #crate_path::Val {
+                if args.len() != #arg_count {
+                    panic!("invalid number of input arguments: {} expected, got {}", #arg_count, args.len());
+                }
+                #[allow(deprecated)]
+                invoke_raw(env, #(#slice_args),*)
+            }
+        })
+    } else {
+        None
+    };
+
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
@@ -146,18 +164,7 @@ pub fn derive_pub_fn(
                 )
             }
 
-            #[cfg(any(test, feature = "testutils"))]
-            #[deprecated(note = #deprecated_note)]
-            pub fn invoke_raw_slice(
-                env: #crate_path::Env,
-                args: &[#crate_path::Val],
-            ) -> #crate_path::Val {
-                if args.len() != #arg_count {
-                    panic!("invalid number of input arguments: {} expected, got {}", #arg_count, args.len());
-                }
-                #[allow(deprecated)]
-                invoke_raw(env, #(#slice_args),*)
-            }
+            #testutils_only_code
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
@@ -178,6 +185,10 @@ pub fn derive_contract_function_registration_ctor<'a>(
     trait_ident: Option<&Ident>,
     methods: impl Iterator<Item = &'a syn::ImplItemFn>,
 ) -> TokenStream2 {
+    if cfg!(not(feature = "testutils")) {
+        return quote!();
+    }
+
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
@@ -193,7 +204,6 @@ pub fn derive_contract_function_registration_ctor<'a>(
 
     quote! {
         #[doc(hidden)]
-        #[cfg(any(test, feature = "testutils"))]
         #[#crate_path::reexports_for_macros::ctor::ctor]
         #[allow(non_snake_case)]
         fn #ctor_ident() {
