@@ -126,7 +126,7 @@ pub fn derive_pub_fn(
         return Err(quote! { #(#compile_errors)* });
     }
 
-    let testutils_only_code = if cfg!(not(feature = "testutils")) {
+    let testutils_only_code = if cfg!(feature = "testutils") {
         Some(quote! {
             #[deprecated(note = #deprecated_note)]
             pub fn invoke_raw_slice(
