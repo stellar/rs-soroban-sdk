@@ -299,6 +299,14 @@ impl TryFromVal<Env, Bytes> for Val {
     }
 }
 
+impl TryFromVal<Env, &Bytes> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&Bytes) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl From<Bytes> for Val {
     #[inline(always)]
     fn from(v: Bytes) -> Self {
@@ -1009,6 +1017,14 @@ impl<const N: usize> TryFromVal<Env, BytesN<N>> for Val {
     type Error = ConversionError;
 
     fn try_from_val(_env: &Env, v: &BytesN<N>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
+impl<const N: usize> TryFromVal<Env, &BytesN<N>> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&BytesN<N>) -> Result<Self, Self::Error> {
         Ok(v.to_val())
     }
 }
