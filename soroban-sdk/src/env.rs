@@ -1587,6 +1587,17 @@ impl Env {
                 .unwrap()
                 .0
                 .into_iter()
+                .filter(|e| match e.event.type_ {
+                    // Keep only system and contract events, because event
+                    // snapshots are used in test snapshots, and intended to be
+                    // stable over time because the goal is to record meaningful
+                    // observable behaviors. Diagnostic events are observable,
+                    // but events have no stability guarantees and are intended
+                    // to be used by developers when debugging, tracing, and
+                    // observing, not by systems that integrate.
+                    xdr::ContractEventType::System | xdr::ContractEventType::Contract => true,
+                    xdr::ContractEventType::Diagnostic => false,
+                })
                 .map(Into::into)
                 .collect(),
         )
