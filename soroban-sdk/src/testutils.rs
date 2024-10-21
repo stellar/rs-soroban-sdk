@@ -47,6 +47,7 @@ where
 }
 
 impl<'w> Register for &'w [u8] {
+    // TODO: How to make this an open type, for any IntoVal<Vec<Val>>?
     type ConstructorArgs = ();
 
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
