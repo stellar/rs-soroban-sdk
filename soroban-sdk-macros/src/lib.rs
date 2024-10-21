@@ -171,6 +171,12 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
             #[doc(hidden)]
             impl #crate_path::testutils::ContractFunctionSet for #ty {
+                // TODO: How to set this type? At the moment it is set by the
+                // `#[contract]` macro, but when that macro is used the
+                // constructor is not known. The constructor is known later when
+                // the `#[contractimpl]` macro is used.
+                type ConstructorArgs = ();
+
                 fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
                     #fn_set_registry_ident::call(func, env, args)
                 }

@@ -24,6 +24,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 pub use crate::env::EnvTestConfig;
 
 pub trait Register {
+    type ConstructorArgs;
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
     where
         I: Into<Option<&'i crate::Address>>,
@@ -34,6 +35,8 @@ impl<C> Register for C
 where
     C: ContractFunctionSet + 'static,
 {
+    type ConstructorArgs = C::ConstructorArgs;
+
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
     where
         I: Into<Option<&'i crate::Address>>,
@@ -44,6 +47,8 @@ where
 }
 
 impl<'w> Register for &'w [u8] {
+    type ConstructorArgs = ();
+
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
     where
         I: Into<Option<&'i crate::Address>>,
@@ -238,8 +243,11 @@ pub type ContractFunctionF = dyn Send + Sync + Fn(Env, &[Val]) -> Val;
 pub trait ContractFunctionRegister {
     fn register(name: &'static str, func: &'static ContractFunctionF);
 }
+
 #[doc(hidden)]
 pub trait ContractFunctionSet {
+    type ConstructorArgs;
+
     fn call(&self, func: &str, env: Env, args: &[Val]) -> Option<Val>;
 }
 

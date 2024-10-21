@@ -627,10 +627,10 @@ impl Env {
     ///     let contract_id = env.register(WASM, ());
     /// }
     /// ```
-    pub fn register<'a, C, A>(&self, contract: C, constructor_args: A) -> Address
+    pub fn register<'a, C>(&self, contract: C, constructor_args: C::ConstructorArgs) -> Address
     where
         C: Register,
-        A: ConstructorArgs,
+        C::ConstructorArgs: ConstructorArgs,
     {
         contract.register(self, None, constructor_args)
     }
