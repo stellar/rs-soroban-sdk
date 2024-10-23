@@ -4,7 +4,7 @@ use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 /// Ledger retrieves information about the current ledger.
 ///
 /// For more details about the ledger and the ledger header that the values in the Ledger are derived from, see:
-///  - https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers
+///  - <https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers>
 ///
 /// ### Examples
 ///
@@ -83,7 +83,7 @@ impl Ledger {
     /// 00:00:00 UTC.
     ///
     /// For more details see:
-    ///  - https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers#close-time
+    ///  - <https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers#close-time>
     pub fn timestamp(&self) -> u64 {
         internal::Env::get_ledger_timestamp(self.env())
             .unwrap_infallible()

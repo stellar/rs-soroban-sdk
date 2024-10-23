@@ -313,29 +313,19 @@ fn quote_arbitrary(
     arbitrary_ctor: TokenStream2,
 ) -> TokenStream2 {
     quote! {
-        // This allows us to create a scope to import std and arbitrary, while
-        // also keeping everything from the current scope. This is better than a
-        // module because: modules inside functions have surprisingly
-        // inconsistent scoping rules and visibility management is harder.
-        const _: () = {
-            // derive(Arbitrary) expects these two to be in scope
-            use #path::testutils::arbitrary::std;
-            use #path::testutils::arbitrary::arbitrary;
+        #[derive(#path::testutils::arbitrary::arbitrary::Arbitrary)]
+        #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+        #vis #arbitrary_type_decl
 
-            #[derive(#path::testutils::arbitrary::arbitrary::Arbitrary)]
-            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-            #vis #arbitrary_type_decl
+        impl #path::testutils::arbitrary::SorobanArbitrary for #ident {
+            type Prototype = #arbitrary_type_ident;
+        }
 
-            impl #path::testutils::arbitrary::SorobanArbitrary for #ident {
-                type Prototype = #arbitrary_type_ident;
+        impl #path::TryFromVal<#path::Env, #arbitrary_type_ident> for #ident {
+            type Error = #path::ConversionError;
+            fn try_from_val(env: &#path::Env, v: &#arbitrary_type_ident) -> std::result::Result<Self, Self::Error> {
+                Ok(#arbitrary_ctor)
             }
-
-            impl #path::TryFromVal<#path::Env, #arbitrary_type_ident> for #ident {
-                type Error = #path::ConversionError;
-                fn try_from_val(env: &#path::Env, v: &#arbitrary_type_ident) -> std::result::Result<Self, Self::Error> {
-                    Ok(#arbitrary_ctor)
-                }
-            }
-        };
+        }
     }
 }

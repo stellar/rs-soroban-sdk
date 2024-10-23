@@ -30,7 +30,7 @@ readme:
 	cd soroban-sdk \
 		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
 		&& cat ../target/doc/soroban_sdk.json \
-		| jq -r '.index[.root].docs' \
+		| jq -r '.index[.root|tostring].docs' \
 		> README.md
 
 watch:
