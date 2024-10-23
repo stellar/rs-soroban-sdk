@@ -6,6 +6,7 @@ CARGO_DOC_ARGS?=--open
 
 doc: fmt
 	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils,hazmat
+	# TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
 	cargo +nightly-2024-10-10 doc -p soroban-sdk --no-deps --all-features $(CARGO_DOC_ARGS)
 
 test: fmt build
@@ -23,11 +24,11 @@ check: build fmt
 	cargo hack check --release --target wasm32-unknown-unknown
 
 build-fuzz:
-	# Allow warnings when using nightly until https://github.com/rust-lang/rust/issues/131643 is fixed.
+	# TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
 	cd tests/fuzz/fuzz && cargo +nightly-2024-10-10 fuzz check
 
 readme:
-	# Allow warnings when using nightly until https://github.com/rust-lang/rust/issues/131643 is fixed.
+	# TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
 	cd soroban-sdk \
 		&& cargo +nightly-2024-10-10 rustdoc -- -Zunstable-options -wjson \
 		&& cat ../target/doc/soroban_sdk.json \
