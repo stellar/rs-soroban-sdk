@@ -80,10 +80,16 @@ fn test_bls_g2() {
     let vp: Vec<G2Affine> = vec![&env, one.clone(), one.clone()];
     let vs: Vec<Fr> = vec![
         &env,
-        U256::from_u32(&env, 1).into(),
-        U256::from_u32(&env, 0).into(),
+        Fr::from_bytes(bytesn!(
+            &env,
+            0x0000000000000000000000000000000000000000000000000000000000000001
+        )),
+        Fr::from_bytes(bytesn!(
+            &env,
+            0x0000000000000000000000000000000000000000000000000000000000000000
+        )),
     ];
-    let res = bls12_381.g2_msm(vp, vs);
+    let res = bls12_381.g2_msm(vp.clone(), vs);
     assert_eq!(res, one);
 
     // map to curve (test case from https://datatracker.ietf.org/doc/html/rfc9380)

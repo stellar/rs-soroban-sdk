@@ -198,6 +198,14 @@ impl Fr {
         &self.0
     }
 
+    pub fn from_bytes(bytes: BytesN<32>) -> Self {
+        U256::from_be_bytes(bytes.env(), bytes.as_ref()).into()
+    }
+
+    pub fn to_bytes(&self) -> BytesN<32> {
+        self.as_u256().to_be_bytes().try_into().unwrap_optimized()
+    }
+
     pub fn as_val(&self) -> &Val {
         self.0.as_val()
     }
