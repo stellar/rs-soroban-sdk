@@ -1317,6 +1317,7 @@ dependencies = [
  "proptest",
  "proptest-arbitrary-interop",
  "rand",
+ "rustc_version",
  "serde",
  "serde_json",
  "soroban-env-guest",
