@@ -24,19 +24,19 @@ soroban-ledger-snapshot = { version = "22.0.0-rc.2.1", path = "soroban-ledger-sn
 soroban-token-sdk = { version = "22.0.0-rc.2.1", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
-version = "=22.0.0-rc.2"
+version = "=22.0.0-rc.3"
 #git = "https://github.com/stellar/rs-soroban-env"
-#rev = "60e9be87a157cc9b5132056e1314faabd485b5fb"
+#rev = "8911531dfb9a4331bc308ff8934c2223bc4e81ed"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=22.0.0-rc.2"
+version = "=22.0.0-rc.3"
 #git = "https://github.com/stellar/rs-soroban-env"
-#rev = "60e9be87a157cc9b5132056e1314faabd485b5fb"
+#rev = "8911531dfb9a4331bc308ff8934c2223bc4e81ed"
 
 [workspace.dependencies.soroban-env-host]
-version = "=22.0.0-rc.2"
+version = "=22.0.0-rc.3"
 #git = "https://github.com/stellar/rs-soroban-env"
-#rev = "60e9be87a157cc9b5132056e1314faabd485b5fb"
+#rev = "8911531dfb9a4331bc308ff8934c2223bc4e81ed"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.9"
