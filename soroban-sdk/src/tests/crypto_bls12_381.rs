@@ -1,6 +1,6 @@
 use crate::{
     bytes, bytesn,
-    crypto::bls12_381::{Bls12_381, Fp, Fp2, G1Affine, G2Affine},
+    crypto::bls12_381::{Bls12_381, Fp, Fp2, Fr, G1Affine, G2Affine},
     vec, Bytes, Env, Vec, U256,
 };
 
@@ -25,12 +25,16 @@ fn test_bls_g1() {
     assert!(res.is_some_and(|v| v == one));
 
     // mul
-    let res = bls12_381.g1_mul(&one, &U256::from_u32(&env, 0));
+    let res = bls12_381.g1_mul(&one, &U256::from_u32(&env, 0).into());
     assert_eq!(res, zero);
 
     // msm
     let vp: Vec<G1Affine> = vec![&env, one.clone(), one.clone()];
-    let vs: Vec<U256> = vec![&env, U256::from_u32(&env, 1), U256::from_u32(&env, 0)];
+    let vs: Vec<Fr> = vec![
+        &env,
+        U256::from_u32(&env, 1).into(),
+        U256::from_u32(&env, 0).into(),
+    ];
     let res = bls12_381.g1_msm(vp, vs);
     assert_eq!(res, one);
 
@@ -69,13 +73,23 @@ fn test_bls_g2() {
     assert!(res.is_some_and(|v| v == one));
 
     // mul
-    let res = bls12_381.g2_mul(&one, &U256::from_u32(&env, 0));
+    let res = bls12_381.g2_mul(&one, &U256::from_u32(&env, 0).into());
     assert_eq!(res, zero);
 
     // msm
     let vp: Vec<G2Affine> = vec![&env, one.clone(), one.clone()];
-    let vs: Vec<U256> = vec![&env, U256::from_u32(&env, 1), U256::from_u32(&env, 0)];
-    let res = bls12_381.g2_msm(vp, vs);
+    let vs: Vec<Fr> = vec![
+        &env,
+        Fr::from_bytes(bytesn!(
+            &env,
+            0x0000000000000000000000000000000000000000000000000000000000000001
+        )),
+        Fr::from_bytes(bytesn!(
+            &env,
+            0x0000000000000000000000000000000000000000000000000000000000000000
+        )),
+    ];
+    let res = bls12_381.g2_msm(vp.clone(), vs);
     assert_eq!(res, one);
 
     // map to curve (test case from https://datatracker.ietf.org/doc/html/rfc9380)
@@ -125,24 +139,33 @@ fn test_fr_arithmetic() {
         ),
     );
     assert_eq!(
-        bls12_381.fr_add(&U256::from_u32(&env, 2), &U256::from_u32(&env, 3)),
-        U256::from_u32(&env, 5)
+        bls12_381.fr_add(
+            &U256::from_u32(&env, 2).into(),
+            &U256::from_u32(&env, 3).into()
+        ),
+        U256::from_u32(&env, 5).into()
     );
     assert_eq!(
-        bls12_381.fr_sub(&U256::from_u32(&env, 2), &U256::from_u32(&env, 3)),
-        modulus.sub(&U256::from_u32(&env, 1))
+        bls12_381.fr_sub(
+            &U256::from_u32(&env, 2).into(),
+            &U256::from_u32(&env, 3).into()
+        ),
+        modulus.sub(&U256::from_u32(&env, 1)).into()
     );
     assert_eq!(
-        bls12_381.fr_mul(&U256::from_u32(&env, 2), &U256::from_u32(&env, 3)),
-        U256::from_u32(&env, 6)
+        bls12_381.fr_mul(
+            &U256::from_u32(&env, 2).into(),
+            &U256::from_u32(&env, 3).into()
+        ),
+        U256::from_u32(&env, 6).into()
     );
     assert_eq!(
-        bls12_381.fr_pow(&U256::from_u32(&env, 5), 2),
-        U256::from_u32(&env, 25)
+        bls12_381.fr_pow(&U256::from_u32(&env, 5).into(), 2),
+        U256::from_u32(&env, 25).into()
     );
-    let inverse_13 = bls12_381.fr_inv(&U256::from_u32(&env, 13));
+    let inverse_13 = bls12_381.fr_inv(&U256::from_u32(&env, 13).into());
     assert_eq!(
-        bls12_381.fr_mul(&inverse_13, &U256::from_u32(&env, 13)),
-        U256::from_u32(&env, 1)
+        bls12_381.fr_mul(&inverse_13, &U256::from_u32(&env, 13).into()),
+        U256::from_u32(&env, 1).into()
     );
 }
