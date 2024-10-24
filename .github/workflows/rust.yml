@@ -138,6 +138,8 @@ jobs:
         name: cargo-fuzz
         version: 0.11.2
     - run: make build-fuzz
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
 
   docs:
     runs-on: ubuntu-latest
@@ -147,6 +149,8 @@ jobs:
     # TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
     - run: rustup install nightly-2024-10-10
     - run: make doc
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
 
   readme:
     runs-on: ubuntu-latest
