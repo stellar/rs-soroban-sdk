@@ -1,6 +1,7 @@
 extern crate proc_macro;
 
 mod arbitrary;
+mod derive_args;
 mod derive_client;
 mod derive_enum;
 mod derive_enum_int;
@@ -15,6 +16,7 @@ mod path;
 mod symbol;
 mod syn_ext;
 
+use derive_args::{derive_args_impl, derive_args_type};
 use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
@@ -136,8 +138,11 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
     let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
+    let args_ident = format!("{ty_str}Args");
+    let contract_args = derive_args_type(&ty_str, &args_ident);
     let mut output = quote! {
         #input2
+        #contract_args
         #client
     };
     if cfg!(feature = "testutils") {
@@ -206,6 +211,18 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
 
+    // TODO: Use imp.trait_ in generating the args ident, to create a unique
+    // args for each trait impl for a contract, to avoid conflicts.
+    let args_ident = if let Type::Path(path) = &**ty {
+        path.path
+            .segments
+            .last()
+            .map(|name| format!("{}Args", name.ident))
+    } else {
+        None
+    }
+    .unwrap_or_else(|| "Args".to_string());
+
     // TODO: Use imp.trait_ in generating the client ident, to create a unique
     // client for each trait impl for a contract, to avoid conflicts.
     let client_ident = if let Type::Path(path) = &**ty {
@@ -239,6 +256,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     match derived {
         Ok(derived_ok) => {
             let mut output = quote! {
+                #[#crate_path::contractargs(crate_path = #crate_path_str, name = #args_ident, impl_only = true)]
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
                 #imp
@@ -531,6 +549,40 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
     // Render bytes.
     let contents_lit = Literal::byte_string(&wasm);
     quote! { #contents_lit }.into()
+}
+
+#[derive(Debug, FromMeta)]
+struct ContractArgsArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
+    name: String,
+    #[darling(default)]
+    impl_only: bool,
+}
+
+#[proc_macro_attribute]
+pub fn contractargs(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
+    let args = match ContractArgsArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let input2: TokenStream2 = input.clone().into();
+    let item = parse_macro_input!(input as HasFnsItem);
+    let methods: Vec<_> = item.fns();
+    let args_type = (!args.impl_only).then(|| derive_args_type(&item.name(), &args.name));
+    let args_impl = derive_args_impl(&args.crate_path, &args.name, &methods);
+    quote! {
+        #input2
+        #args_type
+        #args_impl
+    }
+    .into()
 }
 
 #[derive(Debug, FromMeta)]

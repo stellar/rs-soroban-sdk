@@ -9,7 +9,7 @@ use syn::{
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
-    Pat, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
+    Lifetime, Pat, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
 };
 
 /// Gets methods from the implementation that have public visibility. For
@@ -49,7 +49,7 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
 
 /// Returns a clone of FnArg with the type as a reference if the arg is a typed
 /// arg and its type is not already a reference.
-pub fn fn_arg_make_ref(arg: &FnArg) -> FnArg {
+pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
         if !matches!(*pat_type.ty, Type::Reference(_)) {
             return FnArg::Typed(PatType {
@@ -58,7 +58,7 @@ pub fn fn_arg_make_ref(arg: &FnArg) -> FnArg {
                 colon_token: pat_type.colon_token,
                 ty: Box::new(Type::Reference(TypeReference {
                     and_token: And::default(),
-                    lifetime: None,
+                    lifetime: lifetime.cloned(),
                     mutability: None,
                     elem: pat_type.ty.clone(),
                 })),
