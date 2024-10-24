@@ -37,7 +37,7 @@ impl Contract {
 #[test]
 fn test_constructor() {
     let env = Env::default();
-    let contract_id = env.register(Contract, ContractArgs::__constructor(100_u32, 1000_i64));
+    let contract_id = env.register(Contract, ContractArgs::__constructor(&100_u32, &1000_i64));
     let client = ContractClient::new(&env, &contract_id);
     assert_eq!(client.get_data(&DataKey::Persistent(100)), Some(1000));
     assert_eq!(client.get_data(&DataKey::Temp(200)), Some(2000));
