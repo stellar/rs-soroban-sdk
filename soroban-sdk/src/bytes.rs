@@ -122,7 +122,7 @@ macro_rules! impl_bytesn_repr {
                 self.0.to_array()
             }
 
-            pub fn from_array(&self, env: &Env, array: &[u8; $size]) -> Self {
+            pub fn from_array(env: &Env, array: &[u8; $size]) -> Self {
                 Self(<BytesN<$size>>::from_array(env, array))
             }
 
