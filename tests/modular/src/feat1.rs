@@ -1,6 +1,7 @@
 use soroban_sdk::contractimpl;
 
 use crate::Contract;
+use crate::ContractArgs;
 use crate::ContractClient;
 
 #[contractimpl]
