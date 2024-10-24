@@ -1,21 +1,22 @@
+use itertools::MultiUnzip;
 use proc_macro2::{Span, TokenStream};
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, Lifetime, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, Lifetime, Type, TypePath, TypeReference};
 
 use crate::syn_ext;
 
 pub fn derive_args_type(ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
-    // Render the Client.
-    let args_doc = format!("{name} is a type for buildings function args defined in {ty_str}.");
-    let args_ident = format_ident!("{}", name);
+    let args_doc =
+        format!("{name} is a type for building arg lists for functions defined in {ty_str}.");
+    let args_ident = format_ident!("{name}");
     quote! {
         #[doc = #args_doc]
         pub struct #args_ident;
     }
 }
 
-pub fn derive_args_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
+pub fn derive_args_impl(name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
     // Map the traits methods to methods for the Args.
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
@@ -49,7 +50,7 @@ pub fn derive_args_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) -> T
 
             // Map all remaining inputs.
             let fn_input_lifetime = Lifetime::new("'i", Span::call_site());
-            let (fn_input_names, fn_input_types): (Vec<_>, Vec<_>) = f
+            let (fn_input_names, fn_input_types, fn_input_fn_args): (Vec<_>, Vec<_>, Vec<_>) = f
                 .inputs
                 .iter()
                 .skip(if env_input.is_some() { 1 } else { 0 })
@@ -61,14 +62,25 @@ pub fn derive_args_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) -> T
                             format_ident!("_")
                         }
                     };
-                    (ident, syn_ext::fn_arg_make_ref(t, Some(&fn_input_lifetime)))
+                    let ty = match syn_ext::fn_arg_ref_type(t, Some(&fn_input_lifetime)) {
+                        Ok(ty) => Some(ty),
+                        Err(e) => {
+                            errors.push(e);
+                            None
+                        }
+                    };
+                    (
+                        ident,
+                        ty,
+                        syn_ext::fn_arg_make_ref(t, Some(&fn_input_lifetime)),
+                    )
                 })
-                .unzip();
+                .multiunzip();
 
             quote! {
                 // TODO: Make the fn_input_types an impl Borrow
-                pub fn #fn_ident<#fn_input_lifetime>(#(#fn_input_types),*)
-                    -> impl #crate_path::IntoVal<#crate_path::Env, #crate_path::Vec<#crate_path::Val>> + #fn_input_lifetime
+                pub fn #fn_ident<#fn_input_lifetime>(#(#fn_input_fn_args),*)
+                    -> (#(#fn_input_types,)*)
                 {
                     (#(#fn_input_names,)*)
                 }

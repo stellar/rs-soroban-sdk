@@ -47,6 +47,27 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     ))
 }
 
+/// Returns a clone of the type from the FnArg.
+pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type, Error> {
+    if let FnArg::Typed(pat_type) = arg {
+        if !matches!(*pat_type.ty, Type::Reference(_)) {
+            Ok(Type::Reference(TypeReference {
+                and_token: And::default(),
+                lifetime: lifetime.cloned(),
+                mutability: None,
+                elem: pat_type.ty.clone(),
+            }))
+        } else {
+            Ok((*pat_type.ty).clone())
+        }
+    } else {
+        Err(Error::new(
+            arg.span(),
+            "argument in this form is not supported, use simple named arguments only",
+        ))
+    }
+}
+
 /// Returns a clone of FnArg with the type as a reference if the arg is a typed
 /// arg and its type is not already a reference.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {

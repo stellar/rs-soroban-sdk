@@ -256,7 +256,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     match derived {
         Ok(derived_ok) => {
             let mut output = quote! {
-                #[#crate_path::contractargs(crate_path = #crate_path_str, name = #args_ident, impl_only = true)]
+                #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
                 #imp
@@ -553,8 +553,6 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
 
 #[derive(Debug, FromMeta)]
 struct ContractArgsArgs {
-    #[darling(default = "default_crate_path")]
-    crate_path: Path,
     name: String,
     #[darling(default)]
     impl_only: bool,
@@ -576,7 +574,7 @@ pub fn contractargs(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as HasFnsItem);
     let methods: Vec<_> = item.fns();
     let args_type = (!args.impl_only).then(|| derive_args_type(&item.name(), &args.name));
-    let args_impl = derive_args_impl(&args.crate_path, &args.name, &methods);
+    let args_impl = derive_args_impl(&args.name, &methods);
     quote! {
         #input2
         #args_type
