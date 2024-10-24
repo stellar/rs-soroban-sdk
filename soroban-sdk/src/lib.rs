@@ -594,8 +594,6 @@ pub use soroban_sdk_macros::contractmeta;
 pub use soroban_sdk_macros::contracttype;
 
 /// Generates a type that helps build function args for a contract trait.
-///
-/// TODO: Docs and examples.
 pub use soroban_sdk_macros::contractargs;
 
 /// Generates a client for a contract trait.
