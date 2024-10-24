@@ -78,7 +78,6 @@ pub fn derive_args_impl(name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
                 .multiunzip();
 
             quote! {
-                // TODO: Make the fn_input_types an impl Borrow
                 pub fn #fn_ident<#fn_input_lifetime>(#(#fn_input_fn_args),*)
                     -> (#(#fn_input_types,)*)
                 {
