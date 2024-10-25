@@ -117,7 +117,7 @@ jobs:
       run: |
         cd target/wasm32-unknown-unknown/release/ && \
           for i in *.wasm ; do \
-            ls -l "$$i"; \
+            ls -l "$i"; \
           done
     - if: "!matrix.sys.cdylib-cross-compile-workaround"
       name: Build for native
