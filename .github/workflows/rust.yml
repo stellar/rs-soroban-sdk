@@ -113,6 +113,12 @@ jobs:
       run: rm -fr **/test_snapshots
     - name: Build for wasm
       run: cargo-hack hack build --target wasm32-unknown-unknown --profile release
+    - name: Wasm Size
+      run: |
+        cd target/wasm32-unknown-unknown/release/ && \
+          for i in *.wasm ; do \
+            ls -l "$$i"; \
+          done
     - if: "!matrix.sys.cdylib-cross-compile-workaround"
       name: Build for native
       run: cargo-hack hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
@@ -138,6 +144,8 @@ jobs:
         name: cargo-fuzz
         version: 0.11.2
     - run: make build-fuzz
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
 
   docs:
     runs-on: ubuntu-latest
@@ -147,6 +155,8 @@ jobs:
     # TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
     - run: rustup install nightly-2024-10-10
     - run: make doc
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
 
   readme:
     runs-on: ubuntu-latest
