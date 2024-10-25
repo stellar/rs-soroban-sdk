@@ -113,6 +113,12 @@ jobs:
       run: rm -fr **/test_snapshots
     - name: Build for wasm
       run: cargo-hack hack build --target wasm32-unknown-unknown --profile release
+    - name: Wasm Size
+      run: |
+        cd target/wasm32-unknown-unknown/release/ && \
+          for i in *.wasm ; do \
+            ls -l "$$i"; \
+          done
     - if: "!matrix.sys.cdylib-cross-compile-workaround"
       name: Build for native
       run: cargo-hack hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
