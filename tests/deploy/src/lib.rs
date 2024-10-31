@@ -17,7 +17,6 @@ impl Contract {
         env.deployer()
             .with_current_contract(BytesN::from_array(env, &[0; 32]))
             .deploy_v2(hash, deployable::Args::__constructor(&1, &2));
-        // .deploy_v2(hash, (1u32, 2u64));
     }
 }
 
