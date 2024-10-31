@@ -45,7 +45,7 @@
 #![allow(dead_code)]
 
 #[cfg(feature = "docs")]
-pub mod _releasenotes;
+pub mod _migrating;
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
