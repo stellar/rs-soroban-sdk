@@ -613,7 +613,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = env.register(Contract, ContractArgs::_constructor(&123,));
+    ///     let contract_id = env.register(Contract, ContractArgs::__constructor(&123,));
     /// }
     /// ```
     /// Register a contract wasm, by specifying the wasm bytes:
