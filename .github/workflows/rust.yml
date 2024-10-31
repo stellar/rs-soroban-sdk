@@ -169,7 +169,6 @@ jobs:
     - run: git add -N . && git diff HEAD --exit-code
 
   release-notes:
-    if: startsWith(github.head_ref, 'release/')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
