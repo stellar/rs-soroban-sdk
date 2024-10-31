@@ -1202,6 +1202,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "22.0.0-rc.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bd0c80a1fe171e75f8d745f17975a73927d44ecd#bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1212,6 +1213,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "22.0.0-rc.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bd0c80a1fe171e75f8d745f17975a73927d44ecd#bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1229,6 +1231,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "22.0.0-rc.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bd0c80a1fe171e75f8d745f17975a73927d44ecd#bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1237,6 +1240,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "22.0.0-rc.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bd0c80a1fe171e75f8d745f17975a73927d44ecd#bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -1271,6 +1275,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "22.0.0-rc.3"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=bd0c80a1fe171e75f8d745f17975a73927d44ecd#bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 dependencies = [
  "itertools",
  "proc-macro2",
