@@ -454,9 +454,10 @@ use crate::{
     auth,
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
-        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Snapshot,
+        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
+        StellarAssetContract, StellarAssetIssuer,
     },
-    Bytes, BytesN,
+    Bytes, BytesN, ConstructorArgs,
 };
 #[cfg(any(test, feature = "testutils"))]
 use core::{cell::RefCell, cell::RefMut};
@@ -487,6 +488,7 @@ impl Env {
         f((*self.test_state.generators).borrow_mut())
     }
 
+    /// Create an Env with the test config.
     pub fn new_with_config(config: EnvTestConfig) -> Env {
         struct EmptySnapshotSource();
 
@@ -502,7 +504,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let info = internal::LedgerInfo {
-            protocol_version: 21,
+            protocol_version: 22,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],
@@ -513,6 +515,11 @@ impl Env {
         };
 
         Env::new_for_testutils(config, rf, None, info, None)
+    }
+
+    /// Change the test config of an Env.
+    pub fn set_config(&mut self, config: EnvTestConfig) {
+        self.test_state.config = config;
     }
 
     /// Used by multiple constructors to configure test environments consistently.
@@ -571,13 +578,151 @@ impl Env {
 
     /// Register a contract with the [Env] for testing.
     ///
+    /// Pass the contract type when the contract is defined in the current crate
+    /// and is being registered natively. Pass the contract wasm bytes when the
+    /// contract has been loaded as wasm.
+    ///
+    /// Pass the arguments for the contract's constructor, or `()` if none.
+    ///
+    /// Returns the address of the registered contract that is the same as the
+    /// contract id passed in.
+    ///
+    /// If you need to specify the address the contract should be registered at,
+    /// use [`Env::register_at`].
+    ///
+    /// ### Examples
+    /// Register a contract defined in the current crate, by specifying the type
+    /// name:
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, BytesN, Env, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn __constructor(_env: Env, _input: u32) {
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(Contract, (123_u32,));
+    /// }
+    /// ```
+    /// Register a contract wasm, by specifying the wasm bytes:
+    /// ```
+    /// use soroban_sdk::{testutils::Address as _, Address, BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(WASM, ());
+    /// }
+    /// ```
+    pub fn register<'a, C, A>(&self, contract: C, constructor_args: A) -> Address
+    where
+        C: Register,
+        A: ConstructorArgs,
+    {
+        contract.register(self, None, constructor_args)
+    }
+
+    /// Register a contract with the [Env] for testing.
+    ///
+    /// Passing a contract ID for the first arguments registers the contract
+    /// with that contract ID.
+    ///
+    /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
+    ///
+    /// Pass the contract type when the contract is defined in the current crate
+    /// and is being registered natively. Pass the contract wasm bytes when the
+    /// contract has been loaded as wasm.
+    ///
+    /// Returns the address of the registered contract that is the same as the
+    /// contract id passed in.
+    ///
+    /// ### Examples
+    /// Register a contract defined in the current crate, by specifying the type
+    /// name:
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, BytesN, Env, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn __constructor(_env: Env, _input: u32) {
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = Address::generate(&env);
+    ///     env.register_at(&contract_id, Contract, (123_u32,));
+    /// }
+    /// ```
+    /// Register a contract wasm, by specifying the wasm bytes:
+    /// ```
+    /// use soroban_sdk::{testutils::Address as _, Address, BytesN, Env};
+    ///
+    /// const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = Address::generate(&env);
+    ///     env.register_at(&contract_id, WASM, ());
+    /// }
+    /// ```
+    pub fn register_at<C, A>(
+        &self,
+        contract_id: &Address,
+        contract: C,
+        constructor_args: A,
+    ) -> Address
+    where
+        C: Register,
+        A: ConstructorArgs,
+    {
+        contract.register(self, contract_id, constructor_args)
+    }
+
+    /// Register a contract with the [Env] for testing.
+    ///
     /// Passing a contract ID for the first arguments registers the contract
     /// with that contract ID. Providing `None` causes the Env to generate a new
     /// contract ID that is assigned to the contract.
     ///
-    /// Registering a contract that is already registered replaces it.
+    /// If a contract has a constructor defined, then it will be called with
+    /// no arguments. If a constructor takes arguments, use `register`.
     ///
-    /// Returns the contract ID of the registered contract.
+    /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
+    ///
+    /// Returns the address of the registered contract.
     ///
     /// ### Examples
     /// ```
@@ -601,10 +746,41 @@ impl Env {
     ///     let contract_id = env.register_contract(None, HelloContract);
     /// }
     /// ```
+    #[deprecated(note = "use `register`")]
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
         contract: T,
+    ) -> Address {
+        self.register_contract_with_constructor(contract_id, contract, ())
+    }
+
+    /// Register a contract with the [Env] for testing.
+    ///
+    /// This acts the in the same fashion as `register_contract`, but allows
+    /// passing arguments to the contract's constructor.
+    ///
+    /// Passing a contract ID for the first arguments registers the contract
+    /// with that contract ID. Providing `None` causes the Env to generate a new
+    /// contract ID that is assigned to the contract.
+    ///
+    /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
+    ///
+    /// Returns the address of the registered contract.
+    pub(crate) fn register_contract_with_constructor<
+        'a,
+        T: ContractFunctionSet + 'static,
+        A: ConstructorArgs,
+    >(
+        &self,
+        contract_id: impl Into<Option<&'a Address>>,
+        contract: T,
+        constructor_args: A,
     ) -> Address {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
         impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
@@ -635,23 +811,29 @@ impl Env {
             Address::generate(self)
         };
         self.env_impl
-            .register_test_contract(
+            .register_test_contract_with_constructor(
                 contract_id.to_object(),
                 Rc::new(InternalContractFunctionSet(contract)),
+                constructor_args.into_val(self).to_object(),
             )
             .unwrap();
         contract_id
     }
 
-    /// Register a contract in a WASM file with the [Env] for testing.
+    /// Register a contract in a Wasm file with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
     /// with that contract ID. Providing `None` causes the Env to generate a new
     /// contract ID that is assigned to the contract.
     ///
     /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
     ///
-    /// Returns the contract ID of the registered contract.
+    /// Returns the address of the registered contract.
     ///
     /// ### Examples
     /// ```
@@ -667,6 +849,7 @@ impl Env {
     ///     env.register_contract_wasm(None, WASM);
     /// }
     /// ```
+    #[deprecated(note = "use `register`")]
     pub fn register_contract_wasm<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
@@ -676,17 +859,50 @@ impl Env {
         self.register_contract_with_optional_contract_id_and_executable(
             contract_id,
             xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
+            crate::vec![&self],
+        )
+    }
+
+    /// Register a contract in a Wasm file with the [Env] for testing.
+    ///
+    /// This acts the in the same fashion as `register_contract`, but allows
+    /// passing arguments to the contract's constructor.
+    ///
+    /// Passing a contract ID for the first arguments registers the contract
+    /// with that contract ID. Providing `None` causes the Env to generate a new
+    /// contract ID that is assigned to the contract.
+    ///
+    /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// Wasm updates don't cause constructor to be called.
+    ///
+    /// Returns the address of the registered contract.
+    pub(crate) fn register_contract_wasm_with_constructor<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a Address>>,
+        contract_wasm: impl IntoVal<Env, Bytes>,
+        constructor_args: impl ConstructorArgs,
+    ) -> Address {
+        let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
+        self.register_contract_with_optional_contract_id_and_executable(
+            contract_id,
+            xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
+            constructor_args.into_val(self),
         )
     }
 
     /// Register the built-in Stellar Asset Contract with provided admin address.
     ///
-    /// Returns the contract ID of the registered token contract.
+    /// Returns a utility struct that contains the contract ID of the registered
+    /// token contract, as well as methods to read and update issuer flags.
     ///
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
+    pub fn register_stellar_asset_contract_v2(&self, admin: Address) -> StellarAssetContract {
         let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
             issuer_pk.clone(),
@@ -753,39 +969,67 @@ impl Env {
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
-        token_id
+
+        let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
+
+        StellarAssetContract::new(token_id, issuer)
+    }
+
+    /// Register the built-in Stellar Asset Contract with provided admin address.
+    ///
+    /// Returns the contract ID of the registered token contract.
+    ///
+    /// The contract will wrap a randomly-generated Stellar asset. This function
+    /// is useful for using in the tests when an arbitrary token contract
+    /// instance is needed.
+    #[deprecated(note = "use [Env::register_stellar_asset_contract_v2]")]
+    pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
+        self.register_stellar_asset_contract_v2(admin).address()
     }
 
     fn register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
         executable: xdr::ContractExecutable,
+        constructor_args: Vec<Val>,
     ) -> Address {
         if let Some(contract_id) = contract_id.into() {
-            self.register_contract_with_contract_id_and_executable(contract_id, executable);
+            self.register_contract_with_contract_id_and_executable(
+                contract_id,
+                executable,
+                constructor_args,
+            );
             contract_id.clone()
         } else {
-            self.register_contract_with_source(executable)
+            self.register_contract_with_source(executable, constructor_args)
         }
     }
 
-    fn register_contract_with_source(&self, executable: xdr::ContractExecutable) -> Address {
+    fn register_contract_with_source(
+        &self,
+        executable: xdr::ContractExecutable,
+        constructor_args: Vec<Val>,
+    ) -> Address {
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl.switch_to_recording_auth(true).unwrap();
-
+        let args_vec: std::vec::Vec<xdr::ScVal> =
+            constructor_args.iter().map(|v| v.into_val(self)).collect();
         let contract_id: Address = self
             .env_impl
-            .invoke_function(xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-                contract_id_preimage: xdr::ContractIdPreimage::Address(
-                    xdr::ContractIdPreimageFromAddress {
-                        address: xdr::ScAddress::Contract(xdr::Hash(
-                            self.with_generator(|mut g| g.address()),
-                        )),
-                        salt: xdr::Uint256([0; 32]),
-                    },
-                ),
-                executable,
-            }))
+            .invoke_function(xdr::HostFunction::CreateContractV2(
+                xdr::CreateContractArgsV2 {
+                    contract_id_preimage: xdr::ContractIdPreimage::Address(
+                        xdr::ContractIdPreimageFromAddress {
+                            address: xdr::ScAddress::Contract(xdr::Hash(
+                                self.with_generator(|mut g| g.address()),
+                            )),
+                            salt: xdr::Uint256([0; 32]),
+                        },
+                    ),
+                    executable,
+                    constructor_args: args_vec.try_into().unwrap(),
+                },
+            ))
             .unwrap()
             .try_into_val(self)
             .unwrap();
@@ -843,7 +1087,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///     let contract_id = env.register(HelloContract, ());
     ///
     ///     let client = HelloContractClient::new(&env, &contract_id);
     ///     let addr = Address::generate(&env);
@@ -862,7 +1106,7 @@ impl Env {
     /// ```
     pub fn mock_auths(&self, auths: &[MockAuth]) {
         for a in auths {
-            self.register_contract(a.address, MockAuthContract);
+            self.register_at(a.address, MockAuthContract, ());
         }
         let auths = auths
             .iter()
@@ -912,7 +1156,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, HelloContract);
+    ///     let contract_id = env.register(HelloContract, ());
     ///
     ///     env.mock_all_auths();
     ///
@@ -965,8 +1209,8 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_a = env.register_contract(None, ContractA);
-    ///     let contract_b = env.register_contract(None, ContractB);
+    ///     let contract_a = env.register(ContractA, ());
+    ///     let contract_b = env.register(ContractB, ());
     ///     // The regular `env.mock_all_auths()` would result in the call
     ///     // failure.
     ///     env.mock_all_auths_allowing_non_root_auth();
@@ -1026,7 +1270,7 @@ impl Env {
     /// # fn main() {
     ///     extern crate std;
     ///     let env = Env::default();
-    ///     let contract_id = env.register_contract(None, Contract);
+    ///     let contract_id = env.register(Contract, ());
     ///     let client = ContractClient::new(&env, &contract_id);
     ///     env.mock_all_auths();
     ///     let address = Address::generate(&env);
@@ -1130,7 +1374,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let e: Env = Default::default();
-    ///     let account_contract = NoopAccountContractClient::new(&e, &e.register_contract(None, NoopAccountContract));
+    ///     let account_contract = NoopAccountContractClient::new(&e, &e.register(NoopAccountContract, ()));
     ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
@@ -1184,6 +1428,7 @@ impl Env {
         &self,
         contract_address: &Address,
         executable: xdr::ContractExecutable,
+        constructor_args: Vec<Val>,
     ) {
         let contract_id = contract_address.contract_id();
         let data_key = xdr::ScVal::LedgerKeyContractInstance;
@@ -1220,6 +1465,9 @@ impl Env {
                 )
             })
             .unwrap();
+        self.env_impl
+            .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
+            .unwrap();
     }
 
     /// Run the function as if executed by the given contract ID.
@@ -1246,7 +1494,7 @@ impl Env {
     /// Events, as an output source only, are not loaded into the Env.
     pub fn from_snapshot(s: Snapshot) -> Env {
         Env::new_for_testutils(
-            EnvTestConfig::default(), // TODO: Allow setting the config.
+            EnvTestConfig::default(),
             Rc::new(s.ledger.clone()),
             Some(Rc::new(RefCell::new(s.generators))),
             s.ledger.ledger_info(),
@@ -1339,6 +1587,17 @@ impl Env {
                 .unwrap()
                 .0
                 .into_iter()
+                .filter(|e| match e.event.type_ {
+                    // Keep only system and contract events, because event
+                    // snapshots are used in test snapshots, and intended to be
+                    // stable over time because the goal is to record meaningful
+                    // observable behaviors. Diagnostic events are observable,
+                    // but events have no stability guarantees and are intended
+                    // to be used by developers when debugging, tracing, and
+                    // observing, not by systems that integrate.
+                    xdr::ContractEventType::System | xdr::ContractEventType::Contract => true,
+                    xdr::ContractEventType::Diagnostic => false,
+                })
                 .map(Into::into)
                 .collect(),
         )

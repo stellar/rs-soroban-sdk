@@ -98,6 +98,9 @@ pub enum AuthorizedFunction {
     /// Create contract host function with arguments specified as the respective
     /// XDR.
     CreateContractHostFn(xdr::CreateContractArgs),
+    /// Create contract host function with arguments specified as the respective
+    /// XDR. Supports passing constructor arguments.
+    CreateContractV2HostFn(xdr::CreateContractArgsV2),
 }
 
 impl AuthorizedFunction {
@@ -120,6 +123,9 @@ impl AuthorizedFunction {
             }
             xdr::SorobanAuthorizedFunction::CreateContractHostFn(create_contract) => {
                 Self::CreateContractHostFn(create_contract.clone())
+            }
+            xdr::SorobanAuthorizedFunction::CreateContractV2HostFn(create_contract) => {
+                Self::CreateContractV2HostFn(create_contract.clone())
             }
         }
     }

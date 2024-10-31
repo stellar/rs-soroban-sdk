@@ -231,46 +231,46 @@ where
 use super::xdr::{ScVal, ScVec, VecM};
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<&Vec<T>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Vec<T>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl<T> From<&Vec<T>> for ScVal {
+    fn from(v: &Vec<T>) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<&Vec<T>> for ScVec {
-    type Error = ConversionError;
-    fn try_from(v: &Vec<T>) -> Result<Self, ConversionError> {
-        if let ScVal::Vec(Some(vec)) = ScVal::try_from(v)? {
-            Ok(vec)
+impl<T> From<&Vec<T>> for ScVec {
+    fn from(v: &Vec<T>) -> Self {
+        if let ScVal::Vec(Some(vec)) = ScVal::try_from(v).unwrap() {
+            vec
         } else {
-            Err(ConversionError)
+            panic!("expected ScVec")
         }
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<Vec<T>> for VecM<ScVal> {
-    type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
-        Ok(ScVec::try_from(v)?.0)
+impl<T> From<Vec<T>> for VecM<ScVal> {
+    fn from(v: Vec<T>) -> Self {
+        ScVec::from(v).0
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<Vec<T>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<T> From<Vec<T>> for ScVal {
+    fn from(v: Vec<T>) -> Self {
+        (&v).into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<Vec<T>> for ScVec {
-    type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<T> From<Vec<T>> for ScVec {
+    fn from(v: Vec<T>) -> Self {
+        (&v).into()
     }
 }
 
@@ -891,6 +891,18 @@ where
 
     fn into_iter(self) -> Self::IntoIter {
         VecTryIter::new(self).unwrapped()
+    }
+}
+
+impl<T> IntoIterator for &Vec<T>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Item = T;
+    type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.clone().into_iter()
     }
 }
 
