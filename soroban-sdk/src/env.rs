@@ -582,7 +582,10 @@ impl Env {
     /// and is being registered natively. Pass the contract wasm bytes when the
     /// contract has been loaded as wasm.
     ///
-    /// Pass the arguments for the contract's constructor, or `()` if none.
+    /// Pass the arguments for the contract's constructor, or `()` if none. For
+    /// contracts with a constructor, use the contract's generated `Args` type
+    /// to construct the arguments with the appropropriate types for invoking
+    /// the constructor during registration.
     ///
     /// Returns the address of the registered contract that is the same as the
     /// contract id passed in.
@@ -610,7 +613,7 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let contract_id = env.register(Contract, (123_u32,));
+    ///     let contract_id = env.register(Contract, ContractArgs::_constructor(&123,));
     /// }
     /// ```
     /// Register a contract wasm, by specifying the wasm bytes:
