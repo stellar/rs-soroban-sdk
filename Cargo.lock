@@ -1535,6 +1535,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_deploy"
+version = "22.0.0-rc.3"
+dependencies = [
+ "soroban-sdk",
+ "test_constructor",
+]
+
+[[package]]
 name = "test_empty"
 version = "22.0.0-rc.3"
 dependencies = [
