@@ -192,7 +192,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                             format_ident!("_")
                         }
                     };
-                    (ident, syn_ext::fn_arg_make_ref(t))
+                    (ident, syn_ext::fn_arg_make_ref(t, None))
                 })
                 .unzip();
             let fn_output = f.output();
