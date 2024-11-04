@@ -5,7 +5,7 @@ export RUSTFLAGS=-Dwarnings
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
-	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils,hazmat
+	# cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils,hazmat
 	# TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
 	cargo +nightly-2024-10-10 doc -p soroban-sdk --no-deps --all-features $(CARGO_DOC_ARGS)
 

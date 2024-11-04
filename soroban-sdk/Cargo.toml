@@ -19,7 +19,6 @@ doctest = false
 rustc_version = "0.4.1"
 
 [dependencies]
-soroban-sdk-21 = { package = "soroban-sdk", version = "=21.1.1", optional = true }
 soroban-sdk-macros = { workspace = true }
 bytes-lit = "0.0.5"
 
@@ -56,7 +55,7 @@ proptest-arbitrary-interop = "0.1.0"
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:ctor"]
 hazmat = []
-docs = ["dep:soroban-sdk-21"]
+docs = []
 
 [package.metadata.docs.rs]
 all-features = true
