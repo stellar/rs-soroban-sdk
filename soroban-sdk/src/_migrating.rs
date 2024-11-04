@@ -3,7 +3,7 @@
 //! 1. [`Env::register`] and [`Env::register_at`] replace [`Env::register_contract`] and [`Env::register_contract_wasm`].
 //!
 //!    [`register`] registers both native contracts previously registered with
-//!    [`register_contract`] and WASM contracts previously registered with
+//!    [`register_contract`] and Wasm contracts previously registered with
 //!    [`register_contract_wasm`]. It accepts a tuple that is passed to the
 //!    contracts constructor. Pass `()` if the contract has no constructor.
 //!
