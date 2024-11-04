@@ -25,7 +25,7 @@
 //!    # fn main() {
 //!        let env = Env::default();
 //!        let address = env.register(
-//!            Contract,  // 👈 👀 The contract being registered, or a WASM `&[u8]`.
+//!            Contract,  // 👈 👀 The contract being registered, or a Wasm `&[u8]`.
 //!            (),        // 👈 👀 The constructor arguments, or ().
 //!        );
 //!        // ..
@@ -35,7 +35,7 @@
 //!    ```
 //!
 //!    [`register_at`] registers both native contracts previously registered
-//!    with [`register_contract`] and WASM contracts previously registered with
+//!    with [`register_contract`] and Wasm contracts previously registered with
 //!    [`register_contract_wasm`], and allows setting the address that the
 //!    contract is registered at. It accepts a tuple that is passed to the
 //!    contracts constructor. Pass `()` if the contract has no constructor.
@@ -60,7 +60,7 @@
 //!        let address = Address::generate(&env);
 //!        env.register(
 //!            address,   // 👈 👀 The address to register the contract at.
-//!            Contract,  // 👈 👀 The contract being registered, or a WASM `&[u8]`.
+//!            Contract,  // 👈 👀 The contract being registered, or a Wasm `&[u8]`.
 //!            (),        // 👈 👀 The constructor arguments, or ().
 //!        );
 //!        // ..
@@ -108,7 +108,7 @@
 //!        contract.exec(&wasm_hash);
 //!    }
 //!    # #[cfg(not(feature = "testutils"))]
-//!    # fn main() { }
+//!    # fn main() { }ga
 //!    ```
 //!
 //! 2. Deprecated [`fuzz_catch_panic`]. Use [`Env::try_invoke_contract`] and the `try_` client functions instead.
