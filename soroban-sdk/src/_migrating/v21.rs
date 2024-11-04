@@ -6,7 +6,7 @@
 //!
 //!    Current implementations of the interface will see a build error, and should change [`BytesN<32>`][crate::BytesN] to [`Hash<32>`][crate::crypto::Hash].
 //!
-//!    ```diff
+//!    ```
 //!    use soroban_sdk::auth::CustomAccountInterface;
 //!
 //!    #[contract]
