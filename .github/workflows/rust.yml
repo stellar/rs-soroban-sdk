@@ -176,8 +176,8 @@ jobs:
     - run: rustup update
     - run: |
         version="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | split("\\.";"")[0] | "v"+.')"
-        git grep "#{version}" -- soroban-sdk/src/_migrating.rs \
-          || (echo "The _migrating #{version} section is missing." && exit 1)
+        git grep "${version}" -- soroban-sdk/src/_migrating.rs \
+          || (echo "The _migrating ${version} section is missing." && exit 1)
 
   publish-dry-run:
     if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
