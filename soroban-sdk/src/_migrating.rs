@@ -58,7 +58,7 @@
 //!    # fn main() {
 //!        let env = Env::default();
 //!        let address = Address::generate(&env);
-//!        env.register(
+//!        env.register_at(
 //!            address,   // 👈 👀 The address to register the contract at.
 //!            Contract,  // 👈 👀 The contract being registered, or a Wasm `&[u8]`.
 //!            (),        // 👈 👀 The constructor arguments, or ().
