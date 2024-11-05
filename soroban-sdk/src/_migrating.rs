@@ -118,8 +118,7 @@
 //!    ```
 //!    #![no_main]
 //!    use libfuzzer_sys::fuzz_target;
-//!    use soroban_sdk::testutils::arbitrary::*;
-//!    use soroban_sdk::Env;
+//!    use soroban_sdk::{contract, contracterror, contractimplEnv, testutils::arbitrary::*};
 //!
 //!    #[contract]
 //!    pub struct Contract;
@@ -196,28 +195,34 @@
 //!    Current implementations of the interface will see a build error, and should change [`BytesN<32>`] to [`Hash<32>`].
 //!
 //!    ```
-//!    use soroban_sdk::{auth::{Context, CustomAccountInterface}, contract, contracterror, contractimpl, crypto::Hash, Env};
+//!    use soroban_sdk::{
+//!        auth::{Context, CustomAccountInterface}, contract,
+//!        contracterror, contractimpl, crypto::Hash, Env,
+//!        Vec,
+//!    };
 //!
 //!    #[contract]
 //!    pub struct Contract;
 //!
 //!    #[contracterror]
 //!    pub enum Error {
+//!        AnError = 1,
 //!        // ...
 //!    }
 //!
 //!    #[contractimpl]
-//!    impl CustomAccountInterface for Contract {
+//!    impl soroban_sdk::auth::CustomAccountInterface for Contract {
 //!        type Signature = ();
 //!        type Error = Error;
 //!
 //!        fn __check_auth(
 //!            env: Env,
 //!            signature_payload: Hash<32>, // 👈 👀
-//!            signatures: Self::Signature,
+//!            signatures: (),
 //!            auth_contexts: Vec<Context>,
 //!        ) -> Result<(), Self::Error> {
 //!            // ...
+//!    #       todo!()
 //!        }
 //!    }
 //!    ```
