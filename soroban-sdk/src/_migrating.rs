@@ -48,7 +48,7 @@
 //!
 //!    #[contractimpl]
 //!    impl Contract {
-//!        pub fn __constructor(x: u32) { }
+//!        // ..
 //!    }
 //!
 //!    #[test]
@@ -118,7 +118,7 @@
 //!    ```
 //!    #![no_main]
 //!    use libfuzzer_sys::fuzz_target;
-//!    use soroban_sdk::{contract, contracterror, contractimplEnv, testutils::arbitrary::*};
+//!    use soroban_sdk::{contract, contracterror, contractimpl, Env, testutils::arbitrary::*};
 //!
 //!    #[contract]
 //!    pub struct Contract;
@@ -131,7 +131,7 @@
 //!
 //!    #[contractimpl]
 //!    impl Contract {
-//!        fn add(x: u32, y: u32) -> Result<(), Self::Error> {
+//!        fn add(x: u32, y: u32) -> Result<u32, Error> {
 //!            x.checked_add(y).ok_or(Error::Overflow)
 //!        }
 //!    }
@@ -163,6 +163,8 @@
 //!            Err(Err(_)) => panic!("unexpected error"),
 //!        }
 //!    });
+//!
+//!    # fn main() { }
 //!    ```
 //!
 //! 3. Events in test snapshots are now reduced to only contract events and system events. Diagnostic events will no longer appear in test snapshots.
@@ -211,7 +213,7 @@
 //!    }
 //!
 //!    #[contractimpl]
-//!    impl soroban_sdk::auth::CustomAccountInterface for Contract {
+//!    impl CustomAccountInterface for Contract {
 //!        type Signature = ();
 //!        type Error = Error;
 //!
@@ -225,6 +227,8 @@
 //!    #       todo!()
 //!        }
 //!    }
+//!
+//!    # fn main() { }
 //!    ```
 //!
 //! [`CustomAccountInterface::__check_auth`]: crate::auth::CustomAccountInterface::__check_auth
