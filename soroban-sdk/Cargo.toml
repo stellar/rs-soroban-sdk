@@ -50,6 +50,7 @@ hex = "0.4.3"
 arbitrary = { version = "1.3.0", features = ["derive"] }
 proptest = "1.2.0"
 proptest-arbitrary-interop = "0.1.0"
+libfuzzer-sys = "0.4.7"
 
 [features]
 alloc = []

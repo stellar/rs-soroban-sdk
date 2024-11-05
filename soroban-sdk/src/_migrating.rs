@@ -41,14 +41,14 @@
 //!    contracts constructor. Pass `()` if the contract has no constructor.
 //!
 //!    ```
-//!    use soroban_sdk::{contract, contractimpl, Env, testutils::Address as _};
+//!    use soroban_sdk::{contract, contractimpl, Env, Address, testutils::Address as _};
 //!
 //!    #[contract]
 //!    pub struct Contract;
 //!
 //!    #[contractimpl]
 //!    impl Contract {
-//!        pub __constructor(x: u32) { }
+//!        pub fn __constructor(x: u32) { }
 //!    }
 //!
 //!    #[test]
@@ -59,7 +59,7 @@
 //!        let env = Env::default();
 //!        let address = Address::generate(&env);
 //!        env.register_at(
-//!            address,   // 👈 👀 The address to register the contract at.
+//!            &address,   // 👈 👀 The address to register the contract at.
 //!            Contract,  // 👈 👀 The contract being registered, or a Wasm `&[u8]`.
 //!            (),        // 👈 👀 The constructor arguments, or ().
 //!        );
@@ -108,7 +108,7 @@
 //!        contract.exec(&wasm_hash);
 //!    }
 //!    # #[cfg(not(feature = "testutils"))]
-//!    # fn main() { }ga
+//!    # fn main() { }
 //!    ```
 //!
 //! 2. Deprecated [`fuzz_catch_panic`]. Use [`Env::try_invoke_contract`] and the `try_` client functions instead.
@@ -196,15 +196,20 @@
 //!    Current implementations of the interface will see a build error, and should change [`BytesN<32>`] to [`Hash<32>`].
 //!
 //!    ```
-//!    use soroban_sdk::auth::CustomAccountInterface;
+//!    use soroban_sdk::{auth::{Context, CustomAccountInterface}, contract, contracterror, contractimpl, crypto::Hash, Env};
 //!
 //!    #[contract]
 //!    pub struct Contract;
 //!
+//!    #[contracterror]
+//!    pub enum Error {
+//!        // ...
+//!    }
+//!
 //!    #[contractimpl]
 //!    impl CustomAccountInterface for Contract {
 //!        type Signature = ();
-//!        type Error: Into<Error> = u32;
+//!        type Error = Error;
 //!
 //!        fn __check_auth(
 //!            env: Env,

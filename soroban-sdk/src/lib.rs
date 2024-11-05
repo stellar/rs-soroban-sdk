@@ -44,7 +44,6 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
-#[cfg(feature = "docs")]
 pub mod _migrating;
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
