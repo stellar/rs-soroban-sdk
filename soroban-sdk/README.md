@@ -1,5 +1,5 @@
 Soroban SDK supports writing smart contracts for the [Soroban] smart contract
-Wasm-powered runtime, that is deployed on [Stellar].
+Wasm-powered runtime, deployed on [Stellar].
 
 ### Docs
 
