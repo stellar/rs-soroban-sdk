@@ -1,9 +1,17 @@
-Soroban SDK supports writing programs for the Soroban smart contract
-platform.
+Soroban SDK supports writing smart contracts for the Wasm-powered [Soroban] smart contract
+runtime, deployed on [Stellar].
 
 ### Docs
 
-See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
+See [developers.stellar.org] for documentation about building smart contracts for [Stellar].
+
+[developers.stellar.org]: https://developers.stellar.org
+[Stellar]: https://stellar.org
+[Soroban]: https://stellar.org/soroban
+
+### Migrating Major Versions
+
+See [_migrating] for a summary of how to migrate from one major version to another.
 
 ### Examples
 
@@ -11,10 +19,10 @@ See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
 use soroban_sdk::{contract, contractimpl, vec, symbol_short, BytesN, Env, Symbol, Vec};
 
 #[contract]
-pub struct HelloContract;
+pub struct Contract;
 
 #[contractimpl]
-impl HelloContract {
+impl Contract {
     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
         vec![&env, symbol_short!("Hello"), to]
     }
@@ -26,8 +34,8 @@ fn test() {
 # #[cfg(feature = "testutils")]
 # fn main() {
     let env = Env::default();
-    let contract_id = env.register(HelloContract, ());
-    let client = HelloContractClient::new(&env, &contract_id);
+    let contract_id = env.register(Contract, ());
+    let client = ContractClient::new(&env, &contract_id);
 
     let words = client.hello(&symbol_short!("Dev"));
 
@@ -37,5 +45,6 @@ fn test() {
 # fn main() { }
 ```
 
-More examples are available at <https://soroban.stellar.org/docs/category/basic-tutorials>
-and <https://soroban.stellar.org/docs/category/advanced-tutorials>.
+More examples are available at:
+- <https://developers.stellar.org/docs/build/smart-contracts/example-contracts>
+- <https://developers.stellar.org/docs/build/guides>

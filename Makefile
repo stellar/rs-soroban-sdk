@@ -27,7 +27,7 @@ build-fuzz:
 
 readme:
 	cd soroban-sdk \
-		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
+		&& cargo +nightly rustdoc --features testutils -- -Zunstable-options -wjson \
 		&& cat ../target/doc/soroban_sdk.json \
 		| jq -r '.index[.root|tostring].docs' \
 		> README.md
