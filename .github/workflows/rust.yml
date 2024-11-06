@@ -137,8 +137,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    # TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
-    - run: rustup install nightly-2024-10-10
+    - run: rustup install nightly
     - uses: stellar/binaries@v15
       with:
         name: cargo-fuzz
@@ -152,8 +151,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    # TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
-    - run: rustup install nightly-2024-10-10
+    - run: rustup install nightly
     - run: make doc
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
@@ -163,8 +161,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    # TODO: Unpin nightly version after https://github.com/rust-lang/rust/issues/131643 is fixed.
-    - run: rustup install nightly-2024-10-10
+    - run: rustup install nightly
     - run: make readme
     - run: git add -N . && git diff HEAD --exit-code
 
