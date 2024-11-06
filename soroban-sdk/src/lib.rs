@@ -5,6 +5,10 @@
 //!
 //! See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
 //!
+//! ### Migrating Major Versions
+//!
+//! See [_migrating] for a summary of how to migrate from one major version to another.
+//!
 //! ### Examples
 //!
 //! ```rust
