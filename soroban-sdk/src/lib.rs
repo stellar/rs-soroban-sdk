@@ -1,9 +1,11 @@
-//! Soroban SDK supports writing programs for the Soroban smart contract
-//! platform.
+//! Soroban SDK supports writing smart contracts for Stellar.
 //!
 //! ### Docs
 //!
-//! See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
+//! See [developers.stellar.org] for documentation about building smart contracts for [Stellar].
+//!
+//! [developers.stellar.org]: https://developers.stellar.org
+//! [Stellar]: https://stellar.org
 //!
 //! ### Migrating Major Versions
 //!
