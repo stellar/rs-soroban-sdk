@@ -124,18 +124,21 @@ impl TryFromVal<Env, &Address> for Val {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Address> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Address) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl From<&Address> for ScVal {
+    fn from(v: &Address) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Address> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Address) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl From<Address> for ScVal {
+    fn from(v: Address) -> Self {
+        (&v).into()
     }
 }
 
@@ -152,21 +155,19 @@ impl TryFromVal<Env, ScVal> for Address {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Address> for ScAddress {
-    type Error = ConversionError;
-    fn try_from(v: &Address) -> Result<Self, Self::Error> {
-        match ScVal::try_from_val(&v.env, &v.obj.to_val())? {
-            ScVal::Address(a) => Ok(a),
-            _ => Err(ConversionError),
+impl From<&Address> for ScAddress {
+    fn from(v: &Address) -> Self {
+        match ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap() {
+            ScVal::Address(a) => a,
+            _ => panic!("expected ScVal::Address"),
         }
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Address> for ScAddress {
-    type Error = ConversionError;
-    fn try_from(v: Address) -> Result<Self, Self::Error> {
-        (&v).try_into()
+impl From<Address> for ScAddress {
+    fn from(v: Address) -> Self {
+        (&v).into()
     }
 }
 
@@ -221,6 +222,18 @@ impl Address {
     /// If the invocation is not authorized.
     pub fn require_auth(&self) {
         self.env.require_auth(self);
+    }
+
+    /// Creates an `Address` corresponding to the provided Stellar strkey.
+    ///
+    /// The only supported strkey types are account keys (`G...`) and contract keys (`C...`). Any
+    /// other valid or invalid strkey will cause this to panic.
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases when addresses need to be shared between
+    /// different environments (e.g. different chains).
+    pub fn from_str(env: &Env, strkey: &str) -> Address {
+        Address::from_string(&String::from_str(env, strkey))
     }
 
     /// Creates an `Address` corresponding to the provided Stellar strkey.

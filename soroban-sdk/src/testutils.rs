@@ -6,19 +6,52 @@
 pub mod arbitrary;
 
 mod sign;
+use std::rc::Rc;
+
 pub use sign::ed25519;
 
 mod mock_auth;
 pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
+use soroban_env_host::TryIntoVal;
 
 pub mod storage;
 
-use crate::{xdr, Env, Val, Vec};
+use crate::{xdr, ConstructorArgs, Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
+
+pub trait Register {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs;
+}
+
+impl<C> Register for C
+where
+    C: ContractFunctionSet + 'static,
+{
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_with_constructor(id, self, args)
+    }
+}
+
+impl<'w> Register for &'w [u8] {
+    fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.register_contract_wasm_with_constructor(id, self, args)
+    }
+}
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -199,6 +232,12 @@ impl Generators {
     }
 }
 
+#[doc(hidden)]
+pub type ContractFunctionF = dyn Send + Sync + Fn(Env, &[Val]) -> Val;
+#[doc(hidden)]
+pub trait ContractFunctionRegister {
+    fn register(name: &'static str, func: &'static ContractFunctionF);
+}
 #[doc(hidden)]
 pub trait ContractFunctionSet {
     fn call(&self, func: &str, env: Env, args: &[Val]) -> Option<Val>;
@@ -415,4 +454,118 @@ pub trait Deployer {
     /// Panics if there is no contract instance/code corresponding to
     /// the provided address, or if the instance/code has expired.
     fn get_contract_code_ttl(&self, contract: &crate::Address) -> u32;
+}
+
+pub use xdr::AccountFlags as IssuerFlags;
+
+#[derive(Clone)]
+pub struct StellarAssetIssuer {
+    env: Env,
+    account_id: xdr::AccountId,
+}
+
+impl StellarAssetIssuer {
+    pub(crate) fn new(env: Env, account_id: xdr::AccountId) -> Self {
+        Self { env, account_id }
+    }
+
+    /// Returns the flags for the issuer.
+    pub fn flags(&self) -> u32 {
+        self.env
+            .host()
+            .with_mut_storage(|storage| {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: self.account_id.clone(),
+                }));
+
+                let entry = storage.get(
+                    &k,
+                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                )?;
+
+                match entry.data {
+                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags.clone()),
+                    _ => panic!("expected account entry but got {:?}", entry.data),
+                }
+            })
+            .unwrap()
+    }
+
+    /// Adds the flag specified to the existing issuer flags
+    pub fn set_flag(&self, flag: IssuerFlags) {
+        self.overwrite_issuer_flags(self.flags() | (flag as u32))
+    }
+
+    /// Clears the flag specified from the existing issuer flags
+    pub fn clear_flag(&self, flag: IssuerFlags) {
+        self.overwrite_issuer_flags(self.flags() & (!(flag as u32)))
+    }
+
+    pub fn address(&self) -> crate::Address {
+        xdr::ScAddress::Account(self.account_id.clone())
+            .try_into_val(&self.env.clone())
+            .unwrap()
+    }
+
+    /// Sets the issuer flags field.
+    /// Each flag is a bit with values corresponding to [xdr::AccountFlags]
+    ///
+    /// Use this to test interactions between trustlines/balances and the issuer flags.
+    fn overwrite_issuer_flags(&self, flags: u32) {
+        if u64::from(flags) > xdr::MASK_ACCOUNT_FLAGS_V17 {
+            panic!(
+                "issuer flags value must be at most {}",
+                xdr::MASK_ACCOUNT_FLAGS_V17
+            );
+        }
+
+        self.env
+            .host()
+            .with_mut_storage(|storage| {
+                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                    account_id: self.account_id.clone(),
+                }));
+
+                let mut entry = storage
+                    .get(
+                        &k,
+                        soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                    )?
+                    .as_ref()
+                    .clone();
+
+                match entry.data {
+                    xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
+                    _ => panic!("expected account entry but got {:?}", entry.data),
+                }
+
+                storage.put(
+                    &k,
+                    &Rc::new(entry),
+                    None,
+                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
+                )?;
+                Ok(())
+            })
+            .unwrap();
+    }
+}
+
+pub struct StellarAssetContract {
+    address: crate::Address,
+    issuer: StellarAssetIssuer,
+}
+
+impl StellarAssetContract {
+    pub(crate) fn new(address: crate::Address, issuer: StellarAssetIssuer) -> Self {
+        Self { address, issuer }
+    }
+
+    pub fn address(&self) -> crate::Address {
+        self.address.clone()
+    }
+
+    pub fn issuer(&self) -> StellarAssetIssuer {
+        self.issuer.clone()
+    }
 }

@@ -2,6 +2,7 @@ use crate::{
     self as soroban_sdk, contract, contractimpl,
     env::EnvTestConfig,
     testutils::{Address as _, Logs as _},
+    xdr::{ScErrorCode, ScErrorType},
     Address, Env, Error,
 };
 
@@ -43,8 +44,8 @@ fn default_and_from_snapshot_same_settings() {
     assert!(env1.host().source_account_address().unwrap().is_some());
     assert!(env2.host().source_account_address().unwrap().is_some());
 
-    let c1addr = env1.register_contract(None, Contract);
-    let c2addr = env2.register_contract(None, Contract);
+    let c1addr = env1.register(Contract, ());
+    let c2addr = env2.register(Contract, ());
 
     let c1client = ContractClient::new(&env1, &c1addr);
     let c2client = ContractClient::new(&env2, &c2addr);
@@ -59,15 +60,15 @@ fn default_and_from_snapshot_same_settings() {
     assert_eq!(
         r1,
         Err(Ok(Error::from_type_and_code(
-            stellar_xdr::curr::ScErrorType::Context,
-            stellar_xdr::curr::ScErrorCode::InvalidAction
+            ScErrorType::Context,
+            ScErrorCode::InvalidAction
         )))
     );
     assert_eq!(
         r2,
         Err(Ok(Error::from_type_and_code(
-            stellar_xdr::curr::ScErrorType::Context,
-            stellar_xdr::curr::ScErrorCode::InvalidAction
+            ScErrorType::Context,
+            ScErrorCode::InvalidAction
         )))
     );
 
@@ -82,21 +83,21 @@ fn register_contract_deploys_predictable_contract_ids() {
     let env1 = Env::default();
     let env2 = Env::from_snapshot(env1.to_snapshot());
 
-    let env1addr1 = env1.register_contract(None, Contract);
+    let env1addr1 = env1.register(Contract, ());
     println!("env1 addr1 {:?}", env1addr1.contract_id());
-    let env1addr2 = env1.register_contract(None, Contract);
+    let env1addr2 = env1.register(Contract, ());
     println!("env1 addr2 {:?}", env1addr2.contract_id());
-    let env2addr1 = env2.register_contract(None, Contract);
+    let env2addr1 = env2.register(Contract, ());
     println!("env2 addr1 {:?}", env2addr1.contract_id());
-    let env2addr2 = env2.register_contract(None, Contract);
+    let env2addr2 = env2.register(Contract, ());
     println!("env2 addr2 {:?}", env2addr2.contract_id());
 
     let env3 = Env::from_snapshot(env1.to_snapshot());
-    let env1addr3 = env1.register_contract(None, Contract);
+    let env1addr3 = env1.register(Contract, ());
     println!("env1 addr3 {:?}", env1addr3.contract_id());
-    let env2addr3 = env2.register_contract(None, Contract);
+    let env2addr3 = env2.register(Contract, ());
     println!("env2 addr3 {:?}", env2addr3.contract_id());
-    let env3addr3 = env3.register_contract(None, Contract);
+    let env3addr3 = env3.register(Contract, ());
     println!("env3 addr3 {:?}", env3addr3.contract_id());
 
     // Check that contracts deployed in the envs are consistent and predictable.
@@ -115,8 +116,8 @@ fn test_snapshot_file() {
         .join("test_snapshot_file");
     let p1 = p.with_extension("1.json");
     let p2 = p.with_extension("2.json");
-    assert!(!p1.exists());
-    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
     {
         let e1 = Env::default();
         assert!(!p1.exists());
@@ -131,9 +132,9 @@ fn test_snapshot_file() {
         assert!(!p2.exists());
         {
             let e3 = Env::default(); // When dropped will be written to p1.
-            let _ = e3.register_contract(None, Contract);
+            let _ = e3.register(Contract, ());
         } // Env dropped, written to p1.
-        let c = e1.register_contract(None, Contract);
+        let c = e1.register(Contract, ());
         assert!(p1.exists());
         assert!(!p2.exists());
         e1.as_contract(&c, || {});
@@ -157,21 +158,48 @@ fn test_snapshot_file_disabled() {
         .join("env")
         .join("test_snapshot_file_disabled");
     let p1 = p.with_extension("1.json");
-    assert!(!p1.exists());
     let p2 = p.with_extension("2.json");
-    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
     {
         let e1 = Env::default();
-        let _ = e1.register_contract(None, Contract);
+        let _ = e1.register(Contract, ());
         let e2 = Env::new_with_config(EnvTestConfig {
             capture_snapshot_at_drop: false,
         });
-        let _ = e2.register_contract(None, Contract);
+        let _ = e2.register(Contract, ());
         assert!(!p1.exists());
         assert!(!p2.exists());
     }
     assert!(p1.exists());
     assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
+}
+
+/// Test that the test snapshot file is not written when disabled after
+/// creation.
+#[test]
+fn test_snapshot_file_disabled_after_creation() {
+    let p = std::path::Path::new("test_snapshots")
+        .join("tests")
+        .join("env")
+        .join("test_snapshot_file_disabled_after_creation");
+    let p1 = p.with_extension("1.json");
+    let p2 = p.with_extension("2.json");
+    let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
+    {
+        let e1 = Env::default();
+        let _ = e1.register(Contract, ());
+        let mut e2 = Env::default();
+        e2.set_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
+        let _ = e2.register(Contract, ());
+        assert!(!p1.exists());
+        assert!(!p2.exists());
+    }
+    assert!(p1.exists());
+    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
 }

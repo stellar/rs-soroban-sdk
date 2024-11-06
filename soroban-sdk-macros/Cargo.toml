@@ -14,7 +14,7 @@ rust-version.workspace = true
 proc-macro = true
 doctest = false
 
-[build_dependencies]
+[build-dependencies]
 rustc_version = "0.4.0"
 crate-git-revision = "0.0.6"
 
@@ -26,7 +26,7 @@ stellar-xdr = { workspace = true, features = ["curr", "std"] }
 syn = {version="2.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
-itertools = "0.11.0"
+itertools = "0.10.5"
 darling = "0.20.0"
 sha2 = "0.10.7"
 

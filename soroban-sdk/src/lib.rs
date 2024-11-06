@@ -26,7 +26,7 @@
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //!     let env = Env::default();
-//!     let contract_id = env.register_contract(None, HelloContract);
+//!     let contract_id = env.register(HelloContract, ());
 //!     let client = HelloContractClient::new(&env, &contract_id);
 //!
 //!     let words = client.hello(&symbol_short!("Dev"));
@@ -117,6 +117,24 @@ pub mod reexports_for_macros {
     pub use ::ctor;
 }
 
+/// Assert in contract asserts that the contract is currently executing within a
+/// contract. The macro maps to code when testutils are enabled or in tests,
+/// otherwise maps to nothing.
+#[macro_export]
+macro_rules! assert_in_contract {
+    ($env:expr $(,)?) => {{
+        {
+            #[cfg(any(test, feature = "testutils"))]
+            assert!(
+                ($env).in_contract(),
+                "this function is not accessible outside of a contract, wrap \
+                the call with `env.as_contract()` to access it from a \
+                particular contract"
+            );
+        }
+    }};
+}
+
 /// Create a short [Symbol] constant with the given string.
 ///
 /// A short symbol's maximum length is 9 characters. For longer symbols, use
@@ -179,7 +197,7 @@ pub use soroban_sdk_macros::symbol_short;
 ///     let env = Env::default();
 ///
 ///     // Register the contract defined in this crate.
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///
 ///     // Create a client for calling the contract.
 ///     let client = ContractClient::new(&env, &contract_id);
@@ -226,7 +244,7 @@ pub use soroban_sdk_macros::symbol_short;
 ///     let env = Env::default();
 ///
 ///     // Register the contract defined in this crate.
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///
 ///     // Create a client for calling the contract.
 ///     let client = ContractClient::new(&env, &contract_id);
@@ -278,7 +296,7 @@ pub use soroban_sdk_macros::contracterror;
 ///     let contract_a_id = env.register_contract_wasm(None, contract_a::WASM);
 ///
 ///     // Register contract B defined in this crate.
-///     let contract_b_id = env.register_contract(None, ContractB);
+///     let contract_b_id = env.register(ContractB, ());
 ///
 ///     // Create a client for calling contract B.
 ///     let client = ContractBClient::new(&env, &contract_b_id);
@@ -324,7 +342,7 @@ pub use soroban_sdk_macros::contractimport;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
 ///     let words = client.hello(&symbol_short!("Dev"));
@@ -365,7 +383,7 @@ pub use soroban_sdk_macros::contract;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
 ///     let words = client.hello(&symbol_short!("Dev"));
@@ -405,7 +423,7 @@ pub use soroban_sdk_macros::contractimpl;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
 ///     let words = client.hello(&symbol_short!("Dev"));
@@ -485,7 +503,7 @@ pub use soroban_sdk_macros::contractmeta;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///     let client = ContractClient::new(&env, &contract_id);
 ///
 ///     assert_eq!(client.increment(&1), 1);
@@ -559,7 +577,7 @@ pub use soroban_sdk_macros::contractmeta;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///     let client = ContractClient::new(&env, &contract_id);
 ///
 ///     assert_eq!(client.get(), None);
@@ -574,6 +592,9 @@ pub use soroban_sdk_macros::contractmeta;
 /// # fn main() { }
 /// ```
 pub use soroban_sdk_macros::contracttype;
+
+/// Generates a type that helps build function args for a contract trait.
+pub use soroban_sdk_macros::contractargs;
 
 /// Generates a client for a contract trait.
 ///
@@ -619,7 +640,7 @@ pub use soroban_sdk_macros::contracttype;
 ///     let env = Env::default();
 ///
 ///     // Register the hello contract.
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///
 ///     // Create a client for the hello contract, that was constructed using
 ///     // the trait.
@@ -794,6 +815,9 @@ pub use num::{Duration, Timepoint, I256, U256};
 mod string;
 pub use string::String;
 mod tuple;
+
+mod constructor_args;
+pub use constructor_args::ConstructorArgs;
 
 pub mod xdr;
 

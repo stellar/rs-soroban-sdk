@@ -225,18 +225,21 @@ where
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<K, V> TryFrom<&Map<K, V>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Map<K, V>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl<K, V> From<&Map<K, V>> for ScVal {
+    fn from(v: &Map<K, V>) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<K, V> TryFrom<Map<K, V>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Map<K, V>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<K, V> From<Map<K, V>> for ScVal {
+    fn from(v: Map<K, V>) -> Self {
+        (&v).into()
     }
 }
 
@@ -244,7 +247,7 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, ConversionError> {
-        v.try_into()
+        Ok(v.into())
     }
 }
 

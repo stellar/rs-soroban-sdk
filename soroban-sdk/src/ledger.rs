@@ -3,6 +3,9 @@ use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 
 /// Ledger retrieves information about the current ledger.
 ///
+/// For more details about the ledger and the ledger header that the values in the Ledger are derived from, see:
+///  - <https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers>
+///
 /// ### Examples
 ///
 /// ```
@@ -28,7 +31,7 @@ use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = env.register_contract(None, Contract);
+/// #     let contract_id = env.register(Contract, ());
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]
@@ -75,9 +78,12 @@ impl Ledger {
 
     /// Returns a unix timestamp for when the ledger was closed.
     ///
-    /// The timestamp is the number of seconds, excluding leap seconds,
-    /// that have elapsed since unix epoch. Unix epoch is January 1st, 1970,
-    /// at 00:00:00 UTC.
+    /// The timestamp is the number of seconds, excluding leap seconds, that
+    /// have elapsed since unix epoch. Unix epoch is January 1st, 1970, at
+    /// 00:00:00 UTC.
+    ///
+    /// For more details see:
+    ///  - <https://developers.stellar.org/docs/learn/encyclopedia/network-configuration/ledger-headers#close-time>
     pub fn timestamp(&self) -> u64 {
         internal::Env::get_ledger_timestamp(self.env())
             .unwrap_infallible()

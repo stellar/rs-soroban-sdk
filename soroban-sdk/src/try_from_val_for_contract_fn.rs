@@ -7,7 +7,7 @@
 //!
 //! The trait exists primarily to allow some special types, e.g.
 //! [`crate::crypto::Hash`], to be used as inputs to contract functions without
-//! otherwise being createable from a Val via the public TryFromVal trait, and
+//! otherwise being creatable from a Val via the public TryFromVal trait, and
 //! therefore not storeable.
 //!
 //! For types that can be used and converted everywhere, implementing TryFromVal

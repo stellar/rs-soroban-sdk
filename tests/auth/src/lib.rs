@@ -33,7 +33,7 @@ mod test_a {
     fn test_with_mock_all_auth() {
         let e = Env::default();
 
-        let contract_id = e.register_contract(None, ContractA);
+        let contract_id = e.register(ContractA, ());
         let client = ContractAClient::new(&e, &contract_id);
 
         let a = Address::generate(&e);
@@ -60,7 +60,7 @@ mod test_a {
     fn test_with_mock_auth() {
         let e = Env::default();
 
-        let contract_id = e.register_contract(None, ContractA);
+        let contract_id = e.register(ContractA, ());
         let client = ContractAClient::new(&e, &contract_id);
 
         let a = Address::generate(&e);
@@ -97,10 +97,10 @@ mod test_a {
     fn test_with_real_contract_auth_approve() {
         let e = Env::default();
 
-        let contract_id = e.register_contract(None, ContractA);
+        let contract_id = e.register(ContractA, ());
         let client = ContractAClient::new(&e, &contract_id);
 
-        let a = e.register_contract(None, auth_approve::Contract);
+        let a = e.register(auth_approve::Contract, ());
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
@@ -143,10 +143,10 @@ mod test_a {
     fn test_with_real_contract_auth_decline() {
         let e = Env::default();
 
-        let contract_id = e.register_contract(None, ContractA);
+        let contract_id = e.register(ContractA, ());
         let client = ContractAClient::new(&e, &contract_id);
 
-        let a = e.register_contract(None, auth_decline::Contract);
+        let a = e.register(auth_decline::Contract, ());
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
@@ -251,8 +251,8 @@ mod test_b {
     fn test_with_mock_all_auth() {
         let e = Env::default();
 
-        let contract_a_id = e.register_contract(None, ContractA);
-        let contract_b_id = e.register_contract(None, ContractB);
+        let contract_a_id = e.register(ContractA, ());
+        let contract_b_id = e.register(ContractB, ());
         let client = ContractBClient::new(&e, &contract_b_id);
 
         let a = Address::generate(&e);
@@ -286,8 +286,8 @@ mod test_b {
     fn test_with_mock_auth() {
         let e = Env::default();
 
-        let contract_a_id = e.register_contract(None, ContractA);
-        let contract_b_id = e.register_contract(None, ContractB);
+        let contract_a_id = e.register(ContractA, ());
+        let contract_b_id = e.register(ContractB, ());
         let client = ContractBClient::new(&e, &contract_b_id);
 
         let a = Address::generate(&e);
@@ -336,11 +336,11 @@ mod test_b {
     fn test_with_real_contract_auth_approve() {
         let e = Env::default();
 
-        let contract_a_id = e.register_contract(None, ContractA);
-        let contract_b_id = e.register_contract(None, ContractB);
+        let contract_a_id = e.register(ContractA, ());
+        let contract_b_id = e.register(ContractB, ());
         let client = ContractBClient::new(&e, &contract_b_id);
 
-        let a = e.register_contract(None, auth_approve::Contract);
+        let a = e.register(auth_approve::Contract, ());
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client
@@ -399,11 +399,11 @@ mod test_b {
     fn test_with_real_contract_auth_decline() {
         let e = Env::default();
 
-        let contract_a_id = e.register_contract(None, ContractA);
-        let contract_b_id = e.register_contract(None, ContractB);
+        let contract_a_id = e.register(ContractA, ());
+        let contract_b_id = e.register(ContractB, ());
         let client = ContractBClient::new(&e, &contract_b_id);
 
-        let a = e.register_contract(None, auth_decline::Contract);
+        let a = e.register(auth_decline::Contract, ());
         let a_xdr: ScAddress = (&a).try_into().unwrap();
 
         let r = client

@@ -54,6 +54,27 @@ macro_rules! impl_num_wrapping_val_type {
             }
         }
 
+        impl From<$wrapper> for $val {
+            #[inline(always)]
+            fn from(v: $wrapper) -> Self {
+                v.val
+            }
+        }
+
+        impl From<&$wrapper> for $val {
+            #[inline(always)]
+            fn from(v: &$wrapper) -> Self {
+                v.val
+            }
+        }
+
+        impl From<&$wrapper> for $wrapper {
+            #[inline(always)]
+            fn from(v: &$wrapper) -> Self {
+                v.clone()
+            }
+        }
+
         impl TryFromVal<Env, $val> for $wrapper {
             type Error = Infallible;
 
@@ -89,22 +110,25 @@ macro_rules! impl_num_wrapping_val_type {
         }
 
         #[cfg(not(target_family = "wasm"))]
-        impl TryFrom<&$wrapper> for ScVal {
-            type Error = ConversionError;
-            fn try_from(v: &$wrapper) -> Result<Self, ConversionError> {
+        impl From<&$wrapper> for ScVal {
+            fn from(v: &$wrapper) -> Self {
+                // This conversion occurs only in test utilities, and theoretically all
+                // values should convert to an ScVal because the Env won't let the host
+                // type to exist otherwise, unwrapping. Even if there are edge cases
+                // that don't, this is a trade off for a better test developer
+                // experience.
                 if let Ok(ss) = <$small>::try_from(v.val) {
-                    ScVal::try_from(ss)
+                    ScVal::try_from(ss).unwrap()
                 } else {
-                    Ok(ScVal::try_from_val(&v.env, &v.to_val())?)
+                    ScVal::try_from_val(&v.env, &v.to_val()).unwrap()
                 }
             }
         }
 
         #[cfg(not(target_family = "wasm"))]
-        impl TryFrom<$wrapper> for ScVal {
-            type Error = ConversionError;
-            fn try_from(v: $wrapper) -> Result<Self, ConversionError> {
-                (&v).try_into()
+        impl From<$wrapper> for ScVal {
+            fn from(v: $wrapper) -> Self {
+                (&v).into()
             }
         }
 

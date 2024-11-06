@@ -6,7 +6,6 @@ CARGO_DOC_ARGS?=--open
 
 doc: fmt
 	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils,hazmat
-    # TODO: Upgrade to latest nightly after problem that was introduced in nightly-2024-02-05 (https://github.com/dalek-cryptography/curve25519-dalek/issues/618) is resolved.
 	cargo +nightly doc -p soroban-sdk --no-deps --all-features $(CARGO_DOC_ARGS)
 
 test: fmt build
@@ -30,23 +29,11 @@ readme:
 	cd soroban-sdk \
 		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
 		&& cat ../target/doc/soroban_sdk.json \
-		| jq -r '.index[.root].docs' \
+		| jq -r '.index[.root|tostring].docs' \
 		> README.md
-
-watch:
-	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
-
-watch-doc:
-	cargo +nightly watch --clear --watch-when-idle --shell '$(MAKE) doc CARGO_DOC_ARGS='
 
 fmt:
 	cargo fmt --all
 
 clean:
 	cargo clean
-
-bump-version:
-	cargo workspaces version --all --force '*' --no-git-commit --yes custom $(VERSION)
-
-publish:
-	cargo workspaces publish --all --force '*' --from-git --yes
