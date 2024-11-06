@@ -43,8 +43,9 @@
 //! # fn main() { }
 //! ```
 //!
-//! More examples are available at <https://soroban.stellar.org/docs/category/basic-tutorials>
-//! and <https://soroban.stellar.org/docs/category/advanced-tutorials>.
+//! More examples are available at:
+//! - <https://developers.stellar.org/docs/build/smart-contracts/example-contracts>
+//! - <https://developers.stellar.org/docs/build/guides>
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
