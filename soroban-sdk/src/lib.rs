@@ -1,4 +1,5 @@
-//! Soroban SDK supports writing smart contracts for Stellar.
+//! Soroban SDK supports writing smart contracts for the [Soroban] smart contract
+//! Wasm-powered runtime, that is deployed on [Stellar].
 //!
 //! ### Docs
 //!
@@ -6,6 +7,7 @@
 //!
 //! [developers.stellar.org]: https://developers.stellar.org
 //! [Stellar]: https://stellar.org
+//! [Soroban]: https://stellar.org/soroban
 //!
 //! ### Migrating Major Versions
 //!

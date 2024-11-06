@@ -1,9 +1,17 @@
-Soroban SDK supports writing programs for the Soroban smart contract
-platform.
+Soroban SDK supports writing smart contracts for the [Soroban] smart contract
+Wasm-powered runtime, that is deployed on [Stellar].
 
 ### Docs
 
-See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
+See [developers.stellar.org] for documentation about building smart contracts for [Stellar].
+
+[developers.stellar.org]: https://developers.stellar.org
+[Stellar]: https://stellar.org
+[Soroban]: https://stellar.org/soroban
+
+### Migrating Major Versions
+
+See [_migrating] for a summary of how to migrate from one major version to another.
 
 ### Examples
 
@@ -37,5 +45,6 @@ fn test() {
 # fn main() { }
 ```
 
-More examples are available at <https://soroban.stellar.org/docs/category/basic-tutorials>
-and <https://soroban.stellar.org/docs/category/advanced-tutorials>.
+More examples are available at:
+- <https://developers.stellar.org/docs/build/smart-contracts/example-contracts>
+- <https://developers.stellar.org/docs/build/guides>
