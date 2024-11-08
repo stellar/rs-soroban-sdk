@@ -1213,6 +1213,7 @@ dependencies = [
  "bytes-lit",
  "ctor",
  "curve25519-dalek",
+ "derive_arbitrary",
  "ed25519-dalek",
  "hex",
  "proptest",
