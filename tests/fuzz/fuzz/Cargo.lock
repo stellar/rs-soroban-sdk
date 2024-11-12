@@ -1141,6 +1141,7 @@ dependencies = [
  "arbitrary",
  "bytes-lit",
  "ctor",
+ "derive_arbitrary",
  "ed25519-dalek",
  "rand",
  "rustc_version",
