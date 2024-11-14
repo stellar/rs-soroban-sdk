@@ -1124,7 +1124,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "22.0.0-rc.3.1"
+version = "22.0.0-rc.3.2"
 dependencies = [
  "serde",
  "serde_json",
@@ -1136,7 +1136,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "22.0.0-rc.3.1"
+version = "22.0.0-rc.3.2"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1156,7 +1156,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "22.0.0-rc.3.1"
+version = "22.0.0-rc.3.2"
 dependencies = [
  "crate-git-revision",
  "darling",
@@ -1174,7 +1174,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "22.0.0-rc.3.1"
+version = "22.0.0-rc.3.2"
 dependencies = [
  "base64 0.13.1",
  "stellar-xdr",
@@ -1184,7 +1184,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "22.0.0-rc.3.1"
+version = "22.0.0-rc.3.2"
 dependencies = [
  "prettyplease",
  "proc-macro2",
@@ -1293,7 +1293,7 @@ dependencies = [
 
 [[package]]
 name = "test_fuzz"
-version = "22.0.0-rc.3.1"
+version = "22.0.0-rc.3.2"
 dependencies = [
  "soroban-sdk",
 ]
