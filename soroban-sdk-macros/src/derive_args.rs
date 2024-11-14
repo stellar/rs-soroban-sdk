@@ -79,6 +79,7 @@ pub fn derive_args_impl(name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
 
             quote! {
                 #[inline(always)]
+                #[allow(clippy::unused_unit)]
                 pub fn #fn_ident<#fn_input_lifetime>(#(#fn_input_fn_args),*)
                     -> (#(#fn_input_types,)*)
                 {
