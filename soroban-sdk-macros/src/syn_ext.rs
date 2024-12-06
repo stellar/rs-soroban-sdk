@@ -225,25 +225,30 @@ fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
             _ => None,
         })
         .collect::<HashMap<_, _>>();
-    for item in &mut imp.items {
-        if let ImplItem::Fn(f) = item {
-            for input in &mut f.sig.inputs {
-                if let FnArg::Typed(t) = input {
-                    if let Type::Path(TypePath { qself: None, path }) = &mut *t.ty {
-                        let segments = &path.segments;
-                        if segments.len() == 2
-                            && segments.first() == Some(&PathSegment::from(format_ident!("Self")))
-                        {
-                            if let Some(PathSegment {
-                                arguments: PathArguments::None,
-                                ident,
-                            }) = segments.get(1)
-                            {
-                                if let Some(resolved_ty) = associated_types.get(ident) {
-                                    *t.ty = resolved_ty.clone();
-                                }
-                            }
-                        }
+    let fn_input_types = imp
+        .items
+        .iter_mut()
+        .filter_map(|item| match item {
+            ImplItem::Fn(f) => Some(f.sig.inputs.iter_mut().filter_map(|input| match input {
+                FnArg::Typed(t) => Some(&mut t.ty),
+                _ => None,
+            })),
+            _ => None,
+        })
+        .flatten();
+    for t in fn_input_types {
+        if let Type::Path(TypePath { qself: None, path }) = t.as_mut() {
+            let segments = &path.segments;
+            if segments.len() == 2
+                && segments.first() == Some(&PathSegment::from(format_ident!("Self")))
+            {
+                if let Some(PathSegment {
+                    arguments: PathArguments::None,
+                    ident,
+                }) = segments.get(1)
+                {
+                    if let Some(resolved_ty) = associated_types.get(ident) {
+                        *t.as_mut() = resolved_ty.clone();
                     }
                 }
             }
