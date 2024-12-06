@@ -7,6 +7,7 @@ mod bytes_alloc_vec;
 mod bytes_buffer;
 mod contract_add_i32;
 mod contract_assert;
+mod contract_custom_account_impl;
 mod contract_docs;
 mod contract_duration;
 mod contract_fn;
