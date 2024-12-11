@@ -953,7 +953,11 @@ impl<T> VecTryIter<T> {
         }
     }
 
-    fn into_vec(self) -> Vec<T> {
+    pub fn into_vec(self) -> Vec<T> {
+        self.to_vec()
+    }
+
+    pub fn to_vec(&self) -> Vec<T> {
         self.vec.slice(self.start..self.end)
     }
 }

@@ -51,7 +51,6 @@
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
-#![allow(dead_code)]
 // The SDK uses #[test] in doctests, and does some sneaky line hiding to have
 // the doctest execute the test inside a main function instead.
 #![allow(clippy::test_attr_in_doctest)]

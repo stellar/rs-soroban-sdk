@@ -791,8 +791,12 @@ impl IntoIterator for Bytes {
 pub struct BytesIter(Bytes);
 
 impl BytesIter {
-    fn into_bin(self) -> Bytes {
+    pub fn into_bytes(self) -> Bytes {
         self.0
+    }
+
+    pub fn to_bytes(&self) -> Bytes {
+        self.0.clone()
     }
 }
 
