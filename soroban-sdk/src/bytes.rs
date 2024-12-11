@@ -176,9 +176,9 @@ macro_rules! impl_bytesn_repr {
             }
         }
 
-        impl Into<[u8; $size]> for $elem {
-            fn into(self) -> [u8; $size] {
-                self.0.into()
+        impl From<$elem> for [u8; $size] {
+            fn from(v: $elem) -> [u8; $size] {
+                v.0.into()
             }
         }
 

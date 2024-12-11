@@ -12,6 +12,9 @@ use crate::{storage::Storage, Map, Vec};
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::{ScString, ScVal};
 
+#[cfg(not(target_family = "wasm"))]
+use core::fmt::Display;
+
 /// String is a contiguous growable array type containing `u8`s.
 ///
 /// The array is stored in the Host and available to the Guest through the
@@ -44,7 +47,7 @@ impl Debug for String {
         #[cfg(target_family = "wasm")]
         write!(f, "String(..)")?;
         #[cfg(not(target_family = "wasm"))]
-        write!(f, "String({})", self.to_string())?;
+        write!(f, "String({})", self)?;
         Ok(())
     }
 }
@@ -176,14 +179,15 @@ impl TryFromVal<Env, &str> for String {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl ToString for String {
-    fn to_string(&self) -> std::string::String {
+impl Display for String {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let sc_val: ScVal = self.try_into().unwrap();
-        if let ScVal::String(ScString(s)) = sc_val {
+        let s = if let ScVal::String(ScString(s)) = sc_val {
             s.to_utf8_string().unwrap()
         } else {
             panic!("value is not a string");
-        }
+        };
+        f.write_str(&s)
     }
 }
 

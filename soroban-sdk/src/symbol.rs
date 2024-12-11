@@ -6,6 +6,9 @@ use super::{
 };
 
 #[cfg(not(target_family = "wasm"))]
+use core::fmt::Display;
+
+#[cfg(not(target_family = "wasm"))]
 use super::env::SymbolStr;
 
 #[cfg(not(target_family = "wasm"))]
@@ -37,7 +40,7 @@ impl Debug for Symbol {
         #[cfg(target_family = "wasm")]
         write!(f, "Symbol(..)")?;
         #[cfg(not(target_family = "wasm"))]
-        write!(f, "Symbol({})", self.to_string())?;
+        write!(f, "Symbol({})", self)?;
         Ok(())
     }
 }
@@ -277,15 +280,16 @@ impl Symbol {
 #[cfg(not(target_family = "wasm"))]
 extern crate std;
 #[cfg(not(target_family = "wasm"))]
-impl ToString for Symbol {
-    fn to_string(&self) -> String {
-        if let Ok(s) = SymbolSmall::try_from(self.val) {
+impl Display for Symbol {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        let s = if let Ok(s) = SymbolSmall::try_from(self.val) {
             s.to_string()
         } else {
             let e: Env = self.env.clone().try_into().unwrap_optimized();
             SymbolStr::try_from_val(&e, &self.val)
                 .unwrap_optimized()
                 .to_string()
-        }
+        };
+        f.write_str(&s)
     }
 }

@@ -60,13 +60,13 @@ macro_rules! vec {
 /// There are some cases where this lack of guarantee is important:
 ///
 /// - When storing a Vec that has been provided externally as a contract
-/// function argument, be aware there is no guarantee that all items in the Vec
-/// will be of type `T`. It may be necessary to validate all values, either
-/// before storing, or when loading with `try_` variation functions.
+///   function argument, be aware there is no guarantee that all items in the Vec
+///   will be of type `T`. It may be necessary to validate all values, either
+///   before storing, or when loading with `try_` variation functions.
 ///
 /// - When accessing and iterating over a Vec that has been provided externally
-/// as a contract function input, and the contract needs to be resilient to
-/// failure, use the `try_` variation functions.
+///   as a contract function input, and the contract needs to be resilient to
+///   failure, use the `try_` variation functions.
 ///
 /// Functions with an `_unchecked` suffix will panic if called with indexes that
 /// are out-of-bounds.

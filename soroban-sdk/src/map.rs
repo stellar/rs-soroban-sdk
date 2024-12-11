@@ -59,13 +59,13 @@ macro_rules! map {
 /// There are some cases where this lack of guarantee is important:
 ///
 /// - When storing a Map that has been provided externally as a contract
-/// function argument, be aware there is no guarantee that all pairs in the Map
-/// will be of type `K` and `V`. It may be necessary to validate all pairs,
-/// either before storing, or when loading with `try_` variation functions.
+///   function argument, be aware there is no guarantee that all pairs in the Map
+///   will be of type `K` and `V`. It may be necessary to validate all pairs,
+///   either before storing, or when loading with `try_` variation functions.
 ///
 /// - When accessing and iterating over a Map that has been provided externally
-/// as a contract function input, and the contract needs to be resilient to
-/// failure, use the `try_` variation functions.
+///   as a contract function input, and the contract needs to be resilient to
+///   failure, use the `try_` variation functions.
 ///
 /// Maps have at most one entry per key. Setting a value for a key in the map
 /// that already has a value for that key replaces the value.

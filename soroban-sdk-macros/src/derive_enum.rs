@@ -330,6 +330,7 @@ fn map_empty_variant(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn map_tuple_variant(
     path: &Path,
     enum_ident: &Ident,
@@ -385,8 +386,7 @@ fn map_tuple_variant(
     let try_from = {
         let field_convs = fields
             .iter()
-            .enumerate()
-            .map(|(_i, _f)| {
+            .map(|_f| {
                 quote! {
                     iter.next().ok_or(#path::ConversionError)??.try_into_val(env)?
                 }
