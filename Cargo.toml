@@ -72,11 +72,3 @@ lto = true
 [profile.release-with-logs]
 inherits = "release"
 debug-assertions = true
-
-[lints.clippy]
-# The SDK uses TryFrom/From/TryInto/Into not according to conventions. Types
-# have TryFrom impls, and then Into impls that call the TryFrom and panic.
-unnecessary_fallible_conversions = "allow"
-# The SDK uses #[test] in doctests, and does some sneaky line hiding to have
-# the doctest execute the test.
-test_attr_in_doctest = "allow"
