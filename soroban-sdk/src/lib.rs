@@ -55,9 +55,6 @@
 // The SDK uses #[test] in doctests, and does some sneaky line hiding to have
 // the doctest execute the test inside a main function instead.
 #![allow(clippy::test_attr_in_doctest)]
-// The SDK uses TryFrom/From/TryInto/Into not according to conventions. Types
-// have TryFrom impls, and then Into impls that call the TryFrom and panic.
-#![allow(clippy::unnecessary_fallible_conversions)]
 
 pub mod _migrating;
 

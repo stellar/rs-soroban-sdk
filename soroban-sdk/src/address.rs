@@ -41,7 +41,7 @@ impl Debug for Address {
         {
             use crate::env::internal::xdr;
             use stellar_strkey::{ed25519, Contract, Strkey};
-            let sc_val = ScVal::try_from(self).map_err(|_| core::fmt::Error)?;
+            let sc_val = ScVal::from(self);
             if let ScVal::Address(addr) = sc_val {
                 match addr {
                     xdr::ScAddress::Account(account_id) => {
@@ -331,7 +331,7 @@ impl crate::testutils::Address for Address {
 #[cfg(not(target_family = "wasm"))]
 impl Address {
     pub(crate) fn contract_id(&self) -> Hash {
-        let sc_address: ScAddress = self.try_into().unwrap();
+        let sc_address: ScAddress = self.into();
         if let ScAddress::Contract(c) = sc_address {
             c
         } else {

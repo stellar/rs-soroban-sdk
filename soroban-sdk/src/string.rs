@@ -181,7 +181,7 @@ impl TryFromVal<Env, &str> for String {
 #[cfg(not(target_family = "wasm"))]
 impl Display for String {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        let sc_val: ScVal = self.try_into().unwrap();
+        let sc_val: ScVal = self.into();
         let s = if let ScVal::String(ScString(s)) = sc_val {
             s.to_utf8_string().unwrap()
         } else {

@@ -245,7 +245,7 @@ impl<T> From<&Vec<T>> for ScVal {
 #[cfg(not(target_family = "wasm"))]
 impl<T> From<&Vec<T>> for ScVec {
     fn from(v: &Vec<T>) -> Self {
-        if let ScVal::Vec(Some(vec)) = ScVal::try_from(v).unwrap() {
+        if let ScVal::Vec(Some(vec)) = ScVal::from(v) {
             vec
         } else {
             panic!("expected ScVec")
