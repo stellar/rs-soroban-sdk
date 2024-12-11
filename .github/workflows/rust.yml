@@ -121,7 +121,7 @@ jobs:
           done
     - if: "!matrix.sys.cdylib-cross-compile-workaround"
       name: Build for native
-      run: cargo-hack hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
+      run: cargo-hack hack --feature-powerset --exclude-features docs clippy --target ${{ matrix.sys.target }}
     - if: "matrix.sys.cdylib-cross-compile-workaround"
       name: Build for native
       run: cargo-hack hack --feature-powerset --exclude-features docs rustc --workspace --exclude soroban-sdk-macros --crate-type lib --target ${{ matrix.sys.target }}
