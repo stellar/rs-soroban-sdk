@@ -620,7 +620,7 @@ impl Env {
         self.env_impl.get_last_invocation_resources()
     }
 
-    /// Estimates the fee for the last invocation's resources, i.e. the 
+    /// Estimates the fee for the last invocation's resources, i.e. the
     /// resources returned by `get_last_invocation_resources`.
     ///
     /// In order to get non-`None` results, `enable_invocation_metering` has to
@@ -628,7 +628,7 @@ impl Env {
     ///
     /// The fees are computed using the snapshot of the Stellar Pubnet fees made
     /// on 2024-12-11.
-    /// 
+    ///
     /// Take the return value with a grain of salt as both the resource estimate
     /// and the fee rates may be imprecise.
     ///
