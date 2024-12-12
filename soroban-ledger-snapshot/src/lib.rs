@@ -20,6 +20,8 @@ pub enum Error {
     Serde(#[from] serde_json::Error),
 }
 
+pub type LedgerSnapshotEntry = (Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>));
+
 /// Ledger snapshot stores a snapshot of a ledger that can be restored for use
 /// in environments as a [`LedgerInfo`] and a [`SnapshotSource`].
 #[serde_as]
@@ -35,7 +37,7 @@ pub struct LedgerSnapshot {
     pub min_persistent_entry_ttl: u32,
     pub min_temp_entry_ttl: u32,
     pub max_entry_ttl: u32,
-    pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
+    pub ledger_entries: Vec<LedgerSnapshotEntry>,
 }
 
 impl LedgerSnapshot {
