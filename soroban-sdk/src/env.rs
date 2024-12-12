@@ -450,6 +450,8 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
+use crate::cost_estimate::CostEstimate;
+#[cfg(any(test, feature = "testutils"))]
 use crate::{
     auth,
     testutils::{
@@ -574,6 +576,26 @@ impl Env {
         env.ledger().set(ledger_info);
 
         env
+    }
+
+    /// Returns the resources metered during the last top level contract
+    /// invocation.    
+    ///
+    /// In order to get non-`None` results, `enable_invocation_metering` has to
+    /// be called and at least one invocation has to happen after that.
+    ///
+    /// Take the return value with a grain of salt. The returned resources mostly
+    /// correspond only to the operations that have happened during the host
+    /// invocation, i.e. this won't try to simulate the work that happens in
+    /// production scenarios (e.g. certain XDR rountrips). This also doesn't try
+    /// to model resources related to the transaction size.
+    ///
+    /// The returned value is as useful as the preceding setup, e.g. if a test
+    /// contract is used instead of a Wasm contract, all the costs related to
+    /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
+    /// missed.    
+    pub fn cost_estimate(&self) -> CostEstimate {
+        CostEstimate::new(self.clone())
     }
 
     /// Register a contract with the [Env] for testing.

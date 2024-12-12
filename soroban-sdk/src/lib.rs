@@ -802,6 +802,8 @@ pub mod data {
 }
 pub mod auth;
 mod bytes;
+#[cfg(any(test, feature = "testutils"))]
+pub mod cost_estimate;
 pub mod crypto;
 pub mod deploy;
 mod error;
