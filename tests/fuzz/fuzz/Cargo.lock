@@ -1037,9 +1037,9 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "22.1.0"
+version = "22.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df6c3137afcdb5a62b9ed3b1994ff9439351eaa795d8d33f758b4386ce2d0060"
+checksum = "8ebed97f583127b391cc8137d5e475e66ba4e12f428dd6c9aed7a914bbd2353e"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1049,9 +1049,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "22.1.0"
+version = "22.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24deb45507c219d3608f04768c3b700b627bc345cc4c19e31c4cc57fc7d77be9"
+checksum = "94ce037307fcd6d775f2b567ae10d5eb9b99eacb2b1110e9b23ed92b351e47f4"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1068,9 +1068,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "22.1.0"
+version = "22.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b010a822db635139fcfdb29be8a333606e5204c445e044d3450a5c47eaba20a"
+checksum = "b395eaf56d155529a3951c0ad54420599184a810db86d7316b97cc59b97e5b85"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1078,9 +1078,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "22.1.0"
+version = "22.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ee57de1756bae449a52da032c8312113f355cbcf7e906fbb8957a44827999dc"
+checksum = "cb980b49637cc428fab2442a97800ac2ed9ced39422acf4840f77ab596858cae"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -1114,9 +1114,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "22.1.0"
+version = "22.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1528c2d0d19ab70e9947f930f8707fdc0e9bfd4baf6d275b8a2f67482c2f2d99"
+checksum = "ef84a5b3bfffc84250b22454d6ce9df6750afd5ed900faf7d02968400b9c8bd0"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1249,9 +1249,9 @@ dependencies = [
 
 [[package]]
 name = "stellar-xdr"
-version = "22.0.0"
+version = "22.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20c2130275cc730d042b3082f51145f0486f5a543d6d72fced02ed9048b82b57"
+checksum = "2ce69db907e64d1e70a3dce8d4824655d154749426a6132b25395c49136013e4"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
