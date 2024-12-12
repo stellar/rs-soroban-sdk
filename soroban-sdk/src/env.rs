@@ -85,7 +85,6 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 pub use internal::VecObject;
-use soroban_env_host::fees::FeeConfiguration;
 
 pub trait IntoVal<E: internal::Env, T> {
     fn into_val(&self, e: &E) -> T;
@@ -465,7 +464,7 @@ use core::{cell::RefCell, cell::RefMut};
 #[cfg(any(test, feature = "testutils"))]
 use internal::ContractInvocationEvent;
 #[cfg(any(test, feature = "testutils"))]
-pub use soroban_env_host::{FeeEstimate, InvocationResources};
+pub use soroban_env_host::{fees::FeeConfiguration, FeeEstimate, InvocationResources};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
