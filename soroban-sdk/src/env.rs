@@ -464,6 +464,8 @@ use core::{cell::RefCell, cell::RefMut};
 #[cfg(any(test, feature = "testutils"))]
 use internal::ContractInvocationEvent;
 #[cfg(any(test, feature = "testutils"))]
+pub use soroban_env_host::{fees::FeeConfiguration, FeeEstimate, InvocationResources};
+#[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
@@ -574,6 +576,91 @@ impl Env {
         env.ledger().set(ledger_info);
 
         env
+    }
+
+    /// Enables detailed metering of contract invocations.
+    ///
+    /// The top-level contract invocations and lifecycle operations (such as
+    /// `register` or `env.deployer()` operations) will be metered and the
+    /// budget will reset in-between them. Metering will not be reset while
+    /// inside the call (e.g. if a contract calls or creates another contract,
+    /// that won't reset metering).
+    ///
+    /// The metered resources for the last invocation can be retrieved with
+    /// `get_last_invocation_resources()` and the estimated fee corresponding
+    /// to these resources can be estimated with
+    /// `estimate_last_invocation_fee()`.
+    ///
+    /// While the resource metering may be useful for contract optimization,
+    /// keep in mind that resource and fee estimation may be imprecise. Use
+    /// simulation with RPC in order to get the exact resources for submitting
+    /// the transactions to the network.
+    pub fn enable_invocation_metering(&self) {
+        self.env_impl.enable_invocation_metering();
+    }
+
+    /// Returns the resources metered during the last top level contract
+    /// invocation.    
+    ///
+    /// In order to get non-`None` results, `enable_invocation_metering` has to
+    /// be called and at least one invocation has to happen after that.
+    ///
+    /// Take the return value with a grain of salt. The returned resources mostly
+    /// correspond only to the operations that have happened during the host
+    /// invocation, i.e. this won't try to simulate the work that happens in
+    /// production scenarios (e.g. certain XDR rountrips). This also doesn't try
+    /// to model resources related to the transaction size.
+    ///
+    /// The returned value is as useful as the preceding setup, e.g. if a test
+    /// contract is used instead of a Wasm contract, all the costs related to
+    /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
+    /// missed.    
+    pub fn get_last_invocation_resources(&self) -> Option<InvocationResources> {
+        self.env_impl.get_last_invocation_resources()
+    }
+
+    /// Estimates the fee for the last invocation's resources, i.e. the
+    /// resources returned by `get_last_invocation_resources`.
+    ///
+    /// In order to get non-`None` results, `enable_invocation_metering` has to
+    /// be called and at least one invocation has to happen after that.
+    ///
+    /// The fees are computed using the snapshot of the Stellar Pubnet fees made
+    /// on 2024-12-11.
+    ///
+    /// Take the return value with a grain of salt as both the resource estimate
+    /// and the fee rates may be imprecise.
+    ///
+    /// The returned value is as useful as the preceding setup, e.g. if a test
+    /// contract is used instead of a Wasm contract, all the costs related to
+    /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
+    /// missed.    
+    pub fn estimate_last_invocation_fee(&self) -> Option<FeeEstimate> {
+        // This is a snapshot of the fees as of 2024-12-11.
+        let pubnet_fee_config = FeeConfiguration {
+            fee_per_instruction_increment: 25,
+            fee_per_read_entry: 6250,
+            fee_per_write_entry: 10000,
+            fee_per_read_1kb: 1786,
+            // This is a bit higher than the current network fee, it's an
+            // overestimate for the sake of providing a bit more conservative
+            // results in case if the state grows.
+            fee_per_write_1kb: 12000,
+            fee_per_historical_1kb: 16235,
+            fee_per_contract_event_1kb: 10000,
+            fee_per_transaction_size_1kb: 1624,
+        };
+        let pubnet_persistent_rent_rate_denominator = 2103;
+        let pubnet_temp_rent_rate_denominator = 4206;
+        if let Some(resources) = self.get_last_invocation_resources() {
+            Some(resources.estimate_fees(
+                &pubnet_fee_config,
+                pubnet_persistent_rent_rate_denominator,
+                pubnet_temp_rent_rate_denominator,
+            ))
+        } else {
+            None
+        }
     }
 
     /// Register a contract with the [Env] for testing.

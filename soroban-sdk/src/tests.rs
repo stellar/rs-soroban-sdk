@@ -32,6 +32,7 @@ mod crypto_secp256k1;
 mod crypto_secp256r1;
 mod crypto_sha256;
 mod env;
+mod invocation_metering;
 mod max_ttl;
 mod prng;
 mod proptest_scval_cmp;
