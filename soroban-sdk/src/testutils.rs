@@ -172,20 +172,11 @@ impl AuthSnapshot {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Generators {
     address: u64,
     nonce: u64,
-}
-
-impl Default for Generators {
-    fn default() -> Generators {
-        Generators {
-            address: 0,
-            nonce: 0,
-        }
-    }
 }
 
 impl Generators {
@@ -484,7 +475,7 @@ impl StellarAssetIssuer {
                 )?;
 
                 match entry.data {
-                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags.clone()),
+                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags),
                     _ => panic!("expected account entry but got {:?}", entry.data),
                 }
             })

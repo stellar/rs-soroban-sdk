@@ -578,7 +578,7 @@ mod testutils {
         fn all(&self) -> Map<Val, Val> {
             let env = &self.storage.env;
             let storage = env.host().with_mut_storage(|s| Ok(s.map.clone())).unwrap();
-            let address: xdr::ScAddress = env.current_contract_address().try_into().unwrap();
+            let address: xdr::ScAddress = env.current_contract_address().into();
             for entry in storage {
                 let (k, Some((v, _))) = entry else {
                     continue;

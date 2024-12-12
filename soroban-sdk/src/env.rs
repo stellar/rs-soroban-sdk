@@ -637,7 +637,7 @@ impl Env {
     ///     let contract_id = env.register(WASM, ());
     /// }
     /// ```
-    pub fn register<'a, C, A>(&self, contract: C, constructor_args: A) -> Address
+    pub fn register<C, A>(&self, contract: C, constructor_args: A) -> Address
     where
         C: Register,
         A: ConstructorArgs,
@@ -915,7 +915,7 @@ impl Env {
     pub fn register_stellar_asset_contract_v2(&self, admin: Address) -> StellarAssetContract {
         let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
-            issuer_pk.clone(),
+            issuer_pk,
         )));
 
         self.host()
@@ -1429,7 +1429,10 @@ impl Env {
             .host()
             .call_account_contract_check_auth(contract.to_object(), args.to_object());
         match res {
-            Ok(rv) => Ok(rv.into_val(self)),
+            Ok(rv) => {
+                let _: () = rv.into_val(self);
+                Ok(())
+            }
             Err(e) => Err(e.error.try_into().map_err(Into::into)),
         }
     }

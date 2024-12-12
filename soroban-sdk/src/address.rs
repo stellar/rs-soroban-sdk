@@ -328,7 +328,7 @@ impl crate::testutils::Address for Address {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(any(not(target_family = "wasm"), test, feature = "testutils"))]
 impl Address {
     pub(crate) fn contract_id(&self) -> Hash {
         let sc_address: ScAddress = self.into();
