@@ -14,7 +14,7 @@ impl CostEstimate {
     /// Enables detailed per-invocation resource cost metering.
     ///
     /// The top-level contract invocations and lifecycle operations (such as
-    /// `register` or `env.deployer()` operations) will be metered and the
+    /// `register` or `env.deployer()` operations) will be metered and
     /// all the metering information will reset in-between them. Metering will
     /// not be reset while inside the call (e.g. if a contract calls or creates
     /// another contract, that won't reset metering).
