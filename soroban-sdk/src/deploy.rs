@@ -17,19 +17,20 @@
 //! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
 //!
 //! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+//!
 //! #[contract]
 //! pub struct Contract;
+//!
 //! #[contractimpl]
 //! impl Contract {
 //!     pub fn deploy(env: Env, wasm_hash: BytesN<32>) {
 //!         let salt = [0u8; 32];
 //!         let deployer = env.deployer().with_current_contract(salt);
-//!         // Deployed contract address is deterministic and can be accessed
-//!         // before deploying the contract.
-//!         let _ = deployer.deployed_address();
 //!         let contract_address = deployer.deploy_v2(wasm_hash, ());
+//!         // ...
 //!     }
 //! }
+//!
 //! #[test]
 //! fn test() {
 //! # }
@@ -46,27 +47,29 @@
 //! # fn main() { }
 //! ```
 //!
-//! //! #### Deploy a contract with a multi-argument constructor
+//! #### Deploy a contract with a multi-argument constructor
 //!
 //! ```
 //! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+//!
 //! const DEPLOYED_WASM_WITH_CTOR: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
+//!
 //! #[contract]
 //! pub struct Contract;
+//!
 //! #[contractimpl]
 //! impl Contract {
 //!     pub fn deploy_with_constructor(env: Env, wasm_hash: BytesN<32>) {
 //!         let salt = [1u8; 32];
 //!         let deployer = env.deployer().with_current_contract(salt);
-//!         // Deployed contract address is deterministic and can be accessed
-//!         // before deploying the contract.
-//!         let _ = deployer.deployed_address();
 //!         let contract_address = deployer.deploy_v2(
 //!              wasm_hash,
 //!              (1_u32, 2_i64),
 //!         );
+//!         // ...
 //!     }
 //! }
+//!
 //! #[test]
 //! fn test() {
 //! # }
@@ -78,6 +81,43 @@
 //!     // Upload the contract code before deploying its instance.
 //!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM_WITH_CTOR);
 //!     contract.deploy_with_constructor(&wasm_hash);
+//! }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
+//! ```
+//!
+//! #### Derive before deployment what the address of a contract will be
+//!
+//! ```
+//! use soroban_sdk::{contract, contractimpl, Address, BytesN, Env, Symbol, IntoVal};
+//!
+//! #[contract]
+//! pub struct Contract;
+//!
+//! #[contractimpl]
+//! impl Contract {
+//!     pub fn deploy_contract_address(env: Env) -> Address {
+//!         let salt = [1u8; 32];
+//!         let deployer = env.deployer().with_current_contract(salt);
+//!         // Deployed contract address is deterministic and can be accessed
+//!         // before deploying the contract. It is derived from the deployer
+//!         // (the current contract's address) and the salt passed in above.
+//!         deployer.deployed_address()
+//!     }
+//! }
+//!
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//!     let env = Env::default();
+//!     let contract_address = env.register(Contract, ());
+//!     let contract = ContractClient::new(&env, &contract_address);
+//!     assert_eq!(
+//!         contract.deploy_contract_address(),
+//!         Address::from_str(&env, "CBESJIMX7J53SWJGJ7WQ6QTLJI4S5LPPJNC2BNVD63GIKAYCDTDOO322"),
+//!     );
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
