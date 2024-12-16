@@ -1629,6 +1629,7 @@ impl Env {
     }
 
     /// Get the budget that tracks the resources consumed for the environment.
+    #[deprecated(note = "use cost_estimate().detailed_metering()")]
     pub fn budget(&self) -> Budget {
         Budget::new(self.env_impl.budget_cloned())
     }
