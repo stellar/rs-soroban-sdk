@@ -28,7 +28,7 @@ impl CostEstimate {
     /// keep in mind that resource and fee estimation may be imprecise. Use
     /// simulation with RPC in order to get the exact resources for submitting
     /// the transactions to the network.    
-    pub(crate) fn enable(&self) {
+    pub fn enable(&self) {
         self.env.host().enable_invocation_metering();
     }
 
