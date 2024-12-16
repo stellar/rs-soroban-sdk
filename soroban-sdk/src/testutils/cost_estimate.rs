@@ -48,7 +48,7 @@ impl CostEstimate {
         if let Some(res) = self.env.host().get_last_invocation_resources() {
             res
         } else {
-            panic!("Invocation cost estimate is not available. Make sure invocation cost metering is enabled and this is called after an invocation.")
+            panic!("Invocation cost estimate is not available. Make sure invocation cost metering is enabled in the EnvTestConfig and this is called after an invocation.")
         }
     }
 
