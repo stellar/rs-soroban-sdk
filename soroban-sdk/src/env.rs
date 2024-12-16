@@ -450,7 +450,7 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::cost_estimate::CostEstimate;
+use crate::testutils::cost_estimate::CostEstimate;
 #[cfg(any(test, feature = "testutils"))]
 use crate::{
     auth,

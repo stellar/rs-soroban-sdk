@@ -28,16 +28,12 @@ impl CostEstimate {
     /// keep in mind that resource and fee estimation may be imprecise. Use
     /// simulation with RPC in order to get the exact resources for submitting
     /// the transactions to the network.    
-    pub fn enable(&self) {
+    pub(crate) fn enable(&self) {
         self.env.host().enable_invocation_metering();
     }
 
     /// Returns the resources metered during the last top level contract
     /// invocation.    
-    ///
-    /// In order to get non-`None` results, `enable()` has to
-    /// be called and at least one invocation has to happen after that.
-    ///
     /// Take the return value with a grain of salt. The returned resources mostly
     /// correspond only to the operations that have happened during the host
     /// invocation, i.e. this won't try to simulate the work that happens in
@@ -48,15 +44,16 @@ impl CostEstimate {
     /// contract is used instead of a Wasm contract, all the costs related to
     /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
     /// missed.    
-    pub fn resources(&self) -> Option<InvocationResources> {
-        self.env.host().get_last_invocation_resources()
+    pub fn resources(&self) -> InvocationResources {
+        if let Some(res) = self.env.host().get_last_invocation_resources() {
+            res
+        } else {
+            panic!("Invocation cost estimate is not available. Make sure invocation cost metering is enabled and this is called after an invocation.")
+        }
     }
 
     /// Estimates the fee for the last invocation's resources, i.e. the
     /// resources returned by `resources()`.
-    ///
-    /// In order to get non-`None` results, `enable()` has to
-    /// be called and at least one invocation has to happen after that.
     ///
     /// The fees are computed using the snapshot of the Stellar Pubnet fees made
     /// on 2024-12-11.
@@ -68,7 +65,7 @@ impl CostEstimate {
     /// contract is used instead of a Wasm contract, all the costs related to
     /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
     /// missed.    
-    pub fn fee(&self) -> Option<FeeEstimate> {
+    pub fn fee(&self) -> FeeEstimate {
         // This is a snapshot of the fees as of 2024-12-11.
         let pubnet_fee_config = FeeConfiguration {
             fee_per_instruction_increment: 25,
@@ -85,15 +82,12 @@ impl CostEstimate {
         };
         let pubnet_persistent_rent_rate_denominator = 2103;
         let pubnet_temp_rent_rate_denominator = 4206;
-        if let Some(resources) = self.resources() {
-            Some(resources.estimate_fees(
-                &pubnet_fee_config,
-                pubnet_persistent_rent_rate_denominator,
-                pubnet_temp_rent_rate_denominator,
-            ))
-        } else {
-            None
-        }
+
+        self.resources().estimate_fees(
+            &pubnet_fee_config,
+            pubnet_persistent_rent_rate_denominator,
+            pubnet_temp_rent_rate_denominator,
+        )
     }
 
     /// Returns the detailed CPU and memory metering information recorded thus

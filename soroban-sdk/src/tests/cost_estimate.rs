@@ -33,7 +33,7 @@ fn test_cost_estimate_with_storage() {
             temporary_rent_ledger_bytes: 0,
             temporary_entry_rent_bumps: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().resources().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
             total: 45010,
@@ -46,7 +46,7 @@ fn test_cost_estimate_with_storage() {
             persistent_entry_rent: 12389,
             temporary_entry_rent: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().fee().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().fee()).as_str());
 
     // Read an entry from the storage. Now there are no write-related resources
     // and fees consumed.
@@ -65,7 +65,7 @@ fn test_cost_estimate_with_storage() {
             temporary_rent_ledger_bytes: 0,
             temporary_entry_rent_bumps: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().resources().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
             total: 21819,
@@ -78,7 +78,7 @@ fn test_cost_estimate_with_storage() {
             persistent_entry_rent: 0,
             temporary_entry_rent: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().fee().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().fee()).as_str());
 
     // Delete the entry. There is 1 write_entry, but 0 write_bytes and no rent
     // as this is deletion.
@@ -97,7 +97,7 @@ fn test_cost_estimate_with_storage() {
             temporary_rent_ledger_bytes: 0,
             temporary_entry_rent_bumps: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().resources().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
             total: 31815,
@@ -110,7 +110,7 @@ fn test_cost_estimate_with_storage() {
             persistent_entry_rent: 0,
             temporary_entry_rent: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().fee().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().fee()).as_str());
 
     // Read an entry again, now it no longer exists, so there is less read_bytes
     // than in the case when the entry is present.
@@ -129,7 +129,7 @@ fn test_cost_estimate_with_storage() {
             temporary_rent_ledger_bytes: 0,
             temporary_entry_rent_bumps: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().resources().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
             total: 21675,
@@ -142,5 +142,5 @@ fn test_cost_estimate_with_storage() {
             persistent_entry_rent: 0,
             temporary_entry_rent: 0,
         }"#]]
-    .assert_eq(format!("{:#?}", e.cost_estimate().fee().unwrap()).as_str());
+    .assert_eq(format!("{:#?}", e.cost_estimate().fee()).as_str());
 }
