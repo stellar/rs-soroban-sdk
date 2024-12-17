@@ -993,7 +993,9 @@ impl Env {
             .unwrap();
 
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
-        self.env_impl.switch_to_recording_auth(true).unwrap();
+        self.env_impl
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
+            .unwrap();
         self.invoke_contract::<()>(
             &token_id,
             &soroban_sdk_macros::internal_symbol_short!("set_admin"),
@@ -1042,7 +1044,9 @@ impl Env {
         constructor_args: Vec<Val>,
     ) -> Address {
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
-        self.env_impl.switch_to_recording_auth(true).unwrap();
+        self.env_impl
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
+            .unwrap();
         let args_vec: std::vec::Vec<xdr::ScVal> =
             constructor_args.iter().map(|v| v.into_val(self)).collect();
         let contract_id: Address = self
