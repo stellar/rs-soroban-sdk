@@ -2,7 +2,6 @@
 
 mod address;
 mod auth;
-mod budget;
 mod bytes_alloc_vec;
 mod bytes_buffer;
 mod contract_add_i32;

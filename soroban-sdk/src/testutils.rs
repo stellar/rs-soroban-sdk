@@ -314,9 +314,9 @@ pub mod budget {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// env.budget().reset_default();
+    /// env.cost_estimate().budget().reset_default();
     /// // ...
-    /// println!("{}", env.budget());
+    /// println!("{}", env.cost_estimate().budget());
     /// # }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }

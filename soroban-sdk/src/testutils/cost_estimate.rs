@@ -11,27 +11,6 @@ impl CostEstimate {
         Self { env }
     }
 
-    /// Enables detailed per-invocation resource cost metering.
-    ///
-    /// The top-level contract invocations and lifecycle operations (such as
-    /// `register` or `env.deployer()` operations) will be metered and
-    /// all the metering information will reset in-between them. Metering will
-    /// not be reset while inside the call (e.g. if a contract calls or creates
-    /// another contract, that won't reset metering).
-    ///
-    /// The metered resources for the last invocation can be retrieved with
-    /// `resources()`, the estimated fee corresponding to these resources can be
-    /// retrieved with `fee()`, and the detailed CPU and memory memory
-    /// breakdown can be retrieved with `detailed_metering()`.
-    ///
-    /// While the resource metering may be useful for contract optimization,
-    /// keep in mind that resource and fee estimation may be imprecise. Use
-    /// simulation with RPC in order to get the exact resources for submitting
-    /// the transactions to the network.    
-    pub fn enable(&self) {
-        self.env.host().enable_invocation_metering();
-    }
-
     /// Returns the resources metered during the last top level contract
     /// invocation.    
     /// Take the return value with a grain of salt. The returned resources mostly
@@ -90,16 +69,20 @@ impl CostEstimate {
         )
     }
 
-    /// Returns the detailed CPU and memory metering information recorded thus
-    /// far.
+    /// Returns the budget object that provides the detailed CPU and memory
+    /// metering information recorded thus far.
     ///
-    /// The metering resets before every top-level contract level invocation.
+    /// The budget metering resets before every top-level contract level
+    /// invocation.
+    ///
+    /// budget() may also be used to adjust the CPU and memory limits via the
+    /// `reset_` methods.
     ///
     /// Note, that unlike `resources()`/`fee()` this will always return some
     /// value. If there was no contract call, then the resulting value will
     /// correspond to metering any environment setup that has been made thus
     /// far.
-    pub fn detailed_metering(&self) -> Budget {
+    pub fn budget(&self) -> Budget {
         Budget::new(self.env.host().budget_cloned())
     }
 }
