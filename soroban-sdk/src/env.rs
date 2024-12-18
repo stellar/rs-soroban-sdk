@@ -450,6 +450,8 @@ impl Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
+use crate::testutils::cost_estimate::CostEstimate;
+#[cfg(any(test, feature = "testutils"))]
 use crate::{
     auth,
     testutils::{
@@ -560,6 +562,7 @@ impl Env {
                 }
             })))
             .unwrap();
+        env_impl.enable_invocation_metering();
 
         let env = Env {
             env_impl,
@@ -574,6 +577,31 @@ impl Env {
         env.ledger().set(ledger_info);
 
         env
+    }
+
+    /// Returns the resources metered during the last top level contract
+    /// invocation.    
+    ///
+    /// In order to get non-`None` results, `enable_invocation_metering` has to
+    /// be called and at least one invocation has to happen after that.
+    ///
+    /// Take the return value with a grain of salt. The returned resources mostly
+    /// correspond only to the operations that have happened during the host
+    /// invocation, i.e. this won't try to simulate the work that happens in
+    /// production scenarios (e.g. certain XDR rountrips). This also doesn't try
+    /// to model resources related to the transaction size.
+    ///
+    /// The returned value is as useful as the preceding setup, e.g. if a test
+    /// contract is used instead of a Wasm contract, all the costs related to
+    /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
+    /// missed.
+    ///
+    /// While the resource metering may be useful for contract optimization,
+    /// keep in mind that resource and fee estimation may be imprecise. Use
+    /// simulation with RPC in order to get the exact resources for submitting
+    /// the transactions to the network.    
+    pub fn cost_estimate(&self) -> CostEstimate {
+        CostEstimate::new(self.clone())
     }
 
     /// Register a contract with the [Env] for testing.
@@ -1611,6 +1639,7 @@ impl Env {
     }
 
     /// Get the budget that tracks the resources consumed for the environment.
+    #[deprecated(note = "use cost_estimate().detailed_metering()")]
     pub fn budget(&self) -> Budget {
         Budget::new(self.env_impl.budget_cloned())
     }

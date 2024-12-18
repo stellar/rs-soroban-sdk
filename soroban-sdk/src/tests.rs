@@ -2,7 +2,6 @@
 
 mod address;
 mod auth;
-mod budget;
 mod bytes_alloc_vec;
 mod bytes_buffer;
 mod contract_add_i32;
@@ -25,6 +24,7 @@ mod contract_udt_struct;
 mod contract_udt_struct_tuple;
 mod contractimport;
 mod contractimport_with_error;
+mod cost_estimate;
 mod crypto_bls12_381;
 mod crypto_ed25519;
 mod crypto_keccak256;
