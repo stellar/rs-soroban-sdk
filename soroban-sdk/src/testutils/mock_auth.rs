@@ -34,7 +34,7 @@ impl<'a> From<&MockAuth<'a>> for xdr::SorobanAuthorizationEntry {
         Self {
             root_invocation: value.invoke.into(),
             credentials: xdr::SorobanCredentials::Address(xdr::SorobanAddressCredentials {
-                address: value.address.try_into().unwrap(),
+                address: value.address.into(),
                 nonce: env.with_generator(|mut g| g.nonce()),
                 signature_expiration_ledger: curr_ledger + max_entry_ttl,
                 signature: xdr::ScVal::Void,
@@ -55,7 +55,7 @@ impl<'a> From<&MockAuthInvoke<'a>> for xdr::SorobanAuthorizedInvocation {
             function: xdr::SorobanAuthorizedFunction::ContractFn(xdr::InvokeContractArgs {
                 contract_address: xdr::ScAddress::Contract(value.contract.contract_id()),
                 function_name: value.fn_name.try_into().unwrap(),
-                args: value.args.clone().try_into().unwrap(),
+                args: value.args.clone().into(),
             }),
             sub_invocations: value
                 .sub_invokes

@@ -9,7 +9,7 @@ pub struct Contract;
 #[contractimpl]
 impl Contract {
     pub fn value() -> Value {
-        return Value { value: 13 };
+        Value { value: 13 }
     }
 }
 
