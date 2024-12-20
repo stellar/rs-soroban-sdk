@@ -87,9 +87,9 @@ impl<const N: usize> From<Hash<N>> for BytesN<N> {
     }
 }
 
-impl<const N: usize> Into<[u8; N]> for Hash<N> {
-    fn into(self) -> [u8; N] {
-        self.0.into()
+impl<const N: usize> From<Hash<N>> for [u8; N] {
+    fn from(v: Hash<N>) -> Self {
+        v.0.into()
     }
 }
 

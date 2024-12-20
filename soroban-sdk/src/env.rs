@@ -87,6 +87,13 @@ pub use internal::Val;
 pub use internal::VecObject;
 
 pub trait IntoVal<E: internal::Env, T> {
+    // The use of a borrowed self on an into function is not consistent with
+    // convention. This was done for the type, because most types that are
+    // converted to a Val won't be consumed by the conversion code. This is
+    // because Val's don't hold the actual value and are just a handle to the
+    // data stored in the host. Clippy thinks this was done in error without a
+    // reason.
+    #[allow(clippy::wrong_self_convention)]
     fn into_val(&self, e: &E) -> T;
 }
 
@@ -658,7 +665,7 @@ impl Env {
     ///     let contract_id = env.register(WASM, ());
     /// }
     /// ```
-    pub fn register<'a, C, A>(&self, contract: C, constructor_args: A) -> Address
+    pub fn register<C, A>(&self, contract: C, constructor_args: A) -> Address
     where
         C: Register,
         A: ConstructorArgs,
@@ -936,7 +943,7 @@ impl Env {
     pub fn register_stellar_asset_contract_v2(&self, admin: Address) -> StellarAssetContract {
         let issuer_pk = self.with_generator(|mut g| g.address());
         let issuer_id = xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(
-            issuer_pk.clone(),
+            issuer_pk,
         )));
 
         self.host()
@@ -1454,7 +1461,10 @@ impl Env {
             .host()
             .call_account_contract_check_auth(contract.to_object(), args.to_object());
         match res {
-            Ok(rv) => Ok(rv.into_val(self)),
+            Ok(rv) => {
+                let _: () = rv.into_val(self);
+                Ok(())
+            }
             Err(e) => Err(e.error.try_into().map_err(Into::into)),
         }
     }
@@ -1770,17 +1780,17 @@ impl internal::EnvBase for Env {
     }
 
     fn check_protocol_version_lower_bound(&self, v: u32) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .check_protocol_version_lower_bound(v)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn check_protocol_version_upper_bound(&self, v: u32) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .check_protocol_version_upper_bound(v)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     // Note: the function `escalate_error_to_panic` only exists _on the `Env`
@@ -1805,10 +1815,10 @@ impl internal::EnvBase for Env {
     }
 
     fn check_same_env(&self, other: &Self) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .check_same_env(&other.env_impl)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn bytes_copy_from_slice(
@@ -1829,10 +1839,10 @@ impl internal::EnvBase for Env {
         b_pos: U32Val,
         slice: &mut [u8],
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .bytes_copy_to_slice(b, b_pos, slice)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn bytes_new_from_slice(&self, slice: &[u8]) -> Result<BytesObject, Self::Error> {
@@ -1849,10 +1859,10 @@ impl internal::EnvBase for Env {
         b_pos: U32Val,
         slice: &mut [u8],
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .string_copy_to_slice(b, b_pos, slice)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn symbol_copy_to_slice(
@@ -1861,10 +1871,10 @@ impl internal::EnvBase for Env {
         b_pos: U32Val,
         mem: &mut [u8],
     ) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
+        self.env_impl
             .symbol_copy_to_slice(b, b_pos, mem)
-            .unwrap_optimized())
+            .unwrap_optimized();
+        Ok(())
     }
 
     fn string_new_from_slice(&self, slice: &[u8]) -> Result<StringObject, Self::Error> {
