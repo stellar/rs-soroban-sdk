@@ -1037,9 +1037,9 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "22.1.2"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ebed97f583127b391cc8137d5e475e66ba4e12f428dd6c9aed7a914bbd2353e"
+checksum = "cf2e42bf80fcdefb3aae6ff3c7101a62cf942e95320ed5b518a1705bc11c6b2f"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1049,9 +1049,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "22.1.2"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94ce037307fcd6d775f2b567ae10d5eb9b99eacb2b1110e9b23ed92b351e47f4"
+checksum = "027cd856171bfd6ad2c0ffb3b7dfe55ad7080fb3050c36ad20970f80da634472"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1068,9 +1068,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "22.1.2"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b395eaf56d155529a3951c0ad54420599184a810db86d7316b97cc59b97e5b85"
+checksum = "9a07dda1ae5220d975979b19ad4fd56bc86ec7ec1b4b25bc1c5d403f934e592e"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1078,9 +1078,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "22.1.2"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb980b49637cc428fab2442a97800ac2ed9ced39422acf4840f77ab596858cae"
+checksum = "66e8b03a4191d485eab03f066336112b2a50541a7553179553dc838b986b94dd"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -1114,9 +1114,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "22.1.2"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef84a5b3bfffc84250b22454d6ce9df6750afd5ed900faf7d02968400b9c8bd0"
+checksum = "00eff744764ade3bc480e4909e3a581a240091f3d262acdce80b41f7069b2bd9"
 dependencies = [
  "itertools",
  "proc-macro2",
