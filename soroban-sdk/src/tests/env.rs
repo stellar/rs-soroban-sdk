@@ -52,6 +52,10 @@ fn default_and_from_snapshot_same_settings() {
 
     c1client.test();
     c2client.test();
+    let logs1 = env1.logs().all();
+    let logs2 = env2.logs().all();
+    assert_eq!(logs1, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
+    assert_eq!(logs2, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
 
     let c1addr2 = Address::generate(&env1);
     let c2addr2 = Address::generate(&env2);
@@ -71,11 +75,6 @@ fn default_and_from_snapshot_same_settings() {
             ScErrorCode::InvalidAction
         )))
     );
-
-    let logs1 = env1.logs().all();
-    let logs2 = env2.logs().all();
-    assert_eq!(logs1, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
-    assert_eq!(logs2, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
 }
 
 #[test]

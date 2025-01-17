@@ -463,6 +463,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dissimilar"
+version = "1.0.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59f8e79d1fbf76bdfbde321e902714bf6c49df88a7dda6fc682fc2979226962d"
+
+[[package]]
 name = "downcast-rs"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -557,6 +563,16 @@ name = "ethnum"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b90ca2580b73ab6a1f724b76ca11ab632df820fd6040c336200d2c1df7b3c82c"
+
+[[package]]
+name = "expect-test"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e0be0a561335815e06dab7c62e50353134c796e7a6155402a64bcff66b6a5e0"
+dependencies = [
+ "dissimilar",
+ "once_cell",
+]
 
 [[package]]
 name = "fastrand"
@@ -1223,9 +1239,9 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "22.1.0"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df6c3137afcdb5a62b9ed3b1994ff9439351eaa795d8d33f758b4386ce2d0060"
+checksum = "cf2e42bf80fcdefb3aae6ff3c7101a62cf942e95320ed5b518a1705bc11c6b2f"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1235,9 +1251,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "22.1.0"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24deb45507c219d3608f04768c3b700b627bc345cc4c19e31c4cc57fc7d77be9"
+checksum = "027cd856171bfd6ad2c0ffb3b7dfe55ad7080fb3050c36ad20970f80da634472"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1254,9 +1270,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "22.1.0"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b010a822db635139fcfdb29be8a333606e5204c445e044d3450a5c47eaba20a"
+checksum = "9a07dda1ae5220d975979b19ad4fd56bc86ec7ec1b4b25bc1c5d403f934e592e"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1264,9 +1280,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "22.1.0"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ee57de1756bae449a52da032c8312113f355cbcf7e906fbb8957a44827999dc"
+checksum = "66e8b03a4191d485eab03f066336112b2a50541a7553179553dc838b986b94dd"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -1300,9 +1316,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "22.1.0"
+version = "22.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1528c2d0d19ab70e9947f930f8707fdc0e9bfd4baf6d275b8a2f67482c2f2d99"
+checksum = "00eff744764ade3bc480e4909e3a581a240091f3d262acdce80b41f7069b2bd9"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1315,7 +1331,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1328,7 +1344,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1336,6 +1352,7 @@ dependencies = [
  "curve25519-dalek",
  "derive_arbitrary",
  "ed25519-dalek",
+ "expect-test",
  "hex",
  "libfuzzer-sys",
  "proptest",
@@ -1355,7 +1372,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "crate-git-revision",
  "darling",
@@ -1373,7 +1390,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "base64 0.13.1",
  "pretty_assertions",
@@ -1384,7 +1401,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1399,7 +1416,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1452,9 +1469,9 @@ dependencies = [
 
 [[package]]
 name = "stellar-xdr"
-version = "22.0.0"
+version = "22.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20c2130275cc730d042b3082f51145f0486f5a543d6d72fced02ed9048b82b57"
+checksum = "2ce69db907e64d1e70a3dce8d4824655d154749426a6132b25395c49136013e4"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
@@ -1515,140 +1532,140 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_constructor"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_modular"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -1656,7 +1673,7 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "22.0.2"
+version = "22.0.5"
 dependencies = [
  "soroban-sdk",
 ]

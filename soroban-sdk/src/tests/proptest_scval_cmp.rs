@@ -70,7 +70,7 @@ proptest! {
         prop_assert_eq!(scval_partial_eq, rawval_cmp_is_eq);
 
         // Compare<ScVal> for Budget
-        let budget = env.budget().0;
+        let budget = env.cost_estimate().budget().0;
         let scval_budget_cmp = budget.compare(&scval_1, &scval_2).expect("cmp");
 
         if scval_budget_cmp != scval_cmp {
