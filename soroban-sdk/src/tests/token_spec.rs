@@ -56,15 +56,15 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
             .collect::<Result<HashSet<_>, _>>()?;
 
     // Read all StellarAssetSpec entries
-    let stellar_xdr = StellarAssetSpec::spec_xdr();
-    let stellar_cursor = std::io::Cursor::new(stellar_xdr);
-    let stellar_entries: HashSet<ScSpecEntry> =
-        ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_cursor, Limits::none()))
+    let stellar_asset_xdr = StellarAssetSpec::spec_xdr();
+    let stellar_asset_cursor = std::io::Cursor::new(stellar_asset_xdr);
+    let stellar_asset_entries: HashSet<ScSpecEntry> =
+        ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
             .collect::<Result<HashSet<_>, _>>()?;
 
     // Check that the token entries are a subset of stellar entries
     assert!(
-        token_entries.is_subset(&stellar_entries),
+        token_entries.is_subset(&stellar_asset_entries),
         "StellarAssetSpec is missing entries from TokenSpec"
     );
     Ok(())
