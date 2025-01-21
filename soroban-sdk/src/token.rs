@@ -428,6 +428,7 @@ pub trait StellarAssetInterface {
     ///
     /// If the contract has not yet been initialized.
     fn symbol(env: Env) -> String;
+
     /// Sets the administrator to the specified address `new_admin`.
     ///
     /// # Arguments
