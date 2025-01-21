@@ -156,20 +156,22 @@ pub fn derive_fn_spec(
         return Err(quote! { #(#compile_errors)* });
     }
 
-    let export_attr = if export {
-        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
+    let exported = if export {
+        Some(quote! {
+            #[doc(hidden)]
+            #[allow(non_snake_case)]
+            #[allow(non_upper_case_globals)]
+            #(#attrs)*
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
+        })
     } else {
         None
     };
 
     // Generated code.
     Ok(quote! {
-        #[doc(hidden)]
-        #[allow(non_snake_case)]
-        #[allow(non_upper_case_globals)]
-        #(#attrs)*
-        #export_attr
-        pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
+        #exported
 
         impl #ty {
             #[allow(non_snake_case)]

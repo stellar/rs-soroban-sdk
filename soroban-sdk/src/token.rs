@@ -80,7 +80,7 @@ pub use TokenClient as Client;
 /// There are no functions in the token interface for minting tokens. Minting is
 /// an administrative function that can differ significantly from one token to
 /// the next.
-#[contractspecfn(name = "StellarAssetSpec", export = false)]
+#[contractspecfn(name = "TokenSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "TokenClient")]
 pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
@@ -230,11 +230,204 @@ pub trait TokenInterface {
     fn symbol(env: Env) -> String;
 }
 
+/// Spec contains the contract spec of Token contracts.
+#[doc(hidden)]
+pub struct TokenSpec;
+
+pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
+    &TokenSpec::spec_xdr_allowance(),
+    &TokenSpec::spec_xdr_approve(),
+    &TokenSpec::spec_xdr_balance(),
+    &TokenSpec::spec_xdr_burn(),
+    &TokenSpec::spec_xdr_burn_from(),
+    &TokenSpec::spec_xdr_decimals(),
+    &TokenSpec::spec_xdr_name(),
+    &TokenSpec::spec_xdr_symbol(),
+    &TokenSpec::spec_xdr_transfer(),
+    &TokenSpec::spec_xdr_transfer_from(),
+];
+
+pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 4716;
+
+impl TokenSpec {
+    /// Returns the XDR spec for the Token contract.
+    pub const fn spec_xdr() -> [u8; TOKEN_SPEC_XDR_LEN] {
+        let input = TOKEN_SPEC_XDR_INPUT;
+        // Concatenate all XDR for each item that makes up the token spec.
+        let mut output = [0u8; TOKEN_SPEC_XDR_LEN];
+        let mut input_i = 0;
+        let mut output_i = 0;
+        while input_i < input.len() {
+            let subinput = input[input_i];
+            let mut subinput_i = 0;
+            while subinput_i < subinput.len() {
+                output[output_i] = subinput[subinput_i];
+                output_i += 1;
+                subinput_i += 1;
+            }
+            input_i += 1;
+        }
+
+        // Check that the numbers of bytes written is equal to the number of bytes
+        // expected in the output.
+        if output_i != output.len() {
+            panic!("unexpected output length",);
+        }
+
+        output
+    }
+}
+
 /// Interface for admin capabilities for Token contracts, such as the Stellar
 /// Asset Contract.
 #[contractspecfn(name = "StellarAssetSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "StellarAssetClient")]
 pub trait StellarAssetInterface {
+    /// Returns the allowance for `spender` to transfer from `from`.
+    ///
+    /// The amount returned is the amount that spender is allowed to transfer
+    /// out of from's balance. When the spender transfers amounts, the allowance
+    /// will be reduced by the amount transferred.
+    ///
+    /// # Arguments
+    ///
+    /// * `from` - The address holding the balance of tokens to be drawn from.
+    /// * `spender` - The address spending the tokens held by `from`.
+    fn allowance(env: Env, from: Address, spender: Address) -> i128;
+
+    /// Set the allowance by `amount` for `spender` to transfer/burn from
+    /// `from`.
+    ///
+    /// The amount set is the amount that spender is approved to transfer out of
+    /// from's balance. The spender will be allowed to transfer amounts, and
+    /// when an amount is transferred the allowance will be reduced by the
+    /// amount transferred.
+    ///
+    /// # Arguments
+    ///
+    /// * `from` - The address holding the balance of tokens to be drawn from.
+    /// * `spender` - The address being authorized to spend the tokens held by
+    ///   `from`.
+    /// * `amount` - The tokens to be made available to `spender`.
+    /// * `expiration_ledger` - The ledger number where this allowance expires. Cannot
+    ///    be less than the current ledger number unless the amount is being set to 0.
+    ///    An expired entry (where expiration_ledger < the current ledger number)
+    ///    should be treated as a 0 amount allowance.
+    ///
+    /// # Events
+    ///
+    /// Emits an event with topics `["approve", from: Address,
+    /// spender: Address], data = [amount: i128, expiration_ledger: u32]`
+    fn approve(env: Env, from: Address, spender: Address, amount: i128, expiration_ledger: u32);
+
+    /// Returns the balance of `id`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The address for which a balance is being queried. If the
+    ///   address has no existing balance, returns 0.
+    fn balance(env: Env, id: Address) -> i128;
+
+    /// Transfer `amount` from `from` to `to`.
+    ///
+    /// # Arguments
+    ///
+    /// * `from` - The address holding the balance of tokens which will be
+    ///   withdrawn from.
+    /// * `to` - The address which will receive the transferred tokens.
+    /// * `amount` - The amount of tokens to be transferred.
+    ///
+    /// # Events
+    ///
+    /// Emits an event with topics `["transfer", from: Address, to: Address],
+    /// data = amount: i128`
+    fn transfer(env: Env, from: Address, to: Address, amount: i128);
+
+    /// Transfer `amount` from `from` to `to`, consuming the allowance that
+    /// `spender` has on `from`'s balance. Authorized by spender
+    /// (`spender.require_auth()`).
+    ///
+    /// The spender will be allowed to transfer the amount from from's balance
+    /// if the amount is less than or equal to the allowance that the spender
+    /// has on the from's balance. The spender's allowance on from's balance
+    /// will be reduced by the amount.
+    ///
+    /// # Arguments
+    ///
+    /// * `spender` - The address authorizing the transfer, and having its
+    ///   allowance consumed during the transfer.
+    /// * `from` - The address holding the balance of tokens which will be
+    ///   withdrawn from.
+    /// * `to` - The address which will receive the transferred tokens.
+    /// * `amount` - The amount of tokens to be transferred.
+    ///
+    /// # Events
+    ///
+    /// Emits an event with topics `["transfer", from: Address, to: Address],
+    /// data = amount: i128`
+    fn transfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128);
+
+    /// Burn `amount` from `from`.
+    ///
+    /// Reduces from's balance by the amount, without transferring the balance
+    /// to another holder's balance.
+    ///
+    /// # Arguments
+    ///
+    /// * `from` - The address holding the balance of tokens which will be
+    ///   burned from.
+    /// * `amount` - The amount of tokens to be burned.
+    ///
+    /// # Events
+    ///
+    /// Emits an event with topics `["burn", from: Address], data = amount:
+    /// i128`
+    fn burn(env: Env, from: Address, amount: i128);
+
+    /// Burn `amount` from `from`, consuming the allowance of `spender`.
+    ///
+    /// Reduces from's balance by the amount, without transferring the balance
+    /// to another holder's balance.
+    ///
+    /// The spender will be allowed to burn the amount from from's balance, if
+    /// the amount is less than or equal to the allowance that the spender has
+    /// on the from's balance. The spender's allowance on from's balance will be
+    /// reduced by the amount.
+    ///
+    /// # Arguments
+    ///
+    /// * `spender` - The address authorizing the burn, and having its allowance
+    ///   consumed during the burn.
+    /// * `from` - The address holding the balance of tokens which will be
+    ///   burned from.
+    /// * `amount` - The amount of tokens to be burned.
+    ///
+    /// # Events
+    ///
+    /// Emits an event with topics `["burn", from: Address], data = amount:
+    /// i128`
+    fn burn_from(env: Env, spender: Address, from: Address, amount: i128);
+
+    /// Returns the number of decimals used to represent amounts of this token.
+    ///
+    /// # Panics
+    ///
+    /// If the contract has not yet been initialized.
+    fn decimals(env: Env) -> u32;
+
+    /// Returns the name for this token.
+    ///
+    /// # Panics
+    ///
+    /// If the contract has not yet been initialized.
+    fn name(env: Env) -> String;
+
+    /// Returns the symbol for this token.
+    ///
+    /// # Panics
+    ///
+    /// If the contract has not yet been initialized.
+    fn symbol(env: Env) -> String;
     /// Sets the administrator to the specified address `new_admin`.
     ///
     /// # Arguments
@@ -305,13 +498,13 @@ pub trait StellarAssetInterface {
     fn clawback(env: Env, from: Address, amount: i128);
 }
 
-/// Spec contains the contract spec of Token contracts, including the general
-/// interface, as well as the admin interface, such as the Stellar Asset
-/// Contract.
+/// Spec contains the contract spec of the Stellar Asset Contract.
+///
+/// The Stellar Asset Contract is a superset of the Token Contract.
 #[doc(hidden)]
 pub struct StellarAssetSpec;
 
-pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
+pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_allowance(),
     &StellarAssetSpec::spec_xdr_authorized(),
     &StellarAssetSpec::spec_xdr_approve(),
@@ -330,14 +523,14 @@ pub(crate) const SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const SPEC_XDR_LEN: usize = 6456;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 6456;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
-    pub const fn spec_xdr() -> [u8; SPEC_XDR_LEN] {
-        let input = SPEC_XDR_INPUT;
+    pub const fn spec_xdr() -> [u8; STELLAR_ASSET_SPEC_XDR_LEN] {
+        let input = STELLAR_ASSET_SPEC_XDR_INPUT;
         // Concatenate all XDR for each item that makes up the token spec.
-        let mut output = [0u8; SPEC_XDR_LEN];
+        let mut output = [0u8; STELLAR_ASSET_SPEC_XDR_LEN];
         let mut input_i = 0;
         let mut output_i = 0;
         while input_i < input.len() {
