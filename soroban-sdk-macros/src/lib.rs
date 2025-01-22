@@ -1,6 +1,7 @@
 extern crate proc_macro;
 
 mod arbitrary;
+mod attribute;
 mod derive_args;
 mod derive_client;
 mod derive_enum;
@@ -245,6 +246,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 crate_path,
                 &call,
                 ident,
+                &m.attrs,
                 &m.sig.inputs,
                 trait_ident,
                 &client_ident,

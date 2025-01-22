@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
-use crate::{symbol, syn_ext};
+use crate::{attribute::pass_through_attr_to_gen_code, symbol, syn_ext};
 
 pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
@@ -200,7 +200,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             let fn_attrs = f
                 .attrs
                 .iter()
-                .filter(|attr| attr.path().is_ident("doc"))
+                .filter(|attr| pass_through_attr_to_gen_code(attr))
                 .collect::<Vec<_>>();
             if cfg!(not(feature = "testutils")) {
                 quote! {

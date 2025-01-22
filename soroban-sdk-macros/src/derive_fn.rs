@@ -1,4 +1,4 @@
-use crate::map_type::map_type;
+use crate::{attribute::pass_through_attr_to_gen_code, map_type::map_type};
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -7,7 +7,7 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
 };
 
 #[allow(clippy::too_many_arguments)]
@@ -15,6 +15,7 @@ pub fn derive_pub_fn(
     crate_path: &Path,
     call: &TokenStream2,
     ident: &Ident,
+    attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
     trait_ident: Option<&Ident>,
     client_ident: &str,
@@ -143,9 +144,16 @@ pub fn derive_pub_fn(
         None
     };
 
+    // Filter attributes to those that should be passed through to the generated code.
+    let attrs = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect::<Vec<_>>();
+
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
+        #(#attrs)*
         pub mod #hidden_mod_ident {
             use super::*;
 

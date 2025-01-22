@@ -11,6 +11,7 @@ use syn::{
     ReturnType, Type, TypePath,
 };
 
+use crate::attribute::pass_through_attr_to_gen_code;
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 #[allow(clippy::too_many_arguments)]
@@ -162,16 +163,24 @@ pub fn derive_fn_spec(
         None
     };
 
+    // Filter attributes to those that should be passed through to the generated code.
+    let attrs = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect::<Vec<_>>();
+
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
+        #(#attrs)*
         #export_attr
         pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
 
         impl #ty {
             #[allow(non_snake_case)]
+            #(#attrs)*
             pub const fn #spec_fn_ident() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
             }
