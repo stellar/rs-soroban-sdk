@@ -208,7 +208,6 @@ pub fn derive_contract_function_registration_ctor<'a>(
             #(
                 <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
                     #idents,
-
                     #[allow(deprecated)]
                     &#wrap_idents::invoke_raw_slice,
                 );
