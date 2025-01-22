@@ -17,6 +17,7 @@ use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 pub fn derive_fn_spec(
     ty: &Type,
     ident: &Ident,
+    attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
     output: &ReturnType,
     export: bool,
