@@ -15,7 +15,6 @@ pub fn derive_pub_fn(
     crate_path: &Path,
     call: &TokenStream2,
     ident: &Ident,
-    attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
     trait_ident: Option<&Ident>,
     client_ident: &str,
@@ -147,7 +146,6 @@ pub fn derive_pub_fn(
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
-        #(#attrs)*
         pub mod #hidden_mod_ident {
             use super::*;
 
@@ -210,6 +208,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
             #(
                 <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
                     #idents,
+
                     #[allow(deprecated)]
                     &#wrap_idents::invoke_raw_slice,
                 );

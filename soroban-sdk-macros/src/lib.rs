@@ -91,7 +91,7 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
 
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = methods
         .iter()
-        .map(|m| derive_fn_spec(&args.name, m.ident, m.attrs, m.inputs, m.output, export))
+        .map(|m| derive_fn_spec(&args.name, m.ident, m.inputs, m.output, export))
         .collect();
 
     match derived {
@@ -245,7 +245,6 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 crate_path,
                 &call,
                 ident,
-                &m.attrs,
                 &m.sig.inputs,
                 trait_ident,
                 &client_ident,

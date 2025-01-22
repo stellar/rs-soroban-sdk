@@ -197,7 +197,11 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 .unzip();
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
-            let fn_attrs = f.attrs;
+            let fn_attrs = f
+                .attrs
+                .iter()
+                .filter(|attr| attr.path().is_ident("doc"))
+                .collect::<Vec<_>>();
             if cfg!(not(feature = "testutils")) {
                 quote! {
                     #(#fn_attrs)*
