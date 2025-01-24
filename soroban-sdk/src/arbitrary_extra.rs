@@ -58,8 +58,8 @@ impl TryFromVal<Env, bool> for bool {
 
 impl TryFromVal<Env, ()> for () {
     type Error = ConversionError;
-    fn try_from_val(_env: &Env, v: &()) -> Result<Self, Self::Error> {
-        Ok(*v)
+    fn try_from_val(_env: &Env, _: &()) -> Result<Self, Self::Error> {
+        Ok(())
     }
 }
 
