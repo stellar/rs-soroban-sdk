@@ -1,4 +1,4 @@
-use crate::map_type::map_type;
+use crate::{attribute::pass_through_attr_to_gen_code, map_type::map_type};
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -143,6 +143,12 @@ pub fn derive_pub_fn(
     } else {
         None
     };
+
+    // Filter attributes to those that should be passed through to the generated code.
+    let attrs = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect::<Vec<_>>();
 
     // Generated code.
     Ok(quote! {
