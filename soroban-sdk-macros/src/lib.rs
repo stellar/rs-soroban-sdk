@@ -1,6 +1,7 @@
 extern crate proc_macro;
 
 mod arbitrary;
+mod attribute;
 mod derive_args;
 mod derive_client;
 mod derive_enum;

@@ -11,6 +11,7 @@ use syn::{
     ReturnType, Type, TypePath,
 };
 
+use crate::attribute::pass_through_attr_to_gen_code;
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 #[allow(clippy::too_many_arguments)]
@@ -168,6 +169,12 @@ pub fn derive_fn_spec(
     } else {
         None
     };
+
+    // Filter attributes to those that should be passed through to the generated code.
+    let attrs = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect::<Vec<_>>();
 
     // Generated code.
     Ok(quote! {
