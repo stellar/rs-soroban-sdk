@@ -4,6 +4,7 @@ mod address;
 mod auth;
 mod bytes_alloc_vec;
 mod bytes_buffer;
+mod cmp_across_env_in_tests;
 mod contract_add_i32;
 mod contract_assert;
 mod contract_custom_account_impl;

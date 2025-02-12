@@ -1,7 +1,7 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, Symbol as SymbolVal, SymbolSmall},
+    env::internal::{Env as _, Symbol as SymbolVal, SymbolSmall},
     ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
 
@@ -70,21 +70,29 @@ impl Ord for Symbol {
             // The object-to-small symbol comparisons are handled by `obj_cmp`,
             // so it's safe to handle all the other cases using it.
             _ => {
-                let env: Option<Env> =
-                    match (self.env.clone().try_into(), other.env.clone().try_into()) {
-                        (Err(_), Err(_)) => None,
-                        (Err(_), Ok(e)) => Some(e),
-                        (Ok(e), Err(_)) => Some(e),
-                        (Ok(e1), Ok(e2)) => {
-                            e1.check_same_env(&e2).unwrap_infallible();
-                            Some(e1)
+                let (e1, e2): (Result<Env, _>, Result<Env, _>) =
+                    (self.env.clone().try_into(), other.env.clone().try_into());
+                match (e1, e2) {
+                    (Err(_), Err(_)) => {
+                        panic!("symbol object is missing the env reference");
+                    }
+                    (Err(_), Ok(e)) | (Ok(e), Err(_)) => {
+                        let v = e.obj_cmp(self_raw, other_raw).unwrap_infallible();
+                        v.cmp(&0)
+                    }
+                    #[cfg(not(target_family = "wasm"))]
+                    (Ok(e1), Ok(e2)) => {
+                        if !e1.is_same_env(&e2) {
+                            return ScVal::from(self).cmp(&ScVal::from(other));
                         }
-                    };
-                if let Some(env) = env {
-                    let v = env.obj_cmp(self_raw, other_raw).unwrap_infallible();
-                    v.cmp(&0)
-                } else {
-                    panic!("symbol object is missing the env reference");
+                        let v = e1.obj_cmp(self_raw, other_raw).unwrap_infallible();
+                        v.cmp(&0)
+                    }
+                    #[cfg(target_family = "wasm")]
+                    (Ok(e), Ok(_)) => {
+                        let v = e.obj_cmp(self_raw, other_raw).unwrap_infallible();
+                        v.cmp(&0)
+                    }
                 }
             }
         }

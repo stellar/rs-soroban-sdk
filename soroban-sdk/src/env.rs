@@ -449,6 +449,14 @@ impl Env {
     }
 }
 
+#[doc(hidden)]
+#[cfg(not(target_family = "wasm"))]
+impl Env {
+    pub(crate) fn is_same_env(&self, other: &Self) -> bool {
+        self.env_impl.check_same_env(&other.env_impl).is_ok()
+    }
+}
+
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::cost_estimate::CostEstimate;
 #[cfg(any(test, feature = "testutils"))]
