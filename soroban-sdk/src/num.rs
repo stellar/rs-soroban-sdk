@@ -46,7 +46,10 @@ macro_rules! impl_num_wrapping_val_type {
                     // The object-to-small number comparisons are handled by `obj_cmp`,
                     // so it's safe to handle all the other cases using it.
                     _ => {
-                        self.env.check_same_env(&other.env).unwrap_infallible();
+                        #[cfg(not(target_family = "wasm"))]
+                        if !self.env.is_same_env(&other.env) {
+                            return ScVal::from(self).cmp(&ScVal::from(other));
+                        }
                         let v = self.env.obj_cmp(self_raw, other_raw).unwrap_infallible();
                         v.cmp(&0)
                     }
