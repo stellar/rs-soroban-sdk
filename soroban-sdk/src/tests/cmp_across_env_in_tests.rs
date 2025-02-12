@@ -132,4 +132,3 @@ fn test_map() {
 
     assert_eq!(m1, m2);
 }
-
