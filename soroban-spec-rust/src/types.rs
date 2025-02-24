@@ -1,6 +1,6 @@
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
-use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::next as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
@@ -148,6 +148,13 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Error => quote! { soroban_sdk::Error },
         ScSpecTypeDef::Bytes => quote! { soroban_sdk::Bytes },
         ScSpecTypeDef::Address => quote! { soroban_sdk::Address },
+        ScSpecTypeDef::AddressV2(supports_muxing) => {
+            if *supports_muxing {
+                quote! { soroban_sdk::MuxedAddress }
+            } else {
+                quote! { soroban_sdk::Address }
+            }
+        }
         ScSpecTypeDef::String => quote! { soroban_sdk::String },
         ScSpecTypeDef::Option(o) => {
             let value_ident = generate_type_ident(&o.value_type);

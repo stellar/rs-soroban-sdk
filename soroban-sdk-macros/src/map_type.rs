@@ -1,4 +1,4 @@
-use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::next as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
     ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
@@ -34,7 +34,8 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                     "String" => Ok(ScSpecTypeDef::String),
                     "Error" => Ok(ScSpecTypeDef::Error),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
-                    "Address" => Ok(ScSpecTypeDef::Address),
+                    "Address" => Ok(ScSpecTypeDef::AddressV2(false)),
+                    "MuxedAddress" => Ok(ScSpecTypeDef::AddressV2(true)),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {

@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractspecfn, Address, Env, String};
+use crate::{contractclient, contractspecfn, Address, Env, MuxedAddress, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -228,6 +228,11 @@ pub trait TokenInterface {
     ///
     /// If the contract has not yet been initialized.
     fn symbol(env: Env) -> String;
+}
+
+#[contractclient(crate_path = "crate", name = "MuxTokenClient")]
+pub trait MuxTokenInterface {
+    fn transfer_muxed(env: Env, from: MuxedAddress, to: MuxedAddress, amount: i128);
 }
 
 /// Interface for admin capabilities for Token contracts, such as the Stellar

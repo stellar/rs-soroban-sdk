@@ -55,6 +55,9 @@ impl Debug for Address {
                         let strkey = Strkey::Contract(Contract(contract_id.0));
                         write!(f, "Contract({})", strkey.to_string())?;
                     }
+                    xdr::ScAddress::MuxedAccount(_) => {
+                        write!(f, "MuxedAccount()")?;
+                    }
                 }
             } else {
                 return Err(core::fmt::Error);
@@ -80,10 +83,6 @@ impl PartialOrd for Address {
 
 impl Ord for Address {
     fn cmp(&self, other: &Self) -> Ordering {
-        #[cfg(not(target_family = "wasm"))]
-        if !self.env.is_same_env(&other.env) {
-            return ScVal::from(self).cmp(&ScVal::from(other));
-        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())

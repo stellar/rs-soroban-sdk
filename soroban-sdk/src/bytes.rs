@@ -256,10 +256,6 @@ impl PartialOrd for Bytes {
 
 impl Ord for Bytes {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        #[cfg(not(target_family = "wasm"))]
-        if !self.env.is_same_env(&other.env) {
-            return ScVal::from(self).cmp(&ScVal::from(other));
-        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
