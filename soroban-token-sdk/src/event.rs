@@ -1,4 +1,4 @@
-use soroban_sdk::{symbol_short, Address, Env, Symbol};
+use soroban_sdk::{symbol_short, Address, Env, EnvBase, IntoVal, MuxedAddress, Symbol};
 
 pub struct Events {
     env: Env,
@@ -20,6 +20,45 @@ impl Events {
     pub fn transfer(&self, from: Address, to: Address, amount: i128) {
         let topics = (symbol_short!("transfer"), from, to);
         self.env.events().publish(topics, amount);
+    }
+
+    pub fn transfer_with_muxed_address(&self, from: MuxedAddress, to: MuxedAddress, amount: i128) {
+        let from_muxed_id = from.id();
+        let to_muxed_id = to.id();
+        let topics = (symbol_short!("transfer"), from, to);
+        let amount_val = amount.into_val(&self.env);
+        let data = match (from_muxed_id, to_muxed_id) {
+            (None, None) => amount_val,
+            (None, Some(to_muxed_id)) => self
+                .env
+                .map_new_from_slices(
+                    &["amount", "to_muxed_id"],
+                    &[amount_val, to_muxed_id.into_val(&self.env)],
+                )
+                .unwrap()
+                .into(),
+            (Some(from_muxed_id), None) => self
+                .env
+                .map_new_from_slices(
+                    &["amount", "from_muxed_id"],
+                    &[amount_val, from_muxed_id.into_val(&self.env)],
+                )
+                .unwrap()
+                .into(),
+            (Some(from_muxed_id), Some(to_muxed_id)) => self
+                .env
+                .map_new_from_slices(
+                    &["amount", "from_muxed_id", "to_muxed_id"],
+                    &[
+                        amount_val,
+                        from_muxed_id.into_val(&self.env),
+                        to_muxed_id.into_val(&self.env),
+                    ],
+                )
+                .unwrap()
+                .into(),
+        };
+        self.env.events().publish(topics, data);
     }
 
     pub fn mint(&self, admin: Address, to: Address, amount: i128) {

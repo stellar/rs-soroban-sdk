@@ -122,8 +122,8 @@ use crate::{
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
-    StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
-    U256Val, U32Val, U64Object, U64Val, Void,
+    MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject, TimepointObject,
+    U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -354,6 +354,27 @@ impl Env {
         internal::Env::require_auth(self, address.to_object()).unwrap_infallible();
     }
 
+    #[doc(hidden)]
+    pub(crate) fn get_address_from_muxed_address(
+        &self,
+        muxed_address: MuxedAddressObject,
+    ) -> Address {
+        Address::try_from_val(
+            self,
+            &internal::Env::get_address_from_muxed_address(self, muxed_address).unwrap_infallible(),
+        )
+        .unwrap_infallible()
+    }
+
+    #[doc(hidden)]
+    pub(crate) fn get_id_from_muxed_address(&self, muxed_address: MuxedAddressObject) -> u64 {
+        u64::try_from_val(
+            self,
+            &internal::Env::get_id_from_muxed_address(self, muxed_address).unwrap_infallible(),
+        )
+        .unwrap()
+    }
+
     /// Invokes a function of a contract that is registered in the [Env].
     ///
     /// # Panics
@@ -514,7 +535,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let info = internal::LedgerInfo {
-            protocol_version: 22,
+            protocol_version: 23,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],

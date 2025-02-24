@@ -438,6 +438,12 @@ pub trait Address {
     fn generate(env: &Env) -> crate::Address;
 }
 
+pub trait MuxedAddress {
+    /// Create a new MuxedAddress from a provided account public key and
+    /// multiplexing identifier.
+    fn from_account_id(env: &Env, account_key: &[u8; 32], id: u64) -> crate::MuxedAddress;
+}
+
 pub trait Deployer {
     /// Gets the TTL of the given contract's instance.
     ///

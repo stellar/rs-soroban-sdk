@@ -1,8 +1,8 @@
 use crate as soroban_sdk;
+use crate::xdr::ContractCostType;
 use expect_test::expect;
 use soroban_sdk::Env;
 use soroban_sdk_macros::symbol_short;
-use stellar_xdr::curr::ContractCostType;
 
 mod contract_data {
     use crate as soroban_sdk;
@@ -21,8 +21,8 @@ fn test_cost_estimate_with_storage() {
     client.put(&symbol_short!("k1"), &symbol_short!("v1"));
     expect![[r#"
         InvocationResources {
-            instructions: 455853,
-            mem_bytes: 1162241,
+            instructions: 455907,
+            mem_bytes: 1162257,
             read_entries: 2,
             write_entries: 1,
             read_bytes: 1028,
@@ -53,8 +53,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), Some(symbol_short!("v1")));
     expect![[r#"
         InvocationResources {
-            instructions: 454080,
-            mem_bytes: 1161338,
+            instructions: 454120,
+            mem_bytes: 1161354,
             read_entries: 3,
             write_entries: 0,
             read_bytes: 1108,
@@ -85,8 +85,8 @@ fn test_cost_estimate_with_storage() {
     client.del(&symbol_short!("k1"));
     expect![[r#"
         InvocationResources {
-            instructions: 452458,
-            mem_bytes: 1161558,
+            instructions: 452494,
+            mem_bytes: 1161574,
             read_entries: 2,
             write_entries: 1,
             read_bytes: 1108,
@@ -117,8 +117,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), None);
     expect![[r#"
         InvocationResources {
-            instructions: 452445,
-            mem_bytes: 1161202,
+            instructions: 452477,
+            mem_bytes: 1161218,
             read_entries: 3,
             write_entries: 0,
             read_bytes: 1028,
@@ -157,14 +157,14 @@ fn test_cost_estimate_budget() {
     // Budget breakdown corresponds to the last invocation only.
     expect![[r#"
         ===============================================================================================================================================================================
-        Cpu limit: 100000000; used: 455853
-        Mem limit: 41943040; used: 1162241
+        Cpu limit: 100000000; used: 455907
+        Mem limit: 41943040; used: 1162257
         ===============================================================================================================================================================================
         CostType                           iterations     input          cpu_insns      mem_bytes      const_term_cpu      lin_term_cpu        const_term_mem      lin_term_mem        
         WasmInsnExec                       284            None           1136           0              4                   0                   0                   0                   
-        MemAlloc                           27             Some(1052425)  143269         1052857        434                 16                  16                  128                 
-        MemCpy                             95             Some(9665)     5186           0              42                  16                  0                   0                   
-        MemCmp                             43             Some(1049)     2012           0              44                  16                  0                   0                   
+        MemAlloc                           27             Some(1052441)  143271         1052873        434                 16                  16                  128                 
+        MemCpy                             95             Some(9680)     5188           0              42                  16                  0                   0                   
+        MemCmp                             43             Some(1424)     2062           0              44                  16                  0                   0                   
         DispatchHostFunction               1              None           310            0              310                 0                   0                   0                   
         VisitObject                        2              None           122            0              61                  0                   0                   0                   
         ValSer                             0              Some(0)        0              0              230                 29                  242                 384                 
@@ -234,7 +234,7 @@ fn test_cost_estimate_budget() {
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
         Total # times meter was called: 192
-        Shadow cpu limit: 100000000; used: 34332
+        Shadow cpu limit: 100000000; used: 34394
         Shadow mem limit: 41943040; used: 27725
         ===============================================================================================================================================================================
 
