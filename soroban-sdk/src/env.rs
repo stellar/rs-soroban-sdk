@@ -122,8 +122,8 @@ use crate::{
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
-    StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
-    U256Val, U32Val, U64Object, U64Val, Void,
+    MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject, TimepointObject,
+    U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -354,6 +354,15 @@ impl Env {
         internal::Env::require_auth(self, address.to_object()).unwrap_infallible();
     }
 
+    #[doc(hidden)]
+    pub(crate) fn muxed_address_to_address(&self, muxed_address: MuxedAddressObject) -> Address {
+        Address::try_from_val(
+            self,
+            &internal::Env::muxed_address_to_address(self, muxed_address).unwrap_infallible(),
+        )
+        .unwrap_infallible()
+    }
+
     /// Invokes a function of a contract that is registered in the [Env].
     ///
     /// # Panics
@@ -449,14 +458,6 @@ impl Env {
     }
 }
 
-#[doc(hidden)]
-#[cfg(not(target_family = "wasm"))]
-impl Env {
-    pub(crate) fn is_same_env(&self, other: &Self) -> bool {
-        self.env_impl.check_same_env(&other.env_impl).is_ok()
-    }
-}
-
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::cost_estimate::CostEstimate;
 #[cfg(any(test, feature = "testutils"))]
@@ -514,7 +515,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let info = internal::LedgerInfo {
-            protocol_version: 22,
+            protocol_version: 23,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],
@@ -1810,13 +1811,6 @@ impl internal::EnvBase for Env {
     #[cfg(any(test, feature = "testutils"))]
     fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
         match e {}
-    }
-
-    fn check_same_env(&self, other: &Self) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .check_same_env(&other.env_impl)
-            .unwrap_optimized())
     }
 
     fn bytes_copy_from_slice(

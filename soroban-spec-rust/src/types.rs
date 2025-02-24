@@ -1,6 +1,6 @@
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
-use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::next as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
@@ -16,7 +16,7 @@ use stellar_xdr::{
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
-pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
+pub fn generate_struct(spec: &ScSpecUdtStructV0, expose_muxed_addresses: bool) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
 
     if spec.lib.len() > 0 {
@@ -31,7 +31,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
     {
         // If all fields are numeric, generate a tuple with unnamed fields.
         let fields = spec.fields.iter().map(|f| {
-            let f_type = generate_type_ident(&f.type_);
+            let f_type = generate_type_ident(&f.type_, expose_muxed_addresses);
             quote! { pub #f_type }
         });
         quote! {
@@ -43,7 +43,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
         // Otherwise generate a struct with named fields.
         let fields = spec.fields.iter().map(|f| {
             let f_ident = format_ident!("{}", f.name.to_utf8_string().unwrap());
-            let f_type = generate_type_ident(&f.type_);
+            let f_type = generate_type_ident(&f.type_, expose_muxed_addresses);
             quote! { pub #f_ident: #f_type }
         });
         quote! {
@@ -56,7 +56,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
 
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec.
-pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
+pub fn generate_union(spec: &ScSpecUdtUnionV0, expose_muxed_addresses: bool) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
     if spec.lib.len() > 0 {
         let lib_ident = format_ident!("{}", spec.lib.to_utf8_string_lossy());
@@ -75,7 +75,10 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
                     quote! { #v_ident }
                 }
                 stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => {
-                    let v_type = t.type_.iter().map(generate_type_ident);
+                    let v_type = t
+                        .type_
+                        .iter()
+                        .map(|t| generate_type_ident(t, expose_muxed_addresses));
                     quote! { #v_ident ( #(#v_type),* ) }
                 }
             }
@@ -134,7 +137,7 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
     }
 }
 
-pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
+pub fn generate_type_ident(spec: &ScSpecTypeDef, expose_muxed_addresses: bool) -> TokenStream {
     match spec {
         ScSpecTypeDef::Val => quote! { soroban_sdk::Val },
         ScSpecTypeDef::U64 => quote! { u64 },
@@ -148,27 +151,37 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Error => quote! { soroban_sdk::Error },
         ScSpecTypeDef::Bytes => quote! { soroban_sdk::Bytes },
         ScSpecTypeDef::Address => quote! { soroban_sdk::Address },
+        ScSpecTypeDef::AddressV2(supports_muxing) => {
+            if *supports_muxing && expose_muxed_addresses {
+                quote! { soroban_sdk::MuxedAddress }
+            } else {
+                quote! { soroban_sdk::Address }
+            }
+        }
         ScSpecTypeDef::String => quote! { soroban_sdk::String },
         ScSpecTypeDef::Option(o) => {
-            let value_ident = generate_type_ident(&o.value_type);
+            let value_ident = generate_type_ident(&o.value_type, expose_muxed_addresses);
             quote! { Option<#value_ident> }
         }
         ScSpecTypeDef::Result(r) => {
-            let ok_ident = generate_type_ident(&r.ok_type);
-            let error_ident = generate_type_ident(&r.error_type);
+            let ok_ident = generate_type_ident(&r.ok_type, expose_muxed_addresses);
+            let error_ident = generate_type_ident(&r.error_type, expose_muxed_addresses);
             quote! { Result<#ok_ident, #error_ident> }
         }
         ScSpecTypeDef::Vec(v) => {
-            let element_ident = generate_type_ident(&v.element_type);
+            let element_ident = generate_type_ident(&v.element_type, expose_muxed_addresses);
             quote! { soroban_sdk::Vec<#element_ident> }
         }
         ScSpecTypeDef::Map(m) => {
-            let key_ident = generate_type_ident(&m.key_type);
-            let value_ident = generate_type_ident(&m.value_type);
+            let key_ident = generate_type_ident(&m.key_type, expose_muxed_addresses);
+            let value_ident = generate_type_ident(&m.value_type, expose_muxed_addresses);
             quote! { soroban_sdk::Map<#key_ident, #value_ident> }
         }
         ScSpecTypeDef::Tuple(t) => {
-            let type_idents = t.value_types.iter().map(generate_type_ident);
+            let type_idents = t
+                .value_types
+                .iter()
+                .map(|i| generate_type_ident(i, expose_muxed_addresses));
             quote! { (#(#type_idents,)*) }
         }
         ScSpecTypeDef::BytesN(b) => {

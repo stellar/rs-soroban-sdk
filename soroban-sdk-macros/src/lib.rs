@@ -41,7 +41,7 @@ use syn_ext::HasFnsItem;
 
 use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
-use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::next as stellar_xdr;
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
@@ -624,6 +624,8 @@ struct ContractImportArgs {
     file: String,
     #[darling(default)]
     sha256: darling::util::SpannedValue<Option<String>>,
+    #[darling(default)]
+    expose_muxed_addresses: darling::util::SpannedValue<bool>,
 }
 #[proc_macro]
 pub fn contractimport(metadata: TokenStream) -> TokenStream {
@@ -650,7 +652,12 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
     };
 
     // Generate.
-    match generate_from_wasm(&wasm, &args.file, args.sha256.as_deref()) {
+    match generate_from_wasm(
+        &wasm,
+        &args.file,
+        args.sha256.as_deref(),
+        *args.expose_muxed_addresses.as_ref(),
+    ) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
             Error::new(args.sha256.span(), e.to_string()).into_compile_error()
