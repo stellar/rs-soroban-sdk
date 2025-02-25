@@ -63,6 +63,30 @@ pub enum Mux {
     Hash(BytesN<32>),
 }
 
+impl From<()> for Mux {
+    fn from(_: ()) -> Self {
+        Self::None
+    }
+}
+
+impl From<u64> for Mux {
+    fn from(v: u64) -> Self {
+        Self::Id(v)
+    }
+}
+
+impl From<String> for Mux {
+    fn from(v: String) -> Self {
+        Self::Text(v)
+    }
+}
+
+impl From<BytesN<32>> for Mux {
+    fn from(v: BytesN<32>) -> Self {
+        Self::Hash(v)
+    }
+}
+
 impl TryFromVal<Env, Val> for Mux {
     type Error = ConversionError;
 
