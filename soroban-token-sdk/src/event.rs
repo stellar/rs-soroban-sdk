@@ -25,16 +25,16 @@ impl Events {
     pub fn transfer_muxed(
         &self,
         from: Address,
-        from_mux: Mux,
+        from_id: u64,
         to: Address,
-        to_mux: Mux,
+        to_id: u64,
         amount: i128,
     ) {
         let topics = (Symbol::new(&self.env, "transfer_muxed"), from, to);
         let data = TransferMuxedData {
             amount,
-            from_mux,
-            to_mux,
+            from_id,
+            to_id,
         };
         self.env.events().publish(topics, data);
     }
@@ -68,6 +68,6 @@ impl Events {
 #[contracttype]
 struct TransferMuxedData {
     amount: i128,
-    from_mux: Mux,
-    to_mux: Mux,
+    from_id: u64,
+    to_id: u64,
 }

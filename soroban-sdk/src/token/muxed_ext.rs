@@ -1,8 +1,4 @@
-use crate::{
-    contractclient, contractspecfn, Address, BytesN, ConversionError, Env, String, TryFromVal,
-    TryIntoVal, Val,
-};
-use core::fmt::Debug;
+use crate::{contractclient, contractspecfn, Address, Env};
 
 /// Extension interface for Token contracts that implement the transfer_muxed
 /// extension, such as the Stellar Asset Contract.
@@ -37,98 +33,6 @@ pub trait TokenMuxedExtInterface {
     /// # Events
     ///
     /// Emits an event with topics `["transfer_muxed", from: Address, to: Address],
-    /// data = {amount: i128, from_mux: Mux, to_mux: Mux}`
-    fn transfer_muxed(
-        env: Env,
-        from: Address,
-        from_mux: Mux,
-        to: Address,
-        to_mux: Mux,
-        amount: i128,
-    );
-}
-
-/// Mux is a value that off-chain identifies a sub-identifier of an Address
-/// on-chain.
-///
-/// A mux is also commonly referred to as a memo.
-///
-/// A mux may be a void (none), an ID (64-bit number), a String, or a 32-byte
-/// Hash.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub enum Mux {
-    None,
-    Id(u64),
-    Text(String),
-    Hash(BytesN<32>),
-}
-
-impl From<()> for Mux {
-    fn from(_: ()) -> Self {
-        Self::None
-    }
-}
-
-impl From<u64> for Mux {
-    fn from(v: u64) -> Self {
-        Self::Id(v)
-    }
-}
-
-impl From<String> for Mux {
-    fn from(v: String) -> Self {
-        Self::Text(v)
-    }
-}
-
-impl From<BytesN<32>> for Mux {
-    fn from(v: BytesN<32>) -> Self {
-        Self::Hash(v)
-    }
-}
-
-impl TryFromVal<Env, Val> for Mux {
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, v: &Val) -> Result<Self, Self::Error> {
-        if v.is_void() {
-            Ok(Self::None)
-        } else if let Ok(v) = v.try_into_val(env) {
-            Ok(Self::Id(v))
-        } else if let Ok(v) = v.try_into_val(env) {
-            Ok(Self::Text(v))
-        } else if let Ok(v) = v.try_into_val(env) {
-            Ok(Self::Hash(v))
-        } else {
-            Err(ConversionError)
-        }
-    }
-}
-
-impl TryFromVal<Env, Mux> for Val {
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, v: &Mux) -> Result<Self, Self::Error> {
-        match v {
-            Mux::None => Ok(Val::VOID.to_val()),
-            Mux::Id(v) => v.try_into_val(env).map_err(|_| ConversionError),
-            Mux::Text(v) => v.try_into_val(env).map_err(|_| ConversionError),
-            Mux::Hash(v) => v.try_into_val(env).map_err(|_| ConversionError),
-        }
-    }
-}
-
-#[cfg(not(target_family = "wasm"))]
-use crate::env::internal::xdr::ScVal;
-
-#[cfg(not(target_family = "wasm"))]
-impl From<&Mux> for ScVal {
-    fn from(v: &Mux) -> Self {
-        match v {
-            Mux::None => ScVal::Void,
-            Mux::Id(v) => ScVal::U64(*v),
-            Mux::Text(v) => v.into(),
-            Mux::Hash(v) => v.into(),
-        }
-    }
+    /// data = {amount: i128, from_id: u64, to_id: u64}`
+    fn transfer_muxed(env: Env, from: Address, from_id: u64, to: Address, to_id: u64, amount: i128);
 }
