@@ -682,41 +682,6 @@ mod objects {
     }
 }
 
-/// Implementations for imaginary types, that don't really exist outside of the
-/// Rust SDK and are merely mapped to and from other types.
-mod imaginary {
-    use super::api::*;
-    use crate::token::muxed_ext::Mux;
-    use crate::ConversionError;
-    use crate::{BytesN, Env, String, TryFromVal};
-    use arbitrary::Arbitrary;
-    use std::string::String as RustString;
-
-    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub enum ArbitraryMux {
-        None,
-        Id(u64),
-        Text(RustString),
-        Hash([u8; 32]),
-    }
-
-    impl SorobanArbitrary for Mux {
-        type Prototype = ArbitraryMux;
-    }
-
-    impl TryFromVal<Env, ArbitraryMux> for Mux {
-        type Error = ConversionError;
-        fn try_from_val(env: &Env, v: &ArbitraryMux) -> Result<Self, Self::Error> {
-            match v {
-                ArbitraryMux::None => Ok(Mux::None),
-                ArbitraryMux::Id(id) => Ok(Mux::Id(*id)),
-                ArbitraryMux::Text(text) => Ok(Mux::Text(String::from_str(env, &text))),
-                ArbitraryMux::Hash(hash) => Ok(Mux::Hash(BytesN::from_array(env, &hash))),
-            }
-        }
-    }
-}
-
 /// Implementations of `soroban_sdk::testutils::arbitrary::api` for tuples of Soroban types.
 ///
 /// The implementation is similar to objects, but macroized.
