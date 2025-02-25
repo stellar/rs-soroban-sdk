@@ -1,4 +1,4 @@
-use soroban_sdk::{symbol_short, Address, Env, Symbol};
+use soroban_sdk::{contracttype, symbol_short, token::muxed_ext::Mux, Address, Env, Symbol};
 
 pub struct Events {
     env: Env,
@@ -20,6 +20,23 @@ impl Events {
     pub fn transfer(&self, from: Address, to: Address, amount: i128) {
         let topics = (symbol_short!("transfer"), from, to);
         self.env.events().publish(topics, amount);
+    }
+
+    pub fn transfer_muxed(
+        &self,
+        from: Address,
+        from_mux: Mux,
+        to: Address,
+        to_mux: Mux,
+        amount: i128,
+    ) {
+        let topics = (Symbol::new(&self.env, "transfer_muxed"), from, to);
+        let data = TransferMuxedData {
+            amount,
+            from_mux,
+            to_mux,
+        };
+        self.env.events().publish(topics, data);
     }
 
     pub fn mint(&self, admin: Address, to: Address, amount: i128) {
@@ -46,4 +63,11 @@ impl Events {
         let topics = (symbol_short!("burn"), from);
         self.env.events().publish(topics, amount);
     }
+}
+
+#[contracttype]
+struct TransferMuxedData {
+    amount: i128,
+    from_mux: Mux,
+    to_mux: Mux,
 }

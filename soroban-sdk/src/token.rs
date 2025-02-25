@@ -7,6 +7,8 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
+pub mod muxed_ext;
+
 use crate::{contractclient, contractspecfn, Address, Env, String};
 
 // The interface below was copied from
