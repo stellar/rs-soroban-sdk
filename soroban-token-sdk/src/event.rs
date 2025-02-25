@@ -19,7 +19,8 @@ impl Events {
 
     pub fn transfer(&self, from: Address, to: Address, amount: i128) {
         let topics = (symbol_short!("transfer"), from, to);
-        self.env.events().publish(topics, amount);
+        let data = TransferData { amount };
+        self.env.events().publish(topics, data);
     }
 
     pub fn transfer_muxed(
@@ -30,7 +31,7 @@ impl Events {
         to_id: u64,
         amount: i128,
     ) {
-        let topics = (Symbol::new(&self.env, "transfer_muxed"), from, to);
+        let topics = (Symbol::new(&self.env, "transfer"), from, to);
         let data = TransferMuxedData {
             amount,
             from_id,
@@ -63,6 +64,11 @@ impl Events {
         let topics = (symbol_short!("burn"), from);
         self.env.events().publish(topics, amount);
     }
+}
+
+#[contracttype]
+struct TransferData {
+    amount: i128,
 }
 
 #[contracttype]
