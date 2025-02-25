@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, symbol_short, token::muxed_ext::Mux, Address, Env, Symbol};
+use soroban_sdk::{contracttype, symbol_short, Address, Env, Symbol};
 
 pub struct Events {
     env: Env,
