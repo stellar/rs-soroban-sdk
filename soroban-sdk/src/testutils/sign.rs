@@ -24,7 +24,6 @@ pub mod ed25519 {
     }
 
     impl<E: std::error::Error> std::error::Error for Error<E> {
-        #[must_use]
         fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
             match self {
                 Self::XdrError(e) => e.source(),
