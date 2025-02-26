@@ -42,7 +42,7 @@ ctor = { version = "0.2.9", optional = true }
 [dev-dependencies]
 soroban-sdk-macros = { workspace = true, features = ["testutils"] }
 soroban-env-host = { workspace = true, features = ["testutils"] }
-stellar-xdr = { workspace = true, features = ["curr", "std"] }
+stellar-xdr = { workspace = true, features = ["next", "std"] }
 soroban-spec = { workspace = true }
 ed25519-dalek = "2.0.0"
 rand = "0.8.5"

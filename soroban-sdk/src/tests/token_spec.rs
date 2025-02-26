@@ -1,4 +1,4 @@
-use crate as soroban_sdk;
+use crate::{self as soroban_sdk, mux_token::StellarAssetMuxSpec};
 
 use soroban_sdk::{
     token::{StellarAssetSpec, SPEC_XDR_INPUT, SPEC_XDR_LEN},
@@ -16,6 +16,16 @@ fn test_spec_xdr_len() {
 #[test]
 fn test_spec_xdr() -> Result<(), Error> {
     let xdr = StellarAssetSpec::spec_xdr();
+    let cursor = std::io::Cursor::new(xdr);
+    for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
+        spec_entry?;
+    }
+    Ok(())
+}
+
+#[test]
+fn test_mux_spec_xdr() -> Result<(), Error> {
+    let xdr = StellarAssetMuxSpec::spec_xdr();
     let cursor = std::io::Cursor::new(xdr);
     for spec_entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(cursor, Limits::none())) {
         spec_entry?;

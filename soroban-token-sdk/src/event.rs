@@ -1,8 +1,14 @@
-use soroban_sdk::{symbol_short, Address, Env, Symbol};
+use soroban_sdk::{symbol_short, Address, Env, IntoVal, MuxedAddress, Symbol, Val};
 
 pub struct Events {
     env: Env,
 }
+
+mod sealed {
+    pub trait IsAddressType {}
+}
+impl sealed::IsAddressType for Address {}
+impl sealed::IsAddressType for MuxedAddress {}
 
 impl Events {
     #[inline(always)]
@@ -17,7 +23,12 @@ impl Events {
             .publish(topics, (amount, expiration_ledger));
     }
 
-    pub fn transfer(&self, from: Address, to: Address, amount: i128) {
+    pub fn transfer<AddressType: sealed::IsAddressType + IntoVal<Env, Val>>(
+        &self,
+        from: AddressType,
+        to: AddressType,
+        amount: i128,
+    ) {
         let topics = (symbol_short!("transfer"), from, to);
         self.env.events().publish(topics, amount);
     }
