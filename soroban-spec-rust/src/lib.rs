@@ -6,7 +6,7 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::next as stellar_xdr;
 use stellar_xdr::ScSpecEntry;
 use syn::Error;
 
@@ -29,12 +29,13 @@ pub enum GenerateFromFileError {
 pub fn generate_from_file(
     file: &str,
     verify_sha256: Option<&str>,
+    expose_muxed_addresses: bool,
 ) -> Result<TokenStream, GenerateFromFileError> {
     // Read file.
     let wasm = fs::read(file).map_err(GenerateFromFileError::Io)?;
 
     // Generate code.
-    let code = generate_from_wasm(&wasm, file, verify_sha256)?;
+    let code = generate_from_wasm(&wasm, file, verify_sha256, expose_muxed_addresses)?;
     Ok(code)
 }
 
@@ -42,6 +43,7 @@ pub fn generate_from_wasm(
     wasm: &[u8],
     file: &str,
     verify_sha256: Option<&str>,
+    expose_muxed_addresses: bool,
 ) -> Result<TokenStream, GenerateFromFileError> {
     let sha256 = Sha256::digest(wasm);
     let sha256 = format!("{:x}", sha256);
@@ -52,19 +54,24 @@ pub fn generate_from_wasm(
     }
 
     let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    let code = generate(&spec, file, &sha256);
+    let code = generate(&spec, file, &sha256, expose_muxed_addresses);
     Ok(code)
 }
 
-pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream {
-    let generated = generate_without_file(specs);
+pub fn generate(
+    specs: &[ScSpecEntry],
+    file: &str,
+    sha256: &str,
+    expose_muxed_addresses: bool,
+) -> TokenStream {
+    let generated = generate_without_file(specs, expose_muxed_addresses);
     quote! {
         pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
         #generated
     }
 }
 
-pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
+pub fn generate_without_file(specs: &[ScSpecEntry], expose_muxed_addresses: bool) -> TokenStream {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
@@ -82,9 +89,13 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
 
     let trait_name = "Contract";
 
-    let trait_ = r#trait::generate_trait(trait_name, &spec_fns);
-    let structs = spec_structs.iter().map(|s| generate_struct(s));
-    let unions = spec_unions.iter().map(|s| generate_union(s));
+    let trait_ = r#trait::generate_trait(trait_name, &spec_fns, expose_muxed_addresses);
+    let structs = spec_structs
+        .iter()
+        .map(|s| generate_struct(s, expose_muxed_addresses));
+    let unions = spec_unions
+        .iter()
+        .map(|s| generate_union(s, expose_muxed_addresses));
     let enums = spec_enums.iter().map(|s| generate_enum(s));
     let error_enums = spec_error_enums.iter().map(|s| generate_error_enum(s));
 
@@ -129,7 +140,7 @@ mod test {
     #[test]
     fn example() {
         let entries = from_wasm(EXAMPLE_WASM).unwrap();
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", false)
             .to_formatted_string()
             .unwrap();
         assert_eq!(

@@ -1,8 +1,8 @@
 use crate as soroban_sdk;
+use crate::env::xdr::ContractCostType;
 use expect_test::expect;
 use soroban_sdk::Env;
 use soroban_sdk_macros::symbol_short;
-use stellar_xdr::curr::ContractCostType;
 
 mod contract_data {
     use crate as soroban_sdk;

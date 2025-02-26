@@ -1,6 +1,6 @@
 use std::io::Cursor;
 
-use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::next as stellar_xdr;
 use stellar_xdr::{Limited, Limits, ReadXdr, ScSpecEntry};
 use wasmparser::{BinaryReaderError, Parser, Payload};
 

@@ -82,9 +82,6 @@ impl Ord for Symbol {
                     }
                     #[cfg(not(target_family = "wasm"))]
                     (Ok(e1), Ok(e2)) => {
-                        if !e1.is_same_env(&e2) {
-                            return ScVal::from(self).cmp(&ScVal::from(other));
-                        }
                         let v = e1.obj_cmp(self_raw, other_raw).unwrap_infallible();
                         v.cmp(&0)
                     }

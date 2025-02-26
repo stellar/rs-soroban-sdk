@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::next as stellar_xdr;
 use stellar_xdr::{ScSpecUdtEnumV0, StringM};
 use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path, Visibility};
 

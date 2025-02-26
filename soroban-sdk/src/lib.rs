@@ -758,6 +758,7 @@ pub mod unwrap;
 mod env;
 
 mod address;
+mod muxed_address;
 mod symbol;
 
 pub use env::{ConversionError, Env};
@@ -815,10 +816,12 @@ mod map;
 pub mod prng;
 pub mod storage;
 pub mod token;
+pub mod mux_token;
 mod vec;
 pub use address::Address;
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
+pub use muxed_address::MuxedAddress;
 pub use symbol::Symbol;
 pub use vec::Vec;
 mod num;
