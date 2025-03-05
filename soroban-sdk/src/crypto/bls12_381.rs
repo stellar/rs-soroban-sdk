@@ -7,13 +7,61 @@ use crate::{
 use core::{
     cmp::Ordering,
     fmt::Debug,
-    ops::{Add, Mul, Sub},
+    ops::{Add, Mul, Neg, Sub},
 };
 
 /// Bls12_381 provides access to curve and field arithmetics on the BLS12-381
 /// curve.
 pub struct Bls12_381 {
     env: Env,
+}
+
+fn sbb_for_sub_with_borrow(a: &mut u64, b: u64, borrow: u8) -> u8 {
+    let tmp = (1u128 << 64) + (*a as u128) - (b as u128) - (borrow as u128);
+    *a = tmp as u64;
+    u8::from(tmp >> 64 == 0)
+}
+
+#[derive(Debug)]
+pub(crate) struct BigInt<const N: usize>(pub [u64; N]);
+
+impl<const N: usize> BigInt<N> {
+    pub fn sub_with_borrow(&mut self, other: &Self) -> bool {
+        let mut borrow = 0;
+        for i in 0..N {
+            borrow = sbb_for_sub_with_borrow(&mut self.0[i], other.0[i], borrow);
+        }
+        borrow != 0
+    }
+
+    pub fn copy_into_slice(&self, slice: &mut [u8]) {
+        if slice.len() != N * 8 {
+            sdk_panic!("BigInt::copy_into_slice with mismatched slice length")
+        }
+        for i in 0..N {
+            let limb_bytes = self.0[N - 1 - i].to_be_bytes();
+            slice[i * 8..(i + 1) * 8].copy_from_slice(&limb_bytes);
+        }
+    }
+}
+
+impl<const N: usize, const M: usize> Into<BigInt<N>> for BytesN<M> {
+    fn into(self) -> BigInt<N> {
+        if M != N * 8 {
+            sdk_panic!("BytesN::Into<BigInt> - length mismatch")
+        }
+
+        let array = self.to_array();
+        let mut limbs = [0u64; N];
+        for i in 0..N {
+            let start = i * 8;
+            let end = start + 8;
+            let mut bytes = [0u8; 8];
+            bytes.copy_from_slice(&array[start..end]);
+            limbs[N - 1 - i] = u64::from_be_bytes(bytes);
+        }
+        BigInt(limbs)
+    }
 }
 
 /// `G1Affine` is a point in the G1 group (subgroup defined over the base field
@@ -101,6 +149,57 @@ impl_bytesn_repr!(G2Affine, 192);
 impl_bytesn_repr!(Fp, 48);
 impl_bytesn_repr!(Fp2, 96);
 
+impl Fp {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub fn map_to_g1(&self) -> G1Affine {
+        self.env().crypto().bls12_381().map_fp_to_g1(self)
+    }
+}
+
+impl Into<BigInt<6>> for Fp {
+    fn into(self) -> BigInt<6> {
+        let inner: Bytes = self.0.into();
+        let mut limbs = [0u64; 6];
+        for i in 0..6u32 {
+            let start = i * 8;
+            let mut slice = [0u8; 8];
+            inner.slice(start..start + 8).copy_into_slice(&mut slice);
+            limbs[5 - i as usize] = u64::from_be_bytes(slice);
+        }
+        BigInt(limbs)
+    }
+}
+
+impl Neg for Fp {
+    type Output = Fp;
+
+    fn neg(self) -> Self::Output {
+        if self.to_array() == [0; 48] {
+            return self;
+        }
+
+        let env = self.env().clone();
+        let fp_bigint: BigInt<6> = self.0.into();
+        // BLS12-381 base field modulus
+        let mut res = BigInt([
+            13402431016077863595,
+            2210141511517208575,
+            7435674573564081700,
+            7239337960414712511,
+            5412103778470702295,
+            1873798617647539866,
+        ]);
+        // Compute modulus - value
+        res.sub_with_borrow(&fp_bigint);
+        let mut bytes = [0u8; 48];
+        res.copy_into_slice(&mut bytes);
+        Fp::from_array(&env, &bytes)
+    }
+}
+
 impl G1Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
@@ -128,6 +227,45 @@ impl Mul<Fr> for G1Affine {
 
     fn mul(self, rhs: Fr) -> Self::Output {
         self.env().crypto().bls12_381().g1_mul(&self, &rhs)
+    }
+}
+
+impl Neg for G1Affine {
+    type Output = G1Affine;
+
+    fn neg(self) -> Self::Output {
+        let mut inner: Bytes = self.0.into();
+        let y = Fp::try_from_val(inner.env(), inner.slice(48..).as_val()).unwrap_optimized();
+        let neg_y = -y;
+        inner.copy_from_slice(48, &neg_y.to_array());
+        G1Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+    }
+}
+
+impl Fp2 {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    pub fn map_to_g2(&self) -> G2Affine {
+        self.env().crypto().bls12_381().map_fp2_to_g2(self)
+    }
+}
+
+impl Neg for Fp2 {
+    type Output = Fp2;
+
+    fn neg(self) -> Self::Output {
+        let mut inner = self.to_array();
+        let mut slice0 = [0; 48];
+        let mut slice1 = [0; 48];
+        slice0.copy_from_slice(&inner[0..48]);
+        slice1.copy_from_slice(&inner[48..96]);
+        let c0 = -Fp::from_array(self.env(), &slice0);
+        let c1 = -Fp::from_array(self.env(), &slice1);
+        inner[0..48].copy_from_slice(&c0.to_array());
+        inner[48..96].copy_from_slice(&c1.to_array());
+        Fp2::from_array(self.env(), &inner)
     }
 }
 
@@ -161,23 +299,15 @@ impl Mul<Fr> for G2Affine {
     }
 }
 
-impl Fp {
-    pub fn env(&self) -> &Env {
-        self.0.env()
-    }
+impl Neg for G2Affine {
+    type Output = G2Affine;
 
-    pub fn map_to_g1(&self) -> G1Affine {
-        self.env().crypto().bls12_381().map_fp_to_g1(self)
-    }
-}
-
-impl Fp2 {
-    pub fn env(&self) -> &Env {
-        self.0.env()
-    }
-
-    pub fn map_to_g2(&self) -> G2Affine {
-        self.env().crypto().bls12_381().map_fp2_to_g2(self)
+    fn neg(self) -> Self::Output {
+        let mut inner: Bytes = self.0.into();
+        let y = Fp2::try_from_val(inner.env(), inner.slice(96..).as_val()).unwrap_optimized();
+        let neg_y = -y;
+        inner.copy_from_slice(96, &neg_y.to_array());
+        G2Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
     }
 }
 
