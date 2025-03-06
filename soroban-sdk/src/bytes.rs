@@ -158,7 +158,7 @@ macro_rules! impl_bytesn_repr {
             fn try_from_val(_env: &Env, elt: &$elem) -> Result<Self, Self::Error> {
                 Ok(elt.to_val())
             }
-        }        
+        }
 
         #[cfg(not(target_family = "wasm"))]
         impl From<&$elem> for ScVal {
@@ -166,7 +166,7 @@ macro_rules! impl_bytesn_repr {
                 Self::from(&v.0)
             }
         }
-        
+
         #[cfg(not(target_family = "wasm"))]
         impl From<$elem> for ScVal {
             fn from(v: $elem) -> Self {
