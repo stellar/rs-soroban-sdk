@@ -1,3 +1,5 @@
+#[cfg(not(target_family = "wasm"))]
+use crate::xdr::ScVal;
 use crate::{
     env::internal::{self, BytesObject, U256Val, U64Val},
     impl_bytesn_repr,
