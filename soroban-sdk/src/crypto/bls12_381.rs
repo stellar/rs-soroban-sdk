@@ -10,6 +10,9 @@ use core::{
     ops::{Add, Mul, Neg, Sub},
 };
 
+#[cfg(not(target_family = "wasm"))]
+use crate::xdr::ScVal;
+
 /// Bls12_381 provides access to curve and field arithmetics on the BLS12-381
 /// curve.
 pub struct Bls12_381 {
@@ -74,7 +77,7 @@ impl<const N: usize, const M: usize> Into<BigInt<N>> for BytesN<M> {
 ///   `Fp`
 /// - The most significant three bits (bits 0-3) of the first byte are reserved
 ///   for encoding flags:
-///   - compression_flag (bit 0): Must always be set (1), as only uncompressed
+///   - compression_flag (bit 0): Must always be unset (0), as only uncompressed
 ///     points are supported.
 ///   - infinity_flag (bit 1): Set if the point is the point at infinity (zero
 ///     point), in which case all other bits must be zero.
@@ -105,7 +108,7 @@ pub struct G1Affine(BytesN<96>);
 ///   are components of `Fp2` (each being `Fp`).
 /// - The most significant three bits (bits 0-3) of the first byte are reserved
 ///   for encoding flags:
-///   - compression_flag (bit 0): Must always be set (1), as only uncompressed
+///   - compression_flag (bit 0): Must always be unset (0), as only uncompressed
 ///     points are supported.
 ///   - infinity_flag (bit 1): Set if the point is the point at infinity (zero
 ///     point), in which case all other bits must be zero.
@@ -213,6 +216,14 @@ impl G1Affine {
         self.env().crypto().bls12_381().g1_checked_add(self, rhs)
     }
 }
+
+// impl TryFromVal<Env, Val> for G1Affine {
+//     type Error = ConversionError;
+
+//     fn try_from_val(env: &Env, v: &Val) -> Result<Self, Self::Error> {
+//         Ok(G1Affine(BytesN::try_from_val(env, v)?))
+//     }
+// }
 
 impl Add for G1Affine {
     type Output = G1Affine;
