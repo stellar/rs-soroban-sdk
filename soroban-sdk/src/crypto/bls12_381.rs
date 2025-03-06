@@ -10,6 +10,9 @@ use core::{
     ops::{Add, Mul, Neg, Sub},
 };
 
+#[cfg(not(target_family = "wasm"))]
+use crate::xdr::ScVal;
+
 /// Bls12_381 provides access to curve and field arithmetics on the BLS12-381
 /// curve.
 pub struct Bls12_381 {
@@ -226,6 +229,14 @@ impl G1Affine {
         self.env().crypto().bls12_381().g1_checked_add(self, rhs)
     }
 }
+
+// impl TryFromVal<Env, Val> for G1Affine {
+//     type Error = ConversionError;
+
+//     fn try_from_val(env: &Env, v: &Val) -> Result<Self, Self::Error> {
+//         Ok(G1Affine(BytesN::try_from_val(env, v)?))
+//     }
+// }
 
 impl Add for G1Affine {
     type Output = G1Affine;
