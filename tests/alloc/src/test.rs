@@ -4,9 +4,7 @@ use soroban_sdk::{testutils::EnvTestConfig, vec, Env};
 use crate::{Contract, ContractClient};
 
 mod imported {
-    soroban_sdk::contractimport!(
-        file = "../../target/wasm32-unknown-unknown/release/test_alloc.wasm"
-    );
+    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_alloc.wasm");
 }
 
 macro_rules! tests {
