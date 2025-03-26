@@ -15,7 +15,7 @@ test: fmt build
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
 
 build: fmt
-	cargo hack build --release --workspace $(NATIVE_PACKAGE_ARGS)
+	cargo hack build --release $(NATIVE_PACKAGE_ARGS)
 	cargo hack build --target wasm32v1-none --release --workspace $(WASM_EXCLUDE_ARGS)
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
