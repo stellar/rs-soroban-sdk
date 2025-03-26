@@ -5,9 +5,6 @@ use core::fmt::Debug;
 use crate::{contracttype, Bytes, Map};
 use crate::{env::internal, unwrap::UnwrapInfallible, Env, IntoVal, Val, Vec};
 
-// TODO: consolidate with host::events::TOPIC_BYTES_LENGTH_LIMIT
-const TOPIC_BYTES_LENGTH_LIMIT: u32 = 32;
-
 /// Events publishes events for the currently executing contract.
 ///
 /// ```
