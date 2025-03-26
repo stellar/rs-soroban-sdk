@@ -1,5 +1,5 @@
 #![cfg(test)]
-use soroban_sdk::{vec, Env, testutils::EnvTestConfig};
+use soroban_sdk::{testutils::EnvTestConfig, vec, Env};
 
 use crate::{Contract, ContractClient};
 
