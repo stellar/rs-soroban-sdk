@@ -1,5 +1,5 @@
 #![cfg(test)]
-use soroban_sdk::{vec, Env};
+use soroban_sdk::{vec, Env, testutils::EnvTestConfig};
 
 use crate::{Contract, ContractClient};
 
@@ -16,7 +16,9 @@ macro_rules! tests {
 
             #[test]
             fn test() {
-                let e = Env::default();
+                let e = Env::new_with_config(EnvTestConfig {
+                    capture_snapshot_at_drop: false,
+                });
                 let contract_id = e.register($contract, ());
                 let client = ContractClient::new(&e, &contract_id);
 
