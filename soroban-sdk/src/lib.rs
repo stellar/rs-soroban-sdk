@@ -59,33 +59,11 @@ pub mod _migrating;
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
 // When used in a no_std contract, provide a panic handler as one is required.
-#[cfg(all(not(feature = "alloc"), target_family = "wasm"))]
+#[cfg(target_family = "wasm")]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
 }
-
-// This is a bit subtle: we want to provide a narrowly-scoped feature `"alloc"`
-// that provides support for the `alloc` crate and its types, while using our
-// allocator (defined below in module `alloc`). We want to do this without
-// changing the user-interface a lot (in particular keeping users writing
-// `#[no_std]` and mostly not-using the stdlib casually, because it has many
-// components that produce large code footprint).
-//
-// This is _almost_ possible without involving `std` but unfortunately there's
-// still an allocation-error handler (`alloc_error_handler`) that there's no
-// stable way to install if one only uses the `alloc` crate, so we pull in a
-// dependency on `std` here (for now). When the stabilization of the allocation
-// error handler registration function happens in some future Rust version, or
-// it gets removed which it looks like work is heading towards instead, we can
-// remove std.
-//
-// See these issues for more details:
-// - https://github.com/rust-lang/rust/issues/51540
-// - https://github.com/rust-lang/rust/issues/66740
-// - https://github.com/rust-lang/rust/issues/66741
-#[cfg(all(feature = "alloc", target_family = "wasm"))]
-extern crate std;
 
 // Here we provide a `#[global_allocator]` that is a minimal non-freeing bump
 // allocator, appropriate for a WASM blob that runs a single contract call.

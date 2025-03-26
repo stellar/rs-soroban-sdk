@@ -3,9 +3,7 @@ use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env, Symbol};
 
 mod errcontract {
     use crate as soroban_sdk;
-    soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/test_errors.wasm"
-    );
+    soroban_sdk::contractimport!(file = "../target/wasm32v1-none/release/test_errors.wasm");
 }
 
 #[contract]

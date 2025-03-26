@@ -2,9 +2,7 @@
 use soroban_sdk::{contract, contractimpl, Address, Env};
 
 mod addcontract {
-    soroban_sdk::contractimport!(
-        file = "../../target/wasm32-unknown-unknown/release/test_add_u64.wasm"
-    );
+    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_add_u64.wasm");
 }
 
 #[contract]
