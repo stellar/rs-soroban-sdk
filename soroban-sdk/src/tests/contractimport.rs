@@ -5,16 +5,12 @@ use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTy
 
 mod addcontract {
     use crate as soroban_sdk;
-    soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/test_add_u64.wasm"
-    );
+    soroban_sdk::contractimport!(file = "../target/wasm32v1-none/release/test_add_u64.wasm");
 }
 
 mod addcontract_u128 {
     use crate as soroban_sdk;
-    soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/test_add_u128.wasm"
-    );
+    soroban_sdk::contractimport!(file = "../target/wasm32v1-none/release/test_add_u128.wasm");
 }
 
 mod subcontract {

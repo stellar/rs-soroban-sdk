@@ -123,8 +123,7 @@ mod test {
     use super::{generate, ToFormattedString};
     use soroban_spec::read::from_wasm;
 
-    const EXAMPLE_WASM: &[u8] =
-        include_bytes!("../../target/wasm32-unknown-unknown/release/test_udt.wasm");
+    const EXAMPLE_WASM: &[u8] = include_bytes!("../../target/wasm32v1-none/release/test_udt.wasm");
 
     #[test]
     fn example() {
