@@ -354,27 +354,6 @@ impl Env {
         internal::Env::require_auth(self, address.to_object()).unwrap_infallible();
     }
 
-    #[doc(hidden)]
-    pub(crate) fn get_address_from_muxed_address(
-        &self,
-        muxed_address: MuxedAddressObject,
-    ) -> Address {
-        Address::try_from_val(
-            self,
-            &internal::Env::get_address_from_muxed_address(self, muxed_address).unwrap_infallible(),
-        )
-        .unwrap_infallible()
-    }
-
-    #[doc(hidden)]
-    pub(crate) fn get_id_from_muxed_address(&self, muxed_address: MuxedAddressObject) -> u64 {
-        u64::try_from_val(
-            self,
-            &internal::Env::get_id_from_muxed_address(self, muxed_address).unwrap_infallible(),
-        )
-        .unwrap()
-    }
-
     /// Invokes a function of a contract that is registered in the [Env].
     ///
     /// # Panics

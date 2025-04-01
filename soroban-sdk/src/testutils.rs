@@ -439,9 +439,16 @@ pub trait Address {
 }
 
 pub trait MuxedAddress {
-    /// Create a new MuxedAddress from a provided account public key and
+    /// Create a new MuxedAddress with arbitrary `Address` part and provided
     /// multiplexing identifier.
-    fn from_account_id(env: &Env, account_key: &[u8; 32], id: u64) -> crate::MuxedAddress;
+    /// 
+    /// Note, that since currently only accounts can be multiplexed, the 
+    /// underlying `Address` will be an account (not contract) address.
+    fn generate(env: &Env, id: u64) -> crate::MuxedAddress;
+
+    /// Returns a new `MuxedAddress` that has the same `Address` part as this
+    /// `MuxedAdress`, but a new multiplexing identifier (`new_id`).
+    fn clone_with_id(&self, new_id: u64) -> crate::MuxedAddress;
 }
 
 pub trait Deployer {

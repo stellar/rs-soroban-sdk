@@ -4,7 +4,7 @@ use super::{
     env::internal::{AddressObject, Env as _, MuxedAddressObject, Tag},
     ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
-use crate::{unwrap::UnwrapInfallible, Address};
+use crate::{env::internal, unwrap::UnwrapInfallible, Address};
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::{ScAddress, ScVal};
@@ -20,7 +20,7 @@ enum AddressObjectWrapper {
 /// and can be used for representing the 'virtual' accounts that allows for
 /// managing multiple balances off-chain with only a single on-chain balance
 /// entry. The address part can be used as a regular `Address`, and the id
-/// part can be used only in the events for the off-chain processing.
+/// part should be used only in the events for the off-chain processing.
 ///
 /// This type is only necessary in a few special cases, such as token transfers
 /// that support non-custodial accounts (e.g. for the exchange support). Prefer
@@ -28,7 +28,7 @@ enum AddressObjectWrapper {
 ///
 /// This type is compatible with `Address` at the contract interface level, i.e.
 /// if a contract accepts `MuxedAddress` as an input, then its callers may still
-/// pass `Address` into the call and nothing will break. This means that if a
+/// pass `Address` into the call successfully. This means that if a
 /// contract has upgraded its interface to switch from `Address` argument to
 /// `MuxedAddress` argument, it won't break any of its existing clients.
 ///
@@ -178,9 +178,12 @@ impl MuxedAddress {
             AddressObjectWrapper::Address(address_object) => {
                 Address::try_from_val(&self.env, address_object).unwrap_infallible()
             }
-            AddressObjectWrapper::MuxedAddress(muxed_address_object) => self
-                .env
-                .get_address_from_muxed_address(*muxed_address_object),
+            AddressObjectWrapper::MuxedAddress(muxed_address_object) => Address::try_from_val(
+                &self.env,
+                &internal::Env::get_address_from_muxed_address(&self.env, *muxed_address_object)
+                    .unwrap_infallible(),
+            )
+            .unwrap_infallible(),
         }
     }
 
@@ -194,9 +197,14 @@ impl MuxedAddress {
     pub fn id(&self) -> Option<u64> {
         match &self.obj {
             AddressObjectWrapper::Address(_) => None,
-            AddressObjectWrapper::MuxedAddress(muxed_address_object) => {
-                Some(self.env.get_id_from_muxed_address(*muxed_address_object))
-            }
+            AddressObjectWrapper::MuxedAddress(muxed_address_object) => Some(
+                u64::try_from_val(
+                    &self.env,
+                    &internal::Env::get_id_from_muxed_address(&self.env, *muxed_address_object)
+                        .unwrap_infallible(),
+                )
+                .unwrap(),
+            ),
         }
     }
 
@@ -251,7 +259,9 @@ impl TryFromVal<Env, ScVal> for MuxedAddress {
                 ScAddress::MuxedAccount(_) => Ok(MuxedAddressObject::try_from_val(env, &v)?
                     .try_into_val(env)
                     .unwrap_infallible()),
-                _ => panic!("unsupported ScAddress type"),
+                ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => {
+                    panic!("unsupported ScAddress type")
+                }
             },
             _ => panic!("incorrect scval type"),
         }
@@ -269,13 +279,32 @@ impl TryFromVal<Env, ScAddress> for MuxedAddress {
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::MuxedAddress for MuxedAddress {
-    fn from_account_id(env: &Env, account_key: &[u8; 32], id: u64) -> crate::MuxedAddress {
+    fn generate(env: &Env, id: u64) -> crate::MuxedAddress {
         let sc_val = ScVal::Address(crate::env::internal::xdr::ScAddress::MuxedAccount(
             crate::env::internal::xdr::MuxedEd25519Account {
-                ed25519: crate::env::internal::xdr::Uint256(account_key.clone()),
+                ed25519: crate::env::internal::xdr::Uint256(
+                    env.with_generator(|mut g| g.address()),
+                ),
                 id,
             },
         ));
         sc_val.try_into_val(env).unwrap()
+    }
+
+    fn clone_with_id(&self, new_id: u64) -> crate::MuxedAddress {
+        let mut sc_val = ScVal::try_from_val(&self.env, self.as_val()).unwrap();
+        match &mut sc_val {
+            ScVal::Address(address) => match address {
+                ScAddress::MuxedAccount(muxed_account) => {
+                    muxed_account.id = new_id;
+                }
+                ScAddress::Account(_)
+                | ScAddress::Contract(_)
+                | ScAddress::ClaimableBalance(_)
+                | ScAddress::LiquidityPool(_) => unreachable!(),
+            },
+            _ => unreachable!(),
+        }
+        sc_val.try_into_val(&self.env).unwrap()
     }
 }

@@ -55,7 +55,11 @@ impl Debug for Address {
                         let strkey = Strkey::Contract(Contract(contract_id.0));
                         write!(f, "Contract({})", strkey.to_string())?;
                     }
-                    _ => return Err(core::fmt::Error),
+                    ScAddress::MuxedAccount(_)
+                    | ScAddress::ClaimableBalance(_)
+                    | ScAddress::LiquidityPool(_) => {
+                        return Err(core::fmt::Error);
+                    }
                 }
             } else {
                 return Err(core::fmt::Error);
