@@ -1104,7 +1104,7 @@ dependencies = [
  "soroban-env-common",
  "soroban-wasmi",
  "static_assertions",
- "stellar-strkey 0.0.13",
+ "stellar-strkey",
  "wasmparser",
 ]
 
@@ -1151,7 +1151,7 @@ dependencies = [
  "soroban-env-host",
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
- "stellar-strkey 0.0.9",
+ "stellar-strkey",
 ]
 
 [[package]]
@@ -1232,17 +1232,6 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-strkey"
-version = "0.0.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e3aa3ed00e70082cb43febc1c2afa5056b9bb3e348bbb43d0cd0aa88a611144"
-dependencies = [
- "crate-git-revision",
- "data-encoding",
- "thiserror",
-]
-
-[[package]]
-name = "stellar-strkey"
 version = "0.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ee1832fb50c651ad10f734aaf5d31ca5acdfb197a6ecda64d93fcdb8885af913"
@@ -1263,7 +1252,7 @@ dependencies = [
  "hex",
  "serde",
  "serde_with",
- "stellar-strkey 0.0.13",
+ "stellar-strkey",
 ]
 
 [[package]]
