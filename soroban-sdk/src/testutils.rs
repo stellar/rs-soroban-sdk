@@ -441,8 +441,8 @@ pub trait Address {
 pub trait MuxedAddress {
     /// Create a new MuxedAddress with arbitrary `Address` part and provided
     /// multiplexing identifier.
-    /// 
-    /// Note, that since currently only accounts can be multiplexed, the 
+    ///
+    /// Note, that since currently only accounts can be multiplexed, the
     /// underlying `Address` will be an account (not contract) address.
     fn generate(env: &Env, id: u64) -> crate::MuxedAddress;
 
