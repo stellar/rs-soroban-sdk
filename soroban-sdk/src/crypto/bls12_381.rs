@@ -203,7 +203,10 @@ impl Neg for Fp {
             1873798617647539866,
         ]);
         // Compute modulus - value
-        res.sub_with_borrow(&fp_bigint);
+        let borrow = res.sub_with_borrow(&fp_bigint);
+        if borrow {
+            sdk_panic!("invalid input - Fp is larger than the field modulus")
+        }
         let mut bytes = [0u8; 48];
         res.copy_into_array(&mut bytes);
         Fp::from_array(&self.env(), &bytes)
