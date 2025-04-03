@@ -206,10 +206,7 @@ impl Neg for Fp {
             1873798617647539866,
         ]);
         // Compute modulus - value
-        let borrow = res.sub_with_borrow(&fp_bigint);
-        if borrow {
-            sdk_panic!("invalid input - Fp is larger than the field modulus")
-        }
+        res.sub_with_borrow(&fp_bigint);
         let mut bytes = [0u8; 48];
         res.copy_into_array(&mut bytes);
         Fp::from_array(&self.env(), &bytes)
@@ -229,14 +226,6 @@ impl G1Affine {
         self.env().crypto().bls12_381().g1_checked_add(self, rhs)
     }
 }
-
-// impl TryFromVal<Env, Val> for G1Affine {
-//     type Error = ConversionError;
-
-//     fn try_from_val(env: &Env, v: &Val) -> Result<Self, Self::Error> {
-//         Ok(G1Affine(BytesN::try_from_val(env, v)?))
-//     }
-// }
 
 impl Add for G1Affine {
     type Output = G1Affine;

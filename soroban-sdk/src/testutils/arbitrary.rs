@@ -697,7 +697,13 @@ mod objects {
 
         fn try_from_val(env: &Env, v: &ArbitraryG1Affine) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
-            bytes[0] &= 0b0001_1111; // Clear the top 3 bits
+            // the top 3 bits in a G1 point are reserved for flags:
+            // compression_flag (bit 0), infinity_flag (bit 1) and sort_flag
+            // (bit 2). Only infinity_flag is possible to be set, in which case
+            // the rest of the bytes must be zeros. The host will reject any
+            // invalid input. Clearing the flags here just to give it better
+            // chance of a valid input.
+            bytes[0] &= 0b0001_1111;
             Ok(G1Affine::from_array(env, &bytes))
         }
     }
@@ -717,7 +723,13 @@ mod objects {
 
         fn try_from_val(env: &Env, v: &ArbitraryG2Affine) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
-            bytes[0] &= 0b0001_1111; // Clear the top 3 bits
+            // the top 3 bits in a G1 point are reserved for flags:
+            // compression_flag (bit 0), infinity_flag (bit 1) and sort_flag
+            // (bit 2). Only infinity_flag is possible to be set, in which case
+            // the rest of the bytes must be zeros. The host will reject any
+            // invalid input. Clearing the flags here just to give it better
+            // chance of a valid input.
+            bytes[0] &= 0b0001_1111;
             Ok(G2Affine::from_array(env, &bytes))
         }
     }
