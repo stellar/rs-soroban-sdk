@@ -34,21 +34,30 @@ impl<const N: usize> BigInt<N> {
         borrow != 0
     }
 
-    pub fn copy_into_slice(&self, slice: &mut [u8]) {
-        if slice.len() != N * 8 {
-            sdk_panic!("BigInt::copy_into_slice with mismatched slice length")
+    pub fn copy_into_array<const M: usize>(&self, slice: &mut [u8; M]) {
+        const {
+            if M != N * 8 {
+                panic!("BigInt::copy_into_array with mismatched array length")
+            }
         }
+
         for i in 0..N {
             let limb_bytes = self.0[N - 1 - i].to_be_bytes();
             slice[i * 8..(i + 1) * 8].copy_from_slice(&limb_bytes);
         }
     }
+
+    pub fn is_zero(&self) -> bool {
+        self.0 == [0; N]
+    }
 }
 
-impl<const N: usize, const M: usize> Into<BigInt<N>> for BytesN<M> {
+impl<const N: usize, const M: usize> Into<BigInt<N>> for &BytesN<M> {
     fn into(self) -> BigInt<N> {
-        if M != N * 8 {
-            sdk_panic!("BytesN::Into<BigInt> - length mismatch")
+        const {
+            if M != N * 8 {
+                panic!("BytesN::Into<BigInt> - length mismatch")
+            }
         }
 
         let array = self.to_array();
@@ -154,6 +163,8 @@ impl Fp {
         self.0.env()
     }
 
+    /// Maps to a `G1Affine` point via [simplified SWU
+    /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0)
     pub fn map_to_g1(&self) -> G1Affine {
         self.env().crypto().bls12_381().map_fp_to_g1(self)
     }
@@ -177,12 +188,11 @@ impl Neg for Fp {
     type Output = Fp;
 
     fn neg(self) -> Self::Output {
-        if self.to_array() == [0; 48] {
+        let fp_bigint: BigInt<6> = (&self.0).into();
+        if fp_bigint.is_zero() {
             return self;
         }
 
-        let env = self.env().clone();
-        let fp_bigint: BigInt<6> = self.0.into();
         // BLS12-381 base field modulus
         let mut res = BigInt([
             13402431016077863595,
@@ -195,8 +205,8 @@ impl Neg for Fp {
         // Compute modulus - value
         res.sub_with_borrow(&fp_bigint);
         let mut bytes = [0u8; 48];
-        res.copy_into_slice(&mut bytes);
-        Fp::from_array(&env, &bytes)
+        res.copy_into_array(&mut bytes);
+        Fp::from_array(&self.env(), &bytes)
     }
 }
 
