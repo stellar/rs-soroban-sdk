@@ -26,7 +26,7 @@ pub struct Bls12_381 {
 ///   `Fp`
 /// - The most significant three bits (bits 0-3) of the first byte are reserved
 ///   for encoding flags:
-///   - compression_flag (bit 0): Must always be set (1), as only uncompressed
+///   - compression_flag (bit 0): Must always be unset (0), as only uncompressed
 ///     points are supported.
 ///   - infinity_flag (bit 1): Set if the point is the point at infinity (zero
 ///     point), in which case all other bits must be zero.
@@ -57,7 +57,7 @@ pub struct G1Affine(BytesN<96>);
 ///   are components of `Fp2` (each being `Fp`).
 /// - The most significant three bits (bits 0-3) of the first byte are reserved
 ///   for encoding flags:
-///   - compression_flag (bit 0): Must always be set (1), as only uncompressed
+///   - compression_flag (bit 0): Must always be unset (0), as only uncompressed
 ///     points are supported.
 ///   - infinity_flag (bit 1): Set if the point is the point at infinity (zero
 ///     point), in which case all other bits must be zero.
