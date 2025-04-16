@@ -70,6 +70,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
     let mut spec_unions = Vec::new();
     let mut spec_enums = Vec::new();
     let mut spec_error_enums = Vec::new();
+    let mut spec_events = Vec::new();
     for s in specs {
         match s {
             ScSpecEntry::FunctionV0(f) => spec_fns.push(f),
@@ -77,6 +78,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
             ScSpecEntry::UdtEnumV0(e) => spec_enums.push(e),
             ScSpecEntry::UdtErrorEnumV0(e) => spec_error_enums.push(e),
+            ScSpecEntry::EventV0(e) => spec_events.push(e),
         }
     }
 

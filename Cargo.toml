@@ -2,13 +2,13 @@
 resolver = "2"
 
 members = [
-    "soroban-sdk",
-    "soroban-sdk-macros",
-    "soroban-spec",
-    "soroban-spec-rust",
-    "soroban-ledger-snapshot",
-    "soroban-token-sdk",
-    "tests/*",
+  "soroban-sdk",
+  "soroban-sdk-macros",
+  "soroban-spec",
+  "soroban-spec-rust",
+  "soroban-ledger-snapshot",
+  "soroban-token-sdk",
+  "tests/*",
 ]
 
 [workspace.package]
@@ -47,6 +47,10 @@ default-features = false
 features = ["curr"]
 #git = "https://github.com/stellar/rs-stellar-xdr"
 #rev = "67be5955a15f1d3a4df83fe86e6ae107f687141b"
+
+[patch.crates-io.stellar-xdr]
+git = "https://github.com/stellar/rs-stellar-xdr"
+branch = "add-events-to-contract-spec"
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
