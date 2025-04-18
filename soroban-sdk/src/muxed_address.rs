@@ -291,20 +291,26 @@ impl crate::testutils::MuxedAddress for MuxedAddress {
         sc_val.try_into_val(env).unwrap()
     }
 
-    fn clone_with_id(&self, new_id: u64) -> crate::MuxedAddress {
-        let mut sc_val = ScVal::try_from_val(&self.env, self.as_val()).unwrap();
-        match &mut sc_val {
+    fn new<T: Into<MuxedAddress>>(address: T, id: u64) -> crate::MuxedAddress {
+        let address: MuxedAddress = address.into();
+        let sc_val = ScVal::try_from_val(&address.env, address.as_val()).unwrap();
+        let account_id = match sc_val {
             ScVal::Address(address) => match address {
-                ScAddress::MuxedAccount(muxed_account) => {
-                    muxed_account.id = new_id;
-                }
-                ScAddress::Account(_)
-                | ScAddress::Contract(_)
-                | ScAddress::ClaimableBalance(_)
-                | ScAddress::LiquidityPool(_) => unreachable!(),
+                ScAddress::MuxedAccount(muxed_account) => muxed_account.ed25519,
+                ScAddress::Account(crate::env::internal::xdr::AccountId(
+                    crate::env::internal::xdr::PublicKey::PublicKeyTypeEd25519(account_id),
+                )) => account_id,
+                ScAddress::Contract(_) => panic!("contract addresses can not be multiplexed"),
+                ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => unreachable!(),
             },
             _ => unreachable!(),
-        }
-        sc_val.try_into_val(&self.env).unwrap()
+        };
+        let result_sc_val = ScVal::Address(ScAddress::MuxedAccount(
+            crate::env::internal::xdr::MuxedEd25519Account {
+                id,
+                ed25519: account_id,
+            },
+        ));
+        result_sc_val.try_into_val(&address.env).unwrap()
     }
 }

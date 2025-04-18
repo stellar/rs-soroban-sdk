@@ -44,7 +44,11 @@ fn test_muxed_address_component_getters() {
     assert_eq!(muxed_address.address(), expected_address);
     assert_eq!(muxed_address.id(), Some(123_456));
 
-    let muxed_address_with_another_id = muxed_address.clone_with_id(u64::MAX);
+    let muxed_address_with_another_id = MuxedAddress::new(muxed_address, u64::MAX);
     assert_eq!(muxed_address_with_another_id.address(), expected_address);
     assert_eq!(muxed_address_with_another_id.id(), Some(u64::MAX));
+
+    let muxed_address_from_address = MuxedAddress::new(muxed_address_with_another_id.address(), 0);
+    assert_eq!(muxed_address_from_address.address(), expected_address);
+    assert_eq!(muxed_address_from_address.id(), Some(0));
 }
