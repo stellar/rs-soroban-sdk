@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, symbol_short, Env};
+use soroban_sdk::{contract, contractimpl, events::Event, symbol_short, Env};
 
 #[contract]
 pub struct Contract;
@@ -11,10 +11,15 @@ impl Contract {
             (symbol_short!("greetings"), symbol_short!("topic2")),
             symbol_short!("hello"),
         );
-        env.events().publish(
-            (symbol_short!("farewells"), symbol_short!("topic2")),
-            symbol_short!("bye"),
+        env.events().publish_borrowed(
+            &(symbol_short!("farewells"), symbol_short!("topic2")),
+            &symbol_short!("bye"),
         );
+        (
+            (symbol_short!("hi_hi"), symbol_short!("topic2")),
+            symbol_short!("boo"),
+        )
+            .publish(&env);
     }
 }
 
@@ -37,7 +42,7 @@ mod test {
             env.events().all(),
             vec![
                 &env,
-                // Expect 2 events.
+                // Expect 3 events.
                 (
                     contract_id.clone(),
                     // Expect these event topics.
@@ -46,11 +51,18 @@ mod test {
                     symbol_short!("hello").into_val(&env)
                 ),
                 (
-                    contract_id,
+                    contract_id.clone(),
                     // Expect these event topics.
                     (symbol_short!("farewells"), symbol_short!("topic2")).into_val(&env),
                     // Expect this event body.
                     symbol_short!("bye").into_val(&env)
+                ),
+                (
+                    contract_id,
+                    // Expect these event topics.
+                    (symbol_short!("hi_hi"), symbol_short!("topic2")).into_val(&env),
+                    // Expect this event body.
+                    symbol_short!("boo").into_val(&env)
                 ),
             ],
         );

@@ -58,9 +58,24 @@ impl Debug for Events {
     }
 }
 
+pub trait Event {
+    type Topics: Topics;
+    type Data: IntoVal<Env, Val>;
+    fn publish(&self, env: &Env);
+}
+
 pub trait Topics: IntoVal<Env, Vec<Val>> {}
 
 impl<T> Topics for Vec<T> {}
+
+impl<T: Topics, D: IntoVal<Env, Val>> Event for (T, D) {
+    type Topics = T;
+    type Data = D;
+
+    fn publish(&self, env: &Env) {
+        env.events().publish_borrowed(&self.0, &self.1);
+    }
+}
 
 impl Events {
     #[inline(always)]
