@@ -1,5 +1,5 @@
 //! Events contains types for publishing contract events.
-use core::fmt::Debug;
+use core::{borrow::Borrow, fmt::Debug};
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, Map};
@@ -85,11 +85,13 @@ impl Events {
     /// - [Bytes]/[BytesN][crate::BytesN] longer than 32 bytes
     /// - [contracttype]
     #[inline(always)]
-    pub fn publish<T, D>(&self, topics: T, data: D)
+    pub fn publish<T, D>(&self, topics: impl Borrow<T>, data: impl Borrow<D>)
     where
         T: Topics,
         D: IntoVal<Env, Val>,
     {
+        let topics = topics.borrow();
+        let data = data.borrow();
         let env = self.env();
         internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env))
             .unwrap_infallible();
