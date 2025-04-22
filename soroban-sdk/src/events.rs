@@ -61,7 +61,8 @@ impl Debug for Events {
 pub trait Event {
     type Topics: Topics;
     type Data: IntoVal<Env, Val>;
-    fn publish(&self, env: &Env);
+    fn topics(&self) -> &Self::Topics;
+    fn data(&self) -> &Self::Data;
 }
 
 pub trait Topics: IntoVal<Env, Vec<Val>> {}
@@ -72,8 +73,12 @@ impl<T: Topics, D: IntoVal<Env, Val>> Event for (T, D) {
     type Topics = T;
     type Data = D;
 
-    fn publish(&self, env: &Env) {
-        env.events().publish_borrowed(&self.0, &self.1);
+    fn topics(&self) -> &Self::Topics {
+        &self.0
+    }
+
+    fn data(&self) -> &Self::Data {
+        &self.1
     }
 }
 
@@ -86,6 +91,29 @@ impl Events {
     #[inline(always)]
     pub(crate) fn new(env: &Env) -> Events {
         Events(env.clone())
+    }
+
+    /// Publish an event.
+    ///
+    /// Event data is specified in `data`. Data may be any value or
+    /// type, including types defined by contracts using [contracttype].
+    ///
+    /// Event topics must not contain:
+    ///
+    /// - [Vec]
+    /// - [Map]
+    /// - [Bytes]/[BytesN][crate::BytesN] longer than 32 bytes
+    /// - [contracttype]
+    #[inline(always)]
+    pub fn publish_event<E>(&self, e: &E)
+    where
+        E: Event,
+    {
+        let env = self.env();
+        let topics = e.topics();
+        let data = e.data();
+        internal::Env::contract_event(env, topics.into_val(env).to_object(), data.into_val(env))
+            .unwrap_infallible();
     }
 
     /// Publish an event.
@@ -122,7 +150,7 @@ impl Events {
     /// - [Bytes]/[BytesN][crate::BytesN] longer than 32 bytes
     /// - [contracttype]
     #[inline(always)]
-    pub fn publish_borrowed<T, D>(&self, topics: &T, data: &D)
+    pub(crate) fn publish_borrowed<T, D>(&self, topics: &T, data: &D)
     where
         T: Topics,
         D: IntoVal<Env, Val>,
