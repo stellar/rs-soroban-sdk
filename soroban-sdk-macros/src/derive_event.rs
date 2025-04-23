@@ -5,14 +5,11 @@ use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
+    ScSpecEntry, ScSpecTypeDef, ScSpecEventTopicV0, ScSpecEventDataV0, ScSpecUdtStructV0,
+    StringM, WriteXdr,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
-
-// TODO: Add field attribute for including/excluding fields in types.
-// TODO: Better handling of partial types and types without all their fields and
-// types with private fields.
 
 pub fn derive_event(
     path: &Path,
@@ -33,8 +30,7 @@ pub fn derive_event(
         .map(|(field_num, field)| {
             let field_ident = field.ident.as_ref().unwrap();
             let field_name = field_ident.to_string();
-            let field_idx_lit = Literal::usize_unsuffixed(field_num);
-            let spec_field = ScSpecUdtStructFieldV0 {
+            let spec_field = ScSpecEventV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
                     const MAX: u32 = 30;
@@ -114,91 +110,7 @@ pub fn derive_event(
                 })
             }
         }
-
-        impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
-            type Error = #path::ConversionError;
-            fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
-                use #path::{TryIntoVal,EnvBase,ConversionError,Val};
-                const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
-                let vals: [Val; #field_count_usize] = [
-                    #((&val.#field_idents).try_into_val(env).map_err(|_| ConversionError)?),*
-                ];
-                Ok(env.map_new_from_slices(&KEYS, &vals).map_err(|_| ConversionError)?.into())
-            }
-        }
     };
 
-    // Additional output when testutils are enabled.
-    if cfg!(feature = "testutils") {
-        let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct(path, vis, ident, data);
-        output.extend(quote!{
-            impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
-                type Error = #path::xdr::Error;
-                #[inline(always)]
-                fn try_from_val(env: &#path::Env, val: &#path::xdr::ScMap) -> Result<Self, #path::xdr::Error> {
-                    use #path::xdr::Validate;
-                    use #path::TryIntoVal;
-                    let map = val;
-                    if map.len() != #field_count_usize {
-                        return Err(#path::xdr::Error::Invalid);
-                    }
-                    map.validate()?;
-                    Ok(Self{
-                        #(#try_from_xdrs,)*
-                    })
-                }
-            }
-
-            impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #ident {
-                type Error = #path::xdr::Error;
-                #[inline(always)]
-                fn try_from_val(env: &#path::Env, val: &#path::xdr::ScVal) -> Result<Self, #path::xdr::Error> {
-                    if let #path::xdr::ScVal::Map(Some(map)) = val {
-                        <_ as #path::TryFromVal<_, _>>::try_from_val(env, map)
-                    } else {
-                        Err(#path::xdr::Error::Invalid)
-                    }
-                }
-            }
-
-            impl TryFrom<&#ident> for #path::xdr::ScMap  {
-                type Error = #path::xdr::Error;
-                #[inline(always)]
-                fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
-                    extern crate alloc;
-                    use #path::TryFromVal;
-                    #path::xdr::ScMap::sorted_from(alloc::vec![
-                        #(#try_into_xdrs,)*
-                    ])
-                }
-            }
-
-            impl TryFrom<#ident> for #path::xdr::ScMap {
-                type Error = #path::xdr::Error;
-                #[inline(always)]
-                fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
-                    (&val).try_into()
-                }
-            }
-
-            impl TryFrom<&#ident> for #path::xdr::ScVal  {
-                type Error = #path::xdr::Error;
-                #[inline(always)]
-                fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
-                    Ok(#path::xdr::ScVal::Map(Some(val.try_into()?)))
-                }
-            }
-
-            impl TryFrom<#ident> for #path::xdr::ScVal {
-                type Error = #path::xdr::Error;
-                #[inline(always)]
-                fn try_from(val: #ident) -> Result<Self, #path::xdr::Error> {
-                    (&val).try_into()
-                }
-            }
-
-            #arbitrary_tokens
-        });
-    }
     output
 }
