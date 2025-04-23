@@ -6,6 +6,7 @@ mod derive_args;
 mod derive_client;
 mod derive_enum;
 mod derive_enum_int;
+mod derive_event;
 mod derive_error_enum_int;
 mod derive_fn;
 mod derive_spec_fn;
@@ -21,6 +22,7 @@ use derive_args::{derive_args_impl, derive_args_type};
 use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
+use derive_event::derive_event;
 use derive_error_enum_int::derive_type_error_enum_int;
 use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn};
 use derive_spec_fn::derive_fn_spec;
@@ -372,6 +374,57 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
 
     quote! {
         #gen
+    }
+    .into()
+}
+
+#[derive(Debug, FromMeta)]
+struct ContractEventArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
+    lib: Option<String>,
+}
+
+#[proc_macro_attribute]
+pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
+    let args = match ContractEventArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let input = parse_macro_input!(input as DeriveInput);
+    let vis = &input.vis;
+    let ident = &input.ident;
+    let attrs = &input.attrs;
+    let derived = match &input.data {
+        Data::Struct(s) => match s.fields {
+            Fields::Named(_) => {
+                derive_event(&args.crate_path, vis, ident, attrs, s, &args.lib)
+            }
+            Fields::Unnamed(_) => Error::new(
+                s.fields.span(),
+                "structs with unnamed fields are not supported as contract events",
+            )
+            .to_compile_error(),
+            Fields::Unit => Error::new(
+                s.fields.span(),
+                "structs with no fields are not supported as contract events",
+            )
+            .to_compile_error(),
+        },
+        Data::Enum(_) => Error::new(input.span(), "enums are not supported as contract events")
+            .to_compile_error(),
+        Data::Union(_) => Error::new(input.span(), "unions are not supported as contract events")
+            .to_compile_error(),
+    };
+    quote! {
+        #input
+        #derived
     }
     .into()
 }
