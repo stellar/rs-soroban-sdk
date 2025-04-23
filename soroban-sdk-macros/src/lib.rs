@@ -383,14 +383,7 @@ struct ContractEventArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     lib: Option<String>,
-    data: ContractEventArgsData,
-}
-
-#[derive(Debug, FromMeta)]
-enum ContractEventArgsData {
-    SingleValue,
-    Vec,
-    Map,
+    data: String, // single-value, vec, map
 }
 
 #[proc_macro_attribute]
@@ -410,8 +403,8 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     let derived = match &input.data {
-        Data::Struct(s) => match s.fields {
-            Fields::Named(_) => derive_event(&args.crate_path, vis, ident, attrs, s, &args.lib),
+        Data::Struct(struct_) => match struct_.fields {
+            Fields::Named(_) => derive_event(&args.crate_path, vis, ident, attrs, struct_, &args.data, &args.lib),
             Fields::Unnamed(_) => Error::new(
                 s.fields.span(),
                 "structs with unnamed fields are not supported as contract events",
