@@ -9,7 +9,7 @@ pub fn pass_through_attr_to_gen_code(attr: &Attribute) -> bool {
         || attr.path().is_ident("deny")
 }
 
-pub fn remove_attributes_from_item(input: &mut DeriveInput) {
+pub fn remove_attributes_from_item(mut input: DeriveInput) -> DeriveInput {
     if let Data::Struct(ref mut data_struct) = input.data {
         match &mut data_struct.fields {
             Fields::Named(ref mut fields_named) => {
@@ -35,4 +35,5 @@ pub fn remove_attributes_from_item(input: &mut DeriveInput) {
     } else {
         unimplemented!("Only structs are supported by remove_attributes_from_item");
     }
+    input
 }
