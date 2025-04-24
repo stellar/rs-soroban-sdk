@@ -8,3 +8,7 @@ pub fn pass_through_attr_to_gen_code(attr: &Attribute) -> bool {
         || attr.path().is_ident("allow")
         || attr.path().is_ident("deny")
 }
+
+pub fn remove_attributes_from_item(input: &mut DeriveInput) {
+
+}
