@@ -32,7 +32,7 @@ pub fn remove_attributes_from_item(input: &mut DeriveInput) {
                 // Unit structs have no fields, nothing to do.
             }
         }
+    } else {
+        unimplemented!("Only structs are supported by remove_attributes_from_item");
     }
-    // If the DeriveInput is for an Enum or Union, we don't need to do anything
-    // as the request only specified removing attributes from struct fields.
 }
