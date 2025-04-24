@@ -5,6 +5,7 @@ use soroban_sdk::{contract, contractevent, contractimpl, symbol_short, Env, Symb
 pub struct Contract;
 
 #[contractevent(data = "single-value")]
+#[allow(dead_code)]
 pub struct Transfer {
     #[topic]
     name: Symbol,
