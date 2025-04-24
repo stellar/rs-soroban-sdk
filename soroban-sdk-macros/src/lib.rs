@@ -404,14 +404,21 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let attrs = &input.attrs;
     let derived = match &input.data {
         Data::Struct(struct_) => match struct_.fields {
-            Fields::Named(_) => derive_event(&args.crate_path, vis, ident, attrs, struct_, &args.data, &args.lib),
+            Fields::Named(_) => derive_event(
+                &args.crate_path,
+                ident,
+                attrs,
+                struct_,
+                &args.data,
+                &args.lib,
+            ),
             Fields::Unnamed(_) => Error::new(
-                s.fields.span(),
+                struct_.fields.span(),
                 "structs with unnamed fields are not supported as contract events",
             )
             .to_compile_error(),
             Fields::Unit => Error::new(
-                s.fields.span(),
+                struct_.fields.span(),
                 "structs with no fields are not supported as contract events",
             )
             .to_compile_error(),
