@@ -97,7 +97,12 @@ pub fn derive_event(
                 .collect::<Vec<_>>()
                 .try_into()
                 .unwrap(),
-            data_format: ScSpecEventDataFormatV0::SingleValue,
+            data_format: match data_format {
+                "single-value" => ScSpecEventDataFormatV0::SingleValue,
+                "vec" => ScSpecEventDataFormatV0::Vec,
+                "map" => ScSpecEventDataFormatV0::Map,
+                _ => panic!("Invalid data format: {data_format}"),
+            },
             data: fields
                 .iter()
                 .filter(|f| f.kind == FieldKind::Data)
@@ -137,6 +142,28 @@ pub fn derive_event(
             }
         }
     };
+
+    // Additional output when testutils are enabled for converting to and from the XDR
+    // representation of the event.
+    if cfg!(feature = "testutils") {
+        output.extend(quote!{
+            impl #path::TryFromVal<#path::Env, #path::xdr::ContractEventBody> for #ident {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from_val(env: &#path::Env, val: &#path::xdr::ContractEventBody) -> Result<Self, #path::xdr::Error> {
+                    todo!()
+                }
+            }
+
+            impl TryFrom<&#ident> for #path::xdr::ContractEventBody  {
+                type Error = #path::xdr::Error;
+                #[inline(always)]
+                fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
+                    todo!()
+                }
+            }
+        });
+    }
 
     output
 }

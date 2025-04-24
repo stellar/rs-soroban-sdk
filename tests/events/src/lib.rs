@@ -5,7 +5,6 @@ use soroban_sdk::{contract, contractevent, contractimpl, symbol_short, Env, Symb
 pub struct Contract;
 
 #[contractevent(data = "single-value")]
-#[allow(dead_code)]
 pub struct Transfer {
     #[topic]
     name: Symbol,
@@ -24,6 +23,10 @@ impl Contract {
             (symbol_short!("hi_hi"), symbol_short!("topic2")),
             symbol_short!("boo"),
         ));
+        env.events().publish_event(&Transfer{
+            name: symbol_short!("ho_ho_ho"),
+            value: symbol_short!("santa"),
+        });
     }
 }
 

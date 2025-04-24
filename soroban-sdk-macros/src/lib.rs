@@ -18,6 +18,7 @@ mod path;
 mod symbol;
 mod syn_ext;
 
+use attribute::remove_attributes_from_item;
 use derive_args::{derive_args_impl, derive_args_type};
 use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
@@ -399,7 +400,6 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.write_errors().into(),
     };
     let input = parse_macro_input!(input as DeriveInput);
-    let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
     let derived = match &input.data {
@@ -428,6 +428,7 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Data::Union(_) => Error::new(input.span(), "unions are not supported as contract events")
             .to_compile_error(),
     };
+    let input = remove_attributes_from_item(input);
     quote! {
         #input
         #derived
