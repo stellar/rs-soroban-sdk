@@ -1,8 +1,16 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, events::Event, symbol_short, Env};
+use soroban_sdk::{contract, contractevent, contractimpl, symbol_short, Env, Symbol};
 
 #[contract]
 pub struct Contract;
+
+#[contractevent(data = "single-value")]
+pub struct Transfer {
+    #[topic]
+    name: Symbol,
+    #[data]
+    value: Symbol,
+}
 
 #[contractimpl]
 impl Contract {
@@ -11,15 +19,10 @@ impl Contract {
             (symbol_short!("greetings"), symbol_short!("topic2")),
             symbol_short!("hello"),
         );
-        env.events().publish_borrowed(
-            &(symbol_short!("farewells"), symbol_short!("topic2")),
-            &symbol_short!("bye"),
-        );
-        (
+        env.events().publish_event(&(
             (symbol_short!("hi_hi"), symbol_short!("topic2")),
             symbol_short!("boo"),
-        )
-            .publish(&env);
+        ));
     }
 }
 
