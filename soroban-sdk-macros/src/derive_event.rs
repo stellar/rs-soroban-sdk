@@ -4,8 +4,8 @@ use syn::{Attribute, DataStruct, Error, Ident, Path, Type};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecEntry, ScSpecEventDataFormatV0, ScSpecEventFieldV0, ScSpecEventV0, ScSpecTypeDef,
-    StringM, WriteXdr,
+    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventFieldV0, ScSpecEventV0, ScSpecTypeDef,
+    StringM, WriteXdr, ScSpecEventFieldKindV0
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
@@ -45,6 +45,11 @@ pub fn derive_event(
             let field_type = &field.ty;
             let is_topic = field.attrs.iter().any(|a| a.path().is_ident("topic"));
             let field_spec = ScSpecEventFieldV0 {
+                kind: if is_topic {
+                    ScSpecEventFieldKindV0::Topic
+                } else {
+                    ScSpecEventFieldKindV0::Data
+                },
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
                     const MAX: u32 = 30;
@@ -87,25 +92,17 @@ pub fn derive_event(
     // Generated code spec.
     let spec_gen = {
         let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
+            data_format: match data_format {
+                "single-value" => ScSpecEventDataFormat::SingleValue,
+                "vec" => ScSpecEventDataFormat::Vec,
+                "map" => ScSpecEventDataFormat::Map,
+                _ => panic!("Invalid data format: {data_format}"),
+            },
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
-            topics: fields
+            fields: fields
                 .iter()
-                .filter(|f| f.kind == FieldKind::Topic)
-                .map(|f| f.spec.clone())
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap(),
-            data_format: match data_format {
-                "single-value" => ScSpecEventDataFormatV0::SingleValue,
-                "vec" => ScSpecEventDataFormatV0::Vec,
-                "map" => ScSpecEventDataFormatV0::Map,
-                _ => panic!("Invalid data format: {data_format}"),
-            },
-            data: fields
-                .iter()
-                .filter(|f| f.kind == FieldKind::Data)
                 .map(|f| f.spec.clone())
                 .collect::<Vec<_>>()
                 .try_into()

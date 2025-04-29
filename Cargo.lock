@@ -1470,7 +1470,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "22.1.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-events-to-contract-spec#d697feba0e80f949d8593a75ba130b7bd8f4e6e4"
+source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-events-to-contract-spec#20455e4653568dbc0c4e430d1ffa3583638f10a5"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",

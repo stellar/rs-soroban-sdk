@@ -23,7 +23,7 @@ impl Contract {
             (symbol_short!("hi_hi"), symbol_short!("topic2")),
             symbol_short!("boo"),
         ));
-        env.events().publish_event(&Transfer{
+        env.events().publish_event(&Transfer {
             name: symbol_short!("ho_ho_ho"),
             value: symbol_short!("santa"),
         });
