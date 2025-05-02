@@ -104,7 +104,7 @@ macro_rules! bytesn {
 
 #[macro_export]
 macro_rules! impl_bytesn_repr {
-    ($elem: ident, $size: literal) => {
+    ($elem: ident, $size: expr) => {
         impl $elem {
             pub fn from_bytes(bytes: BytesN<$size>) -> Self {
                 Self(bytes)

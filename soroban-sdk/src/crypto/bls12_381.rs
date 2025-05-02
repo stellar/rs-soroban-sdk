@@ -10,14 +10,21 @@ use core::{
     ops::{Add, Mul, Neg, Sub},
 };
 
+pub const FP_SERIALIZED_SIZE: usize = 48;
+pub const FP2_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2;
+pub const G1_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2;
+pub const G2_SERIALIZED_SIZE: usize = FP2_SERIALIZED_SIZE * 2;
+
 /// Bls12_381 provides access to curve and field arithmetics on the BLS12-381
 /// curve.
 pub struct Bls12_381 {
     env: Env,
 }
 
+// This routine was copied with slight modification from the arkworks library:
+// https://github.com/arkworks-rs/algebra/blob/bf1c9b22b30325ef4df4f701dedcb6dea904c587/ff/src/biginteger/arithmetic.rs#L66-L79
 fn sbb_for_sub_with_borrow(a: &mut u64, b: u64, borrow: u8) -> u8 {
-    let tmp = (1u128 << 64) + (*a as u128) - (b as u128) - (borrow as u128);
+    let tmp = (1u128 << 64) + u128::from(*a) - u128::from(b) - u128::from(borrow);
     *a = tmp as u64;
     u8::from(tmp >> 64 == 0)
 }
@@ -52,22 +59,20 @@ impl<const N: usize> BigInt<N> {
     }
 }
 
-impl<const N: usize, const M: usize> Into<BigInt<N>> for &BytesN<M> {
-    fn into(self) -> BigInt<N> {
-        const {
-            if M != N * 8 {
-                panic!("BytesN::Into<BigInt> - length mismatch")
-            }
+impl<const N: usize, const M: usize> From<&BytesN<M>> for BigInt<N> {
+    fn from(bytes: &BytesN<M>) -> Self {
+        if M != N * 8 {
+            panic!("BytesN::Into<BigInt> - length mismatch")
         }
 
-        let array = self.to_array();
+        let array = bytes.to_array();
         let mut limbs = [0u64; N];
         for i in 0..N {
             let start = i * 8;
             let end = start + 8;
-            let mut bytes = [0u8; 8];
-            bytes.copy_from_slice(&array[start..end]);
-            limbs[N - 1 - i] = u64::from_be_bytes(bytes);
+            let mut chunk = [0u8; 8];
+            chunk.copy_from_slice(&array[start..end]);
+            limbs[N - 1 - i] = u64::from_be_bytes(chunk);
         }
         BigInt(limbs)
     }
@@ -101,7 +106,7 @@ impl<const N: usize, const M: usize> Into<BigInt<N>> for &BytesN<M> {
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct G1Affine(BytesN<96>);
+pub struct G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 
 /// `G2Affine` is a point in the G2 group (subgroup defined over the quadratic
 /// extension field `Fq2`) of the BLS12-381 elliptic curve
@@ -121,7 +126,7 @@ pub struct G1Affine(BytesN<96>);
 ///   - sort_flag (bit 2): Must always be unset (0).
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct G2Affine(BytesN<192>);
+pub struct G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 
 /// `Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
 /// curve
@@ -131,7 +136,7 @@ pub struct G2Affine(BytesN<192>);
 ///   field `Fp`. The value is serialized as a big-endian integer.
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fp(BytesN<48>);
+pub struct Fp(BytesN<FP_SERIALIZED_SIZE>);
 
 /// `Fp2` represents an element of the quadratic extension field `Fq2` of the
 /// BLS12-381 elliptic curve
@@ -143,7 +148,7 @@ pub struct Fp(BytesN<48>);
 ///   and imaginary components).
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fp2(BytesN<96>);
+pub struct Fp2(BytesN<FP2_SERIALIZED_SIZE>);
 
 /// `Fr` represents an element in the BLS12-381 scalar field, which is a prime
 /// field of order `r` (the order of the G1 and G2 groups). The struct is
@@ -153,14 +158,42 @@ pub struct Fp2(BytesN<96>);
 #[repr(transparent)]
 pub struct Fr(U256);
 
-impl_bytesn_repr!(G1Affine, 96);
-impl_bytesn_repr!(G2Affine, 192);
-impl_bytesn_repr!(Fp, 48);
-impl_bytesn_repr!(Fp2, 96);
+impl_bytesn_repr!(G1Affine, G1_SERIALIZED_SIZE);
+impl_bytesn_repr!(G2Affine, G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Fp, FP_SERIALIZED_SIZE);
+impl_bytesn_repr!(Fp2, FP2_SERIALIZED_SIZE);
 
 impl Fp {
     pub fn env(&self) -> &Env {
         self.0.env()
+    }
+
+    fn checked_neg(&self) -> Option<Fp> {
+        let fp_bigint: BigInt<6> = (&self.0).into();
+        if fp_bigint.is_zero() {
+            return Some(self.clone());
+        }
+
+        // BLS12-381 base field modulus
+        const BLS12_381_MODULUS: [u64; 6] = [
+            13402431016077863595,
+            2210141511517208575,
+            7435674573564081700,
+            7239337960414712511,
+            5412103778470702295,
+            1873798617647539866,
+        ];
+        let mut res = BigInt(BLS12_381_MODULUS);
+
+        // Compute modulus - value
+        let borrow = res.sub_with_borrow(&fp_bigint);
+        if borrow {
+            return None;
+        }
+
+        let mut bytes = [0u8; FP_SERIALIZED_SIZE];
+        res.copy_into_array(&mut bytes);
+        Some(Fp::from_array(self.env(), &bytes))
     }
 
     /// Maps to a `G1Affine` point via [simplified SWU
@@ -170,9 +203,9 @@ impl Fp {
     }
 }
 
-impl Into<BigInt<6>> for Fp {
-    fn into(self) -> BigInt<6> {
-        let inner: Bytes = self.0.into();
+impl From<Fp> for BigInt<6> {
+    fn from(fp: Fp) -> Self {
+        let inner: Bytes = fp.0.into();
         let mut limbs = [0u64; 6];
         for i in 0..6u32 {
             let start = i * 8;
@@ -184,32 +217,22 @@ impl Into<BigInt<6>> for Fp {
     }
 }
 
+impl Neg for &Fp {
+    type Output = Fp;
+
+    fn neg(self) -> Self::Output {
+        match self.checked_neg() {
+            Some(v) => v,
+            None => sdk_panic!("invalid input - Fp is larger than the field modulus"),
+        }
+    }
+}
+
 impl Neg for Fp {
     type Output = Fp;
 
     fn neg(self) -> Self::Output {
-        let fp_bigint: BigInt<6> = (&self.0).into();
-        if fp_bigint.is_zero() {
-            return self;
-        }
-
-        // BLS12-381 base field modulus
-        let mut res = BigInt([
-            13402431016077863595,
-            2210141511517208575,
-            7435674573564081700,
-            7239337960414712511,
-            5412103778470702295,
-            1873798617647539866,
-        ]);
-        // Compute modulus - value
-        let borrow = res.sub_with_borrow(&fp_bigint);
-        if borrow {
-            sdk_panic!("invalid input - Fp is larger than the field modulus")
-        }
-        let mut bytes = [0u8; 48];
-        res.copy_into_array(&mut bytes);
-        Fp::from_array(&self.env(), &bytes)
+        (&self).neg()
     }
 }
 
@@ -243,15 +266,29 @@ impl Mul<Fr> for G1Affine {
     }
 }
 
+// G1Affine represents a point (X, Y) on the BLS12-381 curve where X, Y ∈ Fp
+// Negation of (X, Y) is defined as (X, -Y)
+impl Neg for &G1Affine {
+    type Output = G1Affine;
+
+    fn neg(self) -> Self::Output {
+        let mut inner: Bytes = (&self.0).into();
+        let y = Fp::try_from_val(
+            inner.env(),
+            inner.slice(FP_SERIALIZED_SIZE as u32..).as_val(),
+        )
+        .unwrap_optimized();
+        let neg_y = -y;
+        inner.copy_from_slice(FP_SERIALIZED_SIZE as u32, &neg_y.to_array());
+        G1Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+    }
+}
+
 impl Neg for G1Affine {
     type Output = G1Affine;
 
     fn neg(self) -> Self::Output {
-        let mut inner: Bytes = self.0.into();
-        let y = Fp::try_from_val(inner.env(), inner.slice(48..).as_val()).unwrap_optimized();
-        let neg_y = -y;
-        inner.copy_from_slice(48, &neg_y.to_array());
-        G1Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+        (&self).neg()
     }
 }
 
@@ -260,8 +297,45 @@ impl Fp2 {
         self.0.env()
     }
 
+    // An Fp2 element is represented as c0 + c1 * X, where:
+    // - c0, c1 are base field elements (Fp)
+    // - X is the quadratic non-residue used to construct the field extension
+    // The negation of c0 + c1 * X is (-c0) + (-c1) * X.
+    fn checked_neg(&self) -> Option<Fp2> {
+        let mut inner = self.to_array();
+        let mut slice0 = [0; FP_SERIALIZED_SIZE];
+        let mut slice1 = [0; FP_SERIALIZED_SIZE];
+        slice0.copy_from_slice(&inner[0..FP_SERIALIZED_SIZE]);
+        slice1.copy_from_slice(&inner[FP_SERIALIZED_SIZE..FP2_SERIALIZED_SIZE]);
+
+        // Convert both components to Fp and negate them
+        let c0 = Fp::from_array(self.env(), &slice0);
+        let c1 = Fp::from_array(self.env(), &slice1);
+
+        // If either component's negation fails, the whole operation fails
+        let neg_c0 = c0.checked_neg()?;
+        let neg_c1 = c1.checked_neg()?;
+
+        // Reconstruct the Fp2 element from negated components
+        inner[0..FP_SERIALIZED_SIZE].copy_from_slice(&neg_c0.to_array());
+        inner[FP_SERIALIZED_SIZE..FP2_SERIALIZED_SIZE].copy_from_slice(&neg_c1.to_array());
+
+        Some(Fp2::from_array(self.env(), &inner))
+    }
+
     pub fn map_to_g2(&self) -> G2Affine {
         self.env().crypto().bls12_381().map_fp2_to_g2(self)
+    }
+}
+
+impl Neg for &Fp2 {
+    type Output = Fp2;
+
+    fn neg(self) -> Self::Output {
+        match self.checked_neg() {
+            Some(v) => v,
+            None => sdk_panic!("invalid input - Fp2 component is larger than the field modulus"),
+        }
     }
 }
 
@@ -269,16 +343,7 @@ impl Neg for Fp2 {
     type Output = Fp2;
 
     fn neg(self) -> Self::Output {
-        let mut inner = self.to_array();
-        let mut slice0 = [0; 48];
-        let mut slice1 = [0; 48];
-        slice0.copy_from_slice(&inner[0..48]);
-        slice1.copy_from_slice(&inner[48..96]);
-        let c0 = -Fp::from_array(self.env(), &slice0);
-        let c1 = -Fp::from_array(self.env(), &slice1);
-        inner[0..48].copy_from_slice(&c0.to_array());
-        inner[48..96].copy_from_slice(&c1.to_array());
-        Fp2::from_array(self.env(), &inner)
+        (&self).neg()
     }
 }
 
@@ -312,15 +377,29 @@ impl Mul<Fr> for G2Affine {
     }
 }
 
+// G2Affine represents a point (X, Y) on the BLS12-381 quadratic extension curve where X, Y ∈ Fp2
+// Negation of (X, Y) is defined as (X, -Y)
+impl Neg for &G2Affine {
+    type Output = G2Affine;
+
+    fn neg(self) -> Self::Output {
+        let mut inner: Bytes = (&self.0).into();
+        let y = Fp2::try_from_val(
+            inner.env(),
+            inner.slice(FP2_SERIALIZED_SIZE as u32..).as_val(),
+        )
+        .unwrap_optimized();
+        let neg_y = -y;
+        inner.copy_from_slice(FP2_SERIALIZED_SIZE as u32, &neg_y.to_array());
+        G2Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+    }
+}
+
 impl Neg for G2Affine {
     type Output = G2Affine;
 
     fn neg(self) -> Self::Output {
-        let mut inner: Bytes = self.0.into();
-        let y = Fp2::try_from_val(inner.env(), inner.slice(96..).as_val()).unwrap_optimized();
-        let neg_y = -y;
-        inner.copy_from_slice(96, &neg_y.to_array());
-        G2Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+        (&self).neg()
     }
 }
 
