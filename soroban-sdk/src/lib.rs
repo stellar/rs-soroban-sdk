@@ -51,7 +51,9 @@
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
-#![allow(dead_code)]
+// The SDK uses #[test] in doctests, and does some sneaky line hiding to have
+// the doctest execute the test inside a main function instead.
+#![allow(clippy::test_attr_in_doctest)]
 
 pub mod _migrating;
 
@@ -255,7 +257,7 @@ pub use soroban_sdk_macros::contracterror;
 /// Generates in the current module:
 /// - A `Contract` trait that matches the contracts interface.
 /// - A `ContractClient` struct that has functions for each function in the
-/// contract.
+///   contract.
 /// - Types for all contract types defined in the contract.
 ///
 /// ### Examples
@@ -428,16 +430,16 @@ pub use soroban_sdk_macros::contractmeta;
 ///
 /// There are some constraints on the types that are supported:
 /// - Enums with integer values must have an explicit integer literal for every
-/// variant.
+///   variant.
 /// - Enums with unit variants are supported.
 /// - Enums with tuple-like variants with a maximum of one tuple field are
-/// supported. The tuple field must be of a type that is also convertible to and
-/// from `Val`.
+///   supported. The tuple field must be of a type that is also convertible to and
+///   from `Val`.
 /// - Enums with struct-like variants are not supported.
 /// - Structs are supported. All fields must be of a type that is also
-/// convertible to and from `Val`.
+///   convertible to and from `Val`.
 /// - All variant names, field names, and type names must be 10-characters or
-/// less in length.
+///   less in length.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.

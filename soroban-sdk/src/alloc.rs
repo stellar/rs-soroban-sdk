@@ -79,8 +79,7 @@ unsafe impl GlobalAlloc for BumpPointer {
     #[allow(static_mut_refs)]
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         let (bytes, align) = (layout.size(), layout.align());
-        let ptr = LOCAL_ALLOCATOR.alloc(bytes, align);
-        ptr
+        LOCAL_ALLOCATOR.alloc(bytes, align)
     }
 
     #[inline(always)]
