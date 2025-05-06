@@ -7,6 +7,12 @@ use crate::{
 #[test]
 fn test_g1_negation() {
     let env = Env::default();
+    // Test case 1: infinity point
+    let infinity = G1Affine::from_bytes(bytesn!(&env,
+        0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    ));
+    assert_eq!(-infinity.clone(), infinity);
+
     // Test case 1: Generator point (G1)
     let g1_generator = G1Affine::from_bytes(bytesn!(&env,
         0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1
@@ -14,13 +20,8 @@ fn test_g1_negation() {
     let neg_g1_generator = G1Affine::from_bytes(bytesn!(&env,
         0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb114d1d6855d545a8aa7d76c8cf2e21f267816aef1db507c96655b9d5caac42364e6f38ba0ecb751bad54dcd6b939c2ca
     ));
-    assert_eq!(-g1_generator, neg_g1_generator);
-
-    // Test case 2: Identity/infinity point
-    let identity = G1Affine::from_bytes(bytesn!(&env,
-        0x40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-    ));
-    assert_eq!(-identity.clone(), identity);
+    assert_eq!(-g1_generator.clone(), neg_g1_generator.clone());
+    assert_eq!(infinity, g1_generator + neg_g1_generator);
 
     // Test case 3: Random point
     let random_point = G1Affine::from_bytes(bytesn!(&env,
@@ -29,41 +30,39 @@ fn test_g1_negation() {
     let neg_random_point = G1Affine::from_bytes(bytesn!(&env,
         0x00b2ea3a6c75f43ff24d0a93f4302b4e2cf8f5eb2980eb7bb0f65af703c72c19e293cfe7cd98d3645a5d7c5f467d6292064970108f21dcd51c68d25d381037ebb04b5821d982e897296183d9c628f940a78645a1140bc07ac9148da5337a6f5d
     ));
-    assert_eq!(-random_point, neg_random_point);
+    assert_eq!(-random_point.clone(), neg_random_point.clone());
+    assert_eq!(infinity, random_point + neg_random_point);
 }
 
 #[test]
 fn test_g2_negation() {
     let env = Env::default();
+    // Test case 1: infinity point
+    let infinity = G2Affine::from_bytes(bytesn!(&env,
+        0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    ));
+    let neg_infinity = -infinity.clone();
+    assert_eq!(neg_infinity, infinity);
 
-    // Test case 1: Generator point (G2)
+    // Test case 2: Generator point (G2)
     let g2_generator = G2Affine::from_bytes(bytesn!(&env,
         0x13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801
     ));
-
     let neg_g2_generator = G2Affine::from_bytes(bytesn!(&env,
         0x13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb813fa4d4a0ad8b1ce186ed5061789213d993923066dddaf1040bc3ff59f825c78df74f2d75467e25e0f55f8a00fa030ed0d1b3cc2c7027888be51d9ef691d77bcb679afda66c73f17f9ee3837a55024f78c71363275a75d75d86bab79f74782aa
     ));
-
-    assert_eq!(-g2_generator, neg_g2_generator);
-
-    // Test case 2: Identity/infinity point
-    let identity = G2Affine::from_bytes(bytesn!(&env,
-        0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-    ));
-
-    assert_eq!(-identity.clone(), identity);
+    assert_eq!(-g2_generator.clone(), neg_g2_generator.clone());
+    assert_eq!(infinity, g2_generator + neg_g2_generator);
 
     // Test case 3: Random point
     let random_point = G2Affine::from_bytes(bytesn!(&env,
         0x04de7359c488ccf4753d08b99f3fb44de6c4c46b5872c45ddd90a37442dc679591a40ab8ee539b2aa30c333774c71ed01676197052a7a651e5618151d8374fdf4c25ce3f57c06f65b81dbaf0373b67d7be97e7f4f1f87cf71d761ecf04c05b150499bf4cf6242da563d185c2bce880ae59e5f3816b34f70d0a6f30e9ca3064ba179dd4ccda8dd025cb3a2c9628fe0c0b09defb3faaae69a59510cd90badf0b87a82e52a4876837e29466fced187483012c900b4d4a693b2347cab3f9cdd86035
     ));
-
     let neg_random_point = G2Affine::from_bytes(bytesn!(&env,
         0x04de7359c488ccf4753d08b99f3fb44de6c4c46b5872c45ddd90a37442dc679591a40ab8ee539b2aa30c333774c71ed01676197052a7a651e5618151d8374fdf4c25ce3f57c06f65b81dbaf0373b67d7be97e7f4f1f87cf71d761ecf04c05b151567529d435bb8f4e74a21f386632c290a91580388501bb25cc1a1b72c80916a070e2b31d6c62fd9eec4d369d7019ea0102216aa8ed17cf4b60ada25886ca14fbc48f8e06c1cdadcd2c9d5b3de3c7322f21bf4b166eac4dc72344c0632274a76
     ));
-
-    assert_eq!(-random_point, neg_random_point);
+    assert_eq!(-random_point.clone(), neg_random_point.clone());
+    assert_eq!(infinity, random_point + neg_random_point);
 }
 
 #[test]
