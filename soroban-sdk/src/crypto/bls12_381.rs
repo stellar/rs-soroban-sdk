@@ -168,6 +168,11 @@ impl Fp {
         self.0.env()
     }
 
+    // `Fp` represents an element in the base field of the BLS12-381 elliptic curve.
+    // For an element a ∈ Fp, its negation `-a` is defined as:
+    //   a + (-a) = 0 (mod p)
+    // where `p` is the field modulus, and to make a valid point coordinate on the
+    // curve, `a` also must be within the field range (i.e., 0 ≤ a < p).
     fn checked_neg(&self) -> Option<Fp> {
         let fp_bigint: BigInt<6> = (&self.0).into();
         if fp_bigint.is_zero() {
