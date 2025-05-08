@@ -10,7 +10,7 @@ use core::{
     ops::{Add, Mul, Neg, Sub},
 };
 
-pub const FP_SERIALIZED_SIZE: usize = 48;
+pub const FP_SERIALIZED_SIZE: usize = 48; // Size in bytes of a serialized Fp element in BLS12-381. The field modulus is 381 bits, requiring 48 bytes (384 bits) with 3 bits reserved for flags.
 pub const FP2_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2;
 pub const G1_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2;
 pub const G2_SERIALIZED_SIZE: usize = FP2_SERIALIZED_SIZE * 2;
