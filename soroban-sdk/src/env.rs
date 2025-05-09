@@ -122,8 +122,8 @@ use crate::{
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
-    StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
-    U256Val, U32Val, U64Object, U64Val, Void,
+    MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject, TimepointObject,
+    U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -514,7 +514,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let info = internal::LedgerInfo {
-            protocol_version: 22,
+            protocol_version: 23,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],

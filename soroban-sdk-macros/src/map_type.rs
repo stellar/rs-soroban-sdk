@@ -35,6 +35,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                     "Error" => Ok(ScSpecTypeDef::Error),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
                     "Address" => Ok(ScSpecTypeDef::Address),
+                    "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {

@@ -1,8 +1,8 @@
 use crate as soroban_sdk;
+use crate::xdr::ContractCostType;
 use expect_test::expect;
 use soroban_sdk::Env;
 use soroban_sdk_macros::symbol_short;
-use stellar_xdr::curr::ContractCostType;
 
 mod contract_data {
     use crate as soroban_sdk;
@@ -21,8 +21,8 @@ fn test_cost_estimate_with_storage() {
     client.put(&symbol_short!("k1"), &symbol_short!("v1"));
     expect![[r#"
         InvocationResources {
-            instructions: 455853,
-            mem_bytes: 1162241,
+            instructions: 240535,
+            mem_bytes: 1126705,
             read_entries: 2,
             write_entries: 1,
             read_bytes: 1028,
@@ -36,8 +36,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 45010,
-            instructions: 1140,
+            total: 44472,
+            instructions: 602,
             read_entries: 18750,
             write_entries: 10000,
             read_bytes: 1793,
@@ -53,8 +53,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), Some(symbol_short!("v1")));
     expect![[r#"
         InvocationResources {
-            instructions: 454080,
-            mem_bytes: 1161338,
+            instructions: 238748,
+            mem_bytes: 1125802,
             read_entries: 3,
             write_entries: 0,
             read_bytes: 1108,
@@ -68,8 +68,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 21819,
-            instructions: 1136,
+            total: 21280,
+            instructions: 597,
             read_entries: 18750,
             write_entries: 0,
             read_bytes: 1933,
@@ -85,8 +85,8 @@ fn test_cost_estimate_with_storage() {
     client.del(&symbol_short!("k1"));
     expect![[r#"
         InvocationResources {
-            instructions: 452458,
-            mem_bytes: 1161558,
+            instructions: 237122,
+            mem_bytes: 1126022,
             read_entries: 2,
             write_entries: 1,
             read_bytes: 1108,
@@ -100,8 +100,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 31815,
-            instructions: 1132,
+            total: 31276,
+            instructions: 593,
             read_entries: 18750,
             write_entries: 10000,
             read_bytes: 1933,
@@ -117,8 +117,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), None);
     expect![[r#"
         InvocationResources {
-            instructions: 452445,
-            mem_bytes: 1161202,
+            instructions: 237105,
+            mem_bytes: 1125666,
             read_entries: 3,
             write_entries: 0,
             read_bytes: 1028,
@@ -132,8 +132,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 21675,
-            instructions: 1132,
+            total: 21136,
+            instructions: 593,
             read_entries: 18750,
             write_entries: 0,
             read_bytes: 1793,
@@ -157,14 +157,14 @@ fn test_cost_estimate_budget() {
     // Budget breakdown corresponds to the last invocation only.
     expect![[r#"
         ===============================================================================================================================================================================
-        Cpu limit: 100000000; used: 455853
-        Mem limit: 41943040; used: 1162241
+        Cpu limit: 100000000; used: 240535
+        Mem limit: 41943040; used: 1126705
         ===============================================================================================================================================================================
         CostType                           iterations     input          cpu_insns      mem_bytes      const_term_cpu      lin_term_cpu        const_term_mem      lin_term_mem        
         WasmInsnExec                       284            None           1136           0              4                   0                   0                   0                   
-        MemAlloc                           27             Some(1052425)  143269         1052857        434                 16                  16                  128                 
-        MemCpy                             95             Some(9665)     5186           0              42                  16                  0                   0                   
-        MemCmp                             43             Some(1049)     2012           0              44                  16                  0                   0                   
+        MemAlloc                           23             Some(1051337)  141397         1051705        434                 16                  16                  128                 
+        MemCpy                             79             Some(7444)     4238           0              42                  16                  0                   0                   
+        MemCmp                             40             Some(1316)     1918           0              44                  16                  0                   0                   
         DispatchHostFunction               1              None           310            0              310                 0                   0                   0                   
         VisitObject                        2              None           122            0              61                  0                   0                   0                   
         ValSer                             0              Some(0)        0              0              230                 29                  242                 384                 
@@ -184,16 +184,16 @@ fn test_cost_estimate_budget() {
         Int256Pow                          0              None           0              0              4286                0                   99                  0                   
         Int256Shift                        0              None           0              0              913                 0                   99                  0                   
         ChaCha20DrawBytes                  0              Some(0)        0              0              1058                501                 0                   0                   
-        ParseWasmInstructions              1              Some(137)      100273         24475          73077               25410               17564               6457                
-        ParseWasmFunctions                 1              Some(5)        21123          1854           0                   540752              0                   47464               
-        ParseWasmGlobals                   1              Some(3)        4133           314            0                   176363              0                   13420               
-        ParseWasmTableEntries              1              Some(0)        0              0              0                   29989               0                   6285                
-        ParseWasmTypes                     1              Some(5)        41462          2526           0                   1061449             0                   64670               
-        ParseWasmDataSegments              1              Some(0)        0              0              0                   237336              0                   29074               
-        ParseWasmElemSegments              1              Some(0)        0              0              0                   328476              0                   48095               
-        ParseWasmImports                   1              Some(4)        21932          3225           0                   701845              0                   103229              
-        ParseWasmExports                   1              Some(7)        23481          1990           0                   429383              0                   36394               
-        ParseWasmDataSegmentBytes          1              Some(0)        0              0              0                   28                  0                   257                 
+        ParseWasmInstructions              0              Some(0)        0              0              73077               25410               17564               6457                
+        ParseWasmFunctions                 0              Some(0)        0              0              0                   540752              0                   47464               
+        ParseWasmGlobals                   0              Some(0)        0              0              0                   176363              0                   13420               
+        ParseWasmTableEntries              0              Some(0)        0              0              0                   29989               0                   6285                
+        ParseWasmTypes                     0              Some(0)        0              0              0                   1061449             0                   64670               
+        ParseWasmDataSegments              0              Some(0)        0              0              0                   237336              0                   29074               
+        ParseWasmElemSegments              0              Some(0)        0              0              0                   328476              0                   48095               
+        ParseWasmImports                   0              Some(0)        0              0              0                   701845              0                   103229              
+        ParseWasmExports                   0              Some(0)        0              0              0                   429383              0                   36394               
+        ParseWasmDataSegmentBytes          0              Some(0)        0              0              0                   28                  0                   257                 
         InstantiateWasmInstructions        1              None           43030          70704          43030               0                   70704               0                   
         InstantiateWasmFunctions           1              Some(5)        295            570            0                   7556                0                   14613               
         InstantiateWasmGlobals             1              Some(3)        251            160            0                   10711               0                   6833                
@@ -233,9 +233,9 @@ fn test_cost_estimate_budget() {
         Bls12381FrInv                      0              None           0              0              35421               0                   0                   0                   
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
-        Total # times meter was called: 192
-        Shadow cpu limit: 100000000; used: 34332
-        Shadow mem limit: 41943040; used: 27725
+        Total # times meter was called: 159
+        Shadow cpu limit: 100000000; used: 34030
+        Shadow mem limit: 41943040; used: 27589
         ===============================================================================================================================================================================
 
 
