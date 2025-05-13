@@ -466,18 +466,34 @@ impl From<&Fr> for U256Val {
     }
 }
 
-impl IntoVal<Env, Val> for Fr {
-    fn into_val(&self, e: &Env) -> Val {
-        self.0.into_val(e)
-    }
-}
-
 impl TryFromVal<Env, Val> for Fr {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         let u = U256::try_from_val(env, val)?;
         Ok(Fr(u))
+    }
+}
+
+impl TryFromVal<Env, Fr> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, fr: &Fr) -> Result<Self, Self::Error> {
+        Ok(fr.to_val())
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<&Fr> for ScVal {
+    fn from(v: &Fr) -> Self {
+        Self::from(&v.0)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<Fr> for ScVal {
+    fn from(v: Fr) -> Self {
+        (&v).into()
     }
 }
 

@@ -1573,6 +1573,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_bls"
+version = "22.0.7"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_constructor"
 version = "22.0.7"
 dependencies = [
