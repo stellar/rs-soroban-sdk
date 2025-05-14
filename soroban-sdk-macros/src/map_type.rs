@@ -8,6 +8,9 @@ use syn::{
     Type, TypePath, TypeTuple,
 };
 
+const G1_SERIALIZED_SIZE: u32 = 96;
+const G2_SERIALIZED_SIZE: u32 = 192;
+
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
     match t {
@@ -37,6 +40,31 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                     "Address" => Ok(ScSpecTypeDef::Address),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
+                    // The BLS types `G1Affine`, `G2Affine`, and `Fr` are represented in
+                    // the contract's interface by their underlying data types: I.e.
+                    // G1Affine/G2Affine => BytesN<N>, Fr => U256. This approach
+                    // simplifies integration with contract development tooling, as it
+                    // avoids introducing new spec types for these BLS constructs.
+                    //
+                    // While this is functionally sound because the BLS types are
+                    // essentially newtypes over their inner representations, it means
+                    // that the specific semantic meaning of `G1Affine`, `G2Affine`, or
+                    // `Fr` is not directly visible in the compiled WASM interface. For
+                    // example, a contract function expecting a `G1Affine` will appear
+                    // in the WASM interface as expecting a `BytesN<96>`.
+                    //
+                    // Future enhancements might allow the macro to automatically deduce
+                    // and utilize the inner types for types defined using the New Type
+                    // Idiom. For more details, see the tracking issue for supporting
+                    // type aliases:
+                    // https://github.com/stellar/rs-soroban-sdk/issues/1063
+                    "G1Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: G1_SERIALIZED_SIZE,
+                    })),
+                    "G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: G2_SERIALIZED_SIZE,
+                    })),
+                    "Fr" => Ok(ScSpecTypeDef::U256),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                         name: s.try_into().map_err(|e| {
                             Error::new(

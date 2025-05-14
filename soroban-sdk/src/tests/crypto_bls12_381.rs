@@ -1,7 +1,8 @@
-use crate::{
-    bytes, bytesn,
+use crate as soroban_sdk;
+use soroban_sdk::{
+    bytes, bytesn, contract, contractimpl,
     crypto::bls12_381::{Bls12_381, Fp, Fp2, Fr, G1Affine, G2Affine},
-    vec, Bytes, Env, Vec, U256,
+    vec, Address, Bytes, Env, Vec, U256,
 };
 
 #[test]
@@ -229,4 +230,44 @@ fn test_fr_arithmetic() {
         bls12_381.fr_mul(&inverse_13, &U256::from_u32(&env, 13).into()),
         U256::from_u32(&env, 1).into()
     );
+}
+
+mod blscontract {
+    use crate as soroban_sdk;
+    soroban_sdk::contractimport!(file = "../target/wasm32v1-none/release/test_bls.wasm");
+}
+
+#[contract]
+pub struct Contract;
+
+#[contractimpl(crate_path = "crate")]
+impl Contract {
+    pub fn g1_mul_with(
+        env: Env,
+        contract_id: Address,
+        p: crate::BytesN<96>,
+        s: U256,
+    ) -> crate::BytesN<96> {
+        blscontract::Client::new(&env, &contract_id).g1_mul(&p, &s)
+    }
+}
+
+#[test]
+fn test_invoke_contract() {
+    let e = Env::default();
+
+    let bls_contract_id = e.register(blscontract::WASM, ());
+
+    let contract_id = e.register(Contract, ());
+    let client = ContractClient::new(&e, &contract_id);
+
+    // G1 generator and zero scalar
+    let g1 = G1Affine::from_bytes(bytesn!(&e, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
+    let zero = Fr::from_bytes(bytesn!(
+        &e,
+        0x0000000000000000000000000000000000000000000000000000000000000000
+    ));
+    let inf = G1Affine::from_bytes(bytesn!(&e, 0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000));
+    let res = client.g1_mul_with(&bls_contract_id, &g1.as_bytes(), &zero.to_u256());
+    assert_eq!(&res, inf.as_bytes());
 }
