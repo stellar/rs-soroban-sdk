@@ -205,8 +205,17 @@ impl Fp {
         Some(Fp::from_array(self.env(), &bytes))
     }
 
-    /// Maps to a `G1Affine` point via [simplified SWU
-    /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0)
+    /// Maps this `Fp` element to a `G1Affine` point using the [simplified SWU
+    /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0).
+    ///
+    /// **Important:** The resulting point is on the curve but may not be in the
+    /// prime-order subgroup (operations like pairing may fail). To ensure the
+    /// point is in the prime-order subgroup, cofactor clearing must be
+    /// performed on the output.
+    ///
+    /// For applications requiring a point directly in the prime-order subgroup,
+    /// consider using `hash_to_g1`, which handles subgroup checks and cofactor
+    /// clearing internally.
     pub fn map_to_g1(&self) -> G1Affine {
         self.env().crypto().bls12_381().map_fp_to_g1(self)
     }
@@ -332,6 +341,17 @@ impl Fp2 {
         Some(Fp2::from_array(self.env(), &inner))
     }
 
+    /// Maps this `Fp2` element to a `G2Affine` point using the [simplified SWU
+    /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0).
+    ///
+    /// **Important:** The resulting point is on the curve but may not be in the
+    /// prime-order subgroup (operations like pairing may fail). To ensure the
+    /// point is in the prime-order subgroup, cofactor clearing must be
+    /// performed on the output.
+    ///
+    /// For applications requiring a point directly in the prime-order subgroup,
+    /// consider using `hash_to_g2`, which handles subgroup checks and cofactor
+    /// clearing internally.
     pub fn map_to_g2(&self) -> G2Affine {
         self.env().crypto().bls12_381().map_fp2_to_g2(self)
     }
