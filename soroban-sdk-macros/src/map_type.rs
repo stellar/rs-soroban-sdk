@@ -8,8 +8,12 @@ use syn::{
     Type, TypePath, TypeTuple,
 };
 
-const G1_SERIALIZED_SIZE: u32 = 96; // Must match soroban_sdk::crypto::bls21_381::G1_SERIALIZED_SIZE.
-const G2_SERIALIZED_SIZE: u32 = 192; // Must match soroban_sdk::crypto::bls21_381::G2_SERIALIZED_SIZE.
+// These constants' values must match the definitions of the constants with the
+// same names in soroban_sdk::crypto::bls12_381.
+pub const FP_SERIALIZED_SIZE: u32 = 48;
+pub const FP2_SERIALIZED_SIZE: u32 = FP_SERIALIZED_SIZE * 2;
+pub const G1_SERIALIZED_SIZE: u32 = FP_SERIALIZED_SIZE * 2;
+pub const G2_SERIALIZED_SIZE: u32 = FP2_SERIALIZED_SIZE * 2;
 
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
@@ -40,9 +44,9 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                     "Address" => Ok(ScSpecTypeDef::Address),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
-                    // The BLS types `G1Affine`, `G2Affine`, and `Fr` are represented in
-                    // the contract's interface by their underlying data types: I.e.
-                    // G1Affine/G2Affine => BytesN<N>, Fr => U256. This approach
+                    // The BLS types defined below are represented in the contract's
+                    // interface by their underlying data types, i.e.
+                    // Fp/Fp2/G1Affine/G2Affine => BytesN<N>, Fr => U256. This approach
                     // simplifies integration with contract development tooling, as it
                     // avoids introducing new spec types for these BLS constructs.
                     //
@@ -58,6 +62,12 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                     // Idiom. For more details, see the tracking issue for supporting
                     // type aliases:
                     // https://github.com/stellar/rs-soroban-sdk/issues/1063
+                    "Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: FP_SERIALIZED_SIZE,
+                    })),
+                    "Fp2" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: FP2_SERIALIZED_SIZE,
+                    })),
                     "G1Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: G1_SERIALIZED_SIZE,
                     })),

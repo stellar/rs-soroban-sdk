@@ -3,7 +3,7 @@ use soroban_sdk::{
     bytes, bytesn, contract, contractimpl,
     crypto::bls12_381::{Bls12_381, Fp, Fp2, Fr, G1Affine, G2Affine},
     env::EnvTestConfig,
-    vec, Address, Bytes, Env, Vec, U256,
+    vec, Address, Bytes, BytesN, Env, Vec, U256,
 };
 
 #[test]
@@ -243,13 +243,12 @@ pub struct Contract;
 
 #[contractimpl(crate_path = "crate")]
 impl Contract {
-    pub fn g1_mul_with(
-        env: Env,
-        contract_id: Address,
-        p: crate::BytesN<96>,
-        s: U256,
-    ) -> crate::BytesN<96> {
+    pub fn g1_mul_with(env: Env, contract_id: Address, p: BytesN<96>, s: U256) -> BytesN<96> {
         blscontract::Client::new(&env, &contract_id).g1_mul(&p, &s)
+    }
+
+    pub fn verify_with(env: Env, contract_id: Address, proof: blscontract::DummyProof) -> bool {
+        blscontract::Client::new(&env, &contract_id).dummy_verify(&proof)
     }
 }
 
@@ -276,4 +275,24 @@ fn test_invoke_contract() {
     let inf = G1Affine::from_bytes(bytesn!(&e, 0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000));
     let res = client.g1_mul_with(&bls_contract_id, &g1.as_bytes(), &zero.to_u256());
     assert_eq!(&res, inf.as_bytes());
+
+    let fp_val = Fp::from_bytes(bytesn!(&e, 0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001));
+    let fp2_val = Fp2::from_bytes(bytesn!(&e, 0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001));
+    let g1_point = G1Affine::from_bytes(bytesn!(&e, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
+    let g2_point = G2Affine::from_bytes(bytesn!(&e, 0x13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801));
+    let fr_scalar = Fr::from_bytes(bytesn!(
+        &e,
+        0x0000000000000000000000000000000000000000000000000000000000000001
+    ));
+
+    let proof = blscontract::DummyProof {
+        fp: fp_val.to_bytes(),
+        fp2: fp2_val.to_bytes(),
+        g1: g1_point.to_bytes(),
+        g2: g2_point.to_bytes(),
+        fr: fr_scalar.to_u256(),
+    };
+
+    let res = client.verify_with(&bls_contract_id, &proof);
+    assert!(!res);
 }

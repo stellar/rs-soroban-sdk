@@ -320,7 +320,10 @@ mod objects {
 
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
     use crate::{
-        crypto::bls12_381::{Fr, G1Affine, G2Affine},
+        crypto::bls12_381::{
+            Fp, Fp2, Fr, G1Affine, G2Affine, FP2_SERIALIZED_SIZE, FP_SERIALIZED_SIZE,
+            G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
+        },
         Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
     };
 
@@ -682,10 +685,46 @@ mod objects {
         }
     }
 
+    // For Fp (48 bytes)
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryFp {
+        bytes: [u8; FP_SERIALIZED_SIZE],
+    }
+
+    impl SorobanArbitrary for Fp {
+        type Prototype = ArbitraryFp;
+    }
+
+    impl TryFromVal<Env, ArbitraryFp> for Fp {
+        type Error = ConversionError;
+
+        fn try_from_val(env: &Env, v: &ArbitraryFp) -> Result<Self, Self::Error> {
+            Ok(Fp::from_array(env, &v.bytes))
+        }
+    }
+
+    // For Fp2 (96 bytes)
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryFp2 {
+        bytes: [u8; FP2_SERIALIZED_SIZE],
+    }
+
+    impl SorobanArbitrary for Fp2 {
+        type Prototype = ArbitraryFp2;
+    }
+
+    impl TryFromVal<Env, ArbitraryFp2> for Fp2 {
+        type Error = ConversionError;
+
+        fn try_from_val(env: &Env, v: &ArbitraryFp2) -> Result<Self, Self::Error> {
+            Ok(Fp2::from_array(env, &v.bytes))
+        }
+    }
+
     // For G1Affine (96 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryG1Affine {
-        bytes: [u8; 96],
+        bytes: [u8; G1_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for G1Affine {
@@ -720,7 +759,7 @@ mod objects {
     // For G2Affine (192 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryG2Affine {
-        bytes: [u8; 192],
+        bytes: [u8; G2_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for G2Affine {
