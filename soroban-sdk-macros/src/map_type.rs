@@ -8,8 +8,8 @@ use syn::{
     Type, TypePath, TypeTuple,
 };
 
-const G1_SERIALIZED_SIZE: u32 = 96;
-const G2_SERIALIZED_SIZE: u32 = 192;
+const G1_SERIALIZED_SIZE: u32 = 96; // Must match soroban_sdk::crypto::bls21_381::G1_SERIALIZED_SIZE.
+const G2_SERIALIZED_SIZE: u32 = 192; // Must match soroban_sdk::crypto::bls21_381::G2_SERIALIZED_SIZE.
 
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
