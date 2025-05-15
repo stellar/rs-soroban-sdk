@@ -254,7 +254,12 @@ impl Contract {
 
 #[test]
 fn test_invoke_contract() {
-    let e = Env::default();
+    let e = Env::new_with_config(EnvTestConfig {
+        // Disable test snapshots because the tests in this repo will run across
+        // multiple hosts, and this test uses a wasm file that won't build consistently
+        // across different hosts.
+        capture_snapshot_at_drop: false,
+    });
 
     let bls_contract_id = e.register(blscontract::WASM, ());
 
