@@ -1,7 +1,8 @@
-use crate as soroban_sdk;
+use crate::{self as soroban_sdk};
 use soroban_sdk::{
     bytes, bytesn, contract, contractimpl,
     crypto::bls12_381::{Bls12_381, Fp, Fp2, Fr, G1Affine, G2Affine},
+    env::EnvTestConfig,
     vec, Address, Bytes, Env, Vec, U256,
 };
 
