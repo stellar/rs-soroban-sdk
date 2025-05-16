@@ -1,3 +1,5 @@
+#[cfg(not(target_family = "wasm"))]
+use crate::xdr::ScVal;
 use crate::{
     env::internal::{self, BytesObject, U256Val, U64Val},
     impl_bytesn_repr,
@@ -12,8 +14,8 @@ use core::{
 
 pub const FP_SERIALIZED_SIZE: usize = 48; // Size in bytes of a serialized Fp element in BLS12-381. The field modulus is 381 bits, requiring 48 bytes (384 bits) with 3 bits reserved for flags.
 pub const FP2_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2;
-pub const G1_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2;
-pub const G2_SERIALIZED_SIZE: usize = FP2_SERIALIZED_SIZE * 2;
+pub const G1_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2; // Must match soroban_sdk_macro::map_type::G1_SERIALIZED_SIZE.
+pub const G2_SERIALIZED_SIZE: usize = FP2_SERIALIZED_SIZE * 2; // Must match soroban_sdk_macro::map_type::G2_SERIALIZED_SIZE.
 
 /// Bls12_381 provides access to curve and field arithmetics on the BLS12-381
 /// curve.
@@ -203,8 +205,18 @@ impl Fp {
         Some(Fp::from_array(self.env(), &bytes))
     }
 
-    /// Maps to a `G1Affine` point via [simplified SWU
-    /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0)
+    /// Maps this `Fp` element to a `G1Affine` point using the [simplified SWU
+    /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0).
+    ///
+    /// <div class="warning">
+    /// <h6>Warning</h6>
+    /// The resulting point is on the curve but may not be in the prime-order subgroup (operations
+    /// like pairing may fail). To ensure the point is in the prime-order subgroup, cofactor
+    /// clearing must be performed on the output.
+    ///
+    /// For applications requiring a point directly in the prime-order subgroup, consider using
+    /// `hash_to_g1`, which handles subgroup checks and cofactor clearing internally.
+    /// </div>
     pub fn map_to_g1(&self) -> G1Affine {
         self.env().crypto().bls12_381().map_fp_to_g1(self)
     }
@@ -330,6 +342,18 @@ impl Fp2 {
         Some(Fp2::from_array(self.env(), &inner))
     }
 
+    /// Maps this `Fp2` element to a `G2Affine` point using the [simplified SWU
+    /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0).
+    ///
+    /// <div class="warning">
+    /// <h6>Warning</h6>
+    /// The resulting point is on the curve but may not be in the prime-order subgroup (operations
+    /// like pairing may fail). To ensure the point is in the prime-order subgroup, cofactor
+    /// clearing must be performed on the output.
+    ///
+    /// For applications requiring a point directly in the prime-order subgroup, consider using
+    /// `hash_to_g2`, which handles subgroup checks and cofactor clearing internally.
+    /// </div>
     pub fn map_to_g2(&self) -> G2Affine {
         self.env().crypto().bls12_381().map_fp2_to_g2(self)
     }
@@ -464,18 +488,34 @@ impl From<&Fr> for U256Val {
     }
 }
 
-impl IntoVal<Env, Val> for Fr {
-    fn into_val(&self, e: &Env) -> Val {
-        self.0.into_val(e)
-    }
-}
-
 impl TryFromVal<Env, Val> for Fr {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         let u = U256::try_from_val(env, val)?;
         Ok(Fr(u))
+    }
+}
+
+impl TryFromVal<Env, Fr> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, fr: &Fr) -> Result<Self, Self::Error> {
+        Ok(fr.to_val())
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<&Fr> for ScVal {
+    fn from(v: &Fr) -> Self {
+        Self::from(&v.0)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<Fr> for ScVal {
+    fn from(v: Fr) -> Self {
+        (&v).into()
     }
 }
 
