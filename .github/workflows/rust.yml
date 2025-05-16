@@ -183,7 +183,7 @@ jobs:
         sys:
         - os: ubuntu-latest
           target: wasm32v1-none
-          cargo-hack-feature-options: ''
+          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'
