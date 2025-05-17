@@ -77,6 +77,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
             ScSpecEntry::UdtEnumV0(e) => spec_enums.push(e),
             ScSpecEntry::UdtErrorEnumV0(e) => spec_error_enums.push(e),
+            ScSpecEntry::EventV0(_) => todo!(),
         }
     }
 
