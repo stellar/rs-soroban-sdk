@@ -122,8 +122,8 @@ use crate::{
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
-    StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
-    U256Val, U32Val, U64Object, U64Val, Void,
+    MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject, TimepointObject,
+    U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -446,6 +446,12 @@ impl Env {
     #[inline(always)]
     pub fn logs(&self) -> Logs {
         Logs::new(self)
+    }
+
+    pub(crate) fn check_same_env(&self, other: &Self) {
+        self.env_impl
+            .check_same_env(&other.env_impl)
+            .unwrap_optimized()
     }
 }
 
@@ -1810,13 +1816,6 @@ impl internal::EnvBase for Env {
     #[cfg(any(test, feature = "testutils"))]
     fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
         match e {}
-    }
-
-    fn check_same_env(&self, other: &Self) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .check_same_env(&other.env_impl)
-            .unwrap_optimized())
     }
 
     fn bytes_copy_from_slice(
