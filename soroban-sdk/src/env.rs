@@ -448,10 +448,13 @@ impl Env {
         Logs::new(self)
     }
 
-    pub(crate) fn check_same_env(&self, other: &Self) {
+    pub(crate) fn check_same_env(&self, _other: &Self) {        
+        #[cfg(not(target_family = "wasm"))]
         self.env_impl
-            .check_same_env(&other.env_impl)
+            .check_same_env(&_other.env_impl)
             .unwrap_optimized()
+        // For Wasm builds there is only one (guest) env, so this check is a
+        // no-op.
     }
 }
 
