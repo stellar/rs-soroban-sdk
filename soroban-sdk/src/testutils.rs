@@ -438,6 +438,27 @@ pub trait Address {
     fn generate(env: &Env) -> crate::Address;
 }
 
+pub trait MuxedAddress {
+    /// Create a new MuxedAddress with arbitrary `Address` part and provided
+    /// multiplexing identifier.
+    ///
+    /// Note, that since currently only accounts can be multiplexed, the
+    /// underlying `Address` will be an account (not contract) address.
+    fn generate(env: &Env, id: u64) -> crate::MuxedAddress;
+
+    /// Returns a new `MuxedAddress` that has the same `Address` part as the
+    /// provided `address` and the provided multiplexing id.
+    ///
+    /// `address` can be either an `Address` or `MuxedAddress` and it has to
+    /// be an account (non-contract) address.
+    ///
+    /// Note on usage: the simplest way to test `MuxedAddress` is to generate
+    /// an arbitrary valid address with `MuxedAddress::generate`, then
+    /// `MuxedAddress::new` can be used to alter only the multiplexing id part
+    /// of that address.
+    fn new<T: Into<crate::MuxedAddress>>(address: T, id: u64) -> crate::MuxedAddress;
+}
+
 pub trait Deployer {
     /// Gets the TTL of the given contract's instance.
     ///
