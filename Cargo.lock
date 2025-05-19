@@ -1310,7 +1310,7 @@ dependencies = [
  "soroban-env-common",
  "soroban-wasmi",
  "static_assertions",
- "stellar-strkey",
+ "stellar-strkey 0.0.9",
  "wasmparser",
 ]
 
@@ -1366,7 +1366,7 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
- "stellar-strkey",
+ "stellar-strkey 0.0.9",
  "stellar-xdr",
 ]
 
@@ -1468,9 +1468,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "stellar-strkey"
+version = "0.0.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee1832fb50c651ad10f734aaf5d31ca5acdfb197a6ecda64d93fcdb8885af913"
+dependencies = [
+ "crate-git-revision",
+ "data-encoding",
+]
+
+[[package]]
 name = "stellar-xdr"
 version = "22.1.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-events-to-contract-spec#20455e4653568dbc0c4e430d1ffa3583638f10a5"
+source = "git+https://github.com/stellar/rs-stellar-xdr?branch=add-events-to-contract-spec#bbf73bea4738c793230927b95e7399f9e6d418bb"
 dependencies = [
  "arbitrary",
  "base64 0.13.1",
@@ -1479,7 +1489,7 @@ dependencies = [
  "hex",
  "serde",
  "serde_with",
- "stellar-strkey",
+ "stellar-strkey 0.0.13",
 ]
 
 [[package]]

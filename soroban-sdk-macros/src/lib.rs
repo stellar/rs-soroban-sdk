@@ -384,7 +384,9 @@ struct ContractEventArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     lib: Option<String>,
-    data: String, // single-value, vec, map
+    data_format: String, // single-value, vec, map
+                         // TODO: Can the data_format be an enum?
+                         // Or a list of valid values, or have a custom validator?
 }
 
 #[proc_macro_attribute]
@@ -409,7 +411,7 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 ident,
                 attrs,
                 struct_,
-                &args.data,
+                &args.data_format,
                 &args.lib,
             ),
             Fields::Unnamed(_) => Error::new(

@@ -49,6 +49,7 @@ features = ["curr"]
 #rev = "67be5955a15f1d3a4df83fe86e6ae107f687141b"
 
 [patch.crates-io.stellar-xdr]
+#path = "../../rs-stellar-xdr/main/"
 git = "https://github.com/stellar/rs-stellar-xdr"
 branch = "add-events-to-contract-spec"
 

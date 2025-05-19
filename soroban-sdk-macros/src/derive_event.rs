@@ -4,26 +4,26 @@ use syn::{Attribute, DataStruct, Error, Ident, Path, Type};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventFieldV0, ScSpecEventV0, ScSpecTypeDef,
-    StringM, WriteXdr, ScSpecEventFieldKindV0
+    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamKindV0, ScSpecEventParamV0, ScSpecEventV0,
+    ScSpecTypeDef, StringM, WriteXdr,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-enum FieldKind {
+enum ParamKind {
     Topic,
     Data,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct Field<'a> {
-    kind: FieldKind,
+struct Param<'a> {
+    kind: ParamKind,
 
     ident: &'a Ident,
     type_: &'a Type,
 
-    spec: ScSpecEventFieldV0,
+    spec: ScSpecEventParamV0,
 }
 
 pub fn derive_event(
@@ -36,19 +36,41 @@ pub fn derive_event(
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
-    let fields = &struct_.fields;
-    let fields = fields
+
+    // Data format.
+    let data_format = match data_format {
+        "single-value" => ScSpecEventDataFormat::SingleValue,
+        "vec" => ScSpecEventDataFormat::Vec,
+        "map" => ScSpecEventDataFormat::Map,
+        _ => {
+            errors.push(Error::new(
+                ident.span(),
+                format!(
+                    r#"data_format {} must be one of: "single-value", "vec", or "map"."#,
+                    data_format,
+                ),
+            ));
+            ScSpecEventDataFormat::SingleValue
+        }
+    };
+
+    // TODO: Figure out prefix topics. If no prefix topics are defined, set the prefix topics to
+    // the snake_case version of the event struct name.
+
+    // Map each field of the struct to a param for the event.
+    let params = struct_
+        .fields
         .iter()
         .map(|field| {
             let field_ident = field.ident.as_ref().unwrap();
             let field_name = field_ident.to_string();
             let field_type = &field.ty;
             let is_topic = field.attrs.iter().any(|a| a.path().is_ident("topic"));
-            let field_spec = ScSpecEventFieldV0 {
+            let param_spec = ScSpecEventParamV0 {
                 kind: if is_topic {
-                    ScSpecEventFieldKindV0::Topic
+                    ScSpecEventParamKindV0::Topic
                 } else {
-                    ScSpecEventFieldKindV0::Data
+                    ScSpecEventParamKindV0::Data
                 },
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
@@ -56,7 +78,7 @@ pub fn derive_event(
                     errors.push(Error::new(
                         field_ident.span(),
                         format!(
-                            "event field name is too long: {}, max is {MAX}",
+                            "event param name is too long: {}, max is {MAX}",
                             field_name.len()
                         ),
                     ));
@@ -70,15 +92,15 @@ pub fn derive_event(
                     }
                 },
             };
-            Field {
+            Param {
                 kind: if is_topic {
-                    FieldKind::Topic
+                    ParamKind::Topic
                 } else {
-                    FieldKind::Data
+                    ParamKind::Data
                 },
                 ident: field_ident,
                 type_: field_type,
-                spec: field_spec,
+                spec: param_spec,
             }
         })
         .collect::<Vec<_>>();
@@ -92,16 +114,11 @@ pub fn derive_event(
     // Generated code spec.
     let spec_gen = {
         let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
-            data_format: match data_format {
-                "single-value" => ScSpecEventDataFormat::SingleValue,
-                "vec" => ScSpecEventDataFormat::Vec,
-                "map" => ScSpecEventDataFormat::Map,
-                _ => panic!("Invalid data format: {data_format}"),
-            },
+            data_format: data_format,
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
-            fields: fields
+            params: params
                 .iter()
                 .map(|f| f.spec.clone())
                 .collect::<Vec<_>>()
@@ -125,6 +142,8 @@ pub fn derive_event(
     };
 
     // Output.
+    let topics = fields.iter().map(|f| todo!()).collect::<Vec<_>>();
+    let data_params = fields.iter().map(|f| todo!()).collect::<Vec<_>>();
     let mut output = quote! {
         #spec_gen
 
