@@ -447,15 +447,6 @@ impl Env {
     pub fn logs(&self) -> Logs {
         Logs::new(self)
     }
-
-    pub(crate) fn check_same_env(&self, _other: &Self) {
-        #[cfg(not(target_family = "wasm"))]
-        if !self.env_impl.is_same(&_other.env_impl) {
-            panic!("operation performed on values from different `Env`s")
-        }
-        // For Wasm builds there is only one (guest) env, so this check is a
-        // no-op.
-    }
 }
 
 #[doc(hidden)]
