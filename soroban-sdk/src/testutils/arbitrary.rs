@@ -640,9 +640,9 @@ mod objects {
     impl TryFromVal<Env, ArbitraryAddress> for Address {
         type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryAddress) -> Result<Self, Self::Error> {
-            use crate::env::xdr::{Hash, ScAddress};
+            use crate::env::xdr::{ContractId, Hash, ScAddress};
 
-            let sc_addr = ScVal::Address(ScAddress::Contract(Hash(v.inner)));
+            let sc_addr = ScVal::Address(ScAddress::Contract(ContractId(Hash(v.inner))));
             Ok(sc_addr.into_val(env))
         }
     }

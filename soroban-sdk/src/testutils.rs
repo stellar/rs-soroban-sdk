@@ -473,24 +473,16 @@ impl StellarAssetIssuer {
 
     /// Returns the flags for the issuer.
     pub fn flags(&self) -> u32 {
-        self.env
-            .host()
-            .with_mut_storage(|storage| {
-                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: self.account_id.clone(),
-                }));
+        let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+            account_id: self.account_id.clone(),
+        }));
 
-                let entry = storage.get(
-                    &k,
-                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                )?;
+        let (entry, _) = self.env.host().get_ledger_entry(&k).unwrap().unwrap();
 
-                match entry.data {
-                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags.clone()),
-                    _ => panic!("expected account entry but got {:?}", entry.data),
-                }
-            })
-            .unwrap()
+        match &entry.data {
+            xdr::LedgerEntryData::Account(e) => e.flags,
+            _ => panic!("expected account entry but got {:?}", entry.data),
+        }
     }
 
     /// Adds the flag specified to the existing issuer flags
@@ -521,34 +513,21 @@ impl StellarAssetIssuer {
             );
         }
 
+        let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+            account_id: self.account_id.clone(),
+        }));
+
+        let (entry, _) = self.env.host().get_ledger_entry(&k).unwrap().unwrap();
+        let mut entry = entry.as_ref().clone();
+
+        match entry.data {
+            xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
+            _ => panic!("expected account entry but got {:?}", entry.data),
+        }
+
         self.env
             .host()
-            .with_mut_storage(|storage| {
-                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: self.account_id.clone(),
-                }));
-
-                let mut entry = storage
-                    .get(
-                        &k,
-                        soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                    )?
-                    .as_ref()
-                    .clone();
-
-                match entry.data {
-                    xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
-                    _ => panic!("expected account entry but got {:?}", entry.data),
-                }
-
-                storage.put(
-                    &k,
-                    &Rc::new(entry),
-                    None,
-                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                )?;
-                Ok(())
-            })
+            .add_ledger_entry(&k, &Rc::new(entry), None)
             .unwrap();
     }
 }

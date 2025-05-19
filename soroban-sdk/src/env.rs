@@ -122,8 +122,8 @@ use crate::{
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
-    StorageType, StringObject, Symbol, SymbolObject, TimepointObject, U128Object, U256Object,
-    U256Val, U32Val, U64Object, U64Val, Void,
+    MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject, TimepointObject,
+    U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -453,7 +453,7 @@ impl Env {
 #[cfg(not(target_family = "wasm"))]
 impl Env {
     pub(crate) fn is_same_env(&self, other: &Self) -> bool {
-        self.env_impl.check_same_env(&other.env_impl).is_ok()
+        self.env_impl.is_same(&other.env_impl)
     }
 }
 
@@ -514,7 +514,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let info = internal::LedgerInfo {
-            protocol_version: 22,
+            protocol_version: 23,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],
@@ -947,42 +947,29 @@ impl Env {
             issuer_pk.clone(),
         )));
 
-        self.host()
-            .with_mut_storage(|storage| {
-                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: issuer_id.clone(),
-                }));
+        let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+            account_id: issuer_id.clone(),
+        }));
 
-                if !storage.has(
-                    &k,
-                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
-                )? {
-                    let v = Rc::new(xdr::LedgerEntry {
-                        data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
-                            account_id: issuer_id.clone(),
-                            balance: 0,
-                            flags: 0,
-                            home_domain: Default::default(),
-                            inflation_dest: None,
-                            num_sub_entries: 0,
-                            seq_num: xdr::SequenceNumber(0),
-                            thresholds: xdr::Thresholds([1; 4]),
-                            signers: xdr::VecM::default(),
-                            ext: xdr::AccountEntryExt::V0,
-                        }),
-                        last_modified_ledger_seq: 0,
-                        ext: xdr::LedgerEntryExt::V0,
-                    });
-                    storage.put(
-                        &k,
-                        &v,
-                        None,
-                        soroban_env_host::budget::AsBudget::as_budget(self.host()),
-                    )?
-                }
-                Ok(())
-            })
-            .unwrap();
+        if self.host().get_ledger_entry(&k).unwrap().is_none() {
+            let v = Rc::new(xdr::LedgerEntry {
+                data: xdr::LedgerEntryData::Account(xdr::AccountEntry {
+                    account_id: issuer_id.clone(),
+                    balance: 0,
+                    flags: 0,
+                    home_domain: Default::default(),
+                    inflation_dest: None,
+                    num_sub_entries: 0,
+                    seq_num: xdr::SequenceNumber(0),
+                    thresholds: xdr::Thresholds([1; 4]),
+                    signers: xdr::VecM::default(),
+                    ext: xdr::AccountEntryExt::V0,
+                }),
+                last_modified_ledger_seq: 0,
+                ext: xdr::LedgerEntryExt::V0,
+            });
+            self.host().add_ledger_entry(&k, &v, None).unwrap();
+        }
 
         let asset = xdr::Asset::CreditAlphanum4(xdr::AlphaNum4 {
             asset_code: xdr::AssetCode4([b'a', b'a', b'a', 0]),
@@ -1063,9 +1050,9 @@ impl Env {
                 xdr::CreateContractArgsV2 {
                     contract_id_preimage: xdr::ContractIdPreimage::Address(
                         xdr::ContractIdPreimageFromAddress {
-                            address: xdr::ScAddress::Contract(xdr::Hash(
+                            address: xdr::ScAddress::Contract(xdr::ContractId(xdr::Hash(
                                 self.with_generator(|mut g| g.address()),
-                            )),
+                            ))),
                             salt: xdr::Uint256([0; 32]),
                         },
                     ),
@@ -1498,15 +1485,8 @@ impl Env {
             }),
         });
         let live_until_ledger = self.ledger().sequence() + 1;
-        self.env_impl
-            .with_mut_storage(|storage| {
-                storage.put(
-                    &key,
-                    &entry,
-                    Some(live_until_ledger),
-                    soroban_env_host::budget::AsBudget::as_budget(self.host()),
-                )
-            })
+        self.host()
+            .add_ledger_entry(&key, &entry, Some(live_until_ledger))
             .unwrap();
         self.env_impl
             .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
@@ -1518,11 +1498,11 @@ impl Env {
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
-        let id: [u8; 32] = id.contract_id().into();
+        let id = id.contract_id();
         let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
         self.env_impl
-            .with_test_contract_frame(id.into(), func, || {
+            .with_test_contract_frame(id, func, || {
                 t = Some(f());
                 Ok(().into())
             })
@@ -1604,12 +1584,7 @@ impl Env {
         let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
-        let budget = soroban_env_host::budget::AsBudget::as_budget(&self.env_impl);
-        let storage = self
-            .env_impl
-            .with_mut_storage(|s| Ok(s.map.clone()))
-            .unwrap();
-        snapshot.update_entries(storage.iter(budget).unwrap());
+        snapshot.update_entries(&self.host().get_stored_entries().unwrap());
         snapshot
     }
 
@@ -1810,13 +1785,6 @@ impl internal::EnvBase for Env {
     #[cfg(any(test, feature = "testutils"))]
     fn escalate_error_to_panic(&self, e: Self::Error) -> ! {
         match e {}
-    }
-
-    fn check_same_env(&self, other: &Self) -> Result<(), Self::Error> {
-        Ok(self
-            .env_impl
-            .check_same_env(&other.env_impl)
-            .unwrap_optimized())
     }
 
     fn bytes_copy_from_slice(

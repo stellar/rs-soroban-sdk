@@ -120,7 +120,7 @@ impl testutils::Events for Events {
                 } = e.event
                 {
                     vec.push_back((
-                        Address::from_contract_id(env, contract_id.0),
+                        Address::from_contract_id(env, contract_id.0 .0),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
                     ))
