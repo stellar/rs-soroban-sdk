@@ -330,7 +330,7 @@ impl crate::testutils::Address for Address {
     fn generate(env: &Env) -> Self {
         Self::try_from_val(
             env,
-            &ScAddress::Contract(Hash(env.with_generator(|mut g| g.address()))),
+            &ScAddress::Contract(ContractId(Hash(env.with_generator(|mut g| g.address())))),
         )
         .unwrap()
     }

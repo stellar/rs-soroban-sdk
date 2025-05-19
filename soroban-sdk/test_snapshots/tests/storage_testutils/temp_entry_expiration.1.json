@@ -8,8 +8,8 @@
     []
   ],
   "ledger": {
-    "protocol_version": 22,
-    "sequence_number": 2000,
+    "protocol_version": 23,
+    "sequence_number": 1099,
     "timestamp": 0,
     "network_id": "0000000000000000000000000000000000000000000000000000000000000000",
     "base_reserve": 0,
@@ -45,7 +45,7 @@
             },
             "ext": "v0"
           },
-          2099
+          1198
         ]
       ],
       [

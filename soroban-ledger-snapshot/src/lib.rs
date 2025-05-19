@@ -61,10 +61,7 @@ impl LedgerSnapshot {
             self.set_ledger_info(li.clone());
             Ok(())
         });
-        let _result = host.with_mut_storage(|s| {
-            self.update_entries(&s.map);
-            Ok(())
-        });
+        self.update_entries(&host.get_stored_entries().unwrap());
     }
 
     // Get the ledger info in the snapshot.
@@ -168,7 +165,7 @@ impl LedgerSnapshot {
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            protocol_version: 22,
+            protocol_version: 23,
             sequence_number: Default::default(),
             timestamp: Default::default(),
             network_id: Default::default(),
