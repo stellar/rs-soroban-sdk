@@ -1,6 +1,6 @@
 //! # Migrating from v22 to v23
 //! TBD
-//! 
+//!
 //! # Migrating from v21 to v22
 //!
 //! 1. [`Env::register`] and [`Env::register_at`] replace [`Env::register_contract`] and [`Env::register_contract_wasm`].
