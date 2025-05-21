@@ -31,7 +31,7 @@ fn test_contract_address_to_muxed_address_conversion() {
 #[test]
 fn test_muxed_address_component_getters() {
     let env = Env::default();
-    let muxed_address = MuxedAddress::generate(&env, 123_456);
+    let muxed_address = MuxedAddress::generate(&env);
     let mut expected_id = [0_u8; 32];
     expected_id[31] = 1;
     let expected_address = Address::try_from_val(
@@ -42,7 +42,6 @@ fn test_muxed_address_component_getters() {
     )
     .unwrap();
     assert_eq!(muxed_address.address(), expected_address);
-    assert_eq!(muxed_address.id(), Some(123_456));
 
     let muxed_address_with_another_id = MuxedAddress::new(muxed_address, u64::MAX);
     assert_eq!(muxed_address_with_another_id.address(), expected_address);

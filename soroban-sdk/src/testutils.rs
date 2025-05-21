@@ -178,7 +178,8 @@ impl AuthSnapshot {
 #[serde(rename_all = "snake_case")]
 pub struct Generators {
     address: u64,
-    nonce: u64,
+    nonce: i64,
+    mux_id: u64,
 }
 
 impl Default for Generators {
@@ -186,6 +187,7 @@ impl Default for Generators {
         Generators {
             address: 0,
             nonce: 0,
+            mux_id: 0,
         }
     }
 }
@@ -230,7 +232,12 @@ impl Generators {
 
     pub fn nonce(&mut self) -> i64 {
         self.nonce = self.nonce.checked_add(1).unwrap();
-        self.nonce as i64
+        self.nonce
+    }
+
+    pub fn mux_id(&mut self) -> u64 {
+        self.mux_id = self.mux_id.checked_add(1).unwrap();
+        self.mux_id
     }
 }
 
@@ -439,12 +446,11 @@ pub trait Address {
 }
 
 pub trait MuxedAddress {
-    /// Create a new MuxedAddress with arbitrary `Address` part and provided
-    /// multiplexing identifier.
+    /// Create a new MuxedAddress with arbitrary `Address` and id parts.
     ///
     /// Note, that since currently only accounts can be multiplexed, the
     /// underlying `Address` will be an account (not contract) address.
-    fn generate(env: &Env, id: u64) -> crate::MuxedAddress;
+    fn generate(env: &Env) -> crate::MuxedAddress;
 
     /// Returns a new `MuxedAddress` that has the same `Address` part as the
     /// provided `address` and the provided multiplexing id.

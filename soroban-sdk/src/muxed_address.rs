@@ -279,13 +279,13 @@ impl TryFromVal<Env, ScAddress> for MuxedAddress {
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl crate::testutils::MuxedAddress for MuxedAddress {
-    fn generate(env: &Env, id: u64) -> crate::MuxedAddress {
+    fn generate(env: &Env) -> crate::MuxedAddress {
         let sc_val = ScVal::Address(crate::env::internal::xdr::ScAddress::MuxedAccount(
             crate::env::internal::xdr::MuxedEd25519Account {
                 ed25519: crate::env::internal::xdr::Uint256(
                     env.with_generator(|mut g| g.address()),
                 ),
-                id,
+                id: env.with_generator(|mut g| g.mux_id()),
             },
         ));
         sc_val.try_into_val(env).unwrap()
