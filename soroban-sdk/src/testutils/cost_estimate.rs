@@ -45,25 +45,29 @@ impl CostEstimate {
     /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
     /// missed.    
     pub fn fee(&self) -> FeeEstimate {
-        // This is a snapshot of the fees as of 2024-12-11.
+        // This is a snapshot of the fees as of 2024-12-11 with slight
+        // adjustments for p23.
+        // This has to be updated before p23 goes live with the configuration
+        // used at the network upgrade time.
         let pubnet_fee_config = FeeConfiguration {
             fee_per_instruction_increment: 25,
-            fee_per_read_entry: 6250,
+            fee_per_disk_read_entry: 6250,
             fee_per_write_entry: 10000,
-            fee_per_read_1kb: 1786,
-            // This is a bit higher than the current network fee, it's an
-            // overestimate for the sake of providing a bit more conservative
-            // results in case if the state grows.
-            fee_per_write_1kb: 12000,
+            fee_per_disk_read_1kb: 1786,
+            fee_per_write_1kb: 3500,
             fee_per_historical_1kb: 16235,
             fee_per_contract_event_1kb: 10000,
             fee_per_transaction_size_1kb: 1624,
         };
         let pubnet_persistent_rent_rate_denominator = 2103;
         let pubnet_temp_rent_rate_denominator = 4206;
-
+        // This is a bit higher than the current network fee, it's an
+        // overestimate for the sake of providing a bit more conservative
+        // results in case if the state grows.
+        let fee_per_rent_1kb = 12000;
         self.resources().estimate_fees(
             &pubnet_fee_config,
+            fee_per_rent_1kb,
             pubnet_persistent_rent_rate_denominator,
             pubnet_temp_rent_rate_denominator,
         )

@@ -121,15 +121,13 @@ fn temp_entry_expiration() {
         e.ledger().set_sequence_number(1100);
         assert!(!e.storage().temporary().has(&1));
 
-        // Bump the ledger sequence back - the entry would exist again - test environment
-        // doesn't *actually* delete anything. Normally ledger sequence can never decrease
-        // though.
+        // Bump the ledger sequence back - the expired entry is removed from
+        // storage on any access.
+        // Normally ledger sequence can never decrease though.
         e.ledger().set_sequence_number(1099);
-        assert!(e.storage().temporary().has(&1));
-
-        // Bump the ledger sequence past expiration and set the new value for the entry.
-        e.ledger().set_sequence_number(2000);
         assert!(!e.storage().temporary().has(&1));
+
+        // Set the new value for the entry.
         e.storage().temporary().set(&1, &3);
         // The entry is written and the new TTL is set based on min temp entry TTL
         // setting.
@@ -139,8 +137,7 @@ fn temp_entry_expiration() {
 }
 
 #[test]
-#[should_panic(expected = "[testing-only] Accessed contract data key key that has been archived")]
-fn test_persistent_entry_expiration() {
+fn test_persistent_entry_automatically_restored() {
     let e = Env::default();
     e.ledger().set_sequence_number(1000);
     e.ledger().set_min_persistent_entry_ttl(100);
@@ -149,13 +146,11 @@ fn test_persistent_entry_expiration() {
     e.as_contract(&contract, || {
         e.storage().persistent().set(&1, &2);
 
-        e.ledger().set_sequence_number(1100);
-        // Persistent entries are archived when they expire and they no longer can be accessed
-        // by the contracts at all.
-        // In actual networks the contract interaction won't happen at all if the footprint
-        // has any archived entries, but in the tests the closest thing we can do to that is
-        // to just panic (even if the value doesn't need to be accessed).
-        let _ = e.storage().persistent().has(&1);
+        e.ledger().set_sequence_number(10000);
+        // Persistent entries are automatically restored and extended by the
+        // minimum TTL.
+        assert_eq!(e.storage().persistent().get(&1), Some(2));
+        assert_eq!(e.storage().persistent().get_ttl(&1), 99);
     });
 }
 

@@ -104,7 +104,7 @@ macro_rules! bytesn {
 
 #[macro_export]
 macro_rules! impl_bytesn_repr {
-    ($elem: ident, $size: literal) => {
+    ($elem: ident, $size: expr) => {
         impl $elem {
             pub fn from_bytes(bytes: BytesN<$size>) -> Self {
                 Self(bytes)
@@ -143,18 +143,34 @@ macro_rules! impl_bytesn_repr {
             }
         }
 
-        impl IntoVal<Env, Val> for $elem {
-            fn into_val(&self, e: &Env) -> Val {
-                self.0.into_val(e)
-            }
-        }
-
         impl TryFromVal<Env, Val> for $elem {
             type Error = ConversionError;
 
             fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
                 let bytes = <BytesN<$size>>::try_from_val(env, val)?;
                 Ok($elem(bytes))
+            }
+        }
+
+        impl TryFromVal<Env, $elem> for Val {
+            type Error = ConversionError;
+
+            fn try_from_val(_env: &Env, elt: &$elem) -> Result<Self, Self::Error> {
+                Ok(elt.to_val())
+            }
+        }
+
+        #[cfg(not(target_family = "wasm"))]
+        impl From<&$elem> for ScVal {
+            fn from(v: &$elem) -> Self {
+                Self::from(&v.0)
+            }
+        }
+
+        #[cfg(not(target_family = "wasm"))]
+        impl From<$elem> for ScVal {
+            fn from(v: $elem) -> Self {
+                (&v).into()
             }
         }
 
