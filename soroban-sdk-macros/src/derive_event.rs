@@ -4,27 +4,11 @@ use syn::{Attribute, DataStruct, Error, Ident, Path, Type};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamKindV0, ScSpecEventParamV0, ScSpecEventV0,
-    ScSpecTypeDef, StringM, WriteXdr,
+    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
+    ScSpecEventV0, ScSpecTypeDef, StringM, WriteXdr,
 };
 
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-enum ParamKind {
-    Topic,
-    Data,
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-struct Param<'a> {
-    kind: ParamKind,
-
-    ident: &'a Ident,
-    type_: &'a Type,
-
-    spec: ScSpecEventParamV0,
-}
 
 pub fn derive_event(
     path: &Path,
@@ -32,6 +16,7 @@ pub fn derive_event(
     attrs: &[Attribute],
     struct_: &DataStruct,
     data_format: &str,
+    prefix_topics: Vec<String>,
     lib: &Option<String>,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
@@ -54,8 +39,10 @@ pub fn derive_event(
         }
     };
 
-    // TODO: Figure out prefix topics. If no prefix topics are defined, set the prefix topics to
-    // the snake_case version of the event struct name.
+    let prefix_topics = match prefix_topics[..] {
+        [] => vec![ident.to_string()],
+        _ => prefix_topics,
+    };
 
     // Map each field of the struct to a param for the event.
     let params = struct_
@@ -67,10 +54,10 @@ pub fn derive_event(
             let field_type = &field.ty;
             let is_topic = field.attrs.iter().any(|a| a.path().is_ident("topic"));
             let param_spec = ScSpecEventParamV0 {
-                kind: if is_topic {
-                    ScSpecEventParamKindV0::Topic
+                location: if is_topic {
+                    ScSpecEventParamLocationV0::TopicList
                 } else {
-                    ScSpecEventParamKindV0::Data
+                    ScSpecEventParamLocationV0::Data
                 },
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
@@ -93,10 +80,10 @@ pub fn derive_event(
                 },
             };
             Param {
-                kind: if is_topic {
-                    ParamKind::Topic
+                location: if is_topic {
+                    ParamLocation::Topic
                 } else {
-                    ParamKind::Data
+                    ParamLocation::Data
                 },
                 ident: field_ident,
                 type_: field_type,
@@ -118,6 +105,7 @@ pub fn derive_event(
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
+            prefix_topics: [].try_into().unwrap(),
             params: params
                 .iter()
                 .map(|f| f.spec.clone())
@@ -141,11 +129,32 @@ pub fn derive_event(
         })
     };
 
+    // Prepare Data Type.
+    let data_type_ident = format_ident!("{ident}Data");
+    let data_type_params = params.clone().retain(|p| p.location != ParamLocation::Data);
+    let data_type = match data_format {
+        ScSpecEventDataFormat::SingleValue => quote! {
+            pub type #data_type_ident = #ident;
+        },
+        ScSpecEventDataFormat::Vec => quote! {
+            pub struct #data_type_ident();
+        },
+        ScSpecEventDataFormat::Map => quote! {
+            pub type #data_type_ident = #ident;
+        },
+
+    }
+
     // Output.
-    let topics = fields.iter().map(|f| todo!()).collect::<Vec<_>>();
-    let data_params = fields.iter().map(|f| todo!()).collect::<Vec<_>>();
+    let topics = params
+        .iter()
+        .filter(|p| p.location == ParamLocation::Topic)
+        .map(|f| todo!())
+        .collect::<Vec<_>>();
+    let data_params = params.iter().map(|f| todo!()).collect::<Vec<_>>();
     let mut output = quote! {
         #spec_gen
+        #data_type
 
         impl #path::Event for #ident {
             type Topics = ();
@@ -182,4 +191,20 @@ pub fn derive_event(
     }
 
     output
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+enum ParamLocation {
+    Topic,
+    Data,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct Param<'a> {
+    location: ParamLocation,
+
+    ident: &'a Ident,
+    type_: &'a Type,
+
+    spec: ScSpecEventParamV0,
 }

@@ -385,8 +385,7 @@ struct ContractEventArgs {
     crate_path: Path,
     lib: Option<String>,
     data_format: String, // single-value, vec, map
-                         // TODO: Can the data_format be an enum?
-                         // Or a list of valid values, or have a custom validator?
+    prefix_topics: Vec<LitStr>,
 }
 
 #[proc_macro_attribute]
@@ -412,6 +411,7 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 attrs,
                 struct_,
                 &args.data_format,
+                args.prefix_topics.iter().map(|s| s.value()).collect(),
                 &args.lib,
             ),
             Fields::Unnamed(_) => Error::new(
