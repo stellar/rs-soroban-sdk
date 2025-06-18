@@ -106,7 +106,7 @@ impl HasFnsItem {
         }
     }
 
-    pub fn fns(&'_ self) -> Vec<Fn> {
+    pub fn fns(&self) -> Vec<Fn<'_>> {
         match self {
             HasFnsItem::Trait(t) => trait_methods(t)
                 .map(|m| Fn {
