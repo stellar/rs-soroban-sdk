@@ -1,8 +1,10 @@
+use ::stellar_xdr::curr::ScSpecEventParamLocationV0;
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
+    ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0,
+    ScSpecUdtUnionV0,
 };
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
@@ -130,6 +132,39 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
             #[soroban_sdk::contracterror(export = false)]
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
+        }
+    }
+}
+
+/// Constructs a token stream containing a single struct that mirrors the event
+/// spec.
+pub fn generate_event(spec: &ScSpecEventV0) -> TokenStream {
+    let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
+
+    if spec.lib.len() > 0 {
+        let lib_ident = format_ident!("{}", spec.lib.to_utf8_string().unwrap());
+        quote! {
+            type #ident = ::#lib_ident::#ident;
+        }
+    } else {
+        // Otherwise generate a struct with named fields.
+        let fields = spec.params.iter().map(|p| {
+            let p_ident = format_ident!("{}", p.name.to_utf8_string().unwrap());
+            let p_type = generate_type_ident(&p.type_);
+            match p.location {
+                ScSpecEventParamLocationV0::TopicList => quote! {
+                    #[topic]
+                    pub #p_ident: #p_type
+                },
+                ScSpecEventParamLocationV0::Data => quote! {
+                    pub #p_ident: #p_type
+                },
+            }
+        });
+        quote! {
+            #[soroban_sdk::contractevent(export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct #ident { #(#fields,)* }
         }
     }
 }

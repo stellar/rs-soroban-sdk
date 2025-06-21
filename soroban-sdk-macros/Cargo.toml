@@ -29,6 +29,7 @@ proc-macro2 = "1.0"
 itertools = "0.10.5"
 darling = "0.20.0"
 sha2 = "0.10.7"
+heck = "0.5.0"
 
 [features]
 testutils = []
