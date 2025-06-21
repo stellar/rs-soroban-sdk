@@ -95,7 +95,14 @@ fn __link_sections() {
     #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::internal::meta::XDR.len()] = env::internal::meta::XDR;
 
-    soroban_sdk_macros::contractmetabuiltin!();
+    // Rustc version.
+    contractmeta!(key = "rsver", val = env!("RUSTC_VERSION"),);
+
+    // Rust Soroban SDK version.
+    contractmeta!(
+        key = "rssdkver",
+        val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
+    );
 }
 
 // Re-exports of dependencies used by macros.

@@ -17,6 +17,7 @@ doctest = false
 
 [build-dependencies]
 rustc_version = "0.4.1"
+crate-git-revision = "0.0.6"
 
 [dependencies]
 soroban-sdk-macros = { workspace = true }
