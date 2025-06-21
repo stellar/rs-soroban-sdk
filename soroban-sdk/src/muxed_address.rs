@@ -161,6 +161,12 @@ impl TryFromVal<Env, &MuxedAddress> for Val {
 
 impl From<Address> for MuxedAddress {
     fn from(address: Address) -> Self {
+        (&address).into()
+    }
+}
+
+impl From<&Address> for MuxedAddress {
+    fn from(address: &Address) -> Self {
         address
             .as_object()
             .try_into_val(address.env())

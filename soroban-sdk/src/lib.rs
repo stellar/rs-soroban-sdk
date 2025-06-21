@@ -582,6 +582,8 @@ pub use soroban_sdk_macros::contractmeta;
 /// ```
 pub use soroban_sdk_macros::contracttype;
 
+pub use soroban_sdk_macros::contractevent;
+
 /// Generates a type that helps build function args for a contract trait.
 pub use soroban_sdk_macros::contractargs;
 
@@ -786,7 +788,7 @@ pub mod deploy;
 mod error;
 pub use error::InvokeError;
 pub mod events;
-pub use events::Topics;
+pub use events::{Event, Topics};
 pub mod iter;
 pub mod ledger;
 pub mod logs;
