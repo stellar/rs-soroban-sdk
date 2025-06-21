@@ -8,7 +8,7 @@ use crate::{
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, MapObject, U32Val},
+    env::internal::{Env as _, MapObject, U32Val},
     ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val, Vec,
 };
 
@@ -139,7 +139,10 @@ where
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())

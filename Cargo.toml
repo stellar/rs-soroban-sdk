@@ -12,37 +12,37 @@ members = [
 ]
 
 [workspace.package]
-version = "22.0.6"
-rust-version = "1.79.0"
+version = "23.0.0-rc.1.1"
+rust-version = "1.84.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "22.0.6", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "22.0.6", path = "soroban-sdk-macros" }
-soroban-spec = { version = "22.0.6", path = "soroban-spec" }
-soroban-spec-rust = { version = "22.0.6", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "22.0.6", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "22.0.6", path = "soroban-token-sdk" }
+soroban-sdk = { version = "23.0.0-rc.1.1", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "23.0.0-rc.1.1", path = "soroban-sdk-macros" }
+soroban-spec = { version = "23.0.0-rc.1.1", path = "soroban-spec" }
+soroban-spec-rust = { version = "23.0.0-rc.1.1", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "23.0.0-rc.1.1", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "23.0.0-rc.1.1", path = "soroban-token-sdk" }
 
 [workspace.dependencies.soroban-env-common]
-version = "=22.1.3"
+version = "=23.0.0-rc.1.1"
 #git = "https://github.com/stellar/rs-soroban-env"
 #rev = "bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=22.1.3"
+version = "=23.0.0-rc.1.1"
 #git = "https://github.com/stellar/rs-soroban-env"
 #rev = "bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 
 [workspace.dependencies.soroban-env-host]
-version = "=22.1.3"
+version = "=23.0.0-rc.1.1"
 #git = "https://github.com/stellar/rs-soroban-env"
 #rev = "bd0c80a1fe171e75f8d745f17975a73927d44ecd"
 
 [workspace.dependencies.stellar-strkey]
-version = "=0.0.9"
+version = "=0.0.13"
 
 [workspace.dependencies.stellar-xdr]
-version = "=22.1.0"
+version = "=23.0.0-rc.1"
 default-features = false
 features = ["curr"]
 #git = "https://github.com/stellar/rs-stellar-xdr"

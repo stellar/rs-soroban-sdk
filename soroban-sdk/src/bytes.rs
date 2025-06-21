@@ -104,7 +104,7 @@ macro_rules! bytesn {
 
 #[macro_export]
 macro_rules! impl_bytesn_repr {
-    ($elem: ident, $size: literal) => {
+    ($elem: ident, $size: expr) => {
         impl $elem {
             pub fn from_bytes(bytes: BytesN<$size>) -> Self {
                 Self(bytes)
@@ -143,18 +143,34 @@ macro_rules! impl_bytesn_repr {
             }
         }
 
-        impl IntoVal<Env, Val> for $elem {
-            fn into_val(&self, e: &Env) -> Val {
-                self.0.into_val(e)
-            }
-        }
-
         impl TryFromVal<Env, Val> for $elem {
             type Error = ConversionError;
 
             fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
                 let bytes = <BytesN<$size>>::try_from_val(env, val)?;
                 Ok($elem(bytes))
+            }
+        }
+
+        impl TryFromVal<Env, $elem> for Val {
+            type Error = ConversionError;
+
+            fn try_from_val(_env: &Env, elt: &$elem) -> Result<Self, Self::Error> {
+                Ok(elt.to_val())
+            }
+        }
+
+        #[cfg(not(target_family = "wasm"))]
+        impl From<&$elem> for ScVal {
+            fn from(v: &$elem) -> Self {
+                Self::from(&v.0)
+            }
+        }
+
+        #[cfg(not(target_family = "wasm"))]
+        impl From<$elem> for ScVal {
+            fn from(v: $elem) -> Self {
+                (&v).into()
             }
         }
 
@@ -256,7 +272,10 @@ impl PartialOrd for Bytes {
 
 impl Ord for Bytes {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
@@ -1073,18 +1092,21 @@ impl<const N: usize> From<&BytesN<N>> for Bytes {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &BytesN<N>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.0.env, &v.0.obj.to_val())?)
+impl<const N: usize> From<&BytesN<N>> for ScVal {
+    fn from(v: &BytesN<N>) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.0.env, &v.0.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: BytesN<N>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<const N: usize> From<BytesN<N>> for ScVal {
+    fn from(v: BytesN<N>) -> Self {
+        (&v).into()
     }
 }
 

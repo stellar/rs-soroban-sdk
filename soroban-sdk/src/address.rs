@@ -1,7 +1,7 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{AddressObject, Env as _, EnvBase as _},
+    env::internal::{AddressObject, Env as _},
     ConversionError, Env, String, TryFromVal, TryIntoVal, Val,
 };
 
@@ -51,9 +51,14 @@ impl Debug for Address {
                         let strkey = Strkey::PublicKeyEd25519(ed25519::PublicKey(ed25519));
                         write!(f, "AccountId({})", strkey.to_string())?;
                     }
-                    xdr::ScAddress::Contract(contract_id) => {
+                    xdr::ScAddress::Contract(xdr::ContractId(contract_id)) => {
                         let strkey = Strkey::Contract(Contract(contract_id.0));
                         write!(f, "Contract({})", strkey.to_string())?;
+                    }
+                    ScAddress::MuxedAccount(_)
+                    | ScAddress::ClaimableBalance(_)
+                    | ScAddress::LiquidityPool(_) => {
+                        return Err(core::fmt::Error);
                     }
                 }
             } else {
@@ -80,7 +85,10 @@ impl PartialOrd for Address {
 
 impl Ord for Address {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
@@ -313,7 +321,7 @@ impl Address {
 }
 
 #[cfg(any(not(target_family = "wasm"), test, feature = "testutils"))]
-use crate::env::xdr::Hash;
+use crate::env::xdr::{ContractId, Hash};
 use crate::unwrap::UnwrapOptimized;
 
 #[cfg(any(test, feature = "testutils"))]
@@ -322,7 +330,7 @@ impl crate::testutils::Address for Address {
     fn generate(env: &Env) -> Self {
         Self::try_from_val(
             env,
-            &ScAddress::Contract(Hash(env.with_generator(|mut g| g.address()))),
+            &ScAddress::Contract(ContractId(Hash(env.with_generator(|mut g| g.address())))),
         )
         .unwrap()
     }
@@ -330,7 +338,7 @@ impl crate::testutils::Address for Address {
 
 #[cfg(not(target_family = "wasm"))]
 impl Address {
-    pub(crate) fn contract_id(&self) -> Hash {
+    pub(crate) fn contract_id(&self) -> ContractId {
         let sc_address: ScAddress = self.try_into().unwrap();
         if let ScAddress::Contract(c) = sc_address {
             c
@@ -340,6 +348,6 @@ impl Address {
     }
 
     pub(crate) fn from_contract_id(env: &Env, contract_id: [u8; 32]) -> Self {
-        Self::try_from_val(env, &ScAddress::Contract(Hash(contract_id))).unwrap()
+        Self::try_from_val(env, &ScAddress::Contract(ContractId(Hash(contract_id)))).unwrap()
     }
 }

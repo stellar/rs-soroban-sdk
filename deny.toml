@@ -21,7 +21,7 @@
 # list here is effectively saying which targets you are building for.
 targets = [
     { triple = "x86_64-unknown-linux-gnu" },
-    { triple = "wasm32-unknown-unknown" }
+    { triple = "wasm32v1-none" }
     # The triple can be any string, but only the target triples built in to
     # rustc (as of 1.40) can be checked against actual config expressions
     #{ triple = "x86_64-unknown-linux-musl" },
