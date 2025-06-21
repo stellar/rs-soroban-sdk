@@ -58,6 +58,15 @@ impl Debug for Events {
     }
 }
 
+pub trait Event {
+    fn topics(&self, env: &Env) -> Vec<Val>;
+    fn data(&self, env: &Env) -> Val;
+
+    fn publish(&self, env: &Env) {
+        env.events().publish_event(self);
+    }
+}
+
 pub trait Topics: IntoVal<Env, Vec<Val>> {}
 
 impl<T> Topics for Vec<T> {}
@@ -71,6 +80,16 @@ impl Events {
     #[inline(always)]
     pub(crate) fn new(env: &Env) -> Events {
         Events(env.clone())
+    }
+
+    /// Publish an event.
+    ///
+    /// The event is defined using the [`contractevent`][crate::contractevent] macro.
+    #[inline(always)]
+    pub fn publish_event(&self, e: &(impl Event + ?Sized)) {
+        let env = self.env();
+        internal::Env::contract_event(env, e.topics(env).to_object(), e.data(env))
+            .unwrap_infallible();
     }
 
     /// Publish an event.
