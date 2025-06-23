@@ -42,9 +42,9 @@ ctor = { version = "0.2.9", optional = true }
 [dev-dependencies]
 soroban-sdk-macros = { workspace = true, features = ["testutils"] }
 soroban-env-host = { workspace = true, features = ["testutils"] }
+soroban-ledger-snapshot = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["curr", "std"] }
 soroban-spec = { workspace = true }
-soroban-ledger-snapshot = { workspace = true }
 ed25519-dalek = "2.0.0"
 rand = "0.8.5"
 ctor = "0.2.9"
@@ -58,7 +58,7 @@ expect-test = "1.4.1"
 
 [features]
 alloc = []
-testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
+testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
 hazmat = []
 docs = []
 
