@@ -94,6 +94,8 @@ impl Events {
 
     /// Publish an event.
     ///
+    /// Consider using [`contractevent`][crate::contractevent] instead of this function.
+    ///
     /// Event data is specified in `data`. Data may be any value or
     /// type, including types defined by contracts using [contracttype].
     ///

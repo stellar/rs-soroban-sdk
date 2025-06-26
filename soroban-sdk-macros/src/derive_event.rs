@@ -198,6 +198,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .map(|p| format_ident!("{}", p.name.to_string()))
         .collect::<Vec<_>>();
     let topics_to_vec_val = quote! {
+        use #path::IntoVal;
         (
             #(&#prefix_topics_symbols,)*
             #(&self.#topic_idents,)*
@@ -258,6 +259,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             }
             fn data(&self, env: &#path::Env) -> #path::Val {
                 #data_to_val
+            }
+        }
+
+        impl #ident {
+            fn publish(&self, env: &#path::Env) {
+                <_ as #path::Event>::publish(self, env);
             }
         }
     };
