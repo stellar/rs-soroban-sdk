@@ -248,7 +248,7 @@ pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &TokenSpec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 4716;
+pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 4804;
 
 impl TokenSpec {
     /// Returns the XDR spec for the Token contract.
@@ -526,7 +526,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_transfer_from(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 6456;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 6544;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
