@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractspecfn, Address, Env, String};
+use crate::{contractclient, contractspecfn, Address, Env, MuxedAddress, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -140,8 +140,9 @@ pub trait TokenInterface {
     /// # Events
     ///
     /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
-    fn transfer(env: Env, from: Address, to: Address, amount: i128);
+    /// data = amount: i128 or data: { amount: i128, to_muxed_id:u64 }` depending on whether `to`
+    /// contains a muxed ID.
+    fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
     /// `spender` has on `from`'s balance. Authorized by spender
@@ -340,8 +341,9 @@ pub trait StellarAssetInterface {
     /// # Events
     ///
     /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
-    fn transfer(env: Env, from: Address, to: Address, amount: i128);
+    /// data = amount: i128 or data: { amount: i128, to_muxed_id:u64 }` depending on whether `to`
+    /// contains a muxed ID.
+    fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
     /// `spender` has on `from`'s balance. Authorized by spender
