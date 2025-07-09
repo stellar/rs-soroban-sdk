@@ -1,6 +1,6 @@
 use crate::{
     self as soroban_sdk, contract, contractevent, map, symbol_short, testutils::Events as _, vec,
-    Env, Event, IntoVal, Map, Symbol, Val, Vec,
+    Env, IntoVal, Map, Symbol, Val, Vec,
 };
 
 #[test]
