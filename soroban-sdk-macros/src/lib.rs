@@ -284,7 +284,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 #[derive(Debug, FromMeta)]
 struct MetadataArgs {
     key: String,
-    #[darling(with = "darling::util::parse_expr::preserve_str_literal")]
+    #[darling(with = darling::util::parse_expr::preserve_str_literal)]
     val: Expr,
 }
 
