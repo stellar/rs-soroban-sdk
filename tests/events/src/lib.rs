@@ -1,7 +1,5 @@
 #![no_std]
-use soroban_sdk::{
-    contract, contractevent, contractimpl, Address, Env, Event, IntoVal, MuxedAddress,
-};
+use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, MuxedAddress};
 
 #[contract]
 pub struct Contract;
