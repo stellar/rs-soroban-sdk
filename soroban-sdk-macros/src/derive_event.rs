@@ -20,9 +20,9 @@ struct ContractEventArgs {
     lib: Option<String>,
     export: Option<bool>,
     #[darling(default)]
-    data_format: DataFormat,
+    topics: Option<Vec<LitStr>>,
     #[darling(default)]
-    prefix_topics: Option<Vec<LitStr>>,
+    data_format: DataFormat,
 }
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -84,7 +84,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let ident = &input.ident;
     let path = &args.crate_path;
 
-    let prefix_topics = if let Some(prefix_topics) = &args.prefix_topics {
+    let prefix_topics = if let Some(prefix_topics) = &args.topics {
         prefix_topics.iter().map(|t| t.value()).collect()
     } else {
         vec![input.ident.to_string().to_snake_case()]

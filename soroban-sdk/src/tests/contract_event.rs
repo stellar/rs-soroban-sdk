@@ -56,7 +56,7 @@ fn test_prefix_topics() {
     pub struct Contract;
     let id = env.register(Contract, ());
 
-    #[contractevent(prefix_topics = ["topic1", "topic2"])]
+    #[contractevent(topics = ["topic1", "topic2"])]
     pub struct MyEvent {
         #[topic]
         name: Symbol,
@@ -106,7 +106,7 @@ fn test_no_prefix_topics() {
     pub struct Contract;
     let id = env.register(Contract, ());
 
-    #[contractevent(prefix_topics = [])]
+    #[contractevent(topics = [])]
     pub struct MyEvent {
         #[topic]
         name: Symbol,
@@ -151,7 +151,7 @@ fn test_no_topics() {
     pub struct Contract;
     let id = env.register(Contract, ());
 
-    #[contractevent(prefix_topics = [])]
+    #[contractevent(topics = [])]
     pub struct MyEvent {
         value: Symbol,
     }
@@ -193,7 +193,7 @@ fn test_no_topics_no_data() {
     pub struct Contract;
     let id = env.register(Contract, ());
 
-    #[contractevent(prefix_topics = [])]
+    #[contractevent(topics = [])]
     pub struct MyEvent {}
 
     env.as_contract(&id, || {

@@ -598,12 +598,10 @@ pub use soroban_sdk_macros::contracttype;
 ///
 /// ### Examples
 ///
-/// #### Basic Contract Event
+/// #### Define an Event
 ///
-/// Defining a basic contract event.
-///
-/// The event will have a single fixed prefix topic matching the name of the struct in lower snake
-/// case. The fixed prefix topic will appear before any topics listed as fields. In the example
+/// The event will have a single fixed topic matching the name of the struct in lower snake
+/// case. The fixed topic will appear before any topics listed as fields. In the example
 /// below, the topics for the event will be:
 /// - `"my_event"`
 /// - u32 value from the `my_topic` field
@@ -633,11 +631,11 @@ pub use soroban_sdk_macros::contracttype;
 /// # fn main() { }
 /// ```
 ///
-/// #### Prefix Topics
+/// #### Define an Event with Custom Topics
 ///
-/// Defining a contract event with a custom set of fixed prefix topics.
+/// Define a contract event with a custom list of fixed topics.
 ///
-/// The prefix topic list can be set to another value. In the example
+/// The fixed topics can be change to another value. In the example
 /// below, the topics for the event will be:
 /// - `"my_contract"`
 /// - `"an_event"`
@@ -648,7 +646,7 @@ pub use soroban_sdk_macros::contracttype;
 /// use soroban_sdk::contractevent;
 ///
 /// // Define the event using the `contractevent` attribute macro.
-/// #[contractevent(prefix_topics = ["my_contract", "an_event"])]
+/// #[contractevent(topics = ["my_contract", "an_event"])]
 /// #[derive(Clone, Default, Debug, Eq, PartialEq)]
 /// pub struct MyEvent {
 ///     // Mark fields as topics, for the value to be included in the events topic list so
@@ -663,10 +661,10 @@ pub use soroban_sdk_macros::contracttype;
 /// # fn main() { }
 /// ```
 ///
-/// #### Data Format
+/// #### Define an Event with Other Data Formats
 ///
-/// Defining a contract event with a different data format. The data format of the event is by
-/// default a map, but can alternatively be defined as a `vec` or `single-value`.
+/// The data format of the event is a map by default, but can alternatively be defined as a `vec`
+/// or `single-value`.
 ///
 /// ##### Vec
 ///
@@ -721,7 +719,7 @@ pub use soroban_sdk_macros::contracttype;
 ///
 /// #### A Full Example
 ///
-/// Defining a contract event, publishing it in a contract, and testing it.
+/// Defining an event, publishing it in a contract, and testing it.
 ///
 /// ```
 /// #![no_std]
