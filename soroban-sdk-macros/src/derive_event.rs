@@ -9,7 +9,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::curr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecEventV0, WriteXdr,
+    ScSpecEventV0, StringM, WriteXdr,
 };
 use syn::{parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
 
@@ -120,9 +120,16 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 ScSpecEventParamLocationV0::Data
             };
             let doc = docs_from_attrs(&field.attrs);
-            let name = errors
-                .handle(ident.to_string().try_into().map_err(|_| {
-                    Error::custom("event field name is too long").with_span(&field.ident.span())
+            const NAME_LENGTH: u32 = 30;
+            let name = ident.to_string();
+            let name_len = name.len();
+            let name: StringM<NAME_LENGTH> = errors
+                .handle(name.try_into().map_err(|_| {
+                    // TODO:
+                    Error::custom(format!(
+                        "event field name has length {name_len} greater than length limit of {NAME_LENGTH}"
+                    ))
+                    .with_span(&field.ident.span())
                 }))
                 .unwrap_or_default();
             let type_ = errors
