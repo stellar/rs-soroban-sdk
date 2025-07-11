@@ -147,7 +147,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let errors = errors.checkpoint()?;
 
     // Generated code spec.
-
     let export = args.export.unwrap_or(true);
     let spec_gen = if export {
         let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
