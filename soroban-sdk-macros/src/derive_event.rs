@@ -125,7 +125,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             let name_len = name.len();
             let name: StringM<NAME_LENGTH> = errors
                 .handle(name.try_into().map_err(|_| {
-                    // TODO:
                     Error::custom(format!(
                         "event field name has length {name_len} greater than length limit of {NAME_LENGTH}"
                     ))
