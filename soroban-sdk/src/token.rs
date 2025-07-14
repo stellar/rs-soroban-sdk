@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractspecfn, Address, Env, String};
+use crate::{contractclient, contractevent, contractspecfn, Address, Env, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -230,6 +230,56 @@ pub trait TokenInterface {
     fn symbol(env: Env) -> String;
 }
 
+#[contractevent(crate_path = "crate", data_format = "vec", export = false)]
+pub struct Approve {
+    #[topic]
+    pub from: Address,
+    #[topic]
+    pub spender: Address,
+    pub amount: i128,
+    pub expiration_ledger: u32,
+}
+
+#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+pub struct Transfer {
+    #[topic]
+    pub from: Address,
+    #[topic]
+    pub to: Address,
+    pub amount: i128,
+}
+
+#[contractevent(crate_path = "crate", topics = ["transfer"], export = false)]
+pub struct TransferWithMuxedAddress {
+    #[topic]
+    pub from: Address,
+    #[topic]
+    pub to: Address,
+    pub to_muxed_id: i128,
+    pub amount: i128,
+}
+
+#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+pub struct Burn {
+    #[topic]
+    pub from: Address,
+    pub amount: i128,
+}
+
+#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+pub struct Mint {
+    #[topic]
+    pub to: Address,
+    pub amount: i128,
+}
+
+#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+pub struct Clawback {
+    #[topic]
+    pub from: Address,
+    pub amount: i128,
+}
+
 /// Spec contains the contract spec of Token contracts.
 #[doc(hidden)]
 pub struct TokenSpec;
@@ -245,9 +295,15 @@ pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &TokenSpec::spec_xdr_symbol(),
     &TokenSpec::spec_xdr_transfer(),
     &TokenSpec::spec_xdr_transfer_from(),
+    &Approve::spec_xdr(),
+    &Transfer::spec_xdr(),
+    &TransferWithMuxedAddress::spec_xdr(),
+    &Burn::spec_xdr(),
+    &Mint::spec_xdr(),
+    &Clawback::spec_xdr(),
 ];
 
-pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 4716;
+pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5396;
 
 impl TokenSpec {
     /// Returns the XDR spec for the Token contract.
@@ -499,6 +555,22 @@ pub trait StellarAssetInterface {
     fn clawback(env: Env, from: Address, amount: i128);
 }
 
+#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+pub struct SetAdmin {
+    #[topic]
+    pub admin: Address,
+    pub new_admin: Address,
+}
+
+#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+pub struct SetAuthorized {
+    #[topic]
+    pub admin: Address,
+    #[topic]
+    pub id: Address,
+    pub authorize: Address,
+}
+
 /// Spec contains the contract spec of the Stellar Asset Contract.
 ///
 /// The Stellar Asset Contract is a superset of the Token Contract.
@@ -522,9 +594,17 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_symbol(),
     &StellarAssetSpec::spec_xdr_transfer(),
     &StellarAssetSpec::spec_xdr_transfer_from(),
+    &Approve::spec_xdr(),
+    &Transfer::spec_xdr(),
+    &TransferWithMuxedAddress::spec_xdr(),
+    &Burn::spec_xdr(),
+    &Mint::spec_xdr(),
+    &Clawback::spec_xdr(),
+    &SetAdmin::spec_xdr(),
+    &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 6456;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7376;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
