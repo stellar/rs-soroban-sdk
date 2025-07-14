@@ -148,45 +148,45 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // Generated code spec.
     let export = args.export.unwrap_or(true);
-    let spec_gen = if export {
-        let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
-            data_format: args.data_format.into(),
-            doc: docs_from_attrs(&input.attrs),
-            lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: input.ident.to_string().try_into().unwrap(),
-            prefix_topics: prefix_topics
-                .iter()
-                .map(|t| t.try_into().unwrap())
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap(),
-            params: params
-                .iter()
-                .map(|p| p.clone())
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap(),
-        });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!(
-            "__SPEC_XDR_EVENT_{}",
-            input.ident.to_string().to_uppercase()
-        );
-        let ident = &input.ident;
-        Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
-
-            impl #ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
-            }
-        })
+    let export_gen = if export {
+        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
     } else {
         None
+    };
+    let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
+        data_format: args.data_format.into(),
+        doc: docs_from_attrs(&input.attrs),
+        lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: input.ident.to_string().try_into().unwrap(),
+        prefix_topics: prefix_topics
+            .iter()
+            .map(|t| t.try_into().unwrap())
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap(),
+        params: params
+            .iter()
+            .map(|p| p.clone())
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap(),
+    });
+    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
+    let spec_xdr_len = spec_xdr.len();
+    let spec_ident = format_ident!(
+        "__SPEC_XDR_EVENT_{}",
+        input.ident.to_string().to_uppercase()
+    );
+    let spec_gen = quote! {
+        #export_gen
+        pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+
+        impl #ident {
+            pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
+                *#spec_xdr_lit
+            }
+        }
     };
 
     // Prepare Topics Conversion to Vec<Val>.
