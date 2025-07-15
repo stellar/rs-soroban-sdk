@@ -3,7 +3,7 @@ use crate::{self as soroban_sdk, IntoVal};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _},
-    token::{Approve, Transfer, TransferMuxed, Burn, Mint, Clawback},
+    token::{Approve, Burn, Clawback, Mint, Transfer, TransferMuxed},
     vec, Address, Env, Event, Map, Symbol, Val,
 };
 
@@ -89,7 +89,7 @@ fn test_transfer_muxed() {
                     event.from.clone(),
                     event.to.clone(),
                 )
-                .into_val(&env),
+                    .into_val(&env),
                 Map::<Symbol, Val>::from_array(
                     &env,
                     [
@@ -118,11 +118,7 @@ fn test_burn() {
             &env,
             (
                 id.clone(),
-                (
-                    symbol_short!("burn"),
-                    event.from.clone(),
-                )
-                .into_val(&env),
+                (symbol_short!("burn"), event.from.clone(),).into_val(&env),
                 123i128.into_val(&env),
             ),
         ]
@@ -144,11 +140,7 @@ fn test_mint() {
             &env,
             (
                 id.clone(),
-                (
-                    symbol_short!("mint"),
-                    event.to.clone(),
-                )
-                .into_val(&env),
+                (symbol_short!("mint"), event.to.clone(),).into_val(&env),
                 123i128.into_val(&env),
             ),
         ]
@@ -170,11 +162,7 @@ fn test_clawback() {
             &env,
             (
                 id.clone(),
-                (
-                    symbol_short!("clawback"),
-                    event.from.clone(),
-                )
-                .into_val(&env),
+                (symbol_short!("clawback"), event.from.clone(),).into_val(&env),
                 123i128.into_val(&env),
             ),
         ]
