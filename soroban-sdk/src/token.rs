@@ -600,7 +600,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7368;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7320;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
