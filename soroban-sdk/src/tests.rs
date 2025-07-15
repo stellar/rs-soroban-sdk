@@ -42,4 +42,6 @@ mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod storage_testutils;
 mod token_client;
+mod token_events;
+mod token_events_stellar_asset;
 mod token_spec;

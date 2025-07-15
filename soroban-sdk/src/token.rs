@@ -230,7 +230,7 @@ pub trait TokenInterface {
     fn symbol(env: Env) -> String;
 }
 
-#[contractevent(crate_path = "crate", data_format = "vec", export = false)]
+#[contractevent(crate_path = "crate", topics = ["approve"], data_format = "vec", export = false)]
 pub struct Approve {
     #[topic]
     pub from: Address,
@@ -240,7 +240,7 @@ pub struct Approve {
     pub expiration_ledger: u32,
 }
 
-#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+#[contractevent(crate_path = "crate", topics = ["transfer"], data_format = "single-value", export = false)]
 pub struct Transfer {
     #[topic]
     pub from: Address,
@@ -249,31 +249,31 @@ pub struct Transfer {
     pub amount: i128,
 }
 
-#[contractevent(crate_path = "crate", topics = ["transfer"], export = false)]
-pub struct TransferWithMuxedAddress {
+#[contractevent(crate_path = "crate", topics = ["transfer"], data_format = "map", export = false)]
+pub struct TransferMuxed {
     #[topic]
     pub from: Address,
     #[topic]
     pub to: Address,
-    pub to_muxed_id: i128,
+    pub to_muxed_id: u32,
     pub amount: i128,
 }
 
-#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+#[contractevent(crate_path = "crate", topics = ["burn"], data_format = "single-value", export = false)]
 pub struct Burn {
     #[topic]
     pub from: Address,
     pub amount: i128,
 }
 
-#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+#[contractevent(crate_path = "crate", topics = ["mint"], data_format = "single-value", export = false)]
 pub struct Mint {
     #[topic]
     pub to: Address,
     pub amount: i128,
 }
 
-#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+#[contractevent(crate_path = "crate", topics = ["clawback"], data_format = "single-value", export = false)]
 pub struct Clawback {
     #[topic]
     pub from: Address,
@@ -297,13 +297,13 @@ pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &TokenSpec::spec_xdr_transfer_from(),
     &Approve::spec_xdr(),
     &Transfer::spec_xdr(),
-    &TransferWithMuxedAddress::spec_xdr(),
+    &TransferMuxed::spec_xdr(),
     &Burn::spec_xdr(),
     &Mint::spec_xdr(),
     &Clawback::spec_xdr(),
 ];
 
-pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5396;
+pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5388;
 
 impl TokenSpec {
     /// Returns the XDR spec for the Token contract.
@@ -555,20 +555,16 @@ pub trait StellarAssetInterface {
     fn clawback(env: Env, from: Address, amount: i128);
 }
 
-#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+#[contractevent(crate_path = "crate", topics = ["set_admin"], data_format = "single-value", export = false)]
 pub struct SetAdmin {
-    #[topic]
-    pub admin: Address,
     pub new_admin: Address,
 }
 
-#[contractevent(crate_path = "crate", data_format = "single-value", export = false)]
+#[contractevent(crate_path = "crate", topics = ["set_authorized"], data_format = "single-value", export = false)]
 pub struct SetAuthorized {
     #[topic]
-    pub admin: Address,
-    #[topic]
     pub id: Address,
-    pub authorize: Address,
+    pub authorize: bool,
 }
 
 /// Spec contains the contract spec of the Stellar Asset Contract.
@@ -596,7 +592,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_transfer_from(),
     &Approve::spec_xdr(),
     &Transfer::spec_xdr(),
-    &TransferWithMuxedAddress::spec_xdr(),
+    &TransferMuxed::spec_xdr(),
     &Burn::spec_xdr(),
     &Mint::spec_xdr(),
     &Clawback::spec_xdr(),
@@ -604,7 +600,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7376;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7368;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
