@@ -4,6 +4,7 @@ use crate::{
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
+use itertools::Itertools as _;
 use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -214,6 +215,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let data_params = params
         .iter()
         .filter(|p| p.location == ScSpecEventParamLocationV0::Data)
+        .sorted_by_key(|p| p.name.to_string()) // must be sorted for map_new_from_slices
         .collect::<Vec<_>>();
     let data_params_count = data_params.len();
     let data_idents = data_params
