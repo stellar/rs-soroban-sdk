@@ -1,8 +1,10 @@
+use ::stellar_xdr::curr::ScSpecEventParamLocationV0;
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
+    ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0,
+    ScSpecUdtUnionV0,
 };
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
@@ -134,6 +136,40 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
     }
 }
 
+/// Constructs a token stream containing a single struct that mirrors the event
+/// spec.
+pub fn generate_event(spec: &ScSpecEventV0) -> TokenStream {
+    let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
+
+    if spec.lib.len() > 0 {
+        let lib_ident = format_ident!("{}", spec.lib.to_utf8_string().unwrap());
+        quote! {
+            type #ident = ::#lib_ident::#ident;
+        }
+    } else {
+        // Otherwise generate a struct with named fields.
+        let topics = spec.prefix_topics.iter().map(|t| t.to_string());
+        let fields = spec.params.iter().map(|p| {
+            let p_ident = format_ident!("{}", p.name.to_utf8_string().unwrap());
+            let p_type = generate_type_ident(&p.type_);
+            match p.location {
+                ScSpecEventParamLocationV0::TopicList => quote! {
+                    #[topic]
+                    pub #p_ident: #p_type
+                },
+                ScSpecEventParamLocationV0::Data => quote! {
+                    pub #p_ident: #p_type
+                },
+            }
+        });
+        quote! {
+            #[soroban_sdk::contractevent(topics = [#(#topics,)*], export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct #ident { #(#fields,)* }
+        }
+    }
+}
+
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
     match spec {
         ScSpecTypeDef::Val => quote! { soroban_sdk::Val },
@@ -185,5 +221,81 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
         ScSpecTypeDef::Duration => quote! { soroban_sdk::Duration },
         ScSpecTypeDef::U256 => quote! { soroban_sdk::U256 },
         ScSpecTypeDef::I256 => quote! { soroban_sdk::I256 },
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::ToFormattedString;
+
+    use super::generate_event;
+    use quote::quote;
+    use stellar_xdr::curr as stellar_xdr;
+    use stellar_xdr::{
+        ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0,
+        ScSpecTypeDef, ScSymbol,
+    };
+
+    #[test]
+    fn test_generate_event_no_topics_no_fields() {
+        let tokens = generate_event(&ScSpecEventV0 {
+            lib: "".try_into().unwrap(),
+            doc: "".try_into().unwrap(),
+            name: "MyEvent".try_into().unwrap(),
+            prefix_topics: [].try_into().unwrap(),
+            params: [].try_into().unwrap(),
+            data_format: ScSpecEventDataFormat::Map,
+        });
+        let expect = quote! {
+            #[soroban_sdk::contractevent(topics = [], export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct MyEvent {}
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_event_topics_fields() {
+        let tokens = generate_event(&ScSpecEventV0 {
+            lib: "".try_into().unwrap(),
+            doc: "".try_into().unwrap(),
+            name: "MyEvent".try_into().unwrap(),
+            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                .try_into()
+                .unwrap(),
+            params: [
+                ScSpecEventParamV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "from".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                    location: ScSpecEventParamLocationV0::Data,
+                },
+                ScSpecEventParamV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "to".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                    location: ScSpecEventParamLocationV0::TopicList,
+                },
+            ]
+            .try_into()
+            .unwrap(),
+            data_format: ScSpecEventDataFormat::Map,
+        });
+        let expect = quote! {
+            #[soroban_sdk::contractevent(topics = ["my_event"], export = false)]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct MyEvent {
+                pub from: u32,
+                #[topic]
+                pub to: u32,
+            }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
     }
 }

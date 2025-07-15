@@ -7,6 +7,7 @@ mod derive_client;
 mod derive_enum;
 mod derive_enum_int;
 mod derive_error_enum_int;
+mod derive_event;
 mod derive_fn;
 mod derive_spec_fn;
 mod derive_struct;
@@ -22,6 +23,7 @@ use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
+use derive_event::derive_event;
 use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn};
 use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
@@ -64,7 +66,7 @@ pub fn symbol_short(input: TokenStream) -> TokenStream {
     symbol::short(&crate_path, &input).into()
 }
 
-fn default_crate_path() -> Path {
+pub(crate) fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
 }
 
@@ -354,6 +356,11 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
         #gen
     }
     .into()
+}
+
+#[proc_macro_attribute]
+pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_event(metadata.into(), input.into()).into()
 }
 
 #[derive(Debug, FromMeta)]
