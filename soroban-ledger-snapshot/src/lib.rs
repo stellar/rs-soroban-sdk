@@ -9,7 +9,7 @@ use std::{
 use soroban_env_host::{
     storage::SnapshotSource,
     xdr::{LedgerEntry, LedgerKey},
-    Host, HostError, LedgerInfo,
+    HostError, LedgerInfo,
 };
 
 #[derive(thiserror::Error, Debug)]
@@ -50,21 +50,19 @@ impl LedgerSnapshot {
         s
     }
 
-    /// Update the snapshot with the state within the given [`Host`].
+    /// Update the snapshot with the state within the given [`soroban_env_host::Host`].
     ///
     /// The ledger info of the host will overwrite the ledger info in the
     /// snapshot.  The entries in the host's storage will overwrite entries in
     /// the snapshot. Existing entries in the snapshot that are untouched by the
     /// host will remain.
-    pub fn update(&mut self, host: &Host) {
+    #[cfg(feature = "testutils")]
+    pub fn update(&mut self, host: &soroban_env_host::Host) {
         let _result = host.with_ledger_info(|li| {
             self.set_ledger_info(li.clone());
             Ok(())
         });
-        let _result = host.with_mut_storage(|s| {
-            self.update_entries(&s.map);
-            Ok(())
-        });
+        self.update_entries(&host.get_stored_entries().unwrap());
     }
 
     // Get the ledger info in the snapshot.
@@ -168,7 +166,7 @@ impl LedgerSnapshot {
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            protocol_version: 22,
+            protocol_version: 23,
             sequence_number: Default::default(),
             timestamp: Default::default(),
             network_id: Default::default(),

@@ -1,56 +1,111 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, symbol_short, Env};
+use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, MuxedAddress};
 
 #[contract]
 pub struct Contract;
 
+#[contractevent]
+pub struct Transfer {
+    #[topic]
+    from: Address,
+    #[topic]
+    to: Address,
+    amount: i128,
+    to_muxed_id: Option<u64>,
+}
+
 #[contractimpl]
 impl Contract {
-    pub fn hello(env: Env) {
-        env.events().publish(
-            (symbol_short!("greetings"), symbol_short!("topic2")),
-            symbol_short!("hello"),
-        );
-        env.events().publish(
-            (symbol_short!("farewells"), symbol_short!("topic2")),
-            symbol_short!("bye"),
-        );
+    pub fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128) {
+        Transfer {
+            from: from.clone(),
+            to: to.address(),
+            amount,
+            to_muxed_id: to.id(),
+        }
+        .publish(&env);
     }
 }
 
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    use soroban_sdk::{symbol_short, testutils::Events, vec, Env, IntoVal};
+    use soroban_sdk::{
+        map, symbol_short,
+        testutils::{Address as _, Events, MuxedAddress as _},
+        vec, Address, Env, IntoVal, MuxedAddress, Symbol, Val,
+    };
 
     use crate::{Contract, ContractClient};
 
     #[test]
-    fn test_pub_event() {
+    fn test_event() {
         let env = Env::default();
         let contract_id = env.register(Contract, ());
         let client = ContractClient::new(&env, &contract_id);
 
-        client.hello();
+        let from = Address::generate(&env);
+        let to = MuxedAddress::generate(&env);
+        let amount = 1i128;
+
+        client.transfer(&from, &to, &amount);
 
         assert_eq!(
             env.events().all(),
             vec![
                 &env,
-                // Expect 2 events.
                 (
                     contract_id.clone(),
                     // Expect these event topics.
-                    (symbol_short!("greetings"), symbol_short!("topic2")).into_val(&env),
+                    (Symbol::new(&env, "transfer"), &from, to.address()).into_val(&env),
                     // Expect this event body.
-                    symbol_short!("hello").into_val(&env)
+                    map![
+                        &env,
+                        (
+                            symbol_short!("amount"),
+                            <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
+                        ),
+                        (
+                            Symbol::new(&env, "to_muxed_id"),
+                            <_ as IntoVal<Env, Val>>::into_val(&to.id().unwrap(), &env)
+                        ),
+                    ]
+                    .to_val()
                 ),
+            ],
+        );
+    }
+
+    #[test]
+    fn test_event_with_option_none() {
+        let env = Env::default();
+        let contract_id = env.register(Contract, ());
+        let client = ContractClient::new(&env, &contract_id);
+
+        let from = Address::generate(&env);
+        let to = Address::generate(&env);
+        let amount = 1i128;
+
+        client.transfer(&from, &(&to).into(), &amount);
+
+        assert_eq!(
+            env.events().all(),
+            vec![
+                &env,
                 (
-                    contract_id,
+                    contract_id.clone(),
                     // Expect these event topics.
-                    (symbol_short!("farewells"), symbol_short!("topic2")).into_val(&env),
+                    (Symbol::new(&env, "transfer"), &from, &to).into_val(&env),
                     // Expect this event body.
-                    symbol_short!("bye").into_val(&env)
+                    map![
+                        &env,
+                        (
+                            symbol_short!("amount"),
+                            <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
+                        ),
+                        (Symbol::new(&env, "to_muxed_id"), ().into_val(&env),),
+                    ]
+                    .to_val()
                 ),
             ],
         );

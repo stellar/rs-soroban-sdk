@@ -1,5 +1,6 @@
 use std::io::Cursor;
 
+use base64::Engine;
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limited, Limits, ReadXdr, ScSpecEntry};
 use wasmparser::{BinaryReaderError, Parser, Payload};
@@ -15,7 +16,9 @@ pub enum ParseSpecBase64Error {
 }
 
 pub fn parse_base64(spec: &[u8]) -> Result<Vec<ScSpecEntry>, ParseSpecBase64Error> {
-    let decoded = base64::decode(spec).map_err(ParseSpecBase64Error::ParseBase64)?;
+    let decoded = base64::engine::general_purpose::STANDARD
+        .decode(spec)
+        .map_err(ParseSpecBase64Error::ParseBase64)?;
     parse_raw(&decoded).map_err(ParseSpecBase64Error::ParseXdr)
 }
 
@@ -56,7 +59,9 @@ pub fn raw_from_wasm(wasm: &[u8]) -> Result<Vec<u8>, FromWasmError> {
 
 pub fn base64_from_wasm(wasm: &[u8]) -> Result<String, FromWasmError> {
     let raw = raw_from_wasm(wasm)?;
-    Ok(base64::encode(raw))
+    let mut res = String::new();
+    base64::engine::general_purpose::STANDARD.encode_string(raw, &mut res);
+    Ok(res)
 }
 
 pub fn from_wasm(wasm: &[u8]) -> Result<Vec<ScSpecEntry>, FromWasmError> {

@@ -12,7 +12,7 @@ use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
 
-use types::{generate_enum, generate_error_enum, generate_struct, generate_union};
+use types::{generate_enum, generate_error_enum, generate_event, generate_struct, generate_union};
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
@@ -70,6 +70,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
     let mut spec_unions = Vec::new();
     let mut spec_enums = Vec::new();
     let mut spec_error_enums = Vec::new();
+    let mut spec_events = Vec::new();
     for s in specs {
         match s {
             ScSpecEntry::FunctionV0(f) => spec_fns.push(f),
@@ -77,6 +78,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
             ScSpecEntry::UdtUnionV0(u) => spec_unions.push(u),
             ScSpecEntry::UdtEnumV0(e) => spec_enums.push(e),
             ScSpecEntry::UdtErrorEnumV0(e) => spec_error_enums.push(e),
+            ScSpecEntry::EventV0(e) => spec_events.push(e),
         }
     }
 
@@ -87,6 +89,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
     let unions = spec_unions.iter().map(|s| generate_union(s));
     let enums = spec_enums.iter().map(|s| generate_enum(s));
     let error_enums = spec_error_enums.iter().map(|s| generate_error_enum(s));
+    let events = spec_events.iter().map(|s| generate_event(s));
 
     quote! {
         #[soroban_sdk::contractargs(name = "Args")]
@@ -97,6 +100,7 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
         #(#unions)*
         #(#enums)*
         #(#error_enums)*
+        #(#events)*
     }
 }
 
@@ -123,8 +127,7 @@ mod test {
     use super::{generate, ToFormattedString};
     use soroban_spec::read::from_wasm;
 
-    const EXAMPLE_WASM: &[u8] =
-        include_bytes!("../../target/wasm32-unknown-unknown/release/test_udt.wasm");
+    const EXAMPLE_WASM: &[u8] = include_bytes!("../../target/wasm32v1-none/release/test_udt.wasm");
 
     #[test]
     fn example() {

@@ -18,6 +18,8 @@ use soroban_env_host::TryIntoVal;
 
 pub mod storage;
 
+pub mod cost_estimate;
+
 use crate::{xdr, ConstructorArgs, Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
@@ -176,7 +178,8 @@ impl AuthSnapshot {
 #[serde(rename_all = "snake_case")]
 pub struct Generators {
     address: u64,
-    nonce: u64,
+    nonce: i64,
+    mux_id: u64,
 }
 
 impl Default for Generators {
@@ -184,6 +187,7 @@ impl Default for Generators {
         Generators {
             address: 0,
             nonce: 0,
+            mux_id: 0,
         }
     }
 }
@@ -228,7 +232,12 @@ impl Generators {
 
     pub fn nonce(&mut self) -> i64 {
         self.nonce = self.nonce.checked_add(1).unwrap();
-        self.nonce as i64
+        self.nonce
+    }
+
+    pub fn mux_id(&mut self) -> u64 {
+        self.mux_id = self.mux_id.checked_add(1).unwrap();
+        self.mux_id
     }
 }
 
@@ -312,9 +321,9 @@ pub mod budget {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     /// #     let env = Env::default();
-    /// env.budget().reset_default();
+    /// env.cost_estimate().budget().reset_default();
     /// // ...
-    /// println!("{}", env.budget());
+    /// println!("{}", env.cost_estimate().budget());
     /// # }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
@@ -436,6 +445,26 @@ pub trait Address {
     fn generate(env: &Env) -> crate::Address;
 }
 
+pub trait MuxedAddress {
+    /// Create a new MuxedAddress with arbitrary `Address` and id parts.
+    ///
+    /// Note, that since currently only accounts can be multiplexed, the
+    /// underlying `Address` will be an account (not contract) address.
+    fn generate(env: &Env) -> crate::MuxedAddress;
+
+    /// Returns a new `MuxedAddress` that has the same `Address` part as the
+    /// provided `address` and the provided multiplexing id.
+    ///
+    /// `address` can be either an `Address` or `MuxedAddress` and it has to
+    /// be an account (non-contract) address.
+    ///
+    /// Note on usage: the simplest way to test `MuxedAddress` is to generate
+    /// an arbitrary valid address with `MuxedAddress::generate`, then
+    /// `MuxedAddress::new` can be used to alter only the multiplexing id part
+    /// of that address.
+    fn new<T: Into<crate::MuxedAddress>>(address: T, id: u64) -> crate::MuxedAddress;
+}
+
 pub trait Deployer {
     /// Gets the TTL of the given contract's instance.
     ///
@@ -471,24 +500,16 @@ impl StellarAssetIssuer {
 
     /// Returns the flags for the issuer.
     pub fn flags(&self) -> u32 {
-        self.env
-            .host()
-            .with_mut_storage(|storage| {
-                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: self.account_id.clone(),
-                }));
+        let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+            account_id: self.account_id.clone(),
+        }));
 
-                let entry = storage.get(
-                    &k,
-                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                )?;
+        let (entry, _) = self.env.host().get_ledger_entry(&k).unwrap().unwrap();
 
-                match entry.data {
-                    xdr::LedgerEntryData::Account(ref e) => Ok(e.flags.clone()),
-                    _ => panic!("expected account entry but got {:?}", entry.data),
-                }
-            })
-            .unwrap()
+        match &entry.data {
+            xdr::LedgerEntryData::Account(e) => e.flags,
+            _ => panic!("expected account entry but got {:?}", entry.data),
+        }
     }
 
     /// Adds the flag specified to the existing issuer flags
@@ -519,34 +540,21 @@ impl StellarAssetIssuer {
             );
         }
 
+        let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+            account_id: self.account_id.clone(),
+        }));
+
+        let (entry, _) = self.env.host().get_ledger_entry(&k).unwrap().unwrap();
+        let mut entry = entry.as_ref().clone();
+
+        match entry.data {
+            xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
+            _ => panic!("expected account entry but got {:?}", entry.data),
+        }
+
         self.env
             .host()
-            .with_mut_storage(|storage| {
-                let k = Rc::new(xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
-                    account_id: self.account_id.clone(),
-                }));
-
-                let mut entry = storage
-                    .get(
-                        &k,
-                        soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                    )?
-                    .as_ref()
-                    .clone();
-
-                match entry.data {
-                    xdr::LedgerEntryData::Account(ref mut e) => e.flags = flags,
-                    _ => panic!("expected account entry but got {:?}", entry.data),
-                }
-
-                storage.put(
-                    &k,
-                    &Rc::new(entry),
-                    None,
-                    soroban_env_host::budget::AsBudget::as_budget(self.env.host()),
-                )?;
-                Ok(())
-            })
+            .add_ledger_entry(&k, &Rc::new(entry), None)
             .unwrap();
     }
 }

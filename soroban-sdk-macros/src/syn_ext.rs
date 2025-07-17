@@ -1,5 +1,6 @@
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use quote::{format_ident, quote, ToTokens};
+use std::collections::HashMap;
 use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
@@ -105,7 +106,7 @@ impl HasFnsItem {
         }
     }
 
-    pub fn fns(&'_ self) -> Vec<Fn> {
+    pub fn fns(&self) -> Vec<Fn<'_>> {
         match self {
             HasFnsItem::Trait(t) => trait_methods(t)
                 .map(|m| Fn {
@@ -133,9 +134,12 @@ impl Parse for HasFnsItem {
         _ = input.parse::<Token![pub]>();
         let lookahead = input.lookahead1();
         if lookahead.peek(Token![trait]) {
-            input.parse().map(HasFnsItem::Trait)
+            let t = input.parse()?;
+            Ok(HasFnsItem::Trait(t))
         } else if lookahead.peek(Token![impl]) {
-            input.parse().map(HasFnsItem::Impl)
+            let mut imp = input.parse()?;
+            flatten_associated_items_in_impl_fns(&mut imp);
+            Ok(HasFnsItem::Impl(imp))
         } else {
             Err(lookahead.error())
         }
@@ -207,5 +211,47 @@ fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
             }
         }
         _ => None,
+    }
+}
+
+fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
+    // TODO: Flatten associated consts used in functions.
+    // Flatten associated types used in functions.
+    let associated_types = imp
+        .items
+        .iter()
+        .filter_map(|item| match item {
+            ImplItem::Type(i) => Some((i.ident.clone(), i.ty.clone())),
+            _ => None,
+        })
+        .collect::<HashMap<_, _>>();
+    let fn_input_types = imp
+        .items
+        .iter_mut()
+        .filter_map(|item| match item {
+            ImplItem::Fn(f) => Some(f.sig.inputs.iter_mut().filter_map(|input| match input {
+                FnArg::Typed(t) => Some(&mut t.ty),
+                _ => None,
+            })),
+            _ => None,
+        })
+        .flatten();
+    for t in fn_input_types {
+        if let Type::Path(TypePath { qself: None, path }) = t.as_mut() {
+            let segments = &path.segments;
+            if segments.len() == 2
+                && segments.first() == Some(&PathSegment::from(format_ident!("Self")))
+            {
+                if let Some(PathSegment {
+                    arguments: PathArguments::None,
+                    ident,
+                }) = segments.get(1)
+                {
+                    if let Some(resolved_ty) = associated_types.get(ident) {
+                        *t.as_mut() = resolved_ty.clone();
+                    }
+                }
+            }
+        }
     }
 }

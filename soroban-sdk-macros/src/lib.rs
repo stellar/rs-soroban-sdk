@@ -1,11 +1,13 @@
 extern crate proc_macro;
 
 mod arbitrary;
+mod attribute;
 mod derive_args;
 mod derive_client;
 mod derive_enum;
 mod derive_enum_int;
 mod derive_error_enum_int;
+mod derive_event;
 mod derive_fn;
 mod derive_spec_fn;
 mod derive_struct;
@@ -21,20 +23,22 @@ use derive_client::{derive_client_impl, derive_client_type};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
+use derive_event::derive_event;
 use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn};
 use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
 
 use darling::{ast::NestedMeta, FromMeta};
+use macro_string::MacroString;
 use proc_macro::TokenStream;
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
 use syn::{
-    parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
-    ItemStruct, LitStr, Path, Type, Visibility,
+    parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Expr, Fields,
+    ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
@@ -62,7 +66,7 @@ pub fn symbol_short(input: TokenStream) -> TokenStream {
     symbol::short(&crate_path, &input).into()
 }
 
-fn default_crate_path() -> Path {
+pub(crate) fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
 }
 
@@ -154,15 +158,15 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 use std::sync::Mutex;
                 use std::collections::BTreeMap;
 
-                pub(crate) type F = #crate_path::testutils::ContractFunctionF;
+                pub type F = #crate_path::testutils::ContractFunctionF;
 
                 static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
 
-                pub(crate) fn register(name: &'static str, func: &'static F) {
+                pub fn register(name: &'static str, func: &'static F) {
                     FUNCS.lock().unwrap().insert(name, func);
                 }
 
-                pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                pub fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
                     let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
                     fopt.map(|f| f(env, args))
                 }
@@ -279,34 +283,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
 }
 
-#[proc_macro]
-pub fn contractmetabuiltin(_metadata: TokenStream) -> TokenStream {
-    // The following two lines assume that the soroban-sdk-macros crate always
-    // has the same version as the soroban-sdk, and lives in the same
-    // repository.
-    let rustc_version = env!("RUSTC_VERSION");
-    let sdk_pkg_version = env!("CARGO_PKG_VERSION");
-    let sdk_git_revision = env!("GIT_REVISION");
-    let sdk_version = format!("{sdk_pkg_version}#{sdk_git_revision}");
-    quote! {
-        contractmeta!(
-            // Rustc version.
-            key = "rsver",
-            val = #rustc_version,
-        );
-        contractmeta!(
-            // Rust Soroban SDK version.
-            key = "rssdkver",
-            val = #sdk_version,
-        );
-    }
-    .into()
-}
-
 #[derive(Debug, FromMeta)]
 struct MetadataArgs {
     key: String,
-    val: String,
+    #[darling(with = darling::util::parse_expr::preserve_str_literal)]
+    val: Expr,
 }
 
 #[proc_macro]
@@ -332,7 +313,9 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
             }
         };
 
-        let val: StringM = match args.val.try_into() {
+        let val = args.val.to_token_stream().into();
+        let MacroString(val) = parse_macro_input!(val);
+        let val: StringM = match val.try_into() {
             Ok(k) => k,
             Err(e) => {
                 return Error::new(Span::call_site(), e.to_string())
@@ -373,6 +356,11 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
         #gen
     }
     .into()
+}
+
+#[proc_macro_attribute]
+pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_event(metadata.into(), input.into()).into()
 }
 
 #[derive(Debug, FromMeta)]

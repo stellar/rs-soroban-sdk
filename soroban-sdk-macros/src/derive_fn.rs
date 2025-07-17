@@ -1,4 +1,4 @@
-use crate::map_type::map_type;
+use crate::{attribute::pass_through_attr_to_gen_code, map_type::map_type};
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -144,6 +144,12 @@ pub fn derive_pub_fn(
         None
     };
 
+    // Filter attributes to those that should be passed through to the generated code.
+    let attrs = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect::<Vec<_>>();
+
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
@@ -168,9 +174,12 @@ pub fn derive_pub_fn(
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub extern "C" fn invoke_raw_extern(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+            pub extern "C" fn invoke_raw_extern(#(#wrap_args),*) -> #crate_path::Val {
                 #[allow(deprecated)]
-                invoke_raw(env, #(#passthrough_calls),*)
+                invoke_raw(
+                    #crate_path::Env::default(),
+                    #(#passthrough_calls),*
+                )
             }
 
             use super::*;

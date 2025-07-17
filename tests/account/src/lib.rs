@@ -21,7 +21,7 @@ impl CustomAccountInterface for Contract {
     fn __check_auth(
         _env: Env,
         _signature_payload: Hash<32>,
-        _signatures: (),
+        _signatures: Self::Signature,
         _auth_contexts: Vec<Context>,
     ) -> Result<(), Error> {
         Ok(())

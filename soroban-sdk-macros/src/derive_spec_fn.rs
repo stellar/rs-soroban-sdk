@@ -11,6 +11,7 @@ use syn::{
     ReturnType, Type, TypePath,
 };
 
+use crate::attribute::pass_through_attr_to_gen_code;
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 #[allow(clippy::too_many_arguments)]
@@ -156,20 +157,28 @@ pub fn derive_fn_spec(
         return Err(quote! { #(#compile_errors)* });
     }
 
-    let export_attr = if export {
-        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
+    let exported = if export {
+        Some(quote! {
+            #[doc(hidden)]
+            #[allow(non_snake_case)]
+            #[allow(non_upper_case_globals)]
+            #(#attrs)*
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
+        })
     } else {
         None
     };
 
+    // Filter attributes to those that should be passed through to the generated code.
+    let attrs = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect::<Vec<_>>();
+
     // Generated code.
     Ok(quote! {
-        #[doc(hidden)]
-        #[allow(non_snake_case)]
-        #[allow(non_upper_case_globals)]
-        #(#attrs)*
-        #export_attr
-        pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
+        #exported
 
         impl #ty {
             #[allow(non_snake_case)]

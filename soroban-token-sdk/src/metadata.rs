@@ -2,7 +2,7 @@ use soroban_sdk::{contracttype, symbol_short, unwrap::UnwrapOptimized, Env, Stri
 
 const METADATA_KEY: Symbol = symbol_short!("METADATA");
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[contracttype]
 pub struct TokenMetadata {
     pub decimal: u32,
