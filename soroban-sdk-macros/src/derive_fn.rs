@@ -61,7 +61,7 @@ pub fn derive_pub_fn(
                 let allow_hash = ident == "__check_auth" && i == 0;
 
                 // Error if the type of the fn is not mappable.
-                if let Err(e) = map_type(&pat_ty.ty, allow_hash) {
+                if let Err(e) = map_type(&pat_ty.ty, false, allow_hash) {
                     errors.push(e);
                 }
 
