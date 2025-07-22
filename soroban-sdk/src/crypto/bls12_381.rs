@@ -505,6 +505,14 @@ impl TryFromVal<Env, Fr> for Val {
     }
 }
 
+impl TryFromVal<Env, &Fr> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, fr: &&Fr) -> Result<Self, Self::Error> {
+        Ok(fr.to_val())
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl From<&Fr> for ScVal {
     fn from(v: &Fr) -> Self {

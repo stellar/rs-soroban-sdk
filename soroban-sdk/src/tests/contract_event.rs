@@ -1,6 +1,6 @@
 use crate::{
     self as soroban_sdk, contract, contractevent, map, symbol_short, testutils::Events as _, vec,
-    Env, IntoVal, Map, Symbol, Val, Vec,
+    Env, IntoVal, Map, String, Symbol, Val, Vec,
 };
 
 #[test]
@@ -304,6 +304,7 @@ fn test_data_vec() {
         value: Symbol,
         value2: u32,
         value3: Vec<u32>,
+        value4: String,
     }
 
     env.as_contract(&id, || {
@@ -312,6 +313,7 @@ fn test_data_vec() {
             value: symbol_short!("yo"),
             value2: 2,
             value3: Vec::new(&env),
+            value4: String::from_str(&env, "asdf"),
         }
         .publish(&env);
     });
@@ -325,7 +327,13 @@ fn test_data_vec() {
                 // Expect these event topics.
                 (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
                 // Expect this event body.
-                (symbol_short!("yo"), 2u32, Vec::<u32>::new(&env)).into_val(&env)
+                (
+                    symbol_short!("yo"),
+                    2u32,
+                    Vec::<u32>::new(&env),
+                    String::from_str(&env, "asdf")
+                )
+                    .into_val(&env)
             ),
         ],
     );

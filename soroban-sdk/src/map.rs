@@ -216,6 +216,18 @@ where
     }
 }
 
+impl<K, V> TryFromVal<Env, &Map<K, V>> for Val
+where
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Error = Infallible;
+
+    fn try_from_val(_env: &Env, v: &&Map<K, V>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl<K, V> From<Map<K, V>> for Val
 where
     K: IntoVal<Env, Val> + TryFromVal<Env, Val>,

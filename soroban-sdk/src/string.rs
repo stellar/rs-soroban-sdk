@@ -111,6 +111,14 @@ impl TryFromVal<Env, String> for Val {
     }
 }
 
+impl TryFromVal<Env, &String> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&String) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl From<String> for Val {
     #[inline(always)]
     fn from(v: String) -> Self {
