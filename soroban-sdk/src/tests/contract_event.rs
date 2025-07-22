@@ -330,6 +330,47 @@ fn test_data_vec() {
 }
 
 #[test]
+fn test_data_vec_with_vec_field() {
+    let env = Env::default();
+
+    #[contract]
+    pub struct Contract;
+    let id = env.register(Contract, ());
+
+    #[contractevent(data_format = "vec")]
+    pub struct MyEvent {
+        #[topic]
+        name: Symbol,
+        value: Symbol,
+        arr: Vec<u32>,
+    }
+
+    env.as_contract(&id, || {
+        let vec_val = vec![&env, 10u32, 20u32, 30u32];
+        MyEvent {
+            name: symbol_short!("hi"),
+            value: symbol_short!("yo"),
+            arr: vec_val.clone(),
+        }
+        .publish(&env);
+    });
+
+    assert_eq!(
+        env.events().all(),
+        vec![
+            &env,
+            (
+                id,
+                // Expect these event topics.
+                (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
+                // Expect this event body.
+                (symbol_short!("yo"), vec![&env, 10u32, 20u32, 30u32]).into_val(&env)
+            ),
+        ],
+    );
+}
+
+#[test]
 fn test_data_vec_no_data() {
     let env = Env::default();
 

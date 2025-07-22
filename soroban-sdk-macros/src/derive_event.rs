@@ -244,7 +244,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         },
         DataFormat::Vec => quote! {
             use #path::IntoVal;
-            (#(&self.#data_idents,)*).into_val(env)
+            (#(self.#data_idents.clone(),)*).into_val(env)
         },
         DataFormat::Map => quote! {
             use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};
