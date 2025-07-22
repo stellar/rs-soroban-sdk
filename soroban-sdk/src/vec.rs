@@ -210,6 +210,14 @@ impl<T> TryFromVal<Env, Vec<T>> for Val {
     }
 }
 
+impl<T> TryFromVal<Env, &Vec<T>> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&Vec<T>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl<T> From<Vec<T>> for Val
 where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
