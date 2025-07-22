@@ -303,6 +303,7 @@ fn test_data_vec() {
         name: Symbol,
         value: Symbol,
         value2: u32,
+        value3: Vec<u32>,
     }
 
     env.as_contract(&id, || {
@@ -310,6 +311,7 @@ fn test_data_vec() {
             name: symbol_short!("hi"),
             value: symbol_short!("yo"),
             value2: 2,
+            value3: Vec::new(&env),
         }
         .publish(&env);
     });
@@ -323,7 +325,7 @@ fn test_data_vec() {
                 // Expect these event topics.
                 (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
                 // Expect this event body.
-                (symbol_short!("yo"), 2u32).into_val(&env)
+                (symbol_short!("yo"), 2u32, Vec::<u32>::new(&env)).into_val(&env)
             ),
         ],
     );
