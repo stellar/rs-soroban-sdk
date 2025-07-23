@@ -670,6 +670,28 @@ mod test {
     }
 
     #[test]
+    fn test_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = map.clone().into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
+    }
+
+    #[test]
+    fn test_ref_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = (&map).into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
+    }
+
+    #[test]
     fn test_raw_vals() {
         let env = Env::default();
 

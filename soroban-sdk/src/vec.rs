@@ -1052,6 +1052,28 @@ mod test {
     }
 
     #[test]
+    fn test_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = vec.clone().into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
+    }
+
+    #[test]
+    fn test_ref_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = (&vec).into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
+    }
+
+    #[test]
     fn test_vec_raw_val_type() {
         let env = Env::default();
 

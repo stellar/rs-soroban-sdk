@@ -277,6 +277,7 @@ impl String {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::IntoVal;
 
     #[test]
     fn string_from_and_to_slices() {
@@ -318,5 +319,27 @@ mod test {
         let s = String::from_str(&env, msg);
         let mut out = [0u8; 10];
         s.copy_into_slice(&mut out);
+    }
+
+    #[test]
+    fn string_to_val() {
+        let env = Env::default();
+
+        let s = String::from_str(&env, "abcdef");
+        let val: Val = s.clone().into_val(&env);
+        let rt: String = val.into_val(&env);
+
+        assert_eq!(s, rt);
+    }
+
+    #[test]
+    fn ref_string_to_val() {
+        let env = Env::default();
+
+        let s = String::from_str(&env, "abcdef");
+        let val: Val = (&s).into_val(&env);
+        let rt: String = val.into_val(&env);
+
+        assert_eq!(s, rt);
     }
 }
