@@ -118,6 +118,14 @@ pub fn derive_type_struct_tuple(
                 Ok(env.vec_new_from_slice(&vals).map_err(|_| ConversionError)?.into())
             }
         }
+
+        impl #path::TryFromVal<#path::Env, &#ident> for #path::Val {
+            type Error = #path::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &#path::Env, val: &&#ident) -> Result<Self, #path::ConversionError> {
+                <_ as #path::TryFromVal<#path::Env, #ident>>::try_from_val(env, *val)
+            }
+        }
     };
 
     // Additional output when testutils are enabled.

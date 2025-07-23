@@ -117,6 +117,14 @@ pub fn derive_type_enum_int(
                 })
             }
         }
+
+        impl #path::TryFromVal<#path::Env, &#enum_ident> for #path::Val {
+            type Error = #path::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &#path::Env, val: &&#enum_ident) -> Result<Self, #path::ConversionError> {
+                <_ as #path::TryFromVal<#path::Env, #enum_ident>>::try_from_val(env, *val)
+            }
+        }
     };
 
     // Additional output when testutils are enabled.

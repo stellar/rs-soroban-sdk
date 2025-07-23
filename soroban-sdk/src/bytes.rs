@@ -160,6 +160,14 @@ macro_rules! impl_bytesn_repr {
             }
         }
 
+        impl TryFromVal<Env, &$elem> for Val {
+            type Error = ConversionError;
+
+            fn try_from_val(_env: &Env, elt: &&$elem) -> Result<Self, Self::Error> {
+                Ok(elt.to_val())
+            }
+        }
+
         #[cfg(not(target_family = "wasm"))]
         impl From<&$elem> for ScVal {
             fn from(v: &$elem) -> Self {
