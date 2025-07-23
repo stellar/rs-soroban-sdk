@@ -1,7 +1,7 @@
 use crate::{self as soroban_sdk};
 use soroban_sdk::{
-    contract, contractimpl, contracttype, map, symbol_short, ConversionError, Env, TryFromVal,
-    Val, IntoVal
+    contract, contractimpl, contracttype, map, symbol_short, ConversionError, Env, IntoVal,
+    TryFromVal, Val,
 };
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
@@ -201,7 +201,7 @@ fn test_spec_with_long_names() {
 fn test_owned_to_val() {
     let env = Env::default();
 
-    let u = Udt { a: 1, b: 2};
+    let u = Udt { a: 1, b: 2 };
     let val: Val = u.clone().into_val(&env);
     let rt: Udt = val.into_val(&env);
 
@@ -212,7 +212,7 @@ fn test_owned_to_val() {
 fn test_ref_to_val() {
     let env = Env::default();
 
-    let u = Udt { a: 1, b: 2};
+    let u = Udt { a: 1, b: 2 };
     let val: Val = (&u).into_val(&env);
     let rt: Udt = val.into_val(&env);
 
@@ -223,7 +223,7 @@ fn test_ref_to_val() {
 fn test_double_ref_to_val() {
     let env = Env::default();
 
-    let u = Udt { a: 1, b: 2};
+    let u = Udt { a: 1, b: 2 };
     let val: Val = (&&u).into_val(&env);
     let rt: Udt = val.into_val(&env);
 
