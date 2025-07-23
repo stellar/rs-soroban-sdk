@@ -786,11 +786,22 @@ mod test {
     }
 
     #[test]
-    fn ref_g1affine_to_val() {
+    fn test_ref_g1affine_to_val() {
         let env = Env::default();
 
         let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
         let val: Val = (&g1).into_val(&env);
+        let rt: G1Affine = val.into_val(&env);
+
+        assert_eq!(g1, rt);
+    }
+
+    #[test]
+    fn test_doule_ref_g1affine_to_val() {
+        let env = Env::default();
+
+        let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
+        let val: Val = (&&g1).into_val(&env);
         let rt: G1Affine = val.into_val(&env);
 
         assert_eq!(g1, rt);
@@ -808,11 +819,22 @@ mod test {
     }
 
     #[test]
-    fn ref_fr_to_val() {
+    fn test_ref_fr_to_val() {
         let env = Env::default();
 
         let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = (&fr).into_val(&env);
+        let rt: Fr = val.into_val(&env);
+
+        assert_eq!(fr, rt);
+    }
+
+    #[test]
+    fn test_double_ref_fr_to_val() {
+        let env = Env::default();
+
+        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let val: Val = (&&fr).into_val(&env);
         let rt: Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);

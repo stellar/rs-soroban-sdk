@@ -1,6 +1,7 @@
-use crate as soroban_sdk;
+use crate::{self as soroban_sdk};
 use soroban_sdk::{
     contract, contractimpl, contracttype, map, symbol_short, ConversionError, Env, TryFromVal,
+    Val, IntoVal
 };
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
@@ -194,4 +195,37 @@ fn test_spec_with_long_names() {
         outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
     });
     assert_eq!(entries, expect);
+}
+
+#[test]
+fn test_owned_to_val() {
+    let env = Env::default();
+
+    let u = Udt { a: 1, b: 2};
+    let val: Val = u.clone().into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
+}
+
+#[test]
+fn test_ref_to_val() {
+    let env = Env::default();
+
+    let u = Udt { a: 1, b: 2};
+    let val: Val = (&u).into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
+}
+
+#[test]
+fn test_double_ref_to_val() {
+    let env = Env::default();
+
+    let u = Udt { a: 1, b: 2};
+    let val: Val = (&&u).into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
 }

@@ -2,6 +2,14 @@
 
 use crate::{vec, ConversionError, Env, IntoVal, Topics, TryFromVal, Val, Vec};
 
+// Note that the way that this conversion of tuple to Vec<Val> is written results in a need for any
+// supported type to support converting from `&&` (double-ref) to `Val`. This means values that
+// convert to `Val` need to have an impl of TryFromVal converting not only from their owned value
+// (which converts from a ref of that owned value), but from a & value (which converts from a
+// double ref &&).
+//
+// This is why you'll see TryFromVal impls from &values, not just owned values.
+
 impl TryFromVal<Env, ()> for Vec<Val> {
     type Error = ConversionError;
 

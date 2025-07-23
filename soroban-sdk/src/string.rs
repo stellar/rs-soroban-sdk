@@ -342,4 +342,15 @@ mod test {
 
         assert_eq!(s, rt);
     }
+
+    #[test]
+    fn double_ref_string_to_val() {
+        let env = Env::default();
+
+        let s = String::from_str(&env, "abcdef");
+        let val: Val = (&&s).into_val(&env);
+        let rt: String = val.into_val(&env);
+
+        assert_eq!(s, rt);
+    }
 }
