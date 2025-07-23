@@ -102,3 +102,36 @@ fn round_trips() {
     let after: Udt = scvec.try_into_val(&env).unwrap();
     assert_eq!(before, after);
 }
+
+#[test]
+fn test_owned_to_val() {
+    let env = Env::default();
+
+    let u = Udt::Aaa;
+    let val: Val = u.clone().into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
+}
+
+#[test]
+fn test_ref_to_val() {
+    let env = Env::default();
+
+    let u = Udt::Aaa;
+    let val: Val = (&u).into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
+}
+
+#[test]
+fn test_double_ref_to_val() {
+    let env = Env::default();
+
+    let u = Udt::Aaa;
+    let val: Val = (&&u).into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
+}

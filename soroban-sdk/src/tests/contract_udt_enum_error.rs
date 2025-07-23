@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Env};
+use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Env, IntoVal, Val};
 
 #[contract]
 pub struct Contract;
@@ -54,4 +54,31 @@ fn test_error() {
     let Err(Ok(Error::AnError)) = client.try_f(&Flag::B) else {
         panic!("unexpected value returned");
     };
+}
+
+#[test]
+fn test_owned_to_val() {
+    let env = Env::default();
+
+    let e = Error::AnError;
+    let val: Val = e.into_val(&env);
+    let _: Error = val.into_val(&env);
+}
+
+#[test]
+fn test_ref_to_val() {
+    let env = Env::default();
+
+    let e = Error::AnError;
+    let val: Val = (&e).into_val(&env);
+    let _: Error = val.into_val(&env);
+}
+
+#[test]
+fn test_double_ref_to_val() {
+    let env = Env::default();
+
+    let e = Error::AnError;
+    let val: Val = (&&e).into_val(&env);
+    let _: Error = val.into_val(&env);
 }

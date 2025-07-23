@@ -1,6 +1,6 @@
 use crate::{
-    self as soroban_sdk, contract, contractevent, map, symbol_short, testutils::Events as _, vec,
-    Env, IntoVal, Map, Symbol, Val, Vec,
+    self as soroban_sdk, contract, contractevent, contracttype, map, symbol_short,
+    testutils::Events as _, vec, Env, IntoVal, Map, String, Symbol, Val, Vec,
 };
 
 #[test]
@@ -297,12 +297,36 @@ fn test_data_vec() {
     pub struct Contract;
     let id = env.register(Contract, ());
 
+    #[contracttype]
+    pub struct MyType1 {
+        value: u32,
+    }
+
+    #[contracttype]
+    pub struct MyType2(u32);
+
+    #[contracttype]
+    pub enum MyType3 {
+        Value(u32),
+    }
+
+    #[contracttype]
+    pub enum MyType4 {
+        Value = 4,
+    }
+
     #[contractevent(data_format = "vec")]
     pub struct MyEvent {
         #[topic]
         name: Symbol,
         value: Symbol,
         value2: u32,
+        value3: Vec<u32>,
+        value4: String,
+        value5: MyType1,
+        value6: MyType2,
+        value7: MyType3,
+        value8: MyType4,
     }
 
     env.as_contract(&id, || {
@@ -310,6 +334,12 @@ fn test_data_vec() {
             name: symbol_short!("hi"),
             value: symbol_short!("yo"),
             value2: 2,
+            value3: Vec::new(&env),
+            value4: String::from_str(&env, "asdf"),
+            value5: MyType1 { value: 1 },
+            value6: MyType2(2),
+            value7: MyType3::Value(3),
+            value8: MyType4::Value,
         }
         .publish(&env);
     });
@@ -323,7 +353,17 @@ fn test_data_vec() {
                 // Expect these event topics.
                 (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
                 // Expect this event body.
-                (symbol_short!("yo"), 2u32).into_val(&env)
+                (
+                    symbol_short!("yo"),
+                    2u32,
+                    Vec::<u32>::new(&env),
+                    String::from_str(&env, "asdf"),
+                    MyType1 { value: 1 },
+                    MyType2(2),
+                    MyType3::Value(3),
+                    MyType4::Value,
+                )
+                    .into_val(&env)
             ),
         ],
     );

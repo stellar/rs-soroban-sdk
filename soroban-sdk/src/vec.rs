@@ -210,6 +210,14 @@ impl<T> TryFromVal<Env, Vec<T>> for Val {
     }
 }
 
+impl<T> TryFromVal<Env, &Vec<T>> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&Vec<T>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl<T> From<Vec<T>> for Val
 where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
@@ -1041,6 +1049,39 @@ mod test {
             v.push_back(1);
             v
         });
+    }
+
+    #[test]
+    fn test_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = vec.clone().into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
+    }
+
+    #[test]
+    fn test_ref_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = (&vec).into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
+    }
+
+    #[test]
+    fn test_double_ref_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = (&&vec).into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
     }
 
     #[test]
