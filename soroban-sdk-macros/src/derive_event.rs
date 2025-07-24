@@ -208,12 +208,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         use #path::IntoVal;
         (
             #(&#prefix_topics_symbols,)*
-            #(
-                {
-                    let val: #path::Val = self.#topic_idents.into_val(env);
-                    val
-                },
-            )*
+            #({ let v: #path::Val = self.#topic_idents.into_val(env); v },)*
         ).into_val(env)
     };
 
@@ -233,17 +228,13 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .map(|i| i.to_string())
         .collect::<Vec<_>>();
     let data_to_val = match args.data_format {
-        DataFormat::SingleValue if data_params_count == 0 => {
-            quote! {
-                #path::Val::VOID.to_val()
-            }
-        }
-        DataFormat::SingleValue => {
-            quote! {
-                use #path::IntoVal;
-                #(self.#data_idents.into_val(env))*
-            }
-        }
+        DataFormat::SingleValue if data_params_count == 0 => quote! {
+            #path::Val::VOID.to_val()
+        },
+        DataFormat::SingleValue => quote! {
+            use #path::IntoVal;
+            #(self.#data_idents.into_val(env))*
+        },
         DataFormat::Vec if data_params_count == 0 => quote! {
             use #path::IntoVal;
             #path::Vec::<#path::Val>::new(env).into_val(env)
@@ -251,12 +242,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         DataFormat::Vec => quote! {
             use #path::IntoVal;
             (
-                #(
-                    {
-                        let val: #path::Val = self.#data_idents.into_val(env);
-                        val
-                    },
-                )*
+                #({ let v: #path::Val = self.#data_idents.into_val(env); v },)*
             ).into_val(env)
         },
         DataFormat::Map => quote! {
