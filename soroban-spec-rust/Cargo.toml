@@ -18,7 +18,7 @@ syn = {version="2.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
 sha2 = "0.10.7"
-prettyplease = "0.2.4"
+prettyplease = "0.2.36"
 
 [dev-dependencies]
 pretty_assertions = "1.2.1"
