@@ -3,6 +3,7 @@ use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
     ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
+use syn::TypeReference;
 use syn::{
     spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
     Type, TypePath, TypeTuple,
@@ -16,8 +17,9 @@ pub const G1_SERIALIZED_SIZE: u32 = FP_SERIALIZED_SIZE * 2;
 pub const G2_SERIALIZED_SIZE: u32 = FP2_SERIALIZED_SIZE * 2;
 
 #[allow(clippy::too_many_lines)]
-pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
+pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
     match t {
+        Type::Reference(TypeReference { elem, .. }) => map_type(elem, allow_ref, allow_hash),
         Type::Path(TypePath {
             qself: None,
             path: Path { segments, .. },
@@ -100,8 +102,8 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                                ok_type: Box::new(map_type(ok, false)?),
-                                error_type: Box::new(map_type(err, false)?),
+                                ok_type: Box::new(map_type(ok, allow_ref, false)?),
+                                error_type: Box::new(map_type(err, allow_ref, false)?),
                             })))
                         }
                         "Option" => {
@@ -113,7 +115,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                             ))?,
                         };
                             Ok(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
-                                value_type: Box::new(map_type(t, false)?),
+                                value_type: Box::new(map_type(t, allow_ref, false)?),
                             })))
                         }
                         "Vec" => {
@@ -125,7 +127,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
-                                element_type: Box::new(map_type(t, false)?),
+                                element_type: Box::new(map_type(t, allow_ref, false)?),
                             })))
                         }
                         "Map" => {
@@ -137,8 +139,8 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
                                 ))?,
                             };
                             Ok(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
-                                key_type: Box::new(map_type(k, false)?),
-                                value_type: Box::new(map_type(v, false)?),
+                                key_type: Box::new(map_type(k, allow_ref, false)?),
+                                value_type: Box::new(map_type(v, allow_ref, false)?),
                             })))
                         }
                         "BytesN" => {
@@ -179,7 +181,7 @@ pub fn map_type(t: &Type, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
         }
         Type::Tuple(TypeTuple { elems, .. }) => {
             let map_type_reject_hash =
-                |t: &Type| -> Result<ScSpecTypeDef, Error> { map_type(t, false) };
+                |t: &Type| -> Result<ScSpecTypeDef, Error> { map_type(t, allow_ref, false) };
             Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
                 value_types: elems
                     .iter()

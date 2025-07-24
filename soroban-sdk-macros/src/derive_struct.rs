@@ -42,7 +42,7 @@ pub fn derive_type_struct(
                     errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is {MAX}", field_name.len())));
                     StringM::<MAX>::default()
                 }),
-                type_: match map_type(&field.ty, false) {
+                type_: match map_type(&field.ty,false, false) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);

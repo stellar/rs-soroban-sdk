@@ -491,3 +491,54 @@ fn test_data_map_no_data() {
         ],
     );
 }
+
+#[test]
+fn test_ref_fields() {
+    let env = Env::default();
+
+    #[contract]
+    pub struct Contract;
+    let id = env.register(Contract, ());
+
+    #[contractevent]
+    pub struct MyEvent<'a> {
+        #[topic]
+        name: &'a Symbol,
+        value: &'a Symbol,
+        value2: u32,
+    }
+
+    env.as_contract(&id, || {
+        MyEvent {
+            name: &symbol_short!("hi"),
+            value: &symbol_short!("yo"),
+            value2: 2,
+        }
+        .publish(&env);
+    });
+
+    assert_eq!(
+        env.events().all(),
+        vec![
+            &env,
+            (
+                id,
+                // Expect these event topics.
+                (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
+                // Expect this event body.
+                map![
+                    &env,
+                    (
+                        symbol_short!("value"),
+                        <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("yo"), &env),
+                    ),
+                    (
+                        symbol_short!("value2"),
+                        <_ as IntoVal<Env, Val>>::into_val(&2u32, &env),
+                    ),
+                ]
+                .into_val(&env)
+            ),
+        ],
+    );
+}

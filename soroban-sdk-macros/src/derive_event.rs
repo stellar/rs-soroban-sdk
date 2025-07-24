@@ -83,6 +83,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let mut errors = Error::accumulator();
 
     let ident = &input.ident;
+    let (gen_impl, gen_types, gen_where) = input.generics.split_for_impl();
     let path = &args.crate_path;
 
     let prefix_topics = if let Some(prefix_topics) = &args.topics {
@@ -133,7 +134,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 }))
                 .unwrap_or_default();
             let type_ = errors
-                .handle_in(|| Ok(map_type(&field.ty, false)?))
+                .handle_in(|| Ok(map_type(&field.ty, true, false)?))
                 .unwrap_or_default();
             ScSpecEventParamV0 {
                 location,
@@ -183,7 +184,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         #export_gen
         pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 
-        impl #ident {
+        impl #gen_impl #ident #gen_types #gen_where {
             pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
             }
@@ -207,7 +208,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         use #path::IntoVal;
         (
             #(&#prefix_topics_symbols,)*
-            #(&self.#topic_idents,)*
+            #({ let v: #path::Val = self.#topic_idents.into_val(env); v },)*
         ).into_val(env)
     };
 
@@ -227,24 +228,22 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .map(|i| i.to_string())
         .collect::<Vec<_>>();
     let data_to_val = match args.data_format {
-        DataFormat::SingleValue if data_params_count == 0 => {
-            quote! {
-                #path::Val::VOID.to_val()
-            }
-        }
-        DataFormat::SingleValue => {
-            quote! {
-                use #path::IntoVal;
-                #(self.#data_idents.into_val(env))*
-            }
-        }
+        DataFormat::SingleValue if data_params_count == 0 => quote! {
+            #path::Val::VOID.to_val()
+        },
+        DataFormat::SingleValue => quote! {
+            use #path::IntoVal;
+            #(self.#data_idents.into_val(env))*
+        },
         DataFormat::Vec if data_params_count == 0 => quote! {
             use #path::IntoVal;
             #path::Vec::<#path::Val>::new(env).into_val(env)
         },
         DataFormat::Vec => quote! {
             use #path::IntoVal;
-            (#(&self.#data_idents,)*).into_val(env)
+            (
+                #({ let v: #path::Val = self.#data_idents.into_val(env); v },)*
+            ).into_val(env)
         },
         DataFormat::Map => quote! {
             use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};
@@ -260,7 +259,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let output = quote! {
         #spec_gen
 
-        impl #path::Event for #ident {
+        impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {
                 #topics_to_vec_val
             }
@@ -269,7 +268,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             }
         }
 
-        impl #ident {
+        impl #gen_impl #ident #gen_types #gen_where {
             fn publish(&self, env: &#path::Env) {
                 <_ as #path::Event>::publish(self, env);
             }
