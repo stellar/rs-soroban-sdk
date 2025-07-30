@@ -376,6 +376,27 @@ where
         unsafe { Self::unchecked_new(env.clone(), vec) }
     }
 
+    /// Create a Vec from an iterator of items.
+    ///
+    /// This provides FromIterator-like functionality but requires an Env parameter.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// use soroban_sdk::{Env, Vec};
+    ///
+    /// let env = Env::default();
+    /// let items = vec![1, 2, 3, 4];
+    /// let vec = Vec::from_iter(&env, items.into_iter());
+    /// assert_eq!(vec.len(), 4);
+    /// ```
+    #[inline(always)]
+    pub fn from_iter<I: IntoIterator<Item = T>>(env: &Env, iter: I) -> Vec<T> {
+        let mut vec = Self::new(env);
+        vec.extend(iter);
+        vec
+    }
+
     /// Create a Vec from the slice of items.
     #[inline(always)]
     pub fn from_slice(env: &Env, items: &[T]) -> Vec<T>
@@ -914,6 +935,17 @@ where
 
     fn into_iter(self) -> Self::IntoIter {
         self.clone().into_iter()
+    }
+}
+
+impl<T> Extend<T> for Vec<T>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
+        for item in iter {
+            self.push_back(item);
+        }
     }
 }
 
@@ -1850,5 +1882,101 @@ mod test {
         let env = Env::default();
         let mut v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
         v.remove_unchecked(v.len())
+    }
+
+    #[test]
+    fn test_extend() {
+        let env = Env::default();
+        let mut v: Vec<i64> = vec![&env, 1, 2, 3];
+
+        // Extend with a std vector
+        let items = std::vec![4, 5, 6];
+        v.extend(items);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5, 6]);
+        assert_eq!(v.len(), 6);
+
+        // Extend with an array
+        v.extend([7, 8, 9]);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(v.len(), 9);
+
+        // Extend with an empty iterator
+        let empty: std::vec::Vec<i64> = std::vec::Vec::new();
+        v.extend(empty);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(v.len(), 9);
+    }
+
+    #[test]
+    fn test_extend_empty_vec() {
+        let env = Env::default();
+        let mut v: Vec<i64> = vec![&env];
+
+        // Extend empty vec with items
+        v.extend([1, 2, 3, 4, 5]);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5]);
+        assert_eq!(v.len(), 5);
+    }
+
+    #[test]
+    fn test_from_iter() {
+        let env = Env::default();
+
+        // Create from std vector iterator
+        let items = std::vec![1, 2, 3, 4, 5];
+        let v = Vec::from_iter(&env, items.into_iter());
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5]);
+        assert_eq!(v.len(), 5);
+
+        // Create from array iterator
+        let v2 = Vec::from_iter(&env, [10, 20, 30]);
+        assert_eq!(v2, vec![&env, 10, 20, 30]);
+        assert_eq!(v2.len(), 3);
+
+        // Create from range
+        let v3 = Vec::from_iter(&env, 1..=4);
+        assert_eq!(v3, vec![&env, 1, 2, 3, 4]);
+        assert_eq!(v3.len(), 4);
+    }
+
+    #[test]
+    fn test_from_iter_empty() {
+        let env = Env::default();
+
+        // Create from empty iterator
+        let empty: std::vec::Vec<i64> = std::vec::Vec::new();
+        let v = Vec::from_iter(&env, empty.into_iter());
+        assert_eq!(v, vec![&env]);
+        assert_eq!(v.len(), 0);
+
+        // Create from empty range
+        let v2 = Vec::from_iter(&env, 1..1);
+        assert_eq!(v2, vec![&env]);
+        assert_eq!(v2.len(), 0);
+    }
+
+    #[test]
+    fn test_from_iter_different_types() {
+        let env = Env::default();
+
+        // Test with strings
+        let strings = std::vec!["hello".to_string(), "world".to_string(), "test".to_string()];
+        let v = Vec::from_iter(&env, strings.into_iter());
+        assert_eq!(
+            v,
+            vec![
+                &env,
+                "hello".to_string(),
+                "world".to_string(),
+                "test".to_string()
+            ]
+        );
+        assert_eq!(v.len(), 3);
+
+        // Test with booleans
+        let bools = [true, false, true, false];
+        let v2 = Vec::from_iter(&env, bools.into_iter());
+        assert_eq!(v2, vec![&env, true, false, true, false]);
+        assert_eq!(v2.len(), 4);
     }
 }
