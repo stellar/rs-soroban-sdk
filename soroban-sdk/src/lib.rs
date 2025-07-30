@@ -391,6 +391,18 @@ pub use soroban_sdk_macros::contract;
 /// ```
 pub use soroban_sdk_macros::contractimpl;
 
+/// Generates code the same as contractimpl does, but for the default functions of a trait that are
+/// not overriden.
+///
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
+
+/// Marks the trait as intended to provide contract functions that a `contractimpl` can implement.
+/// Functions with default implementation are callable on the contract.
+/// TODO: Add rust docs.
+pub use soroban_sdk_macros::contracttrait;
+
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
 /// under the section name 'contractmetav0'. Contract developers can use this to
 /// append metadata to their contract.
