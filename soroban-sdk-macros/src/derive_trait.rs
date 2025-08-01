@@ -46,13 +46,12 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
     });
 
     let macro_ident = macro_ident(&input.ident);
-    let hidden_macro_ident = format_ident!("__{}", macro_ident);
 
     let output = quote! {
         #[doc(hidden)]
         #[allow(unused_macros)]
         #[macro_export]
-        macro_rules! #hidden_macro_ident {
+        macro_rules! #macro_ident {
             (
                 $impl_ident:ty,
                 $impl_fns:expr,
@@ -74,7 +73,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
 
         /// Macro for `contractimpl`ing the default functions of the trait that are not overriden
         /// inside the macro block.
-        pub use #hidden_macro_ident as #macro_ident;
+        pub use #macro_ident as #trait_ident;
     };
 
     Ok(output)
@@ -88,12 +87,11 @@ pub fn generate_call_to_contractimpl_for_trait(
     args_ident: &str,
     spec_ident: &str,
 ) -> TokenStream2 {
-    let macro_ident = macro_ident(trait_ident);
     let impl_fns = pub_methods
         .iter()
         .map(|f| f.sig.to_token_stream().to_string());
     quote! {
-        #macro_ident!(
+        #trait_ident!(
             #impl_ident,
             [#(#impl_fns),*],
             #client_ident,
@@ -105,5 +103,5 @@ pub fn generate_call_to_contractimpl_for_trait(
 
 fn macro_ident(trait_ident: &Ident) -> Ident {
     let lower = trait_ident.to_string().to_snake_case();
-    format_ident!("contractimpl_for_{lower}")
+    format_ident!("__contractimpl_for_{lower}")
 }
