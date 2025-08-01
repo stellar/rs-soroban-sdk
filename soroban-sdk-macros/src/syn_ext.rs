@@ -5,8 +5,8 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, Path, PathArguments, PathSegment,
-    ReturnType, Token, TypePath,
+    AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
+    PathSegment, ReturnType, Signature, Token, TypePath,
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
@@ -33,6 +33,15 @@ pub fn trait_methods(imp: &ItemTrait) -> impl Iterator<Item = &TraitItemFn> {
         TraitItem::Fn(m) => Some(m),
         _ => None,
     })
+}
+
+/// Converts a Vec<LitStr> into a Vec<Signature>.
+pub fn strs_to_signatures(fn_sigs: &[LitStr]) -> Vec<Signature> {
+    fn_sigs
+        .iter()
+        .map(|f| f.value())
+        .map(|f| syn::parse_str::<Signature>(&f).unwrap())
+        .collect()
 }
 
 /// Returns the ident of the function argument, if it has one.
@@ -187,6 +196,23 @@ impl<'a> Fn<'a> {
                 Result<#e, #crate_path::InvokeError>
             >
         })
+    }
+}
+
+impl<'a> From<&'a Signature> for Fn<'a> {
+    fn from(s: &'a Signature) -> Self {
+        let Signature {
+            ident,
+            inputs,
+            output,
+            ..
+        } = s;
+        Self {
+            ident,
+            attrs: &[],
+            inputs,
+            output,
+        }
     }
 }
 

@@ -13,7 +13,7 @@ use syn::{
 #[allow(clippy::too_many_arguments)]
 pub fn derive_pub_fn(
     crate_path: &Path,
-    call: &TokenStream2,
+    self_ty: TokenStream2,
     ident: &Ident,
     attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
@@ -22,6 +22,8 @@ pub fn derive_pub_fn(
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
+
+    let call = quote! { <super::#self_ty>::#ident };
 
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
