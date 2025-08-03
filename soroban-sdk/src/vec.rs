@@ -1928,7 +1928,7 @@ mod test {
 
         // Create from std vector iterator
         let items = std::vec![1, 2, 3, 4, 5];
-        let v = Vec::from_iter(&env, items.into_iter());
+        let v = Vec::from_iter(&env, items);
         assert_eq!(v, vec![&env, 1, 2, 3, 4, 5]);
         assert_eq!(v.len(), 5);
 
@@ -1949,7 +1949,7 @@ mod test {
 
         // Create from empty iterator
         let empty: std::vec::Vec<i64> = std::vec::Vec::new();
-        let v = Vec::from_iter(&env, empty.into_iter());
+        let v = Vec::from_iter(&env, empty);
         assert_eq!(v, vec![&env]);
         assert_eq!(v.len(), 0);
 
@@ -1965,7 +1965,7 @@ mod test {
 
         // Test with strings
         let strings = std::vec!["hello".to_string(), "world".to_string(), "test".to_string()];
-        let v = Vec::from_iter(&env, strings.into_iter());
+        let v = Vec::from_iter(&env, strings);
         assert_eq!(
             v,
             vec![
