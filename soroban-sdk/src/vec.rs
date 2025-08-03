@@ -380,6 +380,10 @@ where
     ///
     /// This provides FromIterator-like functionality but requires an Env parameter.
     ///
+    /// Note: This function iteratively adds each item one at a time, making a call to the Soroban
+    /// environment for each item making it inefficient for joining two [`Vec`]s. Use [`append`] to
+    /// join two [`Vec`]s.
+    ///
     /// ### Examples
     ///
     /// ```
