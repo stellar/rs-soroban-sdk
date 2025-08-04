@@ -1,0 +1,24 @@
+[package]
+name = "test_macros"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+
+# The must_be_empty crate is used to test functions that have third party
+# attributes in use on functions inside contractimpl blocks. It's selected
+# because it is a small simple function attribute macro, and not for any
+# functionality it actually provides.
+must_be_empty = "0.1.0"
+
+[dev-dependencies]
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
