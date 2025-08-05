@@ -1002,6 +1002,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "proc_macros"
+version = "0.0.0"
+dependencies = [
+ "quote",
+ "syn 2.0.103",
+]
+
+[[package]]
 name = "proptest"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1689,6 +1697,14 @@ dependencies = [
 name = "test_logging"
 version = "23.0.0-rc.2.3"
 dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_macros"
+version = "23.0.0-rc.2.3"
+dependencies = [
+ "proc_macros",
  "soroban-sdk",
 ]
 

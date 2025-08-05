@@ -157,6 +157,12 @@ pub fn derive_fn_spec(
         return Err(quote! { #(#compile_errors)* });
     }
 
+    // Filter attributes to those that should be passed through to the generated code.
+    let attrs = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect::<Vec<_>>();
+
     let exported = if export {
         Some(quote! {
             #[doc(hidden)]
@@ -169,12 +175,6 @@ pub fn derive_fn_spec(
     } else {
         None
     };
-
-    // Filter attributes to those that should be passed through to the generated code.
-    let attrs = attrs
-        .iter()
-        .filter(|attr| pass_through_attr_to_gen_code(attr))
-        .collect::<Vec<_>>();
 
     // Generated code.
     Ok(quote! {
