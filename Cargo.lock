@@ -1003,7 +1003,7 @@ dependencies = [
 
 [[package]]
 name = "proc_macros"
-version = "0.0.0"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "quote",
  "syn 2.0.103",
@@ -1379,7 +1379,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1392,7 +1392,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1421,7 +1421,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "darling",
  "heck",
@@ -1439,7 +1439,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "base64",
  "pretty_assertions",
@@ -1450,7 +1450,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1465,7 +1465,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1583,126 +1583,126 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_bls"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_constructor"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_macros"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "proc_macros",
  "soroban-sdk",
@@ -1710,28 +1710,28 @@ dependencies = [
 
 [[package]]
 name = "test_modular"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -1739,7 +1739,7 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "23.0.0-rc.2.3"
+version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",
 ]

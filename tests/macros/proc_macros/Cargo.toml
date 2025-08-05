@@ -1,7 +1,7 @@
 [package]
 name = "proc_macros"
 description = "A collection of proc-macros used by the test_macros test vector to validate that the soroban-sdk macros are composable and compatible with a variety of other macros."
-version = "0.0.0"
+version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
 edition = "2021"
