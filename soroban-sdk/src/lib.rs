@@ -95,7 +95,14 @@ fn __link_sections() {
     #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::internal::meta::XDR.len()] = env::internal::meta::XDR;
 
-    soroban_sdk_macros::contractmetabuiltin!();
+    // Rustc version.
+    contractmeta!(key = "rsver", val = env!("RUSTC_VERSION"),);
+
+    // Rust Soroban SDK version.
+    contractmeta!(
+        key = "rssdkver",
+        val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
+    );
 }
 
 // Re-exports of dependencies used by macros.
@@ -582,6 +589,221 @@ pub use soroban_sdk_macros::contractmeta;
 /// ```
 pub use soroban_sdk_macros::contracttype;
 
+/// Generates conversions from the struct into a published event.
+///
+/// Fields of the struct become topics and data parameters in the published event.
+///
+/// Includes the event in the contract spec so that clients can generate bindings
+/// for the type and downstream systems can understand the meaning of the event.
+///
+/// ### Examples
+///
+/// #### Define an Event
+///
+/// The event will have a single fixed topic matching the name of the struct in lower snake
+/// case. The fixed topic will appear before any topics listed as fields. In the example
+/// below, the topics for the event will be:
+/// - `"my_event"`
+/// - u32 value from the `my_topic` field
+///
+/// The event's data will be a [`Map`], containing a key-value pair for each field with the key
+/// being the name as a [`Symbol`]. In the example below, the data for the event will be:
+/// - key: my_event_data => val: u32
+/// - key: more_event_data => val: u64
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+///     pub more_event_data: u64,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// #### Define an Event with Custom Topics
+///
+/// Define a contract event with a custom list of fixed topics.
+///
+/// The fixed topics can be change to another value. In the example
+/// below, the topics for the event will be:
+/// - `"my_contract"`
+/// - `"an_event"`
+/// - u32 value from the `my_topic` field
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent(topics = ["my_contract", "an_event"])]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+///     pub more_event_data: u64,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// #### Define an Event with Other Data Formats
+///
+/// The data format of the event is a map by default, but can alternatively be defined as a `vec`
+/// or `single-value`.
+///
+/// ##### Vec
+///
+/// In the example below, the data for the event will be a [`Vec`] containing:
+/// - u32
+/// - u64
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent(data_format = "vec")]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+///     pub more_event_data: u64,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// ##### Single Value
+///
+/// In the example below, the data for the event will be a u32.
+///
+/// When the data format is a single value there must be no more than one data field.
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent(data_format = "single-value")]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// #### A Full Example
+///
+/// Defining an event, publishing it in a contract, and testing it.
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::{contract, contractevent, contractimpl, contracttype, symbol_short, Env, Symbol};
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct Increment {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub change: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub count: u32,
+/// }
+///
+/// #[contracttype]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct State {
+///     pub count: u32,
+///     pub last_incr: u32,
+/// }
+///
+/// #[contract]
+/// pub struct Contract;
+///
+/// #[contractimpl]
+/// impl Contract {
+///     /// Increment increments an internal counter, and returns the value.
+///     /// Publishes an event about the change in the counter.
+///     pub fn increment(env: Env, incr: u32) -> u32 {
+///         // Get the current count.
+///         let mut state = Self::get_state(env.clone());
+///
+///         // Increment the count.
+///         state.count += incr;
+///         state.last_incr = incr;
+///
+///         // Save the count.
+///         env.storage().persistent().set(&symbol_short!("STATE"), &state);
+///
+///         // Publish an event about the change.
+///         Increment {
+///             change: incr,
+///             count: state.count,
+///         }.publish(&env);
+///
+///         // Return the count to the caller.
+///         state.count
+///     }
+///
+///     /// Return the current state.
+///     pub fn get_state(env: Env) -> State {
+///         env.storage().persistent()
+///             .get(&symbol_short!("STATE"))
+///             .unwrap_or_else(|| State::default()) // If no value set, assume 0.
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register(Contract, ());
+///     let client = ContractClient::new(&env, &contract_id);
+///
+///     assert_eq!(client.increment(&1), 1);
+///     assert_eq!(client.increment(&10), 11);
+///     assert_eq!(
+///         client.get_state(),
+///         State {
+///             count: 11,
+///             last_incr: 10,
+///         },
+///     );
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+pub use soroban_sdk_macros::contractevent;
+
 /// Generates a type that helps build function args for a contract trait.
 pub use soroban_sdk_macros::contractargs;
 
@@ -786,7 +1008,7 @@ pub mod deploy;
 mod error;
 pub use error::InvokeError;
 pub mod events;
-pub use events::Topics;
+pub use events::{Event, Topics};
 pub mod iter;
 pub mod ledger;
 pub mod logs;

@@ -36,7 +36,7 @@ pub fn derive_type_struct_tuple(
             let field_spec = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
-                type_: match map_type(&field.ty, false) {
+                type_: match map_type(&field.ty, false, false) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);
@@ -116,6 +116,14 @@ pub fn derive_type_struct_tuple(
                     #((&val.#field_idx_lits).try_into_val(env).map_err(|_| ConversionError)?),*
                 ];
                 Ok(env.vec_new_from_slice(&vals).map_err(|_| ConversionError)?.into())
+            }
+        }
+
+        impl #path::TryFromVal<#path::Env, &#ident> for #path::Val {
+            type Error = #path::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &#path::Env, val: &&#ident) -> Result<Self, #path::ConversionError> {
+                <_ as #path::TryFromVal<#path::Env, #ident>>::try_from_val(env, *val)
             }
         }
     };

@@ -231,7 +231,7 @@ dependencies = [
  "num-bigint",
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -259,7 +259,7 @@ checksum = "45565fc9416b9896014f5732ac776f810ee53a66730c17e4020c3ec064a8f88f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -336,7 +336,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32a2785755761f3ddc1492979ce1e48d2c00d09311c39e4466429188f3dd6501"
 dependencies = [
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -363,7 +363,7 @@ checksum = "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -387,7 +387,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "strsim",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -398,7 +398,7 @@ checksum = "d336a2a514f6ccccaa3e09b02d41d35330c07ddf03a62165fcec10bb561c7806"
 dependencies = [
  "darling_core",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -446,7 +446,7 @@ checksum = "67e77553c4162a157adbf834ebae5b415acbecbeafc7a74b0e886657506a7611"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -670,6 +670,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e5274423e17b7c9fc20b6e7e208532f9b19825d82dfd615708b70edd83df41f1"
 
 [[package]]
+name = "heck"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
+
+[[package]]
 name = "hex"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -846,6 +852,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
 
 [[package]]
+name = "macro-string"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b27834086c65ec3f9387b096d66e99f221cf081c2b738042aa252bcd41204e3"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.103",
+]
+
+[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -886,7 +903,7 @@ checksum = "ed3955f1a9c7c0c15e092f9c887db08b1fc683305fdf6eb6684f22555355e202"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -974,7 +991,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "479cf940fbbb3426c32c5d5176f62ad57549a0bb84773423ba8be9d089f5faba"
 dependencies = [
  "proc-macro2",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -1012,9 +1029,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.86"
+version = "1.0.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e719e8df665df0d1c8fbfd238015744736151d4445ec0836b8e628aae103b77"
+checksum = "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
 dependencies = [
  "unicode-ident",
 ]
@@ -1206,7 +1223,7 @@ checksum = "243902eda00fad750862fc144cea25caca5e20d615af0a81bee94ca738f1df1f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -1249,14 +1266,14 @@ dependencies = [
  "darling",
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
 name = "sha2"
-version = "0.10.8"
+version = "0.10.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "793db75ad2bcafc3ffa7c68b215fee268f537982cd901d132f89c6343f3a3dc8"
+checksum = "a7507d819769d01a365ab707794a4084392c824f54a7a6a7862f8c3d0892b283"
 dependencies = [
  "cfg-if",
  "cpufeatures",
@@ -1297,21 +1314,21 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72a252f947730c56eb2655c3f69736eadc4ef37bb129877051d87353fdff29f9"
+checksum = "2ae7f1f1908c9cdb7740eb9bb7a467770ff26fa4c82e49fdb4de88027b5fb93c"
 dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
 name = "soroban-env-common"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f4727a4d48b5690994d724752ebe06db5d008e88d1cf374303cdd2f16ebebee"
+checksum = "6c20fd873e412036f93916c946d497216d8a997a5f8c13a342127fe0043cde49"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1328,9 +1345,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d1f71190ccec807f3030b61779acd6f7f5b80262c8926f77458e7e72c353beb"
+checksum = "f18662e41bcfc9914ec365c3743ac040513403f1ca2cc7bad0a7a846f179391c"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1338,9 +1355,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a3ffa1528a878fd5c4162b92f4fbe960348dd4b4592d1251843e05cecbc6cd6"
+checksum = "c1a03f55efb228e2b687276a4171291c814b7ee38d2aed926d7cb5a786bf269a"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -1374,9 +1391,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2bed72512c8bebc17340046587c208fd4791d3c79e4e0c3ee9b6b554dafbe968"
+checksum = "273c716dcf8797dd70517cc79af7b788934a17ced73a156bd6511f51930d4cd7"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1384,12 +1401,12 @@ dependencies = [
  "serde",
  "serde_json",
  "stellar-xdr",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1402,10 +1419,11 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "arbitrary",
  "bytes-lit",
+ "crate-git-revision",
  "ctor",
  "curve25519-dalek",
  "derive_arbitrary",
@@ -1430,25 +1448,25 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
- "crate-git-revision",
  "darling",
+ "heck",
  "itertools",
+ "macro-string",
  "proc-macro2",
  "quote",
- "rustc_version",
  "sha2",
  "soroban-env-common",
  "soroban-spec",
  "soroban-spec-rust",
  "stellar-xdr",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
 name = "soroban-spec"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "base64",
  "pretty_assertions",
@@ -1459,7 +1477,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1468,13 +1486,13 @@ dependencies = [
  "sha2",
  "soroban-spec",
  "stellar-xdr",
- "syn 2.0.77",
+ "syn 2.0.103",
  "thiserror",
 ]
 
 [[package]]
 name = "soroban-token-sdk"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1526,9 +1544,9 @@ dependencies = [
 
 [[package]]
 name = "stellar-xdr"
-version = "23.0.0-rc.1"
+version = "23.0.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11e08476633f75dfda6d41769619d8b54280d6b7807ac36bf09fa9c62afb8cfd"
+checksum = "632bf15309c2992c059fb499275a706f6afdfd68c690508d5d9bfa96c771477f"
 dependencies = [
  "arbitrary",
  "base64",
@@ -1539,6 +1557,7 @@ dependencies = [
  "hex",
  "serde",
  "serde_with",
+ "sha2",
  "stellar-strkey",
 ]
 
@@ -1567,9 +1586,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.77"
+version = "2.0.103"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f35bcdf61fd8e7be6caf75f429fdca8beb3ed76584befb503b1569faee373ed"
+checksum = "e4307e30089d6fd6aff212f2da3a1f9e32f3223b1f010fb09b7c95f90f3ca1e8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1591,119 +1610,119 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_bls"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_constructor"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1718,28 +1737,28 @@ dependencies = [
 
 [[package]]
 name = "test_modular"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -1747,7 +1766,7 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "23.0.0-rc.1.1"
+version = "23.0.0-rc.2.3"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1769,7 +1788,7 @@ checksum = "a4558b58466b9ad7ca0f102865eccc95938dca1a74a856f2b57b6629050da261"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -1864,7 +1883,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
  "wasm-bindgen-shared",
 ]
 
@@ -1886,7 +1905,7 @@ checksum = "afc340c74d9005395cf9dd098506f7f44e38f2b4a21c6aaacf9a105ea5e1e836"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -2049,7 +2068,7 @@ checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -2069,5 +2088,5 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.77",
+ "syn 2.0.103",
 ]

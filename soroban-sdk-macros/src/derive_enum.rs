@@ -192,6 +192,14 @@ pub fn derive_type_enum(
                 }
             }
         }
+
+        impl #path::TryFromVal<#path::Env, &#enum_ident> for #path::Val {
+            type Error = #path::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &#path::Env, val: &&#enum_ident) -> Result<Self, #path::ConversionError> {
+                <_ as #path::TryFromVal<#path::Env, #enum_ident>>::try_from_val(env, *val)
+            }
+        }
     };
 
     // Additional output when testutils are enabled.
@@ -344,7 +352,7 @@ fn map_tuple_variant(
     let spec_case = {
         let field_types = fields
             .iter()
-            .map(|f| match map_type(&f.ty, false) {
+            .map(|f| match map_type(&f.ty, false, false) {
                 Ok(t) => t,
                 Err(e) => {
                     errors.push(e);

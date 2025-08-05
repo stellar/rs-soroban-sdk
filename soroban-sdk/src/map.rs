@@ -216,6 +216,18 @@ where
     }
 }
 
+impl<K, V> TryFromVal<Env, &Map<K, V>> for Val
+where
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Error = Infallible;
+
+    fn try_from_val(_env: &Env, v: &&Map<K, V>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl<K, V> From<Map<K, V>> for Val
 where
     K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
@@ -655,6 +667,39 @@ mod test {
 
         let map: Map<(), ()> = map![&env];
         assert_eq!(map.len(), 0);
+    }
+
+    #[test]
+    fn test_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = map.clone().into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
+    }
+
+    #[test]
+    fn test_ref_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = (&map).into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
+    }
+
+    #[test]
+    fn test_double_ref_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = (&&map).into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
     }
 
     #[test]

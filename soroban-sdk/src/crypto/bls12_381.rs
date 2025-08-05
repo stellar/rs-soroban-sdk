@@ -505,6 +505,14 @@ impl TryFromVal<Env, Fr> for Val {
     }
 }
 
+impl TryFromVal<Env, &Fr> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, fr: &&Fr) -> Result<Self, Self::Error> {
+        Ok(fr.to_val())
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl From<&Fr> for ScVal {
     fn from(v: &Fr) -> Self {
@@ -759,5 +767,76 @@ impl Bls12_381 {
         let env = self.env();
         let v = internal::Env::bls12_381_fr_inv(env, lhs.into()).unwrap_infallible();
         U256::try_from_val(env, &v).unwrap_infallible().into()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_g1affine_to_val() {
+        let env = Env::default();
+
+        let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
+        let val: Val = g1.clone().into_val(&env);
+        let rt: G1Affine = val.into_val(&env);
+
+        assert_eq!(g1, rt);
+    }
+
+    #[test]
+    fn test_ref_g1affine_to_val() {
+        let env = Env::default();
+
+        let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
+        let val: Val = (&g1).into_val(&env);
+        let rt: G1Affine = val.into_val(&env);
+
+        assert_eq!(g1, rt);
+    }
+
+    #[test]
+    fn test_doule_ref_g1affine_to_val() {
+        let env = Env::default();
+
+        let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
+        let val: Val = (&&g1).into_val(&env);
+        let rt: G1Affine = val.into_val(&env);
+
+        assert_eq!(g1, rt);
+    }
+
+    #[test]
+    fn test_fr_to_val() {
+        let env = Env::default();
+
+        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let val: Val = fr.clone().into_val(&env);
+        let rt: Fr = val.into_val(&env);
+
+        assert_eq!(fr, rt);
+    }
+
+    #[test]
+    fn test_ref_fr_to_val() {
+        let env = Env::default();
+
+        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let val: Val = (&fr).into_val(&env);
+        let rt: Fr = val.into_val(&env);
+
+        assert_eq!(fr, rt);
+    }
+
+    #[test]
+    fn test_double_ref_fr_to_val() {
+        let env = Env::default();
+
+        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let val: Val = (&&fr).into_val(&env);
+        let rt: Fr = val.into_val(&env);
+
+        assert_eq!(fr, rt);
     }
 }
