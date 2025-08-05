@@ -1,10 +1,25 @@
-use core::u64;
+use soroban_sdk_macros::{contract, contractimpl};
 
-use crate::testutils::MuxedAddress as _;
+use crate::testutils::{Address as _, MuxedAddress as _};
+use crate::{self as soroban_sdk};
 use crate::{
     env::xdr::{AccountId, ScAddress, Uint256},
     Address, Env, MuxedAddress, TryFromVal,
 };
+
+#[contract]
+pub struct MuxedAddressContract;
+
+#[contractimpl]
+impl MuxedAddressContract {
+    pub fn get_muxed_ids(
+        _e: Env,
+        a: MuxedAddress,
+        b: soroban_sdk::MuxedAddress,
+    ) -> (Option<u64>, Option<u64>) {
+        (a.id(), b.id())
+    }
+}
 
 #[test]
 fn test_account_address_to_muxed_address_conversion() {
@@ -50,4 +65,46 @@ fn test_muxed_address_component_getters() {
     let muxed_address_from_address = MuxedAddress::new(muxed_address_with_another_id.address(), 0);
     assert_eq!(muxed_address_from_address.address(), expected_address);
     assert_eq!(muxed_address_from_address.id(), Some(0));
+}
+
+#[test]
+fn test_accept_muxed_address_argument_in_contract() {
+    let env = Env::default();
+    let client = MuxedAddressContractClient::new(&env, &env.register(MuxedAddressContract, ()));
+
+    let muxed_address = MuxedAddress::generate(&env);
+    let muxed_address = MuxedAddress::new(muxed_address, 1);
+    let muxed_address2 = MuxedAddress::generate(&env);
+    let muxed_address2 = MuxedAddress::new(muxed_address2, 2);
+    let non_muxed_address = Address::generate(&env);
+    let non_muxed_address2 = Address::generate(&env);
+
+    assert_eq!(
+        client.get_muxed_ids(&muxed_address, &muxed_address2),
+        (Some(1), Some(2))
+    );
+    assert_eq!(
+        client.get_muxed_ids(&muxed_address, &muxed_address),
+        (Some(1), Some(1))
+    );
+    assert_eq!(
+        client
+            .try_get_muxed_ids(&muxed_address, &non_muxed_address)
+            .unwrap(),
+        Ok((Some(1), None))
+    );
+    assert_eq!(
+        client.get_muxed_ids(&non_muxed_address, &muxed_address2),
+        (None, Some(2))
+    );
+    assert_eq!(
+        client
+            .try_get_muxed_ids(&non_muxed_address, &non_muxed_address2)
+            .unwrap(),
+        Ok((None, None))
+    );
+    assert_eq!(
+        client.get_muxed_ids(non_muxed_address, muxed_address2),
+        (None, Some(2))
+    );
 }

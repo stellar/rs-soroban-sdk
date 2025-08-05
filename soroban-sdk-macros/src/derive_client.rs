@@ -1,8 +1,35 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, LitStr, PatType, Path, Type, TypePath, TypeReference};
 
 use crate::{attribute::pass_through_attr_to_gen_code, symbol, syn_ext};
+
+fn is_muxed_address_type(arg: &FnArg) -> bool {
+    if let FnArg::Typed(pat_type) = arg {
+        if let Type::Path(TypePath { path, .. }) = &*pat_type.ty {
+            let path_str = quote::quote!(#path).to_string();
+            // Check for some common ways to refer to MuxedAddress. The direct
+            // check has a mild risk of a name collision, but the consequences
+            // should be insignificant.
+            return path_str == "MuxedAddress"
+                || path_str == "soroban_sdk :: MuxedAddress"
+                || path_str == ":: soroban_sdk :: MuxedAddress";
+        }
+    }
+    false
+}
+
+fn convert_to_into_muxed_address(arg: &FnArg) -> FnArg {
+    if let FnArg::Typed(pat_type) = arg {
+        return FnArg::Typed(PatType {
+            attrs: pat_type.attrs.clone(),
+            pat: pat_type.pat.clone(),
+            colon_token: pat_type.colon_token,
+            ty: Box::new(syn::parse_quote! { impl Into<MuxedAddress> }),
+        });
+    }
+    arg.clone()
+}
 
 pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
@@ -180,7 +207,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             });
 
             // Map all remaining inputs.
-            let (fn_input_names, fn_input_types): (Vec<_>, Vec<_>) = f
+            let mapped_inputs: Vec<_> = f
                 .inputs
                 .iter()
                 .skip(if env_input.is_some() { 1 } else { 0 })
@@ -192,9 +219,34 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                             format_ident!("_")
                         }
                     };
-                    (ident, syn_ext::fn_arg_make_ref(t, None))
+
+                    let is_muxed_address = is_muxed_address_type(t);
+                    let converted_type = if is_muxed_address {
+                        // syn_ext::fn_arg_make_ref(&convert_to_into_muxed_address(t), None)
+                        convert_to_into_muxed_address(t)
+                    } else {
+                        syn_ext::fn_arg_make_ref(t, None)
+                    };
+                    (ident, converted_type, is_muxed_address)
                 })
-                .unzip();
+                .collect();
+
+            // Generate argument conversions into Val.
+            let fn_input_conversions: Vec<_> = mapped_inputs
+                .iter()
+                .map(|(ident, _, is_muxed_address)| {
+                    if *is_muxed_address {
+                        quote! { #ident.into().into_val(&self.env) }
+                    } else {
+                        quote! { #ident.into_val(&self.env) }
+                    }
+                })
+                .collect();
+
+            let fn_input_types: Vec<_> = mapped_inputs
+                .iter()
+                .map(|(_, arg, _)| arg.clone())
+                .collect();
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
             let fn_attrs = f
@@ -211,7 +263,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         let res = self.env.invoke_contract(
                             &self.address,
                             &#fn_name_symbol,
-                            #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                            #crate_path::vec![&self.env, #(#fn_input_conversions),*],
                         );
                         res
                     }
@@ -222,7 +274,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         let res = self.env.try_invoke_contract(
                             &self.address,
                             &#fn_name_symbol,
-                            #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                            #crate_path::vec![&self.env, #(#fn_input_conversions),*],
                         );
                         res
                     }
@@ -254,7 +306,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         let res = self.env.invoke_contract(
                             &self.address,
                             &#fn_name_symbol,
-                            #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                            #crate_path::vec![&self.env, #(#fn_input_conversions),*],
                         );
                         if let Some(old_auth_manager) = old_auth_manager {
                             self.env.host().set_auth_manager(old_auth_manager).unwrap();
@@ -283,7 +335,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                         let res = self.env.try_invoke_contract(
                             &self.address,
                             &#fn_name_symbol,
-                            #crate_path::vec![&self.env, #(#fn_input_names.into_val(&self.env)),*],
+                            #crate_path::vec![&self.env, #(#fn_input_conversions),*],
                         );
                         if let Some(old_auth_manager) = old_auth_manager {
                             self.env.host().set_auth_manager(old_auth_manager).unwrap();

@@ -159,6 +159,12 @@ impl TryFromVal<Env, &MuxedAddress> for Val {
     }
 }
 
+impl From<&MuxedAddress> for MuxedAddress {
+    fn from(address: &MuxedAddress) -> Self {
+        address.clone()
+    }
+}
+
 impl From<Address> for MuxedAddress {
     fn from(address: Address) -> Self {
         (&address).into()

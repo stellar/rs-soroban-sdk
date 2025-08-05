@@ -86,7 +86,7 @@ mod test {
         let to = Address::generate(&env);
         let amount = 1i128;
 
-        client.transfer(&from, &(&to).into(), &amount);
+        client.transfer(&from, &to, &amount);
 
         assert_eq!(
             env.events().all(),
