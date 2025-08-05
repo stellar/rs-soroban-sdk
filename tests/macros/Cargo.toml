@@ -13,12 +13,7 @@ doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
-
-# The must_be_empty crate is used to test functions that have third party
-# attributes in use on functions inside contractimpl blocks. It's selected
-# because it is a small simple function attribute macro, and not for any
-# functionality it actually provides.
-must_be_empty = "0.1.0"
+proc_macros = {path = "./proc_macros"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}

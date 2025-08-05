@@ -1,16 +1,14 @@
 #![no_std]
-use must_be_empty::must_be_empty;
 use soroban_sdk::{contract, contractimpl};
+use proc_macros::parse_item_fn;
 
 #[contract]
 pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    // The must_be_empty attribute macro is used to test functions that have third party attributes
-    // in use on functions inside contractimpl blocks, to ensure the contractimpl macro and other
-    // SDKs macros interact well with third party macros.
-    #[must_be_empty]
+    // Test that attribute macros that expect to be used on fns are composable with contractimpl.
+    #[parse_item_fn]
     pub fn empty() {}
 }
 
@@ -21,7 +19,7 @@ mod test {
     use crate::{Contract, ContractClient};
 
     #[test]
-    fn test_hello() {
+    fn test_empty() {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
