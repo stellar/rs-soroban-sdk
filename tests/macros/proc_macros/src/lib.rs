@@ -1,6 +1,5 @@
 /// A collection of proc-macros used by the test_macros test vector to validate that the
 /// soroban-sdk macros are composable and compatible with a variety of other macros.
-
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, ItemFn};
