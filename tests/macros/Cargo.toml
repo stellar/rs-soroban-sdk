@@ -1,5 +1,6 @@
 [package]
 name = "test_macros"
+description = "A test vector for testing the interactions of the soroban-sdk macros with third-party macros, validating that they are composable and compatible."
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"

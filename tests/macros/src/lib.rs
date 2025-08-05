@@ -1,3 +1,6 @@
+// A test vector for testing the interactions of the soroban-sdk macros with third-party macros,
+// validating that they are composable and compatible.
+
 #![no_std]
 use proc_macros::parse_item_fn;
 use soroban_sdk::{contract, contractimpl};
