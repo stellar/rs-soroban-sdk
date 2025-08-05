@@ -1,6 +1,6 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl};
 use proc_macros::parse_item_fn;
+use soroban_sdk::{contract, contractimpl};
 
 #[contract]
 pub struct Contract;
