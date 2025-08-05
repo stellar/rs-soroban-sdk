@@ -1,6 +1,6 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl};
 use must_be_empty::must_be_empty;
+use soroban_sdk::{contract, contractimpl};
 
 #[contract]
 pub struct Contract;
