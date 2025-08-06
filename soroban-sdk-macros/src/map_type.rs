@@ -199,3 +199,30 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
         _ => Err(Error::new(t.span(), "unsupported type"))?,
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use syn::parse_quote;
+
+    #[test]
+    fn test_path() {
+        let ty = syn::Type::Path(parse_quote!(u32));
+        let res = map_type(&ty, false, false);
+        assert_eq!(res.unwrap(), ScSpecTypeDef::U32);
+    }
+
+    #[test]
+    fn test_ref() {
+        let ty = Type::Reference(parse_quote!(&u32));
+        let res = map_type(&ty, true, false);
+        assert_eq!(res.unwrap(), ScSpecTypeDef::U32);
+    }
+
+    #[test]
+    fn test_ref_error_when_ref_not_allowed() {
+        let ty = Type::Reference(parse_quote!(&u32));
+        let res = map_type(&ty, false, false);
+        assert!(res.is_err());
+    }
+}
