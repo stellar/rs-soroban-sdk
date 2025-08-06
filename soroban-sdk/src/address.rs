@@ -177,8 +177,8 @@ impl From<Address> for ScAddress {
         (&v).into()
     }
 }
-#[cfg(not(target_family = "wasm"))]
 
+#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScAddress> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
