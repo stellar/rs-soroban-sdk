@@ -19,7 +19,13 @@ pub const G2_SERIALIZED_SIZE: u32 = FP2_SERIALIZED_SIZE * 2;
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
     match t {
-        Type::Reference(TypeReference { elem, .. }) => map_type(elem, allow_ref, allow_hash),
+        Type::Reference(TypeReference { elem, .. }) => {
+            if allow_ref {
+                map_type(elem, allow_ref, allow_hash)
+            } else {
+                Err(Error::new(t.span(), "references unsupported"))
+            }
+        }
         Type::Path(TypePath {
             qself: None,
             path: Path { segments, .. },
@@ -197,5 +203,32 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
             })))
         }
         _ => Err(Error::new(t.span(), "unsupported type"))?,
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use syn::parse_quote;
+
+    #[test]
+    fn test_path() {
+        let ty = syn::Type::Path(parse_quote!(u32));
+        let res = map_type(&ty, false, false);
+        assert_eq!(res.unwrap(), ScSpecTypeDef::U32);
+    }
+
+    #[test]
+    fn test_ref() {
+        let ty = Type::Reference(parse_quote!(&u32));
+        let res = map_type(&ty, true, false);
+        assert_eq!(res.unwrap(), ScSpecTypeDef::U32);
+    }
+
+    #[test]
+    fn test_ref_error_when_ref_not_allowed() {
+        let ty = Type::Reference(parse_quote!(&u32));
+        let res = map_type(&ty, false, false);
+        assert!(res.is_err());
     }
 }
