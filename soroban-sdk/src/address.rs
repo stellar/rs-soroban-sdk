@@ -1,15 +1,15 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{AddressObject, Env as _},
-    ConversionError, Env, String, TryFromVal, TryIntoVal, Val,
+    env::internal::AddressObject, env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, BytesN,
+    ConversionError, Env, IntoVal, String, TryFromVal, TryIntoVal, Val, Vec,
 };
+use soroban_sdk_macros::contracttype;
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
 #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
 use crate::env::xdr::ScAddress;
-use crate::{unwrap::UnwrapInfallible, Bytes, Vec};
 
 /// Address is a universal opaque identifier to use in contracts.
 ///
@@ -192,6 +192,14 @@ impl TryFromVal<Env, ScAddress> for Address {
     }
 }
 
+#[contracttype(crate_path = "crate", export = false)]
+#[derive(Clone)]
+pub enum Executable {
+    Wasm(BytesN<32>),
+    StellarAsset,
+    Account,
+}
+
 impl Address {
     /// Ensures that this Address has authorized invocation of the current
     /// contract with the provided arguments.
@@ -285,6 +293,32 @@ impl Address {
         }
     }
 
+    /// Returns the executable type of this address, if any.
+    ///
+    /// For Wasm contracts, this also returns the hash of the contract code.
+    /// Otherwise, this just returns which kind of 'built-in' executable this is
+    /// (StellarAsset or Account).
+    pub fn executable(&self) -> Option<Executable> {
+        let executable_val: Val =
+            Env::get_address_executable(&self.env, self.obj).unwrap_infallible();
+        if executable_val.is_void() {
+            return None;
+        }
+        Some(executable_val.into_val(&self.env))
+    }
+
+    /// Returns whether this address exists in the ledger.
+    ///
+    /// For the contract addresses, this means that there is a corresponding
+    /// contract instance deployed. For account addresses, this means that the
+    /// account entry exists in the ledger.
+    pub fn exists(&self) -> bool {
+        let executable_val: Val =
+            Env::get_address_executable(&self.env, self.obj).unwrap_infallible();
+        !executable_val.is_void()
+    }
+
+    /// Converts this `Address` into the corresponding Stellar strkey.
     pub fn to_string(&self) -> String {
         String::try_from_val(
             &self.env,
