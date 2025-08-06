@@ -13,6 +13,7 @@ struct Args {
     crate_path: Path,
     trait_ident: Ident,
     trait_default_fns: Vec<LitStr>,
+    internal_fns: Vec<LitStr>,
     impl_ident: Ident,
     impl_fns: Vec<LitStr>,
     client_name: String,
@@ -45,12 +46,18 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
 
     let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns);
     let impl_fns = syn_ext::strs_to_signatures(&args.impl_fns);
+    let internal_fns = syn_ext::strs_to_signatures(&args.internal_fns);
 
     // Filter the list of default fns down to only default fns that have not been redefined /
     // overridden in the input fns.
     let fns = trait_default_fns
         .into_iter()
-        .filter(|f| !impl_fns.iter().any(|o| f.ident == o.ident))
+        .filter(|f| {
+            !impl_fns
+                .iter()
+                .chain(internal_fns.iter())
+                .any(|o| f.ident == o.ident)
+        })
         .collect::<Vec<_>>();
 
     let mut output = quote! {};

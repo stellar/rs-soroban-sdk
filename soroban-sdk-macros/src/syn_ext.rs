@@ -281,3 +281,7 @@ fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
         }
     }
 }
+
+pub fn is_trait_item_type(item: &TraitItem) -> bool {
+    matches!(item, TraitItem::Type(syn::TraitItemType { ident, .. }) if ident == "Impl")
+}

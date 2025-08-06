@@ -1,5 +1,7 @@
 //! Auth contains types for building custom account contracts.
 
+use soroban_sdk_macros::contracttrait;
+
 use crate::{contracttype, crypto::Hash, Address, BytesN, Env, Error, Symbol, Val, Vec};
 
 /// Context of a single authorized call performed by an address.
@@ -90,6 +92,7 @@ pub struct SubContractInvocation {
 ///
 /// Once a contract implements the interface, call to [`Address::require_auth`]
 /// for the contract's address will call its `__check_auth` implementation.
+#[contracttrait]
 pub trait CustomAccountInterface {
     type Signature;
     type Error: Into<Error>;

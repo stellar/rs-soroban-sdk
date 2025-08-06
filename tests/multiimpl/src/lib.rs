@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl};
+use soroban_sdk::{contract, contractimpl, contracttrait};
 
 #[contract]
 pub struct Contract;
@@ -14,6 +14,7 @@ impl Contract {
     pub fn empty2() {}
 }
 
+#[contracttrait]
 trait Trait {
     fn empty3() {}
 }

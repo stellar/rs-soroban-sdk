@@ -1645,6 +1645,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_contracttrait_example"
+version = "23.0.0-rc.2.4"
+dependencies = [
+ "soroban-sdk",
+ "test_contracttrait_lib",
+]
+
+[[package]]
+name = "test_contracttrait_lib"
+version = "23.0.0-rc.2.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_empty"
 version = "23.0.0-rc.2.4"
 dependencies = [
