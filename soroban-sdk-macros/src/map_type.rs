@@ -19,7 +19,13 @@ pub const G2_SERIALIZED_SIZE: u32 = FP2_SERIALIZED_SIZE * 2;
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
     match t {
-        Type::Reference(TypeReference { elem, .. }) => map_type(elem, allow_ref, allow_hash),
+        Type::Reference(TypeReference { elem, .. }) => {
+            if allow_ref {
+                map_type(elem, allow_ref, allow_hash)
+            } else {
+                Err(Error::new(t.span(), "reference types unsupported"))
+            }
+        }
         Type::Path(TypePath {
             qself: None,
             path: Path { segments, .. },
