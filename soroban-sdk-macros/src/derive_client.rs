@@ -1,19 +1,17 @@
+use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::{Error, FnArg, LitStr, PatType, Path, Type, TypePath, TypeReference};
 
-use crate::{attribute::pass_through_attr_to_gen_code, symbol, syn_ext};
+use crate::{
+    attribute::pass_through_attr_to_gen_code, map_type::map_type, stellar_xdr::ScSpecTypeDef,
+    symbol, syn_ext,
+};
 
 fn is_muxed_address_type(arg: &FnArg) -> bool {
     if let FnArg::Typed(pat_type) = arg {
-        if let Type::Path(TypePath { path, .. }) = &*pat_type.ty {
-            let path_str = quote::quote!(#path).to_string();
-            // Check for some common ways to refer to MuxedAddress. The direct
-            // check has a mild risk of a name collision, but the consequences
-            // should be insignificant.
-            return path_str == "MuxedAddress"
-                || path_str == "soroban_sdk :: MuxedAddress"
-                || path_str == ":: soroban_sdk :: MuxedAddress";
+        if let Ok(ScSpecTypeDef::MuxedAddress) = map_type(&pat_type.ty, false, false) {
+            return true;
         }
     }
     false
@@ -207,7 +205,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             });
 
             // Map all remaining inputs.
-            let mapped_inputs: Vec<_> = f
+            let (fn_input_types, fn_input_conversions): (Vec<_>, Vec<_>) = f
                 .inputs
                 .iter()
                 .skip(if env_input.is_some() { 1 } else { 0 })
@@ -222,31 +220,21 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
 
                     let is_muxed_address = is_muxed_address_type(t);
                     let converted_type = if is_muxed_address {
-                        // syn_ext::fn_arg_make_ref(&convert_to_into_muxed_address(t), None)
                         convert_to_into_muxed_address(t)
                     } else {
                         syn_ext::fn_arg_make_ref(t, None)
                     };
-                    (ident, converted_type, is_muxed_address)
-                })
-                .collect();
 
-            // Generate argument conversions into Val.
-            let fn_input_conversions: Vec<_> = mapped_inputs
-                .iter()
-                .map(|(ident, _, is_muxed_address)| {
-                    if *is_muxed_address {
+                    // Generate argument conversion into Val
+                    let conversion = if is_muxed_address {
                         quote! { #ident.into().into_val(&self.env) }
                     } else {
                         quote! { #ident.into_val(&self.env) }
-                    }
-                })
-                .collect();
+                    };
 
-            let fn_input_types: Vec<_> = mapped_inputs
-                .iter()
-                .map(|(_, arg, _)| arg.clone())
-                .collect();
+                    (converted_type, conversion)
+                })
+                .multiunzip();
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
             let fn_attrs = f
