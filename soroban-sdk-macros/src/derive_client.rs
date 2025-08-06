@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, LitStr, PatType, Path, Type, TypePath, TypeReference};
+use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
 use crate::{
     attribute::pass_through_attr_to_gen_code, map_type::map_type, stellar_xdr::ScSpecTypeDef,
@@ -15,18 +15,6 @@ fn is_muxed_address_type(arg: &FnArg) -> bool {
         }
     }
     false
-}
-
-fn convert_to_into_muxed_address(arg: &FnArg) -> FnArg {
-    if let FnArg::Typed(pat_type) = arg {
-        return FnArg::Typed(PatType {
-            attrs: pat_type.attrs.clone(),
-            pat: pat_type.pat.clone(),
-            colon_token: pat_type.colon_token,
-            ty: Box::new(syn::parse_quote! { impl Into<MuxedAddress> }),
-        });
-    }
-    arg.clone()
 }
 
 pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
@@ -220,7 +208,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
 
                     let is_muxed_address = is_muxed_address_type(t);
                     let converted_type = if is_muxed_address {
-                        convert_to_into_muxed_address(t)
+                        syn_ext::fn_arg_make_into(t)
                     } else {
                         syn_ext::fn_arg_make_ref(t, None)
                     };
