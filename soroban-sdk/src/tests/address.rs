@@ -1,7 +1,9 @@
 use crate::{self as soroban_sdk};
-use crate::{address::Executable, Address, Bytes, BytesN, Env, String, TryIntoVal};
 use sha2::{Digest, Sha256};
-use soroban_sdk_macros::contract;
+use soroban_sdk::{
+    address::Executable, contract, env::EnvTestConfig, testutils::Address as _, Address, Bytes,
+    BytesN, Env, String, TryIntoVal,
+};
 
 #[contract]
 struct TestContract;
@@ -80,17 +82,28 @@ fn test_get_non_existent_address_executable() {
 }
 
 #[test]
-fn test_get_existing_contract_address_executable() {
+fn test_get_existing_contract_address_executable_wasm() {
     const EXAMPLE_WASM: &[u8] =
         include_bytes!("../../../target/wasm32v1-none/release/test_udt.wasm");
 
-    let env = Env::default();
+    let env = Env::new_with_config(EnvTestConfig {
+        // Disable test snapshots because the tests in this repo will run across
+        // multiple hosts, and this test uses a wasm file that won't build consistently
+        // across different hosts.
+        capture_snapshot_at_drop: false,
+    });
+
     let contract_address = env.register(EXAMPLE_WASM, ());
     let contract_executable = contract_address.executable();
     let sha256: [u8; 32] = Sha256::digest(EXAMPLE_WASM).into();
     let wasm_hash = BytesN::from_array(&env, &sha256);
     assert_eq!(contract_executable, Some(Executable::Wasm(wasm_hash)));
     assert!(contract_address.exists());
+}
+
+#[test]
+fn test_get_existing_contract_address_executable_native() {
+    let env = Env::default();
 
     let native_contract_address = env.register(TestContract, ());
     let native_contract_executable = native_contract_address.executable();
@@ -101,8 +114,14 @@ fn test_get_existing_contract_address_executable() {
         Some(Executable::Wasm(empty_wasm_hash))
     );
     assert!(native_contract_address.exists());
+}
 
-    let sac = env.register_stellar_asset_contract_v2(contract_address);
+#[test]
+fn test_get_existing_contract_address_executable_asset() {
+    let env = Env::default();
+
+    let admin = Address::generate(&env);
+    let sac = env.register_stellar_asset_contract_v2(admin);
     let sac_address = sac.address();
     assert_eq!(sac_address.executable(), Some(Executable::StellarAsset));
     assert!(sac_address.exists());

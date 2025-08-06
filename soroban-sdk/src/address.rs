@@ -178,8 +178,8 @@ impl From<Address> for ScAddress {
         (&v).into()
     }
 }
-
 #[cfg(not(target_family = "wasm"))]
+
 impl TryFromVal<Env, ScAddress> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScAddress) -> Result<Self, Self::Error> {
@@ -193,7 +193,7 @@ impl TryFromVal<Env, ScAddress> for Address {
 }
 
 #[contracttype(crate_path = "crate", export = false)]
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Executable {
     Wasm(BytesN<32>),
     StellarAsset,
