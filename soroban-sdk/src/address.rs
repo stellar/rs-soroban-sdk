@@ -1,10 +1,9 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::AddressObject, env::internal::Env as _, unwrap::UnwrapInfallible, Bytes, BytesN,
-    ConversionError, Env, IntoVal, String, TryFromVal, TryIntoVal, Val, Vec,
+    contracttype, env::internal::AddressObject, env::internal::Env as _, unwrap::UnwrapInfallible,
+    Bytes, BytesN, ConversionError, Env, IntoVal, String, TryFromVal, TryIntoVal, Val, Vec,
 };
-use soroban_sdk_macros::contracttype;
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::ScVal;
