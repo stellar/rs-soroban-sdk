@@ -64,6 +64,16 @@ pub fn derive_fn_spec(
                     "".to_string()
                 };
 
+                // Strip any underscore prefix characters. Implementations that do not use an
+                // argument will prefix an underscore to the variable name to signal to the
+                // compiler that the developer acknowledges they will not be using the parameter.
+                // Keeping the underscore out of the spec ensures that the spec doesn't communicate
+                // implementation details and doesn't change when implementations start or stop
+                // using a variable in the implementation. It also ensures spec consistency between
+                // implementations of the same trait even if some of those implementations do not
+                // use all the inputs.
+                let name = name.trim_start_matches("_");
+
                 // If fn is a __check_auth implementation, allow the first argument,
                 // signature_payload of type Bytes (32 size), to be a Hash.
                 let allow_hash = ident == "__check_auth" && i == 0;

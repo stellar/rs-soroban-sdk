@@ -27,7 +27,7 @@ fn test_spec() {
         name: "exec".try_into().unwrap(),
         inputs: [xdr::ScSpecFunctionInputV0 {
             doc: "".try_into().unwrap(),
-            name: "_t".try_into().unwrap(),
+            name: "t".try_into().unwrap(),
             type_: xdr::ScSpecTypeDef::Timepoint,
         }]
         .try_into()
