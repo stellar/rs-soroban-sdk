@@ -60,16 +60,19 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
 /// Returns a clone of the type from the FnArg.
 pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type, Error> {
     if let FnArg::Typed(pat_type) = arg {
-        if !matches!(*pat_type.ty, Type::Reference(_)) {
-            Ok(Type::Reference(TypeReference {
+        let type_ref = if let Type::Reference(ref ty) = *pat_type.ty {
+            let mut ty = ty.clone();
+            ty.lifetime = lifetime.cloned();
+            ty
+        } else {
+            TypeReference {
                 and_token: And::default(),
                 lifetime: lifetime.cloned(),
                 mutability: None,
                 elem: pat_type.ty.clone(),
-            }))
-        } else {
-            Ok((*pat_type.ty).clone())
-        }
+            }
+        };
+        Ok(Type::Reference(type_ref))
     } else {
         Err(Error::new(
             arg.span(),
@@ -82,19 +85,24 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
 /// arg and its type is not already a reference.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
-        if !matches!(*pat_type.ty, Type::Reference(_)) {
-            return FnArg::Typed(PatType {
-                attrs: pat_type.attrs.clone(),
-                pat: pat_type.pat.clone(),
-                colon_token: pat_type.colon_token,
-                ty: Box::new(Type::Reference(TypeReference {
-                    and_token: And::default(),
-                    lifetime: lifetime.cloned(),
-                    mutability: None,
-                    elem: pat_type.ty.clone(),
-                })),
-            });
-        }
+        let type_ref = if let Type::Reference(ref ty) = *pat_type.ty {
+            let mut ty = ty.clone();
+            ty.lifetime = lifetime.cloned();
+            ty
+        } else {
+            TypeReference {
+                and_token: And::default(),
+                lifetime: lifetime.cloned(),
+                mutability: None,
+                elem: pat_type.ty.clone(),
+            }
+        };
+        return FnArg::Typed(PatType {
+            attrs: pat_type.attrs.clone(),
+            pat: pat_type.pat.clone(),
+            colon_token: pat_type.colon_token,
+            ty: Box::new(Type::Reference(type_ref)),
+        });
     }
     arg.clone()
 }
