@@ -1,4 +1,10 @@
-use crate::{address::Executable, Address, Bytes, Env, String, TryIntoVal};
+use crate::{self as soroban_sdk};
+use crate::{address::Executable, Address, Bytes, BytesN, Env, String, TryIntoVal};
+use sha2::{Digest, Sha256};
+use soroban_sdk_macros::contract;
+
+#[contract]
+struct TestContract;
 
 #[test]
 fn test_account_address_str_conversions() {
@@ -81,18 +87,27 @@ fn test_get_existing_contract_address_executable() {
     let env = Env::default();
     let contract_address = env.register(EXAMPLE_WASM, ());
     let contract_executable = contract_address.executable();
-    assert!(matches!(contract_executable, Some(Executable::Wasm(_))));
+    let sha256: [u8; 32] = Sha256::digest(EXAMPLE_WASM).into();
+    let wasm_hash = BytesN::from_array(&env, &sha256);
+    assert_eq!(contract_executable, Some(Executable::Wasm(wasm_hash)));
     assert!(contract_address.exists());
+
+    let native_contract_address = env.register(TestContract, ());
+    let native_contract_executable = native_contract_address.executable();
+    let empty_sha256: [u8; 32] = Sha256::digest([]).into();
+    let empty_wasm_hash = BytesN::from_array(&env, &empty_sha256);
+    assert_eq!(
+        native_contract_executable,
+        Some(Executable::Wasm(empty_wasm_hash))
+    );
+    assert!(native_contract_address.exists());
 
     let sac = env.register_stellar_asset_contract_v2(contract_address);
     let sac_address = sac.address();
-    assert!(matches!(
-        sac_address.executable(),
-        Some(Executable::StellarAsset)
-    ));
+    assert_eq!(sac_address.executable(), Some(Executable::StellarAsset));
     assert!(sac_address.exists());
 
     let sac_issuer = sac.issuer().address();
-    assert!(matches!(sac_issuer.executable(), Some(Executable::Account)));
+    assert_eq!(sac_issuer.executable(), Some(Executable::Account));
     assert!(sac_issuer.exists());
 }

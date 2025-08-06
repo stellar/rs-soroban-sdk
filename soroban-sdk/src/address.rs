@@ -193,7 +193,7 @@ impl TryFromVal<Env, ScAddress> for Address {
 }
 
 #[contracttype(crate_path = "crate", export = false)]
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Executable {
     Wasm(BytesN<32>),
     StellarAsset,
@@ -295,16 +295,15 @@ impl Address {
 
     /// Returns the executable type of this address, if any.
     ///
+    /// Returns None when the contract or account does not exist.   
+    ///
     /// For Wasm contracts, this also returns the hash of the contract code.
     /// Otherwise, this just returns which kind of 'built-in' executable this is
     /// (StellarAsset or Account).
     pub fn executable(&self) -> Option<Executable> {
         let executable_val: Val =
             Env::get_address_executable(&self.env, self.obj).unwrap_infallible();
-        if executable_val.is_void() {
-            return None;
-        }
-        Some(executable_val.into_val(&self.env))
+        executable_val.into_val(&self.env)
     }
 
     /// Returns whether this address exists in the ledger.
