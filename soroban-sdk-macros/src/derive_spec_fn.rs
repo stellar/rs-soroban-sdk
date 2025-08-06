@@ -64,7 +64,7 @@ pub fn derive_fn_spec(
                     "".to_string()
                 };
 
-                // Strip any underscore prefix characters. Implementation's that do not use an
+                // Strip any underscore prefix characters. Implementations that do not use an
                 // argument will prefix an underscore to the variable name to signal to the
                 // compiler that the developer acknowledges they will not be using the parameter.
                 // Keeping the underscore out of the spec ensures that the spec doesn't communicate
