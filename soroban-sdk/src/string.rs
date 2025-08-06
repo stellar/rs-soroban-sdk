@@ -2,7 +2,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{Env as _, EnvBase as _, StringObject},
-    ConversionError, Env, TryFromVal, TryIntoVal, Val,
+    Bytes, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -147,6 +147,20 @@ impl From<&String> for String {
     }
 }
 
+impl From<&String> for Bytes {
+    fn from(v: &String) -> Self {
+        Env::string_to_bytes(&v.env, v.obj.clone())
+            .unwrap_infallible()
+            .into_val(&v.env)
+    }
+}
+
+impl From<String> for Bytes {
+    fn from(v: String) -> Self {
+        (&v).into()
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl From<&String> for ScVal {
     fn from(v: &String) -> Self {
@@ -272,6 +286,11 @@ impl String {
         env.string_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
     }
+
+    /// Converts the contents of the String into a respective Bytes object.
+    pub fn to_bytes(&self) -> Bytes {
+        self.into()
+    }
 }
 
 #[cfg(test)]
@@ -352,5 +371,18 @@ mod test {
         let rt: String = val.into_val(&env);
 
         assert_eq!(s, rt);
+    }
+
+    #[test]
+    fn test_string_to_bytes() {
+        let env = Env::default();
+        let s = String::from_str(&env, "abcdef");
+        let b: Bytes = s.clone().into();
+        assert_eq!(b.len(), 6);
+        let mut slice = [0u8; 6];
+        b.copy_into_slice(&mut slice);
+        assert_eq!(&slice, b"abcdef");
+        let b2 = s.to_bytes();
+        assert_eq!(b, b2);
     }
 }

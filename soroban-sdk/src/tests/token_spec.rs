@@ -61,7 +61,6 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     let stellar_asset_entries: HashSet<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
             .collect::<Result<HashSet<_>, _>>()?;
-
     // Check that the token entries are a subset of stellar entries
     assert!(
         token_entries.is_subset(&stellar_asset_entries),
