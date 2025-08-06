@@ -23,7 +23,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
             if allow_ref {
                 map_type(elem, allow_ref, allow_hash)
             } else {
-                Err(Error::new(t.span(), "reference types unsupported"))
+                Err(Error::new(t.span(), "references unsupported"))
             }
         }
         Type::Path(TypePath {
