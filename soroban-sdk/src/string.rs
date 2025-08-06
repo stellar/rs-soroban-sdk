@@ -286,6 +286,11 @@ impl String {
         env.string_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
     }
+
+    /// Converts the contents of the String into a respective Bytes object.
+    pub fn to_bytes(&self) -> Bytes {
+        self.into()
+    }
 }
 
 #[cfg(test)]
@@ -372,10 +377,12 @@ mod test {
     fn test_string_to_bytes() {
         let env = Env::default();
         let s = String::from_str(&env, "abcdef");
-        let b: Bytes = s.into();
+        let b: Bytes = s.clone().into();
         assert_eq!(b.len(), 6);
         let mut slice = [0u8; 6];
         b.copy_into_slice(&mut slice);
         assert_eq!(&slice, b"abcdef");
+        let b2 = s.to_bytes();
+        assert_eq!(b, b2);
     }
 }
