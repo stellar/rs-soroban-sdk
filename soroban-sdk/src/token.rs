@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractevent, contractspecfn, Address, Env, String};
+use crate::{contractclient, contractevent, contractspecfn, Address, Env, MuxedAddress, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -139,9 +139,17 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
-    fn transfer(env: Env, from: Address, to: Address, amount: i128);
+    /// Emits an event with topics
+    /// `["transfer", from: Address, to: Address]
+    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
+    /// will  have the following format (the `Transfer` event):
+    /// `data = amount: i128`
+    ///
+    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
+    /// have be emitted as map with Symbol keys in the following format (the
+    /// `TransferMuxed` event):
+    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
     /// `spender` has on `from`'s balance. Authorized by spender
@@ -303,7 +311,7 @@ pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &Clawback::spec_xdr(),
 ];
 
-pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5388;
+pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5724;
 
 impl TokenSpec {
     /// Returns the XDR spec for the Token contract.
@@ -395,9 +403,17 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
-    fn transfer(env: Env, from: Address, to: Address, amount: i128);
+    /// Emits an event with topics
+    /// `["transfer", from: Address, to: Address]
+    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
+    /// will  have the following format (the `Transfer` event):
+    /// `data = amount: i128`
+    ///
+    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
+    /// have be emitted as map with Symbol keys in the following format (the
+    /// `TransferMuxed` event):
+    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
     /// `spender` has on `from`'s balance. Authorized by spender
@@ -600,7 +616,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7320;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7656;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
