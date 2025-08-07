@@ -4,8 +4,21 @@ use crate::Administratable;
 
 const STORAGE_KEY: &Symbol = &symbol_short!("PAUSED");
 
-#[contracttrait]
+#[contracttrait(add_impl_type = true)]
 pub trait Pausable: Administratable {
+    fn is_paused(env: &Env) -> bool;
+
+    fn pause(env: &Env);
+
+    fn unpause(env: &Env);
+}
+
+pub struct PausableBase;
+
+impl Administratable for PausableBase {}
+
+impl Pausable for PausableBase {
+    type Impl = Self;
     fn is_paused(env: &Env) -> bool {
         env.storage().persistent().get(STORAGE_KEY).unwrap_or(false)
     }

@@ -1,11 +1,12 @@
 use crate::{
     default_crate_path, derive_args::derive_args_impl, derive_client::derive_client_impl,
-    derive_fn::derive_pub_fn, derive_spec_fn::derive_fn_spec, syn_ext,
+    derive_contract_function_registration_ctor, derive_fn::derive_pub_fn,
+    derive_spec_fn::derive_fn_spec, syn_ext,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::{quote, ToTokens};
-use syn::{LitStr, Path, Type};
+use syn::{parse_quote, ImplItemFn, LitStr, Path, Type};
 
 #[derive(Debug, FromMeta)]
 struct Args {
@@ -47,6 +48,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns);
     let impl_fns = syn_ext::strs_to_signatures(&args.impl_fns);
     let internal_fns = syn_ext::strs_to_signatures(&args.internal_fns);
+    let impl_ty: Type = parse_quote!( #ident );
 
     // Filter the list of default fns down to only default fns that have not been redefined /
     // overridden in the input fns.
@@ -95,6 +97,23 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
             .collect::<Vec<syn_ext::Fn>>()
             .as_slice(),
     ));
-
+    // Setup ctor for all methods.
+    let methods: Vec<_> = fns
+        .into_iter()
+        .chain(impl_fns.into_iter())
+        .map(|sig| ImplItemFn {
+            attrs: vec![],
+            vis: syn::Visibility::Inherited,
+            defaultness: None,
+            sig: sig.clone(),
+            block: parse_quote! {{}},
+        })
+        .collect();
+    output.extend(derive_contract_function_registration_ctor(
+        &args.crate_path,
+        &impl_ty,
+        Some(trait_ident),
+        methods.iter(),
+    ));
     Ok(output)
 }

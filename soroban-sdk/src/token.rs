@@ -18,6 +18,7 @@ use crate::{contractclient, contractevent, contractspecfn, Address, Env, String}
 // 2. The implementations have been replaced with a panic.
 // 3. &Host type usage are replaced with Env
 
+use soroban_sdk_macros::contracttrait;
 #[doc(hidden)]
 #[deprecated(note = "use TokenInterface")]
 pub use TokenInterface as Interface;
@@ -82,6 +83,7 @@ pub use TokenClient as Client;
 /// the next.
 #[contractspecfn(name = "TokenSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "TokenClient")]
+#[contracttrait]
 pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
     ///
