@@ -4,7 +4,7 @@ use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _},
     token::{Approve, Burn, Clawback, Mint, Transfer, TransferMuxed},
-    vec, Address, Env, Event, Map, Symbol, Val,
+    vec, Address, Env, Map, Symbol, Val,
 };
 
 #[contract]
@@ -93,7 +93,7 @@ fn test_transfer_muxed() {
                 Map::<Symbol, Val>::from_array(
                     &env,
                     [
-                        (Symbol::new(&env, "to_muxed_id"), 45u32.into_val(&env)),
+                        (Symbol::new(&env, "to_muxed_id"), 45u64.into_val(&env)),
                         (Symbol::new(&env, "amount"), 123i128.into_val(&env)),
                     ],
                 )
