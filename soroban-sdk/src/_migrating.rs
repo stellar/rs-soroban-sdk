@@ -1,5 +1,118 @@
 //! # Migrating from v22 to v23
-//! TBD
+//! 
+//! 1. The [`Events::publish`] method is deprecated in favor of `#[contractevent]`
+//!    macro.
+//!
+//!    `#[contractevent]` macro provides a more convenient and type-safe way to
+//!    define and publish events. It is recommended to migrate the existing
+//!    events to use `#[contractevent]`.
+//!   
+//!    For example, consider the following event publish code:
+//!   
+//!    ```
+//!    // ... inside some function ...
+//!    // When counter is incremented, publish an event with topics 'counter'
+//!    // and 'increment', and data `count`.
+//!    env.events().publish((symbol_short!("counter"), symbol_short!("increment")),
+//!                          count);
+//!    // When counter is decremented, publish an event with topics 'counter'
+//!    // and 'decrement', and data `count`.
+//!    env.events().publish((symbol_short!("counter"), symbol_short!("decrement")),
+//!                          count);
+//!    ```
+//!    
+//!    This can be replaced with the following code using `#[contractevent]`:
+//!
+//!    ```
+//!    use soroban_sdk::contractevent;
+//!    // The event will always have the first topic 'counter'.
+//!    #[contractevent(topics = ["counter"])]
+//!    pub struct CounterEvent {
+//!      // The second topic can be customized to reflect the type of counter
+//!      // change.
+//!      #[topic]
+//!      counter_change: Symbol,
+//!      count: u32,
+//!    }
+//!    
+//!    // ... inside some function ...
+//!    // When counter is incremented, publish an event with topics 'counter'
+//!    // and 'increment', and data `count`.
+//!    CounterEvent {
+//!        counter_change: symbol_short!("increment"),
+//!        count,
+//!    }.publish(&env);
+//!    // When counter is decremented, publish an event with topics 'counter'
+//!    // and 'increment', and data `count`.
+//!    CounterEvent {
+//!        counter_change: symbol_short!("decrement"),
+//!        count,
+//!    }.publish(&env);
+//!    ```
+//!   More examples of using `#[contractevent]` can be found in the event test
+//!   module of the SDK (https://github.com/stellar/rs-soroban-sdk/blob/main/soroban-sdk/src/tests/contract_event.rs)
+//!   
+//! 2. Token interface has been updated to use [`MuxedAddress`] instead of
+//!    [`Address`] for the transfer destination.
+//!
+//!    Note, that Stellar Asset contract supports the updated interface as well.
+//!    
+//!    `MuxedAddress` is a special type that is compatible with `Address` in
+//!    most of the contexts. If a contract function accepts a `MuxedAddress`
+//!    argument, then it can also accept an `Address` argument seamlessly, so
+//!    the existing contracts or tests that interact with the updated token
+//!    interface don't require any changes.
+//!    
+//!    The token implementations should be updated to use the new interface.
+//!    `MuxedAddress` allows users to attach a 64-bit ID to the payment
+//!    destination in order to identify a 'virtual' account, such as an exchange
+//!    deposit account. Note, that this change is not sufficient to support
+//!    the exchange deposits for the token contracts, but is necessary for that.
+//!
+//!    The necessary token modification is very minimal. Consider the following
+//!    `transfer` implementation that still uses `Address` destination:
+//!
+//!    ```
+//!    fn transfer(env: Env, from: Address, to: Address, amount: i128) {
+//!       // Authorize the transfer source.
+//!       from.require_auth();
+//!       // Token-specific implementation of balance movement.
+//!       token_impl::move_balance(&env, &from, &to, amount);
+//!       // Publish an event (notice that this uses the new event format - see
+//!       // the previous migration step).
+//!       soroban_sdk::token::Transfer {
+//!           from,
+//!           to,
+//!           amount,
+//!       }.publish(&env);
+//!    }
+//!    ```
+//!    
+//!    The updated implementation would look as follows:
+//!
+//!    ```
+//!    fn transfer(env: Env, from: Address, muxed_to: MuxedAddress, amount: i128) {
+//!       // Authorize the transfer source.
+//!       from.require_auth();
+//!       // Extract the underlying Address by dropping the ID.
+//!       let to = muxed_to.address();
+//!       // Token-specific implementation of balance movement (same as before).
+//!       token_impl::move_balance(&env, &from, &to, amount);
+//!       // Publish an event (notice that this uses the new event format - see
+//!       // the previous migration step).
+//!       soroban_sdk::token::TransferMuxed { // 👈 👀 New event kind for supporting the muxed destination
+//!           from,
+//!           to,
+//!           to_muxed_id: muxed_to.id(), // 👈 👀 New field to capture the ID.
+//!           amount,
+//!       }.publish(&env);
+//!    }
+//!    ```
+//!   
+//!    That's the extent of the necessary changes. Note, that the transfer 
+//!    events produced in different contexts (e.g. in case of `transfer_from`)
+//!    don't require any changes, because the [`MuxedAddress`] is only necessary
+//!    in a few narrow scenarios (such as direct transfer to an exchange).
 //!
 //! # Migrating from v21 to v22
 //!
