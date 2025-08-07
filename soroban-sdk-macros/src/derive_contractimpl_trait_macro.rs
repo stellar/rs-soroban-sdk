@@ -1,4 +1,4 @@
-use crate::default_crate_path;
+use crate::{default_crate_path, syn_ext};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
@@ -37,7 +37,7 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
 }
 
 fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
-    let path = &args.crate_path;
+    let path = syn_ext::path_in_macro_rules(&args.crate_path);
 
     let trait_ident = &input.ident;
 
