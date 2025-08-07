@@ -1,15 +1,16 @@
 use crate::default_crate_path;
 use darling::{ast::NestedMeta, Error, FromMeta};
-use heck::ToSnakeCase;
-use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::ToTokens;
+use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{parse2, ItemTrait, Path};
 
 #[derive(Debug, FromMeta)]
 struct Args {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
+    spec_name: Option<String>,
+    args_name: Option<String>,
+    client_name: Option<String>,
 }
 
 pub fn derive_trait(metadata: TokenStream2, input: TokenStream2) -> TokenStream2 {
@@ -22,86 +23,21 @@ pub fn derive_trait(metadata: TokenStream2, input: TokenStream2) -> TokenStream2
 fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStream2, Error> {
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = Args::from_list(&args)?;
-    let input = parse2(input)?;
-    let derived = derive(&args, &input)?;
+    let input: ItemTrait = parse2(input)?;
+
+    let path = &args.crate_path;
+    let spec_name = args.spec_name.unwrap_or(format!("{}Spec", input.ident));
+    let spec_ident = format_ident!("{spec_name}");
+    let args_name = args.args_name.unwrap_or(format!("{}Args", input.ident));
+    let client_name = args.client_name.unwrap_or(format!("{}Client", input.ident));
+
     Ok(quote! {
-        #derived
+        pub struct #spec_ident;
+        #[#path::contractspecfn(name = #spec_name, export = false)]
+        #[#path::contractargs(name = #args_name)]
+        #[#path::contractclient(crate_path = #path, name = #client_name)]
+        #[#path::contracttraitmacro(crate_path = #path)]
         #input
     }
     .into())
-}
-
-fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
-    let path = &args.crate_path;
-
-    let trait_ident = &input.ident;
-
-    let fns = input.items.iter().filter_map(|i| match i {
-        TraitItem::Fn(TraitItemFn {
-            default: Some(_),
-            sig,
-            ..
-        }) => Some(sig.to_token_stream().to_string()),
-        _ => None,
-    });
-
-    let macro_ident = macro_ident(&input.ident);
-
-    let output = quote! {
-        #[doc(hidden)]
-        #[allow(unused_macros)]
-        #[macro_export]
-        macro_rules! #macro_ident {
-            (
-                $impl_ident:ty,
-                $impl_fns:expr,
-                $client_name:literal,
-                $args_name:literal,
-                $spec_name:literal $(,)?
-            ) => {
-                #path::contractimpl_trait_default_fns_not_overridden!(
-                    trait_ident = #trait_ident,
-                    trait_default_fns = [#(#fns),*],
-                    impl_ident = $impl_ident,
-                    impl_fns = $impl_fns,
-                    client_name = $client_name,
-                    args_name = $args_name,
-                    spec_name = $spec_name,
-                );
-            }
-        }
-
-        /// Macro for `contractimpl`ing the default functions of the trait that are not overriden
-        /// inside the macro block.
-        pub use #macro_ident as #trait_ident;
-    };
-
-    Ok(output)
-}
-
-pub fn generate_call_to_contractimpl_for_trait(
-    trait_ident: &Ident,
-    impl_ident: &Type,
-    pub_methods: &Vec<&ImplItemFn>,
-    client_ident: &str,
-    args_ident: &str,
-    spec_ident: &str,
-) -> TokenStream2 {
-    let impl_fns = pub_methods
-        .iter()
-        .map(|f| f.sig.to_token_stream().to_string());
-    quote! {
-        #trait_ident!(
-            #impl_ident,
-            [#(#impl_fns),*],
-            #client_ident,
-            #args_ident,
-            #spec_ident,
-        );
-    }
-}
-
-fn macro_ident(trait_ident: &Ident) -> Ident {
-    let lower = trait_ident.to_string().to_snake_case();
-    format_ident!("__contractimpl_for_{lower}")
 }
