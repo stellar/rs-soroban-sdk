@@ -1,5 +1,5 @@
 //! # Migrating from v22 to v23
-//! 
+//!
 //! 1. The [`Events::publish`] method is deprecated in favor of `#[contractevent]`
 //!    macro.
 //!
@@ -10,21 +10,26 @@
 //!    For example, consider the following event publish code:
 //!   
 //!    ```
-//!    // ... inside some function ...
-//!    // When counter is incremented, publish an event with topics 'counter'
-//!    // and 'increment', and data `count`.
-//!    env.events().publish((symbol_short!("counter"), symbol_short!("increment")),
-//!                          count);
-//!    // When counter is decremented, publish an event with topics 'counter'
-//!    // and 'decrement', and data `count`.
-//!    env.events().publish((symbol_short!("counter"), symbol_short!("decrement")),
-//!                          count);
+//!    use soroban_sdk::{symbol_short, Env};
+//!    // ... inside some contract ...
+//!    pub fn increment_counter(env: Env) {
+//!        // When counter is incremented, publish an event with topics 'counter'
+//!        // and 'increment', and data `count`.
+//!        env.events().publish((symbol_short!("counter"), symbol_short!("increment")),
+//!                              123);
+//!    }
+//!    pub fn decrement_counter(env: Env) {
+//!        // When counter is decremented, publish an event with topics 'counter'
+//!        // and 'decrement', and data `count`.
+//!        env.events().publish((symbol_short!("counter"), symbol_short!("decrement")),
+//!                               321);
+//!    }
 //!    ```
 //!    
 //!    This can be replaced with the following code using `#[contractevent]`:
 //!
 //!    ```
-//!    use soroban_sdk::contractevent;
+//!    use soroban_sdk::{contractevent, symbol_short, Env, Symbol};
 //!    // The event will always have the first topic 'counter'.
 //!    #[contractevent(topics = ["counter"])]
 //!    pub struct CounterEvent {
@@ -35,22 +40,27 @@
 //!      count: u32,
 //!    }
 //!    
-//!    // ... inside some function ...
-//!    // When counter is incremented, publish an event with topics 'counter'
-//!    // and 'increment', and data `count`.
-//!    CounterEvent {
-//!        counter_change: symbol_short!("increment"),
-//!        count,
-//!    }.publish(&env);
-//!    // When counter is decremented, publish an event with topics 'counter'
-//!    // and 'increment', and data `count`.
-//!    CounterEvent {
-//!        counter_change: symbol_short!("decrement"),
-//!        count,
-//!    }.publish(&env);
+//!    // ... inside some contract ...
+//!    pub fn increment_counter(env: Env) {
+//!        // When counter is incremented, publish an event with topics 'counter'
+//!        // and 'increment', and data `count`.
+//!        CounterEvent {
+//!          counter_change: symbol_short!("increment"),
+//!          count: 123,
+//!        }.publish(&env);
+//!    }
+//!
+//!    pub fn decrement_counter(env: Env) {
+//!        // When counter is decremented, publish an event with topics 'counter'
+//!        // and 'increment', and data `count`.
+//!        CounterEvent {
+//!          counter_change: symbol_short!("decrement"),
+//!          count: 321,
+//!        }.publish(&env);
+//!    }
 //!    ```
 //!   More examples of using `#[contractevent]` can be found in the event test
-//!   module of the SDK (https://github.com/stellar/rs-soroban-sdk/blob/main/soroban-sdk/src/tests/contract_event.rs)
+//!   module of the SDK (<https://github.com/stellar/rs-soroban-sdk/blob/main/soroban-sdk/src/tests/contract_event.rs>)
 //!   
 //! 2. Token interface has been updated to use [`MuxedAddress`] instead of
 //!    [`Address`] for the transfer destination.
@@ -73,6 +83,8 @@
 //!    `transfer` implementation that still uses `Address` destination:
 //!
 //!    ```
+//!    use soroban_sdk::{Env, Address, token};
+//!    // ... inside some token contract ...
 //!    fn transfer(env: Env, from: Address, to: Address, amount: i128) {
 //!       // Authorize the transfer source.
 //!       from.require_auth();
@@ -80,17 +92,26 @@
 //!       token_impl::move_balance(&env, &from, &to, amount);
 //!       // Publish an event (notice that this uses the new event format - see
 //!       // the previous migration step).
-//!       soroban_sdk::token::Transfer {
+//!       token::Transfer {
 //!           from,
 //!           to,
 //!           amount,
 //!       }.publish(&env);
+//!    }
+//!
+//!    mod token_impl {
+//!      use soroban_sdk::{Env, Address};
+//!      pub fn move_balance(env: &Env, from: &Address, to: &Address, amount: i128) {
+//!        // Token-specific implementation of balance movement.
+//!      }
 //!    }
 //!    ```
 //!    
 //!    The updated implementation would look as follows:
 //!
 //!    ```
+//!    use soroban_sdk::{Env, Address, MuxedAddress, token};
+//!    // ... inside some token contract ...
 //!    fn transfer(env: Env, from: Address, muxed_to: MuxedAddress, amount: i128) {
 //!       // Authorize the transfer source.
 //!       from.require_auth();
@@ -98,21 +119,28 @@
 //!       let to = muxed_to.address();
 //!       // Token-specific implementation of balance movement (same as before).
 //!       token_impl::move_balance(&env, &from, &to, amount);
-//!       // Publish an event (notice that this uses the new event format - see
-//!       // the previous migration step).
-//!       soroban_sdk::token::TransferMuxed { // 👈 👀 New event kind for supporting the muxed destination
-//!           from,
-//!           to,
-//!           to_muxed_id: muxed_to.id(), // 👈 👀 New field to capture the ID.
-//!           amount,
-//!       }.publish(&env);
+//!       // Publish an appropriate transfer event that includes the muxed ID
+//!       // when it's non-None.
+//!       token::publish_transfer_to_muxed_address_event(&env, &from, &muxed_to, amount);
+//!    }
+//!    
+//!    mod token_impl {
+//!      use soroban_sdk::{Env, Address};
+//!      pub fn move_balance(env: &Env, from: &Address, to: &Address, amount: i128) {
+//!        // Token-specific implementation of balance movement.
+//!        // This requires no changes compared to the previous version.
+//!      }
 //!    }
 //!    ```
 //!   
-//!    That's the extent of the necessary changes. Note, that the transfer 
+//!    That's the extent of the necessary changes. Note, that the transfer
 //!    events produced in different contexts (e.g. in case of `transfer_from`)
 //!    don't require any changes, because the [`MuxedAddress`] is only necessary
 //!    in a few narrow scenarios (such as direct transfer to an exchange).
+//!
+//! [`Events::publish`]: crate::events::Events::publish
+//! [`Address`]: crate::MuxedAddress
+//! [`MuxedAddress`]: crate::MuxedAddress
 //!
 //! # Migrating from v21 to v22
 //!
