@@ -5,6 +5,7 @@ mod attribute;
 mod derive_args;
 mod derive_client;
 mod derive_contractimpl_trait_default_fns_not_overridden;
+mod derive_contractimpl_trait_macro;
 mod derive_enum;
 mod derive_enum_int;
 mod derive_error_enum_int;
@@ -23,6 +24,9 @@ mod syn_ext;
 use derive_args::{derive_args_impl, derive_args_type};
 use derive_client::{derive_client_impl, derive_client_type};
 use derive_contractimpl_trait_default_fns_not_overridden::derive_contractimpl_trait_default_fns_not_overridden;
+use derive_contractimpl_trait_macro::{
+    derive_contractimpl_trait_macro, generate_call_to_contractimpl_for_trait,
+};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
@@ -31,7 +35,7 @@ use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn};
 use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
-use derive_trait::{derive_trait, generate_call_to_contractimpl_for_trait};
+use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, FromMeta};
 use macro_string::MacroString;
@@ -304,6 +308,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn contracttrait(metadata: TokenStream, input: TokenStream) -> TokenStream {
     derive_trait(metadata.into(), input.into()).into()
+}
+
+#[proc_macro_attribute]
+pub fn contractimpl_trait_macro(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_contractimpl_trait_macro(metadata.into(), input.into()).into()
 }
 
 #[proc_macro]
@@ -590,6 +599,7 @@ pub fn contractargs(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as HasFnsItem);
     let methods: Vec<_> = item.fns();
     let args_type = (!args.impl_only).then(|| derive_args_type(&item.name(), &args.name));
+
     let args_impl = derive_args_impl(&args.name, &methods);
     quote! {
         #input2

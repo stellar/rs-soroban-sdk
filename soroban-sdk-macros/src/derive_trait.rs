@@ -1,17 +1,17 @@
 use crate::default_crate_path;
-use crate::syn_ext::{fn_arg_ident, is_trait_item_type};
 use darling::{ast::NestedMeta, Error, FromMeta};
-use heck::ToSnakeCase;
-use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::ToTokens;
+use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{parse2, parse_quote, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{parse2, ItemTrait, Path};
 
 #[derive(Debug, FromMeta)]
 struct Args {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     add_impl_type: Option<bool>,
+    spec_name: Option<String>,
+    args_name: Option<String>,
+    client_name: Option<String>,
 }
 
 pub fn derive_trait(metadata: TokenStream2, input: TokenStream2) -> TokenStream2 {
@@ -24,154 +24,22 @@ pub fn derive_trait(metadata: TokenStream2, input: TokenStream2) -> TokenStream2
 fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStream2, Error> {
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = Args::from_list(&args)?;
-    let mut input = parse2(input)?;
-    if args.add_impl_type.unwrap_or_default() {
-        maybe_add_default_methods(&mut input)?;
-        maybe_add_impl_type(&mut input);
-    }
-    let derived = derive(&args, &input)?;
-    remove_internal_attrs(&mut input);
+    let input: ItemTrait = parse2(input)?;
+
+    let path = &args.crate_path;
+    let spec_name = args.spec_name.unwrap_or(format!("{}Spec", input.ident));
+    let spec_ident = format_ident!("{spec_name}");
+    let args_name = args.args_name.unwrap_or(format!("{}Args", input.ident));
+    let client_name = args.client_name.unwrap_or(format!("{}Client", input.ident));
+    let add_impl_type = args.add_impl_type.unwrap_or_default();
+
     Ok(quote! {
-        #derived
+        pub struct #spec_ident;
+        #[#path::contractspecfn(name = #spec_name, export = false)]
+        #[#path::contractargs(name = #args_name)]
+        #[#path::contractclient(crate_path = #path, name = #client_name)]
+        #[#path::contractimpl_trait_macro(crate_path = #path, add_impl_type = #add_impl_type)]
         #input
     }
     .into())
-}
-
-fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
-    let path = &args.crate_path;
-
-    let trait_ident = &input.ident;
-
-    let mut internal_fns = Vec::new();
-
-    let fns = input.items.iter().filter_map(|i| match i {
-        TraitItem::Fn(TraitItemFn {
-            default: Some(_),
-            sig,
-            attrs,
-            ..
-        }) => {
-            if !has_attr(&attrs, "internal") {
-                Some(sig.to_token_stream().to_string())
-            } else {
-                internal_fns.push(sig.to_token_stream().to_string());
-                None
-            }
-        }
-        _ => None,
-    });
-
-    let macro_ident = macro_ident(&input.ident);
-
-    let output = quote! {
-        #[doc(hidden)]
-        #[allow(unused_macros)]
-        #[macro_export]
-        macro_rules! #macro_ident {
-            (
-                $impl_ident:ty,
-                $impl_fns:expr,
-                $client_name:literal,
-                $args_name:literal,
-                $spec_name:literal $(,)?
-            ) => {
-                #path::contractimpl_trait_default_fns_not_overridden!(
-                    trait_ident = #trait_ident,
-                    trait_default_fns = [#(#fns),*],
-                    impl_ident = $impl_ident,
-                    impl_fns = $impl_fns,
-                    internal_fns = [#(#internal_fns),*],
-                    client_name = $client_name,
-                    args_name = $args_name,
-                    spec_name = $spec_name,
-                );
-            }
-        }
-
-        /// Macro for `contractimpl`ing the default functions of the trait that are not overriden
-        /// inside the macro block.
-        pub use #macro_ident as #trait_ident;
-    };
-
-    Ok(output)
-}
-
-pub fn generate_call_to_contractimpl_for_trait(
-    trait_ident: &Ident,
-    impl_ident: &Type,
-    pub_methods: &Vec<&ImplItemFn>,
-    client_ident: &str,
-    args_ident: &str,
-    spec_ident: &str,
-) -> TokenStream2 {
-    let impl_fns = pub_methods
-        .iter()
-        .map(|f| f.sig.to_token_stream().to_string());
-    quote! {
-        #trait_ident!(
-            #impl_ident,
-            [#(#impl_fns),*],
-            #client_ident,
-            #args_ident,
-            #spec_ident,
-        );
-    }
-}
-
-fn macro_ident(trait_ident: &Ident) -> Ident {
-    let lower = trait_ident.to_string().to_snake_case();
-    format_ident!("__contractimpl_for_{lower}")
-}
-
-fn remove_internal_attrs(trait_: &mut ItemTrait) {
-    trait_.items.iter_mut().for_each(|item| {
-        if let TraitItem::Fn(func) = item {
-            func.attrs.retain(|attr| !attr.path().is_ident("internal"))
-        }
-    });
-}
-
-fn maybe_add_default_methods(trait_: &mut ItemTrait) -> Result<(), syn::Error> {
-    trait_
-        .items
-        .iter_mut()
-        .filter_map(|item| match item {
-            TraitItem::Fn(func) => Some(func),
-            _ => None,
-        })
-        .try_for_each(|func| -> Result<(), syn::Error> {
-            if func.default.is_none() {
-                let args = func
-                    .sig
-                    .inputs
-                    .iter()
-                    .map(fn_arg_ident)
-                    .collect::<Result<Vec<_>, _>>()?;
-                let name = func.sig.ident.clone();
-                func.default = Some(parse_quote! {
-                    {
-                        Self::Impl::#name(#(#args),*)
-                    }
-                });
-            }
-            Ok(())
-        })?;
-    Ok(())
-}
-
-fn maybe_add_impl_type(trait_: &mut ItemTrait) {
-    if !trait_.items.iter().any(is_trait_item_type) {
-        let trait_ident = trait_.ident.clone();
-        trait_.items.insert(
-            0,
-            syn::parse_quote! {
-                type Impl: #trait_ident;
-            },
-        );
-    }
-}
-
-pub(crate) fn has_attr(attrs: &[syn::Attribute], ident_str: &str) -> bool {
-    attrs.iter().any(|attr| attr.path().is_ident(ident_str))
 }

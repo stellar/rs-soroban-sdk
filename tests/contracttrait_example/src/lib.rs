@@ -2,7 +2,7 @@
 
 use test_contracttrait_lib::{Administratable, Pausable, PausableBase, Upgradable};
 
-use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, Event};
+use soroban_sdk::{contract, contractevent, contractimpl, Address, Env};
 
 #[contractevent( topics = ["pause"], data_format = "vec", export = false)]
 pub struct Pause {
