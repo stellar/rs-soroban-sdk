@@ -60,7 +60,7 @@ jobs:
     - uses: stellar/binaries@v38
       with:
         name: cargo-semver-checks
-        version: 0.41.0
+        version: 0.42.0
     - run: cargo semver-checks
 
   build-and-test:
