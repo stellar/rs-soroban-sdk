@@ -4,7 +4,7 @@ use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _},
     token::{Approve, Burn, Clawback, Mint, Transfer, TransferMuxed},
-    vec, Address, Env, Event, Map, Symbol, Val,
+    vec, Address, Env, Map, Symbol, Val,
 };
 
 #[contract]
