@@ -12,7 +12,10 @@ struct Args {
     crate_path: Path,
 }
 
-pub fn derive_contractimpl_trait_macro(metadata: TokenStream2, input: TokenStream2) -> TokenStream2 {
+pub fn derive_contractimpl_trait_macro(
+    metadata: TokenStream2,
+    input: TokenStream2,
+) -> TokenStream2 {
     match derive_or_err(metadata, input) {
         Ok(tokens) => tokens,
         Err(err) => err.write_errors(),
