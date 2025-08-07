@@ -14,7 +14,7 @@ mod derive_spec_fn;
 mod derive_struct;
 mod derive_struct_tuple;
 mod derive_trait;
-mod derive_trait_macro;
+mod derive_contractimpl_trait_macro;
 mod doc;
 mod map_type;
 mod path;
@@ -33,7 +33,7 @@ use derive_spec_fn::derive_fn_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
 use derive_trait::derive_trait;
-use derive_trait_macro::{derive_trait_macro, generate_call_to_contractimpl_for_trait};
+use derive_contractimpl_trait_macro::{derive_contractimpl_trait_macro, generate_call_to_contractimpl_for_trait};
 
 use darling::{ast::NestedMeta, FromMeta};
 use macro_string::MacroString;
@@ -306,8 +306,8 @@ pub fn contracttrait(metadata: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn contracttraitmacro(metadata: TokenStream, input: TokenStream) -> TokenStream {
-    derive_trait_macro(metadata.into(), input.into()).into()
+pub fn contractimpl_trait_macro(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_contractimpl_trait_macro(metadata.into(), input.into()).into()
 }
 
 #[proc_macro]
