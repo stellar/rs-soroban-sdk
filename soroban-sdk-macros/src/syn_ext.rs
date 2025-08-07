@@ -291,17 +291,19 @@ fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
 /// in a macro_rules it is not a valid identifier and syn's Ident type, used in Path, does not
 /// permit it.
 pub fn path_in_macro_rules(p: &Path) -> TokenStream {
+    let leading_colon = &p.leading_colon;
     let mut segments = p.segments.iter();
     let first = segments.next();
-    if first
-        == Some(&PathSegment {
-            ident: Ident::new("crate", Span::call_site()),
-            arguments: PathArguments::None,
-        })
+    if leading_colon == &None
+        && first
+            == Some(&PathSegment {
+                ident: Ident::new("crate", Span::call_site()),
+                arguments: PathArguments::None,
+            })
     {
         quote! { $crate #(::#segments)* }
     } else {
-        quote! { #first #(::#segments)* }
+        quote! { #leading_colon #first #(::#segments)* }
     }
 }
 
@@ -326,8 +328,7 @@ mod test_path_in_macro_rules {
     }
 
     #[test]
-    #[ignore = "Currently there's a bug in path_in_macro_rules that needs fixing"]
-    fn test_unaltered_paths_fully_qualified() {
+    fn test_unaltered_global_paths() {
         let input = quote!(::path::to::module);
         let expected = quote!(::path::to::module);
         assert_paths_eq(input, expected);
@@ -344,6 +345,13 @@ mod test_path_in_macro_rules {
     fn test_crate_with_path() {
         let input = quote!(crate::path::to);
         let expected = quote!($crate::path::to);
+        assert_paths_eq(input, expected);
+    }
+
+    #[test]
+    fn test_crate_with_invalid_global() {
+        let input = quote!(::crate);
+        let expected = quote!(::crate);
         assert_paths_eq(input, expected);
     }
 }
