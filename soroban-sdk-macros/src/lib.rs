@@ -285,12 +285,15 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #derived_ok
                 #contractimpl_for_trait
             };
-            let cfs = derive_contract_function_registration_ctor(
-                crate_path,
-                ty,
-                trait_ident,
-                pub_methods.into_iter(),
-            );
+            // derive_contractimpl_trait will handle this since we don't know all the methods here
+            let cfs = trait_ident.is_none().then(|| {
+                derive_contract_function_registration_ctor(
+                    crate_path,
+                    ty,
+                    trait_ident,
+                    pub_methods.into_iter(),
+                )
+            });
             output.extend(quote! { #cfs });
             output.into()
         }
