@@ -98,6 +98,19 @@ pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     arg.clone()
 }
 
+pub fn fn_arg_make_into(arg: &FnArg) -> FnArg {
+    if let FnArg::Typed(pat_type) = arg {
+        let ty = &pat_type.ty;
+        return FnArg::Typed(PatType {
+            attrs: pat_type.attrs.clone(),
+            pat: pat_type.pat.clone(),
+            colon_token: pat_type.colon_token,
+            ty: Box::new(syn::parse_quote! { impl Into<#ty> }),
+        });
+    }
+    arg.clone()
+}
+
 pub enum HasFnsItem {
     Trait(ItemTrait),
     Impl(ItemImpl),
