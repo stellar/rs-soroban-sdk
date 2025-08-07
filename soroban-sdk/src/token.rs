@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractevent, contractspecfn, Address, Env, String};
+use crate::{contractevent, contracttrait, Address, Env, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -80,8 +80,13 @@ pub use TokenClient as Client;
 /// There are no functions in the token interface for minting tokens. Minting is
 /// an administrative function that can differ significantly from one token to
 /// the next.
-#[contractspecfn(name = "TokenSpec", export = false)]
-#[contractclient(crate_path = "crate", name = "TokenClient")]
+#[contracttrait(
+    crate_path = "crate",
+    spec_name = "TokenSpec",
+    // TODO: spec_export = false,
+    args_name = "TokenArgs",
+    client_name = "TokenClient",
+)]
 pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
     ///
@@ -280,10 +285,6 @@ pub struct Clawback {
     pub amount: i128,
 }
 
-/// Spec contains the contract spec of Token contracts.
-#[doc(hidden)]
-pub struct TokenSpec;
-
 pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &TokenSpec::spec_xdr_allowance(),
     &TokenSpec::spec_xdr_approve(),
@@ -336,8 +337,13 @@ impl TokenSpec {
 
 /// Interface for admin capabilities for Token contracts, such as the Stellar
 /// Asset Contract.
-#[contractspecfn(name = "StellarAssetSpec", export = false)]
-#[contractclient(crate_path = "crate", name = "StellarAssetClient")]
+#[contracttrait(
+    crate_path = "crate",
+    spec_name = "StellarAssetSpec",
+    // TODO: spec_export = false,
+    args_name = "StellarAssetArgs",
+    client_name = "StellarAssetClient",
+)]
 pub trait StellarAssetInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
     ///
@@ -566,12 +572,6 @@ pub struct SetAuthorized {
     pub id: Address,
     pub authorize: bool,
 }
-
-/// Spec contains the contract spec of the Stellar Asset Contract.
-///
-/// The Stellar Asset Contract is a superset of the Token Contract.
-#[doc(hidden)]
-pub struct StellarAssetSpec;
 
 pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_allowance(),
