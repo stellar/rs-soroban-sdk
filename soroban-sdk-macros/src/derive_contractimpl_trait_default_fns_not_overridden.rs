@@ -85,35 +85,18 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     output.extend(derive_client_impl(
         &args.crate_path,
         &args.client_name,
-        fns.iter()
-            .map(Into::into)
-            .collect::<Vec<syn_ext::Fn>>()
-            .as_slice(),
+        fns.iter().map(Into::into).collect::<Vec<_>>().as_slice(),
     ));
     output.extend(derive_args_impl(
         &args.args_name,
-        fns.iter()
-            .map(Into::into)
-            .collect::<Vec<syn_ext::Fn>>()
-            .as_slice(),
+        fns.iter().map(Into::into).collect::<Vec<_>>().as_slice(),
     ));
     // Setup ctor for all methods.
-    let methods: Vec<_> = fns
-        .into_iter()
-        .chain(impl_fns.into_iter())
-        .map(|sig| syn::ImplItemFn {
-            attrs: vec![],
-            vis: syn::Visibility::Inherited,
-            defaultness: None,
-            sig: sig.clone(),
-            block: syn::parse_quote! {{}},
-        })
-        .collect();
     output.extend(derive_contract_function_registration_ctor(
         &args.crate_path,
         &impl_ty,
         Some(trait_ident),
-        methods.iter(),
+        fns.iter().chain(impl_fns.iter()),
     ));
     Ok(output)
 }
