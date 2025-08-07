@@ -6,7 +6,7 @@ use crate::{
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::{quote, ToTokens};
-use syn::{parse_quote, ImplItemFn, LitStr, Path, Type};
+use syn::{parse_quote, LitStr, Path, Type};
 
 #[derive(Debug, FromMeta)]
 struct Args {
@@ -101,12 +101,12 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let methods: Vec<_> = fns
         .into_iter()
         .chain(impl_fns.into_iter())
-        .map(|sig| ImplItemFn {
+        .map(|sig| syn::ImplItemFn {
             attrs: vec![],
             vis: syn::Visibility::Inherited,
             defaultness: None,
             sig: sig.clone(),
-            block: parse_quote! {{}},
+            block: syn::parse_quote! {{}},
         })
         .collect();
     output.extend(derive_contract_function_registration_ctor(
