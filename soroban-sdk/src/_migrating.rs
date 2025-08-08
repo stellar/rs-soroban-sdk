@@ -1,5 +1,8 @@
 //! # Migrating from v22 to v23
-//! TBD
+//!
+//! 1. [`contractevent` replaces `Events::publish`][v23_contractevent]
+//!   
+//! 2. [`MuxedAddress` replaces `Address` as the `to` of the `TokenInterface::transfer`][v23_token_transfer]
 //!
 //! # Migrating from v21 to v22
 //!
@@ -237,3 +240,6 @@
 //! [`BytesN<32>`]: crate::BytesN
 //! [`Hash<32>`]: crate::crypto::Hash
 //! [`Hash<32>::to_bytes`]: crate::crypto::Hash::to_bytes
+
+pub mod v23_contractevent;
+pub mod v23_token_transfer;

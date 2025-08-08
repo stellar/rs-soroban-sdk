@@ -288,6 +288,33 @@ pub struct Clawback {
     pub amount: i128,
 }
 
+/// This is a helper function to publish either a `Transfer` or `TransferMuxed`
+/// event based on whether the `to` address is a muxed address or not (i.e.
+/// whether it has non-None ID).
+pub fn publish_transfer_to_muxed_address_event(
+    env: &Env,
+    from: &Address,
+    to: &MuxedAddress,
+    amount: i128,
+) {
+    if let Some(to_muxed_id) = to.id() {
+        TransferMuxed {
+            from: from.clone(),
+            to: to.address(),
+            to_muxed_id,
+            amount,
+        }
+        .publish(env);
+    } else {
+        Transfer {
+            from: from.clone(),
+            to: to.address(),
+            amount,
+        }
+        .publish(env);
+    }
+}
+
 /// Spec contains the contract spec of Token contracts.
 #[doc(hidden)]
 pub struct TokenSpec;
