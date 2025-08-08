@@ -6,7 +6,7 @@ use super::{
 };
 
 #[cfg(not(target_family = "wasm"))]
-use crate::env::internal::xdr::ScVal;
+use crate::env::internal::xdr::{AccountId, ScVal};
 #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
 use crate::env::xdr::ScAddress;
 
@@ -188,6 +188,26 @@ impl TryFromVal<Env, ScAddress> for Address {
         )?
         .try_into_val(env)
         .unwrap_infallible())
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Address> for AccountId {
+    type Error = ConversionError;
+    fn try_from(v: &Address) -> Result<Self, Self::Error> {
+        let sc: ScAddress = v.into();
+        match sc {
+            ScAddress::Account(aid) => Ok(aid),
+            _ => Err(ConversionError),
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Address> for AccountId {
+    type Error = ConversionError;
+    fn try_from(v: Address) -> Result<Self, Self::Error> {
+        (&v).try_into()
     }
 }
 

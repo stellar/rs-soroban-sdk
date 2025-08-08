@@ -263,7 +263,7 @@ pub struct TransferMuxed {
     pub from: Address,
     #[topic]
     pub to: Address,
-    pub to_muxed_id: u32,
+    pub to_muxed_id: u64,
     pub amount: i128,
 }
 
@@ -551,7 +551,7 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["mint", admin: Address, to: Address], data
+    /// Emits an event with topics `["mint", to: Address], data
     /// = amount: i128`
     fn mint(env: Env, to: Address, amount: i128);
 
@@ -573,6 +573,8 @@ pub trait StellarAssetInterface {
 
 #[contractevent(crate_path = "crate", topics = ["set_admin"], data_format = "single-value", export = false)]
 pub struct SetAdmin {
+    #[topic]
+    pub admin: Address,
     pub new_admin: Address,
 }
 
@@ -616,7 +618,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7656;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7664;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
