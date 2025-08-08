@@ -8,7 +8,7 @@ use soroban_sdk::{
     testutils::{Address as _, Events as _, MuxedAddress as _},
     token::StellarAssetClient,
     token::{Approve, Burn, Clawback, Mint, Transfer, TransferMuxed},
-    vec, xdr, Address, Env, Event, IntoVal, Map, MuxedAddress, Symbol, Val,
+    vec, xdr, Address, Env, IntoVal, Map, MuxedAddress, Symbol, Val,
 };
 
 #[contract]
