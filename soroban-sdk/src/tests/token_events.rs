@@ -292,22 +292,48 @@ fn test_mint() {
 #[test]
 fn test_clawback() {
     let env = Env::default();
-    let id = env.register(Contract, ());
+    env.mock_all_auths();
+
+    let from = Address::generate(&env);
+    let amount = 123;
+
     let event = Clawback {
-        from: Address::generate(&env),
-        amount: 123,
+        from: from.clone(),
+        amount,
     };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("clawback"), from.clone());
+    let data = amount;
+
+    let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
     let token_events = env.events().all();
     assert_eq!(
         token_events,
         vec![
             &env,
-            (
-                id.clone(),
-                (symbol_short!("clawback"), event.from.clone(),).into_val(&env),
-                123i128.into_val(&env),
-            ),
+            (id.clone(), topics.into_val(&env), data.into_val(&env)),
+        ]
+    );
+
+    // Verify the event published is consistent with the asset contract.
+    let admin = Address::generate(&env);
+    let asset = env.register_stellar_asset_contract_v2(admin);
+    asset.issuer().set_flag(xdr::AccountFlags::ClawbackEnabledFlag);
+    let client = StellarAssetClient::new(&env, &asset.address());
+
+    let (t0, t1) = topics;
+    let topics = (t0, t1, client.name());
+
+    client.mint(&from, &amount);
+    client.clawback(&from, &amount);
+    let asset_events = env.events().all();
+    assert_eq!(
+        asset_events,
+        vec![
+            &env,
+            (asset.address(), topics.into_val(&env), data.into_val(&env)),
         ]
     );
 }
