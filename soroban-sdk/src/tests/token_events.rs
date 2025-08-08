@@ -320,7 +320,9 @@ fn test_clawback() {
     // Verify the event published is consistent with the asset contract.
     let admin = Address::generate(&env);
     let asset = env.register_stellar_asset_contract_v2(admin);
-    asset.issuer().set_flag(xdr::AccountFlags::ClawbackEnabledFlag);
+    asset
+        .issuer()
+        .set_flag(xdr::AccountFlags::ClawbackEnabledFlag);
     let client = StellarAssetClient::new(&env, &asset.address());
 
     let (t0, t1) = topics;

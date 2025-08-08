@@ -3,9 +3,9 @@ use crate::{self as soroban_sdk, IntoVal};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _},
+    token::StellarAssetClient,
     token::{SetAdmin, SetAuthorized},
     vec, Address, Env, Event, Symbol,
-    token::StellarAssetClient
 };
 
 #[contract]
