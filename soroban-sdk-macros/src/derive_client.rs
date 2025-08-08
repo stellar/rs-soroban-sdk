@@ -2,7 +2,11 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
-use crate::{attribute::pass_through_attr_to_gen_code, symbol, syn_ext};
+use crate::{
+    attribute::pass_through_attr_to_gen_code,
+    symbol,
+    syn_ext::{self, IsInternal},
+};
 
 pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
@@ -143,7 +147,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             // that start with '__', because the Soroban Env won't let those
             // functions be invoked directly as they're reserved for callbacks
             // and hooks.
-            !f.ident.to_string().starts_with("__")
+            !f.ident.to_string().starts_with("__") && !f.is_internal()
         })
         .map(|f| {
             let fn_ident = &f.ident;

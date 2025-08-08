@@ -7,7 +7,8 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Signature, Type, TypePath,
+    TypeReference,
 };
 
 #[allow(clippy::too_many_arguments)]
@@ -66,6 +67,7 @@ pub fn derive_pub_fn(
                 if let Err(e) = map_type(&pat_ty.ty, false, allow_hash) {
                     errors.push(e);
                 }
+                let arg_ref =  matches!(*pat_ty.ty, Type::Reference(_)).then(|| quote!(&));
 
                 let ident = format_ident!("arg_{}", i);
                 let arg = FnArg::Typed(PatType {
@@ -82,7 +84,7 @@ pub fn derive_pub_fn(
                 });
                 let passthrough_call = quote! { #ident };
                 let call = quote! {
-                    <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
+                    #arg_ref<_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
                             &#ident
@@ -105,22 +107,16 @@ pub fn derive_pub_fn(
         "use `{}::new(&env, &contract_id).{}` instead",
         client_ident, &ident
     );
-    let env_call = if let Some(is_ref) = env_input {
+    let env_call = env_input.map(|is_ref| {
         if is_ref {
             quote! { &env, }
         } else {
             quote! { env.clone(), }
         }
-    } else {
-        quote! {}
-    };
+    });
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let arg_count = slice_args.len();
-    let use_trait = if let Some(t) = trait_ident {
-        quote! { use super::#t }
-    } else {
-        quote! {}
-    };
+    let use_trait = trait_ident.map(|t| quote! { use super::#t });
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
@@ -194,16 +190,16 @@ pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Ident>,
-    methods: impl Iterator<Item = &'a syn::ImplItemFn>,
+    methods: impl Iterator<Item = &'a syn::Signature>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
         return quote!();
     }
 
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
-        .map(|m| {
-            let ident = format!("{}", m.sig.ident);
-            let wrap_ident = format_ident!("__{}", m.sig.ident);
+        .map(|Signature { ident, .. }| {
+            let ident = format!("{ident}");
+            let wrap_ident = format_ident!("__{}", ident);
             (ident, wrap_ident)
         })
         .multiunzip();
