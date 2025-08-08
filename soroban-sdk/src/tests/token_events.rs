@@ -148,7 +148,7 @@ fn test_transfer_muxed() {
         token_events,
         vec![
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
+            (id.clone(), topics.into_val(&env), data.into_val(&env))
         ]
     );
 
@@ -157,6 +157,7 @@ fn test_transfer_muxed() {
     let asset = env.register_stellar_asset_contract_v2(admin);
     let client = StellarAssetClient::new(&env, &asset.address());
 
+    client.mint(&from, &123);
     env.host()
         .add_ledger_entry(
             &Rc::new(xdr::LedgerKey::Trustline(xdr::LedgerKeyTrustLine {
@@ -182,7 +183,6 @@ fn test_transfer_muxed() {
     let (t0, t1, t2) = topics;
     let topics = (t0, t1, t2, client.name());
 
-    client.mint(&from, &123);
     client.transfer(&from, &to, &amount);
     let asset_events = env.events().all();
     assert_eq!(
@@ -197,22 +197,47 @@ fn test_transfer_muxed() {
 #[test]
 fn test_burn() {
     let env = Env::default();
-    let id = env.register(Contract, ());
+    env.mock_all_auths();
+
+    let from = Address::generate(&env);
+    let amount = 123;
+
     let event = Burn {
-        from: Address::generate(&env),
-        amount: 123,
+        from: from.clone(),
+        amount,
     };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("burn"), from.clone());
+    let data = amount;
+
+    let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
     let token_events = env.events().all();
     assert_eq!(
         token_events,
         vec![
             &env,
-            (
-                id.clone(),
-                (symbol_short!("burn"), event.from.clone(),).into_val(&env),
-                123i128.into_val(&env),
-            ),
+            (id.clone(), topics.into_val(&env), data.into_val(&env)),
+        ]
+    );
+
+    // Verify the event published is consistent with the asset contract.
+    let admin = Address::generate(&env);
+    let asset = env.register_stellar_asset_contract_v2(admin);
+    let client = StellarAssetClient::new(&env, &asset.address());
+
+    let (t0, t1) = topics;
+    let topics = (t0, t1, client.name());
+
+    client.mint(&from, &amount);
+    client.burn(&from, &amount);
+    let asset_events = env.events().all();
+    assert_eq!(
+        asset_events,
+        vec![
+            &env,
+            (asset.address(), topics.into_val(&env), data.into_val(&env)),
         ]
     );
 }
@@ -220,22 +245,46 @@ fn test_burn() {
 #[test]
 fn test_mint() {
     let env = Env::default();
-    let id = env.register(Contract, ());
+    env.mock_all_auths();
+
+    let to = Address::generate(&env);
+    let amount = 123;
+
     let event = Mint {
-        to: Address::generate(&env),
-        amount: 123,
+        to: to.clone(),
+        amount,
     };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("mint"), to.clone());
+    let data = amount;
+
+    let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
     let token_events = env.events().all();
     assert_eq!(
         token_events,
         vec![
             &env,
-            (
-                id.clone(),
-                (symbol_short!("mint"), event.to.clone(),).into_val(&env),
-                123i128.into_val(&env),
-            ),
+            (id.clone(), topics.into_val(&env), data.into_val(&env)),
+        ]
+    );
+
+    // Verify the event published is consistent with the asset contract.
+    let admin = Address::generate(&env);
+    let asset = env.register_stellar_asset_contract_v2(admin);
+    let client = StellarAssetClient::new(&env, &asset.address());
+
+    let (t0, t1) = topics;
+    let topics = (t0, t1, client.name());
+
+    client.mint(&to, &amount);
+    let asset_events = env.events().all();
+    assert_eq!(
+        asset_events,
+        vec![
+            &env,
+            (asset.address(), topics.into_val(&env), data.into_val(&env)),
         ]
     );
 }
