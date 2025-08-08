@@ -976,7 +976,7 @@ impl Env {
             issuer: issuer_id.clone(),
         });
         let create = xdr::HostFunction::CreateContract(xdr::CreateContractArgs {
-            contract_id_preimage: xdr::ContractIdPreimage::Asset(asset),
+            contract_id_preimage: xdr::ContractIdPreimage::Asset(asset.clone()),
             executable: xdr::ContractExecutable::StellarAsset,
         });
 
@@ -1000,7 +1000,7 @@ impl Env {
 
         let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
 
-        StellarAssetContract::new(token_id, issuer)
+        StellarAssetContract::new(token_id, issuer, asset)
     }
 
     /// Register the built-in Stellar Asset Contract with provided admin address.
