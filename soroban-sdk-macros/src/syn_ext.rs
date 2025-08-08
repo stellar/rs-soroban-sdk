@@ -319,6 +319,26 @@ pub fn path_in_macro_rules(p: &Path) -> TokenStream {
     }
 }
 
+pub trait IsInternal {
+    fn is_internal(&self) -> bool;
+}
+
+impl IsInternal for TraitItemFn {
+    fn is_internal(&self) -> bool {
+        has_attr(&self.attrs, "internal")
+    }
+}
+
+impl<'a> IsInternal for Fn<'a> {
+    fn is_internal(&self) -> bool {
+        has_attr(&self.attrs, "internal")
+    }
+}
+
+pub(crate) fn has_attr(attrs: &[syn::Attribute], ident_str: &str) -> bool {
+    attrs.iter().any(|attr| attr.path().is_ident(ident_str))
+}
+
 #[cfg(test)]
 mod test_path_in_macro_rules {
     use crate::syn_ext::*;

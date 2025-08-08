@@ -1,6 +1,6 @@
 use crate::{
     default_crate_path,
-    syn_ext::{self, fn_arg_ident},
+    syn_ext::{self, fn_arg_ident, IsInternal},
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -54,13 +54,14 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
     let mut internal_fns = Vec::new();
 
     let fns = input.items.iter().filter_map(|i| match i {
-        TraitItem::Fn(TraitItemFn {
-            default: Some(_),
-            sig,
-            attrs,
-            ..
-        }) => {
-            if has_attr(&attrs, "internal") {
+        TraitItem::Fn(
+            func @ TraitItemFn {
+                default: Some(_),
+                sig,
+                ..
+            },
+        ) => {
+            if func.is_internal() {
                 internal_fns.push(sig.to_token_stream().to_string());
                 None
             } else {
@@ -177,8 +178,4 @@ fn maybe_add_impl_type(trait_: &mut ItemTrait) {
             },
         );
     }
-}
-
-pub(crate) fn has_attr(attrs: &[syn::Attribute], ident_str: &str) -> bool {
-    attrs.iter().any(|attr| attr.path().is_ident(ident_str))
 }
