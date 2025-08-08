@@ -562,11 +562,20 @@ impl StellarAssetIssuer {
 pub struct StellarAssetContract {
     address: crate::Address,
     issuer: StellarAssetIssuer,
+    asset: xdr::Asset,
 }
 
 impl StellarAssetContract {
-    pub(crate) fn new(address: crate::Address, issuer: StellarAssetIssuer) -> Self {
-        Self { address, issuer }
+    pub(crate) fn new(
+        address: crate::Address,
+        issuer: StellarAssetIssuer,
+        asset: xdr::Asset,
+    ) -> Self {
+        Self {
+            address,
+            issuer,
+            asset,
+        }
     }
 
     pub fn address(&self) -> crate::Address {
@@ -575,5 +584,18 @@ impl StellarAssetContract {
 
     pub fn issuer(&self) -> StellarAssetIssuer {
         self.issuer.clone()
+    }
+
+    pub fn asset(&self) -> xdr::Asset {
+        self.asset.clone()
+    }
+
+    pub fn trust_line_asset(&self) -> xdr::TrustLineAsset {
+        // TODO: Move this to rs-stellar-xdr.
+        match &self.asset {
+            xdr::Asset::Native => xdr::TrustLineAsset::Native,
+            xdr::Asset::CreditAlphanum4(a) => xdr::TrustLineAsset::CreditAlphanum4(a.clone()),
+            xdr::Asset::CreditAlphanum12(a) => xdr::TrustLineAsset::CreditAlphanum12(a.clone()),
+        }
     }
 }

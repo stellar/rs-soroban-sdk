@@ -263,7 +263,7 @@ pub struct TransferMuxed {
     pub from: Address,
     #[topic]
     pub to: Address,
-    pub to_muxed_id: u32,
+    pub to_muxed_id: u64,
     pub amount: i128,
 }
 
