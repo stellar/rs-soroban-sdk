@@ -5,7 +5,7 @@ use soroban_sdk::{
     testutils::{Address as _, Events as _},
     token::StellarAssetClient,
     token::{SetAdmin, SetAuthorized},
-    vec, Address, Env, Event, Symbol,
+    vec, Address, Env, Symbol,
 };
 
 #[contract]
