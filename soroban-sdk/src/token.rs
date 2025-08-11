@@ -288,10 +288,12 @@ pub struct Clawback {
     pub amount: i128,
 }
 
-/// This is a helper function to publish either a `Transfer` or `TransferMuxed`
-/// event based on whether the `to` address is a muxed address or not (i.e.
-/// whether it has non-None ID).
-pub fn publish_transfer_to_muxed_address_event(
+/// Publish a `transfer` event.
+///
+/// Publishes a [`Transfer`] event if the `to` has no muxed ID.
+///
+/// Publishes a [`TransferMuxed`] event if the `to` has a muxed ID.
+pub fn publish_transfer_event(
     env: &Env,
     from: &Address,
     to: &MuxedAddress,
