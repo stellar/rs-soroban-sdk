@@ -139,16 +139,9 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics
-    /// `["transfer", from: Address, to: Address]
-    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
-    /// will  have the following format (the `Transfer` event):
-    /// `data = amount: i128`
+    /// Publishes the [`Transfer`] event.
     ///
-    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
-    /// have be emitted as map with Symbol keys in the following format (the
-    /// `TransferMuxed` event):
-    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    /// Legacy implementations may publish [`TransferLegacy`].
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
@@ -249,7 +242,7 @@ pub struct Approve {
 }
 
 #[contractevent(crate_path = "crate", topics = ["transfer"], data_format = "single-value", export = false)]
-pub struct Transfer {
+pub struct TransferLegacy {
     #[topic]
     pub from: Address,
     #[topic]
@@ -258,12 +251,12 @@ pub struct Transfer {
 }
 
 #[contractevent(crate_path = "crate", topics = ["transfer"], data_format = "map", export = false)]
-pub struct TransferMuxed {
+pub struct Transfer {
     #[topic]
     pub from: Address,
     #[topic]
     pub to: Address,
-    pub to_muxed_id: u64,
+    pub to_muxed_id: Option<u64>,
     pub amount: i128,
 }
 
@@ -288,30 +281,6 @@ pub struct Clawback {
     pub amount: i128,
 }
 
-/// Publish a `transfer` event.
-///
-/// Publishes a [`Transfer`] event if the `to` has no muxed ID.
-///
-/// Publishes a [`TransferMuxed`] event if the `to` has a muxed ID.
-pub fn publish_transfer_event(env: &Env, from: &Address, to: &MuxedAddress, amount: i128) {
-    if let Some(to_muxed_id) = to.id() {
-        TransferMuxed {
-            from: from.clone(),
-            to: to.address(),
-            to_muxed_id,
-            amount,
-        }
-        .publish(env);
-    } else {
-        Transfer {
-            from: from.clone(),
-            to: to.address(),
-            amount,
-        }
-        .publish(env);
-    }
-}
-
 /// Spec contains the contract spec of Token contracts.
 #[doc(hidden)]
 pub struct TokenSpec;
@@ -328,14 +297,14 @@ pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &TokenSpec::spec_xdr_transfer(),
     &TokenSpec::spec_xdr_transfer_from(),
     &Approve::spec_xdr(),
+    &TransferLegacy::spec_xdr(),
     &Transfer::spec_xdr(),
-    &TransferMuxed::spec_xdr(),
     &Burn::spec_xdr(),
     &Mint::spec_xdr(),
     &Clawback::spec_xdr(),
 ];
 
-pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5724;
+pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5392;
 
 impl TokenSpec {
     /// Returns the XDR spec for the Token contract.
@@ -427,16 +396,9 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics
-    /// `["transfer", from: Address, to: Address]
-    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
-    /// will  have the following format (the `Transfer` event):
-    /// `data = amount: i128`
+    /// Publishes the [`Transfer`] event.
     ///
-    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
-    /// have be emitted as map with Symbol keys in the following format (the
-    /// `TransferMuxed` event):
-    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    /// Legacy implementations may publish [`TransferLegacy`].
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
@@ -633,8 +595,8 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &StellarAssetSpec::spec_xdr_transfer(),
     &StellarAssetSpec::spec_xdr_transfer_from(),
     &Approve::spec_xdr(),
+    &TransferLegacy::spec_xdr(),
     &Transfer::spec_xdr(),
-    &TransferMuxed::spec_xdr(),
     &Burn::spec_xdr(),
     &Mint::spec_xdr(),
     &Clawback::spec_xdr(),
@@ -642,7 +604,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7664;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7332;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.

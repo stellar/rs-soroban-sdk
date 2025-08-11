@@ -1416,6 +1416,7 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
+ "soroban-token-sdk",
  "stellar-strkey",
  "stellar-xdr",
 ]

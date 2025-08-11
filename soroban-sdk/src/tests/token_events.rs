@@ -7,7 +7,7 @@ use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _, MuxedAddress as _},
     token::StellarAssetClient,
-    token::{Approve, Burn, Clawback, Mint, Transfer, TransferMuxed},
+    token::{Approve, Burn, Clawback, Mint, Transfer, TransferLegacy},
     vec, xdr, Address, Env, IntoVal, Map, MuxedAddress, Symbol, Val,
 };
 
@@ -66,7 +66,7 @@ fn test_approve() {
 }
 
 #[test]
-fn test_transfer() {
+fn test_transfer_legacy() {
     let env = Env::default();
     env.mock_all_auths();
 
@@ -74,7 +74,7 @@ fn test_transfer() {
     let to = Address::generate(&env);
     let amount = 123;
 
-    let event = Transfer {
+    let event = TransferLegacy {
         from: from.clone(),
         to: to.clone(),
         amount,
@@ -116,7 +116,51 @@ fn test_transfer() {
 }
 
 #[test]
-fn test_transfer_muxed() {
+fn test_transfer_without_id() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let from = Address::generate(&env);
+    let to: MuxedAddress = MuxedAddress::generate(&env).address().into();
+    let amount = 123;
+
+    let event = Transfer {
+        from: from.clone(),
+        to: to.address(),
+        to_muxed_id: to.id(),
+        amount,
+    };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("transfer"), from.clone(), to.address());
+    let data = Map::<Symbol, Val>::from_array(
+        &env,
+        [
+            (Symbol::new(&env, "to_muxed_id"), Val::VOID.to_val()),
+            (Symbol::new(&env, "amount"), amount.into_val(&env)),
+        ],
+    );
+
+    let id = env.register(Contract, ());
+    env.as_contract(&id, || event.publish(&env));
+    let token_events = env.events().all();
+    assert_eq!(
+        token_events,
+        vec![
+            &env,
+            (id.clone(), topics.into_val(&env), data.into_val(&env))
+        ]
+    );
+
+    // No comparison is made with the Stellar Asset Contract for publishing Transfer with a
+    // MuxedAddress that does not contain an ID, because the Stellar Asset Contract for legacy
+    // reasons, to minimise the changes to its behavior over time, still publishes TransferLegacy
+    // in this case. See [`test_transfer_with_id`] for a test that exercises Transfer in the case
+    // that the Stellar Asset contract does publish that event.
+}
+
+#[test]
+fn test_transfer_with_id() {
     let env = Env::default();
     env.mock_all_auths();
 
@@ -124,10 +168,10 @@ fn test_transfer_muxed() {
     let to = MuxedAddress::generate(&env);
     let amount = 123;
 
-    let event = TransferMuxed {
+    let event = Transfer {
         from: from.clone(),
         to: to.address(),
-        to_muxed_id: to.id().unwrap(),
+        to_muxed_id: to.id(),
         amount,
     };
 
