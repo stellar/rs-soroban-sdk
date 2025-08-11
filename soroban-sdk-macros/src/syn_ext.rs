@@ -76,8 +76,9 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
     }
 }
 
-/// Returns a clone of FnArg with the type as a reference if the arg is a typed
-/// arg and its type is not already a reference.
+/// Returns a clone of FnArg with the type as a reference if the arg is a typed arg. If the type is
+/// a reference, the same happens, but the type within the reference is used, discarding any
+/// properties of the original reference.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
         return FnArg::Typed(PatType {
