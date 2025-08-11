@@ -80,10 +80,13 @@ pub fn derive_pub_fn(
                 });
                 let passthrough_call = quote! { #ident };
 
-                let is_ref = matches!(*pat_ty.ty, Type::Reference(_));
-                let call_ref = is_ref.then(|| quote!(&));
+                let call_prefix = match *pat_ty.ty {
+                    Type::Reference(TypeReference { mutability: Some(_), .. }) => quote!(&mut),
+                    Type::Reference(TypeReference { mutability: None, .. }) => quote!(&),
+                    _ => quote!(),
+                };
                 let call = quote! {
-                    #call_ref
+                    #call_prefix
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
