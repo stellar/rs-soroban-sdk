@@ -5,8 +5,8 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, Path, PathArguments, PathSegment,
-    ReturnType, Token, TypePath,
+    AngleBracketedGenericArguments, Attribute, GenericArgument, PatIdent, Path, PathArguments,
+    PathSegment, ReturnType, Token, TypePath,
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
@@ -58,6 +58,26 @@ pub fn unwrap_ref(t: Type) -> Type {
     }
 }
 
+/// Modifies a Pat removing any 'mut' on an Ident.
+pub fn remove_pat_ident_mut(i: Pat) -> Pat {
+    match i {
+        Pat::Ident(PatIdent {
+            attrs,
+            by_ref,
+            mutability: Some(_),
+            ident,
+            subpat,
+        }) => Pat::Ident(PatIdent {
+            attrs,
+            by_ref,
+            mutability: None,
+            ident,
+            subpat,
+        }),
+        _ => i,
+    }
+}
+
 /// Returns a clone of the type from the FnArg, converted into an immutable reference to the type
 /// with the given lifetime.
 pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type, Error> {
@@ -76,14 +96,12 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
     }
 }
 
-/// Returns a clone of FnArg with the type as a reference if the arg is a typed arg. If the type is
-/// a reference, the same happens, but the type within the reference is used, discarding any
-/// properties of the original reference.
+/// Returns a clone of FnArg, converted into an immutable reference with the given lifetime.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
         return FnArg::Typed(PatType {
             attrs: pat_type.attrs.clone(),
-            pat: pat_type.pat.clone(),
+            pat: Box::new(remove_pat_ident_mut(*pat_type.pat.clone())),
             colon_token: pat_type.colon_token,
             ty: Box::new(Type::Reference(TypeReference {
                 and_token: And::default(),

@@ -23,6 +23,11 @@ impl Contract {
         a + *b
     }
 
+    pub fn add_with_mut_arg(_e: &Env, a: i32, mut b: i32) -> i32 {
+        b += 2;
+        a + b
+    }
+
     pub fn add_with_unused_arg(_e: &Env, a: i32, _b: i32) -> i32 {
         a + 2
     }
