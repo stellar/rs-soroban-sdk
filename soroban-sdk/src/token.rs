@@ -293,12 +293,7 @@ pub struct Clawback {
 /// Publishes a [`Transfer`] event if the `to` has no muxed ID.
 ///
 /// Publishes a [`TransferMuxed`] event if the `to` has a muxed ID.
-pub fn publish_transfer_event(
-    env: &Env,
-    from: &Address,
-    to: &MuxedAddress,
-    amount: i128,
-) {
+pub fn publish_transfer_event(env: &Env, from: &Address, to: &MuxedAddress, amount: i128) {
     if let Some(to_muxed_id) = to.id() {
         TransferMuxed {
             from: from.clone(),
