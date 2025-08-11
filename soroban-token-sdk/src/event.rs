@@ -1,9 +1,10 @@
-use soroban_sdk::{symbol_short, Address, Env, EnvBase, IntoVal, MuxedAddress, Symbol};
+use soroban_sdk::{symbol_short, Address, Env, Symbol};
 
 pub struct Events {
     env: Env,
 }
 
+#[allow(deprecated)]
 impl Events {
     #[inline(always)]
     pub fn new(env: &Env) -> Events {
