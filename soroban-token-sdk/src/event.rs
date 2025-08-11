@@ -19,7 +19,7 @@ impl Events {
             .publish(topics, (amount, expiration_ledger));
     }
 
-    #[deprecated = "use soroban_sdk::token::publish_transfer_event"]
+    #[deprecated = "use soroban_sdk::token::Transfer::publish"]
     pub fn transfer(&self, from: Address, to: Address, amount: i128) {
         let topics = (symbol_short!("transfer"), from, to);
         self.env.events().publish(topics, amount);
