@@ -78,5 +78,3 @@
 //! [`Address`]: crate::MuxedAddress
 //! [`MuxedAddress`]: crate::MuxedAddress
 //! [`contractevent`]: crate::contractevent
-
-
