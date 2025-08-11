@@ -10,7 +10,7 @@ use crate::{
 
 fn is_muxed_address_type(arg: &FnArg) -> bool {
     if let FnArg::Typed(pat_type) = arg {
-        if let Ok(ScSpecTypeDef::MuxedAddress) = map_type(&pat_type.ty, false, false) {
+        if let Ok(ScSpecTypeDef::MuxedAddress) = map_type(&pat_type.ty, true, false) {
             return true;
         }
     }

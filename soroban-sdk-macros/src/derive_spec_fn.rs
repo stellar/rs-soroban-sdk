@@ -78,7 +78,7 @@ pub fn derive_fn_spec(
                 // signature_payload of type Bytes (32 size), to be a Hash.
                 let allow_hash = ident == "__check_auth" && i == 0;
 
-                match map_type(&pat_type.ty, false, allow_hash) {
+                match map_type(&pat_type.ty, true, allow_hash) {
                     Ok(type_) => {
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
@@ -117,7 +117,7 @@ pub fn derive_fn_spec(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![match map_type(ty, false, true) {
+        ReturnType::Type(_, ty) => vec![match map_type(ty, true, true) {
             Ok(spec) => spec,
             Err(e) => {
                 errors.push(e);

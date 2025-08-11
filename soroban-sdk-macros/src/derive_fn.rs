@@ -61,7 +61,7 @@ pub fn derive_pub_fn(
                 let allow_hash = ident == "__check_auth" && i == 0;
 
                 // Error if the type of the fn is not mappable.
-                if let Err(e) = map_type(&pat_ty.ty, false, allow_hash) {
+                if let Err(e) = map_type(&pat_ty.ty, true, allow_hash) {
                     errors.push(e);
                 }
 
@@ -79,7 +79,11 @@ pub fn derive_pub_fn(
                     ty: Box::new(Type::Verbatim(quote! { #crate_path::Val })),
                 });
                 let passthrough_call = quote! { #ident };
+
+                let is_ref = matches!(*pat_ty.ty, Type::Reference(_));
+                let call_ref = is_ref.then(|| quote!(&));
                 let call = quote! {
+                    #call_ref
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
