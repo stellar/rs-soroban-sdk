@@ -57,7 +57,7 @@
 //!    token_impl::move_balance(&env, &from, &to, amount);
 //!    // Publish an appropriate transfer event that includes the muxed ID
 //!    // when it's non-None.
-//!    token::publish_transfer_to_muxed_address_event(&env, &from, &muxed_to, amount);
+//!    token::publish_transfer_event(&env, &from, &muxed_to, amount);
 //! }
 //!
 //! mod token_impl {
