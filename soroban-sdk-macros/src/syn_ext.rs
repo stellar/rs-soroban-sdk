@@ -53,7 +53,7 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
 /// If the type is not a reference, returns the type as-is.
 pub fn unwrap_ref(t: Type) -> Type {
     match t {
-        Type::Reference(TypeReference{ elem, .. }) => *elem,
+        Type::Reference(TypeReference { elem, .. }) => *elem,
         _ => t,
     }
 }
