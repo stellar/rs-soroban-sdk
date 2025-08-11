@@ -19,20 +19,16 @@
 //! `transfer` implementation that still uses `Address` destination:
 //!
 //! ```
-//! use soroban_sdk::{Env, Address, token};
+//! use soroban_sdk::{Env, Address};
+//! use soroban_token_sdk::TokenUtils;
 //! // ... inside some token contract ...
 //! fn transfer(env: Env, from: Address, to: Address, amount: i128) {
 //!    // Authorize the transfer source.
 //!    from.require_auth();
 //!    // Token-specific implementation of balance movement.
 //!    token_impl::move_balance(&env, &from, &to, amount);
-//!    // Publish an event (notice that this uses the new event format - see
-//!    // the previous migration step).
-//!    token::Transfer {
-//!        from,
-//!        to,
-//!        amount,
-//!    }.publish(&env);
+//!    // Publish the event.
+//!    TokenUtils::new(&env).events().transfer(from, to, amount);
 //! }
 //!
 //! mod token_impl {
@@ -55,9 +51,13 @@
 //!    let to = muxed_to.address();
 //!    // Token-specific implementation of balance movement (same as before).
 //!    token_impl::move_balance(&env, &from, &to, amount);
-//!    // Publish an appropriate transfer event that includes the muxed ID
-//!    // when it's non-None.
-//!    token::publish_transfer_event(&env, &from, &muxed_to, amount);
+//!    // Publish the transfer event.
+//!    token::Transfer {
+//!        from,
+//!        to,
+//!        to_muxed_id: muxed_to.id(),
+//!        amount,
+//!    }.publish(&env);
 //! }
 //!
 //! mod token_impl {
