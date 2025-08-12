@@ -201,17 +201,26 @@ fn test_transfer_with_id() {
     let asset = env.register_stellar_asset_contract_v2(admin);
     let client = StellarAssetClient::new(&env, &asset.address());
 
+    let trust_line_asset = |asset: xdr::Asset| {
+        // TODO: Move this to rs-stellar-xdr.
+        match asset {
+            xdr::Asset::Native => xdr::TrustLineAsset::Native,
+            xdr::Asset::CreditAlphanum4(a) => xdr::TrustLineAsset::CreditAlphanum4(a),
+            xdr::Asset::CreditAlphanum12(a) => xdr::TrustLineAsset::CreditAlphanum12(a),
+        }
+    };
+
     client.mint(&from, &123);
     env.host()
         .add_ledger_entry(
             &Rc::new(xdr::LedgerKey::Trustline(xdr::LedgerKeyTrustLine {
                 account_id: to.address().try_into().unwrap(),
-                asset: asset.trust_line_asset(),
+                asset: trust_line_asset(asset.asset()),
             })),
             &Rc::new(xdr::LedgerEntry {
                 data: xdr::LedgerEntryData::Trustline(xdr::TrustLineEntry {
                     account_id: to.address().try_into().unwrap(),
-                    asset: asset.trust_line_asset(),
+                    asset: trust_line_asset(asset.asset()),
                     balance: 0,
                     flags: xdr::TrustLineFlags::AuthorizedFlag as u32,
                     limit: i64::MAX,
