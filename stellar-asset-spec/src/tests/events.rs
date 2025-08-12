@@ -1,11 +1,9 @@
-use crate::{self as soroban_sdk, IntoVal};
-
+use crate::{SetAdmin, SetAuthorized};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _},
     token::StellarAssetClient,
-    token::{SetAdmin, SetAuthorized},
-    vec, Address, Env, Symbol,
+    vec, Address, Env, IntoVal, Symbol,
 };
 
 #[contract]

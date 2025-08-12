@@ -1,13 +1,13 @@
+extern crate std;
+
 use core::i64;
 use std::rc::Rc;
 
-use crate::{self as soroban_sdk};
-
+use crate::events::{Approve, Burn, Clawback, Mint, Transfer, TransferLegacy};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _, MuxedAddress as _},
     token::StellarAssetClient,
-    token::{Approve, Burn, Clawback, Mint, Transfer, TransferLegacy},
     vec, xdr, Address, Env, IntoVal, Map, MuxedAddress, Symbol, Val,
 };
 

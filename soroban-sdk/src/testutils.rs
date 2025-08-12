@@ -586,11 +586,13 @@ impl StellarAssetContract {
         self.issuer.clone()
     }
 
-    pub(crate) fn asset(&self) -> xdr::Asset {
+    #[doc(hidden)]
+    pub fn asset(&self) -> xdr::Asset {
         self.asset.clone()
     }
 
-    pub(crate) fn trust_line_asset(&self) -> xdr::TrustLineAsset {
+    #[doc(hidden)]
+    pub fn trust_line_asset(&self) -> xdr::TrustLineAsset {
         // TODO: Move this to rs-stellar-xdr.
         match &self.asset {
             xdr::Asset::Native => xdr::TrustLineAsset::Native,

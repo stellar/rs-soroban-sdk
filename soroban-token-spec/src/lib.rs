@@ -1,0 +1,51 @@
+#![no_std]
+
+mod tests;
+
+pub(crate) const XDR_INPUT: &[&[u8]] = &[
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_allowance(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_approve(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_balance(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_burn(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_burn_from(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_decimals(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_name(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_symbol(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_transfer(),
+    &soroban_sdk::token::TokenFnSpec::spec_xdr_transfer_from(),
+    &soroban_token_sdk::events::Approve::spec_xdr(),
+    &soroban_token_sdk::events::TransferLegacy::spec_xdr(),
+    &soroban_token_sdk::events::Transfer::spec_xdr(),
+    &soroban_token_sdk::events::Burn::spec_xdr(),
+    &soroban_token_sdk::events::Mint::spec_xdr(),
+    &soroban_token_sdk::events::Clawback::spec_xdr(),
+];
+
+pub(crate) const XDR_LEN: usize = 5392;
+
+/// Returns the XDR spec for a SEP-41 Token contract.
+pub const fn xdr() -> [u8; XDR_LEN] {
+    let input = XDR_INPUT;
+    // Concatenate all XDR for each item that makes up the token spec.
+    let mut output = [0u8; XDR_LEN];
+    let mut input_i = 0;
+    let mut output_i = 0;
+    while input_i < input.len() {
+        let subinput = input[input_i];
+        let mut subinput_i = 0;
+        while subinput_i < subinput.len() {
+            output[output_i] = subinput[subinput_i];
+            output_i += 1;
+            subinput_i += 1;
+        }
+        input_i += 1;
+    }
+
+    // Check that the numbers of bytes written is equal to the number of bytes
+    // expected in the output.
+    if output_i != output.len() {
+        panic!("unexpected output length",);
+    }
+
+    output
+}
