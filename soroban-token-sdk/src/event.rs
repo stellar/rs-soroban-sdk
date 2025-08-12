@@ -37,18 +37,25 @@ impl Events {
         self.env.events().publish(topics, amount);
     }
 
-    #[deprecated = "use soroban_token_sdk::events::SetAuthorized::publish"]
+    #[deprecated = "define a contractevent instead:\n\
+        #[contractevent(data_format = \"single-value\")]\n\
+        pub struct SetAuthorized {\n\
+            #[topic]\n\
+            admin: Address,\n\
+            #[topic]\n\
+            id: Address,\n\
+            authorize: bool,\n\
+        }"]
     pub fn set_authorized(&self, admin: Address, id: Address, authorize: bool) {
         let topics = (Symbol::new(&self.env, "set_authorized"), admin, id);
         self.env.events().publish(topics, authorize);
     }
 
     #[deprecated = "define a contractevent instead:\n\
-        \n\
-        #[contractevent]\n\
+        #[contractevent(data_format = \"single-value\")]\n\
         pub struct SetAdmin {\n\
             #[topic]\n\
-            admin: Admin,\n\
+            admin: Address,\n\
             new_admin: Address,\n\
         }"]
     pub fn set_admin(&self, admin: Address, new_admin: Address) {
