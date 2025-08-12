@@ -139,9 +139,13 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Publishes the [`Transfer`] event.
+    /// Emits an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `{ to_muxed_id: Option<u64>, amount: i128 }: Map`
     ///
-    /// Legacy implementations may publish [`TransferLegacy`].
+    /// Legacy implementations may emit an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `amount: i128`
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
@@ -296,9 +300,13 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Publishes the [`Transfer`] event.
+    /// Emits an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `{ to_muxed_id: Option<u64>, amount: i128 }: Map`
     ///
-    /// Legacy implementations may publish [`TransferLegacy`].
+    /// Legacy implementations may emit an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `amount: i128`
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that

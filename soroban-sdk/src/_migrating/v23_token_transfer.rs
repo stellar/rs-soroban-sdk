@@ -42,7 +42,8 @@
 //! The updated implementation would look as follows:
 //!
 //! ```
-//! use soroban_sdk::{Env, Address, MuxedAddress, token};
+//! use soroban_sdk::{Env, Address, MuxedAddress};
+//! use soroban_token_sdk::events::Transfer;
 //! // ... inside some token contract ...
 //! fn transfer(env: Env, from: Address, muxed_to: MuxedAddress, amount: i128) {
 //!    // Authorize the transfer source.
@@ -52,7 +53,7 @@
 //!    // Token-specific implementation of balance movement (same as before).
 //!    token_impl::move_balance(&env, &from, &to, amount);
 //!    // Publish the transfer event.
-//!    token::Transfer {
+//!    Transfer {
 //!        from,
 //!        to,
 //!        to_muxed_id: muxed_to.id(),
