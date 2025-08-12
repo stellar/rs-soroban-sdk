@@ -23,8 +23,13 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
 
 pub(crate) const XDR_LEN: usize = 5552;
 
-/// Returns the XDR spec for a SEP-41 Token contract.
-pub const fn xdr() -> [u8; XDR_LEN] {
+/// Returns the contract spec for a SEP-41 Token contract.
+pub const fn xdr() -> &'static [u8] {
+    &XDR
+}
+
+/// The contract spec for a SEP-41 Token contract.
+const XDR: [u8; XDR_LEN] = {
     let input = XDR_INPUT;
     // Concatenate all XDR for each item that makes up the token spec.
     let mut output = [0u8; XDR_LEN];
@@ -48,4 +53,4 @@ pub const fn xdr() -> [u8; XDR_LEN] {
     }
 
     output
-}
+};
