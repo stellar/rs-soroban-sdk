@@ -5,7 +5,9 @@ use crate::metadata::Metadata;
 use soroban_sdk::Env;
 
 pub mod event;
+pub mod events;
 pub mod metadata;
+mod tests;
 
 #[derive(Clone)]
 pub struct TokenUtils(Env);

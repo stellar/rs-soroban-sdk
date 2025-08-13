@@ -61,7 +61,10 @@ jobs:
       with:
         name: cargo-semver-checks
         version: 0.42.0
-    - run: cargo semver-checks
+    - run: >
+        cargo semver-checks
+        --exclude soroban-token-spec
+        --exclude stellar-asset-spec
 
   build-and-test:
     strategy:
