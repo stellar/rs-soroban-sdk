@@ -1410,6 +1410,7 @@ dependencies = [
  "rustc_version",
  "serde",
  "serde_json",
+ "sha2",
  "soroban-env-guest",
  "soroban-env-host",
  "soroban-ledger-snapshot",
@@ -1668,6 +1669,13 @@ dependencies = [
 
 [[package]]
 name = "test_empty2"
+version = "23.0.0-rc.2.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_empty3"
 version = "23.0.0-rc.2.4"
 dependencies = [
  "soroban-sdk",

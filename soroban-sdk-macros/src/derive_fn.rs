@@ -64,10 +64,9 @@ pub fn derive_pub_fn(
                 let allow_hash = ident == "__check_auth" && i == 0;
 
                 // Error if the type of the fn is not mappable.
-                if let Err(e) = map_type(&pat_ty.ty, false, allow_hash) {
+                if let Err(e) = map_type(&pat_ty.ty, true, allow_hash) {
                     errors.push(e);
                 }
-                let arg_ref =  matches!(*pat_ty.ty, Type::Reference(_)).then(|| quote!(&));
 
                 let ident = format_ident!("arg_{}", i);
                 let arg = FnArg::Typed(PatType {
@@ -83,8 +82,15 @@ pub fn derive_pub_fn(
                     ty: Box::new(Type::Verbatim(quote! { #crate_path::Val })),
                 });
                 let passthrough_call = quote! { #ident };
+
+                let call_prefix = match *pat_ty.ty {
+                    Type::Reference(TypeReference { mutability: Some(_), .. }) => quote!(&mut),
+                    Type::Reference(TypeReference { mutability: None, .. }) => quote!(&),
+                    _ => quote!(),
+                };
                 let call = quote! {
-                    #arg_ref<_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
+                    #call_prefix
+                    <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
                             &#ident
@@ -107,16 +113,22 @@ pub fn derive_pub_fn(
         "use `{}::new(&env, &contract_id).{}` instead",
         client_ident, &ident
     );
-    let env_call = env_input.map(|is_ref| {
+    let env_call = if let Some(is_ref) = env_input {
         if is_ref {
             quote! { &env, }
         } else {
             quote! { env.clone(), }
         }
-    });
+    } else {
+        quote! {}
+    };
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let arg_count = slice_args.len();
-    let use_trait = trait_ident.map(|t| quote! { use super::#t });
+    let use_trait = if let Some(t) = trait_ident {
+        quote! { use super::#t }
+    } else {
+        quote! {}
+    };
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {

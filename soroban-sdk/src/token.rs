@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractevent, contracttrait, Address, Env, String};
+use crate::{contractclient, contractevent, contractspecfn, Address, Env, MuxedAddress, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -18,6 +18,7 @@ use crate::{contractevent, contracttrait, Address, Env, String};
 // 2. The implementations have been replaced with a panic.
 // 3. &Host type usage are replaced with Env
 
+use soroban_sdk_macros::contracttrait;
 #[doc(hidden)]
 #[deprecated(note = "use TokenInterface")]
 pub use TokenInterface as Interface;
@@ -144,9 +145,17 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
-    fn transfer(env: Env, from: Address, to: Address, amount: i128);
+    /// Emits an event with topics
+    /// `["transfer", from: Address, to: Address]
+    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
+    /// will  have the following format (the `Transfer` event):
+    /// `data = amount: i128`
+    ///
+    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
+    /// have be emitted as map with Symbol keys in the following format (the
+    /// `TransferMuxed` event):
+    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
     /// `spender` has on `from`'s balance. Authorized by spender
@@ -260,7 +269,7 @@ pub struct TransferMuxed {
     pub from: Address,
     #[topic]
     pub to: Address,
-    pub to_muxed_id: u32,
+    pub to_muxed_id: u64,
     pub amount: i128,
 }
 
@@ -285,6 +294,37 @@ pub struct Clawback {
     pub amount: i128,
 }
 
+/// This is a helper function to publish either a `Transfer` or `TransferMuxed`
+/// event based on whether the `to` address is a muxed address or not (i.e.
+/// whether it has non-None ID).
+pub fn publish_transfer_to_muxed_address_event(
+    env: &Env,
+    from: &Address,
+    to: &MuxedAddress,
+    amount: i128,
+) {
+    if let Some(to_muxed_id) = to.id() {
+        TransferMuxed {
+            from: from.clone(),
+            to: to.address(),
+            to_muxed_id,
+            amount,
+        }
+        .publish(env);
+    } else {
+        Transfer {
+            from: from.clone(),
+            to: to.address(),
+            amount,
+        }
+        .publish(env);
+    }
+}
+
+/// Spec contains the contract spec of Token contracts.
+#[doc(hidden)]
+pub struct TokenSpec;
+
 pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &TokenSpec::spec_xdr_allowance(),
     &TokenSpec::spec_xdr_approve(),
@@ -304,7 +344,7 @@ pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
     &Clawback::spec_xdr(),
 ];
 
-pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5388;
+pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5724;
 
 impl TokenSpec {
     /// Returns the XDR spec for the Token contract.
@@ -401,9 +441,17 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
-    fn transfer(env: Env, from: Address, to: Address, amount: i128);
+    /// Emits an event with topics
+    /// `["transfer", from: Address, to: Address]
+    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
+    /// will  have the following format (the `Transfer` event):
+    /// `data = amount: i128`
+    ///
+    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
+    /// have be emitted as map with Symbol keys in the following format (the
+    /// `TransferMuxed` event):
+    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
     /// `spender` has on `from`'s balance. Authorized by spender
@@ -541,7 +589,7 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["mint", admin: Address, to: Address], data
+    /// Emits an event with topics `["mint", to: Address], data
     /// = amount: i128`
     fn mint(env: Env, to: Address, amount: i128);
 
@@ -563,6 +611,8 @@ pub trait StellarAssetInterface {
 
 #[contractevent(crate_path = "crate", topics = ["set_admin"], data_format = "single-value", export = false)]
 pub struct SetAdmin {
+    #[topic]
+    pub admin: Address,
     pub new_admin: Address,
 }
 
@@ -600,7 +650,7 @@ pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7320;
+pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7664;
 
 impl StellarAssetSpec {
     /// Returns the XDR spec for the Token contract.
