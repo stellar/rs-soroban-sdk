@@ -3,7 +3,7 @@ use proc_macro2::{Span, TokenStream};
 use quote::{format_ident, quote};
 use syn::{Error, FnArg, Lifetime, Type, TypePath, TypeReference};
 
-use crate::syn_ext;
+use crate::{syn_ext, IsInternal};
 
 pub fn derive_args_type(ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
@@ -21,6 +21,7 @@ pub fn derive_args_impl(name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
     let mut errors = Vec::<Error>::new();
     let fns: Vec<_> = fns
         .iter()
+        .filter(|m| !m.is_internal())
         .map(|f| {
             let fn_ident = &f.ident;
 

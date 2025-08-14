@@ -46,6 +46,7 @@ soroban-env-host = { workspace = true, features = ["testutils"] }
 soroban-ledger-snapshot = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["curr", "std"] }
 soroban-spec = { workspace = true }
+soroban-token-sdk = { workspace = true }
 ed25519-dalek = "2.0.0"
 rand = "0.8.5"
 ctor = "0.2.9"
@@ -56,6 +57,7 @@ proptest = "1.2.0"
 proptest-arbitrary-interop = "0.1.0"
 libfuzzer-sys = "0.4.7"
 expect-test = "1.4.1"
+sha2 = "0.10.7"
 
 [features]
 alloc = []

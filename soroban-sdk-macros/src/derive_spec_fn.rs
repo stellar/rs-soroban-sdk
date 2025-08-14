@@ -64,11 +64,21 @@ pub fn derive_fn_spec(
                     "".to_string()
                 };
 
+                // Strip any underscore prefix characters. Implementations that do not use an
+                // argument will prefix an underscore to the variable name to signal to the
+                // compiler that the developer acknowledges they will not be using the parameter.
+                // Keeping the underscore out of the spec ensures that the spec doesn't communicate
+                // implementation details and doesn't change when implementations start or stop
+                // using a variable in the implementation. It also ensures spec consistency between
+                // implementations of the same trait even if some of those implementations do not
+                // use all the inputs.
+                let name = name.trim_start_matches("_");
+
                 // If fn is a __check_auth implementation, allow the first argument,
                 // signature_payload of type Bytes (32 size), to be a Hash.
                 let allow_hash = ident == "__check_auth" && i == 0;
 
-                match map_type(&pat_type.ty, false, allow_hash) {
+                match map_type(&pat_type.ty, true, allow_hash) {
                     Ok(type_) => {
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
@@ -107,7 +117,7 @@ pub fn derive_fn_spec(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![match map_type(ty, false, true) {
+        ReturnType::Type(_, ty) => vec![match map_type(ty, true, true) {
             Ok(spec) => spec,
             Err(e) => {
                 errors.push(e);

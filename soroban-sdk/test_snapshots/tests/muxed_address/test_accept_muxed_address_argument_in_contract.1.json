@@ -1,10 +1,15 @@
 {
   "generators": {
-    "address": 2,
+    "address": 5,
     "nonce": 0,
-    "mux_id": 0
+    "mux_id": 2
   },
   "auth": [
+    [],
+    [],
+    [],
+    [],
+    [],
     [],
     []
   ],
@@ -73,26 +78,5 @@
       ]
     ]
   },
-  "events": [
-    {
-      "event": {
-        "ext": "v0",
-        "contract_id": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-        "type_": "contract",
-        "body": {
-          "v0": {
-            "topics": [
-              {
-                "symbol": "set_admin"
-              }
-            ],
-            "data": {
-              "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
-            }
-          }
-        }
-      },
-      "failed_call": false
-    }
-  ]
+  "events": []
 }
