@@ -8,6 +8,8 @@ members = [
     "soroban-spec-rust",
     "soroban-ledger-snapshot",
     "soroban-token-sdk",
+    "soroban-token-spec",
+    "stellar-asset-spec",
     "tests/*",
 ]
 
@@ -22,6 +24,8 @@ soroban-spec = { version = "23.0.0-rc.2.4", path = "soroban-spec" }
 soroban-spec-rust = { version = "23.0.0-rc.2.4", path = "soroban-spec-rust" }
 soroban-ledger-snapshot = { version = "23.0.0-rc.2.4", path = "soroban-ledger-snapshot" }
 soroban-token-sdk = { version = "23.0.0-rc.2.4", path = "soroban-token-sdk" }
+soroban-token-spec = { version = "23.0.0-rc.2.4", path = "soroban-token-spec" }
+stellar-asset-spec = { version = "23.0.0-rc.2.4", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]
 version = "=23.0.0-rc.2"
