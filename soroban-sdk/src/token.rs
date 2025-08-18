@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractevent, contractspecfn, Address, Env, MuxedAddress, String};
+use crate::{contractclient, contractspecfn, Address, Env, MuxedAddress, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -80,7 +80,7 @@ pub use TokenClient as Client;
 /// There are no functions in the token interface for minting tokens. Minting is
 /// an administrative function that can differ significantly from one token to
 /// the next.
-#[contractspecfn(name = "TokenSpec", export = false)]
+#[contractspecfn(name = "TokenFnSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "TokenClient")]
 pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
@@ -139,16 +139,13 @@ pub trait TokenInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics
-    /// `["transfer", from: Address, to: Address]
-    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
-    /// will  have the following format (the `Transfer` event):
-    /// `data = amount: i128`
+    /// Emits an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `{ to_muxed_id: Option<u64>, amount: i128 }: Map`
     ///
-    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
-    /// have be emitted as map with Symbol keys in the following format (the
-    /// `TransferMuxed` event):
-    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    /// Legacy implementations may emit an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `amount: i128`
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
@@ -238,140 +235,13 @@ pub trait TokenInterface {
     fn symbol(env: Env) -> String;
 }
 
-#[contractevent(crate_path = "crate", topics = ["approve"], data_format = "vec", export = false)]
-pub struct Approve {
-    #[topic]
-    pub from: Address,
-    #[topic]
-    pub spender: Address,
-    pub amount: i128,
-    pub expiration_ledger: u32,
-}
-
-#[contractevent(crate_path = "crate", topics = ["transfer"], data_format = "single-value", export = false)]
-pub struct Transfer {
-    #[topic]
-    pub from: Address,
-    #[topic]
-    pub to: Address,
-    pub amount: i128,
-}
-
-#[contractevent(crate_path = "crate", topics = ["transfer"], data_format = "map", export = false)]
-pub struct TransferMuxed {
-    #[topic]
-    pub from: Address,
-    #[topic]
-    pub to: Address,
-    pub to_muxed_id: u64,
-    pub amount: i128,
-}
-
-#[contractevent(crate_path = "crate", topics = ["burn"], data_format = "single-value", export = false)]
-pub struct Burn {
-    #[topic]
-    pub from: Address,
-    pub amount: i128,
-}
-
-#[contractevent(crate_path = "crate", topics = ["mint"], data_format = "single-value", export = false)]
-pub struct Mint {
-    #[topic]
-    pub to: Address,
-    pub amount: i128,
-}
-
-#[contractevent(crate_path = "crate", topics = ["clawback"], data_format = "single-value", export = false)]
-pub struct Clawback {
-    #[topic]
-    pub from: Address,
-    pub amount: i128,
-}
-
-/// This is a helper function to publish either a `Transfer` or `TransferMuxed`
-/// event based on whether the `to` address is a muxed address or not (i.e.
-/// whether it has non-None ID).
-pub fn publish_transfer_to_muxed_address_event(
-    env: &Env,
-    from: &Address,
-    to: &MuxedAddress,
-    amount: i128,
-) {
-    if let Some(to_muxed_id) = to.id() {
-        TransferMuxed {
-            from: from.clone(),
-            to: to.address(),
-            to_muxed_id,
-            amount,
-        }
-        .publish(env);
-    } else {
-        Transfer {
-            from: from.clone(),
-            to: to.address(),
-            amount,
-        }
-        .publish(env);
-    }
-}
-
-/// Spec contains the contract spec of Token contracts.
+/// Spec contains the contract spec of functions of the Token contracts.
 #[doc(hidden)]
-pub struct TokenSpec;
-
-pub(crate) const TOKEN_SPEC_XDR_INPUT: &[&[u8]] = &[
-    &TokenSpec::spec_xdr_allowance(),
-    &TokenSpec::spec_xdr_approve(),
-    &TokenSpec::spec_xdr_balance(),
-    &TokenSpec::spec_xdr_burn(),
-    &TokenSpec::spec_xdr_burn_from(),
-    &TokenSpec::spec_xdr_decimals(),
-    &TokenSpec::spec_xdr_name(),
-    &TokenSpec::spec_xdr_symbol(),
-    &TokenSpec::spec_xdr_transfer(),
-    &TokenSpec::spec_xdr_transfer_from(),
-    &Approve::spec_xdr(),
-    &Transfer::spec_xdr(),
-    &TransferMuxed::spec_xdr(),
-    &Burn::spec_xdr(),
-    &Mint::spec_xdr(),
-    &Clawback::spec_xdr(),
-];
-
-pub(crate) const TOKEN_SPEC_XDR_LEN: usize = 5724;
-
-impl TokenSpec {
-    /// Returns the XDR spec for the Token contract.
-    pub const fn spec_xdr() -> [u8; TOKEN_SPEC_XDR_LEN] {
-        let input = TOKEN_SPEC_XDR_INPUT;
-        // Concatenate all XDR for each item that makes up the token spec.
-        let mut output = [0u8; TOKEN_SPEC_XDR_LEN];
-        let mut input_i = 0;
-        let mut output_i = 0;
-        while input_i < input.len() {
-            let subinput = input[input_i];
-            let mut subinput_i = 0;
-            while subinput_i < subinput.len() {
-                output[output_i] = subinput[subinput_i];
-                output_i += 1;
-                subinput_i += 1;
-            }
-            input_i += 1;
-        }
-
-        // Check that the numbers of bytes written is equal to the number of bytes
-        // expected in the output.
-        if output_i != output.len() {
-            panic!("unexpected output length",);
-        }
-
-        output
-    }
-}
+pub struct TokenFnSpec;
 
 /// Interface for admin capabilities for Token contracts, such as the Stellar
 /// Asset Contract.
-#[contractspecfn(name = "StellarAssetSpec", export = false)]
+#[contractspecfn(name = "StellarAssetFnSpec", export = false)]
 #[contractclient(crate_path = "crate", name = "StellarAssetClient")]
 pub trait StellarAssetInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
@@ -430,16 +300,13 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics
-    /// `["transfer", from: Address, to: Address]
-    /// If `to` is not a muxed address (i.e. has no muxed_id set), then data
-    /// will  have the following format (the `Transfer` event):
-    /// `data = amount: i128`
+    /// Emits an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `{ to_muxed_id: Option<u64>, amount: i128 }: Map`
     ///
-    /// If `to` is a muxed address (i.e. has a muxed_id set), then data will
-    /// have be emitted as map with Symbol keys in the following format (the
-    /// `TransferMuxed` event):
-    /// `data = { "amount": i128, "to_muxed_id": u64 }`
+    /// Legacy implementations may emit an event with:
+    /// * topics `["transfer", from: Address, to: Address]`
+    /// * data `amount: i128`
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
@@ -598,80 +465,8 @@ pub trait StellarAssetInterface {
     fn clawback(env: Env, from: Address, amount: i128);
 }
 
-#[contractevent(crate_path = "crate", topics = ["set_admin"], data_format = "single-value", export = false)]
-pub struct SetAdmin {
-    #[topic]
-    pub admin: Address,
-    pub new_admin: Address,
-}
-
-#[contractevent(crate_path = "crate", topics = ["set_authorized"], data_format = "single-value", export = false)]
-pub struct SetAuthorized {
-    #[topic]
-    pub id: Address,
-    pub authorize: bool,
-}
-
-/// Spec contains the contract spec of the Stellar Asset Contract.
+/// Contains the contract spec of the functions of the Stellar Asset Contract.
 ///
 /// The Stellar Asset Contract is a superset of the Token Contract.
 #[doc(hidden)]
-pub struct StellarAssetSpec;
-
-pub(crate) const STELLAR_ASSET_SPEC_XDR_INPUT: &[&[u8]] = &[
-    &StellarAssetSpec::spec_xdr_allowance(),
-    &StellarAssetSpec::spec_xdr_authorized(),
-    &StellarAssetSpec::spec_xdr_approve(),
-    &StellarAssetSpec::spec_xdr_balance(),
-    &StellarAssetSpec::spec_xdr_burn(),
-    &StellarAssetSpec::spec_xdr_burn_from(),
-    &StellarAssetSpec::spec_xdr_clawback(),
-    &StellarAssetSpec::spec_xdr_decimals(),
-    &StellarAssetSpec::spec_xdr_mint(),
-    &StellarAssetSpec::spec_xdr_name(),
-    &StellarAssetSpec::spec_xdr_set_admin(),
-    &StellarAssetSpec::spec_xdr_admin(),
-    &StellarAssetSpec::spec_xdr_set_authorized(),
-    &StellarAssetSpec::spec_xdr_symbol(),
-    &StellarAssetSpec::spec_xdr_transfer(),
-    &StellarAssetSpec::spec_xdr_transfer_from(),
-    &Approve::spec_xdr(),
-    &Transfer::spec_xdr(),
-    &TransferMuxed::spec_xdr(),
-    &Burn::spec_xdr(),
-    &Mint::spec_xdr(),
-    &Clawback::spec_xdr(),
-    &SetAdmin::spec_xdr(),
-    &SetAuthorized::spec_xdr(),
-];
-
-pub(crate) const STELLAR_ASSET_SPEC_XDR_LEN: usize = 7664;
-
-impl StellarAssetSpec {
-    /// Returns the XDR spec for the Token contract.
-    pub const fn spec_xdr() -> [u8; STELLAR_ASSET_SPEC_XDR_LEN] {
-        let input = STELLAR_ASSET_SPEC_XDR_INPUT;
-        // Concatenate all XDR for each item that makes up the token spec.
-        let mut output = [0u8; STELLAR_ASSET_SPEC_XDR_LEN];
-        let mut input_i = 0;
-        let mut output_i = 0;
-        while input_i < input.len() {
-            let subinput = input[input_i];
-            let mut subinput_i = 0;
-            while subinput_i < subinput.len() {
-                output[output_i] = subinput[subinput_i];
-                output_i += 1;
-                subinput_i += 1;
-            }
-            input_i += 1;
-        }
-
-        // Check that the numbers of bytes written is equal to the number of bytes
-        // expected in the output.
-        if output_i != output.len() {
-            panic!("unexpected output length",);
-        }
-
-        output
-    }
-}
+pub struct StellarAssetFnSpec;

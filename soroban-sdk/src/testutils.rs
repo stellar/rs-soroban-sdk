@@ -586,16 +586,8 @@ impl StellarAssetContract {
         self.issuer.clone()
     }
 
-    pub(crate) fn asset(&self) -> xdr::Asset {
+    #[doc(hidden)]
+    pub fn asset(&self) -> xdr::Asset {
         self.asset.clone()
-    }
-
-    pub(crate) fn trust_line_asset(&self) -> xdr::TrustLineAsset {
-        // TODO: Move this to rs-stellar-xdr.
-        match &self.asset {
-            xdr::Asset::Native => xdr::TrustLineAsset::Native,
-            xdr::Asset::CreditAlphanum4(a) => xdr::TrustLineAsset::CreditAlphanum4(a.clone()),
-            xdr::Asset::CreditAlphanum12(a) => xdr::TrustLineAsset::CreditAlphanum12(a.clone()),
-        }
     }
 }
