@@ -42,5 +42,4 @@ mod prng;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod storage_testutils;
-mod symbol_macro;
 mod token_client;

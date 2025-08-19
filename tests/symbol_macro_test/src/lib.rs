@@ -1,9 +1,10 @@
 #![no_std]
-use soroban_sdk::{Env, Symbol, symbol, symbol_short};
+
+mod example_contract;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use soroban_sdk::{Env, Symbol, symbol, symbol_short};
 
     #[test]
     fn test_symbol_macro_short() {
