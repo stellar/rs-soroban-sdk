@@ -301,6 +301,33 @@ pub mod budget {
     #[doc(inline)]
     pub use crate::xdr::ContractCostType;
 
+    /// Represents stellar-core specific resource limits that can be enforced during testing
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub struct StellarCoreLimits {
+        /// Maximum number of ledger entries that can be read
+        pub read_entries: Option<u32>,
+        /// Maximum number of ledger entries that can be written  
+        pub write_entries: Option<u32>,
+        /// Maximum number of bytes that can be read
+        pub read_bytes: Option<u32>,
+        /// Maximum number of bytes that can be written
+        pub write_bytes: Option<u32>,
+        /// Maximum size in bytes for contract events
+        pub contract_events_size_bytes: Option<u32>,
+    }
+
+    impl Default for StellarCoreLimits {
+        fn default() -> Self {
+            Self {
+                read_entries: None,
+                write_entries: None,
+                read_bytes: None,
+                write_bytes: None,
+                contract_events_size_bytes: None,
+            }
+        }
+    }
+
     /// Budget that tracks the resources consumed for the environment.
     ///
     /// The budget consistents of two cost dimensions:

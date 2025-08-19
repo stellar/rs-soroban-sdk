@@ -41,5 +41,6 @@ mod muxed_address;
 mod prng;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
+mod stellar_limits;
 mod storage_testutils;
 mod token_client;

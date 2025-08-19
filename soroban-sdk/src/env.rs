@@ -246,6 +246,7 @@ struct EnvTestState {
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
     snapshot: Option<Rc<LedgerSnapshot>>,
+    stellar_limits: Rc<RefCell<crate::testutils::budget::StellarCoreLimits>>,
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -579,6 +580,7 @@ impl Env {
                 generators: generators.unwrap_or_default(),
                 snapshot,
                 auth_snapshot,
+                stellar_limits: Default::default(),
             },
         };
 
@@ -1625,6 +1627,20 @@ impl Env {
     #[deprecated(note = "use cost_estimate().budget()")]
     pub fn budget(&self) -> Budget {
         Budget::new(self.env_impl.budget_cloned())
+    }
+
+    /// Set stellar-core resource limits for testing.
+    ///
+    /// This allows you to set limits on stellar-core specific resources like
+    /// read_entries, write_entries, read_bytes, write_bytes, and contract_events_size_bytes
+    /// that will be enforced during contract execution.
+    pub fn set_stellar_limits(&self, limits: crate::testutils::budget::StellarCoreLimits) {
+        *self.test_state.stellar_limits.borrow_mut() = limits;
+    }
+
+    /// Get the current stellar-core resource limits.
+    pub fn get_stellar_limits(&self) -> crate::testutils::budget::StellarCoreLimits {
+        *self.test_state.stellar_limits.borrow()
     }
 }
 

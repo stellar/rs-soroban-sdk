@@ -89,4 +89,73 @@ impl CostEstimate {
     pub fn budget(&self) -> Budget {
         Budget::new(self.env.host().budget_cloned())
     }
+
+    /// Set stellar-core resource limits for testing.
+    /// 
+    /// This allows you to test contract behavior under resource constraints
+    /// that match the limits enforced by stellar-core in production.
+    pub fn set_stellar_limits(&self, limits: crate::testutils::budget::StellarCoreLimits) {
+        self.env.set_stellar_limits(limits);
+    }
+
+    /// Get the current stellar-core resource limits.
+    pub fn get_stellar_limits(&self) -> crate::testutils::budget::StellarCoreLimits {
+        self.env.get_stellar_limits()
+    }
+
+    /// Check if current resource usage exceeds the set stellar-core limits.
+    /// 
+    /// This returns an error if any limits are exceeded, otherwise returns Ok(()).
+    pub fn check_stellar_limits(&self) -> Result<(), String> {
+        let resources = self.resources();
+        let limits = self.get_stellar_limits();
+
+        if let Some(limit) = limits.read_entries {
+            if resources.disk_read_entries as u32 + resources.memory_read_entries > limit {
+                return Err(format!(
+                    "Read entries limit exceeded: {} > {}",
+                    resources.disk_read_entries as u32 + resources.memory_read_entries,
+                    limit
+                ));
+            }
+        }
+
+        if let Some(limit) = limits.write_entries {
+            if resources.write_entries > limit {
+                return Err(format!(
+                    "Write entries limit exceeded: {} > {}",
+                    resources.write_entries, limit
+                ));
+            }
+        }
+
+        if let Some(limit) = limits.read_bytes {
+            if resources.disk_read_bytes as u32 > limit {
+                return Err(format!(
+                    "Read bytes limit exceeded: {} > {}",
+                    resources.disk_read_bytes, limit
+                ));
+            }
+        }
+
+        if let Some(limit) = limits.write_bytes {
+            if resources.write_bytes as u32 > limit {
+                return Err(format!(
+                    "Write bytes limit exceeded: {} > {}",
+                    resources.write_bytes, limit
+                ));
+            }
+        }
+
+        if let Some(limit) = limits.contract_events_size_bytes {
+            if resources.contract_events_size_bytes > limit {
+                return Err(format!(
+                    "Contract events size limit exceeded: {} > {}",
+                    resources.contract_events_size_bytes, limit
+                ));
+            }
+        }
+
+        Ok(())
+    }
 }
