@@ -186,6 +186,11 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
             }
         }
         Type::Tuple(TypeTuple { elems, .. }) => {
+            // Handle unit type () as ScSpecTypeDef::Void
+            if elems.is_empty() {
+                return Ok(ScSpecTypeDef::Void);
+            }
+            
             let map_type_reject_hash =
                 |t: &Type| -> Result<ScSpecTypeDef, Error> { map_type(t, allow_ref, false) };
             Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
@@ -230,5 +235,24 @@ mod test {
         let ty = Type::Reference(parse_quote!(&u32));
         let res = map_type(&ty, false, false);
         assert!(res.is_err());
+    }
+
+    #[test]
+    fn test_unit_type_should_be_void() {
+        // Test that the unit type () maps to ScSpecTypeDef::Void
+        let ty = Type::Tuple(parse_quote!(()));
+        let res = map_type(&ty, false, false);
+        assert_eq!(res.unwrap(), ScSpecTypeDef::Void);
+    }
+
+    #[test]
+    fn test_non_empty_tuple_should_be_tuple() {
+        // Test that non-empty tuples still map to ScSpecTypeDef::Tuple
+        let ty = Type::Tuple(parse_quote!((u32, i64)));
+        let res = map_type(&ty, false, false);
+        match res.unwrap() {
+            ScSpecTypeDef::Tuple(_) => (), // This is what we expect
+            _ => panic!("Expected ScSpecTypeDef::Tuple for non-empty tuple"),
+        }
     }
 }
