@@ -11,15 +11,11 @@ Always reference these instructions first and fallback to search or bash command
   - `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
   - `rustup install stable`
   - `rustup +stable target add wasm32v1-none`
-  - `rustup +stable component add rust-src`
 - Install Rust nightly (required for documentation):
   - `rustup install nightly`
   - `rustup +nightly target add wasm32v1-none`
-  - `rustup +nightly component add rust-src`
 - Install required cargo tools:
   - `cargo install --locked cargo-hack`
-  - `cargo install --locked cargo-nextest`
-  - `cargo install --locked cargo-watch`
 
 ### Build Commands
 - **CRITICAL**: Format code first: `make fmt` -- takes ~1 second
@@ -54,7 +50,7 @@ After making changes to the SDK, always validate with these scenarios:
    - Use `log!` macro for debugging in tests
 
 3. **Contract Compilation Validation**:
-   - Build all test contracts: `make build` or `cargo hack build --target wasm32v1-none --release --workspace --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot`
+   - Build all test contracts: `make build`
    - Verify all Wasm files are generated correctly
    - Check that Wasm file sizes are reasonable (200B-3KB range)
    - Ensure no compilation warnings for the main SDK packages
@@ -111,8 +107,6 @@ After making changes to the SDK, always validate with these scenarios:
 
 ### Cargo Tools Usage
 - `cargo-hack` - Feature powerset testing and multi-target builds
-- `cargo-nextest` - Fast test execution (alternative to `cargo test`)
-- `cargo-watch` - File watching for development
 
 ### Build Artifacts
 - Wasm contracts output to `target/wasm32v1-none/release/*.wasm`
