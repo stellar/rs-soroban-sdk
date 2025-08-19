@@ -2,4 +2,4 @@
 use soroban_sdk::contract;
 
 #[contract]
-struct Contract;
+struct _Contract;

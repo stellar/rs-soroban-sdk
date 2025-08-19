@@ -76,7 +76,3 @@ lto = true
 [profile.release-with-logs]
 inherits = "release"
 debug-assertions = true
-
-[profile.release-without-lto]
-inherits = "release"
-lto = "off"
