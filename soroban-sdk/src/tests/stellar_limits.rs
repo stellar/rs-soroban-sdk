@@ -102,4 +102,113 @@ mod tests {
         assert_eq!(retrieved_limits.write_entries, Some(3));
         assert_eq!(retrieved_limits.write_bytes, Some(1000));
     }
+
+    #[test]
+    #[should_panic(expected = "Budget")]
+    fn test_stellar_limits_enforcement() {
+        let env = Env::default();
+        let contract_id = env.register(TestLimitsContract, ());
+        let client = TestLimitsContractClient::new(&env, &contract_id);
+        
+        // Set very strict limits
+        let limits = StellarCoreLimits {
+            write_entries: Some(2),  // Allow only 2 write entries
+            ..Default::default()
+        };
+        env.set_stellar_limits(limits);
+        
+        // Execute the operation that exceeds limits
+        client.write_entries(&5);
+        
+        // This should panic due to enforcement
+        env.cost_estimate().enforce_stellar_limits();
+    }
+
+    #[test]  
+    fn test_stellar_limits_enforcement_under_limit() {
+        let env = Env::default();
+        let contract_id = env.register(TestLimitsContract, ());
+        let client = TestLimitsContractClient::new(&env, &contract_id);
+        
+        // Set limits that should allow the operation
+        let limits = StellarCoreLimits {
+            write_entries: Some(10),  // Allow up to 10 write entries
+            write_bytes: Some(5000),  // Allow up to 5000 bytes
+            ..Default::default()
+        };
+        env.set_stellar_limits(limits);
+        
+        // This should succeed (5 entries, well under the limit of 10)
+        client.write_entries(&5);
+        
+        // Verify the resources were consumed but under limits
+        let resources = env.cost_estimate().resources();
+        assert_eq!(resources.write_entries, 5);
+        assert!(resources.write_bytes < 5000);
+        
+        // Enforcement check should pass (no panic)
+        env.cost_estimate().enforce_stellar_limits();
+    }
+
+    #[test]
+    fn test_all_stellar_limits_types() {
+        let env = Env::default();
+        let contract_id = env.register(TestLimitsContract, ());
+        let client = TestLimitsContractClient::new(&env, &contract_id);
+        
+        // Test write_bytes limit enforcement
+        let limits = StellarCoreLimits {
+            write_bytes: Some(100), // Very small limit
+            ..Default::default()
+        };
+        env.set_stellar_limits(limits);
+        
+        // This should trigger write_bytes limit
+        client.write_large_data(&10); // 10KB should exceed 100 bytes
+        
+        match env.cost_estimate().check_stellar_limits() {
+            Ok(()) => panic!("Expected write_bytes limit to be exceeded"),
+            Err(msg) => assert!(msg.contains("Write bytes limit exceeded")),
+        }
+    }
+
+    #[test]
+    fn test_stellar_limits_example_usage() {
+        // This example shows how developers can use stellar-core limits
+        // to test their contracts under realistic resource constraints
+        
+        let env = Env::default();
+        let contract_id = env.register(TestLimitsContract, ());
+        let client = TestLimitsContractClient::new(&env, &contract_id);
+        
+        // Set realistic stellar-core limits similar to mainnet
+        let mainnet_like_limits = StellarCoreLimits {
+            read_entries: Some(40),      // Mainnet-like read entries limit
+            write_entries: Some(25),     // Mainnet-like write entries limit  
+            read_bytes: Some(130_000),   // Mainnet-like read bytes limit
+            write_bytes: Some(65_000),   // Mainnet-like write bytes limit
+            contract_events_size_bytes: Some(8192), // Mainnet-like events limit
+        };
+        
+        // Apply the limits 
+        env.set_stellar_limits(mainnet_like_limits);
+        
+        // Test operations under these constraints
+        client.write_entries(&5); // Should be fine (5 < 25)
+        
+        // Verify we're under limits
+        env.cost_estimate().enforce_stellar_limits(); // Won't panic
+        
+        // Show that we can inspect the current usage
+        let resources = env.cost_estimate().resources();
+        let limits = env.get_stellar_limits();
+        
+        println!("Used write entries: {}/{:?}", resources.write_entries, limits.write_entries);
+        println!("Used write bytes: {}/{:?}", resources.write_bytes, limits.write_bytes);
+        
+        // This demonstrates how contract developers can catch limit issues during testing
+        // instead of discovering them after deploying to testnet
+        assert!(resources.write_entries <= limits.write_entries.unwrap());
+        assert!(resources.write_bytes as u32 <= limits.write_bytes.unwrap());
+    }
 }

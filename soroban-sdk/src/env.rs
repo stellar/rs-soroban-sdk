@@ -580,7 +580,7 @@ impl Env {
                 generators: generators.unwrap_or_default(),
                 snapshot,
                 auth_snapshot,
-                stellar_limits: Default::default(),
+                stellar_limits: Rc::new(RefCell::new(crate::testutils::budget::StellarCoreLimits::default())),
             },
         };
 

@@ -1,4 +1,4 @@
-use soroban_env_host::{fees::FeeConfiguration, FeeEstimate, InvocationResources};
+use soroban_env_host::{fees::FeeConfiguration, FeeEstimate, InvocationResources, EnvBase};
 
 use crate::{testutils::budget::Budget, Env};
 
@@ -157,5 +157,22 @@ impl CostEstimate {
         }
 
         Ok(())
+    }
+
+    /// Enforce stellar-core resource limits by panicking if they are exceeded.
+    /// 
+    /// This is a convenience method that calls check_stellar_limits() and panics
+    /// with a budget error if limits are exceeded. This provides automatic 
+    /// enforcement similar to how CPU/memory budget limits work.
+    pub fn enforce_stellar_limits(&self) {
+        if let Err(_msg) = self.check_stellar_limits() {
+            // Use escalate_error_to_panic to mimic the behavior of budget limit failures
+            self.env.host().escalate_error_to_panic(
+                crate::env::internal::Error::from_type_and_code(
+                    crate::xdr::ScErrorType::Budget,
+                    crate::xdr::ScErrorCode::ExceededLimit,
+                ).into()
+            );
+        }
     }
 }
