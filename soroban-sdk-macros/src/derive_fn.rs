@@ -158,6 +158,7 @@ pub fn derive_pub_fn(
             use super::*;
 
             #[deprecated(note = #deprecated_note)]
+            #[inline(always)]
             pub fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
                 #use_trait;
                 <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
@@ -174,6 +175,7 @@ pub fn derive_pub_fn(
 
             #[deprecated(note = #deprecated_note)]
             #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
+            #[inline(always)]
             pub extern "C" fn invoke_raw_extern(#(#wrap_args),*) -> #crate_path::Val {
                 #[allow(deprecated)]
                 invoke_raw(

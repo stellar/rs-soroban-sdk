@@ -70,28 +70,30 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 #[cfg(all(feature = "alloc", target_family = "wasm"))]
 mod alloc;
 
-/// __link_sections returns and does nothing, but it contains link sections that
-/// should be ensured end up in the final build of any contract using the SDK.
+/// This const block contains link sections that need to end up in the final
+/// build of any contract using the SDK.
 ///
 /// In Rust's build system sections only get included into the final build if
 /// the object file containing those sections are processed by the linker, but
 /// as an optimization step if no code is called in an object file it is
 /// discarded.  This has the unfortunate effect of causing anything else in
 /// those object files, such as link sections, to be discarded. Placing anything
-/// that must be included in the build inside an exported function ensures the
-/// object files won't be discarded. wasm-bindgen does a similar thing to this,
-/// and so this seems to be a reasonably accepted way to work around this
-/// limitation in the build system.
+/// that must be included in the build inside an exported static or function
+/// ensures the object files won't be discarded. wasm-bindgen does a similar
+/// thing to this with a function, and so this seems to be a reasonably
+/// accepted way to work around this limitation in the build system. The SDK
+/// uses a static that becomes a global because a global is more unnoticeable,
+/// and takes up less bytes.
 ///
-/// This has an unfortunate side-effect that all contracts will have a function
-/// in the resulting WASM named `_`, however this function won't be rendered in
-/// the contract specification. The overhead of this is very minimal on file
-/// size.
+/// The const block has no affect on the above problem and exists only to group
+/// the static and link sections under a shared cfg.
 ///
 /// See https://github.com/stellar/rs-soroban-sdk/issues/383 for more details.
 #[cfg(target_family = "wasm")]
-#[export_name = "_"]
-fn __link_sections() {
+const _: () = {
+    #[export_name = "_"]
+    static __: () = ();
+
     #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::internal::meta::XDR.len()] = env::internal::meta::XDR;
 
@@ -103,7 +105,7 @@ fn __link_sections() {
         key = "rssdkver",
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
-}
+};
 
 // Re-exports of dependencies used by macros.
 #[doc(hidden)]

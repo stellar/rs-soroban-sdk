@@ -19,6 +19,9 @@ build: fmt
 	cargo hack build --target wasm32v1-none --release --workspace $(WASM_EXCLUDE_ARGS)
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
+			which stellar \
+				&& stellar contract info env-meta --wasm "$$i" \
+				&& stellar contract info meta --wasm "$$i" \
 			ls -l "$$i"; \
 		done
 
