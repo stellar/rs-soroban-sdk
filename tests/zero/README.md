@@ -15,4 +15,9 @@ This is a bit of an edge case to have a test vector for.
 Historically there have been cases where the SDK was seen to be
 imported but env-meta was not written. This test vector exists to
 prove that the case we have been able to replicate is addressed in
-this version of the SDK.
+this version of the SDK, however no automated test will exercise
+that proof. To prove this is the case, build this crate with the
+`release-without-lto` profile and check that the resulting build
+artifact contains the `contractenvmetav0` and `contractmetav0`
+custom sections, using the `stellar contract info [env-meta|meta]`
+commands.
