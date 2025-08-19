@@ -1,6 +1,6 @@
 # Stellar Soroban SDK for Rust
 
-Stellar Soroban SDK is a Rust workspace for writing smart contracts for the [Soroban platform](https://soroban.stellar.org). The SDK includes the core library, macros, specifications, token utilities, and comprehensive test contracts demonstrating various features.
+Soroban SDK is a Rust workspace for writing smart contracts for Stellar blockchain's [smart contract platform](https://developers.stellar.org/docs/learn/fundamentals/contract-development) known as Soroban. The SDK includes the core library, macros, specifications, token utilities, and comprehensive test contracts demonstrating various features.
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
@@ -42,9 +42,9 @@ After making changes to the SDK, always validate with these scenarios:
 1. **Basic Smart Contract Creation**:
    - Create a simple contract with the SDK macros (`#[contract]`, `#[contractimpl]`)
    - **CRITICAL**: Include `#![no_std]` at the top of contract files
-   - Verify it compiles to WASM successfully: `cargo build --target wasm32v1-none --release`
+   - Verify it compiles to Wasm successfully: `cargo build --target wasm32v1-none --release`
    - Test contract functions using the test framework: `cargo test`
-   - Verify WASM file is generated in `target/wasm32v1-none/release/` (typically 500B-3KB)
+   - Verify Wasm file is generated in `target/wasm32v1-none/release/` (typically 500B-3KB)
 
 2. **SDK Feature Testing**:
    - Use core types like `Env`, `Symbol`, `Map`, `Vec`, `BytesN`
@@ -55,8 +55,8 @@ After making changes to the SDK, always validate with these scenarios:
 
 3. **Contract Compilation Validation**:
    - Build all test contracts: `make build` or `cargo hack build --target wasm32v1-none --release --workspace --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot`
-   - Verify all WASM files are generated correctly
-   - Check that WASM file sizes are reasonable (200B-3KB range)
+   - Verify all Wasm files are generated correctly
+   - Check that Wasm file sizes are reasonable (200B-3KB range)
    - Ensure no compilation warnings for the main SDK packages
 
 4. **Integration Testing**:
@@ -75,10 +75,10 @@ After making changes to the SDK, always validate with these scenarios:
 ## Repository Structure
 
 ### Key Directories
-- `soroban-sdk/` - Main SDK crate with core functionality
-- `soroban-sdk-macros/` - Procedural macros for contract development
-- `soroban-spec/` - Specification and type system
-- `soroban-spec-rust/` - Rust code generation from specs
+- `soroban-sdk/` - Main SDK crate with core functionality for creating smart contracts
+- `soroban-sdk-macros/` - Procedural macros for generating contract clients and types
+- `soroban-spec/` - Contract specification utilities
+- `soroban-spec-rust/` - Rust code generation from contract specs
 - `soroban-ledger-snapshot/` - Ledger snapshot utilities for testing
 - `soroban-token-sdk/` - Token-specific SDK functionality
 - `tests/` - Comprehensive test contracts demonstrating SDK features:
@@ -98,14 +98,14 @@ After making changes to the SDK, always validate with these scenarios:
 ### Common Code Patterns
 - Contracts use `#[contract]` and `#[contractimpl]` macros
 - Test utilities available with `testutils` feature
-- All contracts compile to WASM target `wasm32v1-none`
+- All contracts compile to Wasm target `wasm32v1-none`
 - Tests use `Env::default()` for simulation environment
 
 ## Build System Details
 
 ### Targets and Features
 - **Native target**: `x86_64-unknown-linux-gnu` for tooling and tests
-- **WASM target**: `wasm32v1-none` for smart contracts
+- **Wasm target**: `wasm32v1-none` for smart contracts
 - **Key features**: `testutils` enables testing utilities, `hazmat` enables low-level APIs
 - **Native-only crates**: `soroban-spec`, `soroban-spec-rust`, `soroban-ledger-snapshot`
 
@@ -115,15 +115,14 @@ After making changes to the SDK, always validate with these scenarios:
 - `cargo-watch` - File watching for development
 
 ### Build Artifacts
-- WASM contracts output to `target/wasm32v1-none/release/*.wasm`
+- Wasm contracts output to `target/wasm32v1-none/release/*.wasm`
 - Documentation generates to `target/doc/soroban_sdk/`
 - Test snapshots stored in various `test_snapshots/` directories
 
 ## Troubleshooting
 
 ### Common Issues
-- **Rust 1.82+ compatibility**: The SDK requires Rust ≤1.81 for WASM builds due to unsupported features in 1.82+
-- **Missing WASM target**: Run `rustup target add wasm32v1-none` if build fails
+- **Missing Wasm target**: Run `rustup target add wasm32v1-none` if build fails
 - **Cargo tool missing**: Install with `cargo install --locked [tool-name]`
 - **CI failures**: Always run `make fmt` before committing
 
@@ -167,10 +166,11 @@ mod test {
 }
 ```
 
-**CRITICAL**: All smart contracts must include `#![no_std]` at the top since they target WASM.
+**CRITICAL**: All smart contracts must include `#![no_std]` at the top to
+produce minimal binaries. All the non-test SDK features must support building with `#![no_std]` as well.
 
 After creating a contract:
-1. Build WASM: `cargo build --target wasm32v1-none --release`
+1. Build Wasm: `cargo build --target wasm32v1-none --release`
 2. Test: `cargo test` (tests run on native target with std)
-3. Verify WASM output in `target/wasm32v1-none/release/` (typically 500B-3KB)
+3. Verify Wasm output in `target/wasm32v1-none/release/` (typically 500B-3KB)
 4. Check contract functions work as expected in test environment
