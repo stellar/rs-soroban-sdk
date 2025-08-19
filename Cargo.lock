@@ -1764,6 +1764,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_zero"
+version = "23.0.0-rc.2.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "thiserror"
 version = "1.0.63"
 source = "registry+https://github.com/rust-lang/crates.io-index"
