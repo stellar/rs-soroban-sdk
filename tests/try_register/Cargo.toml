@@ -1,0 +1,11 @@
+[package]
+name = "test_try_register"
+version.workspace = true
+edition = "2021"
+publish = false
+
+[dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

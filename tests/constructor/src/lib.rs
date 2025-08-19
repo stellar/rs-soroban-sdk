@@ -75,3 +75,27 @@ fn test_passing_incorrectly_typed_constructor_arguments_causes_panic() {
     let env = Env::default();
     let _ = env.register(Contract, (100_u32, 1000_u32));
 }
+
+#[test]
+fn test_try_register_success() {
+    let env = Env::default();
+    let result = env.try_register(Contract, (100_u32, 1000_i64));
+    assert!(result.is_ok());
+    let contract_id = result.unwrap();
+    let client = ContractClient::new(&env, &contract_id);
+    assert_eq!(client.get_data(&DataKey::Persistent(100)), Some(1000));
+}
+
+#[test]
+fn test_try_register_with_invalid_args_returns_error() {
+    let env = Env::default();
+    let result = env.try_register(Contract, ());
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_try_register_with_wrong_args_returns_error() {
+    let env = Env::default();
+    let result = env.try_register(Contract, (100_u32,));
+    assert!(result.is_err());
+}

@@ -464,7 +464,7 @@ use crate::{
     auth,
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
-        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
+        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, TryRegister, Snapshot,
         StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
@@ -745,6 +745,55 @@ impl Env {
         contract.register(self, contract_id, constructor_args)
     }
 
+    /// Try to register a contract with the [Env] for testing, returning a Result.
+    ///
+    /// This is the same as [`register`] but returns a `Result` to allow testing
+    /// constructor error conditions instead of panicking on constructor failures.
+    ///
+    /// Passing a contract for the first argument registers the contract
+    /// with a generated contract ID.
+    ///
+    /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// updates don't cause constructor to be called.
+    pub fn try_register<'a, C, A>(&self, contract: C, constructor_args: A) -> Result<Address, crate::Error>
+    where
+        C: TryRegister,
+        A: ConstructorArgs,
+    {
+        contract.try_register(self, None, constructor_args)
+    }
+
+    /// Try to register a contract with the [Env] for testing, returning a Result.
+    ///
+    /// This is the same as [`register_at`] but returns a `Result` to allow testing
+    /// constructor error conditions instead of panicking on constructor failures.
+    ///
+    /// Passing a contract ID for the first argument registers the contract
+    /// with that contract ID.
+    ///
+    /// Registering a contract that is already registered replaces it.
+    /// Use re-registration with caution as it does not exist in the real
+    /// (on-chain) environment. Specifically, the new contract's constructor
+    /// will be called again during re-registration. That behavior only exists
+    /// for this test utility and is not reproducible on-chain, where contract
+    /// updates don't cause constructor to be called.
+    pub fn try_register_at<C, A>(
+        &self,
+        contract_id: &Address,
+        contract: C,
+        constructor_args: A,
+    ) -> Result<Address, crate::Error>
+    where
+        C: TryRegister,
+        A: ConstructorArgs,
+    {
+        contract.try_register(self, contract_id, constructor_args)
+    }
+
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -859,6 +908,54 @@ impl Env {
         contract_id
     }
 
+    pub(crate) fn try_register_contract_with_constructor<
+        'a,
+        T: ContractFunctionSet + 'static,
+        A: ConstructorArgs,
+    >(
+        &self,
+        contract_id: impl Into<Option<&'a Address>>,
+        contract: T,
+        constructor_args: A,
+    ) -> Result<Address, crate::Error> {
+        struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+        impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+            fn call(
+                &self,
+                func: &Symbol,
+                env_impl: &internal::EnvImpl,
+                args: &[Val],
+            ) -> Option<Val> {
+                let env = Env {
+                    env_impl: env_impl.clone(),
+                    test_state: Default::default(),
+                };
+                self.0.call(
+                    crate::Symbol::try_from_val(&env, func)
+                        .unwrap_infallible()
+                        .to_string()
+                        .as_str(),
+                    env,
+                    args,
+                )
+            }
+        }
+
+        let contract_id = if let Some(contract_id) = contract_id.into() {
+            contract_id.clone()
+        } else {
+            Address::generate(self)
+        };
+        self.env_impl
+            .register_test_contract_with_constructor(
+                contract_id.to_object(),
+                Rc::new(InternalContractFunctionSet(contract)),
+                constructor_args.into_val(self).to_object(),
+            )
+            .map_err(|e| e.error)?;
+        Ok(contract_id)
+    }
+
     /// Register a contract in a Wasm file with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -927,6 +1024,20 @@ impl Env {
     ) -> Address {
         let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
         self.register_contract_with_optional_contract_id_and_executable(
+            contract_id,
+            xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
+            constructor_args.into_val(self),
+        )
+    }
+
+    pub(crate) fn try_register_contract_wasm_with_constructor<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a Address>>,
+        contract_wasm: impl IntoVal<Env, Bytes>,
+        constructor_args: impl ConstructorArgs,
+    ) -> Result<Address, crate::Error> {
+        let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
+        self.try_register_contract_with_optional_contract_id_and_executable(
             contract_id,
             xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
             constructor_args.into_val(self),
@@ -1033,6 +1144,24 @@ impl Env {
         }
     }
 
+    fn try_register_contract_with_optional_contract_id_and_executable<'a>(
+        &self,
+        contract_id: impl Into<Option<&'a Address>>,
+        executable: xdr::ContractExecutable,
+        constructor_args: Vec<Val>,
+    ) -> Result<Address, crate::Error> {
+        if let Some(contract_id) = contract_id.into() {
+            self.try_register_contract_with_contract_id_and_executable(
+                contract_id,
+                executable,
+                constructor_args,
+            )?;
+            Ok(contract_id.clone())
+        } else {
+            self.try_register_contract_with_source(executable, constructor_args)
+        }
+    }
+
     fn register_contract_with_source(
         &self,
         executable: xdr::ContractExecutable,
@@ -1067,6 +1196,42 @@ impl Env {
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
         contract_id
+    }
+
+    fn try_register_contract_with_source(
+        &self,
+        executable: xdr::ContractExecutable,
+        constructor_args: Vec<Val>,
+    ) -> Result<Address, crate::Error> {
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().map_err(|e| e.error)?;
+        self.env_impl
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
+            .map_err(|e| e.error)?;
+        let args_vec: std::vec::Vec<xdr::ScVal> =
+            constructor_args.iter().map(|v| v.into_val(self)).collect();
+        let contract_id: Address = self
+            .env_impl
+            .invoke_function(xdr::HostFunction::CreateContractV2(
+                xdr::CreateContractArgsV2 {
+                    contract_id_preimage: xdr::ContractIdPreimage::Address(
+                        xdr::ContractIdPreimageFromAddress {
+                            address: xdr::ScAddress::Contract(xdr::ContractId(xdr::Hash(
+                                self.with_generator(|mut g| g.address()),
+                            ))),
+                            salt: xdr::Uint256([0; 32]),
+                        },
+                    ),
+                    executable,
+                    constructor_args: args_vec.try_into().unwrap(),
+                },
+            ))
+            .map_err(|e| e.error)?
+            .try_into_val(self)
+            .map_err(|e| e)?;
+
+        self.env_impl.set_auth_manager(prev_auth_manager).map_err(|e| e.error)?;
+
+        Ok(contract_id)
     }
 
     /// Set authorizations and signatures in the environment which will be
@@ -1491,6 +1656,46 @@ impl Env {
         self.env_impl
             .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
             .unwrap();
+    }
+
+    fn try_register_contract_with_contract_id_and_executable(
+        &self,
+        contract_address: &Address,
+        executable: xdr::ContractExecutable,
+        constructor_args: Vec<Val>,
+    ) -> Result<(), crate::Error> {
+        let contract_id = contract_address.contract_id();
+        let data_key = xdr::ScVal::LedgerKeyContractInstance;
+        let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
+            contract: xdr::ScAddress::Contract(contract_id.clone()),
+            key: data_key.clone(),
+            durability: xdr::ContractDataDurability::Persistent,
+        }));
+
+        let instance = xdr::ScContractInstance {
+            executable,
+            storage: Default::default(),
+        };
+
+        let entry = Rc::new(LedgerEntry {
+            ext: xdr::LedgerEntryExt::V0,
+            last_modified_ledger_seq: 0,
+            data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
+                contract: xdr::ScAddress::Contract(contract_id.clone()),
+                key: data_key,
+                val: xdr::ScVal::ContractInstance(instance),
+                durability: xdr::ContractDataDurability::Persistent,
+                ext: xdr::ExtensionPoint::V0,
+            }),
+        });
+        let live_until_ledger = self.ledger().sequence() + 1;
+        self.host()
+            .add_ledger_entry(&key, &entry, Some(live_until_ledger))
+            .map_err(|e| e.error)?;
+        self.env_impl
+            .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
+            .map_err(|e| e.error)?;
+        Ok(())
     }
 
     /// Run the function as if executed by the given contract ID.

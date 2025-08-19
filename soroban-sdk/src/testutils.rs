@@ -55,6 +55,36 @@ impl<'w> Register for &'w [u8] {
     }
 }
 
+pub trait TryRegister {
+    fn try_register<'i, I, A>(self, env: &Env, id: I, args: A) -> Result<crate::Address, crate::Error>
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs;
+}
+
+impl<C> TryRegister for C
+where
+    C: ContractFunctionSet + 'static,
+{
+    fn try_register<'i, I, A>(self, env: &Env, id: I, args: A) -> Result<crate::Address, crate::Error>
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.try_register_contract_with_constructor(id, self, args)
+    }
+}
+
+impl<'w> TryRegister for &'w [u8] {
+    fn try_register<'i, I, A>(self, env: &Env, id: I, args: A) -> Result<crate::Address, crate::Error>
+    where
+        I: Into<Option<&'i crate::Address>>,
+        A: ConstructorArgs,
+    {
+        env.try_register_contract_wasm_with_constructor(id, self, args)
+    }
+}
+
 #[derive(Default, Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Snapshot {
