@@ -1027,7 +1027,7 @@ pub use bytes::{Bytes, BytesN};
 pub use map::Map;
 pub use muxed_address::MuxedAddress;
 pub use symbol::Symbol;
-pub use vec::Vec;
+pub use vec::{Vec, VecN};
 mod num;
 pub use num::{Duration, Timepoint, I256, U256};
 mod string;
