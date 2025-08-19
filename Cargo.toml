@@ -76,3 +76,10 @@ lto = true
 [profile.release-with-logs]
 inherits = "release"
 debug-assertions = true
+
+# The release-without-lto profile is useful for testing build cases when lto
+# are disabled, such as those like the test_zero test vector. See the test_zero
+# README for more details.
+[profile.release-without-lto]
+inherits = "release"
+lto = "off"
