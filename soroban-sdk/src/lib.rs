@@ -82,8 +82,8 @@ mod alloc;
 /// ensures the object files won't be discarded. wasm-bindgen does a similar
 /// thing to this with a function, and so this seems to be a reasonably
 /// accepted way to work around this limitation in the build system. The SDK
-/// uses a static that becomes a global because a global is more unnoticeable,
-/// and takes up less bytes.
+/// uses a static exported with name `_` that becomes a global because a global
+/// is more unnoticeable, and takes up less bytes.
 ///
 /// The const block has no affect on the above problem and exists only to group
 /// the static and link sections under a shared cfg.
@@ -91,6 +91,9 @@ mod alloc;
 /// See https://github.com/stellar/rs-soroban-sdk/issues/383 for more details.
 #[cfg(target_family = "wasm")]
 const _: () = {
+    /// This exported static is guaranteed to end up in the final binary of any
+    /// importer, as a global. It exists to ensure the link sections are
+    /// included in the final build artifact. See notes above.
     #[export_name = "_"]
     static __: () = ();
 
