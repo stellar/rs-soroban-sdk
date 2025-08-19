@@ -150,6 +150,27 @@ macro_rules! assert_in_contract {
 /// ```
 pub use soroban_sdk_macros::symbol_short;
 
+/// Creates a Symbol from a string literal, optimizing at compile time.
+/// 
+/// For strings of 9 characters or shorter, generates a compile-time constant.
+/// For longer strings, generates code that calls the host function at runtime.
+/// This provides the optimal balance between contract size and performance.
+/// 
+/// Valid characters are `a-zA-Z0-9_` and maximum length is 32 characters.
+/// 
+/// # Examples
+/// 
+/// ```
+/// use soroban_sdk::{Env, symbol};
+/// 
+/// # fn main() {
+/// #     let env = Env::default();
+/// let short_symbol = symbol!(&env, "short");   // Compile-time constant
+/// let long_symbol = symbol!(&env, "this_is_a_very_long_symbol"); // Runtime host call
+/// # }
+/// ```
+pub use soroban_sdk_macros::symbol;
+
 /// Generates conversions from the repr(u32) enum from/into an `Error`.
 ///
 /// There are some constraints on the types that are supported:

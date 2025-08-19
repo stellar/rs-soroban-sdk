@@ -1,0 +1,7 @@
+[package]
+name = "symbol_macro_test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+soroban-sdk = { path = "../../soroban-sdk", features = ["testutils"] }

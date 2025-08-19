@@ -36,6 +36,7 @@ use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
+use syn::parse::Parser;
 use syn::{
     parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Expr, Fields,
     ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
@@ -64,6 +65,52 @@ pub fn symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
     let crate_path: Path = syn::parse_str("soroban_sdk").unwrap();
     symbol::short(&crate_path, &input).into()
+}
+
+#[proc_macro]
+pub fn symbol(input: TokenStream) -> TokenStream {
+    let input_tokens: TokenStream2 = input.into();
+    let parser = syn::punctuated::Punctuated::<Expr, syn::Token![,]>::parse_terminated;
+    let args = match parser.parse2(input_tokens) {
+        Ok(args) => args,
+        Err(e) => return e.to_compile_error().into(),
+    };
+
+    if args.len() != 2 {
+        return Error::new(
+            Span::call_site(),
+            "symbol! macro requires exactly 2 arguments: env and string literal",
+        )
+        .into_compile_error()
+        .into();
+    }
+
+    let env = &args[0];
+    let string_literal = match &args[1] {
+        Expr::Lit(expr_lit) => match &expr_lit.lit {
+            syn::Lit::Str(lit_str) => lit_str,
+            _ => {
+                return Error::new(
+                    args[1].span(),
+                    "second argument must be a string literal",
+                )
+                .into_compile_error()
+                .into();
+            }
+        },
+        _ => {
+            return Error::new(
+                args[1].span(),
+                "second argument must be a string literal",
+            )
+            .into_compile_error()
+            .into();
+        }
+    };
+
+    let crate_path: Path = syn::parse_str("soroban_sdk").unwrap();
+    let env_tokens = quote::quote! { #env };
+    symbol::short_or_long(&crate_path, env_tokens, string_literal).into()
 }
 
 pub(crate) fn default_crate_path() -> Path {
