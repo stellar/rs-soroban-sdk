@@ -1742,6 +1742,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_try_register"
+version = "23.0.0-rc.2.4"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_udt"
 version = "23.0.0-rc.2.4"
 dependencies = [
