@@ -54,30 +54,35 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
 
     let output = quote! {
         #[doc(hidden)]
-        #[allow(unused_macros)]
-        #[macro_export]
-        macro_rules! #macro_ident {
-            (
-                $impl_ident:ty,
-                $impl_fns:expr,
-                $client_name:literal,
-                $args_name:literal,
-                $spec_name:literal $(,)?
-            ) => {
-                #path::contractimpl_trait_default_fns_not_overridden!(
-                    trait_ident = #trait_ident,
-                    trait_default_fns = [#(#fns),*],
-                    impl_ident = $impl_ident,
-                    impl_fns = $impl_fns,
-                    client_name = $client_name,
-                    args_name = $args_name,
-                    spec_name = $spec_name,
-                );
+        mod #macro_ident {
+            #[doc(hidden)]
+            #[allow(unused_macros)]
+            #[macro_export]
+            macro_rules! #trait_ident {
+                (
+                    $impl_ident:ty,
+                    $impl_fns:expr,
+                    $client_name:literal,
+                    $args_name:literal,
+                    $spec_name:literal $(,)?
+                ) => {
+                    #path::contractimpl_trait_default_fns_not_overridden!(
+                        trait_ident = #trait_ident,
+                        trait_default_fns = [#(#fns),*],
+                        impl_ident = $impl_ident,
+                        impl_fns = $impl_fns,
+                        client_name = $client_name,
+                        args_name = $args_name,
+                        spec_name = $spec_name,
+                    );
+                }
             }
+
+            pub use #trait_ident as #macro_ident;
         }
 
         /// Macro for `contractimpl`ing the default functions of the trait that are not overriden.
-        pub use #macro_ident as #trait_ident;
+        pub use #macro_ident::#macro_ident as #trait_ident;
     };
 
     Ok(output)
