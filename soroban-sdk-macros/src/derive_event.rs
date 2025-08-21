@@ -269,7 +269,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
 
         impl #gen_impl #ident #gen_types #gen_where {
-            fn publish(&self, env: &#path::Env) {
+            pub fn publish(&self, env: &#path::Env) {
                 <_ as #path::Event>::publish(self, env);
             }
         }

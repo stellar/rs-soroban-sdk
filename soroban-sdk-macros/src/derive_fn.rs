@@ -7,7 +7,8 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Signature, Type, TypePath,
+    TypeReference,
 };
 
 #[allow(clippy::too_many_arguments)]
@@ -63,7 +64,7 @@ pub fn derive_pub_fn(
                 let allow_hash = ident == "__check_auth" && i == 0;
 
                 // Error if the type of the fn is not mappable.
-                if let Err(e) = map_type(&pat_ty.ty, false, allow_hash) {
+                if let Err(e) = map_type(&pat_ty.ty, true, allow_hash) {
                     errors.push(e);
                 }
 
@@ -81,7 +82,14 @@ pub fn derive_pub_fn(
                     ty: Box::new(Type::Verbatim(quote! { #crate_path::Val })),
                 });
                 let passthrough_call = quote! { #ident };
+
+                let call_prefix = match *pat_ty.ty {
+                    Type::Reference(TypeReference { mutability: Some(_), .. }) => quote!(&mut),
+                    Type::Reference(TypeReference { mutability: None, .. }) => quote!(&),
+                    _ => quote!(),
+                };
                 let call = quote! {
+                    #call_prefix
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
@@ -194,16 +202,16 @@ pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Ident>,
-    methods: impl Iterator<Item = &'a syn::ImplItemFn>,
+    methods: impl Iterator<Item = &'a syn::Signature>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
         return quote!();
     }
 
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
-        .map(|m| {
-            let ident = format!("{}", m.sig.ident);
-            let wrap_ident = format_ident!("__{}", m.sig.ident);
+        .map(|Signature { ident, .. }| {
+            let ident = format!("{ident}");
+            let wrap_ident = format_ident!("__{}", ident);
             (ident, wrap_ident)
         })
         .multiunzip();

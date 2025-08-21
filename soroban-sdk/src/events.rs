@@ -82,9 +82,7 @@ impl Events {
         Events(env.clone())
     }
 
-    /// Publish an event.
-    ///
-    /// The event is defined using the [`contractevent`][crate::contractevent] macro.
+    /// Publish an event defined using the [`contractevent`][crate::contractevent] macro.
     #[inline(always)]
     pub fn publish_event(&self, e: &(impl Event + ?Sized)) {
         let env = self.env();
@@ -105,6 +103,7 @@ impl Events {
     /// - [Map]
     /// - [Bytes]/[BytesN][crate::BytesN] longer than 32 bytes
     /// - [contracttype]
+    #[deprecated(note = "use the #[contractevent] macro on a contract event type")]
     #[inline(always)]
     pub fn publish<T, D>(&self, topics: T, data: D)
     where
