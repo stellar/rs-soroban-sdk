@@ -7,7 +7,8 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
-    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
+    Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Signature, Type, TypePath,
+    TypeReference,
 };
 
 #[allow(clippy::too_many_arguments)]
@@ -194,16 +195,16 @@ pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Ident>,
-    methods: impl Iterator<Item = &'a syn::ImplItemFn>,
+    methods: impl Iterator<Item = &'a syn::Signature>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
         return quote!();
     }
 
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
-        .map(|m| {
-            let ident = format!("{}", m.sig.ident);
-            let wrap_ident = format_ident!("__{}", m.sig.ident);
+        .map(|Signature { ident, .. }| {
+            let ident = format!("{ident}");
+            let wrap_ident = format_ident!("__{}", ident);
             (ident, wrap_ident)
         })
         .multiunzip();
