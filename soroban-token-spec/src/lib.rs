@@ -20,7 +20,7 @@ pub struct TransferWithMuxedString {
     pub amount: i128,
 }
 
-/// Mint event published when a classic payment uses the MEMO_HASH or MEMO_RETURN memo type.
+/// Transfer event published when a classic payment uses the MEMO_HASH or MEMO_RETURN memo type.
 #[contractevent(topics = ["transfer"], data_format = "map", export = false)]
 #[doc(hidden)]
 pub struct TransferWithMuxedBytes {
