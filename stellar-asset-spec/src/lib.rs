@@ -41,14 +41,19 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &soroban_token_sdk::events::Approve::spec_xdr(),
     &soroban_token_sdk::events::TransferLegacy::spec_xdr(),
     &soroban_token_sdk::events::Transfer::spec_xdr(),
+    &soroban_token_spec::TransferWithMuxedString::spec_xdr(),
+    &soroban_token_spec::TransferWithMuxedBytes::spec_xdr(),
     &soroban_token_sdk::events::Burn::spec_xdr(),
+    &soroban_token_sdk::events::MintLegacy::spec_xdr(),
     &soroban_token_sdk::events::Mint::spec_xdr(),
+    &soroban_token_spec::MintWithMuxedString::spec_xdr(),
+    &soroban_token_spec::MintWithMuxedBytes::spec_xdr(),
     &soroban_token_sdk::events::Clawback::spec_xdr(),
     &SetAdmin::spec_xdr(),
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = 7492;
+pub(crate) const XDR_LEN: usize = 8540;
 
 /// Returns the contract spec for Stellar Asset contract.
 pub const fn xdr() -> &'static [u8] {

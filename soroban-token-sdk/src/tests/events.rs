@@ -3,7 +3,7 @@ extern crate std;
 use core::i64;
 use std::rc::Rc;
 
-use crate::events::{Approve, Burn, Clawback, Mint, Transfer, TransferLegacy};
+use crate::events::{Approve, Burn, Clawback, Mint, MintLegacy, Transfer, TransferLegacy};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _, MuxedAddress as _},
@@ -296,14 +296,14 @@ fn test_burn() {
 }
 
 #[test]
-fn test_mint() {
+fn test_mint_legacy() {
     let env = Env::default();
     env.mock_all_auths();
 
     let to = Address::generate(&env);
     let amount = 123;
 
-    let event = Mint {
+    let event = MintLegacy {
         to: to.clone(),
         amount,
     };
@@ -338,6 +338,78 @@ fn test_mint() {
         vec![
             &env,
             (asset.address(), topics.into_val(&env), data.into_val(&env)),
+        ]
+    );
+}
+
+#[test]
+fn test_mint_without_id() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let to: MuxedAddress = MuxedAddress::generate(&env).address().into();
+    let amount = 123;
+
+    let event = Mint {
+        to: to.address(),
+        to_muxed_id: to.id(),
+        amount,
+    };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("mint"), to.address());
+    let data = Map::<Symbol, Val>::from_array(
+        &env,
+        [
+            (Symbol::new(&env, "to_muxed_id"), Val::VOID.to_val()),
+            (Symbol::new(&env, "amount"), amount.into_val(&env)),
+        ],
+    );
+
+    let id = env.register(Contract, ());
+    env.as_contract(&id, || event.publish(&env));
+    let token_events = env.events().all();
+    assert_eq!(
+        token_events,
+        vec![
+            &env,
+            (id.clone(), topics.into_val(&env), data.into_val(&env))
+        ]
+    );
+}
+
+#[test]
+fn test_mint_with_id() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let to = MuxedAddress::generate(&env);
+    let amount = 123;
+
+    let event = Mint {
+        to: to.address(),
+        to_muxed_id: to.id(),
+        amount,
+    };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("mint"), to.address());
+    let data = Map::<Symbol, Val>::from_array(
+        &env,
+        [
+            (Symbol::new(&env, "to_muxed_id"), to.id().into_val(&env)),
+            (Symbol::new(&env, "amount"), amount.into_val(&env)),
+        ],
+    );
+
+    let id = env.register(Contract, ());
+    env.as_contract(&id, || event.publish(&env));
+    let token_events = env.events().all();
+    assert_eq!(
+        token_events,
+        vec![
+            &env,
+            (id.clone(), topics.into_val(&env), data.into_val(&env))
         ]
     );
 }
