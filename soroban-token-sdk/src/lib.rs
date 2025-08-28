@@ -1,7 +1,5 @@
 #![no_std]
-#![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
-#![allow(dead_code)]
 pub mod _migrating;
 
 use crate::event::Events;
@@ -30,4 +28,3 @@ impl TokenUtils {
         Events::new(&self.0)
     }
 }
-
