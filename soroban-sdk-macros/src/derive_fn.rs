@@ -13,6 +13,7 @@ use syn::{
 #[allow(clippy::too_many_arguments)]
 pub fn derive_pub_fn(
     crate_path: &Path,
+    impl_ty: &Type,
     call: &TokenStream2,
     ident: &Ident,
     attrs: &[Attribute],
@@ -97,8 +98,9 @@ pub fn derive_pub_fn(
         .multiunzip();
 
     // Generated code parameters.
+    let impl_ty_safe_str = ty_to_safe_ident_str(impl_ty);
     let wrap_export_name = &format!("{}", ident);
-    let hidden_mod_ident = format_ident!("__{}", ident);
+    let hidden_mod_ident = format_ident!("__{}__{}", impl_ty_safe_str, ident);
     let deprecated_note = format!(
         "use `{}::new(&env, &contract_id).{}` instead",
         client_ident, &ident
@@ -154,6 +156,7 @@ pub fn derive_pub_fn(
     Ok(quote! {
         #[doc(hidden)]
         #(#attrs)*
+        #[allow(non_snake_case)]
         pub mod #hidden_mod_ident {
             use super::*;
 
@@ -198,15 +201,15 @@ pub fn derive_contract_function_registration_ctor<'a>(
         return quote!();
     }
 
+    let ty_str = ty_to_safe_ident_str(ty);
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
         .map(|m| {
             let ident = format!("{}", m.sig.ident);
-            let wrap_ident = format_ident!("__{}", m.sig.ident);
+            let wrap_ident = format_ident!("__{}__{}", ty_str, ident);
             (ident, wrap_ident)
         })
         .multiunzip();
 
-    let ty_str = quote!(#ty).to_string().replace(' ', "").replace(':', "_");
     let trait_str = quote!(#trait_ident).to_string();
     let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
     let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
@@ -225,4 +228,8 @@ pub fn derive_contract_function_registration_ctor<'a>(
             )*
         }
     }
+}
+
+fn ty_to_safe_ident_str(ty: &Type) -> String {
+    quote!(#ty).to_string().replace(' ', "").replace(':', "_")
 }
