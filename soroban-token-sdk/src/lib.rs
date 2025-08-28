@@ -26,3 +26,8 @@ impl TokenUtils {
         Events::new(&self.0)
     }
 }
+
+#[cfg_attr(target_family = "wasm", no_std)]
+#[cfg_attr(feature = "docs", feature(doc_cfg))]
+#[allow(dead_code)]
+pub mod _migrating;

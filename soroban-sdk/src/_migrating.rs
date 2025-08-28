@@ -2,7 +2,9 @@
 //!
 //! 1. [`contractevent` replaces `Events::publish`][v23_contractevent]
 //!   
-//! 2. [`MuxedAddress` replaces `Address` as the `to` of the `TokenInterface::transfer`][v23_token_transfer]
+//! 2. [`MuxedAddress` replaces `Address` as the `to` of the `TokenInterface::transfer`].
+//!    This only `soroban-token-sdk`` and is documented in detail in
+//!    `soroban-token-sdk` crate migration guide.
 //!
 //! # Migrating from v21 to v22
 //!
@@ -242,4 +244,4 @@
 //! [`Hash<32>::to_bytes`]: crate::crypto::Hash::to_bytes
 
 pub mod v23_contractevent;
-pub mod v23_token_transfer;
+
