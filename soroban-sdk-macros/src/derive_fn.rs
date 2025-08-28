@@ -1,4 +1,6 @@
-use crate::{attribute::pass_through_attr_to_gen_code, map_type::map_type};
+use crate::{
+    attribute::pass_through_attr_to_gen_code, map_type::map_type, syn_ext::ty_to_safe_ident_str,
+};
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -228,8 +230,4 @@ pub fn derive_contract_function_registration_ctor<'a>(
             )*
         }
     }
-}
-
-fn ty_to_safe_ident_str(ty: &Type) -> String {
-    quote!(#ty).to_string().replace(' ', "").replace(':', "_")
 }
