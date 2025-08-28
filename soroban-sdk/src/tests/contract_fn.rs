@@ -19,6 +19,16 @@ impl Contract {
     }
 }
 
+#[contract]
+pub struct Contract2;
+
+#[contractimpl]
+impl Contract2 {
+    pub fn add(_e: &Env, a: i32, b: i32) -> i32 {
+        a + b
+    }
+}
+
 #[test]
 fn test_functional() {
     let e = Env::default();
