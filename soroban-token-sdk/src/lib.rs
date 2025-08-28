@@ -1,4 +1,8 @@
 #![no_std]
+#![cfg_attr(target_family = "wasm", no_std)]
+#![cfg_attr(feature = "docs", feature(doc_cfg))]
+#![allow(dead_code)]
+pub mod _migrating;
 
 use crate::event::Events;
 use crate::metadata::Metadata;
@@ -27,7 +31,3 @@ impl TokenUtils {
     }
 }
 
-#[cfg_attr(target_family = "wasm", no_std)]
-#[cfg_attr(feature = "docs", feature(doc_cfg))]
-#[allow(dead_code)]
-pub mod _migrating;
