@@ -244,4 +244,3 @@
 //! [`Hash<32>::to_bytes`]: crate::crypto::Hash::to_bytes
 
 pub mod v23_contractevent;
-
