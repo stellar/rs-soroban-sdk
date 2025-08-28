@@ -66,7 +66,7 @@ fn test_approve() {
 }
 
 #[test]
-fn test_transfer_legacy() {
+fn test_transfer_with_amount_only() {
     let env = Env::default();
     env.mock_all_auths();
 
@@ -154,9 +154,9 @@ fn test_transfer_without_id() {
 
     // No comparison is made with the Stellar Asset Contract for publishing Transfer with a
     // MuxedAddress that does not contain an ID, because the Stellar Asset Contract for legacy
-    // reasons, to minimise the changes to its behavior over time, still publishes TransferLegacy
-    // in this case. See [`test_transfer_with_id`] for a test that exercises Transfer in the case
-    // that the Stellar Asset contract does publish that event.
+    // reasons, to minimise the changes to its behavior over time, still publishes
+    // TransferWithAmountOnly in this case. See [`test_transfer_with_id`] for a test that exercises
+    // Transfer in the case that the Stellar Asset contract does publish that event.
 }
 
 #[test]
@@ -296,7 +296,7 @@ fn test_burn() {
 }
 
 #[test]
-fn test_mint_legacy() {
+fn test_mint_with_amount_only() {
     let env = Env::default();
     env.mock_all_auths();
 
