@@ -3,7 +3,7 @@ extern crate std;
 use core::i64;
 use std::rc::Rc;
 
-use crate::events::{Approve, Burn, Clawback, Mint, MintLegacy, Transfer, TransferLegacy};
+use crate::events::{Approve, Burn, Clawback, Mint, MintWithAmountOnly, Transfer, TransferWithAmountOnly};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _, MuxedAddress as _},
@@ -74,7 +74,7 @@ fn test_transfer_legacy() {
     let to = Address::generate(&env);
     let amount = 123;
 
-    let event = TransferLegacy {
+    let event = TransferWithAmountOnly {
         from: from.clone(),
         to: to.clone(),
         amount,
@@ -303,7 +303,7 @@ fn test_mint_legacy() {
     let to = Address::generate(&env);
     let amount = 123;
 
-    let event = MintLegacy {
+    let event = MintWithAmountOnly {
         to: to.clone(),
         amount,
     };

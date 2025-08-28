@@ -64,19 +64,19 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &soroban_sdk::token::TokenFnSpec::spec_xdr_transfer(),
     &soroban_sdk::token::TokenFnSpec::spec_xdr_transfer_from(),
     &soroban_token_sdk::events::Approve::spec_xdr(),
-    &soroban_token_sdk::events::TransferLegacy::spec_xdr(),
+    &soroban_token_sdk::events::TransferWithAmountOnly::spec_xdr(),
     &soroban_token_sdk::events::Transfer::spec_xdr(),
     &TransferWithMuxedString::spec_xdr(),
     &TransferWithMuxedBytes::spec_xdr(),
     &soroban_token_sdk::events::Burn::spec_xdr(),
-    &soroban_token_sdk::events::MintLegacy::spec_xdr(),
+    &soroban_token_sdk::events::MintWithAmountOnly::spec_xdr(),
     &soroban_token_sdk::events::Mint::spec_xdr(),
     &MintWithMuxedString::spec_xdr(),
     &MintWithMuxedBytes::spec_xdr(),
     &soroban_token_sdk::events::Clawback::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = 6604;
+pub(crate) const XDR_LEN: usize = 6620;
 
 /// Returns the contract spec for a SEP-41 Token contract.
 pub const fn xdr() -> &'static [u8] {
