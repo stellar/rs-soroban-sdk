@@ -3,7 +3,7 @@
 //! 1. [`contractevent` replaces `Events::publish`][v23_contractevent]
 //!   
 //! 2. [`MuxedAddress` replaces `Address` as the `to` of the `TokenInterface::transfer`].
-//!    This only `soroban-token-sdk`` and is documented in detail in
+//!    This change concerns `soroban-token-sdk` and is documented in detail in
 //!    `soroban-token-sdk` crate migration guide.
 //!
 //! # Migrating from v21 to v22
