@@ -3,7 +3,9 @@ extern crate std;
 use core::i64;
 use std::rc::Rc;
 
-use crate::events::{Approve, Burn, Clawback, Mint, MintWithAmountOnly, Transfer, TransferWithAmountOnly};
+use crate::events::{
+    Approve, Burn, Clawback, Mint, MintWithAmountOnly, Transfer, TransferWithAmountOnly,
+};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _, MuxedAddress as _},
