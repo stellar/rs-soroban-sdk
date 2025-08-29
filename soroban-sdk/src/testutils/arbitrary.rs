@@ -324,7 +324,8 @@ mod objects {
             Fp, Fp2, Fr, G1Affine, G2Affine, FP2_SERIALIZED_SIZE, FP_SERIALIZED_SIZE,
             G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
         },
-        Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
+        Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, VecN, I256,
+        U256,
     };
 
     use std::string::String as RustString;
@@ -548,6 +549,48 @@ mod objects {
                     Ok(Vec::<T>::from_val(env, &buf.to_val()))
                 }
             }
+        }
+    }
+
+    //////////////////////////////////
+
+    #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryVecN<T, const N: usize> {
+        array: [T; N],
+    }
+
+    impl<T, const N: usize> SorobanArbitrary for VecN<T, N>
+    where
+        T: SorobanArbitrary,
+    {
+        type Prototype = ArbitraryVecN<T::Prototype, N>;
+    }
+
+    impl<'a, T, const N: usize> Arbitrary<'a> for ArbitraryVecN<T, N>
+    where
+        T: Arbitrary<'a>,
+    {
+        fn arbitrary(u: &mut Unstructured<'a>) -> ArbitraryResult<ArbitraryVecN<T, N>> {
+            Ok(ArbitraryVecN {
+                array: Arbitrary::arbitrary(u)?,
+            })
+        }
+    }
+
+    impl<T, const N: usize> TryFromVal<Env, ArbitraryVecN<T::Prototype, N>> for VecN<T, N>
+    where
+        T: SorobanArbitrary,
+    {
+        type Error = ConversionError;
+        fn try_from_val(
+            env: &Env,
+            v: &ArbitraryVecN<T::Prototype, N>,
+        ) -> Result<Self, Self::Error> {
+            let mut buf: Vec<T> = Vec::new(env);
+            for item in v.array.iter() {
+                buf.push_back(item.into_val(env));
+            }
+            buf.try_into()
         }
     }
 
