@@ -1738,7 +1738,7 @@ mod test {
         let vecn = vec_n![&env, 10, 20, 30, 40];
         assert_eq!(vecn.len(), 4);
 
-        let empty_vecn: VecN<u32, _> = vec_n![&env];
+        let empty_vecn: VecN<u32, 0> = vec_n![&env];
         assert_eq!(empty_vecn.len(), 0);
     }
 
