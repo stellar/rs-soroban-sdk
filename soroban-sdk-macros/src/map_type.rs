@@ -144,8 +144,6 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                                     "incorrect number of generic arguments, expect two for VecN<T, N>",
                                 ))?,
                             };
-                            // VecN maps to Vec in the contract spec since the length constraint
-                            // is a compile-time guarantee, not a runtime type difference
                             Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
                                 element_type: Box::new(map_type(t, allow_ref, false)?),
                             })))

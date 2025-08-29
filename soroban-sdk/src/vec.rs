@@ -45,6 +45,37 @@ macro_rules! vec {
     };
 }
 
+/// Create a [VecN] with the given items.
+///
+/// The first argument in the list must be a reference to an [Env], then the
+/// items follow. The macro automatically determines the length N from the
+/// number of items provided.
+///
+/// ### Examples
+///
+/// ```
+/// use soroban_sdk::{Env, VecN, vec_n};
+///
+/// let env = Env::default();
+/// let vec = vec_n![&env, 0, 1, 2];
+/// assert_eq!(vec, VecN::from_array(&env, [0, 1, 2]));
+/// ```
+#[macro_export]
+macro_rules! vec_n {
+    ($env:expr $(,)?) => {
+        $crate::VecN::<_, 0>::from_array($env, [])
+    };
+    ($env:expr, $($x:expr),+ $(,)?) => {
+        {
+            const COUNT: usize = $crate::vec_n!(@count $($x),+);
+            $crate::VecN::<_, COUNT>::from_array($env, [$($x),+])
+        }
+    };
+    (@count) => { 0 };
+    (@count $head:expr) => { 1 };
+    (@count $head:expr, $($tail:expr),*) => { 1 + $crate::vec_n!(@count $($tail),*) };
+}
+
 /// Vec is a sequential and indexable growable collection type.
 ///
 /// Values are stored in the environment and are available to contract through
@@ -368,6 +399,12 @@ where
     /// Create a Vec from the array of items.
     #[inline(always)]
     pub fn from_array<const N: usize>(env: &Env, items: [T; N]) -> Vec<T> {
+        Self::from_array_ref(env, &items)
+    }
+
+    /// Create a Vec from the array of items reference.
+    #[inline(always)]
+    pub fn from_array_ref<const N: usize>(env: &Env, items: &[T; N]) -> Vec<T> {
         let mut tmp: [Val; N] = [Val::VOID.to_val(); N];
         for (dst, src) in tmp.iter_mut().zip(items.iter()) {
             *dst = src.into_val(env)
@@ -773,8 +810,8 @@ where
 }
 
 impl<T> Vec<T> {
-    /// Returns a subset of the bytes as defined by the start and end bounds of
-    /// the range.
+    /// Returns a subset of the elements as defined by the start and end bounds
+    /// of the range.
     ///
     /// ### Panics
     ///
@@ -1122,26 +1159,26 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn eq(&self, other: &Self) -> bool {
-        self.partial_cmp(other) == Some(Ordering::Equal)
+        self.0.eq(&other.0)
     }
 }
 
 impl<T, const N: usize> PartialEq<[T; N]> for VecN<T, N>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn eq(&self, other: &[T; N]) -> bool {
-        let other_vec = VecN::from_array(self.env(), other);
+        let other_vec = VecN::from_array_ref(self.env(), other);
         self.eq(&other_vec)
     }
 }
 
 impl<T, const N: usize> PartialEq<VecN<T, N>> for [T; N]
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn eq(&self, other: &VecN<T, N>) -> bool {
-        let self_vec = VecN::from_array(other.env(), self);
+        let self_vec = VecN::from_array_ref(other.env(), self);
         self_vec.eq(other)
     }
 }
@@ -1157,20 +1194,20 @@ where
 
 impl<T, const N: usize> PartialOrd<[T; N]> for VecN<T, N>
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn partial_cmp(&self, other: &[T; N]) -> Option<Ordering> {
-        let other_vec = VecN::from_array(self.env(), other);
+        let other_vec = VecN::from_array_ref(self.env(), other);
         self.partial_cmp(&other_vec)
     }
 }
 
 impl<T, const N: usize> PartialOrd<VecN<T, N>> for [T; N]
 where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn partial_cmp(&self, other: &VecN<T, N>) -> Option<Ordering> {
-        let self_vec = VecN::from_array(other.env(), self);
+        let self_vec = VecN::from_array_ref(other.env(), self);
         self_vec.partial_cmp(other)
     }
 }
@@ -1237,24 +1274,22 @@ where
         self.0.to_object()
     }
 
-    /// Create a VecN from the array.
+    /// Create a VecN from the array of items.
     #[inline(always)]
-    pub fn from_array(env: &Env, items: &[T; N]) -> VecN<T, N> 
-    where
-        T: Clone,
-    {
-        // Create a Vec by copying the slice elements
-        let mut vec = Vec::new(env);
-        for item in items.iter() {
-            vec.push_back(item.clone());
-        }
-        VecN(vec)
+    pub fn from_array(env: &Env, items: [T; N]) -> VecN<T, N> {
+        VecN(Vec::from_array(env, items))
+    }
+
+    /// Create a VecN from the array of items reference.
+    #[inline(always)]
+    pub fn from_array_ref(env: &Env, items: &[T; N]) -> VecN<T, N> {
+        VecN(Vec::from_array_ref(env, items))
     }
 
     /// Returns true if the VecN is empty and has a length of zero.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        false
+        self.len() == 0
     }
 
     /// Returns the number of elements in the VecN.
@@ -1277,6 +1312,30 @@ where
     #[inline(always)]
     pub fn get_unchecked(&self, i: u32) -> T {
         self.0.get_unchecked(i)
+    }
+
+    /// Returns the item at the position or None if out-of-bounds.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the position cannot be converted to type T.
+    #[inline(always)]
+    pub fn try_get(&self, i: u32) -> Result<Option<T>, T::Error> {
+        self.0.try_get(i)
+    }
+
+    /// Returns the item at the position.
+    ///
+    /// ### Errors
+    ///
+    /// If the value at the position cannot be converted to type T.
+    ///
+    /// ### Panics
+    ///
+    /// If the position is out-of-bounds.
+    #[inline(always)]
+    pub fn try_get_unchecked(&self, i: u32) -> Result<T, T::Error> {
+        self.0.try_get_unchecked(i)
     }
 
     /// Returns the first element or None if empty.
@@ -1311,79 +1370,121 @@ where
         self.0.last_unchecked()
     }
 
-    /// Copy the vector's elements into an array.
     #[inline(always)]
-    pub fn to_array(&self) -> [T; N]
-    where
-        T: Clone,
-    {
-        let mut arr: [core::mem::MaybeUninit<T>; N] = 
-            unsafe { core::mem::MaybeUninit::uninit().assume_init() };
-        
-        for (i, item) in self.iter().enumerate() {
-            arr[i] = core::mem::MaybeUninit::new(item);
-        }
-        
-        // SAFETY: We've initialized all elements above
-        unsafe {
-            core::mem::transmute_copy(&arr)
-        }
-    }
-
     pub fn iter(&self) -> UnwrappedIter<VecTryIter<T>, T, T::Error>
     where
-        T: Clone,
+        T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
         self.0.iter()
     }
 
-    pub fn slice(&self, range: impl RangeBounds<u32>) -> Vec<T> {
-        self.0.slice(range)
+    #[inline(always)]
+    pub fn try_iter(&self) -> VecTryIter<T>
+    where
+        T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
+    {
+        self.0.try_iter()
+    }
+
+    /// Returns a subset of the elements as defined by the start and end bounds
+    /// of the range.
+    ///
+    /// ### Panics
+    ///
+    /// If the range is out-of-bounds.
+    #[must_use]
+    pub fn slice(&self, r: impl RangeBounds<u32>) -> Vec<T> {
+        self.0.slice(r)
+    }
+
+    /// Copy the elements in [VecN] into an array.
+    #[inline(always)]
+    pub fn to_array(&self) -> [T; N] {
+        let mut val_array = [Val::VOID.into(); N];
+        let env = self.env();
+        env.vec_unpack_to_slice(self.to_object(), &mut val_array)
+            .unwrap_infallible();
+        val_array.map(|v| v.into_val(env))
+    }
+
+    /// Returns copy of the vec shuffled using the NOT-SECURE PRNG.
+    ///
+    /// In tests, must be called from within a running contract.
+    ///
+    /// # Warning
+    ///
+    /// **The pseudo-random generator used to perform the shuffle is not
+    /// suitable for security-sensitive work.**
+    pub fn shuffle(&mut self) {
+        self.0.shuffle();
+    }
+
+    /// Returns copy of the vec shuffled using the NOT-SECURE PRNG.
+    ///
+    /// In tests, must be called from within a running contract.
+    ///
+    /// # Warning
+    ///
+    /// **The pseudo-random generator used to perform the shuffle is not
+    /// suitable for security-sensitive work.**
+    #[must_use]
+    pub fn to_shuffled(&self) -> Self {
+        let mut copy = self.clone();
+        copy.shuffle();
+        copy
+    }
+
+    /// Returns true if the Vec contains the item.
+    #[inline(always)]
+    pub fn contains(&self, item: impl Borrow<T>) -> bool {
+        self.0.contains(item)
+    }
+
+    /// Returns the index of the first occurrence of the item.
+    ///
+    /// If the item cannot be found [None] is returned.
+    #[inline(always)]
+    pub fn first_index_of(&self, item: impl Borrow<T>) -> Option<u32> {
+        self.0.first_index_of(item)
+    }
+
+    /// Returns the index of the last occurrence of the item.
+    ///
+    /// If the item cannot be found [None] is returned.
+    #[inline(always)]
+    pub fn last_index_of(&self, item: impl Borrow<T>) -> Option<u32> {
+        self.0.last_index_of(item)
+    }
+
+    /// Returns the index of an occurrence of the item in an already sorted
+    /// [VecN], or the index of where the item can be inserted to keep the
+    /// [VecN] sorted.
+    ///
+    /// If the item is found, [Result::Ok] is returned containing the index of
+    /// the item.
+    ///
+    /// If the item is not found, [Result::Err] is returned containing the index
+    /// of where the item could be inserted to retain the sorted ordering.
+    #[inline(always)]
+    pub fn binary_search(&self, item: impl Borrow<T>) -> Result<u32, u32> {
+        self.0.binary_search(item)
     }
 }
 
-impl<T, const N: usize> TryFromVal<Env, VecN<T, N>> for VecN<T, N>
-where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
-{
-    type Error = ConversionError;
+impl<T, const N: usize> TryFromVal<Env, VecN<T, N>> for VecN<Val, N> {
+    type Error = Infallible;
 
-    fn try_from_val(_env: &Env, v: &VecN<T, N>) -> Result<Self, Self::Error> {
-        Ok(v.clone())
+    fn try_from_val(env: &Env, v: &VecN<T, N>) -> Result<Self, Self::Error> {
+        Ok(unsafe { VecN::unchecked_new(env.clone(), v.0.obj) })
     }
 }
 
-impl<T, const N: usize> TryFromVal<Env, VecN<T, N>> for Vec<T>
-where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
-{
-    type Error = ConversionError;
+impl<T, const N: usize> TryFromVal<Env, &VecN<T, N>> for VecN<Val, N> {
+    type Error = Infallible;
 
-    fn try_from_val(_env: &Env, v: &VecN<T, N>) -> Result<Self, Self::Error> {
-        Ok(v.0.clone())
-    }
-}
-
-impl<T, const N: usize> TryFromVal<Env, [T; N]> for VecN<T, N>
-where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
-{
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, v: &[T; N]) -> Result<Self, Self::Error> {
-        Ok(VecN::from_array(env, v))
-    }
-}
-
-impl<T, const N: usize> TryFromVal<Env, VecN<T, N>> for [T; N]
-where
-    T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
-{
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &VecN<T, N>) -> Result<Self, Self::Error> {
-        Ok(v.to_array())
+    fn try_from_val(env: &Env, v: &&VecN<T, N>) -> Result<Self, Self::Error> {
+        Ok(unsafe { VecN::unchecked_new(env.clone(), v.0.obj) })
     }
 }
 
@@ -1404,6 +1505,7 @@ where
 {
     type Error = ConversionError;
 
+    #[inline(always)]
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         Vec::try_from_val(env, val)?.try_into()
     }
@@ -1515,6 +1617,79 @@ where
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> From<&VecN<T, N>> for ScVal {
+    fn from(v: &VecN<T, N>) -> Self {
+        let vec: Vec<T> = v.into();
+        vec.into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> From<&VecN<T, N>> for ScVec {
+    fn from(v: &VecN<T, N>) -> Self {
+        let vec: Vec<T> = v.into();
+        vec.into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> From<VecN<T, N>> for VecM<ScVal> {
+    fn from(v: VecN<T, N>) -> Self {
+        let vec: Vec<T> = v.into();
+        vec.into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> From<VecN<T, N>> for ScVal {
+    fn from(v: VecN<T, N>) -> Self {
+        (&v).into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> From<VecN<T, N>> for ScVec {
+    fn from(v: VecN<T, N>) -> Self {
+        (&v).into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> TryFromVal<Env, ScVal> for VecN<T, N>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, ConversionError> {
+        let vec: Vec<T> = Vec::try_from_val(env, val)?;
+        vec.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> TryFromVal<Env, ScVec> for VecN<T, N>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &ScVec) -> Result<Self, Self::Error> {
+        let vec: Vec<T> = Vec::try_from_val(env, val)?;
+        vec.try_into().map_err(|_| ConversionError)
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl<T, const N: usize> TryFromVal<Env, VecM<ScVal>> for VecN<T, N>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Error = ConversionError;
+    fn try_from_val(env: &Env, val: &VecM<ScVal>) -> Result<Self, Self::Error> {
+        let vec: Vec<T> = Vec::try_from_val(env, val)?;
+        vec.try_into().map_err(|_| ConversionError)
+    }
+}
 
 #[cfg(test)]
 mod test {
@@ -1542,6 +1717,29 @@ mod test {
             v.push_back(1);
             v
         });
+    }
+
+    #[test]
+    fn test_vec_n_macro() {
+        let env = Env::default();
+        assert_eq!(vec_n![&env], VecN::<i32, 0>::from_array(&env, []));
+        assert_eq!(vec_n![&env,], VecN::<i32, 0>::from_array(&env, []));
+        assert_eq!(vec_n![&env, 1], VecN::<i32, 1>::from_array(&env, [1]));
+        assert_eq!(vec_n![&env, 1,], VecN::<i32, 1>::from_array(&env, [1]));
+        assert_eq!(
+            vec_n![&env, 3, 2, 1],
+            VecN::<i32, 3>::from_array(&env, [3, 2, 1])
+        );
+        assert_eq!(
+            vec_n![&env, 3, 2, 1,],
+            VecN::<i32, 3>::from_array(&env, [3, 2, 1])
+        );
+
+        let vecn = vec_n![&env, 10, 20, 30, 40];
+        assert_eq!(vecn.len(), 4);
+
+        let empty_vecn: VecN<u32, _> = vec_n![&env];
+        assert_eq!(empty_vecn.len(), 0);
     }
 
     #[test]
@@ -2444,7 +2642,7 @@ mod test {
     #[test]
     fn test_vecn_from_array() {
         let env = Env::default();
-        let vecn: VecN<i32, 3> = VecN::from_array(&env, &[1, 2, 3]);
+        let vecn: VecN<i32, 3> = VecN::from_array(&env, [1, 2, 3]);
         assert_eq!(vecn.len(), 3);
         assert_eq!(vecn.get(0), Some(1));
         assert_eq!(vecn.get(1), Some(2));
@@ -2453,19 +2651,10 @@ mod test {
     }
 
     #[test]
-    fn test_vecn_empty() {
-        let env = Env::default();
-        let vecn: VecN<i32, 0> = VecN::from_array(&env, &[]);
-        assert_eq!(vecn.len(), 0);
-        assert_eq!(vecn.is_empty(), false); // VecN is never considered "empty" by design
-        assert_eq!(vecn.get(0), None);
-    }
-
-    #[test]
     fn test_vecn_to_array() {
         let env = Env::default();
-        let vecn: VecN<i32, 3> = VecN::from_array(&env, &[10, 20, 30]);
-        let arr: [i32; 3] = vecn.to_array();
+        let vecn: VecN<i32, 3> = VecN::from_array(&env, [10, 20, 30]);
+        let arr = vecn.to_array();
         assert_eq!(arr, [10, 20, 30]);
     }
 
@@ -2473,12 +2662,12 @@ mod test {
     fn test_vecn_conversion_from_vec() {
         let env = Env::default();
         let v = vec![&env, 1, 2, 3];
-        
+
         // Successful conversion
         let vecn: VecN<i32, 3> = v.clone().try_into().unwrap();
         assert_eq!(vecn.len(), 3);
         assert_eq!(vecn.get(0), Some(1));
-        
+
         // Failed conversion - wrong length
         let result: Result<VecN<i32, 4>, _> = v.try_into();
         assert!(result.is_err());
@@ -2487,7 +2676,7 @@ mod test {
     #[test]
     fn test_vecn_conversion_to_vec() {
         let env = Env::default();
-        let vecn: VecN<i32, 3> = VecN::from_array(&env, &[1, 2, 3]);
+        let vecn: VecN<i32, 3> = VecN::from_array(&env, [1, 2, 3]);
         let v: Vec<i32> = vecn.into();
         assert_eq!(v.len(), 3);
         assert_eq!(v.get(0), Some(1));
@@ -2498,7 +2687,7 @@ mod test {
     #[test]
     fn test_vecn_iter() {
         let env = Env::default();
-        let vecn: VecN<i32, 3> = VecN::from_array(&env, &[10, 20, 30]);
+        let vecn = VecN::from_array(&env, [10, 20, 30]);
         let items: std::vec::Vec<i32> = vecn.iter().collect();
         assert_eq!(items, std::vec![10, 20, 30]);
     }
@@ -2506,7 +2695,7 @@ mod test {
     #[test]
     fn test_vecn_first_last() {
         let env = Env::default();
-        let vecn: VecN<i32, 3> = VecN::from_array(&env, &[1, 2, 3]);
+        let vecn = VecN::from_array(&env, [1, 2, 3]);
         assert_eq!(vecn.first(), Some(1));
         assert_eq!(vecn.last(), Some(3));
         assert_eq!(vecn.first_unchecked(), 1);
@@ -2516,22 +2705,21 @@ mod test {
     #[test]
     fn test_vecn_debug() {
         let env = Env::default();
-        let vecn: VecN<i32, 3> = VecN::from_array(&env, &[1, 2, 3]);
+        let vecn: VecN<i32, 3> = VecN::from_array(&env, [1, 2, 3]);
         let debug_str = format!("{:?}", vecn);
-        assert!(debug_str.contains("VecN<3>"));
-        assert!(debug_str.contains("[1, 2, 3]"));
+        assert_eq!(debug_str, "VecN<3>([1, 2, 3])");
     }
 
     #[test]
     fn test_vecn_equality() {
         let env = Env::default();
-        let vecn1: VecN<i32, 3> = VecN::from_array(&env, &[1, 2, 3]);
-        let vecn2: VecN<i32, 3> = VecN::from_array(&env, &[1, 2, 3]);
-        let vecn3: VecN<i32, 3> = VecN::from_array(&env, &[1, 2, 4]);
-        
+        let vecn1 = VecN::from_array(&env, [1, 2, 3]);
+        let vecn2 = VecN::from_array(&env, [1, 2, 3]);
+        let vecn3 = VecN::from_array(&env, [1, 2, 4]);
+
         assert_eq!(vecn1, vecn2);
         assert_ne!(vecn1, vecn3);
-        
+
         // Test equality with arrays
         assert_eq!(vecn1, [1, 2, 3]);
         assert_eq!([1, 2, 3], vecn1);
@@ -2541,11 +2729,345 @@ mod test {
     #[test]
     fn test_vecn_slice() {
         let env = Env::default();
-        let vecn: VecN<i32, 5> = VecN::from_array(&env, &[1, 2, 3, 4, 5]);
+        let vecn = VecN::from_array(&env, [1, 2, 3, 4, 5]);
         let slice = vecn.slice(1..4);
         assert_eq!(slice.len(), 3);
         assert_eq!(slice.get(0), Some(2));
         assert_eq!(slice.get(1), Some(3));
         assert_eq!(slice.get(2), Some(4));
+    }
+
+    #[test]
+    fn test_vecn_to_val() {
+        let env = Env::default();
+
+        let vecn: VecN<u32, 4> = VecN::from_array(&env, [0, 1, 2, 3]);
+        let val: Val = vecn.clone().into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(rt.len(), 4);
+        assert_eq!(rt.get(0), Some(0));
+        assert_eq!(rt.get(1), Some(1));
+        assert_eq!(rt.get(2), Some(2));
+        assert_eq!(rt.get(3), Some(3));
+    }
+
+    #[test]
+    fn test_ref_vecn_to_val() {
+        let env = Env::default();
+
+        let vecn: VecN<u32, 4> = VecN::from_array(&env, [0, 1, 2, 3]);
+        let val: Val = (&vecn).into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(rt.len(), 4);
+        assert_eq!(rt.get(0), Some(0));
+        assert_eq!(rt.get(1), Some(1));
+        assert_eq!(rt.get(2), Some(2));
+        assert_eq!(rt.get(3), Some(3));
+    }
+
+    #[test]
+    fn test_double_ref_vecn_to_val() {
+        let env = Env::default();
+
+        let vecn: VecN<u32, 4> = VecN::from_array(&env, [0, 1, 2, 3]);
+        let val: Val = (&&vecn).into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(rt.len(), 4);
+        assert_eq!(rt.get(0), Some(0));
+        assert_eq!(rt.get(1), Some(1));
+        assert_eq!(rt.get(2), Some(2));
+        assert_eq!(rt.get(3), Some(3));
+    }
+
+    #[test]
+    fn test_vecn_contains() {
+        let env = Env::default();
+        let vecn = VecN::from_array(&env, [0, 3, 5, 7, 9, 5]);
+        assert_eq!(vecn.contains(&2), false);
+        assert_eq!(vecn.contains(2), false);
+        assert_eq!(vecn.contains(&3), true);
+        assert_eq!(vecn.contains(3), true);
+        assert_eq!(vecn.contains(&5), true);
+        assert_eq!(vecn.contains(5), true);
+    }
+
+    #[test]
+    fn test_vecn_first_index_of() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [0, 3, 5, 7, 9, 5]);
+        assert_eq!(vecn.first_index_of(&2), None);
+        assert_eq!(vecn.first_index_of(2), None);
+        assert_eq!(vecn.first_index_of(&3), Some(1));
+        assert_eq!(vecn.first_index_of(3), Some(1));
+        assert_eq!(vecn.first_index_of(&5), Some(2));
+        assert_eq!(vecn.first_index_of(5), Some(2));
+    }
+
+    #[test]
+    fn test_vecn_last_index_of() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [0, 3, 5, 7, 9, 5]);
+        assert_eq!(vecn.last_index_of(&2), None);
+        assert_eq!(vecn.last_index_of(2), None);
+        assert_eq!(vecn.last_index_of(&3), Some(1));
+        assert_eq!(vecn.last_index_of(3), Some(1));
+        assert_eq!(vecn.last_index_of(&5), Some(5));
+        assert_eq!(vecn.last_index_of(5), Some(5));
+    }
+
+    #[test]
+    fn test_vecn_binary_search() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [0, 3, 5, 5, 7, 9]);
+        assert_eq!(vecn.binary_search(&2), Err(1));
+        assert_eq!(vecn.binary_search(2), Err(1));
+        assert_eq!(vecn.binary_search(&3), Ok(1));
+        assert_eq!(vecn.binary_search(3), Ok(1));
+        assert_eq!(vecn.binary_search(&5), Ok(3));
+        assert_eq!(vecn.binary_search(5), Ok(3));
+    }
+
+    #[test]
+    fn test_vecn_get() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [0, 3, 5, 5, 7, 9]);
+
+        // get each item
+        assert_eq!(vecn.get(3), Some(5));
+        assert_eq!(vecn.get(0), Some(0));
+        assert_eq!(vecn.get(1), Some(3));
+        assert_eq!(vecn.get(2), Some(5));
+        assert_eq!(vecn.get(5), Some(9));
+        assert_eq!(vecn.get(4), Some(7));
+
+        assert_eq!(vecn.get(vecn.len()), None);
+        assert_eq!(vecn.get(vecn.len() + 1), None);
+        assert_eq!(vecn.get(u32::MAX), None);
+
+        // tests on an empty vecn
+        let vecn_empty: VecN<i64, 0> = VecN::from_array(&env, []);
+        assert_eq!(vecn_empty.get(0), None);
+        assert_eq!(vecn_empty.get(vecn_empty.len()), None);
+        assert_eq!(vecn_empty.get(vecn_empty.len() + 1), None);
+        assert_eq!(vecn_empty.get(u32::MAX), None);
+    }
+
+    #[test]
+    fn test_vecn_get_unchecked() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [0, 3, 5, 5, 7, 9]);
+
+        // get each item
+        assert_eq!(vecn.get_unchecked(3), 5);
+        assert_eq!(vecn.get_unchecked(0), 0);
+        assert_eq!(vecn.get_unchecked(1), 3);
+        assert_eq!(vecn.get_unchecked(2), 5);
+        assert_eq!(vecn.get_unchecked(5), 9);
+        assert_eq!(vecn.get_unchecked(4), 7);
+    }
+
+    #[test]
+    fn test_vecn_try_get() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [0, 3, 5, 5, 7, 9]);
+
+        // get each item
+        assert_eq!(vecn.try_get(3), Ok(Some(5)));
+        assert_eq!(vecn.try_get(0), Ok(Some(0)));
+        assert_eq!(vecn.try_get(1), Ok(Some(3)));
+        assert_eq!(vecn.try_get(2), Ok(Some(5)));
+        assert_eq!(vecn.try_get(5), Ok(Some(9)));
+        assert_eq!(vecn.try_get(4), Ok(Some(7)));
+
+        assert_eq!(vecn.try_get(vecn.len()), Ok(None));
+        assert_eq!(vecn.try_get(vecn.len() + 1), Ok(None));
+        assert_eq!(vecn.try_get(u32::MAX), Ok(None));
+
+        // tests on an empty vecn
+        let vecn_empty: VecN<i64, 0> = VecN::from_array(&env, []);
+        assert_eq!(vecn_empty.try_get(0), Ok(None));
+        assert_eq!(vecn_empty.try_get(vecn_empty.len()), Ok(None));
+        assert_eq!(vecn_empty.try_get(vecn_empty.len() + 1), Ok(None));
+        assert_eq!(vecn_empty.try_get(u32::MAX), Ok(None));
+    }
+
+    #[test]
+    fn test_vecn_try_get_unchecked() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [0, 3, 5, 5, 7, 9]);
+
+        // get each item
+        assert_eq!(vecn.try_get_unchecked(3), Ok(5));
+        assert_eq!(vecn.try_get_unchecked(0), Ok(0));
+        assert_eq!(vecn.try_get_unchecked(1), Ok(3));
+        assert_eq!(vecn.try_get_unchecked(2), Ok(5));
+        assert_eq!(vecn.try_get_unchecked(5), Ok(9));
+        assert_eq!(vecn.try_get_unchecked(4), Ok(7));
+    }
+
+    #[test]
+    fn test_vecn_try_iter() {
+        let env = Env::default();
+
+        let vecn_empty: VecN<u32, 0> = VecN::from_array(&env, []);
+        let mut iter = vecn_empty.try_iter();
+        assert_eq!(iter.len(), 0);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let vecn = VecN::from_array(&env, [0, 1, 2, 3, 4]);
+
+        let mut iter = vecn.try_iter();
+        assert_eq!(iter.len(), 5);
+        assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.len(), 4);
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.len(), 3);
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.len(), 2);
+        assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.len(), 1);
+        assert_eq!(iter.next(), Some(Ok(4)));
+        assert_eq!(iter.len(), 0);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        let mut iter = vecn.try_iter();
+        assert_eq!(iter.len(), 5);
+        assert_eq!(iter.next(), Some(Ok(0)));
+        assert_eq!(iter.len(), 4);
+        assert_eq!(iter.next_back(), Some(Ok(4)));
+        assert_eq!(iter.len(), 3);
+        assert_eq!(iter.next_back(), Some(Ok(3)));
+        assert_eq!(iter.len(), 2);
+        assert_eq!(iter.next(), Some(Ok(1)));
+        assert_eq!(iter.len(), 1);
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.len(), 0);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+
+        let mut iter = vecn.try_iter().rev();
+        assert_eq!(iter.next(), Some(Ok(4)));
+        assert_eq!(iter.next_back(), Some(Ok(0)));
+        assert_eq!(iter.next_back(), Some(Ok(1)));
+        assert_eq!(iter.next(), Some(Ok(3)));
+        assert_eq!(iter.next(), Some(Ok(2)));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+        assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_vecn_is_empty_and_len() {
+        let env = Env::default();
+
+        let vecn = VecN::from_array(&env, [1, 4, 3]);
+        assert_eq!(vecn.is_empty(), false);
+        assert_eq!(vecn.len(), 3);
+
+        let vecn_empty: VecN<u32, 0> = VecN::from_array(&env, []);
+        assert_eq!(vecn_empty.is_empty(), true);
+        assert_eq!(vecn_empty.len(), 0);
+    }
+
+    #[cfg(not(target_family = "wasm"))]
+    #[test]
+    fn test_vecn_scval_conversion() {
+        use crate::TryFromVal;
+        let env = Env::default();
+        let vecn = VecN::from_array(&env, [1_i64, 3, 2]);
+        let val: ScVal = vecn.clone().try_into().unwrap();
+        let roundtrip: VecN<i64, 3> = val.into_val(&env);
+        assert_eq!(roundtrip, vecn);
+
+        let too_short_vecn = VecN::<i64, 2>::try_from_val(&env, &val);
+        assert!(too_short_vecn.is_err());
+
+        let too_long_vecn = VecN::<i64, 4>::try_from_val(&env, &val);
+        assert!(too_long_vecn.is_err());
+    }
+
+    mod vecn_contract {
+        use crate as soroban_sdk;
+        use soroban_sdk::{contract, contractimpl, contracttype, vec_n, Env, Error, IntoVal, VecN};
+        use soroban_sdk_macros::symbol_short;
+        #[contract]
+        struct VecNContract;
+
+        #[contracttype]
+        struct VecNUdt {
+            v: VecN<i32, 2>,
+        }
+
+        #[contracttype]
+        struct WrongVecNUdt {
+            v: VecN<i32, 3>,
+        }
+
+        #[contractimpl]
+        impl VecNContract {
+            pub fn get(v: VecN<i32, 2>) -> i32 {
+                v.get_unchecked(1)
+            }
+
+            pub fn get_udt(udt: VecNUdt) -> i32 {
+                udt.v.get_unchecked(1)
+            }
+        }
+
+        #[test]
+        fn test_vecn_arg_accepted() {
+            let env = Env::default();
+            let contract_id = env.register(VecNContract, ());
+
+            let vecn = vec_n![&env, 10, 20];
+            let res: i32 =
+                env.invoke_contract(&contract_id, &symbol_short!("get"), (&vecn,).into_val(&env));
+            assert_eq!(res, 20);
+
+            let udt = VecNUdt { v: vecn };
+            let res: i32 = env.invoke_contract(
+                &contract_id,
+                &symbol_short!("get_udt"),
+                (udt,).into_val(&env),
+            );
+            assert_eq!(res, 20);
+        }
+
+        #[test]
+        fn test_vecn_arg_not_valid() {
+            let env = Env::default();
+            let contract_id = env.register(VecNContract, ());
+
+            let vecn = vec_n![&env, 10, 20, 30];
+            let res = env.try_invoke_contract::<i32, Error>(
+                &contract_id,
+                &symbol_short!("get"),
+                (&vecn,).into_val(&env),
+            );
+            assert!(res.is_err());
+
+            let udt = WrongVecNUdt { v: vecn };
+            let res = env.try_invoke_contract::<i32, Error>(
+                &contract_id,
+                &symbol_short!("get_udt"),
+                (udt,).into_val(&env),
+            );
+            assert!(res.is_err());
+        }
     }
 }
