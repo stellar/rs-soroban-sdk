@@ -12,6 +12,7 @@ use syn::{
 };
 
 use crate::attribute::pass_through_attr_to_gen_code;
+use crate::syn_ext::ty_to_safe_ident_str;
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 #[allow(clippy::too_many_arguments)]
@@ -173,14 +174,21 @@ pub fn derive_fn_spec(
         .filter(|attr| pass_through_attr_to_gen_code(attr))
         .collect::<Vec<_>>();
 
+    let ty_str = ty_to_safe_ident_str(ty);
+    let hidden_mod_ident = format_ident!("__{}__{}__spec", ty_str, ident);
     let exported = if export {
         Some(quote! {
             #[doc(hidden)]
-            #[allow(non_snake_case)]
-            #[allow(non_upper_case_globals)]
             #(#attrs)*
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #ty::#spec_fn_ident();
+            #[allow(non_snake_case)]
+            pub mod #hidden_mod_ident {
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                #[allow(non_upper_case_globals)]
+                #(#attrs)*
+                #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+                pub static #spec_ident: [u8; #spec_xdr_len] = super::#ty::#spec_fn_ident();
+            }
         })
     } else {
         None

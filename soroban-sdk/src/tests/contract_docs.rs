@@ -25,7 +25,7 @@ mod fn_ {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD, Limits::none()).unwrap();
+        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
         let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
             doc: "Add adds\nthings together.".try_into().unwrap(),
             name: "add".try_into().unwrap(),

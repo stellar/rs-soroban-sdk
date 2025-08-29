@@ -21,7 +21,8 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = xdr::ScSpecEntry::from_xdr(__SPEC_XDR_FN_EXEC, xdr::Limits::none()).unwrap();
+    let entries =
+        xdr::ScSpecEntry::from_xdr(Contract::spec_xdr_exec(), xdr::Limits::none()).unwrap();
     let expect = xdr::ScSpecEntry::FunctionV0(xdr::ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "exec".try_into().unwrap(),
