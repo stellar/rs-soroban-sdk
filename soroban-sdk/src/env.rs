@@ -1093,10 +1093,10 @@ impl Env {
         executable: xdr::ContractExecutable,
         constructor_args: Vec<Val>,
     ) -> Result<Address, crate::Error> {
-        let prev_auth_manager = self.env_impl.snapshot_auth_manager().map_err(|e| e.error)?;
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
-            .map_err(|e| e.error)?;
+            .unwrap();
         let args_vec: std::vec::Vec<xdr::ScVal> =
             constructor_args.iter().map(|v| v.into_val(self)).collect();
         let contract_id: Address = self
@@ -1118,9 +1118,7 @@ impl Env {
             .map_err(|e| e.error)?
             .try_into_val(self)?;
 
-        self.env_impl
-            .set_auth_manager(prev_auth_manager)
-            .map_err(|e| e.error)?;
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
         Ok(contract_id)
     }
@@ -1543,7 +1541,7 @@ impl Env {
         let live_until_ledger = self.ledger().sequence() + 1;
         self.host()
             .add_ledger_entry(&key, &entry, Some(live_until_ledger))
-            .map_err(|e| e.error)?;
+            .unwrap();
         self.env_impl
             .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
             .map_err(|e| e.error)?;
