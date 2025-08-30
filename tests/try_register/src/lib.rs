@@ -27,7 +27,7 @@ mod test {
     fn test_try_register_success() {
         let env = Env::default();
         let result = env.try_register(ContractWithConstructor, (150_u32,));
-        assert!(result.is_ok());  
+        assert!(result.is_ok());
 
         let contract_id = result.unwrap();
         let client = ContractWithConstructorClient::new(&env, &contract_id);
