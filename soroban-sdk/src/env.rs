@@ -464,8 +464,8 @@ use crate::{
     auth,
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
-        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, TryRegister, Snapshot,
-        StellarAssetContract, StellarAssetIssuer,
+        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
+        StellarAssetContract, StellarAssetIssuer, TryRegister,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -759,7 +759,11 @@ impl Env {
     /// will be called again during re-registration. That behavior only exists
     /// for this test utility and is not reproducible on-chain, where contract
     /// updates don't cause constructor to be called.
-    pub fn try_register<'a, C, A>(&self, contract: C, constructor_args: A) -> Result<Address, crate::Error>
+    pub fn try_register<'a, C, A>(
+        &self,
+        contract: C,
+        constructor_args: A,
+    ) -> Result<Address, crate::Error>
     where
         C: TryRegister,
         A: ConstructorArgs,
@@ -840,7 +844,8 @@ impl Env {
         contract_id: impl Into<Option<&'a Address>>,
         contract: T,
     ) -> Address {
-        self.register_contract_with_constructor(contract_id, contract, ())
+        self.try_register_contract_with_constructor(contract_id, contract, ())
+            .unwrap()
     }
 
     /// Register a contract with the [Env] for testing.
@@ -860,54 +865,6 @@ impl Env {
     /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
-    pub(crate) fn register_contract_with_constructor<
-        'a,
-        T: ContractFunctionSet + 'static,
-        A: ConstructorArgs,
-    >(
-        &self,
-        contract_id: impl Into<Option<&'a Address>>,
-        contract: T,
-        constructor_args: A,
-    ) -> Address {
-        struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
-        impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
-            fn call(
-                &self,
-                func: &Symbol,
-                env_impl: &internal::EnvImpl,
-                args: &[Val],
-            ) -> Option<Val> {
-                let env = Env {
-                    env_impl: env_impl.clone(),
-                    test_state: Default::default(),
-                };
-                self.0.call(
-                    crate::Symbol::try_from_val(&env, func)
-                        .unwrap_infallible()
-                        .to_string()
-                        .as_str(),
-                    env,
-                    args,
-                )
-            }
-        }
-
-        let contract_id = if let Some(contract_id) = contract_id.into() {
-            contract_id.clone()
-        } else {
-            Address::generate(self)
-        };
-        self.env_impl
-            .register_test_contract_with_constructor(
-                contract_id.to_object(),
-                Rc::new(InternalContractFunctionSet(contract)),
-                constructor_args.into_val(self).to_object(),
-            )
-            .unwrap();
-        contract_id
-    }
-
     pub(crate) fn try_register_contract_with_constructor<
         'a,
         T: ContractFunctionSet + 'static,
@@ -992,16 +949,17 @@ impl Env {
         contract_wasm: impl IntoVal<Env, Bytes>,
     ) -> Address {
         let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
-        self.register_contract_with_optional_contract_id_and_executable(
+        self.try_register_contract_with_optional_contract_id_and_executable(
             contract_id,
             xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
             crate::vec![&self],
         )
+        .unwrap()
     }
 
-    /// Register a contract in a Wasm file with the [Env] for testing.
+    /// Tries to register a contract in a Wasm file with the [Env] for testing.
     ///
-    /// This acts the in the same fashion as `register_contract`, but allows
+    /// This acts the in the same fashion as `try_register_contract`, but allows
     /// passing arguments to the contract's constructor.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -1016,20 +974,6 @@ impl Env {
     /// Wasm updates don't cause constructor to be called.
     ///
     /// Returns the address of the registered contract.
-    pub(crate) fn register_contract_wasm_with_constructor<'a>(
-        &self,
-        contract_id: impl Into<Option<&'a Address>>,
-        contract_wasm: impl IntoVal<Env, Bytes>,
-        constructor_args: impl ConstructorArgs,
-    ) -> Address {
-        let wasm_hash: BytesN<32> = self.deployer().upload_contract_wasm(contract_wasm);
-        self.register_contract_with_optional_contract_id_and_executable(
-            contract_id,
-            xdr::ContractExecutable::Wasm(xdr::Hash(wasm_hash.into())),
-            constructor_args.into_val(self),
-        )
-    }
-
     pub(crate) fn try_register_contract_wasm_with_constructor<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
@@ -1126,24 +1070,6 @@ impl Env {
         self.register_stellar_asset_contract_v2(admin).address()
     }
 
-    fn register_contract_with_optional_contract_id_and_executable<'a>(
-        &self,
-        contract_id: impl Into<Option<&'a Address>>,
-        executable: xdr::ContractExecutable,
-        constructor_args: Vec<Val>,
-    ) -> Address {
-        if let Some(contract_id) = contract_id.into() {
-            self.register_contract_with_contract_id_and_executable(
-                contract_id,
-                executable,
-                constructor_args,
-            );
-            contract_id.clone()
-        } else {
-            self.register_contract_with_source(executable, constructor_args)
-        }
-    }
-
     fn try_register_contract_with_optional_contract_id_and_executable<'a>(
         &self,
         contract_id: impl Into<Option<&'a Address>>,
@@ -1160,42 +1086,6 @@ impl Env {
         } else {
             self.try_register_contract_with_source(executable, constructor_args)
         }
-    }
-
-    fn register_contract_with_source(
-        &self,
-        executable: xdr::ContractExecutable,
-        constructor_args: Vec<Val>,
-    ) -> Address {
-        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
-        self.env_impl
-            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
-            .unwrap();
-        let args_vec: std::vec::Vec<xdr::ScVal> =
-            constructor_args.iter().map(|v| v.into_val(self)).collect();
-        let contract_id: Address = self
-            .env_impl
-            .invoke_function(xdr::HostFunction::CreateContractV2(
-                xdr::CreateContractArgsV2 {
-                    contract_id_preimage: xdr::ContractIdPreimage::Address(
-                        xdr::ContractIdPreimageFromAddress {
-                            address: xdr::ScAddress::Contract(xdr::ContractId(xdr::Hash(
-                                self.with_generator(|mut g| g.address()),
-                            ))),
-                            salt: xdr::Uint256([0; 32]),
-                        },
-                    ),
-                    executable,
-                    constructor_args: args_vec.try_into().unwrap(),
-                },
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap();
-
-        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
-
-        contract_id
     }
 
     fn try_register_contract_with_source(
@@ -1226,10 +1116,11 @@ impl Env {
                 },
             ))
             .map_err(|e| e.error)?
-            .try_into_val(self)
-            .map_err(|e| e)?;
+            .try_into_val(self)?;
 
-        self.env_impl.set_auth_manager(prev_auth_manager).map_err(|e| e.error)?;
+        self.env_impl
+            .set_auth_manager(prev_auth_manager)
+            .map_err(|e| e.error)?;
 
         Ok(contract_id)
     }
@@ -1617,45 +1508,6 @@ impl Env {
             Ok(rv) => Ok(rv.into_val(self)),
             Err(e) => Err(e.error.try_into().map_err(Into::into)),
         }
-    }
-
-    fn register_contract_with_contract_id_and_executable(
-        &self,
-        contract_address: &Address,
-        executable: xdr::ContractExecutable,
-        constructor_args: Vec<Val>,
-    ) {
-        let contract_id = contract_address.contract_id();
-        let data_key = xdr::ScVal::LedgerKeyContractInstance;
-        let key = Rc::new(LedgerKey::ContractData(LedgerKeyContractData {
-            contract: xdr::ScAddress::Contract(contract_id.clone()),
-            key: data_key.clone(),
-            durability: xdr::ContractDataDurability::Persistent,
-        }));
-
-        let instance = xdr::ScContractInstance {
-            executable,
-            storage: Default::default(),
-        };
-
-        let entry = Rc::new(LedgerEntry {
-            ext: xdr::LedgerEntryExt::V0,
-            last_modified_ledger_seq: 0,
-            data: xdr::LedgerEntryData::ContractData(xdr::ContractDataEntry {
-                contract: xdr::ScAddress::Contract(contract_id.clone()),
-                key: data_key,
-                val: xdr::ScVal::ContractInstance(instance),
-                durability: xdr::ContractDataDurability::Persistent,
-                ext: xdr::ExtensionPoint::V0,
-            }),
-        });
-        let live_until_ledger = self.ledger().sequence() + 1;
-        self.host()
-            .add_ledger_entry(&key, &entry, Some(live_until_ledger))
-            .unwrap();
-        self.env_impl
-            .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
-            .unwrap();
     }
 
     fn try_register_contract_with_contract_id_and_executable(

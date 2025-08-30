@@ -41,7 +41,8 @@ where
         I: Into<Option<&'i crate::Address>>,
         A: ConstructorArgs,
     {
-        env.register_contract_with_constructor(id, self, args)
+        env.try_register_contract_with_constructor(id, self, args)
+            .unwrap()
     }
 }
 
@@ -51,12 +52,18 @@ impl<'w> Register for &'w [u8] {
         I: Into<Option<&'i crate::Address>>,
         A: ConstructorArgs,
     {
-        env.register_contract_wasm_with_constructor(id, self, args)
+        env.try_register_contract_wasm_with_constructor(id, self, args)
+            .unwrap()
     }
 }
 
 pub trait TryRegister {
-    fn try_register<'i, I, A>(self, env: &Env, id: I, args: A) -> Result<crate::Address, crate::Error>
+    fn try_register<'i, I, A>(
+        self,
+        env: &Env,
+        id: I,
+        args: A,
+    ) -> Result<crate::Address, crate::Error>
     where
         I: Into<Option<&'i crate::Address>>,
         A: ConstructorArgs;
@@ -66,7 +73,12 @@ impl<C> TryRegister for C
 where
     C: ContractFunctionSet + 'static,
 {
-    fn try_register<'i, I, A>(self, env: &Env, id: I, args: A) -> Result<crate::Address, crate::Error>
+    fn try_register<'i, I, A>(
+        self,
+        env: &Env,
+        id: I,
+        args: A,
+    ) -> Result<crate::Address, crate::Error>
     where
         I: Into<Option<&'i crate::Address>>,
         A: ConstructorArgs,
@@ -76,7 +88,12 @@ where
 }
 
 impl<'w> TryRegister for &'w [u8] {
-    fn try_register<'i, I, A>(self, env: &Env, id: I, args: A) -> Result<crate::Address, crate::Error>
+    fn try_register<'i, I, A>(
+        self,
+        env: &Env,
+        id: I,
+        args: A,
+    ) -> Result<crate::Address, crate::Error>
     where
         I: Into<Option<&'i crate::Address>>,
         A: ConstructorArgs,

@@ -1742,7 +1742,7 @@ dependencies = [
 
 [[package]]
 name = "test_try_register"
-version = "23.0.0-rc.2.4"
+version = "23.0.0-rc.3"
 dependencies = [
  "soroban-sdk",
 ]
