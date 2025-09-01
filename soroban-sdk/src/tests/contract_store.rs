@@ -75,7 +75,7 @@ fn test_storage() {
     assert!(client.get_temporary(&11).is_none());
     assert!(client.get_instance(&11).is_none());
 
-    // Setup the the storage with some values.
+    // Setup the storage with some values.
     e.as_contract(&contract_id, || {
         e.storage().persistent().set(&DataKey::Key(11), &1111_i32);
         e.storage().temporary().set(&DataKey::Key(11), &2222_i32);
