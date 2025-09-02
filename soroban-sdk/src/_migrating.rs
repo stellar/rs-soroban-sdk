@@ -7,7 +7,7 @@
 //!    `soroban-token-sdk` crate migration guide.
 //!
 //! 3. [Accessing archived persistent entries in tests no longer results in a panic][v23_archived_testing],
-//!    automatic restoration is emulated instead. Note, that instance storage is a 
+//!    automatic restoration is emulated instead. Note, that instance storage is a
 //!    persistent entry as well.
 //!
 //! # Migrating from v21 to v22
