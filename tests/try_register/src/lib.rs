@@ -21,6 +21,7 @@ impl ContractWithConstructor {
 
 #[cfg(test)]
 mod test {
+    extern crate std;
     use super::*;
     use soroban_sdk::testutils::Address as _;
 
@@ -38,8 +39,6 @@ mod test {
     #[test]
     fn test_try_register_constructor_failure() {
         let env = Env::default();
-
-        // This should fail due to constructor validation
         let result = env.try_register(ContractWithConstructor, (50_u32,));
         assert!(result.is_err());
     }
@@ -49,7 +48,6 @@ mod test {
         let env = Env::default();
         let contract_id = soroban_sdk::Address::generate(&env);
 
-        // This should succeed with specific contract ID
         let result = env.try_register_at(&contract_id, ContractWithConstructor, (200_u32,));
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), contract_id);
@@ -62,8 +60,6 @@ mod test {
     fn test_try_register_at_failure() {
         let env = Env::default();
         let contract_id = soroban_sdk::Address::generate(&env);
-
-        // This should fail due to constructor validation
         let result = env.try_register_at(&contract_id, ContractWithConstructor, (25_u32,));
         assert!(result.is_err());
     }
