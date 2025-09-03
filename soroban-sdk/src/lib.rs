@@ -1022,7 +1022,7 @@ pub mod prng;
 pub mod storage;
 pub mod token;
 mod vec;
-pub use address::Address;
+pub use address::{Address, Executable};
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
 pub use muxed_address::MuxedAddress;
