@@ -29,18 +29,18 @@ stellar-asset-spec = { version = "23.0.2", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]
 version = "=23.0.1"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "bd0c80a1fe171e75f8d745f17975a73927d44ecd"
+git = "https://github.com/jayz22/rs-soroban-env"
+rev = "d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 
 [workspace.dependencies.soroban-env-guest]
 version = "=23.0.1"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "bd0c80a1fe171e75f8d745f17975a73927d44ecd"
+git = "https://github.com/jayz22/rs-soroban-env"
+rev = "d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 
 [workspace.dependencies.soroban-env-host]
 version = "=23.0.1"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "bd0c80a1fe171e75f8d745f17975a73927d44ecd"
+git = "https://github.com/jayz22/rs-soroban-env"
+rev = "d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.13"
@@ -52,6 +52,8 @@ features = ["curr"]
 #git = "https://github.com/stellar/rs-stellar-xdr"
 #rev = "67be5955a15f1d3a4df83fe86e6ae107f687141b"
 
+[patch.crates-io]
+merlin = { version = "3.0.0", git = "https://github.com/aptos-labs/merlin.git"}
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 #soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }

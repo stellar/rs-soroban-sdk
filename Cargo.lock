@@ -211,6 +211,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "bulletproofs"
+version = "5.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "012e2e5f88332083bd4235d445ae78081c00b2558443821a9ca5adfe1070073d"
+dependencies = [
+ "byteorder",
+ "clear_on_drop",
+ "curve25519-dalek",
+ "digest",
+ "group",
+ "merlin",
+ "rand",
+ "rand_core",
+ "serde",
+ "serde_derive",
+ "sha3",
+ "subtle",
+ "thiserror",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -273,6 +294,15 @@ dependencies = [
  "num-traits",
  "serde",
  "windows-targets",
+]
+
+[[package]]
+name = "clear_on_drop"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "38508a63f4979f0048febc9966fadbd48e5dab31fd0ec6a3f151bbf4a74f7423"
+dependencies = [
+ "cc",
 ]
 
 [[package]]
@@ -350,7 +380,10 @@ dependencies = [
  "curve25519-dalek-derive",
  "digest",
  "fiat-crypto",
+ "group",
+ "rand_core",
  "rustc_version",
+ "serde",
  "subtle",
  "zeroize",
 ]
@@ -869,6 +902,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
+name = "merlin"
+version = "3.0.0"
+source = "git+https://github.com/aptos-labs/merlin.git#3454ccc85e37355c729ba40e6dac6e867ddf59f5"
+dependencies = [
+ "byteorder",
+ "keccak",
+ "rand_core",
+ "zeroize",
+]
+
+[[package]]
 name = "num-bigint"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1288,8 +1332,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "23.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9336adeabcd6f636a4e0889c8baf494658ef5a3c4e7e227569acd2ce9091e85"
+source = "git+https://github.com/jayz22/rs-soroban-env?rev=d93b55f49c8245214ea8df7e85db2ba4137c5e72#d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1300,8 +1343,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "23.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00067f52e8bbf1abf0de03fe3e2fbb06910893cfbe9a7d9093d6425658833ff3"
+source = "git+https://github.com/jayz22/rs-soroban-env?rev=d93b55f49c8245214ea8df7e85db2ba4137c5e72#d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1319,8 +1361,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "23.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ccd1e40963517b10963a8e404348d3fe6caf9c278ac47a6effd48771297374d6"
+source = "git+https://github.com/jayz22/rs-soroban-env?rev=d93b55f49c8245214ea8df7e85db2ba4137c5e72#d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1329,13 +1370,13 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "23.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9766c5ad78e9d8ae10afbc076301f7d610c16407a1ebb230766dbe007a48725"
+source = "git+https://github.com/jayz22/rs-soroban-env?rev=d93b55f49c8245214ea8df7e85db2ba4137c5e72#d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
  "ark-ff",
  "ark-serialize",
+ "bulletproofs",
  "curve25519-dalek",
  "ecdsa",
  "ed25519-dalek",
@@ -1345,6 +1386,7 @@ dependencies = [
  "hex-literal",
  "hmac",
  "k256",
+ "merlin",
  "num-derive",
  "num-integer",
  "num-traits",
@@ -1365,8 +1407,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "23.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0e6a1c5844257ce96f5f54ef976035d5bd0ee6edefaf9f5e0bcb8ea4b34228c"
+source = "git+https://github.com/jayz22/rs-soroban-env?rev=d93b55f49c8245214ea8df7e85db2ba4137c5e72#d93b55f49c8245214ea8df7e85db2ba4137c5e72"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1482,8 +1523,7 @@ dependencies = [
 [[package]]
 name = "soroban-wasmi"
 version = "0.31.1-soroban.20.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "710403de32d0e0c35375518cb995d4fc056d0d48966f2e56ea471b8cb8fc9719"
+source = "git+https://github.com/stellar/wasmi?rev=0ed3f3dee30dc41ebe21972399e0a73a41944aa0#0ed3f3dee30dc41ebe21972399e0a73a41944aa0"
 dependencies = [
  "smallvec",
  "spin",
@@ -1916,15 +1956,13 @@ checksum = "c62a0a307cb4a311d3a07867860911ca130c3494e8c2719593806c08bc5d0484"
 
 [[package]]
 name = "wasmi_arena"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "104a7f73be44570cac297b3035d76b169d6599637631cf37a1703326a0727073"
+version = "0.4.0"
+source = "git+https://github.com/stellar/wasmi?rev=0ed3f3dee30dc41ebe21972399e0a73a41944aa0#0ed3f3dee30dc41ebe21972399e0a73a41944aa0"
 
 [[package]]
 name = "wasmi_core"
 version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcf1a7db34bff95b85c261002720c00c3a6168256dcb93041d3fa2054d19856a"
+source = "git+https://github.com/stellar/wasmi?rev=0ed3f3dee30dc41ebe21972399e0a73a41944aa0#0ed3f3dee30dc41ebe21972399e0a73a41944aa0"
 dependencies = [
  "downcast-rs",
  "libm",
