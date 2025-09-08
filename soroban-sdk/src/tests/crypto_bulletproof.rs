@@ -7,7 +7,10 @@ fn test_bulletproof_verify_basic_error_cases() {
     // Test with invalid proof bytes (too short)
     let invalid_proof = Bytes::from_array(&env, &[0u8; 10]); // Too short
     let dst = Bytes::from_slice(&env, b"test");
-    let dummy_commitment: BytesN<32> = bytesn!(&env, 0x0101010101010101010101010101010101010101010101010101010101010101);
+    let dummy_commitment: BytesN<32> = bytesn!(
+        &env,
+        0x0101010101010101010101010101010101010101010101010101010101010101
+    );
     let commitments: Vec<BytesN<32>> = vec![&env, dummy_commitment];
 
     // This should panic because the proof is invalid
@@ -19,8 +22,11 @@ fn test_bulletproof_verify_basic_error_cases() {
             &commitments,
         );
     }));
-    
-    assert!(result.is_err(), "Expected bulletproof verification to fail with invalid proof");
+
+    assert!(
+        result.is_err(),
+        "Expected bulletproof verification to fail with invalid proof"
+    );
 }
 
 #[test]
@@ -40,8 +46,11 @@ fn test_bulletproof_verify_empty_commitments() {
             &empty_commitments,
         );
     }));
-    
-    assert!(result.is_err(), "Expected bulletproof verification to fail with empty commitments");
+
+    assert!(
+        result.is_err(),
+        "Expected bulletproof verification to fail with empty commitments"
+    );
 }
 
 #[test]
@@ -51,7 +60,10 @@ fn test_bulletproof_verify_valid_input() {
     // Use proper-sized proof and commitment for the test
     let dummy_proof = Bytes::from_array(&env, &[0u8; 64]);
     let dst = Bytes::from_slice(&env, b"test");
-    let valid_commitment: BytesN<32> = bytesn!(&env, 0x0202020202020202020202020202020202020202020202020202020202020202);
+    let valid_commitment: BytesN<32> = bytesn!(
+        &env,
+        0x0202020202020202020202020202020202020202020202020202020202020202
+    );
     let commitments: Vec<BytesN<32>> = vec![&env, valid_commitment];
 
     // This should panic because the proof is invalid (dummy data)
@@ -63,6 +75,9 @@ fn test_bulletproof_verify_valid_input() {
             &commitments,
         );
     }));
-    
-    assert!(result.is_err(), "Expected bulletproof verification to fail with invalid proof data");
+
+    assert!(
+        result.is_err(),
+        "Expected bulletproof verification to fail with invalid proof data"
+    );
 }
