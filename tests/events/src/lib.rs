@@ -25,6 +25,17 @@ impl Contract {
         }
         .publish(&env);
     }
+
+    pub fn failed_transfer(env: Env, from: Address, to: Address, amount: i128) {
+        Transfer {
+            from: from.clone(),
+            to: to.clone(),
+            amount,
+            to_muxed_id: None,
+        }
+        .publish(&env);
+        panic!("fail");
+    }
 }
 
 #[cfg(test)]
@@ -109,5 +120,16 @@ mod test {
                 ),
             ],
         );
+    }
+
+    #[test]
+    fn test_no_events_recorded_for_failed_call() {
+        let env = Env::default();
+        let contract_id = env.register(Contract, ());
+        let client = ContractClient::new(&env, &contract_id);
+        let from = Address::generate(&env);
+        let to = Address::generate(&env);
+        let _ = client.try_failed_transfer(&from, &to, &1);
+        assert_eq!(env.events().all(), vec![&env]);
     }
 }
