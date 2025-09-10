@@ -14,26 +14,17 @@ Install rust stable:
 ```
 rustup install stable
 rustup +stable target add wasm32v1-none
-rustup +stable component add rust-src
 ```
 
 Install rust nightly:
 ```
 rustup install nightly
 rustup +nightly target add wasm32v1-none
-rustup +nightly component add rust-src
 ```
 
 Install cargo tools:
 ```
 cargo install --locked cargo-hack
-cargo install --locked cargo-nextest
-cargo install --locked cargo-watch
-```
-
-Install binaryen (for `wasm-opt`):
-```
-brew install binaryen
 ```
 
 ## Command Cheatsheet

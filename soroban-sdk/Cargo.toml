@@ -56,6 +56,7 @@ proptest = "1.2.0"
 proptest-arbitrary-interop = "0.1.0"
 libfuzzer-sys = "0.4.7"
 expect-test = "1.4.1"
+sha2 = "0.10.7"
 
 [features]
 alloc = []

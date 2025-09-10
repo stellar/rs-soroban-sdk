@@ -13,7 +13,7 @@ use core::{
 use super::{
     env::internal::{BytesObject, Env as _, EnvBase as _},
     env::IntoVal,
-    ConversionError, Env, TryFromVal, TryIntoVal, Val,
+    ConversionError, Env, String, TryFromVal, TryIntoVal, Val,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -359,6 +359,20 @@ impl From<&Bytes> for Bytes {
     #[inline(always)]
     fn from(v: &Bytes) -> Self {
         v.clone()
+    }
+}
+
+impl From<&Bytes> for String {
+    fn from(v: &Bytes) -> Self {
+        Env::bytes_to_string(&v.env, v.obj.clone())
+            .unwrap_infallible()
+            .into_val(&v.env)
+    }
+}
+
+impl From<Bytes> for String {
+    fn from(v: Bytes) -> Self {
+        (&v).into()
     }
 }
 
@@ -777,6 +791,14 @@ impl Bytes {
         let mut vec = alloc::vec::from_elem(0u8, len);
         self.copy_into_slice(&mut vec);
         vec
+    }
+
+    /// Converts the contents of the Bytes into a respective String object.
+    ///
+    /// The conversion doesn't try to interpret the bytes as any particular
+    /// encoding, as the SDK `String` type doesn't assume any encoding either.
+    pub fn to_string(&self) -> String {
+        self.into()
     }
 }
 
@@ -1781,5 +1803,18 @@ mod test {
         let env = Env::default();
         let bin = bytes![&env, [0, 1, 2, 3, 4]];
         let _ = bin.slice(..=bin.len());
+    }
+
+    #[test]
+    fn test_bytes_to_string() {
+        let env = Env::default();
+        let b: Bytes = bytes![&env, [0, 1, 2, 3, 4]];
+        let s: String = b.clone().into();
+        assert_eq!(s.len(), 5);
+        let mut slice = [0u8; 5];
+        s.copy_into_slice(&mut slice);
+        assert_eq!(slice, [0, 1, 2, 3, 4]);
+        let s2 = b.to_string();
+        assert_eq!(s, s2);
     }
 }

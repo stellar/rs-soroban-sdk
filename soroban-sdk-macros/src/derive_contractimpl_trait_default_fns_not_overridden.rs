@@ -5,8 +5,8 @@ use crate::{
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::{quote, ToTokens};
-use syn::{LitStr, Path, Type};
+use quote::quote;
+use syn::{parse_quote, LitStr, Path, Type};
 
 #[derive(Debug, FromMeta)]
 struct Args {
@@ -14,6 +14,7 @@ struct Args {
     crate_path: Path,
     trait_ident: Ident,
     trait_default_fns: Vec<LitStr>,
+    internal_fns: Vec<LitStr>,
     impl_ident: Ident,
     impl_fns: Vec<LitStr>,
     client_name: String,
@@ -46,20 +47,29 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
 
     let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns);
     let impl_fns = syn_ext::strs_to_signatures(&args.impl_fns);
-    let impl_ty: Type = syn::parse_quote!( #ident );
+    let internal_fns = syn_ext::strs_to_signatures(&args.internal_fns);
+    let impl_ty: Type = parse_quote!( #ident );
 
     // Filter the list of default fns down to only default fns that have not been redefined /
     // overridden in the input fns.
     let fns = trait_default_fns
         .into_iter()
-        .filter(|f| !impl_fns.iter().any(|o| f.ident == o.ident))
+        .filter(|f| {
+            !impl_fns
+                .iter()
+                .chain(internal_fns.iter())
+                .any(|o| f.ident == o.ident)
+        })
         .collect::<Vec<_>>();
 
     let mut output = quote! {};
     for f in &fns {
+        let fn_ident = &f.ident;
+        let call = quote! { <super::#impl_ty>::#fn_ident };
         output.extend(derive_pub_fn(
             &args.crate_path,
-            ident.to_token_stream(),
+            &impl_ty,
+            &call,
             &f.ident,
             &[],
             &f.inputs,

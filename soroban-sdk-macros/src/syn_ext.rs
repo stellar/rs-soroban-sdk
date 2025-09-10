@@ -5,8 +5,8 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
-    PathSegment, ReturnType, Signature, Token, TypePath,
+    AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, PatIdent, Path,
+    PathArguments, PathSegment, ReturnType, Signature, Token, TypePath,
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
@@ -57,19 +57,46 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     ))
 }
 
-/// Returns a clone of the type from the FnArg.
+/// Unwraps a reference, returning the type within the reference.
+///
+/// If the type is not a reference, returns the type as-is.
+pub fn unwrap_ref(t: Type) -> Type {
+    match t {
+        Type::Reference(TypeReference { elem, .. }) => *elem,
+        _ => t,
+    }
+}
+
+/// Modifies a Pat removing any 'mut' on an Ident.
+pub fn remove_pat_ident_mut(i: Pat) -> Pat {
+    match i {
+        Pat::Ident(PatIdent {
+            attrs,
+            by_ref,
+            mutability: Some(_),
+            ident,
+            subpat,
+        }) => Pat::Ident(PatIdent {
+            attrs,
+            by_ref,
+            mutability: None,
+            ident,
+            subpat,
+        }),
+        _ => i,
+    }
+}
+
+/// Returns a clone of the type from the FnArg, converted into an immutable reference to the type
+/// with the given lifetime.
 pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type, Error> {
     if let FnArg::Typed(pat_type) = arg {
-        if !matches!(*pat_type.ty, Type::Reference(_)) {
-            Ok(Type::Reference(TypeReference {
-                and_token: And::default(),
-                lifetime: lifetime.cloned(),
-                mutability: None,
-                elem: pat_type.ty.clone(),
-            }))
-        } else {
-            Ok((*pat_type.ty).clone())
-        }
+        Ok(Type::Reference(TypeReference {
+            and_token: And::default(),
+            lifetime: lifetime.cloned(),
+            mutability: None,
+            elem: Box::new(unwrap_ref(*pat_type.ty.clone())),
+        }))
     } else {
         Err(Error::new(
             arg.span(),
@@ -78,23 +105,33 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
     }
 }
 
-/// Returns a clone of FnArg with the type as a reference if the arg is a typed
-/// arg and its type is not already a reference.
+/// Returns a clone of FnArg, converted into an immutable reference with the given lifetime.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
-        if !matches!(*pat_type.ty, Type::Reference(_)) {
-            return FnArg::Typed(PatType {
-                attrs: pat_type.attrs.clone(),
-                pat: pat_type.pat.clone(),
-                colon_token: pat_type.colon_token,
-                ty: Box::new(Type::Reference(TypeReference {
-                    and_token: And::default(),
-                    lifetime: lifetime.cloned(),
-                    mutability: None,
-                    elem: pat_type.ty.clone(),
-                })),
-            });
-        }
+        return FnArg::Typed(PatType {
+            attrs: pat_type.attrs.clone(),
+            pat: Box::new(remove_pat_ident_mut(*pat_type.pat.clone())),
+            colon_token: pat_type.colon_token,
+            ty: Box::new(Type::Reference(TypeReference {
+                and_token: And::default(),
+                lifetime: lifetime.cloned(),
+                mutability: None,
+                elem: Box::new(unwrap_ref(*pat_type.ty.clone())),
+            })),
+        });
+    }
+    arg.clone()
+}
+
+pub fn fn_arg_make_into(arg: &FnArg) -> FnArg {
+    if let FnArg::Typed(pat_type) = arg {
+        let ty = &pat_type.ty;
+        return FnArg::Typed(PatType {
+            attrs: pat_type.attrs.clone(),
+            pat: pat_type.pat.clone(),
+            colon_token: pat_type.colon_token,
+            ty: Box::new(syn::parse_quote! { impl Into<#ty> }),
+        });
     }
     arg.clone()
 }
@@ -282,6 +319,14 @@ fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
     }
 }
 
+pub fn ty_to_safe_ident_str(ty: &Type) -> String {
+    quote!(#ty).to_string().replace(' ', "").replace(':', "_")
+}
+
+pub fn is_trait_item_type(item: &TraitItem) -> bool {
+    matches!(item, TraitItem::Type(syn::TraitItemType { ident, .. }) if ident == "Impl")
+}
+
 /// Converts a path for use inside a declarative macro_rules.
 ///
 /// If the first segment of the path is `crate`, converts it to `$crate`, otherwise returns the
@@ -305,6 +350,26 @@ pub fn path_in_macro_rules(p: &Path) -> TokenStream {
     } else {
         quote! { #leading_colon #first #(::#segments)* }
     }
+}
+
+pub trait IsInternal {
+    fn is_internal(&self) -> bool;
+}
+
+impl IsInternal for TraitItemFn {
+    fn is_internal(&self) -> bool {
+        has_attr(&self.attrs, "internal")
+    }
+}
+
+impl<'a> IsInternal for Fn<'a> {
+    fn is_internal(&self) -> bool {
+        has_attr(&self.attrs, "internal")
+    }
+}
+
+pub(crate) fn has_attr(attrs: &[syn::Attribute], ident_str: &str) -> bool {
+    attrs.iter().any(|attr| attr.path().is_ident(ident_str))
 }
 
 #[cfg(test)]

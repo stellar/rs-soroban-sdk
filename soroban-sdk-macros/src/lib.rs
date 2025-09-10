@@ -55,6 +55,8 @@ use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
+use crate::syn_ext::IsInternal;
+
 pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     depth: 500,
     len: 0x1000000,
@@ -103,6 +105,7 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
 
     let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = methods
         .iter()
+        .filter(|m| !m.is_internal())
         .map(|m| derive_fn_spec(&args.name, m.ident, m.attrs, m.inputs, m.output, export))
         .collect();
 
@@ -252,9 +255,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         .iter()
         .map(|m| {
             let ident = &m.sig.ident;
+            let call = quote! { <super::#ty>::#ident };
             derive_pub_fn(
                 crate_path,
-                ty.to_token_stream(),
+                &ty,
+                &call,
                 ident,
                 &m.attrs,
                 &m.sig.inputs,
