@@ -2,7 +2,13 @@
 //!
 //! 1. [`contractevent` replaces `Events::publish`][v23_contractevent]
 //!   
-//! 2. [`MuxedAddress` replaces `Address` as the `to` of the `TokenInterface::transfer`][v23_token_transfer]
+//! 2. [`MuxedAddress` replaces `Address` as the `to` of the `TokenInterface::transfer`].
+//!    This change concerns `soroban-token-sdk` and is documented in detail in
+//!    `soroban-token-sdk` crate migration guide.
+//!
+//! 3. [Accessing archived persistent entries in tests no longer results in a panic][v23_archived_testing],
+//!    automatic restoration is emulated instead. Note, that instance storage is a
+//!    persistent entry as well.
 //!
 //! # Migrating from v21 to v22
 //!
@@ -241,5 +247,5 @@
 //! [`Hash<32>`]: crate::crypto::Hash
 //! [`Hash<32>::to_bytes`]: crate::crypto::Hash::to_bytes
 
+pub mod v23_archived_testing;
 pub mod v23_contractevent;
-pub mod v23_token_transfer;

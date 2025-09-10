@@ -3,7 +3,9 @@ extern crate std;
 use core::i64;
 use std::rc::Rc;
 
-use crate::events::{Approve, Burn, Clawback, Mint, Transfer, TransferLegacy};
+use crate::events::{
+    Approve, Burn, Clawback, Mint, MintWithAmountOnly, Transfer, TransferWithAmountOnly,
+};
 use soroban_sdk::{
     contract, symbol_short,
     testutils::{Address as _, Events as _, MuxedAddress as _},
@@ -66,7 +68,7 @@ fn test_approve() {
 }
 
 #[test]
-fn test_transfer_legacy() {
+fn test_transfer_with_amount_only() {
     let env = Env::default();
     env.mock_all_auths();
 
@@ -74,7 +76,7 @@ fn test_transfer_legacy() {
     let to = Address::generate(&env);
     let amount = 123;
 
-    let event = TransferLegacy {
+    let event = TransferWithAmountOnly {
         from: from.clone(),
         to: to.clone(),
         amount,
@@ -154,9 +156,9 @@ fn test_transfer_without_id() {
 
     // No comparison is made with the Stellar Asset Contract for publishing Transfer with a
     // MuxedAddress that does not contain an ID, because the Stellar Asset Contract for legacy
-    // reasons, to minimise the changes to its behavior over time, still publishes TransferLegacy
-    // in this case. See [`test_transfer_with_id`] for a test that exercises Transfer in the case
-    // that the Stellar Asset contract does publish that event.
+    // reasons, to minimise the changes to its behavior over time, still publishes
+    // TransferWithAmountOnly in this case. See [`test_transfer_with_id`] for a test that exercises
+    // Transfer in the case that the Stellar Asset contract does publish that event.
 }
 
 #[test]
@@ -296,14 +298,14 @@ fn test_burn() {
 }
 
 #[test]
-fn test_mint() {
+fn test_mint_with_amount_only() {
     let env = Env::default();
     env.mock_all_auths();
 
     let to = Address::generate(&env);
     let amount = 123;
 
-    let event = Mint {
+    let event = MintWithAmountOnly {
         to: to.clone(),
         amount,
     };
@@ -338,6 +340,78 @@ fn test_mint() {
         vec![
             &env,
             (asset.address(), topics.into_val(&env), data.into_val(&env)),
+        ]
+    );
+}
+
+#[test]
+fn test_mint_without_id() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let to: MuxedAddress = MuxedAddress::generate(&env).address().into();
+    let amount = 123;
+
+    let event = Mint {
+        to: to.address(),
+        to_muxed_id: to.id(),
+        amount,
+    };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("mint"), to.address());
+    let data = Map::<Symbol, Val>::from_array(
+        &env,
+        [
+            (Symbol::new(&env, "to_muxed_id"), Val::VOID.to_val()),
+            (Symbol::new(&env, "amount"), amount.into_val(&env)),
+        ],
+    );
+
+    let id = env.register(Contract, ());
+    env.as_contract(&id, || event.publish(&env));
+    let token_events = env.events().all();
+    assert_eq!(
+        token_events,
+        vec![
+            &env,
+            (id.clone(), topics.into_val(&env), data.into_val(&env))
+        ]
+    );
+}
+
+#[test]
+fn test_mint_with_id() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let to = MuxedAddress::generate(&env);
+    let amount = 123;
+
+    let event = Mint {
+        to: to.address(),
+        to_muxed_id: to.id(),
+        amount,
+    };
+
+    // Verify the event publishes the expected topics and data.
+    let topics = (symbol_short!("mint"), to.address());
+    let data = Map::<Symbol, Val>::from_array(
+        &env,
+        [
+            (Symbol::new(&env, "to_muxed_id"), to.id().into_val(&env)),
+            (Symbol::new(&env, "amount"), amount.into_val(&env)),
+        ],
+    );
+
+    let id = env.register(Contract, ());
+    env.as_contract(&id, || event.publish(&env));
+    let token_events = env.events().all();
+    assert_eq!(
+        token_events,
+        vec![
+            &env,
+            (id.clone(), topics.into_val(&env), data.into_val(&env))
         ]
     );
 }

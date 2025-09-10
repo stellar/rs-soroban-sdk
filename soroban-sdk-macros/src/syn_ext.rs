@@ -319,6 +319,10 @@ fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
     }
 }
 
+pub fn ty_to_safe_ident_str(ty: &Type) -> String {
+    quote!(#ty).to_string().replace(' ', "").replace(':', "_")
+}
+
 pub fn is_trait_item_type(item: &TraitItem) -> bool {
     matches!(item, TraitItem::Type(syn::TraitItemType { ident, .. }) if ident == "Impl")
 }

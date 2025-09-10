@@ -5,7 +5,7 @@ use crate::{
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::{quote, ToTokens};
+use quote::quote;
 use syn::{parse_quote, LitStr, Path, Type};
 
 #[derive(Debug, FromMeta)]
@@ -64,9 +64,12 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
 
     let mut output = quote! {};
     for f in &fns {
+        let fn_ident = &f.ident;
+        let call = quote! { <super::#impl_ty>::#fn_ident };
         output.extend(derive_pub_fn(
             &args.crate_path,
-            ident.to_token_stream(),
+            &impl_ty,
+            &call,
             &f.ident,
             &[],
             &f.inputs,
