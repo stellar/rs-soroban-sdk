@@ -44,7 +44,7 @@ impl Debug for String {
         #[cfg(target_family = "wasm")]
         write!(f, "String(..)")?;
         #[cfg(not(target_family = "wasm"))]
-        write!(f, "String({})", self.to_string())?;
+        write!(f, "String({self})")?;
         Ok(())
     }
 }
@@ -201,14 +201,16 @@ impl TryFromVal<Env, &str> for String {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl ToString for String {
-    fn to_string(&self) -> std::string::String {
+impl core::fmt::Display for String {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
         let sc_val: ScVal = self.try_into().unwrap();
         if let ScVal::String(ScString(s)) = sc_val {
-            s.to_utf8_string().unwrap()
+            let utf8_s = s.to_utf8_string().unwrap();
+            write!(f, "{utf8_s}")?;
         } else {
             panic!("value is not a string");
         }
+        Ok(())
     }
 }
 
@@ -384,5 +386,32 @@ mod test {
         assert_eq!(&slice, b"abcdef");
         let b2 = s.to_bytes();
         assert_eq!(b, b2);
+    }
+
+    #[test]
+    fn test_string_accepts_any_bytes_even_invalid_utf8() {
+        let env = Env::default();
+        let input = b"a\xc3\x28d"; // \xc3 is invalid utf8
+        let s = String::from_bytes(&env, &input[..]);
+        let b = s.to_bytes().to_buffer::<4>();
+        assert_eq!(b.as_slice(), input);
+    }
+
+    #[test]
+    fn test_string_display_to_string() {
+        let env = Env::default();
+        let input = "abcdef";
+        let s = String::from_str(&env, input);
+        let rt = s.to_string();
+        assert_eq!(input, &rt);
+    }
+
+    #[test]
+    #[should_panic = "Utf8Error"]
+    fn test_string_display_to_string_invalid_utf8() {
+        let env = Env::default();
+        let input = b"a\xc3\x28d"; // \xc3 is invalid utf8
+        let s = String::from_bytes(&env, &input[..]);
+        let _ = s.to_string();
     }
 }

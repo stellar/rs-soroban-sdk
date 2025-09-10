@@ -1,4 +1,6 @@
 #![no_std]
+#![cfg_attr(feature = "docs", feature(doc_cfg))]
+pub mod _migrating;
 
 use crate::event::Events;
 use crate::metadata::Metadata;

@@ -11,7 +11,7 @@ pub struct Approve {
 }
 
 #[contractevent(topics = ["transfer"], data_format = "single-value")]
-pub struct TransferLegacy {
+pub struct TransferWithAmountOnly {
     #[topic]
     pub from: Address,
     #[topic]
@@ -37,9 +37,17 @@ pub struct Burn {
 }
 
 #[contractevent(topics = ["mint"], data_format = "single-value")]
+pub struct MintWithAmountOnly {
+    #[topic]
+    pub to: Address,
+    pub amount: i128,
+}
+
+#[contractevent(topics = ["mint"], data_format = "map")]
 pub struct Mint {
     #[topic]
     pub to: Address,
+    pub to_muxed_id: Option<u64>,
     pub amount: i128,
 }
 
