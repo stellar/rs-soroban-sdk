@@ -27,7 +27,7 @@ jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - run: rustup update
     - run: cargo fmt --all --check
 
@@ -41,21 +41,21 @@ jobs:
     # Prevent sudden announcement of a new advisory from failing ci:
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: EmbarkStudios/cargo-deny-action@b01e7a8cfb1f496c52d77361e84c1840d8246393
+    - uses: actions/checkout@v5
+    - uses: EmbarkStudios/cargo-deny-action@f2ba7abc2abebaf185c833c3961145a3c275caad
       with:
         command: check ${{ matrix.checks }}
 
   check-git-rev-deps:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: stellar/actions/rust-check-git-rev-deps@main
 
   semver-checks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - run: rustup update
     - uses: stellar/binaries@v40
       with:
@@ -90,7 +90,7 @@ jobs:
           target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.sys.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: stellar/actions/rust-cache@main
     - name: Use the minimum supported Rust version
       if: matrix.rust == 'msrv'
@@ -107,7 +107,7 @@ jobs:
     - run: cargo version
     - run: rustup target add ${{ matrix.sys.target }}
     - run: rustup target add wasm32v1-none
-    - uses: stellar/binaries@v37
+    - uses: stellar/binaries@v40
       with:
         name: cargo-hack
         version: 0.5.28
@@ -138,10 +138,10 @@ jobs:
   build-fuzz:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
-    - uses: stellar/binaries@v37
+    - uses: stellar/binaries@v40
       with:
         name: cargo-fuzz
         version: 0.12.0
@@ -152,7 +152,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
     - run: make doc
@@ -162,7 +162,7 @@ jobs:
   readme:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
     - run: make readme
@@ -171,7 +171,7 @@ jobs:
   migration-docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - uses: stellar/actions/rust-cache@main
     - run: rustup update
     - run: |
