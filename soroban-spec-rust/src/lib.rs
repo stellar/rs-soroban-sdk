@@ -1,3 +1,4 @@
+pub mod gen;
 pub mod r#trait;
 pub mod types;
 
