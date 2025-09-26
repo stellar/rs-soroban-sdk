@@ -18,7 +18,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, build-fuzz, docs, readme, migration-docs, expand]
+    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, build-fuzz, docs, readme, migration-docs, expand-tests]
     runs-on: ubuntu-latest
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
