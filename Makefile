@@ -36,6 +36,21 @@ readme:
 		| jq -r '.index[.root|tostring].docs' \
 		> README.md
 
+# Expands the generated code within each test vector contract that lives in the
+# tests/ directory. Serves to surface visible changes in generated code that
+# may not be obvious when making changes to sdk macros.
+expand-tests:
+	rm -fr tests-expanded
+	mkdir -p tests-expanded
+	cargo metadata --format-version 1 | jq -r '.packages[] | select(.manifest_path | contains("/tests/")) | "\(.name) \(.manifest_path | split("/") | .[:-1] | join("/")) \(any(.targets[]; any(.kind[]; . == "cdylib")))"' | while read package dir is_cdylib; do \
+		echo "Expanding $$package for host target including tests"; \
+		cargo expand --package $$package --tests | rustfmt > tests-expanded/$${package}_tests.rs; \
+		if [ "$$is_cdylib" = "true" ]; then \
+			echo "Expanding $$package for wasm32v1-none target without tests"; \
+			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
+		fi; \
+	done
+
 fmt:
 	cargo fmt --all
 
