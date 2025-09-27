@@ -282,9 +282,10 @@ extern "C" fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e
 #[used]
 #[allow(non_upper_case_globals, non_snake_case)]
 #[doc(hidden)]
-#[link_section = "__DATA,__mod_init_func"]
+#[link_section = ".init_array"]
 static __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
     #[allow(non_snake_case)]
+    #[link_section = ".text.startup"]
     unsafe extern "C" fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor___rust_ctor___ctor() -> usize {
         __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
         0
@@ -437,9 +438,10 @@ extern "C" fn __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338
 #[used]
 #[allow(non_upper_case_globals, non_snake_case)]
 #[doc(hidden)]
-#[link_section = "__DATA,__mod_init_func"]
+#[link_section = ".init_array"]
 static __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
     #[allow(non_snake_case)]
+    #[link_section = ".text.startup"]
     unsafe extern "C" fn __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor___rust_ctor___ctor() -> usize {
         __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor();
         0
@@ -597,9 +599,10 @@ extern "C" fn __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b7
 #[used]
 #[allow(non_upper_case_globals, non_snake_case)]
 #[doc(hidden)]
-#[link_section = "__DATA,__mod_init_func"]
+#[link_section = ".init_array"]
 static __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b77052a7ae50fa889_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
     #[allow(non_snake_case)]
+    #[link_section = ".text.startup"]
     unsafe extern "C" fn __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b77052a7ae50fa889_ctor___rust_ctor___ctor() -> usize {
         __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b77052a7ae50fa889_ctor();
         0

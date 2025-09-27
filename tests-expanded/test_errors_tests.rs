@@ -940,9 +940,10 @@ extern "C" fn __Contract__dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dc
 #[used]
 #[allow(non_upper_case_globals, non_snake_case)]
 #[doc(hidden)]
-#[link_section = "__DATA,__mod_init_func"]
+#[link_section = ".init_array"]
 static __Contract__dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
     #[allow(non_snake_case)]
+    #[link_section = ".text.startup"]
     unsafe extern "C" fn __Contract__dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_ctor___rust_ctor___ctor() -> usize {
         __Contract__dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_ctor();
         0

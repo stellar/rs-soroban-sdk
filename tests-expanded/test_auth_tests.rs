@@ -293,9 +293,10 @@ extern "C" fn __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251e
 #[used]
 #[allow(non_upper_case_globals, non_snake_case)]
 #[doc(hidden)]
-#[link_section = "__DATA,__mod_init_func"]
+#[link_section = ".init_array"]
 static __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
     #[allow(non_snake_case)]
+    #[link_section = ".text.startup"]
     unsafe extern "C" fn __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor___rust_ctor___ctor() -> usize {
         __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor();
         0
@@ -902,9 +903,10 @@ mod test_a {
         #[used]
         #[allow(non_upper_case_globals, non_snake_case)]
         #[doc(hidden)]
-        #[link_section = "__DATA,__mod_init_func"]
+        #[link_section = ".init_array"]
         static __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
             #[allow(non_snake_case)]
+            #[link_section = ".text.startup"]
             unsafe extern "C" fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor() -> usize {
                 __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                 0
@@ -1342,9 +1344,10 @@ mod test_a {
         #[used]
         #[allow(non_upper_case_globals, non_snake_case)]
         #[doc(hidden)]
-        #[link_section = "__DATA,__mod_init_func"]
+        #[link_section = ".init_array"]
         static __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
             #[allow(non_snake_case)]
+            #[link_section = ".text.startup"]
             unsafe extern "C" fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor() -> usize {
                 __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                 0
@@ -1663,9 +1666,10 @@ extern "C" fn __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514f
 #[used]
 #[allow(non_upper_case_globals, non_snake_case)]
 #[doc(hidden)]
-#[link_section = "__DATA,__mod_init_func"]
+#[link_section = ".init_array"]
 static __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
     #[allow(non_snake_case)]
+    #[link_section = ".text.startup"]
     unsafe extern "C" fn __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor___rust_ctor___ctor() -> usize {
         __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor();
         0
@@ -2367,9 +2371,10 @@ mod test_b {
         #[used]
         #[allow(non_upper_case_globals, non_snake_case)]
         #[doc(hidden)]
-        #[link_section = "__DATA,__mod_init_func"]
+        #[link_section = ".init_array"]
         static __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
             #[allow(non_snake_case)]
+            #[link_section = ".text.startup"]
             unsafe extern "C" fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor() -> usize {
                 __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                 0
@@ -2807,9 +2812,10 @@ mod test_b {
         #[used]
         #[allow(non_upper_case_globals, non_snake_case)]
         #[doc(hidden)]
-        #[link_section = "__DATA,__mod_init_func"]
+        #[link_section = ".init_array"]
         static __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
             #[allow(non_snake_case)]
+            #[link_section = ".text.startup"]
             unsafe extern "C" fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor() -> usize {
                 __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                 0
