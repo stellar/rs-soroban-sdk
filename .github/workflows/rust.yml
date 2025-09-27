@@ -18,7 +18,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, build-fuzz, docs, readme, migration-docs]
+    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, build-fuzz, docs, readme, migration-docs, expand-tests]
     runs-on: ubuntu-latest
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -57,10 +57,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update
-    - uses: stellar/binaries@v40
+    - uses: stellar/binaries@v41
       with:
         name: cargo-semver-checks
-        version: 0.42.0
+        version: 0.44.0
     - run: >
         cargo semver-checks
         --exclude soroban-token-spec
@@ -178,6 +178,25 @@ jobs:
         version="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | split("\\.";"")[0] | "v"+.')"
         git grep "${version}" -- soroban-sdk/src/_migrating.rs \
           || (echo "The _migrating ${version} section is missing." && exit 1)
+
+  expand-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: stellar/actions/rust-cache@main
+    - run: rustup update
+    - run: rustup target add wasm32v1-none
+    - uses: stellar/binaries@v37
+      with:
+        name: cargo-hack
+        version: 0.5.28
+    - uses: stellar/binaries@v44
+      with:
+        name: cargo-expand
+        version: 1.0.116
+    - run: make expand-tests
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
 
   publish-dry-run:
     if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
