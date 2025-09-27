@@ -132,6 +132,9 @@ impl testutils::Events for Events {
             .0
             .into_iter()
             .for_each(|e| {
+                if e.failed_call {
+                    return;
+                }
                 if let xdr::ContractEvent {
                     type_: xdr::ContractEventType::Contract,
                     contract_id: Some(contract_id),
