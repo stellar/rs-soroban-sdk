@@ -39,7 +39,7 @@ readme:
 # Expands the generated code within each test vector contract that lives in the
 # tests/ directory. Serves to surface visible changes in generated code that
 # may not be obvious when making changes to sdk macros.
-expand-tests:
+expand-tests: build
 	rm -fr tests-expanded
 	mkdir -p tests-expanded
 	cargo metadata --format-version 1 | jq -r '.packages[] | select(.manifest_path | contains("/tests/")) | "\(.name) \(.manifest_path | split("/") | .[:-1] | join("/")) \(any(.targets[]; any(.kind[]; . == "cdylib")))"' | while read package dir is_cdylib; do \
