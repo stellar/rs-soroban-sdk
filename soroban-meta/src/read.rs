@@ -9,8 +9,8 @@ pub fn parse_raw(meta: &[u8]) -> Result<Vec<ScMetaEntry>, stellar_xdr::Error> {
     let entries = ScMetaEntry::read_xdr_iter(&mut Limited::new(
         cursor,
         Limits {
-            depth: 500,
-            len: 0x1000000,
+            depth: 5,
+            len: meta.len(),
         },
     ))
     .collect::<Result<Vec<_>, _>>()?;
