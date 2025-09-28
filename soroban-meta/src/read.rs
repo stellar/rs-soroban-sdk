@@ -5,15 +5,10 @@ use stellar_xdr::{Limited, Limits, ReadXdr, ScMetaEntry};
 use wasmparser::{BinaryReaderError, Parser, Payload};
 
 pub fn parse_raw(meta: &[u8]) -> Result<Vec<ScMetaEntry>, stellar_xdr::Error> {
-    let cursor = Cursor::new(meta);
-    let entries = ScMetaEntry::read_xdr_iter(&mut Limited::new(
-        cursor,
-        Limits {
-            depth: 5,
-            len: meta.len(),
-        },
-    ))
-    .collect::<Result<Vec<_>, _>>()?;
+    let limits = Limits::len(meta.len());
+    let reader = Cursor::new(meta);
+    let mut limited_reader = Limited::new(reader, limits);
+    let entries = ScMetaEntry::read_xdr_iter(&mut limited_reader).collect::<Result<Vec<_>, _>>()?;
     Ok(entries)
 }
 
