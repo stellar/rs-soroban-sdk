@@ -3,7 +3,7 @@ all: check test
 export RUSTFLAGS=-Dwarnings
 
 CARGO_DOC_ARGS?=--open
-NATIVE_ONLY_CRATES:=soroban-spec soroban-spec-rust soroban-ledger-snapshot
+NATIVE_ONLY_CRATES:=soroban-meta soroban-spec soroban-spec-rust soroban-ledger-snapshot
 NATIVE_PACKAGE_ARGS:=$(foreach i,$(NATIVE_ONLY_CRATES), --package $(i))
 WASM_EXCLUDE_ARGS:=$(foreach i,$(NATIVE_ONLY_CRATES), --exclude $(i))
 
