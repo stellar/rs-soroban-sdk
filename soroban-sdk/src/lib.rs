@@ -103,7 +103,10 @@ const _: () = {
     // Rustc version.
     contractmeta!(key = "rsver", val = env!("RUSTC_VERSION"),);
 
-    // Rust Soroban SDK version.
+    // Rust Soroban SDK version. Don't emit when the cfg is set, so that every commit in this repo
+    // does not cause the test vectors in this repo to have a new hash due to the revision being
+    // embedded.
+    #[cfg(not(soroban_sdk_internal_no_rssdkver_meta))]
     contractmeta!(
         key = "rssdkver",
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),

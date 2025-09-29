@@ -16,7 +16,8 @@ test: fmt build
 
 build: fmt
 	cargo hack build --release $(NATIVE_PACKAGE_ARGS)
-	cargo hack build --target wasm32v1-none --release --workspace $(WASM_EXCLUDE_ARGS)
+	RUSTFLAGS='--cfg soroban_sdk_internal_disable_rssdkver' \
+		cargo hack build --target wasm32v1-none --release --workspace $(WASM_EXCLUDE_ARGS)
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
