@@ -108,7 +108,7 @@ jobs:
         ref: v37
         name: cargo-hack
         version: 0.5.28
-    - run: cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.manifest_path | contains("tests/")) | .name' | tr '\n' ' '
+    - run: cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.manifest_path | contains("tests/")) | .name'
     - run: make build-libs
     - run: make build-test-wasms
     - name: Upload test wasms
