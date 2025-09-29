@@ -66,6 +66,35 @@ jobs:
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
 
+  build-test-wasms:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - name: Use the minimum supported Rust version
+      run: |
+        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
+        rustup override set $msrv
+        rustup component add clippy --toolchain $msrv
+    - name: Error on warnings and clippy checks
+      run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
+    - run: rustup update
+    - run: cargo version
+    - run: rustup target add wasm32v1-none
+    - uses: stellar/binaries@v37
+      with:
+        name: cargo-hack
+        version: 0.5.28
+    - name: Build wasms
+      run: make build-test-wasms
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
+    - name: Upload test wasms
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-wasms
+        path: target/wasm32v1-none/release/test_*.wasm
+
   build-and-test:
     strategy:
       fail-fast: false
@@ -107,35 +136,22 @@ jobs:
     - run: cargo version
     - run: rustup target add ${{ matrix.sys.target }}
     - run: rustup target add wasm32v1-none
+    - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
     - uses: stellar/binaries@v37
       with:
         name: cargo-hack
         version: 0.5.28
-    - if: startsWith(matrix.sys.target, 'x86_64')
-      name: Clear test snapshots for checking no diffs exists after test run
+    - name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
-    - name: Build for wasm
-      run: >
-        RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta'
-        cargo-hack hack build --target wasm32v1-none --profile release --workspace
-        --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot
-    - name: Wasm Size
-      run: |
-        cd target/wasm32v1-none/release/ && \
-          for i in *.wasm ; do \
-            ls -l "$i"; \
-          done
-    - if: "!matrix.sys.cdylib-cross-compile-workaround"
-      name: Build for native
-      run: cargo-hack hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
-    - if: "matrix.sys.cdylib-cross-compile-workaround"
-      name: Build for native
-      run: cargo-hack hack --feature-powerset --exclude-features docs rustc --workspace --exclude soroban-sdk-macros --exclude proc_macros --crate-type lib --target ${{ matrix.sys.target }}
-    - if: startsWith(matrix.sys.target, 'x86_64')
-      name: Run tests
-      run: cargo-hack hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
-    - if: startsWith(matrix.sys.target, 'x86_64')
-      name: Check no diffs exist
+    - run: make build-test-wasms
+    - run: make build-libs
+    - name: Restore MSRV built test wasms for tests
+      uses: actions/download-artifact@v3
+      with:
+        name: test-wasms
+        path: target/wasm32v1-none/release/
+    - run: make test
+    - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
   build-fuzz:
