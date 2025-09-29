@@ -115,7 +115,10 @@ jobs:
       name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
     - name: Build for wasm
-      run: cargo-hack hack build --target wasm32v1-none --profile release --workspace --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot
+      run: >
+        RUSTFLAGS='--cfg soroban_sdk_internal_disable_rssdkver'
+        cargo-hack hack build --target wasm32v1-none --profile release --workspace
+        --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot
     - name: Wasm Size
       run: |
         cd target/wasm32v1-none/release/ && \
