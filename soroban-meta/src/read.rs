@@ -21,17 +21,7 @@ pub enum FromWasmError {
 }
 
 pub fn raw_from_wasm(wasm: &[u8]) -> Result<Vec<u8>, FromWasmError> {
-    let mut total_len = 0;
-    for payload in Parser::new(0).parse_all(wasm) {
-        let payload = payload.map_err(FromWasmError::Read)?;
-        if let Payload::CustomSection(section) = payload {
-            if section.name() == "contractmetav0" {
-                total_len += section.data().len();
-            }
-        }
-    }
-
-    let mut meta = Vec::with_capacity(total_len);
+    let mut meta = Vec::new();
     for payload in Parser::new(0).parse_all(wasm) {
         let payload = payload.map_err(FromWasmError::Read)?;
         if let Payload::CustomSection(section) = payload {
