@@ -2,6 +2,8 @@ MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] 
 LIB_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name | startswith("test_") | not) | .name' | tr '\n' ' ')
 TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name | startswith("test_")) | .name' | tr '\n' ' ')
 
+TEST_CRATES_RUST_VERSION?="+$(MSRV)"
+
 all: check test
 
 export RUSTFLAGS=-Dwarnings
@@ -23,7 +25,7 @@ build-libs: fmt
 build-test-wasms: fmt
 	# Build the test wasms with MSRV with some meta disabled for binary stability for tests.
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo +$(MSRV) hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
+		cargo $(TEST_CRATES_RUST_VERSION) hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
