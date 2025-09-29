@@ -108,7 +108,7 @@ jobs:
         name: cargo-hack
         version: 0.5.28
     - run: make build-libs
-    - run: make build-test-wasms
+    - run: make build-test-wasms TEST_CRATES_RUST_VERSION=
     - name: Upload test wasms
       uses: actions/upload-artifact@v4
       with:
