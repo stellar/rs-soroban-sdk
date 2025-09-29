@@ -33,7 +33,9 @@ fn test_multiple_metadata_sections() {
     let section_content = ScMetaEntry::ScMetaV0(ScMetaV0 {
         key: StringM::try_from("mykey").unwrap(),
         val: StringM::try_from("myval").unwrap(),
-    }).to_xdr(Limits::none()).unwrap();
+    })
+    .to_xdr(Limits::none())
+    .unwrap();
 
     // Encode custom section
     let mut custom_section = Vec::new();
