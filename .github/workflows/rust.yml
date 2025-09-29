@@ -107,7 +107,7 @@ jobs:
       with:
         name: cargo-hack
         version: 0.5.28
-    - run: cp $HOME/.local/bin/cargo-hack.exe $HOME/.local/bin/cargo-hack
+    - run: mv $HOME/.local/bin/cargo-hack.exe $HOME/.local/bin/cargo-hack
     #- run: cargo install --locked cargo-hack
     - run: echo $GITHUB_PATH
     - run: echo $PATH
