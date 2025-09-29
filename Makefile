@@ -13,17 +13,17 @@ doc: fmt
 	cargo +nightly doc --no-deps $(foreach c,$(LIB_CRATES),--package $(c)) --all-features $(CARGO_DOC_ARGS)
 
 test: fmt build-test-wasms
-	cargo-hack hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
+	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
 
 build: build-libs build-test-wasms
 
 build-libs: fmt
-	cargo-hack hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
+	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
 build-test-wasms: fmt
 	# Build the test wasms with MSRV with some meta disabled for binary stability for tests.
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo-hack +$(MSRV) hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
+		cargo +$(MSRV) hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
