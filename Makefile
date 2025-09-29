@@ -48,6 +48,3 @@ fmt:
 
 clean:
 	cargo clean
-
-print-features:
-	cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | "Crate: \(.name)\n" + (.features | to_entries | map("  \(.key) -> \(.value)") | join("\n"))'
