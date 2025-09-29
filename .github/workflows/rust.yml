@@ -63,6 +63,7 @@ jobs:
         version: 0.44.0
     - run: >
         cargo semver-checks
+        --exclude soroban-meta
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
 
