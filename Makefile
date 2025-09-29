@@ -15,7 +15,9 @@ doc: fmt
 test: fmt build-test-wasms
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
 
-build: fmt
+build: build-libs build-test-wasms
+
+build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
 build-test-wasms: fmt

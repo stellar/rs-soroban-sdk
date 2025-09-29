@@ -10,6 +10,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
   cancel-in-progress: true
 
+env:
+  ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS: 7
+
 defaults:
   run:
     shell: bash
@@ -89,13 +92,8 @@ jobs:
       run: make build-test-wasms
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
-    - name: Upload test wasms
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-wasms
-        path: target/wasm32v1-none/release/test_*.wasm
 
-  build-and-test:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -105,12 +103,6 @@ jobs:
           target: x86_64-unknown-linux-gnu
         - os: ubuntu-latest
           target: aarch64-unknown-linux-gnu
-          # Fix #1011 by avoiding the use of crate-type = ["cdylib"] in native
-          # builds that cross-compile. It causes linker errors. The root cause
-          # is rust-lang/cargo#4133. This workaround uses rustc to build for a
-          # specific crate-type, lib, such that the Cargo.toml crate-type is
-          # ignored.
-          cdylib-cross-compile-workaround: true
 #        - os: macos-latest
 #          target: x86_64-apple-darwin
 #        - os: macos-latest
@@ -127,9 +119,7 @@ jobs:
         msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
         rustup override set $msrv
         rustup component add clippy --toolchain $msrv
-    - name: Error on warnings and clippy checks
-      # Only error on warnings and checks for the msrv, because new versions of
-      # Rust will frequently add new warnings and checks.
+    - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
     - run: rustup update
@@ -141,12 +131,57 @@ jobs:
       with:
         name: cargo-hack
         version: 0.5.28
-    - run: make build-test-wasms
     - run: make build-libs
-    - name: Restore MSRV built test wasms for tests
+    - run: make build-test-wasms
+    - name: Upload test wasms
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-wasms-${{ matrix.rust }}-${{ matrix.sys.target }}
+        path: target/wasm32v1-none/release/test_*.wasm
+        retention-days: ${{ env.ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS }}
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: [msrv, latest]
+        sys:
+        - os: ubuntu-latest
+          target: x86_64-unknown-linux-gnu
+        - os: ubuntu-latest
+          target: aarch64-unknown-linux-gnu
+#        - os: macos-latest
+#          target: x86_64-apple-darwin
+#        - os: macos-latest
+#          target: aarch64-apple-darwin
+        - os: windows-latest
+          target: x86_64-pc-windows-msvc
+    runs-on: ${{ matrix.sys.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - name: Use the minimum supported Rust version
+      if: matrix.rust == 'msrv'
+      run: |
+        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
+        rustup override set $msrv
+        rustup component add clippy --toolchain $msrv
+    - name: Error on warnings only for msrv
+      if: matrix.rust == 'msrv'
+      run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
+    - run: rustup update
+    - run: cargo version
+    - run: rustup target add ${{ matrix.sys.target }}
+    - run: rustup target add wasm32v1-none
+    - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
+    - uses: stellar/binaries@v37
+      with:
+        name: cargo-hack
+        version: 0.5.28
+    - name: Restore test wasms for tests from one of the msrv builds
       uses: actions/download-artifact@v3
       with:
-        name: test-wasms
+        name: test-wasms-msrv-x86_64-unknown-linux-gnu
         path: target/wasm32v1-none/release/
     - name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
