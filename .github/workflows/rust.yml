@@ -103,12 +103,12 @@ jobs:
     - run: rustup target add ${{ matrix.sys.target }}
     - run: rustup target add wasm32v1-none
     - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
-    #- uses: stellar/binaries@v37
-    #  with:
-    #    name: cargo-hack
-    #    version: 0.5.28
-    #- run: mv $HOME/.local/bin/cargo-hack.exe $HOME/.local/bin/cargo-hack
-    - run: cargo install --locked cargo-hack
+    - uses: stellar/binaries@v37
+      with:
+        name: cargo-hack
+        version: 0.5.28
+    - run: cp $HOME/.local/bin/cargo-hack.exe $HOME/.cargo/bin/cargo-hack.exe
+    #- run: cargo install --locked cargo-hack
     - run: echo $GITHUB_PATH
     - run: echo $PATH
     - run: which cargo-hack
