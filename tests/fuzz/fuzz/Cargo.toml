@@ -10,7 +10,7 @@ cargo-fuzz = true
 [dependencies]
 libfuzzer-sys = "0.4"
 soroban-sdk = { path = "../../../soroban-sdk", features = [ "testutils" ]}
-test_fuzz = { path = "..", features = [ "testutils" ] }
+test_fuzz = { path = ".." }
 
 # Prevent this from interfering with workspaces
 [workspace]

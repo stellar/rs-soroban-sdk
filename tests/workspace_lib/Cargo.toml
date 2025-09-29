@@ -11,9 +11,6 @@ rust-version.workspace = true
 crate-type = ["rlib"]
 doctest = false
 
-[features]
-testutils = []
-
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
 

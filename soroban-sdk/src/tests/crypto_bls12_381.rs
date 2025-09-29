@@ -2,7 +2,6 @@ use crate::{self as soroban_sdk};
 use soroban_sdk::{
     bytes, bytesn, contract, contractimpl,
     crypto::bls12_381::{Bls12_381, Fp, Fp2, Fr, G1Affine, G2Affine},
-    env::EnvTestConfig,
     vec, Address, Bytes, BytesN, Env, Vec, U256,
 };
 
@@ -254,12 +253,7 @@ impl Contract {
 
 #[test]
 fn test_invoke_contract() {
-    let e = Env::new_with_config(EnvTestConfig {
-        // Disable test snapshots because the tests in this repo will run across
-        // multiple hosts, and this test uses a wasm file that won't build consistently
-        // across different hosts.
-        capture_snapshot_at_drop: false,
-    });
+    let e = Env::default();
 
     let bls_contract_id = e.register(blscontract::WASM, ());
 

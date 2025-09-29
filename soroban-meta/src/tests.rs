@@ -12,7 +12,7 @@ fn test_from_wasm() {
             ScMetaEntry::ScMetaV0(v0) => v0.key.to_string(),
         })
         .collect::<Vec<_>>();
-    assert_eq!(keys, ["rsver", "rssdkver"]);
+    assert_eq!(keys, ["rsver"]);
 }
 
 #[test]
@@ -58,5 +58,5 @@ fn test_multiple_metadata_sections() {
             ScMetaEntry::ScMetaV0(v0) => v0.key.to_string(),
         })
         .collect::<Vec<_>>();
-    assert_eq!(keys, ["rsver", "rssdkver", "mykey"]);
+    assert_eq!(keys, ["rsver", "mykey"]);
 }
