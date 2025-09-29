@@ -108,12 +108,6 @@ jobs:
         ref: v37
         name: cargo-hack
         version: 0.5.28
-    - run: echo $GITHUB_PATH
-    - run: echo $PATH
-    - run: which cargo-hack
-    - run: cargo --list
-    - run: ls -la $HOME/.local/bin
-    - run: ls -la $HOME/.cargo/bin
     - run: make build-libs
     - run: make build-test-wasms
     - name: Upload test wasms
