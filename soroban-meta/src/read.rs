@@ -18,20 +18,29 @@ pub enum FromWasmError {
     Read(BinaryReaderError),
     #[error("parsing contract meta")]
     Parse(stellar_xdr::Error),
-    #[error("contract meta not found")]
-    NotFound,
 }
 
 pub fn raw_from_wasm(wasm: &[u8]) -> Result<Vec<u8>, FromWasmError> {
+    let mut total_len = 0;
     for payload in Parser::new(0).parse_all(wasm) {
         let payload = payload.map_err(FromWasmError::Read)?;
         if let Payload::CustomSection(section) = payload {
             if section.name() == "contractmetav0" {
-                return Ok(section.data().to_vec());
+                total_len += section.data().len();
             }
-        };
+        }
     }
-    Err(FromWasmError::NotFound)
+
+    let mut meta = Vec::with_capacity(total_len);
+    for payload in Parser::new(0).parse_all(wasm) {
+        let payload = payload.map_err(FromWasmError::Read)?;
+        if let Payload::CustomSection(section) = payload {
+            if section.name() == "contractmetav0" {
+                meta.extend_from_slice(section.data());
+            }
+        }
+    }
+    Ok(meta)
 }
 
 pub fn from_wasm(wasm: &[u8]) -> Result<Vec<ScMetaEntry>, FromWasmError> {
