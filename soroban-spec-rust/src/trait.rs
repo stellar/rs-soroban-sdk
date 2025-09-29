@@ -15,6 +15,14 @@ pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {
     }
 }
 
+/// Constructs a token stream representing a single function definition based on the provided
+/// function specification.
+///
+/// # Parameters
+/// - `s`: A reference to a `ScSpecFunctionV0` containing the specification of the function to generate.
+///
+/// # Returns
+/// A `TokenStream` containing the generated function definition.
 pub fn generate_function(s: &ScSpecFunctionV0) -> TokenStream {
     let fn_ident = format_ident!("{}", s.name.to_utf8_string().unwrap());
     let fn_inputs = s.inputs.iter().map(|input| {
