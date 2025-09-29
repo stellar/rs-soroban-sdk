@@ -94,7 +94,7 @@ jobs:
       run: |
         msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
         rustup override set $msrv
-        rustup component add clippy --toolchain $msrv
+        rustup component add clippy rustfmt
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
