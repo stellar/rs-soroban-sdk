@@ -112,6 +112,8 @@ jobs:
     - run: which cargo-hack
     - run: cargo --list
     - run: ls -la $HOME/.local/bin
+    - shell: cmd
+      run: echo %PATH%
     - run: make build-libs
     - run: make build-test-wasms
     - name: Upload test wasms
