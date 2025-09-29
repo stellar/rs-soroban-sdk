@@ -141,6 +141,7 @@ jobs:
         retention-days: ${{ env.ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS }}
 
   test:
+    needs: build
     strategy:
       fail-fast: false
       matrix:
