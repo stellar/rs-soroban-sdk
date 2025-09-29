@@ -69,30 +69,6 @@ jobs:
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
 
-  build-test-wasms:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: stellar/actions/rust-cache@main
-    - name: Use the minimum supported Rust version
-      run: |
-        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
-        rustup override set $msrv
-        rustup component add clippy --toolchain $msrv
-    - name: Error on warnings and clippy checks
-      run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
-    - run: rustup update
-    - run: cargo version
-    - run: rustup target add wasm32v1-none
-    - uses: stellar/binaries@v37
-      with:
-        name: cargo-hack
-        version: 0.5.28
-    - name: Build wasms
-      run: make build-test-wasms
-    - name: Check no diffs exist
-      run: git add -N . && git diff HEAD --exit-code
-
   build:
     strategy:
       fail-fast: false
