@@ -110,7 +110,7 @@ jobs:
     - run: echo $GITHUB_PATH
     - run: echo $PATH
     - run: which cargo-hack
-    - run: cargo install --list
+    - run: cargo --list
     - run: ls -la $HOME/.local/bin
     - run: make build-libs
     - run: make build-test-wasms
