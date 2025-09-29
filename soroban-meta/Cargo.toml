@@ -1,0 +1,16 @@
+[package]
+name = "soroban-meta"
+description = "Soroban contract meta utilities."
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version.workspace = true
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+stellar-xdr = { workspace = true, features = ["curr", "std"] }
+thiserror = "1.0.32"
+wasmparser = "0.116.1"

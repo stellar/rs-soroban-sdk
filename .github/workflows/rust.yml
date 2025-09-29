@@ -63,6 +63,7 @@ jobs:
         version: 0.44.0
     - run: >
         cargo semver-checks
+        --exclude soroban-meta
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
 
@@ -115,7 +116,7 @@ jobs:
       name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
     - name: Build for wasm
-      run: cargo-hack hack build --target wasm32v1-none --profile release --workspace --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot
+      run: cargo-hack hack build --target wasm32v1-none --profile release --workspace --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot
     - name: Wasm Size
       run: |
         cd target/wasm32v1-none/release/ && \
@@ -186,7 +187,7 @@ jobs:
         sys:
         - os: ubuntu-latest
           target: wasm32v1-none
-          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
+          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'
