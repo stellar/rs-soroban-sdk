@@ -4,16 +4,6 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
-<<<<<<< HEAD
-all: check test
-
-||||||| 194b0c5
-all: check test
-
-export RUSTFLAGS=-Dwarnings
-
-=======
->>>>>>> build-fix-ups
 CARGO_DOC_ARGS?=--open
 
 default: test

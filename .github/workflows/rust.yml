@@ -89,7 +89,6 @@ jobs:
     runs-on: ${{ matrix.sys.os }}
     steps:
     - uses: actions/checkout@v3
-    - uses: stellar/actions/rust-cache@main
     - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
@@ -107,6 +106,10 @@ jobs:
     - name: Use the minimum supported rust version
       if: matrix.rust == 'msrv'
       run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
+    - name: Set latest toolchain
+      if: matrix.rust == 'latest'
+      run: echo RUSTUP_TOOLCHAIN="$(rustup show active-toolchain | cut -d' ' -f1)" >> $GITHUB_ENV
+    - uses: stellar/actions/rust-cache@main
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
@@ -115,8 +118,9 @@ jobs:
       with:
         name: cargo-hack
         version: 0.5.28
+    - run: cargo version
     - run: make build-libs
-    - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=
+    - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=$RUSTUP_TOOLCHAIN
     - name: Upload test wasms
       uses: actions/upload-artifact@v4
       with:
@@ -144,7 +148,6 @@ jobs:
     runs-on: ${{ matrix.sys.os }}
     steps:
     - uses: actions/checkout@v3
-    - uses: stellar/actions/rust-cache@main
     - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
@@ -162,6 +165,10 @@ jobs:
     - name: Use the minimum supported rust version
       if: matrix.rust == 'msrv'
       run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
+    - name: Set latest toolchain
+      if: matrix.rust == 'latest'
+      run: echo RUSTUP_TOOLCHAIN="$(rustup show active-toolchain | cut -d' ' -f1)" >> $GITHUB_ENV
+    - uses: stellar/actions/rust-cache@main
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
@@ -177,6 +184,7 @@ jobs:
         path: target/wasm32v1-none/release/
     - name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
+    - run: cargo version
     - run: make test-only
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
