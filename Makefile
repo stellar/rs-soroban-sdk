@@ -6,8 +6,6 @@ TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
 all: check test
 
-export RUSTFLAGS=-Dwarnings
-
 CARGO_DOC_ARGS?=--open
 
 doc: fmt
@@ -62,3 +60,6 @@ fmt:
 
 clean:
 	cargo clean
+
+msrv:
+	@echo $(MSRV)
