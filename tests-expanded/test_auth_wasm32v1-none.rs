@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
 pub struct ContractA;
 ///ContractAArgs is a type for building arg lists for functions defined in "ContractA".

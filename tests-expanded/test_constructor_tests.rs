@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -947,6 +948,7 @@ static __Contract__99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb13
     __Contract__99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb13593_ctor___rust_ctor___ctor
 };
 extern crate test;
+#[cfg(test)]
 #[rustc_test_marker = "test_constructor"]
 #[doc(hidden)]
 pub const test_constructor: test::TestDescAndFn = test::TestDescAndFn {
@@ -1053,6 +1055,7 @@ fn test_constructor() {
     }
 }
 extern crate test;
+#[cfg(test)]
 #[rustc_test_marker = "test_passing_no_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_passing_no_constructor_arguments_causes_panic: test::TestDescAndFn =
@@ -1084,6 +1087,7 @@ fn test_passing_no_constructor_arguments_causes_panic() {
     let _ = env.register(Contract, ());
 }
 extern crate test;
+#[cfg(test)]
 #[rustc_test_marker = "test_missing_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_missing_constructor_arguments_causes_panic: test::TestDescAndFn =
@@ -1115,6 +1119,7 @@ fn test_missing_constructor_arguments_causes_panic() {
     let _ = env.register(Contract, (100_u32,));
 }
 extern crate test;
+#[cfg(test)]
 #[rustc_test_marker = "test_passing_extra_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_passing_extra_constructor_arguments_causes_panic: test::TestDescAndFn =
@@ -1146,6 +1151,7 @@ fn test_passing_extra_constructor_arguments_causes_panic() {
     let _ = env.register(Contract, (100_u32, 1000_i64, 123_u32));
 }
 extern crate test;
+#[cfg(test)]
 #[rustc_test_marker = "test_passing_incorrectly_typed_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_passing_incorrectly_typed_constructor_arguments_causes_panic: test::TestDescAndFn =

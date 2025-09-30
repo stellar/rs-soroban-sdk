@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -609,10 +610,12 @@ static __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b77052a7a
     }
     __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b77052a7ae50fa889_ctor___rust_ctor___ctor
 };
+#[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_hello"]
     #[doc(hidden)]
     pub const test_hello: test::TestDescAndFn = test::TestDescAndFn {

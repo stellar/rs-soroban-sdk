@@ -218,11 +218,11 @@ jobs:
     - uses: stellar/actions/rust-cache@main
     - run: rustup update
     - run: rustup target add wasm32v1-none
-    - uses: stellar/binaries@v37
+    - uses: stellar/binaries@v45
       with:
         name: cargo-hack
         version: 0.5.28
-    - uses: stellar/binaries@v44
+    - uses: stellar/binaries@v45
       with:
         name: cargo-expand
         version: 1.0.116
