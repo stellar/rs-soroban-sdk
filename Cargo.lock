@@ -1687,7 +1687,7 @@ dependencies = [
 
 [[package]]
 name = "test_empty3"
-version = "23.0.0-rc.2.4"
+version = "23.0.2"
 dependencies = [
  "soroban-sdk",
 ]
