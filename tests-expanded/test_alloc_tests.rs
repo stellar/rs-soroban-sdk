@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, Env};
 extern crate alloc;
 pub struct Contract;
@@ -318,7 +317,6 @@ static __Contract__526e07cb9219443e6b3ef052e7872bf9e5bfee9b91633ed921601b5e93014
     __Contract__526e07cb9219443e6b3ef052e7872bf9e5bfee9b91633ed921601b5e93014bb7_ctor___rust_ctor___ctor
 };
 mod test {
-    #![cfg(test)]
     use crate::{Contract, ContractClient};
     use soroban_sdk::{vec, Env};
     mod imported {
@@ -522,7 +520,6 @@ mod test {
     mod native {
         use super::*;
         extern crate test;
-        #[cfg(test)]
         #[rustc_test_marker = "test::native::test"]
         #[doc(hidden)]
         pub const test: test::TestDescAndFn = test::TestDescAndFn {
@@ -578,7 +575,6 @@ mod test {
     mod wasm {
         use super::*;
         extern crate test;
-        #[cfg(test)]
         #[rustc_test_marker = "test::wasm::test"]
         #[doc(hidden)]
         pub const test: test::TestDescAndFn = test::TestDescAndFn {
