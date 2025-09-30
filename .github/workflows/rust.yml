@@ -21,7 +21,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, semver-checks, build, test, build-fuzz, docs, readme, migration-docs, expand-tests]
+    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, build-fuzz, docs, readme, migration-docs, expand-test-wasms]
     runs-on: ubuntu-latest
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -70,7 +70,7 @@ jobs:
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
 
-  build:
+  build-and-test:
     strategy:
       fail-fast: false
       matrix:
@@ -108,62 +108,14 @@ jobs:
       with:
         name: cargo-hack
         version: 0.5.28
-    - run: make build-libs
-    - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=
-    - name: Upload test wasms
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-wasms-${{ matrix.rust }}-${{ matrix.sys.target }}
-        path: target/wasm32v1-none/release/test_*.wasm
-        retention-days: ${{ env.ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS }}
-
-  test:
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        rust: [msrv, latest]
-        sys:
-        - os: ubuntu-latest
-          target: x86_64-unknown-linux-gnu
-        - os: ubuntu-24.04-arm
-          target: aarch64-unknown-linux-gnu
-        - os: macos-15-intel
-          target: x86_64-apple-darwin
-        - os: macos-latest
-          target: aarch64-apple-darwin
-        - os: windows-latest
-          target: x86_64-pc-windows-msvc
-    runs-on: ${{ matrix.sys.os }}
-    steps:
-    - uses: actions/checkout@v3
-    - uses: stellar/actions/rust-cache@main
-    - name: Use the minimum supported Rust version
-      if: matrix.rust == 'msrv'
-      run: |
-        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
-        rustup override set $msrv
-        rustup component add clippy rustfmt
-    - name: Error on warnings only for msrv
-      if: matrix.rust == 'msrv'
-      run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
-    - run: rustup update
-    - run: cargo version
-    - run: rustup target add ${{ matrix.sys.target }}
-    - run: rustup target add wasm32v1-none
-    - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
-    - uses: stellar/binaries@v45
-      with:
-        name: cargo-hack
-        version: 0.5.28
-    - name: Restore test wasms for tests from one of the msrv builds
-      uses: actions/download-artifact@v5
-      with:
-        name: test-wasms-msrv-x86_64-unknown-linux-gnu
-        path: target/wasm32v1-none/release/
+    - name: Build libs with current rust toolchain
+      run: make build-libs
+    - name: Build test wasms with current rust toolchain
+      run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=
     - name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
-    - run: make test
+    - name: Run test with current rust toolchain (will also rebuild test wasms with msrv rust toolchain for test reproducibility)
+      run: make build-test-wasms test
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
@@ -211,7 +163,7 @@ jobs:
         git grep "${version}" -- soroban-sdk/src/_migrating.rs \
           || (echo "The _migrating ${version} section is missing." && exit 1)
 
-  expand-tests:
+  expand-test-wasms:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
