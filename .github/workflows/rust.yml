@@ -233,6 +233,28 @@ jobs:
         git grep "${version}" -- soroban-sdk/src/_migrating.rs \
           || (echo "The _migrating ${version} section is missing." && exit 1)
 
+  expand-test-wasms:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: stellar/actions/rust-cache@main
+    - name: Install minimum supported rust version
+      run: |
+        msrv="$(make msrv)"
+        rustup install $msrv
+        rustup target add --toolchain $msrv wasm32v1-none
+    - uses: stellar/binaries@v45
+      with:
+        name: cargo-hack
+        version: 0.5.28
+    - uses: stellar/binaries@v45
+      with:
+        name: cargo-expand
+        version: 1.0.116
+    - run: make expand-tests
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
+
   publish-dry-run:
     if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
     strategy:
