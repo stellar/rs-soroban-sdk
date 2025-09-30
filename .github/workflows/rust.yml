@@ -10,6 +10,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
   cancel-in-progress: true
 
+env:
+  ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS: 7
+
 defaults:
   run:
     shell: bash
@@ -18,7 +21,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, semver-checks, build-and-test, build-fuzz, docs, readme, migration-docs, expand-tests]
+    needs: [fmt, check-git-rev-deps, semver-checks, build, test, build-fuzz, docs, readme, migration-docs, expand-tests]
     runs-on: ubuntu-latest
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -57,16 +60,17 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: rustup update
-    - uses: stellar/binaries@v41
+    - uses: stellar/binaries@v45
       with:
         name: cargo-semver-checks
         version: 0.44.0
     - run: >
         cargo semver-checks
+        --exclude soroban-meta
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
 
-  build-and-test:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -74,18 +78,12 @@ jobs:
         sys:
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
-        - os: ubuntu-latest
+        - os: ubuntu-24.04-arm
           target: aarch64-unknown-linux-gnu
-          # Fix #1011 by avoiding the use of crate-type = ["cdylib"] in native
-          # builds that cross-compile. It causes linker errors. The root cause
-          # is rust-lang/cargo#4133. This workaround uses rustc to build for a
-          # specific crate-type, lib, such that the Cargo.toml crate-type is
-          # ignored.
-          cdylib-cross-compile-workaround: true
-#        - os: macos-latest
-#          target: x86_64-apple-darwin
-#        - os: macos-latest
-#          target: aarch64-apple-darwin
+        - os: macos-15-intel
+          target: x86_64-apple-darwin
+        - os: macos-latest
+          target: aarch64-apple-darwin
         - os: windows-latest
           target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.sys.os }}
@@ -97,42 +95,76 @@ jobs:
       run: |
         msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
         rustup override set $msrv
-        rustup component add clippy --toolchain $msrv
-    - name: Error on warnings and clippy checks
-      # Only error on warnings and checks for the msrv, because new versions of
-      # Rust will frequently add new warnings and checks.
+        rustup component add clippy rustfmt
+    - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
     - run: rustup update
     - run: cargo version
     - run: rustup target add ${{ matrix.sys.target }}
     - run: rustup target add wasm32v1-none
-    - uses: stellar/binaries@v37
+    - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
+    - uses: stellar/binaries@v45
       with:
         name: cargo-hack
         version: 0.5.28
-    - if: startsWith(matrix.sys.target, 'x86_64')
-      name: Clear test snapshots for checking no diffs exists after test run
-      run: rm -fr **/test_snapshots
-    - name: Build for wasm
-      run: cargo-hack hack build --target wasm32v1-none --profile release --workspace --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot
-    - name: Wasm Size
+    - run: make build-libs
+    - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=
+    - name: Upload test wasms
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-wasms-${{ matrix.rust }}-${{ matrix.sys.target }}
+        path: target/wasm32v1-none/release/test_*.wasm
+        retention-days: ${{ env.ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS }}
+
+  test:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: [msrv, latest]
+        sys:
+        - os: ubuntu-latest
+          target: x86_64-unknown-linux-gnu
+        - os: ubuntu-24.04-arm
+          target: aarch64-unknown-linux-gnu
+        - os: macos-15-intel
+          target: x86_64-apple-darwin
+        - os: macos-latest
+          target: aarch64-apple-darwin
+        - os: windows-latest
+          target: x86_64-pc-windows-msvc
+    runs-on: ${{ matrix.sys.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - name: Use the minimum supported Rust version
+      if: matrix.rust == 'msrv'
       run: |
-        cd target/wasm32v1-none/release/ && \
-          for i in *.wasm ; do \
-            ls -l "$i"; \
-          done
-    - if: "!matrix.sys.cdylib-cross-compile-workaround"
-      name: Build for native
-      run: cargo-hack hack --feature-powerset --exclude-features docs build --target ${{ matrix.sys.target }}
-    - if: "matrix.sys.cdylib-cross-compile-workaround"
-      name: Build for native
-      run: cargo-hack hack --feature-powerset --exclude-features docs rustc --workspace --exclude soroban-sdk-macros --exclude proc_macros --crate-type lib --target ${{ matrix.sys.target }}
-    - if: startsWith(matrix.sys.target, 'x86_64')
-      name: Run tests
-      run: cargo-hack hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test --target ${{ matrix.sys.target }}
-    - if: startsWith(matrix.sys.target, 'x86_64')
-      name: Check no diffs exist
+        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
+        rustup override set $msrv
+        rustup component add clippy rustfmt
+    - name: Error on warnings only for msrv
+      if: matrix.rust == 'msrv'
+      run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
+    - run: rustup update
+    - run: cargo version
+    - run: rustup target add ${{ matrix.sys.target }}
+    - run: rustup target add wasm32v1-none
+    - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
+    - uses: stellar/binaries@v45
+      with:
+        name: cargo-hack
+        version: 0.5.28
+    - name: Restore test wasms for tests from one of the msrv builds
+      uses: actions/download-artifact@v5
+      with:
+        name: test-wasms-msrv-x86_64-unknown-linux-gnu
+        path: target/wasm32v1-none/release/
+    - name: Clear test snapshots for checking no diffs exists after test run
+      run: rm -fr **/test_snapshots
+    - run: make test
+    - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
   build-fuzz:
@@ -141,10 +173,10 @@ jobs:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
-    - uses: stellar/binaries@v37
+    - uses: stellar/binaries@v45
       with:
         name: cargo-fuzz
-        version: 0.12.0
+        version: 0.13.1
     - run: make build-fuzz
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
@@ -205,7 +237,7 @@ jobs:
         sys:
         - os: ubuntu-latest
           target: wasm32v1-none
-          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
+          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'

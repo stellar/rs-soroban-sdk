@@ -4,6 +4,7 @@ resolver = "2"
 members = [
     "soroban-sdk",
     "soroban-sdk-macros",
+    "soroban-meta",
     "soroban-spec",
     "soroban-spec-rust",
     "soroban-ledger-snapshot",
@@ -20,6 +21,7 @@ rust-version = "1.84.0"
 [workspace.dependencies]
 soroban-sdk = { version = "23.0.2", path = "soroban-sdk" }
 soroban-sdk-macros = { version = "23.0.2", path = "soroban-sdk-macros" }
+soroban-meta = { version = "23.0.2", path = "soroban-meta" }
 soroban-spec = { version = "23.0.2", path = "soroban-spec" }
 soroban-spec-rust = { version = "23.0.2", path = "soroban-spec-rust" }
 soroban-ledger-snapshot = { version = "23.0.2", path = "soroban-ledger-snapshot" }
