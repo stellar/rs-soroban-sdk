@@ -2,21 +2,13 @@ LIB_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packa
 TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name | startswith("test_")) | .name' | tr '\n' ' ')
 
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
+TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
-RUST?=
-ifeq ($(RUST),msrv)
-export RUSTUP_TOOLCHAIN=$(MSRV)
-else
-export RUSTUP_TOOLCHAIN=$(RUST)
-endif
+all: check test
 
-ifeq ($(RUSTUP_TOOLCHAIN),$(MSRV))
 export RUSTFLAGS=-Dwarnings
-endif
 
 CARGO_DOC_ARGS?=--open
-
-default: test
 
 doc: fmt
 	cargo test --doc $(foreach c,$(LIB_CRATES),--package $(c)) --features testutils,alloc,hazmat
@@ -31,7 +23,9 @@ build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
 build-test-wasms: fmt
-	# Build the test wasms with some meta disabled for binary stability for tests.
+	# Build the test wasms with MSRV by default, with some meta disabled for
+	# binary stability for tests.
+	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
 	cd target/wasm32v1-none/release/ && \
@@ -54,6 +48,3 @@ fmt:
 
 clean:
 	cargo clean
-
-msrv:
-	@echo $(MSRV)
