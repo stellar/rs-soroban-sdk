@@ -95,6 +95,7 @@ jobs:
       run: |
         msrv="$(make msrv)"
         rustup install $msrv
+        rustup component add --toolchain $msrv clippy rustfmt
         rustup target add --toolchain $msrv ${{ matrix.sys.target }}
         rustup target add --toolchain $msrv wasm32v1-none
     - name: Install latest rust version
@@ -149,6 +150,7 @@ jobs:
       run: |
         msrv="$(make msrv)"
         rustup install $msrv
+        rustup component add --toolchain $msrv clippy rustfmt
         rustup target add --toolchain $msrv ${{ matrix.sys.target }}
         rustup target add --toolchain $msrv wasm32v1-none
     - name: Install latest rust version
