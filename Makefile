@@ -49,6 +49,8 @@ readme:
 expand-tests: build-test-wasms
 	rm -fr tests-expanded
 	mkdir -p tests-expanded
+	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) ; \
+	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' ; \
 	for package in $(TEST_CRATES); do \
 		echo "Expanding $$package for linux target including tests"; \
 		cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
