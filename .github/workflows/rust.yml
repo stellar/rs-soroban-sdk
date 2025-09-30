@@ -223,6 +223,7 @@ jobs:
         rustup install $msrv
         rustup target add --toolchain $msrv wasm32v1-none
     - name: Install latest rust version
+      if: matrix.rust == 'latest'
       run: |
         rustup update
     - uses: stellar/binaries@v45
