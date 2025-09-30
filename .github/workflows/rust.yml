@@ -90,19 +90,25 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - name: Use the minimum supported Rust version
+    - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
-        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
-        rustup override set $msrv
-        rustup component add clippy rustfmt
+        msrv="$(make msrv)"
+        rustup install $msrv
+        rustup target add --toolchain $msrv ${{ matrix.sys.target }}
+        rustup target add --toolchain $msrv wasm32v1-none
+    - name: Install latest rust version
+      if: matrix.rust == 'latest'
+      run: |
+        rustup update
+        rustup target add ${{ matrix.sys.target }}
+        rustup target add wasm32v1-none
+    - name: Use the minimum supported rust version
+      if: matrix.rust == 'msrv'
+      run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
-    - run: rustup update
-    - run: cargo version
-    - run: rustup target add ${{ matrix.sys.target }}
-    - run: rustup target add wasm32v1-none
     - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
     - uses: stellar/binaries@v45
       with:
@@ -138,19 +144,25 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: stellar/actions/rust-cache@main
-    - name: Use the minimum supported Rust version
+    - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
-        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
-        rustup override set $msrv
-        rustup component add clippy rustfmt
+        msrv="$(make msrv)"
+        rustup install $msrv
+        rustup target add --toolchain $msrv ${{ matrix.sys.target }}
+        rustup target add --toolchain $msrv wasm32v1-none
+    - name: Install latest rust version
+      if: matrix.rust == 'latest'
+      run: |
+        rustup update
+        rustup target add ${{ matrix.sys.target }}
+        rustup target add wasm32v1-none
+    - name: Use the minimum supported rust version
+      if: matrix.rust == 'msrv'
+      run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
-    - run: rustup update
-    - run: cargo version
-    - run: rustup target add ${{ matrix.sys.target }}
-    - run: rustup target add wasm32v1-none
     - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
     - uses: stellar/binaries@v45
       with:
@@ -163,7 +175,7 @@ jobs:
         path: target/wasm32v1-none/release/
     - name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
-    - run: make test
+    - run: make test-only
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 

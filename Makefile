@@ -4,17 +4,17 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
-all: check test
-
-export RUSTFLAGS=-Dwarnings
-
 CARGO_DOC_ARGS?=--open
+
+default: test
 
 doc: fmt
 	cargo test --doc $(foreach c,$(LIB_CRATES),--package $(c)) --features testutils,alloc,hazmat
 	cargo +nightly doc --no-deps $(foreach c,$(LIB_CRATES),--package $(c)) --all-features $(CARGO_DOC_ARGS)
 
-test: fmt build-test-wasms
+test: fmt build-test-wasms test-only
+
+test-only:
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
 
 build: build-libs build-test-wasms
@@ -48,3 +48,6 @@ fmt:
 
 clean:
 	cargo clean
+
+msrv:
+	@echo $(MSRV)
