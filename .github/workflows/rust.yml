@@ -93,16 +93,16 @@ jobs:
     - name: Use the minimum supported Rust version
       if: matrix.rust == 'msrv'
       run: |
-        msrv="$(cargo metadata --format-version 1 --no-deps | jq -r '.packages | map(.rust_version) | map(values) | min')"
+        msrv="$(make msrv)"
         rustup override set $msrv
         rustup component add clippy rustfmt
+    - run: |
+        rustup update
+        rustup target add ${{ matrix.sys.target }}
+        rustup target add wasm32v1-none
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
-    - run: rustup update
-    - run: cargo version
-    - run: rustup target add ${{ matrix.sys.target }}
-    - run: rustup target add wasm32v1-none
     - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
     - uses: stellar/binaries@v45
       with:
