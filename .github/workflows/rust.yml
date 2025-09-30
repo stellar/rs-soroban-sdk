@@ -181,6 +181,18 @@ jobs:
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
+  build-fuzz:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - run: rustup install nightly
+    - uses: stellar/binaries@v45
+      with:
+        name: cargo-fuzz
+        version: 0.13.1
+    - run: make build-fuzz
+
   docs:
     runs-on: ubuntu-latest
     steps:
