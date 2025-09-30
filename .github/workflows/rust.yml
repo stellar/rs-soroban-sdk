@@ -174,8 +174,15 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - uses: stellar/actions/rust-cache@main
-    - run: rustup update
-    - run: rustup target add wasm32v1-none
+    - name: Install minimum supported Rust version
+      if: matrix.rust == 'msrv'
+      run: |
+        msrv="$(make msrv)"
+        rustup install $msrv
+        rustup target add --toolchain $msrv wasm32v1-none
+    - name: Install latest Rust version
+      run: |
+        rustup update
     - uses: stellar/binaries@v45
       with:
         name: cargo-hack
