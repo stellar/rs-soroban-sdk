@@ -1,8 +1,8 @@
 use crate::{self as soroban_sdk};
 use sha2::{Digest, Sha256};
 use soroban_sdk::{
-    address::Executable, contract, env::EnvTestConfig, testutils::Address as _, Address, Bytes,
-    BytesN, Env, String, TryIntoVal,
+    address::Executable, contract, testutils::Address as _, Address, Bytes, BytesN, Env, String,
+    TryIntoVal,
 };
 
 #[contract]
@@ -86,12 +86,7 @@ fn test_get_existing_contract_address_executable_wasm() {
     const EXAMPLE_WASM: &[u8] =
         include_bytes!("../../../target/wasm32v1-none/release/test_udt.wasm");
 
-    let env = Env::new_with_config(EnvTestConfig {
-        // Disable test snapshots because the tests in this repo will run across
-        // multiple hosts, and this test uses a wasm file that won't build consistently
-        // across different hosts.
-        capture_snapshot_at_drop: false,
-    });
+    let env = Env::default();
 
     let contract_address = env.register(EXAMPLE_WASM, ());
     let contract_executable = contract_address.executable();

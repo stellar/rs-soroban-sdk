@@ -1391,6 +1391,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "soroban-meta"
+version = "23.0.2"
+dependencies = [
+ "stellar-xdr",
+ "thiserror",
+ "wasmparser",
+]
+
+[[package]]
 name = "soroban-sdk"
 version = "23.0.2"
 dependencies = [

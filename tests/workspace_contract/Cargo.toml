@@ -17,4 +17,4 @@ test_workspace_lib = {path = "../workspace_lib"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
-test_workspace_lib = {path = "../workspace_lib", features = ["testutils"]}
+test_workspace_lib = {path = "../workspace_lib"}
