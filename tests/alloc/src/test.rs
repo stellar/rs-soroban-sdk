@@ -1,5 +1,5 @@
 #![cfg(test)]
-use soroban_sdk::{testutils::EnvTestConfig, vec, Env};
+use soroban_sdk::{vec, Env};
 
 use crate::{Contract, ContractClient};
 
@@ -14,12 +14,7 @@ macro_rules! tests {
 
             #[test]
             fn test() {
-                let e = Env::new_with_config(EnvTestConfig {
-                    // Disable test snapshots because the tests in this repo will run across
-                    // multiple hosts, and this test uses a wasm file that won't build consistently
-                    // across different hosts.
-                    capture_snapshot_at_drop: false,
-                });
+                let e = Env::default();
                 let contract_id = e.register($contract, ());
                 let client = ContractClient::new(&e, &contract_id);
 

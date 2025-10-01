@@ -1,10 +1,14 @@
 use crate::{
-    default_crate_path, derive_args::derive_args_impl, derive_client::derive_client_impl,
-    derive_fn::derive_pub_fn, derive_spec_fn::derive_fn_spec, syn_ext,
+    default_crate_path,
+    derive_args::derive_args_impl,
+    derive_client::derive_client_impl,
+    derive_fn::derive_pub_fn,
+    derive_spec_fn::derive_fn_spec,
+    syn_ext::{self, ident_to_type},
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::{quote, ToTokens};
+use quote::quote;
 use syn::{LitStr, Path, Type};
 
 #[derive(Debug, FromMeta)]
@@ -40,7 +44,7 @@ fn derive_or_err(metadata: TokenStream2) -> Result<TokenStream2, Error> {
 }
 
 fn derive(args: &Args) -> Result<TokenStream2, Error> {
-    let ident = &args.impl_ident;
+    let impl_ty = ident_to_type(args.impl_ident.clone());
     let trait_ident = &args.trait_ident;
 
     let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns);
@@ -57,7 +61,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     for f in &fns {
         output.extend(derive_pub_fn(
             &args.crate_path,
-            ident.to_token_stream(),
+            &impl_ty,
             &f.ident,
             &[],
             &f.inputs,

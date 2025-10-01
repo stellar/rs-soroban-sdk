@@ -562,11 +562,20 @@ impl StellarAssetIssuer {
 pub struct StellarAssetContract {
     address: crate::Address,
     issuer: StellarAssetIssuer,
+    asset: xdr::Asset,
 }
 
 impl StellarAssetContract {
-    pub(crate) fn new(address: crate::Address, issuer: StellarAssetIssuer) -> Self {
-        Self { address, issuer }
+    pub(crate) fn new(
+        address: crate::Address,
+        issuer: StellarAssetIssuer,
+        asset: xdr::Asset,
+    ) -> Self {
+        Self {
+            address,
+            issuer,
+            asset,
+        }
     }
 
     pub fn address(&self) -> crate::Address {
@@ -575,5 +584,10 @@ impl StellarAssetContract {
 
     pub fn issuer(&self) -> StellarAssetIssuer {
         self.issuer.clone()
+    }
+
+    #[doc(hidden)]
+    pub fn asset(&self) -> xdr::Asset {
+        self.asset.clone()
     }
 }

@@ -254,7 +254,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             let ident = &m.sig.ident;
             derive_pub_fn(
                 crate_path,
-                ty.to_token_stream(),
+                &ty,
                 ident,
                 &m.attrs,
                 &m.sig.inputs,

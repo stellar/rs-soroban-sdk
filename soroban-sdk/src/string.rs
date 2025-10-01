@@ -2,7 +2,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{Env as _, EnvBase as _, StringObject},
-    ConversionError, Env, TryFromVal, TryIntoVal, Val,
+    Bytes, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -44,7 +44,7 @@ impl Debug for String {
         #[cfg(target_family = "wasm")]
         write!(f, "String(..)")?;
         #[cfg(not(target_family = "wasm"))]
-        write!(f, "String({})", self.to_string())?;
+        write!(f, "String({self})")?;
         Ok(())
     }
 }
@@ -147,6 +147,20 @@ impl From<&String> for String {
     }
 }
 
+impl From<&String> for Bytes {
+    fn from(v: &String) -> Self {
+        Env::string_to_bytes(&v.env, v.obj.clone())
+            .unwrap_infallible()
+            .into_val(&v.env)
+    }
+}
+
+impl From<String> for Bytes {
+    fn from(v: String) -> Self {
+        (&v).into()
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 impl From<&String> for ScVal {
     fn from(v: &String) -> Self {
@@ -187,14 +201,16 @@ impl TryFromVal<Env, &str> for String {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl ToString for String {
-    fn to_string(&self) -> std::string::String {
+impl core::fmt::Display for String {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
         let sc_val: ScVal = self.try_into().unwrap();
         if let ScVal::String(ScString(s)) = sc_val {
-            s.to_utf8_string().unwrap()
+            let utf8_s = s.to_utf8_string().unwrap();
+            write!(f, "{utf8_s}")?;
         } else {
             panic!("value is not a string");
         }
+        Ok(())
     }
 }
 
@@ -271,6 +287,11 @@ impl String {
         }
         env.string_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
+    }
+
+    /// Converts the contents of the String into a respective Bytes object.
+    pub fn to_bytes(&self) -> Bytes {
+        self.into()
     }
 }
 
@@ -352,5 +373,45 @@ mod test {
         let rt: String = val.into_val(&env);
 
         assert_eq!(s, rt);
+    }
+
+    #[test]
+    fn test_string_to_bytes() {
+        let env = Env::default();
+        let s = String::from_str(&env, "abcdef");
+        let b: Bytes = s.clone().into();
+        assert_eq!(b.len(), 6);
+        let mut slice = [0u8; 6];
+        b.copy_into_slice(&mut slice);
+        assert_eq!(&slice, b"abcdef");
+        let b2 = s.to_bytes();
+        assert_eq!(b, b2);
+    }
+
+    #[test]
+    fn test_string_accepts_any_bytes_even_invalid_utf8() {
+        let env = Env::default();
+        let input = b"a\xc3\x28d"; // \xc3 is invalid utf8
+        let s = String::from_bytes(&env, &input[..]);
+        let b = s.to_bytes().to_buffer::<4>();
+        assert_eq!(b.as_slice(), input);
+    }
+
+    #[test]
+    fn test_string_display_to_string() {
+        let env = Env::default();
+        let input = "abcdef";
+        let s = String::from_str(&env, input);
+        let rt = s.to_string();
+        assert_eq!(input, &rt);
+    }
+
+    #[test]
+    #[should_panic = "Utf8Error"]
+    fn test_string_display_to_string_invalid_utf8() {
+        let env = Env::default();
+        let input = b"a\xc3\x28d"; // \xc3 is invalid utf8
+        let s = String::from_bytes(&env, &input[..]);
+        let _ = s.to_string();
     }
 }

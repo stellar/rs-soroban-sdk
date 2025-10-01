@@ -13,6 +13,20 @@ impl Contract {
     pub fn add(_e: &Env, a: i32, b: i32) -> i32 {
         a + b
     }
+
+    pub fn add_with_unused_arg(_e: &Env, a: i32, _b: i32) -> i32 {
+        a + 2
+    }
+}
+
+#[contract]
+pub struct Contract2;
+
+#[contractimpl]
+impl Contract2 {
+    pub fn add(_e: &Env, a: i32, b: i32) -> i32 {
+        a + b
+    }
 }
 
 #[test]
@@ -28,10 +42,36 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD, Limits::none()).unwrap();
+    let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "add".try_into().unwrap(),
+        inputs: vec![
+            ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "a".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+            ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "b".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+        ]
+        .try_into()
+        .unwrap(),
+        outputs: vec![ScSpecTypeDef::I32].try_into().unwrap(),
+    });
+    assert_eq!(entries, expect);
+}
+
+#[test]
+fn test_spec_with_unused_arg() {
+    let entries =
+        ScSpecEntry::from_xdr(Contract::spec_xdr_add_with_unused_arg(), Limits::none()).unwrap();
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: "add_with_unused_arg".try_into().unwrap(),
         inputs: vec![
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),

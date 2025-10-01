@@ -70,40 +70,50 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
 #[cfg(all(feature = "alloc", target_family = "wasm"))]
 mod alloc;
 
-/// __link_sections returns and does nothing, but it contains link sections that
-/// should be ensured end up in the final build of any contract using the SDK.
+/// This const block contains link sections that need to end up in the final
+/// build of any contract using the SDK.
 ///
 /// In Rust's build system sections only get included into the final build if
 /// the object file containing those sections are processed by the linker, but
 /// as an optimization step if no code is called in an object file it is
 /// discarded.  This has the unfortunate effect of causing anything else in
 /// those object files, such as link sections, to be discarded. Placing anything
-/// that must be included in the build inside an exported function ensures the
-/// object files won't be discarded. wasm-bindgen does a similar thing to this,
-/// and so this seems to be a reasonably accepted way to work around this
-/// limitation in the build system.
+/// that must be included in the build inside an exported static or function
+/// ensures the object files won't be discarded. wasm-bindgen does a similar
+/// thing to this with a function, and so this seems to be a reasonably
+/// accepted way to work around this limitation in the build system. The SDK
+/// uses a static exported with name `_` that becomes a global because a global
+/// is more unnoticeable, and takes up less bytes.
 ///
-/// This has an unfortunate side-effect that all contracts will have a function
-/// in the resulting WASM named `_`, however this function won't be rendered in
-/// the contract specification. The overhead of this is very minimal on file
-/// size.
+/// The const block has no affect on the above problem and exists only to group
+/// the static and link sections under a shared cfg.
 ///
 /// See https://github.com/stellar/rs-soroban-sdk/issues/383 for more details.
 #[cfg(target_family = "wasm")]
-#[export_name = "_"]
-fn __link_sections() {
+const _: () = {
+    /// This exported static is guaranteed to end up in the final binary of any
+    /// importer, as a global. It exists to ensure the link sections are
+    /// included in the final build artifact. See notes above.
+    #[export_name = "_"]
+    static __: () = ();
+
     #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::internal::meta::XDR.len()] = env::internal::meta::XDR;
 
     // Rustc version.
     contractmeta!(key = "rsver", val = env!("RUSTC_VERSION"),);
 
-    // Rust Soroban SDK version.
+    // Rust Soroban SDK version. Don't emit when the cfg is set. The cfg is set when building test
+    // wasms in this repository, so that every commit in this repo does not cause the test wasms in
+    // this repo to have a new hash due to the revision being embedded. The wasm hash gets embedded
+    // into a few places, such as test snapshots, or get used in test themselves where if they are
+    // constantly changing creates repetitive diffs.
+    #[cfg(not(soroban_sdk_internal_no_rssdkver_meta))]
     contractmeta!(
         key = "rssdkver",
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
-}
+};
 
 // Re-exports of dependencies used by macros.
 #[doc(hidden)]
@@ -1036,7 +1046,7 @@ pub mod prng;
 pub mod storage;
 pub mod token;
 mod vec;
-pub use address::Address;
+pub use address::{Address, Executable};
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
 pub use muxed_address::MuxedAddress;
