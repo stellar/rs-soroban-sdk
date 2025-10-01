@@ -397,6 +397,8 @@ pub mod __Contract____check_auth {
     }
     use super::*;
 }
+impl<'a> ContractClient<'a> {}
+impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
 extern "C" fn __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor(
