@@ -331,16 +331,6 @@ dependencies = [
 
 [[package]]
 name = "ctor"
-version = "0.2.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32a2785755761f3ddc1492979ce1e48d2c00d09311c39e4466429188f3dd6501"
-dependencies = [
- "quote",
- "syn 2.0.103",
-]
-
-[[package]]
-name = "ctor"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67773048316103656a637612c4a62477603b777d91d9c62ff2290f9cde178fdb"
@@ -1437,8 +1427,7 @@ dependencies = [
  "arbitrary",
  "bytes-lit",
  "crate-git-revision",
- "ctor 0.2.9",
- "ctor 0.5.0",
+ "ctor",
  "curve25519-dalek",
  "derive_arbitrary",
  "ed25519-dalek",
