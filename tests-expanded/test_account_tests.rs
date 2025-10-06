@@ -397,29 +397,6 @@ pub mod __Contract____check_auth {
     }
     use super::*;
 }
-#[doc(hidden)]
-#[allow(non_snake_case)]
-extern "C" fn __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor(
-) {
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "__check_auth",
-        #[allow(deprecated)]
-        &__Contract____check_auth::invoke_raw_slice,
-    );
-}
-#[used]
-#[allow(non_upper_case_globals, non_snake_case)]
-#[doc(hidden)]
-#[link_section = ".init_array"]
-static __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
-    #[allow(non_snake_case)]
-    #[link_section = ".text.startup"]
-    unsafe extern "C" fn __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor() -> usize {
-        __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
-        0
-    }
-    __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor___rust_ctor___ctor
-};
 mod test {
     use crate::Contract;
     use soroban_sdk::{

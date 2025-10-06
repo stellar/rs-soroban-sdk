@@ -582,38 +582,6 @@ pub mod __Contract__del {
     }
     use super::*;
 }
-#[doc(hidden)]
-#[allow(non_snake_case)]
-extern "C" fn __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor() {
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "put",
-        #[allow(deprecated)]
-        &__Contract__put::invoke_raw_slice,
-    );
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "get",
-        #[allow(deprecated)]
-        &__Contract__get::invoke_raw_slice,
-    );
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "del",
-        #[allow(deprecated)]
-        &__Contract__del::invoke_raw_slice,
-    );
-}
-#[used]
-#[allow(non_upper_case_globals, non_snake_case)]
-#[doc(hidden)]
-#[link_section = ".init_array"]
-static __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
-    #[allow(non_snake_case)]
-    #[link_section = ".text.startup"]
-    unsafe extern "C" fn __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor___rust_ctor___ctor() -> usize {
-        __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor();
-        0
-    }
-    __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor___rust_ctor___ctor
-};
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]
