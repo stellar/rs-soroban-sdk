@@ -189,6 +189,25 @@ jobs:
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
+  miri:
+    needs: build
+    runs-on: ${{ matrix.sys.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup install nightly
+    - run: rustup +nightly component add miri
+    - run: cargo +nightly miri setup
+    - name: Restore test wasms for tests from one of the msrv builds
+      uses: actions/download-artifact@v5
+      with:
+        name: test-wasms-msrv-x86_64-unknown-linux-gnu
+        path: target/wasm32v1-none/release/
+    - name: Run miri
+      run: >
+        RUST_BACKTRACE=1
+        MIRIFLAGS="-Zmiri-disable-isolation -Zmiri-strict-provenance"
+        cargo +nightly miri test --lib
+
   build-fuzz:
     runs-on: ubuntu-latest
     steps:
