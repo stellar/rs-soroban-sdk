@@ -318,6 +318,11 @@ mod objects {
     use crate::ConversionError;
     use crate::{Env, IntoVal, TryFromVal, TryIntoVal};
 
+    use crate::crypto::bn254::{
+        Fr as Bn254Fr, G1Affine as Bn254G1Affine, G2Affine as Bn254G2Affine,
+        G1_SERIALIZED_SIZE as BN254_G1_SERIALIZED_SIZE,
+        G2_SERIALIZED_SIZE as BN254_G2_SERIALIZED_SIZE,
+    };
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
     use crate::{
         crypto::bls12_381::{
@@ -806,6 +811,62 @@ mod objects {
         fn try_from_val(env: &Env, v: &ArbitraryFr) -> Result<Self, Self::Error> {
             // Convert bytes to Fr via U256
             Ok(Fr::from_bytes(BytesN::from_array(env, &v.bytes)))
+        }
+    }
+
+    // BN254 types
+
+    // For BN254 G1Affine (64 bytes)
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryBn254G1Affine {
+        bytes: [u8; BN254_G1_SERIALIZED_SIZE],
+    }
+
+    impl SorobanArbitrary for Bn254G1Affine {
+        type Prototype = ArbitraryBn254G1Affine;
+    }
+
+    impl TryFromVal<Env, ArbitraryBn254G1Affine> for Bn254G1Affine {
+        type Error = ConversionError;
+
+        fn try_from_val(env: &Env, v: &ArbitraryBn254G1Affine) -> Result<Self, Self::Error> {
+            Ok(Bn254G1Affine::from_array(env, &v.bytes))
+        }
+    }
+
+    // For BN254 G2Affine (128 bytes)
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryBn254G2Affine {
+        bytes: [u8; BN254_G2_SERIALIZED_SIZE],
+    }
+
+    impl SorobanArbitrary for Bn254G2Affine {
+        type Prototype = ArbitraryBn254G2Affine;
+    }
+
+    impl TryFromVal<Env, ArbitraryBn254G2Affine> for Bn254G2Affine {
+        type Error = ConversionError;
+
+        fn try_from_val(env: &Env, v: &ArbitraryBn254G2Affine) -> Result<Self, Self::Error> {
+            Ok(Bn254G2Affine::from_array(env, &v.bytes))
+        }
+    }
+
+    // For BN254 Fr (32 bytes)
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryBn254Fr {
+        bytes: [u8; 32],
+    }
+
+    impl SorobanArbitrary for Bn254Fr {
+        type Prototype = ArbitraryBn254Fr;
+    }
+
+    impl TryFromVal<Env, ArbitraryBn254Fr> for Bn254Fr {
+        type Error = ConversionError;
+
+        fn try_from_val(env: &Env, v: &ArbitraryBn254Fr) -> Result<Self, Self::Error> {
+            Ok(Bn254Fr::from_bytes(BytesN::from_array(env, &v.bytes)))
         }
     }
 }
