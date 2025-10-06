@@ -304,6 +304,36 @@ pub mod __Contract__run {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__acba25512100f80b56fc3ccd14c65be55d94800cda77585c5f41a887e398f9be_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__acba25512100f80b56fc3ccd14c65be55d94800cda77585c5f41a887e398f9be_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "run",
+            #[allow(deprecated)]
+            &__Contract__run::invoke_raw_slice,
+        );
+    }
+}
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]

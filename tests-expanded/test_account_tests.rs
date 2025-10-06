@@ -397,6 +397,37 @@ pub mod __Contract____check_auth {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "__check_auth",
+            #[allow(deprecated)]
+            &__Contract____check_auth::invoke_raw_slice,
+        );
+    }
+}
 mod test {
     use crate::Contract;
     use soroban_sdk::{

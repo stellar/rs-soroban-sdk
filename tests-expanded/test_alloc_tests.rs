@@ -294,6 +294,36 @@ pub mod __Contract__num_list {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__526e07cb9219443e6b3ef052e7872bf9e5bfee9b91633ed921601b5e93014bb7_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__526e07cb9219443e6b3ef052e7872bf9e5bfee9b91633ed921601b5e93014bb7_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "num_list",
+            #[allow(deprecated)]
+            &__Contract__num_list::invoke_raw_slice,
+        );
+    }
+}
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::{vec, Env};

@@ -139,6 +139,30 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 impl Contract {}
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {}
+}
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;

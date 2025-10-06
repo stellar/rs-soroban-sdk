@@ -923,6 +923,41 @@ pub mod __Contract__persisted {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "hello",
+            #[allow(deprecated)]
+            &__Contract__hello::invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "persisted",
+            #[allow(deprecated)]
+            &__Contract__persisted::invoke_raw_slice,
+        );
+    }
+}
 mod test {
     use crate::{Contract, ContractClient, Error, Flag};
     use soroban_sdk::{symbol_short, xdr, Env, InvokeError};

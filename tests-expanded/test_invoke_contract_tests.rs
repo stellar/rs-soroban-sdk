@@ -330,6 +330,36 @@ pub mod __Contract__add_with {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "add_with",
+            #[allow(deprecated)]
+            &__Contract__add_with::invoke_raw_slice,
+        );
+    }
+}
 pub struct AddContract;
 ///AddContractArgs is a type for building arg lists for functions defined in "AddContract".
 pub struct AddContractArgs;
@@ -625,6 +655,36 @@ pub mod __AddContract__add {
         invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
     }
     use super::*;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __AddContract__7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __AddContract__7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <AddContract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "add",
+            #[allow(deprecated)]
+            &__AddContract__add::invoke_raw_slice,
+        );
+    }
 }
 mod test {
     use crate::{AddContract, Contract, ContractClient};

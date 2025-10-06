@@ -152,6 +152,36 @@ mod feat1 {
         }
         use super::*;
     }
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(unused)]
+    fn __Contract__7692c3ad3540bb803c020b3aee66cd8887123234ea0c6e7143c0add73ff431ed_ctor() {
+        #[allow(unsafe_code)]
+        {
+            #[link_section = ".init_array"]
+            #[used]
+            #[allow(non_upper_case_globals, non_snake_case)]
+            #[doc(hidden)]
+            static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+                #[link_section = ".text.startup"]
+                #[allow(non_snake_case)]
+                extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                    unsafe {
+                        __Contract__7692c3ad3540bb803c020b3aee66cd8887123234ea0c6e7143c0add73ff431ed_ctor();
+                    };
+                    core::default::Default::default()
+                }
+                f
+            };
+        }
+        {
+            <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+                "one",
+                #[allow(deprecated)]
+                &__Contract__one::invoke_raw_slice,
+            );
+        }
+    }
 }
 mod feat2 {
     use crate::ContractArgs;
@@ -298,6 +328,36 @@ mod feat2 {
             invoke_raw(soroban_sdk::Env::default())
         }
         use super::*;
+    }
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(unused)]
+    fn __super__Contract__3fc4ccfe745870e2c0d99f71f30ff0656c8dedd41cc1d7d3d376b0dbe685e2f3_ctor() {
+        #[allow(unsafe_code)]
+        {
+            #[link_section = ".init_array"]
+            #[used]
+            #[allow(non_upper_case_globals, non_snake_case)]
+            #[doc(hidden)]
+            static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+                #[link_section = ".text.startup"]
+                #[allow(non_snake_case)]
+                extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                    unsafe {
+                        __super__Contract__3fc4ccfe745870e2c0d99f71f30ff0656c8dedd41cc1d7d3d376b0dbe685e2f3_ctor();
+                    };
+                    core::default::Default::default()
+                }
+                f
+            };
+        }
+        {
+            <super::Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+                "two",
+                #[allow(deprecated)]
+                &__super__Contract__two::invoke_raw_slice,
+            );
+        }
     }
 }
 mod test {
@@ -637,6 +697,36 @@ pub mod __Contract__zero {
         invoke_raw(soroban_sdk::Env::default())
     }
     use super::*;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__f9194e73f9e9459e3450ea10a179cdf77aafa695beecd3b9344a98d111622243_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__f9194e73f9e9459e3450ea10a179cdf77aafa695beecd3b9344a98d111622243_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "zero",
+            #[allow(deprecated)]
+            &__Contract__zero::invoke_raw_slice,
+        );
+    }
 }
 #[rustc_main]
 #[coverage(off)]

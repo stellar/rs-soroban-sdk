@@ -276,6 +276,36 @@ pub mod __Contract__value {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "value",
+            #[allow(deprecated)]
+            &__Contract__value::invoke_raw_slice,
+        );
+    }
+}
 mod test {
     use super::*;
     use soroban_sdk::Env;

@@ -582,6 +582,46 @@ pub mod __Contract__del {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "put",
+            #[allow(deprecated)]
+            &__Contract__put::invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "get",
+            #[allow(deprecated)]
+            &__Contract__get::invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "del",
+            #[allow(deprecated)]
+            &__Contract__del::invoke_raw_slice,
+        );
+    }
+}
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]

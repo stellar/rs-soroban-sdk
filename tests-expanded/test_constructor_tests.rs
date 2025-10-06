@@ -919,6 +919,41 @@ pub mod __Contract__get_data {
     }
     use super::*;
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb13593_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb13593_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "__constructor",
+            #[allow(deprecated)]
+            &__Contract____constructor::invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "get_data",
+            #[allow(deprecated)]
+            &__Contract__get_data::invoke_raw_slice,
+        );
+    }
+}
 extern crate test;
 #[rustc_test_marker = "test_constructor"]
 #[doc(hidden)]
