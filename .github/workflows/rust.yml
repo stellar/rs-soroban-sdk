@@ -198,7 +198,7 @@ jobs:
     - run: rustup install nightly
     - run: rustup +nightly component add miri
     - run: cargo +nightly miri setup
-    - uses: stellar/binaries@v10
+    - uses: stellar/binaries@v49
       with:
         name: cargo-nextest
         version: 0.9.105
