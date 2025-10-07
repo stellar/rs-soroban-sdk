@@ -62,6 +62,7 @@ expand-tests: build-test-wasms
 miri:
 	RUST_BACKTRACE=1 \
 	MIRIFLAGS="-Zmiri-disable-isolation -Zmiri-strict-provenance" \
+	PROPTEST_CASES=1 \
 	cargo +nightly miri test
 
 fmt:
