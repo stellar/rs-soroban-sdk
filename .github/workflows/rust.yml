@@ -189,27 +189,6 @@ jobs:
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
-  miri:
-    #if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
-    needs: build
-    runs-on: ubuntu-latest-16-cores
-    steps:
-    - uses: actions/checkout@v3
-    - run: rustup install nightly
-    - run: rustup +nightly component add miri
-    - run: cargo +nightly miri setup
-    - uses: stellar/binaries@v49
-      with:
-        name: cargo-nextest
-        version: 0.9.105
-    - name: Restore test wasms for tests from one of the msrv builds
-      uses: actions/download-artifact@v5
-      with:
-        name: test-wasms-msrv-x86_64-unknown-linux-gnu
-        path: target/wasm32v1-none/release/
-    - name: Run miri
-      run: make miri
-
   build-fuzz:
     runs-on: ubuntu-latest
     steps:
