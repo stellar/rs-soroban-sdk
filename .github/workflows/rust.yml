@@ -198,6 +198,10 @@ jobs:
     - run: rustup install nightly
     - run: rustup +nightly component add miri
     - run: cargo +nightly miri setup
+    - uses: stellar/binaries@v10
+      with:
+        name: cargo-nextest
+        version: 0.9.105
     - name: Restore test wasms for tests from one of the msrv builds
       uses: actions/download-artifact@v5
       with:
