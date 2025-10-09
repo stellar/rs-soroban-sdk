@@ -25,14 +25,14 @@ impl<'a> ContractClient<'a> {
     }
 }
 impl Contract {
-    pub fn put(e: Env, key: Symbol, val: Symbol) {
-        e.storage().persistent().set(&key, &val)
+    pub fn put(e: Env, key: &Symbol, val: &Symbol) {
+        e.storage().persistent().set(key, val)
     }
-    pub fn get(e: Env, key: Symbol) -> Option<Symbol> {
-        e.storage().persistent().get(&key)
+    pub fn get(e: Env, key: &Symbol) -> Option<Symbol> {
+        e.storage().persistent().get(key)
     }
-    pub fn del(e: Env, key: Symbol) {
-        e.storage().persistent().remove(&key)
+    pub fn del(e: Env, key: &Symbol) {
+        e.storage().persistent().remove(key)
     }
 }
 #[doc(hidden)]
@@ -222,13 +222,13 @@ pub mod __Contract__put {
             #[allow(deprecated)]
             &<super::Contract>::put(
                 env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
                     >>::try_from_val_for_contract_fn(&env, &arg_0),
                 ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
@@ -259,7 +259,7 @@ pub mod __Contract__get {
             #[allow(deprecated)]
             &<super::Contract>::get(
                 env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
@@ -287,7 +287,7 @@ pub mod __Contract__del {
             #[allow(deprecated)]
             &<super::Contract>::del(
                 env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
