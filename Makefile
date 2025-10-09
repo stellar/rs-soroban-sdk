@@ -59,6 +59,12 @@ expand-tests: build-test-wasms
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
 	done
 
+miri:
+	RUST_BACKTRACE=1 \
+	MIRIFLAGS="-Zmiri-disable-isolation -Zmiri-strict-provenance" \
+	PROPTEST_CASES=1 \
+	cargo +nightly miri nextest run
+
 fmt:
 	cargo fmt --all
 

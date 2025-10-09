@@ -225,7 +225,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
 
     quote! {
         #[doc(hidden)]
-        #[#crate_path::reexports_for_macros::ctor::ctor]
+        #[#crate_path::reexports_for_macros::ctor::ctor(crate_path=#crate_path::reexports_for_macros::ctor)]
         #[allow(non_snake_case)]
         fn #ctor_ident() {
             #(
