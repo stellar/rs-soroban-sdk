@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        working-directory: ${{ fromJSON(needs.dirs.outputs.dirs) }}
+        working-directory: ${{ fromJSON(needs.collect-soroban-examples-dirs.outputs.dirs) }}
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
