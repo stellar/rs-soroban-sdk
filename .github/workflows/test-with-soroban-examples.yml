@@ -34,7 +34,7 @@ jobs:
           rustup update
           rustup target add wasm32v1-none
 
-      - uses: stellar/stellar-cli@main
+      - uses: stellar/stellar-cli@v23.1.4
 
       - uses: stellar/actions/rust-cache@main
 
