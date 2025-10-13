@@ -103,7 +103,12 @@ pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
             attrs: pat_type.attrs.clone(),
             pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
             colon_token: pat_type.colon_token,
-            ty: Box::new(fn_arg_ref_type(arg, lifetime)),
+            ty: Box::new(Type::Reference(TypeReference {
+                and_token: And::default(),
+                lifetime: lifetime.cloned(),
+                mutability: None,
+                elem: Box::new(type_unwrap_ref(*pat_type.ty.clone())),
+            })),
         });
     }
     arg.clone()
