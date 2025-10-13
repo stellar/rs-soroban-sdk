@@ -98,16 +98,15 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
 
 /// Returns a clone of FnArg, converted into an immutable reference with the given lifetime.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
-    match arg {
-        FnArg::Typed(pat_type) => {
-            return FnArg::Typed(PatType {
-                attrs: pat_type.attrs.clone(),
-                pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
-                colon_token: pat_type.colon_token,
-                ty: Box::new(fn_arg_ref_type(arg, lifetime)),
-            });
-        }
-        _ => arg.clone(),
+    if let FnArg::Typed(pat_type) = arg {
+        return FnArg::Typed(PatType {
+            attrs: pat_type.attrs.clone(),
+            pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
+            colon_token: pat_type.colon_token,
+            ty: Box::new(fn_arg_ref_type(arg, lifetime)),
+        });
+    } else {
+        arg.clone()
     }
 }
 
