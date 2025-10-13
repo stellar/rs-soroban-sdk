@@ -34,6 +34,11 @@ jobs:
           rustup update
           rustup target add wasm32v1-none
 
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
       - uses: stellar/stellar-cli@v23.1.4
 
       - uses: stellar/actions/rust-cache@main
