@@ -59,8 +59,8 @@ pub fn type_unwrap_ref(t: Type) -> Type {
 }
 
 /// Modifies a Pat removing any 'mut' on an Ident.
-pub fn pat_unwrap_mut(i: Pat) -> Pat {
-    match i {
+pub fn pat_unwrap_mut(p: Pat) -> Pat {
+    match p {
         Pat::Ident(PatIdent {
             attrs,
             by_ref,
@@ -74,7 +74,7 @@ pub fn pat_unwrap_mut(i: Pat) -> Pat {
             ident,
             subpat,
         }),
-        _ => i,
+        _ => p,
     }
 }
 
