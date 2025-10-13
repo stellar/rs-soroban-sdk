@@ -24,11 +24,11 @@ impl<'a> ContractClient<'a> {
         }
     }
 }
-impl Contract {
+impl<'i> Contract {
     pub fn put(e: Env, key: &Symbol, val: &Symbol) {
         e.storage().persistent().set(key, val)
     }
-    pub fn get(e: Env, key: &Symbol) -> Option<Symbol> {
+    pub fn get(e: Env, key: &'i mut Symbol) -> Option<Symbol> {
         e.storage().persistent().get(key)
     }
     pub fn del(e: Env, key: &Symbol) {
@@ -259,7 +259,7 @@ pub mod __Contract__get {
             #[allow(deprecated)]
             &<super::Contract>::get(
                 env.clone(),
-                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                &mut <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
                         soroban_sdk::Val,

@@ -5,12 +5,12 @@ use soroban_sdk::{contract, contractimpl, Env, Symbol};
 pub struct Contract;
 
 #[contractimpl]
-impl Contract {
+impl<'i> Contract {
     pub fn put(e: Env, key: &Symbol, val: &Symbol) {
         e.storage().persistent().set(key, val)
     }
 
-    pub fn get(e: Env, key: &Symbol) -> Option<Symbol> {
+    pub fn get(e: Env, key: &'i mut Symbol) -> Option<Symbol> {
         e.storage().persistent().get(key)
     }
 
