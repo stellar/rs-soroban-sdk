@@ -25,7 +25,7 @@ jobs:
         run: |
           find soroban-examples -name Cargo.toml | while read file; do
             dir=$(dirname "$file")
-            rel_path=$(realpath --relative-to="$dir" rs-soroban-sdk)
+            rel_path=$(realpath --relative-to="$dir" rs-soroban-sdk/soroban-sdk)
             sed -i "/soroban-sdk =/ { s|soroban-sdk = .*|soroban-sdk = { path = \"$rel_path\" }| }" "$file"
           done
 
