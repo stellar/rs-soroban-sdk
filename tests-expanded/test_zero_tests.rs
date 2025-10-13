@@ -4,12 +4,12 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl};
-pub struct Contract;
-///ContractArgs is a type for building arg lists for functions defined in "Contract".
-pub struct ContractArgs;
-///ContractClient is a client for calling the contract defined in "Contract".
-pub struct ContractClient<'a> {
+use soroban_sdk::contract;
+struct _Contract;
+///_ContractArgs is a type for building arg lists for functions defined in "_Contract".
+pub struct _ContractArgs;
+///_ContractClient is a client for calling the contract defined in "_Contract".
+pub struct _ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
@@ -21,7 +21,7 @@ pub struct ContractClient<'a> {
     #[doc(hidden)]
     allow_non_root_auth: bool,
 }
-impl<'a> ContractClient<'a> {
+impl<'a> _ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
@@ -101,7 +101,7 @@ impl<'a> ContractClient<'a> {
         }
     }
 }
-mod __contract_fn_set_registry {
+mod ___contract_fn_set_registry {
     use super::*;
     extern crate std;
     use std::collections::BTreeMap;
@@ -120,79 +120,20 @@ mod __contract_fn_set_registry {
         fopt.map(|f| f(env, args))
     }
 }
-impl soroban_sdk::testutils::ContractFunctionRegister for Contract {
-    fn register(name: &'static str, func: &'static __contract_fn_set_registry::F) {
-        __contract_fn_set_registry::register(name, func);
+impl soroban_sdk::testutils::ContractFunctionRegister for _Contract {
+    fn register(name: &'static str, func: &'static ___contract_fn_set_registry::F) {
+        ___contract_fn_set_registry::register(name, func);
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+impl soroban_sdk::testutils::ContractFunctionSet for _Contract {
     fn call(
         &self,
         func: &str,
         env: soroban_sdk::Env,
         args: &[soroban_sdk::Val],
     ) -> Option<soroban_sdk::Val> {
-        __contract_fn_set_registry::call(func, env, args)
-    }
-}
-impl Contract {}
-impl<'a> ContractClient<'a> {}
-impl ContractArgs {}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[allow(unused)]
-fn __Contract__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor() {
-    #[allow(unsafe_code)]
-    {
-        #[link_section = ".init_array"]
-        #[used]
-        #[allow(non_upper_case_globals, non_snake_case)]
-        #[doc(hidden)]
-        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
-            #[link_section = ".text.startup"]
-            #[allow(non_snake_case)]
-            extern "C" fn f() -> ::ctor::__support::CtorRetType {
-                unsafe {
-                    __Contract__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
-                };
-                core::default::Default::default()
-            }
-            f
-        };
-    }
-    {}
-}
-mod test {
-    use crate::{Contract, ContractClient};
-    use soroban_sdk::Env;
-    extern crate test;
-    #[rustc_test_marker = "test::test_hello"]
-    #[doc(hidden)]
-    pub const test_hello: test::TestDescAndFn = test::TestDescAndFn {
-        desc: test::TestDesc {
-            name: test::StaticTestName("test::test_hello"),
-            ignore: false,
-            ignore_message: ::core::option::Option::None,
-            source_file: "tests/empty2/src/lib.rs",
-            start_line: 17usize,
-            start_col: 8usize,
-            end_line: 17usize,
-            end_col: 18usize,
-            compile_fail: false,
-            no_run: false,
-            should_panic: test::ShouldPanic::No,
-            test_type: test::TestType::UnitTest,
-        },
-        testfn: test::StaticTestFn(
-            #[coverage(off)]
-            || test::assert_test_result(test_hello()),
-        ),
-    };
-    fn test_hello() {
-        let e = Env::default();
-        let contract_id = e.register(Contract, ());
-        let _client = ContractClient::new(&e, &contract_id);
+        ___contract_fn_set_registry::call(func, env, args)
     }
 }
 #[rustc_main]
@@ -200,5 +141,5 @@ mod test {
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_hello])
+    test::test_main_static(&[])
 }

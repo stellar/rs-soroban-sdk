@@ -137,26 +137,24 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
     }
 }
 impl Contract {
-    pub fn add(a: i128, b: i128) -> i128 {
-        a + b
-    }
+    pub fn empty(_a: i32, _b: &i32) {}
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__add__spec {
+pub mod __Contract__empty__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_ADD: [u8; 60usize] = super::Contract::spec_xdr_add();
+    pub static __SPEC_XDR_FN_EMPTY: [u8; 60usize] = super::Contract::spec_xdr_empty();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
+    pub const fn spec_xdr_empty() -> [u8; 60usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x05\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x05\0\0\0\0"
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn add(&self, a: &i128, b: &i128) -> i128 {
+    pub fn empty(&self, _a: &i32, _b: &i32) -> () {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -183,12 +181,12 @@ impl<'a> ContractClient<'a> {
             &self.address,
             &{
                 #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("add");
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty");
                 SYMBOL
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [a.into_val(&self.env), b.into_val(&self.env)],
+                [_a.into_val(&self.env), _b.into_val(&self.env)],
             ),
         );
         if let Some(old_auth_manager) = old_auth_manager {
@@ -196,12 +194,12 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn try_add(
+    pub fn try_empty(
         &self,
-        a: &i128,
-        b: &i128,
+        _a: &i32,
+        _b: &i32,
     ) -> Result<
-        Result<i128, <i128 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use core::ops::Not;
@@ -226,12 +224,12 @@ impl<'a> ContractClient<'a> {
             &self.address,
             &{
                 #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("add");
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty");
                 SYMBOL
             },
             ::soroban_sdk::Vec::from_array(
                 &self.env,
-                [a.into_val(&self.env), b.into_val(&self.env)],
+                [_a.into_val(&self.env), _b.into_val(&self.env)],
             ),
         );
         if let Some(old_auth_manager) = old_auth_manager {
@@ -243,15 +241,15 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn add<'i>(a: &'i i128, b: &'i i128) -> (&'i i128, &'i i128) {
-        (a, b)
+    pub fn empty<'i>(_a: &'i i32, _b: &'i i32) -> (&'i i32, &'i i32) {
+        (_a, _b)
     }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__add {
+pub mod __Contract__empty {
     use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add` instead")]
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
     pub fn invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
@@ -259,14 +257,14 @@ pub mod __Contract__add {
     ) -> soroban_sdk::Val {
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<super::Contract>::add(
+            &<super::Contract>::empty(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
                     >>::try_from_val_for_contract_fn(&env, &arg_0),
                 ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
                         soroban_sdk::Val,
@@ -276,7 +274,7 @@ pub mod __Contract__add {
             &env,
         )
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add` instead")]
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
     pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
         if args.len() != 2usize {
             {
@@ -290,7 +288,7 @@ pub mod __Contract__add {
         #[allow(deprecated)]
         invoke_raw(env, args[0usize], args[1usize])
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add` instead")]
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
     pub extern "C" fn invoke_raw_extern(
         arg_0: soroban_sdk::Val,
         arg_1: soroban_sdk::Val,
@@ -303,7 +301,7 @@ pub mod __Contract__add {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor() {
+fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -315,7 +313,7 @@ fn __Contract__7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor();
+                    __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
                 };
                 core::default::Default::default()
             }
@@ -324,9 +322,9 @@ fn __Contract__7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_
     }
     {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "add",
+            "empty",
             #[allow(deprecated)]
-            &__Contract__add::invoke_raw_slice,
+            &__Contract__empty::invoke_raw_slice,
         );
     }
 }
@@ -334,18 +332,18 @@ mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
-    #[rustc_test_marker = "test::test_add"]
+    #[rustc_test_marker = "test::test_hello"]
     #[doc(hidden)]
-    pub const test_add: test::TestDescAndFn = test::TestDescAndFn {
+    pub const test_hello: test::TestDescAndFn = test::TestDescAndFn {
         desc: test::TestDesc {
-            name: test::StaticTestName("test::test_add"),
+            name: test::StaticTestName("test::test_hello"),
             ignore: false,
             ignore_message: ::core::option::Option::None,
-            source_file: "tests/add_i128/src/lib.rs",
-            start_line: 21usize,
+            source_file: "tests/empty3/src/lib.rs",
+            start_line: 19usize,
             start_col: 8usize,
-            end_line: 21usize,
-            end_col: 16usize,
+            end_line: 19usize,
+            end_col: 18usize,
             compile_fail: false,
             no_run: false,
             should_panic: test::ShouldPanic::No,
@@ -353,19 +351,14 @@ mod test {
         },
         testfn: test::StaticTestFn(
             #[coverage(off)]
-            || test::assert_test_result(test_add()),
+            || test::assert_test_result(test_hello()),
         ),
     };
-    fn test_add() {
+    fn test_hello() {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
-        let x = 2i128.pow(70);
-        let y = 4i128.pow(20);
-        let z = client.add(&x, &y);
-        if !(z == x + y) {
-            ::core::panicking::panic("assertion failed: z == x + y")
-        }
+        client.empty(&0, &0);
     }
 }
 #[rustc_main]
@@ -373,5 +366,5 @@ mod test {
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_add])
+    test::test_main_static(&[&test_hello])
 }

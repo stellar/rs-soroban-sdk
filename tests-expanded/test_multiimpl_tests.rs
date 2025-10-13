@@ -4,7 +4,7 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl, Env, Symbol};
+use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -137,60 +137,24 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
     }
 }
 impl Contract {
-    pub fn put(e: Env, key: &Symbol, val: &Symbol) {
-        e.storage().persistent().set(key, val)
-    }
-    pub fn get(e: Env, key: &Symbol) -> Option<Symbol> {
-        e.storage().persistent().get(key)
-    }
-    pub fn del(e: Env, key: &Symbol) {
-        e.storage().persistent().remove(key)
-    }
+    pub fn empty() {}
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__put__spec {
+pub mod __Contract__empty__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_PUT: [u8; 56usize] = super::Contract::spec_xdr_put();
+    pub static __SPEC_XDR_FN_EMPTY: [u8; 28usize] = super::Contract::spec_xdr_empty();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_put() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03put\0\0\0\0\x02\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\0\0\0\0\x03val\0\0\0\0\x11\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__get__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_GET: [u8; 48usize] = super::Contract::spec_xdr_get();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_get() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03get\0\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\x01\0\0\x03\xe8\0\0\0\x11"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__del__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_DEL: [u8; 40usize] = super::Contract::spec_xdr_del();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_del() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03del\0\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\0"
+    pub const fn spec_xdr_empty() -> [u8; 28usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\0\0\0\0\0"
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn put(&self, key: &Symbol, val: &Symbol) -> () {
+    pub fn empty(&self) -> () {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -217,23 +181,18 @@ impl<'a> ContractClient<'a> {
             &self.address,
             &{
                 #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("put");
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [key.into_val(&self.env), val.into_val(&self.env)],
-            ),
+            ::soroban_sdk::Vec::new(&self.env),
         );
         if let Some(old_auth_manager) = old_auth_manager {
             self.env.host().set_auth_manager(old_auth_manager).unwrap();
         }
         res
     }
-    pub fn try_put(
+    pub fn try_empty(
         &self,
-        key: &Symbol,
-        val: &Symbol,
     ) -> Result<
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
@@ -260,168 +219,10 @@ impl<'a> ContractClient<'a> {
             &self.address,
             &{
                 #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("put");
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::from_array(
-                &self.env,
-                [key.into_val(&self.env), val.into_val(&self.env)],
-            ),
-        );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
-        res
-    }
-    pub fn get(&self, key: &Symbol) -> Option<Symbol> {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("get");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
-        );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
-        res
-    }
-    pub fn try_get(
-        &self,
-        key: &Symbol,
-    ) -> Result<
-        Result<
-            Option<Symbol>,
-            <Option<Symbol> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-        >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                self.env.mock_all_auths();
-            }
-        }
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("get");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
-        );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
-        res
-    }
-    pub fn del(&self, key: &Symbol) -> () {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("del");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
-        );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
-        res
-    }
-    pub fn try_del(
-        &self,
-        key: &Symbol,
-    ) -> Result<
-        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                self.env.mock_all_auths();
-            }
-        }
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("del");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::from_array(&self.env, [key.into_val(&self.env)]),
+            ::soroban_sdk::Vec::new(&self.env),
         );
         if let Some(old_auth_manager) = old_auth_manager {
             self.env.host().set_auth_manager(old_auth_manager).unwrap();
@@ -432,160 +233,47 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn put<'i>(key: &'i Symbol, val: &'i Symbol) -> (&'i Symbol, &'i Symbol) {
-        (key, val)
-    }
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn get<'i>(key: &'i Symbol) -> (&'i Symbol,) {
-        (key,)
-    }
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn del<'i>(key: &'i Symbol) -> (&'i Symbol,) {
-        (key,)
+    pub fn empty<'i>() -> () {
+        ()
     }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__put {
+pub mod __Contract__empty {
     use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).put` instead")]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<super::Contract>::put(
-                env.clone(),
-                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
-            ),
+            &<super::Contract>::empty(),
             &env,
         )
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).put` instead")]
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
     pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 2usize {
+        if args.len() != 0usize {
             {
                 ::core::panicking::panic_fmt(format_args!(
                     "invalid number of input arguments: {0} expected, got {1}",
-                    2usize,
+                    0usize,
                     args.len(),
                 ));
             };
         }
         #[allow(deprecated)]
-        invoke_raw(env, args[0usize], args[1usize])
+        invoke_raw(env)
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).put` instead")]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
         #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
-    }
-    use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__get {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).get` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::get(
-                env.clone(),
-                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).get` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).get` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__del {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).del` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::del(
-                env.clone(),
-                &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).del` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).del` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
+        invoke_raw(soroban_sdk::Env::default())
     }
     use super::*;
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor() {
+fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -597,7 +285,7 @@ fn __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_ctor();
+                    __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
                 };
                 core::default::Default::default()
             }
@@ -606,20 +294,377 @@ fn __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_
     }
     {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "put",
+            "empty",
             #[allow(deprecated)]
-            &__Contract__put::invoke_raw_slice,
+            &__Contract__empty::invoke_raw_slice,
         );
+    }
+}
+impl Contract {
+    pub fn empty2() {}
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__empty2__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_EMPTY2: [u8; 28usize] = super::Contract::spec_xdr_empty2();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_empty2() -> [u8; 28usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty2\0\0\0\0\0\0\0\0\0\0"
+    }
+}
+impl<'a> ContractClient<'a> {
+    pub fn empty2(&self) -> () {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty2");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_empty2(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                self.env.mock_all_auths();
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty2");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+}
+impl ContractArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn empty2<'i>() -> () {
+        ()
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__empty2 {
+    use super::*;
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
+            #[allow(deprecated)]
+            &<super::Contract>::empty2(),
+            &env,
+        )
+    }
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
+        if args.len() != 0usize {
+            {
+                ::core::panicking::panic_fmt(format_args!(
+                    "invalid number of input arguments: {0} expected, got {1}",
+                    0usize,
+                    args.len(),
+                ));
+            };
+        }
+        #[allow(deprecated)]
+        invoke_raw(env)
+    }
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+        #[allow(deprecated)]
+        invoke_raw(soroban_sdk::Env::default())
+    }
+    use super::*;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "get",
+            "empty2",
             #[allow(deprecated)]
-            &__Contract__get::invoke_raw_slice,
+            &__Contract__empty2::invoke_raw_slice,
         );
+    }
+}
+trait Trait {
+    fn empty3() {}
+}
+impl Trait for Contract {
+    fn empty3() {}
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__empty3__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_EMPTY3: [u8; 28usize] = super::Contract::spec_xdr_empty3();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_empty3() -> [u8; 28usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty3\0\0\0\0\0\0\0\0\0\0"
+    }
+}
+impl<'a> ContractClient<'a> {
+    pub fn empty3(&self) -> () {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty3");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_empty3(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                self.env.mock_all_auths();
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty3");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+}
+impl ContractArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn empty3<'i>() -> () {
+        ()
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__empty3 {
+    use super::*;
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
+    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+        use super::Trait;
+        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
+            #[allow(deprecated)]
+            &<super::Contract>::empty3(),
+            &env,
+        )
+    }
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
+    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
+        if args.len() != 0usize {
+            {
+                ::core::panicking::panic_fmt(format_args!(
+                    "invalid number of input arguments: {0} expected, got {1}",
+                    0usize,
+                    args.len(),
+                ));
+            };
+        }
+        #[allow(deprecated)]
+        invoke_raw(env)
+    }
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
+    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+        #[allow(deprecated)]
+        invoke_raw(soroban_sdk::Env::default())
+    }
+    use super::*;
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b77052a7ae50fa889_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract_Trait_2be3aa1100044a64e8135c570a7b382cebaca742493cf17b77052a7ae50fa889_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "del",
+            "empty3",
             #[allow(deprecated)]
-            &__Contract__del::invoke_raw_slice,
+            &__Contract__empty3::invoke_raw_slice,
         );
+    }
+}
+mod test {
+    use crate::{Contract, ContractClient};
+    use soroban_sdk::Env;
+    extern crate test;
+    #[rustc_test_marker = "test::test_hello"]
+    #[doc(hidden)]
+    pub const test_hello: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::test_hello"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/multiimpl/src/lib.rs",
+            start_line: 33usize,
+            start_col: 8usize,
+            end_line: 33usize,
+            end_col: 18usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(test_hello()),
+        ),
+    };
+    fn test_hello() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        client.empty();
+        client.empty2();
+        client.empty3();
     }
 }
 #[rustc_main]
@@ -627,5 +672,5 @@ fn __Contract__0e764744b384ee8739a8810d2509da0f2e8c1cbf45b7a6de3d69726f824c2c8c_
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[])
+    test::test_main_static(&[&test_hello])
 }
