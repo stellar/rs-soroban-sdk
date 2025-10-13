@@ -300,26 +300,34 @@ pub mod __Contract__empty {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-extern "C" fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor() {
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "empty",
-        #[allow(deprecated)]
-        &__Contract__empty::invoke_raw_slice,
-    );
-}
-#[used]
-#[allow(non_upper_case_globals, non_snake_case)]
-#[doc(hidden)]
-#[link_section = ".init_array"]
-static __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
-    #[allow(non_snake_case)]
-    #[link_section = ".text.startup"]
-    unsafe extern "C" fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor___rust_ctor___ctor() -> usize {
-        __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
-        0
+#[allow(unused)]
+fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
     }
-    __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor___rust_ctor___ctor
-};
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "empty",
+            #[allow(deprecated)]
+            &__Contract__empty::invoke_raw_slice,
+        );
+    }
+}
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
