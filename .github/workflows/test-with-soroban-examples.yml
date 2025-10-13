@@ -46,9 +46,7 @@ jobs:
         env:
           CARGO_BUILD_RUSTFLAGS: "-A deprecated"
         run: |
-          # Temporarily exclude import_ark_bn254 which has allocator compatibility issues
-          cd soroban-examples && mv import_ark_bn254 import_ark_bn254.disabled 2>/dev/null || true
-          make build
+          make -C soroban-examples build
 
       - name: Test soroban-examples
         env:
