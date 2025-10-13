@@ -105,9 +105,8 @@ pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
             colon_token: pat_type.colon_token,
             ty: Box::new(fn_arg_ref_type(arg, lifetime)),
         });
-    } else {
-        arg.clone()
     }
+    arg.clone()
 }
 
 pub fn fn_arg_make_into(arg: &FnArg) -> FnArg {
