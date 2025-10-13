@@ -1,0 +1,49 @@
+name: Test with soroban-examples
+
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+jobs:
+  test-with-soroban-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout rs-soroban-sdk
+        uses: actions/checkout@v5
+        with:
+          path: rs-soroban-sdk
+
+      - name: Checkout soroban-examples
+        uses: actions/checkout@v5
+        with:
+          repository: stellar/soroban-examples
+          ref: main
+          path: soroban-examples
+
+      - name: Patch soroban-sdk version
+        run: |
+          find soroban-examples -name Cargo.toml | while read file; do
+            dir=$(dirname "$file")
+            rel_path=$(realpath --relative-to="$dir" rs-soroban-sdk)
+            sed -i "/soroban-sdk =/ { s|soroban-sdk = .*|soroban-sdk = { path = \"$rel_path\" }| }" "$file"
+          done
+
+      - name: Install Rust
+        run: |
+          rustup update
+          rustup target add wasm32v1-none
+
+      - uses: stellar/actions/rust-cache@main
+
+      - name: Build soroban-examples
+        env:
+          CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        run: |
+          make -C soroban-examples build
+
+      - name: Test soroban-examples
+        env:
+          CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        run: |
+          make -C soroban-examples test
