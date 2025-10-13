@@ -10,7 +10,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  collect-soroban-examples-dirs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - id: dirs
+      run: |
+        dirs=$(find . -type f -name 'Makefile' -mindepth 2 | xargs dirname | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
+        echo "dirs=$dirs" >> $GITHUB_OUTPUT
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
+
   test-with-soroban-examples:
+    needs: collect-soroban-examples-dirs
+    strategy:
+      fail-fast: false
+      matrix:
+        working-directory: ${{ fromJSON(needs.dirs.outputs.dirs) }}
+    defaults:
+      run:
+        working-directory: soroban-examples/${{ matrix.working-directory }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout rs-soroban-sdk
@@ -50,10 +69,10 @@ jobs:
         env:
           CARGO_BUILD_RUSTFLAGS: "-A deprecated"
         run: |
-          make -C soroban-examples build
+          make build
 
       - name: Test soroban-examples
         env:
           CARGO_BUILD_RUSTFLAGS: "-A deprecated"
         run: |
-          cd soroban-examples && make test
+          make test
