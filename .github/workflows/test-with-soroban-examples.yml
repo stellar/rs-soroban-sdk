@@ -47,19 +47,6 @@ jobs:
         ref: main
         path: soroban-examples
 
-    - name: Patch soroban-sdk version
-      run: |
-        find soroban-examples -name Cargo.toml | while read file; do
-          dir=$(dirname "$file")
-          rel_path=$(realpath --relative-to="$dir" rs-soroban-sdk/soroban-sdk)
-          sed -i 's|soroban-sdk = "\([^"]*\)"|soroban-sdk = { path = "'"$rel_path"'" }|g' "$file"
-          sed -i 's|soroban-sdk = {.*version = "[^"]*"\(.*\)|soroban-sdk = { path = "'"$rel_path"'" \1|g' "$file"
-        done
-
-    - name: Diff
-      run: |
-        git diff
-
     - name: Install Rust
       run: |
         rustup update
@@ -72,6 +59,19 @@ jobs:
     - uses: stellar/stellar-cli@v23.1.4
 
     - uses: stellar/actions/rust-cache@main
+
+    - name: Patch soroban-sdk version
+      run: |
+        find soroban-examples -name Cargo.toml | while read file; do
+          dir=$(dirname "$file")
+          rel_path=$(realpath --relative-to="$dir" rs-soroban-sdk/soroban-sdk)
+          sed -i 's|soroban-sdk = "\([^"]*\)"|soroban-sdk = { path = "'"$rel_path"'" }|g' "$file"
+          sed -i 's|soroban-sdk = {.*version = "[^"]*"\(.*\)|soroban-sdk = { path = "'"$rel_path"'" \1|g' "$file"
+        done
+
+    - name: Diff
+      run: |
+        git diff
 
     - name: Build soroban-examples
       env:
