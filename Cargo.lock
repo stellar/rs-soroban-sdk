@@ -1707,13 +1707,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_empty3"
-version = "23.0.2"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "test_errors"
 version = "23.0.2"
 dependencies = [
