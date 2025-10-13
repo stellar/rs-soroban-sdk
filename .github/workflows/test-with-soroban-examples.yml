@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  collect-soroban-examples-dirs:
+  collect-examples:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -24,12 +24,12 @@ jobs:
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
 
-  test-with-soroban-examples:
-    needs: collect-soroban-examples-dirs
+  test-example:
+    needs: collect-examples
     strategy:
       fail-fast: false
       matrix:
-        working-directory: ${{ fromJSON(needs.collect-soroban-examples-dirs.outputs.dirs) }}
+        working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
