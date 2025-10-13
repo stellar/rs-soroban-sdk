@@ -62,7 +62,7 @@ jobs:
 
     - name: Patch SDK versions
       run: |
-        crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != false and (.workspace_members | length > 0)) | .name')
+        crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish == null and (.workspace_members | length > 0)) | .name')
         find . -name Cargo.toml | while read file; do
           echo Patching "$file" ...
           dir=$(dirname "$file")
