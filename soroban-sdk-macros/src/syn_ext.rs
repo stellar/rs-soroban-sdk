@@ -51,7 +51,7 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
 /// Unwraps a reference, returning the type within the reference.
 ///
 /// If the type is not a reference, returns the type as-is.
-pub fn unwrap_ref(t: Type) -> Type {
+pub fn type_unwrap_ref(t: Type) -> Type {
     match t {
         Type::Reference(TypeReference { elem, .. }) => *elem,
         _ => t,
@@ -59,7 +59,7 @@ pub fn unwrap_ref(t: Type) -> Type {
 }
 
 /// Modifies a Pat removing any 'mut' on an Ident.
-pub fn remove_pat_ident_mut(i: Pat) -> Pat {
+pub fn pat_unwrap_mut(i: Pat) -> Pat {
     match i {
         Pat::Ident(PatIdent {
             attrs,
@@ -86,7 +86,7 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
             and_token: And::default(),
             lifetime: lifetime.cloned(),
             mutability: None,
-            elem: Box::new(unwrap_ref(*pat_type.ty.clone())),
+            elem: Box::new(type_unwrap_ref(*pat_type.ty.clone())),
         }))
     } else {
         Err(Error::new(
@@ -98,20 +98,17 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
 
 /// Returns a clone of FnArg, converted into an immutable reference with the given lifetime.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
-    if let FnArg::Typed(pat_type) = arg {
-        return FnArg::Typed(PatType {
-            attrs: pat_type.attrs.clone(),
-            pat: Box::new(remove_pat_ident_mut(*pat_type.pat.clone())),
-            colon_token: pat_type.colon_token,
-            ty: Box::new(Type::Reference(TypeReference {
-                and_token: And::default(),
-                lifetime: lifetime.cloned(),
-                mutability: None,
-                elem: Box::new(unwrap_ref(*pat_type.ty.clone())),
-            })),
-        });
+    match arg {
+        FnArg::Typed(pat_type) => {
+            return FnArg::Typed(PatType {
+                attrs: pat_type.attrs.clone(),
+                pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
+                colon_token: pat_type.colon_token,
+                ty: Box::new(fn_arg_ref_type(arg, lifetime)),
+            });
+        }
+        _ => arg.clone(),
     }
-    arg.clone()
 }
 
 pub fn fn_arg_make_into(arg: &FnArg) -> FnArg {
