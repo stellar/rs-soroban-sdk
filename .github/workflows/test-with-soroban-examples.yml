@@ -63,6 +63,7 @@ jobs:
     - name: Patch soroban-sdk version
       run: |
         find . -name Cargo.toml | while read file; do
+          echo Patching "$file" ...
           dir=$(dirname "$file")
           rel_path=$(realpath --relative-to="$dir" ../../rs-soroban-sdk/soroban-sdk)
           sed -i 's|soroban-sdk = "\([^"]*\)"|soroban-sdk = { path = "'"$rel_path"'" }|g' "$file"
