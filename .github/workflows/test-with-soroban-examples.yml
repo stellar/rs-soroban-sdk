@@ -60,14 +60,17 @@ jobs:
 
     - uses: stellar/actions/rust-cache@main
 
-    - name: Patch soroban-sdk version
+    - name: Patch SDK versions
       run: |
+        crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != false and (.workspace_members | length > 0)) | .name')
         find . -name Cargo.toml | while read file; do
           echo Patching "$file" ...
           dir=$(dirname "$file")
-          rel_path=$(realpath --relative-to="$dir" "${{ github.workspace }}"/rs-soroban-sdk/soroban-sdk)
-          sed -i 's|soroban-sdk = "\([^"]*\)"|soroban-sdk = { path = "'"$rel_path"'" }|g' "$file"
-          sed -i 's|soroban-sdk = {.*version = "[^"]*"\(.*\)|soroban-sdk = { path = "'"$rel_path"'" \1|g' "$file"
+          for crate in $crates; do
+            rel_path=$(realpath --relative-to="$dir" ${{ github.workspace }}/rs-soroban-sdk/$crate)
+            sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
+            sed -i 's|'"$crate"' = {.*version = "[^"]*"\(.*\)|'"$crate"' = { path = "'"$rel_path"'" \1|g' "$file"
+          done
         done
 
     - name: Diff
