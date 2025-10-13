@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
+      with:
+        repository: stellar/soroban-examples
+        ref: main
     - id: dirs
       run: |
         dirs=$(find . -type f -name 'Makefile' -mindepth 2 | xargs dirname | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
@@ -32,48 +35,48 @@ jobs:
         working-directory: soroban-examples/${{ matrix.working-directory }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout rs-soroban-sdk
-        uses: actions/checkout@v5
-        with:
-          path: rs-soroban-sdk
+    - name: Checkout rs-soroban-sdk
+      uses: actions/checkout@v5
+      with:
+        path: rs-soroban-sdk
 
-      - name: Checkout soroban-examples
-        uses: actions/checkout@v5
-        with:
-          repository: stellar/soroban-examples
-          ref: main
-          path: soroban-examples
+    - name: Checkout soroban-examples
+      uses: actions/checkout@v5
+      with:
+        repository: stellar/soroban-examples
+        ref: main
+        path: soroban-examples
 
-      - name: Patch soroban-sdk version
-        run: |
-          find soroban-examples -name Cargo.toml | while read file; do
-            dir=$(dirname "$file")
-            rel_path=$(realpath --relative-to="$dir" rs-soroban-sdk/soroban-sdk)
-            sed -i 's|soroban-sdk = "\([^"]*\)"|soroban-sdk = { path = "'"$rel_path"'" }|g' "$file"
-            sed -i 's|soroban-sdk = {.*version = "[^"]*"\(.*\)|soroban-sdk = { path = "'"$rel_path"'" \1|g' "$file"
-          done
+    - name: Patch soroban-sdk version
+      run: |
+        find soroban-examples -name Cargo.toml | while read file; do
+          dir=$(dirname "$file")
+          rel_path=$(realpath --relative-to="$dir" rs-soroban-sdk/soroban-sdk)
+          sed -i 's|soroban-sdk = "\([^"]*\)"|soroban-sdk = { path = "'"$rel_path"'" }|g' "$file"
+          sed -i 's|soroban-sdk = {.*version = "[^"]*"\(.*\)|soroban-sdk = { path = "'"$rel_path"'" \1|g' "$file"
+        done
 
-      - name: Install Rust
-        run: |
-          rustup update
-          rustup target add wasm32v1-none
+    - name: Install Rust
+      run: |
+        rustup update
+        rustup target add wasm32v1-none
 
-      - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
-        with:
-          deno-version: v2.x
+    - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+      with:
+        deno-version: v2.x
 
-      - uses: stellar/stellar-cli@v23.1.4
+    - uses: stellar/stellar-cli@v23.1.4
 
-      - uses: stellar/actions/rust-cache@main
+    - uses: stellar/actions/rust-cache@main
 
-      - name: Build soroban-examples
-        env:
-          CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-        run: |
-          make build
+    - name: Build soroban-examples
+      env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+      run: |
+        make build
 
-      - name: Test soroban-examples
-        env:
-          CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-        run: |
-          make test
+    - name: Test soroban-examples
+      env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+      run: |
+        make test
