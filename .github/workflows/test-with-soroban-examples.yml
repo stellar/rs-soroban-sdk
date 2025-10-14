@@ -81,10 +81,14 @@ jobs:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
       run: make build
 
+    - name: Set artifact name
+      id: artifact-name
+      run: echo "artifact_name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
+
     - name: Upload WASM artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: wasm-${{ matrix.working-directory }}
+        name: ${{ steps.artifact-name.outputs.name }}
         path: '**/*.wasm'
 
     - name: Test soroban-examples
