@@ -87,5 +87,4 @@ jobs:
       run: make test
         
     - name: Diff
-      continue-on-error: true
-      run: git add -N . && git diff HEAD --exit-code
+      run: git add -N . && git diff HEAD
