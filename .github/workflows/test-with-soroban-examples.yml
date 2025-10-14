@@ -90,6 +90,7 @@ jobs:
       with:
         name: ${{ steps.artifact-name.outputs.name }}
         path: '**/*.wasm'
+        retention-days: 3
 
     - name: Test soroban-examples
       env:
