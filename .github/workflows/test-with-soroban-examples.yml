@@ -89,7 +89,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.artifact-name.outputs.name }}
-        path: '**/*.wasm'
+        path: 'soroban-examples/${{ matrix.working-directory }}/**/*.wasm'
         retention-days: 3
 
     - name: Test soroban-examples
