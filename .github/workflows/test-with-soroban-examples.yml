@@ -90,5 +90,5 @@ jobs:
         make test
         
     - name: Diff
-      run:  |
-        git diff
+      continue-on-error: true
+      run: git add -N . && git diff HEAD --exit-code
