@@ -62,6 +62,7 @@ jobs:
 
     - name: Patch SDK versions
       run: |
+        # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
         crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
         find . -name Cargo.toml | while read file; do
           echo Patching "$file" ...
