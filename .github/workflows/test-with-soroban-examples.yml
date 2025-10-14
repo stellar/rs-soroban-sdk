@@ -88,3 +88,7 @@ jobs:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
       run: |
         make test
+        
+    - name: Diff
+      run:  |
+        git diff
