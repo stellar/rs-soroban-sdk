@@ -74,20 +74,17 @@ jobs:
         done
 
     - name: Diff
-      run: |
-        git diff
+      run: git diff
 
     - name: Build soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-      run: |
-        make build
+      run: make build
 
     - name: Test soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-      run: |
-        make test
+      run: make test
         
     - name: Diff
       continue-on-error: true
