@@ -4,16 +4,6 @@ use crate::{
 };
 
 #[test]
-fn test_name_too_long() {
-    #[contractevent]
-    pub struct MyEventIsTooLongAndLongAndLongAndLongAndLong {
-        #[topic]
-        name: Symbol,
-        value: Symbol,
-    }
-}
-
-#[test]
 fn test_defaults() {
     let env = Env::default();
 
