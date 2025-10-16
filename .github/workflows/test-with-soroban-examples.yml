@@ -75,7 +75,7 @@ jobs:
         done
 
     - name: Diff
-      run: git diff
+      run: git diff --exit-code && exit 1 || true
 
     - name: Build soroban-examples
       env:
