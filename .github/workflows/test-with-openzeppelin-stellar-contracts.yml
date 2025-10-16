@@ -71,7 +71,7 @@ jobs:
         done
 
     - name: Diff
-      run: git diff --exit-code && exit 1 || true
+      run: git diff --exit-code && (echo 'A diff is expected'; exit 1) || true
 
     - name: Build contract
       env:
