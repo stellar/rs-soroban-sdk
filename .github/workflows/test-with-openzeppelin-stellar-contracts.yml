@@ -71,6 +71,8 @@ jobs:
             rel_path=$(realpath --relative-to="$dir" ${{ github.workspace }}/rs-soroban-sdk/$crate)
             sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
             sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' "$file"
+            sed -i 's|'"$crate"' = { workspace = true }|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
+            sed -i 's|'"$crate"' = { workspace = true, \(.*\) }|'"$crate"' = { path = "'"$rel_path"'" \1 }|g' "$file"
           done
         done
 
