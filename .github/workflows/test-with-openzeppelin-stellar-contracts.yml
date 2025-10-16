@@ -58,12 +58,6 @@ jobs:
         rustup update
         rustup target add wasm32v1-none
 
-    - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
-      with:
-        deno-version: v2.x
-
-    - uses: stellar/stellar-cli@v23.1.4
-
     - uses: stellar/actions/rust-cache@main
 
     - name: Patch SDK versions
