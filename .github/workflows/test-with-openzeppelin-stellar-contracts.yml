@@ -60,24 +60,19 @@ jobs:
 
     - uses: stellar/actions/rust-cache@main
 
-    - name: Patch SDK versions
+    - name: Patch workspace dependencies
       run: |
-        # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
-        crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
-        find . -name Cargo.toml | while read file; do
-          echo Patching "$file" ...
-          dir=$(dirname "$file")
-          for crate in $crates; do
-            rel_path=$(realpath --relative-to="$dir" ${{ github.workspace }}/rs-soroban-sdk/$crate)
-            sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
-            sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' "$file"
-            sed -i 's|'"$crate"' = { workspace = true }|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
-            sed -i 's|'"$crate"' = { workspace = true, \(.*\) }|'"$crate"' = { path = "'"$rel_path"'" , \1 }|g' "$file"
-          done
+        cd stellar-contracts
+        crates=$(cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
+        for crate in $crates; do
+          rel_path=$(realpath --relative-to="." ../rs-soroban-sdk/$crate)
+          sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' Cargo.toml
+          sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' Cargo.toml
         done
 
     - name: Diff
-      run: git diff
+      run: |
+        git diff --exit-code && exit 1
 
     - name: Build contract
       env:
