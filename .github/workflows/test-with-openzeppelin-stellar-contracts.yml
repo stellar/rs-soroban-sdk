@@ -61,7 +61,7 @@ jobs:
     - uses: stellar/actions/rust-cache@main
 
     - name: Patch workspace dependencies
-      working-directory: .
+      working-directory: stellar-contracts
       run: |
         crates=$(cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
         for crate in $crates; do
