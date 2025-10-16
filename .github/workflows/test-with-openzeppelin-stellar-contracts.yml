@@ -25,7 +25,7 @@ jobs:
     - id: dirs
       run: |
         # Find Cargo.toml files that build to crate-type cdylib.
-        dirs=$(find . -name 'Cargo.toml' -mindepth 2 | xargs -I {} sh -c 'if grep -q "cdylib" "{}"; then dirname "{}"; fi' | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
+        dirs=$(cargo metadata --format-version 1 | jq -r '.workspace_members[] as $id | .packages[] | select(.id == $id) | select(any(.targets[]; any(.crate_types[]; . == "cdylib"))) | .manifest_path | sub("/Cargo.toml$"; "") | sub("^\\./"; "")' | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" >> $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
