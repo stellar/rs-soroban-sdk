@@ -21,7 +21,7 @@ jobs:
         ref: main
     - id: dirs
       run: |
-        dirs=$(find . -name 'Cargo.toml' -mindepth 2 -maxdepth 2 | xargs dirname | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
+        dirs=$(find . -name 'Cargo.toml' -mindepth 2 | xargs dirname | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" >> $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
