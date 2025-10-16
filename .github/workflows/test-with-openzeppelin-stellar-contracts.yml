@@ -1,0 +1,104 @@
+name: Test with OpenZeppelin Contracts
+
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
+  cancel-in-progress: true
+
+permissions: {} # No permissions
+
+jobs:
+  collect-contracts:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        repository: OpenZeppelin/stellar-contracts
+        ref: main
+    - id: dirs
+      run: |
+        dirs=$(find . -name 'Cargo.toml' -mindepth 2 -maxdepth 2 | xargs dirname | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
+        echo "dirs=$dirs" >> $GITHUB_OUTPUT
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
+
+  test-contract:
+    needs: collect-contracts
+    strategy:
+      fail-fast: false
+      matrix:
+        working-directory: ${{ fromJSON(needs.collect-contracts.outputs.dirs) }}
+    defaults:
+      run:
+        working-directory: stellar-contracts/${{ matrix.working-directory }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout rs-soroban-sdk
+      uses: actions/checkout@v5
+      with:
+        path: rs-soroban-sdk
+
+    - name: Checkout OpenZeppelin stellar-contracts
+      uses: actions/checkout@v5
+      with:
+        repository: OpenZeppelin/stellar-contracts
+        ref: main
+        path: stellar-contracts
+
+    - name: Install Rust
+      run: |
+        rustup update
+        rustup target add wasm32v1-none
+
+    - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+      with:
+        deno-version: v2.x
+
+    - uses: stellar/stellar-cli@v23.1.4
+
+    - uses: stellar/actions/rust-cache@main
+
+    - name: Patch SDK versions
+      run: |
+        # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
+        crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
+        find . -name Cargo.toml | while read file; do
+          echo Patching "$file" ...
+          dir=$(dirname "$file")
+          for crate in $crates; do
+            rel_path=$(realpath --relative-to="$dir" ${{ github.workspace }}/rs-soroban-sdk/$crate)
+            sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
+            sed -i 's|'"$crate"' = {.*version = "[^"]*"\(.*\)|'"$crate"' = { path = "'"$rel_path"'" \1|g' "$file"
+          done
+        done
+
+    - name: Diff
+      run: git diff
+
+    - name: Build contract
+      env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+      run: cargo build --target wasm32v1-none --release
+
+    - name: Set artifact name
+      id: artifact-name
+      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
+
+    - name: Upload WASM artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.artifact-name.outputs.name }}
+        path: 'stellar-contracts/target/wasm32v1-none/release/*.wasm'
+        retention-days: 3
+
+    - name: Test OpenZeppelin stellar-contracts
+      env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+      run: cargo test
+
+    - name: Diff
+      run: git add -N . && git diff HEAD
