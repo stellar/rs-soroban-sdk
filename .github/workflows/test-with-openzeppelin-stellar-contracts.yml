@@ -25,7 +25,7 @@ jobs:
     - id: dirs
       run: |
         # Find workspace member Cargo.toml files.
-        dirs=$(cargo metadata --format-version 1 | jq -r '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("/Cargo.toml$"; "") | sub("^\\./"; "")' | jq -Rnc '[inputs | "\(.)"]')
+        dirs=$(cargo metadata --format-version 1 | jq -r '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("/Cargo.toml$"; "")' | xargs -I {} realpath --relative-to=. "{}" | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" >> $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
