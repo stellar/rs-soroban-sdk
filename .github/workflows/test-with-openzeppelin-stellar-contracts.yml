@@ -15,7 +15,7 @@ concurrency:
 permissions: {}
 
 jobs:
-  collect-contracts:
+  collect-crates:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -30,12 +30,12 @@ jobs:
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
 
-  test-contract:
-    needs: collect-contracts
+  test-crate:
+    needs: collect-crate
     strategy:
       fail-fast: false
       matrix:
-        working-directory: ${{ fromJSON(needs.collect-contracts.outputs.dirs) }}
+        working-directory: ${{ fromJSON(needs.collect-crate.outputs.dirs) }}
     defaults:
       run:
         working-directory: stellar-contracts/${{ matrix.working-directory }}
@@ -98,8 +98,7 @@ jobs:
         path: 'stellar-contracts/target/wasm32v1-none/release/*.wasm'
         retention-days: 3
 
-    - name: Test OpenZeppelin stellar-contracts
-      env:
+    - env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
       run: cargo test
 
