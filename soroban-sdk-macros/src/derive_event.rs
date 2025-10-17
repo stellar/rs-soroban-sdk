@@ -10,7 +10,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::curr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecEventV0, StringM, WriteXdr,
+    ScSpecEventV0, ScSymbol, StringM, WriteXdr,
 };
 use syn::{parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
 
@@ -86,6 +86,19 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let (gen_impl, gen_types, gen_where) = input.generics.split_for_impl();
     let path = &args.crate_path;
 
+    // Check event name length
+    const EVENT_NAME_LENGTH: u32 = 32;
+    let event_name = input.ident.to_string();
+    let event_name_len = event_name.len();
+    let event_name: StringM<EVENT_NAME_LENGTH> = errors
+        .handle(event_name.try_into().map_err(|_| {
+            Error::custom(format!(
+                "event name has length {event_name_len} greater than length limit of {EVENT_NAME_LENGTH}"
+            ))
+            .with_span(&input.ident.span())
+        }))
+        .unwrap_or_default();
+
     let prefix_topics = if let Some(prefix_topics) = &args.topics {
         prefix_topics.iter().map(|t| t.value()).collect()
     } else {
@@ -159,7 +172,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
         lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
-        name: input.ident.to_string().try_into().unwrap(),
+        name: ScSymbol(event_name),
         prefix_topics: prefix_topics
             .iter()
             .map(|t| t.try_into().unwrap())
