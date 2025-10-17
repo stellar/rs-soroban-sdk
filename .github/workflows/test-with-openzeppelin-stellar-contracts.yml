@@ -24,8 +24,8 @@ jobs:
         ref: main
     - id: dirs
       run: |
-        # Find Cargo.toml files that build to crate-type cdylib.
-        dirs=$(cargo metadata --format-version 1 | jq -r '.workspace_members[] as $id | .packages[] | select(.id == $id) | select(any(.targets[]; any(.crate_types[]; . == "cdylib"))) | .manifest_path | sub("/Cargo.toml$"; "") | sub("^\\./"; "")' | jq -Rnc '[inputs | "\(.)"]')
+        # Find workspace member Cargo.toml files.
+        dirs=$(cargo metadata --format-version 1 | jq -r '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("/Cargo.toml$"; "") | sub("^\\./"; "")' | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" >> $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
@@ -60,6 +60,12 @@ jobs:
 
     - uses: stellar/actions/rust-cache@main
 
+    - name: Check if should be built as a contract
+      id: check-if-contract
+      run: |
+        is_a_contract=$(cargo metadata --format-version 1 | jq -r 'any(.packages[0].dependencies[]; .name == "soroban-sdk") and any(.packages[0].targets[]; any(.crate_types[]; . == "cdylib"))')
+        echo "is-a-contract=$is_a_contract" >> $GITHUB_OUTPUT
+
     - name: Patch workspace dependencies
       working-directory: stellar-contracts
       run: |
@@ -74,15 +80,18 @@ jobs:
       run: git diff --exit-code && (echo 'A diff is expected'; exit 1) || true
 
     - name: Build contract
+      if: steps.check-if-contract.outputs.is-a-contract == 'true'
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
       run: cargo build --target wasm32v1-none --release
 
     - name: Set artifact name
+      if: steps.check-if-contract.outputs.is-a-contract == 'true'
       id: artifact-name
       run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
+      if: steps.check-if-contract.outputs.is-a-contract == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.artifact-name.outputs.name }}
