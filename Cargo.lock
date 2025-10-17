@@ -1665,6 +1665,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_associated_types"
+version = "23.0.3"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_auth"
 version = "23.0.3"
 dependencies = [
