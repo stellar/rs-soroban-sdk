@@ -19,7 +19,13 @@ jobs:
         ref: main
     - id: dirs
       run: |
-        dirs=$(find . -type f -name 'Makefile' -mindepth 2 | xargs dirname | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
+        dirs=$(
+          for dir in $(find . -type f -name 'Makefile' -mindepth 2 | xargs dirname | sed 's|^\./||'); do
+            if (cd "$dir" && cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[0] | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))' | grep -q '^true$'); then
+              echo "$dir"
+            fi
+          done | jq -Rnc '[inputs | "\(.)"]'
+        )
         echo "dirs=$dirs" >> $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
