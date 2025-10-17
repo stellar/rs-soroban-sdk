@@ -9,6 +9,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
   cancel-in-progress: true
 
+# No permissions. This workflow downloads code from outside this repository and
+# compiles it. No permissions ensures that any exploit in an external
+# repository does not gain access to anything in this repo.
+permissions: {}
+
 jobs:
   collect-examples:
     runs-on: ubuntu-latest
