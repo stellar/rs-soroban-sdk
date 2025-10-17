@@ -22,10 +22,10 @@ jobs:
       with:
         repository: OpenZeppelin/stellar-contracts
         ref: main
-    - id: dirs
+    - name: Find workspace member Cargo.toml files.
+      id: dirs
       run: |
-        # Find workspace member Cargo.toml files.
-        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^$pwd/"; "") | sub("/Cargo.toml$"; "")' | jq -Rnc '[inputs | "\(.)"]')
+        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^$pwd/?"; "") | sub("/Cargo.toml$"; "")' | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" >> $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
