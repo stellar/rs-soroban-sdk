@@ -21,7 +21,7 @@ jobs:
       run: |
         dirs=$(
           for dir in $(find . -type f -name 'Makefile' -mindepth 2 | xargs dirname | sed 's|^\./||'); do
-            if (cd "$dir" && cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[0] | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))' | grep -q '^true$'); then
+            if (cargo metadata --manifest-path "$dir/Cargo.toml" --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[0] | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))' | grep -q '^true$'); then
               echo "$dir"
             fi
           done | jq -Rnc '[inputs | "\(.)"]'
