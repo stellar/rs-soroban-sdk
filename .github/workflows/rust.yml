@@ -65,7 +65,7 @@ jobs:
             }
           ]'
         fi
-        echo "sys=$sys" >> $GITHUB_OUTPUT
+        echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
 
   fmt:
     runs-on: ubuntu-latest
