@@ -27,6 +27,46 @@ jobs:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
       run: exit 1
 
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      sys: ${{ steps.sys.outputs.sys }}
+    steps:
+    - id: sys
+      run: |
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          sys='[
+            {
+              "os": "ubuntu-latest",
+              "target": "x86_64-unknown-linux-gnu"
+            }
+          ]'
+        else
+          sys='[
+            {
+              "os": "ubuntu-latest",
+              "target": "x86_64-unknown-linux-gnu"
+            },
+            {
+              "os": "ubuntu-24.04-arm",
+              "target": "aarch64-unknown-linux-gnu"
+            },
+            {
+              "os": "macos-15-intel",
+              "target": "x86_64-apple-darwin"
+            },
+            {
+              "os": "macos-latest",
+              "target": "aarch64-apple-darwin"
+            },
+            {
+              "os": "windows-latest",
+              "target": "x86_64-pc-windows-msvc"
+            }
+          ]'
+        fi
+        echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
+
   fmt:
     runs-on: ubuntu-latest
     steps:
@@ -71,21 +111,12 @@ jobs:
         --exclude stellar-asset-spec
 
   build:
+    needs: setup
     strategy:
       fail-fast: false
       matrix:
         rust: [msrv, latest]
-        sys:
-        - os: ubuntu-latest
-          target: x86_64-unknown-linux-gnu
-        - os: ubuntu-24.04-arm
-          target: aarch64-unknown-linux-gnu
-        - os: macos-15-intel
-          target: x86_64-apple-darwin
-        - os: macos-latest
-          target: aarch64-apple-darwin
-        - os: windows-latest
-          target: x86_64-pc-windows-msvc
+        sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
     - uses: actions/checkout@v3
@@ -129,22 +160,12 @@ jobs:
         retention-days: ${{ env.ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS }}
 
   test:
-    needs: build
+    needs: [setup, build]
     strategy:
       fail-fast: false
       matrix:
         rust: [msrv, latest]
-        sys:
-        - os: ubuntu-latest
-          target: x86_64-unknown-linux-gnu
-        - os: ubuntu-24.04-arm
-          target: aarch64-unknown-linux-gnu
-        - os: macos-15-intel
-          target: x86_64-apple-darwin
-        - os: macos-latest
-          target: aarch64-apple-darwin
-        - os: windows-latest
-          target: x86_64-pc-windows-msvc
+        sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
     - uses: actions/checkout@v3
