@@ -26,7 +26,7 @@ jobs:
       id: dirs
       run: |
         dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^\($pwd)/"; "") | sub("/Cargo.toml$"; "")' | jq -Rnc '[inputs | "\(.)"]')
-        echo "dirs=$dirs" >> $GITHUB_OUTPUT
+        echo "dirs=$dirs" | tee -a $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
 
@@ -64,7 +64,7 @@ jobs:
       id: check-if-contract
       run: |
         is_a_contract=$(cargo metadata --no-deps --format-version 1 | jq -r 'any(.packages[0].dependencies[]; .name == "soroban-sdk") and any(.packages[0].targets[]; any(.crate_types[]; . == "cdylib"))')
-        echo "is-a-contract=$is_a_contract" >> $GITHUB_OUTPUT
+        echo "is-a-contract=$is_a_contract" | tee -a $GITHUB_OUTPUT
 
     - name: Patch workspace dependencies
       working-directory: stellar-contracts
