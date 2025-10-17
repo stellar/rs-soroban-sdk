@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{Env, String, contract, contractimpl};
+use soroban_sdk::{contract, contractimpl, Env, String};
 
 // The associated type to hold a default impl for a trait pattern is a pattern that's seen in the
 // OpenZeppelin contract library.
