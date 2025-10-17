@@ -25,7 +25,7 @@ jobs:
     - id: dirs
       run: |
         # Find workspace member Cargo.toml files.
-        dirs=$(cargo metadata --format-version 1 | jq -r '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("/Cargo.toml$"; "")' | xargs -I {} realpath --relative-to=. "{}" | jq -Rnc '[inputs | "\(.)"]')
+        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("/Cargo.toml$"; "")' | sed "s|^$(pwd)/||" | sed 's|^\./||' | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" >> $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
@@ -63,7 +63,7 @@ jobs:
     - name: Check if should be built as a contract
       id: check-if-contract
       run: |
-        is_a_contract=$(cargo metadata --format-version 1 | jq -r 'any(.packages[0].dependencies[]; .name == "soroban-sdk") and any(.packages[0].targets[]; any(.crate_types[]; . == "cdylib"))')
+        is_a_contract=$(cargo metadata --no-deps --format-version 1 | jq -r 'any(.packages[0].dependencies[]; .name == "soroban-sdk") and any(.packages[0].targets[]; any(.crate_types[]; . == "cdylib"))')
         echo "is-a-contract=$is_a_contract" >> $GITHUB_OUTPUT
 
     - name: Patch workspace dependencies
