@@ -31,11 +31,11 @@ jobs:
       dirs: ${{ steps.dirs.outputs.dirs }}
 
   test-crate:
-    needs: collect-crate
+    needs: collect-crates
     strategy:
       fail-fast: false
       matrix:
-        working-directory: ${{ fromJSON(needs.collect-crate.outputs.dirs) }}
+        working-directory: ${{ fromJSON(needs.collect-crates.outputs.dirs) }}
     defaults:
       run:
         working-directory: stellar-contracts/${{ matrix.working-directory }}
