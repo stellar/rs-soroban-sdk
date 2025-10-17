@@ -77,7 +77,7 @@ jobs:
         done
 
     - name: Diff
-      run: git diff --exit-code && (echo 'A diff is expected'; exit 1) || true
+      run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
 
     - name: Build contract
       if: steps.check-if-contract.outputs.is-a-contract == 'true'

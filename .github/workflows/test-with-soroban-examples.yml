@@ -75,7 +75,7 @@ jobs:
         done
 
     - name: Diff
-      run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
+      run: git diff
 
     - name: Build soroban-examples
       env:
