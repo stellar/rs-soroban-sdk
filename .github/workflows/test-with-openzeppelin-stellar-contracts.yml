@@ -63,7 +63,7 @@ jobs:
     - name: Check if should be built as a contract
       id: check-if-contract
       run: |
-        is_a_contract=$(cargo metadata --no-deps --format-version 1 | jq -r 'any(.packages[0].dependencies[]; .name == "soroban-sdk") and any(.packages[0].targets[]; any(.crate_types[]; . == "cdylib"))')
+        is_a_contract=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[] | select(.manifest_path == "$pwd/Cargo.toml") | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))')
         echo "is-a-contract=$is_a_contract" | tee -a $GITHUB_OUTPUT
 
     - name: Patch workspace dependencies
