@@ -2,13 +2,14 @@
 // validating that they are composable and compatible.
 
 #![no_std]
-use proc_macros::parse_item_fn;
+use proc_macros::{parse_item_fn, parse_item_impl};
 use soroban_sdk::{contract, contractimpl};
 
 #[contract]
 pub struct Contract;
 
 #[contractimpl]
+#[parse_item_impl]
 impl Contract {
     // Test that attribute macros that expect to be used on fns are composable with contractimpl.
     #[parse_item_fn]
