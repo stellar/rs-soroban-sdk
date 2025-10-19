@@ -4,7 +4,7 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use proc_macros::parse_item_fn;
+use proc_macros::{parse_item_fn, parse_item_impl};
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -313,9 +313,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/macros/src/lib.rs",
-            start_line: 25usize,
+            start_line: 26usize,
             start_col: 8usize,
-            end_line: 25usize,
+            end_line: 26usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
