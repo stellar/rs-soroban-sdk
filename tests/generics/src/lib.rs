@@ -15,7 +15,9 @@ impl<'a, 'b> Contract
 where
     'a: 'b,
 {
-    pub fn empty() {}
+    pub fn exec(i1: u32, i2: &u32, i3: &'b u32) -> u32 {
+        i1 + i2 + *i3
+    }
 }
 
 #[cfg(test)]
@@ -30,6 +32,7 @@ mod test {
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        client.empty();
+        let res = client.exec(&1, &2, &3);
+        assert_eq!(res, 6);
     }
 }
