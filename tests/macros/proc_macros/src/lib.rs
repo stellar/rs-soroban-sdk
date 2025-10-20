@@ -2,7 +2,14 @@
 /// soroban-sdk macros are composable and compatible with a variety of other macros.
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemFn};
+use syn::{parse_macro_input, ItemFn, ItemImpl};
+
+/// An attribute macro that expects to be used on an impl.
+#[proc_macro_attribute]
+pub fn parse_item_impl(_metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let item = parse_macro_input!(input as ItemImpl);
+    quote! { #item }.into()
+}
 
 /// An attribute macro that expects to be used on a function.
 #[proc_macro_attribute]
