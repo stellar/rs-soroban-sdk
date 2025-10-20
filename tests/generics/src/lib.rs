@@ -11,8 +11,11 @@ use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 
 #[contractimpl]
-impl<'a, 'b> Contract where 'a: 'b {
-    pub fn empty() { }
+impl<'a, 'b> Contract
+where
+    'a: 'b,
+{
+    pub fn empty() {}
 }
 
 #[cfg(test)]
