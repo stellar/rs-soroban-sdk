@@ -4,7 +4,6 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use proc_macros::{parse_item_fn, parse_item_impl};
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -137,7 +136,10 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
         __contract_fn_set_registry::call(func, env, args)
     }
 }
-impl Contract {
+impl<'a, 'b> Contract
+where
+    'a: 'b,
+{
     pub fn empty() {}
 }
 #[doc(hidden)]
@@ -305,17 +307,17 @@ mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
-    #[rustc_test_marker = "test::test_empty"]
+    #[rustc_test_marker = "test::test_hello"]
     #[doc(hidden)]
-    pub const test_empty: test::TestDescAndFn = test::TestDescAndFn {
+    pub const test_hello: test::TestDescAndFn = test::TestDescAndFn {
         desc: test::TestDesc {
-            name: test::StaticTestName("test::test_empty"),
+            name: test::StaticTestName("test::test_hello"),
             ignore: false,
             ignore_message: ::core::option::Option::None,
-            source_file: "tests/macros/src/lib.rs",
-            start_line: 26usize,
+            source_file: "tests/generics/src/lib.rs",
+            start_line: 28usize,
             start_col: 8usize,
-            end_line: 26usize,
+            end_line: 28usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
@@ -324,10 +326,10 @@ mod test {
         },
         testfn: test::StaticTestFn(
             #[coverage(off)]
-            || test::assert_test_result(test_empty()),
+            || test::assert_test_result(test_hello()),
         ),
     };
-    fn test_empty() {
+    fn test_hello() {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
@@ -339,5 +341,5 @@ mod test {
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_empty])
+    test::test_main_static(&[&test_hello])
 }
