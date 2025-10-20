@@ -5,7 +5,7 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
-pub struct Contract<ABC>;
+pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
 ///ContractClient is a client for calling the contract defined in "Contract".
@@ -136,7 +136,10 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
         __contract_fn_set_registry::call(func, env, args)
     }
 }
-impl<'i> Contract {
+impl<'a, 'b> Contract
+where
+    'a: 'b,
+{
     pub fn empty() {}
 }
 #[doc(hidden)]
@@ -312,9 +315,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/generics/src/lib.rs",
-            start_line: 19usize,
+            start_line: 28usize,
             start_col: 8usize,
-            end_line: 19usize,
+            end_line: 28usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
