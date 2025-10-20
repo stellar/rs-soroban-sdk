@@ -1721,6 +1721,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_events_ref"
+version = "23.0.3"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_fuzz"
 version = "23.0.3"
 dependencies = [
