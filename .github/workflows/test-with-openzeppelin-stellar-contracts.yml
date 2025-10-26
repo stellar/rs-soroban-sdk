@@ -92,7 +92,7 @@ jobs:
 
     - name: Upload WASM artifacts
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: ${{ steps.artifact-name.outputs.name }}
         path: 'stellar-contracts/target/wasm32v1-none/release/*.wasm'
