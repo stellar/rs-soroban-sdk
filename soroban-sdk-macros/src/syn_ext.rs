@@ -48,15 +48,6 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     ))
 }
 
-// TODO: Add a function that validates function parameters.
-// // Check if this is a mutable reference and reject it
-// if let Type::Reference(TypeReference { mutability: Some(_), .. }) = *pat_type.ty {
-//     return Err(Error::new(
-//         pat_type.ty.span(),
-//         "mutable references (&mut) are not supported in contract function parameters, use immutable references (&) instead",
-//     ));
-// }
-
 /// Modifies a Pat removing any 'mut' on an Ident.
 pub fn pat_unwrap_mut(p: Pat) -> Pat {
     match p {
