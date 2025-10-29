@@ -46,7 +46,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn calc(&self, a: &u32, mut b: &u32) -> u32 {
+    pub fn calc(&self, a: &u32, b: &u32) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -66,7 +66,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_calc(
         &self,
         a: &u32,
-        mut b: &u32,
+        b: &u32,
     ) -> Result<
         Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
@@ -90,7 +90,7 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn calc<'i>(a: &'i u32, mut b: &'i u32) -> (&'i u32, &'i u32) {
+    pub fn calc<'i>(a: &'i u32, b: &'i u32) -> (&'i u32, &'i u32) {
         (a, b)
     }
 }

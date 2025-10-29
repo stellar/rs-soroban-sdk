@@ -10,7 +10,7 @@ use syn::{
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
-    Lifetime, Pat, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
+    Lifetime, Pat, PatIdent, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
 };
 
 /// Gets methods from the implementation that have public visibility. For
@@ -76,7 +76,16 @@ pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
         if !matches!(*pat_type.ty, Type::Reference(_)) {
             return FnArg::Typed(PatType {
                 attrs: pat_type.attrs.clone(),
-                pat: pat_type.pat.clone(),
+                pat: Box::new(match &*pat_type.pat {
+                    Pat::Ident(pat_ident) => Pat::Ident(PatIdent {
+                        attrs: pat_ident.attrs.clone(),
+                        by_ref: pat_ident.by_ref,
+                        mutability: None, // Strip mutability for reference parameters
+                        ident: pat_ident.ident.clone(),
+                        subpat: pat_ident.subpat.clone(),
+                    }),
+                    _ => *pat_type.pat.clone(),
+                }),
                 colon_token: pat_type.colon_token,
                 ty: Box::new(Type::Reference(TypeReference {
                     and_token: And::default(),
@@ -95,7 +104,16 @@ pub fn fn_arg_make_into(arg: &FnArg) -> FnArg {
         let ty = &pat_type.ty;
         return FnArg::Typed(PatType {
             attrs: pat_type.attrs.clone(),
-            pat: pat_type.pat.clone(),
+            pat: Box::new(match &*pat_type.pat {
+                Pat::Ident(pat_ident) => Pat::Ident(PatIdent {
+                    attrs: pat_ident.attrs.clone(),
+                    by_ref: pat_ident.by_ref,
+                    mutability: None, // Strip mutability for Into parameters
+                    ident: pat_ident.ident.clone(),
+                    subpat: pat_ident.subpat.clone(),
+                }),
+                _ => *pat_type.pat.clone(),
+            }),
             colon_token: pat_type.colon_token,
             ty: Box::new(syn::parse_quote! { impl Into<#ty> }),
         });
