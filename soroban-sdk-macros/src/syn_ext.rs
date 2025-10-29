@@ -10,7 +10,7 @@ use syn::{
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
-    Lifetime, Pat, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
+    Lifetime, Pat, PatIdent, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
 };
 
 /// Gets methods from the implementation that have public visibility. For
@@ -48,6 +48,26 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     ))
 }
 
+/// Modifies a Pat removing any 'mut' on an Ident.
+pub fn pat_unwrap_mut(p: Pat) -> Pat {
+    match p {
+        Pat::Ident(PatIdent {
+            attrs,
+            by_ref,
+            mutability: Some(_),
+            ident,
+            subpat,
+        }) => Pat::Ident(PatIdent {
+            attrs,
+            by_ref,
+            mutability: None,
+            ident,
+            subpat,
+        }),
+        _ => p,
+    }
+}
+
 /// Returns a clone of the type from the FnArg.
 pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type, Error> {
     if let FnArg::Typed(pat_type) = arg {
@@ -70,13 +90,13 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
 }
 
 /// Returns a clone of FnArg with the type as a reference if the arg is a typed
-/// arg and its type is not already a reference.
+/// arg and its type is not already a reference. Mutability from the ident is stripped.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
         if !matches!(*pat_type.ty, Type::Reference(_)) {
             return FnArg::Typed(PatType {
                 attrs: pat_type.attrs.clone(),
-                pat: pat_type.pat.clone(),
+                pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
                 colon_token: pat_type.colon_token,
                 ty: Box::new(Type::Reference(TypeReference {
                     and_token: And::default(),
@@ -90,12 +110,14 @@ pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     arg.clone()
 }
 
+/// Returns a clone of FnArg with the type as an Into if the arg is a typed
+/// arg. Mutability from the ident is stripped.
 pub fn fn_arg_make_into(arg: &FnArg) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
         let ty = &pat_type.ty;
         return FnArg::Typed(PatType {
             attrs: pat_type.attrs.clone(),
-            pat: pat_type.pat.clone(),
+            pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
             colon_token: pat_type.colon_token,
             ty: Box::new(syn::parse_quote! { impl Into<#ty> }),
         });
