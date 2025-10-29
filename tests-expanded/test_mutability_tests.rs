@@ -335,18 +335,18 @@ mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
-    #[rustc_test_marker = "test::test_hello"]
+    #[rustc_test_marker = "test::test_calc"]
     #[doc(hidden)]
-    pub const test_hello: test::TestDescAndFn = test::TestDescAndFn {
+    pub const test_calc: test::TestDescAndFn = test::TestDescAndFn {
         desc: test::TestDesc {
-            name: test::StaticTestName("test::test_hello"),
+            name: test::StaticTestName("test::test_calc"),
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/mutability/src/lib.rs",
             start_line: 28usize,
             start_col: 8usize,
             end_line: 28usize,
-            end_col: 18usize,
+            end_col: 17usize,
             compile_fail: false,
             no_run: false,
             should_panic: test::ShouldPanic::No,
@@ -354,10 +354,10 @@ mod test {
         },
         testfn: test::StaticTestFn(
             #[coverage(off)]
-            || test::assert_test_result(test_hello()),
+            || test::assert_test_result(test_calc()),
         ),
     };
-    fn test_hello() {
+    fn test_calc() {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
@@ -382,5 +382,5 @@ mod test {
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_hello])
+    test::test_main_static(&[&test_calc])
 }
