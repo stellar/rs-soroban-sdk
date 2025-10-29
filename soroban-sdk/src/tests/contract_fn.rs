@@ -43,6 +43,9 @@ fn test_functional() {
     let b = 12i32;
     let c = ContractClient::new(&e, &contract_id).add(&a, &b);
     assert_eq!(c, 22);
+
+    let c = ContractClient::new(&e, &contract_id).add_with_mut_arg(&a, &b);
+    assert_eq!(c, 22);
 }
 
 #[test]
