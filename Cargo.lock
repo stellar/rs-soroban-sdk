@@ -1792,6 +1792,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_mutability"
+version = "23.0.3"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_udt"
 version = "23.0.3"
 dependencies = [

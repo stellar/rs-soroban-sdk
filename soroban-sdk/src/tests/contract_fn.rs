@@ -23,13 +23,13 @@ impl Contract {
         a + *b
     }
 
-    pub fn add_with_mut_arg(_e: &Env, a: i32, mut b: i32) -> i32 {
-        b += 2;
-        a + b
-    }
-
     pub fn add_with_unused_arg(_e: &Env, a: i32, _b: i32) -> i32 {
         a + 2
+    }
+
+    pub fn add_with_mut_arg(_e: &Env, a: i32, mut b: i32) -> i32 {
+        b *= 1;
+        a + b
     }
 }
 
@@ -51,6 +51,9 @@ fn test_functional() {
     let a = 10i32;
     let b = 12i32;
     let c = ContractClient::new(&e, &contract_id).add(&a, &b);
+    assert_eq!(c, 22);
+
+    let c = ContractClient::new(&e, &contract_id).add_with_mut_arg(&a, &b);
     assert_eq!(c, 22);
 }
 
