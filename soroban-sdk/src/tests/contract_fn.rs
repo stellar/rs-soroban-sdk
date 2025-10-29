@@ -14,16 +14,16 @@ impl Contract {
         a + b
     }
 
-    pub fn add_with_ref_arg(_e: &Env, a: i32, b: &i32) -> i32 {
-        a + b
-    }
-
     pub fn add_with_unused_arg(_e: &Env, a: i32, _b: i32) -> i32 {
         a + 2
     }
 
     pub fn add_with_mut_arg(_e: &Env, a: i32, mut b: i32) -> i32 {
         b *= 1;
+        a + b
+    }
+
+    pub fn add_with_ref_arg(_e: &Env, a: i32, b: &i32) -> i32 {
         a + b
     }
 }
