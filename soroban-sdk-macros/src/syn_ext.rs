@@ -48,6 +48,21 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     ))
 }
 
+/// Validate that the function argument type is not a mutable reference.
+///
+/// Returns an error indicating that contract functions arguments cannot be a mutable reference.
+/// Even though reference (&) are supported, mutable references (&mut) are not, because it is
+/// semanatically confusing for a contract function to receive an external input that it looks like
+/// it could mutate.
+pub fn fn_arg_type_validate_no_mut(ty: &Type) -> Result<(), Error> {
+    match ty {
+        Type::Reference(TypeReference { mutability: Some(_), .. }) => {
+            Err(Error::new(ty.span(), "mutable references (&mut) are not supported in contract function parameters, use immutable references (&) instead"))
+        }
+        _ => Ok(()),
+    }
+}
+
 /// Modifies a Pat removing any 'mut' on an Ident.
 pub fn pat_unwrap_mut(p: Pat) -> Pat {
     match p {

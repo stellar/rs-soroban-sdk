@@ -1,5 +1,7 @@
 use crate::{
-    attribute::pass_through_attr_to_gen_code, map_type::map_type, syn_ext::ty_to_safe_ident_str,
+    attribute::pass_through_attr_to_gen_code,
+    map_type::map_type,
+    syn_ext::{fn_arg_type_validate_no_mut, ty_to_safe_ident_str},
 };
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
@@ -63,6 +65,11 @@ pub fn derive_pub_fn(
                 // signature_payload of type Bytes (32 size), to be a Hash.
                 let allow_hash = ident == "__check_auth" && i == 0;
 
+                // Error if the type of the fn arg is mutable.
+                if let Err(e) = fn_arg_type_validate_no_mut(&pat_ty.ty) {
+                    errors.push(e);
+                }
+
                 // Error if the type of the fn is not mappable.
                 if let Err(e) = map_type(&pat_ty.ty, true, allow_hash) {
                     errors.push(e);
@@ -84,20 +91,7 @@ pub fn derive_pub_fn(
                 let passthrough_call = quote! { #ident };
 
                 let call_prefix = match *pat_ty.ty {
-                    // Disallow &mut because it is semantically confusing for a contract function
-                    // to receive an input that would mutate a value coming from outside the
-                    // program.
-                    Type::Reference(TypeReference { mutability: Some(_), .. }) => {
-                        errors.push(syn::Error::new(
-                            pat_ty.ty.span(),
-                            "mutable references (&mut) are not supported in contract function parameters, use immutable references (&) instead",
-                        ));
-                        quote!(&)
-                    }
-                    // Allow & because it is convenient to be able to define contract functions
-                    // with borrowed parameters.
-                    Type::Reference(TypeReference { mutability: None, .. }) => quote!(&),
-                    // Any other parameter type doesn't need a call prefix.
+                    Type::Reference(TypeReference { .. }) => quote!(&),
                     _ => quote!(),
                 };
                 let call = quote! {
