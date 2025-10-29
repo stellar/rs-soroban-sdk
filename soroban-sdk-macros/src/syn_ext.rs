@@ -48,6 +48,21 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     ))
 }
 
+/// Validate that the function argument type is not a mutable reference.
+///
+/// Returns an error indicating that contract functions arguments cannot be a mutable reference.
+/// Even though reference (&) are supported, mutable references (&mut) are not, because it is
+/// semanatically confusing for a contract function to receive an external input that it looks like
+/// it could mutate.
+pub fn fn_arg_type_validate_no_mut(ty: &Type) -> Result<(), Error> {
+    match ty {
+        Type::Reference(TypeReference { mutability: Some(_), .. }) => {
+            Err(Error::new(ty.span(), "mutable references (&mut) are not supported in contract function parameters, use immutable references (&) instead"))
+        }
+        _ => Ok(()),
+    }
+}
+
 /// Modifies a Pat removing any 'mut' on an Ident.
 pub fn pat_unwrap_mut(p: Pat) -> Pat {
     match p {
@@ -68,19 +83,26 @@ pub fn pat_unwrap_mut(p: Pat) -> Pat {
     }
 }
 
-/// Returns a clone of the type from the FnArg.
+/// Unwraps a reference, returning the type within the reference.
+///
+/// If the type is not a reference, returns the type as-is.
+pub fn type_unwrap_ref(t: Type) -> Type {
+    match t {
+        Type::Reference(TypeReference { elem, .. }) => *elem,
+        _ => t,
+    }
+}
+
+/// Returns a clone of the type from the FnArg, converted into an immutable reference to the type
+/// with the given lifetime.
 pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type, Error> {
     if let FnArg::Typed(pat_type) = arg {
-        if !matches!(*pat_type.ty, Type::Reference(_)) {
-            Ok(Type::Reference(TypeReference {
-                and_token: And::default(),
-                lifetime: lifetime.cloned(),
-                mutability: None,
-                elem: pat_type.ty.clone(),
-            }))
-        } else {
-            Ok((*pat_type.ty).clone())
-        }
+        Ok(Type::Reference(TypeReference {
+            and_token: And::default(),
+            lifetime: lifetime.cloned(),
+            mutability: None,
+            elem: Box::new(type_unwrap_ref(*pat_type.ty.clone())),
+        }))
     } else {
         Err(Error::new(
             arg.span(),
@@ -89,23 +111,21 @@ pub fn fn_arg_ref_type(arg: &FnArg, lifetime: Option<&Lifetime>) -> Result<Type,
     }
 }
 
-/// Returns a clone of FnArg with the type as a reference if the arg is a typed
-/// arg and its type is not already a reference. Mutability from the ident is stripped.
+/// Returns a clone of FnArg, converted into an immutable reference with the given lifetime.
+/// Mutability from the ident is stripped.
 pub fn fn_arg_make_ref(arg: &FnArg, lifetime: Option<&Lifetime>) -> FnArg {
     if let FnArg::Typed(pat_type) = arg {
-        if !matches!(*pat_type.ty, Type::Reference(_)) {
-            return FnArg::Typed(PatType {
-                attrs: pat_type.attrs.clone(),
-                pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
-                colon_token: pat_type.colon_token,
-                ty: Box::new(Type::Reference(TypeReference {
-                    and_token: And::default(),
-                    lifetime: lifetime.cloned(),
-                    mutability: None,
-                    elem: pat_type.ty.clone(),
-                })),
-            });
-        }
+        return FnArg::Typed(PatType {
+            attrs: pat_type.attrs.clone(),
+            pat: Box::new(pat_unwrap_mut(*pat_type.pat.clone())),
+            colon_token: pat_type.colon_token,
+            ty: Box::new(Type::Reference(TypeReference {
+                and_token: And::default(),
+                lifetime: lifetime.cloned(),
+                mutability: None,
+                elem: Box::new(type_unwrap_ref(*pat_type.ty.clone())),
+            })),
+        });
     }
     arg.clone()
 }

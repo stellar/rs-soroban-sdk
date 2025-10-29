@@ -22,6 +22,10 @@ impl Contract {
         b *= 1;
         a + b
     }
+
+    pub fn add_with_ref_arg(_e: &Env, a: i32, b: &i32) -> i32 {
+        a + b
+    }
 }
 
 #[contract]
@@ -45,6 +49,9 @@ fn test_functional() {
     assert_eq!(c, 22);
 
     let c = ContractClient::new(&e, &contract_id).add_with_mut_arg(&a, &b);
+    assert_eq!(c, 22);
+
+    let c = ContractClient::new(&e, &contract_id).add_with_ref_arg(&a, &b);
     assert_eq!(c, 22);
 }
 
