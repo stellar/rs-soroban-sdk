@@ -84,8 +84,20 @@ pub fn derive_pub_fn(
                 let passthrough_call = quote! { #ident };
 
                 let call_prefix = match *pat_ty.ty {
-                    Type::Reference(TypeReference { mutability: Some(_), .. }) => quote!(&mut),
+                    // Disallow &mut because it is semantically confusing for a contract function
+                    // to receive an input that would mutate a value coming from outside the
+                    // program.
+                    Type::Reference(TypeReference { mutability: Some(_), .. }) => {
+                        errors.push(syn::Error::new(
+                            pat_ty.ty.span(),
+                            "mutable references (&mut) are not supported in contract function parameters, use immutable references (&) instead",
+                        ));
+                        quote!(&)
+                    }
+                    // Allow & because it is convenient to be able to define contract functions
+                    // with borrowed parameters.
                     Type::Reference(TypeReference { mutability: None, .. }) => quote!(&),
+                    // Any other parameter type doesn't need a call prefix.
                     _ => quote!(),
                 };
                 let call = quote! {
