@@ -25,7 +25,7 @@ mod test {
     use crate::{Contract, ContractClient};
 
     #[test]
-    fn test_hello() {
+    fn test_calc() {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
