@@ -1,0 +1,106 @@
+name: Test with OpenZeppelin Contracts
+
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
+  cancel-in-progress: true
+
+# No permissions. This workflow downloads code from outside this repository and
+# compiles it. No permissions ensures that any exploit in an external
+# repository does not gain access to anything in this repo.
+permissions: {}
+
+jobs:
+  collect-crates:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        repository: OpenZeppelin/stellar-contracts
+        ref: main
+    - name: Find workspace member Cargo.toml files.
+      id: dirs
+      run: |
+        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^\($pwd)/"; "") | sub("/Cargo.toml$"; "")' | jq -Rnc '[inputs | "\(.)"]')
+        echo "dirs=$dirs" | tee -a $GITHUB_OUTPUT
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
+
+  test-crate:
+    needs: collect-crates
+    strategy:
+      fail-fast: false
+      matrix:
+        working-directory: ${{ fromJSON(needs.collect-crates.outputs.dirs) }}
+    defaults:
+      run:
+        working-directory: stellar-contracts/${{ matrix.working-directory }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout rs-soroban-sdk
+      uses: actions/checkout@v5
+      with:
+        path: rs-soroban-sdk
+
+    - name: Checkout OpenZeppelin stellar-contracts
+      uses: actions/checkout@v5
+      with:
+        repository: OpenZeppelin/stellar-contracts
+        ref: main
+        path: stellar-contracts
+
+    - name: Install Rust
+      run: |
+        rustup update
+        rustup target add wasm32v1-none
+
+    - uses: stellar/actions/rust-cache@main
+
+    - name: Check if should be built as a contract
+      id: check-if-contract
+      run: |
+        is_a_contract=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[] | select(.manifest_path == "\($pwd)/Cargo.toml") | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))')
+        echo "is-a-contract=$is_a_contract" | tee -a $GITHUB_OUTPUT
+
+    - name: Patch workspace dependencies
+      working-directory: stellar-contracts
+      run: |
+        crates=$(cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
+        for crate in $crates; do
+          rel_path=$(realpath --relative-to="." ../rs-soroban-sdk/$crate)
+          sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' Cargo.toml
+          sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' Cargo.toml
+        done
+
+    - name: Diff
+      run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
+
+    - name: Build contract
+      if: steps.check-if-contract.outputs.is-a-contract == 'true'
+      env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+      run: cargo build --target wasm32v1-none --release
+
+    - name: Set artifact name
+      if: steps.check-if-contract.outputs.is-a-contract == 'true'
+      id: artifact-name
+      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
+
+    - name: Upload WASM artifacts
+      if: steps.check-if-contract.outputs.is-a-contract == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.artifact-name.outputs.name }}
+        path: 'stellar-contracts/target/wasm32v1-none/release/*.wasm'
+        retention-days: 3
+
+    - env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+      run: cargo test
+
+    - name: Diff
+      run: git add -N . && git diff HEAD

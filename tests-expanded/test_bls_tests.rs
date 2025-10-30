@@ -1176,36 +1176,44 @@ pub mod __Contract__dummy_verify {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-extern "C" fn __Contract__492d85ed5a5d2cb14995f41e785b3df9c7fcf4af92b6d50ce2c9fa7c9b1e350d_ctor() {
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "g1_mul",
-        #[allow(deprecated)]
-        &__Contract__g1_mul::invoke_raw_slice,
-    );
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "g2_mul",
-        #[allow(deprecated)]
-        &__Contract__g2_mul::invoke_raw_slice,
-    );
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "dummy_verify",
-        #[allow(deprecated)]
-        &__Contract__dummy_verify::invoke_raw_slice,
-    );
-}
-#[used]
-#[allow(non_upper_case_globals, non_snake_case)]
-#[doc(hidden)]
-#[link_section = ".init_array"]
-static __Contract__492d85ed5a5d2cb14995f41e785b3df9c7fcf4af92b6d50ce2c9fa7c9b1e350d_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
-    #[allow(non_snake_case)]
-    #[link_section = ".text.startup"]
-    unsafe extern "C" fn __Contract__492d85ed5a5d2cb14995f41e785b3df9c7fcf4af92b6d50ce2c9fa7c9b1e350d_ctor___rust_ctor___ctor() -> usize {
-        __Contract__492d85ed5a5d2cb14995f41e785b3df9c7fcf4af92b6d50ce2c9fa7c9b1e350d_ctor();
-        0
+#[allow(unused)]
+fn __Contract__492d85ed5a5d2cb14995f41e785b3df9c7fcf4af92b6d50ce2c9fa7c9b1e350d_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__492d85ed5a5d2cb14995f41e785b3df9c7fcf4af92b6d50ce2c9fa7c9b1e350d_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
     }
-    __Contract__492d85ed5a5d2cb14995f41e785b3df9c7fcf4af92b6d50ce2c9fa7c9b1e350d_ctor___rust_ctor___ctor
-};
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "g1_mul",
+            #[allow(deprecated)]
+            &__Contract__g1_mul::invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "g2_mul",
+            #[allow(deprecated)]
+            &__Contract__g2_mul::invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "dummy_verify",
+            #[allow(deprecated)]
+            &__Contract__dummy_verify::invoke_raw_slice,
+        );
+    }
+}
 mod test {
     use super::*;
     use crate::{Contract, ContractClient};

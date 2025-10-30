@@ -1,5 +1,7 @@
 use crate::{
-    attribute::pass_through_attr_to_gen_code, map_type::map_type, syn_ext::ty_to_safe_ident_str,
+    attribute::pass_through_attr_to_gen_code,
+    map_type::map_type,
+    syn_ext::{fn_arg_type_validate_no_mut, ty_to_safe_ident_str},
 };
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
@@ -64,8 +66,13 @@ pub fn derive_pub_fn(
                 // signature_payload of type Bytes (32 size), to be a Hash.
                 let allow_hash = ident == "__check_auth" && i == 0;
 
+                // Error if the type of the fn arg is mutable.
+                if let Err(e) = fn_arg_type_validate_no_mut(&pat_ty.ty) {
+                    errors.push(e);
+                }
+
                 // Error if the type of the fn is not mappable.
-                if let Err(e) = map_type(&pat_ty.ty, false, allow_hash) {
+                if let Err(e) = map_type(&pat_ty.ty, true, allow_hash) {
                     errors.push(e);
                 }
 
@@ -83,7 +90,13 @@ pub fn derive_pub_fn(
                     ty: Box::new(Type::Verbatim(quote! { #crate_path::Val })),
                 });
                 let passthrough_call = quote! { #ident };
+
+                let call_prefix = match *pat_ty.ty {
+                    Type::Reference(TypeReference { .. }) => quote!(&),
+                    _ => quote!(),
+                };
                 let call = quote! {
+                    #call_prefix
                     <_ as #crate_path::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
@@ -219,7 +232,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
 
     quote! {
         #[doc(hidden)]
-        #[#crate_path::reexports_for_macros::ctor::ctor]
+        #[#crate_path::reexports_for_macros::ctor::ctor(crate_path=#crate_path::reexports_for_macros::ctor)]
         #[allow(non_snake_case)]
         fn #ctor_ident() {
             #(

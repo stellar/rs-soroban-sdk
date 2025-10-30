@@ -355,26 +355,34 @@ pub mod __Contract__hello {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-extern "C" fn __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor() {
-    <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-        "hello",
-        #[allow(deprecated)]
-        &__Contract__hello::invoke_raw_slice,
-    );
-}
-#[used]
-#[allow(non_upper_case_globals, non_snake_case)]
-#[doc(hidden)]
-#[link_section = ".init_array"]
-static __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor___rust_ctor___ctor: unsafe extern "C" fn() -> usize = {
-    #[allow(non_snake_case)]
-    #[link_section = ".text.startup"]
-    unsafe extern "C" fn __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor___rust_ctor___ctor() -> usize {
-        __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor();
-        0
+#[allow(unused)]
+fn __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
     }
-    __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor___rust_ctor___ctor
-};
+    {
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "hello",
+            #[allow(deprecated)]
+            &__Contract__hello::invoke_raw_slice,
+        );
+    }
+}
 mod test {
     extern crate std;
     use crate::{Contract, ContractClient};

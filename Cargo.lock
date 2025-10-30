@@ -331,13 +331,19 @@ dependencies = [
 
 [[package]]
 name = "ctor"
-version = "0.2.9"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32a2785755761f3ddc1492979ce1e48d2c00d09311c39e4466429188f3dd6501"
+checksum = "67773048316103656a637612c4a62477603b777d91d9c62ff2290f9cde178fdb"
 dependencies = [
- "quote",
- "syn 2.0.103",
+ "ctor-proc-macro",
+ "dtor",
 ]
+
+[[package]]
+name = "ctor-proc-macro"
+version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2931af7e13dc045d8e9d26afccc6fa115d64e115c9c84b1166288b46f6782c2"
 
 [[package]]
 name = "curve25519-dalek"
@@ -478,6 +484,21 @@ name = "downcast-rs"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2"
+
+[[package]]
+name = "dtor"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e58a0764cddb55ab28955347b45be00ade43d4d6f3ba4bf3dc354e4ec9432934"
+dependencies = [
+ "dtor-proc-macro",
+]
+
+[[package]]
+name = "dtor-proc-macro"
+version = "0.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f678cf4a922c215c63e0de95eb1ff08a958a81d47e485cf9da1e27bf6305cfa5"
 
 [[package]]
 name = "dyn-clone"
@@ -1003,7 +1024,7 @@ dependencies = [
 
 [[package]]
 name = "proc_macros"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "quote",
  "syn 2.0.103",
@@ -1379,7 +1400,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1392,7 +1413,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-meta"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "stellar-xdr",
  "thiserror",
@@ -1401,7 +1422,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1431,7 +1452,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "darling",
  "heck",
@@ -1449,7 +1470,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "base64",
  "pretty_assertions",
@@ -1460,7 +1481,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1475,14 +1496,14 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "soroban-token-spec"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
  "soroban-token-sdk",
@@ -1525,7 +1546,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-asset-spec"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
  "soroban-token-sdk",
@@ -1610,126 +1631,147 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "23.0.2"
+version = "23.1.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_associated_types"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_bls"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_constructor"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "23.0.2"
+version = "23.1.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_events_ref"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "23.0.2"
+version = "23.1.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_generics"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_macros"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "proc_macros",
  "soroban-sdk",
@@ -1737,28 +1779,35 @@ dependencies = [
 
 [[package]]
 name = "test_modular"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "23.0.2"
+version = "23.1.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_mutability"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -1766,14 +1815,14 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_zero"
-version = "23.0.2"
+version = "23.1.0"
 dependencies = [
  "soroban-sdk",
 ]
