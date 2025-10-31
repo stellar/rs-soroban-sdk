@@ -596,7 +596,6 @@ pub fn contractargs(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as HasFnsItem);
     let methods: Vec<_> = item.fns();
     let args_type = (!args.impl_only).then(|| derive_args_type(&item.name(), &args.name));
-
     let args_impl = derive_args_impl(&args.name, &methods);
     quote! {
         #input2
