@@ -39,9 +39,6 @@ impl<'a> ContractClient<'a> {
 }
 impl Trait for Contract {
     type Impl = DefaultImpl;
-    fn exec(env: &Env) -> String {
-        Self::Impl::exec(env)
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

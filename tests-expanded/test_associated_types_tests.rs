@@ -151,9 +151,6 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 }
 impl Trait for Contract {
     type Impl = DefaultImpl;
-    fn exec(env: &Env) -> String {
-        Self::Impl::exec(env)
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -332,9 +329,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/associated_type/src/lib.rs",
-            start_line: 42usize,
+            start_line: 40usize,
             start_col: 8usize,
-            end_line: 42usize,
+            end_line: 40usize,
             end_col: 17usize,
             compile_fail: false,
             no_run: false,
