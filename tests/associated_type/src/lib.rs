@@ -15,6 +15,7 @@ impl Trait for DefaultImpl {
 
 pub trait Trait {
     type Impl: Trait;
+
     fn exec(env: &Env) -> String {
         Self::Impl::exec(env)
     }
