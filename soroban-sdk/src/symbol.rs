@@ -201,6 +201,11 @@ impl Symbol {
     /// Valid characters are `a-zA-Z0-9_` and maximum string length is 32
     /// characters.
     ///
+    /// **Performance Note**: This method optimistically tries to encode short 
+    /// symbols (≤9 characters) efficiently, but adds ~200 bytes to WASM. 
+    /// For better performance, consider using the `symbol!` macro which chooses 
+    /// the optimal approach at compile time.
+    ///
     /// Use `symbol_short!` for constant symbols that are 9 characters or less.
     ///
     /// Use `Symbol::try_from_val(env, s)`/`s.try_into_val(env)` in case if
@@ -209,6 +214,23 @@ impl Symbol {
     /// ### Panics
     ///
     /// When the input string is not representable by Symbol.
+    ///
+    /// ### Examples
+    ///
+    /// ```rust
+    /// use soroban_sdk::{Env, Symbol, symbol};
+    /// # fn main() {
+    /// # let env = Env::default();
+    ///
+    /// // Direct creation (always works but less optimal for WASM size)
+    /// let sym1 = Symbol::new(&env, "hello");
+    /// let sym2 = Symbol::new(&env, "very_long_symbol_name");
+    ///
+    /// // Preferred: Use symbol! macro for compile-time optimization
+    /// let sym3 = symbol!(&env, "hello");           // Compile-time constant
+    /// let sym4 = symbol!(&env, "very_long_symbol_name"); // Runtime host call
+    /// # }
+    /// ```
     pub fn new(env: &Env, s: &str) -> Self {
         Self {
             env: env.clone().into(),
