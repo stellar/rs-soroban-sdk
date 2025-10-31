@@ -262,7 +262,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
-                #[#crate_path::contractimpl_fns_without_blocks_filtered]
+                #[#crate_path::contractimpl_remove_fns_without_blocks]
                 #imp
                 #derived_ok
             };
@@ -284,7 +284,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn contractimpl_fns_without_blocks_filtered(
+pub fn contractimpl_remove_fns_without_blocks(
     _metadata: TokenStream,
     input: TokenStream,
 ) -> TokenStream {
