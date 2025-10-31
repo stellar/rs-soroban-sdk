@@ -4,7 +4,7 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl, Env, String};
+use soroban_sdk::{contract, contractimpl, contracttrait, Env, String};
 pub struct DefaultImpl;
 impl Trait for DefaultImpl {
     type Impl = Self;
@@ -12,10 +12,201 @@ impl Trait for DefaultImpl {
         String::from_str(env, "default")
     }
 }
+pub struct TraitSpec;
+/// Macro for `contractimpl`ing the default functions of the trait that are not overriden.
+pub use __contractimpl_for_trait as Trait;
 pub trait Trait {
     type Impl: Trait;
     fn exec(env: &Env) -> String {
         Self::Impl::exec(env)
+    }
+}
+///TraitClient is a client for calling the contract defined in "Trait".
+pub struct TraitClient<'a> {
+    pub env: soroban_sdk::Env,
+    pub address: soroban_sdk::Address,
+    #[doc(hidden)]
+    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
+    #[doc(hidden)]
+    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
+    #[doc(hidden)]
+    mock_all_auths: bool,
+    #[doc(hidden)]
+    allow_non_root_auth: bool,
+}
+impl<'a> TraitClient<'a> {
+    pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+        Self {
+            env: env.clone(),
+            address: address.clone(),
+            set_auths: None,
+            mock_auths: None,
+            mock_all_auths: false,
+            allow_non_root_auth: false,
+        }
+    }
+    /// Set authorizations in the environment which will be consumed by
+    /// contracts when they invoke `Address::require_auth` or
+    /// `Address::require_auth_for_args` functions.
+    ///
+    /// Requires valid signatures for the authorization to be successful.
+    /// To mock auth without requiring valid signatures, use `mock_auths`.
+    ///
+    /// See `soroban_sdk::Env::set_auths` for more details and examples.
+    pub fn set_auths(&self, auths: &'a [soroban_sdk::xdr::SorobanAuthorizationEntry]) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            set_auths: Some(auths),
+            mock_auths: self.mock_auths.clone(),
+            mock_all_auths: false,
+            allow_non_root_auth: false,
+        }
+    }
+    /// Mock authorizations in the environment which will cause matching invokes
+    /// of `Address::require_auth` and `Address::require_auth_for_args` to
+    /// pass.
+    ///
+    /// See `soroban_sdk::Env::set_auths` for more details and examples.
+    pub fn mock_auths(&self, mock_auths: &'a [soroban_sdk::testutils::MockAuth<'a>]) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            set_auths: self.set_auths.clone(),
+            mock_auths: Some(mock_auths),
+            mock_all_auths: false,
+            allow_non_root_auth: false,
+        }
+    }
+    /// Mock all calls to the `Address::require_auth` and
+    /// `Address::require_auth_for_args` functions in invoked contracts,
+    /// having them succeed as if authorization was provided.
+    ///
+    /// See `soroban_sdk::Env::mock_all_auths` for more details and
+    /// examples.
+    pub fn mock_all_auths(&self) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            set_auths: None,
+            mock_auths: None,
+            mock_all_auths: true,
+            allow_non_root_auth: false,
+        }
+    }
+    /// A version of `mock_all_auths` that allows authorizations that
+    /// are not present in the root invocation.
+    ///
+    /// Refer to `mock_all_auths` documentation for details and
+    /// prefer using `mock_all_auths` unless non-root authorization is
+    /// required.
+    ///
+    /// See `soroban_sdk::Env::mock_all_auths_allowing_non_root_auth`
+    /// for more details and examples.
+    pub fn mock_all_auths_allowing_non_root_auth(&self) -> Self {
+        Self {
+            env: self.env.clone(),
+            address: self.address.clone(),
+            set_auths: None,
+            mock_auths: None,
+            mock_all_auths: true,
+            allow_non_root_auth: true,
+        }
+    }
+}
+impl<'a> TraitClient<'a> {
+    pub fn exec(&self) -> String {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_exec(
+        &self,
+    ) -> Result<
+        Result<
+            String,
+            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                self.env.mock_all_auths();
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+}
+///TraitArgs is a type for building arg lists for functions defined in "Trait".
+pub struct TraitArgs;
+impl TraitArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn exec<'i>() -> () {
+        ()
+    }
+}
+impl TraitSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_exec() -> [u8; 28usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
     }
 }
 pub struct Contract;
@@ -290,6 +481,8 @@ pub mod __Contract__exec {
     }
     use super::*;
 }
+impl<'a> ContractClient<'a> {}
+impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
@@ -332,9 +525,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/associated_type/src/lib.rs",
-            start_line: 42usize,
+            start_line: 43usize,
             start_col: 8usize,
-            end_line: 42usize,
+            end_line: 43usize,
             end_col: 17usize,
             compile_fail: false,
             no_run: false,

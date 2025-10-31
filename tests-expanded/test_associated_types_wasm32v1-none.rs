@@ -4,7 +4,7 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl, Env, String};
+use soroban_sdk::{contract, contractimpl, contracttrait, Env, String};
 pub struct DefaultImpl;
 impl Trait for DefaultImpl {
     type Impl = Self;
@@ -12,10 +12,81 @@ impl Trait for DefaultImpl {
         String::from_str(env, "default")
     }
 }
+pub struct TraitSpec;
+/// Macro for `contractimpl`ing the default functions of the trait that are not overriden.
+pub use __contractimpl_for_trait as Trait;
 pub trait Trait {
     type Impl: Trait;
     fn exec(env: &Env) -> String {
         Self::Impl::exec(env)
+    }
+}
+///TraitClient is a client for calling the contract defined in "Trait".
+pub struct TraitClient<'a> {
+    pub env: soroban_sdk::Env,
+    pub address: soroban_sdk::Address,
+    #[doc(hidden)]
+    _phantom: core::marker::PhantomData<&'a ()>,
+}
+impl<'a> TraitClient<'a> {
+    pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+        Self {
+            env: env.clone(),
+            address: address.clone(),
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+impl<'a> TraitClient<'a> {
+    pub fn exec(&self) -> String {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_exec(
+        &self,
+    ) -> Result<
+        Result<
+            String,
+            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+}
+///TraitArgs is a type for building arg lists for functions defined in "Trait".
+pub struct TraitArgs;
+impl TraitArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn exec<'i>() -> () {
+        ()
+    }
+}
+impl TraitSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_exec() -> [u8; 28usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
     }
 }
 pub struct Contract;
@@ -123,3 +194,5 @@ pub mod __Contract__exec {
     }
     use super::*;
 }
+impl<'a> ContractClient<'a> {}
+impl ContractArgs {}
