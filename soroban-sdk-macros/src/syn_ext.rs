@@ -17,14 +17,15 @@ use syn::{
 /// methods that are inherently implemented this is methods that have a pub
 /// visibility keyword. For methods that are implementing a trait the pub is
 /// assumed and so all methods are returned.
-pub fn impl_pub_methods(imp: &ItemImpl) -> impl Iterator<Item = &ImplItemFn> {
+pub fn impl_pub_methods(imp: &ItemImpl) -> Vec<ImplItemFn> {
     imp.items
         .iter()
         .filter_map(|i| match i {
-            ImplItem::Fn(m) => Some(m),
+            ImplItem::Fn(m) => Some(m.clone()),
             _ => None,
         })
         .filter(|m| imp.trait_.is_some() || matches!(m.vis, Visibility::Public(_)))
+        .collect()
 }
 
 /// Gets methods from the trait.
@@ -161,22 +162,23 @@ impl HasFnsItem {
         }
     }
 
-    pub fn fns(&self) -> Vec<Fn<'_>> {
+    pub fn fns(&self) -> Vec<Fn> {
         match self {
             HasFnsItem::Trait(t) => trait_methods(t)
                 .map(|m| Fn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
+                    ident: m.sig.ident.clone(),
+                    attrs: m.attrs.clone(),
+                    inputs: m.sig.inputs.clone(),
+                    output: m.sig.output.clone(),
                 })
                 .collect(),
             HasFnsItem::Impl(i) => impl_pub_methods(i)
+                .iter()
                 .map(|m| Fn {
-                    ident: &m.sig.ident,
-                    attrs: &m.attrs,
-                    inputs: &m.sig.inputs,
-                    output: &m.sig.output,
+                    ident: m.sig.ident.clone(),
+                    attrs: m.attrs.clone(),
+                    inputs: m.sig.inputs.clone(),
+                    output: m.sig.output.clone(),
                 })
                 .collect(),
         }
@@ -210,16 +212,16 @@ impl ToTokens for HasFnsItem {
     }
 }
 
-pub struct Fn<'a> {
-    pub ident: &'a Ident,
-    pub attrs: &'a [Attribute],
-    pub inputs: &'a Punctuated<FnArg, Comma>,
-    pub output: &'a ReturnType,
+pub struct Fn {
+    pub ident: Ident,
+    pub attrs: Vec<Attribute>,
+    pub inputs: Punctuated<FnArg, Comma>,
+    pub output: ReturnType,
 }
 
-impl<'a> Fn<'a> {
+impl Fn {
     pub fn output(&self) -> Type {
-        let t = match self.output {
+        let t = match &self.output {
             ReturnType::Default => quote!(()),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
                 Some((t, _)) => quote!(#t),
@@ -229,7 +231,7 @@ impl<'a> Fn<'a> {
         Type::Verbatim(t)
     }
     pub fn try_output(&self, crate_path: &Path) -> Type {
-        let (t, e) = match self.output {
+        let (t, e) = match &self.output {
             ReturnType::Default => (quote!(()), quote!(#crate_path::Error)),
             ReturnType::Type(_, typ) => match unpack_result(typ) {
                 Some((t, e)) => (quote!(#t), quote!(#e)),
