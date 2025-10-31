@@ -244,11 +244,9 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         .iter()
         .map(|m| {
             let ident = &m.sig.ident;
-            let call = quote! { <super::#ty>::#ident };
             derive_pub_fn(
                 crate_path,
                 &ty,
-                &call,
                 ident,
                 &m.attrs,
                 &m.sig.inputs,
