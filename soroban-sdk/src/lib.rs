@@ -365,7 +365,13 @@ pub use soroban_sdk_macros::contract;
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
 ///
+/// All trait functions visiible in the impl block are invocable. Trait
+/// default functions are only invocable if specified without a block. See the
+/// example below.
+///
 /// ### Examples
+///
+/// #### Defining a function
 ///
 /// Define a contract with one function, `hello`, and call it from within a test
 /// using the generated client.
@@ -381,6 +387,85 @@ pub use soroban_sdk_macros::contract;
 ///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
 ///         vec![&env, symbol_short!("Hello"), to]
 ///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register(HelloContract, ());
+///     let client = HelloContractClient::new(&env, &contract_id);
+///
+///     let words = client.hello(&symbol_short!("Dev"));
+///
+///     assert_eq!(words, vec![&env, symbol_short!("Hello"), symbol_short!("Dev"),]);
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+///
+/// #### Defining a function using a trait
+///
+/// Define a contract with one function, `hello`, that is defined by a trait.
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, vec, symbol_short, BytesN, Env, Symbol, Vec};
+///
+/// pub trait HelloTrait {
+///     fn hello(env: Env, to: Symbol) -> Vec<Symbol>;
+/// }
+///
+/// #[contract]
+/// pub struct HelloContract;
+///
+/// #[contractimpl]
+/// impl HelloTrait for HelloContract {
+///     fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
+///         vec![&env, symbol_short!("Hello"), to]
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register(HelloContract, ());
+///     let client = HelloContractClient::new(&env, &contract_id);
+///
+///     let words = client.hello(&symbol_short!("Dev"));
+///
+///     assert_eq!(words, vec![&env, symbol_short!("Hello"), symbol_short!("Dev"),]);
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+///
+/// #### Defining a function using a trait with a default implementation
+///
+/// Define a contract with one function, `hello`, that is defined by a trait, and has a default
+/// implementation in the trait that the contract will make invocable.
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, vec, symbol_short, BytesN, Env, Symbol, Vec};
+///
+/// pub trait HelloTrait {
+///     fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
+///         vec![&env, symbol_short!("Hello"), to]
+///     }
+/// }
+///
+/// #[contract]
+/// pub struct HelloContract;
+///
+/// #[contractimpl]
+/// impl HelloTrait for HelloContract {
+///     // To make a trait default function invocable it must be specified
+///     // in the impl block with no code block.
+///     fn hello(env: Env, to: Symbol) -> Vec<Symbol>;
 /// }
 ///
 /// #[test]
