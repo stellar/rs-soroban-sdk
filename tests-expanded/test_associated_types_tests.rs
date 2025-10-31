@@ -11,16 +11,12 @@ impl Trait for DefaultImpl {
     fn exec(env: &Env) -> String {
         String::from_str(env, "default")
     }
-    fn exec2(env: &Env) {
-        String::from_str(env, "default")
-    }
 }
 pub trait Trait {
     type Impl: Trait;
     fn exec(env: &Env) -> String {
         Self::Impl::exec(env)
     }
-    fn exec2();
 }
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -155,9 +151,6 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 }
 impl Trait for Contract {
     type Impl = DefaultImpl;
-    fn exec2(env: &Env) -> String {
-        String::from_str(env, "impl")
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -171,20 +164,6 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_exec() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__exec2__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_EXEC2: [u8; 32usize] = super::Contract::spec_xdr_exec2();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec2() -> [u8; 32usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05exec2\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -266,94 +245,11 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn exec2(&self) -> String {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec2");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
-        res
-    }
-    pub fn try_exec2(
-        &self,
-    ) -> Result<
-        Result<
-            String,
-            <String as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-        >,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                self.env.mock_all_auths();
-            }
-        }
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec2");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
-        res
-    }
 }
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn exec<'i>() -> () {
-        ()
-    }
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn exec2<'i>() -> () {
         ()
     }
 }
@@ -393,42 +289,8 @@ pub mod __Contract__exec {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec2 {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec2` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        use super::Trait;
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::exec2(&env),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec2` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 0usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    0usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env)
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec2` instead")]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract_Trait_63842da933ab3611b9860480a0bd8b7c0de39e8f6f301c9ed52dd54191e8c014_ctor() {
+fn __Contract_Trait_2706c619fe73f0cf112473c6ee02e66c04e1c01c110b0c37b88d8eb509630c9f_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -440,7 +302,7 @@ fn __Contract_Trait_63842da933ab3611b9860480a0bd8b7c0de39e8f6f301c9ed52dd54191e8
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract_Trait_63842da933ab3611b9860480a0bd8b7c0de39e8f6f301c9ed52dd54191e8c014_ctor();
+                    __Contract_Trait_2706c619fe73f0cf112473c6ee02e66c04e1c01c110b0c37b88d8eb509630c9f_ctor();
                 };
                 core::default::Default::default()
             }
@@ -452,11 +314,6 @@ fn __Contract_Trait_63842da933ab3611b9860480a0bd8b7c0de39e8f6f301c9ed52dd54191e8
             "exec",
             #[allow(deprecated)]
             &__Contract__exec::invoke_raw_slice,
-        );
-        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "exec2",
-            #[allow(deprecated)]
-            &__Contract__exec2::invoke_raw_slice,
         );
     }
 }
@@ -472,9 +329,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/associated_type/src/lib.rs",
-            start_line: 51usize,
+            start_line: 39usize,
             start_col: 8usize,
-            end_line: 51usize,
+            end_line: 39usize,
             end_col: 17usize,
             compile_fail: false,
             no_run: false,
@@ -492,20 +349,6 @@ mod test {
         let client = ContractClient::new(&e, &contract_id);
         let res = client.exec();
         match (&res, &String::from_str(&e, "default")) {
-            (left_val, right_val) => {
-                if !(*left_val == *right_val) {
-                    let kind = ::core::panicking::AssertKind::Eq;
-                    ::core::panicking::assert_failed(
-                        kind,
-                        &*left_val,
-                        &*right_val,
-                        ::core::option::Option::None,
-                    );
-                }
-            }
-        };
-        let res = client.exec2();
-        match (&res, &String::from_str(&e, "impl")) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
