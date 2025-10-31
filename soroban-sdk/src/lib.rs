@@ -401,6 +401,14 @@ pub use soroban_sdk_macros::contract;
 /// ```
 pub use soroban_sdk_macros::contractimpl;
 
+/// Strips out default functions of a trait that are not overridden in the impl
+/// block of a contract and are included without a block only so that the
+/// contractimpl macro can export the functions.
+///
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_fns_without_blocks_filtered;
+
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
 /// under the section name 'contractmetav0'. Contract developers can use this to
 /// append metadata to their contract.

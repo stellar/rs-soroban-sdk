@@ -40,7 +40,7 @@ use syn::{
     parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Expr, Fields,
     ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
 };
-use syn_ext::HasFnsItem;
+use syn_ext::{impl_remove_fns_without_blocks, HasFnsItem};
 
 use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
@@ -262,6 +262,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
+                #[#crate_path::contractimpl_fns_without_blocks_filtered]
                 #imp
                 #derived_ok
             };
@@ -280,6 +281,16 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
         .into(),
     }
+}
+
+#[proc_macro_attribute]
+pub fn contractimpl_fns_without_blocks_filtered(
+    _metadata: TokenStream,
+    input: TokenStream,
+) -> TokenStream {
+    let imp = parse_macro_input!(input as ItemImpl);
+    let imp = impl_remove_fns_without_blocks(&imp);
+    quote!(#imp).into()
 }
 
 #[derive(Debug, FromMeta)]

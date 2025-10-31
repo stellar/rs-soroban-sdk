@@ -8,7 +8,12 @@ pub struct DefaultImpl;
 
 impl Trait for DefaultImpl {
     type Impl = Self;
+
     fn exec(env: &Env) -> String {
+        String::from_str(env, "default")
+    }
+
+    fn exec2(env: &Env) {
         String::from_str(env, "default")
     }
 }
@@ -19,6 +24,8 @@ pub trait Trait {
     fn exec(env: &Env) -> String {
         Self::Impl::exec(env)
     }
+
+    fn exec2();
 }
 
 #[contract]
@@ -27,8 +34,10 @@ pub struct Contract;
 #[contractimpl]
 impl Trait for Contract {
     type Impl = DefaultImpl;
-    fn exec(env: &Env) -> String {
-        Self::Impl::exec(env)
+    fn exec(env: &Env) -> String;
+
+    fn exec2(env: &Env) -> String {
+        String::from_str(env, "impl")
     }
 }
 
@@ -46,5 +55,8 @@ mod test {
 
         let res = client.exec();
         assert_eq!(res, String::from_str(&e, "default"));
+
+        let res = client.exec2();
+        assert_eq!(res, String::from_str(&e, "impl"));
     }
 }
