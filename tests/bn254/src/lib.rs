@@ -21,12 +21,12 @@ impl Contract {
         env.crypto().bn254().pairing_check(proof.g1, proof.g2)
     }
 
-    pub fn g1_add(env: Env, a: G1Affine, b: G1Affine) -> G1Affine {
-        env.crypto().bn254().g1_add(&a, &b)
+    pub fn g1_add(a: G1Affine, b: G1Affine) -> G1Affine {
+        a + b
     }
 
-    pub fn g1_mul(env: Env, p: G1Affine, s: Fr) -> G1Affine {
-        env.crypto().bn254().g1_mul(&p, &s)
+    pub fn g1_mul(p: G1Affine, s: Fr) -> G1Affine {
+        p * s
     }
 }
 

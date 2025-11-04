@@ -6,7 +6,11 @@ use crate::{
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
-use core::{cmp::Ordering, fmt::Debug};
+use core::{
+    cmp::Ordering,
+    fmt::Debug,
+    ops::{Add, Mul},
+};
 
 const FP_SERIALIZED_SIZE: usize = 32; // Size in bytes of a serialized Fp element in BN254.
 pub const G1_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2; // Size in bytes of a serialized G1 element in BN254. Each coordinate (X, Y) is 32 bytes.
@@ -40,6 +44,22 @@ struct Fp(BytesN<FP_SERIALIZED_SIZE>);
 impl G1Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
+    }
+}
+
+impl Add for G1Affine {
+    type Output = G1Affine;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        self.env().crypto().bn254().g1_add(&self, &rhs)
+    }
+}
+
+impl Mul<Fr> for G1Affine {
+    type Output = G1Affine;
+
+    fn mul(self, rhs: Fr) -> Self::Output {
+        self.env().crypto().bn254().g1_mul(&self, &rhs)
     }
 }
 
