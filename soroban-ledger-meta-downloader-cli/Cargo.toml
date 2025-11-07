@@ -19,5 +19,3 @@ clap = { version = "4.0", features = ["derive"] }
 soroban-ledger-meta-downloader = { workspace = true }
 serde_json = "1.0"
 stellar-xdr = { workspace = true, features = ["curr", "std"] }
-rusoto_core = "0.48"
-tokio = { version = "1.0", features = ["rt", "rt-multi-thread", "macros"] }

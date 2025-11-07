@@ -1,10 +1,6 @@
-use std::str::FromStr;
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ReadXdr, LedgerCloseMeta};
 use thiserror::Error;
-use rusoto_core::{Region, credential::StaticProvider, request::HttpClient};
-use rusoto_s3::{S3Client, S3, GetObjectRequest, ListObjectsV2Request};
-use futures::stream::TryStreamExt;
 
 /// Configuration for connecting to S3-compatible storage
 #[derive(Clone, Debug)]
@@ -17,12 +13,8 @@ pub struct S3Config {
 /// Error type for ledger meta downloader operations
 #[derive(Error, Debug)]
 pub enum Error {
-    #[error("S3 operation failed: {0}")]
-    S3(#[from] rusoto_core::RusotoError<rusoto_s3::GetObjectError>),
-    #[error("S3 list operation failed: {0}")]
-    S3List(#[from] rusoto_core::RusotoError<rusoto_s3::ListObjectsV2Error>),
-    #[error("S3 credentials error: {0}")]
-    S3Credentials(#[from] rusoto_core::RusotoError<rusoto_credential::CredentialsError>),
+    #[error("HTTP request failed: {0}")]
+    Http(#[from] reqwest::Error),
     #[error("I/O error: {0}")]
     Io(#[from] std::io::Error),
     #[error("XDR parsing error: {0}")]
@@ -68,7 +60,7 @@ fn get_path_for_ledger(ledger_sequence: u32) -> String {
 ///
 /// # Returns
 /// The uncompressed LedgerCloseMeta for the specified ledger
-pub async fn download_ledger_close_meta(
+pub fn download_ledger_close_meta(
     sequence: u32,
     config: &S3Config,
 ) -> Result<LedgerCloseMeta, Error> {
@@ -77,27 +69,20 @@ pub async fn download_ledger_close_meta(
     }
 
     let key = get_path_for_ledger(sequence);
-    let region = Region::from_str(&config.region).map_err(|_| Error::InvalidSequence(sequence))?;
+    let client = reqwest::blocking::Client::new();
 
-    // Create S3 client with anonymous credentials for public bucket access
-    let credentials = StaticProvider::new_minimal("".to_string(), "".to_string());
-    let s3_client = S3Client::new_with(HttpClient::new().unwrap(), credentials, region);
+    // Construct S3 REST API URL for GET object
+    let url = format!("https://{}.s3.{}.amazonaws.com/{}",
+        config.bucket, config.region, key);
 
-    // Get the compressed ledger data from S3
-    let get_req = GetObjectRequest {
-        bucket: config.bucket.clone(),
-        key: key.clone(),
-        ..Default::default()
-    };
+    // Make HTTP GET request
+    let response = client.get(&url).send()?;
+    if !response.status().is_success() {
+        return Err(Error::LedgerNotFound(sequence));
+    }
 
-    let result = s3_client.get_object(get_req).await?;
-    let body = result.body.ok_or_else(|| Error::LedgerNotFound(sequence))?;
-
-    // Collect all chunks from the stream
-    let chunks: Vec<bytes::Bytes> = body.try_collect().await?;
-    let compressed_data: Vec<u8> = chunks.into_iter()
-        .flat_map(|chunk| chunk.to_vec())
-        .collect();
+    // Get the response body
+    let compressed_data = response.bytes()?.to_vec();
 
     // Decompress using zstd
     let decompressed_data = zstd::decode_all(compressed_data.as_slice())?;
@@ -122,43 +107,57 @@ pub async fn download_ledger_close_meta(
 ///
 /// # Returns
 /// The highest ledger sequence number available
-pub async fn discover_latest_ledger_sequence(config: &S3Config) -> Result<u32, Error> {
-    let region = Region::from_str(&config.region).map_err(|_| Error::InvalidSequence(0))?;
-    // Create S3 client with anonymous credentials for public bucket access
-    let credentials = StaticProvider::new_minimal("".to_string(), "".to_string());
-    let s3_client = S3Client::new_with(HttpClient::new().unwrap(), credentials, region);
+pub fn discover_latest_ledger_sequence(config: &S3Config) -> Result<u32, Error> {
+    let client = reqwest::blocking::Client::new();
 
-    let list_req = ListObjectsV2Request {
-        bucket: config.bucket.clone(),
-        prefix: Some("v1.1/stellar/ledgers/pubnet/".to_string()),
-        max_keys: Some(1000),
-        ..Default::default()
-    };
+    // Construct S3 REST API URL for LIST objects v2
+    let url = format!("https://{}.s3.{}.amazonaws.com/",
+        config.bucket, config.region);
 
-    let result = s3_client.list_objects_v2(list_req).await?;
-    let contents = result.contents.ok_or_else(|| Error::LedgerNotFound(0))?;
+    // Make HTTP GET request with query parameters for listing objects
+    let response = client
+        .get(&url)
+        .query(&[
+            ("list-type", "2"),
+            ("prefix", "v1.1/stellar/ledgers/pubnet/"),
+            ("max-keys", "1000"),
+        ])
+        .send()?;
 
-    let mut sequence_numbers: Vec<u32> = contents
-        .iter()
-        .filter_map(|obj| obj.key.as_ref())
-        .filter_map(|key| {
-            // Parse filename from path like: v1.1/stellar/ledgers/pubnet/partition/batch--sequence.xdr.zst
-            let parts: Vec<&str> = key.split('/').collect();
-            if parts.len() >= 3 {
-                let filename = parts.last()?;
-                // Match pattern: batch--sequence.xdr.zst
-                if let Some(captures) = regex::Regex::new(r"--(\d+)\.xdr\.zst$")
-                    .ok()?
-                    .captures(filename) {
-                    captures.get(1)?.as_str().parse::<u32>().ok()
-                } else {
-                    None
+    if !response.status().is_success() {
+        return Err(Error::LedgerNotFound(0));
+    }
+
+    // Parse the XML response to extract object keys
+    let xml_content = response.text()?;
+    let mut sequence_numbers: Vec<u32> = Vec::new();
+
+    // Simple XML parsing - look for <Key> tags
+    for line in xml_content.lines() {
+        if line.contains("<Key>") && line.contains("</Key>") {
+            if let Some(key_start) = line.find("<Key>") {
+                if let Some(key_end) = line.find("</Key>") {
+                    let key = &line[key_start + 5..key_end];
+                    // Parse filename from path like: v1.1/stellar/ledgers/pubnet/partition/batch--sequence.xdr.zst
+                    let parts: Vec<&str> = key.split('/').collect();
+                    if parts.len() >= 3 {
+                        if let Some(filename) = parts.last() {
+                            // Match pattern: batch--sequence.xdr.zst
+                            if let Some(captures) = regex::Regex::new(r"--(\d+)\.xdr\.zst$")
+                                .ok()
+                                .and_then(|re| re.captures(filename)) {
+                                if let Some(seq_match) = captures.get(1) {
+                                    if let Ok(seq) = seq_match.as_str().parse::<u32>() {
+                                        sequence_numbers.push(seq);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-            } else {
-                None
             }
-        })
-        .collect();
+        }
+    }
 
     sequence_numbers.sort();
     sequence_numbers.into_iter().last().ok_or_else(|| Error::LedgerNotFound(0))

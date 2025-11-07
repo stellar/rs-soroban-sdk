@@ -31,14 +31,6 @@ struct Args {
 }
 
 fn main() {
-    // Initialize a tokio runtime for rusoto
-    let rt = tokio::runtime::Builder::new_current_thread()
-        .enable_all()
-        .build()
-        .unwrap();
-
-    let _guard = rt.enter(); // Enter the runtime context
-
     let args = Args::parse();
 
     // Validate format
@@ -58,7 +50,7 @@ fn main() {
     };
 
     // Download the ledger meta
-    match rt.block_on(download_ledger_close_meta(args.sequence, &config)) {
+    match download_ledger_close_meta(args.sequence, &config) {
         Ok(meta) => {
             match args.format.as_str() {
                 "json" => {
