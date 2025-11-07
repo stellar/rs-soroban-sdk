@@ -19,26 +19,22 @@ pub enum Error {
     InvalidTransactionHash,
 }
 
-/// Mega snapshot source that downloads ledger meta and searches for ledger entries
-pub struct MegaSnapshotSource {
+/// Meta snapshot source that downloads ledger meta and searches for ledger entries
+pub struct MetaSnapshotSource {
     s3_config: S3Config,
     ledger_sequence: u32,
     transaction_hash: Option<Vec<u8>>,
 }
 
-impl MegaSnapshotSource {
-    /// Create a new MegaSnapshotSource
+impl MetaSnapshotSource {
+    /// Create a new MetaSnapshotSource
     ///
     /// # Arguments
-    /// * `bucket` - AWS S3 bucket name
-    /// * `region` - AWS S3 region
-    /// * `root_prefix` - Root prefix in the bucket
+    /// * `config` - S3 configuration
     /// * `ledger_sequence` - Ledger sequence number
     /// * `transaction_hash` - Optional transaction hash as hex string
     pub fn new(
-        bucket: String,
-        region: String,
-        root_prefix: String,
+        config: S3Config,
         ledger_sequence: u32,
         transaction_hash: Option<String>,
     ) -> Result<Self, Error> {
@@ -55,18 +51,14 @@ impl MegaSnapshotSource {
         };
 
         Ok(Self {
-            s3_config: S3Config {
-                bucket,
-                region,
-                root_path: root_prefix,
-            },
+            s3_config: config,
             ledger_sequence,
             transaction_hash,
         })
     }
 }
 
-impl SnapshotSource for MegaSnapshotSource {
+impl SnapshotSource for MetaSnapshotSource {
     fn get(
         &self,
         key: &Rc<LedgerKey>,
@@ -88,12 +80,32 @@ impl SnapshotSource for MegaSnapshotSource {
             };
 
             // If we have a transaction hash, find that specific transaction
+            // TODO: Reorganise this if else so that most of the inner work is shared by both
+            // cases.
             if let Some(tx_hash) = &self.transaction_hash {
                 if let Some(tx_proc) = tx_processing.iter().find(|tx| {
                     tx.result.transaction_hash.as_slice() == tx_hash.as_slice()
                 }) {
                     // Found the transaction, search in its before state
                     // TODO: Implement search
+                    // TODO: look in here: tx_proc.tx_apply_processing which is this type:
+                    // pub enum TransactionMeta {
+                    //     V0(VecM<OperationMeta>),
+                    //     V1(TransactionMetaV1),
+                    //     V2(TransactionMetaV2),
+                    //     V3(TransactionMetaV3),
+                    //     V4(TransactionMetaV4),
+                    // }
+                    // Each of those inner types contains a LedgerEntryChanges which contains:
+                    // pub enum LedgerEntryChange {
+                    //     Created(LedgerEntry),
+                    //     Updated(LedgerEntry),
+                    //     Removed(LedgerKey),
+                    //     State(LedgerEntry),
+                    //     Restored(LedgerEntry),
+                    // }
+                    // Which can be used to get the LedgerEntry that matches the ledger key.
+                    // Or if it is removed then stop searching and return None.
                     return Ok(None);
                 }
                 // Transaction not found in this ledger, try previous ledger
@@ -106,7 +118,7 @@ impl SnapshotSource for MegaSnapshotSource {
                 // No specific transaction hash, search all transactions in reverse order
                 // Start from the last transaction and work backwards
                 for _tx_proc in tx_processing.iter().rev() {
-                    // TODO: Implement search
+                    // TODO: Implement search same as todos above
                 }
                 // Not found in this ledger, try previous ledger
                 if current_ledger == 0 {
