@@ -10,6 +10,8 @@ members = [
     "soroban-ledger-snapshot",
     "soroban-token-sdk",
     "soroban-token-spec",
+    "soroban-ledger-meta-downloader",
+    "soroban-ledger-meta-downloader-cli",
     "stellar-asset-spec",
     "tests/*",
 ]
@@ -27,6 +29,7 @@ soroban-spec-rust = { version = "23.1.0", path = "soroban-spec-rust" }
 soroban-ledger-snapshot = { version = "23.1.0", path = "soroban-ledger-snapshot" }
 soroban-token-sdk = { version = "23.1.0", path = "soroban-token-sdk" }
 soroban-token-spec = { version = "23.1.0", path = "soroban-token-spec" }
+soroban-ledger-meta-downloader = { version = "23.1.0", path = "soroban-ledger-meta-downloader" }
 stellar-asset-spec = { version = "23.1.0", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]

@@ -1,0 +1,23 @@
+[package]
+name = "soroban-ledger-meta-downloader-cli"
+description = "CLI tool to download LedgerCloseMeta from Stellar public blockchain data"
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version.workspace = true
+edition = "2021"
+rust-version.workspace = true
+
+[[bin]]
+name = "soroban-ledger-meta-downloader"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+soroban-ledger-meta-downloader = { workspace = true }
+serde_json = "1.0"
+stellar-xdr = { workspace = true, features = ["curr", "std"] }
+rusoto_core = "0.48"
+tokio = { version = "1.0", features = ["rt", "rt-multi-thread", "macros"] }
