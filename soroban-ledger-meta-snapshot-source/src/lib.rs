@@ -1,6 +1,6 @@
 use soroban_env_host::{storage::SnapshotSource, HostError};
 use soroban_ledger_meta_downloader::{download_ledger_close_meta, S3Config};
-use stellar_xdr::curr::{LedgerCloseMeta, LedgerKey, LedgerEntry, LedgerEntryChange};
+use stellar_xdr::curr::{LedgerCloseMeta, LedgerKey, LedgerEntry, LedgerEntryChange, LedgerEntryChanges, TransactionMeta};
 use std::rc::Rc;
 use thiserror::Error;
 
@@ -83,9 +83,37 @@ impl SnapshotSource for MetaSnapshotSource {
     }
 }
 
+/// Extracted transaction processing components from LedgerCloseMeta
+pub struct TransactionProcessingComponents<'a> {
+    pub fee_processing: Vec<&'a LedgerEntryChanges>,
+    pub tx_apply_processing: Vec<&'a TransactionMeta>,
+    pub post_tx_apply_fee_processing: Vec<Option<&'a LedgerEntryChanges>>,
+}
+
+/// Extract transaction processing components from a LedgerCloseMeta
+pub fn extract_transaction_processing_components(meta: &LedgerCloseMeta) -> TransactionProcessingComponents<'_> {
+    match meta {
+        LedgerCloseMeta::V0(meta_v0) => TransactionProcessingComponents {
+            fee_processing: meta_v0.tx_processing.iter().map(|tx| &tx.fee_processing).collect(),
+            tx_apply_processing: meta_v0.tx_processing.iter().map(|tx| &tx.tx_apply_processing).collect(),
+            post_tx_apply_fee_processing: vec![None; meta_v0.tx_processing.len()], // V0 doesn't have this
+        },
+        LedgerCloseMeta::V1(meta_v1) => TransactionProcessingComponents {
+            fee_processing: meta_v1.tx_processing.iter().map(|tx| &tx.fee_processing).collect(),
+            tx_apply_processing: meta_v1.tx_processing.iter().map(|tx| &tx.tx_apply_processing).collect(),
+            post_tx_apply_fee_processing: vec![None; meta_v1.tx_processing.len()], // V1 doesn't have this
+        },
+        LedgerCloseMeta::V2(meta_v2) => TransactionProcessingComponents {
+            fee_processing: meta_v2.tx_processing.iter().map(|tx| &tx.fee_processing).collect(),
+            tx_apply_processing: meta_v2.tx_processing.iter().map(|tx| &tx.tx_apply_processing).collect(),
+            post_tx_apply_fee_processing: meta_v2.tx_processing.iter().map(|tx| Some(&tx.post_tx_apply_fee_processing)).collect(),
+        },
+    }
+}
+
 /// Iterator over ledger entry changes in reverse order from a LedgerCloseMeta
 pub struct LedgerEntryChangesIterator<'a> {
-    meta: &'a LedgerCloseMeta,
+    components: TransactionProcessingComponents<'a>,
     seen_keys: std::collections::HashSet<LedgerKey>,
     state: IteratorState,
 }
@@ -103,7 +131,7 @@ impl<'a> LedgerEntryChangesIterator<'a> {
     /// Create a new iterator over ledger entry changes
     pub fn new(meta: &'a LedgerCloseMeta) -> Self {
         Self {
-            meta,
+            components: extract_transaction_processing_components(meta),
             seen_keys: std::collections::HashSet::new(),
             state: IteratorState::PostTxApplyFeeProcessing { tx_idx: 0, change_idx: 0 },
         }
@@ -132,18 +160,16 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
         loop {
             match &mut self.state {
                 IteratorState::PostTxApplyFeeProcessing { tx_idx, change_idx } => {
-                    if let LedgerCloseMeta::V2(meta) = self.meta {
-                        let tx_count = meta.tx_processing.len();
+                    let tx_count = self.components.fee_processing.len();
 
-                        // If we've processed all transactions, move to next state
-                        if *tx_idx >= tx_count {
-                            self.state = IteratorState::TxChangesAfter { tx_idx: 0, change_idx: 0 };
-                            continue;
-                        }
+                    // If we've processed all transactions, move to next state
+                    if *tx_idx >= tx_count {
+                        self.state = IteratorState::TxChangesAfter { tx_idx: 0, change_idx: 0 };
+                        continue;
+                    }
 
-                        let tx = &meta.tx_processing[*tx_idx];
-                        let changes = &tx.post_tx_apply_fee_processing;
-
+                    // Skip if this version doesn't have post_tx_apply_fee_processing
+                   if let Some(changes) = self.components.post_tx_apply_fee_processing[*tx_idx] {
                         // If we've processed all changes in this transaction's post_tx_apply_fee_processing
                         if *change_idx >= changes.len() {
                             *tx_idx += 1;
@@ -165,157 +191,22 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         *change_idx += 1;
                         return Some((key, entry));
                     } else {
-                        // For other versions, skip to done for now
-                        self.state = IteratorState::Done;
+                        // Version doesn't have post_tx_apply_fee_processing, skip to next state
+                        *tx_idx += 1;
+                        *change_idx = 0;
                         continue;
                     }
                 }
                 IteratorState::TxChangesAfter { tx_idx, change_idx } => {
-                    if let LedgerCloseMeta::V2(meta) = self.meta {
-                        let tx_count = meta.tx_processing.len();
+                    let tx_count = self.components.fee_processing.len();
 
-                        if *tx_idx >= tx_count {
-                            self.state = IteratorState::OperationsChanges { tx_idx: 0, op_idx: 0, change_idx: 0 };
-                            continue;
-                        }
-
-                        let tx = &meta.tx_processing[*tx_idx];
-
-                        if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = &tx.tx_apply_processing {
-                            let changes = &tx_meta.tx_changes_after;
-
-                            if *change_idx >= changes.len() {
-                                *tx_idx += 1;
-                                *change_idx = 0;
-                                continue;
-                            }
-
-                            let change = &changes[changes.len() - 1 - *change_idx];
-                            let (key, entry) = Self::extract_key_entry(change);
-
-                            if self.seen_keys.contains(&key) {
-                                *change_idx += 1;
-                                continue;
-                            }
-
-                            self.seen_keys.insert(key.clone());
-                            *change_idx += 1;
-                            return Some((key, entry));
-                        } else {
-                            // Skip unsupported tx meta versions
-                            *tx_idx += 1;
-                            *change_idx = 0;
-                            continue;
-                        }
-                    } else {
-                        self.state = IteratorState::Done;
+                    if *tx_idx >= tx_count {
+                        self.state = IteratorState::OperationsChanges { tx_idx: 0, op_idx: 0, change_idx: 0 };
                         continue;
                     }
-                }
-                IteratorState::OperationsChanges { tx_idx, op_idx, change_idx } => {
-                    if let LedgerCloseMeta::V2(meta) = self.meta {
-                        let tx_count = meta.tx_processing.len();
 
-                        if *tx_idx >= tx_count {
-                            self.state = IteratorState::TxChangesBefore { tx_idx: 0, change_idx: 0 };
-                            continue;
-                        }
-
-                        let tx = &meta.tx_processing[*tx_idx];
-
-                        if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = &tx.tx_apply_processing {
-                            let op_count = tx_meta.operations.len();
-
-                            if *op_idx >= op_count {
-                                *tx_idx += 1;
-                                *op_idx = 0;
-                                *change_idx = 0;
-                                continue;
-                            }
-
-                            let op = &tx_meta.operations[*op_idx];
-                            let changes = &op.changes;
-
-                            if *change_idx >= changes.len() {
-                                *op_idx += 1;
-                                *change_idx = 0;
-                                continue;
-                            }
-
-                            let change = &changes[changes.len() - 1 - *change_idx];
-                            let (key, entry) = Self::extract_key_entry(change);
-
-                            if self.seen_keys.contains(&key) {
-                                *change_idx += 1;
-                                continue;
-                            }
-
-                            self.seen_keys.insert(key.clone());
-                            *change_idx += 1;
-                            return Some((key, entry));
-                        } else {
-                            *tx_idx += 1;
-                            *op_idx = 0;
-                            *change_idx = 0;
-                            continue;
-                        }
-                    } else {
-                        self.state = IteratorState::Done;
-                        continue;
-                    }
-                }
-                IteratorState::TxChangesBefore { tx_idx, change_idx } => {
-                    if let LedgerCloseMeta::V2(meta) = self.meta {
-                        let tx_count = meta.tx_processing.len();
-
-                        if *tx_idx >= tx_count {
-                            self.state = IteratorState::FeeProcessing { tx_idx: 0, change_idx: 0 };
-                            continue;
-                        }
-
-                        let tx = &meta.tx_processing[*tx_idx];
-
-                        if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = &tx.tx_apply_processing {
-                            let changes = &tx_meta.tx_changes_before;
-
-                            if *change_idx >= changes.len() {
-                                *tx_idx += 1;
-                                *change_idx = 0;
-                                continue;
-                            }
-
-                            let change = &changes[changes.len() - 1 - *change_idx];
-                            let (key, entry) = Self::extract_key_entry(change);
-
-                            if self.seen_keys.contains(&key) {
-                                *change_idx += 1;
-                                continue;
-                            }
-
-                            self.seen_keys.insert(key.clone());
-                            *change_idx += 1;
-                            return Some((key, entry));
-                        } else {
-                            *tx_idx += 1;
-                            *change_idx = 0;
-                            continue;
-                        }
-                    } else {
-                        self.state = IteratorState::Done;
-                        continue;
-                    }
-                }
-                IteratorState::FeeProcessing { tx_idx, change_idx } => {
-                    if let LedgerCloseMeta::V2(meta) = self.meta {
-                        let tx_count = meta.tx_processing.len();
-
-                        if *tx_idx >= tx_count {
-                            self.state = IteratorState::Done;
-                            continue;
-                        }
-
-                        let tx = &meta.tx_processing[*tx_idx];
-                        let changes = &tx.fee_processing;
+                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing[*tx_idx] {
+                        let changes = &tx_meta.tx_changes_after;
 
                         if *change_idx >= changes.len() {
                             *tx_idx += 1;
@@ -335,9 +226,118 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         *change_idx += 1;
                         return Some((key, entry));
                     } else {
+                        // Skip unsupported tx meta versions
+                        *tx_idx += 1;
+                        *change_idx = 0;
+                        continue;
+                    }
+                }
+                IteratorState::OperationsChanges { tx_idx, op_idx, change_idx } => {
+                    let tx_count = self.components.fee_processing.len();
+
+                    if *tx_idx >= tx_count {
+                        self.state = IteratorState::TxChangesBefore { tx_idx: 0, change_idx: 0 };
+                        continue;
+                    }
+
+                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing[*tx_idx] {
+                        let op_count = tx_meta.operations.len();
+
+                        if *op_idx >= op_count {
+                            *tx_idx += 1;
+                            *op_idx = 0;
+                            *change_idx = 0;
+                            continue;
+                        }
+
+                        let op = &tx_meta.operations[*op_idx];
+                        let changes = &op.changes;
+
+                        if *change_idx >= changes.len() {
+                            *op_idx += 1;
+                            *change_idx = 0;
+                            continue;
+                        }
+
+                        let change = &changes[changes.len() - 1 - *change_idx];
+                        let (key, entry) = Self::extract_key_entry(change);
+
+                        if self.seen_keys.contains(&key) {
+                            *change_idx += 1;
+                            continue;
+                        }
+
+                        self.seen_keys.insert(key.clone());
+                        *change_idx += 1;
+                        return Some((key, entry));
+                    } else {
+                        *tx_idx += 1;
+                        *op_idx = 0;
+                        *change_idx = 0;
+                        continue;
+                    }
+                }
+                IteratorState::TxChangesBefore { tx_idx, change_idx } => {
+                    let tx_count = self.components.fee_processing.len();
+
+                    if *tx_idx >= tx_count {
+                        self.state = IteratorState::FeeProcessing { tx_idx: 0, change_idx: 0 };
+                        continue;
+                    }
+
+                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing[*tx_idx] {
+                        let changes = &tx_meta.tx_changes_before;
+
+                        if *change_idx >= changes.len() {
+                            *tx_idx += 1;
+                            *change_idx = 0;
+                            continue;
+                        }
+
+                        let change = &changes[changes.len() - 1 - *change_idx];
+                        let (key, entry) = Self::extract_key_entry(change);
+
+                        if self.seen_keys.contains(&key) {
+                            *change_idx += 1;
+                            continue;
+                        }
+
+                        self.seen_keys.insert(key.clone());
+                        *change_idx += 1;
+                        return Some((key, entry));
+                    } else {
+                        *tx_idx += 1;
+                        *change_idx = 0;
+                        continue;
+                    }
+                }
+                IteratorState::FeeProcessing { tx_idx, change_idx } => {
+                    let tx_count = self.components.fee_processing.len();
+
+                    if *tx_idx >= tx_count {
                         self.state = IteratorState::Done;
                         continue;
                     }
+
+                    let changes = self.components.fee_processing[*tx_idx];
+
+                    if *change_idx >= changes.len() {
+                        *tx_idx += 1;
+                        *change_idx = 0;
+                        continue;
+                    }
+
+                    let change = &changes[changes.len() - 1 - *change_idx];
+                    let (key, entry) = Self::extract_key_entry(change);
+
+                    if self.seen_keys.contains(&key) {
+                        *change_idx += 1;
+                        continue;
+                    }
+
+                    self.seen_keys.insert(key.clone());
+                    *change_idx += 1;
+                    return Some((key, entry));
                 }
                 IteratorState::Done => return None,
             }
