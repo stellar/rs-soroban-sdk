@@ -1,8 +1,6 @@
-use soroban_env_host::storage::SnapshotSource;
-use soroban_env_host::{xdr::LedgerKey, xdr::LedgerEntry, HostError};
+use soroban_env_host::{storage::SnapshotSource, HostError};
 use soroban_ledger_meta_downloader::{download_ledger_close_meta, S3Config};
-use stellar_xdr::curr as stellar_xdr;
-use stellar_xdr::{LedgerEntryChange as StellarLedgerEntryChange};
+use stellar_xdr::curr::{LedgerCloseMeta, LedgerKey, LedgerEntry, LedgerEntryChange};
 use std::rc::Rc;
 use thiserror::Error;
 
@@ -15,15 +13,13 @@ pub enum Error {
     TransactionNotFound(String, u32),
     #[error("Ledger entry not found for key")]
     LedgerEntryNotFound,
-    #[error("Invalid transaction hash format")]
-    InvalidTransactionHash,
 }
 
 /// Meta snapshot source that downloads ledger meta and searches for ledger entries
 pub struct MetaSnapshotSource {
     s3_config: S3Config,
     ledger_sequence: u32,
-    transaction_hash: Option<Vec<u8>>,
+    transaction_hash: Option<[u8; 32]>,
 }
 
 impl MetaSnapshotSource {
@@ -32,24 +28,12 @@ impl MetaSnapshotSource {
     /// # Arguments
     /// * `config` - S3 configuration
     /// * `ledger_sequence` - Ledger sequence number
-    /// * `transaction_hash` - Optional transaction hash as hex string
+    /// * `transaction_hash` - Optional transaction hash as byte array
     pub fn new(
         config: S3Config,
         ledger_sequence: u32,
-        transaction_hash: Option<String>,
+        transaction_hash: Option<[u8; 32]>,
     ) -> Result<Self, Error> {
-        let transaction_hash_bytes = if let Some(hash_str) = transaction_hash {
-            hex::decode(hash_str).map_err(|_| Error::InvalidTransactionHash)?
-        } else {
-            vec![]
-        };
-
-        let transaction_hash = if transaction_hash_bytes.is_empty() {
-            None
-        } else {
-            Some(transaction_hash_bytes)
-        };
-
         Ok(Self {
             s3_config: config,
             ledger_sequence,
@@ -57,32 +41,6 @@ impl MetaSnapshotSource {
         })
     }
 
-    /// Search for a ledger entry in the given transaction processing data
-    fn search_ledger(
-        &self,
-        key: &LedgerKey,
-        tx_processing: &[stellar_xdr::TransactionResultMeta],
-    ) -> Option<(Rc<LedgerEntry>, Option<u32>)> {
-        if let Some(tx_hash) = &self.transaction_hash {
-            // Search for specific transaction
-            if let Some(tx_proc) = tx_processing.iter().find(|tx| {
-                tx.result.transaction_hash.as_slice() == tx_hash.as_slice()
-            }) {
-                // Found the transaction, search in its meta
-                return search_in_tx_changes(&tx_proc.tx_apply_processing, key);
-            }
-            // Transaction not found
-            None
-        } else {
-            // No specific transaction hash, search all transactions in reverse order
-            for tx_proc in tx_processing.iter().rev() {
-                if let Some(entry) = search_in_tx_changes(&tx_proc.tx_apply_processing, key) {
-                    return Some(entry);
-                }
-            }
-            None
-        }
-    }
 }
 
 impl SnapshotSource for MetaSnapshotSource {
@@ -100,19 +58,16 @@ impl SnapshotSource for MetaSnapshotSource {
                 Err(_) => return Ok(None), // Ledger not found or network error
             };
 
-            // Get the transaction processing data
-            let tx_processing = match &meta {
-                stellar_xdr::LedgerCloseMeta::V0(v0) => &v0.tx_processing,
-                stellar_xdr::LedgerCloseMeta::V1(v1) => &v1.tx_processing,
-                _ => return Ok(None), // Unexpected version
-            };
-
             // Search for the ledger entry in this ledger's transactions
-            if let Some(entry) = self.search_ledger(key, tx_processing) {
+            let changes = extract_ledger_entry_changes(meta);
+
+            if let Some(entry) = entry {
                 return Ok(Some(entry));
             }
 
             // Not found in this ledger, try previous ledger
+            // TODO: Fallback to history archivs. If RPC ever supports historical ledger entry
+            // lookup, fallback to that instead.
             if current_ledger == 0 {
                 return Ok(None);
             }
@@ -121,67 +76,44 @@ impl SnapshotSource for MetaSnapshotSource {
     }
 }
 
-/// Search for a ledger entry in the transaction's meta
-fn search_in_tx_changes(
-    tx_meta: &stellar_xdr::TransactionMeta,
-    key: &LedgerKey,
-) -> Option<(Rc<LedgerEntry>, Option<u32>)> {
-    // Get the changes based on transaction meta version
-    let changes = match tx_meta {
-        stellar_xdr::TransactionMeta::V0(v0) => {
-            // V0 contains operations, each operation may have changes
-            // For V0, we need to collect all changes from all operations
-            let mut all_changes = Vec::new();
-            for op_meta in v0.iter() {
-                if let Some(changes) = &op_meta.changes {
-                    all_changes.extend(changes.iter());
-                }
-            }
-            all_changes
-        }
-        stellar_xdr::TransactionMeta::V1(v1) => v1.tx_changes.iter().collect::<Vec<_>>(),
-        stellar_xdr::TransactionMeta::V2(v2) => v2.tx_changes.iter().collect::<Vec<_>>(),
-        stellar_xdr::TransactionMeta::V3(v3) => v3.tx_changes.iter().collect::<Vec<_>>(),
-        stellar_xdr::TransactionMeta::V4(v4) => v4.tx_changes.iter().collect::<Vec<_>>(),
-    };
-
-    // Search through changes for matching entries
-    for change in changes {
-        if let Some(entry) = extract_ledger_entry_from_change(change, key) {
-            return Some(entry);
-        }
-    }
-    None
-}
-
-/// Convert a stellar_xdr::LedgerEntry to soroban_env_host::xdr::LedgerEntry
-/// Since both should have identical XDR structure, we can safely transmute
-fn convert_ledger_entry(stellar_entry: &stellar_xdr::LedgerEntry) -> LedgerEntry {
-    // Safe conversion assuming identical structure
-    unsafe {
-        std::ptr::read(stellar_entry as *const stellar_xdr::LedgerEntry as *const LedgerEntry)
-    }
-}
-
-/// Convert a stellar_xdr::LedgerKey to soroban_env_host::xdr::LedgerKey
-/// Since both should have identical XDR structure, we can safely transmute
-fn convert_ledger_key(stellar_key: &stellar_xdr::LedgerKey) -> LedgerKey {
-    // Safe conversion assuming identical structure
-    unsafe {
-        std::ptr::read(stellar_key as *const stellar_xdr::LedgerKey as *const LedgerKey)
-    }
-}
+// TODO: Write an iterator that is constructed with one input, a
+// stellar_xdr::curr::LedgerCloseMeta. The iterator will iterate over all stellar_xdr::curr::LedgerEntryChange values
+// that exist inside the LedgerCloseMeta in reverse. LedgerCloseMeta is a large nested value.
+// LedgerEntryChange can be found in a variety of places inside the value. LedgerEntryChange does
+// not internally have any id or value that indicates what order it should be in. Instead, the
+// position and place for here it is stored in the LedgerCloseMeta will inform the order.
+//
+// When iterating in reverse the LedgerEntryChange values should be looked for in order of these
+// places:
+//
+// 1. for each tx in the result meta the post_tx_apply_fee_processing in reverse
+// 2. for each tx in the result meta the tx_apply_processing.*.tx_changes_after in reverse
+// 3. for each tx in the result meta the tx_apply_processing.*.operations.changes in reverse
+// 4. for each tx in the result meta the tx_apply_processing.*.tx_changes_before in reverse
+// 1. for each tx in the result meta the fee_processing in reverse
+//
+// The item value the iterator should return is the (stellar_xdr::LedgerKey,
+// Option<stellar_xdr::LedgerEntry>) at each change.
+//
+// The iterator must keep track of what LedgerKey's it has seen before. If it has seen a LedgerKey
+// before when iterating backwards, it should ignore any other changes it comes across for the same
+// ledger entry.
+//
+// Note that LedgerEntryChange values are always two values side-by-side, a
+// LedgerEntryChange::State that captures the state just before the change, and a
+// LedgerEntryChange::* that captures the state after the change. Always include both, but include
+// the State after the other when iterating backwards.
 
 /// Extract a ledger entry from a ledger entry change if it matches the key
 fn extract_ledger_entry_from_change(
-    change: &StellarLedgerEntryChange,
+    change: &LedgerEntryChange,
     key: &LedgerKey,
 ) -> Option<(LedgerEntry, Option<u32>)> {
     match change {
-        StellarLedgerEntryChange::Created(ledger_entry) |
-        StellarLedgerEntryChange::Updated(ledger_entry) |
-        StellarLedgerEntryChange::State(ledger_entry) |
-        StellarLedgerEntryChange::Restored(ledger_entry) => {
+        LedgerEntryChange::Created(ledger_entry) |
+        LedgerEntryChange::Updated(ledger_entry) |
+        LedgerEntryChange::State(ledger_entry) |
+        LedgerEntryChange::Restored(ledger_entry) => {
             let ledger_entry_key = ledger_entry.to_key();
             if &ledger_entry_key == key {
                 Some((ledger_entry.clone(), None))
@@ -189,7 +121,7 @@ fn extract_ledger_entry_from_change(
                 None
             }
         }
-        StellarLedgerEntryChange::Removed(ledger_key) => {
+        LedgerEntryChange::Removed(ledger_key) => {
             if ledger_key == key {
                 // TODO: Must distinguish between deleted vs not yet found.
                 None // Entry was removed

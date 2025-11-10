@@ -1,5 +1,5 @@
 use stellar_xdr::curr as stellar_xdr;
-use stellar_xdr::{Limits, ReadXdr, LedgerCloseMeta};
+use stellar_xdr::{LedgerCloseMeta, Limits, ReadXdr};
 use thiserror::Error;
 
 /// Configuration for connecting to S3-compatible storage
@@ -46,10 +46,16 @@ fn get_path_for_ledger(ledger_sequence: u32) -> String {
     let batch_prefix_hex = format!("{:08X}", MAX_UINT32 - batch_start);
 
     // Assemble path components
-    let partition_dir = format!("{}--{}-{}", partition_prefix_hex, partition_start, partition_end);
+    let partition_dir = format!(
+        "{}--{}-{}",
+        partition_prefix_hex, partition_start, partition_end
+    );
     let batch_file = format!("{}--{}.xdr.zst", batch_prefix_hex, batch_start);
 
-    format!("v1.1/stellar/ledgers/pubnet/{}/{}", partition_dir, batch_file)
+    format!(
+        "v1.1/stellar/ledgers/pubnet/{}/{}",
+        partition_dir, batch_file
+    )
 }
 
 /// Download LedgerCloseMeta for a specific ledger sequence from S3-compatible storage
@@ -72,8 +78,10 @@ pub fn download_ledger_close_meta(
     let client = reqwest::blocking::Client::new();
 
     // Construct S3 REST API URL for GET object
-    let url = format!("https://{}.s3.{}.amazonaws.com/{}",
-        config.bucket, config.region, key);
+    let url = format!(
+        "https://{}.s3.{}.amazonaws.com/{}",
+        config.bucket, config.region, key
+    );
 
     // Make HTTP GET request
     let response = client.get(&url).send()?;
@@ -89,14 +97,16 @@ pub fn download_ledger_close_meta(
 
     // Parse as LedgerCloseMetaBatch first, then extract the single ledger
     // According to the JavaScript code, batches only contain one ledger
-    let mut limited_reader = stellar_xdr::Limited::new(
-        std::io::Cursor::new(decompressed_data),
-        Limits::none()
-    );
+    let mut limited_reader =
+        stellar_xdr::Limited::new(std::io::Cursor::new(decompressed_data), Limits::none());
     let mut batch: stellar_xdr::LedgerCloseMetaBatch = ReadXdr::read_xdr(&mut limited_reader)?;
 
     // Return the first (and assumed only) ledger from the batch
-    batch.ledger_close_metas.into_iter().next().cloned()
+    batch
+        .ledger_close_metas
+        .into_iter()
+        .next()
+        .cloned()
         .ok_or_else(|| Error::LedgerNotFound(sequence))
 }
 
@@ -111,8 +121,10 @@ pub fn discover_latest_ledger_sequence(config: &S3Config) -> Result<u32, Error> 
     let client = reqwest::blocking::Client::new();
 
     // Construct S3 REST API URL for LIST objects v2
-    let url = format!("https://{}.s3.{}.amazonaws.com/",
-        config.bucket, config.region);
+    let url = format!(
+        "https://{}.s3.{}.amazonaws.com/",
+        config.bucket, config.region
+    );
 
     // Make HTTP GET request with query parameters for listing objects
     let response = client
@@ -145,7 +157,8 @@ pub fn discover_latest_ledger_sequence(config: &S3Config) -> Result<u32, Error> 
                             // Match pattern: batch--sequence.xdr.zst
                             if let Some(captures) = regex::Regex::new(r"--(\d+)\.xdr\.zst$")
                                 .ok()
-                                .and_then(|re| re.captures(filename)) {
+                                .and_then(|re| re.captures(filename))
+                            {
                                 if let Some(seq_match) = captures.get(1) {
                                     if let Ok(seq) = seq_match.as_str().parse::<u32>() {
                                         sequence_numbers.push(seq);
@@ -160,6 +173,8 @@ pub fn discover_latest_ledger_sequence(config: &S3Config) -> Result<u32, Error> 
     }
 
     sequence_numbers.sort();
-    sequence_numbers.into_iter().last().ok_or_else(|| Error::LedgerNotFound(0))
+    sequence_numbers
+        .into_iter()
+        .last()
+        .ok_or_else(|| Error::LedgerNotFound(0))
 }
-

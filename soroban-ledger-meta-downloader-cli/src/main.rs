@@ -1,7 +1,7 @@
 use clap::Parser;
 use soroban_ledger_meta_downloader::{download_ledger_close_meta, S3Config};
-use stellar_xdr::curr::{Limited, Limits, WriteXdr};
 use std::process;
+use stellar_xdr::curr::{Limited, Limits, WriteXdr};
 
 /// CLI tool to download LedgerCloseMeta from Stellar public blockchain data
 #[derive(Parser)]
@@ -35,7 +35,10 @@ fn main() {
 
     // Validate format
     if !matches!(args.format.as_str(), "json" | "xdr") {
-        eprintln!("Error: Invalid format '{}'. Supported formats: json, xdr", args.format);
+        eprintln!(
+            "Error: Invalid format '{}'. Supported formats: json, xdr",
+            args.format
+        );
         process::exit(1);
     }
 
@@ -53,15 +56,13 @@ fn main() {
     match download_ledger_close_meta(args.sequence, &config) {
         Ok(meta) => {
             match args.format.as_str() {
-                "json" => {
-                    match serde_json::to_string_pretty(&meta) {
-                        Ok(json) => println!("{}", json),
-                        Err(e) => {
-                            eprintln!("Error: Failed to serialize to JSON: {}", e);
-                            process::exit(1);
-                        }
+                "json" => match serde_json::to_string_pretty(&meta) {
+                    Ok(json) => println!("{}", json),
+                    Err(e) => {
+                        eprintln!("Error: Failed to serialize to JSON: {}", e);
+                        process::exit(1);
                     }
-                }
+                },
                 "xdr" => {
                     // Write raw XDR bytes
                     let limits = Limits::none(); // No limits for output

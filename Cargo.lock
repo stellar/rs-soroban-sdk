@@ -2183,7 +2183,6 @@ dependencies = [
 name = "soroban-ledger-meta-snapshot-source"
 version = "23.1.0"
 dependencies = [
- "hex",
  "soroban-env-host",
  "soroban-ledger-meta-downloader",
  "stellar-xdr",
