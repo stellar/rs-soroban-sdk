@@ -1,7 +1,7 @@
 use soroban_env_host::{storage::SnapshotSource, HostError};
 use soroban_ledger_meta_downloader::{download_ledger_close_meta, S3Config};
 use stellar_xdr::curr::{LedgerCloseMeta, LedgerKey, LedgerEntry, LedgerEntryChange};
-use std::{collections::HashSet, rc::Rc};
+use std::rc::Rc;
 use thiserror::Error;
 
 /// Error type for mega snapshot source operations
@@ -59,7 +59,7 @@ impl SnapshotSource for MetaSnapshotSource {
             };
 
             // Search for the ledger entry in this ledger's transactions
-            let changes = extract_ledger_entry_changes(&meta);
+            let changes = LedgerEntryChangesIterator::new(&meta);
 
             for (change_key, entry) in changes {
                 if change_key == *key {
@@ -345,35 +345,3 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
     }
 }
 
-/// Extract ledger entry changes from a ledger close meta
-pub fn extract_ledger_entry_changes(meta: &LedgerCloseMeta) -> impl Iterator<Item = (LedgerKey, Option<LedgerEntry>)> + '_ {
-    LedgerEntryChangesIterator::new(meta)
-}
-
-/// Extract a ledger entry from a ledger entry change if it matches the key
-fn extract_ledger_entry_from_change(
-    change: &LedgerEntryChange,
-    key: &LedgerKey,
-) -> Option<(LedgerEntry, Option<u32>)> {
-    match change {
-        LedgerEntryChange::Created(ledger_entry) |
-        LedgerEntryChange::Updated(ledger_entry) |
-        LedgerEntryChange::State(ledger_entry) |
-        LedgerEntryChange::Restored(ledger_entry) => {
-            let ledger_entry_key = ledger_entry.to_key();
-            if &ledger_entry_key == key {
-                Some((ledger_entry.clone(), None))
-            } else {
-                None
-            }
-        }
-        LedgerEntryChange::Removed(ledger_key) => {
-            if ledger_key == key {
-                // TODO: Must distinguish between deleted vs not yet found.
-                None // Entry was removed
-            } else {
-                None
-            }
-        }
-    }
-}
