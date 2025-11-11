@@ -514,7 +514,7 @@ impl Env {
 
         let rf = Rc::new(EmptySnapshotSource());
         let info = internal::LedgerInfo {
-            protocol_version: 23,
+            protocol_version: 25,
             sequence_number: 0,
             timestamp: 0,
             network_id: [0; 32],
