@@ -99,6 +99,10 @@ impl<'a> TransactionProcessingComponents<'a> {
         }
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn fee_processing(&self, index: usize) -> &'a LedgerEntryChanges {
         match self {
             TransactionProcessingComponents::V0(slice) => &slice[index].fee_processing,
