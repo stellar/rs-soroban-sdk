@@ -106,6 +106,21 @@ enum IteratorState {
     Done,
 }
 
+/// Extract the key and entry from a ledger entry change
+fn extract_key_entry(change: &LedgerEntryChange) -> (LedgerKey, Option<LedgerEntry>) {
+    match change {
+        LedgerEntryChange::Created(ledger_entry) |
+        LedgerEntryChange::Updated(ledger_entry) |
+        LedgerEntryChange::State(ledger_entry) |
+        LedgerEntryChange::Restored(ledger_entry) => {
+            (ledger_entry.to_key(), Some(ledger_entry.clone()))
+        }
+        LedgerEntryChange::Removed(ledger_key) => {
+            (ledger_key.clone(), None)
+        }
+    }
+}
+
 impl<'a> LedgerEntryChangesIterator<'a> {
     /// Create a new iterator over ledger entry changes
     pub fn new(meta: &'a LedgerCloseMeta) -> Self {
@@ -113,21 +128,6 @@ impl<'a> LedgerEntryChangesIterator<'a> {
             components: TransactionProcessingComponents::from(meta),
             seen_keys: std::collections::HashSet::new(),
             state: IteratorState::PostTxApplyFeeProcessing { tx_idx: 0, change_idx: 0 },
-        }
-    }
-
-    /// Extract the key and entry from a ledger entry change
-    fn extract_key_entry(change: &LedgerEntryChange) -> (LedgerKey, Option<LedgerEntry>) {
-        match change {
-            LedgerEntryChange::Created(ledger_entry) |
-            LedgerEntryChange::Updated(ledger_entry) |
-            LedgerEntryChange::State(ledger_entry) |
-            LedgerEntryChange::Restored(ledger_entry) => {
-                (ledger_entry.to_key(), Some(ledger_entry.clone()))
-            }
-            LedgerEntryChange::Removed(ledger_key) => {
-                (ledger_key.clone(), None)
-            }
         }
     }
 }
@@ -158,7 +158,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
 
                         // Get the change in reverse order
                         let change = &changes[changes.len() - 1 - *change_idx];
-                        let (key, entry) = Self::extract_key_entry(change);
+                        let (key, entry) = extract_key_entry(change);
 
                         // Skip if we've already seen this key
                         if self.seen_keys.contains(&key) {
@@ -194,7 +194,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         }
 
                         let change = &changes[changes.len() - 1 - *change_idx];
-                        let (key, entry) = Self::extract_key_entry(change);
+                        let (key, entry) = extract_key_entry(change);
 
                         if self.seen_keys.contains(&key) {
                             *change_idx += 1;
@@ -239,7 +239,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         }
 
                         let change = &changes[changes.len() - 1 - *change_idx];
-                        let (key, entry) = Self::extract_key_entry(change);
+                        let (key, entry) = extract_key_entry(change);
 
                         if self.seen_keys.contains(&key) {
                             *change_idx += 1;
@@ -274,7 +274,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         }
 
                         let change = &changes[changes.len() - 1 - *change_idx];
-                        let (key, entry) = Self::extract_key_entry(change);
+                        let (key, entry) = extract_key_entry(change);
 
                         if self.seen_keys.contains(&key) {
                             *change_idx += 1;
@@ -307,7 +307,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                     }
 
                     let change = &changes[changes.len() - 1 - *change_idx];
-                    let (key, entry) = Self::extract_key_entry(change);
+                    let (key, entry) = extract_key_entry(change);
 
                     if self.seen_keys.contains(&key) {
                         *change_idx += 1;
