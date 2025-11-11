@@ -184,9 +184,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         continue;
                     }
 
-                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing(*tx_idx) {
-                        let changes = &tx_meta.tx_changes_after;
-
+                    if let Some(changes) = self.components.tx_changes_after(*tx_idx) {
                         if *change_idx >= changes.len() {
                             *tx_idx += 1;
                             *change_idx = 0;
@@ -219,42 +217,35 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         continue;
                     }
 
-                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing(*tx_idx) {
-                        let op_count = tx_meta.operations.len();
+                    // Handle operations for all TransactionMeta versions
+                    let op_count = self.components.operation_count(*tx_idx);
 
-                        if *op_idx >= op_count {
-                            *tx_idx += 1;
-                            *op_idx = 0;
-                            *change_idx = 0;
-                            continue;
-                        }
-
-                        let op = &tx_meta.operations[*op_idx];
-                        let changes = &op.changes;
-
-                        if *change_idx >= changes.len() {
-                            *op_idx += 1;
-                            *change_idx = 0;
-                            continue;
-                        }
-
-                        let change = &changes[changes.len() - 1 - *change_idx];
-                        let (key, entry) = extract_key_entry(change);
-
-                        if self.seen_keys.contains(&key) {
-                            *change_idx += 1;
-                            continue;
-                        }
-
-                        self.seen_keys.insert(key.clone());
-                        *change_idx += 1;
-                        return Some((key, entry));
-                    } else {
+                    if *op_idx >= op_count {
                         *tx_idx += 1;
                         *op_idx = 0;
                         *change_idx = 0;
                         continue;
                     }
+
+                    let changes = self.components.operation_changes(*tx_idx, *op_idx);
+
+                    if *change_idx >= changes.len() {
+                        *op_idx += 1;
+                        *change_idx = 0;
+                        continue;
+                    }
+
+                    let change = &changes[changes.len() - 1 - *change_idx];
+                    let (key, entry) = extract_key_entry(change);
+
+                    if self.seen_keys.contains(&key) {
+                        *change_idx += 1;
+                        continue;
+                    }
+
+                    self.seen_keys.insert(key.clone());
+                    *change_idx += 1;
+                    return Some((key, entry));
                 }
                 IteratorState::TxChangesBefore { tx_idx, change_idx } => {
                     let tx_count = self.components.len();
@@ -264,9 +255,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         continue;
                     }
 
-                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing(*tx_idx) {
-                        let changes = &tx_meta.tx_changes_before;
-
+                    if let Some(changes) = self.components.tx_changes_before(*tx_idx) {
                         if *change_idx >= changes.len() {
                             *tx_idx += 1;
                             *change_idx = 0;
@@ -353,11 +342,55 @@ impl<'a> TransactionProcessingComponents<'a> {
         }
     }
 
-    pub fn tx_apply_processing(&self, index: usize) -> &'a TransactionMeta {
+    fn tx_apply_processing(&self, index: usize) -> &'a TransactionMeta {
         match self {
             Self::V0(slice) => &slice[index].tx_apply_processing,
             Self::V1(slice) => &slice[index].tx_apply_processing,
             Self::V2(slice) => &slice[index].tx_apply_processing,
+        }
+    }
+
+    /// Extract tx_changes_before from any TransactionMeta version
+    pub fn tx_changes_before(&self, index: usize) -> Option<&'a LedgerEntryChanges> {
+        match self.tx_apply_processing(index) {
+            TransactionMeta::V0(_) => None,
+            TransactionMeta::V1(tx_meta) => Some(&tx_meta.tx_changes),
+            TransactionMeta::V2(tx_meta) => Some(&tx_meta.tx_changes_before),
+            TransactionMeta::V3(tx_meta) => Some(&tx_meta.tx_changes_before),
+            TransactionMeta::V4(tx_meta) => Some(&tx_meta.tx_changes_before),
+        }
+    }
+
+    /// Get the number of operations for a transaction from any TransactionMeta version
+    pub fn operation_count(&self, tx_index: usize) -> usize {
+        match self.tx_apply_processing(tx_index) {
+            TransactionMeta::V0(operations) => operations.len(),
+            TransactionMeta::V1(tx_meta) => tx_meta.operations.len(),
+            TransactionMeta::V2(tx_meta) => tx_meta.operations.len(),
+            TransactionMeta::V3(tx_meta) => tx_meta.operations.len(),
+            TransactionMeta::V4(tx_meta) => tx_meta.operations.len(),
+        }
+    }
+
+    /// Extract changes for a specific operation from any TransactionMeta version
+    pub fn operation_changes(&self, tx_index: usize, op_index: usize) -> &'a LedgerEntryChanges {
+        match self.tx_apply_processing(tx_index) {
+            TransactionMeta::V0(operations) => &operations[op_index].changes,
+            TransactionMeta::V1(tx_meta) => &tx_meta.operations[op_index].changes,
+            TransactionMeta::V2(tx_meta) => &tx_meta.operations[op_index].changes,
+            TransactionMeta::V3(tx_meta) => &tx_meta.operations[op_index].changes,
+            TransactionMeta::V4(tx_meta) => &tx_meta.operations[op_index].changes,
+        }
+    }
+
+    /// Extract tx_changes_after from any TransactionMeta version
+    pub fn tx_changes_after(&self, index: usize) -> Option<&'a LedgerEntryChanges> {
+        match self.tx_apply_processing(index) {
+            TransactionMeta::V0(_) => None,
+            TransactionMeta::V1(tx_meta) => Some(&tx_meta.tx_changes),
+            TransactionMeta::V2(tx_meta) => Some(&tx_meta.tx_changes_after),
+            TransactionMeta::V3(tx_meta) => Some(&tx_meta.tx_changes_after),
+            TransactionMeta::V4(tx_meta) => Some(&tx_meta.tx_changes_after),
         }
     }
 
