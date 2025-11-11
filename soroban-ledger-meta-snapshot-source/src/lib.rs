@@ -90,54 +90,6 @@ pub enum TransactionProcessingComponents<'a> {
     V2(&'a [TransactionResultMetaV1]),
 }
 
-impl<'a> TransactionProcessingComponents<'a> {
-    pub fn len(&self) -> usize {
-        match self {
-            TransactionProcessingComponents::V0(slice) => slice.len(),
-            TransactionProcessingComponents::V1(slice) => slice.len(),
-            TransactionProcessingComponents::V2(slice) => slice.len(),
-        }
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
-    pub fn fee_processing(&self, index: usize) -> &'a LedgerEntryChanges {
-        match self {
-            TransactionProcessingComponents::V0(slice) => &slice[index].fee_processing,
-            TransactionProcessingComponents::V1(slice) => &slice[index].fee_processing,
-            TransactionProcessingComponents::V2(slice) => &slice[index].fee_processing,
-        }
-    }
-
-    pub fn tx_apply_processing(&self, index: usize) -> &'a TransactionMeta {
-        match self {
-            TransactionProcessingComponents::V0(slice) => &slice[index].tx_apply_processing,
-            TransactionProcessingComponents::V1(slice) => &slice[index].tx_apply_processing,
-            TransactionProcessingComponents::V2(slice) => &slice[index].tx_apply_processing,
-        }
-    }
-
-    pub fn post_tx_apply_fee_processing(&self, index: usize) -> Option<&'a LedgerEntryChanges> {
-        match self {
-            TransactionProcessingComponents::V0(_) => None,
-            TransactionProcessingComponents::V1(_) => None,
-            TransactionProcessingComponents::V2(slice) => Some(&slice[index].post_tx_apply_fee_processing),
-        }
-    }
-}
-
-impl<'a> From<&'a LedgerCloseMeta> for TransactionProcessingComponents<'a> {
-    fn from(meta: &'a LedgerCloseMeta) -> Self {
-        match meta {
-            LedgerCloseMeta::V0(meta_v0) => TransactionProcessingComponents::V0(&meta_v0.tx_processing),
-            LedgerCloseMeta::V1(meta_v1) => TransactionProcessingComponents::V1(&meta_v1.tx_processing),
-            LedgerCloseMeta::V2(meta_v2) => TransactionProcessingComponents::V2(&meta_v2.tx_processing),
-        }
-    }
-}
-
 /// Iterator over ledger entry changes in reverse order from a LedgerCloseMeta
 pub struct LedgerEntryChangesIterator<'a> {
     components: TransactionProcessingComponents<'a>,
@@ -368,6 +320,62 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                 }
                 IteratorState::Done => return None,
             }
+        }
+    }
+}
+
+impl<'a> TransactionProcessingComponents<'a> {
+    pub fn len(&self) -> usize {
+        match self {
+            TransactionProcessingComponents::V0(slice) => slice.len(),
+            TransactionProcessingComponents::V1(slice) => slice.len(),
+            TransactionProcessingComponents::V2(slice) => slice.len(),
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    pub fn slice(&self, start: usize) -> Self {
+        match self {
+            Self::V0(slice) => Self::V0(&slice[start..]),
+            Self::V1(slice) => Self::V1(&slice[start..]),
+            Self::V2(slice) => Self::V2(&slice[start..]),
+        }
+    }
+
+    pub fn fee_processing(&self, index: usize) -> &'a LedgerEntryChanges {
+        match self {
+            Self::V0(slice) => &slice[index].fee_processing,
+            Self::V1(slice) => &slice[index].fee_processing,
+            Self::V2(slice) => &slice[index].fee_processing,
+        }
+    }
+
+    pub fn tx_apply_processing(&self, index: usize) -> &'a TransactionMeta {
+        match self {
+            Self::V0(slice) => &slice[index].tx_apply_processing,
+            Self::V1(slice) => &slice[index].tx_apply_processing,
+            Self::V2(slice) => &slice[index].tx_apply_processing,
+        }
+    }
+
+    pub fn post_tx_apply_fee_processing(&self, index: usize) -> Option<&'a LedgerEntryChanges> {
+        match self {
+            Self::V0(_) => None,
+            Self::V1(_) => None,
+            Self::V2(slice) => Some(&slice[index].post_tx_apply_fee_processing),
+        }
+    }
+}
+
+impl<'a> From<&'a LedgerCloseMeta> for TransactionProcessingComponents<'a> {
+    fn from(meta: &'a LedgerCloseMeta) -> Self {
+        match meta {
+            LedgerCloseMeta::V0(meta_v0) => Self::V0(&meta_v0.tx_processing),
+            LedgerCloseMeta::V1(meta_v1) => Self::V1(&meta_v1.tx_processing),
+            LedgerCloseMeta::V2(meta_v2) => Self::V2(&meta_v2.tx_processing),
         }
     }
 }
