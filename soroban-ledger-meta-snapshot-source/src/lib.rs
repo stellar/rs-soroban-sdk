@@ -1,6 +1,6 @@
 use soroban_env_host::{storage::SnapshotSource, HostError};
 use soroban_ledger_meta_downloader::{download_ledger_close_meta, S3Config};
-use stellar_xdr::curr::{LedgerCloseMeta, LedgerKey, LedgerEntry, LedgerEntryChange, LedgerEntryChanges, TransactionMeta};
+use stellar_xdr::curr::{LedgerCloseMeta, LedgerKey, LedgerEntry, LedgerEntryChange, LedgerEntryChanges, TransactionMeta, TransactionResultMeta, TransactionResultMetaV1};
 use std::rc::Rc;
 use thiserror::Error;
 
@@ -84,30 +84,53 @@ impl SnapshotSource for MetaSnapshotSource {
 }
 
 /// Extracted transaction processing components from LedgerCloseMeta
-pub struct TransactionProcessingComponents<'a> {
-    pub fee_processing: Vec<&'a LedgerEntryChanges>,
-    pub tx_apply_processing: Vec<&'a TransactionMeta>,
-    pub post_tx_apply_fee_processing: Vec<Option<&'a LedgerEntryChanges>>,
+pub enum TransactionProcessingComponents<'a> {
+    V0(&'a [TransactionResultMeta]),
+    V1(&'a [TransactionResultMeta]),
+    V2(&'a [TransactionResultMetaV1]),
 }
 
-/// Extract transaction processing components from a LedgerCloseMeta
-pub fn extract_transaction_processing_components(meta: &LedgerCloseMeta) -> TransactionProcessingComponents<'_> {
-    match meta {
-        LedgerCloseMeta::V0(meta_v0) => TransactionProcessingComponents {
-            fee_processing: meta_v0.tx_processing.iter().map(|tx| &tx.fee_processing).collect(),
-            tx_apply_processing: meta_v0.tx_processing.iter().map(|tx| &tx.tx_apply_processing).collect(),
-            post_tx_apply_fee_processing: vec![None; meta_v0.tx_processing.len()], // V0 doesn't have this
-        },
-        LedgerCloseMeta::V1(meta_v1) => TransactionProcessingComponents {
-            fee_processing: meta_v1.tx_processing.iter().map(|tx| &tx.fee_processing).collect(),
-            tx_apply_processing: meta_v1.tx_processing.iter().map(|tx| &tx.tx_apply_processing).collect(),
-            post_tx_apply_fee_processing: vec![None; meta_v1.tx_processing.len()], // V1 doesn't have this
-        },
-        LedgerCloseMeta::V2(meta_v2) => TransactionProcessingComponents {
-            fee_processing: meta_v2.tx_processing.iter().map(|tx| &tx.fee_processing).collect(),
-            tx_apply_processing: meta_v2.tx_processing.iter().map(|tx| &tx.tx_apply_processing).collect(),
-            post_tx_apply_fee_processing: meta_v2.tx_processing.iter().map(|tx| Some(&tx.post_tx_apply_fee_processing)).collect(),
-        },
+impl<'a> TransactionProcessingComponents<'a> {
+    pub fn len(&self) -> usize {
+        match self {
+            TransactionProcessingComponents::V0(slice) => slice.len(),
+            TransactionProcessingComponents::V1(slice) => slice.len(),
+            TransactionProcessingComponents::V2(slice) => slice.len(),
+        }
+    }
+
+    pub fn fee_processing(&self, index: usize) -> &'a LedgerEntryChanges {
+        match self {
+            TransactionProcessingComponents::V0(slice) => &slice[index].fee_processing,
+            TransactionProcessingComponents::V1(slice) => &slice[index].fee_processing,
+            TransactionProcessingComponents::V2(slice) => &slice[index].fee_processing,
+        }
+    }
+
+    pub fn tx_apply_processing(&self, index: usize) -> &'a TransactionMeta {
+        match self {
+            TransactionProcessingComponents::V0(slice) => &slice[index].tx_apply_processing,
+            TransactionProcessingComponents::V1(slice) => &slice[index].tx_apply_processing,
+            TransactionProcessingComponents::V2(slice) => &slice[index].tx_apply_processing,
+        }
+    }
+
+    pub fn post_tx_apply_fee_processing(&self, index: usize) -> Option<&'a LedgerEntryChanges> {
+        match self {
+            TransactionProcessingComponents::V0(_) => None,
+            TransactionProcessingComponents::V1(_) => None,
+            TransactionProcessingComponents::V2(slice) => Some(&slice[index].post_tx_apply_fee_processing),
+        }
+    }
+}
+
+impl<'a> From<&'a LedgerCloseMeta> for TransactionProcessingComponents<'a> {
+    fn from(meta: &'a LedgerCloseMeta) -> Self {
+        match meta {
+            LedgerCloseMeta::V0(meta_v0) => TransactionProcessingComponents::V0(&meta_v0.tx_processing),
+            LedgerCloseMeta::V1(meta_v1) => TransactionProcessingComponents::V1(&meta_v1.tx_processing),
+            LedgerCloseMeta::V2(meta_v2) => TransactionProcessingComponents::V2(&meta_v2.tx_processing),
+        }
     }
 }
 
@@ -131,7 +154,7 @@ impl<'a> LedgerEntryChangesIterator<'a> {
     /// Create a new iterator over ledger entry changes
     pub fn new(meta: &'a LedgerCloseMeta) -> Self {
         Self {
-            components: extract_transaction_processing_components(meta),
+            components: TransactionProcessingComponents::from(meta),
             seen_keys: std::collections::HashSet::new(),
             state: IteratorState::PostTxApplyFeeProcessing { tx_idx: 0, change_idx: 0 },
         }
@@ -160,7 +183,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
         loop {
             match &mut self.state {
                 IteratorState::PostTxApplyFeeProcessing { tx_idx, change_idx } => {
-                    let tx_count = self.components.fee_processing.len();
+                    let tx_count = self.components.len();
 
                     // If we've processed all transactions, move to next state
                     if *tx_idx >= tx_count {
@@ -169,7 +192,7 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                     }
 
                     // Skip if this version doesn't have post_tx_apply_fee_processing
-                   if let Some(changes) = self.components.post_tx_apply_fee_processing[*tx_idx] {
+                    if let Some(changes) = self.components.post_tx_apply_fee_processing(*tx_idx) {
                         // If we've processed all changes in this transaction's post_tx_apply_fee_processing
                         if *change_idx >= changes.len() {
                             *tx_idx += 1;
@@ -198,14 +221,14 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                     }
                 }
                 IteratorState::TxChangesAfter { tx_idx, change_idx } => {
-                    let tx_count = self.components.fee_processing.len();
+                    let tx_count = self.components.len();
 
                     if *tx_idx >= tx_count {
                         self.state = IteratorState::OperationsChanges { tx_idx: 0, op_idx: 0, change_idx: 0 };
                         continue;
                     }
 
-                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing[*tx_idx] {
+                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing(*tx_idx) {
                         let changes = &tx_meta.tx_changes_after;
 
                         if *change_idx >= changes.len() {
@@ -233,14 +256,14 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                     }
                 }
                 IteratorState::OperationsChanges { tx_idx, op_idx, change_idx } => {
-                    let tx_count = self.components.fee_processing.len();
+                    let tx_count = self.components.len();
 
                     if *tx_idx >= tx_count {
                         self.state = IteratorState::TxChangesBefore { tx_idx: 0, change_idx: 0 };
                         continue;
                     }
 
-                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing[*tx_idx] {
+                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing(*tx_idx) {
                         let op_count = tx_meta.operations.len();
 
                         if *op_idx >= op_count {
@@ -278,14 +301,14 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                     }
                 }
                 IteratorState::TxChangesBefore { tx_idx, change_idx } => {
-                    let tx_count = self.components.fee_processing.len();
+                    let tx_count = self.components.len();
 
                     if *tx_idx >= tx_count {
                         self.state = IteratorState::FeeProcessing { tx_idx: 0, change_idx: 0 };
                         continue;
                     }
 
-                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing[*tx_idx] {
+                    if let stellar_xdr::curr::TransactionMeta::V3(tx_meta) = self.components.tx_apply_processing(*tx_idx) {
                         let changes = &tx_meta.tx_changes_before;
 
                         if *change_idx >= changes.len() {
@@ -312,14 +335,14 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                     }
                 }
                 IteratorState::FeeProcessing { tx_idx, change_idx } => {
-                    let tx_count = self.components.fee_processing.len();
+                    let tx_count = self.components.len();
 
                     if *tx_idx >= tx_count {
                         self.state = IteratorState::Done;
                         continue;
                     }
 
-                    let changes = self.components.fee_processing[*tx_idx];
+                    let changes = self.components.fee_processing(*tx_idx);
 
                     if *change_idx >= changes.len() {
                         *tx_idx += 1;
