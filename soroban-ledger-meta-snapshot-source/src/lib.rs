@@ -135,36 +135,36 @@ impl ProcessingPhase {
     fn advance(&self, components: &TransactionProcessingComponents) -> Option<ProcessingPhase> {
         match self {
             ProcessingPhase::PostTxApplyFeeProcessing { tx_idx } => {
-                let next_tx_idx = tx_idx + 1;
-                if next_tx_idx < components.len() {
-                    Some(ProcessingPhase::PostTxApplyFeeProcessing { tx_idx: next_tx_idx })
+                if *tx_idx > 0 {
+                    let prev_tx_idx = tx_idx - 1;
+                    Some(ProcessingPhase::PostTxApplyFeeProcessing { tx_idx: prev_tx_idx })
                 } else {
-                    Some(ProcessingPhase::TxChangesAfter { tx_idx: 0 })
+                    Some(ProcessingPhase::TxChangesAfter { tx_idx: components.len() - 1 })
                 }
             }
             ProcessingPhase::TxChangesAfter { tx_idx } => {
-                Some(ProcessingPhase::OperationsChanges { tx_idx: *tx_idx, op_idx: 0 })
+                Some(ProcessingPhase::OperationsChanges { tx_idx: *tx_idx, op_idx: components.operation_count(*tx_idx).saturating_sub(1) })
             }
             ProcessingPhase::OperationsChanges { tx_idx, op_idx } => {
-                let next_op_idx = op_idx + 1;
-                if next_op_idx < components.operation_count(*tx_idx) {
-                    Some(ProcessingPhase::OperationsChanges { tx_idx: *tx_idx, op_idx: next_op_idx })
+                if *op_idx > 0 {
+                    let prev_op_idx = op_idx - 1;
+                    Some(ProcessingPhase::OperationsChanges { tx_idx: *tx_idx, op_idx: prev_op_idx })
                 } else {
                     Some(ProcessingPhase::TxChangesBefore { tx_idx: *tx_idx })
                 }
             }
             ProcessingPhase::TxChangesBefore { tx_idx } => {
-                let next_tx_idx = tx_idx + 1;
-                if next_tx_idx < components.len() {
-                    Some(ProcessingPhase::TxChangesAfter { tx_idx: next_tx_idx })
+                if *tx_idx > 0 {
+                    let prev_tx_idx = tx_idx - 1;
+                    Some(ProcessingPhase::TxChangesAfter { tx_idx: prev_tx_idx })
                 } else {
-                    Some(ProcessingPhase::FeeProcessing { tx_idx: 0 })
+                    Some(ProcessingPhase::FeeProcessing { tx_idx: components.len() - 1 })
                 }
             }
             ProcessingPhase::FeeProcessing { tx_idx } => {
-                let next_tx_idx = tx_idx + 1;
-                if next_tx_idx < components.len() {
-                    Some(ProcessingPhase::FeeProcessing { tx_idx: next_tx_idx })
+                if *tx_idx > 0 {
+                    let prev_tx_idx = tx_idx - 1;
+                    Some(ProcessingPhase::FeeProcessing { tx_idx: prev_tx_idx })
                 } else {
                     None
                 }
@@ -191,11 +191,18 @@ fn extract_key_entry(change: &LedgerEntryChange) -> (LedgerKey, Option<LedgerEnt
 impl<'a> LedgerEntryChangesIterator<'a> {
     /// Create a new iterator over ledger entry changes
     pub fn new(meta: &'a LedgerCloseMeta) -> Self {
+        let components = TransactionProcessingComponents::from(meta);
+        let len = components.len();
         Self {
-            components: TransactionProcessingComponents::from(meta),
+            components,
             seen_keys: std::collections::HashSet::new(),
             state: IteratorState::Processing {
-                phase: ProcessingPhase::PostTxApplyFeeProcessing { tx_idx: 0 },
+                phase: if len > 0 {
+                    ProcessingPhase::PostTxApplyFeeProcessing { tx_idx: len - 1 }
+                } else {
+                    // If no transactions, start with a phase that will immediately finish
+                    ProcessingPhase::PostTxApplyFeeProcessing { tx_idx: 0 }
+                },
                 change_idx: 0,
             },
         }
