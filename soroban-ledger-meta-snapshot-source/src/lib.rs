@@ -98,12 +98,79 @@ pub struct LedgerEntryChangesIterator<'a> {
 }
 
 enum IteratorState {
-    PostTxApplyFeeProcessing { tx_idx: usize, change_idx: usize },
-    TxChangesAfter { tx_idx: usize, change_idx: usize },
-    OperationsChanges { tx_idx: usize, op_idx: usize, change_idx: usize },
-    TxChangesBefore { tx_idx: usize, change_idx: usize },
-    FeeProcessing { tx_idx: usize, change_idx: usize },
+    Processing { phase: ProcessingPhase, change_idx: usize },
     Done,
+}
+
+#[derive(Clone, Copy)]
+enum ProcessingPhase {
+    PostTxApplyFeeProcessing { tx_idx: usize },
+    TxChangesAfter { tx_idx: usize },
+    OperationsChanges { tx_idx: usize, op_idx: usize },
+    TxChangesBefore { tx_idx: usize },
+    FeeProcessing { tx_idx: usize },
+}
+
+impl ProcessingPhase {
+    fn get_changes<'a>(&self, components: &'a TransactionProcessingComponents<'a>) -> Option<&'a LedgerEntryChanges> {
+        match self {
+            ProcessingPhase::PostTxApplyFeeProcessing { tx_idx } => {
+                components.post_tx_apply_fee_processing(*tx_idx)
+            }
+            ProcessingPhase::TxChangesAfter { tx_idx } => {
+                components.tx_changes_after(*tx_idx)
+            }
+            ProcessingPhase::OperationsChanges { tx_idx, op_idx } => {
+                Some(components.operation_changes(*tx_idx, *op_idx))
+            }
+            ProcessingPhase::TxChangesBefore { tx_idx } => {
+                components.tx_changes_before(*tx_idx)
+            }
+            ProcessingPhase::FeeProcessing { tx_idx } => {
+                Some(components.fee_processing(*tx_idx))
+            }
+        }
+    }
+
+    fn advance(&self, components: &TransactionProcessingComponents) -> Option<ProcessingPhase> {
+        match self {
+            ProcessingPhase::PostTxApplyFeeProcessing { tx_idx } => {
+                let next_tx_idx = tx_idx + 1;
+                if next_tx_idx < components.len() {
+                    Some(ProcessingPhase::PostTxApplyFeeProcessing { tx_idx: next_tx_idx })
+                } else {
+                    Some(ProcessingPhase::TxChangesAfter { tx_idx: 0 })
+                }
+            }
+            ProcessingPhase::TxChangesAfter { tx_idx } => {
+                Some(ProcessingPhase::OperationsChanges { tx_idx: *tx_idx, op_idx: 0 })
+            }
+            ProcessingPhase::OperationsChanges { tx_idx, op_idx } => {
+                let next_op_idx = op_idx + 1;
+                if next_op_idx < components.operation_count(*tx_idx) {
+                    Some(ProcessingPhase::OperationsChanges { tx_idx: *tx_idx, op_idx: next_op_idx })
+                } else {
+                    Some(ProcessingPhase::TxChangesBefore { tx_idx: *tx_idx })
+                }
+            }
+            ProcessingPhase::TxChangesBefore { tx_idx } => {
+                let next_tx_idx = tx_idx + 1;
+                if next_tx_idx < components.len() {
+                    Some(ProcessingPhase::TxChangesAfter { tx_idx: next_tx_idx })
+                } else {
+                    Some(ProcessingPhase::FeeProcessing { tx_idx: 0 })
+                }
+            }
+            ProcessingPhase::FeeProcessing { tx_idx } => {
+                let next_tx_idx = tx_idx + 1;
+                if next_tx_idx < components.len() {
+                    Some(ProcessingPhase::FeeProcessing { tx_idx: next_tx_idx })
+                } else {
+                    None
+                }
+            }
+        }
+    }
 }
 
 /// Extract the key and entry from a ledger entry change
@@ -127,7 +194,10 @@ impl<'a> LedgerEntryChangesIterator<'a> {
         Self {
             components: TransactionProcessingComponents::from(meta),
             seen_keys: std::collections::HashSet::new(),
-            state: IteratorState::PostTxApplyFeeProcessing { tx_idx: 0, change_idx: 0 },
+            state: IteratorState::Processing {
+                phase: ProcessingPhase::PostTxApplyFeeProcessing { tx_idx: 0 },
+                change_idx: 0,
+            },
         }
     }
 }
@@ -138,22 +208,21 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         loop {
             match &mut self.state {
-                IteratorState::PostTxApplyFeeProcessing { tx_idx, change_idx } => {
-                    let tx_count = self.components.len();
-
-                    // If we've processed all transactions, move to next state
-                    if *tx_idx >= tx_count {
-                        self.state = IteratorState::TxChangesAfter { tx_idx: 0, change_idx: 0 };
-                        continue;
-                    }
-
-                    // Skip if this version doesn't have post_tx_apply_fee_processing
-                    if let Some(changes) = self.components.post_tx_apply_fee_processing(*tx_idx) {
-                        // If we've processed all changes in this transaction's post_tx_apply_fee_processing
+                IteratorState::Processing { phase, change_idx } => {
+                    // Try to get changes from current phase
+                    if let Some(changes) = phase.get_changes(&self.components) {
+                        // If we've processed all changes in this phase
                         if *change_idx >= changes.len() {
-                            *tx_idx += 1;
-                            *change_idx = 0;
-                            continue;
+                            // Move to next phase
+                            if let Some(next_phase) = phase.advance(&self.components) {
+                                *phase = next_phase;
+                                *change_idx = 0;
+                                continue;
+                            } else {
+                                // No more phases
+                                self.state = IteratorState::Done;
+                                continue;
+                            }
                         }
 
                         // Get the change in reverse order
@@ -170,142 +239,17 @@ impl<'a> Iterator for LedgerEntryChangesIterator<'a> {
                         *change_idx += 1;
                         return Some((key, entry));
                     } else {
-                        // Version doesn't have post_tx_apply_fee_processing, skip to next state
-                        *tx_idx += 1;
-                        *change_idx = 0;
-                        continue;
-                    }
-                }
-                IteratorState::TxChangesAfter { tx_idx, change_idx } => {
-                    let tx_count = self.components.len();
-
-                    if *tx_idx >= tx_count {
-                        self.state = IteratorState::OperationsChanges { tx_idx: 0, op_idx: 0, change_idx: 0 };
-                        continue;
-                    }
-
-                    if let Some(changes) = self.components.tx_changes_after(*tx_idx) {
-                        if *change_idx >= changes.len() {
-                            *tx_idx += 1;
+                        // This phase has no changes, move to next phase
+                        if let Some(next_phase) = phase.advance(&self.components) {
+                            *phase = next_phase;
                             *change_idx = 0;
                             continue;
-                        }
-
-                        let change = &changes[changes.len() - 1 - *change_idx];
-                        let (key, entry) = extract_key_entry(change);
-
-                        if self.seen_keys.contains(&key) {
-                            *change_idx += 1;
+                        } else {
+                            // No more phases
+                            self.state = IteratorState::Done;
                             continue;
                         }
-
-                        self.seen_keys.insert(key.clone());
-                        *change_idx += 1;
-                        return Some((key, entry));
-                    } else {
-                        // Skip unsupported tx meta versions
-                        *tx_idx += 1;
-                        *change_idx = 0;
-                        continue;
                     }
-                }
-                IteratorState::OperationsChanges { tx_idx, op_idx, change_idx } => {
-                    let tx_count = self.components.len();
-
-                    if *tx_idx >= tx_count {
-                        self.state = IteratorState::TxChangesBefore { tx_idx: 0, change_idx: 0 };
-                        continue;
-                    }
-
-                    // Handle operations for all TransactionMeta versions
-                    let op_count = self.components.operation_count(*tx_idx);
-
-                    if *op_idx >= op_count {
-                        *tx_idx += 1;
-                        *op_idx = 0;
-                        *change_idx = 0;
-                        continue;
-                    }
-
-                    let changes = self.components.operation_changes(*tx_idx, *op_idx);
-
-                    if *change_idx >= changes.len() {
-                        *op_idx += 1;
-                        *change_idx = 0;
-                        continue;
-                    }
-
-                    let change = &changes[changes.len() - 1 - *change_idx];
-                    let (key, entry) = extract_key_entry(change);
-
-                    if self.seen_keys.contains(&key) {
-                        *change_idx += 1;
-                        continue;
-                    }
-
-                    self.seen_keys.insert(key.clone());
-                    *change_idx += 1;
-                    return Some((key, entry));
-                }
-                IteratorState::TxChangesBefore { tx_idx, change_idx } => {
-                    let tx_count = self.components.len();
-
-                    if *tx_idx >= tx_count {
-                        self.state = IteratorState::FeeProcessing { tx_idx: 0, change_idx: 0 };
-                        continue;
-                    }
-
-                    if let Some(changes) = self.components.tx_changes_before(*tx_idx) {
-                        if *change_idx >= changes.len() {
-                            *tx_idx += 1;
-                            *change_idx = 0;
-                            continue;
-                        }
-
-                        let change = &changes[changes.len() - 1 - *change_idx];
-                        let (key, entry) = extract_key_entry(change);
-
-                        if self.seen_keys.contains(&key) {
-                            *change_idx += 1;
-                            continue;
-                        }
-
-                        self.seen_keys.insert(key.clone());
-                        *change_idx += 1;
-                        return Some((key, entry));
-                    } else {
-                        *tx_idx += 1;
-                        *change_idx = 0;
-                        continue;
-                    }
-                }
-                IteratorState::FeeProcessing { tx_idx, change_idx } => {
-                    let tx_count = self.components.len();
-
-                    if *tx_idx >= tx_count {
-                        self.state = IteratorState::Done;
-                        continue;
-                    }
-
-                    let changes = self.components.fee_processing(*tx_idx);
-
-                    if *change_idx >= changes.len() {
-                        *tx_idx += 1;
-                        *change_idx = 0;
-                        continue;
-                    }
-
-                    let change = &changes[changes.len() - 1 - *change_idx];
-                    let (key, entry) = extract_key_entry(change);
-
-                    if self.seen_keys.contains(&key) {
-                        *change_idx += 1;
-                        continue;
-                    }
-
-                    self.seen_keys.insert(key.clone());
-                    *change_idx += 1;
-                    return Some((key, entry));
                 }
                 IteratorState::Done => return None,
             }
@@ -387,7 +331,7 @@ impl<'a> TransactionProcessingComponents<'a> {
     pub fn tx_changes_after(&self, index: usize) -> Option<&'a LedgerEntryChanges> {
         match self.tx_apply_processing(index) {
             TransactionMeta::V0(_) => None,
-            TransactionMeta::V1(tx_meta) => Some(&tx_meta.tx_changes),
+            TransactionMeta::V1(_tx_meta) => None,
             TransactionMeta::V2(tx_meta) => Some(&tx_meta.tx_changes_after),
             TransactionMeta::V3(tx_meta) => Some(&tx_meta.tx_changes_after),
             TransactionMeta::V4(tx_meta) => Some(&tx_meta.tx_changes_after),
