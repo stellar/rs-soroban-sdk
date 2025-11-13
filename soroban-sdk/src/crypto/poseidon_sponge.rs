@@ -16,6 +16,8 @@ pub struct PoseidonSponge {
 
 impl PoseidonSponge {
     pub fn new(env: &Env, iv: U256, field: Symbol) -> PoseidonSponge {
+        // TODO: we need to set up parameters for BLS12-381
+        assert_eq!(field, soroban_sdk_macros::internal_symbol_short!("BN254"));
         // the 0-th element is reserved for capacity
         let mut state = vec![env, iv];
         for _ in 0..RATE {
