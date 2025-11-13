@@ -277,11 +277,11 @@ impl<'a> TransactionProcessingComponents<'a> {
         self.len() == 0
     }
 
-    pub fn slice(&self, start: usize) -> Self {
+    pub fn truncate(&self, end: usize) -> Self {
         match self {
-            Self::V0(slice) => Self::V0(&slice[start..]),
-            Self::V1(slice) => Self::V1(&slice[start..]),
-            Self::V2(slice) => Self::V2(&slice[start..]),
+            Self::V0(slice) => Self::V0(&slice[..end.min(slice.len())]),
+            Self::V1(slice) => Self::V1(&slice[..end.min(slice.len())]),
+            Self::V2(slice) => Self::V2(&slice[..end.min(slice.len())]),
         }
     }
 
