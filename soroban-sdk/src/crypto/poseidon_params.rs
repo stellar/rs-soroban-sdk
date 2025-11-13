@@ -4,7 +4,7 @@ pub const SBOX_D: u32 = 5;
 pub const ROUNDS_F: u32 = 8;
 pub const ROUNDS_P: u32 = 57;
 
-// These parameters matches reference parameters generated with the reference sage script (t = 3, field = BN254): 
+// These parameters matches reference parameters generated with the reference sage script (t = 3, field = BN254):
 // https://extgit.isec.tugraz.at/krypto/hadeshash/-/blob/208b5a164c6a252b137997694d90931b2bb851c5/code/generate_params_poseidon.sage
 
 #[rustfmt::skip]

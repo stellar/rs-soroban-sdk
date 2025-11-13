@@ -5,7 +5,7 @@ pub const SBOX_D: u32 = 5;
 pub const ROUNDS_F: u32 = 8;
 pub const ROUNDS_P: u32 = 56;
 
-// These parameters matches reference parameters generated with the reference sage script (t = 4, field = BN254): 
+// These parameters matches reference parameters generated with the reference sage script (t = 4, field = BN254):
 // https://github.com/HorizenLabs/poseidon2/blob/055bde3f4782731ba5f5ce5888a440a94327eaf3/poseidon2_rust_params.sage
 #[rustfmt::skip]
 pub fn get_mat_diag4_m_1(e: &Env) -> Vec<U256> {
