@@ -8,14 +8,14 @@ use soroban_sdk::{contract, contractimpl, Env, String};
 pub struct DefaultImpl;
 impl Trait for DefaultImpl {
     type Impl = Self;
-    fn exec(env: &Env) -> String {
+    fn exec(env: &Env, _i: u32) -> String {
         String::from_str(env, "default")
     }
 }
 pub trait Trait {
     type Impl: Trait;
-    fn exec(env: &Env) -> String {
-        Self::Impl::exec(env)
+    fn exec(env: &Env, i: u32) -> String {
+        Self::Impl::exec(env, i)
     }
 }
 pub struct Contract;
@@ -152,22 +152,32 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 impl Trait for Contract {
     type Impl = DefaultImpl;
 }
+const _: () = {
+    struct TraitCheckType;
+    impl Trait for TraitCheckType {
+        type Impl = DefaultImpl;
+        #[allow(unused_parameters)]
+        fn exec(_env: &Env, _i: u32) -> String {
+            ::core::panicking::panic("not implemented")
+        }
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__exec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_EXEC: [u8; 28usize] = super::Contract::spec_xdr_exec();
+    pub static __SPEC_XDR_FN_EXEC: [u8; 44usize] = super::Contract::spec_xdr_exec();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_exec() -> [u8; 44usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\x01\0\0\0\0\0\0\0\x01i\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x10"
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn exec(&self) -> String {
+    pub fn exec(&self, _i: &u32) -> String {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -197,7 +207,7 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::new(&self.env),
+            ::soroban_sdk::Vec::from_array(&self.env, [_i.into_val(&self.env)]),
         );
         if let Some(old_auth_manager) = old_auth_manager {
             self.env.host().set_auth_manager(old_auth_manager).unwrap();
@@ -206,6 +216,7 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_exec(
         &self,
+        _i: &u32,
     ) -> Result<
         Result<
             String,
@@ -238,7 +249,7 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec");
                 SYMBOL
             },
-            ::soroban_sdk::Vec::new(&self.env),
+            ::soroban_sdk::Vec::from_array(&self.env, [_i.into_val(&self.env)]),
         );
         if let Some(old_auth_manager) = old_auth_manager {
             self.env.host().set_auth_manager(old_auth_manager).unwrap();
@@ -249,8 +260,8 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn exec<'i>() -> () {
-        ()
+    pub fn exec<'i>(_i: &'i u32) -> (&'i u32,) {
+        (_i,)
     }
 }
 #[doc(hidden)]
@@ -258,32 +269,40 @@ impl ContractArgs {
 pub mod __Contract__exec {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
         use super::Trait;
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<super::Contract>::exec(&env),
+            &<super::Contract>::exec(
+                &env,
+                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                    <_ as soroban_sdk::TryFromValForContractFn<
+                        soroban_sdk::Env,
+                        soroban_sdk::Val,
+                    >>::try_from_val_for_contract_fn(&env, &arg_0),
+                ),
+            ),
             &env,
         )
     }
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
     pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 0usize {
+        if args.len() != 1usize {
             {
                 ::core::panicking::panic_fmt(format_args!(
                     "invalid number of input arguments: {0} expected, got {1}",
-                    0usize,
+                    1usize,
                     args.len(),
                 ));
             };
         }
         #[allow(deprecated)]
-        invoke_raw(env)
+        invoke_raw(env, args[0usize])
     }
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
         #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
+        invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
 }
@@ -347,7 +366,7 @@ mod test {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
-        let res = client.exec();
+        let res = client.exec(&42);
         match (&res, &String::from_str(&e, "default")) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {

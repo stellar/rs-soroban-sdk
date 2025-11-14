@@ -192,6 +192,23 @@ impl CustomAccountInterface for Contract {
         Ok(())
     }
 }
+const _: () = {
+    struct TraitCheckType;
+    impl CustomAccountInterface for TraitCheckType {
+        type Error = Error;
+        type Signature = ();
+        #[allow(non_snake_case)]
+        #[allow(unused_parameters)]
+        fn __check_auth(
+            _env: Env,
+            _signature_payload: Hash<32>,
+            _signatures: Self::Signature,
+            _auth_contexts: Vec<Context>,
+        ) -> Result<(), Error> {
+            ::core::panicking::panic("not implemented")
+        }
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(non_snake_case)]
