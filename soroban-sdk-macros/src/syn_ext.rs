@@ -353,15 +353,15 @@ pub fn impl_generate_trait_check(imp: &ItemImpl) -> TokenStream {
                     sig,
                     ..
                 } = f;
-                 trait_items.push(quote! {
-                     #(#attrs)*
-                     #[allow(unused_parameters)]
-                     #vis
-                     #defaultness
-                     #sig {
-                         unimplemented!()
-                     }
-                 });
+                trait_items.push(quote! {
+                    #(#attrs)*
+                    #[allow(unused_parameters)]
+                    #vis
+                    #defaultness
+                    #sig {
+                        unimplemented!()
+                    }
+                });
             }
             ImplItem::Verbatim(tokens) => {
                 if let Ok(fn_without_block) = syn::parse2::<FnWithoutBlock>(tokens.clone()) {
@@ -372,15 +372,15 @@ pub fn impl_generate_trait_check(imp: &ItemImpl) -> TokenStream {
                         sig,
                         ..
                     } = fn_without_block;
-                     trait_items.push(quote! {
-                         #(#attrs)*
-                         #[allow(unused_parameters)]
-                         #vis
-                         #defaultness
-                         #sig {
-                             unimplemented!()
-                         }
-                     });
+                    trait_items.push(quote! {
+                        #(#attrs)*
+                        #[allow(unused_parameters)]
+                        #vis
+                        #defaultness
+                        #sig {
+                            unimplemented!()
+                        }
+                    });
                 } else {
                     // For verbatim that are not functions, quote as-is
                     trait_items.push(quote! { #tokens });
