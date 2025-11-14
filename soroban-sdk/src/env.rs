@@ -463,9 +463,9 @@ use crate::testutils::cost_estimate::CostEstimate;
 use crate::{
     auth,
     testutils::{
-        budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
-        EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
-        StellarAssetContract, StellarAssetIssuer,
+        budget::Budget, default_ledger_info, Address as _, AuthSnapshot, AuthorizedInvocation,
+        ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
+        Register, Snapshot, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -513,18 +513,8 @@ impl Env {
         }
 
         let rf = Rc::new(EmptySnapshotSource());
-        let info = internal::LedgerInfo {
-            protocol_version: 23,
-            sequence_number: 0,
-            timestamp: 0,
-            network_id: [0; 32],
-            base_reserve: 0,
-            min_persistent_entry_ttl: 4096,
-            min_temp_entry_ttl: 16,
-            max_entry_ttl: 6_312_000,
-        };
 
-        Env::new_for_testutils(config, rf, None, info, None)
+        Env::new_for_testutils(config, rf, None, None, None)
     }
 
     /// Change the test config of an Env.
@@ -537,7 +527,7 @@ impl Env {
         config: EnvTestConfig,
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
         generators: Option<Rc<RefCell<Generators>>>,
-        ledger_info: internal::LedgerInfo,
+        ledger_info: Option<internal::LedgerInfo>,
         snapshot: Option<Rc<LedgerSnapshot>>,
     ) -> Env {
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
@@ -582,6 +572,7 @@ impl Env {
             },
         };
 
+        let ledger_info = ledger_info.unwrap_or_else(default_ledger_info);
         env.ledger().set(ledger_info);
 
         env
@@ -1520,7 +1511,7 @@ impl Env {
             EnvTestConfig::default(),
             Rc::new(s.ledger.clone()),
             Some(Rc::new(RefCell::new(s.generators))),
-            s.ledger.ledger_info(),
+            Some(s.ledger.ledger_info()),
             Some(Rc::new(s.ledger.clone())),
         )
     }
@@ -1565,7 +1556,7 @@ impl Env {
             EnvTestConfig::default(), // TODO: Allow setting the config.
             Rc::new(s.clone()),
             None,
-            s.ledger_info(),
+            Some(s.ledger_info()),
             Some(Rc::new(s.clone())),
         )
     }
