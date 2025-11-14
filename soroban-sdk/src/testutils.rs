@@ -620,7 +620,7 @@ impl From<LedgerSnapshot> for SnapshotSourceInput {
         Self {
             source: s.clone(),
             ledger_info: Some(s.ledger_info()),
-            snapshot: Some(s.clone()),
+            snapshot: Some(s),
         }
     }
 }
