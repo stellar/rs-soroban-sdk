@@ -470,6 +470,15 @@ trait Trait {
 impl Trait for Contract {
     fn empty3() {}
 }
+const _: () = {
+    struct TraitCheckType;
+    impl Trait for TraitCheckType {
+        #[allow(unused_parameters)]
+        fn empty3() {
+            ::core::panicking::panic("not implemented")
+        }
+    }
+};
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__empty3__spec {

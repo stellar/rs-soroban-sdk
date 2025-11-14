@@ -4,9 +4,9 @@ use std::collections::HashMap;
 use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
-    token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, Path, PathArguments, PathSegment,
-    ReturnType, Token, TypePath,
+    token::{Brace, Comma},
+    AngleBracketedGenericArguments, Attribute, Block, GenericArgument, Path, PathArguments,
+    PathSegment, ReturnType, Signature, Token, TypePath,
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
@@ -22,6 +22,9 @@ pub fn impl_pub_methods(imp: &ItemImpl) -> Vec<ImplItemFn> {
         .iter()
         .filter_map(|i| match i {
             ImplItem::Fn(m) => Some(m.clone()),
+            ImplItem::Verbatim(tokens) => syn::parse2::<FnWithoutBlock>(tokens.clone())
+                .ok()
+                .map(Into::into),
             _ => None,
         })
         .filter(|m| imp.trait_.is_some() || matches!(m.vis, Visibility::Public(_)))
@@ -315,4 +318,140 @@ fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
 
 pub fn ty_to_safe_ident_str(ty: &Type) -> String {
     quote!(#ty).to_string().replace(' ', "").replace(':', "_")
+}
+
+/// Check if the function has a block that contains only a semicolon
+/// (similar to the inherent crate's inherit_default_implementation)
+pub fn impl_remove_fns_without_blocks(imp: &ItemImpl) -> ItemImpl {
+    let mut imp = imp.clone();
+    imp.items.retain(|item| match item {
+        ImplItem::Verbatim(tokens) => syn::parse2::<FnWithoutBlock>(tokens.clone()).is_err(),
+        _ => true,
+    });
+    imp
+}
+
+/// Generate a trait implementation check for functions without blocks.
+/// This creates a const _: () = {} block that implements the trait with
+/// unimplemented!() bodies for block-less functions to ensure they match
+/// the trait signatures.
+pub fn impl_generate_trait_check(imp: &ItemImpl) -> TokenStream {
+    let Some((_, trait_path, _)) = &imp.trait_ else {
+        return quote!();
+    };
+
+    let mut trait_items = Vec::new();
+
+    for item in &imp.items {
+        match item {
+            ImplItem::Fn(f) => {
+                // Include functions with blocks, but change their bodies to unimplemented!()
+                let ImplItemFn {
+                    attrs,
+                    vis,
+                    defaultness,
+                    sig,
+                    ..
+                } = f;
+                trait_items.push(quote! {
+                    #(#attrs)*
+                    #[allow(unused_parameters)]
+                    #vis
+                    #defaultness
+                    #sig {
+                        unimplemented!()
+                    }
+                });
+            }
+            ImplItem::Verbatim(tokens) => {
+                if let Ok(fn_without_block) = syn::parse2::<FnWithoutBlock>(tokens.clone()) {
+                    let FnWithoutBlock {
+                        attrs,
+                        vis,
+                        defaultness,
+                        sig,
+                        ..
+                    } = fn_without_block;
+                    trait_items.push(quote! {
+                        #(#attrs)*
+                        #[allow(unused_parameters)]
+                        #vis
+                        #defaultness
+                        #sig {
+                            unimplemented!()
+                        }
+                    });
+                } else {
+                    // For verbatim that are not functions, quote as-is
+                    trait_items.push(quote! { #tokens });
+                }
+            }
+            _ => {
+                // For all other impl items (types, constants, etc.), quote as-is
+                trait_items.push(quote! { #item });
+            }
+        }
+    }
+
+    if trait_items.is_empty() {
+        return quote!();
+    }
+
+    quote! {
+        const _: () = {
+            struct TraitCheckType;
+
+            impl #trait_path for TraitCheckType {
+                #(#trait_items)*
+            }
+        };
+    }
+}
+
+pub struct FnWithoutBlock {
+    pub attrs: Vec<Attribute>,
+    pub vis: Visibility,
+    pub defaultness: Option<Token![default]>,
+    pub sig: Signature,
+    pub semi_token: Token![;],
+}
+
+impl Parse for FnWithoutBlock {
+    fn parse(input: ParseStream) -> Result<Self, Error> {
+        Ok(Self {
+            attrs: input.call(Attribute::parse_outer)?,
+            vis: input.parse()?,
+            defaultness: input.parse()?,
+            sig: input.parse()?,
+            semi_token: input.parse()?,
+        })
+    }
+}
+
+impl From<FnWithoutBlock> for ImplItemFn {
+    fn from(fn_without_block: FnWithoutBlock) -> Self {
+        ImplItemFn {
+            attrs: fn_without_block.attrs,
+            vis: fn_without_block.vis,
+            defaultness: fn_without_block.defaultness,
+            sig: fn_without_block.sig,
+            block: Block {
+                brace_token: Brace::default(),
+                stmts: vec![],
+            },
+        }
+    }
+}
+
+impl From<ImplItemFn> for FnWithoutBlock {
+    fn from(impl_item_fn: ImplItemFn) -> Self {
+        let span = impl_item_fn.span();
+        FnWithoutBlock {
+            attrs: impl_item_fn.attrs,
+            vis: impl_item_fn.vis,
+            defaultness: impl_item_fn.defaultness,
+            sig: impl_item_fn.sig,
+            semi_token: Token![;](span),
+        }
+    }
 }
