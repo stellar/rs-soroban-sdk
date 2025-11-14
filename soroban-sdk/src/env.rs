@@ -465,7 +465,7 @@ use crate::{
     testutils::{
         budget::Budget, Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet,
         EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
-        StellarAssetContract, StellarAssetIssuer,
+        StellarAssetContract, StellarAssetIssuer, default_ledger_info,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -513,7 +513,7 @@ impl Env {
         }
 
         let rf = Rc::new(EmptySnapshotSource());
-        let info = crate::testutils::default_ledger_info();
+        let info = default_ledger_info();
 
         Env::new_for_testutils(config, rf, None, info, None)
     }
