@@ -25,6 +25,8 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
 
+use crate::env::internal::storage::SnapshotSource;
+
 pub trait Register {
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
     where
@@ -603,5 +605,22 @@ impl StellarAssetContract {
     #[doc(hidden)]
     pub fn asset(&self) -> xdr::Asset {
         self.asset.clone()
+    }
+}
+
+pub struct SnapshotSourceInput {
+    pub source: Rc<dyn SnapshotSource>,
+    pub ledger_info: Option<LedgerInfo>,
+    pub snapshot: Option<Rc<LedgerSnapshot>>,
+}
+
+impl From<LedgerSnapshot> for SnapshotSourceInput {
+    fn from(s: LedgerSnapshot) -> Self {
+        let s = Rc::new(s);
+        Self {
+            source: s.clone(),
+            ledger_info: Some(s.ledger_info()),
+            snapshot: Some(s.clone()),
+        }
     }
 }
