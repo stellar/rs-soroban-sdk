@@ -27,7 +27,7 @@ pub struct Contract;
 #[contractimpl]
 impl Trait for Contract {
     type Impl = DefaultImpl;
-    fn exec(env: &Env, i: u32) -> String;
+    fn exec(_env: &Env, _i: u32) -> String;
 }
 
 #[cfg(test)]
