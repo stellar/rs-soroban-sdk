@@ -256,7 +256,7 @@ pub trait ContractFunctionSet {
 pub use crate::env::internal::LedgerInfo;
 
 /// Returns a default `LedgerInfo` suitable for testing.
-pub fn default_ledger_info() -> LedgerInfo {
+pub(crate) fn default_ledger_info() -> LedgerInfo {
     LedgerInfo {
         protocol_version: 23,
         sequence_number: 0,
