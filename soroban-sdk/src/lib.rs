@@ -494,6 +494,10 @@ pub use soroban_sdk_macros::contractimpl;
 #[doc(hidden)]
 pub use soroban_sdk_macros::contractimpl_remove_fns_without_blocks;
 
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_trait_check;
+
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
 /// under the section name 'contractmetav0'. Contract developers can use this to
 /// append metadata to their contract.

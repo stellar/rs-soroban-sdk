@@ -27,7 +27,7 @@ pub struct Contract;
 #[contractimpl]
 impl Trait for Contract {
     type Impl = DefaultImpl;
-    fn exec(env: &Env, _i: u64);
+    fn exec(env: &Env, i: u32) -> String;
 }
 
 #[cfg(test)]
@@ -42,7 +42,7 @@ mod test {
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
 
-        let res = client.exec();
+        let res = client.exec(&42);
         assert_eq!(res, String::from_str(&e, "default"));
     }
 }
