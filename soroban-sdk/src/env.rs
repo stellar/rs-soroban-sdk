@@ -513,16 +513,7 @@ impl Env {
         }
 
         let rf = Rc::new(EmptySnapshotSource());
-        let info = internal::LedgerInfo {
-            protocol_version: 23,
-            sequence_number: 0,
-            timestamp: 0,
-            network_id: [0; 32],
-            base_reserve: 0,
-            min_persistent_entry_ttl: 4096,
-            min_temp_entry_ttl: 16,
-            max_entry_ttl: 6_312_000,
-        };
+        let info = crate::testutils::default_ledger_info();
 
         Env::new_for_testutils(config, rf, None, info, None)
     }
