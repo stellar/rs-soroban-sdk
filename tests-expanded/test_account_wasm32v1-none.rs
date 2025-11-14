@@ -274,3 +274,5 @@ pub mod __Contract____check_auth {
     }
     use super::*;
 }
+impl<'a> ContractClient<'a> {}
+impl ContractArgs {}
