@@ -1,0 +1,18 @@
+[package]
+name = "soroban-snapshot-source-rpc"
+description = "Soroban snapshot source that fetches ledger entries from stellar-rpc."
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "README.md"
+license = "Apache-2.0"
+version.workspace = true
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+serde = { version = "1.0.0", features = ["derive"] }
+serde_json = "1.0.0"
+reqwest = { version = "0.12", features = ["json", "blocking"] }
+thiserror = "1.0"

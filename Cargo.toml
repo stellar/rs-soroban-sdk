@@ -8,6 +8,7 @@ members = [
     "soroban-spec",
     "soroban-spec-rust",
     "soroban-ledger-snapshot",
+    "soroban-snapshot-source-rpc",
     "soroban-token-sdk",
     "soroban-token-spec",
     "stellar-asset-spec",
@@ -25,6 +26,7 @@ soroban-meta = { version = "23.1.0", path = "soroban-meta" }
 soroban-spec = { version = "23.1.0", path = "soroban-spec" }
 soroban-spec-rust = { version = "23.1.0", path = "soroban-spec-rust" }
 soroban-ledger-snapshot = { version = "23.1.0", path = "soroban-ledger-snapshot" }
+soroban-snapshot-source-rpc = { version = "23.1.0", path = "soroban-snapshot-source-rpc" }
 soroban-token-sdk = { version = "23.1.0", path = "soroban-token-sdk" }
 soroban-token-spec = { version = "23.1.0", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "23.1.0", path = "stellar-asset-spec" }
