@@ -3,7 +3,7 @@ use soroban_sdk::{
     testutils::{SnapshotSourceInput, SnapshotSource, HostError},
     xdr::{LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, Limits, ReadXdr, WriteXdr},
 };
-use std::rc::Rc;
+use std::{cell::Cell, rc::Rc};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -19,6 +19,7 @@ pub enum Error {
 pub struct RpcSnapshotSource {
     client: reqwest::blocking::Client,
     rpc_url: String,
+    ledger_seq: Cell<Option<u32>>,
 }
 
 impl RpcSnapshotSource {
@@ -27,6 +28,7 @@ impl RpcSnapshotSource {
         Self {
             client: reqwest::blocking::Client::new(),
             rpc_url: rpc_url.to_string(),
+            ledger_seq: Cell::new(None),
         }
     }
 
@@ -71,9 +73,22 @@ impl RpcSnapshotSource {
 
             let ledger_entry = LedgerEntry {
                 data,
-                last_modified_ledger_seq: 0,
+                last_modified_ledger_seq: entry.last_modified_ledger_seq,
                 ext: LedgerEntryExt::V0,
             };
+
+            // Track ledger consistency
+            match self.ledger_seq.get() {
+                // First ledger entry fetched, record the latest ledger as the point-in-time the data is known to be consistent.
+                None => self.ledger_seq.set(Some(result.latest_ledger)),
+                // Subsequent ledger entry fetched, and the state is newer than the ledger recorded earlier.
+                Some(ledger_seq) if entry.last_modified_ledger_seq > ledger_seq => {
+                    eprintln!("Warning: Ledger entry retrieved was last modified ({}) that is later than the ledger that state has been already fetched ({}). State may be inconsistent.",
+                             entry.last_modified_ledger_seq, ledger_seq);
+                }
+                // Subsequent ledger entry fetched, and the state is not newer than the ledger recorded earlier.
+                Some(_) => {}
+            }
 
             Ok(Some((ledger_entry, Some(0)))) // TODO: Do we need to set the ttl?
         } else {
@@ -128,9 +143,13 @@ struct RpcError {
 #[derive(serde::Deserialize)]
 struct GetLedgerEntriesResponse {
     entries: Vec<GetLedgerEntriesResponseEntry>,
+    #[serde(rename = "latestLedger")]
+    latest_ledger: u32,
 }
 
 #[derive(serde::Deserialize)]
 struct GetLedgerEntriesResponseEntry {
     xdr: String,
+    #[serde(rename = "lastModifiedLedgerSeq")]
+    last_modified_ledger_seq: u32,
 }
