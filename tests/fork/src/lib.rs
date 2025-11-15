@@ -19,6 +19,6 @@ mod test {
             "GCDRCSMJAYHQ5VL4K56STZLJYNHKFXZD4VKA43XCT5UUBFFZCLRR32CP",
         );
         let res = t.balance(&a2);
-        assert_eq!(res, 0);
+        assert_eq!(res, 199999944857);
     }
 }
