@@ -63,11 +63,11 @@ jobs:
         rustup update
         rustup target add wasm32v1-none
 
-    - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+    - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
       with:
         deno-version: v2.x
 
-    - uses: stellar/stellar-cli@v23.1.4
+    - uses: stellar/stellar-cli@v23.2.0
 
     - uses: stellar/actions/rust-cache@main
 
@@ -98,7 +98,7 @@ jobs:
       run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: ${{ steps.artifact-name.outputs.name }}
         path: 'soroban-examples/${{ matrix.working-directory }}/**/*.wasm'
