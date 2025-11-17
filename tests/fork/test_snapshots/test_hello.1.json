@@ -26,45 +26,24 @@
         },
         [
           {
-            "last_modified_ledger_seq": 90133,
+            "last_modified_ledger_seq": 47,
             "data": {
               "account": {
                 "account_id": "GAFUHA24GY66NPICT7KIP4QWZVCWQEL6OMR5QSY6JNDTCBMX72LHPKKQ",
-                "balance": "99999999600",
-                "seq_num": "384872019394564",
+                "balance": "100000000000",
+                "seq_num": "201863462912",
                 "num_sub_entries": 0,
                 "inflation_dest": null,
                 "flags": 0,
                 "home_domain": "",
                 "thresholds": "01000000",
                 "signers": [],
-                "ext": {
-                  "v1": {
-                    "liabilities": {
-                      "buying": "0",
-                      "selling": "0"
-                    },
-                    "ext": {
-                      "v2": {
-                        "num_sponsored": 0,
-                        "num_sponsoring": 0,
-                        "signer_sponsoring_i_ds": [],
-                        "ext": {
-                          "v3": {
-                            "ext": "v0",
-                            "seq_ledger": 90133,
-                            "seq_time": "1763215263"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+                "ext": "v0"
               }
             },
             "ext": "v0"
           },
-          0
+          null
         ]
       ],
       [
@@ -75,12 +54,12 @@
         },
         [
           {
-            "last_modified_ledger_seq": 89499,
+            "last_modified_ledger_seq": 51,
             "data": {
               "account": {
                 "account_id": "GCDRCSMJAYHQ5VL4K56STZLJYNHKFXZD4VKA43XCT5UUBFFZCLRR32CP",
-                "balance": "199999944257",
-                "seq_num": "12816182411271",
+                "balance": "99999944857",
+                "seq_num": "188978561025",
                 "num_sub_entries": 0,
                 "inflation_dest": null,
                 "flags": 0,
@@ -101,8 +80,8 @@
                         "ext": {
                           "v3": {
                             "ext": "v0",
-                            "seq_ledger": 89499,
-                            "seq_time": "1763214624"
+                            "seq_ledger": 51,
+                            "seq_time": "1763338852"
                           }
                         }
                       }
@@ -113,7 +92,7 @@
             },
             "ext": "v0"
           },
-          0
+          null
         ]
       ],
       [
@@ -126,7 +105,7 @@
         },
         [
           {
-            "last_modified_ledger_seq": 2988,
+            "last_modified_ledger_seq": 51,
             "data": {
               "contract_data": {
                 "ext": "v0",
@@ -193,7 +172,7 @@
             },
             "ext": "v0"
           },
-          120960
+          121010
         ]
       ]
     ]
