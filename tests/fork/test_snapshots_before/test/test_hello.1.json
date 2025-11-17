@@ -96,12 +96,12 @@
       },
       [
         {
-          "last_modified_ledger_seq": 51,
+          "last_modified_ledger_seq": 84024,
           "data": {
             "account": {
               "account_id": "GCDRCSMJAYHQ5VL4K56STZLJYNHKFXZD4VKA43XCT5UUBFFZCLRR32CP",
-              "balance": "99999944857",
-              "seq_num": "188978561025",
+              "balance": "199999944557",
+              "seq_num": "188978561028",
               "num_sub_entries": 0,
               "inflation_dest": null,
               "flags": 0,
@@ -122,42 +122,14 @@
                       "ext": {
                         "v3": {
                           "ext": "v0",
-                          "seq_ledger": 51,
-                          "seq_time": "1763338852"
+                          "seq_ledger": 84024,
+                          "seq_time": "1763423442"
                         }
                       }
                     }
                   }
                 }
               }
-            }
-          },
-          "ext": "v0"
-        },
-        null
-      ]
-    ],
-    [
-      {
-        "account": {
-          "account_id": "GAFUHA24GY66NPICT7KIP4QWZVCWQEL6OMR5QSY6JNDTCBMX72LHPKKQ"
-        }
-      },
-      [
-        {
-          "last_modified_ledger_seq": 47,
-          "data": {
-            "account": {
-              "account_id": "GAFUHA24GY66NPICT7KIP4QWZVCWQEL6OMR5QSY6JNDTCBMX72LHPKKQ",
-              "balance": "100000000000",
-              "seq_num": "201863462912",
-              "num_sub_entries": 0,
-              "inflation_dest": null,
-              "flags": 0,
-              "home_domain": "",
-              "thresholds": "01000000",
-              "signers": [],
-              "ext": "v0"
             }
           },
           "ext": "v0"
