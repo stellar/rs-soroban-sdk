@@ -90,7 +90,7 @@ impl RpcSnapshotSource {
                 Some(_) => {}
             }
 
-            Ok(Some((ledger_entry, Some(0)))) // TODO: Do we need to set the ttl?
+            Ok(Some((ledger_entry, entry.live_until_ledger_seq)))
         } else {
             Ok(None)
         }
@@ -152,4 +152,6 @@ struct GetLedgerEntriesResponseEntry {
     xdr: String,
     #[serde(rename = "lastModifiedLedgerSeq")]
     last_modified_ledger_seq: u32,
+    #[serde(rename = "liveUntilLedgerSeq")]
+    live_until_ledger_seq: Option<u32>,
 }
