@@ -589,7 +589,9 @@ impl Env {
                     .reduce(|p0, p1| p0.join(p1))
                     .expect("test name to not be empty");
                 let dir = std::path::Path::new("test_snapshots_before");
-                let p = dir.join(&test_name_path).with_extension(format!("{number}.json"));
+                let p = dir
+                    .join(&test_name_path)
+                    .with_extension(format!("{number}.json"));
                 if let Ok(snapshot) = LedgerSnapshot::read_file(&p) {
                     return Some(Rc::new(RefCell::new(snapshot)));
                 }
@@ -598,12 +600,14 @@ impl Env {
         });
 
         // Default to an empty snapshot if none exists.
-        let snapshot = snapshot
-            .unwrap_or_else(|| Rc::new(RefCell::new(LedgerSnapshot::default())));
+        let snapshot = snapshot.unwrap_or_else(|| Rc::new(RefCell::new(LedgerSnapshot::default())));
 
         // Wrap the recording footprint into a layer that'll record the initial state of anything
         // loaded into the snapshot.
-        let recording_footprint = Rc::new(SnapshotSourceCacheWrite::new(recording_footprint, snapshot.clone()));
+        let recording_footprint = Rc::new(SnapshotSourceCacheWrite::new(
+            recording_footprint,
+            snapshot.clone(),
+        ));
 
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
