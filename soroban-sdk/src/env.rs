@@ -242,7 +242,7 @@ impl Default for Env {
 #[cfg(any(test, feature = "testutils"))]
 #[derive(Default, Clone)]
 struct LastEnv {
-    name: String,
+    test_name: String,
     number: usize,
 }
 
@@ -588,8 +588,8 @@ impl Env {
         let number = if let Some(ref test_name) = test_name {
             LAST_ENV.with_borrow_mut(|l| {
                 if let Some(last_env) = l.as_mut() {
-                    if test_name != &last_env.name {
-                        last_env.name = test_name.clone();
+                    if test_name != &last_env.test_name {
+                        last_env.test_name = test_name.clone();
                         last_env.number = 1;
                         1
                     } else {
@@ -599,7 +599,7 @@ impl Env {
                     }
                 } else {
                     *l = Some(LastEnv {
-                        name: test_name.clone(),
+                        test_name: test_name.clone(),
                         number: 1,
                     });
                     1
