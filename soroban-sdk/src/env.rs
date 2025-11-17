@@ -240,8 +240,22 @@ impl Default for Env {
 }
 
 #[cfg(any(test, feature = "testutils"))]
+#[derive(Default, Clone)]
+struct LastEnv {
+    name: String,
+    number: usize,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+thread_local! {
+    static LAST_ENV: RefCell<Option<LastEnv>> = RefCell::new(None);
+}
+
+#[cfg(any(test, feature = "testutils"))]
 #[derive(Clone, Default)]
 struct EnvTestState {
+    test_name: Option<String>,
+    number: usize,
     config: EnvTestConfig,
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
@@ -562,9 +576,44 @@ impl Env {
             .unwrap();
         env_impl.enable_invocation_metering();
 
+        // Store in the Env the name of the test it is for, and a number so that within a test
+        // where one or more Env's have been created they can be uniquely identified relative to
+        // each other.
+        let test_name = match std::thread::current().name() {
+            // When doc tests are running they're all run with the thread name main. There's no way
+            // to detect which doc test is being run.
+            Some(name) if name != "main" => Some(name.to_owned()),
+            _ => None,
+        };
+        let number = if let Some(ref test_name) = test_name {
+            LAST_ENV.with_borrow_mut(|l| {
+                if let Some(last_env) = l.as_mut() {
+                    if test_name != &last_env.name {
+                        last_env.name = test_name.clone();
+                        last_env.number = 1;
+                        1
+                    } else {
+                        let next_number = last_env.number + 1;
+                        last_env.number = next_number;
+                        next_number
+                    }
+                } else {
+                    *l = Some(LastEnv {
+                        name: test_name.clone(),
+                        number: 1,
+                    });
+                    1
+                }
+            })
+        } else {
+            1
+        };
+
         let env = Env {
             env_impl,
             test_state: EnvTestState {
+                test_name,
+                number,
                 config,
                 generators: generators.unwrap_or_default(),
                 snapshot,
@@ -1633,25 +1682,13 @@ impl Drop for Env {
     }
 }
 
-#[cfg(any(test, feature = "testutils"))]
-#[derive(Default, Clone)]
-struct LastTestSnapshot {
-    name: String,
-    number: usize,
-}
-
-#[cfg(any(test, feature = "testutils"))]
-thread_local! {
-    static LAST_TEST_SNAPSHOT: RefCell<LastTestSnapshot> = RefCell::new(LastTestSnapshot::default());
-}
-
 #[doc(hidden)]
 #[cfg(any(test, feature = "testutils"))]
 impl Env {
     /// Create a snapshot file for the currently executing test.
     ///
     /// Writes the file to the `test_snapshots/{test-name}.N.json` path where
-    /// `N` is incremented for each unique `Env` in the test.
+    /// `N` starts at 0 and is incremented for each unique `Env` in the test.
     ///
     /// Use to record the observable behavior of a test, and changes to that
     /// behavior over time. Commit the test snapshot file to version control and
@@ -1676,28 +1713,11 @@ impl Env {
         }
 
         // Determine path to write test snapshots to.
-        let thread = std::thread::current();
-        let Some(test_name) = thread.name() else {
-            // The stock unit test runner sets a thread name.
-            // If there is no thread name, assume this is not running as
-            // part of a unit test, and do nothing.
+        let Some(test_name) = &self.test_state.test_name else {
+            // If there's no test name, we're not in a test context, so don't write snapshots.
             return;
         };
-        if test_name == "main" {
-            // When doc tests are running they're all run with the thread name
-            // main. There's no way to detect which doc test is being run and
-            // there's little value in writing and overwriting a single file for
-            // all doc tests.
-            return;
-        }
-        let file_number = LAST_TEST_SNAPSHOT.with_borrow_mut(|l| {
-            if test_name == l.name {
-                *l = LastTestSnapshot::default();
-                l.name = test_name.to_owned();
-            }
-            l.number += 1;
-            l.number
-        });
+        let number = self.test_state.number;
         // Break up the test name into directories, using :: as the separator.
         // The :: module separator cannot be written into the filename because
         // some operating systems (e.g. Windows) do not allow the : character in
@@ -1710,7 +1730,7 @@ impl Env {
         let dir = std::path::Path::new("test_snapshots");
         let p = dir
             .join(&test_name_path)
-            .with_extension(format!("{file_number}.json"));
+            .with_extension(format!("{number}.json"));
 
         // Write test snapshots to file.
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
