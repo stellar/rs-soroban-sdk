@@ -26,6 +26,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 pub use crate::env::EnvTestConfig;
 
 pub use crate::env::internal::{storage::SnapshotSource, HostError};
+use soroban_env_host::xdr::{LedgerEntry, LedgerKey};
 
 pub trait Register {
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
@@ -605,6 +606,54 @@ impl StellarAssetContract {
     #[doc(hidden)]
     pub fn asset(&self) -> xdr::Asset {
         self.asset.clone()
+    }
+}
+
+/// A snapshot source that wraps another snapshot source and tracks entries
+/// in a cached snapshot as they are accessed.
+///
+/// The cached snapshot maintains a pre-change version of the ledger state,
+/// where entries are added as they are loaded from the underlying snapshot source.
+pub struct SnapshotSourceCacheWrite {
+    /// The underlying snapshot source to delegate to
+    source: Rc<dyn SnapshotSource>,
+    /// The cached snapshot that tracks accessed entries
+    cache: Rc<std::cell::RefCell<LedgerSnapshot>>,
+}
+
+impl SnapshotSourceCacheWrite {
+    /// Create a new SnapshotSourceCacheWrite that wraps the given snapshot source
+    /// and uses the provided shared cached snapshot.
+    pub fn new(
+        source: Rc<dyn SnapshotSource>,
+        cache: Rc<std::cell::RefCell<LedgerSnapshot>>,
+    ) -> Self {
+        Self { source, cache }
+    }
+
+    /// Get a reference to the current cached snapshot
+    pub fn cache(&self) -> std::cell::Ref<'_, LedgerSnapshot> {
+        self.cache.borrow()
+    }
+}
+
+impl SnapshotSource for SnapshotSourceCacheWrite {
+    fn get(
+        &self,
+        key: &Rc<LedgerKey>,
+    ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
+        // First, try to get the entry from the underlying source
+        let result = self.source.get(key)?;
+
+        // If we got an entry, add it to our cached snapshot using update_entries
+        if let Some((entry, live_until_ledger)) = &result {
+            let mut cache = self.cache.borrow_mut();
+            // Use update_entries to add or update the entry in the cache
+            let entry_tuple = (key.clone(), Some((entry.clone(), *live_until_ledger)));
+            cache.update_entries(std::iter::once(&entry_tuple));
+        }
+
+        Ok(result)
     }
 }
 

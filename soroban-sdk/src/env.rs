@@ -245,7 +245,7 @@ struct EnvTestState {
     config: EnvTestConfig,
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
-    snapshot: Option<Rc<LedgerSnapshot>>,
+    snapshot: Option<Rc<RefCell<LedgerSnapshot>>>,
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -465,7 +465,8 @@ use crate::{
     testutils::{
         budget::Budget, default_ledger_info, Address as _, AuthSnapshot, AuthorizedInvocation,
         ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
-        Register, Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
+        Register, Snapshot, SnapshotSourceCacheWrite, SnapshotSourceInput, StellarAssetContract,
+        StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -528,7 +529,7 @@ impl Env {
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
         generators: Option<Rc<RefCell<Generators>>>,
         ledger_info: Option<internal::LedgerInfo>,
-        snapshot: Option<Rc<LedgerSnapshot>>,
+        snapshot: Option<Rc<RefCell<LedgerSnapshot>>>,
     ) -> Env {
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
@@ -1512,7 +1513,7 @@ impl Env {
             Rc::new(s.ledger.clone()),
             Some(Rc::new(RefCell::new(s.generators))),
             Some(s.ledger.ledger_info()),
-            Some(Rc::new(s.ledger.clone())),
+            Some(Rc::new(RefCell::new(s.ledger.clone()))),
         )
     }
 
@@ -1557,12 +1558,24 @@ impl Env {
             ledger_info,
             snapshot,
         } = input.into();
+
+        // Default to an empty snapshot if none exists.
+        let snapshot = snapshot
+            .map(|s| (*s).clone())
+            .unwrap_or_else(LedgerSnapshot::default);
+        let snapshot = Rc::new(RefCell::new(snapshot));
+
+        // Wrap the snapshot source in a SnapshotSourceCacheWrite that caches seen values before
+        // they get changed.
+        let snapshot_source_cache_before =
+            Rc::new(SnapshotSourceCacheWrite::new(source, snapshot.clone()));
+
         Env::new_for_testutils(
             EnvTestConfig::default(), // TODO: Allow setting the config.
-            source,
+            snapshot_source_cache_before.clone(),
             None,
             ledger_info,
-            snapshot,
+            Some(snapshot),
         )
     }
 
@@ -1577,11 +1590,19 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
-        let mut snapshot = (*snapshot).clone();
+        let mut snapshot = self.to_ledger_snapshot_before();
         snapshot.set_ledger_info(self.ledger().get());
         snapshot.update_entries(&self.host().get_stored_entries().unwrap());
         snapshot
+    }
+
+    /// Create a snapshot from all data loaded by the Env prior to any changes.
+    pub fn to_ledger_snapshot_before(&self) -> LedgerSnapshot {
+        self.test_state
+            .snapshot
+            .as_ref()
+            .map(|s| s.borrow().clone())
+            .unwrap_or_else(LedgerSnapshot::default)
     }
 
     /// Create a snapshot file from the Env's current state.
