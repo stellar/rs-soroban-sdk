@@ -642,11 +642,13 @@ impl SnapshotSource for SnapshotSourceCache {
         &self,
         key: &Rc<LedgerKey>,
     ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
-        // First, try to get the entry from the cache
-        let cache = self.cache.borrow();
-        for (entry_key, (entry, live_until_ledger)) in cache.entries() {
-            if entry_key.as_ref() == key.as_ref() {
-                return Ok(Some((Rc::new((**entry).clone()), *live_until_ledger)));
+        // First, check if the entry exists in the cache
+        {
+            let cache = self.cache.borrow();
+            for (entry_key, (entry, live_until_ledger)) in cache.entries() {
+                if entry_key.as_ref() == key.as_ref() {
+                    return Ok(Some((Rc::new((**entry).clone()), *live_until_ledger)));
+                }
             }
         }
 
