@@ -545,38 +545,6 @@ impl Env {
         ledger_info: Option<internal::LedgerInfo>,
         snapshot: Option<Rc<RefCell<LedgerSnapshot>>>,
     ) -> Env {
-        let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
-        let budget = internal::budget::Budget::default();
-        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
-        env_impl
-            .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
-                xdr::Uint256([0; 32]),
-            )))
-            .unwrap();
-        env_impl
-            .set_diagnostic_level(internal::DiagnosticLevel::Debug)
-            .unwrap();
-        env_impl.set_base_prng_seed([0; 32]).unwrap();
-
-        let auth_snapshot = Rc::new(RefCell::new(AuthSnapshot::default()));
-        let auth_snapshot_in_hook = auth_snapshot.clone();
-        env_impl
-            .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
-                match event {
-                    ContractInvocationEvent::Start => {}
-                    ContractInvocationEvent::Finish => {
-                        let new_auths = host
-                            .get_authenticated_authorizations()
-                            // If an error occurs getting the authenticated authorizations
-                            // it means that no auth has occurred.
-                            .unwrap();
-                        (*auth_snapshot_in_hook).borrow_mut().0.push(new_auths);
-                    }
-                }
-            })))
-            .unwrap();
-        env_impl.enable_invocation_metering();
-
         // Store in the Env the name of the test it is for, and a number so that within a test
         // where one or more Env's have been created they can be uniquely identified relative to
         // each other.
@@ -609,6 +577,38 @@ impl Env {
         } else {
             1
         };
+
+        let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
+        let budget = internal::budget::Budget::default();
+        let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
+        env_impl
+            .set_source_account(xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(
+                xdr::Uint256([0; 32]),
+            )))
+            .unwrap();
+        env_impl
+            .set_diagnostic_level(internal::DiagnosticLevel::Debug)
+            .unwrap();
+        env_impl.set_base_prng_seed([0; 32]).unwrap();
+
+        let auth_snapshot = Rc::new(RefCell::new(AuthSnapshot::default()));
+        let auth_snapshot_in_hook = auth_snapshot.clone();
+        env_impl
+            .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
+                match event {
+                    ContractInvocationEvent::Start => {}
+                    ContractInvocationEvent::Finish => {
+                        let new_auths = host
+                            .get_authenticated_authorizations()
+                            // If an error occurs getting the authenticated authorizations
+                            // it means that no auth has occurred.
+                            .unwrap();
+                        (*auth_snapshot_in_hook).borrow_mut().0.push(new_auths);
+                    }
+                }
+            })))
+            .unwrap();
+        env_impl.enable_invocation_metering();
 
         let env = Env {
             env_impl,
