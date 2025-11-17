@@ -1639,23 +1639,15 @@ impl Env {
             snapshot,
         } = input.into();
 
-        // Default to an empty snapshot if none exists.
         let snapshot = snapshot
-            .map(|s| (*s).clone())
-            .unwrap_or_else(LedgerSnapshot::default);
-        let snapshot = Rc::new(RefCell::new(snapshot));
-
-        // Wrap the snapshot source in a SnapshotSourceCacheWrite that caches seen values before
-        // they get changed.
-        let snapshot_source_cache_before =
-            Rc::new(SnapshotSourceCacheWrite::new(source, snapshot.clone()));
+            .map(|s| Rc::new(RefCell::new((*s).clone())));
 
         Env::new_for_testutils(
             EnvTestConfig::default(), // TODO: Allow setting the config.
-            snapshot_source_cache_before.clone(),
+            source,
             None,
             ledger_info,
-            Some(snapshot),
+            snapshot,
         )
     }
 
