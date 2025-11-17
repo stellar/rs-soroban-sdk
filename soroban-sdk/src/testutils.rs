@@ -614,16 +614,16 @@ impl StellarAssetContract {
 ///
 /// The cached snapshot maintains a pre-change version of the ledger state,
 /// where entries are added as they are loaded from the underlying snapshot source.
-pub struct SnapshotSourceCacheWrite {
+pub struct SnapshotSourceCache {
     /// The underlying snapshot source to delegate to
     source: Rc<dyn SnapshotSource>,
-    /// The cached snapshot that tracks accessed entries
+    /// The snapshot to read from first
     cache: Rc<std::cell::RefCell<LedgerSnapshot>>,
 }
 
-impl SnapshotSourceCacheWrite {
-    /// Create a new SnapshotSourceCacheWrite that wraps the given snapshot source
-    /// and uses the provided shared cached snapshot.
+impl SnapshotSourceCache {
+    /// Create a new SnapshotSourceCache that wraps the given snapshot source
+    /// and uses the provided shared snapshot.
     pub fn new(
         source: Rc<dyn SnapshotSource>,
         cache: Rc<std::cell::RefCell<LedgerSnapshot>>,
@@ -631,21 +631,29 @@ impl SnapshotSourceCacheWrite {
         Self { source, cache }
     }
 
-    /// Get a reference to the current cached snapshot
+    /// Get a reference to the cache
     pub fn cache(&self) -> std::cell::Ref<'_, LedgerSnapshot> {
         self.cache.borrow()
     }
 }
 
-impl SnapshotSource for SnapshotSourceCacheWrite {
+impl SnapshotSource for SnapshotSourceCache {
     fn get(
         &self,
         key: &Rc<LedgerKey>,
     ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
-        // First, try to get the entry from the underlying source
+        // First, try to get the entry from the cache
+        let cache = self.cache.borrow();
+        for (entry_key, (entry, live_until_ledger)) in cache.entries() {
+            if entry_key.as_ref() == key.as_ref() {
+                return Ok(Some((Rc::new((**entry).clone()), *live_until_ledger)));
+            }
+        }
+
+        // If not in cache, try to get from the underlying source
         let result = self.source.get(key)?;
 
-        // If we got an entry, add it to our cached snapshot using update_entries
+        // If we got an entry, add it to our cache using update_entries
         if let Some((entry, live_until_ledger)) = &result {
             let mut cache = self.cache.borrow_mut();
             // Use update_entries to add or update the entry in the cache

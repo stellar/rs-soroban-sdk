@@ -479,7 +479,7 @@ use crate::{
     testutils::{
         budget::Budget, default_ledger_info, Address as _, AuthSnapshot, AuthorizedInvocation,
         ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
-        Register, Snapshot, SnapshotSourceCacheWrite, SnapshotSourceInput, StellarAssetContract,
+        Register, Snapshot, SnapshotSourceCache, SnapshotSourceInput, StellarAssetContract,
         StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
@@ -604,7 +604,7 @@ impl Env {
 
         // Wrap the recording footprint into a layer that'll record the initial state of anything
         // loaded into the snapshot.
-        let recording_footprint = Rc::new(SnapshotSourceCacheWrite::new(
+        let recording_footprint = Rc::new(SnapshotSourceCache::new(
             recording_footprint,
             snapshot.clone(),
         ));
