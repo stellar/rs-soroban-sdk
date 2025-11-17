@@ -578,6 +578,33 @@ impl Env {
             1
         };
 
+        // Apply fallback to read from test_snapshots_before if snapshot is None
+        let snapshot = snapshot.or_else(|| {
+            // Try to read from test_snapshots_before file for the current test.
+            if let Some(test_name) = test_name.as_ref() {
+                // Construct path similar to to_test_ledger_snapshot_before_file.
+                let test_name_path = test_name
+                    .split("::")
+                    .map(|p| std::path::Path::new(p).to_path_buf())
+                    .reduce(|p0, p1| p0.join(p1))
+                    .expect("test name to not be empty");
+                let dir = std::path::Path::new("test_snapshots_before");
+                let p = dir.join(&test_name_path).with_extension(format!("{number}.json"));
+                if let Ok(snapshot) = LedgerSnapshot::read_file(&p) {
+                    return Some(Rc::new(RefCell::new(snapshot)));
+                }
+            }
+            None
+        });
+
+        // Default to an empty snapshot if none exists.
+        let snapshot = snapshot
+            .unwrap_or_else(|| Rc::new(RefCell::new(LedgerSnapshot::default())));
+
+        // Wrap the recording footprint into a layer that'll record the initial state of anything
+        // loaded into the snapshot.
+        let recording_footprint = Rc::new(SnapshotSourceCacheWrite::new(recording_footprint, snapshot.clone()));
+
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
@@ -617,7 +644,7 @@ impl Env {
                 number,
                 config,
                 generators: generators.unwrap_or_default(),
-                snapshot,
+                snapshot: Some(snapshot),
                 auth_snapshot,
             },
         };
