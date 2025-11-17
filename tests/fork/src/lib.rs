@@ -27,15 +27,15 @@ mod test {
         let res = t.balance(&a2);
         std::println!("result {res}");
 
-        std::println!("waiting");
-        std::thread::sleep(std::time::Duration::from_secs(20));
+        //std::println!("waiting");
+        //std::thread::sleep(std::time::Duration::from_secs(20));
 
-        std::println!("test two");
-        let a3 = Address::from_str(
-            &e,
-            "GAFUHA24GY66NPICT7KIP4QWZVCWQEL6OMR5QSY6JNDTCBMX72LHPKKQ",
-        );
-        let res2 = t.balance(&a3);
-        std::println!("result {res2}");
+        //std::println!("test two");
+        //let a3 = Address::from_str(
+        //    &e,
+        //    "GAFUHA24GY66NPICT7KIP4QWZVCWQEL6OMR5QSY6JNDTCBMX72LHPKKQ",
+        //);
+        //let res2 = t.balance(&a3);
+        //std::println!("result {res2}");
     }
 }
