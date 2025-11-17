@@ -1639,8 +1639,7 @@ impl Env {
             snapshot,
         } = input.into();
 
-        let snapshot = snapshot
-            .map(|s| Rc::new(RefCell::new((*s).clone())));
+        let snapshot = snapshot.map(|s| Rc::new(RefCell::new((*s).clone())));
 
         Env::new_for_testutils(
             EnvTestConfig::default(), // TODO: Allow setting the config.
