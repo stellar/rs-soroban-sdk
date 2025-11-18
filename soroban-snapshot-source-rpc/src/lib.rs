@@ -109,7 +109,7 @@ impl SnapshotSource for RpcSnapshotSource {
             Ok(Some((entry, ttl))) => Ok(Some((Rc::new(entry), ttl))),
             Ok(None) => Ok(None),
             Err(err) => {
-                eprintln!("Error in RPC Snapshot Source: {err}");
+                eprintln!("Error in RPC Snapshot Source: {err:?}");
                 Err(HostError::from(soroban_sdk::Error::from((
                     ScErrorType::Storage,
                     ScErrorCode::InternalError,
