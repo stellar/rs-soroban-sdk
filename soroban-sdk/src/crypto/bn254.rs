@@ -1,6 +1,7 @@
 #[cfg(not(target_family = "wasm"))]
 use crate::xdr::ScVal;
 use crate::{
+    crypto::bls12_381::BigInt,
     env::internal::{self, BytesObject, U256Val},
     impl_bytesn_repr,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
@@ -9,7 +10,7 @@ use crate::{
 use core::{
     cmp::Ordering,
     fmt::Debug,
-    ops::{Add, Mul},
+    ops::{Add, Mul, Neg},
 };
 
 const FP_SERIALIZED_SIZE: usize = 32; // Size in bytes of a serialized Fp element in BN254. The field modulus is 254 bits, requiring 32 bytes (256 bits).
@@ -58,12 +59,78 @@ pub struct G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Fr(U256);
 
+/// `Fq` represents an element of the base field `Fq` of the BN254 elliptic curve
+///
+/// # Serialization:
+/// - The 32 bytes represent the **big-endian encoding** of an element in the
+///   field `Fq`. The value is serialized as a big-endian integer.
+#[derive(Clone)]
+#[repr(transparent)]
+pub struct Fq(BytesN<FP_SERIALIZED_SIZE>);
+
 impl_bytesn_repr!(G1Affine, G1_SERIALIZED_SIZE);
 impl_bytesn_repr!(G2Affine, G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Fq, FP_SERIALIZED_SIZE);
 
 impl G1Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
+    }
+}
+
+impl Fq {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    // `Fq` represents an element in the base field of the BN254 elliptic curve.
+    // For an element a ∈ Fq, its negation `-a` is defined as:
+    //   a + (-a) = 0 (mod p)
+    // where `p` is the field modulus, and to make a valid point coordinate on the
+    // curve, `a` also must be within the field range (i.e., 0 ≤ a < p).
+    fn checked_neg(&self) -> Option<Fq> {
+        let fq_bigint: BigInt<4> = (&self.0).into();
+        if fq_bigint.is_zero() {
+            return Some(self.clone());
+        }
+
+        //BN254 base field modulus
+        const BN254_MODULUS: [u64; 4] = [
+            4332616871279656263,
+            10917124144477883021,
+            13281191951274694749,
+            3486998266802970665,
+        ];
+        let mut res = BigInt(BN254_MODULUS);
+
+        // Compute modulus - value
+        let borrow = res.sub_with_borrow(&fq_bigint);
+        if borrow {
+            return None;
+        }
+
+        let mut bytes = [0u8; FP_SERIALIZED_SIZE];
+        res.copy_into_array(&mut bytes);
+        Some(Fq::from_array(self.env(), &bytes))
+    }
+}
+
+impl Neg for &Fq {
+    type Output = Fq;
+
+    fn neg(self) -> Self::Output {
+        match self.checked_neg() {
+            Some(v) => v,
+            None => sdk_panic!("invalid input - Fq is larger than the field modulus"),
+        }
+    }
+}
+
+impl Neg for Fq {
+    type Output = Fq;
+
+    fn neg(self) -> Self::Output {
+        (&self).neg()
     }
 }
 
