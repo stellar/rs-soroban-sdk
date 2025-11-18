@@ -108,12 +108,13 @@ impl SnapshotSource for RpcSnapshotSource {
         match self.fetch_ledger_entry(key) {
             Ok(Some((entry, ttl))) => Ok(Some((Rc::new(entry), ttl))),
             Ok(None) => Ok(None),
-            Err(_err) => {
+            Err(err) => {
+                eprintln!("Error in RPC Snapshot Source: {err}");
                 Err(HostError::from(soroban_sdk::Error::from((
-                ScErrorType::Storage,
-                ScErrorCode::InternalError,
-            ))))
-            },
+                    ScErrorType::Storage,
+                    ScErrorCode::InternalError,
+                ))))
+            }
         }
     }
 }
