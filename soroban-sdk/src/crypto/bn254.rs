@@ -150,6 +150,32 @@ impl Mul<Fr> for G1Affine {
     }
 }
 
+// G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Fr
+// Negation of (X, Y) is defined as (X, -Y)
+impl Neg for &G1Affine {
+    type Output = G1Affine;
+
+    fn neg(self) -> Self::Output {
+        let mut inner: Bytes = (&self.0).into();
+        let y = Fq::try_from_val(
+            inner.env(),
+            inner.slice(FP_SERIALIZED_SIZE as u32..).as_val(),
+        )
+        .unwrap_optimized();
+        let neg_y = -y;
+        inner.copy_from_slice(FP_SERIALIZED_SIZE as u32, &neg_y.to_array());
+        G1Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+    }
+}
+
+impl Neg for G1Affine {
+    type Output = G1Affine;
+
+    fn neg(self) -> Self::Output {
+        (&self).neg()
+    }
+}
+
 impl G2Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
