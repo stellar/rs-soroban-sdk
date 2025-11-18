@@ -137,7 +137,7 @@ fn test_snapshot_file() {
         {
             let e3 = Env::default(); // When dropped will be written to p1.
             let _ = e3.register(Contract, ());
-        } // Env dropped, written to p1.
+        } // Env dropped, written to p3.
         let c = e1.register(Contract, ());
         assert!(!p1.exists());
         assert!(!p2.exists());
