@@ -593,7 +593,9 @@ impl Env {
                     .join(&test_name_path)
                     .with_extension(format!("{number}.json"));
                 if let Ok(snapshot) = LedgerSnapshot::read_file(&p) {
-                    eprintln!("Reading test snapshot before file for test {test_name:?} from {p:?}.");
+                    eprintln!(
+                        "Reading test snapshot before file for test {test_name:?} from {p:?}."
+                    );
                     return Some(Rc::new(RefCell::new(snapshot)));
                 }
             }
