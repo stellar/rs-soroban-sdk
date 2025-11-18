@@ -115,38 +115,48 @@ fn test_snapshot_file() {
         .join("test_snapshot_file");
     let p1 = p.with_extension("1.json");
     let p2 = p.with_extension("2.json");
+    let p3 = p.with_extension("3.json");
     let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
+    let _ = std::fs::remove_file(&p3);
     {
         let e1 = Env::default();
         assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(!p3.exists());
         let e2 = e1.clone();
         assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(!p3.exists());
         {
             let _ = Env::default(); // When dropped won't be written because empty.
         } // Env dropped, nothing written.
         assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(!p3.exists());
         {
             let e3 = Env::default(); // When dropped will be written to p1.
             let _ = e3.register(Contract, ());
-        } // Env dropped, written to p1.
+        } // Env dropped, written to p3.
         let c = e1.register(Contract, ());
-        assert!(p1.exists());
+        assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(p3.exists());
         e1.as_contract(&c, || {});
-        assert!(p1.exists());
+        assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(p3.exists());
         e2.as_contract(&c, || {});
-        assert!(p1.exists());
+        assert!(!p1.exists());
         assert!(!p2.exists());
-    } // Env dropped, written to p2.
+        assert!(p3.exists());
+    } // Env dropped, written to p1.
     assert!(p1.exists());
-    assert!(p2.exists());
+    assert!(!p2.exists());
+    assert!(p3.exists());
     let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
+    let _ = std::fs::remove_file(&p3);
 }
 
 /// Test that the test snapshot file is not written when disabled.
