@@ -1,7 +1,10 @@
 use serde_json::json;
 use soroban_sdk::{
     testutils::{HostError, SnapshotSource, SnapshotSourceInput},
-    xdr::{LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, Limits, ReadXdr, WriteXdr},
+    xdr::{
+        LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, Limits, ReadXdr, ScErrorCode,
+        ScErrorType, WriteXdr,
+    },
 };
 use std::{cell::Cell, rc::Rc};
 
@@ -105,7 +108,12 @@ impl SnapshotSource for RpcSnapshotSource {
         match self.fetch_ledger_entry(key) {
             Ok(Some((entry, ttl))) => Ok(Some((Rc::new(entry), ttl))),
             Ok(None) => Ok(None),
-            Err(_) => Ok(None), // TODO: Return a HostError
+            Err(_err) => {
+                Err(HostError::from(soroban_sdk::Error::from((
+                ScErrorType::Storage,
+                ScErrorCode::InternalError,
+            ))))
+            },
         }
     }
 }

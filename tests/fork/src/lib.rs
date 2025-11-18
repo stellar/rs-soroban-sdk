@@ -11,12 +11,12 @@ mod test {
     use soroban_snapshot_source_rpc::RpcSnapshotSource;
 
     #[test]
-    fn test_hello() {
-        let rpc = RpcSnapshotSource::new("http://localhost:8000/rpc");
+    fn test_rpc() {
+        let rpc = RpcSnapshotSource::new("http://soroban-testnet.stellar.org");
         let e = Env::from_ledger_snapshot(rpc);
         let a = Address::from_str(
             &e,
-            "CDMLFMKMMD7MWZP3FKUBZPVHTUEDLSX4BYGYKH4GCESXYHS3IHQ4EIG4",
+            "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
         );
         let t = TokenClient::new(&e, &a);
 
