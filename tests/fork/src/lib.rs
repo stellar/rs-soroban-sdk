@@ -8,10 +8,11 @@ pub struct Contract;
 mod test {
     extern crate std;
     use soroban_sdk::{token::TokenClient, Address, Env};
+    use soroban_snapshot_source_rpc::RpcSnapshotSource;
 
     #[test]
     fn test_hello() {
-        let rpc = soroban_snapshot_source_rpc::RpcSnapshotSource::new("http://localhost:8000/rpc");
+        let rpc = RpcSnapshotSource::new("http://localhost:8000/rpc");
         let e = Env::from_ledger_snapshot(rpc);
         let a = Address::from_str(
             &e,
