@@ -150,7 +150,7 @@ fn test_snapshot_file() {
         assert!(!p1.exists());
         assert!(!p2.exists());
         assert!(p3.exists());
-    } // Env dropped, written to p2.
+    } // Env dropped, written to p1.
     assert!(p1.exists());
     assert!(!p2.exists());
     assert!(p3.exists());
