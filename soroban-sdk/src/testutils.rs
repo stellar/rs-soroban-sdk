@@ -20,13 +20,15 @@ pub mod storage;
 
 pub mod cost_estimate;
 
-use crate::{xdr, ConstructorArgs, Env, Val, Vec};
+use crate::{
+    xdr::{LedgerEntry, LedgerKey},
+    ConstructorArgs, Env, Val, Vec,
+};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
 
 pub use crate::env::internal::{storage::SnapshotSource, HostError};
-use soroban_env_host::xdr::{LedgerEntry, LedgerKey};
 
 pub trait Register {
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
