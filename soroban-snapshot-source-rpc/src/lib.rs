@@ -110,7 +110,7 @@ impl From<RpcSnapshotSource> for SnapshotSourceInput {
     fn from(source: RpcSnapshotSource) -> Self {
         Self {
             source: Rc::new(source),
-            ledger_info: None, // TODO: Fill in ledger info from rpc
+            ledger_info: None,
             snapshot: None,
         }
     }
