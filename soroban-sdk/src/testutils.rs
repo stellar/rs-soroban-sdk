@@ -21,7 +21,7 @@ pub mod storage;
 pub mod cost_estimate;
 
 use crate::{
-    xdr::{LedgerEntry, LedgerKey},
+    xdr::{self, LedgerEntry, LedgerKey},
     ConstructorArgs, Env, Val, Vec,
 };
 use soroban_ledger_snapshot::LedgerSnapshot;
