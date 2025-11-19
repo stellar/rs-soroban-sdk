@@ -43,7 +43,7 @@ impl RpcSnapshotSource {
             .to_xdr_base64(Limits::none())
             .map_err(|e| Error::Rpc(format!("XDR encoding error: {}", e)))?;
 
-        let request = GetLedgerEntriesRequest {
+        let request = RpcRequest {
             jsonrpc: "2.0".to_string(),
             id: 1,
             method: "getLedgerEntries".to_string(),
@@ -117,7 +117,7 @@ impl From<RpcSnapshotSource> for SnapshotSourceInput {
 }
 
 #[derive(serde::Serialize)]
-struct GetLedgerEntriesRequest {
+struct RpcRequest {
     jsonrpc: String,
     id: u32,
     method: String,
