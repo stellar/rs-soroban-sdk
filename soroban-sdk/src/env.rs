@@ -578,9 +578,9 @@ impl Env {
             1
         };
 
-        // Apply fallback to read from test_snapshots_before if snapshot is None
+        // Apply fallback to read from test_snapshots_source if snapshot is None
         let snapshot = snapshot.or_else(|| {
-            // Try to read from test_snapshots_before file for the current test.
+            // Try to read from test_snapshots_source file for the current test.
             if let Some(test_name) = test_name.as_ref() {
                 // Construct path similar to to_test_ledger_snapshot_before_file.
                 let test_name_path = test_name
@@ -588,13 +588,13 @@ impl Env {
                     .map(|p| std::path::Path::new(p).to_path_buf())
                     .reduce(|p0, p1| p0.join(p1))
                     .expect("test name to not be empty");
-                let dir = std::path::Path::new("test_snapshots_before");
+                let dir = std::path::Path::new("test_snapshots_source");
                 let p = dir
                     .join(&test_name_path)
                     .with_extension(format!("{number}.json"));
                 if let Ok(snapshot) = LedgerSnapshot::read_file(&p) {
                     eprintln!(
-                        "Reading test snapshot before file for test {test_name:?} from {p:?}."
+                        "Reading test snapshot source file for test {test_name:?} from {p:?}."
                     );
                     return Some(Rc::new(RefCell::new(snapshot)));
                 }
@@ -1664,14 +1664,14 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let mut snapshot = self.to_ledger_snapshot_before();
+        let mut snapshot = self.to_ledger_snapshot_source();
         snapshot.set_ledger_info(self.ledger().get());
         snapshot.update_entries(&self.host().get_stored_entries().unwrap());
         snapshot
     }
 
     /// Create a snapshot from all data loaded by the Env prior to any changes.
-    pub fn to_ledger_snapshot_before(&self) -> LedgerSnapshot {
+    pub fn to_ledger_snapshot_source(&self) -> LedgerSnapshot {
         self.test_state
             .snapshot
             .as_ref()
@@ -1728,7 +1728,7 @@ impl Drop for Env {
         // because it is only when there are no other references that the host
         // is being dropped.
         if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
-            self.to_test_ledger_snapshot_before_file();
+            self.to_test_ledger_snapshot_source_file();
             self.to_test_snapshot_file();
         }
     }
@@ -1740,7 +1740,7 @@ impl Env {
     /// Create a snapshot file for the currently executing test containing the ledger entries
     /// loaded but not modified.
     ///
-    /// Writes the file to the `test_snapshots_before/{test-name}.N.json` path where
+    /// Writes the file to the `test_snapshots_source/{test-name}.N.json` path where
     /// `N` is incremented for each unique `Env` in the test.
     ///
     /// Use to record the beginning state of a test.
@@ -1751,8 +1751,8 @@ impl Env {
     /// ### Panics
     ///
     /// If there is any error writing the file.
-    pub(crate) fn to_test_ledger_snapshot_before_file(&self) {
-        let snapshot = self.to_ledger_snapshot_before();
+    pub(crate) fn to_test_ledger_snapshot_source_file(&self) {
+        let snapshot = self.to_ledger_snapshot_source();
 
         // Don't write a snapshot that has no data in it.
         if snapshot.entries().into_iter().count() == 0 {
