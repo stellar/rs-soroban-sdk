@@ -25,7 +25,7 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
 
-pub use crate::env::internal::storage::SnapshotSource;
+pub use crate::env::internal::{storage::SnapshotSource, HostError};
 
 pub trait Register {
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
