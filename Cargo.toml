@@ -15,19 +15,19 @@ members = [
 ]
 
 [workspace.package]
-version = "23.1.0"
+version = "23.2.1"
 rust-version = "1.84.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "23.1.0", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "23.1.0", path = "soroban-sdk-macros" }
-soroban-meta = { version = "23.1.0", path = "soroban-meta" }
-soroban-spec = { version = "23.1.0", path = "soroban-spec" }
-soroban-spec-rust = { version = "23.1.0", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "23.1.0", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "23.1.0", path = "soroban-token-sdk" }
-soroban-token-spec = { version = "23.1.0", path = "soroban-token-spec" }
-stellar-asset-spec = { version = "23.1.0", path = "stellar-asset-spec" }
+soroban-sdk = { version = "23.2.1", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "23.2.1", path = "soroban-sdk-macros" }
+soroban-meta = { version = "23.2.1", path = "soroban-meta" }
+soroban-spec = { version = "23.2.1", path = "soroban-spec" }
+soroban-spec-rust = { version = "23.2.1", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "23.2.1", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "23.2.1", path = "soroban-token-sdk" }
+soroban-token-spec = { version = "23.2.1", path = "soroban-token-spec" }
+stellar-asset-spec = { version = "23.2.1", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]
 version = "=23.0.1"
