@@ -259,7 +259,7 @@ struct EnvTestState {
     config: EnvTestConfig,
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
-    snapshot: Option<Rc<RefCell<LedgerSnapshot>>>,
+    snapshot: Option<Rc<LedgerSnapshot>>,
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -479,8 +479,7 @@ use crate::{
     testutils::{
         budget::Budget, default_ledger_info, Address as _, AuthSnapshot, AuthorizedInvocation,
         ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
-        Register, Snapshot, SnapshotSourceCache, SnapshotSourceInput, StellarAssetContract,
-        StellarAssetIssuer,
+        Register, Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -543,7 +542,7 @@ impl Env {
         recording_footprint: Rc<dyn internal::storage::SnapshotSource>,
         generators: Option<Rc<RefCell<Generators>>>,
         ledger_info: Option<internal::LedgerInfo>,
-        snapshot: Option<Rc<RefCell<LedgerSnapshot>>>,
+        snapshot: Option<Rc<LedgerSnapshot>>,
     ) -> Env {
         // Store in the Env the name of the test it is for, and a number so that within a test
         // where one or more Env's have been created they can be uniquely identified relative to
@@ -577,40 +576,6 @@ impl Env {
         } else {
             1
         };
-
-        // Apply fallback to read from test_snapshots_source if snapshot is None
-        let snapshot = snapshot.or_else(|| {
-            // Try to read from test_snapshots_source file for the current test.
-            if let Some(test_name) = test_name.as_ref() {
-                // Construct path similar to to_test_ledger_snapshot_before_file.
-                let test_name_path = test_name
-                    .split("::")
-                    .map(|p| std::path::Path::new(p).to_path_buf())
-                    .reduce(|p0, p1| p0.join(p1))
-                    .expect("test name to not be empty");
-                let dir = std::path::Path::new("test_snapshots_source");
-                let p = dir
-                    .join(&test_name_path)
-                    .with_extension(format!("{number}.json"));
-                if let Ok(snapshot) = LedgerSnapshot::read_file(&p) {
-                    eprintln!(
-                        "Reading test snapshot source file for test {test_name:?} from {p:?}."
-                    );
-                    return Some(Rc::new(RefCell::new(snapshot)));
-                }
-            }
-            None
-        });
-
-        // Default to an empty snapshot if none exists.
-        let snapshot = snapshot.unwrap_or_else(|| Rc::new(RefCell::new(LedgerSnapshot::default())));
-
-        // Wrap the recording footprint into a layer that'll record the initial state of anything
-        // loaded into the snapshot.
-        let recording_footprint = Rc::new(SnapshotSourceCache::new(
-            recording_footprint,
-            snapshot.clone(),
-        ));
 
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
@@ -651,7 +616,7 @@ impl Env {
                 number,
                 config,
                 generators: generators.unwrap_or_default(),
-                snapshot: Some(snapshot),
+                snapshot,
                 auth_snapshot,
             },
         };
@@ -1596,7 +1561,7 @@ impl Env {
             Rc::new(s.ledger.clone()),
             Some(Rc::new(RefCell::new(s.generators))),
             Some(s.ledger.ledger_info()),
-            Some(Rc::new(RefCell::new(s.ledger.clone()))),
+            Some(Rc::new(s.ledger.clone())),
         )
     }
 
@@ -1642,8 +1607,6 @@ impl Env {
             snapshot,
         } = input.into();
 
-        let snapshot = snapshot.map(|s| Rc::new(RefCell::new((*s).clone())));
-
         Env::new_for_testutils(
             EnvTestConfig::default(), // TODO: Allow setting the config.
             source,
@@ -1664,19 +1627,11 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let mut snapshot = self.to_ledger_snapshot_source();
+        let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
+        let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
         snapshot.update_entries(&self.host().get_stored_entries().unwrap());
         snapshot
-    }
-
-    /// Create a snapshot from all data loaded by the Env prior to any changes.
-    pub fn to_ledger_snapshot_source(&self) -> LedgerSnapshot {
-        self.test_state
-            .snapshot
-            .as_ref()
-            .map(|s| s.borrow().clone())
-            .unwrap_or_else(LedgerSnapshot::default)
     }
 
     /// Create a snapshot file from the Env's current state.
@@ -1728,7 +1683,6 @@ impl Drop for Env {
         // because it is only when there are no other references that the host
         // is being dropped.
         if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
-            self.to_test_ledger_snapshot_source_file();
             self.to_test_snapshot_file();
         }
     }
@@ -1737,53 +1691,6 @@ impl Drop for Env {
 #[doc(hidden)]
 #[cfg(any(test, feature = "testutils"))]
 impl Env {
-    /// Create a snapshot file for the currently executing test containing the ledger entries
-    /// loaded but not modified.
-    ///
-    /// Writes the file to the `test_snapshots_source/{test-name}.N.json` path where
-    /// `N` is incremented for each unique `Env` in the test.
-    ///
-    /// Use to record the beginning state of a test.
-    ///
-    /// No file will be created if the environment has no meaningful data such
-    /// as stored entries or events.
-    ///
-    /// ### Panics
-    ///
-    /// If there is any error writing the file.
-    pub(crate) fn to_test_ledger_snapshot_source_file(&self) {
-        let snapshot = self.to_ledger_snapshot_source();
-
-        // Don't write a snapshot that has no data in it.
-        if snapshot.entries().into_iter().count() == 0 {
-            return;
-        }
-
-        // Determine path to write test snapshots to.
-        let Some(test_name) = &self.test_state.test_name else {
-            // If there's no test name, we're not in a test context, so don't write snapshots.
-            return;
-        };
-        let number = self.test_state.number;
-        // Break up the test name into directories, using :: as the separator.
-        // The :: module separator cannot be written into the filename because
-        // some operating systems (e.g. Windows) do not allow the : character in
-        // filenames.
-        let test_name_path = test_name
-            .split("::")
-            .map(|p| std::path::Path::new(p).to_path_buf())
-            .reduce(|p0, p1| p0.join(p1))
-            .expect("test name to not be empty");
-        let dir = std::path::Path::new("test_snapshots_before");
-        let p = dir
-            .join(&test_name_path)
-            .with_extension(format!("{number}.json"));
-
-        // Write test snapshots to file.
-        eprintln!("Writing test snapshot before file for test {test_name:?} to {p:?}.");
-        snapshot.write_file(p).unwrap();
-    }
-
     /// Create a snapshot file for the currently executing test.
     ///
     /// Writes the file to the `test_snapshots/{test-name}.N.json` path where
