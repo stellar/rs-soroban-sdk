@@ -58,12 +58,25 @@ impl Debug for Events {
     }
 }
 
+#[cfg(any(test, feature = "testutils"))]
+use crate::{testutils, xdr, Address, TryIntoVal};
+
 pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
 
     fn publish(&self, env: &Env) {
         env.events().publish_event(self);
+    }
+
+    /// Convert this event into a [`testutils::ContractEvent`] object for testing purposes.
+    #[cfg(any(test, feature = "testutils"))]
+    fn to_contract_event(
+        &self,
+        env: &Env,
+        contract_id: &crate::Address,
+    ) -> testutils::ContractEvent {
+        testutils::ContractEvent::new(env, contract_id.clone(), self.topics(env), self.data(env))
     }
 }
 
@@ -117,14 +130,11 @@ impl Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, Address, TryIntoVal};
-
-#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)> {
+    fn all(&self) -> std::vec::Vec<testutils::ContractEvent> {
         let env = self.env();
-        let mut vec = Vec::new(env);
+        let mut vec = std::vec::Vec::new();
         self.env()
             .host()
             .get_events()
@@ -142,7 +152,8 @@ impl testutils::Events for Events {
                     ..
                 } = e.event
                 {
-                    vec.push_back((
+                    vec.push(testutils::ContractEvent::new(
+                        &env,
                         Address::from_contract_id(env, contract_id.0 .0),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
