@@ -6,7 +6,7 @@
 pub mod arbitrary;
 
 mod sign;
-use std::rc::Rc;
+use std::{fmt::Debug, rc::Rc};
 
 pub use sign::ed25519;
 
@@ -20,7 +20,9 @@ pub mod storage;
 
 pub mod cost_estimate;
 
-use crate::{xdr, ConstructorArgs, Env, Val, Vec};
+use crate::{
+    env::internal::Env as _, unwrap::UnwrapInfallible, xdr, ConstructorArgs, Env, Val, Vec,
+};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
@@ -428,15 +430,60 @@ pub mod budget {
     }
 }
 
+#[derive(Clone)]
+pub struct ContractEvent {
+    pub env: Env,
+    pub contract_id: crate::Address,
+    pub topics: Vec<Val>,
+    pub data: Val,
+}
+
+impl Eq for ContractEvent {}
+
+impl PartialEq for ContractEvent {
+    fn eq(&self, other: &Self) -> bool {
+        if self.contract_id != other.contract_id || self.topics != other.topics {
+            false
+        } else if self.data.is_object() || other.data.is_object() {
+            self.env.obj_cmp(self.data, other.data).unwrap_infallible() == 0
+        } else {
+            self.data.get_payload() == other.data.get_payload()
+        }
+    }
+}
+
+impl Debug for ContractEvent {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(
+            f,
+            "ContractEvent {{ contract_id: {:?}, topics: {:?}, data: {:?} }}",
+            self.contract_id, self.topics, self.data
+        )
+    }
+}
+
+impl ContractEvent {
+    pub fn new(
+        env: &Env,
+        contract_id: crate::Address,
+        topics: Vec<Val>,
+        data: Val,
+    ) -> ContractEvent {
+        ContractEvent {
+            env: env.clone(),
+            contract_id,
+            topics,
+            data,
+        }
+    }
+}
+
 /// Test utilities for [`Events`][crate::events::Events].
 pub trait Events {
     /// Returns all events that have been published by contracts.
     ///
-    /// Returns a [`Vec`] of three element tuples containing:
-    /// - Contract ID
-    /// - Event Topics as a [`Vec<Val>`]
-    /// - Event Data as a [`Val`]
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
+    /// Returns a [`std::vec::Vec`] of [`ContractEvent`]s
+    fn all(&self) -> std::vec::Vec<ContractEvent>;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].
