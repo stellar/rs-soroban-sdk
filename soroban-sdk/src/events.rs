@@ -58,12 +58,34 @@ impl Debug for Events {
     }
 }
 
+#[cfg(any(test, feature = "testutils"))]
+use crate::env::internal::Env as _;
+
 pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
 
     fn publish(&self, env: &Env) {
         env.events().publish_event(self);
+    }
+
+    #[cfg(any(test, feature = "testutils"))]
+    fn matches(
+        &self,
+        env: &Env,
+        contract_id: &crate::Address,
+        published: &(crate::Address, Vec<Val>, Val),
+    ) -> bool {
+        let (pub_contract_id, pub_topics, pub_data) = published;
+        if contract_id != pub_contract_id || &self.topics(env) != pub_topics {
+            return false;
+        }
+        let data = self.data(env);
+        if data.is_object() || pub_data.is_object() {
+            env.obj_cmp(data, *pub_data).unwrap_infallible() == 0
+        } else {
+            data.get_payload() == pub_data.get_payload()
+        }
     }
 }
 
@@ -132,23 +154,49 @@ impl testutils::Events for Events {
             .0
             .into_iter()
             .for_each(|e| {
-                if e.failed_call {
-                    return;
-                }
-                if let xdr::ContractEvent {
-                    type_: xdr::ContractEventType::Contract,
-                    contract_id: Some(contract_id),
-                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
-                    ..
-                } = e.event
-                {
-                    vec.push_back((
-                        Address::from_contract_id(env, contract_id.0 .0),
-                        topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
-                    ))
+                if let Some(tup) = convert_host_event_to_tuple(env, e) {
+                    vec.push_back(tup);
                 }
             });
         vec
+    }
+
+    fn contains(&self, contract_id: &crate::Address, event: &dyn Event) -> bool {
+        let env = self.env();
+        self.env()
+            .host()
+            .get_events()
+            .unwrap()
+            .0
+            .into_iter()
+            .any(|e| {
+                convert_host_event_to_tuple(env, e)
+                    .map_or(false, |tup| event.matches(env, contract_id, &tup))
+            })
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+fn convert_host_event_to_tuple(
+    env: &Env,
+    e: soroban_env_host::events::HostEvent,
+) -> Option<(crate::Address, Vec<Val>, Val)> {
+    if e.failed_call {
+        return None;
+    }
+    if let xdr::ContractEvent {
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(contract_id),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
+        ..
+    } = e.event
+    {
+        Some((
+            Address::from_contract_id(env, contract_id.0 .0),
+            topics.try_into_val(env).unwrap(),
+            data.try_into_val(env).unwrap(),
+        ))
+    } else {
+        None
     }
 }

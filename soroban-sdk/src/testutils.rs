@@ -20,7 +20,7 @@ pub mod storage;
 
 pub mod cost_estimate;
 
-use crate::{xdr, ConstructorArgs, Env, Val, Vec};
+use crate::{xdr, ConstructorArgs, Env, Event, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
@@ -415,13 +415,23 @@ pub mod budget {
 
 /// Test utilities for [`Events`][crate::events::Events].
 pub trait Events {
-    /// Returns all events that have been published by contracts.
+    /// Returns all events that have been published by the last contract
+    /// invocation. If the last contract invocation failed, no events are returned.
+    ///
+    /// Events are returned in the order they were published, with the
+    /// last published event being the last in the list.
     ///
     /// Returns a [`Vec`] of three element tuples containing:
-    /// - Contract ID
+    /// - Contract ID as an [`Address`]
     /// - Event Topics as a [`Vec<Val>`]
     /// - Event Data as a [`Val`]
     fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
+
+    /// Checks if an event has been published by the last contract
+    /// invocation.
+    ///
+    /// Returns a boolean indicating whether the event was found.
+    fn contains(&self, contract_id: &crate::Address, event: &dyn Event) -> bool;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].
