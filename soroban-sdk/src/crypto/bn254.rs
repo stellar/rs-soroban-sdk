@@ -1,7 +1,7 @@
 #[cfg(not(target_family = "wasm"))]
 use crate::xdr::ScVal;
 use crate::{
-    crypto::bls12_381::BigInt,
+    crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val},
     impl_bytesn_repr,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
