@@ -59,7 +59,7 @@ impl Debug for Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, Address, TryIntoVal};
+use crate::{testutils, xdr, Address, TryFromVal, TryIntoVal};
 
 pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
@@ -69,14 +69,18 @@ pub trait Event {
         env.events().publish_event(self);
     }
 
-    /// Convert this event into a [`testutils::ContractEvent`] object for testing purposes.
+    /// Convert this event and the given contract_id into a [`xdr::ContractEvent`] object.
     #[cfg(any(test, feature = "testutils"))]
-    fn to_contract_event(
-        &self,
-        env: &Env,
-        contract_id: &crate::Address,
-    ) -> testutils::ContractEvent {
-        testutils::ContractEvent::new(env, contract_id.clone(), self.topics(env), self.data(env))
+    fn to_contract_event(&self, env: &Env, contract_id: &crate::Address) -> xdr::ContractEvent {
+        xdr::ContractEvent {
+            ext: xdr::ExtensionPoint::V0,
+            type_: xdr::ContractEventType::Contract,
+            contract_id: Some(contract_id.contract_id()),
+            body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+                topics: self.topics(env).into(),
+                data: xdr::ScVal::try_from_val(env, &self.data(env)).unwrap(),
+            }),
+        }
     }
 }
 
@@ -162,8 +166,7 @@ impl testutils::Events for Events {
         vec
     }
 
-    fn contract_events(&self) -> std::vec::Vec<testutils::ContractEvent> {
-        let env = self.env();
+    fn contract_events(&self) -> std::vec::Vec<xdr::ContractEvent> {
         self.env()
             .host()
             .get_events()
@@ -171,21 +174,11 @@ impl testutils::Events for Events {
             .0
             .into_iter()
             .filter_map(|e| {
-                if e.failed_call {
-                    None
-                } else if let xdr::ContractEvent {
-                    type_: xdr::ContractEventType::Contract,
-                    contract_id: Some(contract_id),
-                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
-                    ..
-                } = e.event
+                if !e.failed_call
+                    && e.event.type_ == xdr::ContractEventType::Contract
+                    && e.event.contract_id.is_some()
                 {
-                    Some(testutils::ContractEvent::new(
-                        &env,
-                        Address::from_contract_id(env, contract_id.0 .0),
-                        topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
-                    ))
+                    Some(e.event)
                 } else {
                     None
                 }
@@ -196,10 +189,11 @@ impl testutils::Events for Events {
     fn contract_events_for(
         &self,
         contract_id: &crate::Address,
-    ) -> std::vec::Vec<testutils::ContractEvent> {
+    ) -> std::vec::Vec<xdr::ContractEvent> {
+        let contract_id = Some(contract_id.contract_id());
         self.contract_events()
             .into_iter()
-            .filter(|e| &e.contract_id == contract_id)
+            .filter(|e| e.contract_id == contract_id)
             .collect()
     }
 }
