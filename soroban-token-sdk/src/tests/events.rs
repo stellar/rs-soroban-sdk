@@ -8,9 +8,9 @@ use crate::events::{
 };
 use soroban_sdk::{
     contract, symbol_short,
-    testutils::{Address as _, Events as _, MuxedAddress as _},
+    testutils::{Address as _, ContractEvent, Events as _, MuxedAddress as _},
     token::StellarAssetClient,
-    vec, xdr, Address, Env, IntoVal, Map, MuxedAddress, Symbol, Val,
+    xdr, Address, Env, IntoVal, Map, MuxedAddress, Symbol, Val,
 };
 
 #[contract]
@@ -39,13 +39,15 @@ fn test_approve() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -57,13 +59,15 @@ fn test_approve() {
     let topics = (t0, t1, t2, client.name());
 
     client.approve(&from, &spender, &amount, &expiration_ledger);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -88,13 +92,15 @@ fn test_transfer_with_amount_only() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -107,13 +113,15 @@ fn test_transfer_with_amount_only() {
 
     client.mint(&from, &123);
     client.transfer(&from, &to, &amount);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -145,13 +153,15 @@ fn test_transfer_without_id() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env))
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // No comparison is made with the Stellar Asset Contract for publishing Transfer with a
@@ -189,13 +199,15 @@ fn test_transfer_with_id() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env))
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -239,13 +251,15 @@ fn test_transfer_with_id() {
     let topics = (t0, t1, t2, client.name());
 
     client.transfer(&from, &to, &amount);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -268,13 +282,15 @@ fn test_burn() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -287,13 +303,15 @@ fn test_burn() {
 
     client.mint(&from, &amount);
     client.burn(&from, &amount);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -316,13 +334,15 @@ fn test_mint_with_amount_only() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -334,13 +354,15 @@ fn test_mint_with_amount_only() {
     let topics = (t0, t1, client.name());
 
     client.mint(&to, &amount);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -370,13 +392,15 @@ fn test_mint_without_id() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env))
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -406,13 +430,15 @@ fn test_mint_with_id() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env))
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -435,13 +461,15 @@ fn test_clawback() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -457,12 +485,14 @@ fn test_clawback() {
 
     client.mint(&from, &amount);
     client.clawback(&from, &amount);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }

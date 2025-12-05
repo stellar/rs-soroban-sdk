@@ -41,13 +41,14 @@ impl Contract {
 #[cfg(test)]
 mod test {
     extern crate alloc;
+    extern crate std;
+
     use soroban_sdk::{
-        map, symbol_short,
         testutils::{Address as _, Events, MuxedAddress as _},
-        vec, Address, Env, IntoVal, MuxedAddress, Symbol, Val,
+        Address, Env, Event, MuxedAddress,
     };
 
-    use crate::{Contract, ContractClient};
+    use crate::{Contract, ContractClient, Transfer};
 
     #[test]
     fn test_event() {
@@ -62,28 +63,14 @@ mod test {
         client.transfer(&from, &to, &amount);
 
         assert_eq!(
-            env.events().all(),
-            vec![
-                &env,
-                (
-                    contract_id.clone(),
-                    // Expect these event topics.
-                    (Symbol::new(&env, "transfer"), &from, to.address()).into_val(&env),
-                    // Expect this event body.
-                    map![
-                        &env,
-                        (
-                            symbol_short!("amount"),
-                            <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
-                        ),
-                        (
-                            Symbol::new(&env, "to_muxed_id"),
-                            <_ as IntoVal<Env, Val>>::into_val(&to.id().unwrap(), &env)
-                        ),
-                    ]
-                    .to_val()
-                ),
-            ],
+            env.events().contract_events(),
+            std::vec![Transfer {
+                from: &from,
+                to: &to.address(),
+                amount: &amount,
+                to_muxed_id: Some(&to.id().unwrap()),
+            }
+            .to_contract_event(&env, &contract_id),],
         );
     }
 
@@ -100,25 +87,14 @@ mod test {
         client.transfer(&from, &to, &amount);
 
         assert_eq!(
-            env.events().all(),
-            vec![
-                &env,
-                (
-                    contract_id.clone(),
-                    // Expect these event topics.
-                    (Symbol::new(&env, "transfer"), &from, &to).into_val(&env),
-                    // Expect this event body.
-                    map![
-                        &env,
-                        (
-                            symbol_short!("amount"),
-                            <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
-                        ),
-                        (Symbol::new(&env, "to_muxed_id"), ().into_val(&env),),
-                    ]
-                    .to_val()
-                ),
-            ],
+            env.events().contract_events(),
+            std::vec![Transfer {
+                from: &from,
+                to: &to,
+                amount: &amount,
+                to_muxed_id: None,
+            }
+            .to_contract_event(&env, &contract_id),],
         );
     }
 
@@ -130,6 +106,6 @@ mod test {
         let from = Address::generate(&env);
         let to = Address::generate(&env);
         let _ = client.try_failed_transfer(&from, &to, &1);
-        assert_eq!(env.events().all(), vec![&env]);
+        assert_eq!(env.events().contract_events(), std::vec![]);
     }
 }

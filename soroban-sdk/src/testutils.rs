@@ -432,10 +432,10 @@ pub mod budget {
 
 #[derive(Clone)]
 pub struct ContractEvent {
-    pub env: Env,
+    env: Env,
     pub contract_id: crate::Address,
-    pub topics: Vec<Val>,
-    pub data: Val,
+    topics: Vec<Val>,
+    data: Val,
 }
 
 impl Eq for ContractEvent {}
@@ -480,10 +480,37 @@ impl ContractEvent {
 
 /// Test utilities for [`Events`][crate::events::Events].
 pub trait Events {
-    /// Returns all events that have been published by contracts.
+    /// Returns all contract events that have been published by the last contract
+    /// invocation. If the last contract invocation failed, no events are returned.
+    ///
+    /// Events are returned in the order they were published, with the
+    /// last published event being the last in the list.
+    ///
+    /// Returns a [`Vec`] of three element tuples containing:
+    /// - Contract ID as an [`Address`]
+    /// - Event Topics as a [`Vec<Val>`]
+    /// - Event Data as a [`Val`]
+    #[deprecated(note = "use [Events::contract_events] instead")]
+    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
+
+    /// Returns all contract events that have been published by the last contract
+    /// invocation. If the last contract invocation failed, no events are returned.
+    ///
+    /// Events are returned in the order they were published, with the
+    /// last published event being the last in the list.
     ///
     /// Returns a [`std::vec::Vec`] of [`ContractEvent`]s
-    fn all(&self) -> std::vec::Vec<ContractEvent>;
+    fn contract_events(&self) -> std::vec::Vec<ContractEvent>;
+
+    /// Returns all contract events that have been published by the given contract id
+    /// during the last contract invocation. If the last contract invocation failed,
+    /// no events are returned.
+    ///
+    /// Events are returned in the order they were published, with the
+    /// last published event being the last in the list.
+    ///
+    /// Returns a [`std::vec::Vec`] of [`ContractEvent`]s
+    fn contract_events_for(&self, contract_id: &crate::Address) -> std::vec::Vec<ContractEvent>;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].

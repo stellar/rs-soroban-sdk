@@ -132,9 +132,9 @@ impl Events {
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> std::vec::Vec<testutils::ContractEvent> {
+    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)> {
         let env = self.env();
-        let mut vec = std::vec::Vec::new();
+        let mut vec = Vec::new(&env);
         self.env()
             .host()
             .get_events()
@@ -152,8 +152,7 @@ impl testutils::Events for Events {
                     ..
                 } = e.event
                 {
-                    vec.push(testutils::ContractEvent::new(
-                        &env,
+                    vec.push_back((
                         Address::from_contract_id(env, contract_id.0 .0),
                         topics.try_into_val(env).unwrap(),
                         data.try_into_val(env).unwrap(),
@@ -161,5 +160,46 @@ impl testutils::Events for Events {
                 }
             });
         vec
+    }
+
+    fn contract_events(&self) -> std::vec::Vec<testutils::ContractEvent> {
+        let env = self.env();
+        self.env()
+            .host()
+            .get_events()
+            .unwrap()
+            .0
+            .into_iter()
+            .filter_map(|e| {
+                if e.failed_call {
+                    None
+                } else if let xdr::ContractEvent {
+                    type_: xdr::ContractEventType::Contract,
+                    contract_id: Some(contract_id),
+                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
+                    ..
+                } = e.event
+                {
+                    Some(testutils::ContractEvent::new(
+                        &env,
+                        Address::from_contract_id(env, contract_id.0 .0),
+                        topics.try_into_val(env).unwrap(),
+                        data.try_into_val(env).unwrap(),
+                    ))
+                } else {
+                    None
+                }
+            })
+            .collect()
+    }
+
+    fn contract_events_for(
+        &self,
+        contract_id: &crate::Address,
+    ) -> std::vec::Vec<testutils::ContractEvent> {
+        self.contract_events()
+            .into_iter()
+            .filter(|e| &e.contract_id == contract_id)
+            .collect()
     }
 }
