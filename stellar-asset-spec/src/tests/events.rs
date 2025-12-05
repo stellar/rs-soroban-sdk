@@ -1,17 +1,16 @@
-extern crate std;
-
 use crate::{SetAdmin, SetAuthorized};
 use soroban_sdk::{
     contract, symbol_short,
-    testutils::{Address as _, ContractEvent, Events as _},
+    testutils::{Address as _, Events as _},
     token::StellarAssetClient,
-    Address, Env, IntoVal, Symbol,
+    vec, Address, Env, IntoVal, Symbol,
 };
 
 #[contract]
 struct Contract;
 
 #[test]
+#[allow(deprecated)]
 fn test_set_admin() {
     let env = Env::default();
     env.mock_all_auths();
@@ -30,15 +29,13 @@ fn test_set_admin() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().contract_events();
+    let token_events = env.events().all();
     assert_eq!(
         token_events,
-        std::vec![ContractEvent::new(
+        vec![
             &env,
-            id.clone(),
-            topics.into_val(&env),
-            data.into_val(&env),
-        )]
+            (id.clone(), topics.into_val(&env), data.into_val(&env)),
+        ]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -49,19 +46,18 @@ fn test_set_admin() {
     let topics = (t0, t1, client.name());
 
     client.set_admin(&new_admin);
-    let asset_events = env.events().contract_events();
+    let asset_events = env.events().all();
     assert_eq!(
         asset_events,
-        std::vec![ContractEvent::new(
+        vec![
             &env,
-            asset.address(),
-            topics.into_val(&env),
-            data.into_val(&env),
-        )]
+            (asset.address(), topics.into_val(&env), data.into_val(&env)),
+        ]
     );
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_set_authorized() {
     let env = Env::default();
     env.mock_all_auths();
@@ -80,15 +76,13 @@ fn test_set_authorized() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().contract_events();
+    let token_events = env.events().all();
     assert_eq!(
         token_events,
-        std::vec![ContractEvent::new(
+        vec![
             &env,
-            id.clone(),
-            topics.into_val(&env),
-            data.into_val(&env),
-        )]
+            (id.clone(), topics.into_val(&env), data.into_val(&env)),
+        ]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -100,14 +94,12 @@ fn test_set_authorized() {
     let topics = (t0, t1, client.name());
 
     client.set_authorized(&authorizee, &authorize);
-    let asset_events = env.events().contract_events();
+    let asset_events = env.events().all();
     assert_eq!(
         asset_events,
-        std::vec![ContractEvent::new(
+        vec![
             &env,
-            asset.address(),
-            topics.into_val(&env),
-            data.into_val(&env),
-        )]
+            (asset.address(), topics.into_val(&env), data.into_val(&env)),
+        ]
     );
 }

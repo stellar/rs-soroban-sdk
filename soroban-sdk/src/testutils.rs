@@ -484,18 +484,21 @@ pub trait Events {
     /// Events are returned in the order they were published, with the
     /// last published event being the last in the list.
     ///
-    /// Returns a [`std::vec::Vec`] of [`ContractEvent`]s
-    fn contract_events(&self) -> std::vec::Vec<ContractEvent>;
+    /// Returns a [`std::vec::Vec`] of [`xdr::ContractEvent`]s
+    fn contract_events(&self) -> std::vec::Vec<xdr::ContractEvent>;
 
-    /// Returns all contract events that have been published by the given contract id
+    /// Returns all contract events that have been published by the given contract
     /// during the last contract invocation. If the last contract invocation failed,
     /// no events are returned.
     ///
     /// Events are returned in the order they were published, with the
     /// last published event being the last in the list.
     ///
-    /// Returns a [`std::vec::Vec`] of [`ContractEvent`]s
-    fn contract_events_for(&self, contract_id: &crate::Address) -> std::vec::Vec<ContractEvent>;
+    /// Returns a [`std::vec::Vec`] of [`xdr::ContractEvent`]s
+    fn contract_events_for(
+        &self,
+        contract_id: &crate::Address,
+    ) -> std::vec::Vec<xdr::ContractEvent>;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].

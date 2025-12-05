@@ -1,7 +1,7 @@
 use crate::{
     self as soroban_sdk, contract, contractevent, contracttype, map, symbol_short,
-    testutils::{Address as _, ContractEvent, Events as _},
-    Address, Env, Event, IntoVal, Map, String, Symbol, Val, Vec,
+    testutils::{Address as _, Events as _},
+    vec, xdr, Address, Env, Event, IntoVal, Map, String, Symbol, TryFromVal, Val, Vec,
 };
 
 #[test]
@@ -27,19 +27,23 @@ fn test_defaults() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
+    let data: Val = map![
         &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        map![
-            &env,
-            (
-                symbol_short!("value"),
-                <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
-            ),
-        ]
-        .into_val(&env),
-    );
+        (
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -70,24 +74,29 @@ fn test_prefix_topics() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
+    let data: Val = map![
         &env,
-        id.clone(),
         (
-            symbol_short!("topic1"),
-            symbol_short!("topic2"),
-            symbol_short!("hi"),
-        )
-            .into_val(&env),
-        map![
-            &env,
-            (
-                symbol_short!("value"),
-                <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
-            ),
-        ]
-        .into_val(&env),
-    );
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![
+                &env,
+                symbol_short!("topic1"),
+                symbol_short!("topic2"),
+                symbol_short!("hi"),
+            ]
+            .into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -118,19 +127,23 @@ fn test_no_prefix_topics() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
+    let data: Val = map![
         &env,
-        id.clone(),
-        (symbol_short!("hi"),).into_val(&env),
-        map![
-            &env,
-            (
-                symbol_short!("value"),
-                <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
-            ),
-        ]
-        .into_val(&env),
-    );
+        (
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -158,19 +171,23 @@ fn test_no_topics() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
+    let data: Val = map![
         &env,
-        id.clone(),
-        ().into_val(&env),
-        map![
-            &env,
-            (
-                symbol_short!("value"),
-                <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
-            ),
-        ]
-        .into_val(&env),
-    );
+        (
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("hello"), &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: Vec::<Val>::new(&env).into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -194,12 +211,16 @@ fn test_no_topics_no_data() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
-        &env,
-        id.clone(),
-        ().into_val(&env),
-        Map::<Symbol, Val>::new(&env).into_val(&env),
-    );
+    let data: Val = Map::<Symbol, Val>::new(&env).into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: Vec::<Val>::new(&env).into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -230,12 +251,16 @@ fn test_data_single_value() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
-        &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        symbol_short!("yo").into_val(&env),
-    );
+    let data: Val = symbol_short!("yo").into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -264,12 +289,16 @@ fn test_data_single_value_no_data() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
-        &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        ().into_val(&env),
-    );
+    let data: Val = ().into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -332,22 +361,26 @@ fn test_data_vec() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
-        &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        (
-            symbol_short!("yo"),
-            2u32,
-            Vec::<u32>::new(&env),
-            String::from_str(&env, "asdf"),
-            MyType1 { value: 1 },
-            MyType2(2),
-            MyType3::Value(3),
-            MyType4::Value,
-        )
-            .into_val(&env),
-    );
+    let data: Val = (
+        symbol_short!("yo"),
+        2u32,
+        Vec::<u32>::new(&env),
+        String::from_str(&env, "asdf"),
+        MyType1 { value: 1 },
+        MyType2(2),
+        MyType3::Value(3),
+        MyType4::Value,
+    )
+        .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -376,12 +409,16 @@ fn test_data_vec_no_data() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
-        &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        Vec::<Val>::new(&env).into_val(&env),
-    );
+    let data: Val = Vec::<Val>::new(&env).into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -414,23 +451,27 @@ fn test_data_map() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
+    let data: Val = map![
         &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        map![
-            &env,
-            (
-                symbol_short!("value"),
-                <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("yo"), &env),
-            ),
-            (
-                symbol_short!("value2"),
-                <_ as IntoVal<Env, Val>>::into_val(&2u32, &env),
-            ),
-        ]
-        .into_val(&env),
-    );
+        (
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("yo"), &env),
+        ),
+        (
+            symbol_short!("value2"),
+            <_ as IntoVal<Env, Val>>::into_val(&2u32, &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -459,12 +500,16 @@ fn test_data_map_no_data() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
-        &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        Map::<Symbol, Val>::new(&env).into_val(&env),
-    );
+    let data: Val = Map::<Symbol, Val>::new(&env).into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
@@ -497,23 +542,27 @@ fn test_ref_fields() {
         event.publish(&env);
     });
 
-    let expected_event = ContractEvent::new(
+    let data: Val = map![
         &env,
-        id.clone(),
-        (symbol_short!("my_event"), symbol_short!("hi")).into_val(&env),
-        map![
-            &env,
-            (
-                symbol_short!("value"),
-                <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("yo"), &env),
-            ),
-            (
-                symbol_short!("value2"),
-                <_ as IntoVal<Env, Val>>::into_val(&2u32, &env),
-            ),
-        ]
-        .into_val(&env),
-    );
+        (
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("yo"), &env),
+        ),
+        (
+            symbol_short!("value2"),
+            <_ as IntoVal<Env, Val>>::into_val(&2u32, &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
     assert_eq!(
         env.events().contract_events(),
         std::vec![expected_event.clone()],
