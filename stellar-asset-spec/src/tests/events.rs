@@ -1,9 +1,11 @@
+extern crate std;
+
 use crate::{SetAdmin, SetAuthorized};
 use soroban_sdk::{
     contract, symbol_short,
-    testutils::{Address as _, Events as _},
+    testutils::{Address as _, ContractEvent, Events as _},
     token::StellarAssetClient,
-    vec, Address, Env, IntoVal, Symbol,
+    Address, Env, IntoVal, Symbol,
 };
 
 #[contract]
@@ -28,13 +30,15 @@ fn test_set_admin() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -45,13 +49,15 @@ fn test_set_admin() {
     let topics = (t0, t1, client.name());
 
     client.set_admin(&new_admin);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
 
@@ -74,13 +80,15 @@ fn test_set_authorized() {
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
+    let token_events = env.events().contract_events();
     assert_eq!(
         token_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            id.clone(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 
     // Verify the event published is consistent with the asset contract.
@@ -92,12 +100,14 @@ fn test_set_authorized() {
     let topics = (t0, t1, client.name());
 
     client.set_authorized(&authorizee, &authorize);
-    let asset_events = env.events().all();
+    let asset_events = env.events().contract_events();
     assert_eq!(
         asset_events,
-        vec![
+        std::vec![ContractEvent::new(
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
-        ]
+            asset.address(),
+            topics.into_val(&env),
+            data.into_val(&env),
+        )]
     );
 }
