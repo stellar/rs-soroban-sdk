@@ -60,15 +60,18 @@ mod test {
 
         client.transfer(&from, &to, &amount);
 
-        let event = Transfer {
-            from: &from,
-            to: &to.address(),
-            amount: &amount,
-            to_muxed_id: Some(&to.id().unwrap()),
-        };
         assert_eq!(
             env.events().from_contract(&contract_id),
-            vec![&env, event.to_event_tuple(&env, &contract_id)]
+            vec![
+                &env,
+                Transfer {
+                    from: &from,
+                    to: &to.address(),
+                    amount: &amount,
+                    to_muxed_id: Some(&to.id().unwrap()),
+                }
+                .to_event_tuple(&env, &contract_id)
+            ]
         );
     }
 
@@ -84,15 +87,18 @@ mod test {
 
         client.transfer(&from, &to, &amount);
 
-        let event = Transfer {
-            from: &from,
-            to: &to,
-            amount: &amount,
-            to_muxed_id: None,
-        };
         assert_eq!(
             env.events().from_contract(&contract_id),
-            vec![&env, event.to_event_tuple(&env, &contract_id)]
+            vec![
+                &env,
+                Transfer {
+                    from: &from,
+                    to: &to,
+                    amount: &amount,
+                    to_muxed_id: None,
+                }
+                .to_event_tuple(&env, &contract_id)
+            ]
         );
     }
 
