@@ -43,7 +43,7 @@ mod test {
     extern crate alloc;
     use soroban_sdk::{
         testutils::{Address as _, Events, MuxedAddress as _},
-        vec, Address, Env, MuxedAddress,
+        vec, Address, Env, Event, MuxedAddress,
     };
 
     use crate::{Contract, ContractClient, Transfer};
@@ -66,7 +66,10 @@ mod test {
             amount,
             to_muxed_id: to.id(),
         };
-        assert!(env.events().contains(&contract_id, &event));
+        assert_eq!(
+            env.events().from_contract(&contract_id),
+            vec![&env, event.to_event_tuple(&env, &contract_id)]
+        );
     }
 
     #[test]
@@ -87,7 +90,10 @@ mod test {
             amount,
             to_muxed_id: None,
         };
-        assert!(env.events().contains(&contract_id, &event));
+        assert_eq!(
+            env.events().from_contract(&contract_id),
+            vec![&env, event.to_event_tuple(&env, &contract_id)]
+        );
     }
 
     #[test]

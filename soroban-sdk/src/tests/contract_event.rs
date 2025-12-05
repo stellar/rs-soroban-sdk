@@ -1,7 +1,6 @@
 use crate::{
     self as soroban_sdk, contract, contractevent, contracttype, map, symbol_short,
-    testutils::{Address as _, Events as _},
-    vec, Address, Env, Event, IntoVal, Map, String, Symbol, Val, Vec,
+    testutils::Events as _, vec, Env, Event, IntoVal, Map, String, Symbol, Val, Vec,
 };
 
 #[test]
@@ -545,7 +544,7 @@ fn test_ref_fields() {
 }
 
 #[test]
-fn test_event_matches_contract_id() {
+fn test_events_from_contract() {
     let env = Env::default();
 
     #[contract]
@@ -557,244 +556,40 @@ fn test_event_matches_contract_id() {
     pub struct MyEvent {
         #[topic]
         name: Symbol,
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("hello"),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    let published = env.events().all().get_unchecked(0);
-    assert!(!event.matches(&env, &id_2, &published));
-    assert!(event.matches(&env, &id, &published));
-}
-
-#[test]
-fn test_event_matches_topics() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        #[topic]
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("hello"),
-    };
-    let event_2 = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("world"),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    let published = env.events().all().get_unchecked(0);
-    assert!(!event_2.matches(&env, &id, &published));
-    assert!(event.matches(&env, &id, &published));
-}
-
-#[test]
-fn test_event_matches_data_host() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        value: Address,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: Address::generate(&env),
-    };
-    let event_2 = MyEvent {
-        name: symbol_short!("hi"),
-        value: Address::generate(&env),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    let published = env.events().all().get_unchecked(0);
-    assert!(!event_2.matches(&env, &id, &published));
-    assert!(event.matches(&env, &id, &published));
-}
-
-#[test]
-fn test_event_matches_data_host_and_small() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: Symbol::new(&env, "i_am_too_long_for_symbol_short"),
-    };
-    let event_2 = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("hello"),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    let published = env.events().all().get_unchecked(0);
-    assert!(!event_2.matches(&env, &id, &published));
-    assert!(event.matches(&env, &id, &published));
-}
-
-#[test]
-fn test_event_matches_data_small() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("world"),
-    };
-    let event_2 = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("hello"),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    let published = env.events().all().get_unchecked(0);
-    assert!(!event_2.matches(&env, &id, &published));
-    assert!(event.matches(&env, &id, &published));
-}
-
-#[test]
-fn test_event_contains_no_events() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hello"),
-        value: symbol_short!("world"),
-    };
-
-    assert!(!env.events().contains(&id, &event));
-}
-
-#[test]
-fn test_event_contains() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent1 {
-        #[topic]
-        name: Symbol,
-        #[topic]
-        address: Address,
-        value: Symbol,
         amount: i128,
     }
 
-    #[contractevent]
-    pub struct MyEvent2 {
-        #[topic]
-        name: Symbol,
-        #[topic]
-        address: Address,
-        value: Symbol,
-        amount: i128,
-    }
-
-    let addr_1 = Address::generate(&env);
-    let addr_2 = Address::generate(&env);
-    let pub_event_1 = MyEvent1 {
+    let pub_event_1 = MyEvent {
         name: symbol_short!("hello"),
-        address: addr_1.clone(),
-        value: symbol_short!("world"),
         amount: 42,
     };
-    let not_pub_event_1 = MyEvent1 {
-        name: symbol_short!("hello"),
-        address: addr_2.clone(),
-        value: symbol_short!("world"),
-        amount: 42,
-    };
-    let pub_event_2 = MyEvent2 {
-        name: symbol_short!("goodbye"),
-        address: addr_1.clone(),
-        value: symbol_short!("world"),
+    let pub_event_2 = MyEvent {
+        name: symbol_short!("world"),
         amount: 0,
     };
-    let not_pub_event_2 = MyEvent2 {
-        name: symbol_short!("goodbye"),
-        address: addr_1.clone(),
-        value: symbol_short!("world"),
-        amount: 1,
-    };
-    let pub_event_2_like_not_1 = MyEvent2 {
-        name: symbol_short!("hello"),
-        address: addr_2.clone(),
-        value: symbol_short!("world"),
-        amount: 42,
+    let pub_event_3 = MyEvent {
+        name: symbol_short!("farewell"),
+        amount: -1,
     };
 
     env.as_contract(&id, || {
         pub_event_1.publish(&env);
-        pub_event_2.publish(&env);
-        pub_event_2_like_not_1.publish(&env);
+        env.as_contract(&id_2, || {
+            pub_event_2.publish(&env);
+        });
+        pub_event_3.publish(&env);
     });
 
-    assert!(env.events().contains(&id, &pub_event_1));
-    assert!(!env.events().contains(&id, &not_pub_event_1));
-    assert!(env.events().contains(&id, &pub_event_2));
-    assert!(!env.events().contains(&id, &not_pub_event_2));
-    assert!(env.events().contains(&id, &pub_event_2_like_not_1));
+    assert_eq!(
+        env.events().from_contract(&id),
+        vec![
+            &env,
+            pub_event_1.to_event_tuple(&env, &id),
+            pub_event_3.to_event_tuple(&env, &id),
+        ],
+    );
+    assert_eq!(
+        env.events().from_contract(&id_2),
+        vec![&env, pub_event_2.to_event_tuple(&env, &id_2),],
+    );
 }

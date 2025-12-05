@@ -58,9 +58,6 @@ impl Debug for Events {
     }
 }
 
-#[cfg(any(test, feature = "testutils"))]
-use crate::env::internal::Env as _;
-
 pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
@@ -69,23 +66,12 @@ pub trait Event {
         env.events().publish_event(self);
     }
 
-    #[cfg(any(test, feature = "testutils"))]
-    fn matches(
+    fn to_event_tuple(
         &self,
         env: &Env,
         contract_id: &crate::Address,
-        published: &(crate::Address, Vec<Val>, Val),
-    ) -> bool {
-        let (pub_contract_id, pub_topics, pub_data) = published;
-        if contract_id != pub_contract_id || &self.topics(env) != pub_topics {
-            return false;
-        }
-        let data = self.data(env);
-        if data.is_object() || pub_data.is_object() {
-            env.obj_cmp(data, *pub_data).unwrap_infallible() == 0
-        } else {
-            data.get_payload() == pub_data.get_payload()
-        }
+    ) -> (crate::Address, Vec<Val>, Val) {
+        (contract_id.clone(), self.topics(env), self.data(env))
     }
 }
 
@@ -161,18 +147,23 @@ impl testutils::Events for Events {
         vec
     }
 
-    fn contains(&self, contract_id: &crate::Address, event: &dyn Event) -> bool {
+    fn from_contract(&self, contract_id: &crate::Address) -> Vec<(crate::Address, Vec<Val>, Val)> {
         let env = self.env();
+        let mut vec = Vec::new(env);
         self.env()
             .host()
             .get_events()
             .unwrap()
             .0
             .into_iter()
-            .any(|e| {
-                convert_host_event_to_tuple(env, e)
-                    .map_or(false, |tup| event.matches(env, contract_id, &tup))
-            })
+            .for_each(|e| {
+                if let Some(tup) = convert_host_event_to_tuple(env, e) {
+                    if &tup.0 == contract_id {
+                        vec.push_back(tup);
+                    }
+                }
+            });
+        vec
     }
 }
 
