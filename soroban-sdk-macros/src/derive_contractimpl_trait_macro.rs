@@ -86,7 +86,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
 pub fn generate_call_to_contractimpl_for_trait(
     trait_ident: &Ident,
     impl_ident: &Type,
-    pub_methods: &Vec<&ImplItemFn>,
+    pub_methods: &[ImplItemFn],
     client_ident: &str,
     args_ident: &str,
     spec_ident: &str,

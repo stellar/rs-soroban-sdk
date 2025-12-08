@@ -256,19 +256,13 @@ impl Fn {
     }
 }
 
-impl<'a> From<&'a Signature> for Fn<'a> {
-    fn from(s: &'a Signature) -> Self {
-        let Signature {
-            ident,
-            inputs,
-            output,
-            ..
-        } = s;
+impl From<&Signature> for Fn {
+    fn from(s: &Signature) -> Self {
         Self {
-            ident,
-            attrs: &[],
-            inputs,
-            output,
+            ident: s.ident.clone(),
+            attrs: vec![],
+            inputs: s.inputs.clone(),
+            output: s.output.clone(),
         }
     }
 }
