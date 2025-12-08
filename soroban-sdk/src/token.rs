@@ -83,9 +83,9 @@ pub use TokenClient as Client;
 #[contracttrait(
     crate_path = "crate",
     spec_name = "TokenFnSpec",
-    // TODO: spec_export = false,
+    spec_export = false,
     args_name = "TokenArgs",
-    client_name = "TokenClient",
+    client_name = "TokenClient"
 )]
 pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
@@ -245,9 +245,9 @@ pub trait TokenInterface {
 #[contracttrait(
     crate_path = "crate",
     spec_name = "StellarAssetFnSpec",
-    // TODO: spec_export = false,
+    spec_export = false,
     args_name = "StellarAssetArgs",
-    client_name = "StellarAssetClient",
+    client_name = "StellarAssetClient"
 )]
 pub trait StellarAssetInterface {
     /// Returns the allowance for `spender` to transfer from `from`.

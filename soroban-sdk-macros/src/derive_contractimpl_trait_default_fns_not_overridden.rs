@@ -22,6 +22,8 @@ struct Args {
     client_name: String,
     args_name: String,
     spec_name: Type,
+    #[darling(default)]
+    spec_export: bool,
 }
 
 pub fn derive_contractimpl_trait_default_fns_not_overridden(
@@ -46,6 +48,7 @@ fn derive_or_err(metadata: TokenStream2) -> Result<TokenStream2, Error> {
 fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let impl_ty = ident_to_type(args.impl_ident.clone());
     let trait_ident = &args.trait_ident;
+    let spec_export = args.spec_export;
 
     let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns);
     let impl_fns = syn_ext::strs_to_signatures(&args.impl_fns);
@@ -74,7 +77,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
             &[],
             &f.inputs,
             &f.output,
-            true, // TODO: pass down the 'export' parameter
+            spec_export,
         ));
     }
     output.extend(derive_client_impl(

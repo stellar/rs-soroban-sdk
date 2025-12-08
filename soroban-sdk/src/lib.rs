@@ -408,9 +408,58 @@ pub use soroban_sdk_macros::contractimpl;
 #[doc(hidden)]
 pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 
-/// Marks the trait as intended to provide contract functions that a `contractimpl` can implement.
-/// Functions with default implementation are callable on the contract.
-/// TODO: Add rust docs.
+/// Defines a contract trait with default function implementations that can be
+/// used by contracts.
+///
+/// The `contracttrait` macro generates a trait that contracts can implement
+/// using `contractimpl`. Functions defined with default implementations in
+/// the trait will be automatically exported as contract functions when a
+/// contract implements the trait using `contractimpl` with
+/// `export_trait_default_fns = true`.
+///
+/// This is useful for defining standard interfaces where some functions have
+/// default implementations that can be optionally overridden.
+///
+/// ### Macro Arguments
+///
+/// - `crate_path` - The path to the soroban-sdk crate. Defaults to `soroban_sdk`.
+/// - `spec_name` - The name for the spec type. Defaults to `{TraitName}Spec`.
+/// - `spec_export` - Whether to export the spec for default functions. Defaults to `false`.
+/// - `args_name` - The name for the args type. Defaults to `{TraitName}Args`.
+/// - `client_name` - The name for the client type. Defaults to `{TraitName}Client`.
+///
+/// ### Examples
+///
+/// Define a trait with a default function and implement it in a contract:
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, contracttrait, Env, String};
+///
+/// pub struct DefaultImpl;
+/// impl Greeter for DefaultImpl {
+///     type Impl = Self;
+///     fn greet(env: &Env) -> String {
+///         String::from_str(env, "Hello")
+///     }
+/// }
+///
+/// #[contracttrait]
+/// pub trait Greeter {
+///     type Impl: Greeter;
+///     fn greet(env: &Env) -> String {
+///         Self::Impl::greet(env)
+///     }
+/// }
+///
+/// #[contract]
+/// pub struct HelloContract;
+///
+/// #[contractimpl(export_trait_default_fns = true)]
+/// impl Greeter for HelloContract {
+///     type Impl = DefaultImpl;
+/// }
+/// # fn main() { }
+/// ```
 pub use soroban_sdk_macros::contracttrait;
 
 #[doc(hidden)]

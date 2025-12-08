@@ -9,6 +9,8 @@ struct Args {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     spec_name: Option<String>,
+    #[darling(default)]
+    spec_export: bool,
     args_name: Option<String>,
     client_name: Option<String>,
 }
@@ -28,15 +30,16 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let path = &args.crate_path;
     let spec_name = args.spec_name.unwrap_or(format!("{}Spec", input.ident));
     let spec_ident = format_ident!("{spec_name}");
+    let spec_export = args.spec_export;
     let args_name = args.args_name.unwrap_or(format!("{}Args", input.ident));
     let client_name = args.client_name.unwrap_or(format!("{}Client", input.ident));
 
     Ok(quote! {
         pub struct #spec_ident;
-        #[#path::contractspecfn(name = #spec_name, export = false)]
+        #[#path::contractspecfn(name = #spec_name, export = #spec_export)]
         #[#path::contractargs(name = #args_name)]
         #[#path::contractclient(crate_path = #path, name = #client_name)]
-        #[#path::contractimpl_trait_macro(crate_path = #path)]
+        #[#path::contractimpl_trait_macro(crate_path = #path, spec_export = #spec_export)]
         #input
     }
     .into())
