@@ -397,8 +397,6 @@ pub mod __Contract____check_auth {
     }
     use super::*;
 }
-impl<'a> ContractClient<'a> {}
-impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]

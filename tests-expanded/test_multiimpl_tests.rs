@@ -790,8 +790,6 @@ pub mod __Contract__empty3 {
     }
     use super::*;
 }
-impl<'a> ContractClient<'a> {}
-impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]

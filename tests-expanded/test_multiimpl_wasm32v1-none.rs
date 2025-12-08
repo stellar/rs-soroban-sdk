@@ -333,5 +333,3 @@ pub mod __Contract__empty3 {
     }
     use super::*;
 }
-impl<'a> ContractClient<'a> {}
-impl ContractArgs {}

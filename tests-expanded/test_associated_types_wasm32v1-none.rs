@@ -194,5 +194,3 @@ pub mod __Contract__exec {
     }
     use super::*;
 }
-impl<'a> ContractClient<'a> {}
-impl ContractArgs {}
