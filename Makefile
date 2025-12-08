@@ -52,6 +52,9 @@ expand-tests: build-test-wasms
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) ; \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' ; \
 	for package in $(TEST_CRATES); do \
+		if [ "$$package" = "test_alloc" ]; then \
+			continue; \
+		fi; \
 		echo "Expanding $$package for linux target including tests"; \
 		cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
