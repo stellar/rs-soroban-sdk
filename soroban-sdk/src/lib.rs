@@ -415,7 +415,7 @@ pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 /// using `contractimpl`. Functions defined with default implementations in
 /// the trait will be automatically exported as contract functions when a
 /// contract implements the trait using `contractimpl` with
-/// `export_trait_default_fns = true`.
+/// `contracttrait = true`.
 ///
 /// This is useful for defining standard interfaces where some functions have
 /// default implementations that can be optionally overridden.
@@ -454,7 +454,7 @@ pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 /// #[contract]
 /// pub struct HelloContract;
 ///
-/// #[contractimpl(export_trait_default_fns = true)]
+/// #[contractimpl(contracttrait = true)]
 /// impl Greeter for HelloContract {
 ///     type Impl = DefaultImpl;
 /// }

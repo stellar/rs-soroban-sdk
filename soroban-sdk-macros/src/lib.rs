@@ -202,7 +202,7 @@ struct ContractImplArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     #[darling(default)]
-    export_trait_default_fns: bool,
+    contracttrait: bool,
 }
 
 #[proc_macro_attribute]
@@ -266,19 +266,18 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         })
         .collect();
 
-    let contractimpl_for_trait =
-        trait_ident
-            .filter(|_| args.export_trait_default_fns)
-            .map(|trait_ident| {
-                generate_call_to_contractimpl_for_trait(
-                    trait_ident.into(),
-                    ty,
-                    &pub_methods,
-                    &client_ident,
-                    &args_ident,
-                    &ty_str,
-                )
-            });
+    let contractimpl_for_trait = trait_ident
+        .filter(|_| args.contracttrait)
+        .map(|trait_ident| {
+            generate_call_to_contractimpl_for_trait(
+                trait_ident.into(),
+                ty,
+                &pub_methods,
+                &client_ident,
+                &args_ident,
+                &ty_str,
+            )
+        });
 
     match derived {
         Ok(derived_ok) => {
