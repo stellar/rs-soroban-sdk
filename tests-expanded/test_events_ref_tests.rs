@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, MuxedAddress};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -593,7 +592,6 @@ fn __Contract__a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b301_
         );
     }
 }
-#[cfg(test)]
 mod test {
     extern crate alloc;
     use crate::{Contract, ContractClient};
@@ -603,7 +601,6 @@ mod test {
         vec, Address, Env, IntoVal, MuxedAddress, Symbol, Val,
     };
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_event"]
     #[doc(hidden)]
     pub const test_event: test::TestDescAndFn = test::TestDescAndFn {
@@ -677,7 +674,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_event_with_option_none"]
     #[doc(hidden)]
     pub const test_event_with_option_none: test::TestDescAndFn = test::TestDescAndFn {
@@ -748,7 +744,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_no_events_recorded_for_failed_call"]
     #[doc(hidden)]
     pub const test_no_events_recorded_for_failed_call: test::TestDescAndFn = test::TestDescAndFn {
