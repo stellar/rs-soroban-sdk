@@ -17,7 +17,6 @@ use soroban_sdk::{
 struct Contract;
 
 #[test]
-#[allow(deprecated)]
 fn test_approve() {
     let env = Env::default();
     env.mock_all_auths();
@@ -69,7 +68,6 @@ fn test_approve() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_transfer_with_amount_only() {
     let env = Env::default();
     env.mock_all_auths();
@@ -120,7 +118,6 @@ fn test_transfer_with_amount_only() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_transfer_without_id() {
     let env = Env::default();
     env.mock_all_auths();
@@ -165,7 +162,6 @@ fn test_transfer_without_id() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_transfer_with_id() {
     let env = Env::default();
     env.mock_all_auths();
@@ -254,7 +250,6 @@ fn test_transfer_with_id() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_burn() {
     let env = Env::default();
     env.mock_all_auths();
@@ -303,7 +298,6 @@ fn test_burn() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_mint_with_amount_only() {
     let env = Env::default();
     env.mock_all_auths();
@@ -351,7 +345,6 @@ fn test_mint_with_amount_only() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_mint_without_id() {
     let env = Env::default();
     env.mock_all_auths();
@@ -388,7 +381,6 @@ fn test_mint_without_id() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_mint_with_id() {
     let env = Env::default();
     env.mock_all_auths();
@@ -425,7 +417,6 @@ fn test_mint_with_id() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_clawback() {
     let env = Env::default();
     env.mock_all_auths();

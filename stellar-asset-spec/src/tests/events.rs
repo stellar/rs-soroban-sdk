@@ -10,7 +10,6 @@ use soroban_sdk::{
 struct Contract;
 
 #[test]
-#[allow(deprecated)]
 fn test_set_admin() {
     let env = Env::default();
     env.mock_all_auths();
@@ -57,7 +56,6 @@ fn test_set_admin() {
 }
 
 #[test]
-#[allow(deprecated)]
 fn test_set_authorized() {
     let env = Env::default();
     env.mock_all_auths();
