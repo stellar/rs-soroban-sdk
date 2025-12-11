@@ -22,6 +22,7 @@ test-only:
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 		--exclude-features docs \
 		--exclude-features hazmat-crypto-secp256k1_recover,hazmat-crypto-secp256r1_verify \
+		--exclude-features hazmat-address-to_payload,hazmat-address-from_payload \
 		test
 
 build: build-libs build-test-wasms
