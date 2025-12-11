@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, log, symbol_short, Env};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -384,13 +383,11 @@ fn __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_
         );
     }
 }
-#[cfg(test)]
 mod test {
     extern crate std;
     use crate::{Contract, ContractClient};
     use soroban_sdk::{testutils::Logs, Env};
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_logging"]
     #[doc(hidden)]
     pub const test_logging: test::TestDescAndFn = test::TestDescAndFn {
@@ -420,17 +417,14 @@ mod test {
         client.hello();
         env.logs().print();
         if true {
-            let pats = <[_]>::into_vec(
-                #[rustc_box]
-                ::alloc::boxed::Box::new([
-                    "\"none\"",
-                    "\"none\"",
-                    "[\"one:\", one]",
-                    "[\"one:\", one]",
-                    "[\"one and two:\", one, two]",
-                    "[\"one and two:\", one, two]",
-                ]),
-            );
+            let pats = <[_]>::into_vec(::alloc::boxed::box_new([
+                "\"none\"",
+                "\"none\"",
+                "[\"one:\", one]",
+                "[\"one:\", one]",
+                "[\"one and two:\", one, two]",
+                "[\"one and two:\", one, two]",
+            ]));
             for (msg, pat) in env.logs().all().iter().zip(pats.iter()) {
                 if !msg.contains(pat) {
                     ::core::panicking::panic("assertion failed: msg.contains(pat)")
