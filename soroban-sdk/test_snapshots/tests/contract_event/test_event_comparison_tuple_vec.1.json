@@ -87,13 +87,51 @@
               },
               {
                 "symbol": "hi"
-              },
-              {
-                "symbol": "hello"
               }
             ],
             "data": {
-              "map": []
+              "map": [
+                {
+                  "key": {
+                    "symbol": "value"
+                  },
+                  "val": {
+                    "symbol": "i_am_too_long_for_symbol_short"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "failed_call": false
+    },
+    {
+      "event": {
+        "ext": "v0",
+        "contract_id": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+        "type_": "contract",
+        "body": {
+          "v0": {
+            "topics": [
+              {
+                "symbol": "my_event"
+              },
+              {
+                "symbol": "hi"
+              }
+            ],
+            "data": {
+              "map": [
+                {
+                  "key": {
+                    "symbol": "value"
+                  },
+                  "val": {
+                    "symbol": "hello"
+                  }
+                }
+              ]
             }
           }
         }
