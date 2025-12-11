@@ -596,11 +596,11 @@ fn __Contract__a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b301_
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    use crate::{Contract, ContractClient};
+    extern crate std;
+    use crate::{Contract, ContractClient, Transfer};
     use soroban_sdk::{
-        map, symbol_short,
         testutils::{Address as _, Events, MuxedAddress as _},
-        vec, Address, Env, IntoVal, MuxedAddress, Symbol, Val,
+        Address, Env, Event, MuxedAddress,
     };
     extern crate test;
     #[cfg(test)]
@@ -612,9 +612,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 53usize,
+            start_line: 54usize,
             start_col: 8usize,
-            end_line: 53usize,
+            end_line: 54usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
@@ -636,32 +636,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &::soroban_sdk::Vec::from_array(
-                &env,
-                [(
-                    contract_id.clone(),
-                    (Symbol::new(&env, "transfer"), &from, to.address()).into_val(&env),
-                    ::soroban_sdk::Map::from_array(
-                        &env,
-                        [
-                            (
-                                {
-                                    #[allow(deprecated)]
-                                    const SYMBOL: soroban_sdk::Symbol =
-                                        soroban_sdk::Symbol::short("amount");
-                                    SYMBOL
-                                },
-                                <_ as IntoVal<Env, Val>>::into_val(&1i128, &env),
-                            ),
-                            (
-                                Symbol::new(&env, "to_muxed_id"),
-                                <_ as IntoVal<Env, Val>>::into_val(&to.id().unwrap(), &env),
-                            ),
-                        ],
-                    )
-                    .to_val(),
-                )],
-            ),
+            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+                from: &from,
+                to: &to.address(),
+                amount: &amount,
+                to_muxed_id: Some(&to.id().unwrap()),
+            }
+            .to_contract_event(&env, &contract_id)])),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -686,9 +667,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 91usize,
+            start_line: 78usize,
             start_col: 8usize,
-            end_line: 91usize,
+            end_line: 78usize,
             end_col: 35usize,
             compile_fail: false,
             no_run: false,
@@ -710,29 +691,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &::soroban_sdk::Vec::from_array(
-                &env,
-                [(
-                    contract_id.clone(),
-                    (Symbol::new(&env, "transfer"), &from, &to).into_val(&env),
-                    ::soroban_sdk::Map::from_array(
-                        &env,
-                        [
-                            (
-                                {
-                                    #[allow(deprecated)]
-                                    const SYMBOL: soroban_sdk::Symbol =
-                                        soroban_sdk::Symbol::short("amount");
-                                    SYMBOL
-                                },
-                                <_ as IntoVal<Env, Val>>::into_val(&1i128, &env),
-                            ),
-                            (Symbol::new(&env, "to_muxed_id"), ().into_val(&env)),
-                        ],
-                    )
-                    .to_val(),
-                )],
-            ),
+            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+                from: &from,
+                to: &to,
+                amount: &amount,
+                to_muxed_id: None,
+            }
+            .to_contract_event(&env, &contract_id)])),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -757,9 +722,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 126usize,
+            start_line: 102usize,
             start_col: 8usize,
-            end_line: 126usize,
+            end_line: 102usize,
             end_col: 47usize,
             compile_fail: false,
             no_run: false,
@@ -778,7 +743,7 @@ mod test {
         let from = Address::generate(&env);
         let to = Address::generate(&env);
         let _ = client.try_failed_transfer(&from, &to, &1);
-        match (&env.events().all(), &::soroban_sdk::Vec::new(&env)) {
+        match (&env.events().all(), &::alloc::vec::Vec::new()) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
