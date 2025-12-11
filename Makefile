@@ -15,7 +15,10 @@ doc: fmt
 test: fmt build-test-wasms test-only
 
 test-only:
-	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
+	cargo hack --feature-powerset --ignore-unknown-features --features testutils \
+		--exclude-features docs \ # docs featurte is excluded because it is a market for docs builds
+		--exclude-features hazmat-crypto-secp256k1_recover,hazmat-crypto-secp256r1_verify \ # hazmat granular features are excluded because all hazmat features are tested together with the umbrella hazmat feature
+		test
 
 build: build-libs build-test-wasms
 
