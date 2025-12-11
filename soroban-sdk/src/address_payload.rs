@@ -1,3 +1,17 @@
+#![cfg(any(
+    test,
+    feature = "hazmat-address-to_payload",
+    feature = "hazmat-address-from_payload"
+))]
+#![cfg_attr(
+    feature = "docs",
+    doc(cfg(any(
+        feature = "hazmat",
+        feature = "hazmat-address-to_payload",
+        feature = "hazmat-address-from_payload"
+    )))
+)]
+
 //! Address payload extraction and construction.
 //!
 //! This module provides types and functions for extracting raw payloads from
@@ -12,23 +26,9 @@
 //! not be a signer of the account. Do not use this for custom Ed25519 signature
 //! verification as a form of authentication.
 
-use crate::{contracttype, unwrap::UnwrapOptimized, Address, Bytes, BytesN, Env};
+use crate::{unwrap::UnwrapOptimized, Address, Bytes, BytesN, Env};
 
 /// The payload contained in an [`Address`].
-#[cfg(any(
-    test,
-    feature = "hazmat-address-to_payload",
-    feature = "hazmat-address-from_payload"
-))]
-#[cfg_attr(
-    feature = "docs",
-    doc(cfg(any(
-        feature = "hazmat",
-        feature = "hazmat-address-to_payload",
-        feature = "hazmat-address-from_payload"
-    )))
-)]
-#[contracttype(crate_path = "crate", export = false)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum AddressPayload {
     /// A 32-byte Ed25519 public key from an account address (G...).
@@ -44,11 +44,6 @@ pub enum AddressPayload {
     ContractHash(BytesN<32>),
 }
 
-#[cfg(any(
-    test,
-    feature = "hazmat-address-to_payload",
-    feature = "hazmat-address-from_payload"
-))]
 impl AddressPayload {
     /// Constructs an [`Address`] from this payload.
     ///

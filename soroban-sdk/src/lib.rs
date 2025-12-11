@@ -968,19 +968,6 @@ pub mod unwrap;
 mod env;
 
 mod address;
-#[cfg(any(
-    test,
-    feature = "hazmat-address-to_payload",
-    feature = "hazmat-address-from_payload"
-))]
-#[cfg_attr(
-    feature = "docs",
-    doc(cfg(any(
-        feature = "hazmat",
-        feature = "hazmat-address-to_payload",
-        feature = "hazmat-address-from_payload"
-    )))
-)]
 pub mod address_payload;
 mod muxed_address;
 mod symbol;
