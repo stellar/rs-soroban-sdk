@@ -1,6 +1,7 @@
 #![cfg(test)]
 
 mod address;
+mod address_payload;
 mod auth;
 mod bytes_alloc_vec;
 mod bytes_buffer;

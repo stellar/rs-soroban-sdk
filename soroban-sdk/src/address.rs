@@ -5,6 +5,13 @@ use super::{
     Bytes, BytesN, ConversionError, Env, IntoVal, String, TryFromVal, TryIntoVal, Val, Vec,
 };
 
+#[cfg(any(
+    test,
+    feature = "hazmat-address-to_payload",
+    feature = "hazmat-address-from_payload"
+))]
+use crate::address_payload::AddressPayload;
+
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::{AccountId, ScVal};
 #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
@@ -369,6 +376,52 @@ impl Address {
 
     pub fn to_object(&self) -> AddressObject {
         self.obj
+    }
+
+    /// Extracts the payload from the address.
+    ///
+    /// Returns:
+    /// - For contract addresses (C...), returns [`AddressPayload::ContractHash`]
+    ///   containing the 32-byte contract hash.
+    /// - For account addresses (G...), returns [`AddressPayload::AccountEd25519PublicKey`]
+    ///   containing the 32-byte Ed25519 public key.
+    ///
+    /// Returns `None` if the address type is not recognized. This may occur if
+    /// a new address type has been introduced to the network that this version
+    /// of this library is not aware of.
+    ///
+    /// # Warning
+    ///
+    /// For account addresses, the returned Ed25519 public key corresponds to
+    /// the account's master key, which depending on the configuration of that
+    /// account may or may not be a signer of the account. Do not use this for
+    /// custom Ed25519 signature verification as a form of authentication.
+    #[cfg(any(test, feature = "hazmat-address-to_payload"))]
+    #[cfg_attr(
+        feature = "docs",
+        doc(cfg(any(feature = "hazmat", feature = "hazmat-address-to_payload")))
+    )]
+    pub fn to_payload(&self) -> Option<AddressPayload> {
+        AddressPayload::from_address(self)
+    }
+
+    /// Constructs an [`Address`] from an [`AddressPayload`].
+    ///
+    /// This is the inverse of [`to_payload`][Address::to_payload].
+    ///
+    /// # Warning
+    ///
+    /// For account addresses, the Ed25519 public key corresponds to the
+    /// account's master key, which depending on the configuration of that
+    /// account may or may not be a signer of the account. Do not use this for
+    /// custom Ed25519 signature verification as a form of authentication.
+    #[cfg(any(test, feature = "hazmat-address-from_payload"))]
+    #[cfg_attr(
+        feature = "docs",
+        doc(cfg(any(feature = "hazmat", feature = "hazmat-address-from_payload")))
+    )]
+    pub fn from_payload(env: &Env, payload: AddressPayload) -> Address {
+        payload.to_address(env)
     }
 }
 

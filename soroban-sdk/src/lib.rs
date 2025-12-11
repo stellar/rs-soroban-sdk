@@ -118,9 +118,9 @@ const _: () = {
 // Re-exports of dependencies used by macros.
 #[doc(hidden)]
 pub mod reexports_for_macros {
-    pub use ::bytes_lit;
+    pub use bytes_lit;
     #[cfg(any(test, feature = "testutils"))]
-    pub use ::ctor;
+    pub use ctor;
 }
 
 /// Assert in contract asserts that the contract is currently executing within a
@@ -968,6 +968,12 @@ pub mod unwrap;
 mod env;
 
 mod address;
+#[cfg(any(
+    test,
+    feature = "hazmat-address-to_payload",
+    feature = "hazmat-address-from_payload"
+))]
+pub mod address_payload;
 mod muxed_address;
 mod symbol;
 

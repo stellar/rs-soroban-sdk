@@ -61,7 +61,9 @@ sha2 = "0.10.7"
 [features]
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
-hazmat = []
+hazmat = ["hazmat-address-to_payload", "hazmat-address-from_payload"]
+hazmat-address-to_payload = []
+hazmat-address-from_payload = []
 docs = []
 
 [package.metadata.docs.rs]
