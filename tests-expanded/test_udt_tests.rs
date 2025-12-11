@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl, contracttype, Vec};
 pub enum UdtEnum2 {
     A = 10,
@@ -1103,14 +1104,17 @@ impl TryFrom<&UdtTuple> for soroban_sdk::xdr::ScVec {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
         Ok(soroban_sdk::xdr::ScVec(
-            <[_]>::into_vec(::alloc::boxed::box_new([
-                (&val.0)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                (&val.1)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            ]))
+            <[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([
+                    (&val.0)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    (&val.1)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                ]),
+            )
             .try_into()?,
         ))
     }
@@ -1527,38 +1531,41 @@ impl TryFrom<&UdtStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UdtStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "a".try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
+            #[rustc_box]
+            ::alloc::boxed::Box::new([
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "a".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.a)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.a)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "b".try_into()
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "b".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.b)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.b)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "c".try_into()
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "c".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.c)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.c)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                },
+            ]),
+        ))
     }
 }
 impl TryFrom<UdtStruct> for soroban_sdk::xdr::ScMap {
@@ -2139,10 +2146,12 @@ fn __Contract__7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_
         );
     }
 }
+#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::{vec, xdr::ScVal, Bytes, Env, TryFromVal};
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_serializing"]
     #[doc(hidden)]
     pub const test_serializing: test::TestDescAndFn = test::TestDescAndFn {
@@ -2196,6 +2205,7 @@ mod test {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_add"]
     #[doc(hidden)]
     pub const test_add: test::TestDescAndFn = test::TestDescAndFn {
@@ -2259,6 +2269,7 @@ mod test {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_scval_accessibility_from_udt_types"]
     #[doc(hidden)]
     pub const test_scval_accessibility_from_udt_types: test::TestDescAndFn = test::TestDescAndFn {
