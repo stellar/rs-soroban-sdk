@@ -448,9 +448,9 @@ impl ContractEvents {
         let contract_id = Some(contract_id.contract_id());
         let filtered_events = self
             .events
-            .clone()
-            .into_iter()
+            .iter()
             .filter(|e| e.contract_id == contract_id)
+            .cloned()
             .collect();
         Self::new(&self.env, filtered_events)
     }
@@ -480,12 +480,7 @@ impl PartialEq<Vec<(crate::Address, Vec<Val>, Val)>> for ContractEvents {
             return false;
         }
 
-        for i in 0..len {
-            let (contract_id, topics, data) = match other.get(i) {
-                Some(obj) => obj,
-                None => return false,
-            };
-            let obj = self.events[i as usize].clone();
+        for (event, (contract_id, topics, data)) in self.events.iter().zip(other.iter()) {
             let data_xdr = match xdr::ScVal::try_from_val(&self.env, &data) {
                 Ok(data_xdr) => data_xdr,
                 Err(..) => return false,
@@ -499,11 +494,11 @@ impl PartialEq<Vec<(crate::Address, Vec<Val>, Val)>> for ContractEvents {
                     data: data_xdr,
                 }),
             };
-            if obj != as_xdr {
+            if event != &as_xdr {
                 return false;
             }
         }
-        return true;
+        true
     }
 }
 
