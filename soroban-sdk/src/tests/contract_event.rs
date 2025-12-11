@@ -45,7 +45,7 @@ fn test_defaults() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()]);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -95,7 +95,7 @@ fn test_prefix_topics() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -139,7 +139,7 @@ fn test_no_prefix_topics() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -180,7 +180,7 @@ fn test_no_topics() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -210,7 +210,7 @@ fn test_no_topics_no_data() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -247,7 +247,7 @@ fn test_data_single_value() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -282,7 +282,7 @@ fn test_data_single_value_no_data() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -361,7 +361,7 @@ fn test_data_vec() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -396,7 +396,7 @@ fn test_data_vec_no_data() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -446,7 +446,7 @@ fn test_data_map() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -481,7 +481,7 @@ fn test_data_map_no_data() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -531,7 +531,7 @@ fn test_ref_fields() {
         }),
     };
     assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_contract_event(&env, &id), expected_event);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
 }
 
 #[test]
@@ -618,14 +618,11 @@ fn test_events_for_diff_contracts() {
     });
 
     assert_eq!(
-        env.events().all().filter_by_contract_id(&id),
-        std::vec![
-            pub_event_1.to_contract_event(&env, &id),
-            pub_event_3.to_contract_event(&env, &id),
-        ],
+        env.events().all().filter_by_contract(&id),
+        std::vec![pub_event_1.to_xdr(&env, &id), pub_event_3.to_xdr(&env, &id),],
     );
     assert_eq!(
-        env.events().all().filter_by_contract_id(&id_2),
-        std::vec![pub_event_2.to_contract_event(&env, &id_2),],
+        env.events().all().filter_by_contract(&id_2),
+        std::vec![pub_event_2.to_xdr(&env, &id_2),],
     );
 }

@@ -435,7 +435,7 @@ pub struct ContractEvents {
 }
 
 impl ContractEvents {
-    pub fn new(env: &Env, events: std::vec::Vec<xdr::ContractEvent>) -> Self {
+    pub(crate) fn new(env: &Env, events: std::vec::Vec<xdr::ContractEvent>) -> Self {
         ContractEvents {
             env: env.clone(),
             events,
@@ -443,9 +443,9 @@ impl ContractEvents {
     }
 
     /// Creates a new ContractEvents struct that only includes events emitted
-    /// by the provided contract_id.
-    pub fn filter_by_contract_id(&self, contract_id: &crate::Address) -> Self {
-        let contract_id = Some(contract_id.contract_id());
+    /// by the provided contract address.
+    pub fn filter_by_contract(&self, addr: &crate::Address) -> Self {
+        let contract_id = Some(addr.contract_id());
         let filtered_events = self
             .events
             .iter()

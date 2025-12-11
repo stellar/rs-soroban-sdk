@@ -44,8 +44,9 @@ mod test {
     extern crate std;
 
     use soroban_sdk::{
+        map, symbol_short,
         testutils::{Address as _, Events, MuxedAddress as _},
-        Address, Env, Event, MuxedAddress,
+        vec, Address, Env, Event, IntoVal, MuxedAddress, Symbol, Val,
     };
 
     use crate::{Contract, ContractClient, Transfer};
@@ -70,7 +71,33 @@ mod test {
                 amount: &amount,
                 to_muxed_id: Some(&to.id().unwrap()),
             }
-            .to_contract_event(&env, &contract_id),],
+            .to_xdr(&env, &contract_id),],
+        );
+
+        // duplicate check to assert previous event testing pattern works
+        assert_eq!(
+            env.events().all(),
+            vec![
+                &env,
+                (
+                    contract_id.clone(),
+                    // Expect these event topics.
+                    (Symbol::new(&env, "transfer"), &from, to.address()).into_val(&env),
+                    // Expect this event body.
+                    map![
+                        &env,
+                        (
+                            symbol_short!("amount"),
+                            <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
+                        ),
+                        (
+                            Symbol::new(&env, "to_muxed_id"),
+                            <_ as IntoVal<Env, Val>>::into_val(&to.id().unwrap(), &env)
+                        ),
+                    ]
+                    .to_val()
+                ),
+            ],
         );
     }
 
@@ -94,7 +121,30 @@ mod test {
                 amount: &amount,
                 to_muxed_id: None,
             }
-            .to_contract_event(&env, &contract_id),],
+            .to_xdr(&env, &contract_id),],
+        );
+
+        // duplicate check to assert previous event testing pattern works
+        assert_eq!(
+            env.events().all(),
+            vec![
+                &env,
+                (
+                    contract_id.clone(),
+                    // Expect these event topics.
+                    (Symbol::new(&env, "transfer"), &from, &to).into_val(&env),
+                    // Expect this event body.
+                    map![
+                        &env,
+                        (
+                            symbol_short!("amount"),
+                            <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
+                        ),
+                        (Symbol::new(&env, "to_muxed_id"), ().into_val(&env),),
+                    ]
+                    .to_val()
+                ),
+            ],
         );
     }
 

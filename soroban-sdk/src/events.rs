@@ -72,7 +72,7 @@ pub trait Event {
     /// Convert this event and the given contract_id into a [`xdr::ContractEvent`] object.
     /// Used to compare Events to emitted events in tests.
     #[cfg(any(test, feature = "testutils"))]
-    fn to_contract_event(&self, env: &Env, contract_id: &crate::Address) -> xdr::ContractEvent {
+    fn to_xdr(&self, env: &Env, contract_id: &crate::Address) -> xdr::ContractEvent {
         xdr::ContractEvent {
             ext: xdr::ExtensionPoint::V0,
             type_: xdr::ContractEventType::Contract,
