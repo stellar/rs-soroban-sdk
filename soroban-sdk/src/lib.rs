@@ -402,7 +402,7 @@ pub use soroban_sdk_macros::contract;
 pub use soroban_sdk_macros::contractimpl;
 
 /// Generates code the same as contractimpl does, but for the default functions of a trait that are
-/// not overriden.
+/// not overridden.
 ///
 /// This macro is used internally and is not intended to be used directly by contracts.
 #[doc(hidden)]
