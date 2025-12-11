@@ -1,4 +1,4 @@
-use crate::{default_crate_path, default_export, syn_ext};
+use crate::{default_crate_path, syn_ext};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
@@ -10,8 +10,6 @@ use syn::{parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
 struct Args {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
-    #[darling(default = "default_export")]
-    spec_export: bool,
 }
 
 pub fn derive_contractimpl_trait_macro(
@@ -42,7 +40,6 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
     let path = syn_ext::path_in_macro_rules(&args.crate_path);
 
     let trait_ident = &input.ident;
-    let spec_export = args.spec_export;
 
     let fns = input.items.iter().filter_map(|i| match i {
         TraitItem::Fn(TraitItemFn {
@@ -75,7 +72,6 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
                     client_name = $client_name,
                     args_name = $args_name,
                     spec_name = $spec_name,
-                    spec_export = #spec_export,
                 );
             }
         }

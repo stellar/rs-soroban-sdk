@@ -1,15 +1,23 @@
-use crate::{default_crate_path, default_export};
+use crate::default_crate_path;
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use syn::{parse2, ItemTrait, Path};
+
+fn default_spec_export() -> bool {
+    // The contracttrait macro defaults to not exporting the spec because most uses of the macro on
+    // a trait are providing machinery for contracts to call `impl Trait for Contract` and that
+    // impl will publish specs appropriately. This default may be surprising at first because in
+    // most other places the default for spec export is true, but for traits it is false.
+    false
+}
 
 #[derive(Debug, FromMeta)]
 struct Args {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     spec_name: Option<String>,
-    #[darling(default = "default_export")]
+    #[darling(default = "default_spec_export")]
     spec_export: bool,
     args_name: Option<String>,
     client_name: Option<String>,
@@ -39,7 +47,7 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
         #[#path::contractspecfn(name = #spec_name, export = #spec_export)]
         #[#path::contractargs(name = #args_name)]
         #[#path::contractclient(crate_path = #path, name = #client_name)]
-        #[#path::contractimpl_trait_macro(crate_path = #path, spec_export = #spec_export)]
+        #[#path::contractimpl_trait_macro(crate_path = #path)]
         #input
     }
     .into())
