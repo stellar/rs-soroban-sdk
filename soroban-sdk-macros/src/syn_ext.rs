@@ -37,11 +37,14 @@ pub fn trait_methods(imp: &ItemTrait) -> impl Iterator<Item = &TraitItemFn> {
 }
 
 /// Converts a Vec<LitStr> into a Vec<Signature>.
-pub fn strs_to_signatures(fn_sigs: &[LitStr]) -> Vec<Signature> {
+pub fn strs_to_signatures(fn_sigs: &[LitStr]) -> Result<Vec<Signature>, Error> {
     fn_sigs
         .iter()
-        .map(|f| f.value())
-        .map(|f| syn::parse_str::<Signature>(&f).unwrap())
+        .map(|f| {
+            syn::parse_str::<Signature>(&f.value()).map_err(|e| {
+                Error::new(f.span(), format!("failed to parse function signature: {e}"))
+            })
+        })
         .collect()
 }
 

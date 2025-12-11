@@ -50,8 +50,8 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let trait_ident = &args.trait_ident;
     let spec_export = args.spec_export;
 
-    let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns);
-    let impl_fns = syn_ext::strs_to_signatures(&args.impl_fns);
+    let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns)?;
+    let impl_fns = syn_ext::strs_to_signatures(&args.impl_fns)?;
 
     // Filter the list of default fns down to only default fns that have not been redefined /
     // overridden in the input fns.
