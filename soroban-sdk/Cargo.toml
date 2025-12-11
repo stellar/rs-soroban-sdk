@@ -62,12 +62,17 @@ sha2 = "0.10.7"
 [features]
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
+docs = []
+
+# Umbrella feature that enables all hazmat sub-features (backwards compatible)
+hazmat = [
+  "hazmat-crypto-secp256k1_recover",
+  "hazmat-crypto-secp256r1_verify",
+]
+
 # Granular hazmat features
 hazmat-crypto-secp256k1_recover = []
 hazmat-crypto-secp256r1_verify = []
-# Umbrella feature that enables all hazmat sub-features (backwards compatible)
-hazmat = ["hazmat-crypto-secp256k1_recover", "hazmat-crypto-secp256r1_verify"]
-docs = []
 
 [package.metadata.docs.rs]
 all-features = true
