@@ -26,9 +26,9 @@ fn test_recover_key_ecdsa_secp256k1() {
 }
 
 /// Test that `secp256k1_recover` is visible via `env.crypto_hazmat()` when
-/// either the `hazmat` or `hazmat-crypto-secp256k1_recover` feature is enabled.
+/// either the `hazmat` or `hazmat-crypto` feature is enabled.
 #[test]
-#[cfg(feature = "hazmat-crypto-secp256k1_recover")]
+#[cfg(feature = "hazmat-crypto")]
 fn test_secp256k1_recover_visible_via_crypto_hazmat() {
     let env = Env::default();
 

@@ -66,13 +66,11 @@ docs = []
 
 # Umbrella feature that enables all hazmat sub-features (backwards compatible)
 hazmat = [
-  "hazmat-crypto-secp256k1_recover",
-  "hazmat-crypto-secp256r1_verify",
+  "hazmat-crypto",
 ]
 
 # Granular hazmat features
-hazmat-crypto-secp256k1_recover = []
-hazmat-crypto-secp256r1_verify = []
+hazmat-crypto = []
 
 [package.metadata.docs.rs]
 all-features = true

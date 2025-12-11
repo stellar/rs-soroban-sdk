@@ -190,21 +190,10 @@ impl Crypto {
 /// insecure if misused. They are not generally recommended. Using them
 /// incorrectly can introduce security vulnerabilities. Please use [Crypto] if
 /// possible.
-#[cfg_attr(
-    any(
-        test,
-        feature = "hazmat-crypto-secp256k1_recover",
-        feature = "hazmat-crypto-secp256r1_verify"
-    ),
-    visibility::make(pub)
-)]
+#[cfg_attr(any(test, feature = "hazmat-crypto"), visibility::make(pub))]
 #[cfg_attr(
     feature = "docs",
-    doc(cfg(any(
-        feature = "hazmat",
-        feature = "hazmat-crypto-secp256k1_recover",
-        feature = "hazmat-crypto-secp256r1_verify"
-    )))
+    doc(cfg(any(feature = "hazmat", feature = "hazmat-crypto")))
 )]
 pub(crate) struct CryptoHazmat {
     env: Env,
@@ -228,15 +217,7 @@ impl CryptoHazmat {
     /// WARNING: The `message_digest` must be produced by a secure cryptographic
     /// hash function on the message, otherwise the attacker can potentially
     /// forge signatures.
-    #[cfg_attr(
-        any(test, feature = "hazmat-crypto-secp256k1_recover"),
-        visibility::make(pub)
-    )]
-    #[cfg_attr(
-        feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-crypto-secp256k1_recover")))
-    )]
-    pub(crate) fn secp256k1_recover(
+    pub fn secp256k1_recover(
         &self,
         message_digest: &BytesN<32>,
         signature: &BytesN<64>,
@@ -261,15 +242,7 @@ impl CryptoHazmat {
     /// WARNING: The `message_digest` must be produced by a secure cryptographic
     /// hash function on the message, otherwise the attacker can potentially
     /// forge signatures.
-    #[cfg_attr(
-        any(test, feature = "hazmat-crypto-secp256r1_verify"),
-        visibility::make(pub)
-    )]
-    #[cfg_attr(
-        feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-crypto-secp256r1_verify")))
-    )]
-    pub(crate) fn secp256r1_verify(
+    pub fn secp256r1_verify(
         &self,
         public_key: &BytesN<65>,
         message_digest: &BytesN<32>,

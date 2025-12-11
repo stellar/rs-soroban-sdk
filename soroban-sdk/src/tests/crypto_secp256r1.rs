@@ -25,9 +25,9 @@ fn test_verify_sig_ecdsa_secp256r1() {
 }
 
 /// Test that `secp256r1_verify` is visible via `env.crypto_hazmat()` when
-/// either the `hazmat` or `hazmat-crypto-secp256r1_verify` feature is enabled.
+/// either the `hazmat` or `hazmat-crypto` feature is enabled.
 #[test]
-#[cfg(feature = "hazmat-crypto-secp256r1_verify")]
+#[cfg(feature = "hazmat-crypto")]
 fn test_secp256r1_verify_visible_via_crypto_hazmat() {
     let env = Env::default();
 
