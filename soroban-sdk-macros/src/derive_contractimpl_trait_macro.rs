@@ -80,7 +80,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
             }
         }
 
-        /// Macro for `contractimpl`ing the default functions of the trait that are not overriden.
+        /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
         pub use #macro_ident as #trait_ident;
     };
 
