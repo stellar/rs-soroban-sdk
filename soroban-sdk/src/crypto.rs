@@ -12,6 +12,7 @@ pub(crate) mod poseidon2_params;
 pub mod poseidon2_sponge;
 pub(crate) mod poseidon_params;
 pub mod poseidon_sponge;
+pub(crate) mod utils;
 pub use bn254::Fr as BnScalar;
 pub use poseidon2_sponge::Poseidon2Sponge;
 pub use poseidon_sponge::PoseidonSponge;

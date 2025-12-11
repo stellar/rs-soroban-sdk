@@ -1,6 +1,7 @@
 #[cfg(not(target_family = "wasm"))]
 use crate::xdr::ScVal;
 use crate::{
+    crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val},
     impl_bytesn_repr,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
@@ -9,7 +10,7 @@ use crate::{
 use core::{
     cmp::Ordering,
     fmt::Debug,
-    ops::{Add, Mul},
+    ops::{Add, Mul, Neg},
 };
 
 const FP_SERIALIZED_SIZE: usize = 32; // Size in bytes of a serialized Fp element in BN254. The field modulus is 254 bits, requiring 32 bytes (256 bits).
@@ -23,7 +24,7 @@ pub struct Bn254 {
 }
 
 /// `G1Affine` is a point in the G1 group (subgroup defined over the base field
-/// `Fq` with prime order `q =
+/// `Fp` with prime order `q =
 /// 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47`) of the
 /// BN254 elliptic curve
 ///
@@ -37,7 +38,7 @@ pub struct Bn254 {
 pub struct G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 
 /// `G2Affine` is a point in the G2 group (subgroup defined over the quadratic
-/// extension field `Fq2`) of the BN254 elliptic curve
+/// extension field `Fp2`) of the BN254 elliptic curve
 ///
 /// # Serialization:
 /// - The 128 bytes represent the **uncompressed encoding** of a point in G2.
@@ -58,12 +59,78 @@ pub struct G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Fr(U256);
 
+/// `Fp` represents an element of the base field `Fp` of the BN254 elliptic curve
+///
+/// # Serialization:
+/// - The 32 bytes represent the **big-endian encoding** of an element in the
+///   field `Fp`. The value is serialized as a big-endian integer.
+#[derive(Clone)]
+#[repr(transparent)]
+pub struct Fp(BytesN<FP_SERIALIZED_SIZE>);
+
 impl_bytesn_repr!(G1Affine, G1_SERIALIZED_SIZE);
 impl_bytesn_repr!(G2Affine, G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Fp, FP_SERIALIZED_SIZE);
 
 impl G1Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
+    }
+}
+
+impl Fp {
+    pub fn env(&self) -> &Env {
+        self.0.env()
+    }
+
+    // `Fp` represents an element in the base field of the BN254 elliptic curve.
+    // For an element a ∈ Fp, its negation `-a` is defined as:
+    //   a + (-a) = 0 (mod p)
+    // where `p` is the field modulus, and to make a valid point coordinate on the
+    // curve, `a` also must be within the field range (i.e., 0 ≤ a < p).
+    fn checked_neg(&self) -> Option<Fp> {
+        let fq_bigint: BigInt<4> = (&self.0).into();
+        if fq_bigint.is_zero() {
+            return Some(self.clone());
+        }
+
+        //BN254 base field modulus
+        const BN254_MODULUS: [u64; 4] = [
+            4332616871279656263,
+            10917124144477883021,
+            13281191951274694749,
+            3486998266802970665,
+        ];
+        let mut res = BigInt(BN254_MODULUS);
+
+        // Compute modulus - value
+        let borrow = res.sub_with_borrow(&fq_bigint);
+        if borrow {
+            return None;
+        }
+
+        let mut bytes = [0u8; FP_SERIALIZED_SIZE];
+        res.copy_into_array(&mut bytes);
+        Some(Fp::from_array(self.env(), &bytes))
+    }
+}
+
+impl Neg for &Fp {
+    type Output = Fp;
+
+    fn neg(self) -> Self::Output {
+        match self.checked_neg() {
+            Some(v) => v,
+            None => sdk_panic!("invalid input - Fp is larger than the field modulus"),
+        }
+    }
+}
+
+impl Neg for Fp {
+    type Output = Fp;
+
+    fn neg(self) -> Self::Output {
+        (&self).neg()
     }
 }
 
@@ -80,6 +147,32 @@ impl Mul<Fr> for G1Affine {
 
     fn mul(self, rhs: Fr) -> Self::Output {
         self.env().crypto().bn254().g1_mul(&self, &rhs)
+    }
+}
+
+// G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Fr
+// Negation of (X, Y) is defined as (X, -Y)
+impl Neg for &G1Affine {
+    type Output = G1Affine;
+
+    fn neg(self) -> Self::Output {
+        let mut inner: Bytes = (&self.0).into();
+        let y = Fp::try_from_val(
+            inner.env(),
+            inner.slice(FP_SERIALIZED_SIZE as u32..).as_val(),
+        )
+        .unwrap_optimized();
+        let neg_y = -y;
+        inner.copy_from_slice(FP_SERIALIZED_SIZE as u32, &neg_y.to_array());
+        G1Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+    }
+}
+
+impl Neg for G1Affine {
+    type Output = G1Affine;
+
+    fn neg(self) -> Self::Output {
+        (&self).neg()
     }
 }
 
@@ -219,7 +312,7 @@ impl Bn254 {
     ///
     /// This function computes the pairing for each pair of points in the
     /// provided vectors `vp1` (G1 points) and `vp2` (G2 points) and verifies if
-    /// the product of all pairings is equal to 1 in the target group Fq12.
+    /// the product of all pairings is equal to 1 in the target group Fp.
     ///
     /// # Returns:
     /// - `true` if the pairing check holds (i.e., the product of pairings equals 1),

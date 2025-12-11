@@ -126,4 +126,21 @@ mod test {
         // This should return true for valid pairing
         assert!(client.verify_pairing(&proof));
     }
+
+    #[test]
+    fn test_g1_negation() {
+        let env = Env::default();
+
+        let negated_input = "00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000130644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd45";
+        let bytes = hex::decode(negated_input).unwrap();
+        assert_eq!(bytes.len(), 128);
+
+        let g1_bytes: [u8; 64] = bytes[0..64].try_into().unwrap();
+        let g1_negaed_bytes: [u8; 64] = bytes[64..128].try_into().unwrap();
+
+        let g1 = G1Affine::from_array(&env, &g1_bytes);
+        let g1_negated = G1Affine::from_array(&env, &g1_negaed_bytes);
+
+        assert_eq!(-g1, g1_negated);
+    }
 }
