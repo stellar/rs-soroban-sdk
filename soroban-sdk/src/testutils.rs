@@ -428,14 +428,12 @@ pub mod budget {
     }
 }
 
-#[cfg(any(test, feature = "testutils"))]
 #[derive(Clone)]
 pub struct ContractEvents {
     env: Env,
     pub events: std::vec::Vec<xdr::ContractEvent>,
 }
 
-#[cfg(any(test, feature = "testutils"))]
 impl ContractEvents {
     pub fn new(env: &Env, events: std::vec::Vec<xdr::ContractEvent>) -> Self {
         ContractEvents {
