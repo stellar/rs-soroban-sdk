@@ -2,7 +2,7 @@ use crate::{
     default_crate_path,
     derive_args::derive_args_impl,
     derive_client::derive_client_impl,
-    derive_fn::derive_pub_fn,
+    derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn},
     derive_spec_fn::derive_fn_spec,
     syn_ext::{self, ident_to_type},
 };
@@ -94,6 +94,12 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
             .map(Into::into)
             .collect::<Vec<syn_ext::Fn>>()
             .as_slice(),
+    ));
+    output.extend(derive_contract_function_registration_ctor(
+        &args.crate_path,
+        &impl_ty,
+        Some(trait_ident),
+        fns.iter(),
     ));
 
     Ok(output)

@@ -293,7 +293,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 crate_path,
                 ty,
                 trait_ident,
-                pub_methods.iter(),
+                pub_methods.iter().map(|m| &m.sig),
             );
             output.extend(quote! { #cfs });
             output.into()
