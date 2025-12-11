@@ -15,8 +15,9 @@ doc: fmt
 test: fmt build-test-wasms test-only
 
 test-only:
-	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test \
-		--group-features hazmat,hazmat-crypto-secp256k1_recover,hazmat-crypto-secp256r1_verify
+	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs \
+		--group-features hazmat,hazmat-crypto-secp256k1_recover,hazmat-crypto-secp256r1_verify \
+		test
 
 build: build-libs build-test-wasms
 
