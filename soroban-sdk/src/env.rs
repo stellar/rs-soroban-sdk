@@ -333,10 +333,24 @@ impl Env {
     /// cryptographic functions that are not generally recommended. Using them
     /// incorrectly can introduce security vulnerabilities. Use [Crypto] if
     /// possible.
-    #[cfg(any(test, feature = "hazmat"))]
-    #[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat")))]
+    #[cfg_attr(
+        any(
+            test,
+            feature = "hazmat-crypto-secp256k1_recover",
+            feature = "hazmat-crypto-secp256r1_verify"
+        ),
+        visibility::make(pub)
+    )]
+    #[cfg_attr(
+        feature = "docs",
+        doc(cfg(any(
+            feature = "hazmat",
+            feature = "hazmat-crypto-secp256k1_recover",
+            feature = "hazmat-crypto-secp256r1_verify"
+        )))
+    )]
     #[inline(always)]
-    pub fn crypto_hazmat(&self) -> crate::crypto::CryptoHazmat {
+    pub(crate) fn crypto_hazmat(&self) -> crate::crypto::CryptoHazmat {
         crate::crypto::CryptoHazmat::new(self)
     }
 

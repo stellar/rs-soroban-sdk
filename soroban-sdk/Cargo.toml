@@ -22,6 +22,7 @@ crate-git-revision = "0.0.6"
 [dependencies]
 soroban-sdk-macros = { workspace = true }
 bytes-lit = "0.0.5"
+visibility = "0.1.1"
 
 [target.'cfg(target_family="wasm")'.dependencies]
 soroban-env-guest = { workspace = true }
@@ -61,10 +62,21 @@ sha2 = "0.10.7"
 [features]
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
-hazmat = ["hazmat-address-to_payload", "hazmat-address-from_payload"]
+docs = []
+
+# Umbrella feature that enables all hazmat sub-features (backwards compatible)
+hazmat = [
+  "hazmat-crypto-secp256k1_recover",
+  "hazmat-crypto-secp256r1_verify",
+  "hazmat-address-to_payload",
+  "hazmat-address-from_payload",
+]
+
+# Granular hazmat features
+hazmat-crypto-secp256k1_recover = []
+hazmat-crypto-secp256r1_verify = []
 hazmat-address-to_payload = []
 hazmat-address-from_payload = []
-docs = []
 
 [package.metadata.docs.rs]
 all-features = true
