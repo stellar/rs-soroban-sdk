@@ -14,7 +14,6 @@ impl Contract {
     pub fn empty2() {}
 }
 
-#[contracttrait]
 trait Trait {
     fn empty3() {}
 }
