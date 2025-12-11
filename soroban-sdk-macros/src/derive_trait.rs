@@ -1,4 +1,4 @@
-use crate::default_crate_path;
+use crate::{default_crate_path, default_export};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -9,7 +9,7 @@ struct Args {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     spec_name: Option<String>,
-    #[darling(default)]
+    #[darling(default = "default_export")]
     spec_export: bool,
     args_name: Option<String>,
     client_name: Option<String>,

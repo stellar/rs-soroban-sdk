@@ -1,5 +1,5 @@
 use crate::{
-    default_crate_path,
+    default_crate_path, default_export,
     derive_args::derive_args_impl,
     derive_client::derive_client_impl,
     derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn},
@@ -22,7 +22,7 @@ struct Args {
     client_name: String,
     args_name: String,
     spec_name: Type,
-    #[darling(default)]
+    #[darling(default = "default_export")]
     spec_export: bool,
 }
 
