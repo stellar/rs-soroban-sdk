@@ -25,12 +25,9 @@ pub trait Trait {
 #[contract]
 pub struct Contract;
 
-#[contractimpl]
+#[contractimpl(contracttrait = true)]
 impl Trait for Contract {
     type Impl = DefaultImpl;
-    fn exec(env: &Env) -> String {
-        Self::Impl::exec(env)
-    }
 }
 
 #[cfg(test)]
