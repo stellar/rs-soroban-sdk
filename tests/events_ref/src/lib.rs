@@ -63,7 +63,7 @@ mod test {
         client.transfer(&from, &to, &amount);
 
         assert_eq!(
-            env.events().contract_events(),
+            env.events().all(),
             std::vec![Transfer {
                 from: &from,
                 to: &to.address(),
@@ -87,7 +87,7 @@ mod test {
         client.transfer(&from, &to, &amount);
 
         assert_eq!(
-            env.events().contract_events(),
+            env.events().all(),
             std::vec![Transfer {
                 from: &from,
                 to: &to,
@@ -106,6 +106,6 @@ mod test {
         let from = Address::generate(&env);
         let to = Address::generate(&env);
         let _ = client.try_failed_transfer(&from, &to, &1);
-        assert_eq!(env.events().contract_events(), std::vec![]);
+        assert_eq!(env.events().all(), std::vec![]);
     }
 }

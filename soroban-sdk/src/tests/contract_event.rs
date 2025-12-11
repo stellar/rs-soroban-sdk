@@ -1,7 +1,7 @@
 use crate::{
     self as soroban_sdk, contract, contractevent, contracttype, map, symbol_short,
-    testutils::{Address as _, Events as _},
-    vec, xdr, Address, Env, Event, IntoVal, Map, String, Symbol, TryFromVal, Val, Vec,
+    testutils::Events as _, vec, xdr, Env, Event, IntoVal, Map, String, Symbol, TryFromVal, Val,
+    Vec,
 };
 
 #[test]
@@ -44,10 +44,7 @@ fn test_defaults() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()]);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -97,10 +94,7 @@ fn test_prefix_topics() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -144,10 +138,7 @@ fn test_no_prefix_topics() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -188,10 +179,7 @@ fn test_no_topics() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -221,10 +209,7 @@ fn test_no_topics_no_data() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -261,10 +246,7 @@ fn test_data_single_value() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -299,10 +281,7 @@ fn test_data_single_value_no_data() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -381,10 +360,7 @@ fn test_data_vec() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -419,10 +395,7 @@ fn test_data_vec_no_data() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -472,10 +445,7 @@ fn test_data_map() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -510,10 +480,7 @@ fn test_data_map_no_data() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
@@ -563,124 +530,12 @@ fn test_ref_fields() {
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
-    assert_eq!(
-        env.events().contract_events(),
-        std::vec![expected_event.clone()],
-    );
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
     assert_eq!(event.to_contract_event(&env, &id), expected_event);
 }
 
 #[test]
-fn test_event_comparison_contract_id() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-    let id_2 = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("hello"),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    assert_ne!(
-        env.events().contract_events()[0],
-        event.to_contract_event(&env, &id_2)
-    );
-    assert_eq!(
-        env.events().contract_events()[0],
-        event.to_contract_event(&env, &id)
-    );
-}
-
-#[test]
-fn test_event_comparison_topics() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        #[topic]
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("hello"),
-    };
-    let event_2 = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("world"),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    assert_ne!(
-        env.events().contract_events()[0],
-        event_2.to_contract_event(&env, &id)
-    );
-    assert_eq!(
-        env.events().contract_events()[0],
-        event.to_contract_event(&env, &id)
-    );
-}
-
-#[test]
-fn test_event_comparison_data_small() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        value: Address,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: Address::generate(&env),
-    };
-    let event_2 = MyEvent {
-        name: symbol_short!("hi"),
-        value: Address::generate(&env),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    assert_ne!(
-        env.events().contract_events()[0],
-        event_2.to_contract_event(&env, &id)
-    );
-    assert_eq!(
-        env.events().contract_events()[0],
-        event.to_contract_event(&env, &id)
-    );
-}
-
-#[test]
-fn test_event_comparison_data_small_and_host() {
+fn test_event_comparison_tuple_vec() {
     let env = Env::default();
 
     #[contract]
@@ -704,52 +559,24 @@ fn test_event_comparison_data_small_and_host() {
     };
     env.as_contract(&id, || {
         event.publish(&env);
+        event_2.publish(&env);
     });
 
     assert_ne!(
-        env.events().contract_events()[0],
-        event_2.to_contract_event(&env, &id)
+        env.events().all(),
+        vec![
+            &env,
+            (id.clone(), event.topics(&env), event.data(&env)),
+            (id.clone(), event_2.topics(&env), event.data(&env)),
+        ]
     );
     assert_eq!(
-        env.events().contract_events()[0],
-        event.to_contract_event(&env, &id)
-    );
-}
-
-#[test]
-fn test_event_comparison_data_host() {
-    let env = Env::default();
-
-    #[contract]
-    pub struct Contract;
-    let id = env.register(Contract, ());
-
-    #[contractevent]
-    pub struct MyEvent {
-        #[topic]
-        name: Symbol,
-        value: Symbol,
-    }
-
-    let event = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("world"),
-    };
-    let event_2 = MyEvent {
-        name: symbol_short!("hi"),
-        value: symbol_short!("hello"),
-    };
-    env.as_contract(&id, || {
-        event.publish(&env);
-    });
-
-    assert_ne!(
-        env.events().contract_events()[0],
-        event_2.to_contract_event(&env, &id)
-    );
-    assert_eq!(
-        env.events().contract_events()[0],
-        event.to_contract_event(&env, &id)
+        env.events().all(),
+        vec![
+            &env,
+            (id.clone(), event.topics(&env), event.data(&env)),
+            (id.clone(), event_2.topics(&env), event_2.data(&env)),
+        ]
     );
 }
 
@@ -791,14 +618,14 @@ fn test_events_for_diff_contracts() {
     });
 
     assert_eq!(
-        env.events().contract_events_for(&id),
+        env.events().all().filter_by_contract_id(&id),
         std::vec![
             pub_event_1.to_contract_event(&env, &id),
             pub_event_3.to_contract_event(&env, &id),
         ],
     );
     assert_eq!(
-        env.events().contract_events_for(&id_2),
+        env.events().all().filter_by_contract_id(&id_2),
         std::vec![pub_event_2.to_contract_event(&env, &id_2),],
     );
 }

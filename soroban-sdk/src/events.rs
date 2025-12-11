@@ -59,7 +59,7 @@ impl Debug for Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, Address, TryFromVal, TryIntoVal};
+use crate::{testutils, xdr, TryFromVal};
 
 pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
@@ -136,38 +136,10 @@ impl Events {
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)> {
+    fn all(&self) -> testutils::ContractEvents {
         let env = self.env();
-        let mut vec = Vec::new(&env);
-        self.env()
-            .host()
-            .get_events()
-            .unwrap()
-            .0
-            .into_iter()
-            .for_each(|e| {
-                if e.failed_call {
-                    return;
-                }
-                if let xdr::ContractEvent {
-                    type_: xdr::ContractEventType::Contract,
-                    contract_id: Some(contract_id),
-                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
-                    ..
-                } = e.event
-                {
-                    vec.push_back((
-                        Address::from_contract_id(env, contract_id.0 .0),
-                        topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
-                    ))
-                }
-            });
-        vec
-    }
-
-    fn contract_events(&self) -> std::vec::Vec<xdr::ContractEvent> {
-        self.env()
+        let vec: std::vec::Vec<xdr::ContractEvent> = self
+            .env()
             .host()
             .get_events()
             .unwrap()
@@ -183,17 +155,7 @@ impl testutils::Events for Events {
                     None
                 }
             })
-            .collect()
-    }
-
-    fn contract_events_for(
-        &self,
-        contract_id: &crate::Address,
-    ) -> std::vec::Vec<xdr::ContractEvent> {
-        let contract_id = Some(contract_id.contract_id());
-        self.contract_events()
-            .into_iter()
-            .filter(|e| e.contract_id == contract_id)
-            .collect()
+            .collect();
+        testutils::ContractEvents::new(&env, vec)
     }
 }

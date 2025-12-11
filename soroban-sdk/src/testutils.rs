@@ -14,15 +14,13 @@ mod mock_auth;
 pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
-use soroban_env_host::TryIntoVal;
+use soroban_env_host::{TryFromVal, TryIntoVal};
 
 pub mod storage;
 
 pub mod cost_estimate;
 
-use crate::{
-    env::internal::Env as _, unwrap::UnwrapInfallible, xdr, ConstructorArgs, Env, Val, Vec,
-};
+use crate::{xdr, ConstructorArgs, Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
@@ -430,51 +428,90 @@ pub mod budget {
     }
 }
 
+#[cfg(any(test, feature = "testutils"))]
 #[derive(Clone)]
-pub struct ContractEvent {
+pub struct ContractEvents {
     env: Env,
-    pub contract_id: crate::Address,
-    topics: Vec<Val>,
-    data: Val,
+    pub events: std::vec::Vec<xdr::ContractEvent>,
 }
 
-impl Eq for ContractEvent {}
-
-impl PartialEq for ContractEvent {
-    fn eq(&self, other: &Self) -> bool {
-        if self.contract_id != other.contract_id || self.topics != other.topics {
-            false
-        } else if self.data.is_object() || other.data.is_object() {
-            self.env.obj_cmp(self.data, other.data).unwrap_infallible() == 0
-        } else {
-            self.data.get_payload() == other.data.get_payload()
-        }
-    }
-}
-
-impl Debug for ContractEvent {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(
-            f,
-            "ContractEvent {{ contract_id: {:?}, topics: {:?}, data: {:?} }}",
-            self.contract_id, self.topics, self.data
-        )
-    }
-}
-
-impl ContractEvent {
-    pub fn new(
-        env: &Env,
-        contract_id: crate::Address,
-        topics: Vec<Val>,
-        data: Val,
-    ) -> ContractEvent {
-        ContractEvent {
+#[cfg(any(test, feature = "testutils"))]
+impl ContractEvents {
+    pub fn new(env: &Env, events: std::vec::Vec<xdr::ContractEvent>) -> Self {
+        ContractEvents {
             env: env.clone(),
-            contract_id,
-            topics,
-            data,
+            events,
         }
+    }
+
+    /// Creates a new ContractEvents struct that only includes events emitted
+    /// by the provided contract_id.
+    pub fn filter_by_contract_id(&self, contract_id: &crate::Address) -> Self {
+        let contract_id = Some(contract_id.contract_id());
+        let filtered_events = self
+            .events
+            .clone()
+            .into_iter()
+            .filter(|e| e.contract_id == contract_id)
+            .collect();
+        Self::new(&self.env, filtered_events)
+    }
+}
+
+impl Eq for ContractEvents {}
+
+impl PartialEq for ContractEvents {
+    fn eq(&self, other: &ContractEvents) -> bool {
+        self.events == other.events
+    }
+}
+
+impl PartialEq<std::vec::Vec<xdr::ContractEvent>> for ContractEvents {
+    fn eq(&self, other: &std::vec::Vec<xdr::ContractEvent>) -> bool {
+        self.events == *other
+    }
+}
+
+impl PartialEq<Vec<(crate::Address, Vec<Val>, Val)>> for ContractEvents {
+    fn eq(&self, other: &Vec<(crate::Address, Vec<Val>, Val)>) -> bool {
+        let len = match u32::try_from(self.events.len()) {
+            Ok(len) => len,
+            Err(..) => return false,
+        };
+        if len != other.len() {
+            return false;
+        }
+
+        for i in 0..len {
+            let (contract_id, topics, data) = match other.get(i) {
+                Some(obj) => obj,
+                None => return false,
+            };
+            let obj = self.events[i as usize].clone();
+            let data_xdr = match xdr::ScVal::try_from_val(&self.env, &data) {
+                Ok(data_xdr) => data_xdr,
+                Err(..) => return false,
+            };
+            let as_xdr = xdr::ContractEvent {
+                ext: xdr::ExtensionPoint::V0,
+                type_: xdr::ContractEventType::Contract,
+                contract_id: Some(contract_id.contract_id()),
+                body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+                    topics: topics.into(),
+                    data: data_xdr,
+                }),
+            };
+            if obj != as_xdr {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+impl Debug for ContractEvents {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{:?}", self.events)
     }
 }
 
@@ -486,34 +523,10 @@ pub trait Events {
     /// Events are returned in the order they were published, with the
     /// last published event being the last in the list.
     ///
-    /// Returns a [`Vec`] of three element tuples containing:
-    /// - Contract ID as an [`Address`]
-    /// - Event Topics as a [`Vec<Val>`]
-    /// - Event Data as a [`Val`]
-    #[deprecated(note = "use [Events::contract_events] instead")]
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
-
-    /// Returns all contract events that have been published by the last contract
-    /// invocation. If the last contract invocation failed, no events are returned.
-    ///
-    /// Events are returned in the order they were published, with the
-    /// last published event being the last in the list.
-    ///
-    /// Returns a [`std::vec::Vec`] of [`xdr::ContractEvent`]s
-    fn contract_events(&self) -> std::vec::Vec<xdr::ContractEvent>;
-
-    /// Returns all contract events that have been published by the given contract
-    /// during the last contract invocation. If the last contract invocation failed,
-    /// no events are returned.
-    ///
-    /// Events are returned in the order they were published, with the
-    /// last published event being the last in the list.
-    ///
-    /// Returns a [`std::vec::Vec`] of [`xdr::ContractEvent`]s
-    fn contract_events_for(
-        &self,
-        contract_id: &crate::Address,
-    ) -> std::vec::Vec<xdr::ContractEvent>;
+    /// Returns a [`ContractEvents`] struct that contains:
+    /// - The test Env
+    /// - A vector of events emitted by successful contract invocations
+    fn all(&self) -> ContractEvents;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].
