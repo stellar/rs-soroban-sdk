@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::contracttype;
 pub struct Value {
     pub value: i32,
@@ -139,8 +140,9 @@ impl TryFrom<&Value> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &Value) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
+            #[rustc_box]
+            ::alloc::boxed::Box::new([soroban_sdk::xdr::ScMapEntry {
                 key: soroban_sdk::xdr::ScSymbol(
                     "value"
                         .try_into()
@@ -150,8 +152,8 @@ impl TryFrom<&Value> for soroban_sdk::xdr::ScMap {
                 val: (&val.value)
                     .try_into()
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+            }]),
+        ))
     }
 }
 impl TryFrom<Value> for soroban_sdk::xdr::ScMap {
