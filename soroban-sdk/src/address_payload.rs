@@ -13,10 +13,11 @@
 //!
 //! # Warning
 //!
-//! For account addresses, the Ed25519 public key corresponds to the account's
-//! master key, which depending on the configuration of that account may or may
-//! not be a signer of the account. Do not use this for custom Ed25519 signature
-//! verification as a form of authentication.
+//! For account addresses, the returned Ed25519 public key corresponds to
+//! the account's master key, which depending on the configuration of that
+//! account may or may not be a signer of the account. Do not use this for
+//! custom Ed25519 signature verification as a form of authentication
+//! because the master key may not be configured the signer of the account.
 
 use crate::{unwrap::UnwrapOptimized, Address, Bytes, BytesN, Env};
 
@@ -43,10 +44,11 @@ impl AddressPayload {
     ///
     /// # Warning
     ///
-    /// For account addresses, the Ed25519 public key corresponds to the
-    /// account's master key, which depending on the configuration of that
+    /// For account addresses, the returned Ed25519 public key corresponds to
+    /// the account's master key, which depending on the configuration of that
     /// account may or may not be a signer of the account. Do not use this for
-    /// custom Ed25519 signature verification as a form of authentication.
+    /// custom Ed25519 signature verification as a form of authentication
+    /// because the master key may not be configured the signer of the account.
     pub fn to_address(&self, env: &Env) -> Address {
         use crate::xdr::FromXdr;
         // Build XDR header and get payload bytes based on payload type:
@@ -91,7 +93,8 @@ impl AddressPayload {
     /// For account addresses, the returned Ed25519 public key corresponds to
     /// the account's master key, which depending on the configuration of that
     /// account may or may not be a signer of the account. Do not use this for
-    /// custom Ed25519 signature verification as a form of authentication.
+    /// custom Ed25519 signature verification as a form of authentication
+    /// because the master key may not be configured the signer of the account.
     pub fn from_address(address: &Address) -> Option<Self> {
         use crate::xdr::ToXdr;
         let xdr = address.to_xdr(address.env());
