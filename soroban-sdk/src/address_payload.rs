@@ -1,15 +1,7 @@
-#![cfg(any(
-    test,
-    feature = "hazmat-address-to_payload",
-    feature = "hazmat-address-from_payload"
-))]
+#![cfg(any(test, feature = "hazmat-address"))]
 #![cfg_attr(
     feature = "docs",
-    doc(cfg(any(
-        feature = "hazmat",
-        feature = "hazmat-address-to_payload",
-        feature = "hazmat-address-from_payload"
-    )))
+    doc(cfg(any(feature = "hazmat", feature = "hazmat-address")))
 )]
 
 //! Address payload extraction and construction.
@@ -55,11 +47,6 @@ impl AddressPayload {
     /// account's master key, which depending on the configuration of that
     /// account may or may not be a signer of the account. Do not use this for
     /// custom Ed25519 signature verification as a form of authentication.
-    #[cfg(any(test, feature = "hazmat-address-from_payload"))]
-    #[cfg_attr(
-        feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-address-from_payload")))
-    )]
     pub fn to_address(&self, env: &Env) -> Address {
         use crate::xdr::FromXdr;
         // Build XDR header and get payload bytes based on payload type:
@@ -105,11 +92,6 @@ impl AddressPayload {
     /// the account's master key, which depending on the configuration of that
     /// account may or may not be a signer of the account. Do not use this for
     /// custom Ed25519 signature verification as a form of authentication.
-    #[cfg(any(test, feature = "hazmat-address-to_payload"))]
-    #[cfg_attr(
-        feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-address-to_payload")))
-    )]
     pub fn from_address(address: &Address) -> Option<Self> {
         use crate::xdr::ToXdr;
         let xdr = address.to_xdr(address.env());

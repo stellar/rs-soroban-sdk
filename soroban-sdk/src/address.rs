@@ -5,11 +5,7 @@ use super::{
     Bytes, BytesN, ConversionError, Env, IntoVal, String, TryFromVal, TryIntoVal, Val, Vec,
 };
 
-#[cfg(any(
-    test,
-    feature = "hazmat-address-to_payload",
-    feature = "hazmat-address-from_payload"
-))]
+#[cfg(any(test, feature = "hazmat-address"))]
 use crate::address_payload::AddressPayload;
 
 #[cfg(not(target_family = "wasm"))]
@@ -396,10 +392,10 @@ impl Address {
     /// the account's master key, which depending on the configuration of that
     /// account may or may not be a signer of the account. Do not use this for
     /// custom Ed25519 signature verification as a form of authentication.
-    #[cfg(any(test, feature = "hazmat-address-to_payload"))]
+    #[cfg(any(test, feature = "hazmat-address"))]
     #[cfg_attr(
         feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-address-to_payload")))
+        doc(cfg(any(feature = "hazmat", feature = "hazmat-address")))
     )]
     pub fn to_payload(&self) -> Option<AddressPayload> {
         AddressPayload::from_address(self)
@@ -415,10 +411,10 @@ impl Address {
     /// account's master key, which depending on the configuration of that
     /// account may or may not be a signer of the account. Do not use this for
     /// custom Ed25519 signature verification as a form of authentication.
-    #[cfg(any(test, feature = "hazmat-address-from_payload"))]
+    #[cfg(any(test, feature = "hazmat-address"))]
     #[cfg_attr(
         feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-address-from_payload")))
+        doc(cfg(any(feature = "hazmat", feature = "hazmat-address")))
     )]
     pub fn from_payload(env: &Env, payload: AddressPayload) -> Address {
         payload.to_address(env)
