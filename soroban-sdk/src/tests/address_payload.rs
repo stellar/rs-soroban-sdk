@@ -43,7 +43,7 @@ fn test_account_address_payload() {
     );
     assert_eq!(
         address.to_payload(),
-        Some(AddressPayload::AccountEd25519PublicKey(expected_payload))
+        Some(AddressPayload::AccountIdPublicKeyEd25519(expected_payload))
     );
 }
 
@@ -80,7 +80,7 @@ fn test_account_address_from_payload() {
         ],
     );
 
-    let address = Address::from_payload(&env, AddressPayload::AccountEd25519PublicKey(payload));
+    let address = Address::from_payload(&env, AddressPayload::AccountIdPublicKeyEd25519(payload));
     assert_eq!(
         address.to_string().to_string(),
         "GCEZWKCA5VLDNRLN3RPRJMRZOX3Z6G5CHCGSNFHEYVXM3XOJMDS674JZ"

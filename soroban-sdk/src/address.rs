@@ -377,9 +377,9 @@ impl Address {
     /// Extracts the payload from the address.
     ///
     /// Returns:
-    /// - For contract addresses (C...), returns [`AddressPayload::ContractIDHash`]
+    /// - For contract addresses (C...), returns [`AddressPayload::ContractIdHash`]
     ///   containing the 32-byte contract hash.
-    /// - For account addresses (G...), returns [`AddressPayload::AccountEd25519PublicKey`]
+    /// - For account addresses (G...), returns [`AddressPayload::AccountIdPublicKeyEd25519`]
     ///   containing the 32-byte Ed25519 public key.
     ///
     /// Returns `None` if the address type is not recognized. This may occur if

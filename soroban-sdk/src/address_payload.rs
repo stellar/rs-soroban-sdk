@@ -32,9 +32,9 @@ pub enum AddressPayload {
     /// depending on the configuration of that account may or may not be a
     /// signer of the account. Do not use this for custom Ed25519 signature
     /// verification as a form of authentication.
-    AccountEd25519PublicKey(BytesN<32>),
+    AccountIdPublicKeyEd25519(BytesN<32>),
     /// A 32-byte contract hash from a contract address (C...).
-    ContractIDHash(BytesN<32>),
+    ContractIdHash(BytesN<32>),
 }
 
 impl AddressPayload {
@@ -53,7 +53,7 @@ impl AddressPayload {
         use crate::xdr::FromXdr;
         // Build XDR header and get payload bytes based on payload type:
         let (header, payload_bytes): (&[u8], &BytesN<32>) = match self {
-            AddressPayload::AccountEd25519PublicKey(bytes) => (
+            AddressPayload::AccountIdPublicKeyEd25519(bytes) => (
                 &[
                     0, 0, 0, 18, // ScVal::Address
                     0, 0, 0, 0, // ScAddress::Account
@@ -61,7 +61,7 @@ impl AddressPayload {
                 ],
                 bytes,
             ),
-            AddressPayload::ContractIDHash(bytes) => (
+            AddressPayload::ContractIdHash(bytes) => (
                 &[
                     0, 0, 0, 18, // ScVal::Address
                     0, 0, 0, 1, // ScAddress::Contract
@@ -79,9 +79,9 @@ impl AddressPayload {
     /// Extracts an [`AddressPayload`] from an [`Address`].
     ///
     /// Returns:
-    /// - For contract addresses (C...), returns [`AddressPayload::ContractIDHash`]
+    /// - For contract addresses (C...), returns [`AddressPayload::ContractIdHash`]
     ///   containing the 32-byte contract hash.
-    /// - For account addresses (G...), returns [`AddressPayload::AccountEd25519PublicKey`]
+    /// - For account addresses (G...), returns [`AddressPayload::AccountIdPublicKeyEd25519`]
     ///   containing the 32-byte Ed25519 public key.
     ///
     /// Returns `None` if the address type is not recognized. This may occur if
@@ -111,7 +111,7 @@ impl AddressPayload {
                     // Decode PublicKey::PublicKeyTypeEd25519
                     [0, 0, 0, 0] => {
                         let ed25519: BytesN<32> = xdr.slice(8..40).try_into().unwrap_optimized();
-                        Some(AddressPayload::AccountEd25519PublicKey(ed25519))
+                        Some(AddressPayload::AccountIdPublicKeyEd25519(ed25519))
                     }
                     _ => None,
                 }
@@ -119,7 +119,7 @@ impl AddressPayload {
             // Decode ScAddress::Contract
             [0, 0, 0, 1] => {
                 let hash: BytesN<32> = xdr.slice(4..36).try_into().unwrap_optimized();
-                Some(AddressPayload::ContractIDHash(hash))
+                Some(AddressPayload::ContractIdHash(hash))
             }
             _ => None,
         }
