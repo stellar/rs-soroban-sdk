@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 mod feat1 {
     use crate::Contract;
@@ -362,11 +361,9 @@ mod feat2 {
     }
 }
 mod test {
-    #![cfg(test)]
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test"]
     #[doc(hidden)]
     pub const test: test::TestDescAndFn = test::TestDescAndFn {
