@@ -33,7 +33,7 @@ pub enum AddressPayload {
     /// verification as a form of authentication.
     AccountEd25519PublicKey(BytesN<32>),
     /// A 32-byte contract hash from a contract address (C...).
-    ContractHash(BytesN<32>),
+    ContractIDHash(BytesN<32>),
 }
 
 impl AddressPayload {
@@ -59,7 +59,7 @@ impl AddressPayload {
                 ],
                 bytes,
             ),
-            AddressPayload::ContractHash(bytes) => (
+            AddressPayload::ContractIDHash(bytes) => (
                 &[
                     0, 0, 0, 18, // ScVal::Address
                     0, 0, 0, 1, // ScAddress::Contract
@@ -77,7 +77,7 @@ impl AddressPayload {
     /// Extracts an [`AddressPayload`] from an [`Address`].
     ///
     /// Returns:
-    /// - For contract addresses (C...), returns [`AddressPayload::ContractHash`]
+    /// - For contract addresses (C...), returns [`AddressPayload::ContractIDHash`]
     ///   containing the 32-byte contract hash.
     /// - For account addresses (G...), returns [`AddressPayload::AccountEd25519PublicKey`]
     ///   containing the 32-byte Ed25519 public key.
@@ -116,7 +116,7 @@ impl AddressPayload {
             // Decode ScAddress::Contract
             [0, 0, 0, 1] => {
                 let hash: BytesN<32> = xdr.slice(4..36).try_into().unwrap_optimized();
-                Some(AddressPayload::ContractHash(hash))
+                Some(AddressPayload::ContractIDHash(hash))
             }
             _ => None,
         }
