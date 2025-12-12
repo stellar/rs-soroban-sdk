@@ -264,6 +264,7 @@ jobs:
         msrv="$(make msrv)"
         rustup install $msrv
         rustup target add --toolchain $msrv wasm32v1-none
+        rustup component add rustfmt
     - uses: stellar/binaries@v45
       with:
         name: cargo-hack
