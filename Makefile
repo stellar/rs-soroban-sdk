@@ -21,7 +21,7 @@ test: fmt build-test-wasms test-only
 test-only:
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 		--exclude-features docs \
-		--exclude-features hazmat-crypto-secp256k1_recover,hazmat-crypto-secp256r1_verify \
+		--exclude-features hazmat-crypto \
 		--exclude-features hazmat-address-to_payload,hazmat-address-from_payload \
 		test
 
@@ -57,16 +57,17 @@ readme:
 expand-tests: build-test-wasms
 	rm -fr tests-expanded
 	mkdir -p tests-expanded
-	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) ; \
-	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' ; \
 	for package in $(TEST_CRATES); do \
 		if [ "$$package" = "test_alloc" ]; then \
 			continue; \
 		fi; \
 		echo "Expanding $$package for linux target including tests"; \
-		cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
+    RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+      RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
-		RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+    RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+      RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
 	done
 

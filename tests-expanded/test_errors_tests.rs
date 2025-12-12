@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Env,
     Symbol,
@@ -642,6 +643,7 @@ impl Contract {
             ::core::panicking::panic("not implemented")
         }
     }
+    #[cfg(test)]
     pub fn persisted(env: Env) -> bool {
         env.storage()
             .persistent()
@@ -668,15 +670,18 @@ impl Contract {
     }
 }
 #[doc(hidden)]
+#[cfg(test)]
 #[allow(non_snake_case)]
 pub mod __Contract__persisted__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[cfg(test)]
     pub static __SPEC_XDR_FN_PERSISTED: [u8; 36usize] = super::Contract::spec_xdr_persisted();
 }
 impl Contract {
     #[allow(non_snake_case)]
+    #[cfg(test)]
     pub const fn spec_xdr_persisted() -> [u8; 36usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\tpersisted\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x01"
     }
@@ -761,6 +766,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    #[cfg(test)]
     pub fn persisted(&self) -> bool {
         use core::ops::Not;
         let old_auth_manager = self
@@ -798,6 +804,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    #[cfg(test)]
     pub fn try_persisted(
         &self,
     ) -> Result<
@@ -891,6 +898,7 @@ pub mod __Contract__hello {
     use super::*;
 }
 #[doc(hidden)]
+#[cfg(test)]
 #[allow(non_snake_case)]
 pub mod __Contract__persisted {
     use super::*;
@@ -958,10 +966,12 @@ fn __Contract__dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_
         );
     }
 }
+#[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient, Error, Flag};
     use soroban_sdk::{symbol_short, xdr, Env, InvokeError};
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::hello_ok"]
     #[doc(hidden)]
     pub const hello_ok: test::TestDescAndFn = test::TestDescAndFn {
@@ -1011,6 +1021,7 @@ mod test {
         }
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::try_hello_ok"]
     #[doc(hidden)]
     pub const try_hello_ok: test::TestDescAndFn = test::TestDescAndFn {
@@ -1063,6 +1074,7 @@ mod test {
         }
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::try_hello_error"]
     #[doc(hidden)]
     pub const try_hello_error: test::TestDescAndFn = test::TestDescAndFn {
@@ -1108,6 +1120,7 @@ mod test {
         }
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::try_hello_error_panic"]
     #[doc(hidden)]
     pub const try_hello_error_panic: test::TestDescAndFn = test::TestDescAndFn {
@@ -1153,6 +1166,7 @@ mod test {
         }
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::try_hello_error_panic_string"]
     #[doc(hidden)]
     pub const try_hello_error_panic_string: test::TestDescAndFn = test::TestDescAndFn {
@@ -1198,6 +1212,7 @@ mod test {
         }
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::try_hello_error_unexpected_contract_error"]
     #[doc(hidden)]
     pub const try_hello_error_unexpected_contract_error: test::TestDescAndFn =
@@ -1244,6 +1259,7 @@ mod test {
         }
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::type_conversion"]
     #[doc(hidden)]
     pub const type_conversion: test::TestDescAndFn = test::TestDescAndFn {
