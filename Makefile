@@ -3,7 +3,6 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
-EXPAND_RUSTUP_TOOLCHAIN?=$(MSRV)
 
 CARGO_DOC_ARGS?=--open
 
@@ -57,16 +56,17 @@ readme:
 expand-tests: build-test-wasms
 	rm -fr tests-expanded
 	mkdir -p tests-expanded
-	export RUSTUP_TOOLCHAIN=$(EXPAND_RUSTUP_TOOLCHAIN) ; \
-	export RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' ; \
 	for package in $(TEST_CRATES); do \
 		if [ "$$package" = "test_alloc" ]; then \
 			continue; \
 		fi; \
 		echo "Expanding $$package for linux target including tests"; \
-		cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
+    RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+      RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
-		RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+    RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+      RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
 	done
 
