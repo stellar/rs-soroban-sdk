@@ -3,6 +3,7 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
+EXPAND_RUSTUP_TOOLCHAIN?=$(MSRV)
 
 CARGO_DOC_ARGS?=--open
 
@@ -56,8 +57,8 @@ readme:
 expand-tests: build-test-wasms
 	rm -fr tests-expanded
 	mkdir -p tests-expanded
-	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) ; \
-	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' ; \
+	export RUSTUP_TOOLCHAIN=$(EXPAND_RUSTUP_TOOLCHAIN) ; \
+	export RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' ; \
 	for package in $(TEST_CRATES); do \
 		if [ "$$package" = "test_alloc" ]; then \
 			continue; \
