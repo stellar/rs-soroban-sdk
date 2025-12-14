@@ -67,10 +67,12 @@ docs = []
 # Umbrella feature that enables all hazmat sub-features (backwards compatible)
 hazmat = [
   "hazmat-crypto",
+  "hazmat-address",
 ]
 
 # Granular hazmat features
 hazmat-crypto = []
+hazmat-address = []
 
 [package.metadata.docs.rs]
 all-features = true
