@@ -1700,6 +1700,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_contracttrait_impl_full"
+version = "23.2.1"
+dependencies = [
+ "soroban-sdk",
+ "test_contracttrait_trait",
+]
+
+[[package]]
+name = "test_contracttrait_impl_partial"
+version = "23.2.1"
+dependencies = [
+ "soroban-sdk",
+ "test_contracttrait_trait",
+]
+
+[[package]]
+name = "test_contracttrait_trait"
+version = "23.2.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_empty"
 version = "23.2.1"
 dependencies = [
