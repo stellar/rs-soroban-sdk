@@ -52,26 +52,28 @@ impl AddressPayload {
     pub fn to_address(&self, env: &Env) -> Address {
         use crate::xdr::FromXdr;
         // Build XDR header and get payload bytes based on payload type:
-        let (header, payload_bytes): (&[u8], &BytesN<32>) = match self {
+        let (header, payload_bytes) = match self {
             AddressPayload::AccountIdPublicKeyEd25519(bytes) => (
-                &[
+                [
                     0, 0, 0, 18, // ScVal::Address
                     0, 0, 0, 0, // ScAddress::Account
                     0, 0, 0, 0, // PublicKey::PublicKeyTypeEd25519
-                ],
-                bytes,
+                ]
+                .as_slice(),
+                bytes.as_bytes(),
             ),
             AddressPayload::ContractIdHash(bytes) => (
-                &[
+                [
                     0, 0, 0, 18, // ScVal::Address
                     0, 0, 0, 1, // ScAddress::Contract
-                ],
-                bytes,
+                ]
+                .as_slice(),
+                bytes.as_bytes(),
             ),
         };
 
         let mut xdr = Bytes::from_slice(env, header);
-        xdr.append(&Bytes::from(payload_bytes.clone()));
+        xdr.append(payload_bytes);
 
         Address::from_xdr(env, &xdr).unwrap_optimized()
     }
