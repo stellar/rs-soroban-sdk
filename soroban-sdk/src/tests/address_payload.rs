@@ -20,7 +20,7 @@ fn test_contract_address_payload() {
     );
     assert_eq!(
         address.to_payload(),
-        Some(AddressPayload::ContractIDHash(expected_payload))
+        Some(AddressPayload::ContractIdHash(expected_payload))
     );
 }
 
@@ -60,7 +60,7 @@ fn test_contract_address_from_payload() {
         ],
     );
 
-    let address = Address::from_payload(&env, AddressPayload::ContractIDHash(payload));
+    let address = Address::from_payload(&env, AddressPayload::ContractIdHash(payload));
     assert_eq!(
         address.to_string().to_string(),
         "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
