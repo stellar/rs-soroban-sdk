@@ -22,6 +22,7 @@ test-only:
 	cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 		--exclude-features docs \
 		--exclude-features hazmat-crypto \
+		--exclude-features hazmat-address \
 		test
 
 build: build-libs build-test-wasms
