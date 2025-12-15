@@ -7,17 +7,17 @@ extern crate core;
 extern crate compiler_builtins as _;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Fr, G1Affine, G2Affine},
+    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
     Env, Vec,
 };
 pub struct MockProof {
-    pub g1: Vec<G1Affine>,
-    pub g2: Vec<G2Affine>,
+    pub g1: Vec<Bn254G1Affine>,
+    pub g2: Vec<Bn254G2Affine>,
 }
 pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
 impl MockProof {
     pub const fn spec_xdr() -> [u8; 80usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\xc0"
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
@@ -190,8 +190,8 @@ const _: () = {
     use soroban_sdk::testutils::arbitrary::arbitrary;
     use soroban_sdk::testutils::arbitrary::std;
     pub struct ArbitraryMockProof {
-        g1: <Vec<G1Affine> as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
-        g2: <Vec<G2Affine> as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        g1: <Vec<Bn254G1Affine> as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        g2: <Vec<Bn254G2Affine> as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
     }
     #[automatically_derived]
     impl ::core::fmt::Debug for ArbitraryMockProof {
@@ -224,10 +224,14 @@ const _: () = {
         #[coverage(off)]
         fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
-                <Vec<G1Affine> as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                <Vec<
+                    Bn254G1Affine,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
             let _: ::core::cmp::AssertParamIsEq<
-                <Vec<G2Affine> as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                <Vec<
+                    Bn254G2Affine,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
         }
     }
@@ -356,12 +360,12 @@ const _: () = {
                     arbitrary::size_hint::and_all(
                         &[
                             <<Vec<
-                                G1Affine,
+                                Bn254G1Affine,
                             > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
                             <<Vec<
-                                G2Affine,
+                                Bn254G2Affine,
                             > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
@@ -532,10 +536,10 @@ impl Contract {
     pub fn verify_pairing(env: Env, proof: MockProof) -> bool {
         env.crypto().bn254().pairing_check(proof.g1, proof.g2)
     }
-    pub fn g1_add(a: G1Affine, b: G1Affine) -> G1Affine {
+    pub fn g1_add(a: Bn254G1Affine, b: Bn254G1Affine) -> Bn254G1Affine {
         a + b
     }
-    pub fn g1_mul(p: G1Affine, s: Fr) -> G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
         p * s
     }
 }
@@ -565,7 +569,7 @@ pub mod __Contract__g1_add__spec {
 impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_g1_add() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_add\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xee\0\0\0`\0\0\0\x01\0\0\x03\xee\0\0\0`"
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_add\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\x01\0\0\x03\xee\0\0\0@"
     }
 }
 #[doc(hidden)]
@@ -579,7 +583,7 @@ pub mod __Contract__g1_mul__spec {
 impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_g1_mul() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0`"
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0@"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -651,7 +655,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn g1_add(&self, a: &G1Affine, b: &G1Affine) -> G1Affine {
+    pub fn g1_add(&self, a: &Bn254G1Affine, b: &Bn254G1Affine) -> Bn254G1Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -693,12 +697,12 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g1_add(
         &self,
-        a: &G1Affine,
-        b: &G1Affine,
+        a: &Bn254G1Affine,
+        b: &Bn254G1Affine,
     ) -> Result<
         Result<
-            G1Affine,
-            <G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bn254G1Affine,
+            <Bn254G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
@@ -737,7 +741,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn g1_mul(&self, p: &G1Affine, s: &Fr) -> G1Affine {
+    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Fr) -> Bn254G1Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -779,12 +783,12 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g1_mul(
         &self,
-        p: &G1Affine,
+        p: &Bn254G1Affine,
         s: &Fr,
     ) -> Result<
         Result<
-            G1Affine,
-            <G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bn254G1Affine,
+            <Bn254G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
@@ -832,12 +836,15 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_add<'i>(a: &'i G1Affine, b: &'i G1Affine) -> (&'i G1Affine, &'i G1Affine) {
+    pub fn g1_add<'i>(
+        a: &'i Bn254G1Affine,
+        b: &'i Bn254G1Affine,
+    ) -> (&'i Bn254G1Affine, &'i Bn254G1Affine) {
         (a, b)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i G1Affine, s: &'i Fr) -> (&'i G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Fr) -> (&'i Bn254G1Affine, &'i Fr) {
         (p, s)
     }
 }
@@ -1031,7 +1038,7 @@ fn __Contract__0bbda83869b96862f040597ce6f7f1153fcf92be3a6565cd371a4485bb1a9c8d_
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{crypto::bn254, vec, Env, U256};
+    use soroban_sdk::{vec, Env, U256};
     extern crate std;
     use crate::{Contract, ContractClient};
     fn parse_ethereum_g1_add_input(input: &str) -> ([u8; 64], [u8; 64]) {
@@ -1110,8 +1117,8 @@ mod test {
         let client = ContractClient::new(&env, &contract_id);
         let add_input = "23f16f1bcc31bd002746da6fa3825209af9a356ccd99cf79604a430dd592bcd90a03caeda9c5aa40cdc9e4166e083492885dad36c72714e3697e34a4bc72ccaa21315394462f1a39f87462dbceb92718b220e4f80af516f727ad85380fadefbc2e4f40ea7bbe2d4d71f13c84fd2ae24a4a24d9638dd78349d0dee8435a67cca6";
         let (g1_x_bytes, g1_y_bytes) = parse_ethereum_g1_add_input(add_input);
-        let x_bn254 = bn254::G1Affine::from_array(&env, &g1_x_bytes);
-        let y_bn254 = bn254::G1Affine::from_array(&env, &g1_y_bytes);
+        let x_bn254 = Bn254G1Affine::from_array(&env, &g1_x_bytes);
+        let y_bn254 = Bn254G1Affine::from_array(&env, &g1_y_bytes);
         let expected_x_plus_y = hex::decode(
                 "013f227997b410cbd96b137a114f5b12d5a3a53d7482797bcd1f116ff30ff1931effebc79dee208d036553beae8ca71afb3b4c00979560db3991c7e67c49103c",
             )
@@ -1132,7 +1139,7 @@ mod test {
                 }
             }
         };
-        let scalar: bn254::Fr = U256::from_u32(&env, 2).into();
+        let scalar: Fr = U256::from_u32(&env, 2).into();
         match (
             &client.g1_add(&x_bn254, &x_bn254),
             &client.g1_mul(&x_bn254, &scalar),
@@ -1183,15 +1190,15 @@ mod test {
         let g1_vec = ::soroban_sdk::Vec::from_array(
             &env,
             [
-                bn254::G1Affine::from_array(&env, &g1_points[0]),
-                bn254::G1Affine::from_array(&env, &g1_points[1]),
+                Bn254G1Affine::from_array(&env, &g1_points[0]),
+                Bn254G1Affine::from_array(&env, &g1_points[1]),
             ],
         );
         let g2_vec = ::soroban_sdk::Vec::from_array(
             &env,
             [
-                bn254::G2Affine::from_array(&env, &g2_points[0]),
-                bn254::G2Affine::from_array(&env, &g2_points[1]),
+                Bn254G2Affine::from_array(&env, &g2_points[0]),
+                Bn254G2Affine::from_array(&env, &g2_points[1]),
             ],
         );
         let proof = MockProof {
@@ -1245,8 +1252,8 @@ mod test {
         };
         let g1_bytes: [u8; 64] = bytes[0..64].try_into().unwrap();
         let g1_negaed_bytes: [u8; 64] = bytes[64..128].try_into().unwrap();
-        let g1 = G1Affine::from_array(&env, &g1_bytes);
-        let g1_negated = G1Affine::from_array(&env, &g1_negaed_bytes);
+        let g1 = Bn254G1Affine::from_array(&env, &g1_bytes);
+        let g1_negated = Bn254G1Affine::from_array(&env, &g1_negaed_bytes);
         match (&-g1, &g1_negated) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {

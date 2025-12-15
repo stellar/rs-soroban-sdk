@@ -24,7 +24,7 @@ pub struct Bls12_381 {
     env: Env,
 }
 
-/// `G1Affine` is a point in the G1 group (subgroup defined over the base field
+/// `Bls12381G1Affine` is a point in the G1 group (subgroup defined over the base field
 ///  `Fq`) of the BLS12-381 elliptic curve
 ///
 /// # Serialization:
@@ -42,19 +42,22 @@ pub struct Bls12_381 {
 ///
 /// # Example Usage:
 /// ```rust
-/// use soroban_sdk::{Env, bytesn, crypto::bls12_381::{Bls12_381, G1Affine}};
+/// use soroban_sdk::{Env, bytesn, crypto::bls12_381::{Bls12_381, Bls12381G1Affine}};
 /// let env = Env::default();
 /// let bls12_381 = env.crypto().bls12_381();
-/// let zero = G1Affine::from_bytes(bytesn!(&env, 0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000));
-/// let one = G1Affine::from_bytes(bytesn!(&env, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
+/// let zero = Bls12381G1Affine::from_bytes(bytesn!(&env, 0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000));
+/// let one = Bls12381G1Affine::from_bytes(bytesn!(&env, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
 /// let res = bls12_381.g1_add(&zero, &one);
 /// assert_eq!(res, one);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct G1Affine(BytesN<G1_SERIALIZED_SIZE>);
+pub struct Bls12381G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 
-/// `G2Affine` is a point in the G2 group (subgroup defined over the quadratic
+/// Type alias for `Bls12381G1Affine` for convenience
+pub type G1Affine = Bls12381G1Affine;
+
+/// `Bls12381G2Affine` is a point in the G2 group (subgroup defined over the quadratic
 /// extension field `Fq2`) of the BLS12-381 elliptic curve
 ///
 /// # Serialization:
@@ -72,9 +75,12 @@ pub struct G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 ///   - sort_flag (bit 2): Must always be unset (0).
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct G2Affine(BytesN<G2_SERIALIZED_SIZE>);
+pub struct Bls12381G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 
-/// `Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
+/// Type alias for `Bls12381G2Affine` for convenience
+pub type G2Affine = Bls12381G2Affine;
+
+/// `Bls12381Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
 /// curve
 ///
 /// # Serialization:
@@ -82,9 +88,12 @@ pub struct G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 ///   field `Fp`. The value is serialized as a big-endian integer.
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fp(BytesN<FP_SERIALIZED_SIZE>);
+pub struct Bls12381Fp(BytesN<FP_SERIALIZED_SIZE>);
 
-/// `Fp2` represents an element of the quadratic extension field `Fq2` of the
+/// Type alias for `Bls12381Fp` for convenience
+pub type Fp = Bls12381Fp;
+
+/// `Bls12381Fp2` represents an element of the quadratic extension field `Fq2` of the
 /// BLS12-381 elliptic curve
 ///
 /// # Serialization:
@@ -94,7 +103,10 @@ pub struct Fp(BytesN<FP_SERIALIZED_SIZE>);
 ///   and imaginary components).
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fp2(BytesN<FP2_SERIALIZED_SIZE>);
+pub struct Bls12381Fp2(BytesN<FP2_SERIALIZED_SIZE>);
+
+/// Type alias for `Bls12381Fp2` for convenience
+pub type Fp2 = Bls12381Fp2;
 
 /// `Fr` represents an element in the BLS12-381 scalar field, which is a prime
 /// field of order `r` (the order of the G1 and G2 groups). The struct is
@@ -104,10 +116,10 @@ pub struct Fp2(BytesN<FP2_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Fr(U256);
 
-impl_bytesn_repr!(G1Affine, G1_SERIALIZED_SIZE);
-impl_bytesn_repr!(G2Affine, G2_SERIALIZED_SIZE);
-impl_bytesn_repr!(Fp, FP_SERIALIZED_SIZE);
-impl_bytesn_repr!(Fp2, FP2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381G1Affine, G1_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381G2Affine, G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381Fp, FP_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381Fp2, FP2_SERIALIZED_SIZE);
 
 impl Fp {
     pub fn env(&self) -> &Env {

@@ -319,9 +319,8 @@ mod objects {
     use crate::{Env, IntoVal, TryFromVal, TryIntoVal};
 
     use crate::crypto::bn254::{
-        Fr as Bn254Fr, G1Affine as Bn254G1Affine, G2Affine as Bn254G2Affine,
-        G1_SERIALIZED_SIZE as BN254_G1_SERIALIZED_SIZE,
-        G2_SERIALIZED_SIZE as BN254_G2_SERIALIZED_SIZE,
+        Bn254G1Affine, Bn254G2Affine, Fr as Bn254Fr, BN254_G1_SERIALIZED_SIZE,
+        BN254_G2_SERIALIZED_SIZE,
     };
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
     use crate::{
