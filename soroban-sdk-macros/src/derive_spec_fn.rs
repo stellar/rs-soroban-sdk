@@ -152,7 +152,7 @@ pub fn derive_fn_spec(
                     MAX,
                 ),
             ));
-            VecM::<_, MAX>::default()
+            VecM::<_, { u32::MAX }>::default()
         }),
         outputs: spec_result.try_into().unwrap(),
     });
