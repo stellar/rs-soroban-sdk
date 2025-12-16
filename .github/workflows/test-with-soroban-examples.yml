@@ -89,8 +89,8 @@ jobs:
       run: |
         # Extract the top-level example directory (e.g., "privacy-pools" from "privacy-pools/contract")
         top_dir=$(echo "${{ matrix.working-directory }}" | cut -d/ -f1)
-        # Check if any Cargo.toml files in this example's tree were modified
-        (cd ${{ github.workspace }}/soroban-examples && ! git diff --exit-code -- "$top_dir/**/Cargo.toml") || (echo 'A diff is expected'; exit 1)
+        # Check if any files in this example's directory tree were modified
+        (cd ${{ github.workspace }}/soroban-examples && ! git diff --exit-code -- "$top_dir/") || (echo 'A diff is expected'; exit 1)
 
     - name: Build soroban-examples
       env:
