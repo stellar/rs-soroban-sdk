@@ -75,7 +75,14 @@ jobs:
       run: |
         # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
         crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
-        find . -name Cargo.toml | while read file; do
+
+        # Find Cargo.toml files to patch
+        local_files=$(find . -name Cargo.toml)
+        workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
+        files=$(echo "$local_files"; echo "$workspace_root/Cargo.toml")
+
+        # Patch local files and workspace root (sort -u to deduplicate)
+        echo "$files" | sort -u | while read -r file; do
           echo Patching "$file" ...
           dir=$(dirname "$file")
           for crate in $crates; do
