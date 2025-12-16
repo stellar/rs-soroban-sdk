@@ -1219,7 +1219,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "23.1.0"
+version = "23.3.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -1231,7 +1231,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "23.1.0"
+version = "23.3.0"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1248,11 +1248,12 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "stellar-strkey",
+ "visibility",
 ]
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "23.1.0"
+version = "23.3.0"
 dependencies = [
  "darling",
  "heck",
@@ -1270,7 +1271,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "23.1.0"
+version = "23.3.0"
 dependencies = [
  "base64",
  "stellar-xdr",
@@ -1280,7 +1281,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "23.1.0"
+version = "23.3.0"
 dependencies = [
  "prettyplease",
  "proc-macro2",
@@ -1390,7 +1391,7 @@ dependencies = [
 
 [[package]]
 name = "test_fuzz"
-version = "23.1.0"
+version = "23.3.0"
 dependencies = [
  "soroban-sdk",
 ]
@@ -1472,6 +1473,17 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
+
+[[package]]
+name = "visibility"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d674d135b4a8c1d7e813e2f8d1c9a58308aee4a680323066025e53132218bd91"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
+]
 
 [[package]]
 name = "wasi"
