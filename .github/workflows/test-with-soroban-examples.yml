@@ -82,7 +82,7 @@ jobs:
         files=$(echo "$local_files"; echo "$workspace_root/Cargo.toml")
 
         # Patch local files and workspace root (sort -u to deduplicate)
-        echo "$files" | sort -u | while read file; do
+        echo "$files" | sort -u | while read -r file; do
           echo Patching "$file" ...
           dir=$(dirname "$file")
           for crate in $crates; do
