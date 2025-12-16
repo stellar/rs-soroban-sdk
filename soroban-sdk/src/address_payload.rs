@@ -1,8 +1,5 @@
 #![cfg(any(test, feature = "hazmat-address"))]
-#![cfg_attr(
-    feature = "docs",
-    doc(cfg(any(feature = "hazmat", feature = "hazmat-address")))
-)]
+#![cfg_attr(feature = "docs", doc(cfg(feature = "hazmat-address")))]
 
 //! Address payload extraction and construction.
 //!

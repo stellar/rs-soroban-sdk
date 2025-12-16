@@ -394,10 +394,7 @@ impl Address {
     /// custom Ed25519 signature verification as a form of authentication
     /// because the master key may not be configured the signer of the account.
     #[cfg(any(test, feature = "hazmat-address"))]
-    #[cfg_attr(
-        feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-address")))
-    )]
+    #[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat-address")))]
     pub fn to_payload(&self) -> Option<AddressPayload> {
         AddressPayload::from_address(self)
     }
@@ -414,10 +411,7 @@ impl Address {
     /// custom Ed25519 signature verification as a form of authentication
     /// because the master key may not be configured the signer of the account.
     #[cfg(any(test, feature = "hazmat-address"))]
-    #[cfg_attr(
-        feature = "docs",
-        doc(cfg(any(feature = "hazmat", feature = "hazmat-address")))
-    )]
+    #[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat-address")))]
     pub fn from_payload(env: &Env, payload: AddressPayload) -> Address {
         payload.to_address(env)
     }

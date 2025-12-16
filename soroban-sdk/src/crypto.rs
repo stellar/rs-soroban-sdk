@@ -191,10 +191,7 @@ impl Crypto {
 /// incorrectly can introduce security vulnerabilities. Please use [Crypto] if
 /// possible.
 #[cfg_attr(any(test, feature = "hazmat-crypto"), visibility::make(pub))]
-#[cfg_attr(
-    feature = "docs",
-    doc(cfg(any(feature = "hazmat", feature = "hazmat-crypto")))
-)]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat-crypto")))]
 pub(crate) struct CryptoHazmat {
     env: Env,
 }
