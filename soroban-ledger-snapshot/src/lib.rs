@@ -12,6 +12,9 @@ use soroban_env_host::{
     HostError, LedgerInfo,
 };
 
+#[cfg(test)]
+mod tests;
+
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("io")]
@@ -22,10 +25,56 @@ pub enum Error {
 
 /// Ledger snapshot stores a snapshot of a ledger that can be restored for use
 /// in environments as a [`LedgerInfo`] and a [`SnapshotSource`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LedgerSnapshot {
+    pub protocol_version: u32,
+    pub sequence_number: u32,
+    pub timestamp: u64,
+    pub network_id: [u8; 32],
+    pub base_reserve: u32,
+    pub min_persistent_entry_ttl: u32,
+    pub min_temp_entry_ttl: u32,
+    pub max_entry_ttl: u32,
+    pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
+}
+
+/// Enum that contains all supported formats a ledger snapshot can be deserialized from.
+///
+/// The serialization format has evolved over time:
+/// 1. V1: The entire ledger snapshot was serialized
+/// 2. V1Compact: A more compact format where the [`LedgerKey`] is omitted from the
+///    ledger_entries tuple since it is duplicated within the [`LedgerEntry`].
+#[derive(serde::Deserialize)]
+#[serde(untagged)]
+enum LedgerSnapshotFormat {
+    V1Compact(LedgerSnapshotV1Compact),
+    V1(LedgerSnapshotV1),
+}
+
+/// Internal structure used to represent a [`LedgerSnapshot`] in a more compact form. The
+/// [`LedgerKey`] is omitted from the ledger_entries tuple since it is duplicated within
+/// the [`LedgerEntry`].
 #[serde_as]
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct LedgerSnapshot {
+struct LedgerSnapshotV1Compact {
+    pub protocol_version: u32,
+    pub sequence_number: u32,
+    pub timestamp: u64,
+    #[serde_as(as = "serde_with::hex::Hex")]
+    pub network_id: [u8; 32],
+    pub base_reserve: u32,
+    pub min_persistent_entry_ttl: u32,
+    pub min_temp_entry_ttl: u32,
+    pub max_entry_ttl: u32,
+    pub ledger_entries: Vec<(Box<LedgerEntry>, Option<u32>)>,
+}
+
+/// Internal structure used to represent the V1 format of a [`LedgerSnapshot`].
+#[serde_as]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+struct LedgerSnapshotV1 {
     pub protocol_version: u32,
     pub sequence_number: u32,
     pub timestamp: u64,
@@ -39,7 +88,7 @@ pub struct LedgerSnapshot {
 }
 
 impl LedgerSnapshot {
-    // Create a ledger snapshot from ledger info and a set of entries.
+    /// Create a [`LedgerSnapshot`] from [`LedgerInfo`] and a set of entries.
     pub fn from<'a>(
         info: LedgerInfo,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, (&'a Box<LedgerEntry>, Option<u32>))>,
@@ -65,7 +114,7 @@ impl LedgerSnapshot {
         self.update_entries(&host.get_stored_entries().unwrap());
     }
 
-    // Get the ledger info in the snapshot.
+    /// Get the ledger info in the snapshot.
     pub fn ledger_info(&self) -> LedgerInfo {
         LedgerInfo {
             protocol_version: self.protocol_version,
@@ -135,23 +184,45 @@ impl LedgerSnapshot {
     }
 }
 
+impl serde::Serialize for LedgerSnapshot {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let compact: LedgerSnapshotV1Compact = self.into();
+        compact.serialize(serializer)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for LedgerSnapshot {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        match LedgerSnapshotFormat::deserialize(deserializer)? {
+            LedgerSnapshotFormat::V1Compact(val) => Ok(val.into()),
+            LedgerSnapshotFormat::V1(val) => Ok(val.into()),
+        }
+    }
+}
+
 impl LedgerSnapshot {
-    // Read in a [`LedgerSnapshot`] from a reader.
+    /// Read in a [`LedgerSnapshot`] from a reader.
     pub fn read(r: impl Read) -> Result<LedgerSnapshot, Error> {
         Ok(serde_json::from_reader::<_, LedgerSnapshot>(r)?)
     }
 
-    // Read in a [`LedgerSnapshot`] from a file.
+    /// Read in a [`LedgerSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Error> {
         Self::read(File::open(p)?)
     }
 
-    // Write a [`LedgerSnapshot`] to a writer.
+    /// Write a [`LedgerSnapshot`] to a writer.
     pub fn write(&self, w: impl Write) -> Result<(), Error> {
         Ok(serde_json::to_writer_pretty(w, self)?)
     }
 
-    // Write a [`LedgerSnapshot`] to file.
+    /// Write a [`LedgerSnapshot`] to file.
     pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Error> {
         let p = p.as_ref();
         if let Some(dir) = p.parent() {
@@ -197,5 +268,64 @@ impl SnapshotSource for LedgerSnapshot {
         key: &Rc<LedgerKey>,
     ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
         <_ as SnapshotSource>::get(&self, key)
+    }
+}
+
+impl From<LedgerSnapshotV1Compact> for LedgerSnapshot {
+    fn from(compact: LedgerSnapshotV1Compact) -> Self {
+        Self {
+            protocol_version: compact.protocol_version,
+            sequence_number: compact.sequence_number,
+            timestamp: compact.timestamp,
+            network_id: compact.network_id,
+            base_reserve: compact.base_reserve,
+            min_persistent_entry_ttl: compact.min_persistent_entry_ttl,
+            min_temp_entry_ttl: compact.min_temp_entry_ttl,
+            max_entry_ttl: compact.max_entry_ttl,
+            ledger_entries: compact
+                .ledger_entries
+                .into_iter()
+                .map(|(e, ttl)| {
+                    let key = Box::new(e.to_key());
+                    (key, (e, ttl))
+                })
+                .collect(),
+        }
+    }
+}
+
+impl From<&LedgerSnapshot> for LedgerSnapshotV1Compact {
+    fn from(snapshot: &LedgerSnapshot) -> Self {
+        Self {
+            protocol_version: snapshot.protocol_version,
+            sequence_number: snapshot.sequence_number,
+            timestamp: snapshot.timestamp,
+            network_id: snapshot.network_id,
+            base_reserve: snapshot.base_reserve,
+            min_persistent_entry_ttl: snapshot.min_persistent_entry_ttl,
+            min_temp_entry_ttl: snapshot.min_temp_entry_ttl,
+            max_entry_ttl: snapshot.max_entry_ttl,
+            ledger_entries: snapshot
+                .ledger_entries
+                .iter()
+                .map(|(_, v)| v.clone())
+                .collect(),
+        }
+    }
+}
+
+impl From<LedgerSnapshotV1> for LedgerSnapshot {
+    fn from(legacy: LedgerSnapshotV1) -> Self {
+        Self {
+            protocol_version: legacy.protocol_version,
+            sequence_number: legacy.sequence_number,
+            timestamp: legacy.timestamp,
+            network_id: legacy.network_id,
+            base_reserve: legacy.base_reserve,
+            min_persistent_entry_ttl: legacy.min_persistent_entry_ttl,
+            min_temp_entry_ttl: legacy.min_temp_entry_ttl,
+            max_entry_ttl: legacy.max_entry_ttl,
+            ledger_entries: legacy.ledger_entries,
+        }
     }
 }
