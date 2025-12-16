@@ -86,14 +86,7 @@ jobs:
         done
 
     - name: Diff
-      run: |
-        # If soroban-sdk uses workspace dependencies, the workspace root Cargo.toml was patched, not this one
-        if grep -E 'soroban-sdk\s*=\s*\{.*workspace\s*=\s*true' Cargo.toml; then
-          echo "soroban-sdk uses workspace dependency - changes expected in workspace root"
-        else
-          # Direct dependencies should have been patched in this Cargo.toml
-          (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
-        fi
+      run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
 
     - name: Build soroban-examples
       env:
