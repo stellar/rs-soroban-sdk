@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
 pub struct ContractA;
 ///ContractAArgs is a type for building arg lists for functions defined in "ContractA".
@@ -311,6 +312,7 @@ fn __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020
         );
     }
 }
+#[cfg(test)]
 mod test_a {
     use super::*;
     use soroban_sdk::{
@@ -327,6 +329,7 @@ mod test_a {
     };
     extern crate std;
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_a::test_with_mock_all_auth"]
     #[doc(hidden)]
     pub const test_with_mock_all_auth: test::TestDescAndFn = test::TestDescAndFn {
@@ -370,17 +373,20 @@ mod test_a {
         };
         match (
             &e.auths(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([(
-                a.clone(),
-                AuthorizedInvocation {
-                    function: AuthorizedFunction::Contract((
-                        contract_id.clone(),
-                        Symbol::new(&e, "fn1"),
-                        (&a,).into_val(&e),
-                    )),
-                    sub_invocations: ::alloc::vec::Vec::new(),
-                },
-            )])),
+            &<[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([(
+                    a.clone(),
+                    AuthorizedInvocation {
+                        function: AuthorizedFunction::Contract((
+                            contract_id.clone(),
+                            Symbol::new(&e, "fn1"),
+                            (&a,).into_val(&e),
+                        )),
+                        sub_invocations: ::alloc::vec::Vec::new(),
+                    },
+                )]),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -396,6 +402,7 @@ mod test_a {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_a::test_with_mock_auth"]
     #[doc(hidden)]
     pub const test_with_mock_auth: test::TestDescAndFn = test::TestDescAndFn {
@@ -449,17 +456,20 @@ mod test_a {
         };
         match (
             &e.auths(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([(
-                a.clone(),
-                AuthorizedInvocation {
-                    function: AuthorizedFunction::Contract((
-                        contract_id.clone(),
-                        Symbol::new(&e, "fn1"),
-                        (&a,).into_val(&e),
-                    )),
-                    sub_invocations: ::alloc::vec::Vec::new(),
-                },
-            )])),
+            &<[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([(
+                    a.clone(),
+                    AuthorizedInvocation {
+                        function: AuthorizedFunction::Contract((
+                            contract_id.clone(),
+                            Symbol::new(&e, "fn1"),
+                            (&a,).into_val(&e),
+                        )),
+                        sub_invocations: ::alloc::vec::Vec::new(),
+                    },
+                )]),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -475,6 +485,7 @@ mod test_a {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_a::test_with_real_contract_auth_approve"]
     #[doc(hidden)]
     pub const test_with_real_contract_auth_approve: test::TestDescAndFn = test::TestDescAndFn {
@@ -515,9 +526,10 @@ mod test_a {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_id.clone().try_into().unwrap(),
                         function_name: StringM::try_from("fn1").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                            a_xdr.clone(),
-                        )]))
+                        args: <[_]>::into_vec(
+                            #[rustc_box]
+                            ::alloc::boxed::Box::new([ScVal::Address(a_xdr.clone())]),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
@@ -540,17 +552,20 @@ mod test_a {
         };
         match (
             &e.auths(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([(
-                a.clone(),
-                AuthorizedInvocation {
-                    function: AuthorizedFunction::Contract((
-                        contract_id.clone(),
-                        Symbol::new(&e, "fn1"),
-                        (&a,).into_val(&e),
-                    )),
-                    sub_invocations: ::alloc::vec::Vec::new(),
-                },
-            )])),
+            &<[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([(
+                    a.clone(),
+                    AuthorizedInvocation {
+                        function: AuthorizedFunction::Contract((
+                            contract_id.clone(),
+                            Symbol::new(&e, "fn1"),
+                            (&a,).into_val(&e),
+                        )),
+                        sub_invocations: ::alloc::vec::Vec::new(),
+                    },
+                )]),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -566,6 +581,7 @@ mod test_a {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_a::test_with_real_contract_auth_decline"]
     #[doc(hidden)]
     pub const test_with_real_contract_auth_decline: test::TestDescAndFn = test::TestDescAndFn {
@@ -606,9 +622,10 @@ mod test_a {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_id.try_into().unwrap(),
                         function_name: StringM::try_from("fn1").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                            a_xdr.clone(),
-                        )]))
+                        args: <[_]>::into_vec(
+                            #[rustc_box]
+                            ::alloc::boxed::Box::new([ScVal::Address(a_xdr.clone())]),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
@@ -1706,6 +1723,7 @@ fn __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84
         );
     }
 }
+#[cfg(test)]
 mod test_b {
     use super::*;
     use soroban_sdk::{
@@ -1722,6 +1740,7 @@ mod test_b {
     };
     extern crate std;
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_b::test_with_mock_all_auth"]
     #[doc(hidden)]
     pub const test_with_mock_all_auth: test::TestDescAndFn = test::TestDescAndFn {
@@ -1778,8 +1797,9 @@ mod test_b {
                         },
                         (1, 2).into_val(&e),
                     )),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        AuthorizedInvocation {
+                    sub_invocations: <[_]>::into_vec(
+                        #[rustc_box]
+                        ::alloc::boxed::Box::new([AuthorizedInvocation {
                             function: AuthorizedFunction::Contract((
                                 contract_a_id.clone(),
                                 {
@@ -1791,8 +1811,8 @@ mod test_b {
                                 (&a,).into_val(&e),
                             )),
                             sub_invocations: ::alloc::vec::Vec::new(),
-                        },
-                    ])),
+                        }]),
+                    ),
                 },
             )],
         ) {
@@ -1810,6 +1830,7 @@ mod test_b {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_b::test_with_mock_auth"]
     #[doc(hidden)]
     pub const test_with_mock_auth: test::TestDescAndFn = test::TestDescAndFn {
@@ -1881,8 +1902,9 @@ mod test_b {
                         },
                         (1, 2).into_val(&e),
                     )),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        AuthorizedInvocation {
+                    sub_invocations: <[_]>::into_vec(
+                        #[rustc_box]
+                        ::alloc::boxed::Box::new([AuthorizedInvocation {
                             function: AuthorizedFunction::Contract((
                                 contract_a_id.clone(),
                                 {
@@ -1894,8 +1916,8 @@ mod test_b {
                                 (&a,).into_val(&e),
                             )),
                             sub_invocations: ::alloc::vec::Vec::new(),
-                        },
-                    ])),
+                        }]),
+                    ),
                 },
             )],
         ) {
@@ -1913,6 +1935,7 @@ mod test_b {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_b::test_with_real_contract_auth_approve"]
     #[doc(hidden)]
     pub const test_with_real_contract_auth_approve: test::TestDescAndFn = test::TestDescAndFn {
@@ -1954,27 +1977,29 @@ mod test_b {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_b_id.clone().try_into().unwrap(),
                         function_name: StringM::try_from("fn2").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([
-                            ScVal::I32(1),
-                            ScVal::I32(2),
-                        ]))
+                        args: <[_]>::into_vec(
+                            #[rustc_box]
+                            ::alloc::boxed::Box::new([ScVal::I32(1), ScVal::I32(2)]),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        SorobanAuthorizedInvocation {
+                    sub_invocations: <[_]>::into_vec(
+                        #[rustc_box]
+                        ::alloc::boxed::Box::new([SorobanAuthorizedInvocation {
                             function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                                 contract_address: contract_a_id.clone().try_into().unwrap(),
                                 function_name: StringM::try_from("fn1").unwrap().into(),
-                                args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                                    a_xdr.clone(),
-                                )]))
+                                args: <[_]>::into_vec(
+                                    #[rustc_box]
+                                    ::alloc::boxed::Box::new([ScVal::Address(a_xdr.clone())]),
+                                )
                                 .try_into()
                                 .unwrap(),
                             }),
                             sub_invocations: Default::default(),
-                        },
-                    ]))
+                        }]),
+                    )
                     .try_into()
                     .unwrap(),
                 },
@@ -2007,8 +2032,9 @@ mod test_b {
                         },
                         (1, 2).into_val(&e),
                     )),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        AuthorizedInvocation {
+                    sub_invocations: <[_]>::into_vec(
+                        #[rustc_box]
+                        ::alloc::boxed::Box::new([AuthorizedInvocation {
                             function: AuthorizedFunction::Contract((
                                 contract_a_id.clone(),
                                 {
@@ -2020,8 +2046,8 @@ mod test_b {
                                 (&a,).into_val(&e),
                             )),
                             sub_invocations: ::alloc::vec::Vec::new(),
-                        },
-                    ])),
+                        }]),
+                    ),
                 },
             )],
         ) {
@@ -2039,6 +2065,7 @@ mod test_b {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_b::test_with_real_contract_auth_decline"]
     #[doc(hidden)]
     pub const test_with_real_contract_auth_decline: test::TestDescAndFn = test::TestDescAndFn {
@@ -2080,27 +2107,29 @@ mod test_b {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_b_id.try_into().unwrap(),
                         function_name: StringM::try_from("fn2").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([
-                            ScVal::I32(1),
-                            ScVal::I32(2),
-                        ]))
+                        args: <[_]>::into_vec(
+                            #[rustc_box]
+                            ::alloc::boxed::Box::new([ScVal::I32(1), ScVal::I32(2)]),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        SorobanAuthorizedInvocation {
+                    sub_invocations: <[_]>::into_vec(
+                        #[rustc_box]
+                        ::alloc::boxed::Box::new([SorobanAuthorizedInvocation {
                             function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                                 contract_address: contract_a_id.clone().try_into().unwrap(),
                                 function_name: StringM::try_from("fn1").unwrap().into(),
-                                args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                                    a_xdr.clone(),
-                                )]))
+                                args: <[_]>::into_vec(
+                                    #[rustc_box]
+                                    ::alloc::boxed::Box::new([ScVal::Address(a_xdr.clone())]),
+                                )
                                 .try_into()
                                 .unwrap(),
                             }),
                             sub_invocations: Default::default(),
-                        },
-                    ]))
+                        }]),
+                    )
                     .try_into()
                     .unwrap(),
                 },

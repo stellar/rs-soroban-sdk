@@ -21,7 +21,6 @@ use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, TryIntoVal};
 /// #     pub fn f(env: Env) {
 /// let ledger = env.ledger();
 ///
-/// let protocol_version = ledger.protocol_version();
 /// let sequence = ledger.sequence();
 /// let timestamp = ledger.timestamp();
 /// let network_id = ledger.network_id();
@@ -52,6 +51,7 @@ impl Ledger {
     }
 
     /// Returns the version of the protocol that the ledger created with.
+    #[deprecated(note = "Protocol version won't be available in the future")]
     pub fn protocol_version(&self) -> u32 {
         internal::Env::get_ledger_version(self.env())
             .unwrap_infallible()
