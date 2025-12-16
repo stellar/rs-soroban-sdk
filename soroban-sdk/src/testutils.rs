@@ -87,7 +87,8 @@ impl Snapshot {
 
     // Read in a [`Snapshot`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<Snapshot, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`Snapshot`] to a writer.
@@ -119,7 +120,8 @@ impl EventsSnapshot {
 
     // Read in a [`EventsSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<EventsSnapshot, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`EventsSnapshot`] to a writer.
@@ -169,7 +171,8 @@ impl AuthSnapshot {
 
     // Read in a [`AuthSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<AuthSnapshot, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`AuthSnapshot`] to a writer.
@@ -215,7 +218,8 @@ impl Generators {
 
     // Read in a [`Generators`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<Generators, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`Generators`] to a writer.

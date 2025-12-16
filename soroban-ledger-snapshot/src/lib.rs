@@ -1,7 +1,7 @@
 use serde_with::serde_as;
 use std::{
     fs::{create_dir_all, File},
-    io::{self, Read, Write},
+    io::{self, BufReader, Read, Write},
     path::Path,
     rc::Rc,
 };
@@ -214,7 +214,8 @@ impl LedgerSnapshot {
 
     /// Read in a [`LedgerSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Error> {
-        Self::read(File::open(p)?)
+        let reader = BufReader::new(File::open(p)?);
+        Self::read(reader)
     }
 
     /// Write a [`LedgerSnapshot`] to a writer.
