@@ -1,15 +1,15 @@
-use ::stellar_xdr::curr::ScSpecEventParamLocationV0;
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
+use stellar_xdr::curr::ScSpecEventParamLocationV0;
 use stellar_xdr::{
     ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0,
     ScSpecUdtUnionV0,
 };
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
-// streams as rustdocs, because rustdocs can contain rust code, and that code
-// will be executed. Generated code may be generated on untrusted wasms
+// streams as rustdocs, because rustdocs can contain Rust code, and that code
+// will be executed. Generated code may be generated from untrusted Wasm
 // containing untrusted spec docs.
 
 // TODO: Replace the unwrap()s in this code with returning Result.

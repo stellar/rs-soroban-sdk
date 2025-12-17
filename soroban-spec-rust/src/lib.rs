@@ -15,8 +15,8 @@ use soroban_spec::read::{from_wasm, FromWasmError};
 use types::{generate_enum, generate_error_enum, generate_event, generate_struct, generate_union};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
-// streams as rustdocs, because rustdocs can contain rust code, and that code
-// will be executed. Generated code may be generated on untrusted wasms
+// streams as rustdocs, because rustdocs can contain Rust code, and that code
+// will be executed. Generated code may be generated from untrusted Wasm
 // containing untrusted spec docs.
 
 #[derive(thiserror::Error, Debug)]
