@@ -60,15 +60,15 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         .filter(|f| !impl_fns.iter().any(|o| f.ident == o.ident))
         .collect::<Vec<_>>();
 
-    let mut output = derive_pub_fns(
+    let mut output = quote! {};
+    output.extend(derive_pub_fns(
         &args.crate_path,
         &impl_ty,
         &fns,
         Some(trait_ident),
         &args.client_name,
-    )
-    .unwrap_or_else(|e| e);
-    output.extend(derive_fns_spec(&args.spec_name, &fns, spec_export).unwrap_or_else(|e| e));
+    ));
+    output.extend(derive_fns_spec(&args.spec_name, &fns, spec_export));
     output.extend(derive_client_impl(
         &args.crate_path,
         &args.client_name,
