@@ -89,7 +89,7 @@ mod test_with_wasm {
 
     mod contract {
         soroban_sdk::contractimport!(
-            file = "../../target/wasm32v1-none/release/test_associated_types.wasm"
+            file = "../../target/wasm32v1-none/release/test_associated_types_contracttrait.wasm"
         );
     }
 
