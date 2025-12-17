@@ -211,18 +211,18 @@ pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Ident>,
-    methods: impl Iterator<Item = &'a syn::Signature>,
+    method_idents: impl Iterator<Item = &'a Ident>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
         return quote!();
     }
 
     let ty_str = ty_to_safe_ident_str(ty);
-    let (idents, wrap_idents): (Vec<_>, Vec<_>) = methods
-        .map(|m| {
-            let ident = format!("{}", m.ident);
-            let wrap_ident = format_ident!("__{}__{}", ty_str, ident);
-            (ident, wrap_ident)
+    let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
+        .map(|ident| {
+            let ident_str = format!("{}", ident);
+            let wrap_ident = format_ident!("__{}__{}", ty_str, ident_str);
+            (ident_str, wrap_ident)
         })
         .multiunzip();
 
