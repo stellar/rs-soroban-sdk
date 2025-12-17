@@ -190,12 +190,8 @@ impl Crypto {
 /// insecure if misused. They are not generally recommended. Using them
 /// incorrectly can introduce security vulnerabilities. Please use [Crypto] if
 /// possible.
-#[cfg(any(test, feature = "hazmat"))]
-#[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat")))]
-pub struct CryptoHazmat {
-    env: Env,
-}
-#[cfg(not(any(test, feature = "hazmat")))]
+#[cfg_attr(any(test, feature = "hazmat-crypto"), visibility::make(pub))]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat-crypto")))]
 pub(crate) struct CryptoHazmat {
     env: Env,
 }

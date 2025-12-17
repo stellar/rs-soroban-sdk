@@ -110,6 +110,10 @@ macro_rules! impl_bytesn_repr {
                 Self(bytes)
             }
 
+            pub fn into_bytes(self) -> BytesN<$size> {
+                self.0
+            }
+
             pub fn to_bytes(&self) -> BytesN<$size> {
                 self.0.clone()
             }
@@ -1110,14 +1114,14 @@ impl<const N: usize> From<BytesN<N>> for Val {
 impl<const N: usize> From<BytesN<N>> for Bytes {
     #[inline(always)]
     fn from(v: BytesN<N>) -> Self {
-        v.0
+        v.into_bytes()
     }
 }
 
 impl<const N: usize> From<&BytesN<N>> for Bytes {
     #[inline(always)]
     fn from(v: &BytesN<N>) -> Self {
-        v.0.clone()
+        v.to_bytes()
     }
 }
 
@@ -1156,6 +1160,18 @@ impl<const N: usize> BytesN<N> {
 
     pub fn env(&self) -> &Env {
         self.0.env()
+    }
+
+    pub fn as_bytes(&self) -> &Bytes {
+        &self.0
+    }
+
+    pub fn into_bytes(self) -> Bytes {
+        self.0
+    }
+
+    pub fn to_bytes(&self) -> Bytes {
+        self.0.clone()
     }
 
     pub fn as_val(&self) -> &Val {

@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{
     contracttrait, contracttype, Address, Bytes, BytesN, Duration, Env, Map, String, Symbol,
     Timepoint, Vec, I256, U256,
@@ -173,28 +174,31 @@ impl TryFrom<&MyStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &MyStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "a".try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
+            #[rustc_box]
+            ::alloc::boxed::Box::new([
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "a".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.a)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.a)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "b".try_into()
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "b".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.b)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.b)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                },
+            ]),
+        ))
     }
 }
 impl TryFrom<MyStruct> for soroban_sdk::xdr::ScMap {
@@ -3355,6 +3359,7 @@ impl AllTypesSpec {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
     }
 }
+#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::{
@@ -6726,6 +6731,7 @@ mod test {
         {}
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_types"]
     #[doc(hidden)]
     pub const test_types: test::TestDescAndFn = test::TestDescAndFn {
@@ -7057,6 +7063,7 @@ mod test {
         };
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_spec_docs"]
     #[doc(hidden)]
     pub const test_spec_docs: test::TestDescAndFn = test::TestDescAndFn {

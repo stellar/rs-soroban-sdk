@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env, String};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -718,10 +719,12 @@ fn __Contract_TraitWithoutContractTrait_b85cb430838ad2be2940af63cd34aab7c962ea87
         );
     }
 }
+#[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::{Env, String};
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_exec"]
     #[doc(hidden)]
     pub const test_exec: test::TestDescAndFn = test::TestDescAndFn {
@@ -776,6 +779,7 @@ mod test {
         };
     }
 }
+#[cfg(test)]
 mod test_with_wasm {
     use soroban_sdk::{Env, String};
     mod contract {
@@ -1063,6 +1067,7 @@ mod test_with_wasm {
         }
     }
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test_with_wasm::test_exec"]
     #[doc(hidden)]
     pub const test_exec: test::TestDescAndFn = test::TestDescAndFn {

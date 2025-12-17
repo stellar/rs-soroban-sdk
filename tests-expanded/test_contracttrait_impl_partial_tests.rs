@@ -1,9 +1,10 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
-extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
 use soroban_sdk::{
     contract, contractimpl, Address, Bytes, BytesN, Duration, Env, Map, String, Symbol, Timepoint,
     Vec, I256, U256,
@@ -3268,10 +3269,12 @@ fn __Contract_AllTypes_1eb9a6a69c5f732bd78e03e0fa5ea9d0a5c925757f7a5e53cd10ccd57
         );
     }
 }
+#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::{map, symbol_short, testutils::Address as _, vec, Env};
     extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::test_partial_override"]
     #[doc(hidden)]
     pub const test_partial_override: test::TestDescAndFn = test::TestDescAndFn {

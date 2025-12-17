@@ -22,7 +22,7 @@ jobs:
   complete:
     if: always()
     needs: [fmt, check-git-rev-deps, semver-checks, build, test, build-fuzz, docs, readme, migration-docs]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
       run: exit 1
@@ -264,6 +264,7 @@ jobs:
         msrv="$(make msrv)"
         rustup install $msrv
         rustup target add --toolchain $msrv wasm32v1-none
+        rustup component add rustfmt
     - uses: stellar/binaries@v45
       with:
         name: cargo-hack
