@@ -78,10 +78,6 @@ pub(crate) fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
 }
 
-pub(crate) fn default_export() -> bool {
-    true
-}
-
 #[derive(Debug, FromMeta)]
 struct ContractSpecArgs {
     name: Type,

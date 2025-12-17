@@ -1,5 +1,5 @@
 use crate::{
-    default_crate_path, default_export,
+    default_crate_path,
     derive_args::derive_args_impl,
     derive_client::derive_client_impl,
     derive_fn::{derive_contract_function_registration_ctor, derive_pub_fns},
@@ -22,8 +22,7 @@ struct Args {
     client_name: String,
     args_name: String,
     spec_name: Type,
-    #[darling(default = "default_export")]
-    spec_export: bool,
+    spec_export: Option<bool>,
 }
 
 pub fn derive_contractimpl_trait_default_fns_not_overridden(
@@ -48,7 +47,7 @@ fn derive_or_err(metadata: TokenStream2) -> Result<TokenStream2, Error> {
 fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let impl_ty = ident_to_type(args.impl_ident.clone());
     let trait_ident = &args.trait_ident;
-    let spec_export = args.spec_export;
+    let spec_export = args.spec_export.unwrap_or(true);
 
     let trait_default_fns = syn_ext::strs_to_fns(&args.trait_default_fns)?;
     let impl_fns = syn_ext::strs_to_fns(&args.impl_fns)?;
