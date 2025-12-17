@@ -723,23 +723,6 @@ pub mod __Contract__test_i32 {
     use super::*;
 }
 #[doc(hidden)]
-/// Test i32 values.
-#[allow(non_snake_case)]
-pub mod __Contract__test_i32__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    /// Test i32 values.
-    pub static __SPEC_XDR_FN_TEST_I32: [u8; 64usize] = super::Contract::spec_xdr_test_i32();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    /// Test i32 values.
-    pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
-    }
-}
-#[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_u64 {
     use super::*;
@@ -779,20 +762,6 @@ pub mod __Contract__test_u64 {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_u64__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_U64: [u8; 48usize] = super::Contract::spec_xdr_test_u64();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -837,20 +806,6 @@ pub mod __Contract__test_i64 {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_i64__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_I64: [u8; 48usize] = super::Contract::spec_xdr_test_i64();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_u128 {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u128` instead")]
@@ -889,20 +844,6 @@ pub mod __Contract__test_u128 {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_u128__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_U128: [u8; 52usize] = super::Contract::spec_xdr_test_u128();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -947,20 +888,6 @@ pub mod __Contract__test_i128 {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_i128__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_I128: [u8; 52usize] = super::Contract::spec_xdr_test_i128();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_bool {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bool` instead")]
@@ -999,20 +926,6 @@ pub mod __Contract__test_bool {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_bool__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_BOOL: [u8; 52usize] = super::Contract::spec_xdr_test_bool();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1057,20 +970,6 @@ pub mod __Contract__test_address {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_address__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_ADDRESS: [u8; 52usize] = super::Contract::spec_xdr_test_address();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_address() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_bytes {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bytes` instead")]
@@ -1109,20 +1008,6 @@ pub mod __Contract__test_bytes {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_bytes__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_BYTES: [u8; 52usize] = super::Contract::spec_xdr_test_bytes();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1167,20 +1052,6 @@ pub mod __Contract__test_bytes_n {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_bytes_n__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_BYTES_N: [u8; 60usize] = super::Contract::spec_xdr_test_bytes_n();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_symbol {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_symbol` instead")]
@@ -1219,20 +1090,6 @@ pub mod __Contract__test_symbol {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_symbol__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_SYMBOL: [u8; 52usize] = super::Contract::spec_xdr_test_symbol();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1277,20 +1134,6 @@ pub mod __Contract__test_vec {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_vec__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_VEC: [u8; 56usize] = super::Contract::spec_xdr_test_vec();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_map {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_map` instead")]
@@ -1329,20 +1172,6 @@ pub mod __Contract__test_map {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_map__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_MAP: [u8; 64usize] = super::Contract::spec_xdr_test_map();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_map() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1387,21 +1216,6 @@ pub mod __Contract__test_duration {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_duration__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_DURATION: [u8; 56usize] =
-        super::Contract::spec_xdr_test_duration();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_timepoint {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_timepoint` instead")]
@@ -1440,21 +1254,6 @@ pub mod __Contract__test_timepoint {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_timepoint__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; 56usize] =
-        super::Contract::spec_xdr_test_timepoint();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1499,20 +1298,6 @@ pub mod __Contract__test_i256 {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_i256__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_I256: [u8; 52usize] = super::Contract::spec_xdr_test_i256();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_u256 {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u256` instead")]
@@ -1551,20 +1336,6 @@ pub mod __Contract__test_u256 {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_u256__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_U256: [u8; 52usize] = super::Contract::spec_xdr_test_u256();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1609,21 +1380,6 @@ pub mod __Contract__test_enum_unit {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__test_enum_unit__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; 88usize] =
-        super::Contract::spec_xdr_test_enum_unit();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__test_enum_variants {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_enum_variants` instead")]
@@ -1662,6 +1418,250 @@ pub mod __Contract__test_enum_variants {
         invoke_raw(soroban_sdk::Env::default(), arg_0)
     }
     use super::*;
+}
+#[doc(hidden)]
+/// Test i32 values.
+#[allow(non_snake_case)]
+pub mod __Contract__test_i32__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    /// Test i32 values.
+    pub static __SPEC_XDR_FN_TEST_I32: [u8; 64usize] = super::Contract::spec_xdr_test_i32();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    /// Test i32 values.
+    pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_u64__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_U64: [u8; 48usize] = super::Contract::spec_xdr_test_u64();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_i64__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_I64: [u8; 48usize] = super::Contract::spec_xdr_test_i64();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_u128__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_U128: [u8; 52usize] = super::Contract::spec_xdr_test_u128();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_i128__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_I128: [u8; 52usize] = super::Contract::spec_xdr_test_i128();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_bool__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_BOOL: [u8; 52usize] = super::Contract::spec_xdr_test_bool();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_address__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_ADDRESS: [u8; 52usize] = super::Contract::spec_xdr_test_address();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_address() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_bytes__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_BYTES: [u8; 52usize] = super::Contract::spec_xdr_test_bytes();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_bytes_n__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_BYTES_N: [u8; 60usize] = super::Contract::spec_xdr_test_bytes_n();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_symbol__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_SYMBOL: [u8; 52usize] = super::Contract::spec_xdr_test_symbol();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_vec__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_VEC: [u8; 56usize] = super::Contract::spec_xdr_test_vec();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_map__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_MAP: [u8; 64usize] = super::Contract::spec_xdr_test_map();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_map() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_duration__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_DURATION: [u8; 56usize] =
+        super::Contract::spec_xdr_test_duration();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_timepoint__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; 56usize] =
+        super::Contract::spec_xdr_test_timepoint();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_i256__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_I256: [u8; 52usize] = super::Contract::spec_xdr_test_i256();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_u256__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_U256: [u8; 52usize] = super::Contract::spec_xdr_test_u256();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_enum_unit__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; 88usize] =
+        super::Contract::spec_xdr_test_enum_unit();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
