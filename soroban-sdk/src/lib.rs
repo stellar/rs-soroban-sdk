@@ -432,30 +432,32 @@ pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 /// Define a trait with a default function and implement it in a contract:
 ///
 /// ```
-/// use soroban_sdk::{contract, contractimpl, contracttrait, Env, String};
-///
-/// pub struct DefaultImpl;
-/// impl Greeter for DefaultImpl {
-///     type Impl = Self;
-///     fn greet(env: &Env) -> String {
-///         String::from_str(env, "Hello")
-///     }
-/// }
+/// use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 ///
 /// #[contracttrait]
-/// pub trait Greeter {
-///     type Impl: Greeter;
-///     fn greet(env: &Env) -> String {
-///         Self::Impl::greet(env)
+/// pub trait Token {
+///     fn balance(env: &Env, id: Address) -> i128 {
+///         // ...
+///         # todo!()
+///     }
+///
+///     // Default function.
+///     fn transfer(env: &Env, from: Address, to: Address, amount: i128) {
+///         // ...
+///         # todo!()
 ///     }
 /// }
 ///
 /// #[contract]
-/// pub struct HelloContract;
+/// pub struct TokenContract;
 ///
 /// #[contractimpl(contracttrait)]
-/// impl Greeter for HelloContract {
-///     type Impl = DefaultImpl;
+/// impl Token for TokenContract {
+///     fn balance(env: &Env, id: Address) -> i128 {
+///         // Provide a custom impl of balance.
+///         // ...
+///         # todo!()
+///     }
 /// }
 /// # fn main() { }
 /// ```
