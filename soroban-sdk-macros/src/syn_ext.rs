@@ -36,18 +36,6 @@ pub fn trait_methods(imp: &ItemTrait) -> impl Iterator<Item = &TraitItemFn> {
     })
 }
 
-/// Converts a Vec<LitStr> into a Vec<Signature>.
-pub fn strs_to_signatures(fn_sigs: &[LitStr]) -> Result<Vec<Signature>, Error> {
-    fn_sigs
-        .iter()
-        .map(|f| {
-            syn::parse_str::<Signature>(&f.value()).map_err(|e| {
-                Error::new(f.span(), format!("failed to parse function signature: {e}"))
-            })
-        })
-        .collect()
-}
-
 /// Returns the ident of the function argument, if it has one.
 pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     if let FnArg::Typed(pat_type) = arg {
