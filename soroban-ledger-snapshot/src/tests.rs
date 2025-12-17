@@ -16,7 +16,7 @@ const TEST_SNAPSHOT_XDR: [(&str, u32); 4] = [
 
 #[test]
 fn test_snapshot_from_non_compact() {
-    let snapshot = LedgerSnapshot::read_file("./test_snapshots/snapshot_not_compact.json").unwrap();
+    let snapshot = LedgerSnapshot::read_file("./test_data/snapshot_not_compact.json").unwrap();
 
     for (xdr_key, expiration) in TEST_SNAPSHOT_XDR.iter() {
         let ledger_key = LedgerKey::from_xdr_base64(xdr_key, Limits::none()).unwrap();
@@ -25,7 +25,7 @@ fn test_snapshot_from_non_compact() {
         assert_eq!(entry.unwrap().1, Some(expiration.clone()));
     }
 
-    let expected_str = std::fs::read_to_string("./test_snapshots/snapshot_compact.json").unwrap();
+    let expected_str = std::fs::read_to_string("./test_data/snapshot_compact.json").unwrap();
     let mut written = Vec::new();
     snapshot.write(&mut written).unwrap();
     let written_str = String::from_utf8(written).unwrap();
@@ -35,7 +35,7 @@ fn test_snapshot_from_non_compact() {
 
 #[test]
 fn test_snapshot_roundtrip() {
-    let snapshot = LedgerSnapshot::read_file("./test_snapshots/snapshot_compact.json").unwrap();
+    let snapshot = LedgerSnapshot::read_file("./test_data/snapshot_compact.json").unwrap();
 
     for (xdr_key, expiration) in TEST_SNAPSHOT_XDR.iter() {
         let ledger_key = LedgerKey::from_xdr_base64(xdr_key, Limits::none()).unwrap();
@@ -44,7 +44,7 @@ fn test_snapshot_roundtrip() {
         assert_eq!(entry.unwrap().1, Some(expiration.clone()));
     }
 
-    let expected_str = std::fs::read_to_string("./test_snapshots/snapshot_compact.json").unwrap();
+    let expected_str = std::fs::read_to_string("./test_data/snapshot_compact.json").unwrap();
     let mut written = Vec::new();
     snapshot.write(&mut written).unwrap();
     let written_str = String::from_utf8(written).unwrap();
