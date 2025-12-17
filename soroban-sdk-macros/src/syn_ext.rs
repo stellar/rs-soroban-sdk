@@ -247,17 +247,6 @@ impl Fn {
     }
 }
 
-impl From<&Signature> for Fn {
-    fn from(s: &Signature) -> Self {
-        Self {
-            ident: s.ident.clone(),
-            attrs: vec![],
-            inputs: s.inputs.clone(),
-            output: s.output.clone(),
-        }
-    }
-}
-
 impl From<&ImplItemFn> for Fn {
     fn from(m: &ImplItemFn) -> Self {
         Self {
