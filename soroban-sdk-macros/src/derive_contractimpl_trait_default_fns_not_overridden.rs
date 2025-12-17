@@ -9,6 +9,7 @@ use crate::{
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::quote;
+use std::collections::HashSet;
 use syn::{LitStr, Path, Type};
 
 #[derive(Debug, FromMeta)]
@@ -50,13 +51,13 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let spec_export = args.spec_export.unwrap_or(true);
 
     let trait_default_fns = syn_ext::strs_to_fns(&args.trait_default_fns)?;
-    let impl_fns = syn_ext::strs_to_fns(&args.impl_fns)?;
+    let impl_fn_idents: HashSet<_> = args.impl_fns.iter().map(|s| s.value()).collect();
 
     // Filter the list of default fns down to only default fns that have not been redefined /
     // overridden in the input fns.
     let fns = trait_default_fns
         .into_iter()
-        .filter(|f| !impl_fns.iter().any(|o| f.ident == o.ident))
+        .filter(|f| !impl_fn_idents.contains(&f.ident.to_string()))
         .collect::<Vec<_>>();
 
     let mut output = quote! {};

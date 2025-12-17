@@ -95,13 +95,11 @@ pub fn generate_call_to_contractimpl_for_trait(
     args_ident: &str,
     spec_ident: &str,
 ) -> TokenStream2 {
-    let impl_fns = pub_methods
-        .iter()
-        .map(|f| f.sig.to_token_stream().to_string());
+    let impl_fn_idents = pub_methods.iter().map(|f| f.sig.ident.to_string());
     quote! {
         #trait_ident!(
             #impl_ident,
-            [#(#impl_fns),*],
+            [#(#impl_fn_idents),*],
             #client_ident,
             #args_ident,
             #spec_ident,
