@@ -412,6 +412,10 @@ pub use soroban_sdk_macros::contractimpl;
 /// This is useful for defining standard interfaces where some functions have
 /// default implementations that can be optionally overridden.
 ///
+/// Note: The `contracttrait` macro is not required on traits, but without it
+/// default functions will not be exported by contracts that implement the
+/// trait.
+///
 /// ### Macro Arguments
 ///
 /// - `crate_path` - The path to the soroban-sdk crate. Defaults to `soroban_sdk`.
