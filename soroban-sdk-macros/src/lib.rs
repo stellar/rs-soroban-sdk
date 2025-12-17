@@ -256,19 +256,6 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         &client_ident,
     );
 
-    let contractimpl_for_trait = trait_ident
-        .filter(|_| args.contracttrait)
-        .map(|trait_ident| {
-            generate_call_to_contractimpl_for_trait(
-                trait_ident.into(),
-                ty,
-                &pub_methods,
-                &client_ident,
-                &args_ident,
-                &ty_str,
-            )
-        });
-
     match derived {
         Ok(derived_ok) => {
             let mut output = quote! {
@@ -277,8 +264,21 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #[#crate_path::contractspecfn(name = #ty_str)]
                 #imp
                 #derived_ok
-                #contractimpl_for_trait
             };
+            let contractimpl_for_trait =
+                trait_ident
+                    .filter(|_| args.contracttrait)
+                    .map(|trait_ident| {
+                        generate_call_to_contractimpl_for_trait(
+                            trait_ident.into(),
+                            ty,
+                            &pub_methods,
+                            &client_ident,
+                            &args_ident,
+                            &ty_str,
+                        )
+                    });
+            output.extend(quote! { #contractimpl_for_trait });
             let cfs = derive_contract_function_registration_ctor(
                 crate_path,
                 ty,
