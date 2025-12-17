@@ -2,8 +2,8 @@ use crate::{
     default_crate_path, default_export,
     derive_args::derive_args_impl,
     derive_client::derive_client_impl,
-    derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn},
-    derive_spec_fn::derive_fn_spec,
+    derive_fn::{derive_contract_function_registration_ctor, derive_pub_fns},
+    derive_spec_fn::derive_fns_spec,
     syn_ext::{self, ident_to_type},
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
@@ -60,26 +60,15 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         .filter(|f| !impl_fns.iter().any(|o| f.ident == o.ident))
         .collect::<Vec<_>>();
 
-    let mut output = quote! {};
-    for f in &fns {
-        output.extend(derive_pub_fn(
-            &args.crate_path,
-            &impl_ty,
-            &f.ident,
-            &f.attrs,
-            &f.inputs,
-            Some(trait_ident),
-            &args.client_name,
-        ));
-        output.extend(derive_fn_spec(
-            &args.spec_name,
-            &f.ident,
-            &f.attrs,
-            &f.inputs,
-            &f.output,
-            spec_export,
-        ));
-    }
+    let mut output = derive_pub_fns(
+        &args.crate_path,
+        &impl_ty,
+        &fns,
+        Some(trait_ident),
+        &args.client_name,
+    )
+    .unwrap_or_else(|e| e);
+    output.extend(derive_fns_spec(&args.spec_name, &fns, spec_export).unwrap_or_else(|e| e));
     output.extend(derive_client_impl(
         &args.crate_path,
         &args.client_name,

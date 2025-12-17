@@ -258,6 +258,17 @@ impl From<&Signature> for Fn {
     }
 }
 
+impl From<&ImplItemFn> for Fn {
+    fn from(m: &ImplItemFn) -> Self {
+        Self {
+            ident: m.sig.ident.clone(),
+            attrs: m.attrs.clone(),
+            inputs: m.sig.inputs.clone(),
+            output: m.sig.output.clone(),
+        }
+    }
+}
+
 impl Parse for Fn {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let attrs = input.call(Attribute::parse_outer)?;

@@ -1,7 +1,7 @@
 use crate::{
     attribute::pass_through_attr_to_gen_code,
     map_type::map_type,
-    syn_ext::{fn_arg_type_validate_no_mut, ty_to_safe_ident_str},
+    syn_ext::{self, fn_arg_type_validate_no_mut, ty_to_safe_ident_str},
 };
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
@@ -13,6 +13,28 @@ use syn::{
     token::{Colon, Comma},
     Attribute, Error, FnArg, Ident, Pat, PatIdent, PatType, Path, Type, TypePath, TypeReference,
 };
+
+pub fn derive_pub_fns<'a>(
+    crate_path: &Path,
+    impl_ty: &Type,
+    fns: impl IntoIterator<Item = &'a syn_ext::Fn>,
+    trait_ident: Option<&Ident>,
+    client_ident: &str,
+) -> Result<TokenStream2, TokenStream2> {
+    fns.into_iter()
+        .map(|f| {
+            derive_pub_fn(
+                crate_path,
+                impl_ty,
+                &f.ident,
+                &f.attrs,
+                &f.inputs,
+                trait_ident,
+                client_ident,
+            )
+        })
+        .collect()
+}
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_pub_fn(

@@ -31,8 +31,8 @@ use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
 use derive_event::derive_event;
-use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn};
-use derive_spec_fn::derive_fn_spec;
+use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fns};
+use derive_spec_fn::derive_fns_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
 use derive_trait::derive_trait;
@@ -105,10 +105,7 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let methods: Vec<_> = item.fns();
     let export = args.export.unwrap_or(true);
 
-    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = methods
-        .iter()
-        .map(|m| derive_fn_spec(&args.name, &m.ident, &m.attrs, &m.inputs, &m.output, export))
-        .collect();
+    let derived = derive_fns_spec(&args.name, &methods, export);
 
     match derived {
         Ok(derived_ok) => quote! {
@@ -254,21 +251,14 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     .unwrap_or_else(|| "Client".to_string());
 
     let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp);
-    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
-        .iter()
-        .map(|m| {
-            let ident = &m.sig.ident;
-            derive_pub_fn(
-                crate_path,
-                &ty,
-                ident,
-                &m.attrs,
-                &m.sig.inputs,
-                trait_ident,
-                &client_ident,
-            )
-        })
-        .collect();
+    let pub_methods_fns: Vec<syn_ext::Fn> = pub_methods.iter().map(Into::into).collect();
+    let derived = derive_pub_fns(
+        crate_path,
+        &ty,
+        &pub_methods_fns,
+        trait_ident,
+        &client_ident,
+    );
 
     let contractimpl_for_trait = trait_ident
         .filter(|_| args.contracttrait)
