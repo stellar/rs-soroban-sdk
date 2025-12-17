@@ -31,28 +31,26 @@ stellar-asset-spec = { version = "23.3.0", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]
 version = "=25.0.0"
-git = "https://github.com/stellar/rs-soroban-env"
-rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
+# git = "https://github.com/stellar/rs-soroban-env"
+# rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
 
 [workspace.dependencies.soroban-env-guest]
 version = "=25.0.0"
-git = "https://github.com/stellar/rs-soroban-env"
-rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
+# git = "https://github.com/stellar/rs-soroban-env"
+# rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
 
 [workspace.dependencies.soroban-env-host]
 version = "=25.0.0"
-git = "https://github.com/stellar/rs-soroban-env"
-rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
+# git = "https://github.com/stellar/rs-soroban-env"
+# rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.13"
 
 [workspace.dependencies.stellar-xdr]
-version = "=24.0.1"
+version = "=25.0.0"
 default-features = false
 features = ["curr"]
-git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "89cc1cbadf1b9a16843826954dede7fec514d8e7"
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }

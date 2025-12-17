@@ -2,7 +2,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM, VecM,
+    ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM,
     WriteXdr, SCSYMBOL_LIMIT,
 };
 use syn::TypeReference;
@@ -143,17 +143,7 @@ pub fn derive_fn_spec(
             ));
             ScSymbol::default()
         }),
-        inputs: spec_args.try_into().unwrap_or_else(|_| {
-            const MAX: u32 = 10;
-            errors.push(Error::new(
-                inputs.iter().nth(MAX as usize).span(),
-                format!(
-                    "contract function has too many parameters, max count {} parameters",
-                    MAX,
-                ),
-            ));
-            VecM::<_, MAX>::default()
-        }),
+        inputs: spec_args.try_into().unwrap(),
         outputs: spec_result.try_into().unwrap(),
     });
     let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
