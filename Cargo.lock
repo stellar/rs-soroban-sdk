@@ -1673,7 +1673,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_associated_types_with_contracttrait"
+name = "test_associated_types_contracttrait"
 version = "23.3.0"
 dependencies = [
  "soroban-sdk",

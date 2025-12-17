@@ -1,5 +1,5 @@
 [package]
-name = "test_associated_types_with_contracttrait"
+name = "test_associated_types_contracttrait"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
