@@ -401,13 +401,6 @@ pub use soroban_sdk_macros::contract;
 /// ```
 pub use soroban_sdk_macros::contractimpl;
 
-/// Generates code the same as contractimpl does, but for the default functions of a trait that are
-/// not overridden.
-///
-/// This macro is used internally and is not intended to be used directly by contracts.
-#[doc(hidden)]
-pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
-
 /// Defines a contract trait with default function implementations that can be
 /// used by contracts.
 ///
@@ -463,12 +456,19 @@ pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 /// ```
 pub use soroban_sdk_macros::contracttrait;
 
-#[doc(hidden)]
 /// Generates a macro for a trait that calls
 /// contractimpl_trait_default_fns_not_overridden with information about the trait.
 ///
 /// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
 pub use soroban_sdk_macros::contractimpl_trait_macro;
+
+/// Generates code the same as contractimpl does, but for the default functions of a trait that are
+/// not overridden.
+///
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
 /// under the section name 'contractmetav0'. Contract developers can use this to
