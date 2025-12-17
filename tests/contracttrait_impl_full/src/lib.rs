@@ -8,7 +8,7 @@ use test_contracttrait_trait::{AllTypes, MyEnumUnit, MyEnumVariants, MyStruct};
 #[contract]
 pub struct Contract;
 
-#[contractimpl(contracttrait = true)]
+#[contractimpl(contracttrait)]
 impl AllTypes for Contract {}
 
 #[cfg(test)]

@@ -28,7 +28,7 @@ impl Trait for DefaultImpl {
     }
 }
 
-#[contractimpl(contracttrait = true)]
+#[contractimpl(contracttrait)]
 impl Trait for Contract {
     type Impl = DefaultImpl;
 

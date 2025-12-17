@@ -117,7 +117,7 @@ mod test {
     #[contract]
     pub struct Contract;
 
-    #[contractimpl(contracttrait = true)]
+    #[contractimpl(contracttrait)]
     impl AllTypes for Contract {}
 
     #[test]
