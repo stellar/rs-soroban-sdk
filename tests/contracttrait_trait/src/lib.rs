@@ -29,10 +29,12 @@ pub enum MyEnumVariants {
 
 #[contracttrait]
 pub trait AllTypes {
-    // Primitives
+    /// Test u32 values.
+    /// Returns the input unchanged.
     fn test_u32(v: u32) -> u32 {
         v
     }
+    /// Test i32 values.
     fn test_i32(v: i32) -> i32 {
         v
     }
@@ -181,5 +183,27 @@ mod test {
 
         let my_enum = MyEnumVariants::VarB(MyStruct { a: 1, b: 2 });
         assert_eq!(client.test_enum_variants(&my_enum), my_enum);
+    }
+
+    #[test]
+    fn test_spec_docs() {
+        use stellar_xdr::curr as stellar_xdr;
+        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry};
+
+        // Verify that doc strings from trait default functions appear in the spec
+        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_u32(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            panic!("expected FunctionV0");
+        };
+        assert_eq!(
+            func.doc.to_utf8_string().unwrap(),
+            "Test u32 values.\nReturns the input unchanged."
+        );
+
+        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_i32(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            panic!("expected FunctionV0");
+        };
+        assert_eq!(func.doc.to_utf8_string().unwrap(), "Test i32 values.");
     }
 }

@@ -4,7 +4,7 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl, contracttrait};
+use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -182,76 +182,8 @@ pub mod __Contract__empty2 {
     }
     use super::*;
 }
-pub struct TraitSpec;
-/// Macro for `contractimpl`ing the default functions of the trait that are not overriden.
-pub use __contractimpl_for_trait as Trait;
 trait Trait {
     fn empty3() {}
-}
-///TraitClient is a client for calling the contract defined in "Trait".
-pub struct TraitClient<'a> {
-    pub env: soroban_sdk::Env,
-    pub address: soroban_sdk::Address,
-    #[doc(hidden)]
-    _phantom: core::marker::PhantomData<&'a ()>,
-}
-impl<'a> TraitClient<'a> {
-    pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
-        Self {
-            env: env.clone(),
-            address: address.clone(),
-            _phantom: core::marker::PhantomData,
-        }
-    }
-}
-impl<'a> TraitClient<'a> {
-    pub fn empty3(&self) -> () {
-        use core::ops::Not;
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty3");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        res
-    }
-    pub fn try_empty3(
-        &self,
-    ) -> Result<
-        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{
-                #[allow(deprecated)]
-                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty3");
-                SYMBOL
-            },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        res
-    }
-}
-///TraitArgs is a type for building arg lists for functions defined in "Trait".
-pub struct TraitArgs;
-impl TraitArgs {
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn empty3<'i>() -> () {
-        ()
-    }
-}
-impl TraitSpec {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_empty3() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty3\0\0\0\0\0\0\0\0\0\0"
-    }
 }
 impl Trait for Contract {
     fn empty3() {}

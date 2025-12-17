@@ -1720,6 +1720,7 @@ name = "test_contracttrait_trait"
 version = "23.2.1"
 dependencies = [
  "soroban-sdk",
+ "stellar-xdr",
 ]
 
 [[package]]

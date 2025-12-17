@@ -1,4 +1,4 @@
-use crate::{default_crate_path, syn_ext};
+use crate::{attribute::is_attr_doc, default_crate_path, syn_ext};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
@@ -45,8 +45,12 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
         TraitItem::Fn(TraitItemFn {
             default: Some(_),
             sig,
+            attrs,
             ..
-        }) => Some(sig.to_token_stream().to_string()),
+        }) => {
+            let doc_attrs: Vec<_> = attrs.iter().filter(|a| is_attr_doc(a)).collect();
+            Some(quote!(#(#doc_attrs)* #sig).to_token_stream().to_string())
+        }
         _ => None,
     });
 

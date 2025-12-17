@@ -270,6 +270,30 @@ impl From<&Signature> for Fn {
     }
 }
 
+impl Parse for Fn {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let attrs = input.call(Attribute::parse_outer)?;
+        let sig: Signature = input.parse()?;
+        Ok(Fn {
+            ident: sig.ident.clone(),
+            attrs,
+            inputs: sig.inputs.clone(),
+            output: sig.output.clone(),
+        })
+    }
+}
+
+/// Converts a Vec<LitStr> containing "attrs + signature" strings into Vec<Fn>.
+pub fn strs_to_fns(fn_strs: &[LitStr]) -> Result<Vec<Fn>, Error> {
+    fn_strs
+        .iter()
+        .map(|f| {
+            syn::parse_str::<Fn>(&f.value())
+                .map_err(|e| Error::new(f.span(), format!("failed to parse function: {e}")))
+        })
+        .collect()
+}
+
 fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
     match &typ {
         Type::Path(TypePath { path, .. }) => {

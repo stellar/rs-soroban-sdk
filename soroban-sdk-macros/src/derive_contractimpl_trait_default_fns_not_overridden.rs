@@ -50,7 +50,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     let trait_ident = &args.trait_ident;
     let spec_export = args.spec_export;
 
-    let trait_default_fns = syn_ext::strs_to_signatures(&args.trait_default_fns)?;
+    let trait_default_fns = syn_ext::strs_to_fns(&args.trait_default_fns)?;
     let impl_fns = syn_ext::strs_to_signatures(&args.impl_fns)?;
 
     // Filter the list of default fns down to only default fns that have not been redefined /
@@ -66,7 +66,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
             &args.crate_path,
             &impl_ty,
             &f.ident,
-            &[],
+            &f.attrs,
             &f.inputs,
             Some(trait_ident),
             &args.client_name,
@@ -74,7 +74,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         output.extend(derive_fn_spec(
             &args.spec_name,
             &f.ident,
-            &[],
+            &f.attrs,
             &f.inputs,
             &f.output,
             spec_export,
@@ -83,18 +83,9 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     output.extend(derive_client_impl(
         &args.crate_path,
         &args.client_name,
-        fns.iter()
-            .map(Into::into)
-            .collect::<Vec<syn_ext::Fn>>()
-            .as_slice(),
+        &fns,
     ));
-    output.extend(derive_args_impl(
-        &args.args_name,
-        fns.iter()
-            .map(Into::into)
-            .collect::<Vec<syn_ext::Fn>>()
-            .as_slice(),
-    ));
+    output.extend(derive_args_impl(&args.args_name, &fns));
     output.extend(derive_contract_function_registration_ctor(
         &args.crate_path,
         &impl_ty,

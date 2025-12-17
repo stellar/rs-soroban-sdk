@@ -16,3 +16,4 @@ soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+stellar-xdr.workspace = true
