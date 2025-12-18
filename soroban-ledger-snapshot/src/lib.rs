@@ -1,4 +1,5 @@
-use serde_with::serde_as;
+use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, DeserializeAs, SerializeAs};
 use std::{
     fs::{create_dir_all, File},
     io::{self, BufReader, Read, Write},
@@ -25,66 +26,80 @@ pub enum Error {
 
 /// Ledger snapshot stores a snapshot of a ledger that can be restored for use
 /// in environments as a [`LedgerInfo`] and a [`SnapshotSource`].
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[serde_as]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub struct LedgerSnapshot {
     pub protocol_version: u32,
     pub sequence_number: u32,
     pub timestamp: u64,
-    pub network_id: [u8; 32],
-    pub base_reserve: u32,
-    pub min_persistent_entry_ttl: u32,
-    pub min_temp_entry_ttl: u32,
-    pub max_entry_ttl: u32,
-    pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
-}
-
-/// Enum that contains all supported formats a ledger snapshot can be deserialized from.
-///
-/// The serialization format has evolved over time:
-/// 1. V1: The entire ledger snapshot was serialized
-/// 2. V1Compact: A more compact format where the [`LedgerKey`] is omitted from the
-///    ledger_entries tuple since it is duplicated within the [`LedgerEntry`].
-#[derive(serde::Deserialize)]
-#[serde(untagged)]
-enum LedgerSnapshotFormat {
-    V1Compact(LedgerSnapshotV1Compact),
-    V1(LedgerSnapshotV1),
-}
-
-/// Internal structure used to represent a [`LedgerSnapshot`] in a more compact form. The
-/// [`LedgerKey`] is omitted from the ledger_entries tuple since it is duplicated within
-/// the [`LedgerEntry`].
-#[serde_as]
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-struct LedgerSnapshotV1Compact {
-    pub protocol_version: u32,
-    pub sequence_number: u32,
-    pub timestamp: u64,
     #[serde_as(as = "serde_with::hex::Hex")]
     pub network_id: [u8; 32],
     pub base_reserve: u32,
     pub min_persistent_entry_ttl: u32,
     pub min_temp_entry_ttl: u32,
     pub max_entry_ttl: u32,
-    pub ledger_entries: Vec<(Box<LedgerEntry>, Option<u32>)>,
+    #[serde_as(as = "LedgerEntryVec")]
+    pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
 }
 
-/// Internal structure used to represent the V1 format of a [`LedgerSnapshot`].
-#[serde_as]
-#[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize)]
-#[serde(rename_all = "snake_case")]
-struct LedgerSnapshotV1 {
-    pub protocol_version: u32,
-    pub sequence_number: u32,
-    pub timestamp: u64,
-    #[serde_as(as = "serde_with::hex::Hex")]
-    pub network_id: [u8; 32],
-    pub base_reserve: u32,
-    pub min_persistent_entry_ttl: u32,
-    pub min_temp_entry_ttl: u32,
-    pub max_entry_ttl: u32,
-    pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
+/// Extended ledger entry that includes the live util ledger sequence. Provides a more compact
+/// form of the tuple used in [`LedgerSnapshot::ledger_entries`], to reduce the size of the snapshot
+/// when serialized to JSON.
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+struct LedgerEntryExt {
+    entry: Box<LedgerEntry>,
+    live_util: Option<u32>,
+}
+
+struct LedgerEntryVec;
+
+impl<'a> SerializeAs<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>> for LedgerEntryVec {
+    fn serialize_as<S>(
+        source: &Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let entries: Vec<LedgerEntryExt> = source
+            .iter()
+            .map(|(_, (entry, live_util))| LedgerEntryExt {
+                entry: entry.clone(),
+                live_util: *live_util,
+            })
+            .collect();
+        entries.serialize(serializer)
+    }
+}
+
+impl<'de> DeserializeAs<'de, Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>>
+    for LedgerEntryVec
+{
+    fn deserialize_as<D>(
+        deserializer: D,
+    ) -> Result<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[derive(serde::Deserialize)]
+        #[serde(untagged)]
+        enum Format {
+            V2(Vec<LedgerEntryExt>),
+            V1(Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>),
+        }
+
+        match Format::deserialize(deserializer)? {
+            Format::V2(entries) => Ok(entries
+                .into_iter()
+                .map(|LedgerEntryExt { entry, live_util }| {
+                    let key = Box::new(entry.to_key());
+                    (key, (entry, live_util))
+                })
+                .collect()),
+            Format::V1(entries) => Ok(entries),
+        }
+    }
 }
 
 impl LedgerSnapshot {
@@ -184,28 +199,6 @@ impl LedgerSnapshot {
     }
 }
 
-impl serde::Serialize for LedgerSnapshot {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        let compact: LedgerSnapshotV1Compact = self.into();
-        compact.serialize(serializer)
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for LedgerSnapshot {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        match LedgerSnapshotFormat::deserialize(deserializer)? {
-            LedgerSnapshotFormat::V1Compact(val) => Ok(val.into()),
-            LedgerSnapshotFormat::V1(val) => Ok(val.into()),
-        }
-    }
-}
-
 impl LedgerSnapshot {
     /// Read in a [`LedgerSnapshot`] from a reader.
     pub fn read(r: impl Read) -> Result<LedgerSnapshot, Error> {
@@ -269,64 +262,5 @@ impl SnapshotSource for LedgerSnapshot {
         key: &Rc<LedgerKey>,
     ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
         <_ as SnapshotSource>::get(&self, key)
-    }
-}
-
-impl From<LedgerSnapshotV1Compact> for LedgerSnapshot {
-    fn from(compact: LedgerSnapshotV1Compact) -> Self {
-        Self {
-            protocol_version: compact.protocol_version,
-            sequence_number: compact.sequence_number,
-            timestamp: compact.timestamp,
-            network_id: compact.network_id,
-            base_reserve: compact.base_reserve,
-            min_persistent_entry_ttl: compact.min_persistent_entry_ttl,
-            min_temp_entry_ttl: compact.min_temp_entry_ttl,
-            max_entry_ttl: compact.max_entry_ttl,
-            ledger_entries: compact
-                .ledger_entries
-                .into_iter()
-                .map(|(e, ttl)| {
-                    let key = Box::new(e.to_key());
-                    (key, (e, ttl))
-                })
-                .collect(),
-        }
-    }
-}
-
-impl From<&LedgerSnapshot> for LedgerSnapshotV1Compact {
-    fn from(snapshot: &LedgerSnapshot) -> Self {
-        Self {
-            protocol_version: snapshot.protocol_version,
-            sequence_number: snapshot.sequence_number,
-            timestamp: snapshot.timestamp,
-            network_id: snapshot.network_id,
-            base_reserve: snapshot.base_reserve,
-            min_persistent_entry_ttl: snapshot.min_persistent_entry_ttl,
-            min_temp_entry_ttl: snapshot.min_temp_entry_ttl,
-            max_entry_ttl: snapshot.max_entry_ttl,
-            ledger_entries: snapshot
-                .ledger_entries
-                .iter()
-                .map(|(_, v)| v.clone())
-                .collect(),
-        }
-    }
-}
-
-impl From<LedgerSnapshotV1> for LedgerSnapshot {
-    fn from(legacy: LedgerSnapshotV1) -> Self {
-        Self {
-            protocol_version: legacy.protocol_version,
-            sequence_number: legacy.sequence_number,
-            timestamp: legacy.timestamp,
-            network_id: legacy.network_id,
-            base_reserve: legacy.base_reserve,
-            min_persistent_entry_ttl: legacy.min_persistent_entry_ttl,
-            min_temp_entry_ttl: legacy.min_temp_entry_ttl,
-            max_entry_ttl: legacy.max_entry_ttl,
-            ledger_entries: legacy.ledger_entries,
-        }
     }
 }

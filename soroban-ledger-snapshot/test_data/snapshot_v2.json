@@ -8,8 +8,8 @@
   "min_temp_entry_ttl": 17280,
   "max_entry_ttl": 3110400,
   "ledger_entries": [
-    [
-      {
+    {
+      "entry": {
         "last_modified_ledger_seq": 50463386,
         "data": {
           "contract_data": {
@@ -77,10 +77,10 @@
         },
         "ext": "v0"
       },
-      10000000
-    ],
-    [
-      {
+      "live_util": 10000000
+    },
+    {
+      "entry": {
         "last_modified_ledger_seq": 59363318,
         "data": {
           "contract_data": {
@@ -129,10 +129,10 @@
         },
         "ext": "v0"
       },
-      10000001
-    ],
-    [
-      {
+      "live_util": 10000001
+    },
+    {
+      "entry": {
         "last_modified_ledger_seq": 57941156,
         "data": {
           "config_setting": {
@@ -141,10 +141,10 @@
         },
         "ext": "v0"
       },
-      10000002
-    ],
-    [
-      {
+      "live_util": 10000002
+    },
+    {
+      "entry": {
         "last_modified_ledger_seq": 60325375,
         "data": {
           "account": {
@@ -205,7 +205,7 @@
         },
         "ext": "v0"
       },
-      10000003
-    ]
+      "live_util": 10000003
+    }
   ]
 }
