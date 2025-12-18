@@ -7,18 +7,18 @@ extern crate core;
 extern crate compiler_builtins as _;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Fr, G1Affine, G2Affine},
+    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
     Env, Vec,
 };
 pub struct MockProof {
-    pub g1: Vec<G1Affine>,
-    pub g2: Vec<G2Affine>,
+    pub g1: Vec<Bn254G1Affine>,
+    pub g2: Vec<Bn254G2Affine>,
 }
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
 impl MockProof {
     pub const fn spec_xdr() -> [u8; 80usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\xc0"
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
@@ -104,10 +104,10 @@ impl Contract {
     pub fn verify_pairing(env: Env, proof: MockProof) -> bool {
         env.crypto().bn254().pairing_check(proof.g1, proof.g2)
     }
-    pub fn g1_add(a: G1Affine, b: G1Affine) -> G1Affine {
+    pub fn g1_add(a: Bn254G1Affine, b: Bn254G1Affine) -> Bn254G1Affine {
         a + b
     }
-    pub fn g1_mul(p: G1Affine, s: Fr) -> G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
         p * s
     }
 }
@@ -139,7 +139,7 @@ pub mod __Contract__g1_add__spec {
 impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_g1_add() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_add\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xee\0\0\0`\0\0\0\x01\0\0\x03\xee\0\0\0`"
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_add\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\x01\0\0\x03\xee\0\0\0@"
     }
 }
 #[doc(hidden)]
@@ -154,7 +154,7 @@ pub mod __Contract__g1_mul__spec {
 impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_g1_mul() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0`"
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0@"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -183,7 +183,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn g1_add(&self, a: &G1Affine, b: &G1Affine) -> G1Affine {
+    pub fn g1_add(&self, a: &Bn254G1Affine, b: &Bn254G1Affine) -> Bn254G1Affine {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -202,12 +202,12 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g1_add(
         &self,
-        a: &G1Affine,
-        b: &G1Affine,
+        a: &Bn254G1Affine,
+        b: &Bn254G1Affine,
     ) -> Result<
         Result<
-            G1Affine,
-            <G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bn254G1Affine,
+            <Bn254G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
@@ -226,7 +226,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn g1_mul(&self, p: &G1Affine, s: &Fr) -> G1Affine {
+    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Fr) -> Bn254G1Affine {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -245,12 +245,12 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g1_mul(
         &self,
-        p: &G1Affine,
+        p: &Bn254G1Affine,
         s: &Fr,
     ) -> Result<
         Result<
-            G1Affine,
-            <G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bn254G1Affine,
+            <Bn254G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
@@ -278,12 +278,15 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_add<'i>(a: &'i G1Affine, b: &'i G1Affine) -> (&'i G1Affine, &'i G1Affine) {
+    pub fn g1_add<'i>(
+        a: &'i Bn254G1Affine,
+        b: &'i Bn254G1Affine,
+    ) -> (&'i Bn254G1Affine, &'i Bn254G1Affine) {
         (a, b)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i G1Affine, s: &'i Fr) -> (&'i G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Fr) -> (&'i Bn254G1Affine, &'i Fr) {
         (p, s)
     }
 }

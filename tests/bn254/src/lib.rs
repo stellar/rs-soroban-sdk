@@ -1,15 +1,15 @@
 #![no_std]
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Fr, G1Affine, G2Affine},
+    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
     Env, Vec,
 };
 
 #[derive(Clone)]
 #[contracttype]
 pub struct MockProof {
-    pub g1: Vec<G1Affine>,
-    pub g2: Vec<G2Affine>,
+    pub g1: Vec<Bn254G1Affine>,
+    pub g2: Vec<Bn254G2Affine>,
 }
 
 #[contract]
@@ -21,11 +21,11 @@ impl Contract {
         env.crypto().bn254().pairing_check(proof.g1, proof.g2)
     }
 
-    pub fn g1_add(a: G1Affine, b: G1Affine) -> G1Affine {
+    pub fn g1_add(a: Bn254G1Affine, b: Bn254G1Affine) -> Bn254G1Affine {
         a + b
     }
 
-    pub fn g1_mul(p: G1Affine, s: Fr) -> G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
         p * s
     }
 }
@@ -33,7 +33,7 @@ impl Contract {
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{crypto::bn254, vec, Env, U256};
+    use soroban_sdk::{vec, Env, U256};
     extern crate std;
 
     use crate::{Contract, ContractClient};
@@ -75,8 +75,8 @@ mod test {
         let add_input = "23f16f1bcc31bd002746da6fa3825209af9a356ccd99cf79604a430dd592bcd90a03caeda9c5aa40cdc9e4166e083492885dad36c72714e3697e34a4bc72ccaa21315394462f1a39f87462dbceb92718b220e4f80af516f727ad85380fadefbc2e4f40ea7bbe2d4d71f13c84fd2ae24a4a24d9638dd78349d0dee8435a67cca6";
         let (g1_x_bytes, g1_y_bytes) = parse_ethereum_g1_add_input(add_input);
 
-        let x_bn254 = bn254::G1Affine::from_array(&env, &g1_x_bytes);
-        let y_bn254 = bn254::G1Affine::from_array(&env, &g1_y_bytes);
+        let x_bn254 = Bn254G1Affine::from_array(&env, &g1_x_bytes);
+        let y_bn254 = Bn254G1Affine::from_array(&env, &g1_y_bytes);
 
         let expected_x_plus_y = hex::decode("013f227997b410cbd96b137a114f5b12d5a3a53d7482797bcd1f116ff30ff1931effebc79dee208d036553beae8ca71afb3b4c00979560db3991c7e67c49103c").unwrap();
         assert_eq!(
@@ -84,7 +84,7 @@ mod test {
             expected_x_plus_y.as_slice()
         );
 
-        let scalar: bn254::Fr = U256::from_u32(&env, 2).into();
+        let scalar: Fr = U256::from_u32(&env, 2).into();
 
         // G + G = 2G
         assert_eq!(
@@ -108,14 +108,14 @@ mod test {
         // Convert to Soroban SDK types
         let g1_vec = vec![
             &env,
-            bn254::G1Affine::from_array(&env, &g1_points[0]),
-            bn254::G1Affine::from_array(&env, &g1_points[1]),
+            Bn254G1Affine::from_array(&env, &g1_points[0]),
+            Bn254G1Affine::from_array(&env, &g1_points[1]),
         ];
 
         let g2_vec = vec![
             &env,
-            bn254::G2Affine::from_array(&env, &g2_points[0]),
-            bn254::G2Affine::from_array(&env, &g2_points[1]),
+            Bn254G2Affine::from_array(&env, &g2_points[0]),
+            Bn254G2Affine::from_array(&env, &g2_points[1]),
         ];
 
         let proof = MockProof {
@@ -138,8 +138,8 @@ mod test {
         let g1_bytes: [u8; 64] = bytes[0..64].try_into().unwrap();
         let g1_negaed_bytes: [u8; 64] = bytes[64..128].try_into().unwrap();
 
-        let g1 = G1Affine::from_array(&env, &g1_bytes);
-        let g1_negated = G1Affine::from_array(&env, &g1_negaed_bytes);
+        let g1 = Bn254G1Affine::from_array(&env, &g1_bytes);
+        let g1_negated = Bn254G1Affine::from_array(&env, &g1_negaed_bytes);
 
         assert_eq!(-g1, g1_negated);
     }
