@@ -1673,6 +1673,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_associated_types_contracttrait"
+version = "23.3.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_auth"
 version = "23.3.0"
 dependencies = [
@@ -1698,6 +1705,30 @@ name = "test_contract_data"
 version = "23.3.0"
 dependencies = [
  "soroban-sdk",
+]
+
+[[package]]
+name = "test_contracttrait_impl_full"
+version = "23.3.0"
+dependencies = [
+ "soroban-sdk",
+ "test_contracttrait_trait",
+]
+
+[[package]]
+name = "test_contracttrait_impl_partial"
+version = "23.3.0"
+dependencies = [
+ "soroban-sdk",
+ "test_contracttrait_trait",
+]
+
+[[package]]
+name = "test_contracttrait_trait"
+version = "23.3.0"
+dependencies = [
+ "soroban-sdk",
+ "stellar-xdr",
 ]
 
 [[package]]

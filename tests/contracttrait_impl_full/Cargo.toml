@@ -1,0 +1,20 @@
+[package]
+name = "test_contracttrait_impl_full"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+test_contracttrait_trait = {path = "../contracttrait_trait"}
+
+[dev-dependencies]
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+test_contracttrait_trait = {path = "../contracttrait_trait"}
