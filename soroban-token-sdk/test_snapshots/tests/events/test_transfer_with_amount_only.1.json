@@ -85,8 +85,8 @@
     "min_temp_entry_ttl": 16,
     "max_entry_ttl": 6312000,
     "ledger_entries": [
-      [
-        {
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "account": {
@@ -104,10 +104,10 @@
           },
           "ext": "v0"
         },
-        null
-      ],
-      [
-        {
+        "live_util": null
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -124,10 +124,10 @@
           },
           "ext": "v0"
         },
-        6311999
-      ],
-      [
-        {
+        "live_util": 6311999
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -144,10 +144,10 @@
           },
           "ext": "v0"
         },
-        6311999
-      ],
-      [
-        {
+        "live_util": 6311999
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -167,10 +167,10 @@
           },
           "ext": "v0"
         },
-        4095
-      ],
-      [
-        {
+        "live_util": 4095
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -187,10 +187,10 @@
           },
           "ext": "v0"
         },
-        6311999
-      ],
-      [
-        {
+        "live_util": 6311999
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -239,10 +239,10 @@
           },
           "ext": "v0"
         },
-        518400
-      ],
-      [
-        {
+        "live_util": 518400
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -291,10 +291,10 @@
           },
           "ext": "v0"
         },
-        518400
-      ],
-      [
-        {
+        "live_util": 518400
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -394,10 +394,10 @@
           },
           "ext": "v0"
         },
-        120960
-      ],
-      [
-        {
+        "live_util": 120960
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_code": {
@@ -408,8 +408,8 @@
           },
           "ext": "v0"
         },
-        4095
-      ]
+        "live_util": 4095
+      }
     ]
   },
   "events": [

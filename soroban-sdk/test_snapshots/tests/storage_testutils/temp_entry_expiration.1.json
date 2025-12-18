@@ -18,8 +18,8 @@
     "min_temp_entry_ttl": 100,
     "max_entry_ttl": 6312000,
     "ledger_entries": [
-      [
-        {
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -36,10 +36,10 @@
           },
           "ext": "v0"
         },
-        1198
-      ],
-      [
-        {
+        "live_util": 1198
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -59,10 +59,10 @@
           },
           "ext": "v0"
         },
-        5095
-      ],
-      [
-        {
+        "live_util": 5095
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_code": {
@@ -73,8 +73,8 @@
           },
           "ext": "v0"
         },
-        5095
-      ]
+        "live_util": 5095
+      }
     ]
   },
   "events": []

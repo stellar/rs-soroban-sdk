@@ -51,8 +51,8 @@
     "min_temp_entry_ttl": 50,
     "max_entry_ttl": 20001,
     "ledger_entries": [
-      [
-        {
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -76,10 +76,10 @@
           },
           "ext": "v0"
         },
-        20000
-      ],
-      [
-        {
+        "live_util": 20000
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -103,10 +103,10 @@
           },
           "ext": "v0"
         },
-        20000
-      ],
-      [
-        {
+        "live_util": 20000
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -130,10 +130,10 @@
           },
           "ext": "v0"
         },
-        49
-      ],
-      [
-        {
+        "live_util": 49
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -157,10 +157,10 @@
           },
           "ext": "v0"
         },
-        99
-      ],
-      [
-        {
+        "live_util": 99
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_data": {
@@ -211,10 +211,10 @@
           },
           "ext": "v0"
         },
-        20000
-      ],
-      [
-        {
+        "live_util": 20000
+      },
+      {
+        "entry": {
           "last_modified_ledger_seq": 0,
           "data": {
             "contract_code": {
@@ -225,8 +225,8 @@
           },
           "ext": "v0"
         },
-        20000
-      ]
+        "live_util": 20000
+      }
     ]
   },
   "events": []
