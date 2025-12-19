@@ -14,21 +14,21 @@ The key challenge is handling **default trait functions**. When a trait has func
 flowchart TB
     subgraph trait_def ["Trait Definer"]
         direction TB
-        A["#91;contracttrait#93;<br/>trait Pause #123;"]
+        A["#91;contracttrait#93;<br/>trait Pause #123;<br/>&emsp;// fn without impl<br/>&emsp;fn f1#40;...#41;;<br/>&emsp;// fn with default impl<br/>&emsp;fn f2#40;...#41; #123; ... #125;<br/>#125;"]
+        style A text-align:left
         A -->|generates| B["#91;contractspecfn#93;<br/>trait Pause #123;"]
         A -->|generates| C["#91;contractargs#93;<br/>trait Pause #123;"]
         A -->|generates| D["#91;contractclient#93;<br/>trait Pause #123;"]
         A -->|1. generates| E["#91;contractimpl_trait_macro#93;<br/>trait Pause #123;"]
-        E -->|2. generates| F["macro_rules! Pause<br/>Captures trait defaults,<br/>accepts impl_fns"]
+        E -->|2. generates| F["macro_rules! Pause #123;<br/>&emsp;#40;impl_fns#41; => #123;<br/>contractimpl_trait_default_fns_not_overridden!#40;<br/>&emsp;&emsp;trait_default_fns = #91;f2#93;,<br/>&emsp;&emsp;impl_fns = $impl_fns,<br/>#41;<br/>&emsp;#125;<br/>#125;"]
+        style F text-align:left
         F -->|4. generates| I["contractimpl_trait_default_fns_not_overridden!#40;trait_default_fns, impl_fns#41;"]
-        F_note["macro_rules! Pause #123;<br/>&emsp;#40;impl_fns#41; => #123;<br/>contractimpl_trait_default_fns_not_overridden!#40;<br/>&emsp;&emsp;trait_default_fns = #91;f2#93;,<br/>&emsp;&emsp;impl_fns = $impl_fns,<br/>#41;<br/>&emsp;#125;<br/>#125;"]
-        style F_note fill:#cccccc,text-align:left
-        F -.- F_note
     end
 
     subgraph impl_def ["Trait Implementer"]
         direction BT
-        G["#91;contractimpl#40;contracttrait#41;#93;<br/>impl Pause for Contract #123;<br/>fn f1#40;...#41; #123; ... #125;<br/>#125;"]
+        G["#91;contractimpl#40;contracttrait#41;#93;<br/>impl Pause for Contract #123;<br/>&emsp;fn f1#40;...#41; #123; ... #125;<br/>#125;"]
+        style G text-align:left
     end
 
     G -->|"3. calls<br/>Pause!#40;impl_fns = #91;f1#93;#41;"| F
