@@ -6,6 +6,8 @@ use quote::ToTokens;
 use quote::{format_ident, quote};
 use syn::{parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
 
+// See soroban-sdk/docs/contracttrait.md for documentation on how this works.
+
 #[derive(Debug, FromMeta)]
 struct Args {
     #[darling(default = "default_crate_path")]
