@@ -10,7 +10,7 @@ The key challenge is handling **default trait functions**. When a trait has func
 
 ## Diagram
 
-![](assets/contracttrait_internals.excalidraw.png)
+![](./docs/assets/contractrait_internals.excalidraw.png)
 
 ## Stage-by-Stage Breakdown
 
