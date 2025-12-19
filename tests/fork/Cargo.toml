@@ -1,0 +1,22 @@
+[package]
+name = "test_fork"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+
+[dev-dependencies]
+soroban-ledger-fetch = {path = "../../soroban-ledger-fetch"}
+soroban-ledger-snapshot-source-tx = {path = "../../soroban-ledger-snapshot-source-tx"}
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+url = "2"
+bytes-lit = "0.0.5"

@@ -1,0 +1,49 @@
+{
+  "last_modified_ledger_seq": 8633,
+  "data": {
+    "contract_data": {
+      "ext": "v0",
+      "contract": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+      "key": {
+        "vec": [
+          {
+            "symbol": "Balance"
+          },
+          {
+            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
+          }
+        ]
+      },
+      "durability": "persistent",
+      "val": {
+        "map": [
+          {
+            "key": {
+              "symbol": "amount"
+            },
+            "val": {
+              "i128": "27"
+            }
+          },
+          {
+            "key": {
+              "symbol": "authorized"
+            },
+            "val": {
+              "bool": true
+            }
+          },
+          {
+            "key": {
+              "symbol": "clawback"
+            },
+            "val": {
+              "bool": false
+            }
+          }
+        ]
+      }
+    }
+  },
+  "ext": "v0"
+}

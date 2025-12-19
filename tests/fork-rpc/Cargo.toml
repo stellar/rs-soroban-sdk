@@ -1,0 +1,19 @@
+[package]
+name = "test_fork_rpc"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+
+[dev-dependencies]
+soroban-ledger-snapshot-source-live = {path = "../../soroban-ledger-snapshot-source-live"}
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}

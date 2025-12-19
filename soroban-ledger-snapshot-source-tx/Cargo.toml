@@ -1,0 +1,21 @@
+[package]
+name = "soroban-ledger-snapshot-source-tx"
+description = "SnapshotSource implementation that downloads ledger meta and searches for ledger entries"
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version.workspace = true
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+soroban-ledger-fetch = { workspace = true }
+soroban-sdk = { workspace = true, features = ["testutils"] }
+cache-to-file = { workspace = true }
+cargo_metadata = "0.19"
+directories = "6.0"
+sha2 = "0.10"
+serde_json = "1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
