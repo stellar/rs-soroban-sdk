@@ -265,6 +265,9 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 #imp
                 #derived_ok
             };
+
+            // See soroban-sdk/docs/contracttrait.md for documentation on how
+            // contractimpl interacts with contracttrait.
             let contractimpl_for_trait =
                 trait_ident
                     .filter(|_| args.contracttrait)
@@ -279,6 +282,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                         )
                     });
             output.extend(quote! { #contractimpl_for_trait });
+
             let cfs = derive_contract_function_registration_ctor(
                 crate_path,
                 ty,
@@ -286,6 +290,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 pub_methods.iter().map(|m| &m.sig.ident),
             );
             output.extend(quote! { #cfs });
+
             output.into()
         }
         Err(derived_err) => quote! {

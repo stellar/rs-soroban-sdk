@@ -12,6 +12,8 @@ use quote::quote;
 use std::collections::HashSet;
 use syn::{LitStr, Path, Type};
 
+// See soroban-sdk/docs/contracttrait.md for documentation on how this works.
+
 #[derive(Debug, FromMeta)]
 struct Args {
     #[darling(default = "default_crate_path")]

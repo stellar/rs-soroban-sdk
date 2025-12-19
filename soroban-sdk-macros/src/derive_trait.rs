@@ -4,6 +4,8 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use syn::{parse2, ItemTrait, Path};
 
+// See soroban-sdk/docs/contracttrait.md for documentation on how this works.
+
 fn default_spec_export() -> bool {
     // The contracttrait macro defaults to not exporting the spec because most uses of the macro on
     // a trait are providing machinery for contracts to call `impl Trait for Contract` and that
