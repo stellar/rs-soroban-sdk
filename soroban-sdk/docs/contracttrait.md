@@ -95,7 +95,7 @@ This proc macro:
 1. Filters out any functions that appear in `impl_fns` (they're overridden and will already be handled by the `contractimpl` macro like any other implemented non-trait function)
 2. For remaining functions (defaults not overridden), generates all the same things that `contractimpl` generates:
    - **Specs:** Contract specification entries via `derive_fns_spec`
-   - **Exported functions:** The actual `__fn_name` exports via `derive_pub_fns` that is what become the functions in the Wasm file
+   - **Exported functions:** The actual `__fn_name` exports via `derive_pub_fns` that become the functions in the Wasm file
    - **Client methods:** Methods on the client struct via `derive_client_impl`
    - **Args variants:** Enum variants for function arguments via `derive_args_impl`
    - **Test hooks:** Function registration for test environment via `derive_contract_function_registration_ctor`
