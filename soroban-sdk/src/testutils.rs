@@ -25,6 +25,21 @@ use soroban_ledger_snapshot::LedgerSnapshot;
 
 pub use crate::env::EnvTestConfig;
 
+/// Trait for providing ledger data to the test environment.
+///
+/// Implement this trait to create custom snapshot sources that load ledger state
+/// from sources other than [`LedgerSnapshot`] files, such as RPC endpoints,
+/// history archives, or in-memory data structures.
+///
+/// Use with [`SnapshotSourceInput`] and [`Env::from_ledger_snapshot`] to initialize
+/// a test environment from a custom source.
+pub use crate::env::internal::storage::SnapshotSource;
+
+/// Error type returned by [`SnapshotSource::get`].
+///
+/// Required for implementing custom snapshot sources.
+pub use crate::env::internal::HostError;
+
 pub trait Register {
     fn register<'i, I, A>(self, env: &Env, id: I, args: A) -> crate::Address
     where
@@ -603,5 +618,77 @@ impl StellarAssetContract {
     #[doc(hidden)]
     pub fn asset(&self) -> xdr::Asset {
         self.asset.clone()
+    }
+}
+
+/// Input for creating an [`Env`] from a custom snapshot source.
+///
+/// This struct enables [`Env::from_ledger_snapshot`] to accept custom snapshot
+/// source types beyond [`LedgerSnapshot`], providing flexibility for testing
+/// scenarios that load ledger state from different sources such as RPC endpoints,
+/// history archives, or in-memory data structures.
+///
+/// # Fields
+///
+/// * `source` - A snapshot source implementing the [`SnapshotSource`] trait.
+///   This is used to load ledger entries on demand during test execution.
+///
+/// * `ledger_info` - Optional ledger info to initialize the environment with.
+///   If `None`, default test ledger info is used.
+///
+/// * `snapshot` - Optional [`LedgerSnapshot`] used as the base for capturing
+///   state changes. When the test completes, modified entries are written to
+///   this snapshot. If `None`, a new empty snapshot is created.
+///
+/// # Example
+///
+/// ```
+/// use soroban_sdk::testutils::{SnapshotSource, SnapshotSourceInput, HostError};
+/// use soroban_sdk::xdr::{LedgerEntry, LedgerKey};
+/// use soroban_sdk::Env;
+/// use std::rc::Rc;
+///
+/// struct MyCustomSource;
+///
+/// impl SnapshotSource for MyCustomSource {
+///     fn get(
+///         &self,
+///         key: &Rc<LedgerKey>,
+///     ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
+///         // Return None for keys not found, or Some((entry, live_until_ledger))
+///         Ok(None)
+///     }
+/// }
+///
+/// let input = SnapshotSourceInput {
+///     source: Rc::new(MyCustomSource),
+///     ledger_info: None,
+///     snapshot: None,
+/// };
+/// let env = Env::from_ledger_snapshot(input);
+/// ```
+pub struct SnapshotSourceInput {
+    pub source: Rc<dyn SnapshotSource>,
+    pub ledger_info: Option<LedgerInfo>,
+    pub snapshot: Option<Rc<LedgerSnapshot>>,
+}
+
+/// Converts a [`LedgerSnapshot`] into a [`SnapshotSourceInput`].
+///
+/// This conversion maintains backward compatibility with the existing API,
+/// allowing [`LedgerSnapshot`] to be used directly with [`Env::from_ledger_snapshot`].
+///
+/// The [`LedgerSnapshot`] is wrapped in an [`Rc`] and used for all three fields:
+/// - As the snapshot source for loading ledger entries
+/// - To provide the ledger info for the environment
+/// - As the base snapshot for capturing state changes
+impl From<LedgerSnapshot> for SnapshotSourceInput {
+    fn from(s: LedgerSnapshot) -> Self {
+        let s = Rc::new(s);
+        Self {
+            source: s.clone(),
+            ledger_info: Some(s.ledger_info()),
+            snapshot: Some(s),
+        }
     }
 }

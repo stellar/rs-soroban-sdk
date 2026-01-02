@@ -8,8 +8,9 @@ use stellar_xdr::{
 };
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
-// streams as rustdocs, because rustdocs are evaluated and execute code by
-// default in Rust projects.
+// streams as rustdocs, because rustdocs can contain Rust code, and that code
+// will be executed. Generated code may be generated from untrusted Wasm
+// containing untrusted spec docs.
 
 // TODO: Replace the unwrap()s in this code with returning Result.
 // TODO: Create Idents in a way that we can get a Result back and return it too

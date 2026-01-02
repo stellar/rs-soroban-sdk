@@ -5,6 +5,11 @@ use stellar_xdr::ScSpecFunctionV0;
 
 use super::types::generate_type_ident;
 
+// IMPORTANT: The "docs" fields of spec entries are not output in Rust token
+// streams as rustdocs, because rustdocs can contain Rust code, and that code
+// will be executed. Generated code may be generated from untrusted Wasm
+// containing untrusted spec docs.
+
 /// Constructs a token stream containing a single trait that has a function for
 /// every function spec.
 pub fn generate_trait(name: &str, specs: &[&ScSpecFunctionV0]) -> TokenStream {

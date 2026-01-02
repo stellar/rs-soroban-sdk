@@ -1,12 +1,12 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
 use quote::{format_ident, quote, ToTokens};
 use std::collections::HashMap;
 use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, Path, PathArguments, PathSegment,
-    ReturnType, Token, TypePath,
+    AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
+    PathSegment, ReturnType, Signature, Token, TypePath,
 };
 use syn::{
     spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
@@ -247,6 +247,41 @@ impl Fn {
     }
 }
 
+impl From<&ImplItemFn> for Fn {
+    fn from(m: &ImplItemFn) -> Self {
+        Self {
+            ident: m.sig.ident.clone(),
+            attrs: m.attrs.clone(),
+            inputs: m.sig.inputs.clone(),
+            output: m.sig.output.clone(),
+        }
+    }
+}
+
+impl Parse for Fn {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let attrs = input.call(Attribute::parse_outer)?;
+        let sig: Signature = input.parse()?;
+        Ok(Fn {
+            ident: sig.ident.clone(),
+            attrs,
+            inputs: sig.inputs.clone(),
+            output: sig.output.clone(),
+        })
+    }
+}
+
+/// Converts a Vec<LitStr> containing "attrs + signature" strings into Vec<Fn>.
+pub fn strs_to_fns(fn_strs: &[LitStr]) -> Result<Vec<Fn>, Error> {
+    fn_strs
+        .iter()
+        .map(|f| {
+            syn::parse_str::<Fn>(&f.value())
+                .map_err(|e| Error::new(f.span(), format!("failed to parse function: {e}")))
+        })
+        .collect()
+}
+
 fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
     match &typ {
         Type::Path(TypePath { path, .. }) => {
@@ -315,4 +350,91 @@ fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
 
 pub fn ty_to_safe_ident_str(ty: &Type) -> String {
     quote!(#ty).to_string().replace(' ', "").replace(':', "_")
+}
+
+pub fn ident_to_type(ident: Ident) -> Type {
+    Type::Path(TypePath {
+        qself: None,
+        path: Path {
+            leading_colon: None,
+            segments: Punctuated::from_iter([PathSegment {
+                ident,
+                arguments: PathArguments::None,
+            }]),
+        },
+    })
+}
+
+/// Converts a path for use inside a declarative macro_rules.
+///
+/// If the first segment of the path is `crate`, converts it to `$crate`, otherwise returns the
+/// path unaltered.
+///
+/// The return value is a TokenStream because while $crate is a special token that acts as a path
+/// in a macro_rules it is not a valid identifier and syn's Ident type, used in Path, does not
+/// permit it.
+pub fn path_in_macro_rules(p: &Path) -> TokenStream {
+    let leading_colon = &p.leading_colon;
+    let mut segments = p.segments.iter();
+    let first = segments.next();
+    if leading_colon == &None
+        && first
+            == Some(&PathSegment {
+                ident: Ident::new("crate", Span::call_site()),
+                arguments: PathArguments::None,
+            })
+    {
+        quote! { $crate #(::#segments)* }
+    } else {
+        quote! { #leading_colon #first #(::#segments)* }
+    }
+}
+
+#[cfg(test)]
+mod test_path_in_macro_rules {
+    use crate::syn_ext::*;
+    use quote::quote;
+    use syn::parse2;
+
+    fn assert_paths_eq(input: TokenStream, expected: TokenStream) {
+        assert_eq!(
+            path_in_macro_rules(&parse2(input).unwrap()).to_string(),
+            expected.to_string(),
+        );
+    }
+
+    #[test]
+    fn test_unaltered_paths() {
+        let input = quote!(path::to::module);
+        let expected = quote!(path::to::module);
+        assert_paths_eq(input, expected);
+    }
+
+    #[test]
+    fn test_unaltered_global_paths() {
+        let input = quote!(::path::to::module);
+        let expected = quote!(::path::to::module);
+        assert_paths_eq(input, expected);
+    }
+
+    #[test]
+    fn test_crate() {
+        let input = quote!(crate);
+        let expected = quote!($crate);
+        assert_paths_eq(input, expected);
+    }
+
+    #[test]
+    fn test_crate_with_path() {
+        let input = quote!(crate::path::to);
+        let expected = quote!($crate::path::to);
+        assert_paths_eq(input, expected);
+    }
+
+    #[test]
+    fn test_crate_with_invalid_global() {
+        let input = quote!(::crate);
+        let expected = quote!(::crate);
+        assert_paths_eq(input, expected);
+    }
 }

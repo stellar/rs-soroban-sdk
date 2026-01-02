@@ -401,6 +401,79 @@ pub use soroban_sdk_macros::contract;
 /// ```
 pub use soroban_sdk_macros::contractimpl;
 
+/// Defines a contract trait with default function implementations that can be
+/// used by contracts.
+///
+/// The `contracttrait` macro generates a trait that contracts can implement
+/// using `contractimpl`. Functions defined with default implementations in
+/// the trait will be automatically exported as contract functions when a
+/// contract implements the trait using `#[contractimpl(contracttrait)]`.
+///
+/// This is useful for defining standard interfaces where some functions have
+/// default implementations that can be optionally overridden.
+///
+/// Note: The `contracttrait` macro is not required on traits, but without it
+/// default functions will not be exported by contracts that implement the
+/// trait.
+///
+/// ### Macro Arguments
+///
+/// - `crate_path` - The path to the soroban-sdk crate. Defaults to `soroban_sdk`.
+/// - `spec_name` - The name for the spec type. Defaults to `{TraitName}Spec`.
+/// - `spec_export` - Whether to export the spec for default functions. Defaults to `false`.
+/// - `args_name` - The name for the args type. Defaults to `{TraitName}Args`.
+/// - `client_name` - The name for the client type. Defaults to `{TraitName}Client`.
+///
+/// ### Examples
+///
+/// Define a trait with a default function and implement it in a contract:
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
+///
+/// #[contracttrait]
+/// pub trait Token {
+///     fn balance(env: &Env, id: Address) -> i128 {
+///         // ...
+///         # todo!()
+///     }
+///
+///     // Default function.
+///     fn transfer(env: &Env, from: Address, to: Address, amount: i128) {
+///         // ...
+///         # todo!()
+///     }
+/// }
+///
+/// #[contract]
+/// pub struct TokenContract;
+///
+/// #[contractimpl(contracttrait)]
+/// impl Token for TokenContract {
+///     fn balance(env: &Env, id: Address) -> i128 {
+///         // Provide a custom impl of balance.
+///         // ...
+///         # todo!()
+///     }
+/// }
+/// # fn main() { }
+/// ```
+pub use soroban_sdk_macros::contracttrait;
+
+/// Generates a macro for a trait that calls
+/// contractimpl_trait_default_fns_not_overridden with information about the trait.
+///
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_trait_macro;
+
+/// Generates code the same as contractimpl does, but for the default functions of a trait that are
+/// not overridden.
+///
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
+
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
 /// under the section name 'contractmetav0'. Contract developers can use this to
 /// append metadata to their contract.
