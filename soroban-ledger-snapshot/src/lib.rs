@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use serde_with::{serde_as, DeserializeAs, SerializeAs};
 use std::{
     fs::{create_dir_all, File},
@@ -46,9 +46,17 @@ pub struct LedgerSnapshot {
 /// Extended ledger entry that includes the live util ledger sequence. Provides a more compact
 /// form of the tuple used in [`LedgerSnapshot::ledger_entries`], to reduce the size of the snapshot
 /// when serialized to JSON.
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Clone, serde::Deserialize)]
 struct LedgerEntryExt {
     entry: Box<LedgerEntry>,
+    live_util: Option<u32>,
+}
+
+/// Extended ledger entry that includes the live util ledger sequence, and the entry by reference.
+/// Used to reduce memory usage during serialization.
+#[derive(serde::Serialize)]
+struct LedgerEntryExtRef<'a> {
+    entry: &'a Box<LedgerEntry>, // Reference = no clone
     live_util: Option<u32>,
 }
 
@@ -62,14 +70,15 @@ impl<'a> SerializeAs<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>> for
     where
         S: serde::Serializer,
     {
-        let entries: Vec<LedgerEntryExt> = source
-            .iter()
-            .map(|(_, (entry, live_util))| LedgerEntryExt {
-                entry: entry.clone(),
+        use serde::ser::SerializeSeq;
+        let mut seq = serializer.serialize_seq(Some(source.len()))?;
+        for (_, (entry, live_util)) in source {
+            seq.serialize_element(&LedgerEntryExtRef {
+                entry,
                 live_util: *live_util,
-            })
-            .collect();
-        entries.serialize(serializer)
+            })?;
+        }
+        seq.end()
     }
 }
 
