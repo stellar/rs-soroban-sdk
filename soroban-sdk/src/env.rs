@@ -479,7 +479,7 @@ use crate::{
     testutils::{
         budget::Budget, default_ledger_info, Address as _, AuthSnapshot, AuthorizedInvocation,
         ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
-        Register, Snapshot, StellarAssetContract, StellarAssetIssuer,
+        Register, Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -1597,16 +1597,22 @@ impl Env {
         self.to_snapshot().write_file(p).unwrap();
     }
 
-    /// Creates a new Env loaded with the [`LedgerSnapshot`].
+    /// Creates a new Env loaded with the snapshot source.
     ///
-    /// The ledger info and state in the snapshot are loaded into the Env.
-    pub fn from_ledger_snapshot(s: LedgerSnapshot) -> Env {
+    /// The ledger info and state from the snapshot source are loaded into the Env.
+    pub fn from_ledger_snapshot(input: impl Into<SnapshotSourceInput>) -> Env {
+        let SnapshotSourceInput {
+            source,
+            ledger_info,
+            snapshot,
+        } = input.into();
+
         Env::new_for_testutils(
             EnvTestConfig::default(), // TODO: Allow setting the config.
-            Rc::new(s.clone()),
+            source,
             None,
-            Some(s.ledger_info()),
-            Some(Rc::new(s.clone())),
+            ledger_info,
+            snapshot,
         )
     }
 
