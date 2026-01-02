@@ -85,6 +85,8 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 pub use internal::VecObject;
+#[cfg(any(test, feature = "testutils"))]
+use soroban_env_host::HostError;
 
 pub trait IntoVal<E: internal::Env, T> {
     fn into_val(&self, e: &E) -> T;
@@ -1548,6 +1550,26 @@ impl Env {
             })
             .unwrap();
         t.unwrap()
+    }
+
+    /// Run the function as if executed by the given contract ID. Returns an
+    /// error if the function execution fails for any reason.
+    ///
+    /// Used to write or read contract data, or take other actions in tests for
+    /// setting up tests or asserting on internal state.
+    pub fn try_as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> Result<T, HostError> {
+        let id = id.contract_id();
+        let func = Symbol::from_small_str("");
+        let mut t: Option<T> = None;
+        let result = self.env_impl.try_with_test_contract_frame(id, func, || {
+            t = Some(f());
+            Ok(().into())
+        });
+
+        match result {
+            Ok(_) => Ok(t.unwrap()),
+            Err(e) => Err(e),
+        }
     }
 
     /// Creates a new Env loaded with the [`Snapshot`].
