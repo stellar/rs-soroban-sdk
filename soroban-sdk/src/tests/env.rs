@@ -1,9 +1,11 @@
+use soroban_sdk_macros::contracterror;
+
 use crate::{
     self as soroban_sdk, contract, contractimpl,
     env::EnvTestConfig,
     testutils::{Address as _, Logs as _},
     xdr::{ScErrorCode, ScErrorType},
-    Address, Env, Error,
+    Address, Env, Error, Symbol,
 };
 
 #[test]
@@ -34,6 +36,11 @@ impl Contract {
         // This should fail because auths aren't mocked.
         env.require_auth(&address);
     }
+}
+
+#[contracterror]
+enum ContractError {
+    AnError = 1,
 }
 
 #[test]
@@ -211,4 +218,55 @@ fn test_snapshot_file_disabled_after_creation() {
     assert!(p1.exists());
     assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
+}
+
+#[test]
+fn test_try_as_contract() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+    let val = Symbol::new(&env, "bar");
+
+    env.as_contract(&addr, || {
+        env.storage().persistent().set(&key, &val);
+    });
+
+    let result =
+        env.try_as_contract::<Symbol>(&addr, || env.storage().persistent().get(&key).unwrap());
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap(), val);
+}
+
+#[test]
+fn test_try_as_contract_host_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+
+    let result = env.try_as_contract(&addr, || {
+        // should error as key doesn't exist in storage
+        env.storage().persistent().extend_ttl(&key, 1, 100);
+    });
+    println!("{:?}", result);
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_try_as_contract_contract_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract(&addr, || {
+        panic_with_error!(&env, ContractError::AnError);
+    });
+    println!("{:?}", result);
+    assert!(result.is_err());
 }
