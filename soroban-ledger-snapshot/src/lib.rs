@@ -49,7 +49,7 @@ pub struct LedgerSnapshot {
 #[derive(Debug, Clone, serde::Deserialize)]
 struct LedgerEntryExt {
     entry: Box<LedgerEntry>,
-    live_util: Option<u32>,
+    live_until: Option<u32>,
 }
 
 /// Extended ledger entry that includes the live util ledger sequence, and the entry by reference.
@@ -57,7 +57,7 @@ struct LedgerEntryExt {
 #[derive(serde::Serialize)]
 struct LedgerEntryExtRef<'a> {
     entry: &'a Box<LedgerEntry>, // Reference = no clone
-    live_util: Option<u32>,
+    live_until: Option<u32>,
 }
 
 struct LedgerEntryVec;
@@ -72,10 +72,10 @@ impl<'a> SerializeAs<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>> for
     {
         use serde::ser::SerializeSeq;
         let mut seq = serializer.serialize_seq(Some(source.len()))?;
-        for (_, (entry, live_util)) in source {
+        for (_, (entry, live_until)) in source {
             seq.serialize_element(&LedgerEntryExtRef {
                 entry,
-                live_util: *live_util,
+                live_until: *live_until,
             })?;
         }
         seq.end()
@@ -101,9 +101,9 @@ impl<'de> DeserializeAs<'de, Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>
         match Format::deserialize(deserializer)? {
             Format::V2(entries) => Ok(entries
                 .into_iter()
-                .map(|LedgerEntryExt { entry, live_util }| {
+                .map(|LedgerEntryExt { entry, live_until }| {
                     let key = Box::new(entry.to_key());
-                    (key, (entry, live_util))
+                    (key, (entry, live_until))
                 })
                 .collect()),
             Format::V1(entries) => Ok(entries),
