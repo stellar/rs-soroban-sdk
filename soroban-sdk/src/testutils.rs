@@ -431,7 +431,7 @@ pub mod budget {
 #[derive(Clone)]
 pub struct ContractEvents {
     env: Env,
-    pub events: std::vec::Vec<xdr::ContractEvent>,
+    events: std::vec::Vec<xdr::ContractEvent>,
 }
 
 impl ContractEvents {
@@ -440,6 +440,11 @@ impl ContractEvents {
             env: env.clone(),
             events,
         }
+    }
+
+    /// Returns the events in their XDR form.
+    pub fn events(&self) -> &[xdr::ContractEvent] {
+        &self.events
     }
 
     /// Creates a new ContractEvents struct that only includes events emitted
