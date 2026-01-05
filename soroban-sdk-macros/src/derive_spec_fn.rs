@@ -12,8 +12,18 @@ use syn::{
 };
 
 use crate::attribute::pass_through_attr_to_gen_code;
-use crate::syn_ext::ty_to_safe_ident_str;
+use crate::syn_ext::{self, ty_to_safe_ident_str};
 use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+
+pub fn derive_fns_spec<'a>(
+    ty: &Type,
+    fns: impl IntoIterator<Item = &'a syn_ext::Fn>,
+    export: bool,
+) -> Result<TokenStream2, TokenStream2> {
+    fns.into_iter()
+        .map(|f| derive_fn_spec(ty, &f.ident, &f.attrs, &f.inputs, &f.output, export))
+        .collect()
+}
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn_spec(

@@ -7,7 +7,7 @@
 //! Use [`TokenClient`] for calling token contracts such as the Stellar Asset
 //! Contract.
 
-use crate::{contractclient, contractspecfn, Address, Env, MuxedAddress, String};
+use crate::{contracttrait, Address, Env, MuxedAddress, String};
 
 // The interface below was copied from
 // https://github.com/stellar/rs-soroban-env/blob/main/soroban-env-host/src/native_contract/token/contract.rs
@@ -80,8 +80,13 @@ pub use TokenClient as Client;
 /// There are no functions in the token interface for minting tokens. Minting is
 /// an administrative function that can differ significantly from one token to
 /// the next.
-#[contractspecfn(name = "TokenFnSpec", export = false)]
-#[contractclient(crate_path = "crate", name = "TokenClient")]
+#[contracttrait(
+    crate_path = "crate",
+    spec_name = "TokenFnSpec",
+    spec_export = false,
+    args_name = "TokenArgs",
+    client_name = "TokenClient"
+)]
 pub trait TokenInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
     ///
@@ -235,14 +240,15 @@ pub trait TokenInterface {
     fn symbol(env: Env) -> String;
 }
 
-/// Spec contains the contract spec of functions of the Token contracts.
-#[doc(hidden)]
-pub struct TokenFnSpec;
-
 /// Interface for admin capabilities for Token contracts, such as the Stellar
 /// Asset Contract.
-#[contractspecfn(name = "StellarAssetFnSpec", export = false)]
-#[contractclient(crate_path = "crate", name = "StellarAssetClient")]
+#[contracttrait(
+    crate_path = "crate",
+    spec_name = "StellarAssetFnSpec",
+    spec_export = false,
+    args_name = "StellarAssetArgs",
+    client_name = "StellarAssetClient"
+)]
 pub trait StellarAssetInterface {
     /// Returns the allowance for `spender` to transfer from `from`.
     ///
@@ -464,9 +470,3 @@ pub trait StellarAssetInterface {
     /// data = amount: i128`
     fn clawback(env: Env, from: Address, amount: i128);
 }
-
-/// Contains the contract spec of the functions of the Stellar Asset Contract.
-///
-/// The Stellar Asset Contract is a superset of the Token Contract.
-#[doc(hidden)]
-pub struct StellarAssetFnSpec;
