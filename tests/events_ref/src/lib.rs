@@ -41,7 +41,6 @@ impl Contract {
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    extern crate std;
 
     use soroban_sdk::{
         map, symbol_short,
@@ -65,13 +64,13 @@ mod test {
 
         assert_eq!(
             env.events().all(),
-            std::vec![Transfer {
+            [Transfer {
                 from: &from,
                 to: &to.address(),
                 amount: &amount,
                 to_muxed_id: Some(&to.id().unwrap()),
             }
-            .to_xdr(&env, &contract_id),],
+            .to_xdr(&env, &contract_id)],
         );
 
         // duplicate check to assert previous event testing pattern works
@@ -115,13 +114,13 @@ mod test {
 
         assert_eq!(
             env.events().all(),
-            std::vec![Transfer {
+            [Transfer {
                 from: &from,
                 to: &to,
                 amount: &amount,
                 to_muxed_id: None,
             }
-            .to_xdr(&env, &contract_id),],
+            .to_xdr(&env, &contract_id)],
         );
 
         // duplicate check to assert previous event testing pattern works
@@ -156,6 +155,6 @@ mod test {
         let from = Address::generate(&env);
         let to = Address::generate(&env);
         let _ = client.try_failed_transfer(&from, &to, &1);
-        assert_eq!(env.events().all(), std::vec![]);
+        assert_eq!(env.events().all(), []);
     }
 }

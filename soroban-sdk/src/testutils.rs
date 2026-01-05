@@ -475,6 +475,18 @@ impl PartialEq<std::vec::Vec<xdr::ContractEvent>> for ContractEvents {
     }
 }
 
+impl PartialEq<&[xdr::ContractEvent]> for ContractEvents {
+    fn eq(&self, other: &&[xdr::ContractEvent]) -> bool {
+        self.events == *other
+    }
+}
+
+impl<const N: usize> PartialEq<[xdr::ContractEvent; N]> for ContractEvents {
+    fn eq(&self, other: &[xdr::ContractEvent; N]) -> bool {
+        self.events == other
+    }
+}
+
 impl PartialEq<Vec<(crate::Address, Vec<Val>, Val)>> for ContractEvents {
     fn eq(&self, other: &Vec<(crate::Address, Vec<Val>, Val)>) -> bool {
         let len = match u32::try_from(self.events.len()) {
