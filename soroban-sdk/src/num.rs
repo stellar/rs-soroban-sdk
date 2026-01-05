@@ -192,6 +192,21 @@ pub struct U256 {
 impl_num_wrapping_val_type!(U256, U256Val, U256Small);
 
 impl U256 {
+    /// Returns zero.
+    pub fn zero(env: &Env) -> U256 {
+        U256::from_u32(env, 0)
+    }
+
+    /// Returns the minimum value for U256 (0).
+    pub fn min_value(env: &Env) -> U256 {
+        U256::zero(env)
+    }
+
+    /// Returns the maximum value for U256 (2^256 - 1).
+    pub fn max_value(env: &Env) -> U256 {
+        U256::from_parts(env, u64::MAX, u64::MAX, u64::MAX, u64::MAX)
+    }
+
     pub fn from_u32(env: &Env, u: u32) -> Self {
         U256 {
             env: env.clone(),
@@ -311,6 +326,119 @@ impl U256 {
             val,
         }
     }
+
+    /// Checked integer addition. Computes `self + other`, returning `None` if
+    /// overflow occurred.
+    pub fn checked_add(&self, other: &U256) -> Option<U256> {
+        // Overflow occurs if max - self < other
+        let remaining = U256::max_value(self.env()).sub(self);
+        if remaining >= *other {
+            Some(self.add(other))
+        } else {
+            None
+        }
+    }
+
+    /// Checked integer subtraction. Computes `self - other`, returning `None`
+    /// if underflow occurred.
+    pub fn checked_sub(&self, other: &U256) -> Option<U256> {
+        if self >= other {
+            Some(self.sub(other))
+        } else {
+            None
+        }
+    }
+
+    /// Checked integer multiplication. Computes `self * other`, returning
+    /// `None` if overflow occurred.
+    pub fn checked_mul(&self, other: &U256) -> Option<U256> {
+        let zero = U256::zero(self.env());
+        if *other == zero {
+            Some(zero)
+        } else {
+            // Overflow occurs if self > max / other
+            let max_quotient = U256::max_value(self.env()).div(other);
+            if *self <= max_quotient {
+                Some(self.mul(other))
+            } else {
+                None
+            }
+        }
+    }
+
+    /// Checked integer division. Computes `self / other`, returning `None` if
+    /// `other == 0`.
+    pub fn checked_div(&self, other: &U256) -> Option<U256> {
+        let zero = U256::zero(self.env());
+        if *other == zero {
+            None
+        } else {
+            Some(self.div(other))
+        }
+    }
+
+    /// Checked Euclidean remainder. Computes `self.rem_euclid(other)`,
+    /// returning `None` if `other == 0`.
+    pub fn checked_rem_euclid(&self, other: &U256) -> Option<U256> {
+        let zero = U256::zero(self.env());
+        if *other == zero {
+            None
+        } else {
+            Some(self.rem_euclid(other))
+        }
+    }
+
+    /// Checked exponentiation. Computes `self.pow(exp)`, returning `None` if
+    /// overflow occurred.
+    pub fn checked_pow(&self, exp: u32) -> Option<U256> {
+        if exp == 0 {
+            return Some(U256::from_u32(self.env(), 1));
+        }
+
+        let zero = U256::zero(self.env());
+        let one = U256::from_u32(self.env(), 1);
+
+        if *self == zero {
+            return Some(zero);
+        }
+        if *self == one {
+            return Some(one);
+        }
+
+        // Use iterative approach to check for overflow
+        let mut base = self.clone();
+        let mut exp = exp;
+        let mut result = U256::from_u32(self.env(), 1);
+
+        loop {
+            if exp % 2 == 1 {
+                result = result.checked_mul(&base)?;
+            }
+            exp /= 2;
+            if exp == 0 {
+                break;
+            }
+            base = base.checked_mul(&base)?;
+        }
+
+        Some(result)
+    }
+
+    /// Checked shift left. Computes `self << bits`, returning `None` if `bits`
+    /// is greater than or equal to 256 or if the shift would overflow.
+    pub fn checked_shl(&self, bits: u32) -> Option<U256> {
+        if bits >= 256 {
+            return None;
+        }
+
+        // Check for overflow: value must be recoverable by right shift
+        let shifted = self.shl(bits);
+        if shifted.shr(bits) == *self {
+            Some(shifted)
+        } else {
+            None
+        }
+    }
 }
 
 /// I256 holds a 256-bit signed integer.
@@ -335,6 +463,21 @@ pub struct I256 {
 impl_num_wrapping_val_type!(I256, I256Val, I256Small);
 
 impl I256 {
+    /// Returns zero.
+    pub fn zero(env: &Env) -> I256 {
+        I256::from_i32(env, 0)
+    }
+
+    /// Returns the minimum value for I256 (-2^255).
+    pub fn min_value(env: &Env) -> I256 {
+        I256::from_parts(env, i64::MIN, 0, 0, 0)
+    }
+
+    /// Returns the maximum value for I256 (2^255 - 1).
+    pub fn max_value(env: &Env) -> I256 {
+        I256::from_parts(env, i64::MAX, u64::MAX, u64::MAX, u64::MAX)
+    }
+
     pub fn from_i32(env: &Env, i: i32) -> Self {
         I256 {
             env: env.clone(),
@@ -460,6 +603,234 @@ impl I256 {
         I256 {
             env: self.env.clone(),
             val,
+        }
+    }
+
+    /// Checked integer addition. Computes `self + other`, returning `None` if
+    /// overflow or underflow occurred.
+    pub fn checked_add(&self, other: &I256) -> Option<I256> {
+        let zero = I256::zero(self.env());
+
+        if *other >= zero {
+            // Adding a non-negative number: check for overflow
+            // Overflow if self > max - other
+            let max = I256::max_value(self.env());
+            let remaining = max.sub(other);
+            if *self <= remaining {
+                Some(self.add(other))
+            } else {
+                None
+            }
+        } else {
+            // Adding a negative number: check for underflow
+            // Underflow if self < min - other (but other is negative, so min - other > min)
+            let min = I256::min_value(self.env());
+            let remaining = min.sub(other);
+            if *self >= remaining {
+                Some(self.add(other))
+            } else {
+                None
+            }
+        }
+    }
+
+    /// Checked integer subtraction. Computes `self - other`, returning `None`
+    /// if overflow or underflow occurred.
+    pub fn checked_sub(&self, other: &I256) -> Option<I256> {
+        let zero = I256::zero(self.env());
+
+        if *other >= zero {
+            // Subtracting a non-negative number: check for underflow
+            // Underflow if self < min + other
+            let min = I256::min_value(self.env());
+            let limit = min.add(other);
+            if *self >= limit {
+                Some(self.sub(other))
+            } else {
+                None
+            }
+        } else {
+            // Subtracting a negative number (adding positive): check for overflow
+            // Overflow if self > max + other (but other is negative, so max + other < max)
+            let max = I256::max_value(self.env());
+            let limit = max.add(other);
+            if *self <= limit {
+                Some(self.sub(other))
+            } else {
+                None
+            }
+        }
+    }
+
+    /// Checked integer multiplication. Computes `self * other`, returning
+    /// `None` if overflow or underflow occurred.
+    pub fn checked_mul(&self, other: &I256) -> Option<I256> {
+        let zero = I256::zero(self.env());
+        let one = I256::from_i32(self.env(), 1);
+        let neg_one = I256::from_i32(self.env(), -1);
+
+        if *self == zero || *other == zero {
+            return Some(zero);
+        }
+
+        if *self == one {
+            return Some(other.clone());
+        }
+        if *other == one {
+            return Some(self.clone());
+        }
+
+        let min = I256::min_value(self.env());
+        let max = I256::max_value(self.env());
+
+        // Check for the special case of MIN * -1 which would overflow
+        if (*self == min && *other == neg_one) || (*self == neg_one && *other == min) {
+            return None;
+        }
+
+        // Handle -1 cases
+        if *self == neg_one {
+            return Some(zero.sub(other));
+        }
+        if *other == neg_one {
+            return Some(zero.sub(self));
+        }
+
+        // Determine signs
+        let self_neg = *self < zero;
+        let other_neg = *other < zero;
+        let result_neg = self_neg != other_neg;
+
+        // Handle cases involving MIN specially since abs(MIN) overflows
+        if *self == min || *other == min {
+            // MIN * anything with |anything| > 1 will overflow
+            // We already handled MIN * 1, MIN * 0, MIN * -1 above
+            return None;
+        }
+
+        // Get absolute values for comparison (safe now since neither is MIN)
+        let self_abs = if self_neg {
+            zero.sub(self)
+        } else {
+            self.clone()
+        };
+        let other_abs = if other_neg {
+            zero.sub(other)
+        } else {
+            other.clone()
+        };
+
+        // Check for overflow using absolute values
+        // For negative result, the limit is abs(min) = max + 1, but we can only represent max
+        // So we check: self_abs * other_abs <= max (for positive result)
+        // Or: self_abs * other_abs <= max + 1 (for negative result), which we approximate as <= max
+        // since if self_abs * other_abs == max + 1, result is exactly MIN which is valid
+
+        // Overflow if self_abs > max / other_abs
+        let max_self = max.div(&other_abs);
+        if self_abs <= max_self {
+            Some(self.mul(other))
+        } else if result_neg && self_abs == max_self.add(&one) {
+            // Special case: result is exactly MIN
+            let result = self.mul(other);
+            if result == min {
+                Some(result)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+
+    /// Checked integer division. Computes `self / other`, returning `None` if
+    /// `other == 0` or if `self == MIN && other == -1` (overflow case).
+    pub fn checked_div(&self, other: &I256) -> Option<I256> {
+        let zero = I256::zero(self.env());
+        let neg_one = I256::from_i32(self.env(), -1);
+        let min = I256::min_value(self.env());
+
+        if *other == zero {
+            return None;
+        }
+
+        // Check for MIN / -1 overflow
+        if *self == min && *other == neg_one {
+            return None;
+        }
+
+        Some(self.div(other))
+    }
+
+    /// Checked Euclidean remainder. Computes `self.rem_euclid(other)`,
+    /// returning `None` if `other == 0`.
+    pub fn checked_rem_euclid(&self, other: &I256) -> Option<I256> {
+        let zero = I256::zero(self.env());
+        if *other == zero {
+            None
+        } else {
+            Some(self.rem_euclid(other))
+        }
+    }
+
+    /// Checked exponentiation. Computes `self.pow(exp)`, returning `None` if
+    /// overflow or underflow occurred.
+    pub fn checked_pow(&self, exp: u32) -> Option<I256> {
+        if exp == 0 {
+            return Some(I256::from_i32(self.env(), 1));
+        }
+
+        let zero = I256::zero(self.env());
+        let one = I256::from_i32(self.env(), 1);
+        let neg_one = I256::from_i32(self.env(), -1);
+
+        if *self == zero {
+            return Some(zero);
+        }
+        if *self == one {
+            return Some(one);
+        }
+        if *self == neg_one {
+            // (-1)^exp = 1 if exp is even, -1 if exp is odd
+            return if exp % 2 == 0 {
+                Some(one)
+            } else {
+                Some(neg_one)
+            };
+        }
+
+        // Use iterative approach to check for overflow
+        let mut base = self.clone();
+        let mut exp = exp;
+        let mut result = I256::from_i32(self.env(), 1);
+
+        loop {
+            if exp % 2 == 1 {
+                result = result.checked_mul(&base)?;
+            }
+            exp /= 2;
+            if exp == 0 {
+                break;
+            }
+            base = base.checked_mul(&base)?;
+        }
+
+        Some(result)
+    }
+
+    /// Checked shift left. Computes `self << bits`, returning `None` if `bits`
+    /// is greater than or equal to 256 or if the shift would overflow.
+    pub fn checked_shl(&self, bits: u32) -> Option<I256> {
+        if bits >= 256 {
+            return None;
+        }
+
+        // Check for overflow: value must be recoverable by right shift
+        let shifted = self.shl(bits);
+        if shifted.shr(bits) == *self {
+            Some(shifted)
+        } else {
+            None
         }
     }
 }
@@ -646,5 +1017,359 @@ mod test {
         let u3 = I256::from_i32(&env, -7);
         let u4 = I256::from_i32(&env, 4);
         assert_eq!(u3.rem_euclid(&u4), I256::from_i32(&env, 1));
+    }
+
+    #[test]
+    fn test_u256_min_max_value() {
+        let env = Env::default();
+
+        let zero = U256::zero(&env);
+        let min = U256::min_value(&env);
+        let max = U256::max_value(&env);
+
+        // zero should be 0
+        assert_eq!(zero, U256::from_u32(&env, 0));
+
+        // min should be 0
+        assert_eq!(min, U256::from_u32(&env, 0));
+        assert_eq!(min, zero);
+
+        // max should be 2^256 - 1 (all bits set)
+        assert_eq!(
+            max,
+            U256::from_parts(&env, u64::MAX, u64::MAX, u64::MAX, u64::MAX)
+        );
+
+        // max > min
+        assert!(max > min);
+    }
+
+    #[test]
+    fn test_i256_min_max_value() {
+        let env = Env::default();
+
+        let zero = I256::zero(&env);
+        let min = I256::min_value(&env);
+        let max = I256::max_value(&env);
+
+        // zero should be 0
+        assert_eq!(zero, I256::from_i32(&env, 0));
+
+        // max should be 2^255 - 1
+        assert_eq!(
+            max,
+            I256::from_parts(&env, i64::MAX, u64::MAX, u64::MAX, u64::MAX)
+        );
+
+        // min should be -2^255
+        assert_eq!(min, I256::from_parts(&env, i64::MIN, 0, 0, 0));
+
+        // max > 0 and min < 0
+        assert!(max > zero);
+        assert!(min < zero);
+
+        // max > min
+        assert!(max > min);
+    }
+
+    #[test]
+    fn test_u256_checked_add() {
+        let env = Env::default();
+
+        // Normal case
+        let u1 = U256::from_u32(&env, 6);
+        let u2 = U256::from_u32(&env, 3);
+        assert_eq!(u1.checked_add(&u2), Some(U256::from_u32(&env, 9)));
+
+        // Overflow case
+        let max = U256::from_parts(&env, u64::MAX, u64::MAX, u64::MAX, u64::MAX);
+        let one = U256::from_u32(&env, 1);
+        assert_eq!(max.checked_add(&one), None);
+
+        // Adding to max-1 should work
+        let max_minus_one = max.sub(&one);
+        assert_eq!(max_minus_one.checked_add(&one), Some(max.clone()));
+    }
+
+    #[test]
+    fn test_u256_checked_sub() {
+        let env = Env::default();
+
+        // Normal case
+        let u1 = U256::from_u32(&env, 6);
+        let u2 = U256::from_u32(&env, 3);
+        assert_eq!(u1.checked_sub(&u2), Some(U256::from_u32(&env, 3)));
+
+        // Underflow case
+        assert_eq!(u2.checked_sub(&u1), None);
+
+        // Subtracting zero should work
+        let zero = U256::from_u32(&env, 0);
+        assert_eq!(u1.checked_sub(&zero), Some(u1.clone()));
+
+        // Subtracting from zero should fail for non-zero
+        assert_eq!(zero.checked_sub(&u1), None);
+    }
+
+    #[test]
+    fn test_u256_checked_mul() {
+        let env = Env::default();
+
+        // Normal case
+        let u1 = U256::from_u32(&env, 6);
+        let u2 = U256::from_u32(&env, 3);
+        assert_eq!(u1.checked_mul(&u2), Some(U256::from_u32(&env, 18)));
+
+        // Multiply by zero
+        let zero = U256::from_u32(&env, 0);
+        assert_eq!(u1.checked_mul(&zero), Some(zero.clone()));
+        assert_eq!(zero.checked_mul(&u1), Some(zero.clone()));
+
+        // Overflow case
+        let max = U256::from_parts(&env, u64::MAX, u64::MAX, u64::MAX, u64::MAX);
+        let two = U256::from_u32(&env, 2);
+        assert_eq!(max.checked_mul(&two), None);
+    }
+
+    #[test]
+    fn test_u256_checked_div() {
+        let env = Env::default();
+
+        // Normal case
+        let u1 = U256::from_u32(&env, 6);
+        let u2 = U256::from_u32(&env, 3);
+        assert_eq!(u1.checked_div(&u2), Some(U256::from_u32(&env, 2)));
+
+        // Divide by zero
+        let zero = U256::from_u32(&env, 0);
+        assert_eq!(u1.checked_div(&zero), None);
+
+        // Zero divided by non-zero
+        assert_eq!(zero.checked_div(&u1), Some(zero.clone()));
+    }
+
+    #[test]
+    fn test_u256_checked_rem_euclid() {
+        let env = Env::default();
+
+        // Normal case
+        let u1 = U256::from_u32(&env, 7);
+        let u2 = U256::from_u32(&env, 4);
+        assert_eq!(u1.checked_rem_euclid(&u2), Some(U256::from_u32(&env, 3)));
+
+        // Mod by zero
+        let zero = U256::from_u32(&env, 0);
+        assert_eq!(u1.checked_rem_euclid(&zero), None);
+    }
+
+    #[test]
+    fn test_u256_checked_pow() {
+        let env = Env::default();
+
+        // Normal case
+        let u = U256::from_u32(&env, 2);
+        assert_eq!(u.checked_pow(10), Some(U256::from_u32(&env, 1024)));
+
+        // Power of zero
+        assert_eq!(u.checked_pow(0), Some(U256::from_u32(&env, 1)));
+
+        // Zero to the power of something
+        let zero = U256::from_u32(&env, 0);
+        assert_eq!(zero.checked_pow(5), Some(zero.clone()));
+
+        // One to any power
+        let one = U256::from_u32(&env, 1);
+        assert_eq!(one.checked_pow(100), Some(one.clone()));
+
+        // Overflow case: 2^256 would overflow
+        assert_eq!(u.checked_pow(256), None);
+    }
+
+    #[test]
+    fn test_u256_checked_shl() {
+        let env = Env::default();
+
+        // Normal case
+        let u = U256::from_u32(&env, 1);
+        assert_eq!(u.checked_shl(4), Some(U256::from_u32(&env, 16)));
+
+        // Shift by 0
+        assert_eq!(u.checked_shl(0), Some(u.clone()));
+
+        // Shift >= 256 returns None
+        assert_eq!(u.checked_shl(256), None);
+        assert_eq!(u.checked_shl(300), None);
+
+        // Overflow case: shifting a value with high bit set
+        let high_bit = U256::from_parts(&env, 1u64 << 63, 0, 0, 0); // Bit 255 set
+        assert_eq!(high_bit.checked_shl(1), None); // Would lose the high bit
+    }
+
+    #[test]
+    fn test_i256_checked_add() {
+        let env = Env::default();
+
+        // Normal case (positive + positive)
+        let i1 = I256::from_i32(&env, 6);
+        let i2 = I256::from_i32(&env, 3);
+        assert_eq!(i1.checked_add(&i2), Some(I256::from_i32(&env, 9)));
+
+        // Normal case (negative + negative)
+        let i3 = I256::from_i32(&env, -6);
+        let i4 = I256::from_i32(&env, -3);
+        assert_eq!(i3.checked_add(&i4), Some(I256::from_i32(&env, -9)));
+
+        // Normal case (positive + negative)
+        assert_eq!(i1.checked_add(&i4), Some(I256::from_i32(&env, 3)));
+
+        // Overflow case (max + positive)
+        let max = I256::from_parts(&env, i64::MAX, u64::MAX, u64::MAX, u64::MAX);
+        let one = I256::from_i32(&env, 1);
+        assert_eq!(max.checked_add(&one), None);
+
+        // Underflow case (min + negative)
+        let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+        let neg_one = I256::from_i32(&env, -1);
+        assert_eq!(min.checked_add(&neg_one), None);
+    }
+
+    #[test]
+    fn test_i256_checked_sub() {
+        let env = Env::default();
+
+        // Normal case
+        let i1 = I256::from_i32(&env, 6);
+        let i2 = I256::from_i32(&env, 3);
+        assert_eq!(i1.checked_sub(&i2), Some(I256::from_i32(&env, 3)));
+
+        // Normal case (negative result)
+        assert_eq!(i2.checked_sub(&i1), Some(I256::from_i32(&env, -3)));
+
+        // Underflow case (min - positive)
+        let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+        let one = I256::from_i32(&env, 1);
+        assert_eq!(min.checked_sub(&one), None);
+
+        // Overflow case (max - negative)
+        let max = I256::from_parts(&env, i64::MAX, u64::MAX, u64::MAX, u64::MAX);
+        let neg_one = I256::from_i32(&env, -1);
+        assert_eq!(max.checked_sub(&neg_one), None);
+    }
+
+    #[test]
+    fn test_i256_checked_mul() {
+        let env = Env::default();
+
+        // Normal case
+        let i1 = I256::from_i32(&env, 6);
+        let i2 = I256::from_i32(&env, 3);
+        assert_eq!(i1.checked_mul(&i2), Some(I256::from_i32(&env, 18)));
+
+        // Normal case (negative * positive)
+        let neg_i1 = I256::from_i32(&env, -6);
+        assert_eq!(neg_i1.checked_mul(&i2), Some(I256::from_i32(&env, -18)));
+
+        // Normal case (negative * negative)
+        let neg_i2 = I256::from_i32(&env, -3);
+        assert_eq!(neg_i1.checked_mul(&neg_i2), Some(I256::from_i32(&env, 18)));
+
+        // Multiply by zero
+        let zero = I256::from_i32(&env, 0);
+        assert_eq!(i1.checked_mul(&zero), Some(zero.clone()));
+
+        // Overflow case (min * -1)
+        let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+        let neg_one = I256::from_i32(&env, -1);
+        assert_eq!(min.checked_mul(&neg_one), None);
+    }
+
+    #[test]
+    fn test_i256_checked_div() {
+        let env = Env::default();
+
+        // Normal case
+        let i1 = I256::from_i32(&env, 6);
+        let i2 = I256::from_i32(&env, 3);
+        assert_eq!(i1.checked_div(&i2), Some(I256::from_i32(&env, 2)));
+
+        // Normal case (negative / positive)
+        let neg_i1 = I256::from_i32(&env, -6);
+        assert_eq!(neg_i1.checked_div(&i2), Some(I256::from_i32(&env, -2)));
+
+        // Divide by zero
+        let zero = I256::from_i32(&env, 0);
+        assert_eq!(i1.checked_div(&zero), None);
+
+        // Overflow case (min / -1)
+        let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+        let neg_one = I256::from_i32(&env, -1);
+        assert_eq!(min.checked_div(&neg_one), None);
+    }
+
+    #[test]
+    fn test_i256_checked_rem_euclid() {
+        let env = Env::default();
+
+        // Normal case
+        let i1 = I256::from_i32(&env, -7);
+        let i2 = I256::from_i32(&env, 4);
+        assert_eq!(i1.checked_rem_euclid(&i2), Some(I256::from_i32(&env, 1)));
+
+        // Mod by zero
+        let zero = I256::from_i32(&env, 0);
+        assert_eq!(i1.checked_rem_euclid(&zero), None);
+    }
+
+    #[test]
+    fn test_i256_checked_pow() {
+        let env = Env::default();
+
+        // Normal case
+        let i = I256::from_i32(&env, 2);
+        assert_eq!(i.checked_pow(10), Some(I256::from_i32(&env, 1024)));
+
+        // Negative base with even exponent
+        let neg_i = I256::from_i32(&env, -2);
+        assert_eq!(neg_i.checked_pow(10), Some(I256::from_i32(&env, 1024)));
+
+        // Negative base with odd exponent
+        assert_eq!(neg_i.checked_pow(3), Some(I256::from_i32(&env, -8)));
+
+        // Power of zero
+        assert_eq!(i.checked_pow(0), Some(I256::from_i32(&env, 1)));
+
+        // -1 to even power
+        let neg_one = I256::from_i32(&env, -1);
+        assert_eq!(neg_one.checked_pow(100), Some(I256::from_i32(&env, 1)));
+
+        // -1 to odd power
+        assert_eq!(neg_one.checked_pow(101), Some(I256::from_i32(&env, -1)));
+
+        // Overflow case
+        assert_eq!(i.checked_pow(255), None);
+    }
+
+    #[test]
+    fn test_i256_checked_shl() {
+        let env = Env::default();
+
+        // Normal case (positive)
+        let i = I256::from_i32(&env, 1);
+        assert_eq!(i.checked_shl(4), Some(I256::from_i32(&env, 16)));
+
+        // Normal case (negative)
+        let neg_i = I256::from_i32(&env, -1);
+        assert_eq!(neg_i.checked_shl(4), Some(I256::from_i32(&env, -16)));
+
+        // Shift by 0
+        assert_eq!(i.checked_shl(0), Some(i.clone()));
+
+        // Shift >= 256 returns None
+        assert_eq!(i.checked_shl(256), None);
+        assert_eq!(i.checked_shl(300), None);
+
+        // Overflow case for positive: bit 254 set, shifting left would change sign
+        let large_pos = I256::from_parts(&env, 1i64 << 62, 0, 0, 0); // Bit 254 set
+        assert_eq!(large_pos.checked_shl(1), None); // Would become negative
     }
 }
