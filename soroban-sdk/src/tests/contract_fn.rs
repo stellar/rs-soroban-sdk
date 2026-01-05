@@ -3,6 +3,7 @@ use soroban_sdk::{contract, contractimpl, Env};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
+    ScSpecTypeTuple,
 };
 
 #[contract]
@@ -25,6 +26,16 @@ impl Contract {
 
     pub fn add_with_ref_arg(_e: &Env, a: i32, b: &i32) -> i32 {
         a + b
+    }
+
+    pub fn void_fn(_e: &Env, _void_arg: ()) -> () {}
+
+    pub fn tuple_single_fn(_e: &Env, arg: (u32,)) -> (u32,) {
+        arg
+    }
+
+    pub fn tuple_two_fn(_e: &Env, arg: (u32, i64)) -> (u32, i64) {
+        arg
     }
 }
 
@@ -102,6 +113,69 @@ fn test_spec_with_unused_arg() {
         .try_into()
         .unwrap(),
         outputs: vec![ScSpecTypeDef::I32].try_into().unwrap(),
+    });
+    assert_eq!(entries, expect);
+}
+
+#[test]
+fn test_spec_void_types() {
+    let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_void_fn(), Limits::none()).unwrap();
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: "void_fn".try_into().unwrap(),
+        inputs: vec![ScSpecFunctionInputV0 {
+            doc: "".try_into().unwrap(),
+            name: "void_arg".try_into().unwrap(),
+            type_: ScSpecTypeDef::Void,
+        }]
+        .try_into()
+        .unwrap(),
+        outputs: vec![ScSpecTypeDef::Void].try_into().unwrap(),
+    });
+    assert_eq!(entries, expect);
+}
+
+#[test]
+fn test_spec_tuple_single() {
+    let entries =
+        ScSpecEntry::from_xdr(Contract::spec_xdr_tuple_single_fn(), Limits::none()).unwrap();
+    let tuple_type = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+        value_types: vec![ScSpecTypeDef::U32].try_into().unwrap(),
+    }));
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: "tuple_single_fn".try_into().unwrap(),
+        inputs: vec![ScSpecFunctionInputV0 {
+            doc: "".try_into().unwrap(),
+            name: "arg".try_into().unwrap(),
+            type_: tuple_type.clone(),
+        }]
+        .try_into()
+        .unwrap(),
+        outputs: vec![tuple_type].try_into().unwrap(),
+    });
+    assert_eq!(entries, expect);
+}
+
+#[test]
+fn test_spec_tuple_two() {
+    let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_tuple_two_fn(), Limits::none()).unwrap();
+    let tuple_type = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+        value_types: vec![ScSpecTypeDef::U32, ScSpecTypeDef::I64]
+            .try_into()
+            .unwrap(),
+    }));
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: "tuple_two_fn".try_into().unwrap(),
+        inputs: vec![ScSpecFunctionInputV0 {
+            doc: "".try_into().unwrap(),
+            name: "arg".try_into().unwrap(),
+            type_: tuple_type.clone(),
+        }]
+        .try_into()
+        .unwrap(),
+        outputs: vec![tuple_type].try_into().unwrap(),
     });
     assert_eq!(entries, expect);
 }
