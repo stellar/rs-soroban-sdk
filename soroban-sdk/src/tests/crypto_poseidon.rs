@@ -165,6 +165,128 @@ fn test_poseidon_bn254_hash_1_2_3() {
     assert_eq!(result, expected);
 }
 
+// This test case matches circom hash([1, 2, 3, 4]) with t=5 (N=4)
+#[test]
+fn test_poseidon_bn254_hash_1_2_3_4() {
+    let env = Env::default();
+
+    // Input: [1, 2, 3, 4]
+    let inputs = [
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000001
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000002
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000003
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000004
+            )
+            .into(),
+        ),
+    ];
+
+    // Expected output from circomlibjs
+    let expected = U256::from_be_bytes(
+        &env,
+        &bytesn!(
+            &env,
+            0x299c867db6c1fdd79dcefa40e4510b9837e60ebb1ce0663dbaa525df65250465
+        )
+        .into(),
+    );
+
+    let field = Symbol::new(&env, "BN254");
+    let result = env.crypto().poseidon_hash(field, &inputs);
+
+    assert_eq!(result, expected);
+}
+
+// This test case matches circom hash([1, 2, 3, 4, 5]) with t=6 (N=5)
+#[test]
+fn test_poseidon_bn254_hash_1_2_3_4_5() {
+    let env = Env::default();
+
+    // Input: [1, 2, 3, 4, 5]
+    let inputs = [
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000001
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000002
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000003
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000004
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000005
+            )
+            .into(),
+        ),
+    ];
+
+    // Expected output from circomlibjs
+    let expected = U256::from_be_bytes(
+        &env,
+        &bytesn!(
+            &env,
+            0x0dab9449e4a1398a15224c0b15a49d598b2174d305a316c918125f8feeb123c0
+        )
+        .into(),
+    );
+
+    let field = Symbol::new(&env, "BN254");
+    let result = env.crypto().poseidon_hash(field, &inputs);
+
+    assert_eq!(result, expected);
+}
+
 #[test]
 fn test_poseidon_bls12_381_hash_1_2() {
     let env = Env::default();
@@ -275,6 +397,128 @@ fn test_poseidon_bls12_381_hash_1_2_3() {
         &bytesn!(
             &env,
             0x5ad8bcfa9754b5bc043cc74dea65ae15e3fdb0c2295970aaacfc116c802d9895
+        )
+        .into(),
+    );
+
+    let field = Symbol::new(&env, "BLS12_381");
+    let result = env.crypto().poseidon_hash(field, &inputs);
+
+    assert_eq!(result, expected);
+}
+
+// This test case matches poseidon-bls12381-circom hash([1, 2, 3, 4]) with t=5 (N=4)
+#[test]
+fn test_poseidon_bls12_381_hash_1_2_3_4() {
+    let env = Env::default();
+
+    // Input: [1, 2, 3, 4]
+    let inputs = [
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000001
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000002
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000003
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000004
+            )
+            .into(),
+        ),
+    ];
+
+    // Expected output from poseidon-bls12381-circom
+    let expected = U256::from_be_bytes(
+        &env,
+        &bytesn!(
+            &env,
+            0x2ebfd520dd8b5f26dfdc74e4ca0861495e119e6b43f7df3369dbb2f190cd5866
+        )
+        .into(),
+    );
+
+    let field = Symbol::new(&env, "BLS12_381");
+    let result = env.crypto().poseidon_hash(field, &inputs);
+
+    assert_eq!(result, expected);
+}
+
+// This test case matches poseidon-bls12381-circom hash([1, 2, 3, 4, 5]) with t=6 (N=5)
+#[test]
+fn test_poseidon_bls12_381_hash_1_2_3_4_5() {
+    let env = Env::default();
+
+    // Input: [1, 2, 3, 4, 5]
+    let inputs = [
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000001
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000002
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000003
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000004
+            )
+            .into(),
+        ),
+        U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000005
+            )
+            .into(),
+        ),
+    ];
+
+    // Expected output from poseidon-bls12381-circom
+    let expected = U256::from_be_bytes(
+        &env,
+        &bytesn!(
+            &env,
+            0x2c0507691a38c8c109572be56878c10a34a741fafe3e6d04c3d1e0be60ddd781
         )
         .into(),
     );
