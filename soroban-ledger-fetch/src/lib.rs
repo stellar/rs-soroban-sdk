@@ -86,6 +86,22 @@ impl Network {
         }
     }
 
+    /// Create a Network configuration for local Stellar Quickstart
+    ///
+    /// Uses default quickstart URLs:
+    /// - SEP-54 meta storage: localhost:8000/meta
+    /// - RPC: localhost:8000/rpc
+    /// - History archive: localhost:8000/archive
+    pub fn local() -> Self {
+        Self {
+            passphrase: "Standalone Network ; February 2017".to_string(),
+            meta_url: "http://localhost:8000/meta".to_string(),
+            rpc_url: Some("http://localhost:8000/rpc".to_string()),
+            archive_url: "http://localhost:8000/archive".to_string(),
+            archive_checkpoint_ledger_count: 8,
+        }
+    }
+
     /// Returns the network ID, which is the SHA256 hash of the network passphrase.
     pub fn network_id(&self) -> [u8; 32] {
         Sha256::digest(self.passphrase.as_bytes()).into()
