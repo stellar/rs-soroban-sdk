@@ -176,61 +176,89 @@ mod local {
     #[test]
     fn test_local_fork() {
         // Run async part to submit transactions
+        // tx1: transfers 5, before checkpoint
+        // tx2: transfers 10, after checkpoint
+        // tx3: transfers 20, after checkpoint (same ledger as tx2)
         let result = tokio::runtime::Builder::new_multi_thread()
             .enable_all()
             .build()
             .unwrap()
             .block_on(submit_transactions_async());
 
-        // Verify balances synchronously (outside async context)
-        if result.ledger1 == result.ledger2 {
-            let ledger = result.ledger1;
-            std::println!("Both transactions in same ledger {ledger}! Testing intra-ledger state...");
+        // Verify tx1 balance (requires archive lookup since it's before checkpoint)
+        std::println!("Verifying tx1 balance (requires archive lookup)...");
+        let balance_before_tx1 = get_balance_at(&result.sac_contract, result.ledger1, Some(result.hash1));
+        let balance_after_tx1 = get_balance_at(&result.sac_contract, result.ledger1, None);
+        std::println!("Balance before tx1 (transfers 5): {balance_before_tx1}");
+        std::println!("Balance after tx1: {balance_after_tx1}");
+        assert_eq!(balance_after_tx1, balance_before_tx1 + 5, "tx1 should add 5");
+
+        // Verify balance 8 ledgers before tx2/tx3 (requires archive lookup across checkpoint)
+        let ledger_before_checkpoint = result.ledger2 - 1;
+        std::println!(
+            "Verifying balance at ledger {} (8 ledgers before tx2, requires archive lookup)...",
+            ledger_before_checkpoint
+        );
+        let balance_at_checkpoint = get_balance_at(&result.sac_contract, ledger_before_checkpoint, None);
+        std::println!("Balance at ledger {}: {balance_at_checkpoint}", ledger_before_checkpoint);
+        // This should equal the balance after tx1 since no other transactions affected TARGET_ADDRESS
+        assert_eq!(
+            balance_at_checkpoint, balance_after_tx1,
+            "balance 8 ledgers before tx2 should equal balance after tx1"
+        );
+
+        // Verify tx2/tx3 balances (intra-ledger state)
+        if result.ledger2 == result.ledger3 {
+            let ledger = result.ledger2;
+            std::println!("tx2 and tx3 in same ledger {ledger}! Testing intra-ledger state...");
 
             // Get balances at different points in the ledger
-            let balance_before_tx1 = get_balance_at(&result.sac_contract, ledger, Some(result.hash1));
             let balance_before_tx2 = get_balance_at(&result.sac_contract, ledger, Some(result.hash2));
+            let balance_before_tx3 = get_balance_at(&result.sac_contract, ledger, Some(result.hash3));
             let balance_end = get_balance_at(&result.sac_contract, ledger, None);
 
             // Determine transaction order based on balances
-            // tx1 transfers 10, tx2 transfers 20
+            // tx2 transfers 10, tx3 transfers 20
             // The one with lower "before" balance came first
-            if balance_before_tx1 < balance_before_tx2 {
-                // tx1 came first: before_tx1 -> +10 -> before_tx2 -> +20 -> end
-                std::println!("Transaction order: tx1 then tx2");
-                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
-                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
+            if balance_before_tx2 < balance_before_tx3 {
+                // tx2 came first: before_tx2 -> +10 -> before_tx3 -> +20 -> end
+                std::println!("Transaction order: tx2 then tx3");
+                std::println!("Balance before tx2 (transfers 10): {balance_before_tx2}");
+                std::println!("Balance before tx3 (transfers 20): {balance_before_tx3}");
                 std::println!("Balance at end of ledger: {balance_end}");
-                assert_eq!(balance_before_tx2, balance_before_tx1 + 10, "tx1 should add 10");
-                assert_eq!(balance_end, balance_before_tx2 + 20, "tx2 should add 20");
+                assert_eq!(balance_before_tx3, balance_before_tx2 + 10, "tx2 should add 10");
+                assert_eq!(balance_end, balance_before_tx3 + 20, "tx3 should add 20");
             } else {
-                // tx2 came first: before_tx2 -> +20 -> before_tx1 -> +10 -> end
-                std::println!("Transaction order: tx2 then tx1");
-                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
-                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
+                // tx3 came first: before_tx3 -> +20 -> before_tx2 -> +10 -> end
+                std::println!("Transaction order: tx3 then tx2");
+                std::println!("Balance before tx3 (transfers 20): {balance_before_tx3}");
+                std::println!("Balance before tx2 (transfers 10): {balance_before_tx2}");
                 std::println!("Balance at end of ledger: {balance_end}");
-                assert_eq!(balance_before_tx1, balance_before_tx2 + 20, "tx2 should add 20");
-                assert_eq!(balance_end, balance_before_tx1 + 10, "tx1 should add 10");
+                assert_eq!(balance_before_tx2, balance_before_tx3 + 20, "tx3 should add 20");
+                assert_eq!(balance_end, balance_before_tx2 + 10, "tx2 should add 10");
             }
 
-            // Either way, total change should be 30
-            let initial_balance = std::cmp::min(balance_before_tx1, balance_before_tx2);
-            assert_eq!(balance_end, initial_balance + 30, "total change should be 30");
-        } else {
-            std::println!("Transactions landed in different ledgers, testing cross-ledger state...");
+            // Either way, total change from tx2+tx3 should be 30
+            let initial_balance = std::cmp::min(balance_before_tx2, balance_before_tx3);
+            assert_eq!(balance_end, initial_balance + 30, "tx2+tx3 total change should be 30");
 
-            // Get balance before first ledger's transactions
-            let initial_balance = get_balance_at(&result.sac_contract, result.initial_ledger, None);
-            std::println!("Initial balance at ledger {}: {initial_balance}", result.initial_ledger);
+            // Verify the balance before tx2/tx3 equals balance after tx1 (with +5 from tx1)
+            assert_eq!(initial_balance, balance_after_tx1, "balance before tx2/tx3 should equal balance after tx1");
+        } else {
+            std::println!("tx2 and tx3 landed in different ledgers, testing cross-ledger state...");
 
             // Verify state at end of each ledger
-            let balance1 = get_balance_at(&result.sac_contract, result.ledger1, None);
             let balance2 = get_balance_at(&result.sac_contract, result.ledger2, None);
-            std::println!("Balance at ledger {}: {balance1}", result.ledger1);
+            let balance3 = get_balance_at(&result.sac_contract, result.ledger3, None);
             std::println!("Balance at ledger {}: {balance2}", result.ledger2);
-            assert_eq!(balance1, initial_balance + 10);
-            assert_eq!(balance2, initial_balance + 30);
+            std::println!("Balance at ledger {}: {balance3}", result.ledger3);
+            assert_eq!(balance2, balance_after_tx1 + 10, "tx2 should add 10");
+            assert_eq!(balance3, balance_after_tx1 + 30, "tx2+tx3 should add 30 total");
         }
+
+        // Verify total: balance should have increased by 5 + 10 + 20 = 35
+        let final_balance = get_balance_at(&result.sac_contract, result.ledger3.max(result.ledger2), None);
+        assert_eq!(final_balance, balance_before_tx1 + 35, "total change should be 35");
     }
 
     fn network_id() -> [u8; 32] {
@@ -421,9 +449,10 @@ mod local {
     struct SubmitResult {
         ledger1: u32,
         ledger2: u32,
+        ledger3: u32,
         hash1: [u8; 32],
         hash2: [u8; 32],
-        initial_ledger: u32,
+        hash3: [u8; 32],
         sac_contract: std::string::String,
     }
 
@@ -511,84 +540,117 @@ mod local {
             std::println!("Native SAC already exists");
         }
 
-        // Get initial ledger and sequence numbers in parallel
-
-        let (initial_ledger_result, seq1_result, seq2_result) = tokio::join!(
-            client.get_latest_ledger(),
-            get_sequence_number(&client, &account1_id),
-            get_sequence_number(&client, &account2_id),
-        );
-        let initial_ledger = initial_ledger_result.unwrap().sequence;
-        let seq1 = seq1_result.expect("failed to get seq for account 1");
-        let seq2 = seq2_result.expect("failed to get seq for account 2");
-        std::println!("Initial ledger: {initial_ledger}");
-
-        // Build transfer operations
+        // Submit tx1 first (before checkpoint gap) - transfers 5
+        std::println!("Submitting tx1 (before checkpoint gap)...");
         let from1 = signing_key_to_sc_address(&key1);
-        let from2 = signing_key_to_sc_address(&key2);
         let to = ScAddress::from_str(TARGET_ADDRESS).unwrap();
 
-        let op1 = build_sac_transfer_op(&sac_contract, from1, to.clone(), 10);
-        let op2 = build_sac_transfer_op(&sac_contract, from2, to, 20);
-
-        // Build transactions
-        let tx1 = build_transaction(&account1_id, seq1 + 1, std::vec![op1]);
-        let tx2 = build_transaction(&account2_id, seq2 + 1, std::vec![op2]);
-
-        // Simulate and prepare both transactions in parallel
-        std::println!("Simulating transactions...");
-        let (prepared1, prepared2) = tokio::join!(
-            simulate_and_prepare(&client, tx1),
-            simulate_and_prepare(&client, tx2),
-        );
-        let prepared_tx1 = prepared1.expect("failed to simulate tx1");
-        let prepared_tx2 = prepared2.expect("failed to simulate tx2");
-
-        // Sign both transactions
+        let seq1_for_tx1 = get_sequence_number(&client, &account1_id).await.unwrap();
+        let op1 = build_sac_transfer_op(&sac_contract, from1.clone(), to.clone(), 5);
+        let tx1 = build_transaction(&account1_id, seq1_for_tx1 + 1, std::vec![op1]);
+        let prepared_tx1 = simulate_and_prepare(&client, tx1).await.expect("failed to simulate tx1");
         let sig1 = sign_transaction(&prepared_tx1, &key1);
-        let sig2 = sign_transaction(&prepared_tx2, &key2);
-
         let envelope1 = TransactionEnvelope::Tx(TransactionV1Envelope {
             tx: prepared_tx1,
             signatures: std::vec![sig1].try_into().unwrap(),
         });
+        let hash1_bytes = envelope1.hash(network_id()).expect("failed to hash tx1");
+        let hash1 = Hash(hash1_bytes);
+        client.send_transaction(&envelope1).await.expect("failed to send tx1");
+        let tx1_result = client
+            .get_transaction_polling(&hash1, None)
+            .await
+            .expect("failed to get tx1");
+        let ledger1 = tx1_result.ledger.expect("missing ledger for tx1");
+        std::println!("Tx1 hash: {}", hex::encode(hash1_bytes));
+        std::println!("Tx1 ledger: {ledger1}");
+
+        // Wait for at least 9 ledgers to pass (crosses a checkpoint boundary on local network)
+        // Local quickstart has checkpoint frequency of 8
+        std::println!("Waiting for 9+ ledgers to pass (checkpoint boundary)...");
+        loop {
+            let current = client.get_latest_ledger().await.unwrap().sequence;
+            let gap = current.saturating_sub(ledger1);
+            if gap >= 9 {
+                std::println!("Current ledger: {current}, gap from tx1: {gap}");
+                break;
+            }
+            std::println!("Current ledger: {current}, gap from tx1: {gap}, waiting...");
+            tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+        }
+
+        // Get sequence numbers for tx2/tx3
+        let (seq1_result, seq2_result) = tokio::join!(
+            get_sequence_number(&client, &account1_id),
+            get_sequence_number(&client, &account2_id),
+        );
+        let seq1 = seq1_result.expect("failed to get seq for account 1");
+        let seq2 = seq2_result.expect("failed to get seq for account 2");
+
+        // Build transfer operations for tx2 and tx3
+        let from2 = signing_key_to_sc_address(&key2);
+
+        let op2 = build_sac_transfer_op(&sac_contract, from1, to.clone(), 10);
+        let op3 = build_sac_transfer_op(&sac_contract, from2, to, 20);
+
+        // Build tx2 and tx3
+        let tx2 = build_transaction(&account1_id, seq1 + 1, std::vec![op2]);
+        let tx3 = build_transaction(&account2_id, seq2 + 1, std::vec![op3]);
+
+        // Simulate and prepare both transactions in parallel
+        std::println!("Simulating tx2 and tx3...");
+        let (prepared2, prepared3) = tokio::join!(
+            simulate_and_prepare(&client, tx2),
+            simulate_and_prepare(&client, tx3),
+        );
+        let prepared_tx2 = prepared2.expect("failed to simulate tx2");
+        let prepared_tx3 = prepared3.expect("failed to simulate tx3");
+
+        // Sign both transactions
+        let sig2 = sign_transaction(&prepared_tx2, &key1);
+        let sig3 = sign_transaction(&prepared_tx3, &key2);
+
         let envelope2 = TransactionEnvelope::Tx(TransactionV1Envelope {
             tx: prepared_tx2,
             signatures: std::vec![sig2].try_into().unwrap(),
         });
+        let envelope3 = TransactionEnvelope::Tx(TransactionV1Envelope {
+            tx: prepared_tx3,
+            signatures: std::vec![sig3].try_into().unwrap(),
+        });
 
         // Compute hashes before sending
-        let hash1_bytes = envelope1.hash(network_id()).expect("failed to hash tx1");
         let hash2_bytes = envelope2.hash(network_id()).expect("failed to hash tx2");
-        let hash1 = Hash(hash1_bytes);
+        let hash3_bytes = envelope3.hash(network_id()).expect("failed to hash tx3");
         let hash2 = Hash(hash2_bytes);
+        let hash3 = Hash(hash3_bytes);
 
         // Send both transactions simultaneously to maximize chance of same ledger
-        std::println!("Sending transactions...");
-        let (send1, send2) = tokio::join!(
-            client.send_transaction(&envelope1),
+        std::println!("Sending tx2 and tx3...");
+        let (send2, send3) = tokio::join!(
             client.send_transaction(&envelope2),
+            client.send_transaction(&envelope3),
         );
-        send1.expect("failed to send tx1");
         send2.expect("failed to send tx2");
+        send3.expect("failed to send tx3");
 
-        std::println!("Tx1 hash: {}", hex::encode(hash1_bytes));
         std::println!("Tx2 hash: {}", hex::encode(hash2_bytes));
+        std::println!("Tx3 hash: {}", hex::encode(hash3_bytes));
 
         // Poll for both transactions to complete in parallel
-        std::println!("Waiting for transactions to complete...");
-        let (poll1, poll2) = tokio::join!(
-            client.get_transaction_polling(&hash1, None),
+        std::println!("Waiting for tx2 and tx3 to complete...");
+        let (poll2, poll3) = tokio::join!(
             client.get_transaction_polling(&hash2, None),
+            client.get_transaction_polling(&hash3, None),
         );
-        let tx1_result = poll1.expect("failed to get tx1");
         let tx2_result = poll2.expect("failed to get tx2");
+        let tx3_result = poll3.expect("failed to get tx3");
 
-        let ledger1 = tx1_result.ledger.expect("missing ledger for tx1");
         let ledger2 = tx2_result.ledger.expect("missing ledger for tx2");
+        let ledger3 = tx3_result.ledger.expect("missing ledger for tx3");
 
-        std::println!("Tx1 ledger: {ledger1}");
         std::println!("Tx2 ledger: {ledger2}");
+        std::println!("Tx3 ledger: {ledger3}");
 
         // Wait for ledger data to be available in meta storage
         std::println!("Waiting for ledger data to be available...");
@@ -597,9 +659,10 @@ mod local {
         SubmitResult {
             ledger1,
             ledger2,
+            ledger3,
             hash1: hash1_bytes,
             hash2: hash2_bytes,
-            initial_ledger,
+            hash3: hash3_bytes,
             sac_contract,
         }
     }

@@ -1,9 +1,9 @@
 {
-  "last_modified_ledger_seq": 521,
+  "last_modified_ledger_seq": 8622,
   "data": {
     "contract_data": {
       "ext": "v0",
-      "contract": "CDMLFMKMMD7MWZP3FKUBZPVHTUEDLSX4BYGYKH4GCESXYHS3IHQ4EIG4",
+      "contract": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
       "key": {
         "vec": [
           {
@@ -22,7 +22,7 @@
               "symbol": "amount"
             },
             "val": {
-              "i128": "120"
+              "i128": "6"
             }
           },
           {
