@@ -9,7 +9,8 @@ fn test_poseidon_bn254_hash_1_2() {
     let env = Env::default();
 
     // Input: [1, 2]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -50,7 +51,8 @@ fn test_poseidon_bn254_hash_3_4() {
     let env = Env::default();
 
     // Input: [3, 4]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -91,14 +93,17 @@ fn test_poseidon_bn254_hash_1() {
     let env = Env::default();
 
     // Input: [1]
-    let inputs = [U256::from_be_bytes(
+    let inputs = vec![
         &env,
-        &bytesn!(
+        U256::from_be_bytes(
             &env,
-            0x0000000000000000000000000000000000000000000000000000000000000001
-        )
-        .into(),
-    )];
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000001
+            )
+            .into(),
+        ),
+    ];
 
     // Expected output from circomlibjs
     let expected = U256::from_be_bytes(
@@ -122,7 +127,8 @@ fn test_poseidon_bn254_hash_1_2_3() {
     let env = Env::default();
 
     // Input: [1, 2, 3]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -171,7 +177,8 @@ fn test_poseidon_bn254_hash_1_2_3_4() {
     let env = Env::default();
 
     // Input: [1, 2, 3, 4]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -228,7 +235,8 @@ fn test_poseidon_bn254_hash_1_2_3_4_5() {
     let env = Env::default();
 
     // Input: [1, 2, 3, 4, 5]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -292,7 +300,8 @@ fn test_poseidon_bls12_381_hash_1_2() {
     let env = Env::default();
 
     // Input: [1, 2]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -333,14 +342,17 @@ fn test_poseidon_bls12_381_hash_1() {
     let env = Env::default();
 
     // Input: [1]
-    let inputs = [U256::from_be_bytes(
+    let inputs = vec![
         &env,
-        &bytesn!(
+        U256::from_be_bytes(
             &env,
-            0x0000000000000000000000000000000000000000000000000000000000000001
-        )
-        .into(),
-    )];
+            &bytesn!(
+                &env,
+                0x0000000000000000000000000000000000000000000000000000000000000001
+            )
+            .into(),
+        ),
+    ];
 
     // Expected output from poseidon-bls12381-circom
     let expected = U256::from_be_bytes(
@@ -364,7 +376,8 @@ fn test_poseidon_bls12_381_hash_1_2_3() {
     let env = Env::default();
 
     // Input: [1, 2, 3]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -413,7 +426,8 @@ fn test_poseidon_bls12_381_hash_1_2_3_4() {
     let env = Env::default();
 
     // Input: [1, 2, 3, 4]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -470,7 +484,8 @@ fn test_poseidon_bls12_381_hash_1_2_3_4_5() {
     let env = Env::default();
 
     // Input: [1, 2, 3, 4, 5]
-    let inputs = [
+    let inputs = vec![
+        &env,
         U256::from_be_bytes(
             &env,
             &bytesn!(
@@ -601,7 +616,8 @@ fn test_poseidon2_hash() {
         )
         .into(),
     );
-    let inputs = [
+    let inputs = vec![
+        &env,
         input_value.clone(),
         input_value.clone(),
         input_value.clone(),

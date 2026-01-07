@@ -146,11 +146,10 @@ impl Poseidon2Sponge {
 /// For convenience, use [`Crypto::poseidon2_hash`] which creates the config
 /// automatically. Use this function directly when hashing multiple times with
 /// the same config to avoid repeated parameter initialization.
-pub fn hash(env: &Env, inputs: &[U256], config: Poseidon2Config) -> U256 {
+pub fn hash(env: &Env, inputs: &Vec<U256>, config: Poseidon2Config) -> U256 {
     // The initial value for the capacity element initialized with `input.len() * 2^64` for Poseidon2
     let iv = U256::from_u128(env, (inputs.len() as u128) << 64);
     let mut sponge = Poseidon2Sponge::new(env, iv, config);
-    let input_vec = Vec::from_slice(env, inputs);
-    sponge.absorb(&input_vec);
+    sponge.absorb(inputs);
     sponge.squeeze()
 }
