@@ -159,17 +159,18 @@ mod local {
     use stellar_rpc_client::Client;
     use std::str::FromStr;
     use stellar_xdr::curr::{
-        self as xdr, AccountId, DecoratedSignature, Hash, HostFunction, Int128Parts,
-        InvokeContractArgs, InvokeHostFunctionOp, Memo, MuxedAccount, Operation, OperationBody,
-        Preconditions, PublicKey, ReadXdr, ScAddress, ScSymbol, ScVal, SequenceNumber, Signature,
-        SignatureHint, SorobanAuthorizationEntry, Transaction, TransactionEnvelope,
-        TransactionExt, TransactionSignaturePayload, TransactionSignaturePayloadTaggedTransaction,
-        TransactionV1Envelope, Uint256, VecM, WriteXdr,
+        self as xdr, AccountId, Asset, ContractExecutable, ContractIdPreimage, CreateContractArgs,
+        DecoratedSignature, Hash, HashIdPreimage, HashIdPreimageContractId, HostFunction,
+        Int128Parts, InvokeContractArgs, InvokeHostFunctionOp, Memo, MuxedAccount, Operation,
+        OperationBody, Preconditions, PublicKey, ReadXdr, ScAddress, ScSymbol, ScVal,
+        SequenceNumber, Signature, SignatureHint, SorobanAuthorizationEntry, Transaction,
+        TransactionEnvelope, TransactionExt, TransactionSignaturePayload,
+        TransactionSignaturePayloadTaggedTransaction, TransactionV1Envelope, Uint256, VecM,
+        WriteXdr,
     };
 
     const RPC_URL: &str = "http://localhost:8000/rpc";
     const NETWORK_PASSPHRASE: &str = "Standalone Network ; February 2017";
-    const SAC_CONTRACT: &str = "CDMLFMKMMD7MWZP3FKUBZPVHTUEDLSX4BYGYKH4GCESXYHS3IHQ4EIG4";
     const TARGET_ADDRESS: &str = "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM";
 
     fn network_id() -> [u8; 32] {
@@ -199,8 +200,39 @@ mod local {
         ScVal::I128(Int128Parts { hi, lo })
     }
 
-    fn build_sac_transfer_op(from: ScAddress, to: ScAddress, amount: i128) -> Operation {
-        let contract_address = ScAddress::from_str(SAC_CONTRACT).unwrap();
+    fn native_sac_contract_id() -> [u8; 32] {
+        // Compute the contract ID for the native asset SAC using XDR HashIdPreimage
+        let preimage = HashIdPreimage::ContractId(HashIdPreimageContractId {
+            network_id: Hash(network_id()),
+            contract_id_preimage: ContractIdPreimage::Asset(Asset::Native),
+        });
+        let preimage_xdr = preimage.to_xdr(xdr::Limits::none()).unwrap();
+        Sha256::digest(&preimage_xdr).into()
+    }
+
+    fn native_sac_address() -> std::string::String {
+        let contract_id = native_sac_contract_id();
+        let strkey = stellar_strkey::Strkey::Contract(stellar_strkey::Contract(contract_id));
+        std::format!("{strkey}")
+    }
+
+    fn build_deploy_native_sac_op() -> Operation {
+        let host_function = HostFunction::CreateContract(CreateContractArgs {
+            contract_id_preimage: ContractIdPreimage::Asset(Asset::Native),
+            executable: ContractExecutable::StellarAsset,
+        });
+
+        Operation {
+            source_account: None,
+            body: OperationBody::InvokeHostFunction(InvokeHostFunctionOp {
+                host_function,
+                auth: VecM::default(),
+            }),
+        }
+    }
+
+    fn build_sac_transfer_op(sac_contract: &str, from: ScAddress, to: ScAddress, amount: i128) -> Operation {
+        let contract_address = ScAddress::from_str(sac_contract).unwrap();
         let host_function = HostFunction::InvokeContract(InvokeContractArgs {
             contract_address,
             function_name: ScSymbol("transfer".try_into().unwrap()),
@@ -279,6 +311,11 @@ mod local {
         });
         let sim = client.simulate_transaction_envelope(&envelope, None).await?;
 
+        // Check for simulation error
+        if let Some(error) = &sim.error {
+            return Err(std::format!("Simulation failed: {error}").into());
+        }
+
         // Get resource fee and auth from simulation
         let min_resource_fee = sim.min_resource_fee;
 
@@ -309,13 +346,13 @@ mod local {
         Ok(new_tx)
     }
 
-    fn get_balance_at(ledger: u32, tx_hash: Option<[u8; 32]>) -> i128 {
+    fn get_balance_at(sac_contract: &str, ledger: u32, tx_hash: Option<[u8; 32]>) -> i128 {
         let source = TxSnapshotSource::new(Network::local(), ledger, tx_hash);
         let mut env = Env::from_ledger_snapshot(source);
         env.set_config(EnvTestConfig {
             capture_snapshot_at_drop: false,
         });
-        let contract = Address::from_str(&env, SAC_CONTRACT);
+        let contract = Address::from_str(&env, sac_contract);
         let client = TokenClient::new(&env, &contract);
         let addr = Address::from_str(&env, TARGET_ADDRESS);
         client.balance(&addr)
@@ -327,6 +364,7 @@ mod local {
         hash1: [u8; 32],
         hash2: [u8; 32],
         initial_ledger: u32,
+        sac_contract: std::string::String,
     }
 
     async fn submit_transactions_async() -> SubmitResult {
@@ -354,9 +392,66 @@ mod local {
         // Wait for accounts to be created
         tokio::time::sleep(std::time::Duration::from_secs(2)).await;
 
-        // Get initial ledger and sequence numbers in parallel
         let account1_id = signing_key_to_account_id(&key1);
         let account2_id = signing_key_to_account_id(&key2);
+
+        // Deploy the native SAC if it doesn't exist
+        let sac_contract = native_sac_address();
+        std::println!("Native SAC: {sac_contract}");
+
+        // Check if SAC already exists by trying to simulate the deploy
+        let deploy_op = build_deploy_native_sac_op();
+        let deploy_seq = get_sequence_number(&client, &account1_id).await.unwrap();
+        let deploy_tx = build_transaction(&account1_id, deploy_seq + 1, std::vec![deploy_op]);
+
+        // Try to simulate - if it fails with "already exists" that's fine
+        let deploy_envelope = TransactionEnvelope::Tx(TransactionV1Envelope {
+            tx: deploy_tx.clone(),
+            signatures: VecM::default(),
+        });
+        let deploy_sim = client
+            .simulate_transaction_envelope(&deploy_envelope, None)
+            .await
+            .expect("failed to simulate deploy");
+
+        if deploy_sim.error.is_none() {
+            // SAC doesn't exist yet, deploy it
+            std::println!("Deploying native SAC...");
+            let prepared_deploy = {
+                let mut tx = deploy_tx;
+                tx.fee = tx.fee.saturating_add(deploy_sim.min_resource_fee as u32);
+                if !deploy_sim.transaction_data.is_empty() {
+                    let soroban_data = xdr::SorobanTransactionData::from_xdr_base64(
+                        &deploy_sim.transaction_data,
+                        xdr::Limits::none(),
+                    )
+                    .unwrap();
+                    tx.ext = TransactionExt::V1(soroban_data);
+                }
+                tx
+            };
+
+            let deploy_sig = sign_transaction(&prepared_deploy, &key1);
+            let signed_deploy = TransactionEnvelope::Tx(TransactionV1Envelope {
+                tx: prepared_deploy,
+                signatures: std::vec![deploy_sig].try_into().unwrap(),
+            });
+
+            let deploy_hash = signed_deploy.hash(network_id()).expect("failed to hash deploy tx");
+            client
+                .send_transaction(&signed_deploy)
+                .await
+                .expect("failed to send deploy tx");
+            client
+                .get_transaction_polling(&Hash(deploy_hash), None)
+                .await
+                .expect("failed to get deploy tx result");
+            std::println!("Native SAC deployed");
+        } else {
+            std::println!("Native SAC already exists");
+        }
+
+        // Get initial ledger and sequence numbers in parallel
 
         let (initial_ledger_result, seq1_result, seq2_result) = tokio::join!(
             client.get_latest_ledger(),
@@ -373,8 +468,8 @@ mod local {
         let from2 = signing_key_to_sc_address(&key2);
         let to = ScAddress::from_str(TARGET_ADDRESS).unwrap();
 
-        let op1 = build_sac_transfer_op(from1, to.clone(), 10);
-        let op2 = build_sac_transfer_op(from2, to, 20);
+        let op1 = build_sac_transfer_op(&sac_contract, from1, to.clone(), 10);
+        let op2 = build_sac_transfer_op(&sac_contract, from2, to, 20);
 
         // Build transactions
         let tx1 = build_transaction(&account1_id, seq1 + 1, std::vec![op1]);
@@ -445,6 +540,7 @@ mod local {
             hash1: hash1_bytes,
             hash2: hash2_bytes,
             initial_ledger,
+            sac_contract,
         }
     }
 
@@ -463,9 +559,9 @@ mod local {
             std::println!("Both transactions in same ledger {ledger}! Testing intra-ledger state...");
 
             // Get balances at different points in the ledger
-            let balance_before_tx1 = get_balance_at(ledger, Some(result.hash1));
-            let balance_before_tx2 = get_balance_at(ledger, Some(result.hash2));
-            let balance_end = get_balance_at(ledger, None);
+            let balance_before_tx1 = get_balance_at(&result.sac_contract, ledger, Some(result.hash1));
+            let balance_before_tx2 = get_balance_at(&result.sac_contract, ledger, Some(result.hash2));
+            let balance_end = get_balance_at(&result.sac_contract, ledger, None);
 
             // Determine transaction order based on balances
             // tx1 transfers 10, tx2 transfers 20
@@ -495,12 +591,12 @@ mod local {
             std::println!("Transactions landed in different ledgers, testing cross-ledger state...");
 
             // Get balance before first ledger's transactions
-            let initial_balance = get_balance_at(result.initial_ledger, None);
+            let initial_balance = get_balance_at(&result.sac_contract, result.initial_ledger, None);
             std::println!("Initial balance at ledger {}: {initial_balance}", result.initial_ledger);
 
             // Verify state at end of each ledger
-            let balance1 = get_balance_at(result.ledger1, None);
-            let balance2 = get_balance_at(result.ledger2, None);
+            let balance1 = get_balance_at(&result.sac_contract, result.ledger1, None);
+            let balance2 = get_balance_at(&result.sac_contract, result.ledger2, None);
             std::println!("Balance at ledger {}: {balance1}", result.ledger1);
             std::println!("Balance at ledger {}: {balance2}", result.ledger2);
             assert_eq!(balance1, initial_balance + 10);
