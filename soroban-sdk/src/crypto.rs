@@ -199,16 +199,33 @@ impl Crypto {
         bn254::Bn254::new(self.env())
     }
 
-    /// Performs a Poseidon hash using a sponge construction that matches circom's [implementation](https://github.com/iden3/circomlib/blob/35e54ea21da3e8762557234298dbb553c175ea8d/circuits/poseidon.circom)
+    /// Performs a Poseidon hash using a sponge construction that matches circom's
+    /// [implementation](https://github.com/iden3/circomlib/blob/35e54ea21da3e8762557234298dbb553c175ea8d/circuits/poseidon.circom).
+    ///
+    /// Internally it picks the state size `t` to match the input length, i.e. `t =
+    /// N + 1` (rate = N, capacity = 1). For example, hashing 2 elements uses t=3.
+    ///
+    /// Note for performance: for repeated hashing with the same input size, create
+    /// a [`PoseidonConfig`] once and call [`poseidon_sponge::hash`] directly to
+    /// avoid re-initializing parameters each time.
     pub fn poseidon_hash(&self, field_type: Symbol, inputs: &[U256]) -> U256 {
         let config = PoseidonConfig::new(&self.env, field_type, inputs.len() as u32);
         poseidon_sponge::hash(&self.env, inputs, config)
     }
 
-    /// Performs a poseidon2 hash with a sponge construction that matches noir's implementation.
-    /// Uses rate=3 (t=4) to match the noir/barretenberg [implementation](https://github.com/noir-lang/noir/blob/abfee1f54b20984172ba23482f4af160395cfba5/noir_stdlib/src/hash/poseidon2.nr).
+    /// Performs a poseidon2 hash with a sponge construction that matches noir's
+    /// [implementation](https://github.com/noir-lang/noir/blob/abfee1f54b20984172ba23482f4af160395cfba5/noir_stdlib/src/hash/poseidon2.nr).
+    ///
+    /// Internally it always initialize the state with `t = 4``, no matter the input
+    /// length. It alternates between absorb and permute until all input elements
+    /// are consumed.
+    ///
+    /// Note for performance: for repeated hashing, create a [`Poseidon2Config`]
+    /// once and call [`poseidon2_sponge::hash`] directly to avoid re-initializing
+    /// parameters each time.
     pub fn poseidon2_hash(&self, field_type: Symbol, inputs: &[U256]) -> U256 {
-        let config = Poseidon2Config::new(&self.env, field_type, 3);
+        const INTERNAL_RATE: u32 = 3;
+        let config = Poseidon2Config::new(&self.env, field_type, INTERNAL_RATE);
         poseidon2_sponge::hash(&self.env, inputs, config)
     }
 }

@@ -146,6 +146,14 @@ impl PoseidonSponge {
     }
 }
 
+/// Hashes the inputs using the Poseidon sponge with the given config.
+///
+/// The capacity element is initialized to 0, matching circom's Poseidon. The
+/// config determines the state size `t` and field-specific parameters.
+///
+/// For convenience, use [`Crypto::poseidon_hash`] which creates the config
+/// automatically. Use this function directly when hashing multiple times with
+/// the same config to avoid repeated parameter initialization.
 pub fn hash(env: &Env, inputs: &[U256], config: PoseidonConfig) -> U256 {
     // The initial value for the capacity element initialized with 0 for standard Poseidon
     let iv = U256::from_u32(env, 0);

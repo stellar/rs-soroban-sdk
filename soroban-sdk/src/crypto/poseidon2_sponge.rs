@@ -137,6 +137,15 @@ impl Poseidon2Sponge {
     }
 }
 
+/// Hashes the inputs using the Poseidon2 sponge with the given config.
+///
+/// The capacity element is initialized to `input.len() << 64`, matching noir's
+/// Poseidon2. The config determines the state size `t` and field-specific
+/// parameters.
+///
+/// For convenience, use [`Crypto::poseidon2_hash`] which creates the config
+/// automatically. Use this function directly when hashing multiple times with
+/// the same config to avoid repeated parameter initialization.
 pub fn hash(env: &Env, inputs: &[U256], config: Poseidon2Config) -> U256 {
     // The initial value for the capacity element initialized with `input.len() * 2^64` for Poseidon2
     let iv = U256::from_u128(env, (inputs.len() as u128) << 64);
