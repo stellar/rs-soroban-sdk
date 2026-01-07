@@ -85,8 +85,6 @@ pub use internal::TryFromVal;
 pub use internal::TryIntoVal;
 pub use internal::Val;
 pub use internal::VecObject;
-#[cfg(any(test, feature = "testutils"))]
-use soroban_env_host::HostError;
 
 pub trait IntoVal<E: internal::Env, T> {
     fn into_val(&self, e: &E) -> T;
@@ -1541,10 +1539,9 @@ impl Env {
     /// setting up tests or asserting on internal state.
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
         let id = id.contract_id();
-        let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
         self.env_impl
-            .with_test_contract_frame(id, func, || {
+            .with_test_contract_frame(id, || {
                 t = Some(f());
                 Ok(().into())
             })
@@ -1557,18 +1554,25 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
-    pub fn try_as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> Result<T, HostError> {
+    pub fn try_as_contract<T, E>(
+        &self,
+        id: &Address,
+        f: impl FnOnce() -> T,
+    ) -> Result<T, Result<E, InvokeError>>
+    where
+        E: TryFrom<Error>,
+        E::Error: Into<InvokeError>,
+    {
         let id = id.contract_id();
-        let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
-        let result = self.env_impl.try_with_test_contract_frame(id, func, || {
+        let result = self.env_impl.try_with_test_contract_frame(id, || {
             t = Some(f());
             Ok(().into())
         });
 
         match result {
             Ok(_) => Ok(t.unwrap()),
-            Err(e) => Err(e),
+            Err(e) => Err(E::try_from(e.error).map_err(Into::into)),
         }
     }
 
