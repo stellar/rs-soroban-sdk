@@ -39,7 +39,7 @@ mod example {
 }
 
 #[cfg(test)]
-mod test {
+mod testnet {
     extern crate std;
     use bytes_lit::bytes;
     use soroban_ledger_fetch::Network;
@@ -172,6 +172,66 @@ mod local {
     const RPC_URL: &str = "http://localhost:8000/rpc";
     const NETWORK_PASSPHRASE: &str = "Standalone Network ; February 2017";
     const TARGET_ADDRESS: &str = "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM";
+
+    #[test]
+    fn test_local_fork() {
+        // Run async part to submit transactions
+        let result = tokio::runtime::Builder::new_multi_thread()
+            .enable_all()
+            .build()
+            .unwrap()
+            .block_on(submit_transactions_async());
+
+        // Verify balances synchronously (outside async context)
+        if result.ledger1 == result.ledger2 {
+            let ledger = result.ledger1;
+            std::println!("Both transactions in same ledger {ledger}! Testing intra-ledger state...");
+
+            // Get balances at different points in the ledger
+            let balance_before_tx1 = get_balance_at(&result.sac_contract, ledger, Some(result.hash1));
+            let balance_before_tx2 = get_balance_at(&result.sac_contract, ledger, Some(result.hash2));
+            let balance_end = get_balance_at(&result.sac_contract, ledger, None);
+
+            // Determine transaction order based on balances
+            // tx1 transfers 10, tx2 transfers 20
+            // The one with lower "before" balance came first
+            if balance_before_tx1 < balance_before_tx2 {
+                // tx1 came first: before_tx1 -> +10 -> before_tx2 -> +20 -> end
+                std::println!("Transaction order: tx1 then tx2");
+                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
+                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
+                std::println!("Balance at end of ledger: {balance_end}");
+                assert_eq!(balance_before_tx2, balance_before_tx1 + 10, "tx1 should add 10");
+                assert_eq!(balance_end, balance_before_tx2 + 20, "tx2 should add 20");
+            } else {
+                // tx2 came first: before_tx2 -> +20 -> before_tx1 -> +10 -> end
+                std::println!("Transaction order: tx2 then tx1");
+                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
+                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
+                std::println!("Balance at end of ledger: {balance_end}");
+                assert_eq!(balance_before_tx1, balance_before_tx2 + 20, "tx2 should add 20");
+                assert_eq!(balance_end, balance_before_tx1 + 10, "tx1 should add 10");
+            }
+
+            // Either way, total change should be 30
+            let initial_balance = std::cmp::min(balance_before_tx1, balance_before_tx2);
+            assert_eq!(balance_end, initial_balance + 30, "total change should be 30");
+        } else {
+            std::println!("Transactions landed in different ledgers, testing cross-ledger state...");
+
+            // Get balance before first ledger's transactions
+            let initial_balance = get_balance_at(&result.sac_contract, result.initial_ledger, None);
+            std::println!("Initial balance at ledger {}: {initial_balance}", result.initial_ledger);
+
+            // Verify state at end of each ledger
+            let balance1 = get_balance_at(&result.sac_contract, result.ledger1, None);
+            let balance2 = get_balance_at(&result.sac_contract, result.ledger2, None);
+            std::println!("Balance at ledger {}: {balance1}", result.ledger1);
+            std::println!("Balance at ledger {}: {balance2}", result.ledger2);
+            assert_eq!(balance1, initial_balance + 10);
+            assert_eq!(balance2, initial_balance + 30);
+        }
+    }
 
     fn network_id() -> [u8; 32] {
         Sha256::digest(NETWORK_PASSPHRASE.as_bytes()).into()
@@ -541,66 +601,6 @@ mod local {
             hash2: hash2_bytes,
             initial_ledger,
             sac_contract,
-        }
-    }
-
-    #[test]
-    fn test_local_fork() {
-        // Run async part to submit transactions
-        let result = tokio::runtime::Builder::new_multi_thread()
-            .enable_all()
-            .build()
-            .unwrap()
-            .block_on(submit_transactions_async());
-
-        // Verify balances synchronously (outside async context)
-        if result.ledger1 == result.ledger2 {
-            let ledger = result.ledger1;
-            std::println!("Both transactions in same ledger {ledger}! Testing intra-ledger state...");
-
-            // Get balances at different points in the ledger
-            let balance_before_tx1 = get_balance_at(&result.sac_contract, ledger, Some(result.hash1));
-            let balance_before_tx2 = get_balance_at(&result.sac_contract, ledger, Some(result.hash2));
-            let balance_end = get_balance_at(&result.sac_contract, ledger, None);
-
-            // Determine transaction order based on balances
-            // tx1 transfers 10, tx2 transfers 20
-            // The one with lower "before" balance came first
-            if balance_before_tx1 < balance_before_tx2 {
-                // tx1 came first: before_tx1 -> +10 -> before_tx2 -> +20 -> end
-                std::println!("Transaction order: tx1 then tx2");
-                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
-                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
-                std::println!("Balance at end of ledger: {balance_end}");
-                assert_eq!(balance_before_tx2, balance_before_tx1 + 10, "tx1 should add 10");
-                assert_eq!(balance_end, balance_before_tx2 + 20, "tx2 should add 20");
-            } else {
-                // tx2 came first: before_tx2 -> +20 -> before_tx1 -> +10 -> end
-                std::println!("Transaction order: tx2 then tx1");
-                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
-                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
-                std::println!("Balance at end of ledger: {balance_end}");
-                assert_eq!(balance_before_tx1, balance_before_tx2 + 20, "tx2 should add 20");
-                assert_eq!(balance_end, balance_before_tx1 + 10, "tx1 should add 10");
-            }
-
-            // Either way, total change should be 30
-            let initial_balance = std::cmp::min(balance_before_tx1, balance_before_tx2);
-            assert_eq!(balance_end, initial_balance + 30, "total change should be 30");
-        } else {
-            std::println!("Transactions landed in different ledgers, testing cross-ledger state...");
-
-            // Get balance before first ledger's transactions
-            let initial_balance = get_balance_at(&result.sac_contract, result.initial_ledger, None);
-            std::println!("Initial balance at ledger {}: {initial_balance}", result.initial_ledger);
-
-            // Verify state at end of each ledger
-            let balance1 = get_balance_at(&result.sac_contract, result.ledger1, None);
-            let balance2 = get_balance_at(&result.sac_contract, result.ledger2, None);
-            std::println!("Balance at ledger {}: {balance1}", result.ledger1);
-            std::println!("Balance at ledger {}: {balance2}", result.ledger2);
-            assert_eq!(balance1, initial_balance + 10);
-            assert_eq!(balance2, initial_balance + 30);
         }
     }
 }

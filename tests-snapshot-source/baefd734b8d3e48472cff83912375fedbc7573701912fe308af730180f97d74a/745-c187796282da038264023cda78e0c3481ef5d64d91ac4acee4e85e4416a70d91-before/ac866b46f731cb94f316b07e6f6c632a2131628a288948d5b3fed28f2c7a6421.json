@@ -1,5 +1,5 @@
 {
-  "last_modified_ledger_seq": 79,
+  "last_modified_ledger_seq": 521,
   "data": {
     "contract_data": {
       "ext": "v0",
@@ -22,7 +22,7 @@
               "symbol": "amount"
             },
             "val": {
-              "i128": "80"
+              "i128": "120"
             }
           },
           {
