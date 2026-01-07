@@ -1,5 +1,4 @@
 use crate::{bytesn, vec, Env, Vec, U256};
-pub const T: usize = 3;
 pub const SBOX_D: u32 = 5;
 
 // Poseidon preset parameters for bn254

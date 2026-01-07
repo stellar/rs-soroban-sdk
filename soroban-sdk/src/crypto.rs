@@ -200,14 +200,14 @@ impl Crypto {
     }
 
     /// Performs a Poseidon hash using a sponge construction that matches circom's [implementation](https://github.com/iden3/circomlib/blob/35e54ea21da3e8762557234298dbb553c175ea8d/circuits/poseidon.circom)
-    pub fn poseidon_hash<const N: usize>(&self, field_type: Symbol, inputs: &[U256; N]) -> U256 {
-        let config = PoseidonConfig::new(&self.env, field_type, N as u32);
+    pub fn poseidon_hash(&self, field_type: Symbol, inputs: &[U256]) -> U256 {
+        let config = PoseidonConfig::new(&self.env, field_type, inputs.len() as u32);
         poseidon_sponge::hash(&self.env, inputs, config)
     }
 
     /// Performs a poseidon2 hash with a sponge construction that matches noir's implementation.
     /// Uses rate=3 (t=4) to match the noir/barretenberg [implementation](https://github.com/noir-lang/noir/blob/abfee1f54b20984172ba23482f4af160395cfba5/noir_stdlib/src/hash/poseidon2.nr).
-    pub fn poseidon2_hash<const N: usize>(&self, field_type: Symbol, inputs: &[U256; N]) -> U256 {
+    pub fn poseidon2_hash(&self, field_type: Symbol, inputs: &[U256]) -> U256 {
         let config = Poseidon2Config::new(&self.env, field_type, 3);
         poseidon2_sponge::hash(&self.env, inputs, config)
     }

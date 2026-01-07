@@ -46,7 +46,9 @@ impl PoseidonConfig {
                 rc: get_rc_bls12_381(env, t),
             }
         } else {
-            panic!()
+            panic!(
+                "Unsupported field_type in PoseidonConfig::new; supported field types are BN254 and BLS12_381"
+            )
         }
     }
 }
@@ -61,14 +63,14 @@ pub struct PoseidonSponge {
 
 impl PoseidonSponge {
     // field_type - 'BN254' or 'BLS12_381'
-    // rate - number of elements the sponge can absorb/squeeze continously at once, after which a permutation is
+    // rate - number of elements the sponge can absorb/squeeze continuously at once, after which a permutation is
     // required.
     // capacity - number of extra elements the state contains, capacity provides more safety. capacity = 1 in our simplified sponge (matching circom's).
     // state.len() == rate + capacity
-    // returns a Poseidon object initialize with the prepulated parameters for use, you can call hash on it.
-    // limitation - single sqeeze, no duplex switching between absorb and sqeeze
+    // returns a Poseidon object initialize with the prepopulated parameters for use, you can call hash on it.
+    // limitation - single squeeze, no duplex switching between absorb and squeeze
     pub fn new(env: &Env, iv: U256, config: PoseidonConfig) -> Self {
-        // the 0-th element is reserved for capacity
+        // initialize the state with CAPACITY elements (CAPACITY = 1 in our sponge)
         let mut state = vec![env, iv];
         for _ in 0..config.rate {
             state.push_back(U256::from_u32(env, 0));
@@ -144,11 +146,11 @@ impl PoseidonSponge {
     }
 }
 
-pub fn hash<const N: usize>(env: &Env, inputs: &[U256; N], config: PoseidonConfig) -> U256 {
+pub fn hash(env: &Env, inputs: &[U256], config: PoseidonConfig) -> U256 {
     // The initial value for the capacity element initialized with 0 for standard Poseidon
     let iv = U256::from_u32(env, 0);
     let mut sponge = PoseidonSponge::new(env, iv, config);
-    let input_vec = Vec::from_array(env, inputs.clone());
+    let input_vec = Vec::from_slice(env, inputs);
     sponge.absorb(&input_vec);
     sponge.squeeze()
 }

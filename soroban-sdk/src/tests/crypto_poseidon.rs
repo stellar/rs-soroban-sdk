@@ -530,8 +530,8 @@ fn test_poseidon_bls12_381_hash_1_2_3_4_5() {
 }
 
 #[test]
-fn test_poseidon_permutation() {
-    use crate::crypto::poseidon_params::{get_mds_bn254, get_rc_bn254, SBOX_D, T};
+fn test_poseidon_permutation_t3() {
+    use crate::crypto::poseidon_params::{get_mds_bn254, get_rc_bn254, SBOX_D};
     use crate::crypto::CryptoHazmat;
 
     let env = Env::default();
@@ -560,7 +560,7 @@ fn test_poseidon_permutation() {
 
     // Get parameters
     let field = Symbol::new(&env, "BN254");
-    let t = T as u32;
+    let t = 3;
     let mds = get_mds_bn254(&env, t);
     let rc = get_rc_bn254(&env, t);
     let d = SBOX_D;

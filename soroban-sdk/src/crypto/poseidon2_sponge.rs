@@ -44,7 +44,9 @@ impl Poseidon2Config {
                 rc: get_rc_bls12_381(env, t),
             }
         } else {
-            panic!()
+            panic!(
+                "Unsupported field_type in Poseidon2Config::new; supported field types are BN254 and BLS12_381"
+            )
         }
     }
 }
@@ -135,11 +137,11 @@ impl Poseidon2Sponge {
     }
 }
 
-pub fn hash<const N: usize>(env: &Env, inputs: &[U256; N], config: Poseidon2Config) -> U256 {
+pub fn hash(env: &Env, inputs: &[U256], config: Poseidon2Config) -> U256 {
     // The initial value for the capacity element initialized with `input.len() * 2^64` for Poseidon2
-    let iv = U256::from_u128(env, (N as u128) << 64);
+    let iv = U256::from_u128(env, (inputs.len() as u128) << 64);
     let mut sponge = Poseidon2Sponge::new(env, iv, config);
-    let input_vec = Vec::from_array(env, inputs.clone());
+    let input_vec = Vec::from_slice(env, inputs);
     sponge.absorb(&input_vec);
     sponge.squeeze()
 }
