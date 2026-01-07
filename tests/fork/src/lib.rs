@@ -147,3 +147,362 @@ mod test {
         //#[test] fn test_50() { test() }
     }
 }
+
+#[cfg(test)]
+mod local {
+    extern crate std;
+    use ed25519_dalek::{Signer, SigningKey};
+    use sha2::{Digest, Sha256};
+    use soroban_ledger_fetch::Network;
+    use soroban_ledger_snapshot_source_tx::TxSnapshotSource;
+    use soroban_sdk::{testutils::EnvTestConfig, token::TokenClient, Address, Env};
+    use stellar_rpc_client::Client;
+    use std::str::FromStr;
+    use stellar_xdr::curr::{
+        self as xdr, AccountId, DecoratedSignature, Hash, HostFunction, Int128Parts,
+        InvokeContractArgs, InvokeHostFunctionOp, Memo, MuxedAccount, Operation, OperationBody,
+        Preconditions, PublicKey, ReadXdr, ScAddress, ScSymbol, ScVal, SequenceNumber, Signature,
+        SignatureHint, SorobanAuthorizationEntry, Transaction, TransactionEnvelope,
+        TransactionExt, TransactionSignaturePayload, TransactionSignaturePayloadTaggedTransaction,
+        TransactionV1Envelope, Uint256, VecM, WriteXdr,
+    };
+
+    const RPC_URL: &str = "http://localhost:8000/rpc";
+    const NETWORK_PASSPHRASE: &str = "Standalone Network ; February 2017";
+    const SAC_CONTRACT: &str = "CDMLFMKMMD7MWZP3FKUBZPVHTUEDLSX4BYGYKH4GCESXYHS3IHQ4EIG4";
+    const TARGET_ADDRESS: &str = "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM";
+
+    fn network_id() -> [u8; 32] {
+        Sha256::digest(NETWORK_PASSPHRASE.as_bytes()).into()
+    }
+
+    fn signing_key_to_account_id(key: &SigningKey) -> AccountId {
+        AccountId(PublicKey::PublicKeyTypeEd25519(Uint256(
+            key.verifying_key().to_bytes(),
+        )))
+    }
+
+    fn signing_key_to_sc_address(key: &SigningKey) -> ScAddress {
+        ScAddress::Account(signing_key_to_account_id(key))
+    }
+
+    fn signing_key_to_strkey(key: &SigningKey) -> std::string::String {
+        stellar_strkey::Strkey::PublicKeyEd25519(stellar_strkey::ed25519::PublicKey(
+            key.verifying_key().to_bytes(),
+        ))
+        .to_string()
+    }
+
+    fn i128_to_sc_val(v: i128) -> ScVal {
+        let hi = (v >> 64) as i64;
+        let lo = v as u64;
+        ScVal::I128(Int128Parts { hi, lo })
+    }
+
+    fn build_sac_transfer_op(from: ScAddress, to: ScAddress, amount: i128) -> Operation {
+        let contract_address = ScAddress::from_str(SAC_CONTRACT).unwrap();
+        let host_function = HostFunction::InvokeContract(InvokeContractArgs {
+            contract_address,
+            function_name: ScSymbol("transfer".try_into().unwrap()),
+            args: std::vec![ScVal::Address(from), ScVal::Address(to), i128_to_sc_val(amount)]
+                .try_into()
+                .unwrap(),
+        });
+
+        Operation {
+            source_account: None,
+            body: OperationBody::InvokeHostFunction(InvokeHostFunctionOp {
+                host_function,
+                auth: VecM::default(),
+            }),
+        }
+    }
+
+    fn build_transaction(
+        source_account: &AccountId,
+        sequence_number: i64,
+        operations: std::vec::Vec<Operation>,
+    ) -> Transaction {
+        Transaction {
+            source_account: MuxedAccount::Ed25519(match &source_account.0 {
+                PublicKey::PublicKeyTypeEd25519(pk) => pk.clone(),
+            }),
+            fee: 10_000_000, // Will be updated after simulation
+            seq_num: SequenceNumber(sequence_number),
+            cond: Preconditions::None,
+            memo: Memo::None,
+            operations: operations.try_into().unwrap(),
+            ext: TransactionExt::V0,
+        }
+    }
+
+    fn sign_transaction(tx: &Transaction, key: &SigningKey) -> DecoratedSignature {
+        let payload = TransactionSignaturePayload {
+            network_id: Hash(network_id()),
+            tagged_transaction: TransactionSignaturePayloadTaggedTransaction::Tx(tx.clone()),
+        };
+        let payload_bytes = payload.to_xdr(xdr::Limits::none()).unwrap();
+        let payload_hash = Sha256::digest(&payload_bytes);
+        let signature = key.sign(&payload_hash);
+
+        let pk_bytes = key.verifying_key().to_bytes();
+        let hint = SignatureHint([pk_bytes[28], pk_bytes[29], pk_bytes[30], pk_bytes[31]]);
+
+        DecoratedSignature {
+            hint,
+            signature: Signature(signature.to_bytes().to_vec().try_into().unwrap()),
+        }
+    }
+
+    async fn fund_account(client: &Client, address: &str) -> Result<(), std::boxed::Box<dyn std::error::Error>> {
+        let friendbot_url = client.friendbot_url().await?;
+        if !friendbot_url.is_empty() {
+            let fund_url = std::format!("{friendbot_url}?addr={address}");
+            reqwest::get(&fund_url).await?.error_for_status()?;
+        }
+        Ok(())
+    }
+
+    async fn get_sequence_number(client: &Client, account_id: &AccountId) -> Result<i64, std::boxed::Box<dyn std::error::Error>> {
+        use std::string::ToString;
+        let account = client.get_account(&account_id.to_string()).await?;
+        Ok(account.seq_num.0)
+    }
+
+    async fn simulate_and_prepare(
+        client: &Client,
+        tx: Transaction,
+    ) -> Result<Transaction, std::boxed::Box<dyn std::error::Error>> {
+        let envelope = TransactionEnvelope::Tx(TransactionV1Envelope {
+            tx: tx.clone(),
+            signatures: VecM::default(),
+        });
+        let sim = client.simulate_transaction_envelope(&envelope, None).await?;
+
+        // Get resource fee and auth from simulation
+        let min_resource_fee = sim.min_resource_fee;
+
+        // Update the transaction with auth from simulation
+        let mut new_tx = tx;
+        new_tx.fee = new_tx.fee.saturating_add(min_resource_fee as u32);
+
+        if let Some(result) = sim.results.first() {
+            if !result.auth.is_empty() {
+                let mut ops: std::vec::Vec<Operation> = new_tx.operations.to_vec();
+                if let OperationBody::InvokeHostFunction(ref mut op) = ops.first_mut().unwrap().body {
+                    let auth_vec: std::vec::Vec<SorobanAuthorizationEntry> = result.auth
+                        .iter()
+                        .map(|a| SorobanAuthorizationEntry::from_xdr_base64(a, xdr::Limits::none()).unwrap())
+                        .collect();
+                    op.auth = auth_vec.try_into().unwrap();
+                }
+                new_tx.operations = ops.try_into().unwrap();
+            }
+        }
+
+        // Set transaction resources from simulation
+        if !sim.transaction_data.is_empty() {
+            let soroban_data = xdr::SorobanTransactionData::from_xdr_base64(&sim.transaction_data, xdr::Limits::none())?;
+            new_tx.ext = TransactionExt::V1(soroban_data);
+        }
+
+        Ok(new_tx)
+    }
+
+    fn get_balance_at(ledger: u32, tx_hash: Option<[u8; 32]>) -> i128 {
+        let source = TxSnapshotSource::new(Network::local(), ledger, tx_hash);
+        let mut env = Env::from_ledger_snapshot(source);
+        env.set_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
+        let contract = Address::from_str(&env, SAC_CONTRACT);
+        let client = TokenClient::new(&env, &contract);
+        let addr = Address::from_str(&env, TARGET_ADDRESS);
+        client.balance(&addr)
+    }
+
+    struct SubmitResult {
+        ledger1: u32,
+        ledger2: u32,
+        hash1: [u8; 32],
+        hash2: [u8; 32],
+        initial_ledger: u32,
+    }
+
+    async fn submit_transactions_async() -> SubmitResult {
+        let client = Client::new(RPC_URL).unwrap();
+
+        // Create two source accounts with random keys
+        let key1 = SigningKey::generate(&mut rand::rngs::OsRng);
+        let key2 = SigningKey::generate(&mut rand::rngs::OsRng);
+
+        let addr1 = signing_key_to_strkey(&key1);
+        let addr2 = signing_key_to_strkey(&key2);
+
+        std::println!("Account 1: {addr1}");
+        std::println!("Account 2: {addr2}");
+
+        // Fund both accounts in parallel
+        std::println!("Funding accounts...");
+        let (fund1, fund2) = tokio::join!(
+            fund_account(&client, &addr1),
+            fund_account(&client, &addr2),
+        );
+        fund1.expect("failed to fund account 1");
+        fund2.expect("failed to fund account 2");
+
+        // Wait for accounts to be created
+        tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+
+        // Get initial ledger and sequence numbers in parallel
+        let account1_id = signing_key_to_account_id(&key1);
+        let account2_id = signing_key_to_account_id(&key2);
+
+        let (initial_ledger_result, seq1_result, seq2_result) = tokio::join!(
+            client.get_latest_ledger(),
+            get_sequence_number(&client, &account1_id),
+            get_sequence_number(&client, &account2_id),
+        );
+        let initial_ledger = initial_ledger_result.unwrap().sequence;
+        let seq1 = seq1_result.expect("failed to get seq for account 1");
+        let seq2 = seq2_result.expect("failed to get seq for account 2");
+        std::println!("Initial ledger: {initial_ledger}");
+
+        // Build transfer operations
+        let from1 = signing_key_to_sc_address(&key1);
+        let from2 = signing_key_to_sc_address(&key2);
+        let to = ScAddress::from_str(TARGET_ADDRESS).unwrap();
+
+        let op1 = build_sac_transfer_op(from1, to.clone(), 10);
+        let op2 = build_sac_transfer_op(from2, to, 20);
+
+        // Build transactions
+        let tx1 = build_transaction(&account1_id, seq1 + 1, std::vec![op1]);
+        let tx2 = build_transaction(&account2_id, seq2 + 1, std::vec![op2]);
+
+        // Simulate and prepare both transactions in parallel
+        std::println!("Simulating transactions...");
+        let (prepared1, prepared2) = tokio::join!(
+            simulate_and_prepare(&client, tx1),
+            simulate_and_prepare(&client, tx2),
+        );
+        let prepared_tx1 = prepared1.expect("failed to simulate tx1");
+        let prepared_tx2 = prepared2.expect("failed to simulate tx2");
+
+        // Sign both transactions
+        let sig1 = sign_transaction(&prepared_tx1, &key1);
+        let sig2 = sign_transaction(&prepared_tx2, &key2);
+
+        let envelope1 = TransactionEnvelope::Tx(TransactionV1Envelope {
+            tx: prepared_tx1,
+            signatures: std::vec![sig1].try_into().unwrap(),
+        });
+        let envelope2 = TransactionEnvelope::Tx(TransactionV1Envelope {
+            tx: prepared_tx2,
+            signatures: std::vec![sig2].try_into().unwrap(),
+        });
+
+        // Compute hashes before sending
+        let hash1_bytes = envelope1.hash(network_id()).expect("failed to hash tx1");
+        let hash2_bytes = envelope2.hash(network_id()).expect("failed to hash tx2");
+        let hash1 = Hash(hash1_bytes);
+        let hash2 = Hash(hash2_bytes);
+
+        // Send both transactions simultaneously to maximize chance of same ledger
+        std::println!("Sending transactions...");
+        let (send1, send2) = tokio::join!(
+            client.send_transaction(&envelope1),
+            client.send_transaction(&envelope2),
+        );
+        send1.expect("failed to send tx1");
+        send2.expect("failed to send tx2");
+
+        std::println!("Tx1 hash: {}", hex::encode(hash1_bytes));
+        std::println!("Tx2 hash: {}", hex::encode(hash2_bytes));
+
+        // Poll for both transactions to complete in parallel
+        std::println!("Waiting for transactions to complete...");
+        let (poll1, poll2) = tokio::join!(
+            client.get_transaction_polling(&hash1, None),
+            client.get_transaction_polling(&hash2, None),
+        );
+        let tx1_result = poll1.expect("failed to get tx1");
+        let tx2_result = poll2.expect("failed to get tx2");
+
+        let ledger1 = tx1_result.ledger.expect("missing ledger for tx1");
+        let ledger2 = tx2_result.ledger.expect("missing ledger for tx2");
+
+        std::println!("Tx1 ledger: {ledger1}");
+        std::println!("Tx2 ledger: {ledger2}");
+
+        // Wait for ledger data to be available in meta storage
+        std::println!("Waiting for ledger data to be available...");
+        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+
+        SubmitResult {
+            ledger1,
+            ledger2,
+            hash1: hash1_bytes,
+            hash2: hash2_bytes,
+            initial_ledger,
+        }
+    }
+
+    #[test]
+    fn test_local_fork() {
+        // Run async part to submit transactions
+        let result = tokio::runtime::Builder::new_multi_thread()
+            .enable_all()
+            .build()
+            .unwrap()
+            .block_on(submit_transactions_async());
+
+        // Verify balances synchronously (outside async context)
+        if result.ledger1 == result.ledger2 {
+            let ledger = result.ledger1;
+            std::println!("Both transactions in same ledger {ledger}! Testing intra-ledger state...");
+
+            // Get balances at different points in the ledger
+            let balance_before_tx1 = get_balance_at(ledger, Some(result.hash1));
+            let balance_before_tx2 = get_balance_at(ledger, Some(result.hash2));
+            let balance_end = get_balance_at(ledger, None);
+
+            std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
+            std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
+            std::println!("Balance at end of ledger: {balance_end}");
+
+            // Determine transaction order based on balances
+            // tx1 transfers 10, tx2 transfers 20
+            // The one with lower "before" balance came first
+            if balance_before_tx1 < balance_before_tx2 {
+                // tx1 came first: before_tx1 -> +10 -> before_tx2 -> +20 -> end
+                std::println!("Transaction order: tx1 then tx2");
+                assert_eq!(balance_before_tx2, balance_before_tx1 + 10, "tx1 should add 10");
+                assert_eq!(balance_end, balance_before_tx2 + 20, "tx2 should add 20");
+            } else {
+                // tx2 came first: before_tx2 -> +20 -> before_tx1 -> +10 -> end
+                std::println!("Transaction order: tx2 then tx1");
+                assert_eq!(balance_before_tx1, balance_before_tx2 + 20, "tx2 should add 20");
+                assert_eq!(balance_end, balance_before_tx1 + 10, "tx1 should add 10");
+            }
+
+            // Either way, total change should be 30
+            let initial_balance = std::cmp::min(balance_before_tx1, balance_before_tx2);
+            assert_eq!(balance_end, initial_balance + 30, "total change should be 30");
+        } else {
+            std::println!("Transactions landed in different ledgers, testing cross-ledger state...");
+
+            // Get balance before first ledger's transactions
+            let initial_balance = get_balance_at(result.initial_ledger, None);
+            std::println!("Initial balance at ledger {}: {initial_balance}", result.initial_ledger);
+
+            // Verify state at end of each ledger
+            let balance1 = get_balance_at(result.ledger1, None);
+            let balance2 = get_balance_at(result.ledger2, None);
+            std::println!("Balance at ledger {}: {balance1}", result.ledger1);
+            std::println!("Balance at ledger {}: {balance2}", result.ledger2);
+            assert_eq!(balance1, initial_balance + 10);
+            assert_eq!(balance2, initial_balance + 30);
+        }
+    }
+}
