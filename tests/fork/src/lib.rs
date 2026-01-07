@@ -467,21 +467,23 @@ mod local {
             let balance_before_tx2 = get_balance_at(ledger, Some(result.hash2));
             let balance_end = get_balance_at(ledger, None);
 
-            std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
-            std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
-            std::println!("Balance at end of ledger: {balance_end}");
-
             // Determine transaction order based on balances
             // tx1 transfers 10, tx2 transfers 20
             // The one with lower "before" balance came first
             if balance_before_tx1 < balance_before_tx2 {
                 // tx1 came first: before_tx1 -> +10 -> before_tx2 -> +20 -> end
                 std::println!("Transaction order: tx1 then tx2");
+                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
+                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
+                std::println!("Balance at end of ledger: {balance_end}");
                 assert_eq!(balance_before_tx2, balance_before_tx1 + 10, "tx1 should add 10");
                 assert_eq!(balance_end, balance_before_tx2 + 20, "tx2 should add 20");
             } else {
                 // tx2 came first: before_tx2 -> +20 -> before_tx1 -> +10 -> end
                 std::println!("Transaction order: tx2 then tx1");
+                std::println!("Balance before tx2 (transfers 20): {balance_before_tx2}");
+                std::println!("Balance before tx1 (transfers 10): {balance_before_tx1}");
+                std::println!("Balance at end of ledger: {balance_end}");
                 assert_eq!(balance_before_tx1, balance_before_tx2 + 20, "tx2 should add 20");
                 assert_eq!(balance_end, balance_before_tx1 + 10, "tx1 should add 10");
             }
