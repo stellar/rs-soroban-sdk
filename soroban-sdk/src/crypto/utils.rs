@@ -2,6 +2,8 @@ use crate::BytesN;
 
 // This routine was copied with slight modification from the arkworks library:
 // https://github.com/arkworks-rs/algebra/blob/bf1c9b22b30325ef4df4f701dedcb6dea904c587/ff/src/biginteger/arithmetic.rs#L66-L79
+// Copyright 2022 arkworks contributors. arkworks zkSNARK ecosystem [Computer software]. https://github.com/arkworks-rs/
+// Licensed under the Apache License, Version 2.0
 fn sbb_for_sub_with_borrow(a: &mut u64, b: u64, borrow: u8) -> u8 {
     let tmp = (1u128 << 64) + u128::from(*a) - u128::from(b) - u128::from(borrow);
     // casting is safe here because `tmp` can only exceed u64 by a single
