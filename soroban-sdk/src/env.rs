@@ -1539,9 +1539,10 @@ impl Env {
     /// setting up tests or asserting on internal state.
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
         let id = id.contract_id();
+        let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
         self.env_impl
-            .with_test_contract_frame(id, || {
+            .with_test_contract_frame(id, func, || {
                 t = Some(f());
                 Ok(().into())
             })
@@ -1564,8 +1565,9 @@ impl Env {
         E::Error: Into<InvokeError>,
     {
         let id = id.contract_id();
+        let func = Symbol::from_small_str("");
         let mut t: Option<T> = None;
-        let result = self.env_impl.try_with_test_contract_frame(id, || {
+        let result = self.env_impl.try_with_test_contract_frame(id, func, || {
             t = Some(f());
             Ok(().into())
         });
