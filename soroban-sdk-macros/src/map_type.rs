@@ -16,6 +16,11 @@ pub const FP2_SERIALIZED_SIZE: u32 = FP_SERIALIZED_SIZE * 2;
 pub const G1_SERIALIZED_SIZE: u32 = FP_SERIALIZED_SIZE * 2;
 pub const G2_SERIALIZED_SIZE: u32 = FP2_SERIALIZED_SIZE * 2;
 
+// BN254 constants - values must match soroban_sdk::crypto::bn254
+pub const BN254_FP_SERIALIZED_SIZE: u32 = 32;
+pub const BN254_G1_SERIALIZED_SIZE: u32 = BN254_FP_SERIALIZED_SIZE * 2; // 64
+pub const BN254_G2_SERIALIZED_SIZE: u32 = BN254_G1_SERIALIZED_SIZE * 2; // 128
+
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
     match t {
@@ -53,13 +58,13 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
-                    // The BLS types defined below are represented in the contract's
+                    // The BLS and BN types defined below are represented in the contract's
                     // interface by their underlying data types, i.e.
                     // Fp/Fp2/G1Affine/G2Affine => BytesN<N>, Fr => U256. This approach
                     // simplifies integration with contract development tooling, as it
-                    // avoids introducing new spec types for these BLS constructs.
+                    // avoids introducing new spec types for these constructs.
                     //
-                    // While this is functionally sound because the BLS types are
+                    // While this is functionally sound because the types are
                     // essentially newtypes over their inner representations, it means
                     // that the specific semantic meaning of `G1Affine`, `G2Affine`, or
                     // `Fr` is not directly visible in the compiled WASM interface. For
@@ -71,6 +76,9 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     // Idiom. For more details, see the tracking issue for supporting
                     // type aliases:
                     // https://github.com/stellar/rs-soroban-sdk/issues/1063
+
+                    // These BLS12-381 unprefixed type names
+                    // will be removed in a future release.
                     "Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: FP_SERIALIZED_SIZE,
                     })),
@@ -84,6 +92,29 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                         n: G2_SERIALIZED_SIZE,
                     })),
                     "Fr" => Ok(ScSpecTypeDef::U256),
+                    // BLS12-381 prefixed type names
+                    "Bls12381Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: FP_SERIALIZED_SIZE,
+                    })),
+                    "Bls12381Fp2" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: FP2_SERIALIZED_SIZE,
+                    })),
+                    "Bls12381G1Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: G1_SERIALIZED_SIZE,
+                    })),
+                    "Bls12381G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: G2_SERIALIZED_SIZE,
+                    })),
+                    // BN254 prefixed type names
+                    "Bn254Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: BN254_FP_SERIALIZED_SIZE,
+                    })),
+                    "Bn254G1Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: BN254_G1_SERIALIZED_SIZE,
+                    })),
+                    "Bn254G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
+                        n: BN254_G2_SERIALIZED_SIZE,
+                    })),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                         name: s.try_into().map_err(|e| {
                             Error::new(
