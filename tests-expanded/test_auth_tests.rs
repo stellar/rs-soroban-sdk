@@ -1264,14 +1264,14 @@ mod test_a {
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
             #[allow(non_snake_case)]
-            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 128usize] =
+            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 124usize] =
                 super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
             #[allow(non_snake_case)]
             #[allow(non_snake_case)]
-            pub const fn spec_xdr___check_auth() -> [u8; 128usize] {
-                *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x03\xed\0\0\0\0\0\0\0\x03"
+            pub const fn spec_xdr___check_auth() -> [u8; 124usize] {
+                *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
             }
         }
         impl<'a> ContractClient<'a> {}
@@ -2766,14 +2766,14 @@ mod test_b {
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
             #[allow(non_snake_case)]
-            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 128usize] =
+            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 124usize] =
                 super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
             #[allow(non_snake_case)]
             #[allow(non_snake_case)]
-            pub const fn spec_xdr___check_auth() -> [u8; 128usize] {
-                *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x03\xed\0\0\0\0\0\0\0\x03"
+            pub const fn spec_xdr___check_auth() -> [u8; 124usize] {
+                *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
             }
         }
         impl<'a> ContractClient<'a> {}

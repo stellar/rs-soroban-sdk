@@ -217,21 +217,25 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
             }
         }
         Type::Tuple(TypeTuple { elems, .. }) => {
-            let map_type_reject_hash =
-                |t: &Type| -> Result<ScSpecTypeDef, Error> { map_type(t, allow_ref, false) };
-            Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
-                value_types: elems
-                    .iter()
-                    .map(map_type_reject_hash)
-                    .collect::<Result<Vec<ScSpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
-                    .try_into()
-                    .map_err(|e| {
-                        Error::new(
-                            t.span(),
-                            format!("tuple values cannot be used in XDR spec: {}", e),
-                        )
-                    })?,
-            })))
+            if elems.is_empty() {
+                Ok(ScSpecTypeDef::Void)
+            } else {
+                let map_type_reject_hash =
+                    |t: &Type| -> Result<ScSpecTypeDef, Error> { map_type(t, allow_ref, false) };
+                Ok(ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                    value_types: elems
+                        .iter()
+                        .map(map_type_reject_hash)
+                        .collect::<Result<Vec<ScSpecTypeDef>, Error>>()? // TODO: Implement conversion to VecM from iters to omit this collect.
+                        .try_into()
+                        .map_err(|e| {
+                            Error::new(
+                                t.span(),
+                                format!("tuple values cannot be used in XDR spec: {}", e),
+                            )
+                        })?,
+                })))
+            }
         }
         _ => Err(Error::new(t.span(), "unsupported type"))?,
     }
@@ -261,5 +265,38 @@ mod test {
         let ty = Type::Reference(parse_quote!(&u32));
         let res = map_type(&ty, false, false);
         assert!(res.is_err());
+    }
+
+    #[test]
+    fn test_unit_type() {
+        let ty: Type = parse_quote!(());
+        let res = map_type(&ty, false, false);
+        assert_eq!(res.unwrap(), ScSpecTypeDef::Void);
+    }
+
+    #[test]
+    fn test_tuple_single_element() {
+        let ty: Type = parse_quote!((u32,));
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                value_types: vec![ScSpecTypeDef::U32].try_into().unwrap(),
+            }))
+        );
+    }
+
+    #[test]
+    fn test_tuple_two_elements() {
+        let ty: Type = parse_quote!((u32, i64));
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                value_types: vec![ScSpecTypeDef::U32, ScSpecTypeDef::I64]
+                    .try_into()
+                    .unwrap(),
+            }))
+        );
     }
 }
