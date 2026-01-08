@@ -1,7 +1,10 @@
-# Contributing
+# How to contribute
 
-Contributions are welcome to the soroban-sdk. Please discuss issues to be solved
-and potential solutions on issues ahead of opening a pull request.
+Check out the [Stellar Contribution Guide](https://github.com/stellar/.github/blob/master/CONTRIBUTING.md) that applies to all Stellar projects.
+
+## Contributing to soroban-sdk
+
+Please discuss issues to be solved and potential solutions on issues ahead of opening a pull request.
 
 ## Development Environment Setup
 
