@@ -1090,7 +1090,6 @@ pub(crate) fn get_rc_bn254(e: &Env, t: u32) -> Vec<Vec<U256>>{
     }
 }
 
-
 #[rustfmt::skip]
 pub(crate) fn get_mat_diag_m_1_bls12_381(e: &Env, t: u32) -> Vec<U256> {
     if t == 2 {
