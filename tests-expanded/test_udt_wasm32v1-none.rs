@@ -57,6 +57,17 @@ impl UdtEnum2 {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
     }
 }
+impl soroban_sdk::IncludeSpecMarker for UdtEnum2 {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        #[cfg(target_family = "wasm")]
+        {
+            static MARKER: [u8; 12usize] = *b"SpEc\xaf\xf7\x93\xba\x9eM\xde\x9a";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -165,6 +176,17 @@ pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
 impl UdtEnum {
     pub const fn spec_xdr() -> [u8; 156usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
+    }
+}
+impl soroban_sdk::IncludeSpecMarker for UdtEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        #[cfg(target_family = "wasm")]
+        {
+            static MARKER: [u8; 12usize] = *b"SpEc\xf3\xb0\xab@i\rH\xb4";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
@@ -319,6 +341,17 @@ impl UdtTuple {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
+impl soroban_sdk::IncludeSpecMarker for UdtTuple {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        #[cfg(target_family = "wasm")]
+        {
+            static MARKER: [u8; 12usize] = *b"SpEc\xeb\x9f\x12&\x9av(*";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -421,6 +454,17 @@ pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
 impl UdtStruct {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
+    }
+}
+impl soroban_sdk::IncludeSpecMarker for UdtStruct {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        #[cfg(target_family = "wasm")]
+        {
+            static MARKER: [u8; 12usize] = *b"SpEc\x16'd8\xff\xc9\xb1\xf8";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
@@ -582,14 +626,14 @@ impl ContractArgs {
 pub mod __Contract__add {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
         arg_1: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::add(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::add(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,

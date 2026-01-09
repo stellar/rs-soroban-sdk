@@ -351,11 +351,11 @@ impl ContractArgs {}
 pub mod __Contract__exec {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
         use super::Trait;
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::exec(&env),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::exec(&env),
             &env,
         )
     }
@@ -659,11 +659,11 @@ impl ContractArgs {
 pub mod __Contract__exec2 {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec2` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
         use super::TraitWithoutContractTrait;
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::exec2(&env),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::exec2(&env),
             &env,
         )
     }
@@ -783,7 +783,7 @@ mod test {
 mod test_with_wasm {
     use soroban_sdk::{Env, String};
     mod contract {
-        pub const WASM: &[u8] = b"\0asm\x01\0\0\0\x01\x11\x03`\x02~~\x01~`\0\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\0\0\x03\x04\x03\x01\x02\x01\x05\x03\x01\0\x11\x06!\x04\x7f\x01A\x80\x80\xc0\0\x0b\x7f\0A\x8f\x80\xc0\0\x0b\x7f\0A\x8f\x80\xc0\0\x0b\x7f\0A\x90\x80\xc0\0\x0b\x078\x06\x06memory\x02\0\x05exec2\0\x01\x04exec\0\x03\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n>\x03\x10\0A\x87\x80\xc0\x80\0A\x08\x10\x82\x80\x80\x80\0\x0b\x1a\0 \0\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\0\x0b\x10\0A\x80\x80\xc0\x80\0A\x07\x10\x82\x80\x80\x80\0\x0b\x0b\x18\x01\0A\x80\x80\xc0\0\x0b\x0fdefaultdefault2\0K\x0econtractspecv0\0\0\0\0\0\0\0\0\0\0\0\x05exec2\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10\0\x1e\x11contractenvmetav0\0\0\0\0\0\0\0\x17\0\0\0\0\0+\x0econtractmetav0\0\0\0\0\0\0\0\x05rsver\0\0\0\0\0\0\x061.84.0\0\0";
+        pub const WASM: &[u8] = b"\0asm\x01\0\0\0\x01\x16\x04`\x02~~\x01~`\x01~\x01~`\0\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\0\0\x03\x05\x04\x01\x02\x03\x02\x05\x03\x01\0\x11\x06!\x04\x7f\x01A\x80\x80\xc0\0\x0b\x7f\0A\x8f\x80\xc0\0\x0b\x7f\0A\x8f\x80\xc0\0\x0b\x7f\0A\x90\x80\xc0\0\x0b\x078\x06\x06memory\x02\0\x05exec2\0\x02\x04exec\0\x04\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\nO\x04\x04\0 \0\x0b\x16\0A\x87\x80\xc0\x80\0A\x08\x10\x83\x80\x80\x80\0\x10\x81\x80\x80\x80\0\x0b\x1a\0 \0\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\0\x0b\x16\0A\x80\x80\xc0\x80\0A\x07\x10\x83\x80\x80\x80\0\x10\x81\x80\x80\x80\0\x0b\x0b\x18\x01\0A\x80\x80\xc0\0\x0b\x0fdefaultdefault2\0K\x0econtractspecv0\0\0\0\0\0\0\0\0\0\0\0\x05exec2\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10\0\x1e\x11contractenvmetav0\0\0\0\0\0\0\0\x17\0\0\0\0\0+\x0econtractmetav0\0\0\0\0\0\0\0\x05rsver\0\0\0\0\0\0\x061.84.0\0\0";
         pub trait Contract {
             fn exec2(env: soroban_sdk::Env) -> soroban_sdk::String;
             fn exec(env: soroban_sdk::Env) -> soroban_sdk::String;

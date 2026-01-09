@@ -24,6 +24,17 @@ impl DummyProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nDummyProof\0\0\0\0\0\x05\0\0\0\0\0\0\0\x02fp\0\0\0\0\x03\xee\0\0\00\0\0\0\0\0\0\0\x03fp2\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02fr\0\0\0\0\0\x0c\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xee\0\0\0\xc0"
     }
 }
+impl soroban_sdk::IncludeSpecMarker for DummyProof {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        #[cfg(target_family = "wasm")]
+        {
+            static MARKER: [u8; 12usize] = *b"SpEc\x85W\0A\xdc~\xb7\"";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -329,14 +340,14 @@ impl ContractArgs {
 pub mod __Contract__g1_mul {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).g1_mul` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
         arg_1: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::g1_mul(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::g1_mul(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
@@ -370,14 +381,14 @@ pub mod __Contract__g1_mul {
 pub mod __Contract__g2_mul {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).g2_mul` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
         arg_1: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::g2_mul(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::g2_mul(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
@@ -411,10 +422,10 @@ pub mod __Contract__g2_mul {
 pub mod __Contract__dummy_verify {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).dummy_verify` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::dummy_verify(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::dummy_verify(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<

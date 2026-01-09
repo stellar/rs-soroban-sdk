@@ -446,10 +446,10 @@ impl ContractArgs {
 pub mod __Contract__void_fn {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::void_fn(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::void_fn(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -486,10 +486,10 @@ pub mod __Contract__void_fn {
 pub mod __Contract__tuple1 {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::tuple1(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::tuple1(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -526,10 +526,10 @@ pub mod __Contract__tuple1 {
 pub mod __Contract__tuple2 {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::tuple2(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::tuple2(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,

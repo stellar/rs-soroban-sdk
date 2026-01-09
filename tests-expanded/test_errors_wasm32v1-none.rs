@@ -53,6 +53,17 @@ impl Flag {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04Flag\0\0\0\x05\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01C\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01D\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01E\0\0\0\0\0\0\x04"
     }
 }
+impl soroban_sdk::IncludeSpecMarker for Flag {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        #[cfg(target_family = "wasm")]
+        {
+            static MARKER: [u8; 12usize] = *b"SpEcg\x19\x8d\xc6\x8aP\xeb\xb7";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Flag {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -129,6 +140,17 @@ pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07AnError\0\0\0\0\x01"
+    }
+}
+impl soroban_sdk::IncludeSpecMarker for Error {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        #[cfg(target_family = "wasm")]
+        {
+            static MARKER: [u8; 12usize] = *b"SpEc\xbc\x04\x04\xea\xa4\x9e6(";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl TryFrom<soroban_sdk::Error> for Error {
@@ -340,10 +362,10 @@ impl ContractArgs {
 pub mod __Contract__hello {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).hello` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::hello(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::hello(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<

@@ -9,7 +9,7 @@ use stellar_xdr::{
     ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, spec_marker, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -136,15 +136,21 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Generated code spec.
-    let spec_gen = if spec {
+    // Compute spec XDR once if spec is enabled.
+    let spec_xdr = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    } else {
+        None
+    };
+
+    // Generated code spec.
+    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
@@ -162,9 +168,41 @@ pub fn derive_type_enum(
         None
     };
 
+    // IncludeSpecMarker impl - only generated when spec is true.
+    // Types with export=false should not be used at external boundaries.
+    let include_spec_impl = if let Some(ref spec_xdr) = spec_xdr {
+        // Create a marker that identifies this spec entry. The marker is a byte array
+        // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
+        // Post-build tools can scan the data section for "SpEc" markers and match
+        // against specs in contractspecv0.
+        let marker = spec_marker::spec_marker(spec_xdr);
+        let marker_lit = proc_macro2::Literal::byte_string(&marker);
+        let marker_len = marker.len();
+        Some(quote! {
+            impl #path::IncludeSpecMarker for #enum_ident {
+                #[doc(hidden)]
+                #[inline(always)]
+                fn include_spec_marker() {
+                    #[cfg(target_family = "wasm")]
+                    {
+                        // Marker in data section. Post-build tools can scan for "SpEc"
+                        // patterns and match against specs in contractspecv0.
+                        static MARKER: [u8; #marker_len] = *#marker_lit;
+                        // Volatile read prevents DCE within live function.
+                        let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                    }
+                }
+            }
+        })
+    } else {
+        None
+    };
+
     // Output.
     let mut output = quote! {
         #spec_gen
+
+        #include_spec_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;

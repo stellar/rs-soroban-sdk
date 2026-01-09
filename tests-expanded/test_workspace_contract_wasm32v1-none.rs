@@ -95,10 +95,10 @@ impl ContractArgs {
 pub mod __Contract__value {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::value(),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::value(),
             &env,
         )
     }

@@ -1,6 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, spec_marker, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -193,6 +193,20 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
+    // Create a marker that identifies this spec entry. The marker is a byte array
+    // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
+    // Post-build toOls can scan the data section for "SpEc" markers and match
+    // against specs in contractspecv0.
+    let marker = spec_marker::spec_marker(&spec_xdr);
+    let marker_lit = proc_macro2::Literal::byte_string(&marker);
+    let marker_len = marker.len();
+    let include_spec_call = if export {
+        Some(quote! { <Self as #path::IncludeSpecMarker>::include_spec_marker(); })
+    } else {
+        None
+    };
+
+    // Generated code spec.
     let spec_gen = quote! {
         #export_gen
         pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
@@ -202,6 +216,29 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 *#spec_xdr_lit
             }
         }
+    };
+
+    // IncludeSpecMarker impl - only generated when export is true.
+    // Types with export=false should not be used at external boundaries.
+    let include_spec_impl = if export {
+        Some(quote! {
+            impl #gen_impl #path::IncludeSpecMarker for #ident #gen_types #gen_where {
+                #[doc(hidden)]
+                #[inline(always)]
+                fn include_spec_marker() {
+                    #[cfg(target_family = "wasm")]
+                    {
+                        // Marker in data section. Post-build tools can scan for "SpEc"
+                        // patterns and match against specs in contractspecv0.
+                        static MARKER: [u8; #marker_len] = *#marker_lit;
+                        // Volatile read prevents DCE within live function.
+                        let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                    }
+                }
+            }
+        })
+    } else {
+        None
     };
 
     // Prepare Topics Conversion to Vec<Val>.
@@ -272,6 +309,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let output = quote! {
         #spec_gen
 
+        #include_spec_impl
+
         impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {
                 #topics_to_vec_val
@@ -283,6 +322,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
+                #include_spec_call
                 <_ as #path::Event>::publish(self, env);
             }
         }
