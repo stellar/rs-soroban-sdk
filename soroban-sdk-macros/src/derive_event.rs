@@ -163,6 +163,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // Generated code spec.
     let export = args.export.unwrap_or(true);
+    let export_gen = if export {
+        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
+    } else {
+        None
+    };
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
@@ -200,15 +205,10 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     } else {
         None
     };
-    let link_section_attr = if export {
-        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
-    } else {
-        None
-    };
 
     // Generated code spec.
     let spec_gen = quote! {
-        #link_section_attr
+        #export_gen
         pub static #spec_ident: [u8; #spec_xdr_len] = <#ident #gen_types>::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
