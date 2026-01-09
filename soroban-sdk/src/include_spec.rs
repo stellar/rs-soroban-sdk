@@ -31,7 +31,7 @@ pub trait IncludeSpec {
     /// For user-defined contract types, this ensures the spec XDR is
     /// included in the contractspecv0 section.
     #[inline(always)]
-    fn __include_spec() {}
+    fn __include_spec_marker() {}
 }
 
 // Primitive type implementations (no-op)
@@ -47,57 +47,57 @@ impl IncludeSpec for i128 {}
 // Reference implementations
 impl<T: IncludeSpec> IncludeSpec for &T {
     #[inline(always)]
-    fn __include_spec() {
-        T::__include_spec();
+    fn __include_spec_marker() {
+        T::__include_spec_marker();
     }
 }
 
 impl<T: IncludeSpec> IncludeSpec for &mut T {
     #[inline(always)]
-    fn __include_spec() {
-        T::__include_spec();
+    fn __include_spec_marker() {
+        T::__include_spec_marker();
     }
 }
 
 // Option implementation - includes inner type's spec
 impl<T: IncludeSpec> IncludeSpec for Option<T> {
     #[inline(always)]
-    fn __include_spec() {
-        T::__include_spec();
+    fn __include_spec_marker() {
+        T::__include_spec_marker();
     }
 }
 
 // Result implementation - includes both type's specs
 impl<T: IncludeSpec, E: IncludeSpec> IncludeSpec for Result<T, E> {
     #[inline(always)]
-    fn __include_spec() {
-        T::__include_spec();
-        E::__include_spec();
+    fn __include_spec_marker() {
+        T::__include_spec_marker();
+        E::__include_spec_marker();
     }
 }
 
 // Tuple implementations
 impl<T0: IncludeSpec> IncludeSpec for (T0,) {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
     }
 }
 
 impl<T0: IncludeSpec, T1: IncludeSpec> IncludeSpec for (T0, T1) {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
     }
 }
 
 impl<T0: IncludeSpec, T1: IncludeSpec, T2: IncludeSpec> IncludeSpec for (T0, T1, T2) {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
     }
 }
 
@@ -105,11 +105,11 @@ impl<T0: IncludeSpec, T1: IncludeSpec, T2: IncludeSpec, T3: IncludeSpec> Include
     for (T0, T1, T2, T3)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
     }
 }
 
@@ -117,12 +117,12 @@ impl<T0: IncludeSpec, T1: IncludeSpec, T2: IncludeSpec, T3: IncludeSpec, T4: Inc
     IncludeSpec for (T0, T1, T2, T3, T4)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
     }
 }
 
@@ -136,13 +136,13 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
     }
 }
 
@@ -157,14 +157,14 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
-        T6::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
+        T6::__include_spec_marker();
     }
 }
 
@@ -180,15 +180,15 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
-        T6::__include_spec();
-        T7::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
+        T6::__include_spec_marker();
+        T7::__include_spec_marker();
     }
 }
 
@@ -205,16 +205,16 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
-        T6::__include_spec();
-        T7::__include_spec();
-        T8::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
+        T6::__include_spec_marker();
+        T7::__include_spec_marker();
+        T8::__include_spec_marker();
     }
 }
 
@@ -232,17 +232,17 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
-        T6::__include_spec();
-        T7::__include_spec();
-        T8::__include_spec();
-        T9::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
+        T6::__include_spec_marker();
+        T7::__include_spec_marker();
+        T8::__include_spec_marker();
+        T9::__include_spec_marker();
     }
 }
 
@@ -261,18 +261,18 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
-        T6::__include_spec();
-        T7::__include_spec();
-        T8::__include_spec();
-        T9::__include_spec();
-        T10::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
+        T6::__include_spec_marker();
+        T7::__include_spec_marker();
+        T8::__include_spec_marker();
+        T9::__include_spec_marker();
+        T10::__include_spec_marker();
     }
 }
 
@@ -292,19 +292,19 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
-        T6::__include_spec();
-        T7::__include_spec();
-        T8::__include_spec();
-        T9::__include_spec();
-        T10::__include_spec();
-        T11::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
+        T6::__include_spec_marker();
+        T7::__include_spec_marker();
+        T8::__include_spec_marker();
+        T9::__include_spec_marker();
+        T10::__include_spec_marker();
+        T11::__include_spec_marker();
     }
 }
 
@@ -325,20 +325,20 @@ impl<
     > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)
 {
     #[inline(always)]
-    fn __include_spec() {
-        T0::__include_spec();
-        T1::__include_spec();
-        T2::__include_spec();
-        T3::__include_spec();
-        T4::__include_spec();
-        T5::__include_spec();
-        T6::__include_spec();
-        T7::__include_spec();
-        T8::__include_spec();
-        T9::__include_spec();
-        T10::__include_spec();
-        T11::__include_spec();
-        T12::__include_spec();
+    fn __include_spec_marker() {
+        T0::__include_spec_marker();
+        T1::__include_spec_marker();
+        T2::__include_spec_marker();
+        T3::__include_spec_marker();
+        T4::__include_spec_marker();
+        T5::__include_spec_marker();
+        T6::__include_spec_marker();
+        T7::__include_spec_marker();
+        T8::__include_spec_marker();
+        T9::__include_spec_marker();
+        T10::__include_spec_marker();
+        T11::__include_spec_marker();
+        T12::__include_spec_marker();
     }
 }
 
@@ -359,16 +359,16 @@ impl IncludeSpec for crate::Val {}
 // Container types - propagate to inner types
 impl<T: IncludeSpec> IncludeSpec for crate::Vec<T> {
     #[inline(always)]
-    fn __include_spec() {
-        T::__include_spec();
+    fn __include_spec_marker() {
+        T::__include_spec_marker();
     }
 }
 
 impl<K: IncludeSpec, V: IncludeSpec> IncludeSpec for crate::Map<K, V> {
     #[inline(always)]
-    fn __include_spec() {
-        K::__include_spec();
-        V::__include_spec();
+    fn __include_spec_marker() {
+        K::__include_spec_marker();
+        V::__include_spec_marker();
     }
 }
 

@@ -5,7 +5,7 @@
 //! The trait has a blanket implementation for all types that already implement
 //! IntoVal<Env, Val>.
 //!
-//! This trait exists to call `IncludeSpec::__include_spec()` to ensure that type
+//! This trait exists to call `IncludeSpec::__include_spec_marker()` to ensure that type
 //! specs are included in the WASM when types are used at external boundaries
 //! (function return values).
 
@@ -26,7 +26,7 @@ where
     T: IntoVal<Env, Val> + IncludeSpec,
 {
     fn into_val_for_contract_fn(self, env: &Env) -> Val {
-        T::__include_spec();
+        T::__include_spec_marker();
         self.into_val(env)
     }
 }

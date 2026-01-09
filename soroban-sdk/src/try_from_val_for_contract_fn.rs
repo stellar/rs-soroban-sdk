@@ -14,7 +14,7 @@
 //! is most appropriate. For types that should only be used and converted to as
 //! part of contract function invocation, then this trait is appropriate.
 //!
-//! This trait also calls `IncludeSpec::__include_spec()` to ensure that type
+//! This trait also calls `IncludeSpec::__include_spec_marker()` to ensure that type
 //! specs are included in the WASM when types are used at external boundaries.
 
 use crate::{env::internal::Env, Error, IncludeSpec, TryFromVal};
@@ -37,7 +37,7 @@ where
 {
     type Error = U::Error;
     fn try_from_val_for_contract_fn(e: &E, v: &T) -> Result<Self, Self::Error> {
-        U::__include_spec();
+        U::__include_spec_marker();
         U::try_from_val(e, v)
     }
 }

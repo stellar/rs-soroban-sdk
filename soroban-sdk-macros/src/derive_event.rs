@@ -207,7 +207,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(quote! {
             #[doc(hidden)]
             #[inline(always)]
-            fn __include_spec() {
+            fn __include_spec_marker() {
                 #[cfg(target_family = "wasm")]
                 {
                     // Marker in regular data section (subject to DCE).
@@ -222,7 +222,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         None
     };
     let include_spec_call = if export {
-        Some(quote! { Self::__include_spec(); })
+        Some(quote! { Self::__include_spec_marker(); })
     } else {
         None
     };
@@ -253,8 +253,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             impl #gen_impl #path::IncludeSpec for #ident #gen_types #gen_where {
                 #[doc(hidden)]
                 #[inline(always)]
-                fn __include_spec() {
-                    <#ident #gen_types>::__include_spec();
+                fn __include_spec_marker() {
+                    <#ident #gen_types>::__include_spec_marker();
                 }
             }
         })

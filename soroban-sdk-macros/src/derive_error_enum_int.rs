@@ -101,7 +101,7 @@ pub fn derive_type_error_enum_int(
 
                 #[doc(hidden)]
                 #[inline(always)]
-                fn __include_spec() {
+                fn __include_spec_marker() {
                     #[cfg(target_family = "wasm")]
                     {
                         // Marker in regular data section (subject to DCE).
@@ -124,8 +124,8 @@ pub fn derive_type_error_enum_int(
             impl #path::IncludeSpec for #enum_ident {
                 #[doc(hidden)]
                 #[inline(always)]
-                fn __include_spec() {
-                    <#enum_ident>::__include_spec();
+                fn __include_spec_marker() {
+                    <#enum_ident>::__include_spec_marker();
                 }
             }
         })

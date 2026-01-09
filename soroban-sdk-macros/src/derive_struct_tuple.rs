@@ -99,7 +99,7 @@ pub fn derive_type_struct_tuple(
 
                 #[doc(hidden)]
                 #[inline(always)]
-                fn __include_spec() {
+                fn __include_spec_marker() {
                     #[cfg(target_family = "wasm")]
                     {
                         // Marker in regular data section (subject to DCE).
@@ -122,8 +122,8 @@ pub fn derive_type_struct_tuple(
             impl #path::IncludeSpec for #ident {
                 #[doc(hidden)]
                 #[inline(always)]
-                fn __include_spec() {
-                    <#ident>::__include_spec();
+                fn __include_spec_marker() {
+                    <#ident>::__include_spec_marker();
                 }
             }
         })
