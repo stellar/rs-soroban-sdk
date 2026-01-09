@@ -136,6 +136,18 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                                 element_type: Box::new(map_type(t, allow_ref, false)?),
                             })))
                         }
+                        "VecN" => {
+                            let t = match args.as_slice() {
+                                [GenericArgument::Type(t), GenericArgument::Const(_)] => t,
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect two for VecN<T, N>",
+                                ))?,
+                            };
+                            Ok(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                                element_type: Box::new(map_type(t, allow_ref, false)?),
+                            })))
+                        }
                         "Map" => {
                             let (k, v) = match args.as_slice() {
                                 [GenericArgument::Type(k), GenericArgument::Type(v)] => (k, v),
