@@ -13,8 +13,11 @@
 //! For types that can be used and converted everywhere, implementing TryFromVal
 //! is most appropriate. For types that should only be used and converted to as
 //! part of contract function invocation, then this trait is appropriate.
+//!
+//! This trait also calls `IncludeSpec::__include_spec()` to ensure that type
+//! specs are included in the WASM when types are used at external boundaries.
 
-use crate::{env::internal::Env, Error, TryFromVal};
+use crate::{env::internal::Env, Error, IncludeSpec, TryFromVal};
 use core::fmt::Debug;
 
 #[doc(hidden)]
@@ -30,10 +33,11 @@ pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
 where
-    U: TryFromVal<E, T>,
+    U: TryFromVal<E, T> + IncludeSpec,
 {
     type Error = U::Error;
     fn try_from_val_for_contract_fn(e: &E, v: &T) -> Result<Self, Self::Error> {
+        U::__include_spec();
         U::try_from_val(e, v)
     }
 }

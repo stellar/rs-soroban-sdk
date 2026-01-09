@@ -1,6 +1,10 @@
 use crate::{
-    attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, symbol, DEFAULT_XDR_RW_LIMITS,
+    attribute::remove_attributes_from_item,
+    default_crate_path,
+    doc::docs_from_attrs,
+    map_type::map_type,
+    spec_marker::{encode_spec_marker, SPEC_MARKER_EVENT},
+    symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -188,6 +192,19 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
+    // Create a marker that identifies this spec entry. The marker is in the regular data
+    // section (subject to DCE) while the spec is in contractspecv0. A post-build tool will
+    // find markers in the data section and keep only the corresponding specs in contractspecv0.
+    // The marker is XDR-encoded: discriminant (4 bytes) + lib string + name string.
+    let marker_ident = format_ident!(
+        "__SPEC_XDR_MARKER_{}",
+        input.ident.to_string().to_uppercase()
+    );
+    let lib_str = args.lib.as_deref().unwrap_or_default();
+    let event_name_str = input.ident.to_string();
+    let marker_xdr = encode_spec_marker(SPEC_MARKER_EVENT, lib_str, &event_name_str);
+    let marker_len = marker_xdr.len();
+    let marker_lit = proc_macro2::Literal::byte_string(&marker_xdr);
     let include_spec_fn = if export {
         Some(quote! {
             #[doc(hidden)]
@@ -195,9 +212,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             fn __include_spec() {
                 #[cfg(target_family = "wasm")]
                 {
-                    #[link_section = "contractspecv0"]
-                    static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
-                    let _ = unsafe { ::core::ptr::read_volatile(#spec_ident.as_ptr()) };
+                    // Marker in regular data section (subject to DCE).
+                    // A post-build tool will find these markers and keep only
+                    // the corresponding specs in contractspecv0.
+                    static #marker_ident: [u8; #marker_len] = *#marker_lit;
+                    let _ = unsafe { ::core::ptr::read_volatile(#marker_ident.as_ptr()) };
                 }
             }
         })
@@ -209,7 +228,17 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     } else {
         None
     };
+    let spec_static = if export {
+        Some(quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = <#ident #gen_types>::spec_xdr();
+        })
+    } else {
+        None
+    };
     let spec_gen = quote! {
+        #spec_static
+
         impl #gen_impl #ident #gen_types #gen_where {
             pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
@@ -217,6 +246,22 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
             #include_spec_fn
         }
+    };
+
+    // IncludeSpec implementation - only generated when export is true.
+    // Types with export=false should not be used at external boundaries.
+    let include_spec_impl = if export {
+        Some(quote! {
+            impl #gen_impl #path::IncludeSpec for #ident #gen_types #gen_where {
+                #[doc(hidden)]
+                #[inline(always)]
+                fn __include_spec() {
+                    <#ident #gen_types>::__include_spec();
+                }
+            }
+        })
+    } else {
+        None
     };
 
     // Prepare Topics Conversion to Vec<Val>.
@@ -286,6 +331,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Output.
     let output = quote! {
         #spec_gen
+
+        #include_spec_impl
 
         impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {

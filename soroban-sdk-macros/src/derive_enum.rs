@@ -9,7 +9,12 @@ use stellar_xdr::{
     ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::map_type,
+    spec_marker::{encode_spec_marker, SPEC_MARKER_UNION},
+    DEFAULT_XDR_RW_LIMITS,
+};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -148,7 +153,23 @@ pub fn derive_type_enum(
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
+        // Create a marker that identifies this spec entry. The marker is in the regular data
+        // section (subject to DCE) while the spec is in contractspecv0. A post-build tool will
+        // find markers in the data section and keep only the corresponding specs in contractspecv0.
+        // The marker is XDR-encoded: discriminant (4 bytes) + lib string + name string.
+        let marker_ident = format_ident!(
+            "__SPEC_XDR_MARKER_{}",
+            enum_ident.to_string().to_uppercase()
+        );
+        let lib_str = lib.as_deref().unwrap_or_default();
+        let type_name = enum_ident.to_string();
+        let marker_xdr = encode_spec_marker(SPEC_MARKER_UNION, lib_str, &type_name);
+        let marker_len = marker_xdr.len();
+        let marker_lit = proc_macro2::Literal::byte_string(&marker_xdr);
         Some(quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+
             impl #enum_ident {
                 pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                     *#spec_xdr_lit
@@ -159,9 +180,11 @@ pub fn derive_type_enum(
                 fn __include_spec() {
                     #[cfg(target_family = "wasm")]
                     {
-                        #[link_section = "contractspecv0"]
-                        static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
-                        let _ = unsafe { ::core::ptr::read_volatile(#spec_ident.as_ptr()) };
+                        // Marker in regular data section (subject to DCE).
+                        // A post-build tool will find these markers and keep only
+                        // the corresponding specs in contractspecv0.
+                        static #marker_ident: [u8; #marker_len] = *#marker_lit;
+                        let _ = unsafe { ::core::ptr::read_volatile(#marker_ident.as_ptr()) };
                     }
                 }
             }
@@ -170,9 +193,18 @@ pub fn derive_type_enum(
         None
     };
 
-    // Call to include spec in the WASM if the type is used.
-    let include_spec_call = if spec {
-        Some(quote! { #enum_ident::__include_spec(); })
+    // IncludeSpec implementation - only generated when spec is true.
+    // Types with export=false should not be used at external boundaries.
+    let include_spec_impl = if spec {
+        Some(quote! {
+            impl #path::IncludeSpec for #enum_ident {
+                #[doc(hidden)]
+                #[inline(always)]
+                fn __include_spec() {
+                    <#enum_ident>::__include_spec();
+                }
+            }
+        })
     } else {
         None
     };
@@ -181,11 +213,12 @@ pub fn derive_type_enum(
     let mut output = quote! {
         #spec_gen
 
+        #include_spec_impl
+
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
-                #include_spec_call
                 use #path::{EnvBase,TryIntoVal,TryFromVal};
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
                 let vec: #path::Vec<#path::Val> = val.try_into_val(env)?;
@@ -202,7 +235,6 @@ pub fn derive_type_enum(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
-                #include_spec_call
                 use #path::{TryIntoVal,TryFromVal};
                 match val {
                     #(#try_intos,)*

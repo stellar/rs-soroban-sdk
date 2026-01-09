@@ -1078,6 +1078,15 @@ mod try_from_val_for_contract_fn;
 #[allow(deprecated)]
 pub use try_from_val_for_contract_fn::TryFromValForContractFn;
 
+mod into_val_for_contract_fn;
+#[doc(hidden)]
+#[allow(deprecated)]
+pub use into_val_for_contract_fn::IntoValForContractFn;
+
+mod include_spec;
+#[doc(hidden)]
+pub use include_spec::IncludeSpec;
+
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
 pub mod data {

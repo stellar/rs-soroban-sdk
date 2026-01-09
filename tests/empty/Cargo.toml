@@ -13,6 +13,7 @@ doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
+soroban-token-sdk = {path = "../../soroban-token-sdk"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}

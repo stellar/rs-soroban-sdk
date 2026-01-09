@@ -1,10 +1,9 @@
-use ::stellar_xdr::curr::ScSpecEventParamLocationV0;
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0,
-    ScSpecUdtUnionV0,
+    ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0,
+    ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
@@ -37,8 +36,10 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
             let f_type = generate_type_ident(&f.type_);
             quote! { pub #f_type }
         });
+        // Imported types use the default export=true so their specs are re-emitted
+        // when used at external boundaries of the importing contract.
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident ( #(#fields),* );
         }
@@ -49,8 +50,10 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
             let f_type = generate_type_ident(&f.type_);
             quote! { pub #f_ident: #f_type }
         });
+        // Imported types use the default export=true so their specs are re-emitted
+        // when used at external boundaries of the importing contract.
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident { #(#fields,)* }
         }
@@ -84,7 +87,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
             }
         });
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         }
@@ -107,7 +110,7 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
             quote! { #v_ident = #v_value }
         });
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         }
@@ -130,7 +133,7 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
             quote! { #v_ident = #v_value }
         });
         quote! {
-            #[soroban_sdk::contracterror(export = false)]
+            #[soroban_sdk::contracterror]
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         }
@@ -164,7 +167,7 @@ pub fn generate_event(spec: &ScSpecEventV0) -> TokenStream {
             }
         });
         quote! {
-            #[soroban_sdk::contractevent(topics = [#(#topics,)*], export = false)]
+            #[soroban_sdk::contractevent(topics = [#(#topics,)*])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident { #(#fields,)* }
         }
@@ -248,7 +251,7 @@ mod test {
             data_format: ScSpecEventDataFormat::Map,
         });
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = [], export = false)]
+            #[soroban_sdk::contractevent(topics = [])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {}
         };
@@ -286,7 +289,7 @@ mod test {
             data_format: ScSpecEventDataFormat::Map,
         });
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = ["my_event"], export = false)]
+            #[soroban_sdk::contractevent(topics = ["my_event"])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {
                 pub from: u32,
