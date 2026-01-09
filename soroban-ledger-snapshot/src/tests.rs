@@ -30,7 +30,9 @@ fn test_snapshot_from_v1() {
     snapshot.write(&mut written).unwrap();
     let written_str = String::from_utf8(written).unwrap();
 
-    assert_eq!(written_str, expected_str);
+    let expected_normalized = expected_str.replace("\r\n", "\n");
+    let written_normalized = written_str.replace("\r\n", "\n");
+    assert_eq!(written_normalized, expected_normalized);
 }
 
 #[test]
@@ -49,5 +51,7 @@ fn test_snapshot_roundtrip() {
     snapshot.write(&mut written).unwrap();
     let written_str = String::from_utf8(written).unwrap();
 
-    assert_eq!(written_str, expected_str);
+    let expected_normalized = expected_str.replace("\r\n", "\n");
+    let written_normalized = written_str.replace("\r\n", "\n");
+    assert_eq!(written_normalized, expected_normalized);
 }
