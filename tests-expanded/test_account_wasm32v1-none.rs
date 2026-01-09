@@ -202,14 +202,14 @@ pub mod __Contract____check_auth__spec {
     #[allow(non_upper_case_globals)]
     #[allow(non_snake_case)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 156usize] =
+    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 148usize] =
         super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___check_auth() -> [u8; 156usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\x03\xed\0\0\0\0\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\x03\xed\0\0\0\0\0\0\0\x03"
+    pub const fn spec_xdr___check_auth() -> [u8; 148usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
     }
 }
 impl<'a> ContractClient<'a> {}
