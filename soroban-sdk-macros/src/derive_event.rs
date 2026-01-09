@@ -200,27 +200,22 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     } else {
         None
     };
+    let link_section_attr = if export {
+        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
+    } else {
+        None
+    };
 
     // Generated code spec.
-    let spec_gen = if export {
-        Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = <#ident #gen_types>::spec_xdr();
+    let spec_gen = quote! {
+        #link_section_attr
+        pub static #spec_ident: [u8; #spec_xdr_len] = <#ident #gen_types>::spec_xdr();
 
-            impl #gen_impl #ident #gen_types #gen_where {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
+        impl #gen_impl #ident #gen_types #gen_where {
+            pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
+                *#spec_xdr_lit
             }
-        })
-    } else {
-        Some(quote! {
-            impl #gen_impl #ident #gen_types #gen_where {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
-            }
-        })
+        }
     };
 
     // IncludeSpecMarker impl - only generated when export is true.
