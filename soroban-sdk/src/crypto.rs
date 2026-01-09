@@ -3,7 +3,7 @@
 use crate::{
     env::internal::{self, BytesObject},
     unwrap::UnwrapInfallible,
-    Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val
+    Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val,
 };
 
 pub mod bls12_381;
