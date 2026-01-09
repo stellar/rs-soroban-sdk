@@ -16,31 +16,17 @@
 // TODO: Move the spec marker logic into a crate that can be shared with the CLI.
 use sha2::{Digest, Sha256};
 
-/// Prefix for spec markers.
-pub const SPEC_MARKER_PREFIX: &[u8; 4] = b"SpEc";
+/// Total length of a spec marker (4-byte prefix + 8-byte hash).
+pub const SPEC_MARKER_LEN: usize = 12;
 
-/// Length of the hash portion (truncated SHA256 - first 8 bytes / 64 bits).
-pub const SPEC_MARKER_HASH_LEN: usize = 8;
-
-/// Total length of a spec marker.
-pub const SPEC_MARKER_LEN: usize = SPEC_MARKER_PREFIX.len() + SPEC_MARKER_HASH_LEN;
-
-/// Computes the hash portion of the spec marker (8 bytes / 64 bits).
-pub fn spec_marker_hash(spec_xdr: &[u8]) -> [u8; SPEC_MARKER_HASH_LEN] {
-    let hash: [u8; 32] = Sha256::digest(spec_xdr).into();
-    let mut result = [0u8; SPEC_MARKER_HASH_LEN];
-    result.copy_from_slice(&hash[..SPEC_MARKER_HASH_LEN]);
-    result
-}
-
-/// Generates the full spec marker as a byte array.
-/// Format: "SpEc" + 8 bytes of SHA256 hash = 12 bytes total.
+/// Generates the spec marker as a byte array.
+/// Format: "SpEc" + first 8 bytes of SHA256 hash = 12 bytes total.
 pub fn spec_marker(spec_xdr: &[u8]) -> [u8; SPEC_MARKER_LEN] {
-    let hash = spec_marker_hash(spec_xdr);
-    let mut result = [0u8; SPEC_MARKER_LEN];
-    result[..SPEC_MARKER_PREFIX.len()].copy_from_slice(SPEC_MARKER_PREFIX);
-    result[SPEC_MARKER_PREFIX.len()..].copy_from_slice(&hash);
-    result
+    let hash: [u8; 32] = Sha256::digest(spec_xdr).into();
+    [
+        b'S', b'p', b'E', b'c', hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6],
+        hash[7],
+    ]
 }
 
 #[cfg(test)]
