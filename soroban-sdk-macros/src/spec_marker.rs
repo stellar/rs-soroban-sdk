@@ -2,42 +2,34 @@
 ///
 /// The marker is encoded as:
 /// - 4-byte magic prefix: "SpEc" (alternating case to avoid false positives)
-/// - 1-byte discriminant (0=struct, 1=union, 2=enum, 3=error, 4=event)
-/// - 1-byte lib name length + lib name bytes
-/// - 1-byte type/event name length + name bytes
-
+/// - 8-byte truncated SHA256 hash of the spec entry XDR bytes (64 bits)
 // TODO: Move the spec marker logic into a crate that can be shared with the CLI.
+use sha2::{Digest, Sha256};
 
 /// Magic prefix for spec markers to avoid false positives when scanning the data section.
 /// Uses alternating case "SpEc" for a distinctive pattern.
 pub const SPEC_MARKER_MAGIC: &[u8; 4] = b"SpEc";
 
-/// Spec entry type discriminants.
-pub const SPEC_MARKER_STRUCT: u8 = 0;
-pub const SPEC_MARKER_UNION: u8 = 1;
-pub const SPEC_MARKER_ENUM: u8 = 2;
-pub const SPEC_MARKER_ERROR: u8 = 3;
-pub const SPEC_MARKER_EVENT: u8 = 4;
+/// Length of the hash portion (truncated SHA256 - first 8 bytes / 64 bits).
+pub const SPEC_MARKER_HASH_LEN: usize = 8;
 
-/// Encodes a spec marker with a magic prefix.
-pub fn encode_spec_marker(discriminant: u8, lib: &str, name: &str) -> Vec<u8> {
-    let mut buf = Vec::new();
+/// Length of the marker: 4-byte prefix + 8-byte truncated SHA256 hash.
+pub const SPEC_MARKER_LEN: usize = 4 + SPEC_MARKER_HASH_LEN;
+
+/// Encodes a spec marker: magic prefix followed by truncated SHA256 hash of the spec XDR.
+pub fn encode_spec_marker(spec_xdr: &[u8]) -> [u8; SPEC_MARKER_LEN] {
+    let mut marker = [0u8; SPEC_MARKER_LEN];
 
     // Write magic prefix (4 bytes)
-    buf.extend_from_slice(SPEC_MARKER_MAGIC);
+    marker[..4].copy_from_slice(SPEC_MARKER_MAGIC);
 
-    // Write discriminant (1 byte)
-    buf.push(discriminant);
+    // Write truncated SHA256 hash (first 16 bytes)
+    let mut hasher = Sha256::new();
+    hasher.update(spec_xdr);
+    let hash: [u8; 32] = hasher.finalize().into();
+    marker[4..].copy_from_slice(&hash[..SPEC_MARKER_HASH_LEN]);
 
-    // Write lib string (1-byte length + bytes)
-    buf.push(lib.len() as u8);
-    buf.extend_from_slice(lib.as_bytes());
-
-    // Write name string (1-byte length + bytes)
-    buf.push(name.len() as u8);
-    buf.extend_from_slice(name.as_bytes());
-
-    buf
+    marker
 }
 
 #[cfg(test)]
@@ -46,43 +38,24 @@ mod tests {
 
     #[test]
     fn test_encode_spec_marker() {
-        let marker = encode_spec_marker(SPEC_MARKER_STRUCT, "", "MyStruct");
-        // magic: "SpEc"
-        // discriminant: 0 (struct)
-        // lib length: 0
-        // name length: 8
-        // name bytes: "MyStruct"
-        assert_eq!(
-            marker,
-            vec![
-                b'S', b'p', b'E', b'c', // magic
-                0,    // discriminant = struct
-                0,    // lib length = 0
-                8,    // name length = 8
-                b'M', b'y', b'S', b't', b'r', b'u', b'c', b't', // "MyStruct"
-            ]
-        );
-    }
+        let spec_xdr = b"some spec xdr bytes";
+        let marker = encode_spec_marker(spec_xdr);
 
-    #[test]
-    fn test_encode_spec_marker_with_lib() {
-        let marker = encode_spec_marker(SPEC_MARKER_EVENT, "mylib", "Transfer");
-        // magic: "SpEc"
-        // discriminant: 4 (event)
-        // lib length: 5
-        // lib bytes: "mylib"
-        // name length: 8
-        // name bytes: "Transfer"
-        assert_eq!(
-            marker,
-            vec![
-                b'S', b'p', b'E', b'c', // magic
-                4,    // discriminant = event
-                5,    // lib length = 5
-                b'm', b'y', b'l', b'i', b'b', // "mylib"
-                8,    // name length = 8
-                b'T', b'r', b'a', b'n', b's', b'f', b'e', b'r', // "Transfer"
-            ]
-        );
+        // Check length: 4-byte prefix + 8-byte hash = 12 bytes
+        assert_eq!(marker.len(), SPEC_MARKER_LEN);
+        assert_eq!(SPEC_MARKER_LEN, 12);
+
+        // Check magic prefix
+        assert_eq!(&marker[..4], b"SpEc");
+
+        // Same input produces same marker
+        let marker2 = encode_spec_marker(spec_xdr);
+        assert_eq!(marker, marker2);
+
+        // Different input produces different marker
+        let different_xdr = b"different spec xdr bytes";
+        let different_marker = encode_spec_marker(different_xdr);
+        assert_eq!(&different_marker[..4], b"SpEc"); // Same prefix
+        assert_ne!(&marker[4..], &different_marker[4..]); // Different hash
     }
 }

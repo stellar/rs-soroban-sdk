@@ -3,7 +3,7 @@ use crate::{
     default_crate_path,
     doc::docs_from_attrs,
     map_type::map_type,
-    spec_marker::{encode_spec_marker, SPEC_MARKER_EVENT},
+    spec_marker::{encode_spec_marker, SPEC_MARKER_LEN},
     symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
@@ -195,16 +195,14 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Create a marker that identifies this spec entry. The marker is in the regular data
     // section (subject to DCE) while the spec is in contractspecv0. A post-build tool will
     // find markers in the data section and keep only the corresponding specs in contractspecv0.
-    // The marker is XDR-encoded: discriminant (4 bytes) + lib string + name string.
+    // The marker is: magic prefix "SpEc" + truncated SHA256 hash of the spec XDR.
     let marker_ident = format_ident!(
         "__SPEC_XDR_MARKER_{}",
         input.ident.to_string().to_uppercase()
     );
-    let lib_str = args.lib.as_deref().unwrap_or_default();
-    let event_name_str = input.ident.to_string();
-    let marker_xdr = encode_spec_marker(SPEC_MARKER_EVENT, lib_str, &event_name_str);
-    let marker_len = marker_xdr.len();
-    let marker_lit = proc_macro2::Literal::byte_string(&marker_xdr);
+    let marker_bytes = encode_spec_marker(&spec_xdr);
+    let marker_len = SPEC_MARKER_LEN;
+    let marker_lit = proc_macro2::Literal::byte_string(&marker_bytes);
     let include_spec_fn = if export {
         Some(quote! {
             #[doc(hidden)]

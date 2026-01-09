@@ -12,7 +12,7 @@ use stellar_xdr::{
 use crate::{
     doc::docs_from_attrs,
     map_type::map_type,
-    spec_marker::{encode_spec_marker, SPEC_MARKER_UNION},
+    spec_marker::{encode_spec_marker, SPEC_MARKER_LEN},
     DEFAULT_XDR_RW_LIMITS,
 };
 
@@ -156,16 +156,14 @@ pub fn derive_type_enum(
         // Create a marker that identifies this spec entry. The marker is in the regular data
         // section (subject to DCE) while the spec is in contractspecv0. A post-build tool will
         // find markers in the data section and keep only the corresponding specs in contractspecv0.
-        // The marker is XDR-encoded: discriminant (4 bytes) + lib string + name string.
+        // The marker is: magic prefix "SpEc" + SHA256 hash of the spec XDR.
         let marker_ident = format_ident!(
             "__SPEC_XDR_MARKER_{}",
             enum_ident.to_string().to_uppercase()
         );
-        let lib_str = lib.as_deref().unwrap_or_default();
-        let type_name = enum_ident.to_string();
-        let marker_xdr = encode_spec_marker(SPEC_MARKER_UNION, lib_str, &type_name);
-        let marker_len = marker_xdr.len();
-        let marker_lit = proc_macro2::Literal::byte_string(&marker_xdr);
+        let marker_bytes = encode_spec_marker(&spec_xdr);
+        let marker_len = SPEC_MARKER_LEN;
+        let marker_lit = proc_macro2::Literal::byte_string(&marker_bytes);
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
