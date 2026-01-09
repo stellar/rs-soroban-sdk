@@ -87,15 +87,30 @@ pub fn derive_type_struct(
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", ident.to_string().to_uppercase());
         Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
-
             impl #ident {
                 pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                     *#spec_xdr_lit
                 }
+
+                #[doc(hidden)]
+                #[inline(always)]
+                fn __include_spec() {
+                    #[cfg(target_family = "wasm")]
+                    {
+                        #[link_section = "contractspecv0"]
+                        static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+                        let _ = unsafe { ::core::ptr::read_volatile(#spec_ident.as_ptr()) };
+                    }
+                }
             }
         })
+    } else {
+        None
+    };
+
+    // Call to include spec in the WASM if the type is used.
+    let include_spec_call = if spec {
+        Some(quote! { #ident::__include_spec(); })
     } else {
         None
     };
@@ -107,6 +122,7 @@ pub fn derive_type_struct(
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                #include_spec_call
                 use #path::{TryIntoVal,EnvBase,ConversionError,Val,MapObject};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
@@ -121,6 +137,7 @@ pub fn derive_type_struct(
         impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
+                #include_spec_call
                 use #path::{TryIntoVal,EnvBase,ConversionError,Val};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let vals: [Val; #field_count_usize] = [

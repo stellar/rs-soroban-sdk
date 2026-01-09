@@ -163,11 +163,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // Generated code spec.
     let export = args.export.unwrap_or(true);
-    let export_gen = if export {
-        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
-    } else {
-        None
-    };
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
@@ -193,14 +188,34 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
+    let include_spec_fn = if export {
+        Some(quote! {
+            #[doc(hidden)]
+            #[inline(always)]
+            fn __include_spec() {
+                #[cfg(target_family = "wasm")]
+                {
+                    #[link_section = "contractspecv0"]
+                    static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+                    let _ = unsafe { ::core::ptr::read_volatile(#spec_ident.as_ptr()) };
+                }
+            }
+        })
+    } else {
+        None
+    };
+    let include_spec_call = if export {
+        Some(quote! { Self::__include_spec(); })
+    } else {
+        None
+    };
     let spec_gen = quote! {
-        #export_gen
-        pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
-
         impl #gen_impl #ident #gen_types #gen_where {
             pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
             }
+
+            #include_spec_fn
         }
     };
 
@@ -283,6 +298,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
+                #include_spec_call
                 <_ as #path::Event>::publish(self, env);
             }
         }

@@ -78,15 +78,30 @@ pub fn derive_type_enum_int(
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
         Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
-
             impl #enum_ident {
                 pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                     *#spec_xdr_lit
                 }
+
+                #[doc(hidden)]
+                #[inline(always)]
+                fn __include_spec() {
+                    #[cfg(target_family = "wasm")]
+                    {
+                        #[link_section = "contractspecv0"]
+                        static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+                        let _ = unsafe { ::core::ptr::read_volatile(#spec_ident.as_ptr()) };
+                    }
+                }
             }
         })
+    } else {
+        None
+    };
+
+    // Call to include spec in the WASM if the type is used.
+    let include_spec_call = if spec {
+        Some(quote! { #enum_ident::__include_spec(); })
     } else {
         None
     };
@@ -99,6 +114,7 @@ pub fn derive_type_enum_int(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                #include_spec_call
                 use #path::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -112,6 +128,7 @@ pub fn derive_type_enum_int(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
+                #include_spec_call
                 Ok(match val {
                     #(#try_intos,)*
                 })

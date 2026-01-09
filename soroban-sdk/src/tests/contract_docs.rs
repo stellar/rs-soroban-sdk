@@ -56,7 +56,7 @@ mod struct_ {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
+        let entry = ScSpecEntry::from_xdr(S::spec_xdr(), Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds a and\nb.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
@@ -98,7 +98,7 @@ mod struct_tuple {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
+        let entry = ScSpecEntry::from_xdr(S::spec_xdr(), Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds two u64s.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
@@ -145,7 +145,7 @@ mod enum_ {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
+        let entry = ScSpecEntry::from_xdr(E::spec_xdr(), Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             lib: "".try_into().unwrap(),
@@ -193,7 +193,7 @@ mod enum_int {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
+        let entry = ScSpecEntry::from_xdr(E::spec_xdr(), Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),
@@ -238,7 +238,7 @@ mod enum_error_int {
 
     #[test]
     fn test_spec() {
-        let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
+        let entry = ScSpecEntry::from_xdr(E::spec_xdr(), Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),
