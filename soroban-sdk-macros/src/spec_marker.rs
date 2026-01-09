@@ -27,9 +27,7 @@ pub const SPEC_MARKER_LEN: usize = SPEC_MARKER_PREFIX.len() + SPEC_MARKER_HASH_L
 
 /// Computes the hash portion of the spec marker (8 bytes / 64 bits).
 pub fn spec_marker_hash(spec_xdr: &[u8]) -> [u8; SPEC_MARKER_HASH_LEN] {
-    let mut hasher = Sha256::new();
-    hasher.update(spec_xdr);
-    let hash: [u8; 32] = hasher.finalize().into();
+    let hash: [u8; 32] = Sha256::digest(spec_xdr).into();
     let mut result = [0u8; SPEC_MARKER_HASH_LEN];
     result.copy_from_slice(&hash[..SPEC_MARKER_HASH_LEN]);
     result
