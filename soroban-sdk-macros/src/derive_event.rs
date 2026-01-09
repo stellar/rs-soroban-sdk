@@ -1,10 +1,6 @@
 use crate::{
-    attribute::remove_attributes_from_item,
-    default_crate_path,
-    doc::docs_from_attrs,
-    map_type::map_type,
-    spec_marker::{encode_spec_marker, SPEC_MARKER_LEN},
-    symbol, DEFAULT_XDR_RW_LIMITS,
+    attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
+    map_type::map_type, spec_marker, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -192,17 +188,13 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
-    // Create a marker that identifies this spec entry. The marker is in the regular data
-    // section (subject to DCE) while the spec is in contractspecv0. A post-build tool will
-    // find markers in the data section and keep only the corresponding specs in contractspecv0.
-    // The marker is: magic prefix "SpEc" + truncated SHA256 hash of the spec XDR.
-    let marker_ident = format_ident!(
-        "__SPEC_XDR_MARKER_{}",
-        input.ident.to_string().to_uppercase()
-    );
-    let marker_bytes = encode_spec_marker(&spec_xdr);
-    let marker_len = SPEC_MARKER_LEN;
-    let marker_lit = proc_macro2::Literal::byte_string(&marker_bytes);
+    // Create a marker that identifies this spec entry. The marker is a byte array
+    // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
+    // Post-build tools can scan the data section for "SpEc" markers and match
+    // against specs in contractspecv0.
+    let marker = spec_marker::spec_marker(&spec_xdr);
+    let marker_lit = proc_macro2::Literal::byte_string(&marker);
+    let marker_len = marker.len();
     let include_spec_fn = if export {
         Some(quote! {
             #[doc(hidden)]
@@ -210,11 +202,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             fn __include_spec_marker() {
                 #[cfg(target_family = "wasm")]
                 {
-                    // Marker in regular data section (subject to DCE).
-                    // A post-build tool will find these markers and keep only
-                    // the corresponding specs in contractspecv0.
-                    static #marker_ident: [u8; #marker_len] = *#marker_lit;
-                    let _ = unsafe { ::core::ptr::read_volatile(#marker_ident.as_ptr()) };
+                    // Marker in data section. Post-build tools can scan for "SpEc"
+                    // patterns and match against specs in contractspecv0.
+                    static MARKER: [u8; #marker_len] = *#marker_lit;
+                    // Volatile read prevents DCE within live function.
+                    let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
                 }
             }
         })
