@@ -163,11 +163,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // Generated code spec.
     let export = args.export.unwrap_or(true);
-    let export_gen = if export {
-        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
-    } else {
-        None
-    };
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
@@ -195,7 +190,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     );
     // Create a marker that identifies this spec entry. The marker is a byte array
     // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
-    // Post-build tools can scan the data section for "SpEc" markers and match
+    // Post-build toOls can scan the data section for "SpEc" markers and match
     // against specs in contractspecv0.
     let marker = spec_marker::spec_marker(&spec_xdr);
     let marker_lit = proc_macro2::Literal::byte_string(&marker);
@@ -208,8 +203,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // Generated code spec.
     let spec_gen = quote! {
-        #export_gen
-        pub static #spec_ident: [u8; #spec_xdr_len] = <#ident #gen_types>::spec_xdr();
+        #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+        pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
