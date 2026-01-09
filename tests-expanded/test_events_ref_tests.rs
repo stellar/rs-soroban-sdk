@@ -596,7 +596,6 @@ fn __Contract__a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b301_
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    extern crate std;
     use crate::{Contract, ContractClient, Transfer};
     use soroban_sdk::{
         map, symbol_short,
@@ -613,9 +612,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 55usize,
+            start_line: 54usize,
             start_col: 8usize,
-            end_line: 55usize,
+            end_line: 54usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
@@ -637,13 +636,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+            &[Transfer {
                 from: &from,
                 to: &to.address(),
                 amount: &amount,
                 to_muxed_id: Some(&to.id().unwrap()),
             }
-            .to_xdr(&env, &contract_id)])),
+            .to_xdr(&env, &contract_id)],
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -709,9 +708,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 105usize,
+            start_line: 104usize,
             start_col: 8usize,
-            end_line: 105usize,
+            end_line: 104usize,
             end_col: 35usize,
             compile_fail: false,
             no_run: false,
@@ -733,13 +732,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+            &[Transfer {
                 from: &from,
                 to: &to,
                 amount: &amount,
                 to_muxed_id: None,
             }
-            .to_xdr(&env, &contract_id)])),
+            .to_xdr(&env, &contract_id)],
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -802,9 +801,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 152usize,
+            start_line: 151usize,
             start_col: 8usize,
-            end_line: 152usize,
+            end_line: 151usize,
             end_col: 47usize,
             compile_fail: false,
             no_run: false,
@@ -823,7 +822,7 @@ mod test {
         let from = Address::generate(&env);
         let to = Address::generate(&env);
         let _ = client.try_failed_transfer(&from, &to, &1);
-        match (&env.events().all(), &::alloc::vec::Vec::new()) {
+        match (&env.events().all(), &[]) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;

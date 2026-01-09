@@ -637,13 +637,16 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
-                from: from.clone(),
-                to: to.address(),
-                amount,
-                to_muxed_id: to.id(),
-            }
-            .to_xdr(&env, &contract_id)])),
+            &<[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([Transfer {
+                    from: from.clone(),
+                    to: to.address(),
+                    amount,
+                    to_muxed_id: to.id(),
+                }
+                .to_xdr(&env, &contract_id)]),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -733,13 +736,16 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
-                from: from.clone(),
-                to: to.clone(),
-                amount,
-                to_muxed_id: None,
-            }
-            .to_xdr(&env, &contract_id)])),
+            &<[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([Transfer {
+                    from: from.clone(),
+                    to: to.clone(),
+                    amount,
+                    to_muxed_id: None,
+                }
+                .to_xdr(&env, &contract_id)]),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
