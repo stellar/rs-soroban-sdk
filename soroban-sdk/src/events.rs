@@ -58,12 +58,30 @@ impl Debug for Events {
     }
 }
 
+#[cfg(any(test, feature = "testutils"))]
+use crate::{testutils, xdr, FromVal};
+
 pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
 
     fn publish(&self, env: &Env) {
         env.events().publish_event(self);
+    }
+
+    /// Convert this event and the given contract_id into a [`xdr::ContractEvent`] object.
+    /// Used to compare Events to emitted events in tests.
+    #[cfg(any(test, feature = "testutils"))]
+    fn to_xdr(&self, env: &Env, contract_id: &crate::Address) -> xdr::ContractEvent {
+        xdr::ContractEvent {
+            ext: xdr::ExtensionPoint::V0,
+            type_: xdr::ContractEventType::Contract,
+            contract_id: Some(contract_id.contract_id()),
+            body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+                topics: self.topics(env).into(),
+                data: xdr::ScVal::from_val(env, &self.data(env)),
+            }),
+        }
     }
 }
 
@@ -117,38 +135,28 @@ impl Events {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-use crate::{testutils, xdr, Address, TryIntoVal};
-
-#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl testutils::Events for Events {
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)> {
+    fn all(&self) -> testutils::ContractEvents {
         let env = self.env();
-        let mut vec = Vec::new(env);
-        self.env()
+        let vec: std::vec::Vec<xdr::ContractEvent> = self
+            .env()
             .host()
             .get_events()
             .unwrap()
             .0
             .into_iter()
-            .for_each(|e| {
-                if e.failed_call {
-                    return;
-                }
-                if let xdr::ContractEvent {
-                    type_: xdr::ContractEventType::Contract,
-                    contract_id: Some(contract_id),
-                    body: xdr::ContractEventBody::V0(xdr::ContractEventV0 { topics, data }),
-                    ..
-                } = e.event
+            .filter_map(|e| {
+                if !e.failed_call
+                    && e.event.type_ == xdr::ContractEventType::Contract
+                    && e.event.contract_id.is_some()
                 {
-                    vec.push_back((
-                        Address::from_contract_id(env, contract_id.0 .0),
-                        topics.try_into_val(env).unwrap(),
-                        data.try_into_val(env).unwrap(),
-                    ))
+                    Some(e.event)
+                } else {
+                    None
                 }
-            });
-        vec
+            })
+            .collect();
+        testutils::ContractEvents::new(&env, vec)
     }
 }

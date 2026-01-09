@@ -596,11 +596,12 @@ fn __Contract__a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b301_
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    use crate::{Contract, ContractClient};
+    extern crate std;
+    use crate::{Contract, ContractClient, Transfer};
     use soroban_sdk::{
         map, symbol_short,
         testutils::{Address as _, Events, MuxedAddress as _},
-        vec, Address, Env, IntoVal, MuxedAddress, Symbol, Val,
+        vec, Address, Env, Event, IntoVal, MuxedAddress, Symbol, Val,
     };
     extern crate test;
     #[cfg(test)]
@@ -612,9 +613,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events/src/lib.rs",
-            start_line: 53usize,
+            start_line: 55usize,
             start_col: 8usize,
-            end_line: 53usize,
+            end_line: 55usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
@@ -634,6 +635,31 @@ mod test {
         let to = MuxedAddress::generate(&env);
         let amount = 1i128;
         client.transfer(&from, &to, &amount);
+        match (
+            &env.events().all(),
+            &<[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([Transfer {
+                    from: from.clone(),
+                    to: to.address(),
+                    amount,
+                    to_muxed_id: to.id(),
+                }
+                .to_xdr(&env, &contract_id)]),
+            ),
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
         match (
             &env.events().all(),
             &::soroban_sdk::Vec::from_array(
@@ -686,9 +712,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events/src/lib.rs",
-            start_line: 91usize,
+            start_line: 105usize,
             start_col: 8usize,
-            end_line: 91usize,
+            end_line: 105usize,
             end_col: 35usize,
             compile_fail: false,
             no_run: false,
@@ -708,6 +734,31 @@ mod test {
         let to = Address::generate(&env);
         let amount = 1i128;
         client.transfer(&from, &to, &amount);
+        match (
+            &env.events().all(),
+            &<[_]>::into_vec(
+                #[rustc_box]
+                ::alloc::boxed::Box::new([Transfer {
+                    from: from.clone(),
+                    to: to.clone(),
+                    amount,
+                    to_muxed_id: None,
+                }
+                .to_xdr(&env, &contract_id)]),
+            ),
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
         match (
             &env.events().all(),
             &::soroban_sdk::Vec::from_array(
@@ -757,9 +808,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events/src/lib.rs",
-            start_line: 126usize,
+            start_line: 152usize,
             start_col: 8usize,
-            end_line: 126usize,
+            end_line: 152usize,
             end_col: 47usize,
             compile_fail: false,
             no_run: false,
@@ -778,7 +829,7 @@ mod test {
         let from = Address::generate(&env);
         let to = Address::generate(&env);
         let _ = client.try_failed_transfer(&from, &to, &1);
-        match (&env.events().all(), &::soroban_sdk::Vec::new(&env)) {
+        match (&env.events().all(), &::alloc::vec::Vec::new()) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
