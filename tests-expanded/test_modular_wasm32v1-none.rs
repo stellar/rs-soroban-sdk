@@ -80,10 +80,10 @@ mod feat1 {
     pub mod __Contract__one {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).one` instead")]
+        #[allow(deprecated)]
         pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                #[allow(deprecated)]
-                &<super::Contract>::one(),
+            soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+                <super::Contract>::one(),
                 &env,
             )
         }
@@ -169,10 +169,10 @@ mod feat2 {
     pub mod __super__Contract__two {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).two` instead")]
+        #[allow(deprecated)]
         pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                #[allow(deprecated)]
-                &<super::super::Contract>::two(),
+            soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+                <super::super::Contract>::two(),
                 &env,
             )
         }
@@ -270,12 +270,9 @@ impl ContractArgs {
 pub mod __Contract__zero {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::zero(),
-            &env,
-        )
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<super::Contract>::zero(), &env)
     }
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
     #[export_name = "zero"]

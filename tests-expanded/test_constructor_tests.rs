@@ -148,6 +148,11 @@ impl DataKey {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
     }
 }
+impl soroban_sdk::IncludeSpecMarker for DataKey {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -830,14 +835,14 @@ impl ContractArgs {
 pub mod __Contract____constructor {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__constructor` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
         arg_1: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::__constructor(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::__constructor(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
@@ -884,10 +889,10 @@ pub mod __Contract____constructor {
 pub mod __Contract__get_data {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).get_data` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::get_data(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::get_data(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<

@@ -40,6 +40,11 @@ impl Value {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x05"
     }
 }
+impl soroban_sdk::IncludeSpecMarker for Value {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(

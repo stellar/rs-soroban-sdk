@@ -230,9 +230,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                     {
                         // Marker in data section. Post-build tools can scan for "SpEc"
                         // patterns and match against specs in contractspecv0.
+                        #[used]
                         static MARKER: [u8; #marker_len] = *#marker_lit;
-                        // Volatile read prevents DCE within live function.
-                        let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
                     }
                 }
             }

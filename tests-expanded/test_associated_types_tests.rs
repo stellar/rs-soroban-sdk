@@ -262,11 +262,11 @@ impl ContractArgs {
 pub mod __Contract__exec {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
         use super::Trait;
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::exec(&env),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::exec(&env),
             &env,
         )
     }
