@@ -1831,6 +1831,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_token"
+version = "23.4.0"
+dependencies = [
+ "soroban-sdk",
+ "soroban-token-sdk",
+]
+
+[[package]]
 name = "test_tuples"
 version = "23.4.0"
 dependencies = [
