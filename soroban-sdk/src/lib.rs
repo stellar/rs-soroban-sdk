@@ -1085,7 +1085,7 @@ pub use into_val_for_contract_fn::IntoValForContractFn;
 
 mod include_spec;
 #[doc(hidden)]
-pub use include_spec::IncludeSpec;
+pub use include_spec::IncludeSpecMarker;
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

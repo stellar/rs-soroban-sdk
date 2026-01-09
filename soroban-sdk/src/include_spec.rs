@@ -1,4 +1,4 @@
-//! IncludeSpec is an internal trait used to ensure that contract type specs
+//! IncludeSpecMarker is an internal trait used to ensure that contract type specs
 //! are included in the WASM binary when types are used at contract boundaries.
 //!
 //! The trait is called at three external boundary points:
@@ -24,370 +24,381 @@
 /// will have implementations that include their spec. All other types have
 /// a no-op implementation.
 #[doc(hidden)]
-pub trait IncludeSpec {
+pub trait IncludeSpecMarker {
     /// Include this type's spec in the WASM binary.
     ///
     /// For primitive types and built-in SDK types, this is a no-op.
     /// For user-defined contract types, this ensures the spec XDR is
     /// included in the contractspecv0 section.
     #[inline(always)]
-    fn __include_spec_marker() {}
+    fn include_spec_marker() {}
 }
 
 // Primitive type implementations (no-op)
-impl IncludeSpec for () {}
-impl IncludeSpec for bool {}
-impl IncludeSpec for u32 {}
-impl IncludeSpec for i32 {}
-impl IncludeSpec for u64 {}
-impl IncludeSpec for i64 {}
-impl IncludeSpec for u128 {}
-impl IncludeSpec for i128 {}
+impl IncludeSpecMarker for () {}
+impl IncludeSpecMarker for bool {}
+impl IncludeSpecMarker for u32 {}
+impl IncludeSpecMarker for i32 {}
+impl IncludeSpecMarker for u64 {}
+impl IncludeSpecMarker for i64 {}
+impl IncludeSpecMarker for u128 {}
+impl IncludeSpecMarker for i128 {}
 
 // Reference implementations
-impl<T: IncludeSpec> IncludeSpec for &T {
+impl<T: IncludeSpecMarker> IncludeSpecMarker for &T {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T::__include_spec_marker();
+    fn include_spec_marker() {
+        T::include_spec_marker();
     }
 }
 
-impl<T: IncludeSpec> IncludeSpec for &mut T {
+impl<T: IncludeSpecMarker> IncludeSpecMarker for &mut T {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T::__include_spec_marker();
+    fn include_spec_marker() {
+        T::include_spec_marker();
     }
 }
 
 // Option implementation - includes inner type's spec
-impl<T: IncludeSpec> IncludeSpec for Option<T> {
+impl<T: IncludeSpecMarker> IncludeSpecMarker for Option<T> {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T::__include_spec_marker();
+    fn include_spec_marker() {
+        T::include_spec_marker();
     }
 }
 
 // Result implementation - includes both type's specs
-impl<T: IncludeSpec, E: IncludeSpec> IncludeSpec for Result<T, E> {
+impl<T: IncludeSpecMarker, E: IncludeSpecMarker> IncludeSpecMarker for Result<T, E> {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T::__include_spec_marker();
-        E::__include_spec_marker();
+    fn include_spec_marker() {
+        T::include_spec_marker();
+        E::include_spec_marker();
     }
 }
 
 // Tuple implementations
-impl<T0: IncludeSpec> IncludeSpec for (T0,) {
+impl<T0: IncludeSpecMarker> IncludeSpecMarker for (T0,) {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
     }
 }
 
-impl<T0: IncludeSpec, T1: IncludeSpec> IncludeSpec for (T0, T1) {
+impl<T0: IncludeSpecMarker, T1: IncludeSpecMarker> IncludeSpecMarker for (T0, T1) {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
     }
 }
 
-impl<T0: IncludeSpec, T1: IncludeSpec, T2: IncludeSpec> IncludeSpec for (T0, T1, T2) {
-    #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-    }
-}
-
-impl<T0: IncludeSpec, T1: IncludeSpec, T2: IncludeSpec, T3: IncludeSpec> IncludeSpec
-    for (T0, T1, T2, T3)
+impl<T0: IncludeSpecMarker, T1: IncludeSpecMarker, T2: IncludeSpecMarker> IncludeSpecMarker
+    for (T0, T1, T2)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-    }
-}
-
-impl<T0: IncludeSpec, T1: IncludeSpec, T2: IncludeSpec, T3: IncludeSpec, T4: IncludeSpec>
-    IncludeSpec for (T0, T1, T2, T3, T4)
-{
-    #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-        T6: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
-        T6::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-        T6: IncludeSpec,
-        T7: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
-        T6::__include_spec_marker();
-        T7::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-        T6: IncludeSpec,
-        T7: IncludeSpec,
-        T8: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+        T6: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5, T6)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
-        T6::__include_spec_marker();
-        T7::__include_spec_marker();
-        T8::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
+        T6::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-        T6: IncludeSpec,
-        T7: IncludeSpec,
-        T8: IncludeSpec,
-        T9: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+        T6: IncludeSpecMarker,
+        T7: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5, T6, T7)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
-        T6::__include_spec_marker();
-        T7::__include_spec_marker();
-        T8::__include_spec_marker();
-        T9::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
+        T6::include_spec_marker();
+        T7::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-        T6: IncludeSpec,
-        T7: IncludeSpec,
-        T8: IncludeSpec,
-        T9: IncludeSpec,
-        T10: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+        T6: IncludeSpecMarker,
+        T7: IncludeSpecMarker,
+        T8: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
-        T6::__include_spec_marker();
-        T7::__include_spec_marker();
-        T8::__include_spec_marker();
-        T9::__include_spec_marker();
-        T10::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
+        T6::include_spec_marker();
+        T7::include_spec_marker();
+        T8::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-        T6: IncludeSpec,
-        T7: IncludeSpec,
-        T8: IncludeSpec,
-        T9: IncludeSpec,
-        T10: IncludeSpec,
-        T11: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+        T6: IncludeSpecMarker,
+        T7: IncludeSpecMarker,
+        T8: IncludeSpecMarker,
+        T9: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
-        T6::__include_spec_marker();
-        T7::__include_spec_marker();
-        T8::__include_spec_marker();
-        T9::__include_spec_marker();
-        T10::__include_spec_marker();
-        T11::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
+        T6::include_spec_marker();
+        T7::include_spec_marker();
+        T8::include_spec_marker();
+        T9::include_spec_marker();
     }
 }
 
 impl<
-        T0: IncludeSpec,
-        T1: IncludeSpec,
-        T2: IncludeSpec,
-        T3: IncludeSpec,
-        T4: IncludeSpec,
-        T5: IncludeSpec,
-        T6: IncludeSpec,
-        T7: IncludeSpec,
-        T8: IncludeSpec,
-        T9: IncludeSpec,
-        T10: IncludeSpec,
-        T11: IncludeSpec,
-        T12: IncludeSpec,
-    > IncludeSpec for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+        T6: IncludeSpecMarker,
+        T7: IncludeSpecMarker,
+        T8: IncludeSpecMarker,
+        T9: IncludeSpecMarker,
+        T10: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)
 {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T0::__include_spec_marker();
-        T1::__include_spec_marker();
-        T2::__include_spec_marker();
-        T3::__include_spec_marker();
-        T4::__include_spec_marker();
-        T5::__include_spec_marker();
-        T6::__include_spec_marker();
-        T7::__include_spec_marker();
-        T8::__include_spec_marker();
-        T9::__include_spec_marker();
-        T10::__include_spec_marker();
-        T11::__include_spec_marker();
-        T12::__include_spec_marker();
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
+        T6::include_spec_marker();
+        T7::include_spec_marker();
+        T8::include_spec_marker();
+        T9::include_spec_marker();
+        T10::include_spec_marker();
+    }
+}
+
+impl<
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+        T6: IncludeSpecMarker,
+        T7: IncludeSpecMarker,
+        T8: IncludeSpecMarker,
+        T9: IncludeSpecMarker,
+        T10: IncludeSpecMarker,
+        T11: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
+{
+    #[inline(always)]
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
+        T6::include_spec_marker();
+        T7::include_spec_marker();
+        T8::include_spec_marker();
+        T9::include_spec_marker();
+        T10::include_spec_marker();
+        T11::include_spec_marker();
+    }
+}
+
+impl<
+        T0: IncludeSpecMarker,
+        T1: IncludeSpecMarker,
+        T2: IncludeSpecMarker,
+        T3: IncludeSpecMarker,
+        T4: IncludeSpecMarker,
+        T5: IncludeSpecMarker,
+        T6: IncludeSpecMarker,
+        T7: IncludeSpecMarker,
+        T8: IncludeSpecMarker,
+        T9: IncludeSpecMarker,
+        T10: IncludeSpecMarker,
+        T11: IncludeSpecMarker,
+        T12: IncludeSpecMarker,
+    > IncludeSpecMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)
+{
+    #[inline(always)]
+    fn include_spec_marker() {
+        T0::include_spec_marker();
+        T1::include_spec_marker();
+        T2::include_spec_marker();
+        T3::include_spec_marker();
+        T4::include_spec_marker();
+        T5::include_spec_marker();
+        T6::include_spec_marker();
+        T7::include_spec_marker();
+        T8::include_spec_marker();
+        T9::include_spec_marker();
+        T10::include_spec_marker();
+        T11::include_spec_marker();
+        T12::include_spec_marker();
     }
 }
 
 // SDK type implementations (no-op for built-in types, propagate for containers)
 // These are imported via crate:: to avoid circular dependencies
 
-impl IncludeSpec for crate::Address {}
-impl IncludeSpec for crate::Bytes {}
-impl<const N: usize> IncludeSpec for crate::BytesN<N> {}
-impl IncludeSpec for crate::String {}
-impl IncludeSpec for crate::Symbol {}
-impl IncludeSpec for crate::U256 {}
-impl IncludeSpec for crate::I256 {}
-impl IncludeSpec for crate::Timepoint {}
-impl IncludeSpec for crate::Duration {}
-impl IncludeSpec for crate::Val {}
+impl IncludeSpecMarker for crate::Address {}
+impl IncludeSpecMarker for crate::Bytes {}
+impl<const N: usize> IncludeSpecMarker for crate::BytesN<N> {}
+impl IncludeSpecMarker for crate::String {}
+impl IncludeSpecMarker for crate::Symbol {}
+impl IncludeSpecMarker for crate::U256 {}
+impl IncludeSpecMarker for crate::I256 {}
+impl IncludeSpecMarker for crate::Timepoint {}
+impl IncludeSpecMarker for crate::Duration {}
+impl IncludeSpecMarker for crate::Val {}
 
 // Container types - propagate to inner types
-impl<T: IncludeSpec> IncludeSpec for crate::Vec<T> {
+impl<T: IncludeSpecMarker> IncludeSpecMarker for crate::Vec<T> {
     #[inline(always)]
-    fn __include_spec_marker() {
-        T::__include_spec_marker();
+    fn include_spec_marker() {
+        T::include_spec_marker();
     }
 }
 
-impl<K: IncludeSpec, V: IncludeSpec> IncludeSpec for crate::Map<K, V> {
+impl<K: IncludeSpecMarker, V: IncludeSpecMarker> IncludeSpecMarker for crate::Map<K, V> {
     #[inline(always)]
-    fn __include_spec_marker() {
-        K::__include_spec_marker();
-        V::__include_spec_marker();
+    fn include_spec_marker() {
+        K::include_spec_marker();
+        V::include_spec_marker();
     }
 }
 
 // Additional SDK types
-impl IncludeSpec for crate::MuxedAddress {}
-impl<const N: usize> IncludeSpec for crate::crypto::Hash<N> {}
-impl IncludeSpec for crate::crypto::bls12_381::G1Affine {}
-impl IncludeSpec for crate::crypto::bls12_381::G2Affine {}
-impl IncludeSpec for crate::crypto::bls12_381::Fp {}
-impl IncludeSpec for crate::crypto::bls12_381::Fp2 {}
-impl IncludeSpec for crate::crypto::bls12_381::Fr {}
+impl IncludeSpecMarker for crate::MuxedAddress {}
+impl<const N: usize> IncludeSpecMarker for crate::crypto::Hash<N> {}
+impl IncludeSpecMarker for crate::crypto::bls12_381::G1Affine {}
+impl IncludeSpecMarker for crate::crypto::bls12_381::G2Affine {}
+impl IncludeSpecMarker for crate::crypto::bls12_381::Fp {}
+impl IncludeSpecMarker for crate::crypto::bls12_381::Fp2 {}
+impl IncludeSpecMarker for crate::crypto::bls12_381::Fr {}
 
 // Auth types - these have export=false but are legitimately used at external
 // boundaries (as inputs to __check_auth in custom account contracts).
 // They don't emit specs themselves because they're internal SDK types.
-impl IncludeSpec for crate::auth::Context {}
-impl IncludeSpec for crate::auth::ContractContext {}
-impl IncludeSpec for crate::auth::CreateContractHostFnContext {}
-impl IncludeSpec for crate::auth::CreateContractWithConstructorHostFnContext {}
-impl IncludeSpec for crate::auth::ContractExecutable {}
-impl IncludeSpec for crate::auth::InvokerContractAuthEntry {}
-impl IncludeSpec for crate::auth::SubContractInvocation {}
+impl IncludeSpecMarker for crate::auth::Context {}
+impl IncludeSpecMarker for crate::auth::ContractContext {}
+impl IncludeSpecMarker for crate::auth::CreateContractHostFnContext {}
+impl IncludeSpecMarker for crate::auth::CreateContractWithConstructorHostFnContext {}
+impl IncludeSpecMarker for crate::auth::ContractExecutable {}
+impl IncludeSpecMarker for crate::auth::InvokerContractAuthEntry {}
+impl IncludeSpecMarker for crate::auth::SubContractInvocation {}

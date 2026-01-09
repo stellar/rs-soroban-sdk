@@ -195,58 +195,50 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let marker = spec_marker::spec_marker(&spec_xdr);
     let marker_lit = proc_macro2::Literal::byte_string(&marker);
     let marker_len = marker.len();
-    let include_spec_fn = if export {
+    let include_spec_call = if export {
+        Some(quote! { <Self as #path::IncludeSpecMarker>::include_spec_marker(); })
+    } else {
+        None
+    };
+
+    // Generated code spec.
+    let spec_gen = if export {
         Some(quote! {
-            #[doc(hidden)]
-            #[inline(always)]
-            fn __include_spec_marker() {
-                #[cfg(target_family = "wasm")]
-                {
-                    // Marker in data section. Post-build tools can scan for "SpEc"
-                    // patterns and match against specs in contractspecv0.
-                    static MARKER: [u8; #marker_len] = *#marker_lit;
-                    // Volatile read prevents DCE within live function.
-                    let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = <#ident #gen_types>::spec_xdr();
+
+            impl #gen_impl #ident #gen_types #gen_where {
+                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
+                    *#spec_xdr_lit
                 }
             }
         })
     } else {
-        None
-    };
-    let include_spec_call = if export {
-        Some(quote! { Self::__include_spec_marker(); })
-    } else {
-        None
-    };
-    let spec_static = if export {
         Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = <#ident #gen_types>::spec_xdr();
-        })
-    } else {
-        None
-    };
-    let spec_gen = quote! {
-        #spec_static
-
-        impl #gen_impl #ident #gen_types #gen_where {
-            pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                *#spec_xdr_lit
+            impl #gen_impl #ident #gen_types #gen_where {
+                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
+                    *#spec_xdr_lit
+                }
             }
-
-            #include_spec_fn
-        }
+        })
     };
 
-    // IncludeSpec implementation - only generated when export is true.
+    // IncludeSpecMarker impl - only generated when export is true.
     // Types with export=false should not be used at external boundaries.
     let include_spec_impl = if export {
         Some(quote! {
-            impl #gen_impl #path::IncludeSpec for #ident #gen_types #gen_where {
+            impl #gen_impl #path::IncludeSpecMarker for #ident #gen_types #gen_where {
                 #[doc(hidden)]
                 #[inline(always)]
-                fn __include_spec_marker() {
-                    <#ident #gen_types>::__include_spec_marker();
+                fn include_spec_marker() {
+                    #[cfg(target_family = "wasm")]
+                    {
+                        // Marker in data section. Post-build tools can scan for "SpEc"
+                        // patterns and match against specs in contractspecv0.
+                        static MARKER: [u8; #marker_len] = *#marker_lit;
+                        // Volatile read prevents DCE within live function.
+                        let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                    }
                 }
             }
         })
