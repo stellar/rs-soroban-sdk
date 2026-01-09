@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{contract, contractimpl, Address, Env, String};
 use test_spec_lib::{
-    EnumA, EnumB, EnumIntA, EnumIntB, ErrorA, ErrorB, EventA, EventB, StructA, StructB,
+    EnumA, EnumB, EnumIntA, EnumIntB, ErrorA, ErrorB, ErrorC, EventA, EventB, StructA, StructB,
     StructTupleA, StructTupleB,
 };
 
@@ -16,8 +16,7 @@ impl Contract {
         StructA { f1, f2 }
     }
 
-    pub fn create_struct_b(env: Env, f1: i64, f2: String) -> StructB {
-        let _ = &env;
+    pub fn create_struct_b(f1: i64, f2: String) -> StructB {
         StructB { f1, f2 }
     }
 
@@ -64,6 +63,14 @@ impl Contract {
     pub fn check_b(input: u32) -> Result<u32, ErrorB> {
         if input > 1000 {
             Err(ErrorB::E3)
+        } else {
+            Ok(input)
+        }
+    }
+
+    pub fn check_c(input: u32) -> Result<u32, ErrorC> {
+        if input < 10 {
+            Err(ErrorC::E1)
         } else {
             Ok(input)
         }
