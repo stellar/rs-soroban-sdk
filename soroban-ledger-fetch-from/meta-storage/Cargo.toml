@@ -1,0 +1,29 @@
+[package]
+name = "soroban-ledger-fetch-from-meta-storage"
+description = "Download LedgerCloseMeta from SEP-54 compatible ledger storage."
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version.workspace = true
+edition = "2021"
+rust-version.workspace = true
+
+[features]
+default = []
+cli = ["dep:clap"]
+
+[[bin]]
+name = "soroban-ledger-meta-storage"
+path = "src/bin/soroban-ledger-meta-storage/main.rs"
+required-features = ["cli"]
+
+[dependencies]
+stellar-xdr = { workspace = true, features = ["curr", "std", "serde"] }
+thiserror = "1.0"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+zstd = "0.13"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.0", features = ["derive"], optional = true }
