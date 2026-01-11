@@ -13,7 +13,7 @@ rust-version.workspace = true
 [dependencies]
 stellar-xdr = { workspace = true, features = ["curr", "std", "serde"] }
 soroban-spec = { workspace = true }
-thiserror = "1.0.32"
+thiserror = "2.0.17"
 syn = {version="2.0",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
