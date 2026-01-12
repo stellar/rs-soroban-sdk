@@ -51,6 +51,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-bn254"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a22f4561524cd949590d78d7d4c5df8f592430d221f7f3c9497bbafd8972120f"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-std",
+]
+
+[[package]]
 name = "ark-ec"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1120,9 +1131,9 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "23.0.1"
+version = "25.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9336adeabcd6f636a4e0889c8baf494658ef5a3c4e7e227569acd2ce9091e85"
+checksum = "bba99589f3f535a6f1425ffafe94387955291e18015f1a7a3ee3181268f9eade"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1132,9 +1143,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "23.0.1"
+version = "25.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00067f52e8bbf1abf0de03fe3e2fbb06910893cfbe9a7d9093d6425658833ff3"
+checksum = "8d98779d733d04c89aa0883d50c7c072ba91c336689330467b55eb794be7730a"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1151,9 +1162,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "23.0.1"
+version = "25.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ccd1e40963517b10963a8e404348d3fe6caf9c278ac47a6effd48771297374d6"
+checksum = "7e34ece76defac3fb40a5f8e4dec69a709181f3ff591c31955f0e3e4fdd88737"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1161,11 +1172,12 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "23.0.1"
+version = "25.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9766c5ad78e9d8ae10afbc076301f7d610c16407a1ebb230766dbe007a48725"
+checksum = "a655ba881c6a2aa4f465370367aa5dad3e34ccdc1daff504b0a2499e54ed3517"
 dependencies = [
  "ark-bls12-381",
+ "ark-bn254",
  "ark-ec",
  "ark-ff",
  "ark-serialize",
@@ -1197,9 +1209,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "23.0.1"
+version = "25.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0e6a1c5844257ce96f5f54ef976035d5bd0ee6edefaf9f5e0bcb8ea4b34228c"
+checksum = "61ac49b6d8980998fdbf621148b9895cd315e6c9978c84db1bb14885df865019"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1333,9 +1345,9 @@ dependencies = [
 
 [[package]]
 name = "stellar-xdr"
-version = "23.0.0"
+version = "25.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89d2848e1694b0c8db81fd812bfab5ea71ee28073e09ccc45620ef3cf7a75a9b"
+checksum = "10d20dafed80076b227d4b17c0c508a4bbc4d5e4c3d4c1de7cd42242df4b1eaf"
 dependencies = [
  "arbitrary",
  "base64",

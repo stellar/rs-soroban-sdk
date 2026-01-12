@@ -235,11 +235,26 @@ fn test_cost_estimate_budget() {
         Bls12381FrMul                      0              None           0              0              332                 0                   0                   0                   
         Bls12381FrPow                      0              Some(0)        0              0              691                 74558               0                   128                 
         Bls12381FrInv                      0              None           0              0              35421               0                   0                   0                   
+        Bn254EncodeFp                      0              None           0              0              344                 0                   0                   0                   
+        Bn254DecodeFp                      0              None           0              0              476                 0                   0                   0                   
+        Bn254G1CheckPointOnCurve           0              None           0              0              904                 0                   0                   0                   
+        Bn254G2CheckPointOnCurve           0              None           0              0              2811                0                   0                   0                   
+        Bn254G2CheckPointInSubgroup        0              None           0              0              2937755             0                   0                   0                   
+        Bn254G1ProjectiveToAffine          0              None           0              0              61                  0                   0                   0                   
+        Bn254G1Add                         0              None           0              0              3623                0                   0                   0                   
+        Bn254G1Mul                         0              None           0              0              1150435             0                   0                   0                   
+        Bn254Pairing                       0              Some(0)        0              0              5263916             392472814           1821                6232546             
+        Bn254FrFromU256                    0              None           0              0              2052                0                   0                   0                   
+        Bn254FrToU256                      0              None           0              0              1133                0                   312                 0                   
+        Bn254FrAddSub                      0              None           0              0              74                  0                   0                   0                   
+        Bn254FrMul                         0              None           0              0              332                 0                   0                   0                   
+        Bn254FrPow                         0              Some(0)        0              0              755                 68930               0                   0                   
+        Bn254FrInv                         0              None           0              0              33151               0                   0                   0                   
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
         Total # times meter was called: 197
-        Shadow cpu limit: 100000000; used: 31868
-        Shadow mem limit: 41943040; used: 27092
+        Shadow cpu limit: 100000000; used: 32431
+        Shadow mem limit: 41943040; used: 27108
         ===============================================================================================================================================================================
 
 
