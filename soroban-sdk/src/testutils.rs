@@ -6,7 +6,7 @@
 pub mod arbitrary;
 
 mod sign;
-use std::rc::Rc;
+use std::{fmt::Debug, rc::Rc};
 
 pub use sign::ed25519;
 
@@ -14,7 +14,7 @@ mod mock_auth;
 pub use mock_auth::{
     AuthorizedFunction, AuthorizedInvocation, MockAuth, MockAuthContract, MockAuthInvoke,
 };
-use soroban_env_host::TryIntoVal;
+use soroban_env_host::{TryFromVal, TryIntoVal};
 
 pub mod storage;
 
@@ -87,7 +87,8 @@ impl Snapshot {
 
     // Read in a [`Snapshot`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<Snapshot, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`Snapshot`] to a writer.
@@ -119,7 +120,8 @@ impl EventsSnapshot {
 
     // Read in a [`EventsSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<EventsSnapshot, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`EventsSnapshot`] to a writer.
@@ -169,7 +171,8 @@ impl AuthSnapshot {
 
     // Read in a [`AuthSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<AuthSnapshot, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`AuthSnapshot`] to a writer.
@@ -215,7 +218,8 @@ impl Generators {
 
     // Read in a [`Generators`] from a file.
     pub fn read_file(p: impl AsRef<std::path::Path>) -> Result<Generators, std::io::Error> {
-        Self::read(std::fs::File::open(p)?)
+        let reader = std::io::BufReader::new(std::fs::File::open(p)?);
+        Self::read(reader)
     }
 
     // Write a [`Generators`] to a writer.
@@ -428,15 +432,115 @@ pub mod budget {
     }
 }
 
+#[derive(Clone)]
+pub struct ContractEvents {
+    env: Env,
+    events: std::vec::Vec<xdr::ContractEvent>,
+}
+
+impl ContractEvents {
+    pub(crate) fn new(env: &Env, events: std::vec::Vec<xdr::ContractEvent>) -> Self {
+        ContractEvents {
+            env: env.clone(),
+            events,
+        }
+    }
+
+    /// Returns the events in their XDR form.
+    pub fn events(&self) -> &[xdr::ContractEvent] {
+        &self.events
+    }
+
+    /// Creates a new ContractEvents struct that only includes events emitted
+    /// by the provided contract address.
+    pub fn filter_by_contract(&self, addr: &crate::Address) -> Self {
+        let contract_id = Some(addr.contract_id());
+        let filtered_events = self
+            .events
+            .iter()
+            .filter(|e| e.contract_id == contract_id)
+            .cloned()
+            .collect();
+        Self::new(&self.env, filtered_events)
+    }
+}
+
+impl Eq for ContractEvents {}
+
+impl PartialEq for ContractEvents {
+    fn eq(&self, other: &ContractEvents) -> bool {
+        self.events == other.events
+    }
+}
+
+impl PartialEq<std::vec::Vec<xdr::ContractEvent>> for ContractEvents {
+    fn eq(&self, other: &std::vec::Vec<xdr::ContractEvent>) -> bool {
+        self.events == *other
+    }
+}
+
+impl PartialEq<&[xdr::ContractEvent]> for ContractEvents {
+    fn eq(&self, other: &&[xdr::ContractEvent]) -> bool {
+        self.events == *other
+    }
+}
+
+impl<const N: usize> PartialEq<[xdr::ContractEvent; N]> for ContractEvents {
+    fn eq(&self, other: &[xdr::ContractEvent; N]) -> bool {
+        self.events == other
+    }
+}
+
+impl PartialEq<Vec<(crate::Address, Vec<Val>, Val)>> for ContractEvents {
+    fn eq(&self, other: &Vec<(crate::Address, Vec<Val>, Val)>) -> bool {
+        let len = match u32::try_from(self.events.len()) {
+            Ok(len) => len,
+            Err(..) => return false,
+        };
+        if len != other.len() {
+            return false;
+        }
+
+        for (event, (contract_id, topics, data)) in self.events.iter().zip(other.iter()) {
+            let data_xdr = match xdr::ScVal::try_from_val(&self.env, &data) {
+                Ok(data_xdr) => data_xdr,
+                Err(..) => return false,
+            };
+            let as_xdr = xdr::ContractEvent {
+                ext: xdr::ExtensionPoint::V0,
+                type_: xdr::ContractEventType::Contract,
+                contract_id: Some(contract_id.contract_id()),
+                body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+                    topics: topics.into(),
+                    data: data_xdr,
+                }),
+            };
+            if event != &as_xdr {
+                return false;
+            }
+        }
+        true
+    }
+}
+
+impl Debug for ContractEvents {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{:?}", self.events)
+    }
+}
+
 /// Test utilities for [`Events`][crate::events::Events].
 pub trait Events {
-    /// Returns all events that have been published by contracts.
+    /// Returns all contract events that have been published by the last contract
+    /// invocation. If the last contract invocation failed, no events are returned.
     ///
-    /// Returns a [`Vec`] of three element tuples containing:
-    /// - Contract ID
-    /// - Event Topics as a [`Vec<Val>`]
-    /// - Event Data as a [`Val`]
-    fn all(&self) -> Vec<(crate::Address, Vec<Val>, Val)>;
+    /// Events are returned in the order they were published, with the
+    /// last published event being the last in the list.
+    ///
+    /// Returns a [`ContractEvents`] struct that contains:
+    /// - The test Env
+    /// - A vector of events emitted by successful contract invocations
+    fn all(&self) -> ContractEvents;
 }
 
 /// Test utilities for [`Logs`][crate::logs::Logs].
