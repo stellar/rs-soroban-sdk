@@ -1,7 +1,8 @@
-use serde_with::serde_as;
+use serde::Deserialize;
+use serde_with::{serde_as, DeserializeAs, SerializeAs};
 use std::{
     fs::{create_dir_all, File},
-    io::{self, Read, Write},
+    io::{self, BufReader, Read, Write},
     path::Path,
     rc::Rc,
 };
@@ -11,6 +12,9 @@ use soroban_env_host::{
     xdr::{LedgerEntry, LedgerKey},
     HostError, LedgerInfo,
 };
+
+#[cfg(test)]
+mod tests;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -35,11 +39,80 @@ pub struct LedgerSnapshot {
     pub min_persistent_entry_ttl: u32,
     pub min_temp_entry_ttl: u32,
     pub max_entry_ttl: u32,
+    #[serde_as(as = "LedgerEntryVec")]
     pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
 }
 
+/// Extended ledger entry that includes the live util ledger sequence. Provides a more compact
+/// form of the tuple used in [`LedgerSnapshot::ledger_entries`], to reduce the size of the snapshot
+/// when serialized to JSON.
+#[derive(Debug, Clone, serde::Deserialize)]
+struct LedgerEntryExt {
+    entry: Box<LedgerEntry>,
+    live_until: Option<u32>,
+}
+
+/// Extended ledger entry that includes the live util ledger sequence, and the entry by reference.
+/// Used to reduce memory usage during serialization.
+#[derive(serde::Serialize)]
+struct LedgerEntryExtRef<'a> {
+    entry: &'a Box<LedgerEntry>, // Reference = no clone
+    live_until: Option<u32>,
+}
+
+struct LedgerEntryVec;
+
+impl<'a> SerializeAs<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>> for LedgerEntryVec {
+    fn serialize_as<S>(
+        source: &Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeSeq;
+        let mut seq = serializer.serialize_seq(Some(source.len()))?;
+        for (_, (entry, live_until)) in source {
+            seq.serialize_element(&LedgerEntryExtRef {
+                entry,
+                live_until: *live_until,
+            })?;
+        }
+        seq.end()
+    }
+}
+
+impl<'de> DeserializeAs<'de, Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>>
+    for LedgerEntryVec
+{
+    fn deserialize_as<D>(
+        deserializer: D,
+    ) -> Result<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[derive(serde::Deserialize)]
+        #[serde(untagged)]
+        enum Format {
+            V2(Vec<LedgerEntryExt>),
+            V1(Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>),
+        }
+
+        match Format::deserialize(deserializer)? {
+            Format::V2(entries) => Ok(entries
+                .into_iter()
+                .map(|LedgerEntryExt { entry, live_until }| {
+                    let key = Box::new(entry.to_key());
+                    (key, (entry, live_until))
+                })
+                .collect()),
+            Format::V1(entries) => Ok(entries),
+        }
+    }
+}
+
 impl LedgerSnapshot {
-    // Create a ledger snapshot from ledger info and a set of entries.
+    /// Create a [`LedgerSnapshot`] from [`LedgerInfo`] and a set of entries.
     pub fn from<'a>(
         info: LedgerInfo,
         entries: impl IntoIterator<Item = (&'a Box<LedgerKey>, (&'a Box<LedgerEntry>, Option<u32>))>,
@@ -65,7 +138,7 @@ impl LedgerSnapshot {
         self.update_entries(&host.get_stored_entries().unwrap());
     }
 
-    // Get the ledger info in the snapshot.
+    /// Get the ledger info in the snapshot.
     pub fn ledger_info(&self) -> LedgerInfo {
         LedgerInfo {
             protocol_version: self.protocol_version,
@@ -136,22 +209,23 @@ impl LedgerSnapshot {
 }
 
 impl LedgerSnapshot {
-    // Read in a [`LedgerSnapshot`] from a reader.
+    /// Read in a [`LedgerSnapshot`] from a reader.
     pub fn read(r: impl Read) -> Result<LedgerSnapshot, Error> {
         Ok(serde_json::from_reader::<_, LedgerSnapshot>(r)?)
     }
 
-    // Read in a [`LedgerSnapshot`] from a file.
+    /// Read in a [`LedgerSnapshot`] from a file.
     pub fn read_file(p: impl AsRef<Path>) -> Result<LedgerSnapshot, Error> {
-        Self::read(File::open(p)?)
+        let reader = BufReader::new(File::open(p)?);
+        Self::read(reader)
     }
 
-    // Write a [`LedgerSnapshot`] to a writer.
+    /// Write a [`LedgerSnapshot`] to a writer.
     pub fn write(&self, w: impl Write) -> Result<(), Error> {
         Ok(serde_json::to_writer_pretty(w, self)?)
     }
 
-    // Write a [`LedgerSnapshot`] to file.
+    /// Write a [`LedgerSnapshot`] to file.
     pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Error> {
         let p = p.as_ref();
         if let Some(dir) = p.parent() {
@@ -166,7 +240,7 @@ impl LedgerSnapshot {
 impl Default for LedgerSnapshot {
     fn default() -> Self {
         Self {
-            protocol_version: 23,
+            protocol_version: 25,
             sequence_number: Default::default(),
             timestamp: Default::default(),
             network_id: Default::default(),

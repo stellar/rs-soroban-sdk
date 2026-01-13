@@ -607,11 +607,11 @@ fn __Contract__a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b301_
 #[cfg(test)]
 mod test {
     extern crate alloc;
-    use crate::{Contract, ContractClient};
+    use crate::{Contract, ContractClient, Transfer};
     use soroban_sdk::{
         map, symbol_short,
         testutils::{Address as _, Events, MuxedAddress as _},
-        vec, Address, Env, IntoVal, MuxedAddress, Symbol, Val,
+        vec, Address, Env, Event, IntoVal, MuxedAddress, Symbol, Val,
     };
     extern crate test;
     #[cfg(test)]
@@ -623,9 +623,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 53usize,
+            start_line: 54usize,
             start_col: 8usize,
-            end_line: 53usize,
+            end_line: 54usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
@@ -645,6 +645,28 @@ mod test {
         let to = MuxedAddress::generate(&env);
         let amount = 1i128;
         client.transfer(&from, &to, &amount);
+        match (
+            &env.events().all(),
+            &[Transfer {
+                from: &from,
+                to: &to.address(),
+                amount: &amount,
+                to_muxed_id: Some(&to.id().unwrap()),
+            }
+            .to_xdr(&env, &contract_id)],
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
         match (
             &env.events().all(),
             &::soroban_sdk::Vec::from_array(
@@ -697,9 +719,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 91usize,
+            start_line: 104usize,
             start_col: 8usize,
-            end_line: 91usize,
+            end_line: 104usize,
             end_col: 35usize,
             compile_fail: false,
             no_run: false,
@@ -719,6 +741,28 @@ mod test {
         let to = Address::generate(&env);
         let amount = 1i128;
         client.transfer(&from, &to, &amount);
+        match (
+            &env.events().all(),
+            &[Transfer {
+                from: &from,
+                to: &to,
+                amount: &amount,
+                to_muxed_id: None,
+            }
+            .to_xdr(&env, &contract_id)],
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
         match (
             &env.events().all(),
             &::soroban_sdk::Vec::from_array(
@@ -768,9 +812,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/events_ref/src/lib.rs",
-            start_line: 126usize,
+            start_line: 151usize,
             start_col: 8usize,
-            end_line: 126usize,
+            end_line: 151usize,
             end_col: 47usize,
             compile_fail: false,
             no_run: false,
@@ -789,7 +833,7 @@ mod test {
         let from = Address::generate(&env);
         let to = Address::generate(&env);
         let _ = client.try_failed_transfer(&from, &to, &1);
-        match (&env.events().all(), &::soroban_sdk::Vec::new(&env)) {
+        match (&env.events().all(), &[]) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;

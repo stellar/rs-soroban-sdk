@@ -7,14 +7,14 @@ extern crate core;
 extern crate compiler_builtins as _;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bls12_381::{Fp, Fp2, Fr, G1Affine, G2Affine},
+    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381G2Affine, Fr},
     log, Env,
 };
 pub struct DummyProof {
-    pub fp: Fp,
-    pub fp2: Fp2,
-    pub g1: G1Affine,
-    pub g2: G2Affine,
+    pub fp: Bls12381Fp,
+    pub fp2: Bls12381Fp2,
+    pub g1: Bls12381G1Affine,
+    pub g2: Bls12381G2Affine,
     pub fr: Fr,
 }
 pub static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; 128usize] = DummyProof::spec_xdr();
@@ -293,10 +293,10 @@ const _: () = {
     use soroban_sdk::testutils::arbitrary::arbitrary;
     use soroban_sdk::testutils::arbitrary::std;
     pub struct ArbitraryDummyProof {
-        fp: <Fp as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
-        fp2: <Fp2 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
-        g1: <G1Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
-        g2: <G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        fp: <Bls12381Fp as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        fp2: <Bls12381Fp2 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        g1: <Bls12381G1Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        g2: <Bls12381G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
         fr: <Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
     }
     #[automatically_derived]
@@ -339,16 +339,16 @@ const _: () = {
         #[coverage(off)]
         fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
-                <Fp as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                <Bls12381Fp as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
             let _: ::core::cmp::AssertParamIsEq<
-                <Fp2 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                <Bls12381Fp2 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
             let _: ::core::cmp::AssertParamIsEq<
-                <G1Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                <Bls12381G1Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
             let _: ::core::cmp::AssertParamIsEq<
-                <G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                <Bls12381G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
             let _: ::core::cmp::AssertParamIsEq<
                 <Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
@@ -524,16 +524,16 @@ const _: () = {
                 arbitrary::size_hint::recursion_guard(depth, |depth| {
                     arbitrary::size_hint::and_all(
                         &[
-                            <<Fp as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                            <<Bls12381Fp as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
-                            <<Fp2 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                            <<Bls12381Fp2 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
-                            <<G1Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                            <<Bls12381G1Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
-                            <<G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                            <<Bls12381G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
                             <<Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
@@ -709,10 +709,10 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
     }
 }
 impl Contract {
-    pub fn g1_mul(env: Env, p: G1Affine, s: Fr) -> G1Affine {
+    pub fn g1_mul(env: Env, p: Bls12381G1Affine, s: Fr) -> Bls12381G1Affine {
         env.crypto().bls12_381().g1_mul(&p, &s)
     }
-    pub fn g2_mul(env: Env, p: G2Affine, s: Fr) -> G2Affine {
+    pub fn g2_mul(env: Env, p: Bls12381G2Affine, s: Fr) -> Bls12381G2Affine {
         env.crypto().bls12_381().g2_mul(&p, &s)
     }
     pub fn dummy_verify(env: Env, proof: DummyProof) -> bool {
@@ -782,7 +782,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn g1_mul(&self, p: &G1Affine, s: &Fr) -> G1Affine {
+    pub fn g1_mul(&self, p: &Bls12381G1Affine, s: &Fr) -> Bls12381G1Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -824,15 +824,18 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g1_mul(
         &self,
-        p: &G1Affine,
+        p: &Bls12381G1Affine,
         s: &Fr,
     ) -> Result<
         Result<
-            G1Affine,
-            <G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bls12381G1Affine,
+            <Bls12381G1Affine as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -868,7 +871,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn g2_mul(&self, p: &G2Affine, s: &Fr) -> G2Affine {
+    pub fn g2_mul(&self, p: &Bls12381G2Affine, s: &Fr) -> Bls12381G2Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -910,15 +913,18 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g2_mul(
         &self,
-        p: &G2Affine,
+        p: &Bls12381G2Affine,
         s: &Fr,
     ) -> Result<
         Result<
-            G2Affine,
-            <G2Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bls12381G2Affine,
+            <Bls12381G2Affine as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -1026,12 +1032,12 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i G1Affine, s: &'i Fr) -> (&'i G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bls12381G1Affine, s: &'i Fr) -> (&'i Bls12381G1Affine, &'i Fr) {
         (p, s)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g2_mul<'i>(p: &'i G2Affine, s: &'i Fr) -> (&'i G2Affine, &'i Fr) {
+    pub fn g2_mul<'i>(p: &'i Bls12381G2Affine, s: &'i Fr) -> (&'i Bls12381G2Affine, &'i Fr) {
         (p, s)
     }
     #[inline(always)]
@@ -1262,7 +1268,7 @@ mod test {
         let env = Env::default();
         let contract_id = env.register(Contract, ());
         let client = ContractClient::new(&env, &contract_id);
-        let g1 = G1Affine::from_bytes(::soroban_sdk::BytesN::from_array(
+        let g1 = Bls12381G1Affine::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 23u8, 241u8, 211u8, 167u8, 49u8, 151u8, 215u8, 148u8, 38u8, 149u8, 99u8, 140u8,
@@ -1282,7 +1288,7 @@ mod test {
                 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
             ],
         ));
-        let inf = G1Affine::from_bytes(::soroban_sdk::BytesN::from_array(
+        let inf = Bls12381G1Affine::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 64u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
@@ -1336,7 +1342,7 @@ mod test {
         let env = Env::default();
         let contract_id = env.register(Contract, ());
         let client = ContractClient::new(&env, &contract_id);
-        let g2 = G2Affine::from_bytes(::soroban_sdk::BytesN::from_array(
+        let g2 = Bls12381G2Affine::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 19u8, 224u8, 43u8, 96u8, 82u8, 113u8, 159u8, 96u8, 125u8, 172u8, 211u8, 160u8,
@@ -1364,7 +1370,7 @@ mod test {
                 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
             ],
         ));
-        let inf = G2Affine::from_bytes(::soroban_sdk::BytesN::from_array(
+        let inf = Bls12381G2Affine::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 64u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
@@ -1424,7 +1430,7 @@ mod test {
         let env = Env::default();
         let contract_id = env.register(Contract, ());
         let client = ContractClient::new(&env, &contract_id);
-        let fp = Fp::from_bytes(::soroban_sdk::BytesN::from_array(
+        let fp = Bls12381Fp::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
@@ -1432,7 +1438,7 @@ mod test {
                 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 1u8,
             ],
         ));
-        let fp2 = Fp2::from_bytes(::soroban_sdk::BytesN::from_array(
+        let fp2 = Bls12381Fp2::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
@@ -1443,7 +1449,7 @@ mod test {
                 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 1u8,
             ],
         ));
-        let g1 = G1Affine::from_bytes(::soroban_sdk::BytesN::from_array(
+        let g1 = Bls12381G1Affine::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 23u8, 241u8, 211u8, 167u8, 49u8, 151u8, 215u8, 148u8, 38u8, 149u8, 99u8, 140u8,
@@ -1456,7 +1462,7 @@ mod test {
                 136u8, 138u8, 228u8, 12u8, 170u8, 35u8, 41u8, 70u8, 197u8, 231u8, 225u8,
             ],
         ));
-        let g2 = G2Affine::from_bytes(::soroban_sdk::BytesN::from_array(
+        let g2 = Bls12381G2Affine::from_bytes(::soroban_sdk::BytesN::from_array(
             &env,
             &[
                 19u8, 224u8, 43u8, 96u8, 82u8, 113u8, 159u8, 96u8, 125u8, 172u8, 211u8, 160u8,

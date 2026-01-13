@@ -7,14 +7,14 @@ extern crate core;
 extern crate compiler_builtins as _;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bls12_381::{Fp, Fp2, Fr, G1Affine, G2Affine},
+    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381G2Affine, Fr},
     log, Env,
 };
 pub struct DummyProof {
-    pub fp: Fp,
-    pub fp2: Fp2,
-    pub g1: G1Affine,
-    pub g2: G2Affine,
+    pub fp: Bls12381Fp,
+    pub fp2: Bls12381Fp2,
+    pub g1: Bls12381G1Affine,
+    pub g2: Bls12381G2Affine,
     pub fr: Fr,
 }
 #[link_section = "contractspecv0"]
@@ -135,10 +135,10 @@ impl<'a> ContractClient<'a> {
     }
 }
 impl Contract {
-    pub fn g1_mul(env: Env, p: G1Affine, s: Fr) -> G1Affine {
+    pub fn g1_mul(env: Env, p: Bls12381G1Affine, s: Fr) -> Bls12381G1Affine {
         env.crypto().bls12_381().g1_mul(&p, &s)
     }
-    pub fn g2_mul(env: Env, p: G2Affine, s: Fr) -> G2Affine {
+    pub fn g2_mul(env: Env, p: Bls12381G2Affine, s: Fr) -> Bls12381G2Affine {
         env.crypto().bls12_381().g2_mul(&p, &s)
     }
     pub fn dummy_verify(env: Env, proof: DummyProof) -> bool {
@@ -211,7 +211,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn g1_mul(&self, p: &G1Affine, s: &Fr) -> G1Affine {
+    pub fn g1_mul(&self, p: &Bls12381G1Affine, s: &Fr) -> Bls12381G1Affine {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -230,15 +230,18 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g1_mul(
         &self,
-        p: &G1Affine,
+        p: &Bls12381G1Affine,
         s: &Fr,
     ) -> Result<
         Result<
-            G1Affine,
-            <G1Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bls12381G1Affine,
+            <Bls12381G1Affine as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -254,7 +257,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn g2_mul(&self, p: &G2Affine, s: &Fr) -> G2Affine {
+    pub fn g2_mul(&self, p: &Bls12381G2Affine, s: &Fr) -> Bls12381G2Affine {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -273,15 +276,18 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_g2_mul(
         &self,
-        p: &G2Affine,
+        p: &Bls12381G2Affine,
         s: &Fr,
     ) -> Result<
         Result<
-            G2Affine,
-            <G2Affine as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            Bls12381G2Affine,
+            <Bls12381G2Affine as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
+    >{
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -326,12 +332,12 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i G1Affine, s: &'i Fr) -> (&'i G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bls12381G1Affine, s: &'i Fr) -> (&'i Bls12381G1Affine, &'i Fr) {
         (p, s)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g2_mul<'i>(p: &'i G2Affine, s: &'i Fr) -> (&'i G2Affine, &'i Fr) {
+    pub fn g2_mul<'i>(p: &'i Bls12381G2Affine, s: &'i Fr) -> (&'i Bls12381G2Affine, &'i Fr) {
         (p, s)
     }
     #[inline(always)]
