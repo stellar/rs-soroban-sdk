@@ -9,7 +9,7 @@
 //!
 //! - [`Bn254G1Affine`] - A point in the G1 group (64 bytes, Ethereum-compatible format)
 //! - [`Bn254G2Affine`] - A point in the G2 group (128 bytes, Ethereum-compatible format)
-//! - [`Bn254Fr`] - A scalar field element (32 bytes, internally a `U256`)
+//! - [`Fr`] - A scalar field element (32 bytes, internally a `U256`)
 //! - [`Bn254Fp`] - A base field element (32 bytes)
 //!
 //! ## New Operations
@@ -20,14 +20,14 @@
 //!
 //! G1 points also support arithmetic operations via Rust traits:
 //! - `Add` - Add two G1 points
-//! - `Mul<Bn254Fr>` - Multiply a G1 point by a scalar
+//! - `Mul<Fr>` - Multiply a G1 point by a scalar
 //! - `Neg` - Negate a G1 point
 //!
 //! ## Example: Basic G1 Operations
 //!
 //! ```
 //! use soroban_sdk::{Env, BytesN, U256};
-//! use soroban_sdk::crypto::bn254::{Bn254G1Affine, Bn254Fr};
+//! use soroban_sdk::crypto::bn254::{Bn254G1Affine, Fr};
 //!
 //! # fn main() {
 //! let env = Env::default();
@@ -51,7 +51,7 @@
 //! assert_eq!(g1_doubled, g1_doubled_alt);
 //!
 //! // Scalar multiplication: 2 * G should equal G + G
-//! let scalar: Bn254Fr = U256::from_u32(&env, 2).into();
+//! let scalar: Fr = U256::from_u32(&env, 2).into();
 //! let g1_times_2 = bn254.g1_mul(&g1, &scalar);
 //! assert_eq!(g1_doubled, g1_times_2);
 //!
