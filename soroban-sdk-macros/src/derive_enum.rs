@@ -1,6 +1,6 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, ToTokens};
 use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path, Visibility};
 
 use stellar_xdr::curr as stellar_xdr;
@@ -185,8 +185,12 @@ pub fn derive_type_enum(
         let marker = spec_marker::spec_marker(spec_xdr);
         let marker_lit = proc_macro2::Literal::byte_string(&marker);
         let marker_len = marker.len();
-        // Flatten all variant field types for include_spec_marker calls
-        let all_field_types: Vec<_> = variant_field_types.iter().flatten().collect();
+        // Flatten all variant field types for include_spec_marker calls, deduplicating
+        // to avoid redundant calls for types that appear in multiple variants.
+        let all_field_types = itertools::Itertools::unique_by(
+            variant_field_types.iter().flatten(),
+            |t| t.to_token_stream().to_string(),
+        );
         Some(quote! {
             impl #path::IncludeSpecMarker for #enum_ident {
                 #[doc(hidden)]
