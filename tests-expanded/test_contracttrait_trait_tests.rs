@@ -59,7 +59,10 @@ impl MyStruct {
 impl soroban_sdk::IncludeSpecMarker for MyStruct {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
     type Error = soroban_sdk::ConversionError;
@@ -827,7 +830,10 @@ impl MyEnumVariants {
 impl soroban_sdk::IncludeSpecMarker for MyEnumVariants {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <MyStruct as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <MyEnumUnit as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVariants {
     type Error = soroban_sdk::ConversionError;

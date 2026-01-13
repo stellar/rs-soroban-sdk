@@ -152,7 +152,12 @@ impl Transfer {
 impl soroban_sdk::IncludeSpecMarker for Transfer {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Option<u64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::Event for Transfer {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {

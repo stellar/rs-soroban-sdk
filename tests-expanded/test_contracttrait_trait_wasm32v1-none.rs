@@ -61,6 +61,8 @@ impl soroban_sdk::IncludeSpecMarker for MyStruct {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\x08\xd4\xa7b\xae1|\xdd";
@@ -295,6 +297,8 @@ impl soroban_sdk::IncludeSpecMarker for MyEnumVariants {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <MyStruct as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <MyEnumUnit as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xceHo\xd4mpUm";

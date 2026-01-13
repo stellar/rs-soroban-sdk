@@ -57,7 +57,10 @@ impl StructA {
 impl soroban_sdk::IncludeSpecMarker for StructA {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <u32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <bool as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
     type Error = soroban_sdk::ConversionError;
@@ -473,7 +476,10 @@ impl StructB {
 impl soroban_sdk::IncludeSpecMarker for StructB {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <soroban_sdk::String as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
     type Error = soroban_sdk::ConversionError;
@@ -889,7 +895,10 @@ impl StructC {
 impl soroban_sdk::IncludeSpecMarker for StructC {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <Vec<u32> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
     type Error = soroban_sdk::ConversionError;
@@ -1301,7 +1310,10 @@ impl StructTupleA {
 impl soroban_sdk::IncludeSpecMarker for StructTupleA {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
     type Error = soroban_sdk::ConversionError;
@@ -1677,7 +1689,10 @@ impl StructTupleB {
 impl soroban_sdk::IncludeSpecMarker for StructTupleB {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <u128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <u128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
     type Error = soroban_sdk::ConversionError;
@@ -2054,7 +2069,10 @@ impl StructTupleC {
 impl soroban_sdk::IncludeSpecMarker for StructTupleC {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
     type Error = soroban_sdk::ConversionError;
@@ -2912,7 +2930,11 @@ impl EnumB {
 impl soroban_sdk::IncludeSpecMarker for EnumB {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
     type Error = soroban_sdk::ConversionError;
@@ -3504,7 +3526,10 @@ impl EnumC {
 impl soroban_sdk::IncludeSpecMarker for EnumC {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <StructA as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <StructTupleA as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
     type Error = soroban_sdk::ConversionError;
@@ -5576,7 +5601,10 @@ impl EventA {
 impl soroban_sdk::IncludeSpecMarker for EventA {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <soroban_sdk::String as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::Event for EventA {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -5662,7 +5690,11 @@ impl EventB {
 impl soroban_sdk::IncludeSpecMarker for EventB {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::Event for EventB {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -5752,7 +5784,11 @@ impl EventC {
 impl soroban_sdk::IncludeSpecMarker for EventC {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <soroban_sdk::Symbol as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::Event for EventC {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {

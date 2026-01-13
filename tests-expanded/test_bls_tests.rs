@@ -26,7 +26,13 @@ impl DummyProof {
 impl soroban_sdk::IncludeSpecMarker for DummyProof {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <Fp as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Fp2 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Fr as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <G1Affine as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <G2Affine as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof {
     type Error = soroban_sdk::ConversionError;

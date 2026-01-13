@@ -43,7 +43,9 @@ impl Value {
 impl soroban_sdk::IncludeSpecMarker for Value {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <i32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
     type Error = soroban_sdk::ConversionError;

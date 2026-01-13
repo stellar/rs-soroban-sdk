@@ -182,6 +182,9 @@ impl soroban_sdk::IncludeSpecMarker for UdtEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <UdtStruct as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <UdtEnum2 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <UdtTuple as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xf3\xb0\xab@i\rH\xb4";
@@ -345,6 +348,8 @@ impl soroban_sdk::IncludeSpecMarker for UdtTuple {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Vec<i64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xeb\x9f\x12&\x9av(*";
@@ -460,6 +465,9 @@ impl soroban_sdk::IncludeSpecMarker for UdtStruct {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Vec<i64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\x16'd8\xff\xc9\xb1\xf8";

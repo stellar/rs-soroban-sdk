@@ -408,7 +408,11 @@ impl UdtEnum {
 impl soroban_sdk::IncludeSpecMarker for UdtEnum {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <UdtStruct as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <UdtEnum2 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <UdtTuple as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
     type Error = soroban_sdk::ConversionError;
@@ -1019,7 +1023,10 @@ impl UdtTuple {
 impl soroban_sdk::IncludeSpecMarker for UdtTuple {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Vec<i64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
@@ -1412,7 +1419,11 @@ impl UdtStruct {
 impl soroban_sdk::IncludeSpecMarker for UdtStruct {
     #[doc(hidden)]
     #[inline(always)]
-    fn include_spec_marker() {}
+    fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Vec<i64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
     type Error = soroban_sdk::ConversionError;

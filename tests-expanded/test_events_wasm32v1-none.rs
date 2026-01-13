@@ -42,6 +42,10 @@ impl soroban_sdk::IncludeSpecMarker for Transfer {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Option<u64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc;\xc1i\xa0H>\x8d\xf1";

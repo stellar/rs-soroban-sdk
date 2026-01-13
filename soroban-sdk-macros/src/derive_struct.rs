@@ -27,7 +27,7 @@ pub fn derive_type_struct(
     let mut errors = Vec::<Error>::new();
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
-    let (spec_fields, field_idents, field_names, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (spec_fields, field_idents, field_names, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .sorted_by_key(|field| field.ident.as_ref().unwrap().to_string())
         .enumerate()
@@ -35,6 +35,7 @@ pub fn derive_type_struct(
             let field_ident = field.ident.as_ref().unwrap();
             let field_name = field_ident.to_string();
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
+            let field_type = &field.ty;
             let spec_field = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
@@ -64,7 +65,7 @@ pub fn derive_type_struct(
                     val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };
-            (spec_field, field_ident, field_name, field_idx_lit, try_from_xdr, try_into_xdr)
+            (spec_field, field_ident, field_name, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -121,6 +122,8 @@ pub fn derive_type_struct(
                 #[doc(hidden)]
                 #[inline(always)]
                 fn include_spec_marker() {
+                    // Include markers for nested field types.
+                    #(<#field_types as #path::IncludeSpecMarker>::include_spec_marker();)*
                     #[cfg(target_family = "wasm")]
                     {
                         // Marker in data section. Post-build tools can scan for "SpEc"

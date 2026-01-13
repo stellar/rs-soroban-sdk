@@ -30,14 +30,15 @@ pub fn derive_type_enum(
             format!("enum {} must have variants", enum_ident),
         ));
     }
-    let (spec_cases, case_name_str_lits, try_froms, try_intos, try_from_xdrs, into_xdrs): (
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-    ) = variants
+    let (
+        spec_cases,
+        case_name_str_lits,
+        variant_field_types,
+        try_froms,
+        try_intos,
+        try_from_xdrs,
+        into_xdrs,
+    ): (Vec<_>, Vec<_>, Vec<Vec<_>>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .enumerate()
         .map(|(case_num, variant)| {
@@ -75,6 +76,10 @@ pub fn derive_type_enum(
                 }
                 _ => {}
             }
+
+            // Collect field types for IncludeSpecMarker
+            let field_types: Vec<_> = variant.fields.iter().map(|f| &f.ty).collect();
+
             let is_unit_variant = variant.fields == Fields::Unit;
             if !is_unit_variant {
                 let VariantTokens {
@@ -97,6 +102,7 @@ pub fn derive_type_enum(
                 (
                     spec_case,
                     case_name_str_lit,
+                    field_types,
                     try_from,
                     try_into,
                     try_from_xdr,
@@ -121,6 +127,7 @@ pub fn derive_type_enum(
                 (
                     spec_case,
                     case_name_str_lit,
+                    field_types,
                     try_from,
                     try_into,
                     try_from_xdr,
@@ -178,11 +185,15 @@ pub fn derive_type_enum(
         let marker = spec_marker::spec_marker(spec_xdr);
         let marker_lit = proc_macro2::Literal::byte_string(&marker);
         let marker_len = marker.len();
+        // Flatten all variant field types for include_spec_marker calls
+        let all_field_types: Vec<_> = variant_field_types.iter().flatten().collect();
         Some(quote! {
             impl #path::IncludeSpecMarker for #enum_ident {
                 #[doc(hidden)]
                 #[inline(always)]
                 fn include_spec_marker() {
+                    // Include markers for nested variant field types.
+                    #(<#all_field_types as #path::IncludeSpecMarker>::include_spec_marker();)*
                     #[cfg(target_family = "wasm")]
                     {
                         // Marker in data section. Post-build tools can scan for "SpEc"

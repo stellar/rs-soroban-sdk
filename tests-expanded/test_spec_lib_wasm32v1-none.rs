@@ -59,6 +59,8 @@ impl soroban_sdk::IncludeSpecMarker for StructA {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <u32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <bool as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xb6\x1c\xfd\xdfhY-d";
@@ -169,6 +171,8 @@ impl soroban_sdk::IncludeSpecMarker for StructB {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <soroban_sdk::String as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xf3\xc4\xd3\x8c\xc1w\xe9\x18";
@@ -279,6 +283,8 @@ impl soroban_sdk::IncludeSpecMarker for StructC {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <Vec<u32> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xa3\x16\n\x8f\xc9\x92\xd2\x11";
@@ -383,6 +389,8 @@ impl soroban_sdk::IncludeSpecMarker for StructTupleA {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xcf)\x97]S\xb2\xfd)";
@@ -483,6 +491,8 @@ impl soroban_sdk::IncludeSpecMarker for StructTupleB {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <u128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <u128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEcx\xd98\x9c\x1ao\xac\x8c";
@@ -584,6 +594,8 @@ impl soroban_sdk::IncludeSpecMarker for StructTupleC {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xc5=\x81\xc1\"\xafT\xd9";
@@ -854,6 +866,9 @@ impl soroban_sdk::IncludeSpecMarker for EnumB {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc'\x1b\0DSH^\xcc";
@@ -1024,6 +1039,8 @@ impl soroban_sdk::IncludeSpecMarker for EnumC {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <StructA as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <StructTupleA as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
@@ -2015,6 +2032,8 @@ impl soroban_sdk::IncludeSpecMarker for EventA {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <soroban_sdk::String as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEcK\xe6\x8ej\x19\x9en\xbd";
@@ -2108,6 +2127,9 @@ impl soroban_sdk::IncludeSpecMarker for EventB {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\xe6\xaa\xefz\x17i$\x15";
@@ -2205,6 +2227,9 @@ impl soroban_sdk::IncludeSpecMarker for EventC {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <soroban_sdk::Symbol as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\x16\xd6\xdf\xe7\xdb\xb4W@";

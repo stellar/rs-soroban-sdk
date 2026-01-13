@@ -108,7 +108,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let fields =
         match &input.data {
             Data::Struct(struct_) => match &struct_.fields {
-                Fields::Named(fields) => fields.named.iter(),
+                Fields::Named(fields) => fields.named.iter().collect::<Vec<_>>(),
                 Fields::Unnamed(_) => Err(Error::custom(
                     "structs with unnamed fields are not supported as contract events",
                 )
@@ -124,8 +124,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .with_span(&input.span()))?,
         };
 
+    // Collect field types for IncludeSpecMarker
+    let field_types: Vec<_> = fields.iter().map(|f| &f.ty).collect();
+
     // Map each field of the struct to a spec for a param.
     let params = fields
+        .iter()
         .map(|field| {
             let ident = field.ident.as_ref().unwrap();
             let is_topic = field.attrs.iter().any(|a| a.path().is_ident("topic"));
@@ -226,6 +230,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 #[doc(hidden)]
                 #[inline(always)]
                 fn include_spec_marker() {
+                    // Include markers for nested field types (topics and data).
+                    #(<#field_types as #path::IncludeSpecMarker>::include_spec_marker();)*
                     #[cfg(target_family = "wasm")]
                     {
                         // Marker in data section. Post-build tools can scan for "SpEc"

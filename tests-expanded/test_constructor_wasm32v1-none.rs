@@ -41,6 +41,9 @@ impl soroban_sdk::IncludeSpecMarker for DataKey {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <u32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <u32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <u32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\x14\x94}~\xec\x15\x94\x84";

@@ -45,6 +45,7 @@ impl soroban_sdk::IncludeSpecMarker for Value {
     #[doc(hidden)]
     #[inline(always)]
     fn include_spec_marker() {
+        <i32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc\x82\xf8t\xbe\t\x04b\\";

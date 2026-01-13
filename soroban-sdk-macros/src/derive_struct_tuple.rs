@@ -25,7 +25,7 @@ pub fn derive_type_struct_tuple(
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
 
-    let (field_specs, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (field_specs, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .enumerate()
         .map(|(field_idx, field)| {
@@ -33,6 +33,7 @@ pub fn derive_type_struct_tuple(
             // as the token to reference the field.
             let field_idx_lit = Literal::usize_unsuffixed(field_idx);
             let field_name = format!("{}", field_idx);
+            let field_type = &field.ty;
             let field_spec = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
@@ -53,7 +54,7 @@ pub fn derive_type_struct_tuple(
             let try_into_xdr = quote! {
                 (&val.#field_idx_lit).try_into().map_err(|_| #path::xdr::Error::Invalid)?
             };
-            (field_spec, field_idx_lit, try_from_xdr, try_into_xdr)
+            (field_spec, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -110,6 +111,8 @@ pub fn derive_type_struct_tuple(
                 #[doc(hidden)]
                 #[inline(always)]
                 fn include_spec_marker() {
+                    // Include markers for nested field types.
+                    #(<#field_types as #path::IncludeSpecMarker>::include_spec_marker();)*
                     #[cfg(target_family = "wasm")]
                     {
                         // Marker in data section. Post-build tools can scan for "SpEc"
