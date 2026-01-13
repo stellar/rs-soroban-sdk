@@ -1,3 +1,16 @@
+//! # Migrating from v23 to v25
+//!
+//! 1. [`Events::all()` return type changed from `Vec<(Address, Vec<Val>, Val)>` to `ContractEvents`][v25_event_testing].
+//!    The new type supports the old comparison format, so most code will continue to work.
+//!    New methods like `filter_by_contract()` and XDR comparison via `to_xdr()` are now available.
+//!
+//! 2. [BN254 (alt_bn128) elliptic curve support added][v25_bn254].
+//!    Access via `env.crypto().bn254()` for G1/G2 point operations and pairing checks.
+//!
+//! 3. [Poseidon and Poseidon2 permutation functions added][v25_poseidon].
+//!    Available via `CryptoHazmat` under the `hazmat-crypto` feature for advanced
+//!    cryptographic use cases.
+//!
 //! # Migrating from v22 to v23
 //!
 //! 1. [`contractevent` replaces `Events::publish`][v23_contractevent]
@@ -249,3 +262,6 @@
 
 pub mod v23_archived_testing;
 pub mod v23_contractevent;
+pub mod v25_bn254;
+pub mod v25_event_testing;
+pub mod v25_poseidon;
