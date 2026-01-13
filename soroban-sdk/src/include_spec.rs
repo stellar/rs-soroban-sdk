@@ -391,6 +391,10 @@ impl IncludeSpecMarker for crate::crypto::bls12_381::G2Affine {}
 impl IncludeSpecMarker for crate::crypto::bls12_381::Fp {}
 impl IncludeSpecMarker for crate::crypto::bls12_381::Fp2 {}
 impl IncludeSpecMarker for crate::crypto::bls12_381::Fr {}
+impl IncludeSpecMarker for crate::crypto::bn254::Bn254G1Affine {}
+impl IncludeSpecMarker for crate::crypto::bn254::Bn254G2Affine {}
+impl IncludeSpecMarker for crate::crypto::bn254::Bn254Fp {}
+impl IncludeSpecMarker for crate::crypto::bn254::Fr {}
 
 // Auth types - these have export=false but are legitimately used at external
 // boundaries (as inputs to __check_auth in custom account contracts).
