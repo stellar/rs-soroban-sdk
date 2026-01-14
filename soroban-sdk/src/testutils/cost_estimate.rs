@@ -125,7 +125,6 @@ impl CostEstimate {
     }
 }
 
-
 /// Predefined network invocation resource limits.
 pub trait NetworkInvocationResourceLimits {
     fn mainnet() -> Self;
