@@ -477,7 +477,7 @@ use crate::testutils::cost_estimate::CostEstimate;
 use crate::{
     auth,
     testutils::{
-        budget::Budget, cost_estimate::NetworkInvocationResourcesLimits, default_ledger_info,
+        budget::Budget, cost_estimate::NetworkInvocationResourceLimits, default_ledger_info,
         Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
         Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
         SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,

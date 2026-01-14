@@ -127,11 +127,11 @@ impl CostEstimate {
 
 
 /// Predefined network invocation resource limits.
-pub trait NetworkInvocationResourcesLimits {
+pub trait NetworkInvocationResourceLimits {
     fn mainnet() -> Self;
 }
 
-impl NetworkInvocationResourcesLimits for InvocationResourceLimits {
+impl NetworkInvocationResourceLimits for InvocationResourceLimits {
     /// Returns the invocation resource limits used on Stellar Mainnet.
     /// 
     /// This is not pulling the values dynamically, so updating the SDK is
