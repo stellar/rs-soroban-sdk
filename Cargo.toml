@@ -30,17 +30,17 @@ soroban-token-spec = { version = "25.0.0-rc.1", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "25.0.0-rc.1", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]
-version = "=25.0.0"
+version = "=25.0.1"
 # git = "https://github.com/stellar/rs-soroban-env"
 # rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=25.0.0"
+version = "=25.0.1"
 # git = "https://github.com/stellar/rs-soroban-env"
 # rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
 
 [workspace.dependencies.soroban-env-host]
-version = "=25.0.0"
+version = "=25.0.1"
 # git = "https://github.com/stellar/rs-soroban-env"
 # rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
 

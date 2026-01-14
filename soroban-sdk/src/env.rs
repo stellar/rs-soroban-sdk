@@ -477,16 +477,17 @@ use crate::testutils::cost_estimate::CostEstimate;
 use crate::{
     auth,
     testutils::{
-        budget::Budget, default_ledger_info, Address as _, AuthSnapshot, AuthorizedInvocation,
-        ContractFunctionSet, EventsSnapshot, Generators, Ledger as _, MockAuth, MockAuthContract,
-        Register, Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
+        budget::Budget, cost_estimate::NetworkInvocationResourcesLimits, default_ledger_info,
+        Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
+        Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
+        SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
 #[cfg(any(test, feature = "testutils"))]
 use core::{cell::RefCell, cell::RefMut};
 #[cfg(any(test, feature = "testutils"))]
-use internal::ContractInvocationEvent;
+use internal::{ContractInvocationEvent, InvocationResourceLimits};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -547,6 +548,7 @@ impl Env {
         // Store in the Env the name of the test it is for, and a number so that within a test
         // where one or more Env's have been created they can be uniquely identified relative to
         // each other.
+
         let test_name = match std::thread::current().name() {
             // When doc tests are running they're all run with the thread name main. There's no way
             // to detect which doc test is being run.
@@ -608,6 +610,9 @@ impl Env {
             })))
             .unwrap();
         env_impl.enable_invocation_metering();
+        env_impl
+            .set_invocation_resource_limits(Some(InvocationResourceLimits::mainnet()))
+            .unwrap();
 
         let env = Env {
             env_impl,

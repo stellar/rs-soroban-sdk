@@ -1,4 +1,6 @@
-use soroban_env_host::{fees::FeeConfiguration, FeeEstimate, InvocationResources};
+use soroban_env_host::{
+    fees::FeeConfiguration, FeeEstimate, InvocationResourceLimits, InvocationResources,
+};
 
 use crate::{testutils::budget::Budget, Env};
 
@@ -88,5 +90,66 @@ impl CostEstimate {
     /// far.
     pub fn budget(&self) -> Budget {
         Budget::new(self.env.host().budget_cloned())
+    }
+
+    /// Enforces custom resource limits for contract invocations in tests.
+    /// 
+    /// When limit enforcement is enabled, for every contract invocation the
+    /// resource usage is checked against the provided limits, and if any of the
+    /// limits is exceeded, the contract invocation will result in a panic
+    /// that indicates which limits were exceeded.
+    /// 
+    /// Limit enforcement is meant to provide an early warning sign that a 
+    /// contract might be too resource heavy to run on a real network. If the
+    /// high resource usage is intentional and expected (e.g. for
+    /// experimentation), disable the enforcement via 
+    /// `disable_resource_limits()`.
+    /// 
+    /// By default, `InvocationResourceLimits::mainnet()` limits are enforced.
+    pub fn enforce_resource_limits(&self, limits: InvocationResourceLimits) {
+        self.env
+            .host()
+            .set_invocation_resource_limits(Some(limits))
+            .unwrap();
+    }
+
+    
+    /// Disables resource limit enforcement for contract invocations in tests.
+    /// 
+    /// This may be useful for the experimental contracts that are still being 
+    /// optimized.
+    pub fn disable_resource_limits(&self) {
+        self.env
+            .host()
+            .set_invocation_resource_limits(None)
+            .unwrap();
+    }
+}
+
+
+/// Predefined network invocation resource limits.
+pub trait NetworkInvocationResourcesLimits {
+    fn mainnet() -> Self;
+}
+
+impl NetworkInvocationResourcesLimits for InvocationResourceLimits {
+    /// Returns the invocation resource limits used on Stellar Mainnet.
+    /// 
+    /// This is not pulling the values dynamically, so updating the SDK is
+    /// necessary to pick up the most recent values.
+    fn mainnet() -> Self {
+        InvocationResourceLimits {
+            instructions: 600_000_000,
+            mem_bytes: 41943040,
+            disk_read_entries: 100,
+            write_entries: 50,
+            ledger_entries: 100,
+            disk_read_bytes: 200000,
+            write_bytes: 132096,
+            contract_events_size_bytes: 16384,
+            max_contract_data_key_size_bytes: 250,
+            max_contract_data_entry_size_bytes: 65536,
+            max_contract_code_entry_size_bytes: 131072,
+        }
     }
 }
