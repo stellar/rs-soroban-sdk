@@ -113,7 +113,6 @@ impl CostEstimate {
             .unwrap();
     }
 
-    
     /// Disables resource limit enforcement for contract invocations in tests.
     /// 
     /// This may be useful for the experimental contracts that are still being 
