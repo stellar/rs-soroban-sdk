@@ -165,38 +165,36 @@ fn test_from_str_contract_debug_roundtrip() {
 }
 
 // Error tests for unsupported strkey types
-// Note: The noalloc branch of stellar-strkey returns "Invalid" for unsupported types
-// rather than parsing them to distinct variants.
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "unsupported strkey type")]
 fn test_from_str_private_key_panics() {
     let env = Env::default();
-    // S... private key strkey - invalid in noalloc branch
+    // S... private key strkey
     let strkey = "SCZANGBA5YHTNYVVV3C7CAZMTQDBJHJQNE2M57SW7JEX6MRDBHWSKFPI";
     MuxedAddress::from_str(&env, strkey);
 }
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "unsupported strkey type")]
 fn test_from_str_preauth_tx_panics() {
     let env = Env::default();
-    // T... pre-auth tx strkey - invalid in noalloc branch
+    // T... pre-auth tx strkey
     let strkey = "TBU2RRGLXH3E5CQHTD3ODLDF2BWDCYUSSBLLZ5GNW7JXHDIRAT2IJDPN";
     MuxedAddress::from_str(&env, strkey);
 }
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "unsupported strkey type")]
 fn test_from_str_hash_x_panics() {
     let env = Env::default();
-    // X... hash-x strkey - invalid in noalloc branch
+    // X... hash-x strkey
     let strkey = "XBU2RRGLXH3E5CQHTD3ODLDF2BWDCYUSSBLLZ5GNW7JXHDIRAT2IJDPN";
     MuxedAddress::from_str(&env, strkey);
 }
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "unsupported strkey type")]
 fn test_from_str_invalid_strkey_panics() {
     let env = Env::default();
     // Invalid strkey (random garbage)
