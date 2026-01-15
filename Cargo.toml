@@ -45,7 +45,8 @@ version = "=25.0.0"
 # rev = "cf58d535ab05d02802a5e804a95524650f8c62c7"
 
 [workspace.dependencies.stellar-strkey]
-version = "=0.0.13"
+git = "https://github.com/stellar/rs-stellar-strkey"
+branch = "noalloc"
 
 [workspace.dependencies.stellar-xdr]
 version = "=25.0.0"

@@ -181,6 +181,89 @@ impl From<&Address> for MuxedAddress {
 }
 
 impl MuxedAddress {
+    /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey.
+    ///
+    /// Supported strkey types:
+    /// - Account keys (G...)
+    /// - Muxed account keys (M...)
+    /// - Contract keys (C...)
+    ///
+    /// Any other strkey type will cause this to panic.
+    ///
+    /// Prefer using the `MuxedAddress` directly as input or output argument. Only
+    /// use this in special cases when addresses need to be shared between
+    /// different environments (e.g. different chains).
+    pub fn from_str(env: &Env, strkey: &str) -> MuxedAddress {
+        MuxedAddress::from_string(&crate::String::from_str(env, strkey))
+    }
+
+    /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey.
+    ///
+    /// Supported strkey types:
+    /// - Account keys (G...)
+    /// - Muxed account keys (M...)
+    /// - Contract keys (C...)
+    ///
+    /// Any other strkey type will cause this to panic.
+    ///
+    /// Prefer using the `MuxedAddress` directly as input or output argument. Only
+    /// use this in special cases when addresses need to be shared between
+    /// different environments (e.g. different chains).
+    pub fn from_string(strkey: &crate::String) -> Self {
+        use crate::xdr::FromXdr;
+        use crate::Bytes;
+        use stellar_strkey::Strkey;
+
+        let env = strkey.env();
+
+        // Read strkey bytes into a fixed-size buffer (max strkey length is 69 chars for muxed accounts)
+        let mut strkey_buf = [0u8; 69];
+        let len = strkey.len() as usize;
+        strkey.copy_into_slice(&mut strkey_buf[..len]);
+
+        let strkey_decoded =
+            Strkey::from_string(core::str::from_utf8(&strkey_buf[..len]).expect("invalid utf8"))
+                .expect("invalid strkey");
+
+        // Build XDR bytes manually (NO stellar-xdr types used)
+        // XDR format: big-endian integers, discriminants as 4-byte ints
+        let xdr_bytes = match strkey_decoded {
+            Strkey::PublicKeyEd25519(pk) => {
+                // XDR layout for ScVal::Address(ScAddress::Account(AccountId(PublicKey::Ed25519)))
+                // Total: 44 bytes
+                let mut buf = [0u8; 44];
+                buf[0..4].copy_from_slice(&18u32.to_be_bytes()); // ScVal discriminant: Address = 18
+                buf[4..8].copy_from_slice(&0u32.to_be_bytes()); // ScAddress discriminant: Account = 0
+                buf[8..12].copy_from_slice(&0u32.to_be_bytes()); // PublicKey discriminant: Ed25519 = 0
+                buf[12..44].copy_from_slice(&pk.0); // 32-byte ed25519 public key
+                Bytes::from_slice(env, &buf)
+            }
+            Strkey::MuxedAccountEd25519(muxed) => {
+                // XDR layout for ScVal::Address(ScAddress::MuxedAccount(MuxedEd25519Account))
+                // MuxedEd25519Account: { id: uint64, ed25519: uint256 }
+                // Total: 48 bytes
+                let mut buf = [0u8; 48];
+                buf[0..4].copy_from_slice(&18u32.to_be_bytes()); // ScVal discriminant: Address = 18
+                buf[4..8].copy_from_slice(&2u32.to_be_bytes()); // ScAddress discriminant: MuxedAccount = 2
+                buf[8..16].copy_from_slice(&muxed.id.to_be_bytes()); // 8-byte mux id (big-endian)
+                buf[16..48].copy_from_slice(&muxed.ed25519); // 32-byte ed25519 public key
+                Bytes::from_slice(env, &buf)
+            }
+            Strkey::Contract(c) => {
+                // XDR layout for ScVal::Address(ScAddress::Contract(ContractId))
+                // Total: 40 bytes
+                let mut buf = [0u8; 40];
+                buf[0..4].copy_from_slice(&18u32.to_be_bytes()); // ScVal discriminant: Address = 18
+                buf[4..8].copy_from_slice(&1u32.to_be_bytes()); // ScAddress discriminant: Contract = 1
+                buf[8..40].copy_from_slice(&c.0); // 32-byte contract hash
+                Bytes::from_slice(env, &buf)
+            }
+            _ => panic!("unsupported strkey type for MuxedAddress"),
+        };
+
+        MuxedAddress::from_xdr(env, &xdr_bytes).expect("invalid xdr")
+    }
+
     /// Returns the `Address` part of this multiplexed address.
     ///
     /// The address part is necessary to perform most of the operations, such

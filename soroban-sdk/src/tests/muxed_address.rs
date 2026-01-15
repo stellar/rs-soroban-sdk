@@ -108,3 +108,98 @@ fn test_accept_muxed_address_argument_in_contract() {
         (None, Some(2))
     );
 }
+
+// Tests for MuxedAddress::from_str
+
+#[test]
+fn test_from_str_account() {
+    let env = Env::default();
+    let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    assert_eq!(muxed.id(), None);
+}
+
+#[test]
+fn test_from_str_muxed_account() {
+    let env = Env::default();
+    let strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    assert!(muxed.id().is_some());
+}
+
+#[test]
+fn test_from_str_contract() {
+    let env = Env::default();
+    let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    assert_eq!(muxed.id(), None);
+}
+
+// Debug roundtrip tests
+
+#[test]
+fn test_from_str_account_debug_roundtrip() {
+    let env = Env::default();
+    let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let debug_output = format!("{:?}", muxed);
+    assert!(debug_output.contains(strkey));
+}
+
+#[test]
+fn test_from_str_muxed_account_debug_roundtrip() {
+    let env = Env::default();
+    let strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let debug_output = format!("{:?}", muxed);
+    assert!(debug_output.contains(strkey));
+}
+
+#[test]
+fn test_from_str_contract_debug_roundtrip() {
+    let env = Env::default();
+    let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let debug_output = format!("{:?}", muxed);
+    assert!(debug_output.contains(strkey));
+}
+
+// Error tests for unsupported strkey types
+// Note: The noalloc branch of stellar-strkey returns "Invalid" for unsupported types
+// rather than parsing them to distinct variants.
+
+#[test]
+#[should_panic(expected = "invalid strkey")]
+fn test_from_str_private_key_panics() {
+    let env = Env::default();
+    // S... private key strkey - invalid in noalloc branch
+    let strkey = "SCZANGBA5YHTNYVVV3C7CAZMTQDBJHJQNE2M57SW7JEX6MRDBHWSKFPI";
+    MuxedAddress::from_str(&env, strkey);
+}
+
+#[test]
+#[should_panic(expected = "invalid strkey")]
+fn test_from_str_preauth_tx_panics() {
+    let env = Env::default();
+    // T... pre-auth tx strkey - invalid in noalloc branch
+    let strkey = "TBU2RRGLXH3E5CQHTD3ODLDF2BWDCYUSSBLLZ5GNW7JXHDIRAT2IJDPN";
+    MuxedAddress::from_str(&env, strkey);
+}
+
+#[test]
+#[should_panic(expected = "invalid strkey")]
+fn test_from_str_hash_x_panics() {
+    let env = Env::default();
+    // X... hash-x strkey - invalid in noalloc branch
+    let strkey = "XBU2RRGLXH3E5CQHTD3ODLDF2BWDCYUSSBLLZ5GNW7JXHDIRAT2IJDPN";
+    MuxedAddress::from_str(&env, strkey);
+}
+
+#[test]
+#[should_panic(expected = "invalid strkey")]
+fn test_from_str_invalid_strkey_panics() {
+    let env = Env::default();
+    // Invalid strkey (random garbage)
+    let strkey = "INVALID_NOT_A_REAL_STRKEY";
+    MuxedAddress::from_str(&env, strkey);
+}
