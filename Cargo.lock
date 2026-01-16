@@ -1886,6 +1886,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_muxed_address_from_str"
+version = "25.0.0-rc.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_tuples"
 version = "25.0.0-rc.1"
 dependencies = [
