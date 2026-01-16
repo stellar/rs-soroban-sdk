@@ -219,6 +219,9 @@ impl MuxedAddress {
 
         // Read strkey bytes into buffer
         let mut strkey_buf = [0u8; 69];
+        if len > strkey_buf.len() {
+            sdk_panic!("strkey too long");
+        }
         strkey.copy_into_slice(&mut strkey_buf[..len]);
 
         match strkey_buf[0] {
@@ -247,6 +250,9 @@ impl MuxedAddress {
 
         // Read strkey bytes into buffer
         let mut strkey_buf = [0u8; 69];
+        if len > strkey_buf.len() {
+            sdk_panic!("strkey too long");
+        }
         strkey.copy_into_slice(&mut strkey_buf[..len]);
 
         match strkey_buf[0] {
