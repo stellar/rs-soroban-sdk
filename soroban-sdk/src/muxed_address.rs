@@ -264,13 +264,12 @@ impl MuxedAddress {
 
     /// Internal: parses a muxed account strkey (M...) and builds MuxedAddress.
     fn from_muxed_strkey(env: &Env, strkey: &[u8]) -> Self {
-        use crate::xdr::FromXdr;
+        use crate::xdr::{FromXdr, ScAddressType, ScValType};
         use crate::Bytes;
         use stellar_strkey::ed25519::MuxedAccount;
 
-        // XDR discriminant values (from stellar-xdr, duplicated to avoid type dependencies)
-        const SCVAL_ADDRESS: u32 = 18;
-        const SCADDRESS_MUXED_ACCOUNT: u32 = 2;
+        const SCVAL_ADDRESS: i32 = ScValType::Address as i32;
+        const SCADDRESS_MUXED_ACCOUNT: i32 = ScAddressType::MuxedAccount as i32;
 
         let muxed =
             MuxedAccount::from_slice(strkey).unwrap_or_else(|_| sdk_panic!("invalid strkey"));
