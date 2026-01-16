@@ -431,18 +431,19 @@ fn test_data_vec_preserves_field_order() {
         event.publish(&env);
     });
 
-    let data: Val = (1000u64, 500i128).into_val(&env);
-    let expected_event = xdr::ContractEvent {
-        ext: xdr::ExtensionPoint::V0,
-        type_: xdr::ContractEventType::Contract,
-        contract_id: Some(id.contract_id()),
-        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
-            topics: vec![&env, symbol_short!("deposit"), symbol_short!("user")].into(),
-            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
-        }),
-    };
-    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_xdr(&env, &id), expected_event);
+    assert_eq!(
+        env.events().all(),
+        vec![
+            &env,
+            (
+                id,
+                // Expect these event topics.
+                (symbol_short!("deposit"), symbol_short!("user")).into_val(&env),
+                // Expect this event body.
+                (1000u64, 500i128).into_val(&env)
+            ),
+        ],
+    );
 }
 
 #[test]
@@ -557,29 +558,30 @@ fn test_data_map_sorts_fields() {
         event.publish(&env);
     });
 
-    let data: Val = map![
-        &env,
-        (
-            symbol_short!("amount"),
-            <_ as IntoVal<Env, Val>>::into_val(&500i128, &env),
-        ),
-        (
-            symbol_short!("time"),
-            <_ as IntoVal<Env, Val>>::into_val(&1000u64, &env),
-        ),
-    ]
-    .into_val(&env);
-    let expected_event = xdr::ContractEvent {
-        ext: xdr::ExtensionPoint::V0,
-        type_: xdr::ContractEventType::Contract,
-        contract_id: Some(id.contract_id()),
-        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
-            topics: vec![&env, symbol_short!("deposit"), symbol_short!("user")].into(),
-            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
-        }),
-    };
-    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
-    assert_eq!(event.to_xdr(&env, &id), expected_event);
+    assert_eq!(
+        env.events().all(),
+        vec![
+            &env,
+            (
+                id,
+                // Expect these event topics.
+                (symbol_short!("deposit"), symbol_short!("user")).into_val(&env),
+                // Expect this event body.
+                map![
+                    &env,
+                    (
+                        symbol_short!("amount"),
+                        <_ as IntoVal<Env, Val>>::into_val(&500i128, &env),
+                    ),
+                    (
+                        symbol_short!("time"),
+                        <_ as IntoVal<Env, Val>>::into_val(&1000u64, &env),
+                    ),
+                ]
+                .into_val(&env)
+            ),
+        ],
+    );
 }
 
 #[test]
