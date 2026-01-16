@@ -227,7 +227,7 @@ impl MuxedAddress {
         match strkey_buf[0] {
             b'G' | b'C' => Address::from_string(strkey).into(),
             b'M' => MuxedAddress::from_muxed_strkey(env, &strkey_buf[..len]),
-            _ => sdk_panic!("unsupported strkey type for MuxedAddress"),
+            _ => sdk_panic!("invalid strkey: only G... (account), M... (muxed account), and C... (contract) addresses are supported"),
         }
     }
 
@@ -258,7 +258,7 @@ impl MuxedAddress {
         match strkey_buf[0] {
             b'G' | b'C' => Address::from_string_bytes(strkey).into(),
             b'M' => MuxedAddress::from_muxed_strkey(env, &strkey_buf[..len]),
-            _ => sdk_panic!("unsupported strkey type for MuxedAddress"),
+            _ => sdk_panic!("invalid strkey: only G... (account), M... (muxed account), and C... (contract) addresses are supported"),
         }
     }
 
