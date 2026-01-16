@@ -116,15 +116,20 @@ fn test_from_str_account() {
     let env = Env::default();
     let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
     let muxed = MuxedAddress::from_str(&env, strkey);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
     assert_eq!(muxed.id(), None);
 }
 
 #[test]
 fn test_from_str_muxed_account() {
     let env = Env::default();
-    let strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
-    let muxed = MuxedAddress::from_str(&env, strkey);
-    assert!(muxed.id().is_some());
+    let muxed_strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    let base_strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let muxed = MuxedAddress::from_str(&env, muxed_strkey);
+    let expected_address = Address::from_str(&env, base_strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), Some(123456));
 }
 
 #[test]
@@ -132,6 +137,8 @@ fn test_from_str_contract() {
     let env = Env::default();
     let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
     let muxed = MuxedAddress::from_str(&env, strkey);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
     assert_eq!(muxed.id(), None);
 }
 
