@@ -93,18 +93,18 @@ impl CostEstimate {
     }
 
     /// Enforces custom resource limits for contract invocations in tests.
-    /// 
+    ///
     /// When limit enforcement is enabled, for every contract invocation the
     /// resource usage is checked against the provided limits, and if any of the
     /// limits is exceeded, the contract invocation will result in a panic
     /// that indicates which limits were exceeded.
-    /// 
-    /// Limit enforcement is meant to provide an early warning sign that a 
+    ///
+    /// Limit enforcement is meant to provide an early warning sign that a
     /// contract might be too resource heavy to run on a real network. If the
     /// high resource usage is intentional and expected (e.g. for
-    /// experimentation), disable the enforcement via 
+    /// experimentation), disable the enforcement via
     /// `disable_resource_limits()`.
-    /// 
+    ///
     /// By default, `InvocationResourceLimits::mainnet()` limits are enforced.
     pub fn enforce_resource_limits(&self, limits: InvocationResourceLimits) {
         self.env
@@ -114,8 +114,8 @@ impl CostEstimate {
     }
 
     /// Disables resource limit enforcement for contract invocations in tests.
-    /// 
-    /// This may be useful for the experimental contracts that are still being 
+    ///
+    /// This may be useful for the experimental contracts that are still being
     /// optimized.
     pub fn disable_resource_limits(&self) {
         self.env
@@ -132,7 +132,7 @@ pub trait NetworkInvocationResourceLimits {
 
 impl NetworkInvocationResourceLimits for InvocationResourceLimits {
     /// Returns the invocation resource limits used on Stellar Mainnet.
-    /// 
+    ///
     /// This is not pulling the values dynamically, so updating the SDK is
     /// necessary to pick up the most recent values.
     fn mainnet() -> Self {
