@@ -268,6 +268,10 @@ impl MuxedAddress {
         use crate::Bytes;
         use stellar_strkey::ed25519::MuxedAccount;
 
+        // XDR discriminant values (from stellar-xdr, duplicated to avoid type dependencies)
+        const SCVAL_ADDRESS: u32 = 18;
+        const SCADDRESS_MUXED_ACCOUNT: u32 = 2;
+
         let muxed =
             MuxedAccount::from_slice(strkey).unwrap_or_else(|_| sdk_panic!("invalid strkey"));
 
@@ -276,8 +280,8 @@ impl MuxedAddress {
         // MuxedEd25519Account: { id: uint64, ed25519: uint256 }
         // Total: 48 bytes
         let mut buf = [0u8; 48];
-        buf[0..4].copy_from_slice(&18u32.to_be_bytes()); // ScVal discriminant: Address = 18
-        buf[4..8].copy_from_slice(&2u32.to_be_bytes()); // ScAddress discriminant: MuxedAccount = 2
+        buf[0..4].copy_from_slice(&SCVAL_ADDRESS.to_be_bytes());
+        buf[4..8].copy_from_slice(&SCADDRESS_MUXED_ACCOUNT.to_be_bytes());
         buf[8..16].copy_from_slice(&muxed.id.to_be_bytes()); // 8-byte mux id (big-endian)
         buf[16..48].copy_from_slice(&muxed.ed25519); // 32-byte ed25519 public key
         let xdr_bytes = Bytes::from_slice(env, &buf);
