@@ -244,6 +244,7 @@ deny = [
 # Certain crates/versions that will be skipped when doing duplicate detection.
 skip = [
     { name = "hashbrown", version = "=0.13.2" },
+    { name = "stellar-strkey", version = "=0.0.13" },
     { name = "syn", version = "=1.0.109" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
