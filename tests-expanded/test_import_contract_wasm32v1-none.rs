@@ -188,15 +188,15 @@ impl ContractArgs {
 pub mod __Contract__add_with {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add_with` instead")]
+    #[allow(deprecated)]
     pub fn invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
         arg_1: soroban_sdk::Val,
         arg_2: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::add_with(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <super::Contract>::add_with(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
