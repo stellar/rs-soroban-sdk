@@ -1,0 +1,22 @@
+# soroban-sdk-nexus 🚀
+
+Soroban SDK Nexus adalah fork dari rs-soroban-sdk yang difokuskan pada:
+- 🔗 Interoperabilitas lintas jaringan
+- 🛡️ Pola keamanan kontrak pintar
+- 🧠 Tooling analisis kontrak
+- 📚 Edukasi & contoh siap pakai
+
+Cocok untuk developer yang ingin membangun DeFi, DAO, dan aplikasi terdesentralisasi di Soroban dengan standar enterprise.
+
+## Fitur Utama
+- Nexus Interop Layer
+- Secure Smart Contract Patterns
+- DeFi & DAO Examples
+- Gas Optimizer & Risk Scorer
+- Dokumentasi Bahasa Indonesia 🇮🇩
+
+## Quick Start
+```bash
+git clone https://github.com/USERNAME/soroban-sdk-nexus
+cd soroban-sdk-nexus
+cargo test
