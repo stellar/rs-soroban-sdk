@@ -260,3 +260,11 @@ fn test_from_string_empty_panics() {
     let strkey = crate::String::from_str(&env, "");
     MuxedAddress::from_string(&strkey);
 }
+
+#[test]
+#[should_panic(expected = "invalid strkey")]
+fn test_from_string_bytes_invalid_strkey_panics() {
+    let env = Env::default();
+    let strkey_bytes = crate::Bytes::from_slice(&env, b"INVALID_NOT_A_REAL_STRKEY");
+    MuxedAddress::from_string_bytes(&strkey_bytes);
+}
