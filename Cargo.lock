@@ -1887,7 +1887,7 @@ dependencies = [
 
 [[package]]
 name = "test_muxed_address_from_str"
-version = "25.0.0-rc.1"
+version = "25.0.0-rc.2"
 dependencies = [
  "soroban-sdk",
 ]
