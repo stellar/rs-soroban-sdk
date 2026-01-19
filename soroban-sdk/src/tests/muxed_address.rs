@@ -208,3 +208,55 @@ fn test_from_str_invalid_strkey_panics() {
     let strkey = "INVALID_NOT_A_REAL_STRKEY";
     MuxedAddress::from_str(&env, strkey);
 }
+
+// Tests for MuxedAddress::from_string_bytes
+
+#[test]
+fn test_from_string_bytes_account() {
+    let env = Env::default();
+    let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let strkey_bytes = crate::Bytes::from_slice(&env, strkey.as_bytes());
+    let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+#[test]
+fn test_from_string_bytes_muxed_account() {
+    let env = Env::default();
+    let muxed_strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    let base_strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let strkey_bytes = crate::Bytes::from_slice(&env, muxed_strkey.as_bytes());
+    let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
+    let expected_address = Address::from_str(&env, base_strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), Some(123456));
+}
+
+#[test]
+fn test_from_string_bytes_contract() {
+    let env = Env::default();
+    let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let strkey_bytes = crate::Bytes::from_slice(&env, strkey.as_bytes());
+    let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+#[test]
+#[should_panic(expected = "strkey cannot be empty")]
+fn test_from_string_bytes_empty_panics() {
+    let env = Env::default();
+    let strkey_bytes = crate::Bytes::from_slice(&env, &[]);
+    MuxedAddress::from_string_bytes(&strkey_bytes);
+}
+
+#[test]
+#[should_panic(expected = "strkey cannot be empty")]
+fn test_from_string_empty_panics() {
+    let env = Env::default();
+    let strkey = crate::String::from_str(&env, "");
+    MuxedAddress::from_string(&strkey);
+}
