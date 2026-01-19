@@ -221,7 +221,8 @@ impl MuxedAddress {
             sdk_panic!("strkey cannot be empty");
         }
 
-        // Read strkey bytes into buffer
+        // Read strkey bytes into buffer.
+        // 69 is the maximum length of a Stellar strkey (muxed account M... addresses).
         let mut strkey_buf = [0u8; 69];
         if len > strkey_buf.len() {
             sdk_panic!("strkey too long");
@@ -256,7 +257,8 @@ impl MuxedAddress {
             sdk_panic!("strkey cannot be empty");
         }
 
-        // Read strkey bytes into buffer
+        // Read strkey bytes into buffer.
+        // 69 is the maximum length of a Stellar strkey (muxed account M... addresses).
         let mut strkey_buf = [0u8; 69];
         if len > strkey_buf.len() {
             sdk_panic!("strkey too long");
