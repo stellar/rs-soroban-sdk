@@ -400,6 +400,46 @@ fn test_data_vec_no_data() {
 }
 
 #[test]
+fn test_data_vec_preserves_field_order() {
+    let env = Env::default();
+
+    #[contract]
+    pub struct Contract;
+    let id = env.register(Contract, ());
+
+    // Fields are named so that alphabetical order differs from declaration order
+    #[contractevent(data_format = "vec")]
+    pub struct Deposit {
+        #[topic]
+        addr: Symbol,
+        time: u64,
+        amount: i128,
+    }
+
+    let event = Deposit {
+        addr: symbol_short!("user"),
+        time: 1000u64,
+        amount: 500i128,
+    };
+    env.as_contract(&id, || {
+        event.publish(&env);
+    });
+
+    let data: Val = (1000u64, 500i128).into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("deposit"), symbol_short!("user")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
+}
+
+#[test]
 fn test_data_map() {
     let env = Env::default();
 
@@ -477,6 +517,56 @@ fn test_data_map_no_data() {
         contract_id: Some(id.contract_id()),
         body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
             topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
+}
+
+#[test]
+fn test_data_map_sorts_fields() {
+    let env = Env::default();
+
+    #[contract]
+    pub struct Contract;
+    let id = env.register(Contract, ());
+
+    #[contractevent(data_format = "map")]
+    pub struct Deposit {
+        #[topic]
+        addr: Symbol,
+        time: u64,
+        amount: i128,
+    }
+
+    let event = Deposit {
+        addr: symbol_short!("user"),
+        time: 1000u64,
+        amount: 500i128,
+    };
+    env.as_contract(&id, || {
+        event.publish(&env);
+    });
+
+    let data: Val = map![
+        &env,
+        (
+            symbol_short!("amount"),
+            <_ as IntoVal<Env, Val>>::into_val(&500i128, &env),
+        ),
+        (
+            symbol_short!("time"),
+            <_ as IntoVal<Env, Val>>::into_val(&1000u64, &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("deposit"), symbol_short!("user")].into(),
             data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
         }),
     };
