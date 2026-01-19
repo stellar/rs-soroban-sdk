@@ -174,7 +174,7 @@ fn test_from_str_contract_debug_roundtrip() {
 // Error tests for unsupported strkey types
 
 #[test]
-#[should_panic(expected = "unsupported strkey type")]
+#[should_panic(expected = "invalid strkey")]
 fn test_from_str_private_key_panics() {
     let env = Env::default();
     // S... private key strkey
@@ -183,7 +183,7 @@ fn test_from_str_private_key_panics() {
 }
 
 #[test]
-#[should_panic(expected = "unsupported strkey type")]
+#[should_panic(expected = "invalid strkey")]
 fn test_from_str_preauth_tx_panics() {
     let env = Env::default();
     // T... pre-auth tx strkey
@@ -192,7 +192,7 @@ fn test_from_str_preauth_tx_panics() {
 }
 
 #[test]
-#[should_panic(expected = "unsupported strkey type")]
+#[should_panic(expected = "invalid strkey")]
 fn test_from_str_hash_x_panics() {
     let env = Env::default();
     // X... hash-x strkey
@@ -201,7 +201,7 @@ fn test_from_str_hash_x_panics() {
 }
 
 #[test]
-#[should_panic(expected = "unsupported strkey type")]
+#[should_panic(expected = "invalid strkey")]
 fn test_from_str_invalid_strkey_panics() {
     let env = Env::default();
     // Invalid strkey (random garbage)

@@ -200,7 +200,7 @@ impl MuxedAddress {
         match strkey.as_bytes().first() {
             Some(b'G') | Some(b'C') => Address::from_str(env, strkey).into(),
             Some(b'M') => MuxedAddress::from_muxed_strkey(env, strkey.as_bytes()),
-            _ => sdk_panic!("unsupported strkey type for MuxedAddress"),
+            _ => sdk_panic!("invalid strkey: only G... (account), M... (muxed account), and C... (contract) addresses are supported"),
         }
     }
 
