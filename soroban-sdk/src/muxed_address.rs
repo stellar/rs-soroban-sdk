@@ -217,6 +217,10 @@ impl MuxedAddress {
         let env = strkey.env();
         let len = strkey.len() as usize;
 
+        if len == 0 {
+            sdk_panic!("strkey cannot be empty");
+        }
+
         // Read strkey bytes into buffer
         let mut strkey_buf = [0u8; 69];
         if len > strkey_buf.len() {
@@ -247,6 +251,10 @@ impl MuxedAddress {
     pub fn from_string_bytes(strkey: &crate::Bytes) -> Self {
         let env = strkey.env();
         let len = strkey.len() as usize;
+
+        if len == 0 {
+            sdk_panic!("strkey cannot be empty");
+        }
 
         // Read strkey bytes into buffer
         let mut strkey_buf = [0u8; 69];
