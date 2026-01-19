@@ -1604,7 +1604,7 @@ dependencies = [
 [[package]]
 name = "stellar-strkey"
 version = "0.0.15"
-source = "git+https://github.com/stellar/rs-stellar-strkey?branch=noalloc#47c504ef627a3deb918d9cf3850cb262d258de6d"
+source = "git+https://github.com/stellar/rs-stellar-strkey?branch=noalloc#4219f70a5321f57fd56b9cfc89b96505a772839f"
 dependencies = [
  "crate-git-revision",
  "data-encoding",
