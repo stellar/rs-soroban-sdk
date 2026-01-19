@@ -180,6 +180,9 @@ impl From<&Address> for MuxedAddress {
     }
 }
 
+/// Maximum length of a Stellar strkey (muxed account M... addresses are the longest at 69 bytes).
+const MAX_STRKEY_LEN: usize = 69;
+
 impl MuxedAddress {
     /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey.
     ///
@@ -222,8 +225,7 @@ impl MuxedAddress {
         }
 
         // Read strkey bytes into buffer.
-        // 69 is the maximum length of a Stellar strkey (muxed account M... addresses).
-        let mut strkey_buf = [0u8; 69];
+        let mut strkey_buf = [0u8; MAX_STRKEY_LEN];
         if len > strkey_buf.len() {
             sdk_panic!("strkey too long");
         }
@@ -258,8 +260,7 @@ impl MuxedAddress {
         }
 
         // Read strkey bytes into buffer.
-        // 69 is the maximum length of a Stellar strkey (muxed account M... addresses).
-        let mut strkey_buf = [0u8; 69];
+        let mut strkey_buf = [0u8; MAX_STRKEY_LEN];
         if len > strkey_buf.len() {
             sdk_panic!("strkey too long");
         }
