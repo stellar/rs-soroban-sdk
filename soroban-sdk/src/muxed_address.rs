@@ -180,9 +180,6 @@ impl From<&Address> for MuxedAddress {
     }
 }
 
-/// Maximum length of a Stellar strkey (muxed account M... addresses are the longest at 69 bytes).
-const MAX_STRKEY_LEN: usize = 69;
-
 impl MuxedAddress {
     /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey.
     ///
@@ -253,12 +250,10 @@ impl MuxedAddress {
         use crate::xdr::{FromXdr, ScAddressType, ScValType};
         use stellar_strkey::ed25519::MuxedAccount;
 
-        const SCVAL_ADDRESS: i32 = ScValType::Address as i32;
-        const SCADDRESS_MUXED_ACCOUNT: i32 = ScAddressType::MuxedAccount as i32;
-
         // Copy strkey bytes into buffer for parsing.
-        let len = strkey.len() as usize;
+        const MAX_STRKEY_LEN: usize = 69;
         let mut strkey_buf = [0u8; MAX_STRKEY_LEN];
+        let len = strkey.len() as usize;
         if len > strkey_buf.len() {
             sdk_panic!("strkey too long");
         }
@@ -271,6 +266,8 @@ impl MuxedAddress {
         // XDR layout for ScVal::Address(ScAddress::MuxedAccount(MuxedEd25519Account))
         // MuxedEd25519Account: { id: uint64, ed25519: uint256 }
         // Total: 48 bytes
+        const SCVAL_ADDRESS: i32 = ScValType::Address as i32;
+        const SCADDRESS_MUXED_ACCOUNT: i32 = ScAddressType::MuxedAccount as i32;
         let mut buf = [0u8; 48];
         buf[0..4].copy_from_slice(&SCVAL_ADDRESS.to_be_bytes());
         buf[4..8].copy_from_slice(&SCADDRESS_MUXED_ACCOUNT.to_be_bytes());
