@@ -174,7 +174,7 @@ fn test_from_str_contract_debug_roundtrip() {
 // Error tests for unsupported strkey types
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "couldn't process the string as strkey")]
 fn test_from_str_private_key_panics() {
     let env = Env::default();
     // S... private key strkey
@@ -183,7 +183,7 @@ fn test_from_str_private_key_panics() {
 }
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "couldn't process the string as strkey")]
 fn test_from_str_preauth_tx_panics() {
     let env = Env::default();
     // T... pre-auth tx strkey
@@ -192,7 +192,7 @@ fn test_from_str_preauth_tx_panics() {
 }
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "couldn't process the string as strkey")]
 fn test_from_str_hash_x_panics() {
     let env = Env::default();
     // X... hash-x strkey
@@ -201,7 +201,7 @@ fn test_from_str_hash_x_panics() {
 }
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "unexpected strkey length")]
 fn test_from_str_invalid_strkey_panics() {
     let env = Env::default();
     // Invalid strkey (random garbage)
@@ -246,7 +246,7 @@ fn test_from_string_bytes_contract() {
 }
 
 #[test]
-#[should_panic(expected = "strkey cannot be empty")]
+#[should_panic(expected = "unexpected strkey length")]
 fn test_from_string_bytes_empty_panics() {
     let env = Env::default();
     let strkey_bytes = crate::Bytes::from_slice(&env, &[]);
@@ -254,7 +254,7 @@ fn test_from_string_bytes_empty_panics() {
 }
 
 #[test]
-#[should_panic(expected = "strkey cannot be empty")]
+#[should_panic(expected = "unexpected strkey length")]
 fn test_from_string_empty_panics() {
     let env = Env::default();
     let strkey = crate::String::from_str(&env, "");
@@ -262,7 +262,7 @@ fn test_from_string_empty_panics() {
 }
 
 #[test]
-#[should_panic(expected = "invalid strkey")]
+#[should_panic(expected = "unexpected strkey length")]
 fn test_from_string_bytes_invalid_strkey_panics() {
     let env = Env::default();
     let strkey_bytes = crate::Bytes::from_slice(&env, b"INVALID_NOT_A_REAL_STRKEY");

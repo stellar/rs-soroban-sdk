@@ -4,7 +4,7 @@ use super::{
     env::internal::{AddressObject, Env as _, MuxedAddressObject, Tag},
     ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
-use crate::{env::internal, unwrap::UnwrapInfallible, Address};
+use crate::{env::internal, unwrap::UnwrapInfallible, Address, Bytes, String};
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::{ScAddress, ScVal};
@@ -198,9 +198,11 @@ impl MuxedAddress {
     /// different environments (e.g. different chains).
     pub fn from_str(env: &Env, strkey: &str) -> MuxedAddress {
         match strkey.as_bytes().first() {
-            Some(b'G') | Some(b'C') => Address::from_str(env, strkey).into(),
-            Some(b'M') => MuxedAddress::from_muxed_strkey(env, strkey.as_bytes()),
-            _ => sdk_panic!("invalid strkey: only G... (account), M... (muxed account), and C... (contract) addresses are supported"),
+            Some(b'M') => MuxedAddress::from_muxed_strkey_bytes(
+                env,
+                &Bytes::from_slice(env, strkey.as_bytes()),
+            ),
+            _ => Address::from_str(env, strkey).into(),
         }
     }
 
@@ -216,25 +218,12 @@ impl MuxedAddress {
     /// Prefer using the `MuxedAddress` directly as input or output argument. Only
     /// use this in special cases when addresses need to be shared between
     /// different environments (e.g. different chains).
-    pub fn from_string(strkey: &crate::String) -> Self {
+    pub fn from_string(strkey: &String) -> Self {
         let env = strkey.env();
-        let len = strkey.len() as usize;
-
-        if len == 0 {
-            sdk_panic!("strkey cannot be empty");
-        }
-
-        // Read strkey bytes into buffer.
-        let mut strkey_buf = [0u8; MAX_STRKEY_LEN];
-        if len > strkey_buf.len() {
-            sdk_panic!("strkey too long");
-        }
-        strkey.copy_into_slice(&mut strkey_buf[..len]);
-
-        match strkey_buf[0] {
-            b'G' | b'C' => Address::from_string(strkey).into(),
-            b'M' => MuxedAddress::from_muxed_strkey(env, &strkey_buf[..len]),
-            _ => sdk_panic!("invalid strkey: only G... (account), M... (muxed account), and C... (contract) addresses are supported"),
+        let strkey_bytes = strkey.to_bytes();
+        match strkey_bytes.first() {
+            Some(b'M') => MuxedAddress::from_muxed_strkey_bytes(env, &strkey_bytes),
+            _ => Address::from_string(strkey).into(),
         }
     }
 
@@ -251,39 +240,32 @@ impl MuxedAddress {
     /// Prefer using the `MuxedAddress` directly as input or output argument. Only
     /// use this in special cases when addresses need to be shared between
     /// different environments (e.g. different chains).
-    pub fn from_string_bytes(strkey: &crate::Bytes) -> Self {
+    pub fn from_string_bytes(strkey: &Bytes) -> Self {
         let env = strkey.env();
-        let len = strkey.len() as usize;
-
-        if len == 0 {
-            sdk_panic!("strkey cannot be empty");
+        match strkey.first() {
+            Some(b'M') => MuxedAddress::from_muxed_strkey_bytes(env, strkey),
+            _ => Address::from_string_bytes(strkey).into(),
         }
+    }
 
-        // Read strkey bytes into buffer.
+    /// Internal: parses a muxed account strkey (M...) and builds MuxedAddress.
+    fn from_muxed_strkey_bytes(env: &Env, strkey: &Bytes) -> Self {
+        use crate::xdr::{FromXdr, ScAddressType, ScValType};
+        use stellar_strkey::ed25519::MuxedAccount;
+
+        const SCVAL_ADDRESS: i32 = ScValType::Address as i32;
+        const SCADDRESS_MUXED_ACCOUNT: i32 = ScAddressType::MuxedAccount as i32;
+
+        // Copy strkey bytes into buffer for parsing.
+        let len = strkey.len() as usize;
         let mut strkey_buf = [0u8; MAX_STRKEY_LEN];
         if len > strkey_buf.len() {
             sdk_panic!("strkey too long");
         }
         strkey.copy_into_slice(&mut strkey_buf[..len]);
 
-        match strkey_buf[0] {
-            b'G' | b'C' => Address::from_string_bytes(strkey).into(),
-            b'M' => MuxedAddress::from_muxed_strkey(env, &strkey_buf[..len]),
-            _ => sdk_panic!("invalid strkey: only G... (account), M... (muxed account), and C... (contract) addresses are supported"),
-        }
-    }
-
-    /// Internal: parses a muxed account strkey (M...) and builds MuxedAddress.
-    fn from_muxed_strkey(env: &Env, strkey: &[u8]) -> Self {
-        use crate::xdr::{FromXdr, ScAddressType, ScValType};
-        use crate::Bytes;
-        use stellar_strkey::ed25519::MuxedAccount;
-
-        const SCVAL_ADDRESS: i32 = ScValType::Address as i32;
-        const SCADDRESS_MUXED_ACCOUNT: i32 = ScAddressType::MuxedAccount as i32;
-
-        let muxed =
-            MuxedAccount::from_slice(strkey).unwrap_or_else(|_| sdk_panic!("invalid strkey"));
+        let muxed = MuxedAccount::from_slice(&strkey_buf[..len])
+            .unwrap_or_else(|_| sdk_panic!("invalid strkey"));
 
         // Build XDR bytes
         // XDR layout for ScVal::Address(ScAddress::MuxedAccount(MuxedEd25519Account))
