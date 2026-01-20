@@ -1,7 +1,7 @@
 use soroban_sdk_macros::{contract, contractimpl};
 
 use crate::testutils::{Address as _, MuxedAddress as _};
-use crate::{self as soroban_sdk};
+use crate::{self as soroban_sdk, Bytes, String};
 use crate::{
     env::xdr::{AccountId, ScAddress, Uint256},
     Address, Env, MuxedAddress, TryFromVal,
@@ -109,8 +109,6 @@ fn test_accept_muxed_address_argument_in_contract() {
     );
 }
 
-// Tests for MuxedAddress::from_str
-
 #[test]
 fn test_from_str_account() {
     let env = Env::default();
@@ -171,8 +169,6 @@ fn test_from_str_contract_debug_roundtrip() {
     assert!(debug_output.contains(strkey));
 }
 
-// Error tests for unsupported strkey types
-
 #[test]
 #[should_panic(expected = "couldn't process the string as strkey")]
 fn test_from_str_private_key_panics() {
@@ -215,7 +211,7 @@ fn test_from_str_invalid_strkey_panics() {
 fn test_from_string_bytes_account() {
     let env = Env::default();
     let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
-    let strkey_bytes = crate::Bytes::from_slice(&env, strkey.as_bytes());
+    let strkey_bytes = Bytes::from_slice(&env, strkey.as_bytes());
     let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
     let expected_address = Address::from_str(&env, strkey);
     assert_eq!(muxed.address(), expected_address);
@@ -227,7 +223,7 @@ fn test_from_string_bytes_muxed_account() {
     let env = Env::default();
     let muxed_strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
     let base_strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
-    let strkey_bytes = crate::Bytes::from_slice(&env, muxed_strkey.as_bytes());
+    let strkey_bytes = Bytes::from_slice(&env, muxed_strkey.as_bytes());
     let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
     let expected_address = Address::from_str(&env, base_strkey);
     assert_eq!(muxed.address(), expected_address);
@@ -238,7 +234,7 @@ fn test_from_string_bytes_muxed_account() {
 fn test_from_string_bytes_contract() {
     let env = Env::default();
     let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
-    let strkey_bytes = crate::Bytes::from_slice(&env, strkey.as_bytes());
+    let strkey_bytes = Bytes::from_slice(&env, strkey.as_bytes());
     let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
     let expected_address = Address::from_str(&env, strkey);
     assert_eq!(muxed.address(), expected_address);
@@ -249,7 +245,7 @@ fn test_from_string_bytes_contract() {
 #[should_panic(expected = "unexpected strkey length")]
 fn test_from_string_bytes_empty_panics() {
     let env = Env::default();
-    let strkey_bytes = crate::Bytes::from_slice(&env, &[]);
+    let strkey_bytes = Bytes::from_slice(&env, &[]);
     MuxedAddress::from_string_bytes(&strkey_bytes);
 }
 
@@ -257,7 +253,7 @@ fn test_from_string_bytes_empty_panics() {
 #[should_panic(expected = "unexpected strkey length")]
 fn test_from_string_empty_panics() {
     let env = Env::default();
-    let strkey = crate::String::from_str(&env, "");
+    let strkey = String::from_str(&env, "");
     MuxedAddress::from_string(&strkey);
 }
 
@@ -265,16 +261,14 @@ fn test_from_string_empty_panics() {
 #[should_panic(expected = "unexpected strkey length")]
 fn test_from_string_bytes_invalid_strkey_panics() {
     let env = Env::default();
-    let strkey_bytes = crate::Bytes::from_slice(&env, b"INVALID_NOT_A_REAL_STRKEY");
+    let strkey_bytes = Bytes::from_slice(&env, b"INVALID_NOT_A_REAL_STRKEY");
     MuxedAddress::from_string_bytes(&strkey_bytes);
 }
-
-// Tests for MuxedAddress::from_string (the String type variant)
 
 #[test]
 fn test_from_string_account() {
     let env = Env::default();
-    let strkey = crate::String::from_str(
+    let strkey = String::from_str(
         &env,
         "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5",
     );
@@ -290,7 +284,7 @@ fn test_from_string_account() {
 #[test]
 fn test_from_string_muxed_account() {
     let env = Env::default();
-    let muxed_strkey = crate::String::from_str(
+    let muxed_strkey = String::from_str(
         &env,
         "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU",
     );
@@ -304,7 +298,7 @@ fn test_from_string_muxed_account() {
 #[test]
 fn test_from_string_contract() {
     let env = Env::default();
-    let strkey = crate::String::from_str(
+    let strkey = String::from_str(
         &env,
         "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE",
     );
@@ -330,7 +324,7 @@ fn test_from_str_muxed_exactly_69_chars() {
 }
 
 #[test]
-#[should_panic(expected = "strkey too long")]
+#[should_panic(expected = "unexpected strkey length")]
 fn test_from_str_muxed_strkey_too_long() {
     let env = Env::default();
     // 70+ character string starting with M (exceeds MAX_STRKEY_LEN of 69)

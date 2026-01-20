@@ -255,12 +255,12 @@ impl MuxedAddress {
         let mut strkey_buf = [0u8; MAX_STRKEY_LEN];
         let len = strkey.len() as usize;
         if len > strkey_buf.len() {
-            sdk_panic!("strkey too long");
+            sdk_panic!("unexpected strkey length");
         }
         strkey.copy_into_slice(&mut strkey_buf[..len]);
 
         let muxed = MuxedAccount::from_slice(&strkey_buf[..len])
-            .unwrap_or_else(|_| sdk_panic!("invalid strkey"));
+            .unwrap_or_else(|_| sdk_panic!("muxed strkey invalid"));
 
         // Build XDR bytes
         // XDR layout for ScVal::Address(ScAddress::MuxedAccount(MuxedEd25519Account))
