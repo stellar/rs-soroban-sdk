@@ -121,7 +121,7 @@ impl Events {
     /// - [Map]
     /// - [Bytes]/[BytesN][crate::BytesN] longer than 32 bytes
     /// - [contracttype]
-    #[deprecated(note = "use the #[contractevent] macro on a contract event type")]
+    #[deprecated(note = "use the #\\[contractevent\\] macro on a contract event type")]
     #[inline(always)]
     pub fn publish<T, D>(&self, topics: T, data: D)
     where

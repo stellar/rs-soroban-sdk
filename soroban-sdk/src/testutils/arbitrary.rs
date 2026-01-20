@@ -1439,7 +1439,7 @@ mod fuzz_test_helpers {
     ///     let r = contract.try_deposit(deposit_address, input.deposit_amount);
     /// });
     /// ```
-    #[deprecated(note = "use [Env::try_invoke] or the try_ functions on a contract client")]
+    #[deprecated(note = "use Env::try_invoke or the try_ functions on a contract client")]
     pub fn fuzz_catch_panic<F, R>(f: F) -> std::thread::Result<R>
     where
         F: FnOnce() -> R,

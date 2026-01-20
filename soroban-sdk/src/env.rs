@@ -450,7 +450,7 @@ impl Env {
 
     /// Get the [Logs] for logging debug events.
     #[inline(always)]
-    #[deprecated(note = "use [Env::logs]")]
+    #[deprecated(note = "use Env::logs")]
     #[doc(hidden)]
     pub fn logger(&self) -> Logs {
         self.logs()
@@ -1050,7 +1050,7 @@ impl Env {
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
-    #[deprecated(note = "use [Env::register_stellar_asset_contract_v2]")]
+    #[deprecated(note = "use Env::register_stellar_asset_contract_v2")]
     pub fn register_stellar_asset_contract(&self, admin: Address) -> Address {
         self.register_stellar_asset_contract_v2(admin).address()
     }

@@ -108,7 +108,7 @@ impl Logs {
         Logs(env.clone())
     }
 
-    #[deprecated(note = "use [Logs::add]")]
+    #[deprecated(note = "use Logs::add")]
     #[inline(always)]
     pub fn log(&self, msg: &'static str, args: &[Val]) {
         self.add(msg, args);
