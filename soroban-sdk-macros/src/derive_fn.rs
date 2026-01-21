@@ -18,7 +18,7 @@ pub fn derive_pub_fns<'a>(
     crate_path: &Path,
     impl_ty: &Type,
     fns: impl IntoIterator<Item = &'a syn_ext::Fn>,
-    trait_ident: Option<&Ident>,
+    trait_ident: Option<&Path>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     fns.into_iter()
@@ -43,7 +43,7 @@ pub fn derive_pub_fn(
     ident: &Ident,
     attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
-    trait_ident: Option<&Ident>,
+    trait_ident: Option<&Path>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
@@ -155,7 +155,27 @@ pub fn derive_pub_fn(
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let arg_count = slice_args.len();
     let use_trait = if let Some(t) = trait_ident {
-        quote! { use super::#t }
+        // Generated code is inside a hidden module, so we need to adjust the path
+        // to correctly reference the trait from within that nested scope.
+        if t.leading_colon.is_some() {
+            // Global paths (::extern_crate::Trait) are absolute, work as-is
+            quote! { use #t }
+        } else {
+            let first_segment = t.segments.first().map(|s| s.ident.to_string());
+            match first_segment.as_deref() {
+                // crate:: paths are absolute within the crate, work as-is
+                Some("crate") => quote! { use #t },
+                // self:: paths need self replaced with super since we're one module deeper
+                Some("self") => {
+                    let rest = t.segments.iter().skip(1);
+                    quote! { use super::#(#rest)::* }
+                }
+                // super:: paths need an additional super:: prefix
+                Some("super") => quote! { use super::#t },
+                // All other paths need super:: to reach parent scope
+                _ => quote! { use super::#t },
+            }
+        }
     } else {
         quote! {}
     };
@@ -232,7 +252,7 @@ pub fn derive_pub_fn(
 pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
-    trait_ident: Option<&Ident>,
+    trait_ident: Option<&Path>,
     method_idents: impl Iterator<Item = &'a Ident>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
@@ -248,7 +268,15 @@ pub fn derive_contract_function_registration_ctor<'a>(
         })
         .multiunzip();
 
-    let trait_str = quote!(#trait_ident).to_string();
+    let trait_str = trait_ident
+        .map(|p| {
+            p.segments
+                .iter()
+                .map(|s| s.ident.to_string())
+                .collect::<Vec<_>>()
+                .join("_")
+        })
+        .unwrap_or_else(|| "None".to_string());
     let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
     let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
 

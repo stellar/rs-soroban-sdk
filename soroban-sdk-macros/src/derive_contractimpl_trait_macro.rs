@@ -68,10 +68,11 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
                 $impl_fns:expr,
                 $client_name:literal,
                 $args_name:literal,
-                $spec_name:literal $(,)?
+                $spec_name:literal,
+                $trait_ident:path $(,)?
             ) => {
                 #path::contractimpl_trait_default_fns_not_overridden!(
-                    trait_ident = #trait_ident,
+                    trait_ident = $trait_ident,
                     trait_default_fns = [#(#fns),*],
                     impl_ident = $impl_ident,
                     impl_fns = $impl_fns,
@@ -90,7 +91,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
 }
 
 pub fn generate_call_to_contractimpl_for_trait(
-    trait_ident: &Ident,
+    trait_ident: &Path,
     impl_ident: &Type,
     pub_methods: &[ImplItemFn],
     client_ident: &str,
@@ -105,6 +106,7 @@ pub fn generate_call_to_contractimpl_for_trait(
             #client_ident,
             #args_ident,
             #spec_ident,
+            #trait_ident,
         );
     }
 }

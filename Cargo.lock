@@ -1744,6 +1744,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_contracttrait_impl_qualified"
+version = "25.0.0-rc.2"
+dependencies = [
+ "soroban-sdk",
+ "test_contracttrait_trait",
+]
+
+[[package]]
 name = "test_contracttrait_trait"
 version = "25.0.0-rc.2"
 dependencies = [
