@@ -184,9 +184,9 @@ impl MuxedAddress {
     /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey.
     ///
     /// Supported strkey types:
-    /// - Account keys (G...)
-    /// - Muxed account keys (M...)
-    /// - Contract keys (C...)
+    /// - Account address (G...)
+    /// - Muxed account address (M...)
+    /// - Contract address (C...)
     ///
     /// Any other strkey type will cause this to panic.
     ///
@@ -206,9 +206,9 @@ impl MuxedAddress {
     /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey.
     ///
     /// Supported strkey types:
-    /// - Account keys (G...)
-    /// - Muxed account keys (M...)
-    /// - Contract keys (C...)
+    /// - Account address (G...)
+    /// - Muxed account address (M...)
+    /// - Contract address (C...)
     ///
     /// Any other strkey type will cause this to panic.
     ///
@@ -228,9 +228,9 @@ impl MuxedAddress {
     /// in raw bytes form.
     ///
     /// Supported strkey types:
-    /// - Account keys (G...)
-    /// - Muxed account keys (M...)
-    /// - Contract keys (C...)
+    /// - Account address (G...)
+    /// - Muxed account address (M...)
+    /// - Contract address (C...)
     ///
     /// Any other strkey type will cause this to panic.
     ///
