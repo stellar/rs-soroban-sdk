@@ -49,7 +49,7 @@ pub fn derive_pub_fn(
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
-    let call = quote! { <super::#impl_ty>::#ident };
+    let call = quote! { <#impl_ty>::#ident };
 
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
@@ -155,27 +155,7 @@ pub fn derive_pub_fn(
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let arg_count = slice_args.len();
     let use_trait = if let Some(t) = trait_ident {
-        // Generated code is inside a hidden module, so we need to adjust the path
-        // to correctly reference the trait from within that nested scope.
-        if t.leading_colon.is_some() {
-            // Global paths (::extern_crate::Trait) are absolute, work as-is
-            quote! { use #t }
-        } else {
-            let first_segment = t.segments.first().map(|s| s.ident.to_string());
-            match first_segment.as_deref() {
-                // crate:: paths are absolute within the crate, work as-is
-                Some("crate") => quote! { use #t },
-                // self:: paths need self replaced with super since we're one module deeper
-                Some("self") => {
-                    let rest = t.segments.iter().skip(1);
-                    quote! { use super::#(#rest)::* }
-                }
-                // super:: paths need an additional super:: prefix
-                Some("super") => quote! { use super::#t },
-                // All other paths need super:: to reach parent scope
-                _ => quote! { use super::#t },
-            }
-        }
+        quote! { use #t }
     } else {
         quote! {}
     };
@@ -186,10 +166,17 @@ pub fn derive_pub_fn(
         return Err(quote! { #(#compile_errors)* });
     }
 
+    let invoke_raw_ident = format_ident!("{}__invoke_raw", hidden_mod_ident);
+    let invoke_raw_slice_ident = format_ident!("{}__invoke_raw_slice", hidden_mod_ident);
+    let invoke_raw_extern_ident = format_ident!("{}__invoke_raw_extern", hidden_mod_ident);
+
     let testutils_only_code = if cfg!(feature = "testutils") {
         Some(quote! {
+            #[doc(hidden)]
+            #(#attrs)*
+            #[allow(non_snake_case)]
             #[deprecated(note = #deprecated_note)]
-            pub fn invoke_raw_slice(
+            pub fn #invoke_raw_slice_ident(
                 env: #crate_path::Env,
                 args: &[#crate_path::Val],
             ) -> #crate_path::Val {
@@ -197,7 +184,7 @@ pub fn derive_pub_fn(
                     panic!("invalid number of input arguments: {} expected, got {}", #arg_count, args.len());
                 }
                 #[allow(deprecated)]
-                invoke_raw(env, #(#slice_args),*)
+                #invoke_raw_ident(env, #(#slice_args),*)
             }
         })
     } else {
@@ -215,35 +202,32 @@ pub fn derive_pub_fn(
         #[doc(hidden)]
         #(#attrs)*
         #[allow(non_snake_case)]
-        pub mod #hidden_mod_ident {
-            use super::*;
-
-            #[deprecated(note = #deprecated_note)]
-            pub fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
-                #use_trait;
-                <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
-                    #[allow(deprecated)]
-                    &#call(
-                        #env_call
-                        #(#wrap_calls),*
-                    ),
-                    &env
-                )
-            }
-
-            #testutils_only_code
-
-            #[deprecated(note = #deprecated_note)]
-            #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub extern "C" fn invoke_raw_extern(#(#wrap_args),*) -> #crate_path::Val {
+        #[deprecated(note = #deprecated_note)]
+        pub fn #invoke_raw_ident(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+            #use_trait;
+            <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
                 #[allow(deprecated)]
-                invoke_raw(
-                    #crate_path::Env::default(),
-                    #(#passthrough_calls),*
-                )
-            }
+                &#call(
+                    #env_call
+                    #(#wrap_calls),*
+                ),
+                &env
+            )
+        }
 
-            use super::*;
+        #testutils_only_code
+
+        #[doc(hidden)]
+        #(#attrs)*
+        #[allow(non_snake_case)]
+        #[deprecated(note = #deprecated_note)]
+        #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
+        pub extern "C" fn #invoke_raw_extern_ident(#(#wrap_args),*) -> #crate_path::Val {
+            #[allow(deprecated)]
+            #invoke_raw_ident(
+                #crate_path::Env::default(),
+                #(#passthrough_calls),*
+            )
         }
     })
 }
@@ -263,7 +247,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
         .map(|ident| {
             let ident_str = format!("{}", ident);
-            let wrap_ident = format_ident!("__{}__{}", ty_str, ident_str);
+            let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
             (ident_str, wrap_ident)
         })
         .multiunzip();
@@ -289,7 +273,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
                 <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
                     #idents,
                     #[allow(deprecated)]
-                    &#wrap_idents::invoke_raw_slice,
+                    &#wrap_idents,
                 );
             )*
         }
