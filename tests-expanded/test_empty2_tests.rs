@@ -143,7 +143,7 @@ impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor() {
+fn __Contract_None_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -155,7 +155,7 @@ fn __Contract__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                    __Contract_None_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
                 };
                 core::default::Default::default()
             }
