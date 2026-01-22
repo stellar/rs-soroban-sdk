@@ -3393,7 +3393,7 @@ impl ContractGlobalPathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractGlobalPath_test_contracttrait_trait_AllTypes_959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor(
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -3406,7 +3406,7 @@ fn __ContractGlobalPath_test_contracttrait_trait_AllTypes_959aee9d42336ade924165
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractGlobalPath_test_contracttrait_trait_AllTypes_959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor();
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor();
                 };
                 core::default::Default::default()
             }
@@ -3529,7 +3529,7 @@ fn __ContractGlobalPath_test_contracttrait_trait_AllTypes_959aee9d42336ade924165
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractGlobalPath_test_contracttrait_trait_AllTypes_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -3542,7 +3542,7 @@ fn __ContractGlobalPath_test_contracttrait_trait_AllTypes_e3b0c44298fc1c149afbf4
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractGlobalPath_test_contracttrait_trait_AllTypes_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
                 };
                 core::default::Default::default()
             }
@@ -4016,7 +4016,7 @@ impl ContractCratePathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractCratePath_crate_traits_CratePathTrait_1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor(
+fn __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -4029,7 +4029,7 @@ fn __ContractCratePath_crate_traits_CratePathTrait_1eead55085fa77445f5d7af954169
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractCratePath_crate_traits_CratePathTrait_1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor();
+                    __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor();
                 };
                 core::default::Default::default()
             }
@@ -4047,7 +4047,7 @@ fn __ContractCratePath_crate_traits_CratePathTrait_1eead55085fa77445f5d7af954169
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractCratePath_crate_traits_CratePathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
+fn __ContractCratePath__crate_traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -4060,7 +4060,7 @@ fn __ContractCratePath_crate_traits_CratePathTrait_e3b0c44298fc1c149afbf4c8996fb
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractCratePath_crate_traits_CratePathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                    __ContractCratePath__crate_traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
                 };
                 core::default::Default::default()
             }
@@ -4526,7 +4526,7 @@ impl ContractSelfPathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractSelfPath_self_SelfPathTrait_dc5f37562c93d76ec88b95b8afc4265e99af33ca688eed9a0b515ee0a60c5b8d_ctor(
+fn __ContractSelfPath__self_SelfPathTrait__dc5f37562c93d76ec88b95b8afc4265e99af33ca688eed9a0b515ee0a60c5b8d_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -4539,7 +4539,7 @@ fn __ContractSelfPath_self_SelfPathTrait_dc5f37562c93d76ec88b95b8afc4265e99af33c
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractSelfPath_self_SelfPathTrait_dc5f37562c93d76ec88b95b8afc4265e99af33ca688eed9a0b515ee0a60c5b8d_ctor();
+                    __ContractSelfPath__self_SelfPathTrait__dc5f37562c93d76ec88b95b8afc4265e99af33ca688eed9a0b515ee0a60c5b8d_ctor();
                 };
                 core::default::Default::default()
             }
@@ -4557,7 +4557,7 @@ fn __ContractSelfPath_self_SelfPathTrait_dc5f37562c93d76ec88b95b8afc4265e99af33c
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractSelfPath_self_SelfPathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
+fn __ContractSelfPath__self_SelfPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -4570,7 +4570,7 @@ fn __ContractSelfPath_self_SelfPathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractSelfPath_self_SelfPathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                    __ContractSelfPath__self_SelfPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
                 };
                 core::default::Default::default()
             }
@@ -5044,7 +5044,7 @@ pub mod submodule {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(unused)]
-    fn __ContractSuperPath_super_SuperPathTrait_027cbc237c9f13b03e39d11891fd87f1aacbf08c9bcea0bcd8a3a5a7226d3ade_ctor(
+    fn __ContractSuperPath__super_SuperPathTrait__027cbc237c9f13b03e39d11891fd87f1aacbf08c9bcea0bcd8a3a5a7226d3ade_ctor(
     ) {
         #[allow(unsafe_code)]
         {
@@ -5057,7 +5057,7 @@ pub mod submodule {
                 #[allow(non_snake_case)]
                 extern "C" fn f() -> ::ctor::__support::CtorRetType {
                     unsafe {
-                        __ContractSuperPath_super_SuperPathTrait_027cbc237c9f13b03e39d11891fd87f1aacbf08c9bcea0bcd8a3a5a7226d3ade_ctor();
+                        __ContractSuperPath__super_SuperPathTrait__027cbc237c9f13b03e39d11891fd87f1aacbf08c9bcea0bcd8a3a5a7226d3ade_ctor();
                     };
                     core::default::Default::default()
                 }
@@ -5075,7 +5075,7 @@ pub mod submodule {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(unused)]
-    fn __ContractSuperPath_super_SuperPathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
+    fn __ContractSuperPath__super_SuperPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
     ) {
         #[allow(unsafe_code)]
         {
@@ -5088,7 +5088,7 @@ pub mod submodule {
                 #[allow(non_snake_case)]
                 extern "C" fn f() -> ::ctor::__support::CtorRetType {
                     unsafe {
-                        __ContractSuperPath_super_SuperPathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                        __ContractSuperPath__super_SuperPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
                     };
                     core::default::Default::default()
                 }
@@ -8452,7 +8452,7 @@ impl ContractBarePathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractBarePath_AllTypes_959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor(
+fn __ContractBarePath__AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -8465,7 +8465,7 @@ fn __ContractBarePath_AllTypes_959aee9d42336ade92416504111dfbb4e37b0472bbb1e4873
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractBarePath_AllTypes_959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor();
+                    __ContractBarePath__AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor();
                 };
                 core::default::Default::default()
             }
@@ -8588,7 +8588,7 @@ fn __ContractBarePath_AllTypes_959aee9d42336ade92416504111dfbb4e37b0472bbb1e4873
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractBarePath_AllTypes_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
+fn __ContractBarePath__AllTypes__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -8601,7 +8601,7 @@ fn __ContractBarePath_AllTypes_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractBarePath_AllTypes_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                    __ContractBarePath__AllTypes__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
                 };
                 core::default::Default::default()
             }
@@ -8884,7 +8884,7 @@ impl ContractRelativePathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractRelativePath_traits_CratePathTrait_1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor(
+fn __ContractRelativePath__traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -8897,7 +8897,7 @@ fn __ContractRelativePath_traits_CratePathTrait_1eead55085fa77445f5d7af954169483
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractRelativePath_traits_CratePathTrait_1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor();
+                    __ContractRelativePath__traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor();
                 };
                 core::default::Default::default()
             }
@@ -8915,7 +8915,7 @@ fn __ContractRelativePath_traits_CratePathTrait_1eead55085fa77445f5d7af954169483
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractRelativePath_traits_CratePathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
+fn __ContractRelativePath__traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -8928,7 +8928,7 @@ fn __ContractRelativePath_traits_CratePathTrait_e3b0c44298fc1c149afbf4c8996fb924
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractRelativePath_traits_CratePathTrait_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                    __ContractRelativePath__traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
                 };
                 core::default::Default::default()
             }

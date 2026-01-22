@@ -409,7 +409,7 @@ pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor(
+fn __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -422,7 +422,7 @@ fn __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract_CustomAccountInterface_d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                    __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                 };
                 core::default::Default::default()
             }
