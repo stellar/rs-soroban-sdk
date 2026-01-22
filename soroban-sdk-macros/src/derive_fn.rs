@@ -138,7 +138,10 @@ pub fn derive_pub_fn(
     // Generated code parameters.
     let impl_ty_safe_str = ty_to_safe_ident_str(impl_ty);
     let wrap_export_name = &format!("{}", ident);
-    let hidden_mod_ident = format_ident!("__{}__{}", impl_ty_safe_str, ident);
+    let invoke_fn_prefix = format_ident!("__{}__{}", impl_ty_safe_str, ident);
+    let invoke_raw = format_ident!("{}__invoke_raw", invoke_fn_prefix);
+    let invoke_raw_slice = format_ident!("{}__invoke_raw_slice", invoke_fn_prefix);
+    let invoke_raw_extern = format_ident!("{}__invoke_raw_extern", invoke_fn_prefix);
     let deprecated_note = format!(
         "use `{}::new(&env, &contract_id).{}` instead",
         client_ident, &ident
@@ -166,17 +169,13 @@ pub fn derive_pub_fn(
         return Err(quote! { #(#compile_errors)* });
     }
 
-    let invoke_raw_ident = format_ident!("{}__invoke_raw", hidden_mod_ident);
-    let invoke_raw_slice_ident = format_ident!("{}__invoke_raw_slice", hidden_mod_ident);
-    let invoke_raw_extern_ident = format_ident!("{}__invoke_raw_extern", hidden_mod_ident);
-
     let testutils_only_code = if cfg!(feature = "testutils") {
         Some(quote! {
             #[doc(hidden)]
             #(#attrs)*
             #[allow(non_snake_case)]
             #[deprecated(note = #deprecated_note)]
-            pub fn #invoke_raw_slice_ident(
+            pub fn #invoke_raw_slice(
                 env: #crate_path::Env,
                 args: &[#crate_path::Val],
             ) -> #crate_path::Val {
@@ -184,7 +183,7 @@ pub fn derive_pub_fn(
                     panic!("invalid number of input arguments: {} expected, got {}", #arg_count, args.len());
                 }
                 #[allow(deprecated)]
-                #invoke_raw_ident(env, #(#slice_args),*)
+                #invoke_raw(env, #(#slice_args),*)
             }
         })
     } else {
@@ -203,7 +202,7 @@ pub fn derive_pub_fn(
         #(#attrs)*
         #[allow(non_snake_case)]
         #[deprecated(note = #deprecated_note)]
-        pub fn #invoke_raw_ident(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+        pub fn #invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
             #use_trait;
             <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
                 #[allow(deprecated)]
@@ -222,9 +221,9 @@ pub fn derive_pub_fn(
         #[allow(non_snake_case)]
         #[deprecated(note = #deprecated_note)]
         #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-        pub extern "C" fn #invoke_raw_extern_ident(#(#wrap_args),*) -> #crate_path::Val {
+        pub extern "C" fn #invoke_raw_extern(#(#wrap_args),*) -> #crate_path::Val {
             #[allow(deprecated)]
-            #invoke_raw_ident(
+            #invoke_raw(
                 #crate_path::Env::default(),
                 #(#passthrough_calls),*
             )
@@ -262,7 +261,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
         })
         .unwrap_or_else(|| "".to_string());
     let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
-    let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
+    let ctor_ident = format_ident!("__{ty_str}__{trait_str}__{methods_hash}_ctor");
 
     quote! {
         #[doc(hidden)]
