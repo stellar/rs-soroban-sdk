@@ -277,7 +277,7 @@ pub extern "C" fn __Contract__empty__invoke_raw_extern() -> soroban_sdk::Val {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract_None_2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor() {
+fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -289,7 +289,7 @@ fn __Contract_None_2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract_None_2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
+                    __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
                 };
                 core::default::Default::default()
             }
@@ -444,7 +444,7 @@ pub extern "C" fn __Contract__empty2__invoke_raw_extern() -> soroban_sdk::Val {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract_None_a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor() {
+fn __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -456,7 +456,7 @@ fn __Contract_None_a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract_None_a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor();
+                    __Contract__a081c9c13231c3c184333e4fde14f4f10e045d30869e1b800f4338ab8a726ca4_ctor();
                 };
                 core::default::Default::default()
             }

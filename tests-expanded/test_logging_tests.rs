@@ -360,7 +360,7 @@ pub extern "C" fn __Contract__hello__invoke_raw_extern() -> soroban_sdk::Val {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract_None_2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor() {
+fn __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -372,7 +372,7 @@ fn __Contract_None_2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract_None_2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor();
+                    __Contract__2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824_ctor();
                 };
                 core::default::Default::default()
             }

@@ -260,7 +260,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
                 .collect::<Vec<_>>()
                 .join("_")
         })
-        .unwrap_or_else(|| "None".to_string());
+        .unwrap_or_else(|| "".to_string());
     let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
     let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
 

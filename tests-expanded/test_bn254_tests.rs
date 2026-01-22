@@ -1021,7 +1021,7 @@ pub extern "C" fn __Contract__g1_mul__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract_None_0bbda83869b96862f040597ce6f7f1153fcf92be3a6565cd371a4485bb1a9c8d_ctor() {
+fn __Contract__0bbda83869b96862f040597ce6f7f1153fcf92be3a6565cd371a4485bb1a9c8d_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -1033,7 +1033,7 @@ fn __Contract_None_0bbda83869b96862f040597ce6f7f1153fcf92be3a6565cd371a4485bb1a9
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract_None_0bbda83869b96862f040597ce6f7f1153fcf92be3a6565cd371a4485bb1a9c8d_ctor();
+                    __Contract__0bbda83869b96862f040597ce6f7f1153fcf92be3a6565cd371a4485bb1a9c8d_ctor();
                 };
                 core::default::Default::default()
             }
