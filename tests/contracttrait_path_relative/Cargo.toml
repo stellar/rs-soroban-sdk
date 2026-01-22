@@ -1,5 +1,5 @@
 [package]
-name = "test_contracttrait_impl_qualified"
+name = "test_contracttrait_path_relative"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -13,8 +13,6 @@ doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
-test_contracttrait_trait = {path = "../contracttrait_trait"}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
-test_contracttrait_trait = {path = "../contracttrait_trait"}
