@@ -7,9 +7,31 @@ on:
         description: 'Version to bump to'
         required: true
 
+permissions:
+  contents: write
+
 jobs:
 
   bump-version:
     uses: stellar/actions/.github/workflows/rust-bump-version.yml@main
     with:
       version: ${{ inputs.version }}
+
+  bump-fuzz-lock:
+    needs: bump-version
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        ref: 'release/v${{ inputs.version }}'
+    - run: rustup update
+    - run: rustup install nightly
+    - name: Update fuzz Cargo.lock
+      run: cargo +nightly update --manifest-path tests/fuzz/fuzz/Cargo.toml soroban-sdk
+    - name: Commit fuzz Cargo.lock
+      run: |
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add tests/fuzz/fuzz/Cargo.lock
+        git commit -m 'Update fuzz Cargo.lock for ${{ inputs.version }}' || echo 'No changes to commit'
+        git push
