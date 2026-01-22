@@ -9,21 +9,21 @@ use test_contracttrait_trait::{MyEnumUnit, MyEnumVariants, MyStruct};
 
 // =============================================================================
 // Test 1: Global path (::extern_crate::Trait)
+// Uses a fully qualified path for an external crate trait.
+// The leading :: is required for external crate paths.
 // =============================================================================
 
 #[contract]
 pub struct ContractGlobalPath;
 
-// This uses a fully qualified path for the trait instead of importing it.
-// The leading :: is required for external crate paths to distinguish from local modules.
 #[contractimpl(contracttrait)]
 impl ::test_contracttrait_trait::AllTypes for ContractGlobalPath {}
 
 // =============================================================================
 // Test 2: crate:: path (crate::module::Trait)
+// Uses crate:: prefix to reference a trait in another module.
 // =============================================================================
 
-// Define a trait within this crate to test crate:: paths
 pub mod traits {
     use soroban_sdk::{contracttrait, Env};
 
@@ -32,6 +32,14 @@ pub mod traits {
         fn crate_path_method(env: &Env) -> u32 {
             let _ = env;
             100
+        }
+    }
+
+    #[contracttrait]
+    pub trait RelativePathTrait {
+        fn relative_path_method(env: &Env) -> u32 {
+            let _ = env;
+            400
         }
     }
 }
@@ -44,9 +52,9 @@ impl crate::traits::CratePathTrait for ContractCratePath {}
 
 // =============================================================================
 // Test 3: self:: path (self::Trait)
+// Uses self:: prefix to reference a trait in the current module.
 // =============================================================================
 
-// Define a trait in this module to test self:: paths
 #[contracttrait]
 pub trait SelfPathTrait {
     fn self_path_method(env: &Env) -> u32 {
@@ -63,9 +71,9 @@ impl self::SelfPathTrait for ContractSelfPath {}
 
 // =============================================================================
 // Test 4: super:: path (super::Trait)
+// Uses super:: prefix to reference a trait from a parent module.
 // =============================================================================
 
-// Define a trait to be referenced via super::
 #[contracttrait]
 pub trait SuperPathTrait {
     fn super_path_method(env: &Env) -> u32 {
@@ -85,26 +93,15 @@ pub mod submodule {
 }
 
 // =============================================================================
-// Test 5: Bare trait path (Trait) - trait is imported
-// =============================================================================
-
-use test_contracttrait_trait::AllTypes;
-
-#[contract]
-pub struct ContractBarePath;
-
-#[contractimpl(contracttrait)]
-impl AllTypes for ContractBarePath {}
-
-// =============================================================================
-// Test 6: Relative path (module::Trait) - without crate:: or self::
+// Test 5: Relative path (module::Trait) - without crate:: or self::
+// Uses a relative path to reference a trait in a sibling module.
 // =============================================================================
 
 #[contract]
 pub struct ContractRelativePath;
 
 #[contractimpl(contracttrait)]
-impl traits::CratePathTrait for ContractRelativePath {}
+impl traits::RelativePathTrait for ContractRelativePath {}
 
 // =============================================================================
 // Tests
@@ -113,7 +110,10 @@ impl traits::CratePathTrait for ContractRelativePath {}
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{map, symbol_short, testutils::Address as _, vec, Env};
+    use soroban_sdk::{
+        map, symbol_short, testutils::Address as _, vec, Address, Bytes, BytesN, Duration, Map,
+        String, Symbol, Timepoint, Vec, I256, U256,
+    };
 
     #[test]
     fn test_global_path() {
@@ -206,23 +206,11 @@ mod test {
     }
 
     #[test]
-    fn test_bare_path() {
-        let e = Env::default();
-        let contract_id = e.register(ContractBarePath, ());
-        let client = ContractBarePathClient::new(&e, &contract_id);
-
-        // Test a few methods to ensure the trait is properly implemented
-        assert_eq!(client.test_u32(&42u32), 42u32);
-        assert_eq!(client.test_bool(&true), true);
-        assert_eq!(client.test_env_param(), 42);
-    }
-
-    #[test]
     fn test_relative_path() {
         let e = Env::default();
         let contract_id = e.register(ContractRelativePath, ());
         let client = ContractRelativePathClient::new(&e, &contract_id);
 
-        assert_eq!(client.crate_path_method(), 100);
+        assert_eq!(client.relative_path_method(), 400);
     }
 }
