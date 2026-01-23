@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Install previous minor Rust version
+    - name: Install Rust n-2 version for cargo-semver-checks compatibility
       run: |
         set -x
         echo "::group::Update stable toolchain"
@@ -117,14 +117,14 @@ jobs:
         echo "major=$major"
         minor=$(echo $current_version | cut -d. -f2)
         echo "minor=$minor"
-        prev_minor=$((minor - 1))
+        prev_minor=$((minor - 2))
         echo "prev_minor=$prev_minor"
         prev_version="${major}.${prev_minor}"
         echo "prev_version=$prev_version"
         echo "::endgroup::"
 
         echo "::group::Install and set previous minor version"
-        echo "Latest stable: $current_version, using previous minor: $prev_version"
+        echo "Latest stable: $current_version, using n-2 minor: $prev_version"
         rustup install $prev_version
         rustup default $prev_version
         echo "::endgroup::"
