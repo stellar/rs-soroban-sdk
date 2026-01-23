@@ -244,48 +244,57 @@ impl ContractAArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractA__fn1 {
-    use super::*;
-    #[deprecated(note = "use `ContractAClient::new(&env, &contract_id).fn1` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::ContractA>::fn1(
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
+#[deprecated(note = "use `ContractAClient::new(&env, &contract_id).fn1` instead")]
+pub fn __ContractA__fn1__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
+        #[allow(deprecated)]
+        &<ContractA>::fn1(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractAClient::new(&env, &contract_id).fn1` instead")]
+pub fn __ContractA__fn1__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractAClient::new(&env, &contract_id).fn1` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
-    }
-    #[deprecated(note = "use `ContractAClient::new(&env, &contract_id).fn1` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+    #[allow(deprecated)]
+    __ContractA__fn1__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractAClient::new(&env, &contract_id).fn1` instead")]
+pub extern "C" fn __ContractA__fn1__invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __ContractA__fn1__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor() {
+fn __ContractA____7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -297,7 +306,7 @@ fn __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor();
+                    __ContractA____7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor();
                 };
                 core::default::Default::default()
             }
@@ -308,7 +317,7 @@ fn __ContractA__7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020
         <ContractA as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "fn1",
             #[allow(deprecated)]
-            &__ContractA__fn1::invoke_raw_slice,
+            &__ContractA__fn1__invoke_raw_slice,
         );
     }
 }
@@ -841,84 +850,74 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth {
-            use super::*;
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw(
-                env: soroban_sdk::Env,
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                    #[allow(deprecated)]
-                    &<super::Contract>::__check_auth(
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_0
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_1
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_2
-                            ),
-                        ),
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw(
+            env: soroban_sdk::Env,
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
+                #[allow(deprecated)]
+                &<Contract>::__check_auth(
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_0),
                     ),
-                    &env,
-                )
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_1),
+                    ),
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_2),
+                    ),
+                ),
+                &env,
+            )
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw_slice(
+            env: soroban_sdk::Env,
+            args: &[soroban_sdk::Val],
+        ) -> soroban_sdk::Val {
+            if args.len() != 3usize {
+                {
+                    ::core::panicking::panic_fmt(format_args!(
+                        "invalid number of input arguments: {0} expected, got {1}",
+                        3usize,
+                        args.len(),
+                    ));
+                };
             }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw_slice(
-                env: soroban_sdk::Env,
-                args: &[soroban_sdk::Val],
-            ) -> soroban_sdk::Val {
-                if args.len() != 3usize {
-                    {
-                        ::core::panicking::panic_fmt(format_args!(
-                            "invalid number of input arguments: {0} expected, got {1}",
-                            3usize,
-                            args.len(),
-                        ));
-                    };
-                }
-                #[allow(deprecated)]
-                invoke_raw(env, args[0usize], args[1usize], args[2usize])
-            }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub extern "C" fn invoke_raw_extern(
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                #[allow(deprecated)]
-                invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
-            }
-            use super::*;
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(env, args[0usize], args[1usize], args[2usize])
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
         }
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -930,7 +929,7 @@ mod test_a {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                         };
                         core::default::Default::default()
                     }
@@ -941,7 +940,7 @@ mod test_a {
                 <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
                     "__check_auth",
                     #[allow(deprecated)]
-                    &__Contract____check_auth::invoke_raw_slice,
+                    &__Contract____check_auth__invoke_raw_slice,
                 );
             }
         }
@@ -1289,84 +1288,74 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth {
-            use super::*;
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw(
-                env: soroban_sdk::Env,
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                    #[allow(deprecated)]
-                    &<super::Contract>::__check_auth(
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_0
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_1
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_2
-                            ),
-                        ),
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw(
+            env: soroban_sdk::Env,
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
+                #[allow(deprecated)]
+                &<Contract>::__check_auth(
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_0),
                     ),
-                    &env,
-                )
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_1),
+                    ),
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_2),
+                    ),
+                ),
+                &env,
+            )
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw_slice(
+            env: soroban_sdk::Env,
+            args: &[soroban_sdk::Val],
+        ) -> soroban_sdk::Val {
+            if args.len() != 3usize {
+                {
+                    ::core::panicking::panic_fmt(format_args!(
+                        "invalid number of input arguments: {0} expected, got {1}",
+                        3usize,
+                        args.len(),
+                    ));
+                };
             }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw_slice(
-                env: soroban_sdk::Env,
-                args: &[soroban_sdk::Val],
-            ) -> soroban_sdk::Val {
-                if args.len() != 3usize {
-                    {
-                        ::core::panicking::panic_fmt(format_args!(
-                            "invalid number of input arguments: {0} expected, got {1}",
-                            3usize,
-                            args.len(),
-                        ));
-                    };
-                }
-                #[allow(deprecated)]
-                invoke_raw(env, args[0usize], args[1usize], args[2usize])
-            }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub extern "C" fn invoke_raw_extern(
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                #[allow(deprecated)]
-                invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
-            }
-            use super::*;
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(env, args[0usize], args[1usize], args[2usize])
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
         }
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -1378,7 +1367,7 @@ mod test_a {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                         };
                         core::default::Default::default()
                     }
@@ -1389,7 +1378,7 @@ mod test_a {
                 <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
                     "__check_auth",
                     #[allow(deprecated)]
-                    &__Contract____check_auth::invoke_raw_slice,
+                    &__Contract____check_auth__invoke_raw_slice,
                 );
             }
         }
@@ -1641,62 +1630,68 @@ impl ContractBArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractB__fn2 {
-    use super::*;
-    #[deprecated(note = "use `ContractBClient::new(&env, &contract_id).fn2` instead")]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::ContractB>::fn2(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
+#[deprecated(note = "use `ContractBClient::new(&env, &contract_id).fn2` instead")]
+pub fn __ContractB__fn2__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
+        #[allow(deprecated)]
+        &<ContractB>::fn2(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractBClient::new(&env, &contract_id).fn2` instead")]
+pub fn __ContractB__fn2__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 2usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                2usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractBClient::new(&env, &contract_id).fn2` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 2usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    2usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize], args[1usize])
-    }
-    #[deprecated(note = "use `ContractBClient::new(&env, &contract_id).fn2` instead")]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
-    }
-    use super::*;
+    #[allow(deprecated)]
+    __ContractB__fn2__invoke_raw(env, args[0usize], args[1usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractBClient::new(&env, &contract_id).fn2` instead")]
+pub extern "C" fn __ContractB__fn2__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __ContractB__fn2__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor() {
+fn __ContractB____389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -1708,7 +1703,7 @@ fn __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor();
+                    __ContractB____389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor();
                 };
                 core::default::Default::default()
             }
@@ -1719,7 +1714,7 @@ fn __ContractB__389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84
         <ContractB as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "fn2",
             #[allow(deprecated)]
-            &__ContractB__fn2::invoke_raw_slice,
+            &__ContractB__fn2__invoke_raw_slice,
         );
     }
 }
@@ -2343,84 +2338,74 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth {
-            use super::*;
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw(
-                env: soroban_sdk::Env,
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                    #[allow(deprecated)]
-                    &<super::Contract>::__check_auth(
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_0
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_1
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_2
-                            ),
-                        ),
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw(
+            env: soroban_sdk::Env,
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
+                #[allow(deprecated)]
+                &<Contract>::__check_auth(
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_0),
                     ),
-                    &env,
-                )
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_1),
+                    ),
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_2),
+                    ),
+                ),
+                &env,
+            )
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw_slice(
+            env: soroban_sdk::Env,
+            args: &[soroban_sdk::Val],
+        ) -> soroban_sdk::Val {
+            if args.len() != 3usize {
+                {
+                    ::core::panicking::panic_fmt(format_args!(
+                        "invalid number of input arguments: {0} expected, got {1}",
+                        3usize,
+                        args.len(),
+                    ));
+                };
             }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw_slice(
-                env: soroban_sdk::Env,
-                args: &[soroban_sdk::Val],
-            ) -> soroban_sdk::Val {
-                if args.len() != 3usize {
-                    {
-                        ::core::panicking::panic_fmt(format_args!(
-                            "invalid number of input arguments: {0} expected, got {1}",
-                            3usize,
-                            args.len(),
-                        ));
-                    };
-                }
-                #[allow(deprecated)]
-                invoke_raw(env, args[0usize], args[1usize], args[2usize])
-            }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub extern "C" fn invoke_raw_extern(
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                #[allow(deprecated)]
-                invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
-            }
-            use super::*;
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(env, args[0usize], args[1usize], args[2usize])
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
         }
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -2432,7 +2417,7 @@ mod test_b {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                         };
                         core::default::Default::default()
                     }
@@ -2443,7 +2428,7 @@ mod test_b {
                 <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
                     "__check_auth",
                     #[allow(deprecated)]
-                    &__Contract____check_auth::invoke_raw_slice,
+                    &__Contract____check_auth__invoke_raw_slice,
                 );
             }
         }
@@ -2791,84 +2776,74 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth {
-            use super::*;
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw(
-                env: soroban_sdk::Env,
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                    #[allow(deprecated)]
-                    &<super::Contract>::__check_auth(
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_0
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_1
-                            ),
-                        ),
-                        <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                            <_ as soroban_sdk::TryFromValForContractFn<
-                                soroban_sdk::Env,
-                                soroban_sdk::Val,
-                            >>::try_from_val_for_contract_fn(
-                                &env, &arg_2
-                            ),
-                        ),
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw(
+            env: soroban_sdk::Env,
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
+                #[allow(deprecated)]
+                &<Contract>::__check_auth(
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_0),
                     ),
-                    &env,
-                )
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_1),
+                    ),
+                    <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                        <_ as soroban_sdk::TryFromValForContractFn<
+                            soroban_sdk::Env,
+                            soroban_sdk::Val,
+                        >>::try_from_val_for_contract_fn(&env, &arg_2),
+                    ),
+                ),
+                &env,
+            )
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub fn __Contract____check_auth__invoke_raw_slice(
+            env: soroban_sdk::Env,
+            args: &[soroban_sdk::Val],
+        ) -> soroban_sdk::Val {
+            if args.len() != 3usize {
+                {
+                    ::core::panicking::panic_fmt(format_args!(
+                        "invalid number of input arguments: {0} expected, got {1}",
+                        3usize,
+                        args.len(),
+                    ));
+                };
             }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub fn invoke_raw_slice(
-                env: soroban_sdk::Env,
-                args: &[soroban_sdk::Val],
-            ) -> soroban_sdk::Val {
-                if args.len() != 3usize {
-                    {
-                        ::core::panicking::panic_fmt(format_args!(
-                            "invalid number of input arguments: {0} expected, got {1}",
-                            3usize,
-                            args.len(),
-                        ));
-                    };
-                }
-                #[allow(deprecated)]
-                invoke_raw(env, args[0usize], args[1usize], args[2usize])
-            }
-            #[deprecated(
-                note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead"
-            )]
-            pub extern "C" fn invoke_raw_extern(
-                arg_0: soroban_sdk::Val,
-                arg_1: soroban_sdk::Val,
-                arg_2: soroban_sdk::Val,
-            ) -> soroban_sdk::Val {
-                #[allow(deprecated)]
-                invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
-            }
-            use super::*;
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(env, args[0usize], args[1usize], args[2usize])
+        }
+        #[doc(hidden)]
+        #[allow(non_snake_case)]
+        #[allow(non_snake_case)]
+        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+        pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
+            arg_0: soroban_sdk::Val,
+            arg_1: soroban_sdk::Val,
+            arg_2: soroban_sdk::Val,
+        ) -> soroban_sdk::Val {
+            #[allow(deprecated)]
+            __Contract____check_auth__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
         }
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -2880,7 +2855,7 @@ mod test_b {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
                         };
                         core::default::Default::default()
                     }
@@ -2891,7 +2866,7 @@ mod test_b {
                 <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
                     "__check_auth",
                     #[allow(deprecated)]
-                    &__Contract____check_auth::invoke_raw_slice,
+                    &__Contract____check_auth__invoke_raw_slice,
                 );
             }
         }
