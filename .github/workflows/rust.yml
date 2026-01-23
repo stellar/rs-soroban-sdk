@@ -103,7 +103,7 @@ jobs:
     - uses: stellar/binaries@v45
       with:
         name: cargo-semver-checks
-        version: 0.41.0
+        version: 0.44.0
     - run: >
         cargo semver-checks
         --exclude soroban-meta
