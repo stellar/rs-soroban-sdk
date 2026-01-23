@@ -34,7 +34,7 @@
 //! 2. **Implement the trait** with [`contractimpl`], including the `contracttrait` option:
 //!    `#[contractimpl(contracttrait)]`
 //!
-//! 3. **Override default functons as needed** - Contracts can provide their own implementations of
+//! 3. **Override default functions as needed** - Contracts can provide their own implementations of
 //!    any function with default implementations.
 //!
 //! ## Patterns For Use
