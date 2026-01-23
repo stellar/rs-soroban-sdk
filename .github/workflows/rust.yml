@@ -113,7 +113,7 @@ jobs:
     - name: Install Rust ${{ steps.rust-version.outputs.version }}
       run: |
         rustup install ${{ steps.rust-version.outputs.version }}
-        rustup default ${{ steps.rust-version.outputs.version }}
+        rustup override set ${{ steps.rust-version.outputs.version }}
     - name: Verify Rust version
       run: |
         rustc --version
