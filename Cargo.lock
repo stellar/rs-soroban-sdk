@@ -1744,6 +1744,42 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_contracttrait_path_crate"
+version = "25.0.0-rc.2"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_contracttrait_path_global"
+version = "25.0.0-rc.2"
+dependencies = [
+ "soroban-sdk",
+ "test_contracttrait_trait",
+]
+
+[[package]]
+name = "test_contracttrait_path_relative"
+version = "25.0.0-rc.2"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_contracttrait_path_self"
+version = "25.0.0-rc.2"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_contracttrait_path_super"
+version = "25.0.0-rc.2"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_contracttrait_trait"
 version = "25.0.0-rc.2"
 dependencies = [

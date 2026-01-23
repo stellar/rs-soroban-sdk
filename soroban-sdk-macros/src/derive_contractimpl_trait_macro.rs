@@ -64,6 +64,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
         #[macro_export]
         macro_rules! #macro_ident {
             (
+                $trait_ident:path,
                 $impl_ident:ty,
                 $impl_fns:expr,
                 $client_name:literal,
@@ -71,7 +72,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
                 $spec_name:literal $(,)?
             ) => {
                 #path::contractimpl_trait_default_fns_not_overridden!(
-                    trait_ident = #trait_ident,
+                    trait_ident = $trait_ident,
                     trait_default_fns = [#(#fns),*],
                     impl_ident = $impl_ident,
                     impl_fns = $impl_fns,
@@ -90,7 +91,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
 }
 
 pub fn generate_call_to_contractimpl_for_trait(
-    trait_ident: &Ident,
+    trait_ident: &Path,
     impl_ident: &Type,
     pub_methods: &[ImplItemFn],
     client_ident: &str,
@@ -100,6 +101,7 @@ pub fn generate_call_to_contractimpl_for_trait(
     let impl_fn_idents = pub_methods.iter().map(|f| f.sig.ident.to_string());
     quote! {
         #trait_ident!(
+            #trait_ident,
             #impl_ident,
             [#(#impl_fn_idents),*],
             #client_ident,
