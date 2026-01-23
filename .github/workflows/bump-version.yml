@@ -7,9 +7,6 @@ on:
         description: 'Version to bump to'
         required: true
 
-permissions:
-  contents: write
-
 jobs:
 
   bump-version:
