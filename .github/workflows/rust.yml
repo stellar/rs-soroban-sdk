@@ -99,11 +99,44 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - run: rustup update
-    - uses: stellar/binaries@v45
+    - name: Install previous minor Rust version
+      run: |
+        set -x
+        echo "::group::Update stable toolchain"
+        rustup update stable
+        echo "::endgroup::"
+
+        echo "::group::Detect current stable version"
+        rustc +stable --version
+        current_version=$(rustc +stable --version | grep -oE '[0-9]+\.[0-9]+' | head -1)
+        echo "current_version=$current_version"
+        echo "::endgroup::"
+
+        echo "::group::Calculate previous minor version"
+        major=$(echo $current_version | cut -d. -f1)
+        echo "major=$major"
+        minor=$(echo $current_version | cut -d. -f2)
+        echo "minor=$minor"
+        prev_minor=$((minor - 1))
+        echo "prev_minor=$prev_minor"
+        prev_version="${major}.${prev_minor}"
+        echo "prev_version=$prev_version"
+        echo "::endgroup::"
+
+        echo "::group::Install and set previous minor version"
+        echo "Latest stable: $current_version, using previous minor: $prev_version"
+        rustup install $prev_version
+        rustup default $prev_version
+        echo "::endgroup::"
+
+        echo "::group::Verify installation"
+        rustc --version
+        cargo --version
+        echo "::endgroup::"
+    - uses: stellar/binaries@v51
       with:
         name: cargo-semver-checks
-        version: 0.44.0
+        version: 0.45.0
     - run: >
         cargo semver-checks
         --exclude soroban-meta
