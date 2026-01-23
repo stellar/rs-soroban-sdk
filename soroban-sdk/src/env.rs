@@ -1770,6 +1770,7 @@ impl internal::EnvBase for Env {
     // When targeting wasm we don't even need to do that, just delegate to
     // the Guest's impl, which calls core::arch::wasm32::unreachable.
     #[cfg(target_family = "wasm")]
+    #[allow(unreachable_code)]
     fn error_from_error_val(&self, e: crate::Error) -> Self::Error {
         self.env_impl.error_from_error_val(e)
     }

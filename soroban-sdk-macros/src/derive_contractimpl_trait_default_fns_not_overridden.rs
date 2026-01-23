@@ -18,7 +18,7 @@ use syn::{LitStr, Path, Type};
 struct Args {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
-    trait_ident: Ident,
+    trait_ident: Path,
     trait_default_fns: Vec<LitStr>,
     impl_ident: Ident,
     impl_fns: Vec<LitStr>,
