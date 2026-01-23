@@ -20,7 +20,7 @@
 //!
 //! ## When to Use
 //!
-//! Use [`contracttrait`] when you want the the trait to represent a contract interface.
+//! Use [`contracttrait`] when you want the trait to represent a contract interface.
 //!
 //! The [`contracttrait`] will make it possible to:
 //! - Access a generated client for any contract implementing the interface.
