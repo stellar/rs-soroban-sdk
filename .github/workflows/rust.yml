@@ -99,40 +99,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Install Rust n-2 version for cargo-semver-checks compatibility
+    - name: Update stable toolchain
+      run: rustup update stable
+    - name: Determine Rust n-2 version
+      id: rust-version
       run: |
-        set -x
-        echo "::group::Update stable toolchain"
-        rustup update stable
-        echo "::endgroup::"
-
-        echo "::group::Detect current stable version"
-        rustc +stable --version
         current_version=$(rustc +stable --version | grep -oE '[0-9]+\.[0-9]+' | head -1)
-        echo "current_version=$current_version"
-        echo "::endgroup::"
-
-        echo "::group::Calculate previous minor version"
         major=$(echo $current_version | cut -d. -f1)
-        echo "major=$major"
         minor=$(echo $current_version | cut -d. -f2)
-        echo "minor=$minor"
         prev_minor=$((minor - 2))
-        echo "prev_minor=$prev_minor"
         prev_version="${major}.${prev_minor}"
-        echo "prev_version=$prev_version"
-        echo "::endgroup::"
-
-        echo "::group::Install and set previous minor version"
-        echo "Latest stable: $current_version, using n-2 minor: $prev_version"
-        rustup install $prev_version
-        rustup default $prev_version
-        echo "::endgroup::"
-
-        echo "::group::Verify installation"
+        echo "Latest stable: $current_version, using n-2: $prev_version"
+        echo "version=$prev_version" >> $GITHUB_OUTPUT
+    - name: Install Rust ${{ steps.rust-version.outputs.version }}
+      run: |
+        rustup install ${{ steps.rust-version.outputs.version }}
+        rustup default ${{ steps.rust-version.outputs.version }}
+    - name: Verify Rust version
+      run: |
         rustc --version
         cargo --version
-        echo "::endgroup::"
     - uses: stellar/binaries@v51
       with:
         name: cargo-semver-checks
