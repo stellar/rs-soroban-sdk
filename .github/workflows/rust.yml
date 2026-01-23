@@ -99,9 +99,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Update stable toolchain
-      run: rustup update stable
-    - name: Determine Rust n-2 version
+    - run: rustup update stable
+    - name: Determine Rust n-2 version since cargo-semver-checks is rarely available for the latest version
       id: rust-version
       run: |
         current_version=$(rustc +stable --version | grep -oE '[0-9]+\.[0-9]+' | head -1)
