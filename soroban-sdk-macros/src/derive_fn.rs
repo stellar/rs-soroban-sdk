@@ -169,6 +169,11 @@ pub fn derive_pub_fn(
         return Err(quote! { #(#compile_errors)* });
     }
 
+    let attrs: Vec<_> = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect();
+
     let testutils_only_code = if cfg!(feature = "testutils") {
         Some(quote! {
             #[doc(hidden)]
@@ -189,12 +194,6 @@ pub fn derive_pub_fn(
     } else {
         None
     };
-
-    // Filter attributes to those that should be passed through to the generated code.
-    let attrs = attrs
-        .iter()
-        .filter(|attr| pass_through_attr_to_gen_code(attr))
-        .collect::<Vec<_>>();
 
     // Generated code.
     Ok(quote! {
