@@ -1054,7 +1054,7 @@ dependencies = [
 
 [[package]]
 name = "proc_macros"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "quote",
  "syn 2.0.103",
@@ -1431,7 +1431,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1444,7 +1444,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-meta"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "stellar-xdr",
  "thiserror",
@@ -1453,7 +1453,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1484,7 +1484,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "darling",
  "heck",
@@ -1502,7 +1502,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "base64",
  "pretty_assertions",
@@ -1513,7 +1513,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1528,14 +1528,14 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "soroban-token-spec"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
  "soroban-token-sdk",
@@ -1584,7 +1584,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-asset-spec"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
  "soroban-token-sdk",
@@ -1680,70 +1680,70 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_associated_types"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_associated_types_contracttrait"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_auth"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_bls"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_bn254"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "hex",
  "soroban-sdk",
@@ -1751,21 +1751,21 @@ dependencies = [
 
 [[package]]
 name = "test_constructor"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_impl_full"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
  "test_contracttrait_trait",
@@ -1773,7 +1773,7 @@ dependencies = [
 
 [[package]]
 name = "test_contracttrait_impl_partial"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
  "test_contracttrait_trait",
@@ -1781,14 +1781,14 @@ dependencies = [
 
 [[package]]
 name = "test_contracttrait_path_crate"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_path_global"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
  "test_contracttrait_trait",
@@ -1796,28 +1796,28 @@ dependencies = [
 
 [[package]]
 name = "test_contracttrait_path_relative"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_path_self"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_path_super"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_trait"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
  "stellar-xdr",
@@ -1825,77 +1825,77 @@ dependencies = [
 
 [[package]]
 name = "test_empty"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events_ref"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_generics"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_macros"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "proc_macros",
  "soroban-sdk",
@@ -1903,42 +1903,42 @@ dependencies = [
 
 [[package]]
 name = "test_modular"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_mutability"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_tuples"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -1946,14 +1946,14 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_zero"
-version = "25.0.0"
+version = "25.0.1"
 dependencies = [
  "soroban-sdk",
 ]
