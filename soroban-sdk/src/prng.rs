@@ -469,12 +469,16 @@ impl GenRange for u64 {
         assert_in_contract!(env);
         let start_bound = match r.start_bound() {
             Bound::Included(b) => *b,
-            Bound::Excluded(b) => b.checked_add(1).expect_optimized("attempt to add with overflow"),
+            Bound::Excluded(b) => b
+                .checked_add(1)
+                .expect_optimized("attempt to add with overflow"),
             Bound::Unbounded => u64::MIN,
         };
         let end_bound = match r.end_bound() {
             Bound::Included(b) => *b,
-            Bound::Excluded(b) => b.checked_sub(1).expect_optimized("attempt to subtract with overflow"),
+            Bound::Excluded(b) => b
+                .checked_sub(1)
+                .expect_optimized("attempt to subtract with overflow"),
             Bound::Unbounded => u64::MAX,
         };
         internal::Env::prng_u64_in_inclusive_range(env, start_bound, end_bound).unwrap_infallible()
