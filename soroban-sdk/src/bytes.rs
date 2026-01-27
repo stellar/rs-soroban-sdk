@@ -739,11 +739,11 @@ impl Bytes {
     pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
         let start_bound = match r.start_bound() {
             Bound::Included(s) => *s,
-            Bound::Excluded(s) => *s + 1,
+            Bound::Excluded(s) => s.checked_add(1).expect_optimized("attempt to add with overflow"),
             Bound::Unbounded => 0,
         };
         let end_bound = match r.end_bound() {
-            Bound::Included(s) => *s + 1,
+            Bound::Included(s) => s.checked_add(1).expect_optimized("attempt to add with overflow"),
             Bound::Excluded(s) => *s,
             Bound::Unbounded => self.len(),
         };

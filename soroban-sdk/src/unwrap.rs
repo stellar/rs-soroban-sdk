@@ -3,6 +3,7 @@ use core::convert::Infallible;
 pub trait UnwrapOptimized {
     type Output;
     fn unwrap_optimized(self) -> Self::Output;
+    fn expect_optimized(self, msg: &'static str) -> Self::Output;
 }
 
 impl<T> UnwrapOptimized for Option<T> {
@@ -18,6 +19,17 @@ impl<T> UnwrapOptimized for Option<T> {
         #[cfg(not(target_family = "wasm"))]
         self.unwrap()
     }
+
+    #[inline(always)]
+    fn expect_optimized(self, msg: &'static str) -> Self::Output {
+        #[cfg(target_family = "wasm")]
+        match self {
+            Some(t) => t,
+            None => core::arch::wasm32::unreachable(),
+        }
+        #[cfg(not(target_family = "wasm"))]
+        self.expect(msg)
+    }
 }
 
 impl<T, E: core::fmt::Debug> UnwrapOptimized for Result<T, E> {
@@ -32,6 +44,17 @@ impl<T, E: core::fmt::Debug> UnwrapOptimized for Result<T, E> {
         }
         #[cfg(not(target_family = "wasm"))]
         self.unwrap()
+    }
+
+    #[inline(always)]
+    fn expect_optimized(self, msg: &'static str) -> Self::Output {
+        #[cfg(target_family = "wasm")]
+        match self {
+            Ok(t) => t,
+            Err(_) => core::arch::wasm32::unreachable(),
+        }
+        #[cfg(not(target_family = "wasm"))]
+        self.expect(msg)
     }
 }
 
