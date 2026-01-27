@@ -38,8 +38,10 @@ fn test_gen_range_u64_exclusive_end() {
     });
     let id = env.register(TestPrngRangeContract, ());
     env.as_contract(&id, || {
-        let val: u64 = env.prng().gen_range(5..10);
-        assert!(val >= 5 && val < 10);
+        for _ in 0..100 {
+            let val: u64 = env.prng().gen_range(5..10);
+            assert!(val >= 5 && val < 10);
+        }
     });
 }
 
