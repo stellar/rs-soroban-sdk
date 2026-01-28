@@ -17,3 +17,16 @@ pub fn parse_item_fn(_metadata: TokenStream, input: TokenStream) -> TokenStream 
     let item = parse_macro_input!(input as ItemFn);
     quote! { #item }.into()
 }
+
+/// An attribute macro that checks it is being used on a method of a type, not a free function.
+/// It does this by injecting code that references `Self`, which is only valid inside an impl block.
+#[proc_macro_attribute]
+pub fn check_fn_is_item_fn(_metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let mut item = parse_macro_input!(input as ItemFn);
+    // Insert a statement that uses `Self` at the beginning of the function
+    let check_stmt: syn::Stmt = syn::parse_quote! {
+        let _ = core::any::type_name::<Self>();
+    };
+    item.block.stmts.insert(0, check_stmt);
+    quote! { #item }.into()
+}

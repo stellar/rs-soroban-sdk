@@ -218,7 +218,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let crate_path_str = quote!(#crate_path).to_string();
 
     let imp = parse_macro_input!(input as ItemImpl);
-    let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
+    let trait_ident = imp.trait_.as_ref().map(|x| &x.1);
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
 
@@ -273,7 +273,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     .filter(|_| args.contracttrait)
                     .map(|trait_ident| {
                         generate_call_to_contractimpl_for_trait(
-                            trait_ident.into(),
+                            trait_ident,
                             ty,
                             &pub_methods,
                             &client_ident,

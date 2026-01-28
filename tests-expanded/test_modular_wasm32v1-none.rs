@@ -77,23 +77,21 @@ mod feat1 {
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
-    pub mod __Contract__one {
-        use super::*;
-        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).one` instead")]
-        pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                #[allow(deprecated)]
-                &<super::Contract>::one(),
-                &env,
-            )
-        }
-        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).one` instead")]
-        #[export_name = "one"]
-        pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).one` instead")]
+    pub fn __Contract__one__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            invoke_raw(soroban_sdk::Env::default())
-        }
-        use super::*;
+            &<Contract>::one(),
+            &env,
+        )
+    }
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).one` instead")]
+    #[export_name = "one"]
+    pub extern "C" fn __Contract__one__invoke_raw_extern() -> soroban_sdk::Val {
+        #[allow(deprecated)]
+        __Contract__one__invoke_raw(soroban_sdk::Env::default())
     }
 }
 mod feat2 {
@@ -166,23 +164,21 @@ mod feat2 {
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
-    pub mod __super__Contract__two {
-        use super::*;
-        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).two` instead")]
-        pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-            <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-                #[allow(deprecated)]
-                &<super::super::Contract>::two(),
-                &env,
-            )
-        }
-        #[deprecated(note = "use `ContractClient::new(&env, &contract_id).two` instead")]
-        #[export_name = "two"]
-        pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).two` instead")]
+    pub fn __super__Contract__two__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            invoke_raw(soroban_sdk::Env::default())
-        }
-        use super::*;
+            &<super::Contract>::two(),
+            &env,
+        )
+    }
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).two` instead")]
+    #[export_name = "two"]
+    pub extern "C" fn __super__Contract__two__invoke_raw_extern() -> soroban_sdk::Val {
+        #[allow(deprecated)]
+        __super__Contract__two__invoke_raw(soroban_sdk::Env::default())
     }
 }
 pub struct Contract;
@@ -267,21 +263,19 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__zero {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::zero(),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
-    #[export_name = "zero"]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
+pub fn __Contract__zero__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
+        &<Contract>::zero(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
+#[export_name = "zero"]
+pub extern "C" fn __Contract__zero__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__zero__invoke_raw(soroban_sdk::Env::default())
 }
