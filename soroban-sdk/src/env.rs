@@ -1555,6 +1555,34 @@ impl Env {
         t.unwrap()
     }
 
+    /// Run the function as if executed by the given contract ID. Returns an
+    /// error if the function execution fails for any reason.
+    ///
+    /// Used to write or read contract data, or take other actions in tests for
+    /// setting up tests or asserting on internal state.
+    pub fn try_as_contract<T, E>(
+        &self,
+        id: &Address,
+        f: impl FnOnce() -> T,
+    ) -> Result<T, Result<E, InvokeError>>
+    where
+        E: TryFrom<Error>,
+        E::Error: Into<InvokeError>,
+    {
+        let id = id.contract_id();
+        let func = Symbol::from_small_str("");
+        let mut t: Option<T> = None;
+        let result = self.env_impl.try_with_test_contract_frame(id, func, || {
+            t = Some(f());
+            Ok(().into())
+        });
+
+        match result {
+            Ok(_) => Ok(t.unwrap()),
+            Err(e) => Err(E::try_from(e.error).map_err(Into::into)),
+        }
+    }
+
     /// Creates a new Env loaded with the [`Snapshot`].
     ///
     /// The ledger info and state in the snapshot are loaded into the Env.

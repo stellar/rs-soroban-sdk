@@ -1276,6 +1276,251 @@ mod test {
     }
     extern crate test;
     #[cfg(test)]
+    #[rustc_test_marker = "test::try_as_contract_hello_ok"]
+    #[doc(hidden)]
+    pub const try_as_contract_hello_ok: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::try_as_contract_hello_ok"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/errors/src/lib.rs",
+            start_line: 129usize,
+            start_col: 8usize,
+            end_line: 129usize,
+            end_col: 32usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(try_as_contract_hello_ok()),
+        ),
+    };
+    fn try_as_contract_hello_ok() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::A));
+        match (
+            &res,
+            &Ok({
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("hello");
+                SYMBOL
+            }),
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        if !client.persisted() {
+            ::core::panicking::panic("assertion failed: client.persisted()")
+        }
+    }
+    extern crate test;
+    #[cfg(test)]
+    #[rustc_test_marker = "test::try_as_contract_hello_error"]
+    #[doc(hidden)]
+    pub const try_as_contract_hello_error: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::try_as_contract_hello_error"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/errors/src/lib.rs",
+            start_line: 141usize,
+            start_col: 8usize,
+            end_line: 141usize,
+            end_col: 35usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(try_as_contract_hello_error()),
+        ),
+    };
+    fn try_as_contract_hello_error() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::B));
+        match (&res, &Err(Ok(Error::AnError))) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        if !!client.persisted() {
+            ::core::panicking::panic("assertion failed: !client.persisted()")
+        }
+    }
+    extern crate test;
+    #[cfg(test)]
+    #[rustc_test_marker = "test::try_as_contract_hello_error_panic"]
+    #[doc(hidden)]
+    pub const try_as_contract_hello_error_panic: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::try_as_contract_hello_error_panic"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/errors/src/lib.rs",
+            start_line: 153usize,
+            start_col: 8usize,
+            end_line: 153usize,
+            end_col: 41usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(try_as_contract_hello_error_panic()),
+        ),
+    };
+    fn try_as_contract_hello_error_panic() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::C));
+        match (&res, &Err(Ok(Error::AnError))) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        if !!client.persisted() {
+            ::core::panicking::panic("assertion failed: !client.persisted()")
+        }
+    }
+    extern crate test;
+    #[cfg(test)]
+    #[rustc_test_marker = "test::try_as_contract_hello_error_panic_string"]
+    #[doc(hidden)]
+    pub const try_as_contract_hello_error_panic_string: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::try_as_contract_hello_error_panic_string"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/errors/src/lib.rs",
+            start_line: 165usize,
+            start_col: 8usize,
+            end_line: 165usize,
+            end_col: 48usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(try_as_contract_hello_error_panic_string()),
+        ),
+    };
+    fn try_as_contract_hello_error_panic_string() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::D));
+        match (&res, &Err(Err(InvokeError::Abort))) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        if !!client.persisted() {
+            ::core::panicking::panic("assertion failed: !client.persisted()")
+        }
+    }
+    extern crate test;
+    #[cfg(test)]
+    #[rustc_test_marker = "test::try_as_contract_hello_error_unexpected_contract_error"]
+    #[doc(hidden)]
+    pub const try_as_contract_hello_error_unexpected_contract_error: test::TestDescAndFn =
+        test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName(
+                    "test::try_as_contract_hello_error_unexpected_contract_error",
+                ),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/errors/src/lib.rs",
+                start_line: 177usize,
+                start_col: 8usize,
+                end_line: 177usize,
+                end_col: 61usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(try_as_contract_hello_error_unexpected_contract_error()),
+            ),
+        };
+    fn try_as_contract_hello_error_unexpected_contract_error() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::E));
+        match (&res, &Err(Err(InvokeError::Contract(9)))) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        if !!client.persisted() {
+            ::core::panicking::panic("assertion failed: !client.persisted()")
+        }
+    }
+    extern crate test;
+    #[cfg(test)]
     #[rustc_test_marker = "test::type_conversion"]
     #[doc(hidden)]
     pub const type_conversion: test::TestDescAndFn = test::TestDescAndFn {
@@ -1284,9 +1529,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/errors/src/lib.rs",
-            start_line: 129usize,
+            start_line: 189usize,
             start_col: 8usize,
-            end_line: 129usize,
+            end_line: 189usize,
             end_col: 23usize,
             compile_fail: false,
             no_run: false,
@@ -1477,6 +1722,11 @@ pub fn main() -> () {
     extern crate test;
     test::test_main_static(&[
         &hello_ok,
+        &try_as_contract_hello_error,
+        &try_as_contract_hello_error_panic,
+        &try_as_contract_hello_error_panic_string,
+        &try_as_contract_hello_error_unexpected_contract_error,
+        &try_as_contract_hello_ok,
         &try_hello_error,
         &try_hello_error_panic,
         &try_hello_error_panic_string,
