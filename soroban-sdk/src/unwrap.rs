@@ -21,14 +21,14 @@ impl<T> UnwrapOptimized for Option<T> {
     }
 
     #[inline(always)]
-    fn expect_optimized(self, msg: &'static str) -> Self::Output {
+    fn expect_optimized(self, _msg: &'static str) -> Self::Output {
         #[cfg(target_family = "wasm")]
         match self {
             Some(t) => t,
             None => core::arch::wasm32::unreachable(),
         }
         #[cfg(not(target_family = "wasm"))]
-        self.expect(msg)
+        self.expect(_msg)
     }
 }
 
@@ -47,14 +47,14 @@ impl<T, E: core::fmt::Debug> UnwrapOptimized for Result<T, E> {
     }
 
     #[inline(always)]
-    fn expect_optimized(self, msg: &'static str) -> Self::Output {
+    fn expect_optimized(self, _msg: &'static str) -> Self::Output {
         #[cfg(target_family = "wasm")]
         match self {
             Ok(t) => t,
             Err(_) => core::arch::wasm32::unreachable(),
         }
         #[cfg(not(target_family = "wasm"))]
-        self.expect(msg)
+        self.expect(_msg)
     }
 }
 
