@@ -12,5 +12,5 @@ rust-version.workspace = true
 
 [dependencies]
 stellar-xdr = { workspace = true, features = ["curr", "std"] }
-thiserror = "1.0.32"
-wasmparser = "0.116.1"
+thiserror = "2.0.18"
+wasmparser = "0.221.3"
