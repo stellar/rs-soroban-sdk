@@ -58,6 +58,18 @@ pub mod _migrating;
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
+#[cfg(not(soroban_sdk_internal_overflow_checks_enabled))]
+const _: () = {
+    macro_rules! overflow_checks_not_enabled_error {
+        () => {
+            concat!("'overflow-checks' are disabled in the current profile. ",
+            "To prevent silent integer overflow, add `overflow-checks = true` to `[profile.release]` in the `Cargo.toml`. ",
+            "See https://developers.stellar.org/docs/build/smart-contracts/getting-started/hello-world#release-profile.")
+        };
+    }
+    compile_error!(overflow_checks_not_enabled_error!());
+};
+
 // When used in a no_std contract, provide a panic handler as one is required.
 #[cfg(target_family = "wasm")]
 #[panic_handler]
