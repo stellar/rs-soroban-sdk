@@ -57,6 +57,11 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
 }
+impl soroban_sdk::IncludeSpecMarker for Error {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {}
+}
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -338,6 +343,7 @@ impl ContractArgs {
 #[allow(non_snake_case)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+#[allow(deprecated)]
 pub fn __Contract____check_auth__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
@@ -345,12 +351,8 @@ pub fn __Contract____check_auth__invoke_raw(
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
     use CustomAccountInterface;
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::__check_auth(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::__check_auth(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<

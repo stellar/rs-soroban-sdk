@@ -149,6 +149,16 @@ impl<'a> Transfer<'a> {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
     }
 }
+impl<'a> soroban_sdk::IncludeSpecMarker for Transfer<'a> {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn include_spec_marker() {
+        <&'a Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <&'a Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <&'a i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+        <Option<&'a u64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
+    }
+}
 impl<'a> soroban_sdk::Event for Transfer<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -181,6 +191,7 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
 }
 impl<'a> Transfer<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -437,18 +448,15 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).transfer` instead")]
+#[allow(deprecated)]
 pub fn __Contract__transfer__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::transfer(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::transfer(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -505,18 +513,15 @@ pub extern "C" fn __Contract__transfer__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).failed_transfer` instead")]
+#[allow(deprecated)]
 pub fn __Contract__failed_transfer__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::failed_transfer(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::failed_transfer(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<

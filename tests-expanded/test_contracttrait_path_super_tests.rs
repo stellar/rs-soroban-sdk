@@ -333,13 +333,13 @@ pub mod submodule {
     #[deprecated(
         note = "use `ContractSuperPathClient::new(&env, &contract_id).super_path_method` instead"
     )]
+    #[allow(deprecated)]
     pub fn __ContractSuperPath__super_path_method__invoke_raw(
         env: soroban_sdk::Env,
     ) -> soroban_sdk::Val {
         use super::SuperPathTrait;
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<ContractSuperPath>::super_path_method(&env),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <ContractSuperPath>::super_path_method(&env),
             &env,
         )
     }

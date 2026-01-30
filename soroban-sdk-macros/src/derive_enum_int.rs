@@ -7,7 +7,7 @@ use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Pat
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
-use crate::{doc::docs_from_attrs, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, spec_marker, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -65,15 +65,21 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Generated code spec.
-    let spec_gen = if spec {
+    // Compute spec XDR once if spec is enabled.
+    let spec_xdr = if spec {
         let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    } else {
+        None
+    };
+
+    // Generated code spec.
+    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
@@ -91,9 +97,25 @@ pub fn derive_type_enum_int(
         None
     };
 
+    // IncludeSpecMarker impl - only generated when spec is true.
+    // Types with export=false should not be used at external boundaries.
+    let include_spec_impl = spec_xdr.as_ref().map(|spec_xdr| {
+        spec_marker::generate_include_spec_marker_impl(
+            path,
+            quote!(#enum_ident),
+            spec_xdr,
+            std::iter::empty(),
+            None,
+            None,
+            None,
+        )
+    });
+
     // Output.
     let mut output = quote! {
         #spec_gen
+
+        #include_spec_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;

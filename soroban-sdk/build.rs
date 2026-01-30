@@ -16,5 +16,19 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
+    // Warn if building for WASM without spec optimization support from the build system (Stellar
+    // CLI). The cfg flag indicates the build system supports spec optimization.
+    println!("cargo::rustc-check-cfg=cfg(soroban_sdk_build_system_supports_optimising_specs_using_data_markers)");
+    let target_family = std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default();
+    if target_family == "wasm" {
+        let rustflags = std::env::var("RUSTFLAGS").unwrap_or_default();
+        let cargo_encoded_rustflags = std::env::var("CARGO_ENCODED_RUSTFLAGS").unwrap_or_default();
+        let cfg_name = "soroban_sdk_build_system_supports_optimising_specs_using_data_markers";
+        let has_cfg = rustflags.contains(cfg_name) || cargo_encoded_rustflags.contains(cfg_name);
+        if !has_cfg {
+            println!("cargo:warning=Building without a Soroban-aware build system. The contract will be larger than necessary. Use stellar-cli v26 or newer to build.");
+        }
+    }
+
     crate_git_revision::init();
 }

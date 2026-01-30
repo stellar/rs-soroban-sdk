@@ -337,13 +337,13 @@ impl ContractRelativePathArgs {}
 #[deprecated(
     note = "use `ContractRelativePathClient::new(&env, &contract_id).relative_path_method` instead"
 )]
+#[allow(deprecated)]
 pub fn __ContractRelativePath__relative_path_method__invoke_raw(
     env: soroban_sdk::Env,
 ) -> soroban_sdk::Val {
     use traits::RelativePathTrait;
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<ContractRelativePath>::relative_path_method(&env),
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <ContractRelativePath>::relative_path_method(&env),
         &env,
     )
 }
