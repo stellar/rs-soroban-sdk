@@ -22,11 +22,15 @@
 use sha2::{Digest, Sha256};
 
 /// Total length of a spec marker (4-byte prefix + 8-byte hash).
-pub const SPEC_MARKER_LEN: usize = 12;
+pub const LEN: usize = 12;
 
-/// Generates the spec marker for a spec entry.
-/// Format: "SpEc" + first 8 bytes of SHA256 hash = 12 bytes total.
-pub fn generate(spec_entry_xdr: &[u8]) -> [u8; SPEC_MARKER_LEN] {
+/// A spec marker that identifies a spec entry.
+///
+/// Format: "SpEc" prefix (4 bytes) + first 8 bytes of SHA256 hash = 12 bytes total.
+pub type SpecMarker = [u8; LEN];
+
+/// Generates a spec marker for a spec entry XDR.
+pub fn generate(spec_entry_xdr: &[u8]) -> SpecMarker {
     let hash: [u8; 32] = Sha256::digest(spec_entry_xdr).into();
     [
         b'S', b'p', b'E', b'c', hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6],
@@ -41,13 +45,13 @@ mod tests {
     #[test]
     fn test_generate() {
         let spec_xdr = b"some spec xdr bytes";
-        let marker = generate(spec_xdr);
+        let marker: SpecMarker = generate(spec_xdr);
 
         // Check prefix
         assert_eq!(&marker[..4], b"SpEc");
 
         // Check total length
-        assert_eq!(marker.len(), SPEC_MARKER_LEN);
+        assert_eq!(marker.len(), LEN);
         assert_eq!(marker.len(), 12);
 
         // Same input produces same marker
