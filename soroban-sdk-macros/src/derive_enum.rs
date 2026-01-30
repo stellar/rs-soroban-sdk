@@ -9,7 +9,7 @@ use stellar_xdr::{
     ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, spec_marker, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -182,7 +182,7 @@ pub fn derive_type_enum(
         // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
         // Post-build tools can scan the data section for "SpEc" markers and match
         // against specs in contractspecv0.
-        let marker = spec_marker::spec_marker(spec_xdr);
+        let marker = soroban_spec::marker::generate(spec_xdr);
         let marker_lit = proc_macro2::Literal::byte_string(&marker);
         let marker_len = marker.len();
         // Flatten all variant field types for include_spec_marker calls, deduplicating

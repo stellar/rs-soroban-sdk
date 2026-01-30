@@ -7,7 +7,7 @@ use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Pat
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
-use crate::{doc::docs_from_attrs, spec_marker, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -104,7 +104,7 @@ pub fn derive_type_enum_int(
         // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
         // Post-build tools can scan the data section for "SpEc" markers and match
         // against specs in contractspecv0.
-        let marker = spec_marker::spec_marker(spec_xdr);
+        let marker = soroban_spec::marker::generate(spec_xdr);
         let marker_lit = proc_macro2::Literal::byte_string(&marker);
         let marker_len = marker.len();
         Some(quote! {
