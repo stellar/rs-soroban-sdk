@@ -182,7 +182,7 @@ pub fn derive_type_enum(
         // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
         // Post-build tools can scan the data section for "SpEc" markers and match
         // against specs in contractspecv0.
-        let marker = soroban_spec::marker::generate(spec_xdr);
+        let marker = soroban_spec::marker::generate_for_xdr(spec_xdr);
         let marker_lit = proc_macro2::Literal::byte_string(&marker);
         let marker_len = marker.len();
         // Flatten all variant field types for include_spec_marker calls, deduplicating
