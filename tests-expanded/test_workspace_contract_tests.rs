@@ -246,41 +246,41 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__value {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
+#[allow(deprecated)]
+pub fn __Contract__value__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::value(), &env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
+pub fn __Contract__value__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 0usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                0usize,
+                args.len(),
+            ));
+        };
+    }
     #[allow(deprecated)]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::value(),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 0usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    0usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env)
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
+    __Contract__value__invoke_raw(env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
+pub extern "C" fn __Contract__value__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__value__invoke_raw(soroban_sdk::Env::default())
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_ctor() {
+fn __Contract____cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -292,7 +292,7 @@ fn __Contract__cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_ctor();
+                    __Contract____cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_ctor();
                 };
                 core::default::Default::default()
             }
@@ -303,7 +303,7 @@ fn __Contract__cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf724118320619_
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "value",
             #[allow(deprecated)]
-            &__Contract__value::invoke_raw_slice,
+            &__Contract__value__invoke_raw_slice,
         );
     }
 }

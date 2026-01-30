@@ -187,10 +187,10 @@ pub fn derive_type_enum(
         let marker_len = marker.len();
         // Flatten all variant field types for include_spec_marker calls, deduplicating
         // to avoid redundant calls for types that appear in multiple variants.
-        let all_field_types = itertools::Itertools::unique_by(
-            variant_field_types.iter().flatten(),
-            |t| t.to_token_stream().to_string(),
-        );
+        let all_field_types =
+            itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
+                t.to_token_stream().to_string()
+            });
         Some(quote! {
             impl #path::IncludeSpecMarker for #enum_ident {
                 #[doc(hidden)]

@@ -7,7 +7,7 @@ extern crate core;
 extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl, Address, Env, String};
 mod imported {
-    pub const WASM: &[u8] = b"\0asm\x01\0\0\0\x019\n`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x02\x7f~\0`\x03\x7f~~\0`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f\x7f\x01~`\0\x01~`\x01\x7f\0`\x01\x7f\x01~\x02I\x0c\x01i\x015\0\0\x01i\x014\0\0\x01i\x013\0\x01\x01x\x011\0\x01\x01i\x018\0\0\x01i\x017\0\0\x01i\x016\0\x01\x01v\x01g\0\x01\x01b\x01j\0\x01\x01m\x019\0\x02\x01i\x012\0\0\x01i\x011\0\0\x03\x16\x15\x03\x04\x01\x05\x01\x03\x03\x01\x06\x01\x07\x08\0\x07\x07\0\0\0\x01\t\x02\x05\x03\x01\0\x11\x06!\x04\x7f\x01A\x80\x80\xc0\0\x0b\x7f\0A\x82\x80\xc0\0\x0b\x7f\0A\xdc\x81\xc0\0\x0b\x7f\0A\xe0\x81\xc0\0\x0b\x07\xf5\x01\x11\x06memory\x02\0\x0fcreate_struct_a\0\x0e\x0fcreate_struct_b\0\x10\x15create_struct_tuple_a\0\x13\x15create_struct_tuple_b\0\x15\nget_enum_a\0\x16\nget_enum_b\0\x18\x0eget_enum_int_a\0\x19\x0eget_enum_int_b\0\x1a\x07check_a\0\x1b\x07check_b\0\x1c\x07check_c\0\x1d\x0cemit_event_a\0\x1e\x0cemit_event_b\0 \x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xae\x13\x15{\x02\x01\x7f\x01~\x02@\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc4\0F\r\0 \x02A\nG\r\x01B\0!\x03 \0B\07\x03\x10 \0 \x01B\x08\x887\x03\x08\x0c\x02\x0b \x01\x10\x80\x80\x80\x80\0!\x03 \x01\x10\x81\x80\x80\x80\0!\x01 \0 \x037\x03\x10 \0 \x017\x03\x08B\0!\x03\x0c\x01\x0b \0B\x83\x90\x80\x80\x80\x017\x03\x08B\x01!\x03\x0b \0 \x037\x03\0\x0bF\0\x02@\x02@ \x01B\xff\xff\xff\xff\xff\xff\xff\xff\0V \x02B\0R \x02P\x1b\r\0 \x01B\x08\x86B\n\x84!\x02\x0c\x01\x0b \x02 \x01\x10\x82\x80\x80\x80\0!\x02\x0b \0B\07\x03\0 \0 \x027\x03\x08\x0b\x84\x01\x01\x02\x7f#\x80\x80\x80\x80\0A\x10k\"\x02$\x80\x80\x80\x80\0\x02@ \0B\xff\x01\x83B\x04R\r\0A\x01 \x01\xa7A\xff\x01q\"\x03A\0GA\x01t \x03A\x01F\x1b\"\x03A\x02F\r\0A\0-\0\x82\x80\xc0\x80\0\x1a \x02 \x03\xad7\x03\x08 \x02 \0B\x84\x80\x80\x80p\x837\x03\0A\x94\x80\xc0\x80\0A\x02 \x02A\x02\x10\x8f\x80\x80\x80\0!\0 \x02A\x10j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0b.\0\x02@ \x01 \x03F\r\0\0\x0b \0\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\0\x0b\x9b\x01\x01\x01\x7f#\x80\x80\x80\x80\0A k\"\x02$\x80\x80\x80\x80\0 \x02A\x10j \0\x10\x91\x80\x80\x80\0\x02@ \x02(\x02\x10A\x01F\r\0 \x01B\xff\x01\x83B\xc9\0R\r\0 \x02)\x03\x18!\0A\0-\0\xa4\x80\xc0\x80\0\x1a \x02A\x10j \0\x10\x92\x80\x80\x80\0 \x02(\x02\x10A\x01F\r\0 \x02)\x03\x18!\0 \x02 \x017\x03\x08 \x02 \07\x03\0A\x94\x80\xc0\x80\0A\x02 \x02A\x02\x10\x8f\x80\x80\x80\0!\x01 \x02A j$\x80\x80\x80\x80\0 \x01\x0f\x0b\0\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\0F\r\0\x02@ \x02A\x07F\r\0B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\0!\x03\x0c\x01\x0bB\0!\x03 \x01\x10\x8a\x80\x80\x80\0!\x01\x0b \0 \x037\x03\0 \0 \x017\x03\x08\x0bF\0\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\0|B\xff\xff\xff\xff\xff\xff\xff\xff\0V\r\0 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x8b\x80\x80\x80\0!\x01\x0b \0B\07\x03\0 \0 \x017\x03\x08\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\0A k\"\x02$\x80\x80\x80\x80\0 \x02A\x10j \0\x10\x91\x80\x80\x80\0\x02@ \x02(\x02\x10A\x01F\r\0 \x02)\x03\x18!\0 \x02A\x10j \x01\x10\x91\x80\x80\x80\0 \x02(\x02\x10A\x01F\r\0 \x02)\x03\x18!\x01A\0-\0\xb0\x80\xc0\x80\0\x1a \x02A\x10j \0\x10\x92\x80\x80\x80\0 \x02(\x02\x10\r\0 \x02)\x03\x18!\0 \x02A\x10j \x01\x10\x92\x80\x80\x80\0 \x02(\x02\x10A\x01F\r\0 \x02 \x02)\x03\x187\x03\x08 \x02 \07\x03\0 \x02A\x02\x10\x94\x80\x80\x80\0!\0 \x02A j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0b\x1a\0 \0\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\0\x0b\xd8\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\0A0k\"\x02$\x80\x80\x80\x80\0 \x02A\x08j \0\x10\x8c\x80\x80\x80\0\x02@ \x02(\x02\x08A\x01F\r\0 \x02A\x18j\"\x03)\x03\0!\0 \x02)\x03\x10!\x04 \x02A\x08j \x01\x10\x8c\x80\x80\x80\0 \x02(\x02\x08A\x01F\r\0A\0-\0\xbc\x80\xc0\x80\0\x1a \x03)\x03\0!\x01 \x02)\x03\x10!\x05 \x02A\x08j \x04 \0\x10\x8d\x80\x80\x80\0 \x02(\x02\x08\r\0 \x02)\x03\x10!\0 \x02A\x08j \x05 \x01\x10\x8d\x80\x80\x80\0 \x02(\x02\x08A\x01F\r\0 \x02 \x02)\x03\x107\x03( \x02 \07\x03  \x02A jA\x02\x10\x94\x80\x80\x80\0!\0 \x02A0j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0bZ\x02\x01\x7f\x01~#\x80\x80\x80\x80\0A\x10k\"\0$\x80\x80\x80\x80\0A\0-\0\xc8\x80\xc0\x80\0\x1a \0\x10\x97\x80\x80\x80\0\x02@ \0(\x02\0A\x01G\r\0\0\x0b \0 \0)\x03\x087\x03\0 \0A\x01\x10\x94\x80\x80\x80\0!\x01 \0A\x10j$\x80\x80\x80\x80\0 \x01\x0b\x83\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\0A\x10k\"\x01$\x80\x80\x80\x80\0B\0!\x02A~!\x03\x02@\x02@\x02@\x03@ \x03E\r\x01A\x01!\x04\x02@ \x03A\x82\x80\xc0\x80\0j-\0\0\"\x05A\xdf\0F\r\0\x02@ \x05APjA\xff\x01qA\nI\r\0\x02@ \x05A\xbf\x7fjA\xff\x01qA\x1aI\r\0 \x05A\x9f\x7fjA\xff\x01qA\x19K\r\x05 \x05AEj!\x04\x0c\x02\x0b \x05AKj!\x04\x0c\x01\x0b \x05ARj!\x04\x0b \x02B\x06\x86 \x04\xadB\xff\x01\x83\x84!\x02 \x03A\x01j!\x03\x0c\0\x0b\x0b \x01 \x02B\x08\x86B\x0e\x84\"\x027\x02\x04\x0c\x01\x0b \x01 \x05\xadB\x08\x86B\x01\x847\x03\0A\x80\x80\xc0\x80\0\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x88\x80\x80\x80\0!\x02\x0b \0B\07\x03\0 \0 \x027\x03\x08 \x01A\x10j$\x80\x80\x80\x80\0\x0b\x95\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\0A\x10k\"\x01$\x80\x80\x80\x80\0 \x01 \0\x10\x91\x80\x80\x80\0\x02@ \x01(\x02\0A\x01F\r\0 \x01)\x03\x08!\0A\0-\0\xd4\x80\xc0\x80\0\x1a \x01\x10\x97\x80\x80\x80\0 \x01(\x02\0\r\0 \x01)\x03\x08!\x02 \x01 \0\x10\x92\x80\x80\x80\0 \x01(\x02\0A\x01F\r\0 \x01 \x01)\x03\x087\x03\x08 \x01 \x027\x03\0 \x01A\x02\x10\x94\x80\x80\x80\0!\0 \x01A\x10j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0b\x12\0A\0-\0\xe0\x80\xc0\x80\0\x1aB\x84\x80\x80\x800\x0b\x13\0A\0-\0\xec\x80\xc0\x80\0\x1aB\x84\x80\x80\x80\xc0\x02\x0b4\0\x02@ \0B\xff\x01\x83B\x04Q\r\0\0\x0bA\0-\0\xf8\x80\xc0\x80\0\x1aB\x83\x80\x80\x80  \0B\x84\x80\x80\x80p\x83 \0B\x80\x80\x80\x80\x10T\x1b\x0b9\0\x02@ \0B\xff\x01\x83B\x04Q\r\0\0\x0bA\0-\0\x84\x81\xc0\x80\0\x1aB\x83\x80\x80\x80\xc0\x01 \0B\x84\x80\x80\x80\xf0\xff\0\x83 \0B\xff\xff\xff\xff\x8f\xfd\0V\x1b\x0b6\0\x02@ \0B\xff\x01\x83B\x04Q\r\0\0\x0bA\0-\0\x90\x81\xc0\x80\0\x1aB\x83\x80\x80\x80\xc0\x0c \0B\x84\x80\x80\x80p\x83 \0B\x80\x80\x80\x80\xa0\x01T\x1b\x0b\xef\x01\x02\x02\x7f\x01~#\x80\x80\x80\x80\0A k\"\x02$\x80\x80\x80\x80\0\x02@ \0B\xff\x01\x83B\xcd\0R\r\0 \x01B\xff\x01\x83B\xc9\0R\r\0A\0!\x03A\0-\0\x9c\x81\xc0\x80\0\x1aA\xa8\x81\xc0\x80\0\x10\x9f\x80\x80\x80\0!\x04 \x02 \07\x03\x08 \x02 \x047\x03\0\x03@\x02@ \x03A\x10G\r\0A\0!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\07\x03\0 \x03A\x08j!\x03\x0c\0\x0b\x0b \x02A\x10jA\x02\x10\x94\x80\x80\x80\0!\0 \x02 \x017\x03\x10 \0A\xb0\x81\xc0\x80\0A\x01 \x02A\x10jA\x01\x10\x8f\x80\x80\x80\0\x10\x83\x80\x80\x80\0\x1a \x02A j$\x80\x80\x80\x80\0B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\0 \x03A\x08j!\x03\x0c\0\x0b\x0b\0\x0b\x07\0 \0)\x03\0\x0b\x81\x03\x02\x02\x7f\x02~#\x80\x80\x80\x80\0A0k\"\x03$\x80\x80\x80\x80\0\x02@ \0B\xff\x01\x83B\xcd\0R\r\0 \x01B\xff\x01\x83B\xcd\0R\r\0\x02@\x02@ \x02\xa7A\xff\x01q\"\x04A\xc5\0F\r\0 \x04A\x0bG\r\x02 \x02B?\x87!\x05 \x02B\x08\x87!\x02\x0c\x01\x0b \x02\x10\x84\x80\x80\x80\0!\x05 \x02\x10\x85\x80\x80\x80\0!\x02\x0bA\0!\x04A\0-\0\xb8\x81\xc0\x80\0\x1aA\xc8\x81\xc0\x80\0\x10\x9f\x80\x80\x80\0!\x06 \x03 \x017\x03\x10 \x03 \07\x03\x08 \x03 \x067\x03\0\x03@\x02@ \x04A\x18G\r\0A\0!\x04\x02@\x03@ \x04A\x18F\r\x01 \x03A\x18j \x04j \x03 \x04j)\x03\07\x03\0 \x04A\x08j!\x04\x0c\0\x0b\x0b \x03A\x18jA\x03\x10\x94\x80\x80\x80\0!\0\x02@\x02@ \x02B\x80\x80\x80\x80\x80\x80\x80\xc0\0|B\xff\xff\xff\xff\xff\xff\xff\xff\0V\r\0 \x02 \x02\x85 \x05 \x02B?\x87\x85\x84B\0R\r\0 \x02B\x08\x86B\x0b\x84!\x02\x0c\x01\x0b \x05 \x02\x10\x86\x80\x80\x80\0!\x02\x0b \x03 \x027\x03\x18 \0A\xd4\x81\xc0\x80\0A\x01 \x03A\x18jA\x01\x10\x8f\x80\x80\x80\0\x10\x83\x80\x80\x80\0\x1a \x03A0j$\x80\x80\x80\x80\0B\x02\x0f\x0b \x03A\x18j \x04jB\x027\x03\0 \x04A\x08j!\x04\x0c\0\x0b\x0b\0\x0b\x0b\xe6\x01\x01\0A\x80\x80\xc0\0\x0b\xdc\x01V2SpEc\xb6\x1c\xfd\xdfhY-df1f2\0\0\x0e\0\x10\0\x02\0\0\0\x10\0\x10\0\x02\0\0\0SpEc\xf3\xc4\xd3\x8c\xc1w\xe9\x18SpEc\xcf)\x97]S\xb2\xfd)SpEcx\xd98\x9c\x1ao\xac\x8cSpEc\xa2=N\xc1p\x95\x90\xb2SpEc'\x1b\0DSH^\xccSpEcV]\x80\\~\x1a\x08/SpEc,\x9c\xc0_\xed_)\x85SpEc\xe9R\xa7\xe8b\x99\xa2\xc3SpEc\x1d1\xd6\xfb\x88\xd2=\xe3SpEc\xb9\x01\xafj\xe0c\xa3\rSpEcK\xe6\x8ej\x19\x9en\xbd\x0ef\x90\xcf\xea\xae\x02\0\x10\0\x10\0\x02\0\0\0SpEc\xe6\xaa\xefz\x17i$\x15\0\0\0\0\x0eg\x90\xcf\xea\xae\x02\0f3\0\0\xd0\0\x10\0\x02\0\0\0\0\xcf\x12\x0econtractspecv0\0\0\0\0\0\0\0\0\0\0\0\x0fcreate_struct_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\0\0\0\0\0\0\0\0\x0fcreate_struct_b\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructB\0\0\0\0\0\0\0\0\0\0\0\0\x15create_struct_tuple_a\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA\0\0\0\0\0\0\0\0\0\0\0\x15create_struct_tuple_b\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\n\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleB\0\0\0\0\0\0\0\0\0\0\0\nget_enum_a\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x05EnumA\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nget_enum_b\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd0\0\0\0\x05EnumB\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x0eget_enum_int_a\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x08EnumIntA\0\0\0\0\0\0\0\0\0\0\0\x0eget_enum_int_b\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x08EnumIntB\0\0\0\0\0\0\0\0\0\0\0\x07check_a\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorA\0\0\0\0\0\0\0\0\0\0\0\0\0\x07check_b\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorB\0\0\0\0\0\0\0\0\0\0\0\0\0\x07check_c\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorC\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cemit_event_a\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cemit_event_b\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02\0\x1e\x11contractenvmetav0\0\0\0\0\0\0\0\x17\0\0\0\0\0+\x0econtractmetav0\0\0\0\0\0\0\0\x05rsver\0\0\0\0\0\0\x061.84.0\0\0";
+    pub const WASM: &[u8] = b"\0asm\x01\0\0\0\x019\n`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x02\x7f~\0`\x03\x7f~~\0`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f\x7f\x01~`\0\x01~`\x01\x7f\0`\x01\x7f\x01~\x02I\x0c\x01i\x015\0\0\x01i\x014\0\0\x01i\x013\0\x01\x01x\x011\0\x01\x01i\x018\0\0\x01i\x017\0\0\x01i\x016\0\x01\x01v\x01g\0\x01\x01b\x01j\0\x01\x01m\x019\0\x02\x01i\x012\0\0\x01i\x011\0\0\x03\x16\x15\x03\x04\x01\x05\x01\x03\x03\x01\x06\x01\x07\x08\0\x07\x07\0\0\0\x01\t\x02\x05\x03\x01\0\x11\x06!\x04\x7f\x01A\x80\x80\xc0\0\x0b\x7f\0A\x82\x80\xc0\0\x0b\x7f\0A\xdc\x81\xc0\0\x0b\x7f\0A\xe0\x81\xc0\0\x0b\x07\xf5\x01\x11\x06memory\x02\0\x0fcreate_struct_a\0\x0e\x0fcreate_struct_b\0\x10\x15create_struct_tuple_a\0\x13\x15create_struct_tuple_b\0\x15\nget_enum_a\0\x16\nget_enum_b\0\x18\x0eget_enum_int_a\0\x19\x0eget_enum_int_b\0\x1a\x07check_a\0\x1b\x07check_b\0\x1c\x07check_c\0\x1d\x0cemit_event_a\0\x1e\x0cemit_event_b\0 \x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xae\x13\x15{\x02\x01\x7f\x01~\x02@\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc4\0F\r\0 \x02A\nG\r\x01B\0!\x03 \0B\07\x03\x10 \0 \x01B\x08\x887\x03\x08\x0c\x02\x0b \x01\x10\x80\x80\x80\x80\0!\x03 \x01\x10\x81\x80\x80\x80\0!\x01 \0 \x037\x03\x10 \0 \x017\x03\x08B\0!\x03\x0c\x01\x0b \0B\x83\x90\x80\x80\x80\x017\x03\x08B\x01!\x03\x0b \0 \x037\x03\0\x0bF\0\x02@\x02@ \x01B\xff\xff\xff\xff\xff\xff\xff\xff\0V \x02B\0R \x02P\x1b\r\0 \x01B\x08\x86B\n\x84!\x02\x0c\x01\x0b \x02 \x01\x10\x82\x80\x80\x80\0!\x02\x0b \0B\07\x03\0 \0 \x027\x03\x08\x0b\x84\x01\x01\x02\x7f#\x80\x80\x80\x80\0A\x10k\"\x02$\x80\x80\x80\x80\0\x02@ \0B\xff\x01\x83B\x04R\r\0A\x01 \x01\xa7A\xff\x01q\"\x03A\0GA\x01t \x03A\x01F\x1b\"\x03A\x02F\r\0A\0-\0\x82\x80\xc0\x80\0\x1a \x02 \x03\xad7\x03\x08 \x02 \0B\x84\x80\x80\x80p\x837\x03\0A\x94\x80\xc0\x80\0A\x02 \x02A\x02\x10\x8f\x80\x80\x80\0!\0 \x02A\x10j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0b.\0\x02@ \x01 \x03F\r\0\0\x0b \0\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\0\x0b\x9b\x01\x01\x01\x7f#\x80\x80\x80\x80\0A k\"\x02$\x80\x80\x80\x80\0 \x02A\x10j \0\x10\x91\x80\x80\x80\0\x02@ \x02(\x02\x10A\x01F\r\0 \x01B\xff\x01\x83B\xc9\0R\r\0 \x02)\x03\x18!\0A\0-\0\xa4\x80\xc0\x80\0\x1a \x02A\x10j \0\x10\x92\x80\x80\x80\0 \x02(\x02\x10A\x01F\r\0 \x02)\x03\x18!\0 \x02 \x017\x03\x08 \x02 \07\x03\0A\x94\x80\xc0\x80\0A\x02 \x02A\x02\x10\x8f\x80\x80\x80\0!\x01 \x02A j$\x80\x80\x80\x80\0 \x01\x0f\x0b\0\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\0F\r\0\x02@ \x02A\x07F\r\0B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\0!\x03\x0c\x01\x0bB\0!\x03 \x01\x10\x8a\x80\x80\x80\0!\x01\x0b \0 \x037\x03\0 \0 \x017\x03\x08\x0bF\0\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\0|B\xff\xff\xff\xff\xff\xff\xff\xff\0V\r\0 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x8b\x80\x80\x80\0!\x01\x0b \0B\07\x03\0 \0 \x017\x03\x08\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\0A k\"\x02$\x80\x80\x80\x80\0 \x02A\x10j \0\x10\x91\x80\x80\x80\0\x02@ \x02(\x02\x10A\x01F\r\0 \x02)\x03\x18!\0 \x02A\x10j \x01\x10\x91\x80\x80\x80\0 \x02(\x02\x10A\x01F\r\0 \x02)\x03\x18!\x01A\0-\0\xb0\x80\xc0\x80\0\x1a \x02A\x10j \0\x10\x92\x80\x80\x80\0 \x02(\x02\x10\r\0 \x02)\x03\x18!\0 \x02A\x10j \x01\x10\x92\x80\x80\x80\0 \x02(\x02\x10A\x01F\r\0 \x02 \x02)\x03\x187\x03\x08 \x02 \07\x03\0 \x02A\x02\x10\x94\x80\x80\x80\0!\0 \x02A j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0b\x1a\0 \0\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\0\x0b\xd8\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\0A0k\"\x02$\x80\x80\x80\x80\0 \x02A\x08j \0\x10\x8c\x80\x80\x80\0\x02@ \x02(\x02\x08A\x01F\r\0 \x02A\x18j\"\x03)\x03\0!\0 \x02)\x03\x10!\x04 \x02A\x08j \x01\x10\x8c\x80\x80\x80\0 \x02(\x02\x08A\x01F\r\0A\0-\0\xbc\x80\xc0\x80\0\x1a \x03)\x03\0!\x01 \x02)\x03\x10!\x05 \x02A\x08j \x04 \0\x10\x8d\x80\x80\x80\0 \x02(\x02\x08\r\0 \x02)\x03\x10!\0 \x02A\x08j \x05 \x01\x10\x8d\x80\x80\x80\0 \x02(\x02\x08A\x01F\r\0 \x02 \x02)\x03\x107\x03( \x02 \07\x03  \x02A jA\x02\x10\x94\x80\x80\x80\0!\0 \x02A0j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0bZ\x02\x01\x7f\x01~#\x80\x80\x80\x80\0A\x10k\"\0$\x80\x80\x80\x80\0A\0-\0\xc8\x80\xc0\x80\0\x1a \0\x10\x97\x80\x80\x80\0\x02@ \0(\x02\0A\x01G\r\0\0\x0b \0 \0)\x03\x087\x03\0 \0A\x01\x10\x94\x80\x80\x80\0!\x01 \0A\x10j$\x80\x80\x80\x80\0 \x01\x0b\x83\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\0A\x10k\"\x01$\x80\x80\x80\x80\0B\0!\x02A~!\x03\x02@\x02@\x02@\x03@ \x03E\r\x01A\x01!\x04\x02@ \x03A\x82\x80\xc0\x80\0j-\0\0\"\x05A\xdf\0F\r\0\x02@ \x05APjA\xff\x01qA\nI\r\0\x02@ \x05A\xbf\x7fjA\xff\x01qA\x1aI\r\0 \x05A\x9f\x7fjA\xff\x01qA\x19K\r\x05 \x05AEj!\x04\x0c\x02\x0b \x05AKj!\x04\x0c\x01\x0b \x05ARj!\x04\x0b \x02B\x06\x86 \x04\xadB\xff\x01\x83\x84!\x02 \x03A\x01j!\x03\x0c\0\x0b\x0b \x01 \x02B\x08\x86B\x0e\x84\"\x027\x02\x04\x0c\x01\x0b \x01 \x05\xadB\x08\x86B\x01\x847\x03\0A\x80\x80\xc0\x80\0\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x88\x80\x80\x80\0!\x02\x0b \0B\07\x03\0 \0 \x027\x03\x08 \x01A\x10j$\x80\x80\x80\x80\0\x0b\x95\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\0A\x10k\"\x01$\x80\x80\x80\x80\0 \x01 \0\x10\x91\x80\x80\x80\0\x02@ \x01(\x02\0A\x01F\r\0 \x01)\x03\x08!\0A\0-\0\xd4\x80\xc0\x80\0\x1a \x01\x10\x97\x80\x80\x80\0 \x01(\x02\0\r\0 \x01)\x03\x08!\x02 \x01 \0\x10\x92\x80\x80\x80\0 \x01(\x02\0A\x01F\r\0 \x01 \x01)\x03\x087\x03\x08 \x01 \x027\x03\0 \x01A\x02\x10\x94\x80\x80\x80\0!\0 \x01A\x10j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0b\x12\0A\0-\0\xe0\x80\xc0\x80\0\x1aB\x84\x80\x80\x800\x0b\x13\0A\0-\0\xec\x80\xc0\x80\0\x1aB\x84\x80\x80\x80\xc0\x02\x0b4\0\x02@ \0B\xff\x01\x83B\x04Q\r\0\0\x0bA\0-\0\xf8\x80\xc0\x80\0\x1aB\x83\x80\x80\x80  \0B\x84\x80\x80\x80p\x83 \0B\x80\x80\x80\x80\x10T\x1b\x0b9\0\x02@ \0B\xff\x01\x83B\x04Q\r\0\0\x0bA\0-\0\x84\x81\xc0\x80\0\x1aB\x83\x80\x80\x80\xc0\x01 \0B\x84\x80\x80\x80\xf0\xff\0\x83 \0B\xff\xff\xff\xff\x8f\xfd\0V\x1b\x0b6\0\x02@ \0B\xff\x01\x83B\x04Q\r\0\0\x0bA\0-\0\x90\x81\xc0\x80\0\x1aB\x83\x80\x80\x80\xc0\x0c \0B\x84\x80\x80\x80p\x83 \0B\x80\x80\x80\x80\xa0\x01T\x1b\x0b\xef\x01\x02\x02\x7f\x01~#\x80\x80\x80\x80\0A k\"\x02$\x80\x80\x80\x80\0\x02@ \0B\xff\x01\x83B\xcd\0R\r\0 \x01B\xff\x01\x83B\xc9\0R\r\0A\0!\x03A\0-\0\x9c\x81\xc0\x80\0\x1aA\xa8\x81\xc0\x80\0\x10\x9f\x80\x80\x80\0!\x04 \x02 \07\x03\x08 \x02 \x047\x03\0\x03@\x02@ \x03A\x10G\r\0A\0!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\07\x03\0 \x03A\x08j!\x03\x0c\0\x0b\x0b \x02A\x10jA\x02\x10\x94\x80\x80\x80\0!\0 \x02 \x017\x03\x10 \0A\xb0\x81\xc0\x80\0A\x01 \x02A\x10jA\x01\x10\x8f\x80\x80\x80\0\x10\x83\x80\x80\x80\0\x1a \x02A j$\x80\x80\x80\x80\0B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\0 \x03A\x08j!\x03\x0c\0\x0b\x0b\0\x0b\x07\0 \0)\x03\0\x0b\x81\x03\x02\x02\x7f\x02~#\x80\x80\x80\x80\0A0k\"\x03$\x80\x80\x80\x80\0\x02@ \0B\xff\x01\x83B\xcd\0R\r\0 \x01B\xff\x01\x83B\xcd\0R\r\0\x02@\x02@ \x02\xa7A\xff\x01q\"\x04A\xc5\0F\r\0 \x04A\x0bG\r\x02 \x02B?\x87!\x05 \x02B\x08\x87!\x02\x0c\x01\x0b \x02\x10\x84\x80\x80\x80\0!\x05 \x02\x10\x85\x80\x80\x80\0!\x02\x0bA\0!\x04A\0-\0\xb8\x81\xc0\x80\0\x1aA\xc8\x81\xc0\x80\0\x10\x9f\x80\x80\x80\0!\x06 \x03 \x017\x03\x10 \x03 \07\x03\x08 \x03 \x067\x03\0\x03@\x02@ \x04A\x18G\r\0A\0!\x04\x02@\x03@ \x04A\x18F\r\x01 \x03A\x18j \x04j \x03 \x04j)\x03\07\x03\0 \x04A\x08j!\x04\x0c\0\x0b\x0b \x03A\x18jA\x03\x10\x94\x80\x80\x80\0!\0\x02@\x02@ \x02B\x80\x80\x80\x80\x80\x80\x80\xc0\0|B\xff\xff\xff\xff\xff\xff\xff\xff\0V\r\0 \x02 \x02\x85 \x05 \x02B?\x87\x85\x84B\0R\r\0 \x02B\x08\x86B\x0b\x84!\x02\x0c\x01\x0b \x05 \x02\x10\x86\x80\x80\x80\0!\x02\x0b \x03 \x027\x03\x18 \0A\xd4\x81\xc0\x80\0A\x01 \x03A\x18jA\x01\x10\x8f\x80\x80\x80\0\x10\x83\x80\x80\x80\0\x1a \x03A0j$\x80\x80\x80\x80\0B\x02\x0f\x0b \x03A\x18j \x04jB\x027\x03\0 \x04A\x08j!\x04\x0c\0\x0b\x0b\0\x0b\x0b\xe6\x01\x01\0A\x80\x80\xc0\0\x0b\xdc\x01V2SpEc\xb6\x1c\xfd\xdfhY-df1f2\0\0\x0e\0\x10\0\x02\0\0\0\x10\0\x10\0\x02\0\0\0SpEc\xf3\xc4\xd3\x8c\xc1w\xe9\x18SpEc\xcf)\x97]S\xb2\xfd)SpEcx\xd98\x9c\x1ao\xac\x8cSpEc\xa2=N\xc1p\x95\x90\xb2SpEc'\x1b\0DSH^\xccSpEcV]\x80\\~\x1a\x08/SpEc,\x9c\xc0_\xed_)\x85SpEc\xe9R\xa7\xe8b\x99\xa2\xc3SpEc\x1d1\xd6\xfb\x88\xd2=\xe3SpEc\xb9\x01\xafj\xe0c\xa3\rSpEcK\xe6\x8ej\x19\x9en\xbd\x0ef\x90\xcf\xea\xae\x02\0\x10\0\x10\0\x02\0\0\0SpEc\xe6\xaa\xefz\x17i$\x15\0\0\0\0\x0eg\x90\xcf\xea\xae\x02\0f3\0\0\xd0\0\x10\0\x02\0\0\0\0\xcf\x12\x0econtractspecv0\0\0\0\0\0\0\0\0\0\0\0\x0fcreate_struct_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\0\0\0\0\0\0\0\0\x0fcreate_struct_b\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructB\0\0\0\0\0\0\0\0\0\0\0\0\x15create_struct_tuple_a\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA\0\0\0\0\0\0\0\0\0\0\0\x15create_struct_tuple_b\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\n\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleB\0\0\0\0\0\0\0\0\0\0\0\nget_enum_a\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x05EnumA\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nget_enum_b\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd0\0\0\0\x05EnumB\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x0eget_enum_int_a\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x08EnumIntA\0\0\0\0\0\0\0\0\0\0\0\x0eget_enum_int_b\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x08EnumIntB\0\0\0\0\0\0\0\0\0\0\0\x07check_a\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorA\0\0\0\0\0\0\0\0\0\0\0\0\0\x07check_b\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorB\0\0\0\0\0\0\0\0\0\0\0\0\0\x07check_c\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorC\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cemit_event_a\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cemit_event_b\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02\0\x1e\x11contractenvmetav0\0\0\0\0\0\0\0\x19\0\0\0\0\0+\x0econtractmetav0\0\0\0\0\0\0\0\x05rsver\0\0\0\0\0\0\x061.84.0\0\0";
     pub trait Contract {
         fn create_struct_a(env: soroban_sdk::Env, f1: u32, f2: bool) -> StructA;
         fn create_struct_b(env: soroban_sdk::Env, f1: i64, f2: soroban_sdk::String) -> StructB;
@@ -4361,8 +4361,6 @@ mod imported {
         #[inline(always)]
         fn include_spec_marker() {
             <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-            <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-            <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -8268,336 +8266,358 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__wrap_struct_a {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
-    #[allow(deprecated)]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::wrap_struct_a(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_2),
-                ),
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_struct_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_struct_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 3usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    3usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize], args[1usize], args[2usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
-    }
-    use super::*;
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__wrap_struct_tuple_a {
-    use super::*;
-    #[deprecated(
-        note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead"
-    )]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
+pub fn __Contract__wrap_struct_a__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 3usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                3usize,
+                args.len(),
+            ));
+        };
+    }
     #[allow(deprecated)]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::wrap_struct_tuple_a(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_2),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(
-        note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead"
-    )]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 3usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    3usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize], args[1usize], args[2usize])
-    }
-    #[deprecated(
-        note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead"
-    )]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
-    }
-    use super::*;
+    __Contract__wrap_struct_a__invoke_raw(env, args[0usize], args[1usize], args[2usize])
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__wrap_enum_a {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
+pub extern "C" fn __Contract__wrap_struct_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
     #[allow(deprecated)]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::wrap_enum_a(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+    __Contract__wrap_struct_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__wrap_enum_int_a {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
-    #[allow(deprecated)]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::wrap_enum_int_a(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_struct_tuple_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_struct_tuple_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__wrap_check_a {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead")]
+pub fn __Contract__wrap_struct_tuple_a__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 3usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                3usize,
+                args.len(),
+            ));
+        };
+    }
     #[allow(deprecated)]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::wrap_check_a(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 2usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    2usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize], args[1usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
-    }
-    use super::*;
+    __Contract__wrap_struct_tuple_a__invoke_raw(env, args[0usize], args[1usize], args[2usize])
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__wrap_emit_event_a {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead")]
+pub extern "C" fn __Contract__wrap_struct_tuple_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
     #[allow(deprecated)]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::wrap_emit_event_a(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_2),
-                ),
+    __Contract__wrap_struct_tuple_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_enum_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_enum_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
+pub fn __Contract__wrap_enum_a__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 3usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    3usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize], args[1usize], args[2usize])
+    #[allow(deprecated)]
+    __Contract__wrap_enum_a__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
+pub extern "C" fn __Contract__wrap_enum_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_enum_a__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_enum_int_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_enum_int_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
+pub fn __Contract__wrap_enum_int_a__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
+    #[allow(deprecated)]
+    __Contract__wrap_enum_int_a__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
+pub extern "C" fn __Contract__wrap_enum_int_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_enum_int_a__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_check_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_check_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
+pub fn __Contract__wrap_check_a__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 2usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                2usize,
+                args.len(),
+            ));
+        };
     }
-    use super::*;
+    #[allow(deprecated)]
+    __Contract__wrap_check_a__invoke_raw(env, args[0usize], args[1usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
+pub extern "C" fn __Contract__wrap_check_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_check_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_emit_event_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_emit_event_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
+pub fn __Contract__wrap_emit_event_a__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 3usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                3usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__wrap_emit_event_a__invoke_raw(env, args[0usize], args[1usize], args[2usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
+pub extern "C" fn __Contract__wrap_emit_event_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_emit_event_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__ce8e2bdbcdf6c60182dd70f69509d7ca88e28358cf52c984ae04155681c56c34_ctor() {
+fn __Contract____ce8e2bdbcdf6c60182dd70f69509d7ca88e28358cf52c984ae04155681c56c34_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -8609,7 +8629,7 @@ fn __Contract__ce8e2bdbcdf6c60182dd70f69509d7ca88e28358cf52c984ae04155681c56c34_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__ce8e2bdbcdf6c60182dd70f69509d7ca88e28358cf52c984ae04155681c56c34_ctor();
+                    __Contract____ce8e2bdbcdf6c60182dd70f69509d7ca88e28358cf52c984ae04155681c56c34_ctor();
                 };
                 core::default::Default::default()
             }
@@ -8620,32 +8640,32 @@ fn __Contract__ce8e2bdbcdf6c60182dd70f69509d7ca88e28358cf52c984ae04155681c56c34_
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "wrap_struct_a",
             #[allow(deprecated)]
-            &__Contract__wrap_struct_a::invoke_raw_slice,
+            &__Contract__wrap_struct_a__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "wrap_struct_tuple_a",
             #[allow(deprecated)]
-            &__Contract__wrap_struct_tuple_a::invoke_raw_slice,
+            &__Contract__wrap_struct_tuple_a__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "wrap_enum_a",
             #[allow(deprecated)]
-            &__Contract__wrap_enum_a::invoke_raw_slice,
+            &__Contract__wrap_enum_a__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "wrap_enum_int_a",
             #[allow(deprecated)]
-            &__Contract__wrap_enum_int_a::invoke_raw_slice,
+            &__Contract__wrap_enum_int_a__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "wrap_check_a",
             #[allow(deprecated)]
-            &__Contract__wrap_check_a::invoke_raw_slice,
+            &__Contract__wrap_check_a__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "wrap_emit_event_a",
             #[allow(deprecated)]
-            &__Contract__wrap_emit_event_a::invoke_raw_slice,
+            &__Contract__wrap_emit_event_a__invoke_raw_slice,
         );
     }
 }

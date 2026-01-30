@@ -105,22 +105,17 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
+#[allow(deprecated)]
+pub fn __Contract__exec__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    use Trait;
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::exec(&env), &env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
+#[export_name = "exec"]
+pub extern "C" fn __Contract__exec__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        use super::Trait;
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::exec(&env),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
-    #[export_name = "exec"]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
+    __Contract__exec__invoke_raw(soroban_sdk::Env::default())
 }

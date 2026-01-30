@@ -86,23 +86,18 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+#[allow(deprecated)]
+pub fn __Contract__empty__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::empty(), &env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+#[export_name = "empty"]
+pub extern "C" fn __Contract__empty__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::empty(),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
-    #[export_name = "empty"]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
+    __Contract__empty__invoke_raw(soroban_sdk::Env::default())
 }
 impl Contract {
     pub fn empty2() {}
@@ -165,23 +160,18 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty2 {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+#[allow(deprecated)]
+pub fn __Contract__empty2__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::empty2(), &env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+#[export_name = "empty2"]
+pub extern "C" fn __Contract__empty2__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::empty2(),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
-    #[export_name = "empty2"]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
+    __Contract__empty2__invoke_raw(soroban_sdk::Env::default())
 }
 trait Trait {
     fn empty3() {}
@@ -247,22 +237,17 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty3 {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
+#[allow(deprecated)]
+pub fn __Contract__empty3__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    use Trait;
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::empty3(), &env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
+#[export_name = "empty3"]
+pub extern "C" fn __Contract__empty3__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        use super::Trait;
-        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-            <super::Contract>::empty3(),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
-    #[export_name = "empty3"]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
+    __Contract__empty3__invoke_raw(soroban_sdk::Env::default())
 }

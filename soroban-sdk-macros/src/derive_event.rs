@@ -272,16 +272,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let data_params = params
         .iter()
         .filter(|p| p.location == ScSpecEventParamLocationV0::Data)
-        .sorted_by_key(|p| p.name.to_string()) // must be sorted for map_new_from_slices
         .collect::<Vec<_>>();
     let data_params_count = data_params.len();
     let data_idents = data_params
         .iter()
         .map(|p| format_ident!("{}", p.name.to_string()))
-        .collect::<Vec<_>>();
-    let data_strs = data_idents
-        .iter()
-        .map(|i| i.to_string())
         .collect::<Vec<_>>();
     let data_to_val = match args.data_format {
         DataFormat::SingleValue if data_params_count == 0 => quote! {
@@ -301,14 +296,26 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 #({ let v: #path::Val = self.#data_idents.into_val(env); v },)*
             ).into_val(env)
         },
-        DataFormat::Map => quote! {
-            use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};
-            const KEYS: [&'static str; #data_params_count] = [#(#data_strs),*];
-            let vals: [#path::Val; #data_params_count] = [
-                #(self.#data_idents.into_val(env)),*
-            ];
-            env.map_new_from_slices(&KEYS, &vals).unwrap_infallible().into()
-        },
+        DataFormat::Map => {
+            // Must be sorted for map_new_from_slices
+            let data_idents_sorted = data_params
+                .iter()
+                .sorted_by_key(|p| p.name.to_string())
+                .map(|p| format_ident!("{}", p.name.to_string()))
+                .collect::<Vec<_>>();
+            let data_strs_sorted = data_idents_sorted
+                .iter()
+                .map(|i| i.to_string())
+                .collect::<Vec<_>>();
+            quote! {
+                use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};
+                const KEYS: [&'static str; #data_params_count] = [#(#data_strs_sorted),*];
+                let vals: [#path::Val; #data_params_count] = [
+                    #(self.#data_idents_sorted.into_val(env)),*
+                ];
+                env.map_new_from_slices(&KEYS, &vals).unwrap_infallible().into()
+            }
+        }
     };
 
     // Output.

@@ -867,8 +867,6 @@ impl soroban_sdk::IncludeSpecMarker for EnumB {
     #[inline(always)]
     fn include_spec_marker() {
         <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 12usize] = *b"SpEc'\x1b\0DSH^\xcc";

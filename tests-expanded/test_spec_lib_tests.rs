@@ -2932,8 +2932,6 @@ impl soroban_sdk::IncludeSpecMarker for EnumB {
     #[inline(always)]
     fn include_spec_marker() {
         <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
