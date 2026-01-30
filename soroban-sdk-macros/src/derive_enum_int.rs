@@ -7,7 +7,7 @@ use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Pat
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
-use crate::{doc::docs_from_attrs, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, spec_marker, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -99,33 +99,17 @@ pub fn derive_type_enum_int(
 
     // IncludeSpecMarker impl - only generated when spec is true.
     // Types with export=false should not be used at external boundaries.
-    let include_spec_impl = if let Some(ref spec_xdr) = spec_xdr {
-        // Create a marker that identifies this spec entry. The marker is a byte array
-        // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
-        // Post-build tools can scan the data section for "SpEc" markers and match
-        // against specs in contractspecv0.
-        let marker = soroban_spec::marker::generate_for_xdr(spec_xdr);
-        let marker_lit = proc_macro2::Literal::byte_string(&marker);
-        let marker_len = marker.len();
-        Some(quote! {
-            impl #path::IncludeSpecMarker for #enum_ident {
-                #[doc(hidden)]
-                #[inline(always)]
-                fn include_spec_marker() {
-                    #[cfg(target_family = "wasm")]
-                    {
-                        // Marker in data section. Post-build tools can scan for "SpEc"
-                        // patterns and match against specs in contractspecv0.
-                        static MARKER: [u8; #marker_len] = *#marker_lit;
-                        // Volatile read prevents DCE within live function.
-                        let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-                    }
-                }
-            }
-        })
-    } else {
-        None
-    };
+    let include_spec_impl = spec_xdr.as_ref().map(|spec_xdr| {
+        spec_marker::generate_include_spec_marker_impl(
+            path,
+            quote!(#enum_ident),
+            spec_xdr,
+            std::iter::empty(),
+            None,
+            None,
+            None,
+        )
+    });
 
     // Output.
     let mut output = quote! {

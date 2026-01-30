@@ -1,6 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, spec_marker, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -197,13 +197,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
-    // Create a marker that identifies this spec entry. The marker is a byte array
-    // in the data section with a distinctive pattern: "SpEc" + truncated SHA256.
-    // Post-build tools can scan the data section for "SpEc" markers and match
-    // against specs in contractspecv0.
-    let marker = soroban_spec::marker::generate_for_xdr(&spec_xdr);
-    let marker_lit = proc_macro2::Literal::byte_string(&marker);
-    let marker_len = marker.len();
     let include_spec_call = if export {
         Some(quote! { <Self as #path::IncludeSpecMarker>::include_spec_marker(); })
     } else {
@@ -225,24 +218,15 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // IncludeSpecMarker impl - only generated when export is true.
     // Types with export=false should not be used at external boundaries.
     let include_spec_impl = if export {
-        Some(quote! {
-            impl #gen_impl #path::IncludeSpecMarker for #ident #gen_types #gen_where {
-                #[doc(hidden)]
-                #[inline(always)]
-                fn include_spec_marker() {
-                    // Include markers for nested field types (topics and data).
-                    #(<#field_types as #path::IncludeSpecMarker>::include_spec_marker();)*
-                    #[cfg(target_family = "wasm")]
-                    {
-                        // Marker in data section. Post-build tools can scan for "SpEc"
-                        // patterns and match against specs in contractspecv0.
-                        static MARKER: [u8; #marker_len] = *#marker_lit;
-                        // Volatile read prevents DCE within live function.
-                        let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-                    }
-                }
-            }
-        })
+        Some(spec_marker::generate_include_spec_marker_impl(
+            path,
+            quote!(#ident),
+            &spec_xdr,
+            field_types.iter().cloned(),
+            Some(quote!(#gen_impl)),
+            Some(quote!(#gen_types)),
+            Some(quote!(#gen_where)),
+        ))
     } else {
         None
     };
