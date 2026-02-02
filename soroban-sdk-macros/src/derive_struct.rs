@@ -8,7 +8,9 @@ use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs, map_type::is_option_type, map_type::map_type, DEFAULT_XDR_RW_LIMITS,
+};
 
 // TODO: Add field attribute for including/excluding fields in types.
 // TODO: Better handling of partial types and types without all their fields and
@@ -27,7 +29,9 @@ pub fn derive_type_struct(
     let mut errors = Vec::<Error>::new();
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
-    let (spec_fields, field_idents, field_names, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+
+    // Collect field data including whether each field is an Option type
+    let (spec_fields, field_idents, field_names, field_idx_lits, field_is_options, try_from_xdrs, try_into_xdr_stmts, try_into_xdr_exprs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .sorted_by_key(|field| field.ident.as_ref().unwrap().to_string())
         .enumerate()
@@ -35,6 +39,7 @@ pub fn derive_type_struct(
             let field_ident = field.ident.as_ref().unwrap();
             let field_name = field_ident.to_string();
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
+            let field_is_option = is_option_type(&field.ty);
             let spec_field = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
@@ -50,23 +55,77 @@ pub fn derive_type_struct(
                     }
                 },
             };
-            let try_from_xdr = quote! {
-                #field_ident: {
-                    let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
-                    let idx = map.binary_search_by_key(&key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
-                    let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
-                    rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
+
+            // Generate XDR conversion code based on whether field is Option
+            let try_from_xdr = if field_is_option {
+                // For Option fields: handle missing keys gracefully
+                quote! {
+                    #field_ident: {
+                        let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
+                        match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                            Ok(idx) => {
+                                let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                                // Handle backwards compat: VOID -> None
+                                if rv.is_void() {
+                                    None
+                                } else {
+                                    Some(rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?)
+                                }
+                            }
+                            Err(_) => None // Missing key -> None
+                        }
+                    }
+                }
+            } else {
+                // For non-Option fields: key must exist
+                quote! {
+                    #field_ident: {
+                        let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
+                        let idx = map.binary_search_by_key(&key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
+                        let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                        rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
+                    }
                 }
             };
-            let try_into_xdr = quote! {
+
+            // Statement form: for structs WITH Option fields (uses __entries.push())
+            let try_into_xdr_stmt = if field_is_option {
+                // For Option fields: only add entry if Some
+                quote! {
+                    if let Some(ref __inner) = val.#field_ident {
+                        __entries.push(#path::xdr::ScMapEntry {
+                            key: #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into(),
+                            val: __inner.try_into().map_err(|_| #path::xdr::Error::Invalid)?,
+                        });
+                    }
+                }
+            } else {
+                // For non-Option fields: always add entry
+                quote! {
+                    __entries.push(#path::xdr::ScMapEntry {
+                        key: #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into(),
+                        val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
+                    });
+                }
+            };
+
+            // Expression form: for structs WITHOUT Option fields (used in vec![...])
+            let try_into_xdr_expr = quote! {
                 #path::xdr::ScMapEntry {
                     key: #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into(),
                     val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };
-            (spec_field, field_ident, field_name, field_idx_lit, try_from_xdr, try_into_xdr)
+
+            (spec_field, field_ident, field_name, field_idx_lit, field_is_option, try_from_xdr, try_into_xdr_stmt, try_into_xdr_expr)
         })
         .multiunzip();
+
+    // Check if struct has any Option fields
+    let has_any_option_fields = field_is_options.iter().any(|&is_opt| is_opt);
+
+    // Count required (non-Option) fields for validation
+    let required_field_count: usize = field_is_options.iter().filter(|&&is_opt| !is_opt).count();
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
@@ -100,35 +159,141 @@ pub fn derive_type_struct(
         None
     };
 
+    // Generate serialization and deserialization code based on whether struct has Option fields
+    let (from_val_impl, to_val_impl) = if has_any_option_fields {
+        // For structs WITH Option fields: use dynamic map building
+
+        // Generate field extraction code for deserialization
+        let field_extracts: Vec<_> = field_idents
+            .iter()
+            .zip(field_names.iter())
+            .zip(field_is_options.iter())
+            .map(|((field_ident, field_name), &is_option)| {
+                if is_option {
+                    // For Option fields: check if key exists, handle VOID for backwards compat
+                    quote! {
+                        #field_ident: {
+                            let __sym = #path::Symbol::new(env, #field_name);
+                            if __map.contains_key(__sym.clone()) {
+                                let __v: Val = __map.get_unchecked(__sym);
+                                if __v.is_void() {
+                                    None // Backwards compat: VOID -> None
+                                } else {
+                                    Some(__v.try_into_val(env).map_err(|_| ConversionError)?)
+                                }
+                            } else {
+                                None // Missing key -> None
+                            }
+                        }
+                    }
+                } else {
+                    // For non-Option fields: key must exist
+                    quote! {
+                        #field_ident: {
+                            let __sym = #path::Symbol::new(env, #field_name);
+                            __map.get_unchecked(__sym).try_into_val(env).map_err(|_| ConversionError)?
+                        }
+                    }
+                }
+            })
+            .collect();
+
+        // Generate field insertion code for serialization
+        let field_inserts: Vec<_> = field_idents
+            .iter()
+            .zip(field_names.iter())
+            .zip(field_is_options.iter())
+            .map(|((field_ident, field_name), &is_option)| {
+                if is_option {
+                    // For Option fields: only insert if Some
+                    quote! {
+                        if let Some(ref __inner) = val.#field_ident {
+                            __map.set(
+                                #path::Symbol::new(env, #field_name),
+                                __inner.try_into_val(env).map_err(|_| ConversionError)?
+                            );
+                        }
+                    }
+                } else {
+                    // For non-Option fields: always insert
+                    quote! {
+                        __map.set(
+                            #path::Symbol::new(env, #field_name),
+                            (&val.#field_ident).try_into_val(env).map_err(|_| ConversionError)?
+                        );
+                    }
+                }
+            })
+            .collect();
+
+        let from_val = quote! {
+            impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
+                type Error = #path::ConversionError;
+                fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                    use #path::{TryIntoVal, ConversionError, Map, Symbol, Val};
+                    let __map: Map<Symbol, Val> = val.try_into_val(env).map_err(|_| ConversionError)?;
+                    Ok(Self {
+                        #(#field_extracts,)*
+                    })
+                }
+            }
+        };
+
+        let to_val = quote! {
+            impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
+                type Error = #path::ConversionError;
+                fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
+                    use #path::{TryIntoVal, ConversionError, Map, Symbol, Val};
+                    let mut __map: Map<Symbol, Val> = Map::new(env);
+                    #(#field_inserts)*
+                    Ok(__map.into())
+                }
+            }
+        };
+
+        (from_val, to_val)
+    } else {
+        // For structs WITHOUT Option fields: use original optimized approach
+        let from_val = quote! {
+            impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
+                type Error = #path::ConversionError;
+                fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                    use #path::{TryIntoVal,EnvBase,ConversionError,Val,MapObject};
+                    const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
+                    let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
+                    let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+                    env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
+                    Ok(Self {
+                        #(#field_idents: vals[#field_idx_lits].try_into_val(env).map_err(|_| #path::ConversionError)?,)*
+                    })
+                }
+            }
+        };
+
+        let to_val = quote! {
+            impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
+                type Error = #path::ConversionError;
+                fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
+                    use #path::{TryIntoVal,EnvBase,ConversionError,Val};
+                    const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
+                    let vals: [Val; #field_count_usize] = [
+                        #((&val.#field_idents).try_into_val(env).map_err(|_| ConversionError)?),*
+                    ];
+                    Ok(env.map_new_from_slices(&KEYS, &vals).map_err(|_| ConversionError)?.into())
+                }
+            }
+        };
+
+        (from_val, to_val)
+    };
+
     // Output.
     let mut output = quote! {
         #spec_gen
 
-        impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
-            type Error = #path::ConversionError;
-            fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
-                use #path::{TryIntoVal,EnvBase,ConversionError,Val,MapObject};
-                const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
-                let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
-                let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
-                Ok(Self {
-                    #(#field_idents: vals[#field_idx_lits].try_into_val(env).map_err(|_| #path::ConversionError)?,)*
-                })
-            }
-        }
+        #from_val_impl
 
-        impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
-            type Error = #path::ConversionError;
-            fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
-                use #path::{TryIntoVal,EnvBase,ConversionError,Val};
-                const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
-                let vals: [Val; #field_count_usize] = [
-                    #((&val.#field_idents).try_into_val(env).map_err(|_| ConversionError)?),*
-                ];
-                Ok(env.map_new_from_slices(&KEYS, &vals).map_err(|_| ConversionError)?.into())
-            }
-        }
+        #to_val_impl
 
         impl #path::TryFromVal<#path::Env, &#ident> for #path::Val {
             type Error = #path::ConversionError;
@@ -142,6 +307,57 @@ pub fn derive_type_struct(
     // Additional output when testutils are enabled.
     if cfg!(feature = "testutils") {
         let arbitrary_tokens = crate::arbitrary::derive_arbitrary_struct(path, vis, ident, data);
+
+        // Generate the map length check based on whether we have Option fields
+        let map_len_check = if has_any_option_fields {
+            // For structs with Option fields: require at least required_field_count, at most field_count_usize
+            quote! {
+                if map.len() < #required_field_count || map.len() > #field_count_usize {
+                    return Err(#path::xdr::Error::Invalid);
+                }
+            }
+        } else {
+            // For structs without Option fields: exact count required
+            quote! {
+                if map.len() != #field_count_usize {
+                    return Err(#path::xdr::Error::Invalid);
+                }
+            }
+        };
+
+        // Generate the TryFrom<&Struct> for ScMap based on whether we have Option fields
+        let try_from_struct_for_scmap = if has_any_option_fields {
+            // For structs with Option fields: build entries dynamically
+            quote! {
+                impl TryFrom<&#ident> for #path::xdr::ScMap  {
+                    type Error = #path::xdr::Error;
+                    #[inline(always)]
+                    fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
+                        extern crate alloc;
+                        use #path::TryFromVal;
+                        let mut __entries = alloc::vec::Vec::new();
+                        #(#try_into_xdr_stmts)*
+                        #path::xdr::ScMap::sorted_from(__entries)
+                    }
+                }
+            }
+        } else {
+            // For structs without Option fields: original vec! macro approach
+            quote! {
+                impl TryFrom<&#ident> for #path::xdr::ScMap  {
+                    type Error = #path::xdr::Error;
+                    #[inline(always)]
+                    fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
+                        extern crate alloc;
+                        use #path::TryFromVal;
+                        #path::xdr::ScMap::sorted_from(alloc::vec![
+                            #(#try_into_xdr_exprs,)*
+                        ])
+                    }
+                }
+            }
+        };
+
         output.extend(quote!{
             impl #path::TryFromVal<#path::Env, #path::xdr::ScMap> for #ident {
                 type Error = #path::xdr::Error;
@@ -150,9 +366,7 @@ pub fn derive_type_struct(
                     use #path::xdr::Validate;
                     use #path::TryIntoVal;
                     let map = val;
-                    if map.len() != #field_count_usize {
-                        return Err(#path::xdr::Error::Invalid);
-                    }
+                    #map_len_check
                     map.validate()?;
                     Ok(Self{
                         #(#try_from_xdrs,)*
@@ -172,17 +386,7 @@ pub fn derive_type_struct(
                 }
             }
 
-            impl TryFrom<&#ident> for #path::xdr::ScMap  {
-                type Error = #path::xdr::Error;
-                #[inline(always)]
-                fn try_from(val: &#ident) -> Result<Self, #path::xdr::Error> {
-                    extern crate alloc;
-                    use #path::TryFromVal;
-                    #path::xdr::ScMap::sorted_from(alloc::vec![
-                        #(#try_into_xdrs,)*
-                    ])
-                }
-            }
+            #try_from_struct_for_scmap
 
             impl TryFrom<#ident> for #path::xdr::ScMap {
                 type Error = #path::xdr::Error;

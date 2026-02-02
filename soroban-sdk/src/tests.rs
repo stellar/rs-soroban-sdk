@@ -26,6 +26,7 @@ mod contract_udt_enum_error;
 mod contract_udt_enum_int;
 mod contract_udt_enum_option;
 mod contract_udt_option;
+mod contract_udt_option_omit;
 mod contract_udt_struct;
 mod contract_udt_struct_tuple;
 mod contractimport;

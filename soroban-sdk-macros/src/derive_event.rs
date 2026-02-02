@@ -1,6 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::is_option_type, map_type::map_type, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -124,8 +124,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .with_span(&input.span()))?,
         };
 
-    // Map each field of the struct to a spec for a param.
-    let params = fields
+    // Map each field of the struct to a spec for a param, and capture Option type info.
+    let field_data: Vec<_> = fields
         .map(|field| {
             let ident = field.ident.as_ref().unwrap();
             let is_topic = field.attrs.iter().any(|a| a.path().is_ident("topic"));
@@ -149,14 +149,18 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             let type_ = errors
                 .handle_in(|| Ok(map_type(&field.ty, true, false)?))
                 .unwrap_or_default();
-            ScSpecEventParamV0 {
+            let is_option = is_option_type(&field.ty);
+            let param = ScSpecEventParamV0 {
                 location,
                 doc,
                 name,
                 type_,
-            }
+            };
+            (param, is_option)
         })
-        .collect::<Vec<_>>();
+        .collect();
+
+    let params: Vec<_> = field_data.iter().map(|(p, _)| p.clone()).collect();
 
     // If errors have occurred, return them.
     let errors = errors.checkpoint()?;
@@ -226,15 +230,20 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Prepare Data Conversion to Val.
-    let data_params = params
+    // Collect data params along with their Option type info
+    let data_params_with_option: Vec<_> = field_data
         .iter()
-        .filter(|p| p.location == ScSpecEventParamLocationV0::Data)
-        .collect::<Vec<_>>();
-    let data_params_count = data_params.len();
-    let data_idents = data_params
+        .filter(|(p, _)| p.location == ScSpecEventParamLocationV0::Data)
+        .collect();
+    let data_params_count = data_params_with_option.len();
+    let data_idents: Vec<_> = data_params_with_option
         .iter()
-        .map(|p| format_ident!("{}", p.name.to_string()))
-        .collect::<Vec<_>>();
+        .map(|(p, _)| format_ident!("{}", p.name.to_string()))
+        .collect();
+
+    // Check if any data param is an Option type
+    let has_any_option_data = data_params_with_option.iter().any(|(_, is_opt)| *is_opt);
+
     let data_to_val = match args.data_format {
         DataFormat::SingleValue if data_params_count == 0 => quote! {
             #path::Val::VOID.to_val()
@@ -253,17 +262,52 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 #({ let v: #path::Val = self.#data_idents.into_val(env); v },)*
             ).into_val(env)
         },
+        DataFormat::Map if has_any_option_data => {
+            // For events with Option data fields: use dynamic map building
+            let data_inserts: Vec<_> = data_params_with_option
+                .iter()
+                .sorted_by_key(|(p, _)| p.name.to_string())
+                .map(|(p, is_option)| {
+                    let field_ident = format_ident!("{}", p.name.to_string());
+                    let field_name = p.name.to_string();
+                    if *is_option {
+                        // For Option fields: only insert if Some
+                        quote! {
+                            if let Some(ref __inner) = self.#field_ident {
+                                __map.set(
+                                    #path::Symbol::new(env, #field_name),
+                                    __inner.into_val(env)
+                                );
+                            }
+                        }
+                    } else {
+                        // For non-Option fields: always insert
+                        quote! {
+                            __map.set(
+                                #path::Symbol::new(env, #field_name),
+                                self.#field_ident.into_val(env)
+                            );
+                        }
+                    }
+                })
+                .collect();
+
+            quote! {
+                use #path::{IntoVal, Map, Symbol, Val};
+                let mut __map: Map<Symbol, Val> = Map::new(env);
+                #(#data_inserts)*
+                __map.into()
+            }
+        }
         DataFormat::Map => {
-            // Must be sorted for map_new_from_slices
-            let data_idents_sorted = data_params
+            // For events without Option data fields: use original optimized approach
+            let data_idents_sorted: Vec<_> = data_params_with_option
                 .iter()
-                .sorted_by_key(|p| p.name.to_string())
-                .map(|p| format_ident!("{}", p.name.to_string()))
-                .collect::<Vec<_>>();
-            let data_strs_sorted = data_idents_sorted
-                .iter()
-                .map(|i| i.to_string())
-                .collect::<Vec<_>>();
+                .sorted_by_key(|(p, _)| p.name.to_string())
+                .map(|(p, _)| format_ident!("{}", p.name.to_string()))
+                .collect();
+            let data_strs_sorted: Vec<_> =
+                data_idents_sorted.iter().map(|i| i.to_string()).collect();
             quote! {
                 use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};
                 const KEYS: [&'static str; #data_params_count] = [#(#data_strs_sorted),*];

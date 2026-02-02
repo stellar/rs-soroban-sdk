@@ -241,6 +241,27 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
     }
 }
 
+/// Checks if a syn::Type represents Option<T>
+pub fn is_option_type(ty: &Type) -> bool {
+    match ty {
+        Type::Path(TypePath {
+            qself: None,
+            path: Path { segments, .. },
+        }) => {
+            if let Some(segment) = segments.last() {
+                segment.ident == "Option"
+                    && matches!(
+                        &segment.arguments,
+                        PathArguments::AngleBracketed(args) if args.args.len() == 1
+                    )
+            } else {
+                false
+            }
+        }
+        _ => false,
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -298,5 +319,35 @@ mod test {
                     .unwrap(),
             }))
         );
+    }
+
+    #[test]
+    fn test_is_option_type_with_option() {
+        let ty: Type = parse_quote!(Option<i32>);
+        assert!(is_option_type(&ty));
+    }
+
+    #[test]
+    fn test_is_option_type_with_nested_option() {
+        let ty: Type = parse_quote!(Option<Option<i32>>);
+        assert!(is_option_type(&ty));
+    }
+
+    #[test]
+    fn test_is_option_type_with_non_option() {
+        let ty: Type = parse_quote!(i32);
+        assert!(!is_option_type(&ty));
+    }
+
+    #[test]
+    fn test_is_option_type_with_vec() {
+        let ty: Type = parse_quote!(Vec<i32>);
+        assert!(!is_option_type(&ty));
+    }
+
+    #[test]
+    fn test_is_option_type_with_result() {
+        let ty: Type = parse_quote!(Result<i32, Error>);
+        assert!(!is_option_type(&ty));
     }
 }
