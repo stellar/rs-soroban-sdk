@@ -40,7 +40,7 @@ use derive_trait::derive_trait;
 use darling::{ast::NestedMeta, FromMeta};
 use macro_string::MacroString;
 use proc_macro::TokenStream;
-use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
+use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
@@ -544,9 +544,12 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
         Err(e) => return e.write_errors().into(),
     };
 
-    // Read WASM from file.
+    // Determine absolute path to file.
     let file_abs = path::abs_from_rel_to_manifest(&args.file);
-    let wasm = match fs::read(file_abs) {
+    let file_abs_str = file_abs.to_string_lossy().into_owned();
+
+    // Read WASM from file to verify SHA256 hash at compile time.
+    let wasm = match fs::read(&file_abs) {
         Ok(wasm) => wasm,
         Err(e) => {
             return Error::new(Span::call_site(), e.to_string())
@@ -567,9 +570,9 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
         .into();
     }
 
-    // Render bytes.
-    let contents_lit = Literal::byte_string(&wasm);
-    quote! { #contents_lit }.into()
+    // Use include_bytes! with the absolute path so that Cargo tracks the file
+    // as a dependency.
+    quote! { include_bytes!(#file_abs_str) }.into()
 }
 
 #[derive(Debug, FromMeta)]
