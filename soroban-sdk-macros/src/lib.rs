@@ -546,7 +546,14 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
 
     // Determine absolute path to file.
     let file_abs = path::abs_from_rel_to_manifest(&args.file);
-    let file_abs_str = file_abs.to_string_lossy().into_owned();
+    let file_abs_str = match file_abs.to_str() {
+        Some(s) => s,
+        None => {
+            return Error::new(args.file.span(), "file path is not valid UTF-8")
+                .into_compile_error()
+                .into()
+        }
+    };
 
     // Read WASM from file to verify SHA256 hash at compile time.
     let wasm = match fs::read(&file_abs) {
