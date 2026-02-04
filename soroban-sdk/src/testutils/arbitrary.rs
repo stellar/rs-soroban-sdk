@@ -319,14 +319,13 @@ mod objects {
     use crate::{Env, IntoVal, TryFromVal, TryIntoVal};
 
     use crate::crypto::bn254::{
-        Bn254G1Affine, Bn254G2Affine, Fr as Bn254Fr, BN254_G1_SERIALIZED_SIZE,
-        BN254_G2_SERIALIZED_SIZE,
+        Bn254Fr, Bn254G1Affine, Bn254G2Affine, BN254_G1_SERIALIZED_SIZE, BN254_G2_SERIALIZED_SIZE,
     };
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
     use crate::{
         crypto::bls12_381::{
-            Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381G2Affine, Fr, FP2_SERIALIZED_SIZE,
-            FP_SERIALIZED_SIZE, G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
+            Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine,
+            FP2_SERIALIZED_SIZE, FP_SERIALIZED_SIZE, G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
         },
         Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
     };
@@ -800,16 +799,16 @@ mod objects {
         bytes: [u8; 32],
     }
 
-    impl SorobanArbitrary for Fr {
+    impl SorobanArbitrary for Bls12381Fr {
         type Prototype = ArbitraryFr;
     }
 
-    impl TryFromVal<Env, ArbitraryFr> for Fr {
+    impl TryFromVal<Env, ArbitraryFr> for Bls12381Fr {
         type Error = ConversionError;
 
         fn try_from_val(env: &Env, v: &ArbitraryFr) -> Result<Self, Self::Error> {
-            // Convert bytes to Fr via U256
-            Ok(Fr::from_bytes(BytesN::from_array(env, &v.bytes)))
+            // Convert bytes to Bls12381Fr via U256
+            Ok(Bls12381Fr::from_bytes(BytesN::from_array(env, &v.bytes)))
         }
     }
 

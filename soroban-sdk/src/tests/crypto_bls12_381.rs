@@ -2,7 +2,7 @@ use crate::{self as soroban_sdk};
 use soroban_sdk::{
     bytes, bytesn, contract, contractimpl,
     crypto::bls12_381::{
-        Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381G2Affine, Bls12_381, Fr,
+        Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine, Bls12_381,
     },
     vec, Address, Bytes, BytesN, Env, Vec, U256,
 };
@@ -94,7 +94,7 @@ fn test_bls_g1() {
 
     // msm
     let vp: Vec<Bls12381G1Affine> = vec![&env, one.clone(), one.clone()];
-    let vs: Vec<Fr> = vec![
+    let vs: Vec<Bls12381Fr> = vec![
         &env,
         U256::from_u32(&env, 1).into(),
         U256::from_u32(&env, 0).into(),
@@ -142,13 +142,13 @@ fn test_bls_g2() {
 
     // msm
     let vp: Vec<Bls12381G2Affine> = vec![&env, one.clone(), one.clone()];
-    let vs: Vec<Fr> = vec![
+    let vs: Vec<Bls12381Fr> = vec![
         &env,
-        Fr::from_bytes(bytesn!(
+        Bls12381Fr::from_bytes(bytesn!(
             &env,
             0x0000000000000000000000000000000000000000000000000000000000000001
         )),
-        Fr::from_bytes(bytesn!(
+        Bls12381Fr::from_bytes(bytesn!(
             &env,
             0x0000000000000000000000000000000000000000000000000000000000000000
         )),
@@ -264,7 +264,7 @@ fn test_invoke_contract() {
 
     // G1 generator and zero scalar
     let g1 = Bls12381G1Affine::from_bytes(bytesn!(&e, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
-    let zero = Fr::from_bytes(bytesn!(
+    let zero = Bls12381Fr::from_bytes(bytesn!(
         &e,
         0x0000000000000000000000000000000000000000000000000000000000000000
     ));
@@ -276,7 +276,7 @@ fn test_invoke_contract() {
     let fp2_val = Bls12381Fp2::from_bytes(bytesn!(&e, 0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001));
     let g1_point = Bls12381G1Affine::from_bytes(bytesn!(&e, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
     let g2_point = Bls12381G2Affine::from_bytes(bytesn!(&e, 0x13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801));
-    let fr_scalar = Fr::from_bytes(bytesn!(
+    let fr_scalar = Bls12381Fr::from_bytes(bytesn!(
         &e,
         0x0000000000000000000000000000000000000000000000000000000000000001
     ));

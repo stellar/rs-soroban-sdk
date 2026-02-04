@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
+    crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
     Env, Vec,
 };
 
@@ -25,7 +25,7 @@ impl Contract {
         a + b
     }
 
-    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Bn254Fr) -> Bn254G1Affine {
         p * s
     }
 }
@@ -84,7 +84,7 @@ mod test {
             expected_x_plus_y.as_slice()
         );
 
-        let scalar: Fr = U256::from_u32(&env, 2).into();
+        let scalar: Bn254Fr = U256::from_u32(&env, 2).into();
 
         // G + G = 2G
         assert_eq!(

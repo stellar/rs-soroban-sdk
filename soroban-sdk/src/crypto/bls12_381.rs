@@ -96,13 +96,13 @@ pub struct Bls12381Fp(BytesN<FP_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Bls12381Fp2(BytesN<FP2_SERIALIZED_SIZE>);
 
-/// `Fr` represents an element in the BLS12-381 scalar field, which is a prime
+/// `Bls12381Fr` represents an element in the BLS12-381 scalar field, which is a prime
 /// field of order `r` (the order of the G1 and G2 groups). The struct is
 /// internally represented with an `U256`, all arithmetic operations follow
 /// modulo `r`.
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fr(U256);
+pub struct Bls12381Fr(U256);
 
 impl_bytesn_repr!(Bls12381G1Affine, G1_SERIALIZED_SIZE);
 impl_bytesn_repr!(Bls12381G2Affine, G2_SERIALIZED_SIZE);
@@ -219,10 +219,10 @@ impl Add for Bls12381G1Affine {
     }
 }
 
-impl Mul<Fr> for Bls12381G1Affine {
+impl Mul<Bls12381Fr> for Bls12381G1Affine {
     type Output = Bls12381G1Affine;
 
-    fn mul(self, rhs: Fr) -> Self::Output {
+    fn mul(self, rhs: Bls12381Fr) -> Self::Output {
         self.env().crypto().bls12_381().g1_mul(&self, &rhs)
     }
 }
@@ -346,10 +346,10 @@ impl Add for Bls12381G2Affine {
     }
 }
 
-impl Mul<Fr> for Bls12381G2Affine {
+impl Mul<Bls12381Fr> for Bls12381G2Affine {
     type Output = Bls12381G2Affine;
 
-    fn mul(self, rhs: Fr) -> Self::Output {
+    fn mul(self, rhs: Bls12381Fr) -> Self::Output {
         self.env().crypto().bls12_381().g2_mul(&self, &rhs)
     }
 }
@@ -382,7 +382,7 @@ impl Neg for Bls12381G2Affine {
     }
 }
 
-impl Fr {
+impl Bls12381Fr {
     pub fn env(&self) -> &Env {
         self.0.env()
     }
@@ -424,89 +424,89 @@ impl Fr {
     }
 }
 
-impl From<U256> for Fr {
+impl From<U256> for Bls12381Fr {
     fn from(value: U256) -> Self {
         Self(value)
     }
 }
 
-impl From<&Fr> for U256Val {
-    fn from(value: &Fr) -> Self {
+impl From<&Bls12381Fr> for U256Val {
+    fn from(value: &Bls12381Fr) -> Self {
         value.as_u256().into()
     }
 }
 
-impl TryFromVal<Env, Val> for Fr {
+impl TryFromVal<Env, Val> for Bls12381Fr {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         let u = U256::try_from_val(env, val)?;
-        Ok(Fr(u))
+        Ok(Bls12381Fr(u))
     }
 }
 
-impl TryFromVal<Env, Fr> for Val {
+impl TryFromVal<Env, Bls12381Fr> for Val {
     type Error = ConversionError;
 
-    fn try_from_val(_env: &Env, fr: &Fr) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, fr: &Bls12381Fr) -> Result<Self, Self::Error> {
         Ok(fr.to_val())
     }
 }
 
-impl TryFromVal<Env, &Fr> for Val {
+impl TryFromVal<Env, &Bls12381Fr> for Val {
     type Error = ConversionError;
 
-    fn try_from_val(_env: &Env, fr: &&Fr) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, fr: &&Bls12381Fr) -> Result<Self, Self::Error> {
         Ok(fr.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl From<&Fr> for ScVal {
-    fn from(v: &Fr) -> Self {
+impl From<&Bls12381Fr> for ScVal {
+    fn from(v: &Bls12381Fr) -> Self {
         Self::from(&v.0)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl From<Fr> for ScVal {
-    fn from(v: Fr) -> Self {
+impl From<Bls12381Fr> for ScVal {
+    fn from(v: Bls12381Fr) -> Self {
         (&v).into()
     }
 }
 
-impl Eq for Fr {}
+impl Eq for Bls12381Fr {}
 
-impl PartialEq for Fr {
+impl PartialEq for Bls12381Fr {
     fn eq(&self, other: &Self) -> bool {
         self.as_u256().partial_cmp(other.as_u256()) == Some(Ordering::Equal)
     }
 }
 
-impl Debug for Fr {
+impl Debug for Bls12381Fr {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Fr({:?})", self.as_u256())
+        write!(f, "Bls12381Fr({:?})", self.as_u256())
     }
 }
 
-impl Add for Fr {
-    type Output = Fr;
+impl Add for Bls12381Fr {
+    type Output = Bls12381Fr;
 
     fn add(self, rhs: Self) -> Self::Output {
         self.env().crypto().bls12_381().fr_add(&self, &rhs)
     }
 }
 
-impl Sub for Fr {
-    type Output = Fr;
+impl Sub for Bls12381Fr {
+    type Output = Bls12381Fr;
 
     fn sub(self, rhs: Self) -> Self::Output {
         self.env().crypto().bls12_381().fr_sub(&self, &rhs)
     }
 }
 
-impl Mul for Fr {
-    type Output = Fr;
+impl Mul for Bls12381Fr {
+    type Output = Bls12381Fr;
 
     fn mul(self, rhs: Self) -> Self::Output {
         self.env().crypto().bls12_381().fr_mul(&self, &rhs)
@@ -565,7 +565,7 @@ impl Bls12_381 {
     }
 
     /// Multiplies a point `p0` in G1 by a scalar.
-    pub fn g1_mul(&self, p0: &Bls12381G1Affine, scalar: &Fr) -> Bls12381G1Affine {
+    pub fn g1_mul(&self, p0: &Bls12381G1Affine, scalar: &Bls12381Fr) -> Bls12381G1Affine {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g1_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
@@ -573,7 +573,7 @@ impl Bls12_381 {
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G1.
-    pub fn g1_msm(&self, vp: Vec<Bls12381G1Affine>, vs: Vec<Fr>) -> Bls12381G1Affine {
+    pub fn g1_msm(&self, vp: Vec<Bls12381G1Affine>, vs: Vec<Bls12381Fr>) -> Bls12381G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_msm(env, vp.into(), vs.into()).unwrap_infallible();
         unsafe { Bls12381G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
@@ -637,7 +637,7 @@ impl Bls12_381 {
     }
 
     /// Multiplies a point `p0` in G2 by a scalar.
-    pub fn g2_mul(&self, p0: &Bls12381G2Affine, scalar: &Fr) -> Bls12381G2Affine {
+    pub fn g2_mul(&self, p0: &Bls12381G2Affine, scalar: &Bls12381Fr) -> Bls12381G2Affine {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g2_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
@@ -645,7 +645,7 @@ impl Bls12_381 {
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G2.
-    pub fn g2_msm(&self, vp: Vec<Bls12381G2Affine>, vs: Vec<Fr>) -> Bls12381G2Affine {
+    pub fn g2_msm(&self, vp: Vec<Bls12381G2Affine>, vs: Vec<Bls12381Fr>) -> Bls12381G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_msm(env, vp.into(), vs.into()).unwrap_infallible();
         unsafe { Bls12381G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
@@ -689,37 +689,37 @@ impl Bls12_381 {
 
     // scalar arithmetic
 
-    /// Adds two scalars in the BLS12-381 scalar field `Fr`.
-    pub fn fr_add(&self, lhs: &Fr, rhs: &Fr) -> Fr {
+    /// Adds two scalars in the BLS12-381 scalar field `Bls12381Fr`.
+    pub fn fr_add(&self, lhs: &Bls12381Fr, rhs: &Bls12381Fr) -> Bls12381Fr {
         let env = self.env();
         let v = internal::Env::bls12_381_fr_add(env, lhs.into(), rhs.into()).unwrap_infallible();
         U256::try_from_val(env, &v).unwrap_infallible().into()
     }
 
-    /// Subtracts one scalar from another in the BLS12-381 scalar field `Fr`.
-    pub fn fr_sub(&self, lhs: &Fr, rhs: &Fr) -> Fr {
+    /// Subtracts one scalar from another in the BLS12-381 scalar field `Bls12381Fr`.
+    pub fn fr_sub(&self, lhs: &Bls12381Fr, rhs: &Bls12381Fr) -> Bls12381Fr {
         let env = self.env();
         let v = internal::Env::bls12_381_fr_sub(env, lhs.into(), rhs.into()).unwrap_infallible();
         U256::try_from_val(env, &v).unwrap_infallible().into()
     }
 
-    /// Multiplies two scalars in the BLS12-381 scalar field `Fr`.
-    pub fn fr_mul(&self, lhs: &Fr, rhs: &Fr) -> Fr {
+    /// Multiplies two scalars in the BLS12-381 scalar field `Bls12381Fr`.
+    pub fn fr_mul(&self, lhs: &Bls12381Fr, rhs: &Bls12381Fr) -> Bls12381Fr {
         let env = self.env();
         let v = internal::Env::bls12_381_fr_mul(env, lhs.into(), rhs.into()).unwrap_infallible();
         U256::try_from_val(env, &v).unwrap_infallible().into()
     }
 
-    /// Raises a scalar to the power of a given exponent in the BLS12-381 scalar field `Fr`.
-    pub fn fr_pow(&self, lhs: &Fr, rhs: u64) -> Fr {
+    /// Raises a scalar to the power of a given exponent in the BLS12-381 scalar field `Bls12381Fr`.
+    pub fn fr_pow(&self, lhs: &Bls12381Fr, rhs: u64) -> Bls12381Fr {
         let env = self.env();
         let rhs = U64Val::try_from_val(env, &rhs).unwrap_optimized();
         let v = internal::Env::bls12_381_fr_pow(env, lhs.into(), rhs).unwrap_infallible();
         U256::try_from_val(env, &v).unwrap_infallible().into()
     }
 
-    /// Computes the multiplicative inverse of a scalar in the BLS12-381 scalar field `Fr`.
-    pub fn fr_inv(&self, lhs: &Fr) -> Fr {
+    /// Computes the multiplicative inverse of a scalar in the BLS12-381 scalar field `Bls12381Fr`.
+    pub fn fr_inv(&self, lhs: &Bls12381Fr) -> Bls12381Fr {
         let env = self.env();
         let v = internal::Env::bls12_381_fr_inv(env, lhs.into()).unwrap_infallible();
         U256::try_from_val(env, &v).unwrap_infallible().into()
@@ -767,9 +767,9 @@ mod test {
     fn test_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bls12381Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = fr.clone().into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bls12381Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
@@ -778,9 +778,9 @@ mod test {
     fn test_ref_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bls12381Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = (&fr).into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bls12381Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
@@ -789,9 +789,9 @@ mod test {
     fn test_double_ref_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bls12381Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = (&&fr).into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bls12381Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }

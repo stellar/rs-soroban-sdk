@@ -7,7 +7,7 @@ extern crate core;
 extern crate compiler_builtins as _;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
+    crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
     Env, Vec,
 };
 pub struct MockProof {
@@ -539,7 +539,7 @@ impl Contract {
     pub fn g1_add(a: Bn254G1Affine, b: Bn254G1Affine) -> Bn254G1Affine {
         a + b
     }
-    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Bn254Fr) -> Bn254G1Affine {
         p * s
     }
 }
@@ -741,7 +741,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Fr) -> Bn254G1Affine {
+    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Bn254Fr) -> Bn254G1Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -784,7 +784,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_g1_mul(
         &self,
         p: &Bn254G1Affine,
-        s: &Fr,
+        s: &Bn254Fr,
     ) -> Result<
         Result<
             Bn254G1Affine,
@@ -844,7 +844,7 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Fr) -> (&'i Bn254G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Bn254Fr) -> (&'i Bn254G1Affine, &'i Bn254Fr) {
         (p, s)
     }
 }
@@ -1162,7 +1162,7 @@ mod test {
                 }
             }
         };
-        let scalar: Fr = U256::from_u32(&env, 2).into();
+        let scalar: Bn254Fr = U256::from_u32(&env, 2).into();
         match (
             &client.g1_add(&x_bn254, &x_bn254),
             &client.g1_mul(&x_bn254, &scalar),

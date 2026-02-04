@@ -61,14 +61,17 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     // The BLS and BN types defined below are represented in the contract's
                     // interface by their underlying data types, i.e.
                     // Bls12381Fp/Bls12381Fp2/Bls12381G1Affine/Bls12381G2Affine => BytesN<N>,
-                    // Fr => U256. This approach simplifies integration with contract
+                    // Bls12381Fr/Bn254Fr => U256. This approach simplifies integration with
+                    // contract development tooling, as it avoids introducing new spec types
+                    // for these constructs.
                     // development tooling, as it avoids introducing new spec types for these
                     // constructs.
                     //
                     // While this is functionally sound because the types are
                     // essentially newtypes over their inner representations, it means
                     // that the specific semantic meaning of `Bls12381G1Affine`,
-                    // `Bls12381G2Affine`, or `Fr` is not directly visible in the compiled
+                    // `Bls12381G2Affine`, `Bls12381Fr`, or `Bn254Fr` is not directly visible
+                    // in the compiled
                     // WASM interface. For example, a contract function expecting a
                     // `Bls12381G1Affine` will appear in the WASM interface as expecting a
                     // `BytesN<96>`.
@@ -78,7 +81,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     // Idiom. For more details, see the tracking issue for supporting
                     // type aliases:
                     // https://github.com/stellar/rs-soroban-sdk/issues/1063
-                    "Fr" => Ok(ScSpecTypeDef::U256),
+                    "Bls12381Fr" => Ok(ScSpecTypeDef::U256),
                     // BLS12-381 prefixed type names
                     "Bls12381Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: FP_SERIALIZED_SIZE,
@@ -92,6 +95,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "Bls12381G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: G2_SERIALIZED_SIZE,
                     })),
+                    "Bn254Fr" => Ok(ScSpecTypeDef::U256),
                     // BN254 prefixed type names
                     "Bn254Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: BN254_FP_SERIALIZED_SIZE,
