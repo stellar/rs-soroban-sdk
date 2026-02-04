@@ -13,7 +13,7 @@ use core::{
     ops::{Add, Mul, Neg, Sub},
 };
 
-pub const FP_SERIALIZED_SIZE: usize = 48; // Size in bytes of a serialized Fp element in BLS12-381. The field modulus is 381 bits, requiring 48 bytes (384 bits) with 3 bits reserved for flags.
+pub const FP_SERIALIZED_SIZE: usize = 48; // Size in bytes of a serialized Bls12381Fp element in BLS12-381. The field modulus is 381 bits, requiring 48 bytes (384 bits) with 3 bits reserved for flags.
 pub const FP2_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2;
 pub const G1_SERIALIZED_SIZE: usize = FP_SERIALIZED_SIZE * 2; // Must match soroban_sdk_macro::map_type::G1_SERIALIZED_SIZE.
 pub const G2_SERIALIZED_SIZE: usize = FP2_SERIALIZED_SIZE * 2; // Must match soroban_sdk_macro::map_type::G2_SERIALIZED_SIZE.
@@ -31,7 +31,7 @@ pub struct Bls12_381 {
 /// - The 96 bytes represent the **uncompressed encoding** of a point in G1. The
 ///   Bytes consist of `be_byte(X) || be_byte(Y)`  (`||` is concatenation),
 ///   where 'X' and 'Y' are the two coordinates, each being a base field element
-///   `Fp`
+///   `Bls12381Fp`
 /// - The most significant three bits (bits 0-3) of the first byte are reserved
 ///   for encoding flags:
 ///   - compression_flag (bit 0): Must always be unset (0), as only uncompressed
@@ -54,9 +54,6 @@ pub struct Bls12_381 {
 #[repr(transparent)]
 pub struct Bls12381G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 
-/// Type alias for `Bls12381G1Affine` for convenience
-pub type G1Affine = Bls12381G1Affine;
-
 /// `Bls12381G2Affine` is a point in the G2 group (subgroup defined over the quadratic
 /// extension field `Fq2`) of the BLS12-381 elliptic curve
 ///
@@ -64,8 +61,8 @@ pub type G1Affine = Bls12381G1Affine;
 /// - The 192 bytes represent the **uncompressed encoding** of a point in G2.
 ///   The bytes consist of `be_bytes(X_c1) || be_bytes(X_c0) || be_bytes(Y_c1)
 ///   || be_bytes(Y_c0)` (`||` is concatenation), where 'X' and 'Y' are the two
-///   coordinates, each being an extension field element `Fp2` and `c0`, `c1`
-///   are components of `Fp2` (each being `Fp`).
+///   coordinates, each being an extension field element `Bls12381Fp2` and `c0`, `c1`
+///   are components of `Bls12381Fp2` (each being `Bls12381Fp`).
 /// - The most significant three bits (bits 0-3) of the first byte are reserved
 ///   for encoding flags:
 ///   - compression_flag (bit 0): Must always be unset (0), as only uncompressed
@@ -77,36 +74,27 @@ pub type G1Affine = Bls12381G1Affine;
 #[repr(transparent)]
 pub struct Bls12381G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 
-/// Type alias for `Bls12381G2Affine` for convenience
-pub type G2Affine = Bls12381G2Affine;
-
 /// `Bls12381Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
 /// curve
 ///
 /// # Serialization:
 /// - The 48 bytes represent the **big-endian encoding** of an element in the
-///   field `Fp`. The value is serialized as a big-endian integer.
+///   field `Bls12381Fp`. The value is serialized as a big-endian integer.
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Bls12381Fp(BytesN<FP_SERIALIZED_SIZE>);
-
-/// Type alias for `Bls12381Fp` for convenience
-pub type Fp = Bls12381Fp;
 
 /// `Bls12381Fp2` represents an element of the quadratic extension field `Fq2` of the
 /// BLS12-381 elliptic curve
 ///
 /// # Serialization:
 /// - The 96 bytes represent the **big-endian encoding** of an element in the
-///   field `Fp2`. The bytes consist of `be_bytes(c1) || be_bytes(c0)` (`||` is
-///   concatenation), where `c0` and `c1` are the two `Fp` elements (the real
+///   field `Bls12381Fp2`. The bytes consist of `be_bytes(c1) || be_bytes(c0)` (`||` is
+///   concatenation), where `c0` and `c1` are the two `Bls12381Fp` elements (the real
 ///   and imaginary components).
 #[derive(Clone)]
 #[repr(transparent)]
 pub struct Bls12381Fp2(BytesN<FP2_SERIALIZED_SIZE>);
-
-/// Type alias for `Bls12381Fp2` for convenience
-pub type Fp2 = Bls12381Fp2;
 
 /// `Fr` represents an element in the BLS12-381 scalar field, which is a prime
 /// field of order `r` (the order of the G1 and G2 groups). The struct is
@@ -121,17 +109,17 @@ impl_bytesn_repr!(Bls12381G2Affine, G2_SERIALIZED_SIZE);
 impl_bytesn_repr!(Bls12381Fp, FP_SERIALIZED_SIZE);
 impl_bytesn_repr!(Bls12381Fp2, FP2_SERIALIZED_SIZE);
 
-impl Fp {
+impl Bls12381Fp {
     pub fn env(&self) -> &Env {
         self.0.env()
     }
 
-    // `Fp` represents an element in the base field of the BLS12-381 elliptic curve.
-    // For an element a ∈ Fp, its negation `-a` is defined as:
+    // `Bls12381Fp` represents an element in the base field of the BLS12-381 elliptic curve.
+    // For an element a ∈ Bls12381Fp, its negation `-a` is defined as:
     //   a + (-a) = 0 (mod p)
     // where `p` is the field modulus, and to make a valid point coordinate on the
     // curve, `a` also must be within the field range (i.e., 0 ≤ a < p).
-    fn checked_neg(&self) -> Option<Fp> {
+    fn checked_neg(&self) -> Option<Bls12381Fp> {
         let fp_bigint: BigInt<6> = (&self.0).into();
         if fp_bigint.is_zero() {
             return Some(self.clone());
@@ -156,10 +144,10 @@ impl Fp {
 
         let mut bytes = [0u8; FP_SERIALIZED_SIZE];
         res.copy_into_array(&mut bytes);
-        Some(Fp::from_array(self.env(), &bytes))
+        Some(Bls12381Fp::from_array(self.env(), &bytes))
     }
 
-    /// Maps this `Fp` element to a `G1Affine` point using the [simplified SWU
+    /// Maps this `Bls12381Fp` element to a `Bls12381G1Affine` point using the [simplified SWU
     /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0).
     ///
     /// <div class="warning">
@@ -171,13 +159,13 @@ impl Fp {
     /// For applications requiring a point directly in the prime-order subgroup, consider using
     /// `hash_to_g1`, which handles subgroup checks and cofactor clearing internally.
     /// </div>
-    pub fn map_to_g1(&self) -> G1Affine {
+    pub fn map_to_g1(&self) -> Bls12381G1Affine {
         self.env().crypto().bls12_381().map_fp_to_g1(self)
     }
 }
 
-impl From<Fp> for BigInt<6> {
-    fn from(fp: Fp) -> Self {
+impl From<Bls12381Fp> for BigInt<6> {
+    fn from(fp: Bls12381Fp) -> Self {
         let inner: Bytes = fp.0.into();
         let mut limbs = [0u64; 6];
         for i in 0..6u32 {
@@ -190,26 +178,26 @@ impl From<Fp> for BigInt<6> {
     }
 }
 
-impl Neg for &Fp {
-    type Output = Fp;
+impl Neg for &Bls12381Fp {
+    type Output = Bls12381Fp;
 
     fn neg(self) -> Self::Output {
         match self.checked_neg() {
             Some(v) => v,
-            None => sdk_panic!("invalid input - Fp is larger than the field modulus"),
+            None => sdk_panic!("invalid input - Bls12381Fp is larger than the field modulus"),
         }
     }
 }
 
-impl Neg for Fp {
-    type Output = Fp;
+impl Neg for Bls12381Fp {
+    type Output = Bls12381Fp;
 
     fn neg(self) -> Self::Output {
         (&self).neg()
     }
 }
 
-impl G1Affine {
+impl Bls12381G1Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
     }
@@ -223,80 +211,82 @@ impl G1Affine {
     }
 }
 
-impl Add for G1Affine {
-    type Output = G1Affine;
+impl Add for Bls12381G1Affine {
+    type Output = Bls12381G1Affine;
 
     fn add(self, rhs: Self) -> Self::Output {
         self.env().crypto().bls12_381().g1_add(&self, &rhs)
     }
 }
 
-impl Mul<Fr> for G1Affine {
-    type Output = G1Affine;
+impl Mul<Fr> for Bls12381G1Affine {
+    type Output = Bls12381G1Affine;
 
     fn mul(self, rhs: Fr) -> Self::Output {
         self.env().crypto().bls12_381().g1_mul(&self, &rhs)
     }
 }
 
-// G1Affine represents a point (X, Y) on the BLS12-381 curve where X, Y ∈ Fp
+// Bls12381G1Affine represents a point (X, Y) on the BLS12-381 curve where X, Y ∈ Bls12381Fp
 // Negation of (X, Y) is defined as (X, -Y)
-impl Neg for &G1Affine {
-    type Output = G1Affine;
+impl Neg for &Bls12381G1Affine {
+    type Output = Bls12381G1Affine;
 
     fn neg(self) -> Self::Output {
         let mut inner: Bytes = (&self.0).into();
-        let y = Fp::try_from_val(
+        let y = Bls12381Fp::try_from_val(
             inner.env(),
             inner.slice(FP_SERIALIZED_SIZE as u32..).as_val(),
         )
         .unwrap_optimized();
         let neg_y = -y;
         inner.copy_from_slice(FP_SERIALIZED_SIZE as u32, &neg_y.to_array());
-        G1Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+        Bls12381G1Affine::from_bytes(
+            BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized(),
+        )
     }
 }
 
-impl Neg for G1Affine {
-    type Output = G1Affine;
+impl Neg for Bls12381G1Affine {
+    type Output = Bls12381G1Affine;
 
     fn neg(self) -> Self::Output {
         (&self).neg()
     }
 }
 
-impl Fp2 {
+impl Bls12381Fp2 {
     pub fn env(&self) -> &Env {
         self.0.env()
     }
 
-    // An Fp2 element is represented as c0 + c1 * X, where:
-    // - c0, c1 are base field elements (Fp)
+    // An Bls12381Fp2 element is represented as c0 + c1 * X, where:
+    // - c0, c1 are base field elements (Bls12381Fp)
     // - X is the quadratic non-residue used to construct the field extension
     // The negation of c0 + c1 * X is (-c0) + (-c1) * X.
-    fn checked_neg(&self) -> Option<Fp2> {
+    fn checked_neg(&self) -> Option<Bls12381Fp2> {
         let mut inner = self.to_array();
         let mut slice0 = [0; FP_SERIALIZED_SIZE];
         let mut slice1 = [0; FP_SERIALIZED_SIZE];
         slice0.copy_from_slice(&inner[0..FP_SERIALIZED_SIZE]);
         slice1.copy_from_slice(&inner[FP_SERIALIZED_SIZE..FP2_SERIALIZED_SIZE]);
 
-        // Convert both components to Fp and negate them
-        let c0 = Fp::from_array(self.env(), &slice0);
-        let c1 = Fp::from_array(self.env(), &slice1);
+        // Convert both components to Bls12381Fp and negate them
+        let c0 = Bls12381Fp::from_array(self.env(), &slice0);
+        let c1 = Bls12381Fp::from_array(self.env(), &slice1);
 
         // If either component's negation fails, the whole operation fails
         let neg_c0 = c0.checked_neg()?;
         let neg_c1 = c1.checked_neg()?;
 
-        // Reconstruct the Fp2 element from negated components
+        // Reconstruct the Bls12381Fp2 element from negated components
         inner[0..FP_SERIALIZED_SIZE].copy_from_slice(&neg_c0.to_array());
         inner[FP_SERIALIZED_SIZE..FP2_SERIALIZED_SIZE].copy_from_slice(&neg_c1.to_array());
 
-        Some(Fp2::from_array(self.env(), &inner))
+        Some(Bls12381Fp2::from_array(self.env(), &inner))
     }
 
-    /// Maps this `Fp2` element to a `G2Affine` point using the [simplified SWU
+    /// Maps this `Bls12381Fp2` element to a `Bls12381G2Affine` point using the [simplified SWU
     /// mapping](https://www.rfc-editor.org/rfc/rfc9380.html#name-simplified-swu-for-ab-0).
     ///
     /// <div class="warning">
@@ -308,31 +298,33 @@ impl Fp2 {
     /// For applications requiring a point directly in the prime-order subgroup, consider using
     /// `hash_to_g2`, which handles subgroup checks and cofactor clearing internally.
     /// </div>
-    pub fn map_to_g2(&self) -> G2Affine {
+    pub fn map_to_g2(&self) -> Bls12381G2Affine {
         self.env().crypto().bls12_381().map_fp2_to_g2(self)
     }
 }
 
-impl Neg for &Fp2 {
-    type Output = Fp2;
+impl Neg for &Bls12381Fp2 {
+    type Output = Bls12381Fp2;
 
     fn neg(self) -> Self::Output {
         match self.checked_neg() {
             Some(v) => v,
-            None => sdk_panic!("invalid input - Fp2 component is larger than the field modulus"),
+            None => {
+                sdk_panic!("invalid input - Bls12381Fp2 component is larger than the field modulus")
+            }
         }
     }
 }
 
-impl Neg for Fp2 {
-    type Output = Fp2;
+impl Neg for Bls12381Fp2 {
+    type Output = Bls12381Fp2;
 
     fn neg(self) -> Self::Output {
         (&self).neg()
     }
 }
 
-impl G2Affine {
+impl Bls12381G2Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
     }
@@ -346,42 +338,44 @@ impl G2Affine {
     }
 }
 
-impl Add for G2Affine {
-    type Output = G2Affine;
+impl Add for Bls12381G2Affine {
+    type Output = Bls12381G2Affine;
 
     fn add(self, rhs: Self) -> Self::Output {
         self.env().crypto().bls12_381().g2_add(&self, &rhs)
     }
 }
 
-impl Mul<Fr> for G2Affine {
-    type Output = G2Affine;
+impl Mul<Fr> for Bls12381G2Affine {
+    type Output = Bls12381G2Affine;
 
     fn mul(self, rhs: Fr) -> Self::Output {
         self.env().crypto().bls12_381().g2_mul(&self, &rhs)
     }
 }
 
-// G2Affine represents a point (X, Y) on the BLS12-381 quadratic extension curve where X, Y ∈ Fp2
+// Bls12381G2Affine represents a point (X, Y) on the BLS12-381 quadratic extension curve where X, Y ∈ Bls12381Fp2
 // Negation of (X, Y) is defined as (X, -Y)
-impl Neg for &G2Affine {
-    type Output = G2Affine;
+impl Neg for &Bls12381G2Affine {
+    type Output = Bls12381G2Affine;
 
     fn neg(self) -> Self::Output {
         let mut inner: Bytes = (&self.0).into();
-        let y = Fp2::try_from_val(
+        let y = Bls12381Fp2::try_from_val(
             inner.env(),
             inner.slice(FP2_SERIALIZED_SIZE as u32..).as_val(),
         )
         .unwrap_optimized();
         let neg_y = -y;
         inner.copy_from_slice(FP2_SERIALIZED_SIZE as u32, &neg_y.to_array());
-        G2Affine::from_bytes(BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized())
+        Bls12381G2Affine::from_bytes(
+            BytesN::try_from_val(inner.env(), inner.as_val()).unwrap_optimized(),
+        )
     }
 }
 
-impl Neg for G2Affine {
-    type Output = G2Affine;
+impl Neg for Bls12381G2Affine {
+    type Output = Bls12381G2Affine;
 
     fn neg(self) -> Self::Output {
         (&self).neg()
@@ -531,7 +525,7 @@ impl Bls12_381 {
     // g1
 
     /// Checks if a point `p` in G1 is in the correct subgroup.
-    pub fn g1_is_in_subgroup(&self, p: &G1Affine) -> bool {
+    pub fn g1_is_in_subgroup(&self, p: &Bls12381G1Affine) -> bool {
         let env = self.env();
         let res = internal::Env::bls12_381_check_g1_is_in_subgroup(env, p.to_object())
             .unwrap_infallible();
@@ -539,11 +533,11 @@ impl Bls12_381 {
     }
 
     /// Adds two points `p0` and `p1` in G1.
-    pub fn g1_add(&self, p0: &G1Affine, p1: &G1Affine) -> G1Affine {
+    pub fn g1_add(&self, p0: &Bls12381G1Affine, p1: &Bls12381G1Affine) -> Bls12381G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Adds two points `p0` and `p1` in G1, ensuring that the result is in the
@@ -551,11 +545,15 @@ impl Bls12_381 {
     /// so if want to perform a series of additions i.e. `agg = p0 + p1 + .. + pn`,
     /// it may make sense to only call g1_checked_add on the final addition,
     /// while using `g1_add` (non-checked version) on the intermediate ones.
-    pub fn g1_checked_add(&self, p0: &G1Affine, p1: &G1Affine) -> Option<G1Affine> {
+    pub fn g1_checked_add(
+        &self,
+        p0: &Bls12381G1Affine,
+        p1: &Bls12381G1Affine,
+    ) -> Option<Bls12381G1Affine> {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        let res = unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) };
+        let res = unsafe { Bls12381G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) };
         let is_in_correct_subgroup: bool =
             internal::Env::bls12_381_check_g1_is_in_subgroup(env, res.to_object())
                 .unwrap_optimized()
@@ -567,39 +565,39 @@ impl Bls12_381 {
     }
 
     /// Multiplies a point `p0` in G1 by a scalar.
-    pub fn g1_mul(&self, p0: &G1Affine, scalar: &Fr) -> G1Affine {
+    pub fn g1_mul(&self, p0: &Bls12381G1Affine, scalar: &Fr) -> Bls12381G1Affine {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g1_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
-        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G1.
-    pub fn g1_msm(&self, vp: Vec<G1Affine>, vs: Vec<Fr>) -> G1Affine {
+    pub fn g1_msm(&self, vp: Vec<Bls12381G1Affine>, vs: Vec<Fr>) -> Bls12381G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g1_msm(env, vp.into(), vs.into()).unwrap_infallible();
-        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
-    /// Maps an element in the base field `Fp` to a point in G1.
-    pub fn map_fp_to_g1(&self, fp: &Fp) -> G1Affine {
+    /// Maps an element in the base field `Bls12381Fp` to a point in G1.
+    pub fn map_fp_to_g1(&self, fp: &Bls12381Fp) -> Bls12381G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_map_fp_to_g1(env, fp.to_object()).unwrap_infallible();
-        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Hashes a message `msg` to a point in G1, using a domain separation tag `dst`.
-    pub fn hash_to_g1(&self, msg: &Bytes, dst: &Bytes) -> G1Affine {
+    pub fn hash_to_g1(&self, msg: &Bytes, dst: &Bytes) -> Bls12381G1Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_hash_to_g1(env, msg.into(), dst.to_object())
             .unwrap_infallible();
-        unsafe { G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     // g2
 
     /// Checks if a point `p` in G2 is in the correct subgroup.
-    pub fn g2_is_in_subgroup(&self, p: &G2Affine) -> bool {
+    pub fn g2_is_in_subgroup(&self, p: &Bls12381G2Affine) -> bool {
         let env = self.env();
         let res = internal::Env::bls12_381_check_g2_is_in_subgroup(env, p.to_object())
             .unwrap_infallible();
@@ -607,11 +605,11 @@ impl Bls12_381 {
     }
 
     /// Adds two points `p0` and `p1` in G2.
-    pub fn g2_add(&self, p0: &G2Affine, p1: &G2Affine) -> G2Affine {
+    pub fn g2_add(&self, p0: &Bls12381G2Affine, p1: &Bls12381G2Affine) -> Bls12381G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Adds two points `p0` and `p1` in G2, ensuring that the result is in the
@@ -619,11 +617,15 @@ impl Bls12_381 {
     /// so if want to perform a series of additions i.e. `agg = p0 + p1 + .. +pn`,     
     /// it may make sense to only call g2_checked_add on the final addition,
     /// while using `g2_add` (non-checked version) on the intermediate ones.
-    pub fn g2_checked_add(&self, p0: &G2Affine, p1: &G2Affine) -> Option<G2Affine> {
+    pub fn g2_checked_add(
+        &self,
+        p0: &Bls12381G2Affine,
+        p1: &Bls12381G2Affine,
+    ) -> Option<Bls12381G2Affine> {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_add(env, p0.to_object(), p1.to_object())
             .unwrap_infallible();
-        let res = unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) };
+        let res = unsafe { Bls12381G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) };
         let is_in_correct_subgroup: bool =
             internal::Env::bls12_381_check_g2_is_in_subgroup(env, res.to_object())
                 .unwrap_optimized()
@@ -635,33 +637,33 @@ impl Bls12_381 {
     }
 
     /// Multiplies a point `p0` in G2 by a scalar.
-    pub fn g2_mul(&self, p0: &G2Affine, scalar: &Fr) -> G2Affine {
+    pub fn g2_mul(&self, p0: &Bls12381G2Affine, scalar: &Fr) -> Bls12381G2Affine {
         let env = self.env();
         let bin =
             internal::Env::bls12_381_g2_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
-        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Performs a multi-scalar multiplication (MSM) operation in G2.
-    pub fn g2_msm(&self, vp: Vec<G2Affine>, vs: Vec<Fr>) -> G2Affine {
+    pub fn g2_msm(&self, vp: Vec<Bls12381G2Affine>, vs: Vec<Fr>) -> Bls12381G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_g2_msm(env, vp.into(), vs.into()).unwrap_infallible();
-        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
-    /// Maps an element in the base field `Fp2` to a point in G2.
-    pub fn map_fp2_to_g2(&self, fp2: &Fp2) -> G2Affine {
+    /// Maps an element in the base field `Bls12381Fp2` to a point in G2.
+    pub fn map_fp2_to_g2(&self, fp2: &Bls12381Fp2) -> Bls12381G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_map_fp2_to_g2(env, fp2.to_object()).unwrap_infallible();
-        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     /// Hashes a message `msg` to a point in G2, using a domain separation tag `dst`.
-    pub fn hash_to_g2(&self, msg: &Bytes, dst: &Bytes) -> G2Affine {
+    pub fn hash_to_g2(&self, msg: &Bytes, dst: &Bytes) -> Bls12381G2Affine {
         let env = self.env();
         let bin = internal::Env::bls12_381_hash_to_g2(env, msg.into(), dst.to_object())
             .unwrap_infallible();
-        unsafe { G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+        unsafe { Bls12381G2Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
     }
 
     // pairing
@@ -678,7 +680,7 @@ impl Bls12_381 {
     ///
     /// # Panics:
     /// - If the lengths of `vp1` and `vp2` are not equal or if they are empty.
-    pub fn pairing_check(&self, vp1: Vec<G1Affine>, vp2: Vec<G2Affine>) -> bool {
+    pub fn pairing_check(&self, vp1: Vec<Bls12381G1Affine>, vp2: Vec<Bls12381G2Affine>) -> bool {
         let env = self.env();
         internal::Env::bls12_381_multi_pairing_check(env, vp1.into(), vp2.into())
             .unwrap_infallible()
@@ -732,9 +734,9 @@ mod test {
     fn test_g1affine_to_val() {
         let env = Env::default();
 
-        let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
+        let g1 = Bls12381G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
         let val: Val = g1.clone().into_val(&env);
-        let rt: G1Affine = val.into_val(&env);
+        let rt: Bls12381G1Affine = val.into_val(&env);
 
         assert_eq!(g1, rt);
     }
@@ -743,9 +745,9 @@ mod test {
     fn test_ref_g1affine_to_val() {
         let env = Env::default();
 
-        let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
+        let g1 = Bls12381G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
         let val: Val = (&g1).into_val(&env);
-        let rt: G1Affine = val.into_val(&env);
+        let rt: Bls12381G1Affine = val.into_val(&env);
 
         assert_eq!(g1, rt);
     }
@@ -754,9 +756,9 @@ mod test {
     fn test_doule_ref_g1affine_to_val() {
         let env = Env::default();
 
-        let g1 = G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
+        let g1 = Bls12381G1Affine::from_bytes(BytesN::from_array(&env, &[1; 96]));
         let val: Val = (&&g1).into_val(&env);
-        let rt: G1Affine = val.into_val(&env);
+        let rt: Bls12381G1Affine = val.into_val(&env);
 
         assert_eq!(g1, rt);
     }
