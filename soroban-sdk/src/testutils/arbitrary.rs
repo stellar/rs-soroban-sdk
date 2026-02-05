@@ -252,6 +252,22 @@ mod scalars {
     }
 
     impl SorobanArbitrary for u32 {
+        type Prototype = u8;
+    }
+
+    impl SorobanArbitrary for u32 {
+        type Prototype = i8;
+    }
+
+    impl SorobanArbitrary for u32 {
+        type Prototype = u16;
+    }
+
+    impl SorobanArbitrary for u32 {
+        type Prototype = i16;
+    }
+
+    impl SorobanArbitrary for u32 {
         type Prototype = u32;
     }
 
