@@ -1572,7 +1572,7 @@ impl Env {
     ///     client.set_storage(&key, &val);
     ///
     ///     // Successfully read the storage key
-    ///     let result = env.as_contract::<Symbol>(&contract_id, || {
+    ///     let result = env.as_contract(&contract_id, || {
     ///         env.storage()
     ///             .persistent()
     ///             .get::<Symbol, Symbol>(&key)
@@ -1635,21 +1635,19 @@ impl Env {
     ///             .get::<Symbol, Symbol>(&key)
     ///             .unwrap()
     ///     });
-    ///     assert!(result.is_ok());
-    ///     assert_eq!(result.unwrap(), val);
+    ///     assert_eq!(result, Ok(val));
     ///
     ///     // Attempting to extend TTL of a non-existent key throws an error
     ///     let new_key = Symbol::new(&env, "baz");
-    ///     let result = env.try_as_contract::<_, Error>(&contract_id, || {
+    ///     let result = env.try_as_contract(&contract_id, || {
     ///         env.storage().persistent().extend_ttl(&new_key, 1, 100);
     ///     });
-    ///     assert!(result.is_err());
     ///     assert_eq!(
-    ///         result.unwrap_err(),
-    ///         Ok(Error::from_type_and_code(
+    ///         result,
+    ///         Err(Ok(Error::from_type_and_code(
     ///             ScErrorType::Storage,
     ///             ScErrorCode::MissingValue
-    ///         ))
+    ///         )))
     ///     );
     /// }
     /// ```

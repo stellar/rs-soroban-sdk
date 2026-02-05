@@ -241,8 +241,7 @@ fn test_try_as_contract() {
             .get::<Symbol, Symbol>(&key)
             .unwrap()
     });
-    assert!(result.is_ok());
-    assert_eq!(result.unwrap(), val);
+    assert_eq!(result, Ok(val));
 }
 
 #[test]
@@ -258,14 +257,13 @@ fn test_try_as_contract_host_error() {
         // should error as key doesn't exist in storage
         env.storage().persistent().extend_ttl(&key, 1, 100);
     });
-    assert!(result.is_err());
     assert_eq!(
-        result.unwrap_err(),
-        Ok(Error::from_type_and_code(
+        result,
+        Err(Ok(Error::from_type_and_code(
             ScErrorType::Storage,
             ScErrorCode::MissingValue
-        ))
-    )
+        )))
+    );
 }
 
 #[test]
@@ -281,8 +279,7 @@ fn test_try_as_contract_host_error_contract_error_expected() {
         // should error as key doesn't exist in storage
         env.storage().persistent().extend_ttl(&key, 1, 100);
     });
-    assert!(result.is_err());
-    assert_eq!(result.unwrap_err(), Err(InvokeError::Abort));
+    assert_eq!(result, Err(Err(InvokeError::Abort)));
 }
 
 #[test]
@@ -295,8 +292,7 @@ fn test_try_as_contract_contract_error() {
     let result = env.try_as_contract::<_, ContractError>(&addr, || {
         panic_with_error!(&env, ContractError::AnError);
     });
-    assert!(result.is_err());
-    assert_eq!(result.unwrap_err(), Ok(ContractError::AnError));
+    assert_eq!(result, Err(Ok(ContractError::AnError)));
 }
 
 #[test]
@@ -309,8 +305,7 @@ fn test_try_as_contract_contract_error_unexpected_error() {
     let result = env.try_as_contract::<_, ContractError>(&addr, || {
         panic_with_error!(&env, Error::from_contract_error(99));
     });
-    assert!(result.is_err());
-    assert_eq!(result.unwrap_err(), Err(InvokeError::Contract(99)));
+    assert_eq!(result, Err(Err(InvokeError::Contract(99))));
 }
 
 #[test]
@@ -323,12 +318,11 @@ fn test_try_as_contract_panic() {
     let result = env.try_as_contract::<_, Error>(&addr, || {
         panic!("please don't do this when writing contracts");
     });
-    assert!(result.is_err());
     assert_eq!(
-        result.unwrap_err(),
-        Ok(Error::from_type_and_code(
+        result,
+        Err(Ok(Error::from_type_and_code(
             ScErrorType::WasmVm,
             ScErrorCode::InvalidAction
-        ))
+        )))
     );
 }
