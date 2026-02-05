@@ -1923,6 +1923,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_storage_upgrade"
+version = "25.0.2"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_tuples"
 version = "25.0.2"
 dependencies = [
