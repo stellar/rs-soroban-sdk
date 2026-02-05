@@ -211,98 +211,107 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__put {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).put` instead")]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::put(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).put` instead")]
-    #[export_name = "put"]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).put` instead")]
+pub fn __Contract__put__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
         #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
-    }
-    use super::*;
+        &<Contract>::put(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__get {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).get` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::get(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).get` instead")]
-    #[export_name = "get"]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).put` instead")]
+#[export_name = "put"]
+pub extern "C" fn __Contract__put__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__put__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__del {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).del` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::del(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-            ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).del` instead")]
-    #[export_name = "del"]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).get` instead")]
+pub fn __Contract__get__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
         #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+        &<Contract>::get(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).get` instead")]
+#[export_name = "get"]
+pub extern "C" fn __Contract__get__invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__get__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).del` instead")]
+pub fn __Contract__del__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
+        #[allow(deprecated)]
+        &<Contract>::del(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).del` instead")]
+#[export_name = "del"]
+pub extern "C" fn __Contract__del__invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__del__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }

@@ -443,128 +443,161 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__void_fn {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::void_fn(
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
+pub fn __Contract__void_fn__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
+        #[allow(deprecated)]
+        &<Contract>::void_fn(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+        ),
+        &env,
+    )
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__tuple1 {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::tuple1(
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-            ),
-            &env,
-        )
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
+pub fn __Contract__void_fn__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+    #[allow(deprecated)]
+    __Contract__void_fn__invoke_raw(env, args[0usize])
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__tuple2 {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::tuple2(
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
+pub extern "C" fn __Contract__void_fn__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__void_fn__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
+pub fn __Contract__tuple1__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
+        #[allow(deprecated)]
+        &<Contract>::tuple1(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
+pub fn __Contract__tuple1__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 1usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    1usize,
-                    args.len(),
-                ));
-            };
-        }
+    #[allow(deprecated)]
+    __Contract__tuple1__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
+pub extern "C" fn __Contract__tuple1__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__tuple1__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
+pub fn __Contract__tuple2__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
         #[allow(deprecated)]
-        invoke_raw(env, args[0usize])
+        &<Contract>::tuple2(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
+pub fn __Contract__tuple2__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
-    pub extern "C" fn invoke_raw_extern(arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0)
-    }
-    use super::*;
+    #[allow(deprecated)]
+    __Contract__tuple2__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
+pub extern "C" fn __Contract__tuple2__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__tuple2__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__69e94e814d1599c21b8ac3d759295183311eaabe224b3ad8865aaa5d01729db0_ctor() {
+fn __Contract____69e94e814d1599c21b8ac3d759295183311eaabe224b3ad8865aaa5d01729db0_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -576,7 +609,7 @@ fn __Contract__69e94e814d1599c21b8ac3d759295183311eaabe224b3ad8865aaa5d01729db0_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__69e94e814d1599c21b8ac3d759295183311eaabe224b3ad8865aaa5d01729db0_ctor();
+                    __Contract____69e94e814d1599c21b8ac3d759295183311eaabe224b3ad8865aaa5d01729db0_ctor();
                 };
                 core::default::Default::default()
             }
@@ -587,17 +620,17 @@ fn __Contract__69e94e814d1599c21b8ac3d759295183311eaabe224b3ad8865aaa5d01729db0_
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "void_fn",
             #[allow(deprecated)]
-            &__Contract__void_fn::invoke_raw_slice,
+            &__Contract__void_fn__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "tuple1",
             #[allow(deprecated)]
-            &__Contract__tuple1::invoke_raw_slice,
+            &__Contract__tuple1__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "tuple2",
             #[allow(deprecated)]
-            &__Contract__tuple2::invoke_raw_slice,
+            &__Contract__tuple2__invoke_raw_slice,
         );
     }
 }
@@ -606,7 +639,7 @@ mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     mod wasm {
-        pub const WASM: &[u8] = b"\0asm\x01\0\0\0\x01\x1f\x05`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x03~\x7f\x7f\0`\x02\x7f\x7f\x01~\x02\x19\x04\x01i\x012\0\0\x01i\x011\0\0\x01v\x01g\0\x01\x01v\x01h\0\x02\x03\x06\x05\0\0\x03\x04\0\x05\x03\x01\0\x10\x06!\x04\x7f\x01A\x80\x80\xc0\0\x0b\x7f\0A\x80\x80\xc0\0\x0b\x7f\0A\x80\x80\xc0\0\x0b\x7f\0A\x80\x80\xc0\0\x0b\x07E\x07\x06memory\x02\0\x07void_fn\0\x04\x06tuple1\0\x05\x06tuple2\0\x08\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xc8\x03\x05\x13\0\x02@ \0B\xff\x01\x83B\x02Q\r\0\0\x0bB\x02\x0bx\x01\x01\x7f#\x80\x80\x80\x80\0A\x10k\"\x01$\x80\x80\x80\x80\0\x02@\x02@ \0B\xff\x01\x83B\xcb\0R\r\0 \x01B\x027\x03\x08 \0 \x01A\x08jA\x01\x10\x86\x80\x80\x80\0 \x01)\x03\x08\"\0B\xff\x01\x83B\x04Q\r\x01\x0b\0\x0b \x01 \0B\x84\x80\x80\x80p\x837\x03\x08 \x01A\x08jA\x01\x10\x87\x80\x80\x80\0!\0 \x01A\x10j$\x80\x80\x80\x80\0 \0\x0b\x1d\0 \0 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\0\x1a\x0b\x1a\0 \0\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\0\x0b\xff\x01\x02\x02\x7f\x01~#\x80\x80\x80\x80\0A\x10k\"\x01$\x80\x80\x80\x80\0\x02@\x02@\x02@ \0B\xff\x01\x83B\xcb\0R\r\0A\0!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\0 \x02A\x08j!\x02\x0c\0\x0b\x0b \0 \x01A\x02\x10\x86\x80\x80\x80\0 \x01)\x03\0\"\x03B\xff\x01\x83B\x04R\r\0 \x01)\x03\x08\"\0\xa7A\xff\x01q\"\x02A\xc1\0F\r\x01 \x02A\x07G\r\0 \0B\x08\x87!\0\x0c\x02\x0b\0\x0b \0\x10\x80\x80\x80\x80\0!\0\x0b\x02@\x02@ \0B\x80\x80\x80\x80\x80\x80\x80\xc0\0|B\xff\xff\xff\xff\xff\xff\xff\xff\0V\r\0 \0B\x08\x86B\x07\x84!\0\x0c\x01\x0b \0\x10\x81\x80\x80\x80\0!\0\x0b \x01 \07\x03\x08 \x01 \x03B\x84\x80\x80\x80p\x837\x03\0 \x01A\x02\x10\x87\x80\x80\x80\0!\0 \x01A\x10j$\x80\x80\x80\x80\0 \0\x0b\x0b\t\x01\0A\x80\x80\xc0\0\x0b\0\0\xcb\x01\x0econtractspecv0\0\0\0\0\0\0\0\0\0\0\0\x07void_fn\0\0\0\0\x01\0\0\0\0\0\0\0\x08void_arg\0\0\0\x02\0\0\0\x01\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x06tuple1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03arg\0\0\0\x03\xed\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\x03\xed\0\0\0\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06tuple2\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03arg\0\0\0\x03\xed\0\0\0\x02\0\0\0\x04\0\0\0\x07\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\0\x04\0\0\0\x07\0\x1e\x11contractenvmetav0\0\0\0\0\0\0\0\x19\0\0\0\0\0+\x0econtractmetav0\0\0\0\0\0\0\0\x05rsver\0\0\0\0\0\0\x061.84.0\0\0";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x03~\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02\x19\x04\x01i\x012\x00\x00\x01i\x011\x00\x00\x01v\x01g\x00\x01\x01v\x01h\x00\x02\x03\x06\x05\x00\x00\x03\x04\x00\x05\x03\x01\x00\x10\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x07E\x07\x06memory\x02\x00\x07void_fn\x00\x04\x06tuple1\x00\x05\x06tuple2\x00\x08\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xc8\x03\x05\x13\x00\x02@ \x00B\xff\x01\x83B\x02Q\r\x00\x00\x0bB\x02\x0bx\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x01B\x027\x03\x08 \x00 \x01A\x08jA\x01\x10\x86\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x01A\x08jA\x01\x10\x87\x80\x80\x80\x00!\x00 \x01A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\x1d\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x1a\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\xff\x01\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x02\x10\x86\x80\x80\x80\x00 \x01)\x03\x00\"\x03B\xff\x01\x83B\x04R\r\x00 \x01)\x03\x08\"\x00\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x01 \x02A\x07G\r\x00 \x00B\x08\x87!\x00\x0c\x02\x0b\x00\x0b \x00\x10\x80\x80\x80\x80\x00!\x00\x0b\x02@\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00B\x08\x86B\x07\x84!\x00\x0c\x01\x0b \x00\x10\x81\x80\x80\x80\x00!\x00\x0b \x01 \x007\x03\x08 \x01 \x03B\x84\x80\x80\x80p\x837\x03\x00 \x01A\x02\x10\x87\x80\x80\x80\x00!\x00 \x01A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\x0b\t\x01\x00A\x80\x80\xc0\x00\x0b\x00\x00\xcb\x01\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07void_fn\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08void_arg\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06tuple1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03arg\x00\x00\x00\x03\xed\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06tuple2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03arg\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x07\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.84.0\x00\x00";
         pub trait Contract {
             fn void_fn(env: soroban_sdk::Env, void_arg: ()) -> ();
             fn tuple1(env: soroban_sdk::Env, arg: (u32,)) -> (u32,);

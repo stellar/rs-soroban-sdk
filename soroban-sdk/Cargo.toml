@@ -21,6 +21,7 @@ crate-git-revision = "0.0.6"
 
 [dependencies]
 soroban-sdk-macros = { workspace = true }
+stellar-strkey = { workspace = true }
 bytes-lit = "0.0.5"
 visibility = "0.1.1"
 

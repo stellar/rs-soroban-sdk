@@ -131,3 +131,8 @@
 //! // result will be true or false depending on the pairing equation
 //! # }
 //! ```
+//!
+//! [`Bn254G1Affine`]: crate::crypto::bn254::Bn254G1Affine
+//! [`Bn254G2Affine`]: crate::crypto::bn254::Bn254G2Affine
+//! [`Fr`]: crate::crypto::bn254::Fr
+//! [`Bn254Fp`]: crate::crypto::bn254::Bn254Fp

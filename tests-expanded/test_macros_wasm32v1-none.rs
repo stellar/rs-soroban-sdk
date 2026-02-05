@@ -5,7 +5,7 @@ use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
 extern crate compiler_builtins as _;
-use proc_macros::{parse_item_fn, parse_item_impl};
+use proc_macros::{check_fn_is_item_fn, parse_item_fn, parse_item_impl};
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -28,6 +28,9 @@ impl<'a> ContractClient<'a> {
 }
 impl Contract {
     pub fn empty() {}
+    pub fn empty2() {
+        let _ = core::any::type_name::<Self>();
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -42,6 +45,21 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_empty() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\0\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__empty2__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_EMPTY2: [u8; 28usize] = super::Contract::spec_xdr_empty2();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_empty2() -> [u8; 28usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty2\0\0\0\0\0\0\0\0\0\0"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -77,6 +95,38 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn empty2(&self) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty2");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_empty2(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty2");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -84,24 +134,45 @@ impl ContractArgs {
     pub fn empty<'i>() -> () {
         ()
     }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn empty2<'i>() -> () {
+        ()
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::empty(),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
-    #[export_name = "empty"]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+pub fn __Contract__empty__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
-    }
-    use super::*;
+        &<Contract>::empty(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+#[export_name = "empty"]
+pub extern "C" fn __Contract__empty__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__empty__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+pub fn __Contract__empty2__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
+        #[allow(deprecated)]
+        &<Contract>::empty2(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+#[export_name = "empty2"]
+pub extern "C" fn __Contract__empty2__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__empty2__invoke_raw(soroban_sdk::Env::default())
 }
