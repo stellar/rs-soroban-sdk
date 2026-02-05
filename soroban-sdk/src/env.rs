@@ -1542,6 +1542,45 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn set_storage(env: Env, key: Symbol, val: Symbol) {
+    ///         env.storage().persistent().set(&key, &val);
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(HelloContract, ());
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///
+    ///     let key = Symbol::new(&env, "foo");
+    ///     let val = Symbol::new(&env, "bar");
+    ///
+    ///     // Set storage using the contract
+    ///     client.set_storage(&key, &val);
+    ///
+    ///     // Successfully read the storage key
+    ///     let result = env.as_contract::<Symbol>(&contract_id, || {
+    ///         env.storage()
+    ///             .persistent()
+    ///             .get::<Symbol, Symbol>(&key)
+    ///             .unwrap()
+    ///     });
+    ///     assert_eq!(result, val);
+    /// }
+    /// ```
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
         let id = id.contract_id();
         let func = Symbol::from_small_str("");
@@ -1560,6 +1599,60 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, xdr::{ScErrorCode, ScErrorType}, Env, Error, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn set_storage(env: Env, key: Symbol, val: Symbol) {
+    ///         env.storage().persistent().set(&key, &val);
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(HelloContract, ());
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///
+    ///     let key = Symbol::new(&env, "foo");
+    ///     let val = Symbol::new(&env, "bar");
+    ///
+    ///     // Set storage using the contract
+    ///     client.set_storage(&key, &val);
+    ///
+    ///     // Successfully read the storage key
+    ///     let result = env.try_as_contract::<Symbol, Error>(&contract_id, || {
+    ///         env.storage()
+    ///             .persistent()
+    ///             .get::<Symbol, Symbol>(&key)
+    ///             .unwrap()
+    ///     });
+    ///     assert!(result.is_ok());
+    ///     assert_eq!(result.unwrap(), val);
+    ///
+    ///     // Attempting to extend TTL of a non-existent key throws an error
+    ///     let new_key = Symbol::new(&env, "baz");
+    ///     let result = env.try_as_contract::<_, Error>(&contract_id, || {
+    ///         env.storage().persistent().extend_ttl(&new_key, 1, 100);
+    ///     });
+    ///     assert!(result.is_err());
+    ///     assert_eq!(
+    ///         result.unwrap_err(),
+    ///         Ok(Error::from_type_and_code(
+    ///             ScErrorType::Storage,
+    ///             ScErrorCode::MissingValue
+    ///         ))
+    ///     );
+    /// }
+    /// ```
     pub fn try_as_contract<T, E>(
         &self,
         id: &Address,
