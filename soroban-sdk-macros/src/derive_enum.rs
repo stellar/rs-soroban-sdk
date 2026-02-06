@@ -175,25 +175,29 @@ pub fn derive_type_enum(
         None
     };
 
-    // IncludeSpecMarker impl - only generated when spec is true.
-    // Types with export=false should not be used at external boundaries.
-    let include_spec_impl = spec_xdr.as_ref().map(|spec_xdr| {
-        // Flatten all variant field types for include_spec_marker calls, deduplicating
-        // to avoid redundant calls for types that appear in multiple variants.
-        let all_field_types =
-            itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
-                t.to_token_stream().to_string()
-            });
-        spec_marker::generate_include_spec_marker_impl(
-            path,
-            quote!(#enum_ident),
-            spec_xdr,
-            all_field_types.cloned(),
-            None,
-            None,
-            None,
-        )
-    });
+    // IncludeSpecMarker impl - only generated when spec is true and the
+    // experimental_spec_resolver_v2 feature is enabled.
+    let include_spec_impl = if cfg!(feature = "experimental_spec_resolver_v2") {
+        spec_xdr.as_ref().map(|spec_xdr| {
+            // Flatten all variant field types for include_spec_marker calls, deduplicating
+            // to avoid redundant calls for types that appear in multiple variants.
+            let all_field_types =
+                itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
+                    t.to_token_stream().to_string()
+                });
+            spec_marker::generate_include_spec_marker_impl(
+                path,
+                quote!(#enum_ident),
+                spec_xdr,
+                all_field_types.cloned(),
+                None,
+                None,
+                None,
+            )
+        })
+    } else {
+        None
+    };
 
     // Output.
     let mut output = quote! {

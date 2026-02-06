@@ -63,6 +63,7 @@ sha2 = "0.10.7"
 [features]
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
+experimental_spec_resolver_v2 = ["soroban-sdk-macros/experimental_spec_resolver_v2"]
 docs = []
 
 # Umbrella feature that enables all hazmat sub-features (backwards compatible)

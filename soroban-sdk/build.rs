@@ -16,17 +16,17 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
-    // Warn if building for WASM without spec optimization support from the build system (Stellar
-    // CLI). The cfg flag indicates the build system supports spec optimization.
-    println!("cargo::rustc-check-cfg=cfg(soroban_sdk_build_system_supports_optimising_specs_using_data_markers)");
-    let target_family = std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default();
-    if target_family == "wasm" {
-        let rustflags = std::env::var("RUSTFLAGS").unwrap_or_default();
-        let cargo_encoded_rustflags = std::env::var("CARGO_ENCODED_RUSTFLAGS").unwrap_or_default();
-        let cfg_name = "soroban_sdk_build_system_supports_optimising_specs_using_data_markers";
-        let has_cfg = rustflags.contains(cfg_name) || cargo_encoded_rustflags.contains(cfg_name);
-        if !has_cfg {
-            println!("cargo:warning=Building without a Soroban-aware build system. The contract will be larger than necessary. Use stellar-cli v26 or newer to build.");
+    // When the experimental_spec_resolver_v2 feature is enabled, check for an env var from the
+    // build system (Stellar CLI) that indicates it supports spec optimization using markers.
+    if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_RESOLVER_V2").is_ok() {
+        println!("cargo::rustc-check-cfg=cfg(soroban_sdk_build_system_supports_optimising_specs_using_data_markers)");
+        let target_family = std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default();
+        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_OPTIMISING_SPECS_USING_DATA_MARKERS";
+        println!("cargo::rerun-if-env-changed={env_name}");
+        if std::env::var(env_name).ok().as_deref() == Some("1") {
+            println!("cargo::rustc-cfg=soroban_sdk_build_system_supports_optimising_specs_using_data_markers");
+        } else if target_family == "wasm" {
+            println!("cargo:warning=Building without the stellar-cli. The contract will be larger than necessary. Use stellar-cli v26 or newer to build.");
         }
     }
 

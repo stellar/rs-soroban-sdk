@@ -107,19 +107,23 @@ pub fn derive_type_struct(
         None
     };
 
-    // IncludeSpecMarker impl - only generated when spec is true.
-    // Types with export=false should not be used at external boundaries.
-    let include_spec_impl = spec_xdr.as_ref().map(|spec_xdr| {
-        spec_marker::generate_include_spec_marker_impl(
-            path,
-            quote!(#ident),
-            spec_xdr,
-            field_types.iter().cloned(),
-            None,
-            None,
-            None,
-        )
-    });
+    // IncludeSpecMarker impl - only generated when spec is true and the
+    // experimental_spec_resolver_v2 feature is enabled.
+    let include_spec_impl = if cfg!(feature = "experimental_spec_resolver_v2") {
+        spec_xdr.as_ref().map(|spec_xdr| {
+            spec_marker::generate_include_spec_marker_impl(
+                path,
+                quote!(#ident),
+                spec_xdr,
+                field_types.iter().cloned(),
+                None,
+                None,
+                None,
+            )
+        })
+    } else {
+        None
+    };
 
     // Output.
     let mut output = quote! {
