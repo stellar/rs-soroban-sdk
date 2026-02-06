@@ -1,9 +1,11 @@
+use soroban_sdk_macros::contracterror;
+
 use crate::{
     self as soroban_sdk, contract, contractimpl,
     env::EnvTestConfig,
-    testutils::{Address as _, Logs as _},
+    testutils::{Address as _, Logs},
     xdr::{ScErrorCode, ScErrorType},
-    Address, Env, Error,
+    Address, Env, Error, InvokeError, Symbol,
 };
 
 #[test]
@@ -34,6 +36,12 @@ impl Contract {
         // This should fail because auths aren't mocked.
         env.require_auth(&address);
     }
+}
+
+#[contracterror]
+#[derive(Debug, Eq, PartialEq)]
+enum ContractError {
+    AnError = 1,
 }
 
 #[test]
@@ -211,4 +219,110 @@ fn test_snapshot_file_disabled_after_creation() {
     assert!(p1.exists());
     assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
+}
+
+#[test]
+fn test_try_as_contract() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+    let val = Symbol::new(&env, "bar");
+
+    env.as_contract(&addr, || {
+        env.storage().persistent().set(&key, &val);
+    });
+
+    let result = env.try_as_contract::<Symbol, Error>(&addr, || {
+        env.storage()
+            .persistent()
+            .get::<Symbol, Symbol>(&key)
+            .unwrap()
+    });
+    assert_eq!(result, Ok(val));
+}
+
+#[test]
+fn test_try_as_contract_host_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+
+    let result = env.try_as_contract::<_, Error>(&addr, || {
+        // should error as key doesn't exist in storage
+        env.storage().persistent().extend_ttl(&key, 1, 100);
+    });
+    assert_eq!(
+        result,
+        Err(Ok(Error::from_type_and_code(
+            ScErrorType::Storage,
+            ScErrorCode::MissingValue
+        )))
+    );
+}
+
+#[test]
+fn test_try_as_contract_host_error_contract_error_expected() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+
+    let result = env.try_as_contract::<_, ContractError>(&addr, || {
+        // should error as key doesn't exist in storage
+        env.storage().persistent().extend_ttl(&key, 1, 100);
+    });
+    assert_eq!(result, Err(Err(InvokeError::Abort)));
+}
+
+#[test]
+fn test_try_as_contract_contract_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract::<_, ContractError>(&addr, || {
+        panic_with_error!(&env, ContractError::AnError);
+    });
+    assert_eq!(result, Err(Ok(ContractError::AnError)));
+}
+
+#[test]
+fn test_try_as_contract_contract_error_unexpected_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract::<_, ContractError>(&addr, || {
+        panic_with_error!(&env, Error::from_contract_error(99));
+    });
+    assert_eq!(result, Err(Err(InvokeError::Contract(99))));
+}
+
+#[test]
+fn test_try_as_contract_panic() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract::<_, Error>(&addr, || {
+        panic!("please don't do this when writing contracts");
+    });
+    assert_eq!(
+        result,
+        Err(Ok(Error::from_type_and_code(
+            ScErrorType::WasmVm,
+            ScErrorCode::InvalidAction
+        )))
+    );
 }

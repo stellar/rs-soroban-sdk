@@ -126,6 +126,66 @@ mod test {
     }
 
     #[test]
+    fn try_as_contract_hello_ok() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::A));
+        assert_eq!(res, Ok(symbol_short!("hello")));
+        assert!(client.persisted());
+    }
+
+    #[test]
+    fn try_as_contract_hello_error() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::B));
+        assert_eq!(res, Err(Ok(Error::AnError)));
+        assert!(!client.persisted());
+    }
+
+    #[test]
+    fn try_as_contract_hello_error_panic() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::C));
+        assert_eq!(res, Err(Ok(Error::AnError)));
+        assert!(!client.persisted());
+    }
+
+    #[test]
+    fn try_as_contract_hello_error_panic_string() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::D));
+        assert_eq!(res, Err(Err(InvokeError::Abort)));
+        assert!(!client.persisted());
+    }
+
+    #[test]
+    fn try_as_contract_hello_error_unexpected_contract_error() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let contract_id_2 = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+
+        let res = e.try_as_contract::<_, Error>(&contract_id_2, || client.hello(&Flag::E));
+        assert_eq!(res, Err(Err(InvokeError::Contract(9))));
+        assert!(!client.persisted());
+    }
+
+    #[test]
     fn type_conversion() {
         // Error can be converted into InvokeError.
         assert_eq!(
