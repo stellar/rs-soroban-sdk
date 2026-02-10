@@ -1410,7 +1410,7 @@ dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
  "static_assertions",
- "stellar-xdr 25.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=c458ac6bb943c271332cb8cf274b492433cb763f)",
+ "stellar-xdr",
  "wasmparser",
 ]
 
@@ -1469,7 +1469,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_json",
- "stellar-xdr 25.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=c458ac6bb943c271332cb8cf274b492433cb763f)",
+ "stellar-xdr",
  "syn",
 ]
 
@@ -1490,7 +1490,7 @@ dependencies = [
 name = "soroban-meta"
 version = "25.1.0"
 dependencies = [
- "stellar-xdr 25.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stellar-xdr",
  "thiserror",
  "wasmparser",
 ]
@@ -1522,7 +1522,7 @@ dependencies = [
  "soroban-sdk-macros",
  "soroban-spec",
  "stellar-strkey 0.0.16",
- "stellar-xdr 25.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stellar-xdr",
  "visibility",
 ]
 
@@ -1540,7 +1540,7 @@ dependencies = [
  "soroban-env-common",
  "soroban-spec",
  "soroban-spec-rust",
- "stellar-xdr 25.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stellar-xdr",
  "syn",
 ]
 
@@ -1550,7 +1550,7 @@ version = "25.1.0"
 dependencies = [
  "base64",
  "pretty_assertions",
- "stellar-xdr 25.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stellar-xdr",
  "thiserror",
  "wasmparser",
 ]
@@ -1565,7 +1565,7 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-spec",
- "stellar-xdr 25.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stellar-xdr",
  "syn",
  "thiserror",
 ]
@@ -1653,23 +1653,6 @@ dependencies = [
  "crate-git-revision",
  "data-encoding",
  "heapless",
-]
-
-[[package]]
-name = "stellar-xdr"
-version = "25.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10d20dafed80076b227d4b17c0c508a4bbc4d5e4c3d4c1de7cd42242df4b1eaf"
-dependencies = [
- "cfg_eval",
- "crate-git-revision",
- "escape-bytes",
- "ethnum",
- "hex",
- "serde",
- "serde_with",
- "sha2",
- "stellar-strkey 0.0.13",
 ]
 
 [[package]]
@@ -1868,7 +1851,7 @@ name = "test_contracttrait_trait"
 version = "25.1.0"
 dependencies = [
  "soroban-sdk",
- "stellar-xdr 25.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stellar-xdr",
 ]
 
 [[package]]
