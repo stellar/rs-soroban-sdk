@@ -49,6 +49,8 @@ version = "=0.0.16"
 
 [workspace.dependencies.stellar-xdr]
 version = "=25.0.0"
+git = "https://github.com/stellar/rs-stellar-xdr"
+rev = "c458ac6bb943c271332cb8cf274b492433cb763f"
 default-features = false
 features = ["curr"]
 
