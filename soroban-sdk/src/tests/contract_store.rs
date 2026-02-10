@@ -181,7 +181,7 @@ fn test_storage() {
 }
 
 #[test]
-#[should_panic(expected = "trying to extend past max live_until ledger")]
+#[should_panic(expected = "trying to extend temporary entry past max TTL allowed by network")]
 fn test_temp_storage_extension_past_max_ttl_panics() {
     let e = Env::default();
     e.ledger().set_min_temp_entry_ttl(50);
