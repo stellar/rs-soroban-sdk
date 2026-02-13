@@ -241,7 +241,11 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         .iter()
         .map(|m| {
             let ident = &m.sig.ident;
-            let call = quote! { <super::#ty>::#ident };
+            let call = if let Some(t) = trait_ident {
+                quote! { <super::#ty as #t>::#ident }
+            } else {
+                quote! { <super::#ty>::#ident }
+            };
             derive_pub_fn(
                 crate_path,
                 &call,
