@@ -49,7 +49,11 @@ pub fn derive_pub_fn(
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
-    let call = quote! { <#impl_ty>::#ident };
+    let call = if let Some(t) = trait_ident {
+        quote! { <#impl_ty as #t>::#ident }
+    } else {
+        quote! { <#impl_ty>::#ident }
+    };
 
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
