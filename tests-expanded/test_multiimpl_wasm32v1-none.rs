@@ -251,10 +251,9 @@ pub mod __Contract__empty3 {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty3` instead")]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        use super::Trait;
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<super::Contract>::empty3(),
+            &<super::Contract as Trait>::empty3(),
             &env,
         )
     }

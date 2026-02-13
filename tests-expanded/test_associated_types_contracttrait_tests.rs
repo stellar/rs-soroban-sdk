@@ -352,10 +352,9 @@ pub mod __Contract__exec {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        use super::Trait;
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<super::Contract>::exec(&env),
+            &<super::Contract as Trait>::exec(&env),
             &env,
         )
     }
@@ -660,10 +659,9 @@ pub mod __Contract__exec2 {
     use super::*;
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec2` instead")]
     pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        use super::TraitWithoutContractTrait;
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<super::Contract>::exec2(&env),
+            &<super::Contract as TraitWithoutContractTrait>::exec2(&env),
             &env,
         )
     }

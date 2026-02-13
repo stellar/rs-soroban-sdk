@@ -3507,10 +3507,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u32` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_u32(
+                &<super::Contract as AllTypes>::test_u32(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3552,10 +3551,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i32` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_i32(
+                &<super::Contract as AllTypes>::test_i32(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3596,10 +3594,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u64` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_u64(
+                &<super::Contract as AllTypes>::test_u64(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3640,10 +3637,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i64` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_i64(
+                &<super::Contract as AllTypes>::test_i64(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3684,10 +3680,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u128` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_u128(
+                &<super::Contract as AllTypes>::test_u128(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3728,10 +3723,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i128` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_i128(
+                &<super::Contract as AllTypes>::test_i128(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3772,10 +3766,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bool` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_bool(
+                &<super::Contract as AllTypes>::test_bool(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3816,10 +3809,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_address` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_address(
+                &<super::Contract as AllTypes>::test_address(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3860,10 +3852,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bytes` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_bytes(
+                &<super::Contract as AllTypes>::test_bytes(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3904,10 +3895,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bytes_n` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_bytes_n(
+                &<super::Contract as AllTypes>::test_bytes_n(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3948,10 +3938,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_string` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_string(
+                &<super::Contract as AllTypes>::test_string(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -3992,10 +3981,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_symbol` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_symbol(
+                &<super::Contract as AllTypes>::test_symbol(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4036,10 +4024,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_vec` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_vec(
+                &<super::Contract as AllTypes>::test_vec(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4080,10 +4067,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_map` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_map(
+                &<super::Contract as AllTypes>::test_map(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4124,10 +4110,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_duration` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_duration(
+                &<super::Contract as AllTypes>::test_duration(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4168,10 +4153,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_timepoint` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_timepoint(
+                &<super::Contract as AllTypes>::test_timepoint(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4212,10 +4196,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i256` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_i256(
+                &<super::Contract as AllTypes>::test_i256(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4256,10 +4239,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u256` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_u256(
+                &<super::Contract as AllTypes>::test_u256(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4300,10 +4282,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_env_param` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_env_param(&env),
+                &<super::Contract as AllTypes>::test_env_param(&env),
                 &env,
             )
         }
@@ -4337,10 +4318,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_struct` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_struct(
+                &<super::Contract as AllTypes>::test_struct(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4381,10 +4361,9 @@ mod test {
         use super::*;
         #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_enum_unit` instead")]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_enum_unit(
+                &<super::Contract as AllTypes>::test_enum_unit(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,
@@ -4427,10 +4406,9 @@ mod test {
             note = "use `ContractClient::new(&env, &contract_id).test_enum_variants` instead"
         )]
         pub fn invoke_raw(env: soroban_sdk::Env, arg_0: soroban_sdk::Val) -> soroban_sdk::Val {
-            use super::AllTypes;
             <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
                 #[allow(deprecated)]
-                &<super::Contract>::test_enum_variants(
+                &<super::Contract as AllTypes>::test_enum_variants(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
                             soroban_sdk::Env,

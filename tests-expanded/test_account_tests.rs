@@ -346,10 +346,9 @@ pub mod __Contract____check_auth {
         arg_1: soroban_sdk::Val,
         arg_2: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        use super::CustomAccountInterface;
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<super::Contract>::__check_auth(
+            &<super::Contract as CustomAccountInterface>::__check_auth(
                 env.clone(),
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
