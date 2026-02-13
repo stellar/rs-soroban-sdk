@@ -161,11 +161,6 @@ pub fn derive_pub_fn(
     };
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let arg_count = slice_args.len();
-    let use_trait = if let Some(t) = trait_ident {
-        quote! { use #t }
-    } else {
-        quote! {}
-    };
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
@@ -206,7 +201,6 @@ pub fn derive_pub_fn(
         #[allow(non_snake_case)]
         #[deprecated(note = #deprecated_note)]
         pub fn #invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
-            #use_trait;
             <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
                 #[allow(deprecated)]
                 &#call(
