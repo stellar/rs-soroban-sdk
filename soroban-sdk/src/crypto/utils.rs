@@ -44,8 +44,10 @@ impl<const N: usize> BigInt<N> {
 
 impl<const N: usize, const M: usize> From<&BytesN<M>> for BigInt<N> {
     fn from(bytes: &BytesN<M>) -> Self {
-        if M != N * 8 {
-            panic!("BytesN::Into<BigInt> - length mismatch")
+        const {
+            if M != N * 8 {
+                panic!("BytesN::Into<BigInt> - length mismatch")
+            }
         }
 
         let array = bytes.to_array();
