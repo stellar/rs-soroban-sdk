@@ -56,14 +56,14 @@ pub struct Bn254G1Affine(BytesN<BN254_G1_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Bn254G2Affine(BytesN<BN254_G2_SERIALIZED_SIZE>);
 
-/// `Fr` represents an element in the BN254 scalar field, which is a prime field
+/// `Bn254Fr` represents an element in the BN254 scalar field, which is a prime field
 /// of order `r =
 /// 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001`. The
 /// struct is internally represented with a `U256`, all arithmetic operations
 /// follow modulo `r`.
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fr(U256);
+pub struct Bn254Fr(U256);
 
 /// `Bn254Fp` represents an element of the base field `Bn254Fp` of the BN254 elliptic curve
 ///
@@ -148,15 +148,15 @@ impl Add for Bn254G1Affine {
     }
 }
 
-impl Mul<Fr> for Bn254G1Affine {
+impl Mul<Bn254Fr> for Bn254G1Affine {
     type Output = Bn254G1Affine;
 
-    fn mul(self, rhs: Fr) -> Self::Output {
+    fn mul(self, rhs: Bn254Fr) -> Self::Output {
         self.env().crypto().bn254().g1_mul(&self, &rhs)
     }
 }
 
-// Bn254G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Fr
+// Bn254G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Bn254Fr
 // Negation of (X, Y) is defined as (X, -Y)
 impl Neg for &Bn254G1Affine {
     type Output = Bn254G1Affine;
@@ -190,7 +190,7 @@ impl Bn254G2Affine {
     }
 }
 
-impl Fr {
+impl Bn254Fr {
     pub fn env(&self) -> &Env {
         self.0.env()
     }
@@ -224,68 +224,68 @@ impl Fr {
     }
 }
 
-impl From<U256> for Fr {
+impl From<U256> for Bn254Fr {
     fn from(value: U256) -> Self {
         Self(value)
     }
 }
 
-impl From<&Fr> for U256Val {
-    fn from(value: &Fr) -> Self {
+impl From<&Bn254Fr> for U256Val {
+    fn from(value: &Bn254Fr) -> Self {
         value.as_u256().into()
     }
 }
 
-impl TryFromVal<Env, Val> for Fr {
+impl TryFromVal<Env, Val> for Bn254Fr {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         let u = U256::try_from_val(env, val)?;
-        Ok(Fr(u))
+        Ok(Bn254Fr(u))
     }
 }
 
-impl TryFromVal<Env, Fr> for Val {
+impl TryFromVal<Env, Bn254Fr> for Val {
     type Error = ConversionError;
 
-    fn try_from_val(_env: &Env, fr: &Fr) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, fr: &Bn254Fr) -> Result<Self, Self::Error> {
         Ok(fr.to_val())
     }
 }
 
-impl TryFromVal<Env, &Fr> for Val {
+impl TryFromVal<Env, &Bn254Fr> for Val {
     type Error = ConversionError;
 
-    fn try_from_val(_env: &Env, fr: &&Fr) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, fr: &&Bn254Fr) -> Result<Self, Self::Error> {
         Ok(fr.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl From<&Fr> for ScVal {
-    fn from(v: &Fr) -> Self {
+impl From<&Bn254Fr> for ScVal {
+    fn from(v: &Bn254Fr) -> Self {
         Self::from(&v.0)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl From<Fr> for ScVal {
-    fn from(v: Fr) -> Self {
+impl From<Bn254Fr> for ScVal {
+    fn from(v: Bn254Fr) -> Self {
         (&v).into()
     }
 }
 
-impl Eq for Fr {}
+impl Eq for Bn254Fr {}
 
-impl PartialEq for Fr {
+impl PartialEq for Bn254Fr {
     fn eq(&self, other: &Self) -> bool {
         self.as_u256().partial_cmp(other.as_u256()) == Some(core::cmp::Ordering::Equal)
     }
 }
 
-impl Debug for Fr {
+impl Debug for Bn254Fr {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Fr({:?})", self.as_u256())
+        write!(f, "Bn254Fr({:?})", self.as_u256())
     }
 }
 
@@ -307,7 +307,7 @@ impl Bn254 {
     }
 
     /// Multiplies a point `p0` in G1 by a scalar.
-    pub fn g1_mul(&self, p0: &Bn254G1Affine, scalar: &Fr) -> Bn254G1Affine {
+    pub fn g1_mul(&self, p0: &Bn254G1Affine, scalar: &Bn254Fr) -> Bn254G1Affine {
         let env = self.env();
         let bin =
             internal::Env::bn254_g1_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
@@ -377,9 +377,9 @@ mod test {
     fn test_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bn254Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = fr.clone().into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bn254Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
@@ -388,9 +388,9 @@ mod test {
     fn test_ref_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bn254Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = (&fr).into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bn254Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
@@ -399,9 +399,9 @@ mod test {
     fn test_double_ref_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bn254Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = (&&fr).into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bn254Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
