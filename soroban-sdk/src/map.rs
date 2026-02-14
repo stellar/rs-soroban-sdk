@@ -519,7 +519,7 @@ where
         K: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         V: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
-        MapTryIter::new(self.clone())
+        MapTryIter::new(self)
     }
 }
 
