@@ -1229,7 +1229,7 @@ impl<const N: usize> BytesN<N> {
     /// Returns true if the Bytes is empty and has a length of zero.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        false
+        N == 0
     }
 
     /// Returns the number of bytes are in the Bytes.
