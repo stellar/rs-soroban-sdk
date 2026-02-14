@@ -100,6 +100,7 @@ unsafe impl GlobalAlloc for BumpPointer {
         core::ptr::with_exposed_provenance_mut(ptr)
     }
 
+    // No-op. See the module-level documentation on `crate::alloc` for details.
     #[inline(always)]
     unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {}
 }
