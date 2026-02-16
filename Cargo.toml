@@ -17,7 +17,6 @@ members = [
     "soroban-ledger-fetch-from/meta-storage",
     "soroban-ledger-fetch-from/history-archive",
     "soroban-ledger-fetch",
-    "soroban-ledger-snapshot-source-live",
     "soroban-ledger-snapshot-source-tx",
 
     "tests/*",

@@ -156,8 +156,8 @@ mod local {
     use soroban_ledger_fetch::Network;
     use soroban_ledger_snapshot_source_tx::TxSnapshotSource;
     use soroban_sdk::{testutils::EnvTestConfig, token::TokenClient, Address, Env};
-    use stellar_rpc_client::Client;
     use std::str::FromStr;
+    use stellar_rpc_client::Client;
     use stellar_xdr::curr::{
         self as xdr, AccountId, Asset, ContractExecutable, ContractIdPreimage, CreateContractArgs,
         DecoratedSignature, Hash, HashIdPreimage, HashIdPreimageContractId, HostFunction,
@@ -187,11 +187,16 @@ mod local {
 
         // Verify tx1 balance (requires archive lookup since it's before checkpoint)
         std::println!("Verifying tx1 balance (requires archive lookup)...");
-        let balance_before_tx1 = get_balance_at(&result.sac_contract, result.ledger1, Some(result.hash1));
+        let balance_before_tx1 =
+            get_balance_at(&result.sac_contract, result.ledger1, Some(result.hash1));
         let balance_after_tx1 = get_balance_at(&result.sac_contract, result.ledger1, None);
         std::println!("Balance before tx1 (transfers 5): {balance_before_tx1}");
         std::println!("Balance after tx1: {balance_after_tx1}");
-        assert_eq!(balance_after_tx1, balance_before_tx1 + 5, "tx1 should add 5");
+        assert_eq!(
+            balance_after_tx1,
+            balance_before_tx1 + 5,
+            "tx1 should add 5"
+        );
 
         // Verify balance 8 ledgers before tx2/tx3 (requires archive lookup across checkpoint)
         let ledger_before_checkpoint = result.ledger2 - 1;
@@ -199,8 +204,12 @@ mod local {
             "Verifying balance at ledger {} (8 ledgers before tx2, requires archive lookup)...",
             ledger_before_checkpoint
         );
-        let balance_at_checkpoint = get_balance_at(&result.sac_contract, ledger_before_checkpoint, None);
-        std::println!("Balance at ledger {}: {balance_at_checkpoint}", ledger_before_checkpoint);
+        let balance_at_checkpoint =
+            get_balance_at(&result.sac_contract, ledger_before_checkpoint, None);
+        std::println!(
+            "Balance at ledger {}: {balance_at_checkpoint}",
+            ledger_before_checkpoint
+        );
         // This should equal the balance after tx1 since no other transactions affected TARGET_ADDRESS
         assert_eq!(
             balance_at_checkpoint, balance_after_tx1,
@@ -213,8 +222,10 @@ mod local {
             std::println!("tx2 and tx3 in same ledger {ledger}! Testing intra-ledger state...");
 
             // Get balances at different points in the ledger
-            let balance_before_tx2 = get_balance_at(&result.sac_contract, ledger, Some(result.hash2));
-            let balance_before_tx3 = get_balance_at(&result.sac_contract, ledger, Some(result.hash3));
+            let balance_before_tx2 =
+                get_balance_at(&result.sac_contract, ledger, Some(result.hash2));
+            let balance_before_tx3 =
+                get_balance_at(&result.sac_contract, ledger, Some(result.hash3));
             let balance_end = get_balance_at(&result.sac_contract, ledger, None);
 
             // Determine transaction order based on balances
@@ -226,7 +237,11 @@ mod local {
                 std::println!("Balance before tx2 (transfers 10): {balance_before_tx2}");
                 std::println!("Balance before tx3 (transfers 20): {balance_before_tx3}");
                 std::println!("Balance at end of ledger: {balance_end}");
-                assert_eq!(balance_before_tx3, balance_before_tx2 + 10, "tx2 should add 10");
+                assert_eq!(
+                    balance_before_tx3,
+                    balance_before_tx2 + 10,
+                    "tx2 should add 10"
+                );
                 assert_eq!(balance_end, balance_before_tx3 + 20, "tx3 should add 20");
             } else {
                 // tx3 came first: before_tx3 -> +20 -> before_tx2 -> +10 -> end
@@ -234,16 +249,27 @@ mod local {
                 std::println!("Balance before tx3 (transfers 20): {balance_before_tx3}");
                 std::println!("Balance before tx2 (transfers 10): {balance_before_tx2}");
                 std::println!("Balance at end of ledger: {balance_end}");
-                assert_eq!(balance_before_tx2, balance_before_tx3 + 20, "tx3 should add 20");
+                assert_eq!(
+                    balance_before_tx2,
+                    balance_before_tx3 + 20,
+                    "tx3 should add 20"
+                );
                 assert_eq!(balance_end, balance_before_tx2 + 10, "tx2 should add 10");
             }
 
             // Either way, total change from tx2+tx3 should be 30
             let initial_balance = std::cmp::min(balance_before_tx2, balance_before_tx3);
-            assert_eq!(balance_end, initial_balance + 30, "tx2+tx3 total change should be 30");
+            assert_eq!(
+                balance_end,
+                initial_balance + 30,
+                "tx2+tx3 total change should be 30"
+            );
 
             // Verify the balance before tx2/tx3 equals balance after tx1 (with +5 from tx1)
-            assert_eq!(initial_balance, balance_after_tx1, "balance before tx2/tx3 should equal balance after tx1");
+            assert_eq!(
+                initial_balance, balance_after_tx1,
+                "balance before tx2/tx3 should equal balance after tx1"
+            );
         } else {
             std::println!("tx2 and tx3 landed in different ledgers, testing cross-ledger state...");
 
@@ -253,12 +279,24 @@ mod local {
             std::println!("Balance at ledger {}: {balance2}", result.ledger2);
             std::println!("Balance at ledger {}: {balance3}", result.ledger3);
             assert_eq!(balance2, balance_after_tx1 + 10, "tx2 should add 10");
-            assert_eq!(balance3, balance_after_tx1 + 30, "tx2+tx3 should add 30 total");
+            assert_eq!(
+                balance3,
+                balance_after_tx1 + 30,
+                "tx2+tx3 should add 30 total"
+            );
         }
 
         // Verify total: balance should have increased by 5 + 10 + 20 = 35
-        let final_balance = get_balance_at(&result.sac_contract, result.ledger3.max(result.ledger2), None);
-        assert_eq!(final_balance, balance_before_tx1 + 35, "total change should be 35");
+        let final_balance = get_balance_at(
+            &result.sac_contract,
+            result.ledger3.max(result.ledger2),
+            None,
+        );
+        assert_eq!(
+            final_balance,
+            balance_before_tx1 + 35,
+            "total change should be 35"
+        );
     }
 
     fn network_id() -> [u8; 32] {
@@ -319,14 +357,23 @@ mod local {
         }
     }
 
-    fn build_sac_transfer_op(sac_contract: &str, from: ScAddress, to: ScAddress, amount: i128) -> Operation {
+    fn build_sac_transfer_op(
+        sac_contract: &str,
+        from: ScAddress,
+        to: ScAddress,
+        amount: i128,
+    ) -> Operation {
         let contract_address = ScAddress::from_str(sac_contract).unwrap();
         let host_function = HostFunction::InvokeContract(InvokeContractArgs {
             contract_address,
             function_name: ScSymbol("transfer".try_into().unwrap()),
-            args: std::vec![ScVal::Address(from), ScVal::Address(to), i128_to_sc_val(amount)]
-                .try_into()
-                .unwrap(),
+            args: std::vec![
+                ScVal::Address(from),
+                ScVal::Address(to),
+                i128_to_sc_val(amount)
+            ]
+            .try_into()
+            .unwrap(),
         });
 
         Operation {
@@ -374,7 +421,10 @@ mod local {
         }
     }
 
-    async fn fund_account(client: &Client, address: &str) -> Result<(), std::boxed::Box<dyn std::error::Error>> {
+    async fn fund_account(
+        client: &Client,
+        address: &str,
+    ) -> Result<(), std::boxed::Box<dyn std::error::Error>> {
         let friendbot_url = client.friendbot_url().await?;
         if !friendbot_url.is_empty() {
             let fund_url = std::format!("{friendbot_url}?addr={address}");
@@ -383,7 +433,10 @@ mod local {
         Ok(())
     }
 
-    async fn get_sequence_number(client: &Client, account_id: &AccountId) -> Result<i64, std::boxed::Box<dyn std::error::Error>> {
+    async fn get_sequence_number(
+        client: &Client,
+        account_id: &AccountId,
+    ) -> Result<i64, std::boxed::Box<dyn std::error::Error>> {
         use std::string::ToString;
         let account = client.get_account(&account_id.to_string()).await?;
         Ok(account.seq_num.0)
@@ -397,7 +450,9 @@ mod local {
             tx: tx.clone(),
             signatures: VecM::default(),
         });
-        let sim = client.simulate_transaction_envelope(&envelope, None).await?;
+        let sim = client
+            .simulate_transaction_envelope(&envelope, None)
+            .await?;
 
         // Check for simulation error
         if let Some(error) = &sim.error {
@@ -414,10 +469,15 @@ mod local {
         if let Some(result) = sim.results.first() {
             if !result.auth.is_empty() {
                 let mut ops: std::vec::Vec<Operation> = new_tx.operations.to_vec();
-                if let OperationBody::InvokeHostFunction(ref mut op) = ops.first_mut().unwrap().body {
-                    let auth_vec: std::vec::Vec<SorobanAuthorizationEntry> = result.auth
+                if let OperationBody::InvokeHostFunction(ref mut op) = ops.first_mut().unwrap().body
+                {
+                    let auth_vec: std::vec::Vec<SorobanAuthorizationEntry> = result
+                        .auth
                         .iter()
-                        .map(|a| SorobanAuthorizationEntry::from_xdr_base64(a, xdr::Limits::none()).unwrap())
+                        .map(|a| {
+                            SorobanAuthorizationEntry::from_xdr_base64(a, xdr::Limits::none())
+                                .unwrap()
+                        })
                         .collect();
                     op.auth = auth_vec.try_into().unwrap();
                 }
@@ -427,7 +487,10 @@ mod local {
 
         // Set transaction resources from simulation
         if !sim.transaction_data.is_empty() {
-            let soroban_data = xdr::SorobanTransactionData::from_xdr_base64(&sim.transaction_data, xdr::Limits::none())?;
+            let soroban_data = xdr::SorobanTransactionData::from_xdr_base64(
+                &sim.transaction_data,
+                xdr::Limits::none(),
+            )?;
             new_tx.ext = TransactionExt::V1(soroban_data);
         }
 
@@ -471,10 +534,8 @@ mod local {
 
         // Fund both accounts in parallel
         std::println!("Funding accounts...");
-        let (fund1, fund2) = tokio::join!(
-            fund_account(&client, &addr1),
-            fund_account(&client, &addr2),
-        );
+        let (fund1, fund2) =
+            tokio::join!(fund_account(&client, &addr1), fund_account(&client, &addr2),);
         fund1.expect("failed to fund account 1");
         fund2.expect("failed to fund account 2");
 
@@ -526,7 +587,9 @@ mod local {
                 signatures: std::vec![deploy_sig].try_into().unwrap(),
             });
 
-            let deploy_hash = signed_deploy.hash(network_id()).expect("failed to hash deploy tx");
+            let deploy_hash = signed_deploy
+                .hash(network_id())
+                .expect("failed to hash deploy tx");
             client
                 .send_transaction(&signed_deploy)
                 .await
@@ -548,7 +611,9 @@ mod local {
         let seq1_for_tx1 = get_sequence_number(&client, &account1_id).await.unwrap();
         let op1 = build_sac_transfer_op(&sac_contract, from1.clone(), to.clone(), 5);
         let tx1 = build_transaction(&account1_id, seq1_for_tx1 + 1, std::vec![op1]);
-        let prepared_tx1 = simulate_and_prepare(&client, tx1).await.expect("failed to simulate tx1");
+        let prepared_tx1 = simulate_and_prepare(&client, tx1)
+            .await
+            .expect("failed to simulate tx1");
         let sig1 = sign_transaction(&prepared_tx1, &key1);
         let envelope1 = TransactionEnvelope::Tx(TransactionV1Envelope {
             tx: prepared_tx1,
@@ -556,7 +621,10 @@ mod local {
         });
         let hash1_bytes = envelope1.hash(network_id()).expect("failed to hash tx1");
         let hash1 = Hash(hash1_bytes);
-        client.send_transaction(&envelope1).await.expect("failed to send tx1");
+        client
+            .send_transaction(&envelope1)
+            .await
+            .expect("failed to send tx1");
         let tx1_result = client
             .get_transaction_polling(&hash1, None)
             .await
