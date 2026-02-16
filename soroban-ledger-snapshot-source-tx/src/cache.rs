@@ -4,8 +4,6 @@ use std::path::Path;
 
 use fs2::FileExt;
 
-// TODO: Move this crate to its own repo.
-
 /// Cache a file, collecting bytes if not present, and return a reader
 pub fn cache<P, C, CE>(path: P, collect: C) -> Result<impl Read, CacheError<CE>>
 where

@@ -1,9 +1,12 @@
-use cache_to_file::cache;
+mod cache;
+mod fetch;
+
+use cache::cache;
 use cargo_metadata::MetadataCommand;
 use directories::ProjectDirs;
+use fetch::LedgerEntryFetcher;
+pub use fetch::Network;
 use sha2::{Digest, Sha256};
-use soroban_ledger_fetch::LedgerEntryFetcher;
-pub use soroban_ledger_fetch::Network;
 use soroban_sdk::testutils::SnapshotSourceInput;
 use soroban_sdk::testutils::{HostError, SnapshotSource};
 use soroban_sdk::xdr::{LedgerEntry, LedgerKey, Limits, WriteXdr};

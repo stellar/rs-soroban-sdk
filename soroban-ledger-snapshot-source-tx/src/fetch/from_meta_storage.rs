@@ -1,8 +1,5 @@
 //! Implements SEP-54
 
-#[cfg(feature = "cli")]
-pub mod cli;
-
 use std::io::{copy, Cursor, Write};
 
 use stellar_xdr::curr as stellar_xdr;
@@ -25,11 +22,12 @@ pub enum Error {
 /// Download LedgerCloseMeta for a specific ledger sequence from S3-compatible storage
 ///
 /// # Arguments
-/// * `config` - S3 configuration (bucket, region, root path)
+/// * `meta_url` - URL to the SEP-54 compatible ledger meta storage
 /// * `sequence` - The ledger sequence number to download
 ///
 /// # Returns
 /// The uncompressed LedgerCloseMeta for the specified ledger
+#[allow(dead_code)]
 pub fn ledger(meta_url: &str, sequence: u32) -> Result<LedgerCloseMeta, Error> {
     let mut ledger = Vec::new();
     get_ledger(meta_url, sequence, &mut ledger)?;
@@ -39,9 +37,9 @@ pub fn ledger(meta_url: &str, sequence: u32) -> Result<LedgerCloseMeta, Error> {
 /// Download compressed LedgerCloseMeta bytes for a specific ledger sequence from S3-compatible storage
 ///
 /// # Arguments
-/// * `config` - S3 configuration (bucket, region, root path)
+/// * `meta_url` - URL to the SEP-54 compatible ledger meta storage
 /// * `sequence` - The ledger sequence number to download
-/// * `writer` - Writer to write the decompressed data to
+/// * `write` - Writer to write the decompressed data to
 ///
 /// # Returns
 /// The compressed bytes for the specified ledger

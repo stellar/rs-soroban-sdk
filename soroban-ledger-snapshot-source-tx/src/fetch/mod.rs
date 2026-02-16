@@ -1,15 +1,17 @@
-use cache_to_file::{cache, CacheError};
+use crate::cache::{cache, CacheError};
+use from_history_archive::{get_bucket, get_history, parse_bucket, parse_history};
+use from_meta_storage::{get_ledger, parse_ledger};
+use from_rpc::{get_ledger_entry, parse_ledger_entry};
 use sha2::{Digest, Sha256};
-use soroban_ledger_fetch_from_history_archive::{
-    get_bucket, get_history, parse_bucket, parse_history,
-};
-use soroban_ledger_fetch_from_meta_storage::{get_ledger, parse_ledger};
-use soroban_ledger_fetch_from_rpc::{get_ledger_entry, parse_ledger_entry};
 use soroban_sdk::xdr::{BucketEntry, LedgerEntry, LedgerKey, Limited, Limits, WriteXdr};
 use std::path::PathBuf;
 
 mod iter;
-pub use iter::{LedgerEntryChangesIterator, ProcessingPhase};
+pub use iter::LedgerEntryChangesIterator;
+
+pub(crate) mod from_history_archive;
+pub(crate) mod from_meta_storage;
+pub(crate) mod from_rpc;
 
 /// Error type for LedgerEntryFetcher operations
 #[derive(Debug, thiserror::Error)]
@@ -23,14 +25,15 @@ pub enum Error {
     #[error("json error: {0}")]
     Json(#[from] serde_json::Error),
     #[error("meta storage error: {0}")]
-    MetaStorage(#[from] soroban_ledger_fetch_from_meta_storage::Error),
+    MetaStorage(#[from] from_meta_storage::Error),
     #[error("rpc error: {0}")]
-    Rpc(#[from] soroban_ledger_fetch_from_rpc::Error),
+    Rpc(#[from] from_rpc::Error),
     #[error("history archive error: {0}")]
-    HistoryArchive(#[from] soroban_ledger_fetch_from_history_archive::Error),
+    HistoryArchive(#[from] from_history_archive::Error),
 }
 
 /// Returns true if the ledger is a checkpoint ledger for the given checkpoint frequency.
+#[allow(dead_code)]
 pub fn is_checkpoint_ledger(ledger: u32, checkpoint_frequency: u32) -> bool {
     (ledger + 1) % checkpoint_frequency == 0
 }
@@ -58,13 +61,12 @@ impl Network {
     ///
     /// Uses default mainnet URLs:
     /// - SEP-54 meta storage: AWS public blockchain
-    /// - RPC: mainnet.sorobanrpc.com
     /// - History archive: history.stellar.org
     pub fn mainnet() -> Self {
         Self {
             passphrase: "Public Global Stellar Network ; September 2015".to_string(),
             meta_url: "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/pubnet".to_string(),
-            rpc_url: Some("https://mainnet.sorobanrpc.com".to_string()),
+            rpc_url: None,
             archive_url: "https://history.stellar.org/prd/core-live/core_live_001".to_string(),
             archive_checkpoint_ledger_count: 64,
         }
@@ -74,13 +76,12 @@ impl Network {
     ///
     /// Uses default testnet URLs:
     /// - SEP-54 meta storage: AWS public blockchain
-    /// - RPC: soroban-testnet.stellar.org
     /// - History archive: history.stellar.org
     pub fn testnet() -> Self {
         Self {
             passphrase: "Test SDF Network ; September 2015".to_string(),
             meta_url: "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-17".to_string(),
-            rpc_url: Some("https://soroban-testnet.stellar.org".to_string()),
+            rpc_url: None,
             archive_url: "https://history.stellar.org/prd/core-testnet/core_testnet_001".to_string(),
             archive_checkpoint_ledger_count: 64,
         }
@@ -90,13 +91,12 @@ impl Network {
     ///
     /// Uses default quickstart URLs:
     /// - SEP-54 meta storage: localhost:8000/meta-archive
-    /// - RPC: localhost:8000/rpc
     /// - History archive: localhost:8000/archive
     pub fn local() -> Self {
         Self {
             passphrase: "Standalone Network ; February 2017".to_string(),
             meta_url: "http://localhost:8000/meta-archive".to_string(),
-            rpc_url: Some("http://localhost:8000/rpc".to_string()),
+            rpc_url: None,
             archive_url: "http://localhost:8000/archive".to_string(),
             archive_checkpoint_ledger_count: 8,
         }

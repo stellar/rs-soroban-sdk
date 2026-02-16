@@ -8,7 +8,7 @@ pub struct Contract;
 mod example {
     extern crate std;
     use bytes_lit::bytes;
-    use soroban_ledger_fetch::Network;
+    use soroban_ledger_snapshot_source_tx::Network;
     use soroban_ledger_snapshot_source_tx::TxSnapshotSource;
     use soroban_sdk::{token::TokenClient, Address, Env};
 
@@ -42,7 +42,7 @@ mod example {
 mod testnet {
     extern crate std;
     use bytes_lit::bytes;
-    use soroban_ledger_fetch::Network;
+    use soroban_ledger_snapshot_source_tx::Network;
     use soroban_ledger_snapshot_source_tx::TxSnapshotSource;
     use soroban_sdk::{token::TokenClient, Address, Env};
 
@@ -153,7 +153,7 @@ mod local {
     extern crate std;
     use ed25519_dalek::{Signer, SigningKey};
     use sha2::{Digest, Sha256};
-    use soroban_ledger_fetch::Network;
+    use soroban_ledger_snapshot_source_tx::Network;
     use soroban_ledger_snapshot_source_tx::TxSnapshotSource;
     use soroban_sdk::{testutils::EnvTestConfig, token::TokenClient, Address, Env};
     use std::str::FromStr;

@@ -29,6 +29,7 @@ pub enum Error {
     Xdr(#[from] xdr::Error),
 }
 
+#[allow(dead_code)]
 pub fn history(archive_url: &str, ledger: u32) -> Result<History, Error> {
     let mut bytes = Vec::new();
     get_history(archive_url, ledger, &mut bytes)?;
@@ -47,7 +48,6 @@ pub fn get_history<W: Write + ?Sized>(
         let ledger_hex_2 = ledger_hex[4..=5].to_string();
         format!("{archive_url}/history/{ledger_hex_0}/{ledger_hex_1}/{ledger_hex_2}/history-{ledger_hex}.json")
     };
-    //eprintln!("url: {history_url}");
 
     let mut response = reqwest::blocking::Client::new()
         .get(&history_url)

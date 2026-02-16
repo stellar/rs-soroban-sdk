@@ -332,14 +332,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cache-to-file"
-version = "0.0.1"
-dependencies = [
- "fs2",
- "thiserror 2.0.17",
-]
-
-[[package]]
 name = "camino"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2843,59 +2835,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "soroban-ledger-fetch"
-version = "23.4.0"
-dependencies = [
- "cache-to-file",
- "hex",
- "serde",
- "serde_json",
- "sha2",
- "soroban-ledger-fetch-from-history-archive",
- "soroban-ledger-fetch-from-meta-storage",
- "soroban-ledger-fetch-from-rpc",
- "soroban-sdk",
- "thiserror 2.0.17",
- "tracing",
-]
-
-[[package]]
-name = "soroban-ledger-fetch-from-history-archive"
-version = "23.4.0"
-dependencies = [
- "flate2",
- "reqwest",
- "serde",
- "serde_json",
- "stellar-xdr",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "soroban-ledger-fetch-from-meta-storage"
-version = "23.4.0"
-dependencies = [
- "clap",
- "reqwest",
- "serde",
- "serde_json",
- "stellar-xdr",
- "thiserror 1.0.69",
- "zstd",
-]
-
-[[package]]
-name = "soroban-ledger-fetch-from-rpc"
-version = "23.4.0"
-dependencies = [
- "reqwest",
- "serde",
- "serde_json",
- "stellar-xdr",
- "thiserror 1.0.69",
-]
-
-[[package]]
 name = "soroban-ledger-snapshot"
 version = "23.4.0"
 dependencies = [
@@ -2909,25 +2848,24 @@ dependencies = [
 ]
 
 [[package]]
-name = "soroban-ledger-snapshot-source-live"
-version = "23.4.0"
-dependencies = [
- "soroban-ledger-fetch-from-rpc",
- "soroban-sdk",
-]
-
-[[package]]
 name = "soroban-ledger-snapshot-source-tx"
 version = "23.4.0"
 dependencies = [
- "cache-to-file",
  "cargo_metadata",
  "directories",
+ "flate2",
+ "fs2",
+ "hex",
+ "reqwest",
+ "serde",
  "serde_json",
  "sha2",
- "soroban-ledger-fetch",
  "soroban-sdk",
+ "stellar-xdr",
+ "thiserror 2.0.17",
+ "tracing",
  "tracing-subscriber",
+ "zstd",
 ]
 
 [[package]]
@@ -3404,7 +3342,6 @@ dependencies = [
  "reqwest",
  "serde_json",
  "sha2",
- "soroban-ledger-fetch",
  "soroban-ledger-snapshot-source-tx",
  "soroban-sdk",
  "stellar-rpc-client",
@@ -3412,14 +3349,6 @@ dependencies = [
  "stellar-xdr",
  "tokio",
  "url",
-]
-
-[[package]]
-name = "test_fork_rpc"
-version = "23.4.0"
-dependencies = [
- "soroban-ledger-snapshot-source-live",
- "soroban-sdk",
 ]
 
 [[package]]
