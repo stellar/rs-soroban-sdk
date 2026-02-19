@@ -1,8 +1,8 @@
 use crate as soroban_sdk;
 use expect_test::expect;
+use soroban_sdk::xdr::ContractCostType;
 use soroban_sdk::Env;
 use soroban_sdk_macros::symbol_short;
-use stellar_xdr::curr::ContractCostType;
 
 mod contract_data {
     use crate as soroban_sdk;
@@ -220,14 +220,14 @@ fn test_cost_estimate_budget() {
         Bls12381G2ProjectiveToAffine       0              None           0              0              100742              0                   0                   0                   
         Bls12381G1Add                      0              None           0              0              7689                0                   0                   0                   
         Bls12381G1Mul                      0              None           0              0              2458985             0                   0                   0                   
-        Bls12381G1Msm                      0              Some(0)        0              0              2426722             96397671            109494              354667              
-        Bls12381MapFpToG1                  0              None           0              0              1541554             0                   5552                0                   
-        Bls12381HashToG1                   0              Some(0)        0              0              3211191             6713                9424                0                   
+        Bls12381G1Msm                      0              Some(0)        0              0              2347584             94135478            109494              266603              
+        Bls12381MapFpToG1                  0              None           0              0              1020885             0                   2776                0                   
+        Bls12381HashToG1                   0              Some(0)        0              0              2638451             6803                5896                0                   
         Bls12381G2Add                      0              None           0              0              25207               0                   0                   0                   
         Bls12381G2Mul                      0              None           0              0              7873219             0                   0                   0                   
-        Bls12381G2Msm                      0              Some(0)        0              0              8035968             309667335           219654              354667              
-        Bls12381MapFp2ToG2                 0              None           0              0              2420202             0                   3344                0                   
-        Bls12381HashToG2                   0              Some(0)        0              0              7050564             6797                6816                0                   
+        Bls12381G2Msm                      0              Some(0)        0              0              7663880             298580871           219654              266603              
+        Bls12381MapFp2ToG2                 0              None           0              0              1856539             0                   1672                0                   
+        Bls12381HashToG2                   0              Some(0)        0              0              6315452             7232                3960                0                   
         Bls12381Pairing                    0              Some(0)        0              0              10558948            632860943           2204                9340474             
         Bls12381FrFromU256                 0              None           0              0              1994                0                   0                   0                   
         Bls12381FrToU256                   0              None           0              0              1155                0                   248                 0                   
@@ -239,7 +239,7 @@ fn test_cost_estimate_budget() {
         Bn254DecodeFp                      0              None           0              0              476                 0                   0                   0                   
         Bn254G1CheckPointOnCurve           0              None           0              0              904                 0                   0                   0                   
         Bn254G2CheckPointOnCurve           0              None           0              0              2811                0                   0                   0                   
-        Bn254G2CheckPointInSubgroup        0              None           0              0              2937755             0                   0                   0                   
+        Bn254G2CheckPointInSubgroup        0              None           0              0              1706052             0                   0                   0                   
         Bn254G1ProjectiveToAffine          0              None           0              0              61                  0                   0                   0                   
         Bn254G1Add                         0              None           0              0              3623                0                   0                   0                   
         Bn254G1Mul                         0              None           0              0              1150435             0                   0                   0                   
@@ -250,6 +250,7 @@ fn test_cost_estimate_budget() {
         Bn254FrMul                         0              None           0              0              332                 0                   0                   0                   
         Bn254FrPow                         0              Some(0)        0              0              755                 68930               0                   0                   
         Bn254FrInv                         0              None           0              0              33151               0                   0                   0                   
+        Bn254G1Msm                         0              Some(0)        0              0              1185193             41568084            73061               229779              
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
         Total # times meter was called: 272
