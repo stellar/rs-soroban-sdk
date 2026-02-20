@@ -22,7 +22,7 @@ let tx_hash = bytes!(0x6fc2e483896276816b6d3b8d1df778bc978521f51561faa407ab8bb19
 
 // Use mainnet with default URLs
 let source = TxSnapshotSource::new(
-    Network::mainnet(),
+    Network::mainnet(None),
     59914751,  // Ledger sequence
     Some(tx_hash),
 );

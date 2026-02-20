@@ -62,11 +62,14 @@ impl Network {
     /// Uses default mainnet URLs:
     /// - SEP-54 meta storage: AWS public blockchain
     /// - History archive: history.stellar.org
-    pub fn mainnet() -> Self {
+    ///
+    /// # Arguments
+    /// * `rpc_url` - Optional RPC URL, used as an optimization to skip searching meta/archive
+    pub fn mainnet(rpc_url: Option<String>) -> Self {
         Self {
             passphrase: "Public Global Stellar Network ; September 2015".to_string(),
             meta_url: "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/pubnet".to_string(),
-            rpc_url: None,
+            rpc_url,
             archive_url: "https://history.stellar.org/prd/core-live/core_live_001".to_string(),
             archive_checkpoint_ledger_count: 64,
         }
@@ -76,12 +79,13 @@ impl Network {
     ///
     /// Uses default testnet URLs:
     /// - SEP-54 meta storage: AWS public blockchain
+    /// - RPC: soroban-testnet.stellar.org
     /// - History archive: history.stellar.org
     pub fn testnet() -> Self {
         Self {
             passphrase: "Test SDF Network ; September 2015".to_string(),
             meta_url: "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-17".to_string(),
-            rpc_url: None,
+            rpc_url: Some("https://soroban-testnet.stellar.org".to_string()),
             archive_url: "https://history.stellar.org/prd/core-testnet/core_testnet_001".to_string(),
             archive_checkpoint_ledger_count: 64,
         }
@@ -91,12 +95,13 @@ impl Network {
     ///
     /// Uses default quickstart URLs:
     /// - SEP-54 meta storage: localhost:8000/meta-archive
+    /// - RPC: localhost:8000/rpc
     /// - History archive: localhost:8000/archive
     pub fn local() -> Self {
         Self {
             passphrase: "Standalone Network ; February 2017".to_string(),
             meta_url: "http://localhost:8000/meta-archive".to_string(),
-            rpc_url: None,
+            rpc_url: Some("http://localhost:8000/rpc".to_string()),
             archive_url: "http://localhost:8000/archive".to_string(),
             archive_checkpoint_ledger_count: 8,
         }
