@@ -175,4 +175,118 @@ pub enum UdtEnum2 {
 "#,
         );
     }
+
+    const ADD_U64_WASM: &[u8] =
+        include_bytes!("../../target/wasm32v1-none/release/test_add_u64.wasm");
+
+    /// Test that Result types with user-defined error types are generated correctly.
+    /// This specifically tests that:
+    /// - An error enum named `Error` generates `Result<u64, Error>` (not `Result<u64, soroban_sdk::Error>`)
+    /// - An error enum named `MyError` generates `Result<u64, MyError>`
+    #[test]
+    fn test_add_u64_result_types() {
+        let entries = from_wasm(ADD_U64_WASM).unwrap();
+        let rust = generate(&entries, "<file>", "<sha256>")
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(file = "<file>", sha256 = "<sha256>");
+#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn add(env: soroban_sdk::Env, a: u64, b: u64) -> u64;
+    fn safe_add(env: soroban_sdk::Env, a: u64, b: u64) -> Result<u64, Error>;
+    fn safe_add_two(env: soroban_sdk::Env, a: u64, b: u64) -> Result<u64, MyError>;
+}
+#[soroban_sdk::contracterror(export = false)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+#[soroban_sdk::contracterror(export = false)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum MyError {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
+    /// Test that shows the raw spec entries from the wasm.
+    /// Verifies that both Error and MyError are correctly represented as UDTs.
+    #[test]
+    fn test_add_u64_spec_entries() {
+        use super::ScSpecEntry;
+        use stellar_xdr::curr::ScSpecTypeDef;
+
+        let entries = from_wasm(ADD_U64_WASM).unwrap();
+
+        // Find the safe_add function spec
+        let safe_add_fn = entries
+            .iter()
+            .find_map(|e| match e {
+                ScSpecEntry::FunctionV0(f) if f.name.to_utf8_string().unwrap() == "safe_add" => {
+                    Some(f)
+                }
+                _ => None,
+            })
+            .expect("safe_add function not found");
+
+        let output = safe_add_fn.outputs.to_option().expect("should have output");
+        let ScSpecTypeDef::Result(r) = output else {
+            panic!("output should be a Result type");
+        };
+        assert!(
+            matches!(r.ok_type.as_ref(), ScSpecTypeDef::U64),
+            "ok_type should be U64"
+        );
+        let ScSpecTypeDef::Udt(u) = r.error_type.as_ref() else {
+            panic!(
+                "error_type should be a UDT for Error, got {:?}",
+                r.error_type
+            );
+        };
+        assert_eq!(
+            u.name.to_utf8_string().unwrap(),
+            "Error",
+            "error_type should be Error UDT"
+        );
+
+        // Find the safe_add_two function spec
+        let safe_add_two_fn = entries
+            .iter()
+            .find_map(|e| match e {
+                ScSpecEntry::FunctionV0(f)
+                    if f.name.to_utf8_string().unwrap() == "safe_add_two" =>
+                {
+                    Some(f)
+                }
+                _ => None,
+            })
+            .expect("safe_add_two function not found");
+
+        let output = safe_add_two_fn
+            .outputs
+            .to_option()
+            .expect("should have output");
+        let ScSpecTypeDef::Result(r) = output else {
+            panic!("output should be a Result type");
+        };
+        assert!(
+            matches!(r.ok_type.as_ref(), ScSpecTypeDef::U64),
+            "ok_type should be U64"
+        );
+        let ScSpecTypeDef::Udt(u) = r.error_type.as_ref() else {
+            panic!(
+                "error_type should be a UDT for MyError, got {:?}",
+                r.error_type
+            );
+        };
+        assert_eq!(
+            u.name.to_utf8_string().unwrap(),
+            "MyError",
+            "error_type should be MyError UDT"
+        );
+    }
 }

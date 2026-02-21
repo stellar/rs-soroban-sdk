@@ -52,7 +52,6 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "bool" => Ok(ScSpecTypeDef::Bool),
                     "Symbol" => Ok(ScSpecTypeDef::Symbol),
                     "String" => Ok(ScSpecTypeDef::String),
-                    "Error" => Ok(ScSpecTypeDef::Error),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
                     "Address" => Ok(ScSpecTypeDef::Address),
                     "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
@@ -297,6 +296,68 @@ mod test {
                     .try_into()
                     .unwrap(),
             }))
+        );
+    }
+
+    /// Test that a type named "Error" correctly maps to a UDT.
+    /// User-defined error enums named "Error" should be treated as UDTs,
+    /// not as the built-in soroban_sdk::Error type.
+    #[test]
+    fn test_error_type_maps_to_udt() {
+        let ty: Type = parse_quote!(Error);
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: "Error".try_into().unwrap(),
+            })
+        );
+    }
+
+    /// Test that a type named "MyError" correctly maps to a UDT.
+    #[test]
+    fn test_my_error_type_maps_to_udt() {
+        let ty: Type = parse_quote!(MyError);
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: "MyError".try_into().unwrap(),
+            })
+        );
+    }
+
+    /// Test Result<u64, Error> - the error type should be a UDT reference.
+    #[test]
+    fn test_result_with_error_type() {
+        let ty: Type = parse_quote!(Result<u64, Error>);
+        let res = map_type(&ty, false, false).unwrap();
+        let ScSpecTypeDef::Result(r) = res else {
+            panic!("expected Result type");
+        };
+        assert_eq!(*r.ok_type, ScSpecTypeDef::U64);
+        assert_eq!(
+            *r.error_type,
+            ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: "Error".try_into().unwrap(),
+            })
+        );
+    }
+
+    /// Test Result<u64, MyError> - correctly maps to UDT reference.
+    #[test]
+    fn test_result_with_my_error_type() {
+        let ty: Type = parse_quote!(Result<u64, MyError>);
+        let res = map_type(&ty, false, false).unwrap();
+        let ScSpecTypeDef::Result(r) = res else {
+            panic!("expected Result type");
+        };
+        assert_eq!(*r.ok_type, ScSpecTypeDef::U64);
+        assert_eq!(
+            *r.error_type,
+            ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: "MyError".try_into().unwrap(),
+            })
         );
     }
 }
