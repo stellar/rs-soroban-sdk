@@ -127,11 +127,17 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
         let variants = spec.cases.iter().map(|c| {
             let v_ident = format_ident!("{}", c.name.to_utf8_string().unwrap());
             let v_value = Literal::u32_unsuffixed(c.value);
-            quote! { #v_ident = #v_value }
+            let v_doc = c.doc.to_string();
+            quote! {
+                #[doc = #v_doc]
+                #v_ident = #v_value
+            }
         });
+        let docs = spec.doc.to_string();
         quote! {
             #[soroban_sdk::contracterror(export = false)]
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            #[doc = #docs]
             pub enum #ident { #(#variants,)* }
         }
     }
@@ -227,9 +233,11 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> TokenStream {
 
 #[cfg(test)]
 mod test {
+    use crate::types::generate_error_enum;
     use crate::ToFormattedString;
 
     use super::generate_event;
+    use ::stellar_xdr::curr::{ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM};
     use quote::quote;
     use stellar_xdr::curr as stellar_xdr;
     use stellar_xdr::{
@@ -298,5 +306,42 @@ mod test {
             tokens.to_formatted_string().unwrap(),
             expect.to_formatted_string().unwrap()
         );
+    }
+
+    #[test]
+    fn test_generate_error_enum_with_comments() {
+        let tokens = generate_error_enum(&ScSpecUdtErrorEnumV0 {
+            doc: "Error Docs".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "Error".try_into().unwrap(),
+            cases: [
+                ScSpecUdtErrorEnumCaseV0 {
+                    doc: "case 1".try_into().unwrap(),
+                    name: "CaseOne".try_into().unwrap(),
+                    value: 1,
+                },
+                ScSpecUdtErrorEnumCaseV0 {
+                    doc: "case 2".try_into().unwrap(),
+                    name: "CaseTwo".try_into().unwrap(),
+                    value: 2,
+                },
+            ]
+            .try_into()
+            .unwrap(),
+        });
+        let expect = quote! {
+            #[soroban_sdk::contracterror(export = false)]
+            #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            #[doc = "Error Docs"]
+            pub enum Error {
+                #[doc = "case 1"]
+                CaseOne = 1,
+                #[doc = "case 2"]
+                CaseTwo = 2,
+            }
+        };
+        let tokens = tokens.to_formatted_string().unwrap();
+        let expected = expect.to_formatted_string().unwrap();
+        assert_eq!(tokens, expected);
     }
 }
