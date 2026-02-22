@@ -8,7 +8,7 @@ use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, spec_marker, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
@@ -25,7 +25,7 @@ pub fn derive_type_struct_tuple(
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
 
-    let (field_specs, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (field_specs, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .enumerate()
         .map(|(field_idx, field)| {
@@ -33,6 +33,7 @@ pub fn derive_type_struct_tuple(
             // as the token to reference the field.
             let field_idx_lit = Literal::usize_unsuffixed(field_idx);
             let field_name = format!("{}", field_idx);
+            let field_type = &field.ty;
             let field_spec = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
@@ -53,7 +54,7 @@ pub fn derive_type_struct_tuple(
             let try_into_xdr = quote! {
                 (&val.#field_idx_lit).try_into().map_err(|_| #path::xdr::Error::Invalid)?
             };
-            (field_spec, field_idx_lit, try_from_xdr, try_into_xdr)
+            (field_spec, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -63,15 +64,21 @@ pub fn derive_type_struct_tuple(
         return quote! { #(#compile_errors)* };
     }
 
-    // Generated code spec.
-    let spec_gen = if spec {
+    // Compute spec XDR once if spec is enabled.
+    let spec_xdr = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.to_string().try_into().unwrap(),
             fields: field_specs.try_into().unwrap(),
         });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    } else {
+        None
+    };
+
+    // Generated code spec.
+    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", ident.to_string().to_uppercase());
@@ -89,9 +96,29 @@ pub fn derive_type_struct_tuple(
         None
     };
 
+    // IncludeSpecMarker impl - only generated when spec is true and the
+    // experimental_spec_resolver_v2 feature is enabled.
+    let include_spec_impl = if cfg!(feature = "experimental_spec_resolver_v2") {
+        spec_xdr.as_ref().map(|spec_xdr| {
+            spec_marker::generate_include_spec_marker_impl(
+                path,
+                quote!(#ident),
+                spec_xdr,
+                field_types.iter().cloned(),
+                None,
+                None,
+                None,
+            )
+        })
+    } else {
+        None
+    };
+
     // Output.
     let mut output = quote! {
         #spec_gen
+
+        #include_spec_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;

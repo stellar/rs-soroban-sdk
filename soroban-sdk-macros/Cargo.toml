@@ -30,3 +30,4 @@ heck = "0.5.0"
 
 [features]
 testutils = []
+experimental_spec_resolver_v2 = []

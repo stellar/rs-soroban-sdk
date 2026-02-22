@@ -1,10 +1,9 @@
-use ::stellar_xdr::curr::ScSpecEventParamLocationV0;
 use proc_macro2::{Literal, TokenStream};
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
-    ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0,
-    ScSpecUdtUnionV0,
+    ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0,
+    ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
@@ -17,9 +16,26 @@ use stellar_xdr::{
 // because at the moment the format_ident! calls can panic if the inputs do not
 // result in a valid ident.
 
+/// Options for controlling code generation behavior.
+#[derive(Default)]
+pub struct GenerateOptions {
+    /// When true, generated types use default export behavior (pub types export their spec).
+    /// When false (default), generated types use `export = false`.
+    pub export: bool,
+}
+
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
 pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
+    generate_struct_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single struct that mirrors the struct
+/// spec, with configurable options.
+pub fn generate_struct_with_options(
+    spec: &ScSpecUdtStructV0,
+    opts: &GenerateOptions,
+) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
 
     if spec.lib.len() > 0 {
@@ -32,25 +48,25 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
         .iter()
         .all(|f| f.name.to_utf8_string().unwrap().parse::<usize>().is_ok())
     {
-        // If all fields are numeric, generate a tuple with unnamed fields.
         let fields = spec.fields.iter().map(|f| {
             let f_type = generate_type_ident(&f.type_);
             quote! { pub #f_type }
         });
+        let contracttype_attr = contracttype_attr(opts.export);
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #contracttype_attr
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident ( #(#fields),* );
         }
     } else {
-        // Otherwise generate a struct with named fields.
         let fields = spec.fields.iter().map(|f| {
             let f_ident = format_ident!("{}", f.name.to_utf8_string().unwrap());
             let f_type = generate_type_ident(&f.type_);
             quote! { pub #f_ident: #f_type }
         });
+        let contracttype_attr = contracttype_attr(opts.export);
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #contracttype_attr
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident { #(#fields,)* }
         }
@@ -60,6 +76,12 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> TokenStream {
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec.
 pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
+    generate_union_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single enum that mirrors the union
+/// spec, with configurable options.
+pub fn generate_union_with_options(spec: &ScSpecUdtUnionV0, opts: &GenerateOptions) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
     if spec.lib.len() > 0 {
         let lib_ident = format_ident!("{}", spec.lib.to_utf8_string_lossy());
@@ -83,8 +105,9 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
                 }
             }
         });
+        let contracttype_attr = contracttype_attr(opts.export);
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #contracttype_attr
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         }
@@ -94,6 +117,12 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> TokenStream {
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec.
 pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
+    generate_enum_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single enum that mirrors the enum
+/// spec, with configurable options.
+pub fn generate_enum_with_options(spec: &ScSpecUdtEnumV0, opts: &GenerateOptions) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
     if spec.lib.len() > 0 {
         let lib_ident = format_ident!("{}", spec.lib.to_utf8_string_lossy());
@@ -106,8 +135,9 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
             let v_value = Literal::u32_unsuffixed(c.value);
             quote! { #v_ident = #v_value }
         });
+        let contracttype_attr = contracttype_attr(opts.export);
         quote! {
-            #[soroban_sdk::contracttype(export = false)]
+            #contracttype_attr
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         }
@@ -117,6 +147,15 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> TokenStream {
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, that is intended for use with errors.
 pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
+    generate_error_enum_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single enum that mirrors the enum
+/// spec, that is intended for use with errors, with configurable options.
+pub fn generate_error_enum_with_options(
+    spec: &ScSpecUdtErrorEnumV0,
+    opts: &GenerateOptions,
+) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
     if spec.lib.len() > 0 {
         let lib_ident = format_ident!("{}", spec.lib.to_utf8_string_lossy());
@@ -129,8 +168,13 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
             let v_value = Literal::u32_unsuffixed(c.value);
             quote! { #v_ident = #v_value }
         });
+        let contracterror_attr = if opts.export {
+            quote! { #[soroban_sdk::contracterror] }
+        } else {
+            quote! { #[soroban_sdk::contracterror(export = false)] }
+        };
         quote! {
-            #[soroban_sdk::contracterror(export = false)]
+            #contracterror_attr
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         }
@@ -140,6 +184,12 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> TokenStream {
 /// Constructs a token stream containing a single struct that mirrors the event
 /// spec.
 pub fn generate_event(spec: &ScSpecEventV0) -> TokenStream {
+    generate_event_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single struct that mirrors the event
+/// spec, with configurable options.
+pub fn generate_event_with_options(spec: &ScSpecEventV0, opts: &GenerateOptions) -> TokenStream {
     let ident = format_ident!("{}", spec.name.to_utf8_string().unwrap());
 
     if spec.lib.len() > 0 {
@@ -148,7 +198,6 @@ pub fn generate_event(spec: &ScSpecEventV0) -> TokenStream {
             type #ident = ::#lib_ident::#ident;
         }
     } else {
-        // Otherwise generate a struct with named fields.
         let topics = spec.prefix_topics.iter().map(|t| t.to_string());
         let fields = spec.params.iter().map(|p| {
             let p_ident = format_ident!("{}", p.name.to_utf8_string().unwrap());
@@ -163,11 +212,26 @@ pub fn generate_event(spec: &ScSpecEventV0) -> TokenStream {
                 },
             }
         });
+        let export_attr = if opts.export {
+            quote! {}
+        } else {
+            quote! { export = false, }
+        };
         quote! {
-            #[soroban_sdk::contractevent(topics = [#(#topics,)*], export = false)]
+            #[soroban_sdk::contractevent(#export_attr topics = [#(#topics,)*])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident { #(#fields,)* }
         }
+    }
+}
+
+/// Returns the `#[soroban_sdk::contracttype]` attribute, optionally with
+/// `export = false` when the generated type should not export its spec.
+fn contracttype_attr(export: bool) -> TokenStream {
+    if export {
+        quote! { #[soroban_sdk::contracttype] }
+    } else {
+        quote! { #[soroban_sdk::contracttype(export = false)] }
     }
 }
 
@@ -248,7 +312,7 @@ mod test {
             data_format: ScSpecEventDataFormat::Map,
         });
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = [], export = false)]
+            #[soroban_sdk::contractevent(topics = [])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {}
         };
@@ -286,7 +350,7 @@ mod test {
             data_format: ScSpecEventDataFormat::Map,
         });
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = ["my_event"], export = false)]
+            #[soroban_sdk::contractevent(topics = ["my_event"])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {
                 pub from: u32,

@@ -1,0 +1,3573 @@
+#![feature(prelude_import)]
+#![no_std]
+#[prelude_import]
+use core::prelude::rust_2021::*;
+#[macro_use]
+extern crate core;
+extern crate compiler_builtins as _;
+use soroban_sdk::{contract, contractimpl, Address, Env, String};
+mod imported {
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x019\n`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x02\x7f~\x00`\x03\x7f~~\x00`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f\x7f\x01~`\x00\x01~`\x01\x7f\x00`\x01\x7f\x01~\x02I\x0c\x01i\x015\x00\x00\x01i\x014\x00\x00\x01i\x013\x00\x01\x01x\x011\x00\x01\x01i\x018\x00\x00\x01i\x017\x00\x00\x01i\x016\x00\x01\x01v\x01g\x00\x01\x01b\x01j\x00\x01\x01m\x019\x00\x02\x01i\x012\x00\x00\x01i\x011\x00\x00\x03\x16\x15\x03\x04\x01\x05\x01\x03\x03\x01\x06\x01\x07\x08\x00\x07\x07\x00\x00\x00\x01\t\x02\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xbc\x80\xc0\x00\x0b\x7f\x00A\xc0\x80\xc0\x00\x0b\x07\xf5\x01\x11\x06memory\x02\x00\x0fcreate_struct_a\x00\x0e\x0fcreate_struct_b\x00\x10\x15create_struct_tuple_a\x00\x13\x15create_struct_tuple_b\x00\x15\nget_enum_a\x00\x16\nget_enum_b\x00\x18\x0eget_enum_int_a\x00\x19\x0eget_enum_int_b\x00\x1a\x07check_a\x00\x1b\x07check_b\x00\x1c\x07check_c\x00\x1d\x0cemit_event_a\x00\x1e\x0cemit_event_b\x00 \x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xa9\x12\x15{\x02\x01\x7f\x01~\x02@\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc4\x00F\r\x00 \x02A\nG\r\x01B\x00!\x03 \x00B\x007\x03\x10 \x00 \x01B\x08\x887\x03\x08\x0c\x02\x0b \x01\x10\x80\x80\x80\x80\x00!\x03 \x01\x10\x81\x80\x80\x80\x00!\x01 \x00 \x037\x03\x10 \x00 \x017\x03\x08B\x00!\x03\x0c\x01\x0b \x00B\x83\x90\x80\x80\x80\x017\x03\x08B\x01!\x03\x0b \x00 \x037\x03\x00\x0bF\x00\x02@\x02@ \x01B\xff\xff\xff\xff\xff\xff\xff\xff\x00V \x02B\x00R \x02P\x1b\r\x00 \x01B\x08\x86B\n\x84!\x02\x0c\x01\x0b \x02 \x01\x10\x82\x80\x80\x80\x00!\x02\x0b \x00B\x007\x03\x00 \x00 \x027\x03\x08\x0bz\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01 \x01\xa7A\xff\x01q\"\x03A\x00GA\x01t \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8f\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00\x0b\x8d\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x91\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02A\x10j \x02)\x03\x18\x10\x92\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8f\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x8a\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x8b\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x91\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x91\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x92\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x92\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x94\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\x00\x0b\xce\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A0k\"\x02$\x80\x80\x80\x80\x00 \x02A\x08j \x00\x10\x8c\x80\x80\x80\x00\x02@ \x02(\x02\x08A\x01F\r\x00 \x02A\x18j\"\x03)\x03\x00!\x00 \x02)\x03\x10!\x04 \x02A\x08j \x01\x10\x8c\x80\x80\x80\x00 \x02(\x02\x08A\x01F\r\x00 \x03)\x03\x00!\x01 \x02)\x03\x10!\x05 \x02A\x08j \x04 \x00\x10\x8d\x80\x80\x80\x00 \x02(\x02\x08\r\x00 \x02)\x03\x10!\x00 \x02A\x08j \x05 \x01\x10\x8d\x80\x80\x80\x00 \x02(\x02\x08A\x01F\r\x00 \x02 \x02)\x03\x107\x03( \x02 \x007\x03  \x02A jA\x02\x10\x94\x80\x80\x80\x00!\x00 \x02A0j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0bP\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00\x10\x97\x80\x80\x80\x00\x02@ \x00(\x02\x00A\x01G\r\x00\x00\x0b \x00 \x00)\x03\x087\x03\x00 \x00A\x01\x10\x94\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\x83\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00B\x00!\x02A~!\x03\x02@\x02@\x02@\x03@ \x03E\r\x01A\x01!\x04\x02@ \x03A\x82\x80\xc0\x80\x00j-\x00\x00\"\x05A\xdf\x00F\r\x00\x02@ \x05APjA\xff\x01qA\nI\r\x00\x02@ \x05A\xbf\x7fjA\xff\x01qA\x1aI\r\x00 \x05A\x9f\x7fjA\xff\x01qA\x19K\r\x05 \x05AEj!\x04\x0c\x02\x0b \x05AKj!\x04\x0c\x01\x0b \x05ARj!\x04\x0b \x02B\x06\x86 \x04\xadB\xff\x01\x83\x84!\x02 \x03A\x01j!\x03\x0c\x00\x0b\x0b \x01 \x02B\x08\x86B\x0e\x84\"\x027\x02\x04\x0c\x01\x0b \x01 \x05\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x88\x80\x80\x80\x00!\x02\x0b \x00B\x007\x03\x00 \x00 \x027\x03\x08 \x01A\x10j$\x80\x80\x80\x80\x00\x0b\x8b\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01 \x00\x10\x91\x80\x80\x80\x00\x02@ \x01(\x02\x00A\x01F\r\x00 \x01)\x03\x08!\x00 \x01\x10\x97\x80\x80\x80\x00 \x01(\x02\x00\r\x00 \x01)\x03\x08!\x02 \x01 \x00\x10\x92\x80\x80\x80\x00 \x01(\x02\x00A\x01F\r\x00 \x01 \x01)\x03\x087\x03\x08 \x01 \x027\x03\x00 \x01A\x02\x10\x94\x80\x80\x80\x00!\x00 \x01A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b\t\x00B\x84\x80\x80\x80\xc0\x02\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b/\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80\xc0\x01 \x00B\x84\x80\x80\x80\xf0\xff\x00\x83 \x00B\xff\xff\xff\xff\x8f\xfd\x00V\x1b\x0b,\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80\xc0\x0c \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\xa0\x01T\x1b\x0b\xe7\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x98\x80\xc0\x80\x00\x10\x9f\x80\x80\x80\x00!\x03 \x02 \x007\x03\x08 \x02 \x037\x03\x00A\x00!\x04\x03@\x02@ \x04A\x10G\r\x00A\x00!\x04\x02@\x03@ \x04A\x10F\r\x01 \x02A\x10j \x04j \x02 \x04j)\x03\x007\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x94\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xa0\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8f\x80\x80\x80\x00\x10\x83\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b\x00\x0b\x07\x00 \x00)\x03\x00\x0b\xf7\x02\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A0k\"\x03$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xcd\x00R\r\x00\x02@\x02@ \x02\xa7A\xff\x01q\"\x04A\xc5\x00F\r\x00 \x04A\x0bG\r\x02 \x02B?\x87!\x05 \x02B\x08\x87!\x02\x0c\x01\x0b \x02\x10\x84\x80\x80\x80\x00!\x05 \x02\x10\x85\x80\x80\x80\x00!\x02\x0bA\xa8\x80\xc0\x80\x00\x10\x9f\x80\x80\x80\x00!\x06 \x03 \x017\x03\x10 \x03 \x007\x03\x08 \x03 \x067\x03\x00A\x00!\x04\x03@\x02@ \x04A\x18G\r\x00A\x00!\x04\x02@\x03@ \x04A\x18F\r\x01 \x03A\x18j \x04j \x03 \x04j)\x03\x007\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b \x03A\x18jA\x03\x10\x94\x80\x80\x80\x00!\x00\x02@\x02@ \x02B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x02 \x02\x85 \x05 \x02B?\x87\x85\x84B\x00R\r\x00 \x02B\x08\x86B\x0b\x84!\x02\x0c\x01\x0b \x05 \x02\x10\x86\x80\x80\x80\x00!\x02\x0b \x03 \x027\x03\x18 \x00A\xb4\x80\xc0\x80\x00A\x01 \x03A\x18jA\x01\x10\x8f\x80\x80\x80\x00\x10\x83\x80\x80\x80\x00\x1a \x03A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x03A\x18j \x04jB\x027\x03\x00 \x04A\x08j!\x04\x0c\x00\x0b\x0b\x00\x0b\x0bE\x01\x00A\x80\x80\xc0\x00\x0b<V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x0ef\x90\xcf\xea\xae\x02\x00\x04\x00\x10\x00\x02\x00\x00\x00\x0eg\x90\xcf\xea\xae\x02\x00f3\x00\x000\x00\x10\x00\x02\x00\x00\x00\x00\xcf\x12\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fcreate_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fcreate_struct_b\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15create_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15create_struct_tuple_b\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nget_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nget_enum_b\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eget_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eget_enum_int_b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07check_a\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07check_b\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07check_c\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cemit_event_a\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cemit_event_b\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.84.0\x00\x00";
+    pub trait Contract {
+        fn create_struct_a(env: soroban_sdk::Env, f1: u32, f2: bool) -> StructA;
+        fn create_struct_b(env: soroban_sdk::Env, f1: i64, f2: soroban_sdk::String) -> StructB;
+        fn create_struct_tuple_a(env: soroban_sdk::Env, f1: i64, f2: i64) -> StructTupleA;
+        fn create_struct_tuple_b(env: soroban_sdk::Env, f1: u128, f2: u128) -> StructTupleB;
+        fn get_enum_a(env: soroban_sdk::Env) -> EnumA;
+        fn get_enum_b(env: soroban_sdk::Env, value: i64) -> EnumB;
+        fn get_enum_int_a(env: soroban_sdk::Env) -> EnumIntA;
+        fn get_enum_int_b(env: soroban_sdk::Env) -> EnumIntB;
+        fn check_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
+        fn check_b(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorB>;
+        fn check_c(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorC>;
+        fn emit_event_a(env: soroban_sdk::Env, f1: soroban_sdk::Address, f2: soroban_sdk::String);
+        fn emit_event_b(
+            env: soroban_sdk::Env,
+            f1: soroban_sdk::Address,
+            f2: soroban_sdk::Address,
+            f3: i128,
+        );
+    }
+    ///Client is a client for calling the contract defined in "Contract".
+    pub struct Client<'a> {
+        pub env: soroban_sdk::Env,
+        pub address: soroban_sdk::Address,
+        #[doc(hidden)]
+        _phantom: core::marker::PhantomData<&'a ()>,
+    }
+    impl<'a> Client<'a> {
+        pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+            Self {
+                env: env.clone(),
+                address: address.clone(),
+                _phantom: core::marker::PhantomData,
+            }
+        }
+    }
+    impl<'a> Client<'a> {
+        pub fn create_struct_a(&self, f1: &u32, f2: &bool) -> StructA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_create_struct_a(
+            &self,
+            f1: &u32,
+            f2: &bool,
+        ) -> Result<
+            Result<
+                StructA,
+                <StructA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn create_struct_b(&self, f1: &i64, f2: &soroban_sdk::String) -> StructB {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_b") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_create_struct_b(
+            &self,
+            f1: &i64,
+            f2: &soroban_sdk::String,
+        ) -> Result<
+            Result<
+                StructB,
+                <StructB as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_b") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn create_struct_tuple_a(&self, f1: &i64, f2: &i64) -> StructTupleA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_tuple_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_create_struct_tuple_a(
+            &self,
+            f1: &i64,
+            f2: &i64,
+        ) -> Result<
+            Result<
+                StructTupleA,
+                <StructTupleA as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        >{
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_tuple_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn create_struct_tuple_b(&self, f1: &u128, f2: &u128) -> StructTupleB {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_tuple_b") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_create_struct_tuple_b(
+            &self,
+            f1: &u128,
+            f2: &u128,
+        ) -> Result<
+            Result<
+                StructTupleB,
+                <StructTupleB as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        >{
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "create_struct_tuple_b") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn get_enum_a(&self) -> EnumA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn try_get_enum_a(
+            &self,
+        ) -> Result<
+            Result<
+                EnumA,
+                <EnumA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn get_enum_b(&self, value: &i64) -> EnumB {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_b") },
+                ::soroban_sdk::Vec::from_array(&self.env, [value.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn try_get_enum_b(
+            &self,
+            value: &i64,
+        ) -> Result<
+            Result<
+                EnumB,
+                <EnumB as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_b") },
+                ::soroban_sdk::Vec::from_array(&self.env, [value.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn get_enum_int_a(&self) -> EnumIntA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_int_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn try_get_enum_int_a(
+            &self,
+        ) -> Result<
+            Result<
+                EnumIntA,
+                <EnumIntA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_int_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn get_enum_int_b(&self) -> EnumIntB {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_int_b") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn try_get_enum_int_b(
+            &self,
+        ) -> Result<
+            Result<
+                EnumIntB,
+                <EnumIntB as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "get_enum_int_b") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn check_a(&self, input: &u32) -> u32 {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("check_a");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn try_check_a(
+            &self,
+            input: &u32,
+        ) -> Result<
+            Result<
+                u32,
+                <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<ErrorA, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("check_a");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn check_b(&self, input: &u32) -> u32 {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("check_b");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn try_check_b(
+            &self,
+            input: &u32,
+        ) -> Result<
+            Result<
+                u32,
+                <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<ErrorB, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("check_b");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn check_c(&self, input: &u32) -> u32 {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("check_c");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn try_check_c(
+            &self,
+            input: &u32,
+        ) -> Result<
+            Result<
+                u32,
+                <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<ErrorC, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("check_c");
+                    SYMBOL
+                },
+                ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+            );
+            res
+        }
+        pub fn emit_event_a(&self, f1: &soroban_sdk::Address, f2: &soroban_sdk::String) -> () {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "emit_event_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_emit_event_a(
+            &self,
+            f1: &soroban_sdk::Address,
+            f2: &soroban_sdk::String,
+        ) -> Result<
+            Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "emit_event_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn emit_event_b(
+            &self,
+            f1: &soroban_sdk::Address,
+            f2: &soroban_sdk::Address,
+            f3: &i128,
+        ) -> () {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "emit_event_b") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        f1.into_val(&self.env),
+                        f2.into_val(&self.env),
+                        f3.into_val(&self.env),
+                    ],
+                ),
+            );
+            res
+        }
+        pub fn try_emit_event_b(
+            &self,
+            f1: &soroban_sdk::Address,
+            f2: &soroban_sdk::Address,
+            f3: &i128,
+        ) -> Result<
+            Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "emit_event_b") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [
+                        f1.into_val(&self.env),
+                        f2.into_val(&self.env),
+                        f3.into_val(&self.env),
+                    ],
+                ),
+            );
+            res
+        }
+    }
+    ///Args is a type for building arg lists for functions defined in "Contract".
+    pub struct Args;
+    impl Args {
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn create_struct_a<'i>(f1: &'i u32, f2: &'i bool) -> (&'i u32, &'i bool) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn create_struct_b<'i>(
+            f1: &'i i64,
+            f2: &'i soroban_sdk::String,
+        ) -> (&'i i64, &'i soroban_sdk::String) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn create_struct_tuple_a<'i>(f1: &'i i64, f2: &'i i64) -> (&'i i64, &'i i64) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn create_struct_tuple_b<'i>(f1: &'i u128, f2: &'i u128) -> (&'i u128, &'i u128) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn get_enum_a<'i>() -> () {
+            ()
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn get_enum_b<'i>(value: &'i i64) -> (&'i i64,) {
+            (value,)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn get_enum_int_a<'i>() -> () {
+            ()
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn get_enum_int_b<'i>() -> () {
+            ()
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn check_a<'i>(input: &'i u32) -> (&'i u32,) {
+            (input,)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn check_b<'i>(input: &'i u32) -> (&'i u32,) {
+            (input,)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn check_c<'i>(input: &'i u32) -> (&'i u32,) {
+            (input,)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn emit_event_a<'i>(
+            f1: &'i soroban_sdk::Address,
+            f2: &'i soroban_sdk::String,
+        ) -> (&'i soroban_sdk::Address, &'i soroban_sdk::String) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn emit_event_b<'i>(
+            f1: &'i soroban_sdk::Address,
+            f2: &'i soroban_sdk::Address,
+            f3: &'i i128,
+        ) -> (&'i soroban_sdk::Address, &'i soroban_sdk::Address, &'i i128) {
+            (f1, f2, f3)
+        }
+    }
+    pub struct StructA {
+        pub f1: u32,
+        pub f2: bool,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for StructA {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f, "StructA", "f1", &self.f1, "f2", &&self.f2,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for StructA {
+        #[inline]
+        fn clone(&self) -> StructA {
+            StructA {
+                f1: ::core::clone::Clone::clone(&self.f1),
+                f2: ::core::clone::Clone::clone(&self.f2),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for StructA {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<u32>;
+            let _: ::core::cmp::AssertParamIsEq<bool>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for StructA {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for StructA {
+        #[inline]
+        fn eq(&self, other: &StructA) -> bool {
+            self.f1 == other.f1 && self.f2 == other.f2
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for StructA {
+        #[inline]
+        fn cmp(&self, other: &StructA) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.f1, &other.f1) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.f2, &other.f2),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for StructA {
+        #[inline]
+        fn partial_cmp(&self, other: &StructA) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.f1, &other.f1) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.f2, &other.f2)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["f1", "f2"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                f1: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                f2: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &StructA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["f1", "f2"];
+            let vals: [Val; 2usize] = [
+                (&val.f1).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.f2).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&StructA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, StructA>>::try_from_val(env, *val)
+        }
+    }
+    pub struct StructB {
+        pub f1: i64,
+        pub f2: soroban_sdk::String,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for StructB {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f, "StructB", "f1", &self.f1, "f2", &&self.f2,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for StructB {
+        #[inline]
+        fn clone(&self) -> StructB {
+            StructB {
+                f1: ::core::clone::Clone::clone(&self.f1),
+                f2: ::core::clone::Clone::clone(&self.f2),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for StructB {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<i64>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for StructB {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for StructB {
+        #[inline]
+        fn eq(&self, other: &StructB) -> bool {
+            self.f1 == other.f1 && self.f2 == other.f2
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for StructB {
+        #[inline]
+        fn cmp(&self, other: &StructB) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.f1, &other.f1) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.f2, &other.f2),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for StructB {
+        #[inline]
+        fn partial_cmp(&self, other: &StructB) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.f1, &other.f1) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.f2, &other.f2)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["f1", "f2"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                f1: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                f2: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &StructB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["f1", "f2"];
+            let vals: [Val; 2usize] = [
+                (&val.f1).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.f2).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&StructB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, StructB>>::try_from_val(env, *val)
+        }
+    }
+    pub struct StructC {
+        pub f1: soroban_sdk::Vec<u32>,
+        pub f2: soroban_sdk::Address,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for StructC {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f, "StructC", "f1", &self.f1, "f2", &&self.f2,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for StructC {
+        #[inline]
+        fn clone(&self) -> StructC {
+            StructC {
+                f1: ::core::clone::Clone::clone(&self.f1),
+                f2: ::core::clone::Clone::clone(&self.f2),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for StructC {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<u32>>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for StructC {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for StructC {
+        #[inline]
+        fn eq(&self, other: &StructC) -> bool {
+            self.f1 == other.f1 && self.f2 == other.f2
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for StructC {
+        #[inline]
+        fn cmp(&self, other: &StructC) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.f1, &other.f1) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.f2, &other.f2),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for StructC {
+        #[inline]
+        fn partial_cmp(&self, other: &StructC) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.f1, &other.f1) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.f2, &other.f2)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["f1", "f2"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                f1: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                f2: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &StructC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["f1", "f2"];
+            let vals: [Val; 2usize] = [
+                (&val.f1).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.f2).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&StructC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, StructC>>::try_from_val(env, *val)
+        }
+    }
+    pub struct StructTupleA(pub i64, pub i64);
+    #[automatically_derived]
+    impl ::core::fmt::Debug for StructTupleA {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_tuple_field2_finish(f, "StructTupleA", &self.0, &&self.1)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for StructTupleA {
+        #[inline]
+        fn clone(&self) -> StructTupleA {
+            StructTupleA(
+                ::core::clone::Clone::clone(&self.0),
+                ::core::clone::Clone::clone(&self.1),
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for StructTupleA {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<i64>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for StructTupleA {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for StructTupleA {
+        #[inline]
+        fn eq(&self, other: &StructTupleA) -> bool {
+            self.0 == other.0 && self.1 == other.1
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for StructTupleA {
+        #[inline]
+        fn cmp(&self, other: &StructTupleA) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.0, &other.0) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.1, &other.1),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for StructTupleA {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &StructTupleA,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.0, &other.0) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.1, &other.1)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
+            let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            env.vec_unpack_to_slice(vec, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                0: vals[0].try_into_val(env).map_err(|_| ConversionError)?,
+                1: vals[1].try_into_val(env).map_err(|_| ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &StructTupleA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            let vals: [Val; 2usize] = [
+                (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.1).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .vec_new_from_slice(&vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructTupleA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&StructTupleA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleA>>::try_from_val(env, *val)
+        }
+    }
+    pub struct StructTupleB(pub u128, pub u128);
+    #[automatically_derived]
+    impl ::core::fmt::Debug for StructTupleB {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_tuple_field2_finish(f, "StructTupleB", &self.0, &&self.1)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for StructTupleB {
+        #[inline]
+        fn clone(&self) -> StructTupleB {
+            StructTupleB(
+                ::core::clone::Clone::clone(&self.0),
+                ::core::clone::Clone::clone(&self.1),
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for StructTupleB {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<u128>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for StructTupleB {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for StructTupleB {
+        #[inline]
+        fn eq(&self, other: &StructTupleB) -> bool {
+            self.0 == other.0 && self.1 == other.1
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for StructTupleB {
+        #[inline]
+        fn cmp(&self, other: &StructTupleB) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.0, &other.0) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.1, &other.1),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for StructTupleB {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &StructTupleB,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.0, &other.0) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.1, &other.1)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
+            let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            env.vec_unpack_to_slice(vec, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                0: vals[0].try_into_val(env).map_err(|_| ConversionError)?,
+                1: vals[1].try_into_val(env).map_err(|_| ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &StructTupleB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            let vals: [Val; 2usize] = [
+                (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.1).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .vec_new_from_slice(&vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructTupleB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&StructTupleB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleB>>::try_from_val(env, *val)
+        }
+    }
+    pub struct StructTupleC(pub soroban_sdk::Address, pub i128);
+    #[automatically_derived]
+    impl ::core::fmt::Debug for StructTupleC {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_tuple_field2_finish(f, "StructTupleC", &self.0, &&self.1)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for StructTupleC {
+        #[inline]
+        fn clone(&self) -> StructTupleC {
+            StructTupleC(
+                ::core::clone::Clone::clone(&self.0),
+                ::core::clone::Clone::clone(&self.1),
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for StructTupleC {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+            let _: ::core::cmp::AssertParamIsEq<i128>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for StructTupleC {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for StructTupleC {
+        #[inline]
+        fn eq(&self, other: &StructTupleC) -> bool {
+            self.0 == other.0 && self.1 == other.1
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for StructTupleC {
+        #[inline]
+        fn cmp(&self, other: &StructTupleC) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.0, &other.0) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.1, &other.1),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for StructTupleC {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &StructTupleC,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.0, &other.0) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.1, &other.1)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
+            let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            env.vec_unpack_to_slice(vec, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                0: vals[0].try_into_val(env).map_err(|_| ConversionError)?,
+                1: vals[1].try_into_val(env).map_err(|_| ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &StructTupleC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            let vals: [Val; 2usize] = [
+                (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.1).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .vec_new_from_slice(&vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &StructTupleC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&StructTupleC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleC>>::try_from_val(env, *val)
+        }
+    }
+    pub enum EnumA {
+        V1,
+        V2,
+        V3,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EnumA {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(
+                f,
+                match self {
+                    EnumA::V1 => "V1",
+                    EnumA::V2 => "V2",
+                    EnumA::V3 => "V3",
+                },
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for EnumA {
+        #[inline]
+        fn clone(&self) -> EnumA {
+            match self {
+                EnumA::V1 => EnumA::V1,
+                EnumA::V2 => EnumA::V2,
+                EnumA::V3 => EnumA::V3,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EnumA {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EnumA {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EnumA {
+        #[inline]
+        fn eq(&self, other: &EnumA) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EnumA {
+        #[inline]
+        fn cmp(&self, other: &EnumA) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EnumA {
+        #[inline]
+        fn partial_cmp(&self, other: &EnumA) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V1
+                    }
+                    1 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V2
+                    }
+                    2 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V3
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &EnumA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                EnumA::V1 => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"V1")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                EnumA::V2 => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"V2")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                EnumA::V3 => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"V3")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&EnumA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, EnumA>>::try_from_val(env, *val)
+        }
+    }
+    pub enum EnumB {
+        V1,
+        V2(i64),
+        V3(i64, i64),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EnumB {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                EnumB::V1 => ::core::fmt::Formatter::write_str(f, "V1"),
+                EnumB::V2(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "V2", &__self_0)
+                }
+                EnumB::V3(__self_0, __self_1) => {
+                    ::core::fmt::Formatter::debug_tuple_field2_finish(f, "V3", __self_0, &__self_1)
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for EnumB {
+        #[inline]
+        fn clone(&self) -> EnumB {
+            match self {
+                EnumB::V1 => EnumB::V1,
+                EnumB::V2(__self_0) => EnumB::V2(::core::clone::Clone::clone(__self_0)),
+                EnumB::V3(__self_0, __self_1) => EnumB::V3(
+                    ::core::clone::Clone::clone(__self_0),
+                    ::core::clone::Clone::clone(__self_1),
+                ),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EnumB {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<i64>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EnumB {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EnumB {
+        #[inline]
+        fn eq(&self, other: &EnumB) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (EnumB::V2(__self_0), EnumB::V2(__arg1_0)) => __self_0 == __arg1_0,
+                    (EnumB::V3(__self_0, __self_1), EnumB::V3(__arg1_0, __arg1_1)) => {
+                        __self_0 == __arg1_0 && __self_1 == __arg1_1
+                    }
+                    _ => true,
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EnumB {
+        #[inline]
+        fn cmp(&self, other: &EnumB) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (EnumB::V2(__self_0), EnumB::V2(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    (EnumB::V3(__self_0, __self_1), EnumB::V3(__arg1_0, __arg1_1)) => {
+                        match ::core::cmp::Ord::cmp(__self_0, __arg1_0) {
+                            ::core::cmp::Ordering::Equal => {
+                                ::core::cmp::Ord::cmp(__self_1, __arg1_1)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    _ => ::core::cmp::Ordering::Equal,
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EnumB {
+        #[inline]
+        fn partial_cmp(&self, other: &EnumB) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (EnumB::V2(__self_0), EnumB::V2(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                (EnumB::V3(__self_0, __self_1), EnumB::V3(__arg1_0, __arg1_1)) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(__self_1, __arg1_1)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V1
+                    }
+                    1 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V2(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    2 => {
+                        if iter.len() > 2usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V3(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &EnumB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                EnumB::V1 => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"V1")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                EnumB::V2(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"V2")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                EnumB::V3(ref value0, ref value1) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"V3")?.to_val(),
+                        value0.try_into_val(env)?,
+                        value1.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&EnumB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, EnumB>>::try_from_val(env, *val)
+        }
+    }
+    pub enum EnumC {
+        V1,
+        V2(StructA),
+        V3(StructTupleA),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EnumC {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                EnumC::V1 => ::core::fmt::Formatter::write_str(f, "V1"),
+                EnumC::V2(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "V2", &__self_0)
+                }
+                EnumC::V3(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "V3", &__self_0)
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for EnumC {
+        #[inline]
+        fn clone(&self) -> EnumC {
+            match self {
+                EnumC::V1 => EnumC::V1,
+                EnumC::V2(__self_0) => EnumC::V2(::core::clone::Clone::clone(__self_0)),
+                EnumC::V3(__self_0) => EnumC::V3(::core::clone::Clone::clone(__self_0)),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EnumC {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<StructA>;
+            let _: ::core::cmp::AssertParamIsEq<StructTupleA>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EnumC {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EnumC {
+        #[inline]
+        fn eq(&self, other: &EnumC) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (EnumC::V2(__self_0), EnumC::V2(__arg1_0)) => __self_0 == __arg1_0,
+                    (EnumC::V3(__self_0), EnumC::V3(__arg1_0)) => __self_0 == __arg1_0,
+                    _ => true,
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EnumC {
+        #[inline]
+        fn cmp(&self, other: &EnumC) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (EnumC::V2(__self_0), EnumC::V2(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    (EnumC::V3(__self_0), EnumC::V3(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    _ => ::core::cmp::Ordering::Equal,
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EnumC {
+        #[inline]
+        fn partial_cmp(&self, other: &EnumC) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (EnumC::V2(__self_0), EnumC::V2(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                (EnumC::V3(__self_0), EnumC::V3(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V1
+                    }
+                    1 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V2(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    2 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::V3(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &EnumC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                EnumC::V1 => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"V1")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                EnumC::V2(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"V2")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                EnumC::V3(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"V3")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&EnumC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, EnumC>>::try_from_val(env, *val)
+        }
+    }
+    pub enum EnumIntA {
+        V1 = 1,
+        V2 = 2,
+        V3 = 3,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EnumIntA {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(
+                f,
+                match self {
+                    EnumIntA::V1 => "V1",
+                    EnumIntA::V2 => "V2",
+                    EnumIntA::V3 => "V3",
+                },
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::Copy for EnumIntA {}
+    #[automatically_derived]
+    impl ::core::clone::Clone for EnumIntA {
+        #[inline]
+        fn clone(&self) -> EnumIntA {
+            *self
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EnumIntA {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EnumIntA {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EnumIntA {
+        #[inline]
+        fn eq(&self, other: &EnumIntA) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EnumIntA {
+        #[inline]
+        fn cmp(&self, other: &EnumIntA) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EnumIntA {
+        #[inline]
+        fn partial_cmp(&self, other: &EnumIntA) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::TryIntoVal;
+            let discriminant: u32 = val.try_into_val(env)?;
+            Ok(match discriminant {
+                1u32 => Self::V1,
+                2u32 => Self::V2,
+                3u32 => Self::V3,
+                _ => Err(soroban_sdk::ConversionError {})?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &EnumIntA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            Ok(match val {
+                EnumIntA::V1 => 1u32.into(),
+                EnumIntA::V2 => 2u32.into(),
+                EnumIntA::V3 => 3u32.into(),
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumIntA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&EnumIntA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntA>>::try_from_val(env, *val)
+        }
+    }
+    pub enum EnumIntB {
+        V1 = 10,
+        V2 = 20,
+        V3 = 30,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EnumIntB {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(
+                f,
+                match self {
+                    EnumIntB::V1 => "V1",
+                    EnumIntB::V2 => "V2",
+                    EnumIntB::V3 => "V3",
+                },
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::Copy for EnumIntB {}
+    #[automatically_derived]
+    impl ::core::clone::Clone for EnumIntB {
+        #[inline]
+        fn clone(&self) -> EnumIntB {
+            *self
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EnumIntB {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EnumIntB {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EnumIntB {
+        #[inline]
+        fn eq(&self, other: &EnumIntB) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EnumIntB {
+        #[inline]
+        fn cmp(&self, other: &EnumIntB) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EnumIntB {
+        #[inline]
+        fn partial_cmp(&self, other: &EnumIntB) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::TryIntoVal;
+            let discriminant: u32 = val.try_into_val(env)?;
+            Ok(match discriminant {
+                10u32 => Self::V1,
+                20u32 => Self::V2,
+                30u32 => Self::V3,
+                _ => Err(soroban_sdk::ConversionError {})?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &EnumIntB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            Ok(match val {
+                EnumIntB::V1 => 10u32.into(),
+                EnumIntB::V2 => 20u32.into(),
+                EnumIntB::V3 => 30u32.into(),
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumIntB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&EnumIntB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntB>>::try_from_val(env, *val)
+        }
+    }
+    pub enum EnumIntC {
+        V1 = 100,
+        V2 = 200,
+        V3 = 300,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EnumIntC {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(
+                f,
+                match self {
+                    EnumIntC::V1 => "V1",
+                    EnumIntC::V2 => "V2",
+                    EnumIntC::V3 => "V3",
+                },
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::Copy for EnumIntC {}
+    #[automatically_derived]
+    impl ::core::clone::Clone for EnumIntC {
+        #[inline]
+        fn clone(&self) -> EnumIntC {
+            *self
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EnumIntC {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EnumIntC {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EnumIntC {
+        #[inline]
+        fn eq(&self, other: &EnumIntC) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EnumIntC {
+        #[inline]
+        fn cmp(&self, other: &EnumIntC) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EnumIntC {
+        #[inline]
+        fn partial_cmp(&self, other: &EnumIntC) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::TryIntoVal;
+            let discriminant: u32 = val.try_into_val(env)?;
+            Ok(match discriminant {
+                100u32 => Self::V1,
+                200u32 => Self::V2,
+                300u32 => Self::V3,
+                _ => Err(soroban_sdk::ConversionError {})?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &EnumIntC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            Ok(match val {
+                EnumIntC::V1 => 100u32.into(),
+                EnumIntC::V2 => 200u32.into(),
+                EnumIntC::V3 => 300u32.into(),
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &EnumIntC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&EnumIntC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, EnumIntC>>::try_from_val(env, *val)
+        }
+    }
+    pub enum ErrorA {
+        E1 = 1,
+        E2 = 2,
+        E3 = 3,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ErrorA {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(
+                f,
+                match self {
+                    ErrorA::E1 => "E1",
+                    ErrorA::E2 => "E2",
+                    ErrorA::E3 => "E3",
+                },
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::Copy for ErrorA {}
+    #[automatically_derived]
+    impl ::core::clone::Clone for ErrorA {
+        #[inline]
+        fn clone(&self) -> ErrorA {
+            *self
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ErrorA {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ErrorA {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ErrorA {
+        #[inline]
+        fn eq(&self, other: &ErrorA) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ErrorA {
+        #[inline]
+        fn cmp(&self, other: &ErrorA) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ErrorA {
+        #[inline]
+        fn partial_cmp(&self, other: &ErrorA) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    impl TryFrom<soroban_sdk::Error> for ErrorA {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+                let discriminant = error.get_code();
+                Ok(match discriminant {
+                    1u32 => Self::E1,
+                    2u32 => Self::E2,
+                    3u32 => Self::E3,
+                    _ => return Err(error),
+                })
+            } else {
+                Err(error)
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::Error> for ErrorA {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+        }
+    }
+    impl From<ErrorA> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: ErrorA) -> soroban_sdk::Error {
+            <_ as From<&ErrorA>>::from(&val)
+        }
+    }
+    impl From<&ErrorA> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: &ErrorA) -> soroban_sdk::Error {
+            match val {
+                ErrorA::E1 => soroban_sdk::Error::from_contract_error(1u32),
+                ErrorA::E2 => soroban_sdk::Error::from_contract_error(2u32),
+                ErrorA::E3 => soroban_sdk::Error::from_contract_error(3u32),
+            }
+        }
+    }
+    impl TryFrom<soroban_sdk::InvokeError> for ErrorA {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            match error {
+                soroban_sdk::InvokeError::Abort => Err(error),
+                soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                    1u32 => Self::E1,
+                    2u32 => Self::E2,
+                    3u32 => Self::E3,
+                    _ => return Err(error),
+                }),
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::InvokeError> for ErrorA {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+        }
+    }
+    impl From<ErrorA> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: ErrorA) -> soroban_sdk::InvokeError {
+            <_ as From<&ErrorA>>::from(&val)
+        }
+    }
+    impl From<&ErrorA> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: &ErrorA) -> soroban_sdk::InvokeError {
+            match val {
+                ErrorA::E1 => soroban_sdk::InvokeError::Contract(1u32),
+                ErrorA::E2 => soroban_sdk::InvokeError::Contract(2u32),
+                ErrorA::E3 => soroban_sdk::InvokeError::Contract(3u32),
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorA {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::TryIntoVal;
+            let error: soroban_sdk::Error = val.try_into_val(env)?;
+            error.try_into().map_err(|_| soroban_sdk::ConversionError)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ErrorA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            let error: soroban_sdk::Error = val.into();
+            Ok(error.into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ErrorA> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ErrorA,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorA>>::try_from_val(env, *val)
+        }
+    }
+    pub enum ErrorB {
+        E1 = 10,
+        E2 = 11,
+        E3 = 12,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ErrorB {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(
+                f,
+                match self {
+                    ErrorB::E1 => "E1",
+                    ErrorB::E2 => "E2",
+                    ErrorB::E3 => "E3",
+                },
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::Copy for ErrorB {}
+    #[automatically_derived]
+    impl ::core::clone::Clone for ErrorB {
+        #[inline]
+        fn clone(&self) -> ErrorB {
+            *self
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ErrorB {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ErrorB {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ErrorB {
+        #[inline]
+        fn eq(&self, other: &ErrorB) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ErrorB {
+        #[inline]
+        fn cmp(&self, other: &ErrorB) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ErrorB {
+        #[inline]
+        fn partial_cmp(&self, other: &ErrorB) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    impl TryFrom<soroban_sdk::Error> for ErrorB {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+                let discriminant = error.get_code();
+                Ok(match discriminant {
+                    10u32 => Self::E1,
+                    11u32 => Self::E2,
+                    12u32 => Self::E3,
+                    _ => return Err(error),
+                })
+            } else {
+                Err(error)
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::Error> for ErrorB {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+        }
+    }
+    impl From<ErrorB> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: ErrorB) -> soroban_sdk::Error {
+            <_ as From<&ErrorB>>::from(&val)
+        }
+    }
+    impl From<&ErrorB> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: &ErrorB) -> soroban_sdk::Error {
+            match val {
+                ErrorB::E1 => soroban_sdk::Error::from_contract_error(10u32),
+                ErrorB::E2 => soroban_sdk::Error::from_contract_error(11u32),
+                ErrorB::E3 => soroban_sdk::Error::from_contract_error(12u32),
+            }
+        }
+    }
+    impl TryFrom<soroban_sdk::InvokeError> for ErrorB {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            match error {
+                soroban_sdk::InvokeError::Abort => Err(error),
+                soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                    10u32 => Self::E1,
+                    11u32 => Self::E2,
+                    12u32 => Self::E3,
+                    _ => return Err(error),
+                }),
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::InvokeError> for ErrorB {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+        }
+    }
+    impl From<ErrorB> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: ErrorB) -> soroban_sdk::InvokeError {
+            <_ as From<&ErrorB>>::from(&val)
+        }
+    }
+    impl From<&ErrorB> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: &ErrorB) -> soroban_sdk::InvokeError {
+            match val {
+                ErrorB::E1 => soroban_sdk::InvokeError::Contract(10u32),
+                ErrorB::E2 => soroban_sdk::InvokeError::Contract(11u32),
+                ErrorB::E3 => soroban_sdk::InvokeError::Contract(12u32),
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorB {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::TryIntoVal;
+            let error: soroban_sdk::Error = val.try_into_val(env)?;
+            error.try_into().map_err(|_| soroban_sdk::ConversionError)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ErrorB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            let error: soroban_sdk::Error = val.into();
+            Ok(error.into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ErrorB> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ErrorB,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorB>>::try_from_val(env, *val)
+        }
+    }
+    pub enum ErrorC {
+        E1 = 100,
+        E2 = 101,
+        E3 = 102,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ErrorC {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(
+                f,
+                match self {
+                    ErrorC::E1 => "E1",
+                    ErrorC::E2 => "E2",
+                    ErrorC::E3 => "E3",
+                },
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::Copy for ErrorC {}
+    #[automatically_derived]
+    impl ::core::clone::Clone for ErrorC {
+        #[inline]
+        fn clone(&self) -> ErrorC {
+            *self
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ErrorC {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ErrorC {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ErrorC {
+        #[inline]
+        fn eq(&self, other: &ErrorC) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ErrorC {
+        #[inline]
+        fn cmp(&self, other: &ErrorC) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ErrorC {
+        #[inline]
+        fn partial_cmp(&self, other: &ErrorC) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
+        }
+    }
+    impl TryFrom<soroban_sdk::Error> for ErrorC {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+                let discriminant = error.get_code();
+                Ok(match discriminant {
+                    100u32 => Self::E1,
+                    101u32 => Self::E2,
+                    102u32 => Self::E3,
+                    _ => return Err(error),
+                })
+            } else {
+                Err(error)
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::Error> for ErrorC {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+        }
+    }
+    impl From<ErrorC> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: ErrorC) -> soroban_sdk::Error {
+            <_ as From<&ErrorC>>::from(&val)
+        }
+    }
+    impl From<&ErrorC> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: &ErrorC) -> soroban_sdk::Error {
+            match val {
+                ErrorC::E1 => soroban_sdk::Error::from_contract_error(100u32),
+                ErrorC::E2 => soroban_sdk::Error::from_contract_error(101u32),
+                ErrorC::E3 => soroban_sdk::Error::from_contract_error(102u32),
+            }
+        }
+    }
+    impl TryFrom<soroban_sdk::InvokeError> for ErrorC {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            match error {
+                soroban_sdk::InvokeError::Abort => Err(error),
+                soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                    100u32 => Self::E1,
+                    101u32 => Self::E2,
+                    102u32 => Self::E3,
+                    _ => return Err(error),
+                }),
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::InvokeError> for ErrorC {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+        }
+    }
+    impl From<ErrorC> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: ErrorC) -> soroban_sdk::InvokeError {
+            <_ as From<&ErrorC>>::from(&val)
+        }
+    }
+    impl From<&ErrorC> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: &ErrorC) -> soroban_sdk::InvokeError {
+            match val {
+                ErrorC::E1 => soroban_sdk::InvokeError::Contract(100u32),
+                ErrorC::E2 => soroban_sdk::InvokeError::Contract(101u32),
+                ErrorC::E3 => soroban_sdk::InvokeError::Contract(102u32),
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ErrorC {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::TryIntoVal;
+            let error: soroban_sdk::Error = val.try_into_val(env)?;
+            error.try_into().map_err(|_| soroban_sdk::ConversionError)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ErrorC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            let error: soroban_sdk::Error = val.into();
+            Ok(error.into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ErrorC> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ErrorC,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ErrorC>>::try_from_val(env, *val)
+        }
+    }
+    pub struct EventA {
+        pub f1: soroban_sdk::Address,
+        pub f2: soroban_sdk::String,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EventA {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f, "EventA", "f1", &self.f1, "f2", &&self.f2,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for EventA {
+        #[inline]
+        fn clone(&self) -> EventA {
+            EventA {
+                f1: ::core::clone::Clone::clone(&self.f1),
+                f2: ::core::clone::Clone::clone(&self.f2),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EventA {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EventA {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EventA {
+        #[inline]
+        fn eq(&self, other: &EventA) -> bool {
+            self.f1 == other.f1 && self.f2 == other.f2
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EventA {
+        #[inline]
+        fn cmp(&self, other: &EventA) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.f1, &other.f1) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.f2, &other.f2),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EventA {
+        #[inline]
+        fn partial_cmp(&self, other: &EventA) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.f1, &other.f1) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.f2, &other.f2)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    pub static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
+    impl EventA {
+        pub const fn spec_xdr() -> [u8; 88usize] {
+            *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
+        }
+    }
+    impl soroban_sdk::Event for EventA {
+        fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            use soroban_sdk::IntoVal;
+            (
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("event_a");
+                    SYMBOL
+                },
+                {
+                    let v: soroban_sdk::Val = self.f1.into_val(env);
+                    v
+                },
+            )
+                .into_val(env)
+        }
+        fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+            use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+            const KEYS: [&'static str; 1usize] = ["f2"];
+            let vals: [soroban_sdk::Val; 1usize] = [self.f2.into_val(env)];
+            env.map_new_from_slices(&KEYS, &vals)
+                .unwrap_infallible()
+                .into()
+        }
+    }
+    impl EventA {
+        pub fn publish(&self, env: &soroban_sdk::Env) {
+            <_ as soroban_sdk::Event>::publish(self, env);
+        }
+    }
+    pub struct EventB {
+        pub f1: soroban_sdk::Address,
+        pub f2: soroban_sdk::Address,
+        pub f3: i128,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EventB {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field3_finish(
+                f, "EventB", "f1", &self.f1, "f2", &self.f2, "f3", &&self.f3,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for EventB {
+        #[inline]
+        fn clone(&self) -> EventB {
+            EventB {
+                f1: ::core::clone::Clone::clone(&self.f1),
+                f2: ::core::clone::Clone::clone(&self.f2),
+                f3: ::core::clone::Clone::clone(&self.f3),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EventB {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+            let _: ::core::cmp::AssertParamIsEq<i128>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EventB {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EventB {
+        #[inline]
+        fn eq(&self, other: &EventB) -> bool {
+            self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EventB {
+        #[inline]
+        fn cmp(&self, other: &EventB) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.f1, &other.f1) {
+                ::core::cmp::Ordering::Equal => match ::core::cmp::Ord::cmp(&self.f2, &other.f2) {
+                    ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.f3, &other.f3),
+                    cmp => cmp,
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EventB {
+        #[inline]
+        fn partial_cmp(&self, other: &EventB) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.f1, &other.f1) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.f2, &other.f2) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.f3, &other.f3)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
+    impl EventB {
+        pub const fn spec_xdr() -> [u8; 108usize] {
+            *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
+        }
+    }
+    impl soroban_sdk::Event for EventB {
+        fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            use soroban_sdk::IntoVal;
+            (
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("event_b");
+                    SYMBOL
+                },
+                {
+                    let v: soroban_sdk::Val = self.f1.into_val(env);
+                    v
+                },
+                {
+                    let v: soroban_sdk::Val = self.f2.into_val(env);
+                    v
+                },
+            )
+                .into_val(env)
+        }
+        fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+            use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+            const KEYS: [&'static str; 1usize] = ["f3"];
+            let vals: [soroban_sdk::Val; 1usize] = [self.f3.into_val(env)];
+            env.map_new_from_slices(&KEYS, &vals)
+                .unwrap_infallible()
+                .into()
+        }
+    }
+    impl EventB {
+        pub fn publish(&self, env: &soroban_sdk::Env) {
+            <_ as soroban_sdk::Event>::publish(self, env);
+        }
+    }
+    pub struct EventC {
+        pub f1: soroban_sdk::Symbol,
+        pub f2: i64,
+        pub f3: i64,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EventC {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field3_finish(
+                f, "EventC", "f1", &self.f1, "f2", &self.f2, "f3", &&self.f3,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for EventC {
+        #[inline]
+        fn clone(&self) -> EventC {
+            EventC {
+                f1: ::core::clone::Clone::clone(&self.f1),
+                f2: ::core::clone::Clone::clone(&self.f2),
+                f3: ::core::clone::Clone::clone(&self.f3),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EventC {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
+            let _: ::core::cmp::AssertParamIsEq<i64>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EventC {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EventC {
+        #[inline]
+        fn eq(&self, other: &EventC) -> bool {
+            self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EventC {
+        #[inline]
+        fn cmp(&self, other: &EventC) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.f1, &other.f1) {
+                ::core::cmp::Ordering::Equal => match ::core::cmp::Ord::cmp(&self.f2, &other.f2) {
+                    ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.f3, &other.f3),
+                    cmp => cmp,
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EventC {
+        #[inline]
+        fn partial_cmp(&self, other: &EventC) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.f1, &other.f1) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.f2, &other.f2) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.f3, &other.f3)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
+    impl EventC {
+        pub const fn spec_xdr() -> [u8; 108usize] {
+            *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
+        }
+    }
+    impl soroban_sdk::Event for EventC {
+        fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            use soroban_sdk::IntoVal;
+            (
+                &{
+                    #[allow(deprecated)]
+                    const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("event_c");
+                    SYMBOL
+                },
+                {
+                    let v: soroban_sdk::Val = self.f1.into_val(env);
+                    v
+                },
+            )
+                .into_val(env)
+        }
+        fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+            use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+            const KEYS: [&'static str; 2usize] = ["f2", "f3"];
+            let vals: [soroban_sdk::Val; 2usize] = [self.f2.into_val(env), self.f3.into_val(env)];
+            env.map_new_from_slices(&KEYS, &vals)
+                .unwrap_infallible()
+                .into()
+        }
+    }
+    impl EventC {
+        pub fn publish(&self, env: &soroban_sdk::Env) {
+            <_ as soroban_sdk::Event>::publish(self, env);
+        }
+    }
+}
+pub use imported::{EnumA, EnumIntA, ErrorA, EventA, StructA, StructTupleA};
+pub struct Contract;
+///ContractArgs is a type for building arg lists for functions defined in "Contract".
+pub struct ContractArgs;
+///ContractClient is a client for calling the contract defined in "Contract".
+pub struct ContractClient<'a> {
+    pub env: soroban_sdk::Env,
+    pub address: soroban_sdk::Address,
+    #[doc(hidden)]
+    _phantom: core::marker::PhantomData<&'a ()>,
+}
+impl<'a> ContractClient<'a> {
+    pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+        Self {
+            env: env.clone(),
+            address: address.clone(),
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+impl Contract {
+    pub fn wrap_struct_a(env: Env, contract_id: Address, f1: u32, f2: bool) -> StructA {
+        imported::Client::new(&env, &contract_id).create_struct_a(&f1, &f2)
+    }
+    pub fn wrap_struct_tuple_a(env: Env, contract_id: Address, f1: i64, f2: i64) -> StructTupleA {
+        imported::Client::new(&env, &contract_id).create_struct_tuple_a(&f1, &f2)
+    }
+    pub fn wrap_enum_a(env: Env, contract_id: Address) -> EnumA {
+        imported::Client::new(&env, &contract_id).get_enum_a()
+    }
+    pub fn wrap_enum_int_a(env: Env, contract_id: Address) -> EnumIntA {
+        imported::Client::new(&env, &contract_id).get_enum_int_a()
+    }
+    pub fn wrap_check_a(env: Env, contract_id: Address, input: u32) -> u32 {
+        imported::Client::new(&env, &contract_id).check_a(&input)
+    }
+    pub fn wrap_emit_event_a(env: Env, contract_id: Address, f1: Address, f2: String) {
+        imported::Client::new(&env, &contract_id).emit_event_a(&f1, &f2);
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__wrap_struct_a__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WRAP_STRUCT_A: [u8; 108usize] =
+        super::Contract::spec_xdr_wrap_struct_a();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_wrap_struct_a() -> [u8; 108usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\rwrap_struct_a\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__wrap_struct_tuple_a__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WRAP_STRUCT_TUPLE_A: [u8; 116usize] =
+        super::Contract::spec_xdr_wrap_struct_tuple_a();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_wrap_struct_tuple_a() -> [u8; 116usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x13wrap_struct_tuple_a\0\0\0\0\x03\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__wrap_enum_a__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WRAP_ENUM_A: [u8; 72usize] = super::Contract::spec_xdr_wrap_enum_a();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_wrap_enum_a() -> [u8; 72usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwrap_enum_a\0\0\0\0\x01\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\x01\0\0\x07\xd0\0\0\0\x05EnumA\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__wrap_enum_int_a__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WRAP_ENUM_INT_A: [u8; 76usize] =
+        super::Contract::spec_xdr_wrap_enum_int_a();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_wrap_enum_int_a() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwrap_enum_int_a\0\0\0\0\x01\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\x01\0\0\x07\xd0\0\0\0\x08EnumIntA"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__wrap_check_a__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WRAP_CHECK_A: [u8; 80usize] = super::Contract::spec_xdr_wrap_check_a();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_wrap_check_a() -> [u8; 80usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0cwrap_check_a\0\0\0\x02\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__wrap_emit_event_a__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WRAP_EMIT_EVENT_A: [u8; 96usize] =
+        super::Contract::spec_xdr_wrap_emit_event_a();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_wrap_emit_event_a() -> [u8; 96usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x11wrap_emit_event_a\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0"
+    }
+}
+impl<'a> ContractClient<'a> {
+    pub fn wrap_struct_a(&self, contract_id: &Address, f1: &u32, f2: &bool) -> StructA {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_struct_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    contract_id.into_val(&self.env),
+                    f1.into_val(&self.env),
+                    f2.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    pub fn try_wrap_struct_a(
+        &self,
+        contract_id: &Address,
+        f1: &u32,
+        f2: &bool,
+    ) -> Result<
+        Result<
+            StructA,
+            <StructA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_struct_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    contract_id.into_val(&self.env),
+                    f1.into_val(&self.env),
+                    f2.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    pub fn wrap_struct_tuple_a(&self, contract_id: &Address, f1: &i64, f2: &i64) -> StructTupleA {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_struct_tuple_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    contract_id.into_val(&self.env),
+                    f1.into_val(&self.env),
+                    f2.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    pub fn try_wrap_struct_tuple_a(
+        &self,
+        contract_id: &Address,
+        f1: &i64,
+        f2: &i64,
+    ) -> Result<
+        Result<
+            StructTupleA,
+            <StructTupleA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_struct_tuple_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    contract_id.into_val(&self.env),
+                    f1.into_val(&self.env),
+                    f2.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    pub fn wrap_enum_a(&self, contract_id: &Address) -> EnumA {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_enum_a") },
+            ::soroban_sdk::Vec::from_array(&self.env, [contract_id.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_wrap_enum_a(
+        &self,
+        contract_id: &Address,
+    ) -> Result<
+        Result<
+            EnumA,
+            <EnumA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_enum_a") },
+            ::soroban_sdk::Vec::from_array(&self.env, [contract_id.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn wrap_enum_int_a(&self, contract_id: &Address) -> EnumIntA {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_enum_int_a") },
+            ::soroban_sdk::Vec::from_array(&self.env, [contract_id.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_wrap_enum_int_a(
+        &self,
+        contract_id: &Address,
+    ) -> Result<
+        Result<
+            EnumIntA,
+            <EnumIntA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_enum_int_a") },
+            ::soroban_sdk::Vec::from_array(&self.env, [contract_id.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn wrap_check_a(&self, contract_id: &Address, input: &u32) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_check_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [contract_id.into_val(&self.env), input.into_val(&self.env)],
+            ),
+        );
+        res
+    }
+    pub fn try_wrap_check_a(
+        &self,
+        contract_id: &Address,
+        input: &u32,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_check_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [contract_id.into_val(&self.env), input.into_val(&self.env)],
+            ),
+        );
+        res
+    }
+    pub fn wrap_emit_event_a(&self, contract_id: &Address, f1: &Address, f2: &String) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_emit_event_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    contract_id.into_val(&self.env),
+                    f1.into_val(&self.env),
+                    f2.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+    pub fn try_wrap_emit_event_a(
+        &self,
+        contract_id: &Address,
+        f1: &Address,
+        f2: &String,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "wrap_emit_event_a") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [
+                    contract_id.into_val(&self.env),
+                    f1.into_val(&self.env),
+                    f2.into_val(&self.env),
+                ],
+            ),
+        );
+        res
+    }
+}
+impl ContractArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn wrap_struct_a<'i>(
+        contract_id: &'i Address,
+        f1: &'i u32,
+        f2: &'i bool,
+    ) -> (&'i Address, &'i u32, &'i bool) {
+        (contract_id, f1, f2)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn wrap_struct_tuple_a<'i>(
+        contract_id: &'i Address,
+        f1: &'i i64,
+        f2: &'i i64,
+    ) -> (&'i Address, &'i i64, &'i i64) {
+        (contract_id, f1, f2)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn wrap_enum_a<'i>(contract_id: &'i Address) -> (&'i Address,) {
+        (contract_id,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn wrap_enum_int_a<'i>(contract_id: &'i Address) -> (&'i Address,) {
+        (contract_id,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn wrap_check_a<'i>(contract_id: &'i Address, input: &'i u32) -> (&'i Address, &'i u32) {
+        (contract_id, input)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn wrap_emit_event_a<'i>(
+        contract_id: &'i Address,
+        f1: &'i Address,
+        f2: &'i String,
+    ) -> (&'i Address, &'i Address, &'i String) {
+        (contract_id, f1, f2)
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_struct_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_struct_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_a` instead")]
+#[export_name = "wrap_struct_a"]
+pub extern "C" fn __Contract__wrap_struct_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_struct_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_struct_tuple_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_struct_tuple_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_struct_tuple_a` instead")]
+#[export_name = "wrap_struct_tuple_a"]
+pub extern "C" fn __Contract__wrap_struct_tuple_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_struct_tuple_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_enum_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_enum_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_a` instead")]
+#[export_name = "wrap_enum_a"]
+pub extern "C" fn __Contract__wrap_enum_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_enum_a__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_enum_int_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_enum_int_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_enum_int_a` instead")]
+#[export_name = "wrap_enum_int_a"]
+pub extern "C" fn __Contract__wrap_enum_int_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_enum_int_a__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_check_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_check_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_check_a` instead")]
+#[export_name = "wrap_check_a"]
+pub extern "C" fn __Contract__wrap_check_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_check_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrap_emit_event_a__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::wrap_emit_event_a(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrap_emit_event_a` instead")]
+#[export_name = "wrap_emit_event_a"]
+pub extern "C" fn __Contract__wrap_emit_event_a__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrap_emit_event_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
+}

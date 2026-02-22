@@ -120,12 +120,9 @@ mod feat1 {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).one` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__one__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract>::one(),
-            &env,
-        )
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::one(), &env)
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -297,12 +294,9 @@ mod feat2 {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).two` instead")]
+    #[allow(deprecated)]
     pub fn __super__Contract__two__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::two(),
-            &env,
-        )
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<super::Contract>::two(), &env)
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -672,12 +666,9 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
+#[allow(deprecated)]
 pub fn __Contract__zero__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::zero(),
-        &env,
-    )
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::zero(), &env)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

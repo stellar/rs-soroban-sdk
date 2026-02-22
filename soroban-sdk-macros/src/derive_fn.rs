@@ -200,10 +200,10 @@ pub fn derive_pub_fn(
         #(#attrs)*
         #[allow(non_snake_case)]
         #[deprecated(note = #deprecated_note)]
+        #[allow(deprecated)]
         pub fn #invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
-            <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
-                #[allow(deprecated)]
-                &#call(
+            #crate_path::IntoValForContractFn::into_val_for_contract_fn(
+                #call(
                     #env_call
                     #(#wrap_calls),*
                 ),
