@@ -7,7 +7,7 @@ extern crate core;
 extern crate compiler_builtins as _;
 use soroban_sdk::{contract, contractimpl, Address, Env};
 mod addcontract {
-    pub const WASM: &[u8] = b"\0asm\x01\0\0\0\x01\x14\x04`\x01~\x01~`\x02\x7f~\0`\x02~~\x01~`\0\0\x02\r\x02\x01i\x010\0\0\x01i\x01_\0\0\x03\x05\x04\x01\x02\x03\x03\x05\x03\x01\0\x10\x06!\x04\x7f\x01A\x80\x80\xc0\0\x0b\x7f\0A\x80\x80\xc0\0\x0b\x7f\0A\x80\x80\xc0\0\x0b\x7f\0A\x80\x80\xc0\0\x0b\x07/\x05\x06memory\x02\0\x03add\0\x03\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x89\x02\x04]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc0\0F\r\0\x02@ \x02A\x06F\r\0B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x88!\x01B\0!\x03\x0c\x01\x0bB\0!\x03 \x01\x10\x80\x80\x80\x80\0!\x01\x0b \0 \x037\x03\0 \0 \x017\x03\x08\x0b\x9a\x01\x01\x01\x7f#\x80\x80\x80\x80\0A\x10k\"\x02$\x80\x80\x80\x80\0 \x02 \0\x10\x82\x80\x80\x80\0\x02@\x02@ \x02(\x02\0A\x01F\r\0 \x02)\x03\x08!\0 \x02 \x01\x10\x82\x80\x80\x80\0 \x02(\x02\0A\x01F\r\0 \0 \x02)\x03\x08|\"\x01 \0T\r\x01\x02@\x02@ \x01B\xff\xff\xff\xff\xff\xff\xff\xff\0V\r\0 \x01B\x08\x86B\x06\x84!\0\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\0!\0\x0b \x02A\x10j$\x80\x80\x80\x80\0 \0\x0f\x0b\0\x0b\x10\x84\x80\x80\x80\0\0\x0b\t\0\x10\x85\x80\x80\x80\0\0\x0b\x03\0\0\x0b\x0b\t\x01\0A\x80\x80\xc0\0\x0b\0\0K\x0econtractspecv0\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06\0\x1e\x11contractenvmetav0\0\0\0\0\0\0\0\x17\0\0\0\0\0+\x0econtractmetav0\0\0\0\0\0\0\0\x05rsver\0\0\0\0\0\0\x061.84.0\0\0";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x14\x04`\x01~\x01~`\x02\x7f~\x00`\x02~~\x01~`\x00\x00\x02\r\x02\x01i\x010\x00\x00\x01i\x01_\x00\x00\x03\x05\x04\x01\x02\x03\x03\x05\x03\x01\x00\x10\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x07/\x05\x06memory\x02\x00\x03add\x00\x03\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x89\x02\x04]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc0\x00F\r\x00\x02@ \x02A\x06F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x88!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x80\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b\x9a\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00\x10\x82\x80\x80\x80\x00\x02@\x02@ \x02(\x02\x00A\x01F\r\x00 \x02)\x03\x08!\x00 \x02 \x01\x10\x82\x80\x80\x80\x00 \x02(\x02\x00A\x01F\r\x00 \x00 \x02)\x03\x08|\"\x01 \x00T\r\x01\x02@\x02@ \x01B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x06\x84!\x00\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\x00!\x00\x0b \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\x10\x84\x80\x80\x80\x00\x00\x0b\t\x00\x10\x85\x80\x80\x80\x00\x00\x0b\x03\x00\x00\x0b\x0b\t\x01\x00A\x80\x80\xc0\x00\x0b\x00\x00K\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x01\x00\x00\x00\x06\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.84.0\x00\x00";
     pub trait Contract {
         fn add(env: soroban_sdk::Env, a: u64, b: u64) -> u64;
     }
@@ -459,70 +459,76 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__add_with {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add_with` instead")]
-    pub fn invoke_raw(
-        env: soroban_sdk::Env,
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::add_with(
-                env.clone(),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_0),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_1),
-                ),
-                <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                    <_ as soroban_sdk::TryFromValForContractFn<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::try_from_val_for_contract_fn(&env, &arg_2),
-                ),
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).add_with` instead")]
+pub fn __Contract__add_with__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<
+        soroban_sdk::Env,
+        soroban_sdk::Val,
+    >>::into_val(
+        #[allow(deprecated)]
+        &<Contract>::add_with(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
             ),
-            &env,
-        )
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).add_with` instead")]
+pub fn __Contract__add_with__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 3usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                3usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add_with` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 3usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    3usize,
-                    args.len(),
-                ));
-            };
-        }
-        #[allow(deprecated)]
-        invoke_raw(env, args[0usize], args[1usize], args[2usize])
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).add_with` instead")]
-    pub extern "C" fn invoke_raw_extern(
-        arg_0: soroban_sdk::Val,
-        arg_1: soroban_sdk::Val,
-        arg_2: soroban_sdk::Val,
-    ) -> soroban_sdk::Val {
-        #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
-    }
-    use super::*;
+    #[allow(deprecated)]
+    __Contract__add_with__invoke_raw(env, args[0usize], args[1usize], args[2usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).add_with` instead")]
+pub extern "C" fn __Contract__add_with__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__add_with__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor() {
+fn __Contract____70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -534,7 +540,7 @@ fn __Contract__70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor();
+                    __Contract____70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor();
                 };
                 core::default::Default::default()
             }
@@ -545,7 +551,7 @@ fn __Contract__70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "add_with",
             #[allow(deprecated)]
-            &__Contract__add_with::invoke_raw_slice,
+            &__Contract__add_with__invoke_raw_slice,
         );
     }
 }

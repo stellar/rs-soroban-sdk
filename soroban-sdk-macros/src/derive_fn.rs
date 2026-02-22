@@ -18,7 +18,7 @@ pub fn derive_pub_fns<'a>(
     crate_path: &Path,
     impl_ty: &Type,
     fns: impl IntoIterator<Item = &'a syn_ext::Fn>,
-    trait_ident: Option<&Ident>,
+    trait_ident: Option<&Path>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     fns.into_iter()
@@ -43,13 +43,17 @@ pub fn derive_pub_fn(
     ident: &Ident,
     attrs: &[Attribute],
     inputs: &Punctuated<FnArg, Comma>,
-    trait_ident: Option<&Ident>,
+    trait_ident: Option<&Path>,
     client_ident: &str,
 ) -> Result<TokenStream2, TokenStream2> {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
 
-    let call = quote! { <super::#impl_ty>::#ident };
+    let call = if let Some(t) = trait_ident {
+        quote! { <#impl_ty as #t>::#ident }
+    } else {
+        quote! { <#impl_ty>::#ident }
+    };
 
     // Prepare the env input.
     let env_input = inputs.first().and_then(|a| match a {
@@ -138,7 +142,10 @@ pub fn derive_pub_fn(
     // Generated code parameters.
     let impl_ty_safe_str = ty_to_safe_ident_str(impl_ty);
     let wrap_export_name = &format!("{}", ident);
-    let hidden_mod_ident = format_ident!("__{}__{}", impl_ty_safe_str, ident);
+    let invoke_fn_prefix = format_ident!("__{}__{}", impl_ty_safe_str, ident);
+    let invoke_raw = format_ident!("{}__invoke_raw", invoke_fn_prefix);
+    let invoke_raw_slice = format_ident!("{}__invoke_raw_slice", invoke_fn_prefix);
+    let invoke_raw_extern = format_ident!("{}__invoke_raw_extern", invoke_fn_prefix);
     let deprecated_note = format!(
         "use `{}::new(&env, &contract_id).{}` instead",
         client_ident, &ident
@@ -154,11 +161,6 @@ pub fn derive_pub_fn(
     };
     let slice_args: Vec<TokenStream2> = (0..wrap_args.len()).map(|n| quote! { args[#n] }).collect();
     let arg_count = slice_args.len();
-    let use_trait = if let Some(t) = trait_ident {
-        quote! { use super::#t }
-    } else {
-        quote! {}
-    };
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
@@ -166,10 +168,18 @@ pub fn derive_pub_fn(
         return Err(quote! { #(#compile_errors)* });
     }
 
+    let attrs: Vec<_> = attrs
+        .iter()
+        .filter(|attr| pass_through_attr_to_gen_code(attr))
+        .collect();
+
     let testutils_only_code = if cfg!(feature = "testutils") {
         Some(quote! {
+            #[doc(hidden)]
+            #(#attrs)*
+            #[allow(non_snake_case)]
             #[deprecated(note = #deprecated_note)]
-            pub fn invoke_raw_slice(
+            pub fn #invoke_raw_slice(
                 env: #crate_path::Env,
                 args: &[#crate_path::Val],
             ) -> #crate_path::Val {
@@ -177,53 +187,43 @@ pub fn derive_pub_fn(
                     panic!("invalid number of input arguments: {} expected, got {}", #arg_count, args.len());
                 }
                 #[allow(deprecated)]
-                invoke_raw(env, #(#slice_args),*)
+                #invoke_raw(env, #(#slice_args),*)
             }
         })
     } else {
         None
     };
 
-    // Filter attributes to those that should be passed through to the generated code.
-    let attrs = attrs
-        .iter()
-        .filter(|attr| pass_through_attr_to_gen_code(attr))
-        .collect::<Vec<_>>();
-
     // Generated code.
     Ok(quote! {
         #[doc(hidden)]
         #(#attrs)*
         #[allow(non_snake_case)]
-        pub mod #hidden_mod_ident {
-            use super::*;
-
-            #[deprecated(note = #deprecated_note)]
-            pub fn invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
-                #use_trait;
-                <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
-                    #[allow(deprecated)]
-                    &#call(
-                        #env_call
-                        #(#wrap_calls),*
-                    ),
-                    &env
-                )
-            }
-
-            #testutils_only_code
-
-            #[deprecated(note = #deprecated_note)]
-            #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
-            pub extern "C" fn invoke_raw_extern(#(#wrap_args),*) -> #crate_path::Val {
+        #[deprecated(note = #deprecated_note)]
+        pub fn #invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
+            <_ as #crate_path::IntoVal<#crate_path::Env, #crate_path::Val>>::into_val(
                 #[allow(deprecated)]
-                invoke_raw(
-                    #crate_path::Env::default(),
-                    #(#passthrough_calls),*
-                )
-            }
+                &#call(
+                    #env_call
+                    #(#wrap_calls),*
+                ),
+                &env
+            )
+        }
 
-            use super::*;
+        #testutils_only_code
+
+        #[doc(hidden)]
+        #(#attrs)*
+        #[allow(non_snake_case)]
+        #[deprecated(note = #deprecated_note)]
+        #[cfg_attr(target_family = "wasm", export_name = #wrap_export_name)]
+        pub extern "C" fn #invoke_raw_extern(#(#wrap_args),*) -> #crate_path::Val {
+            #[allow(deprecated)]
+            #invoke_raw(
+                #crate_path::Env::default(),
+                #(#passthrough_calls),*
+            )
         }
     })
 }
@@ -232,7 +232,7 @@ pub fn derive_pub_fn(
 pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
-    trait_ident: Option<&Ident>,
+    trait_ident: Option<&Path>,
     method_idents: impl Iterator<Item = &'a Ident>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
@@ -243,14 +243,22 @@ pub fn derive_contract_function_registration_ctor<'a>(
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
         .map(|ident| {
             let ident_str = format!("{}", ident);
-            let wrap_ident = format_ident!("__{}__{}", ty_str, ident_str);
+            let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
             (ident_str, wrap_ident)
         })
         .multiunzip();
 
-    let trait_str = quote!(#trait_ident).to_string();
+    let trait_str = trait_ident
+        .map(|p| {
+            p.segments
+                .iter()
+                .map(|s| s.ident.to_string())
+                .collect::<Vec<_>>()
+                .join("_")
+        })
+        .unwrap_or_else(|| "".to_string());
     let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
-    let ctor_ident = format_ident!("__{ty_str}_{trait_str}_{methods_hash}_ctor");
+    let ctor_ident = format_ident!("__{ty_str}__{trait_str}__{methods_hash}_ctor");
 
     quote! {
         #[doc(hidden)]
@@ -261,7 +269,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
                 <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
                     #idents,
                     #[allow(deprecated)]
-                    &#wrap_idents::invoke_raw_slice,
+                    &#wrap_idents,
                 );
             )*
         }

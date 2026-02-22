@@ -1,7 +1,7 @@
 use soroban_sdk_macros::{contract, contractimpl};
 
 use crate::testutils::{Address as _, MuxedAddress as _};
-use crate::{self as soroban_sdk};
+use crate::{self as soroban_sdk, Bytes, String};
 use crate::{
     env::xdr::{AccountId, ScAddress, Uint256},
     Address, Env, MuxedAddress, TryFromVal,
@@ -107,4 +107,227 @@ fn test_accept_muxed_address_argument_in_contract() {
         client.get_muxed_ids(non_muxed_address, muxed_address2),
         (None, Some(2))
     );
+}
+
+#[test]
+fn test_from_str_account() {
+    let env = Env::default();
+    let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+#[test]
+fn test_from_str_muxed_account() {
+    let env = Env::default();
+    let muxed_strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    let base_strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let muxed = MuxedAddress::from_str(&env, muxed_strkey);
+    let expected_address = Address::from_str(&env, base_strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), Some(123456));
+}
+
+#[test]
+fn test_from_str_contract() {
+    let env = Env::default();
+    let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+// Debug roundtrip tests
+
+#[test]
+fn test_from_str_account_debug_roundtrip() {
+    let env = Env::default();
+    let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let debug_output = format!("{:?}", muxed);
+    assert!(debug_output.contains(strkey));
+}
+
+#[test]
+fn test_from_str_muxed_account_debug_roundtrip() {
+    let env = Env::default();
+    let strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let debug_output = format!("{:?}", muxed);
+    assert!(debug_output.contains(strkey));
+}
+
+#[test]
+fn test_from_str_contract_debug_roundtrip() {
+    let env = Env::default();
+    let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    let debug_output = format!("{:?}", muxed);
+    assert!(debug_output.contains(strkey));
+}
+
+#[test]
+#[should_panic(expected = "couldn't process the string as strkey")]
+fn test_from_str_private_key_panics() {
+    let env = Env::default();
+    // S... private key strkey
+    let strkey = "SCZANGBA5YHTNYVVV3C7CAZMTQDBJHJQNE2M57SW7JEX6MRDBHWSKFPI";
+    MuxedAddress::from_str(&env, strkey);
+}
+
+#[test]
+#[should_panic(expected = "couldn't process the string as strkey")]
+fn test_from_str_preauth_tx_panics() {
+    let env = Env::default();
+    // T... pre-auth tx strkey
+    let strkey = "TBU2RRGLXH3E5CQHTD3ODLDF2BWDCYUSSBLLZ5GNW7JXHDIRAT2IJDPN";
+    MuxedAddress::from_str(&env, strkey);
+}
+
+#[test]
+#[should_panic(expected = "couldn't process the string as strkey")]
+fn test_from_str_hash_x_panics() {
+    let env = Env::default();
+    // X... hash-x strkey
+    let strkey = "XBU2RRGLXH3E5CQHTD3ODLDF2BWDCYUSSBLLZ5GNW7JXHDIRAT2IJDPN";
+    MuxedAddress::from_str(&env, strkey);
+}
+
+#[test]
+#[should_panic(expected = "unexpected strkey length")]
+fn test_from_str_invalid_strkey_panics() {
+    let env = Env::default();
+    // Invalid strkey (random garbage)
+    let strkey = "INVALID_NOT_A_REAL_STRKEY";
+    MuxedAddress::from_str(&env, strkey);
+}
+
+// Tests for MuxedAddress::from_string_bytes
+
+#[test]
+fn test_from_string_bytes_account() {
+    let env = Env::default();
+    let strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let strkey_bytes = Bytes::from_slice(&env, strkey.as_bytes());
+    let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+#[test]
+fn test_from_string_bytes_muxed_account() {
+    let env = Env::default();
+    let muxed_strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    let base_strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let strkey_bytes = Bytes::from_slice(&env, muxed_strkey.as_bytes());
+    let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
+    let expected_address = Address::from_str(&env, base_strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), Some(123456));
+}
+
+#[test]
+fn test_from_string_bytes_contract() {
+    let env = Env::default();
+    let strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let strkey_bytes = Bytes::from_slice(&env, strkey.as_bytes());
+    let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
+    let expected_address = Address::from_str(&env, strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+#[test]
+#[should_panic(expected = "unexpected strkey length")]
+fn test_from_string_bytes_empty_panics() {
+    let env = Env::default();
+    let strkey_bytes = Bytes::from_slice(&env, &[]);
+    MuxedAddress::from_string_bytes(&strkey_bytes);
+}
+
+#[test]
+#[should_panic(expected = "unexpected strkey length")]
+fn test_from_string_empty_panics() {
+    let env = Env::default();
+    let strkey = String::from_str(&env, "");
+    MuxedAddress::from_string(&strkey);
+}
+
+#[test]
+#[should_panic(expected = "unexpected strkey length")]
+fn test_from_string_bytes_invalid_strkey_panics() {
+    let env = Env::default();
+    let strkey_bytes = Bytes::from_slice(&env, b"INVALID_NOT_A_REAL_STRKEY");
+    MuxedAddress::from_string_bytes(&strkey_bytes);
+}
+
+#[test]
+fn test_from_string_account() {
+    let env = Env::default();
+    let strkey = String::from_str(
+        &env,
+        "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5",
+    );
+    let muxed = MuxedAddress::from_string(&strkey);
+    let expected_address = Address::from_str(
+        &env,
+        "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5",
+    );
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+#[test]
+fn test_from_string_muxed_account() {
+    let env = Env::default();
+    let muxed_strkey = String::from_str(
+        &env,
+        "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU",
+    );
+    let base_strkey = "GA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQHES5";
+    let muxed = MuxedAddress::from_string(&muxed_strkey);
+    let expected_address = Address::from_str(&env, base_strkey);
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), Some(123456));
+}
+
+#[test]
+fn test_from_string_contract() {
+    let env = Env::default();
+    let strkey = String::from_str(
+        &env,
+        "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE",
+    );
+    let muxed = MuxedAddress::from_string(&strkey);
+    let expected_address = Address::from_str(
+        &env,
+        "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE",
+    );
+    assert_eq!(muxed.address(), expected_address);
+    assert_eq!(muxed.id(), None);
+}
+
+// Tests for strkey length boundary conditions
+
+#[test]
+fn test_from_str_muxed_exactly_69_chars() {
+    let env = Env::default();
+    // Valid 69-char muxed strkey
+    let muxed_strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU";
+    assert_eq!(muxed_strkey.len(), 69);
+    let muxed = MuxedAddress::from_str(&env, muxed_strkey);
+    assert!(muxed.id().is_some());
+}
+
+#[test]
+#[should_panic(expected = "unexpected strkey length")]
+fn test_from_str_muxed_strkey_too_long() {
+    let env = Env::default();
+    // 70+ character string starting with M (exceeds MAX_STRKEY_LEN of 69)
+    let strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKUXX";
+    MuxedAddress::from_str(&env, strkey);
 }

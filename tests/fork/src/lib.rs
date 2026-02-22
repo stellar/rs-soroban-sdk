@@ -314,10 +314,10 @@ mod local {
     }
 
     fn signing_key_to_strkey(key: &SigningKey) -> std::string::String {
-        stellar_strkey::Strkey::PublicKeyEd25519(stellar_strkey::ed25519::PublicKey(
+        let strkey = stellar_strkey::Strkey::PublicKeyEd25519(stellar_strkey::ed25519::PublicKey(
             key.verifying_key().to_bytes(),
-        ))
-        .to_string()
+        ));
+        std::format!("{strkey}")
     }
 
     fn i128_to_sc_val(v: i128) -> ScVal {

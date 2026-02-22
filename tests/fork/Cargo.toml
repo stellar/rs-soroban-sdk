@@ -25,7 +25,7 @@ stellar-xdr = { workspace = true, features = ["std", "curr"] }
 stellar-strkey = { workspace = true }
 ed25519-dalek = { version = "2", features = ["rand_core"] }
 sha2 = "0.10"
-stellar-rpc-client = "23"
+stellar-rpc-client = "25"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 rand = "0.8"
 reqwest = "0.12"

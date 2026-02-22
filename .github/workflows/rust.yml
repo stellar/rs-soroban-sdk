@@ -21,7 +21,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, semver-checks, build, test, build-fuzz, docs, readme, migration-docs]
+    needs: [fmt, check-git-rev-deps, semver-checks, build, test, expand-test-wasms, build-fuzz, docs, readme, migration-docs]
     runs-on: ubuntu-slim
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -99,11 +99,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - run: rustup update
-    - uses: stellar/binaries@v45
+    - run: rustup update stable
+    - name: Determine Rust n-2 version since cargo-semver-checks is rarely available for the latest version
+      id: rust-version
+      run: |
+        current_version=$(rustc +stable --version | grep -oE '[0-9]+\.[0-9]+' | head -1)
+        major=$(echo $current_version | cut -d. -f1)
+        minor=$(echo $current_version | cut -d. -f2)
+        prev_minor=$((minor - 2))
+        prev_version="${major}.${prev_minor}"
+        echo "Latest stable: $current_version, using n-2: $prev_version"
+        echo "version=$prev_version" >> $GITHUB_OUTPUT
+    - name: Install Rust ${{ steps.rust-version.outputs.version }}
+      run: |
+        rustup install ${{ steps.rust-version.outputs.version }}
+        rustup override set ${{ steps.rust-version.outputs.version }}
+    - name: Verify Rust version
+      run: |
+        rustc --version
+        cargo --version
+    - uses: stellar/binaries@v51
       with:
         name: cargo-semver-checks
-        version: 0.44.0
+        version: 0.45.0
     - run: >
         cargo semver-checks
         --exclude soroban-meta

@@ -5,7 +5,7 @@ use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
 extern crate compiler_builtins as _;
-use proc_macros::{parse_item_fn, parse_item_impl};
+use proc_macros::{check_fn_is_item_fn, parse_item_fn, parse_item_impl};
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -140,6 +140,9 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 }
 impl Contract {
     pub fn empty() {}
+    pub fn empty2() {
+        let _ = core::any::type_name::<Self>();
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -153,6 +156,20 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_empty() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\0\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__empty2__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_EMPTY2: [u8; 28usize] = super::Contract::spec_xdr_empty2();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_empty2() -> [u8; 28usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty2\0\0\0\0\0\0\0\0\0\0"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -231,6 +248,81 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    pub fn empty2(&self) -> () {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty2");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_empty2(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                self.env.mock_all_auths();
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("empty2");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -238,44 +330,88 @@ impl ContractArgs {
     pub fn empty<'i>() -> () {
         ()
     }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn empty2<'i>() -> () {
+        ()
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty {
-    use super::*;
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
-    pub fn invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::empty(),
-            &env,
-        )
-    }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
-    pub fn invoke_raw_slice(env: soroban_sdk::Env, args: &[soroban_sdk::Val]) -> soroban_sdk::Val {
-        if args.len() != 0usize {
-            {
-                ::core::panicking::panic_fmt(format_args!(
-                    "invalid number of input arguments: {0} expected, got {1}",
-                    0usize,
-                    args.len(),
-                ));
-            };
-        }
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+pub fn __Contract__empty__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        invoke_raw(env)
+        &<Contract>::empty(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+pub fn __Contract__empty__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 0usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                0usize,
+                args.len(),
+            ));
+        };
     }
-    #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
-    pub extern "C" fn invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__empty__invoke_raw(env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+pub extern "C" fn __Contract__empty__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__empty__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+pub fn __Contract__empty2__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        invoke_raw(soroban_sdk::Env::default())
+        &<Contract>::empty2(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+pub fn __Contract__empty2__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 0usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                0usize,
+                args.len(),
+            ));
+        };
     }
-    use super::*;
+    #[allow(deprecated)]
+    __Contract__empty2__invoke_raw(env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+pub extern "C" fn __Contract__empty2__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__empty2__invoke_raw(soroban_sdk::Env::default())
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor() {
+fn __Contract____3d3f4e42d091a0f5587b8b2342b95a9ce7a0f5074262f199c972d2b2f43f23c1_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -287,7 +423,7 @@ fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_ctor();
+                    __Contract____3d3f4e42d091a0f5587b8b2342b95a9ce7a0f5074262f199c972d2b2f43f23c1_ctor();
                 };
                 core::default::Default::default()
             }
@@ -298,7 +434,12 @@ fn __Contract__2e1cfa82b035c26cbbbdae632cea070514eb8b773f616aaeaf668e2f0be8f10d_
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "empty",
             #[allow(deprecated)]
-            &__Contract__empty::invoke_raw_slice,
+            &__Contract__empty__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "empty2",
+            #[allow(deprecated)]
+            &__Contract__empty2__invoke_raw_slice,
         );
     }
 }
@@ -316,9 +457,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/macros/src/lib.rs",
-            start_line: 26usize,
+            start_line: 30usize,
             start_col: 8usize,
-            end_line: 26usize,
+            end_line: 30usize,
             end_col: 18usize,
             compile_fail: false,
             no_run: false,
@@ -336,11 +477,47 @@ mod test {
         let client = ContractClient::new(&e, &contract_id);
         client.empty();
     }
+    extern crate test;
+    #[cfg(test)]
+    #[rustc_test_marker = "test::test_custom_attrs_are_not_copied_onto_generated_fns"]
+    #[doc(hidden)]
+    pub const test_custom_attrs_are_not_copied_onto_generated_fns: test::TestDescAndFn =
+        test::TestDescAndFn {
+            desc: test::TestDesc {
+                name: test::StaticTestName(
+                    "test::test_custom_attrs_are_not_copied_onto_generated_fns",
+                ),
+                ignore: false,
+                ignore_message: ::core::option::Option::None,
+                source_file: "tests/macros/src/lib.rs",
+                start_line: 50usize,
+                start_col: 8usize,
+                end_line: 50usize,
+                end_col: 59usize,
+                compile_fail: false,
+                no_run: false,
+                should_panic: test::ShouldPanic::No,
+                test_type: test::TestType::UnitTest,
+            },
+            testfn: test::StaticTestFn(
+                #[coverage(off)]
+                || test::assert_test_result(test_custom_attrs_are_not_copied_onto_generated_fns()),
+            ),
+        };
+    fn test_custom_attrs_are_not_copied_onto_generated_fns() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        client.empty2();
+    }
 }
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_empty])
+    test::test_main_static(&[
+        &test_custom_attrs_are_not_copied_onto_generated_fns,
+        &test_empty,
+    ])
 }

@@ -1,6 +1,7 @@
 #[cfg(not(target_family = "wasm"))]
 use crate::xdr::ScVal;
 use crate::{
+    crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val, U64Val},
     impl_bytesn_repr,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
@@ -23,66 +24,7 @@ pub struct Bls12_381 {
     env: Env,
 }
 
-// This routine was copied with slight modification from the arkworks library:
-// https://github.com/arkworks-rs/algebra/blob/bf1c9b22b30325ef4df4f701dedcb6dea904c587/ff/src/biginteger/arithmetic.rs#L66-L79
-fn sbb_for_sub_with_borrow(a: &mut u64, b: u64, borrow: u8) -> u8 {
-    let tmp = (1u128 << 64) + u128::from(*a) - u128::from(b) - u128::from(borrow);
-    // casting is safe here because `tmp` can only exceed u64 by a single
-    // (borrow) bit, which we capture in the next line.
-    *a = tmp as u64;
-    u8::from(tmp >> 64 == 0)
-}
-
-#[derive(Debug)]
-pub(crate) struct BigInt<const N: usize>(pub [u64; N]);
-
-impl<const N: usize> BigInt<N> {
-    pub fn sub_with_borrow(&mut self, other: &Self) -> bool {
-        let mut borrow = 0;
-        for i in 0..N {
-            borrow = sbb_for_sub_with_borrow(&mut self.0[i], other.0[i], borrow);
-        }
-        borrow != 0
-    }
-
-    pub fn copy_into_array<const M: usize>(&self, slice: &mut [u8; M]) {
-        const {
-            if M != N * 8 {
-                panic!("BigInt::copy_into_array with mismatched array length")
-            }
-        }
-
-        for i in 0..N {
-            let limb_bytes = self.0[N - 1 - i].to_be_bytes();
-            slice[i * 8..(i + 1) * 8].copy_from_slice(&limb_bytes);
-        }
-    }
-
-    pub fn is_zero(&self) -> bool {
-        self.0 == [0; N]
-    }
-}
-
-impl<const N: usize, const M: usize> From<&BytesN<M>> for BigInt<N> {
-    fn from(bytes: &BytesN<M>) -> Self {
-        if M != N * 8 {
-            panic!("BytesN::Into<BigInt> - length mismatch")
-        }
-
-        let array = bytes.to_array();
-        let mut limbs = [0u64; N];
-        for i in 0..N {
-            let start = i * 8;
-            let end = start + 8;
-            let mut chunk = [0u8; 8];
-            chunk.copy_from_slice(&array[start..end]);
-            limbs[N - 1 - i] = u64::from_be_bytes(chunk);
-        }
-        BigInt(limbs)
-    }
-}
-
-/// `G1Affine` is a point in the G1 group (subgroup defined over the base field
+/// `Bls12381G1Affine` is a point in the G1 group (subgroup defined over the base field
 ///  `Fq`) of the BLS12-381 elliptic curve
 ///
 /// # Serialization:
@@ -100,19 +42,22 @@ impl<const N: usize, const M: usize> From<&BytesN<M>> for BigInt<N> {
 ///
 /// # Example Usage:
 /// ```rust
-/// use soroban_sdk::{Env, bytesn, crypto::bls12_381::{Bls12_381, G1Affine}};
+/// use soroban_sdk::{Env, bytesn, crypto::bls12_381::{Bls12_381, Bls12381G1Affine}};
 /// let env = Env::default();
 /// let bls12_381 = env.crypto().bls12_381();
-/// let zero = G1Affine::from_bytes(bytesn!(&env, 0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000));
-/// let one = G1Affine::from_bytes(bytesn!(&env, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
+/// let zero = Bls12381G1Affine::from_bytes(bytesn!(&env, 0x400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000));
+/// let one = Bls12381G1Affine::from_bytes(bytesn!(&env, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
 /// let res = bls12_381.g1_add(&zero, &one);
 /// assert_eq!(res, one);
 /// ```
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct G1Affine(BytesN<G1_SERIALIZED_SIZE>);
+pub struct Bls12381G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 
-/// `G2Affine` is a point in the G2 group (subgroup defined over the quadratic
+/// Type alias for `Bls12381G1Affine` for convenience
+pub type G1Affine = Bls12381G1Affine;
+
+/// `Bls12381G2Affine` is a point in the G2 group (subgroup defined over the quadratic
 /// extension field `Fq2`) of the BLS12-381 elliptic curve
 ///
 /// # Serialization:
@@ -130,9 +75,12 @@ pub struct G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 ///   - sort_flag (bit 2): Must always be unset (0).
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct G2Affine(BytesN<G2_SERIALIZED_SIZE>);
+pub struct Bls12381G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 
-/// `Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
+/// Type alias for `Bls12381G2Affine` for convenience
+pub type G2Affine = Bls12381G2Affine;
+
+/// `Bls12381Fp` represents an element of the base field `Fq` of the BLS12-381 elliptic
 /// curve
 ///
 /// # Serialization:
@@ -140,9 +88,12 @@ pub struct G2Affine(BytesN<G2_SERIALIZED_SIZE>);
 ///   field `Fp`. The value is serialized as a big-endian integer.
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fp(BytesN<FP_SERIALIZED_SIZE>);
+pub struct Bls12381Fp(BytesN<FP_SERIALIZED_SIZE>);
 
-/// `Fp2` represents an element of the quadratic extension field `Fq2` of the
+/// Type alias for `Bls12381Fp` for convenience
+pub type Fp = Bls12381Fp;
+
+/// `Bls12381Fp2` represents an element of the quadratic extension field `Fq2` of the
 /// BLS12-381 elliptic curve
 ///
 /// # Serialization:
@@ -152,7 +103,10 @@ pub struct Fp(BytesN<FP_SERIALIZED_SIZE>);
 ///   and imaginary components).
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fp2(BytesN<FP2_SERIALIZED_SIZE>);
+pub struct Bls12381Fp2(BytesN<FP2_SERIALIZED_SIZE>);
+
+/// Type alias for `Bls12381Fp2` for convenience
+pub type Fp2 = Bls12381Fp2;
 
 /// `Fr` represents an element in the BLS12-381 scalar field, which is a prime
 /// field of order `r` (the order of the G1 and G2 groups). The struct is
@@ -162,10 +116,10 @@ pub struct Fp2(BytesN<FP2_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Fr(U256);
 
-impl_bytesn_repr!(G1Affine, G1_SERIALIZED_SIZE);
-impl_bytesn_repr!(G2Affine, G2_SERIALIZED_SIZE);
-impl_bytesn_repr!(Fp, FP_SERIALIZED_SIZE);
-impl_bytesn_repr!(Fp2, FP2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381G1Affine, G1_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381G2Affine, G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381Fp, FP_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381Fp2, FP2_SERIALIZED_SIZE);
 
 impl Fp {
     pub fn env(&self) -> &Env {

@@ -161,17 +161,17 @@ fn test_cost_estimate_budget() {
     // Budget breakdown corresponds to the last invocation only.
     expect![[r#"
         ===============================================================================================================================================================================
-        Cpu limit: 100000000; used: 242479
-        Mem limit: 41943040; used: 1126705
+        Cpu limit: 100000000; used: 257503
+        Mem limit: 41943040; used: 1145211
         ===============================================================================================================================================================================
         CostType                           iterations     input          cpu_insns      mem_bytes      const_term_cpu      lin_term_cpu        const_term_mem      lin_term_mem        
         WasmInsnExec                       284            None           1136           0              4                   0                   0                   0                   
         MemAlloc                           23             Some(1051337)  141397         1051705        434                 16                  16                  128                 
-        MemCpy                             97             Some(9494)     5246           0              42                  16                  0                   0                   
-        MemCmp                             60             Some(1806)     2854           0              44                  16                  0                   0                   
+        MemCpy                             104            Some(10589)    5675           0              42                  16                  0                   0                   
+        MemCmp                             67             Some(1996)     3184           0              44                  16                  0                   0                   
         DispatchHostFunction               1              None           310            0              310                 0                   0                   0                   
         VisitObject                        2              None           122            0              61                  0                   0                   0                   
-        ValSer                             0              Some(0)        0              0              230                 29                  242                 384                 
+        ValSer                             61             Some(1248)     14265          18506          230                 29                  242                 384                 
         ValDeser                           0              Some(0)        0              0              59052               4001                0                   384                 
         ComputeSha256Hash                  1              Some(0)        3738           0              3738                7012                0                   0                   
         ComputeEd25519PubKey               0              None           0              0              40253               0                   0                   0                   
@@ -235,11 +235,26 @@ fn test_cost_estimate_budget() {
         Bls12381FrMul                      0              None           0              0              332                 0                   0                   0                   
         Bls12381FrPow                      0              Some(0)        0              0              691                 74558               0                   128                 
         Bls12381FrInv                      0              None           0              0              35421               0                   0                   0                   
+        Bn254EncodeFp                      0              None           0              0              344                 0                   0                   0                   
+        Bn254DecodeFp                      0              None           0              0              476                 0                   0                   0                   
+        Bn254G1CheckPointOnCurve           0              None           0              0              904                 0                   0                   0                   
+        Bn254G2CheckPointOnCurve           0              None           0              0              2811                0                   0                   0                   
+        Bn254G2CheckPointInSubgroup        0              None           0              0              2937755             0                   0                   0                   
+        Bn254G1ProjectiveToAffine          0              None           0              0              61                  0                   0                   0                   
+        Bn254G1Add                         0              None           0              0              3623                0                   0                   0                   
+        Bn254G1Mul                         0              None           0              0              1150435             0                   0                   0                   
+        Bn254Pairing                       0              Some(0)        0              0              5263916             392472814           1821                6232546             
+        Bn254FrFromU256                    0              None           0              0              2052                0                   0                   0                   
+        Bn254FrToU256                      0              None           0              0              1133                0                   312                 0                   
+        Bn254FrAddSub                      0              None           0              0              74                  0                   0                   0                   
+        Bn254FrMul                         0              None           0              0              332                 0                   0                   0                   
+        Bn254FrPow                         0              Some(0)        0              0              755                 68930               0                   0                   
+        Bn254FrInv                         0              None           0              0              33151               0                   0                   0                   
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
-        Total # times meter was called: 197
-        Shadow cpu limit: 100000000; used: 31868
-        Shadow mem limit: 41943040; used: 27092
+        Total # times meter was called: 272
+        Shadow cpu limit: 100000000; used: 32431
+        Shadow mem limit: 41943040; used: 27108
         ===============================================================================================================================================================================
 
 

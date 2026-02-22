@@ -1,3 +1,29 @@
+//! # Migrating from v23 to v25
+//!
+//! 1. [`Events::all()` return type changed from `Vec<(Address, Vec<Val>, Val)>` to `ContractEvents`][v25_event_testing].
+//!    The new type supports the old comparison format, so most code will continue to work.
+//!    New methods like `filter_by_contract()` and XDR comparison via `to_xdr()` are now available.
+//!
+//! 2. [BN254 (alt_bn128) elliptic curve support added][v25_bn254].
+//!    Access via `env.crypto().bn254()` for G1/G2 point operations and pairing checks.
+//!
+//! 3. [Poseidon and Poseidon2 permutation functions added][v25_poseidon].
+//!    Available via `CryptoHazmat` under the `hazmat-crypto` feature for advanced
+//!    cryptographic use cases.
+//!
+//! 4. [`contracttrait` macro added for reusable contract interfaces][v25_contracttrait].
+//!    Define traits with default implementations using `#[contracttrait]`, then implement them
+//!    in contracts using `#[contractimpl(contracttrait)]`.
+//!
+//! 5. [Resource limit enforcement enabled by default in tests][v25_resource_limits].
+//!    `Env::default()` now enforces Mainnet resource limits for contract invocations.
+//!    Tests will fail if limits are exceeded. This provides early warning of contracts that
+//!    may be too resource-heavy for Mainnet. If you see test failures after upgrading,
+//!    use `env.cost_estimate().disable_resource_limits()` to opt-out while optimizing.
+//!
+//! [v25_contracttrait]: v25_contracttrait
+//! [v25_resource_limits]: v25_resource_limits
+//!
 //! # Migrating from v22 to v23
 //!
 //! 1. [`contractevent` replaces `Events::publish`][v23_contractevent]
@@ -249,3 +275,8 @@
 
 pub mod v23_archived_testing;
 pub mod v23_contractevent;
+pub mod v25_bn254;
+pub mod v25_contracttrait;
+pub mod v25_event_testing;
+pub mod v25_poseidon;
+pub mod v25_resource_limits;
