@@ -148,13 +148,6 @@ impl DataKey {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for DataKey {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <u32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]

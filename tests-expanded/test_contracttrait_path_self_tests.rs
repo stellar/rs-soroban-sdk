@@ -333,9 +333,8 @@ impl ContractSelfPathArgs {}
 )]
 #[allow(deprecated)]
 pub fn __ContractSelfPath__self_path_method__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    use self::SelfPathTrait;
     soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-        <ContractSelfPath>::self_path_method(&env),
+        <ContractSelfPath as self::SelfPathTrait>::self_path_method(&env),
         &env,
     )
 }

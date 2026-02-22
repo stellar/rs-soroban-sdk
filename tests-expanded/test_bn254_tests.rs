@@ -20,14 +20,6 @@ impl MockProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for MockProof {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <Vec<Bn254G1Affine> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <Vec<Bn254G2Affine> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(

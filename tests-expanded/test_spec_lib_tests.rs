@@ -54,14 +54,6 @@ impl StructA {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for StructA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <u32 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <bool as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -471,14 +463,6 @@ pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
 impl StructB {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
-    }
-}
-impl soroban_sdk::IncludeSpecMarker for StructB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <soroban_sdk::String as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
@@ -892,14 +876,6 @@ impl StructC {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for StructC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <Vec<u32> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -1307,14 +1283,6 @@ impl StructTupleA {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for StructTupleA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1684,14 +1652,6 @@ pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr(
 impl StructTupleB {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
-    }
-}
-impl soroban_sdk::IncludeSpecMarker for StructTupleB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <u128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <u128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
@@ -2064,14 +2024,6 @@ pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr(
 impl StructTupleC {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
-    }
-}
-impl soroban_sdk::IncludeSpecMarker for StructTupleC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
@@ -2456,11 +2408,6 @@ impl EnumA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
     }
-}
-impl soroban_sdk::IncludeSpecMarker for EnumA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
     type Error = soroban_sdk::ConversionError;
@@ -2925,13 +2872,6 @@ pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
 impl EnumB {
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
-    }
-}
-impl soroban_sdk::IncludeSpecMarker for EnumB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -3521,14 +3461,6 @@ impl EnumC {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for EnumC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <StructA as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <StructTupleA as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -4067,11 +3999,6 @@ impl EnumIntA {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for EnumIntA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -4409,11 +4336,6 @@ impl EnumIntB {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
     }
-}
-impl soroban_sdk::IncludeSpecMarker for EnumIntB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
     type Error = soroban_sdk::ConversionError;
@@ -4753,11 +4675,6 @@ impl EnumIntC {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for EnumIntC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -5096,11 +5013,6 @@ impl ErrorA {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for ErrorA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
-}
 impl TryFrom<soroban_sdk::Error> for ErrorA {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -5263,11 +5175,6 @@ impl ErrorB {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
     }
-}
-impl soroban_sdk::IncludeSpecMarker for ErrorB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
 }
 impl TryFrom<soroban_sdk::Error> for ErrorB {
     type Error = soroban_sdk::Error;
@@ -5432,11 +5339,6 @@ impl ErrorC {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for ErrorC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
-}
 impl TryFrom<soroban_sdk::Error> for ErrorC {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -5596,14 +5498,6 @@ impl EventA {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for EventA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <soroban_sdk::String as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::Event for EventA {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -5631,7 +5525,6 @@ impl soroban_sdk::Event for EventA {
 }
 impl EventA {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -5685,15 +5578,6 @@ impl EventB {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for EventB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::Event for EventB {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -5725,7 +5609,6 @@ impl soroban_sdk::Event for EventB {
 }
 impl EventB {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -5779,15 +5662,6 @@ impl EventC {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for EventC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <soroban_sdk::Symbol as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::Event for EventC {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -5815,7 +5689,6 @@ impl soroban_sdk::Event for EventC {
 }
 impl EventC {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

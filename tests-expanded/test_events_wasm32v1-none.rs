@@ -38,21 +38,6 @@ impl Transfer {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for Transfer {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <Address as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i128 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <Option<u64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        #[cfg(target_family = "wasm")]
-        {
-            static MARKER: [u8; 12usize] = *b"SpEc;\xc1i\xa0H>\x8d\xf1";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::Event for Transfer {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -85,7 +70,6 @@ impl soroban_sdk::Event for Transfer {
 }
 impl Transfer {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

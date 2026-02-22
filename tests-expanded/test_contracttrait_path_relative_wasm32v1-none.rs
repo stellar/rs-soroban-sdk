@@ -109,9 +109,8 @@ impl ContractRelativePathArgs {}
 pub fn __ContractRelativePath__relative_path_method__invoke_raw(
     env: soroban_sdk::Env,
 ) -> soroban_sdk::Val {
-    use traits::RelativePathTrait;
     soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-        <ContractRelativePath>::relative_path_method(&env),
+        <ContractRelativePath as traits::RelativePathTrait>::relative_path_method(&env),
         &env,
     )
 }

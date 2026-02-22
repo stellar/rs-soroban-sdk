@@ -1542,6 +1542,45 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn set_storage(env: Env, key: Symbol, val: Symbol) {
+    ///         env.storage().persistent().set(&key, &val);
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(HelloContract, ());
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///
+    ///     let key = Symbol::new(&env, "foo");
+    ///     let val = Symbol::new(&env, "bar");
+    ///
+    ///     // Set storage using the contract
+    ///     client.set_storage(&key, &val);
+    ///
+    ///     // Successfully read the storage key
+    ///     let result = env.as_contract(&contract_id, || {
+    ///         env.storage()
+    ///             .persistent()
+    ///             .get::<Symbol, Symbol>(&key)
+    ///             .unwrap()
+    ///     });
+    ///     assert_eq!(result, val);
+    /// }
+    /// ```
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
         let id = id.contract_id();
         let func = Symbol::from_small_str("");
@@ -1553,6 +1592,86 @@ impl Env {
             })
             .unwrap();
         t.unwrap()
+    }
+
+    /// Run the function as if executed by the given contract ID. Returns an
+    /// error if the function execution fails for any reason.
+    ///
+    /// Used to write or read contract data, or take other actions in tests for
+    /// setting up tests or asserting on internal state.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, xdr::{ScErrorCode, ScErrorType}, Env, Error, Symbol};
+    ///
+    /// #[contract]
+    /// pub struct HelloContract;
+    ///
+    /// #[contractimpl]
+    /// impl HelloContract {
+    ///     pub fn set_storage(env: Env, key: Symbol, val: Symbol) {
+    ///         env.storage().persistent().set(&key, &val);
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(HelloContract, ());
+    ///     let client = HelloContractClient::new(&env, &contract_id);
+    ///
+    ///     let key = Symbol::new(&env, "foo");
+    ///     let val = Symbol::new(&env, "bar");
+    ///
+    ///     // Set storage using the contract
+    ///     client.set_storage(&key, &val);
+    ///
+    ///     // Successfully read the storage key
+    ///     let result = env.try_as_contract::<Symbol, Error>(&contract_id, || {
+    ///         env.storage()
+    ///             .persistent()
+    ///             .get::<Symbol, Symbol>(&key)
+    ///             .unwrap()
+    ///     });
+    ///     assert_eq!(result, Ok(val));
+    ///
+    ///     // Attempting to extend TTL of a non-existent key throws an error
+    ///     let new_key = Symbol::new(&env, "baz");
+    ///     let result = env.try_as_contract(&contract_id, || {
+    ///         env.storage().persistent().extend_ttl(&new_key, 1, 100);
+    ///     });
+    ///     assert_eq!(
+    ///         result,
+    ///         Err(Ok(Error::from_type_and_code(
+    ///             ScErrorType::Storage,
+    ///             ScErrorCode::MissingValue
+    ///         )))
+    ///     );
+    /// }
+    /// ```
+    pub fn try_as_contract<T, E>(
+        &self,
+        id: &Address,
+        f: impl FnOnce() -> T,
+    ) -> Result<T, Result<E, InvokeError>>
+    where
+        E: TryFrom<Error>,
+        E::Error: Into<InvokeError>,
+    {
+        let id = id.contract_id();
+        let func = Symbol::from_small_str("");
+        let mut t: Option<T> = None;
+        let result = self.env_impl.try_with_test_contract_frame(id, func, || {
+            t = Some(f());
+            Ok(().into())
+        });
+
+        match result {
+            Ok(_) => Ok(t.unwrap()),
+            Err(e) => Err(E::try_from(e.error).map_err(Into::into)),
+        }
     }
 
     /// Creates a new Env loaded with the [`Snapshot`].

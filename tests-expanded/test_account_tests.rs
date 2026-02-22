@@ -57,11 +57,6 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for Error {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
-}
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -350,9 +345,8 @@ pub fn __Contract____check_auth__invoke_raw(
     arg_1: soroban_sdk::Val,
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use CustomAccountInterface;
     soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-        <Contract>::__check_auth(
+        <Contract as CustomAccountInterface>::__check_auth(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<

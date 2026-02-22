@@ -56,11 +56,6 @@ impl UdtEnum2 {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for UdtEnum2 {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {}
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -403,15 +398,6 @@ pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
 impl UdtEnum {
     pub const fn spec_xdr() -> [u8; 156usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
-    }
-}
-impl soroban_sdk::IncludeSpecMarker for UdtEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <UdtStruct as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <UdtEnum2 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <UdtTuple as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
@@ -1020,14 +1006,6 @@ impl UdtTuple {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
-impl soroban_sdk::IncludeSpecMarker for UdtTuple {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <Vec<i64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1414,15 +1392,6 @@ pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
 impl UdtStruct {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
-    }
-}
-impl soroban_sdk::IncludeSpecMarker for UdtStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn include_spec_marker() {
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <i64 as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
-        <Vec<i64> as soroban_sdk::IncludeSpecMarker>::include_spec_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
