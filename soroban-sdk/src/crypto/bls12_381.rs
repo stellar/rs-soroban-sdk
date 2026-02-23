@@ -1,6 +1,7 @@
 #[cfg(not(target_family = "wasm"))]
 use crate::xdr::ScVal;
 use crate::{
+    bytes,
     crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val, U64Val},
     impl_bytesn_repr,
@@ -430,9 +431,24 @@ impl Fr {
     }
 }
 
+/// BLS12-381 scalar field modulus r =
+/// 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+fn fr_modulus(env: &Env) -> U256 {
+    U256::from_be_bytes(
+        env,
+        &bytes!(
+            env,
+            0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+        ),
+    )
+}
+
 impl From<U256> for Fr {
     fn from(value: U256) -> Self {
-        Self(value)
+        // Keep all Fr construction paths canonical by reducing modulo r here.
+        // Constructors and deserialization paths should route through this impl.
+        let modulus = fr_modulus(value.env());
+        Self(value.rem_euclid(&modulus))
     }
 }
 
@@ -447,7 +463,7 @@ impl TryFromVal<Env, Val> for Fr {
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         let u = U256::try_from_val(env, val)?;
-        Ok(Fr(u))
+        Ok(u.into())
     }
 }
 
@@ -727,6 +743,7 @@ impl Bls12_381 {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::bytesn;
 
     #[test]
     fn test_g1affine_to_val() {
@@ -792,5 +809,89 @@ mod test {
         let rt: Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
+    }
+
+    #[test]
+    fn test_fr_eq_both_unreduced() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let a = Fr::from_u256(r.add(&one));
+        let b = Fr::from_u256(one.clone());
+        assert_eq!(a, b);
+
+        let two_r_plus_one = r.add(&r).add(&one);
+        let c = Fr::from_u256(two_r_plus_one);
+        assert_eq!(a, c);
+        assert_eq!(b, c);
+    }
+
+    #[test]
+    fn test_fr_eq_unreduced_vs_zero() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let zero = U256::from_u32(&env, 0);
+
+        let a = Fr::from_u256(r);
+        let b = Fr::from_u256(zero);
+        assert_eq!(a, b);
+    }
+
+    #[test]
+    fn test_fr_reduced_value_unchanged() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let val = r.sub(&U256::from_u32(&env, 1));
+
+        let fr = Fr::from_u256(val.clone());
+        assert_eq!(fr.to_u256(), val);
+
+        let fr42 = Fr::from_u256(U256::from_u32(&env, 42));
+        assert_eq!(fr42.to_u256(), U256::from_u32(&env, 42));
+    }
+
+    #[test]
+    fn test_fr_from_bytes_reduces() {
+        let env = Env::default();
+        let one_fr = Fr::from_u256(U256::from_u32(&env, 1));
+
+        // BLS12-381 r+1 as big-endian bytes
+        let fr_from_bytes = Fr::from_bytes(bytesn!(
+            &env,
+            0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000002
+        ));
+        assert_eq!(fr_from_bytes, one_fr);
+    }
+
+    #[test]
+    fn test_fr_try_from_val_reduces() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let unreduced_u256 = r.add(&one);
+        let val: Val = unreduced_u256.into_val(&env);
+        let fr_from_val: Fr = val.into_val(&env);
+        let fr_one = Fr::from_u256(one);
+        assert_eq!(fr_from_val, fr_one);
+    }
+
+    #[test]
+    fn test_fr_eq_unreduced_vs_host_computed() {
+        // User-provided unreduced Fr vs host-computed Fr
+        let env = Env::default();
+        let bls = Bls12_381::new(&env);
+        let r = fr_modulus(&env);
+        let five = U256::from_u32(&env, 5);
+
+        // User provides r+5 (unreduced)
+        let user_fr = Fr::from_u256(r.add(&five));
+        // Host computes 2+3 = 5 (always reduced)
+        let host_fr = bls.fr_add(
+            &Fr::from_u256(U256::from_u32(&env, 2)),
+            &Fr::from_u256(U256::from_u32(&env, 3)),
+        );
+        assert_eq!(user_fr, host_fr);
     }
 }
