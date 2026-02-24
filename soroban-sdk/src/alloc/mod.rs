@@ -1,9 +1,17 @@
 //! Allocator used by contracts built with the `alloc` feature.
 //!
-//! The `alloc` feature is **disabled by default**. Contracts will generally be
-//! implementable using stack-allocated or host-managed types (e.g.
-//! [`Vec`](crate::Vec), [`Map`](crate::Map), [`Bytes`](crate::Bytes)). The
-//! feature is only necessary when when heap allocation is needed.
+//! The `alloc` feature is **disabled by default**. It exists to support a
+//! use-case that is both expensive (in terms of CPU time and code size) and
+//! typically unnecessary: allocating unbounded memory, dynamically, in the wasm
+//! guest's linear-memory heap. Soroban was designed to avoid this need most of
+//! the time: host objects like [`Vec`](crate::Vec), [`Map`](crate::Map), or
+//! [`Bytes`](crate::Bytes) already support dynamic growth, but live in the host
+//! heap and are efficient to use from the guest without any guest memory
+//! allocator. Moreover even if a contract _does_ want guest-memory storage of
+//! dynamic data, it can accomplish it in bounded static memory using a crate
+//! like [`heapless`](https://crates.io/crates/heapless). Turning on the `alloc`
+//! feature should usually be the last choice for contracts with no better
+//! option.
 //!
 //! # Enabling
 //!
