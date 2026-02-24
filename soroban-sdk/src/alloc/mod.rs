@@ -24,8 +24,8 @@
 //!
 //! With the feature enabled the SDK registers a global bump-pointer allocator
 //! that services all allocations made through Rust's [`alloc`](alloc_crate)
-//! APIs. This makes heap-allocated types such as `alloc::vec::Vec` and
-//! `alloc::string::String` available inside contracts, and enables SDK helpers
+//! APIs. This makes heap-allocated types such as `::alloc::vec::Vec` and
+//! `::alloc::string::String` available inside contracts, and enables SDK helpers
 //! that require allocation (e.g. [`Bytes::to_alloc_vec`]).
 //!
 //! [alloc_crate]: https://doc.rust-lang.org/alloc/
