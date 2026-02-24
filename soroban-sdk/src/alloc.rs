@@ -18,7 +18,38 @@
 use crate::unwrap::UnwrapOptimized;
 use core::alloc::{GlobalAlloc, Layout};
 
+#[global_allocator]
+static GLOBAL: BumpPointer = BumpPointer;
+
+struct BumpPointer;
+
+// Safety: The mutable reference to LOCAL_ALLOCATOR in GlobalAlloc::alloc is
+// safe because:
+//
+// 1. This code only runs on wasm32, which is single-threaded — no concurrent
+//    access is possible.
+// 2. The reference is narrowly scoped — it is created, used for a single
+//    method call, and immediately dropped within GlobalAlloc::alloc.
+// 3. Reentrancy cannot occur — none of the code called through
+//    BumpPointerLocal::alloc can allocate (it is all simple integer
+//    arithmetic and wasm intrinsics), so the global allocator will not
+//    be re-entered while the reference is live.
+//
+// See: https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html#safe-references
 static mut LOCAL_ALLOCATOR: BumpPointerLocal = BumpPointerLocal::new();
+
+unsafe impl GlobalAlloc for BumpPointer {
+    #[inline(always)]
+    #[allow(static_mut_refs)]
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        let (bytes, align) = (layout.size(), layout.align());
+        let ptr = LOCAL_ALLOCATOR.alloc(bytes, align);
+        core::ptr::with_exposed_provenance_mut(ptr)
+    }
+
+    #[inline(always)]
+    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {}
+}
 
 struct BumpPointerLocal {
     cursor: usize,
@@ -88,21 +119,3 @@ impl BumpPointerLocal {
         self.alloc_slow_inline(bytes, align)
     }
 }
-
-pub struct BumpPointer;
-
-unsafe impl GlobalAlloc for BumpPointer {
-    #[inline(always)]
-    #[allow(static_mut_refs)]
-    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        let (bytes, align) = (layout.size(), layout.align());
-        let ptr = LOCAL_ALLOCATOR.alloc(bytes, align);
-        core::ptr::with_exposed_provenance_mut(ptr)
-    }
-
-    #[inline(always)]
-    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {}
-}
-
-#[global_allocator]
-static GLOBAL: BumpPointer = BumpPointer;
