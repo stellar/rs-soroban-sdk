@@ -153,13 +153,12 @@ pub fn __ContractGlobalPath__test_u32__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_u32(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u32(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -210,13 +209,12 @@ pub fn __ContractGlobalPath__test_i32__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_i32(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i32(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -264,13 +262,12 @@ pub fn __ContractGlobalPath__test_u64__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_u64(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u64(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -316,13 +313,12 @@ pub fn __ContractGlobalPath__test_i64__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_i64(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i64(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -368,13 +364,12 @@ pub fn __ContractGlobalPath__test_u128__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_u128(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u128(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -420,13 +415,12 @@ pub fn __ContractGlobalPath__test_i128__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_i128(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i128(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -472,13 +466,12 @@ pub fn __ContractGlobalPath__test_bool__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_bool(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bool(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -524,13 +517,12 @@ pub fn __ContractGlobalPath__test_address__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_address(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_address(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -576,13 +568,12 @@ pub fn __ContractGlobalPath__test_bytes__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_bytes(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bytes(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -628,13 +619,12 @@ pub fn __ContractGlobalPath__test_bytes_n__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_bytes_n(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_bytes_n(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -680,13 +670,12 @@ pub fn __ContractGlobalPath__test_string__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_string(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_string(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -732,13 +721,12 @@ pub fn __ContractGlobalPath__test_symbol__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_symbol(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_symbol(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -784,13 +772,12 @@ pub fn __ContractGlobalPath__test_vec__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_vec(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_vec(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -836,13 +823,12 @@ pub fn __ContractGlobalPath__test_map__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_map(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_map(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -890,13 +876,12 @@ pub fn __ContractGlobalPath__test_duration__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_duration(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_duration(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -948,13 +933,12 @@ pub fn __ContractGlobalPath__test_timepoint__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_timepoint(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_timepoint(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -1004,13 +988,12 @@ pub fn __ContractGlobalPath__test_i256__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_i256(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_i256(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -1056,13 +1039,12 @@ pub fn __ContractGlobalPath__test_u256__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_u256(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_u256(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -1107,10 +1089,9 @@ pub extern "C" fn __ContractGlobalPath__test_u256__invoke_raw_extern(
     note = "use `ContractGlobalPathClient::new(&env, &contract_id).test_env_param` instead"
 )]
 pub fn __ContractGlobalPath__test_env_param__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_env_param(&env),
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_env_param(&env),
         &env,
     )
 }
@@ -1151,13 +1132,12 @@ pub fn __ContractGlobalPath__test_struct__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_struct(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_struct(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -1205,13 +1185,12 @@ pub fn __ContractGlobalPath__test_enum_unit__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_enum_unit(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_enum_unit(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -1263,13 +1242,12 @@ pub fn __ContractGlobalPath__test_enum_variants__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use test_contracttrait_trait::AllTypes;
     <_ as soroban_sdk::IntoVal<
         soroban_sdk::Env,
         soroban_sdk::Val,
     >>::into_val(
         #[allow(deprecated)]
-        &<ContractGlobalPath>::test_enum_variants(
+        &<ContractGlobalPath as ::test_contracttrait_trait::AllTypes>::test_enum_variants(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
