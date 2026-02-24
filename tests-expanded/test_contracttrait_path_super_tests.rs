@@ -336,10 +336,9 @@ pub mod submodule {
     pub fn __ContractSuperPath__super_path_method__invoke_raw(
         env: soroban_sdk::Env,
     ) -> soroban_sdk::Val {
-        use super::SuperPathTrait;
         <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
             #[allow(deprecated)]
-            &<ContractSuperPath>::super_path_method(&env),
+            &<ContractSuperPath as super::SuperPathTrait>::super_path_method(&env),
             &env,
         )
     }

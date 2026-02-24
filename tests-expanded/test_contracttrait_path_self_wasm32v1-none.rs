@@ -100,10 +100,9 @@ impl ContractSelfPathArgs {}
     note = "use `ContractSelfPathClient::new(&env, &contract_id).self_path_method` instead"
 )]
 pub fn __ContractSelfPath__self_path_method__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    use self::SelfPathTrait;
     <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        &<ContractSelfPath>::self_path_method(&env),
+        &<ContractSelfPath as self::SelfPathTrait>::self_path_method(&env),
         &env,
     )
 }

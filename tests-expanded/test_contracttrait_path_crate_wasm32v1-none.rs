@@ -108,10 +108,9 @@ impl ContractCratePathArgs {}
 pub fn __ContractCratePath__crate_path_method__invoke_raw(
     env: soroban_sdk::Env,
 ) -> soroban_sdk::Val {
-    use crate::traits::CratePathTrait;
     <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        &<ContractCratePath>::crate_path_method(&env),
+        &<ContractCratePath as crate::traits::CratePathTrait>::crate_path_method(&env),
         &env,
     )
 }

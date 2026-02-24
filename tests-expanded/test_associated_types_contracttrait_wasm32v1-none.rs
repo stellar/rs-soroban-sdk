@@ -118,10 +118,9 @@ impl ContractArgs {}
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
 pub fn __Contract__exec__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    use Trait;
     <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        &<Contract>::exec(&env),
+        &<Contract as Trait>::exec(&env),
         &env,
     )
 }
@@ -273,10 +272,9 @@ impl ContractArgs {
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec2` instead")]
 pub fn __Contract__exec2__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    use TraitWithoutContractTrait;
     <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
         #[allow(deprecated)]
-        &<Contract>::exec2(&env),
+        &<Contract as TraitWithoutContractTrait>::exec2(&env),
         &env,
     )
 }

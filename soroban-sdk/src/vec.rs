@@ -984,7 +984,7 @@ where
         T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
-        VecTryIter::new(self.clone())
+        VecTryIter::new(self)
     }
 }
 
