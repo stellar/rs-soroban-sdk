@@ -81,7 +81,7 @@ dependencies = [
  "educe",
  "fnv",
  "hashbrown 0.15.5",
- "itertools 0.13.0",
+ "itertools",
  "num-bigint",
  "num-integer",
  "num-traits",
@@ -101,7 +101,7 @@ dependencies = [
  "arrayvec",
  "digest",
  "educe",
- "itertools 0.13.0",
+ "itertools",
  "num-bigint",
  "num-traits",
  "paste",
@@ -849,15 +849,6 @@ checksum = "8e04e2fd2b8188ea827b32ef11de88377086d690286ab35747ef7f9bf3ccb590"
 
 [[package]]
 name = "itertools"
-version = "0.10.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
@@ -1390,7 +1381,7 @@ name = "soroban-builtin-sdk-macros"
 version = "26.0.0-rc.1"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=65f2f07533bc716de97233c46ddc2f1121629d35#65f2f07533bc716de97233c46ddc2f1121629d35"
 dependencies = [
- "itertools 0.13.0",
+ "itertools",
  "proc-macro2",
  "quote",
  "syn",
@@ -1464,7 +1455,7 @@ name = "soroban-env-macros"
 version = "26.0.0-rc.1"
 source = "git+https://github.com/stellar/rs-soroban-env?rev=65f2f07533bc716de97233c46ddc2f1121629d35#65f2f07533bc716de97233c46ddc2f1121629d35"
 dependencies = [
- "itertools 0.13.0",
+ "itertools",
  "proc-macro2",
  "quote",
  "serde",
@@ -1532,7 +1523,7 @@ version = "25.1.1"
 dependencies = [
  "darling",
  "heck",
- "itertools 0.10.5",
+ "itertools",
  "macro-string",
  "proc-macro2",
  "quote",
