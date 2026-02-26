@@ -129,7 +129,7 @@ mod mainnet {
       let client = TokenClient::new(&e, &contract);
       let addr = Address::from_str(&e, "GBLKX4UPDM7CC4UUG2FXBLOCXOTQ6ARHOQYVL4RD6A4AQVB6TPTLIUYN");
       let res = client.balance(&addr);
-      std::println!("\x1b[32m{ledger} {} bal = {res}\x1b[0m", tx.map(|t| std::format!("{:02x}{:02x}{:x}", t[0], t[1], t[2] >> 4)).unwrap_or_default());
+      std::println!("\x1b[32m{ledger} {} bal = {res}\x1b[0m", tx.map(|t| hex::encode(t)).unwrap_or_default());
       res
     }
 
