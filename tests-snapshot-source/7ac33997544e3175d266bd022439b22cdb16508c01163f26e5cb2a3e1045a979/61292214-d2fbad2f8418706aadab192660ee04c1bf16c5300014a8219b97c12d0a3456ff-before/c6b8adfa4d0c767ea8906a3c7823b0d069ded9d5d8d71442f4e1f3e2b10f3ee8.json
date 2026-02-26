@@ -1,0 +1,39 @@
+{
+  "last_modified_ledger_seq": 61292212,
+  "data": {
+    "account": {
+      "account_id": "GBLKX4UPDM7CC4UUG2FXBLOCXOTQ6ARHOQYVL4RD6A4AQVB6TPTLIUYN",
+      "balance": "18662250331",
+      "seq_num": "233832081317167159",
+      "num_sub_entries": 50,
+      "inflation_dest": "GDCHDRSDOBRMSUDKRE2C4U4KDLNEATJPIHHR2ORFL5BSD56G4DQXL4VW",
+      "flags": 0,
+      "home_domain": "lobstr.co",
+      "thresholds": "01000000",
+      "signers": [],
+      "ext": {
+        "v1": {
+          "liabilities": {
+            "buying": "0",
+            "selling": "21894525"
+          },
+          "ext": {
+            "v2": {
+              "num_sponsored": 0,
+              "num_sponsoring": 0,
+              "signer_sponsoring_i_ds": [],
+              "ext": {
+                "v3": {
+                  "ext": "v0",
+                  "seq_ledger": 61292152,
+                  "seq_time": "1771441174"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "ext": "v0"
+}

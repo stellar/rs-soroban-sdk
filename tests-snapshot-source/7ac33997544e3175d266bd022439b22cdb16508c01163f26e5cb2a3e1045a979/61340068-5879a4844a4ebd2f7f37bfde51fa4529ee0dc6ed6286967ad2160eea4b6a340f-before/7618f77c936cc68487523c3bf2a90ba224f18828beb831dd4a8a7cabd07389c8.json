@@ -1,0 +1,44 @@
+{
+  "last_modified_ledger_seq": 61340066,
+  "data": {
+    "account": {
+      "account_id": "GCO45COWIBDZEGJ3DRGDGCCCJXK777F2S6D6HXQKXVB3EKQVCQU7B2WA",
+      "balance": "827944242",
+      "seq_num": "206881591031603723",
+      "num_sub_entries": 23,
+      "inflation_dest": null,
+      "flags": 0,
+      "home_domain": "",
+      "thresholds": "01000000",
+      "signers": [],
+      "ext": {
+        "v1": {
+          "liabilities": {
+            "buying": "3370680361",
+            "selling": "190363081"
+          },
+          "ext": {
+            "v2": {
+              "num_sponsored": 0,
+              "num_sponsoring": 0,
+              "signer_sponsoring_i_ds": [],
+              "ext": {
+                "v3": {
+                  "ext": "v0",
+                  "seq_ledger": 61191436,
+                  "seq_time": "1770853357"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "ext": {
+    "v1": {
+      "sponsoring_id": null,
+      "ext": "v0"
+    }
+  }
+}
