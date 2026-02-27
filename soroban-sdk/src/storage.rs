@@ -2,9 +2,9 @@
 use core::fmt::Debug;
 
 use crate::{
-    env::internal::{self, StorageType, Val},
+    env::internal::{self, ContractTtlExtension, StorageType, Val},
     unwrap::{UnwrapInfallible, UnwrapOptimized},
-    Env, IntoVal, TryFromVal,
+    Address, Env, IntoVal, TryFromVal,
 };
 
 /// Storage stores and retrieves data for the currently executing contract.
@@ -274,6 +274,28 @@ impl Storage {
         .unwrap_infallible();
     }
 
+    pub(crate) fn extend_ttl_v2<K>(
+        &self,
+        key: &K,
+        storage_type: StorageType,
+        extend_to: u32,
+        min_extension: u32,
+        max_extension: u32,
+    ) where
+        K: IntoVal<Env, Val>,
+    {
+        let env = &self.env;
+        internal::Env::extend_contract_data_ttl_v2(
+            env,
+            key.into_val(env),
+            storage_type,
+            extend_to.into(),
+            min_extension.into(),
+            max_extension.into(),
+        )
+        .unwrap_infallible();
+    }
+
     /// Removes the key and the corresponding value from the currently executing
     /// contract's storage.
     ///
@@ -378,6 +400,24 @@ impl Persistent {
             .extend_ttl(key, StorageType::Persistent, threshold, extend_to)
     }
 
+    /// Extend the TTL of the data under the key with bounded extension (protocol 26+).
+    ///
+    /// - `extend_to`: Target TTL in ledgers.
+    /// - `min_extension`: Only extend if at least this many ledgers would be added.
+    /// - `max_extension`: Don't extend more than this many ledgers.
+    pub fn extend_ttl_v2<K>(&self, key: &K, extend_to: u32, min_extension: u32, max_extension: u32)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.extend_ttl_v2(
+            key,
+            StorageType::Persistent,
+            extend_to,
+            min_extension,
+            max_extension,
+        )
+    }
+
     #[inline(always)]
     pub fn remove<K>(&self, key: &K)
     where
@@ -465,6 +505,20 @@ impl Temporary {
     {
         self.storage
             .extend_ttl(key, StorageType::Temporary, threshold, extend_to)
+    }
+
+    /// Extend the TTL of the data under the key with bounded extension (protocol 26+).
+    pub fn extend_ttl_v2<K>(&self, key: &K, extend_to: u32, min_extension: u32, max_extension: u32)
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.extend_ttl_v2(
+            key,
+            StorageType::Temporary,
+            extend_to,
+            min_extension,
+            max_extension,
+        )
     }
 
     #[inline(always)]
@@ -563,6 +617,32 @@ impl Instance {
             &self.storage.env,
             threshold.into(),
             extend_to.into(),
+        )
+        .unwrap_infallible();
+    }
+
+    /// Extend the TTL of a contract's instance and/or code with bounded extension (protocol 26+).
+    ///
+    /// - `contract`: The contract whose TTL to extend.
+    /// - `scope`: Which entries to extend (InstanceAndCode, Instance, or Code).
+    /// - `extend_to`: Target TTL in ledgers.
+    /// - `min_extension`: Only extend if at least this many ledgers would be added.
+    /// - `max_extension`: Don't extend more than this many ledgers.
+    pub fn extend_ttl_v2(
+        &self,
+        contract: &Address,
+        scope: ContractTtlExtension,
+        extend_to: u32,
+        min_extension: u32,
+        max_extension: u32,
+    ) {
+        internal::Env::extend_contract_instance_and_code_ttl_v2(
+            &self.storage.env,
+            contract.to_object(),
+            scope,
+            extend_to.into(),
+            min_extension.into(),
+            max_extension.into(),
         )
         .unwrap_infallible();
     }
