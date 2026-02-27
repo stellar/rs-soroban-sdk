@@ -233,18 +233,22 @@ pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Path>,
-    method_idents: impl Iterator<Item = &'a Ident>,
+    method_idents: impl Iterator<Item = (&'a Ident, &'a [Attribute])>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
         return quote!();
     }
 
     let ty_str = ty_to_safe_ident_str(ty);
-    let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
-        .map(|ident| {
+    let (idents, wrap_idents, cfg_attrs): (Vec<_>, Vec<_>, Vec<_>) = method_idents
+        .map(|(ident, attrs)| {
             let ident_str = format!("{}", ident);
             let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
-            (ident_str, wrap_ident)
+            let cfg_attrs: Vec<_> = attrs
+                .iter()
+                .filter(|attr| attr.path().is_ident("cfg"))
+                .collect();
+            (ident_str, wrap_ident, cfg_attrs)
         })
         .multiunzip();
 
@@ -266,6 +270,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
         #[allow(non_snake_case)]
         fn #ctor_ident() {
             #(
+                #(#cfg_attrs)*
                 <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
                     #idents,
                     #[allow(deprecated)]

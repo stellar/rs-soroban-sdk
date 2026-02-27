@@ -81,7 +81,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         &args.crate_path,
         &impl_ty,
         Some(trait_ident),
-        fns.iter().map(|f| &f.ident),
+        fns.iter().map(|f| (&f.ident, f.attrs.as_slice())),
     ));
 
     Ok(output)
