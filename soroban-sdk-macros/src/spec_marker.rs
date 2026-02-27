@@ -1,7 +1,7 @@
 //! Generates the `IncludeSpecMarker` impl for contract types.
 //!
 //! The marker is a byte array in the data section with a distinctive pattern:
-//! - 4 bytes: "SpEc" prefix
+//! - 6 bytes: "SpEcV1" prefix
 //! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 //!
 //! Markers are embedded in `include_spec_marker()` functions with a volatile read.
@@ -9,7 +9,7 @@
 //! When the type is unused, the function is DCE'd along with its marker.
 //!
 //! Post-processing tools (e.g. stellar-cli) can:
-//! 1. Scan the WASM data section for "SpEc" patterns
+//! 1. Scan the WASM data section for "SpEcV1" patterns
 //! 2. Extract the hash from each marker
 //! 3. Match against specs in contractspecv0 section (by hashing each spec)
 //! 4. Strip unused specs from contractspecv0
@@ -62,7 +62,7 @@ where
                 #(<#field_type_markers as #path::IncludeSpecMarker>::include_spec_marker();)*
                 #[cfg(target_family = "wasm")]
                 {
-                    // Marker in data section. Post-build tools can scan for "SpEc"
+                    // Marker in data section. Post-build tools can scan for "SpEcV1"
                     // patterns and match against specs in contractspecv0.
                     static MARKER: [u8; #marker_len] = *#marker_lit;
                     // Volatile read prevents DCE within live function.

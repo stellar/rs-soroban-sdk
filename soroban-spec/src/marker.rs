@@ -1,7 +1,7 @@
 /// Spec marker generation for identifying used spec entries.
 ///
 /// The marker is a byte array in the data section with a distinctive pattern:
-/// - 4 bytes: "SpEc" prefix
+/// - 6 bytes: "SpEcV1" prefix
 /// - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 ///
 /// Markers are embedded in conversion/usage functions with a volatile read. When the type is used,
@@ -9,7 +9,7 @@
 /// DCE'd along with its marker.
 ///
 /// Post-processing tools (e.g. stellar-cli) can:
-/// 1. Scan the WASM data section for "SpEc" patterns
+/// 1. Scan the WASM data section for "SpEcV1" patterns
 /// 2. Extract the hash from each marker
 /// 3. Match against specs in contractspecv0 section (by hashing each spec)
 /// 4. Strip unused specs from contractspecv0
@@ -24,15 +24,15 @@ use std::collections::HashSet;
 use sha2::{Digest, Sha256};
 use stellar_xdr::curr::{Limits, ScSpecEntry, WriteXdr};
 
-/// Magic bytes that identify a spec marker: `SpEc`
-const SPEC_MARKER_MAGIC: &[u8; 4] = b"SpEc";
+/// Magic bytes that identify a spec marker: `SpEcV1`
+const SPEC_MARKER_MAGIC: &[u8; 6] = b"SpEcV1";
 
-/// Total length of a spec marker (4-byte prefix + 8-byte hash).
-const SPEC_MARKER_LEN: usize = 12;
+/// Total length of a spec marker (6-byte prefix + 8-byte hash).
+const SPEC_MARKER_LEN: usize = 14;
 
 /// A spec marker that identifies a spec entry.
 ///
-/// Format: "SpEc" prefix (4 bytes) + first 8 bytes of SHA256 hash = 12 bytes total.
+/// Format: "SpEcV1" prefix (6 bytes) + first 8 bytes of SHA256 hash = 14 bytes total.
 pub type SpecMarker = [u8; SPEC_MARKER_LEN];
 
 /// Generates a spec marker for spec entry XDR bytes.
@@ -43,6 +43,8 @@ pub fn generate_for_xdr(spec_entry_xdr: &[u8]) -> SpecMarker {
         SPEC_MARKER_MAGIC[1],
         SPEC_MARKER_MAGIC[2],
         SPEC_MARKER_MAGIC[3],
+        SPEC_MARKER_MAGIC[4],
+        SPEC_MARKER_MAGIC[5],
         hash[0],
         hash[1],
         hash[2],
@@ -56,7 +58,7 @@ pub fn generate_for_xdr(spec_entry_xdr: &[u8]) -> SpecMarker {
 
 /// Generates a marker for a spec entry.
 ///
-/// The marker is the magic prefix `SpEc` followed by a truncated SHA256
+/// The marker is the magic prefix `SpEcV1` followed by a truncated SHA256
 /// (first 8 bytes) of the spec entry's XDR bytes.
 ///
 /// # Panics
@@ -77,7 +79,7 @@ pub fn generate_for_entry(entry: &ScSpecEntry) -> SpecMarker {
 /// only if the corresponding type/event is used.
 ///
 /// Marker format:
-/// - 4 bytes: `SpEc` magic
+/// - 6 bytes: `SpEcV1` magic
 /// - 8 bytes: truncated SHA256 hash of the spec entry XDR bytes
 pub fn find_all(wasm_bytes: &[u8]) -> HashSet<SpecMarker> {
     let mut markers = HashSet::new();
@@ -97,7 +99,7 @@ pub fn find_all(wasm_bytes: &[u8]) -> HashSet<SpecMarker> {
 
 /// Finds spec markers in a data segment.
 fn find_all_in_data(data: &[u8], markers: &mut HashSet<SpecMarker>) {
-    // Marker size is exactly 12 bytes: 4 (magic) + 8 (hash)
+    // Marker size is exactly 14 bytes: 6 (magic) + 8 (hash)
     if data.len() < SPEC_MARKER_LEN {
         return;
     }
@@ -231,7 +233,7 @@ mod tests {
 
         // Check total length
         assert_eq!(marker.len(), SPEC_MARKER_LEN);
-        assert_eq!(marker.len(), 12);
+        assert_eq!(marker.len(), 14);
 
         // Same input produces same marker
         let marker2 = generate_for_xdr(spec_xdr);
