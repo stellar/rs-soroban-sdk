@@ -538,6 +538,14 @@ impl Bls12_381 {
         res.into()
     }
 
+    /// Checks if a G1 point is on the BLS12-381 curve (no subgroup check).
+    pub fn g1_is_on_curve(&self, point: &G1Affine) -> bool {
+        let env = self.env();
+        internal::Env::bls12_381_g1_is_on_curve(env, point.to_object())
+            .unwrap_infallible()
+            .into()
+    }
+
     /// Adds two points `p0` and `p1` in G1.
     pub fn g1_add(&self, p0: &G1Affine, p1: &G1Affine) -> G1Affine {
         let env = self.env();
@@ -604,6 +612,14 @@ impl Bls12_381 {
         let res = internal::Env::bls12_381_check_g2_is_in_subgroup(env, p.to_object())
             .unwrap_infallible();
         res.into()
+    }
+
+    /// Checks if a G2 point is on the BLS12-381 curve (no subgroup check).
+    pub fn g2_is_on_curve(&self, point: &G2Affine) -> bool {
+        let env = self.env();
+        internal::Env::bls12_381_g2_is_on_curve(env, point.to_object())
+            .unwrap_infallible()
+            .into()
     }
 
     /// Adds two points `p0` and `p1` in G2.
