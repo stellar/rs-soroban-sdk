@@ -26,7 +26,7 @@ pub fn main() {
         if std::env::var(env_name).ok().as_deref() == Some("1") {
             println!("cargo::rustc-cfg=soroban_sdk_build_system_supports_optimising_specs_using_data_markers");
         } else if target_family == "wasm" {
-            println!("cargo:warning=Building without the stellar-cli. The contract will be larger than necessary. Use stellar-cli v26 or newer to build.");
+            println!("cargo:warning=Building without the stellar-cli, or with an old stellar-cli. The contract will be larger than necessary. Use stellar-cli v26 or newer to build.");
         }
     }
 
