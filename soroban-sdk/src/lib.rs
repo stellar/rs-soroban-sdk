@@ -65,10 +65,9 @@ fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
 }
 
-// Here we provide a `#[global_allocator]` that is a minimal non-freeing bump
-// allocator, appropriate for a WASM blob that runs a single contract call.
-#[cfg(all(feature = "alloc", target_family = "wasm"))]
-mod alloc;
+#[cfg(feature = "alloc")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "alloc")))]
+pub mod alloc;
 
 /// This const block contains link sections that need to end up in the final
 /// build of any contract using the SDK.
