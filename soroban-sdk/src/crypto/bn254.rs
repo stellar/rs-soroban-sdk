@@ -79,6 +79,38 @@ impl_bytesn_repr!(Bn254G1Affine, BN254_G1_SERIALIZED_SIZE);
 impl_bytesn_repr!(Bn254G2Affine, BN254_G2_SERIALIZED_SIZE);
 impl_bytesn_repr!(Bn254Fp, BN254_FP_SERIALIZED_SIZE);
 
+// BN254 base field modulus p in big-endian bytes.
+// p = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47
+const BN254_FP_MODULUS_BE: [u8; BN254_FP_SERIALIZED_SIZE] = [
+    0x30, 0x64, 0x4e, 0x72, 0xe1, 0x31, 0xa0, 0x29, 0xb8, 0x50, 0x45, 0xb6, 0x81, 0x81, 0x58, 0x5d,
+    0x97, 0x81, 0x6a, 0x91, 0x68, 0x71, 0xca, 0x8d, 0x3c, 0x20, 0x8c, 0x16, 0xd8, 0x7c, 0xfd, 0x47,
+];
+
+fn validate_bn254_fp(bytes: &[u8; BN254_FP_SERIALIZED_SIZE]) {
+    if bytes >= &BN254_FP_MODULUS_BE {
+        sdk_panic!("Bn254Invalid Fp");
+    }
+}
+
+impl Bn254G1Affine {
+    pub fn from_bytes(bytes: BytesN<BN254_G1_SERIALIZED_SIZE>) -> Self {
+        Self(bytes)
+    }
+}
+
+impl Bn254G2Affine {
+    pub fn from_bytes(bytes: BytesN<BN254_G2_SERIALIZED_SIZE>) -> Self {
+        Self(bytes)
+    }
+}
+
+impl Bn254Fp {
+    pub fn from_bytes(bytes: BytesN<BN254_FP_SERIALIZED_SIZE>) -> Self {
+        validate_bn254_fp(&bytes.to_array());
+        Self(bytes)
+    }
+}
+
 impl Bn254G1Affine {
     pub fn env(&self) -> &Env {
         self.0.env()
@@ -495,5 +527,67 @@ mod test {
         let fr_from_val: Fr = val.into_val(&env);
         let fr_one = Fr::from_u256(one);
         assert_eq!(fr_from_val, fr_one);
+    }
+
+    #[test]
+    fn test_fr_u256_into_reduces() {
+        // Direct From<U256>::from / .into() path must reduce
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let fr: Fr = r.add(&one).into(); // r+1 via .into()
+        let fr_one: Fr = one.into();
+        assert_eq!(fr, fr_one);
+    }
+
+    // Bn254Fp validation tests
+
+    #[test]
+    fn test_bn254_fp_max_valid_accepted() {
+        let env = Env::default();
+        // p - 1 (last byte 0x46 instead of 0x47)
+        let mut p_minus_1 = BN254_FP_MODULUS_BE;
+        p_minus_1[BN254_FP_SERIALIZED_SIZE - 1] -= 1;
+        let _ = Bn254Fp::from_array(&env, &p_minus_1);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254Invalid Fp")]
+    fn test_bn254_fp_at_modulus_panics() {
+        let env = Env::default();
+        let _ = Bn254Fp::from_array(&env, &BN254_FP_MODULUS_BE);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254Invalid Fp")]
+    fn test_bn254_fp_above_modulus_panics() {
+        let env = Env::default();
+        let mut above = BN254_FP_MODULUS_BE;
+        above[BN254_FP_SERIALIZED_SIZE - 1] += 1; // p + 1
+        let _ = Bn254Fp::from_array(&env, &above);
+    }
+
+    #[test]
+    fn test_bn254_fp_from_bytes_validates() {
+        let env = Env::default();
+        // Zero should be valid
+        let _ = Bn254Fp::from_bytes(BytesN::from_array(&env, &[0u8; BN254_FP_SERIALIZED_SIZE]));
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254Invalid Fp")]
+    fn test_bn254_fp_from_bytes_rejects_modulus() {
+        let env = Env::default();
+        let _ = Bn254Fp::from_bytes(BytesN::from_array(&env, &BN254_FP_MODULUS_BE));
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254Invalid Fp")]
+    fn test_bn254_fp_try_from_val_validates() {
+        let env = Env::default();
+        let bytes = BytesN::from_array(&env, &BN254_FP_MODULUS_BE);
+        let val: Val = bytes.into_val(&env);
+        let _: Bn254Fp = val.into_val(&env);
     }
 }
