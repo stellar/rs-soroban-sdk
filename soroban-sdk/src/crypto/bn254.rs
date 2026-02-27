@@ -88,7 +88,7 @@ const BN254_FP_MODULUS_BE: [u8; BN254_FP_SERIALIZED_SIZE] = [
 
 fn validate_bn254_fp(bytes: &[u8; BN254_FP_SERIALIZED_SIZE]) {
     if bytes >= &BN254_FP_MODULUS_BE {
-        sdk_panic!("Bn254Invalid Fp");
+        sdk_panic!("Bn254: Invalid Fp");
     }
 }
 
@@ -273,8 +273,14 @@ impl From<U256> for Fr {
     fn from(value: U256) -> Self {
         // Keep all Fr construction paths canonical by reducing modulo r here.
         // Constructors and deserialization paths should route through this impl.
+        // Skip the expensive rem_euclid when value is already canonical (< r),
+        // which is always the case for host-returned arithmetic results.
         let modulus = fr_modulus(value.env());
-        Self(value.rem_euclid(&modulus))
+        if value >= modulus {
+            Self(value.rem_euclid(&modulus))
+        } else {
+            Self(value)
+        }
     }
 }
 
@@ -553,14 +559,14 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "Bn254Invalid Fp")]
+    #[should_panic(expected = "Bn254: Invalid Fp")]
     fn test_bn254_fp_at_modulus_panics() {
         let env = Env::default();
         let _ = Bn254Fp::from_array(&env, &BN254_FP_MODULUS_BE);
     }
 
     #[test]
-    #[should_panic(expected = "Bn254Invalid Fp")]
+    #[should_panic(expected = "Bn254: Invalid Fp")]
     fn test_bn254_fp_above_modulus_panics() {
         let env = Env::default();
         let mut above = BN254_FP_MODULUS_BE;
@@ -576,15 +582,15 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "Bn254Invalid Fp")]
+    #[should_panic(expected = "Bn254: Invalid Fp")]
     fn test_bn254_fp_from_bytes_rejects_modulus() {
         let env = Env::default();
         let _ = Bn254Fp::from_bytes(BytesN::from_array(&env, &BN254_FP_MODULUS_BE));
     }
 
     #[test]
-    #[should_panic(expected = "Bn254Invalid Fp")]
-    fn test_bn254_fp_try_from_val_validates() {
+    #[should_panic(expected = "Bn254: Invalid Fp")]
+    fn test_bn254_fp_try_from_val_rejects_modulus() {
         let env = Env::default();
         let bytes = BytesN::from_array(&env, &BN254_FP_MODULUS_BE);
         let val: Val = bytes.into_val(&env);

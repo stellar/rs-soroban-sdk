@@ -132,7 +132,7 @@ const BLS12_381_FP_MODULUS_BE: [u8; FP_SERIALIZED_SIZE] = [
 
 fn validate_fp(bytes: &[u8; FP_SERIALIZED_SIZE]) {
     if bytes >= &BLS12_381_FP_MODULUS_BE {
-        sdk_panic!("Invalid Fp");
+        sdk_panic!("Bls12-381: Invalid Fp");
     }
 }
 
@@ -492,8 +492,14 @@ impl From<U256> for Fr {
     fn from(value: U256) -> Self {
         // Keep all Fr construction paths canonical by reducing modulo r here.
         // Constructors and deserialization paths should route through this impl.
+        // Skip the expensive rem_euclid when value is already canonical (< r),
+        // which is always the case for host-returned arithmetic results.
         let modulus = fr_modulus(value.env());
-        Self(value.rem_euclid(&modulus))
+        if value >= modulus {
+            Self(value.rem_euclid(&modulus))
+        } else {
+            Self(value)
+        }
     }
 }
 
@@ -964,14 +970,14 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "Invalid Fp")]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
     fn test_fp_at_modulus_panics() {
         let env = Env::default();
         let _ = Fp::from_array(&env, &BLS12_381_FP_MODULUS_BE);
     }
 
     #[test]
-    #[should_panic(expected = "Invalid Fp")]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
     fn test_fp_above_modulus_panics() {
         let env = Env::default();
         let mut above = BLS12_381_FP_MODULUS_BE;
@@ -987,15 +993,15 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "Invalid Fp")]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
     fn test_fp_from_bytes_rejects_modulus() {
         let env = Env::default();
         let _ = Fp::from_bytes(BytesN::from_array(&env, &BLS12_381_FP_MODULUS_BE));
     }
 
     #[test]
-    #[should_panic(expected = "Invalid Fp")]
-    fn test_fp_try_from_val_validates() {
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
+    fn test_fp_try_from_val_rejects_modulus() {
         let env = Env::default();
         let bytes = BytesN::from_array(&env, &BLS12_381_FP_MODULUS_BE);
         let val: Val = bytes.into_val(&env);
@@ -1003,7 +1009,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "Invalid Fp")]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
     fn test_fp2_component_above_modulus_panics() {
         let env = Env::default();
         // First Fp component is the modulus (invalid), second is zero (valid)
@@ -1013,7 +1019,7 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "Invalid Fp")]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
     fn test_fp2_second_component_above_modulus_panics() {
         let env = Env::default();
         // First Fp component is zero (valid), second is the modulus (invalid)
