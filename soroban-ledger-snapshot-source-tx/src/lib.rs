@@ -12,9 +12,10 @@ use soroban_sdk::testutils::{HostError, SnapshotSource};
 use soroban_sdk::xdr::{LedgerEntry, LedgerKey, Limits, WriteXdr};
 use std::path::PathBuf;
 use std::rc::Rc;
-use std::sync::Once;
+use std::sync::{Once, OnceLock};
 
 static TRACING_INIT: Once = Once::new();
+static WORKSPACE_ROOT: OnceLock<PathBuf> = OnceLock::new();
 
 /// Initialize tracing subscriber if RUST_LOG environment variable is set.
 /// This is called automatically when creating a TxSnapshotSource.
@@ -53,11 +54,13 @@ impl TxSnapshotSource {
     /// Panics if the workspace root cannot be determined via cargo metadata.
     pub fn new(network: Network, ledger: u32, tx_hash: Option<[u8; 32]>) -> Self {
         init_tracing();
-        let workspace_root: PathBuf = MetadataCommand::new()
-            .exec()
-            .expect("failed to get cargo metadata")
-            .workspace_root
-            .into();
+        let workspace_root = WORKSPACE_ROOT.get_or_init(|| {
+            MetadataCommand::new()
+                .exec()
+                .expect("failed to get cargo metadata")
+                .workspace_root
+                .into()
+        });
         let cache_path = workspace_root
             .join("tests-snapshot-source")
             .join(network.network_id_hex());
