@@ -48,6 +48,8 @@ fn test_spec_shaking_v1() {
         "with_imported",
         "with_non_pub",
         "with_non_pub_error",
+        "with_tuple",
+        "with_tuple_return",
     ] {
         assert!(
             fn_names.contains(&expected_fn.into()),
@@ -80,6 +82,10 @@ fn test_spec_shaking_v1() {
         "UsedRefDataType",
         "UsedRefDataInner",
         "UsedEventWithRefs",
+        "UsedTupleElement",
+        "UsedTupleReturnElement",
+        "UnusedNonContractFnParam",
+        "UnusedNonContractFnReturn",
         "UnusedStruct",
         "UnusedEnum",
         "UnusedIntEnum",

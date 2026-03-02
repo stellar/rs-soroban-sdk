@@ -180,6 +180,20 @@ pub struct UsedEventWithRefs<'a> {
     pub payload: &'a UsedRefDataType,
 }
 
+// Used as element in tuple fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedTupleElement {
+    pub val: u32,
+}
+
+// Used as element in tuple fn return
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedTupleReturnElement {
+    pub val: u32,
+}
+
 // --- Non-pub used types: spec entries + markers expected with feature ---
 
 // Non-pub struct used as fn param
@@ -232,6 +246,19 @@ pub struct UnusedEvent {
     #[topic]
     pub kind: Symbol,
     pub data: u32,
+}
+
+// Used only in a non-contractimpl fn: spec entry exists but no marker
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedNonContractFnParam {
+    pub x: u32,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedNonContractFnReturn {
+    pub x: u32,
 }
 
 // Non-pub unused struct: spec entry exists but no marker
@@ -317,6 +344,12 @@ impl Contract {
         Ok(1)
     }
 
+    pub fn with_tuple(_env: Env, _t: (UsedTupleElement, u32)) {}
+
+    pub fn with_tuple_return(_env: Env) -> (UsedTupleReturnElement, u32) {
+        (UsedTupleReturnElement { val: 1 }, 2)
+    }
+
     pub fn publish_ref_event(env: Env) {
         let kind = UsedRefTopicType::Send;
         let payload = UsedRefDataType {
@@ -328,6 +361,13 @@ impl Contract {
         }
         .publish(&env);
     }
+}
+
+// Non-contractimpl function: types used here should NOT have markers since
+// they are not at a contract boundary.
+#[allow(dead_code)]
+fn non_contract_fn(_s: UnusedNonContractFnParam) -> UnusedNonContractFnReturn {
+    UnusedNonContractFnReturn { x: 1 }
 }
 
 #[cfg(test)]
