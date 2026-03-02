@@ -33,7 +33,7 @@ use syn::{Path, Type};
 /// # Returns
 ///
 /// A `TokenStream2` containing the `impl SpecShakingMarker for Type { ... }` block.
-pub fn generate_impl<'a, I>(
+pub fn generate_marker_impl<'a, I>(
     path: &Path,
     ident: TokenStream2,
     spec_xdr: &[u8],

@@ -185,7 +185,7 @@ pub fn derive_type_enum(
                 itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
                     t.to_token_stream().to_string()
                 });
-            shaking::generate_impl(
+            shaking::generate_marker_impl(
                 path,
                 quote!(#enum_ident),
                 spec_xdr,

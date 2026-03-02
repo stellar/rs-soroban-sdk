@@ -218,7 +218,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // SpecShakingMarker impl - only generated when export is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(shaking::generate_impl(
+        Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),
             &spec_xdr,

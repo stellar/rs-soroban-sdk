@@ -99,7 +99,7 @@ pub fn derive_type_error_enum_int(
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
-            shaking::generate_impl(
+            shaking::generate_marker_impl(
                 path,
                 quote!(#enum_ident),
                 spec_xdr,
