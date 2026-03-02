@@ -26,13 +26,13 @@ pub fn main() {
         {
             panic!(
                 "\
-\n\nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v26+\
+\n\nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v25.2.0+\
 \n\
 \nThe soroban-sdk 'experimental_spec_shaking_v2' feature requires building\
-\nwith `stellar contract build` from stellar-cli v26 or newer.\
+\nwith `stellar contract build` from stellar-cli v25.2.0 or newer.\
 \n\
 \nTo fix, either:\
-\n  - Build with `stellar contract build` using stellar-cli v26+\
+\n  - Build with `stellar contract build` using stellar-cli v25.2.0+\
 \n  - Disable the feature by removing 'experimental_spec_shaking_v2' from\
 \n    the soroban-sdk import features list in Cargo.toml.\
 \n"

@@ -115,7 +115,7 @@
 //! ### Build Requirements
 //!
 //! This feature requires building with `stellar contract build` from
-//! `stellar-cli` v26 or newer. Building directly with `cargo build` will
+//! `stellar-cli` v25.2.0 or newer. Building directly with `cargo build` will
 //! produce a build error unless the
 //! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable is
 //! set.
