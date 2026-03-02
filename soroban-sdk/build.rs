@@ -19,7 +19,7 @@ pub fn main() {
     // When the experimental_spec_shaking_v2 feature is enabled, check for an env var from the
     // build system (Stellar CLI) that indicates it supports spec optimization using markers.
     if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
-        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
+        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_EXPERIMENTAL_SPEC_SHAKING_V2";
         println!("cargo::rerun-if-env-changed={env_name}");
         if std::env::var(env_name).ok().as_deref() == None
             && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
