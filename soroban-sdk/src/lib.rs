@@ -1085,7 +1085,7 @@ pub use into_val_for_contract_fn::IntoValForContractFn;
 #[cfg(feature = "experimental_spec_shaking_v2")]
 mod include_spec;
 #[cfg(feature = "experimental_spec_shaking_v2")]
-#[doc(hidden)]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "experimental_spec_shaking_v2")))]
 pub use include_spec::IncludeSpecMarker;
 
 #[doc(hidden)]
