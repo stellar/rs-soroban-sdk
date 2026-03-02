@@ -312,7 +312,7 @@ mod test {
             data_format: ScSpecEventDataFormat::Map,
         });
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = [])]
+            #[soroban_sdk::contractevent(export = false, topics = [])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {}
         };
@@ -350,7 +350,7 @@ mod test {
             data_format: ScSpecEventDataFormat::Map,
         });
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = ["my_event"])]
+            #[soroban_sdk::contractevent(export = false, topics = ["my_event"])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {
                 pub from: u32,
