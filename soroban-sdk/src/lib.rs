@@ -112,6 +112,11 @@ const _: () = {
         key = "rssdkver",
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
+
+    // An indicator that the spec shaking v2 experimental feature is in use. Signals to the
+    // stellar-cli that the .wasm needs to have it's spec shaken using markers in the data section.
+    #[cfg(feature = "experimental_spec_shaking_v2")]
+    contractmeta!(key = "rssdkfeat", val = "experimental_spec_shaking_v2");
 };
 
 // Re-exports of dependencies used by macros.
