@@ -9,7 +9,7 @@ use stellar_xdr::{
     ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, spec_marker, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -77,7 +77,7 @@ pub fn derive_type_enum(
                 _ => {}
             }
 
-            // Collect field types for IncludeSpecMarker
+            // Collect field types for SpecShakingMarker
             let field_types: Vec<_> = variant.fields.iter().map(|f| &f.ty).collect();
 
             let is_unit_variant = variant.fields == Fields::Unit;
@@ -175,17 +175,17 @@ pub fn derive_type_enum(
         None
     };
 
-    // IncludeSpecMarker impl - only generated when spec is true and the
+    // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
-    let include_spec_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
-            // Flatten all variant field types for include_spec_marker calls, deduplicating
+            // Flatten all variant field types for shaking calls, deduplicating
             // to avoid redundant calls for types that appear in multiple variants.
             let all_field_types =
                 itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
                     t.to_token_stream().to_string()
                 });
-            spec_marker::generate_include_spec_marker_impl(
+            shaking::generate_impl(
                 path,
                 quote!(#enum_ident),
                 spec_xdr,
@@ -203,7 +203,7 @@ pub fn derive_type_enum(
     let mut output = quote! {
         #spec_gen
 
-        #include_spec_impl
+        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;

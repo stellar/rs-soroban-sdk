@@ -6,7 +6,7 @@
 //! IntoVal<Env, Val>.
 //!
 //! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
-//! calls `IncludeSpecMarker::include_spec_marker()` to ensure that type specs
+//! calls `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs
 //! are included in the WASM when types are used at external boundaries
 //! (function return values).
 
@@ -25,10 +25,10 @@ pub trait IntoValForContractFn {
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T
 where
-    T: IntoVal<Env, Val> + crate::IncludeSpecMarker,
+    T: IntoVal<Env, Val> + crate::SpecShakingMarker,
 {
     fn into_val_for_contract_fn(self, env: &Env) -> Val {
-        T::include_spec_marker();
+        T::spec_shaking_marker();
         self.into_val(env)
     }
 }

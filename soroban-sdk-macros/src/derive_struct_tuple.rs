@@ -8,7 +8,7 @@ use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, spec_marker, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
@@ -96,11 +96,11 @@ pub fn derive_type_struct_tuple(
         None
     };
 
-    // IncludeSpecMarker impl - only generated when spec is true and the
+    // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
-    let include_spec_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
-            spec_marker::generate_include_spec_marker_impl(
+            shaking::generate_impl(
                 path,
                 quote!(#ident),
                 spec_xdr,
@@ -118,7 +118,7 @@ pub fn derive_type_struct_tuple(
     let mut output = quote! {
         #spec_gen
 
-        #include_spec_impl
+        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;

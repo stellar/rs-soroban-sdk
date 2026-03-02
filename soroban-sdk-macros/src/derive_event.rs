@@ -1,6 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, spec_marker, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -124,7 +124,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .with_span(&input.span()))?,
         };
 
-    // Collect field types for IncludeSpecMarker
+    // Collect field types for SpecShakingMarker
     let field_types: Vec<_> = fields.iter().map(|f| &f.ty).collect();
 
     // Map each field of the struct to a spec for a param.
@@ -197,8 +197,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
-    let include_spec_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(quote! { <Self as #path::IncludeSpecMarker>::include_spec_marker(); })
+    let spec_shaking_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
+        Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
     } else {
         None
     };
@@ -215,10 +215,10 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
     };
 
-    // IncludeSpecMarker impl - only generated when export is true and the
+    // SpecShakingMarker impl - only generated when export is true and the
     // experimental_spec_shaking_v2 feature is enabled.
-    let include_spec_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(spec_marker::generate_include_spec_marker_impl(
+    let spec_shaking_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
+        Some(shaking::generate_impl(
             path,
             quote!(#ident),
             &spec_xdr,
@@ -306,7 +306,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let output = quote! {
         #spec_gen
 
-        #include_spec_impl
+        #spec_shaking_impl
 
         impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {
@@ -319,7 +319,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
-                #include_spec_call
+                #spec_shaking_call
                 <_ as #path::Event>::publish(self, env);
             }
         }

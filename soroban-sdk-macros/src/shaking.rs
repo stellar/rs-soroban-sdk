@@ -1,10 +1,10 @@
-//! Generates the `IncludeSpecMarker` impl for contract types.
+//! Generates the `SpecShakingMarker` impl for contract types.
 //!
 //! The marker is a byte array in the data section with a distinctive pattern:
 //! - 6 bytes: "SpEcV1" prefix
 //! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 //!
-//! Markers are embedded in `include_spec_marker()` functions with a volatile read.
+//! Markers are embedded in `spec_shaking_marker()` functions with a volatile read.
 //! When the type is used, the function is called and the marker is included.
 //! When the type is unused, the function is DCE'd along with its marker.
 //!
@@ -18,7 +18,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::{Path, Type};
 
-/// Generates the `IncludeSpecMarker` impl for a type.
+/// Generates the `SpecShakingMarker` impl for a type.
 ///
 /// # Arguments
 ///
@@ -32,8 +32,8 @@ use syn::{Path, Type};
 ///
 /// # Returns
 ///
-/// A `TokenStream2` containing the `impl IncludeSpecMarker for Type { ... }` block.
-pub fn generate_include_spec_marker_impl<'a, I>(
+/// A `TokenStream2` containing the `impl SpecShakingMarker for Type { ... }` block.
+pub fn generate_impl<'a, I>(
     path: &Path,
     ident: TokenStream2,
     spec_xdr: &[u8],
@@ -45,7 +45,7 @@ pub fn generate_include_spec_marker_impl<'a, I>(
 where
     I: Iterator<Item = &'a Type>,
 {
-    let marker = soroban_spec::marker::generate_for_xdr(spec_xdr);
+    let marker = soroban_spec::shaking::generate_marker_for_xdr(spec_xdr);
     let marker_lit = proc_macro2::Literal::byte_string(&marker);
     let marker_len = marker.len();
 
@@ -55,11 +55,11 @@ where
     let gen_where = gen_where.unwrap_or_default();
 
     quote! {
-        impl #gen_impl #path::IncludeSpecMarker for #ident #gen_types #gen_where {
+        impl #gen_impl #path::SpecShakingMarker for #ident #gen_types #gen_where {
             #[doc(hidden)]
             #[inline(always)]
-            fn include_spec_marker() {
-                #(<#field_type_markers as #path::IncludeSpecMarker>::include_spec_marker();)*
+            fn spec_shaking_marker() {
+                #(<#field_type_markers as #path::SpecShakingMarker>::spec_shaking_marker();)*
                 #[cfg(target_family = "wasm")]
                 {
                     // Marker in data section. Post-build tools can scan for "SpEcV1"

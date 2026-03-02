@@ -1083,10 +1083,10 @@ mod into_val_for_contract_fn;
 pub use into_val_for_contract_fn::IntoValForContractFn;
 
 #[cfg(feature = "experimental_spec_shaking_v2")]
-mod include_spec;
+mod spec_shaking;
 #[cfg(feature = "experimental_spec_shaking_v2")]
-#[cfg_attr(feature = "docs", doc(cfg(feature = "experimental_spec_shaking_v2")))]
-pub use include_spec::IncludeSpecMarker;
+#[doc(hidden)]
+pub use spec_shaking::SpecShakingMarker;
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

@@ -25,34 +25,22 @@ use sha2::{Digest, Sha256};
 use stellar_xdr::curr::{Limits, ScSpecEntry, WriteXdr};
 
 /// Magic bytes that identify a spec marker: `SpEcV1`
-const SPEC_MARKER_MAGIC: &[u8; 6] = b"SpEcV1";
+const MAGIC: &[u8; 6] = b"SpEcV1";
 
 /// Total length of a spec marker (6-byte prefix + 8-byte hash).
-const SPEC_MARKER_LEN: usize = 14;
+const LEN: usize = 14;
 
 /// A spec marker that identifies a spec entry.
 ///
 /// Format: "SpEcV1" prefix (6 bytes) + first 8 bytes of SHA256 hash = 14 bytes total.
-pub type SpecMarker = [u8; SPEC_MARKER_LEN];
+pub type Marker = [u8; LEN];
 
 /// Generates a spec marker for spec entry XDR bytes.
-pub fn generate_for_xdr(spec_entry_xdr: &[u8]) -> SpecMarker {
+pub fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
     let hash: [u8; 32] = Sha256::digest(spec_entry_xdr).into();
     [
-        SPEC_MARKER_MAGIC[0],
-        SPEC_MARKER_MAGIC[1],
-        SPEC_MARKER_MAGIC[2],
-        SPEC_MARKER_MAGIC[3],
-        SPEC_MARKER_MAGIC[4],
-        SPEC_MARKER_MAGIC[5],
-        hash[0],
-        hash[1],
-        hash[2],
-        hash[3],
-        hash[4],
-        hash[5],
-        hash[6],
-        hash[7],
+        MAGIC[0], MAGIC[1], MAGIC[2], MAGIC[3], MAGIC[4], MAGIC[5], hash[0], hash[1], hash[2],
+        hash[3], hash[4], hash[5], hash[6], hash[7],
     ]
 }
 
@@ -65,11 +53,11 @@ pub fn generate_for_xdr(spec_entry_xdr: &[u8]) -> SpecMarker {
 ///
 /// Panics if the spec entry cannot be encoded to XDR, which should never happen
 /// for valid `ScSpecEntry` values.
-pub fn generate_for_entry(entry: &ScSpecEntry) -> SpecMarker {
+pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
     let xdr_bytes = entry
         .to_xdr(Limits::none())
         .expect("XDR encoding should not fail");
-    generate_for_xdr(&xdr_bytes)
+    generate_marker_for_xdr(&xdr_bytes)
 }
 
 /// Finds all spec markers in a WASM binary's data section.
@@ -81,7 +69,7 @@ pub fn generate_for_entry(entry: &ScSpecEntry) -> SpecMarker {
 /// Marker format:
 /// - 6 bytes: `SpEcV1` magic
 /// - 8 bytes: truncated SHA256 hash of the spec entry XDR bytes
-pub fn find_all(wasm_bytes: &[u8]) -> HashSet<SpecMarker> {
+pub fn find_all(wasm_bytes: &[u8]) -> HashSet<Marker> {
     let mut markers = HashSet::new();
 
     for payload in wasmparser::Parser::new(0).parse_all(wasm_bytes) {
@@ -98,17 +86,17 @@ pub fn find_all(wasm_bytes: &[u8]) -> HashSet<SpecMarker> {
 }
 
 /// Finds spec markers in a data segment.
-fn find_all_in_data(data: &[u8], markers: &mut HashSet<SpecMarker>) {
+fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
     // Marker size is exactly 14 bytes: 6 (magic) + 8 (hash)
-    if data.len() < SPEC_MARKER_LEN {
+    if data.len() < LEN {
         return;
     }
 
-    for i in 0..=data.len() - SPEC_MARKER_LEN {
+    for i in 0..=data.len() - LEN {
         // Look for magic bytes
-        if data[i..].starts_with(SPEC_MARKER_MAGIC) {
-            let marker_end = i + SPEC_MARKER_LEN;
-            let mut marker_bytes = [0u8; SPEC_MARKER_LEN];
+        if data[i..].starts_with(MAGIC) {
+            let marker_end = i + LEN;
+            let mut marker_bytes = [0u8; LEN];
             marker_bytes.copy_from_slice(&data[i..marker_end]);
             markers.insert(marker_bytes);
         }
@@ -132,7 +120,7 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<SpecMarker>) {
 ///
 /// Filtered entries with only used types/events remaining.
 #[allow(clippy::implicit_hasher)]
-pub fn filter(entries: Vec<ScSpecEntry>, markers: &HashSet<SpecMarker>) -> Vec<ScSpecEntry> {
+pub fn filter(entries: Vec<ScSpecEntry>, markers: &HashSet<Marker>) -> Vec<ScSpecEntry> {
     entries
         .into_iter()
         .filter(|entry| {
@@ -141,7 +129,7 @@ pub fn filter(entries: Vec<ScSpecEntry>, markers: &HashSet<SpecMarker>) -> Vec<S
                 return true;
             }
             // For all other entries (types, events), check if marker exists
-            let marker = generate_for_entry(entry);
+            let marker = generate_marker_for_entry(entry);
             markers.contains(&marker)
         })
         .collect()
@@ -224,30 +212,30 @@ mod tests {
     }
 
     #[test]
-    fn test_generate_for_xdr() {
+    fn test_generate_marker_for_xdr() {
         let spec_xdr = b"some spec xdr bytes";
-        let marker: SpecMarker = generate_for_xdr(spec_xdr);
+        let marker: Marker = generate_marker_for_xdr(spec_xdr);
 
         // Check prefix
-        assert_eq!(&marker[..4], SPEC_MARKER_MAGIC);
+        assert_eq!(&marker[..4], MAGIC);
 
         // Check total length
-        assert_eq!(marker.len(), SPEC_MARKER_LEN);
+        assert_eq!(marker.len(), LEN);
         assert_eq!(marker.len(), 14);
 
         // Same input produces same marker
-        let marker2 = generate_for_xdr(spec_xdr);
+        let marker2 = generate_marker_for_xdr(spec_xdr);
         assert_eq!(marker, marker2);
 
         // Different input produces different marker
         let different_xdr = b"different spec xdr bytes";
-        let different_marker = generate_for_xdr(different_xdr);
-        assert_eq!(&different_marker[..4], SPEC_MARKER_MAGIC);
+        let different_marker = generate_marker_for_xdr(different_xdr);
+        assert_eq!(&different_marker[..4], MAGIC);
         assert_ne!(marker, different_marker);
     }
 
     #[test]
-    fn test_generate_for_entry() {
+    fn test_generate_marker_for_entry() {
         let entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
             doc: StringM::default(),
             name: "test".try_into().unwrap(),
@@ -255,16 +243,16 @@ mod tests {
             outputs: VecM::default(),
         });
 
-        let marker = generate_for_entry(&entry);
+        let marker = generate_marker_for_entry(&entry);
 
         // Marker should be 12 bytes
-        assert_eq!(marker.len(), SPEC_MARKER_LEN);
+        assert_eq!(marker.len(), LEN);
 
         // First 4 bytes should be magic
-        assert_eq!(&marker[..4], SPEC_MARKER_MAGIC);
+        assert_eq!(&marker[..4], MAGIC);
 
         // Same entry produces same marker
-        let marker2 = generate_for_entry(&entry);
+        let marker2 = generate_marker_for_entry(&entry);
         assert_eq!(marker, marker2);
 
         // Different entry produces different marker
@@ -274,28 +262,28 @@ mod tests {
             inputs: VecM::default(),
             outputs: VecM::default(),
         });
-        let marker3 = generate_for_entry(&entry2);
+        let marker3 = generate_marker_for_entry(&entry2);
         assert_ne!(marker, marker3);
     }
 
     #[test]
-    fn test_generate_for_entry_struct() {
+    fn test_generate_marker_for_entry_struct() {
         let entry = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
-        let marker = generate_for_entry(&entry);
+        let marker = generate_marker_for_entry(&entry);
 
         // Marker should be 12 bytes
-        assert_eq!(marker.len(), SPEC_MARKER_LEN);
+        assert_eq!(marker.len(), LEN);
 
         // First 4 bytes should be magic
-        assert_eq!(&marker[..4], SPEC_MARKER_MAGIC);
+        assert_eq!(&marker[..4], MAGIC);
 
         // Same entry produces same marker
-        let marker2 = generate_for_entry(&entry);
+        let marker2 = generate_marker_for_entry(&entry);
         assert_eq!(marker, marker2);
 
         // Different entry produces different marker
         let entry2 = make_struct("DifferentStruct", vec![("field", ScSpecTypeDef::U32)]);
-        let marker3 = generate_for_entry(&entry2);
+        let marker3 = generate_marker_for_entry(&entry2);
         assert_ne!(marker, marker3);
     }
 
@@ -304,8 +292,8 @@ mod tests {
         let entry1 = make_event("Transfer");
         let entry2 = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
 
-        let encoded1 = generate_for_entry(&entry1);
-        let encoded2 = generate_for_entry(&entry2);
+        let encoded1 = generate_marker_for_entry(&entry1);
+        let encoded2 = generate_marker_for_entry(&entry2);
 
         // Concatenate markers with some padding
         let mut data = Vec::new();
@@ -319,8 +307,8 @@ mod tests {
         find_all_in_data(&data, &mut found);
 
         // Both markers should be found
-        assert!(found.contains(&generate_for_entry(&entry1)));
-        assert!(found.contains(&generate_for_entry(&entry2)));
+        assert!(found.contains(&generate_marker_for_entry(&entry1)));
+        assert!(found.contains(&generate_marker_for_entry(&entry2)));
     }
 
     #[test]
@@ -336,8 +324,8 @@ mod tests {
         ];
 
         let mut markers = HashSet::new();
-        markers.insert(generate_for_entry(&transfer_event));
-        markers.insert(generate_for_entry(&mint_event));
+        markers.insert(generate_marker_for_entry(&transfer_event));
+        markers.insert(generate_marker_for_entry(&mint_event));
 
         let filtered = filter(entries, &markers);
 
@@ -414,9 +402,9 @@ mod tests {
         ];
 
         let mut markers = HashSet::new();
-        markers.insert(generate_for_entry(&used_struct));
-        markers.insert(generate_for_entry(&used_enum));
-        markers.insert(generate_for_entry(&used_event));
+        markers.insert(generate_marker_for_entry(&used_struct));
+        markers.insert(generate_marker_for_entry(&used_enum));
+        markers.insert(generate_marker_for_entry(&used_event));
 
         let filtered = filter(entries, &markers);
 

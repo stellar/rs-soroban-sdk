@@ -18,7 +18,7 @@ mod derive_trait;
 mod doc;
 mod map_type;
 mod path;
-mod spec_marker;
+mod shaking;
 mod symbol;
 mod syn_ext;
 

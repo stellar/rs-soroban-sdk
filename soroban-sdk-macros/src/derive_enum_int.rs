@@ -7,7 +7,7 @@ use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Pat
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
-use crate::{doc::docs_from_attrs, spec_marker, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, shaking, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -97,11 +97,11 @@ pub fn derive_type_enum_int(
         None
     };
 
-    // IncludeSpecMarker impl - only generated when spec is true and the
+    // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
-    let include_spec_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
-            spec_marker::generate_include_spec_marker_impl(
+            shaking::generate_impl(
                 path,
                 quote!(#enum_ident),
                 spec_xdr,
@@ -119,7 +119,7 @@ pub fn derive_type_enum_int(
     let mut output = quote! {
         #spec_gen
 
-        #include_spec_impl
+        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
