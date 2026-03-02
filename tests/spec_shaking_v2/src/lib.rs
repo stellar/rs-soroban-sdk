@@ -69,6 +69,20 @@ pub struct UsedMapVal {
     pub v: u32,
 }
 
+// Used as Option element in fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedOptionElement {
+    pub data: u32,
+}
+
+// Used as Result Ok type in fn return
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedResultOk {
+    pub data: u32,
+}
+
 // Used as published event (simple, primitive fields only)
 #[contractevent]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -291,6 +305,12 @@ impl Contract {
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
 
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
+
+    pub fn with_option(_env: Env, _o: Option<UsedOptionElement>) {}
+
+    pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
+        Ok(UsedResultOk { data: 1 })
+    }
 
     pub fn publish_simple(env: Env) {
         UsedEventSimple {

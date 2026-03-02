@@ -46,6 +46,8 @@ fn test_spec_shaking_v2() {
         "publish_nested_data",
         "publish_ref_event",
         "with_imported",
+        "with_option",
+        "with_result",
         "with_non_pub",
         "with_non_pub_error",
         "with_tuple",
@@ -70,6 +72,10 @@ fn test_spec_shaking_v2() {
         "UsedVecElement",
         "UsedMapKey",
         "UsedMapVal",
+        // Option element type in fn param
+        "UsedOptionElement",
+        // Result Ok type in fn return
+        "UsedResultOk",
         // simple event
         "UsedEventSimple",
         // event with custom type in topic
