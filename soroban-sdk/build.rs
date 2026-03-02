@@ -21,8 +21,22 @@ pub fn main() {
     if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
         let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
         println!("cargo::rerun-if-env-changed={env_name}");
-        if std::env::var(env_name).ok().as_deref() == None && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" {
-            println!("cargo:error=Building wasm with feature 'experimental_spec_shaking_v2' requires building with stellar-cli v26 to perform spec shaking.");
+        if std::env::var(env_name).ok().as_deref() == None
+            && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
+        {
+            panic!(
+                "\
+\n\nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v26+\
+\n\
+\nThe soroban-sdk 'experimental_spec_shaking_v2' feature requires building\
+\nwith `stellar contract build` from stellar-cli v26 or newer.\
+\n\
+\nTo fix, either:\
+\n  - Build with `stellar contract build` using stellar-cli v26+\
+\n  - Disable the feature by removing 'experimental_spec_shaking_v2' from\
+\n    the soroban-sdk import features list in Cargo.toml.\
+\n"
+            );
         }
     }
 
