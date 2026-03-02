@@ -14,7 +14,7 @@
 //! is most appropriate. For types that should only be used and converted to as
 //! part of contract function invocation, then this trait is appropriate.
 //!
-//! When the `experimental_spec_resolver_v2` feature is enabled, this trait also
+//! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
 //! calls `IncludeSpecMarker::include_spec_marker()` to ensure that type specs
 //! are included in the WASM when types are used at external boundaries.
 
@@ -30,7 +30,7 @@ pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
     fn try_from_val_for_contract_fn(env: &E, v: &V) -> Result<Self, Self::Error>;
 }
 
-#[cfg(feature = "experimental_spec_resolver_v2")]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
@@ -44,7 +44,7 @@ where
     }
 }
 
-#[cfg(not(feature = "experimental_spec_resolver_v2"))]
+#[cfg(not(feature = "experimental_spec_shaking_v2"))]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U

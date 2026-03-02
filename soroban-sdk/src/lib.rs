@@ -1082,9 +1082,9 @@ mod into_val_for_contract_fn;
 #[allow(deprecated)]
 pub use into_val_for_contract_fn::IntoValForContractFn;
 
-#[cfg(feature = "experimental_spec_resolver_v2")]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 mod include_spec;
-#[cfg(feature = "experimental_spec_resolver_v2")]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 #[doc(hidden)]
 pub use include_spec::IncludeSpecMarker;
 

@@ -176,8 +176,8 @@ pub fn derive_type_enum(
     };
 
     // IncludeSpecMarker impl - only generated when spec is true and the
-    // experimental_spec_resolver_v2 feature is enabled.
-    let include_spec_impl = if cfg!(feature = "experimental_spec_resolver_v2") {
+    // experimental_spec_shaking_v2 feature is enabled.
+    let include_spec_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
             // Flatten all variant field types for include_spec_marker calls, deduplicating
             // to avoid redundant calls for types that appear in multiple variants.

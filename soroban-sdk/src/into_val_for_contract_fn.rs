@@ -5,7 +5,7 @@
 //! The trait has a blanket implementation for all types that already implement
 //! IntoVal<Env, Val>.
 //!
-//! When the `experimental_spec_resolver_v2` feature is enabled, this trait also
+//! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
 //! calls `IncludeSpecMarker::include_spec_marker()` to ensure that type specs
 //! are included in the WASM when types are used at external boundaries
 //! (function return values).
@@ -20,7 +20,7 @@ pub trait IntoValForContractFn {
     fn into_val_for_contract_fn(self, env: &Env) -> Val;
 }
 
-#[cfg(feature = "experimental_spec_resolver_v2")]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T
@@ -33,7 +33,7 @@ where
     }
 }
 
-#[cfg(not(feature = "experimental_spec_resolver_v2"))]
+#[cfg(not(feature = "experimental_spec_shaking_v2"))]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T

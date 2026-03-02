@@ -98,8 +98,8 @@ pub fn derive_type_enum_int(
     };
 
     // IncludeSpecMarker impl - only generated when spec is true and the
-    // experimental_spec_resolver_v2 feature is enabled.
-    let include_spec_impl = if cfg!(feature = "experimental_spec_resolver_v2") {
+    // experimental_spec_shaking_v2 feature is enabled.
+    let include_spec_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
             spec_marker::generate_include_spec_marker_impl(
                 path,

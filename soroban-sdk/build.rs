@@ -16,17 +16,13 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
-    // When the experimental_spec_resolver_v2 feature is enabled, check for an env var from the
+    // When the experimental_spec_shaking_v2 feature is enabled, check for an env var from the
     // build system (Stellar CLI) that indicates it supports spec optimization using markers.
-    if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_RESOLVER_V2").is_ok() {
-        println!("cargo::rustc-check-cfg=cfg(soroban_sdk_build_system_supports_optimising_specs_using_data_markers)");
-        let target_family = std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default();
-        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_OPTIMISING_SPECS_USING_DATA_MARKERS";
+    if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
+        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
         println!("cargo::rerun-if-env-changed={env_name}");
-        if std::env::var(env_name).ok().as_deref() == Some("1") {
-            println!("cargo::rustc-cfg=soroban_sdk_build_system_supports_optimising_specs_using_data_markers");
-        } else if target_family == "wasm" {
-            println!("cargo:warning=Building without the stellar-cli, or with an old stellar-cli. The contract will be larger than necessary. Use stellar-cli v26 or newer to build.");
+        if std::env::var(env_name).ok().as_deref() == None && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" {
+            println!("cargo:error=Building wasm with feature 'experimental_spec_shaking_v2' requires building with stellar-cli v26 to perform spec shaking.");
         }
     }
 

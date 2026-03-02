@@ -197,7 +197,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
-    let include_spec_call = if export && cfg!(feature = "experimental_spec_resolver_v2") {
+    let include_spec_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
         Some(quote! { <Self as #path::IncludeSpecMarker>::include_spec_marker(); })
     } else {
         None
@@ -216,8 +216,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // IncludeSpecMarker impl - only generated when export is true and the
-    // experimental_spec_resolver_v2 feature is enabled.
-    let include_spec_impl = if export && cfg!(feature = "experimental_spec_resolver_v2") {
+    // experimental_spec_shaking_v2 feature is enabled.
+    let include_spec_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
         Some(spec_marker::generate_include_spec_marker_impl(
             path,
             quote!(#ident),

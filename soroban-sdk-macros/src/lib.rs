@@ -680,10 +680,10 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate with options based on whether the experimental_spec_resolver_v2
+    // Generate with options based on whether the experimental_spec_shaking_v2
     // feature is enabled.
     let opts = GenerateOptions {
-        export: cfg!(feature = "experimental_spec_resolver_v2"),
+        export: cfg!(feature = "experimental_spec_shaking_v2"),
     };
     match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },
