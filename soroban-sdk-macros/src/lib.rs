@@ -422,9 +422,12 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
+    // exporting. If it does not have a value, export if the type is pub,
+    // or always export when spec shaking is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
+    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+        true
     } else {
         matches!(input.vis, Visibility::Public(_))
     };
@@ -493,9 +496,12 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
+    // exporting. If it does not have a value, export if the type is pub,
+    // or always export when spec shaking is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
+    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+        true
     } else {
         matches!(input.vis, Visibility::Public(_))
     };

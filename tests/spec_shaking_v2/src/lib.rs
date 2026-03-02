@@ -180,6 +180,22 @@ pub struct UsedEventWithRefs<'a> {
     pub payload: &'a UsedRefDataType,
 }
 
+// --- Non-pub used types: spec entries + markers expected with feature ---
+
+// Non-pub struct used as fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct UsedNonPubStruct {
+    pub val: u32,
+}
+
+// Non-pub error enum used as fn error return
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+enum UsedNonPubError {
+    Fail = 1,
+}
+
 // --- Imported types from contractimport: only used ones should have markers ---
 
 mod imported {
@@ -218,6 +234,21 @@ pub struct UnusedEvent {
     pub data: u32,
 }
 
+// Non-pub unused struct: spec entry exists but no marker
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct UnusedNonPubStruct {
+    pub x: u32,
+}
+
+// Non-pub unused error: spec entry exists but no marker
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+enum UnusedNonPubError {
+    Bad = 1,
+}
+
+#[allow(private_interfaces)]
 #[contractimpl]
 impl Contract {
     pub fn with_param(_env: Env, _s: UsedParamStruct, _ie: UsedParamIntEnum) {}
@@ -279,6 +310,12 @@ impl Contract {
     }
 
     pub fn with_imported(_env: Env, _s: imported::StructA) {}
+
+    pub fn with_non_pub(_env: Env, _s: UsedNonPubStruct) {}
+
+    pub fn with_non_pub_error(_env: Env) -> Result<u32, UsedNonPubError> {
+        Ok(1)
+    }
 
     pub fn publish_ref_event(env: Env) {
         let kind = UsedRefTopicType::Send;
