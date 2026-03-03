@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path, Visibility};
+use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path, Type, Visibility};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
@@ -156,48 +156,18 @@ pub fn derive_type_enum(
         None
     };
 
-    // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
-        Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
-
-            impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
-            }
+    // Flatten all variant field types for shaking calls, deduplicating
+    // to avoid redundant calls for types that appear in multiple variants.
+    let all_field_types: Vec<&Type> =
+        itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
+            t.to_token_stream().to_string()
         })
-    } else {
-        None
-    };
+        .copied()
+        .collect();
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            // Flatten all variant field types for shaking calls, deduplicating
-            // to avoid redundant calls for types that appear in multiple variants.
-            let all_field_types =
-                itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
-                    t.to_token_stream().to_string()
-                });
-            shaking::generate_marker_impl(
-                path,
-                quote!(#enum_ident),
-                spec_xdr,
-                all_field_types.cloned(),
-                None,
-                None,
-                None,
-            )
-        })
-    } else {
-        None
-    };
+    // Generated code spec and SpecShakingMarker impl.
+    let (spec_gen, spec_shaking_impl) =
+        shaking::generate_type_spec_and_marker(path, &enum_ident, &spec_xdr, &all_field_types);
 
     // Output.
     let mut output = quote! {

@@ -15,8 +15,58 @@
 //! 4. Strip unused specs from contractspecv0
 
 use proc_macro2::TokenStream as TokenStream2;
-use quote::quote;
-use syn::{Path, Type};
+use quote::{format_ident, quote};
+use syn::{Ident, Path, Type};
+
+/// Generates the spec XDR static, `spec_xdr()` const fn, and optional
+/// `SpecShakingMarker` impl for a contract type.
+///
+/// Returns `(spec_gen, spec_shaking_impl)` where:
+/// - `spec_gen` contains the `__SPEC_XDR_TYPE_*` static and `spec_xdr()` method
+/// - `spec_shaking_impl` contains the `SpecShakingMarker` impl (only when the
+///   `experimental_spec_shaking_v2` feature is enabled)
+///
+/// Both are `None` when `spec_xdr` is `None` (i.e., spec generation is disabled).
+pub fn generate_type_spec_and_marker(
+    path: &Path,
+    ident: &Ident,
+    spec_xdr: &Option<Vec<u8>>,
+    field_types: &[&Type],
+) -> (Option<TokenStream2>, Option<TokenStream2>) {
+    let spec_gen = spec_xdr.as_ref().map(|spec_xdr| {
+        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
+        let spec_xdr_len = spec_xdr.len();
+        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", ident.to_string().to_uppercase());
+        quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+
+            impl #ident {
+                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
+                    *#spec_xdr_lit
+                }
+            }
+        }
+    });
+
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+        spec_xdr.as_ref().map(|spec_xdr| {
+            generate_marker_impl(
+                path,
+                quote!(#ident),
+                spec_xdr,
+                field_types.iter().copied(),
+                None,
+                None,
+                None,
+            )
+        })
+    } else {
+        None
+    };
+
+    (spec_gen, spec_shaking_impl)
+}
 
 /// Generates the `SpecShakingMarker` impl for a type.
 ///
