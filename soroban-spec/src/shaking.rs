@@ -17,7 +17,7 @@
 /// Today markers are only used in contracts written in Rust, leveraging how Rust can eliminate
 /// dead code to make the markers are good signal for if a type gets used. It's not known if the
 /// same pattern could be used in other languages, and so it is not a general part of the SEP-48
-/// Contact Interface Specification. Markers are just a mechanism used by the Rust soroban-sdk and
+/// Contract Interface Specification. Markers are just a mechanism used by the Rust soroban-sdk and
 /// the stellar-cli to achieve accurately scoped contract specs.
 use std::collections::HashSet;
 
