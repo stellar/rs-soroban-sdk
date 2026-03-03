@@ -45,7 +45,8 @@ fn test_spec_shaking_v1() {
         "publish_nested_topic",
         "publish_nested_data",
         "publish_ref_event",
-        "with_imported",
+        "with_lib_struct",
+        "with_wasm_imported",
         "with_option",
         "with_result",
         "with_non_pub",
@@ -116,28 +117,37 @@ fn test_spec_shaking_v1() {
         );
     }
 
-    // Imported types should NOT have spec entries (export = false without the feature).
-    let imported_types = [
+    // Lib-imported types are in the WASM spec (rlib statics linked into cdylib).
+    let lib_imported_types = [
         "StructA",
         "StructB",
+        "StructC",
         "StructTupleA",
         "StructTupleB",
+        "StructTupleC",
         "EnumA",
         "EnumB",
+        "EnumC",
         "EnumIntA",
         "EnumIntB",
+        "EnumIntC",
         "ErrorA",
         "ErrorB",
         "ErrorC",
         "EventA",
         "EventB",
+        "EventC",
     ];
-    for name in imported_types {
+    for name in lib_imported_types {
         assert!(
-            !all_names.contains(name),
-            "imported type {name} should NOT have a spec entry without the feature"
+            all_names.contains(name),
+            "lib-imported type {name} should have a spec entry (rlib statics linked into cdylib)"
         );
     }
+
+    // WASM-imported types have export = false without the feature, so they do
+    // not contribute additional spec entries. (Their names overlap with
+    // lib-imported types above, which ARE present from rlib linking.)
 }
 
 /// Extract the name from a non-function spec entry.

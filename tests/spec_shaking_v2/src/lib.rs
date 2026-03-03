@@ -224,12 +224,14 @@ enum UsedNonPubError {
     Fail = 1,
 }
 
-// --- Imported types from contractimport: only used ones should have markers ---
+// --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
+// Only StructC is used in a contract fn; other spec_lib types have spec entries
+// but no markers.
 
-mod imported {
-    soroban_sdk::contractimport!(
-        file = "../../target/wasm32v1-none/release/test_spec_contract_import_lib.wasm"
-    );
+// --- WASM-imported types (contractimport!): only used ones should have markers ---
+
+mod wasm_imported {
+    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_wasm.wasm");
 }
 
 // --- Unused types: no markers expected ---
@@ -356,7 +358,9 @@ impl Contract {
         .publish(&env);
     }
 
-    pub fn with_imported(_env: Env, _s: imported::StructA) {}
+    pub fn with_lib_struct(_env: Env, _s: test_spec_lib::StructC) {}
+
+    pub fn with_wasm_imported(_env: Env, _s: wasm_imported::StructA) {}
 
     pub fn with_non_pub(_env: Env, _s: UsedNonPubStruct) {}
 

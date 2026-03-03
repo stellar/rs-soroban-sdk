@@ -1,5 +1,5 @@
 [package]
-name = "test_spec_contract_import_lib"
+name = "test_spec_wasm"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -13,8 +13,4 @@ doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
-test_spec_lib = {path = "../spec_lib"}
-
-[dev-dependencies]
-soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
 test_spec_lib = {path = "../spec_lib"}
