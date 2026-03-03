@@ -366,6 +366,7 @@ impl SpecShakingMarker for crate::I256 {}
 impl SpecShakingMarker for crate::Timepoint {}
 impl SpecShakingMarker for crate::Duration {}
 impl SpecShakingMarker for crate::Val {}
+impl SpecShakingMarker for crate::Error {}
 
 // Container types - propagate to inner types
 impl<T: SpecShakingMarker> SpecShakingMarker for crate::Vec<T> {
