@@ -4,7 +4,7 @@ use from_meta_storage::{get_ledger, parse_ledger};
 use from_rpc::{get_ledger_entry, parse_ledger_entry};
 use sha2::{Digest, Sha256};
 use soroban_sdk::xdr::{BucketEntry, LedgerEntry, LedgerKey, Limited, Limits, WriteXdr};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 mod iter;
 pub use iter::LedgerEntryChangesIterator;
@@ -199,7 +199,7 @@ impl LedgerEntryFetcher {
     fn fetch_with_dl_cache(
         &self,
         key: &LedgerKey,
-        cache_path: &PathBuf,
+        cache_path: &Path,
     ) -> Result<Option<LedgerEntry>, Error> {
         std::fs::create_dir_all(cache_path)?;
 
@@ -217,7 +217,7 @@ impl LedgerEntryFetcher {
 
         // Prefetch all meta for ledgers from starting ledger down to the checkpoint (in background)
         let prefetch_meta_url = self.network.meta_url.clone();
-        let prefetch_cache_path = cache_path.clone();
+        let prefetch_cache_path = cache_path.to_path_buf();
         let prefetch_ledgers: Vec<u32> = (0..ledgers_to_checkpoint)
             .filter_map(|i| self.ledger.checked_sub(i))
             .collect();
@@ -252,7 +252,7 @@ impl LedgerEntryFetcher {
         self.fetch_from_archive(&cache_path, prev_checkpoint, key)
     }
 
-    fn prefetch_meta(meta_url: &str, cache_path: &PathBuf, ledgers: &[u32]) {
+    fn prefetch_meta(meta_url: &str, cache_path: &Path, ledgers: &[u32]) {
         // Process in chunks of 10 to avoid too many open files
         const MAX_CONCURRENT_DOWNLOADS: usize = 10;
         for chunk in ledgers.chunks(MAX_CONCURRENT_DOWNLOADS) {
@@ -278,7 +278,7 @@ impl LedgerEntryFetcher {
 
     fn fetch_from_meta(
         &self,
-        cache_path: &PathBuf,
+        cache_path: &Path,
         ledger: u32,
         key: &LedgerKey,
     ) -> Result<Option<Option<LedgerEntry>>, Error> {
@@ -311,7 +311,7 @@ impl LedgerEntryFetcher {
 
     fn fetch_from_rpc(
         &self,
-        cache_path: &PathBuf,
+        cache_path: &Path,
         ledger: u32,
         key: &LedgerKey,
     ) -> Result<Option<Option<LedgerEntry>>, Error> {
@@ -345,7 +345,7 @@ impl LedgerEntryFetcher {
 
     fn fetch_from_archive(
         &self,
-        cache_path: &PathBuf,
+        cache_path: &Path,
         ledger: u32,
         key: &LedgerKey,
     ) -> Result<Option<LedgerEntry>, Error> {
