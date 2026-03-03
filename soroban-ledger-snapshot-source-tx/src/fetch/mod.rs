@@ -32,12 +32,6 @@ pub enum Error {
     HistoryArchive(#[from] from_history_archive::Error),
 }
 
-/// Returns true if the ledger is a checkpoint ledger for the given checkpoint frequency.
-#[allow(dead_code)]
-pub fn is_checkpoint_ledger(ledger: u32, checkpoint_frequency: u32) -> bool {
-    (ledger + 1) % checkpoint_frequency == 0
-}
-
 /// Network configuration for fetching ledger data
 ///
 /// Contains URLs for SEP-54 meta storage, RPC, and history archive,
