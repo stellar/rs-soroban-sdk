@@ -41,6 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
+        experimental_spec_shaking_v2: [true, false]
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
@@ -92,17 +93,29 @@ jobs:
           done
         done
 
+    - name: Enable experimental_spec_shaking_v2 feature
+      if: matrix.experimental_spec_shaking_v2
+      working-directory: soroban-examples
+      run: |
+        find . -name Cargo.toml | while read -r file; do
+          # Add feature to entries with existing features
+          sed -i '/soroban-sdk = {.*features/s|features = \[|features = ["experimental_spec_shaking_v2", |' "$file"
+          # Add features field to entries without features
+          sed -i '/soroban-sdk = {/{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' "$file"
+        done
+
     - name: Diff
       run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
 
     - name: Build soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: make build
 
     - name: Set artifact name
       id: artifact-name
-      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
+      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')${{ matrix.experimental_spec_shaking_v2 && '-spec-shaking-v2' || '' }}" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
       uses: actions/upload-artifact@v4
@@ -114,6 +127,7 @@ jobs:
     - name: Test soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: make test
         
     - name: Diff

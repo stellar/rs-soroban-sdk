@@ -36,6 +36,7 @@ jobs:
       fail-fast: false
       matrix:
         working-directory: ${{ fromJSON(needs.collect-crates.outputs.dirs) }}
+        experimental_spec_shaking_v2: [true, false]
     defaults:
       run:
         working-directory: stellar-contracts/${{ matrix.working-directory }}
@@ -76,6 +77,15 @@ jobs:
           sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' Cargo.toml
         done
 
+    - name: Enable experimental_spec_shaking_v2 feature
+      if: matrix.experimental_spec_shaking_v2
+      working-directory: stellar-contracts
+      run: |
+        # Add feature to entries with existing features
+        sed -i '/soroban-sdk = {.*features/s|features = \[|features = ["experimental_spec_shaking_v2", |' Cargo.toml
+        # Add features field to entries without features
+        sed -i '/soroban-sdk = {/{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' Cargo.toml
+
     - name: Diff
       run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
 
@@ -83,12 +93,13 @@ jobs:
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: cargo build --target wasm32v1-none --release
 
     - name: Set artifact name
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
       id: artifact-name
-      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
+      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')${{ matrix.experimental_spec_shaking_v2 && '-spec-shaking-v2' || '' }}" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
@@ -100,6 +111,7 @@ jobs:
 
     - env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: cargo test
 
     - name: Diff
