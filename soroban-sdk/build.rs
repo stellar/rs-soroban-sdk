@@ -21,7 +21,7 @@ pub fn main() {
     if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
         let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
         println!("cargo::rerun-if-env-changed={env_name}");
-        if std::env::var(env_name).ok().as_deref() == None
+        if std::env::var(env_name).is_err()
             && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
         {
             panic!(
