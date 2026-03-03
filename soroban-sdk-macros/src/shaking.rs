@@ -65,7 +65,12 @@ where
                     // Marker in data section. Post-build tools can scan for "SpEcV1"
                     // patterns and match against specs in contractspecv0.
                     static MARKER: [u8; #marker_len] = *#marker_lit;
-                    // Volatile read prevents DCE within live function.
+                    // Volatile read prevents DCE of this function and keeps MARKER
+                    // in the data section. We only read a single `u8` from the start
+                    // of the array because merely taking a volatile reference to the
+                    // symbol is sufficient; reading all bytes via
+                    // `read_volatile::<[u8; #marker_len]>()` would be redundant and
+                    // could increase code size without any functional benefit.
                     let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
                 }
             }
