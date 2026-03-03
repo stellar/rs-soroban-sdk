@@ -67,7 +67,7 @@ impl<T: SpecShakingMarker> SpecShakingMarker for Option<T> {
     }
 }
 
-// Result implementation - includes both type's specs
+// Result implementation - includes both types' specs
 impl<T: SpecShakingMarker, E: SpecShakingMarker> SpecShakingMarker for Result<T, E> {
     #[inline(always)]
     fn spec_shaking_marker() {
