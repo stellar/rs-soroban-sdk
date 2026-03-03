@@ -1,0 +1,68 @@
+{
+  "last_modified_ledger_seq": 50463386,
+  "data": {
+    "contract_data": {
+      "ext": "v0",
+      "contract": "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA",
+      "key": "ledger_key_contract_instance",
+      "durability": "persistent",
+      "val": {
+        "contract_instance": {
+          "executable": "stellar_asset",
+          "storage": [
+            {
+              "key": {
+                "symbol": "METADATA"
+              },
+              "val": {
+                "map": [
+                  {
+                    "key": {
+                      "symbol": "decimal"
+                    },
+                    "val": {
+                      "u32": 7
+                    }
+                  },
+                  {
+                    "key": {
+                      "symbol": "name"
+                    },
+                    "val": {
+                      "string": "native"
+                    }
+                  },
+                  {
+                    "key": {
+                      "symbol": "symbol"
+                    },
+                    "val": {
+                      "string": "native"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "key": {
+                "vec": [
+                  {
+                    "symbol": "AssetInfo"
+                  }
+                ]
+              },
+              "val": {
+                "vec": [
+                  {
+                    "symbol": "Native"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "ext": "v0"
+}
