@@ -19,8 +19,9 @@ use stellar_xdr::{
 /// Options for controlling code generation behavior.
 #[derive(Default)]
 pub struct GenerateOptions {
-    /// When true, generated types use default export behavior (pub types export their spec).
-    /// When false (default), generated types use `export = false`.
+    /// When true, generated types are annotated so their specs are exported regardless of
+    /// Rust visibility (equivalent to `export = true` in macros).
+    /// When false (default), generated types behave as if `export = false` in macros.
     pub export: bool,
 }
 
