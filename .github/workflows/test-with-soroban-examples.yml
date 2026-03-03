@@ -98,10 +98,10 @@ jobs:
       working-directory: soroban-examples
       run: |
         find . -name Cargo.toml | while read -r file; do
-          # Add feature to entries with existing features
-          sed -i '/soroban-sdk = {.*features/s|features = \[|features = ["experimental_spec_shaking_v2", |' "$file"
-          # Add features field to entries without features
-          sed -i '/soroban-sdk = {/{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' "$file"
+          # Add feature to path-patched entries with existing features
+          sed -i '/soroban-sdk = {.*path = /s|features = \[|features = ["experimental_spec_shaking_v2", |' "$file"
+          # Add features field to path-patched entries without features
+          sed -i '/soroban-sdk = {.*path = /{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' "$file"
         done
 
     - name: Diff
