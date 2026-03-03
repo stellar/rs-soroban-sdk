@@ -216,12 +216,12 @@ mod tests {
         let spec_xdr = b"some spec xdr bytes";
         let marker: Marker = generate_marker_for_xdr(spec_xdr);
 
-        // Check prefix
-        assert_eq!(&marker[..4], MAGIC);
-
-        // Check total length
-        assert_eq!(marker.len(), LEN);
-        assert_eq!(marker.len(), 14);
+        // Assert exact marker bytes so that any change to the marker
+        // format (prefix, hash algorithm, truncation length) is caught.
+        assert_eq!(
+            marker,
+            [0x53, 0x70, 0x45, 0x63, 0x56, 0x31, 0xf5, 0xbe, 0x3f, 0x49, 0x6f, 0x7b, 0xbc, 0xb6]
+        );
 
         // Same input produces same marker
         let marker2 = generate_marker_for_xdr(spec_xdr);
@@ -230,7 +230,7 @@ mod tests {
         // Different input produces different marker
         let different_xdr = b"different spec xdr bytes";
         let different_marker = generate_marker_for_xdr(different_xdr);
-        assert_eq!(&different_marker[..4], MAGIC);
+        assert_eq!(&different_marker[..6], MAGIC.as_slice());
         assert_ne!(marker, different_marker);
     }
 
@@ -249,7 +249,7 @@ mod tests {
         assert_eq!(marker.len(), LEN);
 
         // First 4 bytes should be magic
-        assert_eq!(&marker[..4], MAGIC);
+        assert_eq!(&marker[..6], MAGIC.as_slice());
 
         // Same entry produces same marker
         let marker2 = generate_marker_for_entry(&entry);
@@ -275,7 +275,7 @@ mod tests {
         assert_eq!(marker.len(), LEN);
 
         // First 4 bytes should be magic
-        assert_eq!(&marker[..4], MAGIC);
+        assert_eq!(&marker[..6], MAGIC.as_slice());
 
         // Same entry produces same marker
         let marker2 = generate_marker_for_entry(&entry);
