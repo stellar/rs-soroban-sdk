@@ -242,10 +242,10 @@ mod tests {
 
         let marker = generate_marker_for_entry(&entry);
 
-        // Marker should be 12 bytes
+        // Marker should be 14 bytes (6-byte prefix + 8-byte hash)
         assert_eq!(marker.len(), LEN);
 
-        // First 4 bytes should be magic
+        // First 6 bytes should be magic
         assert_eq!(&marker[..6], MAGIC.as_slice());
 
         // Same entry produces same marker
@@ -268,10 +268,10 @@ mod tests {
         let entry = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
         let marker = generate_marker_for_entry(&entry);
 
-        // Marker should be 12 bytes
+        // Marker should be 14 bytes (6-byte prefix + 8-byte hash)
         assert_eq!(marker.len(), LEN);
 
-        // First 4 bytes should be magic
+        // First 6 bytes should be magic
         assert_eq!(&marker[..6], MAGIC.as_slice());
 
         // Same entry produces same marker
