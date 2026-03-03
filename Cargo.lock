@@ -1924,6 +1924,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_spec_import"
+version = "25.1.1"
+dependencies = [
+ "soroban-sdk",
+ "test_spec_lib",
+]
+
+[[package]]
 name = "test_spec_lib"
 version = "25.1.1"
 dependencies = [
@@ -1945,14 +1953,6 @@ version = "25.1.1"
 dependencies = [
  "soroban-sdk",
  "soroban-spec",
- "test_spec_lib",
-]
-
-[[package]]
-name = "test_spec_wasm"
-version = "25.1.1"
-dependencies = [
- "soroban-sdk",
  "test_spec_lib",
 ]
 

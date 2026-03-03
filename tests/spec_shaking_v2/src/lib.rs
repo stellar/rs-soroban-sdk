@@ -231,7 +231,7 @@ enum UsedNonPubError {
 // --- WASM-imported types (contractimport!): only used ones should have markers ---
 
 mod wasm_imported {
-    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_wasm.wasm");
+    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_import.wasm");
 }
 
 // --- Unused types: no markers expected ---

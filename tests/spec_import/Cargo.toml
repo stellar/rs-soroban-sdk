@@ -1,5 +1,5 @@
 [package]
-name = "test_spec_wasm"
+name = "test_spec_import"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
