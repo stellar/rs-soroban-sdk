@@ -16,7 +16,8 @@ fn test_spec_shaking_v2() {
     let markers = soroban_spec::shaking::find_all(WASM);
 
     // Filter entries using markers.
-    let filtered = soroban_spec::shaking::filter(entries.clone(), &markers);
+    let filtered: Vec<_> =
+        soroban_spec::shaking::filter(entries.iter().cloned(), &markers).collect();
 
     // Collect names of filtered entries by kind for assertions.
     let filtered_names: HashSet<std::string::String> =

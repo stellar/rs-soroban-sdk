@@ -118,21 +118,21 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 ///
 /// # Returns
 ///
-/// Filtered entries with only used types/events remaining.
+/// Iterator of filtered entries with only used types/events remaining.
 #[allow(clippy::implicit_hasher)]
-pub fn filter(entries: Vec<ScSpecEntry>, markers: &HashSet<Marker>) -> Vec<ScSpecEntry> {
-    entries
-        .into_iter()
-        .filter(|entry| {
-            // Always keep functions - they're the contract's API
-            if matches!(entry, ScSpecEntry::FunctionV0(_)) {
-                return true;
-            }
-            // For all other entries (types, events), check if marker exists
-            let marker = generate_marker_for_entry(entry);
-            markers.contains(&marker)
-        })
-        .collect()
+pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
+    entries: I,
+    markers: &'a HashSet<Marker>,
+) -> impl Iterator<Item = ScSpecEntry> + 'a {
+    entries.into_iter().filter(move |entry| {
+        // Always keep functions - they're the contract's API
+        if matches!(entry, ScSpecEntry::FunctionV0(_)) {
+            return true;
+        }
+        // For all other entries (types, events), check if marker exists
+        let marker = generate_marker_for_entry(entry);
+        markers.contains(&marker)
+    })
 }
 
 #[cfg(test)]
@@ -324,7 +324,7 @@ mod tests {
         markers.insert(generate_marker_for_entry(&transfer_event));
         markers.insert(generate_marker_for_entry(&mint_event));
 
-        let filtered = filter(entries, &markers);
+        let filtered: Vec<_> = filter(entries, &markers).collect();
 
         // Should have: 1 function + 2 used events
         assert_eq!(filtered.len(), 3);
@@ -355,7 +355,7 @@ mod tests {
 
         let markers = HashSet::new();
 
-        let filtered = filter(entries, &markers);
+        let filtered: Vec<_> = filter(entries, &markers).collect();
 
         // Should have: 1 function, 0 events
         assert_eq!(filtered.len(), 1);
@@ -373,7 +373,7 @@ mod tests {
 
         let markers = HashSet::new(); // No markers
 
-        let filtered = filter(entries, &markers);
+        let filtered: Vec<_> = filter(entries, &markers).collect();
 
         // Should have: only functions (always kept), no types or events
         assert_eq!(filtered.len(), 1);
@@ -403,7 +403,7 @@ mod tests {
         markers.insert(generate_marker_for_entry(&used_enum));
         markers.insert(generate_marker_for_entry(&used_event));
 
-        let filtered = filter(entries, &markers);
+        let filtered: Vec<_> = filter(entries, &markers).collect();
 
         // Should have: 1 function + 1 struct + 1 enum + 1 event
         assert_eq!(filtered.len(), 4);

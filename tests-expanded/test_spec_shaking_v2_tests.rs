@@ -20962,7 +20962,8 @@ mod test {
     fn test_spec_shaking_v2() {
         let entries = soroban_spec::read::from_wasm(WASM).unwrap();
         let markers = soroban_spec::shaking::find_all(WASM);
-        let filtered = soroban_spec::shaking::filter(entries.clone(), &markers);
+        let filtered: Vec<_> =
+            soroban_spec::shaking::filter(entries.iter().cloned(), &markers).collect();
         let filtered_names: HashSet<std::string::String> =
             filtered.iter().filter_map(entry_name).collect();
         let fn_names: Vec<std::string::String> = filtered
