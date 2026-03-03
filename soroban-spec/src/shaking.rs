@@ -218,10 +218,7 @@ mod tests {
 
         // Assert exact marker bytes so that any change to the marker
         // format (prefix, hash algorithm, truncation length) is caught.
-        assert_eq!(
-            marker,
-            [0x53, 0x70, 0x45, 0x63, 0x56, 0x31, 0xf5, 0xbe, 0x3f, 0x49, 0x6f, 0x7b, 0xbc, 0xb6]
-        );
+        assert_eq!(marker, *b"SpEcV1\xf5\xbe\x3f\x49\x6f\x7b\xbc\xb6");
 
         // Same input produces same marker
         let marker2 = generate_marker_for_xdr(spec_xdr);
