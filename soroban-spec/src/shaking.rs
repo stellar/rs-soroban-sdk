@@ -1,4 +1,18 @@
-/// Spec marker generation for identifying used spec entries.
+/// Spec shaking: removing unused spec entries from contract WASMs.
+///
+/// ## Meta
+///
+/// The `contractmetav0` section of a WASM may contain an [`ScMetaV0`] entry
+/// with key [`META_KEY`] (`rssdk_spec_shaking`). The value indicates the spec
+/// shaking version:
+///
+/// - Absent or `"1"` — version 1 (no markers, no shaking possible).
+/// - `"2"` — version 2, markers are embedded in the data section.
+///
+/// Use [`spec_shaking_version_for_meta`] to determine the version from the
+/// contract's meta entries.
+///
+/// ## Markers (version 2)
 ///
 /// The marker is a byte array in the data section with a distinctive pattern:
 /// - 6 bytes: "SpEcV1" prefix
@@ -22,7 +36,34 @@
 use std::collections::HashSet;
 
 use sha2::{Digest, Sha256};
-use stellar_xdr::curr::{Limits, ScSpecEntry, WriteXdr};
+use stellar_xdr::curr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+
+/// The contract meta key that indicates the spec shaking version.
+///
+/// Stored in the `contractmetav0` section as an [`ScMetaV0`] entry.
+pub const META_KEY: &str = "rssdk_spec_shaking";
+
+/// The meta value for spec shaking version 2.
+pub const META_VALUE_V2: &str = "2";
+
+/// Returns the spec shaking version indicated by the contract meta entries.
+///
+/// Looks for an [`ScMetaV0`] entry with key [`META_KEY`]. Returns:
+/// - `2` if the value is [`META_VALUE_V2`] (`"2"`).
+/// - `1` otherwise (absent or any other value).
+pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
+    for entry in meta {
+        match entry {
+            ScMetaEntry::ScMetaV0(v0) if v0.key.to_utf8_string_lossy() == META_KEY => {
+                if v0.val.to_utf8_string_lossy() == META_VALUE_V2 {
+                    return 2;
+                }
+            }
+            _ => {}
+        }
+    }
+    1
+}
 
 /// Magic bytes that identify a spec marker: `SpEcV1`
 const MAGIC: &[u8; 6] = b"SpEcV1";
@@ -139,9 +180,9 @@ pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
 mod tests {
     use super::*;
     use stellar_xdr::curr::{
-        ScSpecEntry, ScSpecEventDataFormat, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0,
-        ScSpecTypeDef, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0, ScSpecUdtStructFieldV0,
-        ScSpecUdtStructV0, StringM, VecM,
+        ScMetaV0, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventV0, ScSpecFunctionInputV0,
+        ScSpecFunctionV0, ScSpecTypeDef, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
+        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, VecM,
     };
 
     fn make_function(name: &str, input_types: Vec<ScSpecTypeDef>) -> ScSpecEntry {
@@ -444,5 +485,38 @@ mod tests {
             })
             .collect();
         assert_eq!(event_names, vec!["UsedEvent"]);
+    }
+
+    #[test]
+    fn test_spec_shaking_version_absent() {
+        let meta = vec![];
+        assert_eq!(spec_shaking_version_for_meta(&meta), 1);
+    }
+
+    #[test]
+    fn test_spec_shaking_version_other_keys() {
+        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
+            key: "rssdkver".try_into().unwrap(),
+            val: "1.0.0".try_into().unwrap(),
+        })];
+        assert_eq!(spec_shaking_version_for_meta(&meta), 1);
+    }
+
+    #[test]
+    fn test_spec_shaking_version_v2() {
+        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
+            key: META_KEY.try_into().unwrap(),
+            val: META_VALUE_V2.try_into().unwrap(),
+        })];
+        assert_eq!(spec_shaking_version_for_meta(&meta), 2);
+    }
+
+    #[test]
+    fn test_spec_shaking_version_unknown_value() {
+        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
+            key: META_KEY.try_into().unwrap(),
+            val: "99".try_into().unwrap(),
+        })];
+        assert_eq!(spec_shaking_version_for_meta(&meta), 1);
     }
 }

@@ -118,10 +118,12 @@ const _: () = {
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
 
-    // An indicator that the spec shaking v2 experimental feature is in use. Signals to the
-    // stellar-cli that the .wasm needs to have its spec shaken using markers in the data section.
+    // An indicator of the spec shaking version in use. Signals to the stellar-cli that the .wasm
+    // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
+    // The contractmeta! macro requires string literals, so we assert the literals match the
+    // constants defined in soroban_spec::shaking.
     #[cfg(feature = "experimental_spec_shaking_v2")]
-    contractmeta!(key = "rssdkfeat", val = "experimental_spec_shaking_v2");
+    contractmeta!(key = "rssdk_spec_shaking", val = "2");
 };
 
 // Re-exports of dependencies used by macros.
@@ -1102,7 +1104,7 @@ pub use env::FromVal;
 pub use env::IntoVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryFromVal;
-/// Used to do conversions between values in the Soroban environment.
+/// Used to do convers_ons between values in the Soroban environment.
 pub use env::TryIntoVal;
 
 // Used by generated code only.
