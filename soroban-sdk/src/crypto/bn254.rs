@@ -1,7 +1,6 @@
 #[cfg(not(target_family = "wasm"))]
 use crate::xdr::ScVal;
 use crate::{
-    bytes,
     crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val},
     impl_bytesn_repr,
@@ -257,16 +256,15 @@ impl Fr {
     }
 }
 
-/// BN254 scalar field modulus r =
-/// 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001
+// BN254 scalar field modulus r in big-endian bytes.
+// r = 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001
+const BN254_FR_MODULUS_BE: [u8; 32] = [
+    0x30, 0x64, 0x4e, 0x72, 0xe1, 0x31, 0xa0, 0x29, 0xb8, 0x50, 0x45, 0xb6, 0x81, 0x81, 0x58, 0x5d,
+    0x28, 0x33, 0xe8, 0x48, 0x79, 0xb9, 0x70, 0x91, 0x43, 0xe1, 0xf5, 0x93, 0xf0, 0x00, 0x00, 0x01,
+];
+
 fn fr_modulus(env: &Env) -> U256 {
-    U256::from_be_bytes(
-        env,
-        &bytes!(
-            env,
-            0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001
-        ),
-    )
+    U256::from_be_bytes(env, &Bytes::from_array(env, &BN254_FR_MODULUS_BE))
 }
 
 impl From<U256> for Fr {
@@ -595,5 +593,31 @@ mod test {
         let bytes = BytesN::from_array(&env, &BN254_FP_MODULUS_BE);
         let val: Val = bytes.into_val(&env);
         let _: Bn254Fp = val.into_val(&env);
+    }
+
+    #[test]
+    fn test_bn254_fp_modulus_matches_arkworks() {
+        use ark_bn254::Fq;
+        use ark_ff::{BigInteger, PrimeField};
+
+        let be_bytes = Fq::MODULUS.to_bytes_be();
+        assert_eq!(
+            be_bytes.as_slice(),
+            &BN254_FP_MODULUS_BE,
+            "BN254 Fp modulus does not match arkworks"
+        );
+    }
+
+    #[test]
+    fn test_bn254_fr_modulus_matches_arkworks() {
+        use ark_bn254::Fr as ArkFr;
+        use ark_ff::{BigInteger, PrimeField};
+
+        let be_bytes = ArkFr::MODULUS.to_bytes_be();
+        assert_eq!(
+            be_bytes.as_slice(),
+            &BN254_FR_MODULUS_BE,
+            "BN254 Fr modulus does not match arkworks"
+        );
     }
 }

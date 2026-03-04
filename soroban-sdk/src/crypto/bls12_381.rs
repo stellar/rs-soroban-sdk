@@ -1,7 +1,6 @@
 #[cfg(not(target_family = "wasm"))]
 use crate::xdr::ScVal;
 use crate::{
-    bytes,
     crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val, U64Val},
     impl_bytesn_repr,
@@ -476,16 +475,15 @@ impl Fr {
     }
 }
 
-/// BLS12-381 scalar field modulus r =
-/// 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+// BLS12-381 scalar field modulus r in big-endian bytes.
+// r = 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+const BLS12_381_FR_MODULUS_BE: [u8; 32] = [
+    0x73, 0xed, 0xa7, 0x53, 0x29, 0x9d, 0x7d, 0x48, 0x33, 0x39, 0xd8, 0x08, 0x09, 0xa1, 0xd8, 0x05,
+    0x53, 0xbd, 0xa4, 0x02, 0xff, 0xfe, 0x5b, 0xfe, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x01,
+];
+
 fn fr_modulus(env: &Env) -> U256 {
-    U256::from_be_bytes(
-        env,
-        &bytes!(
-            env,
-            0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
-        ),
-    )
+    U256::from_be_bytes(env, &Bytes::from_array(env, &BLS12_381_FR_MODULUS_BE))
 }
 
 impl From<U256> for Fr {
@@ -1038,5 +1036,31 @@ mod test {
         fp2_bytes[0..FP_SERIALIZED_SIZE].copy_from_slice(&p_minus_1);
         fp2_bytes[FP_SERIALIZED_SIZE..].copy_from_slice(&p_minus_1);
         let _ = Fp2::from_array(&env, &fp2_bytes);
+    }
+
+    #[test]
+    fn test_bls12_381_fp_modulus_matches_arkworks() {
+        use ark_bls12_381::Fq;
+        use ark_ff::{BigInteger, PrimeField};
+
+        let be_bytes = Fq::MODULUS.to_bytes_be();
+        assert_eq!(
+            be_bytes.as_slice(),
+            &BLS12_381_FP_MODULUS_BE,
+            "BLS12-381 Fp modulus does not match arkworks"
+        );
+    }
+
+    #[test]
+    fn test_bls12_381_fr_modulus_matches_arkworks() {
+        use ark_bls12_381::Fr as ArkFr;
+        use ark_ff::{BigInteger, PrimeField};
+
+        let be_bytes = ArkFr::MODULUS.to_bytes_be();
+        assert_eq!(
+            be_bytes.as_slice(),
+            &BLS12_381_FR_MODULUS_BE,
+            "BLS12-381 Fr modulus does not match arkworks"
+        );
     }
 }
