@@ -28,8 +28,22 @@
 //!
 //! ## `experimental_spec_shaking_v2`
 //!
-//! Enables spec shaking, a mechanism for stripping unused type and event
-//! definitions from a contract's spec after building.
+//! Enables v2 spec shaking, an improved mechanism for controlling which type,
+//! event, and function definitions appear in a contract's spec.
+//!
+//! ### Spec Shaking v1 (default, no feature flag)
+//!
+//! - Lib imports (via `contractimport!`): exported
+//! - Wasm imports (via `contractimport!`): not exported
+//! - `pub` types: exported
+//! - Non-`pub` types: not exported
+//! - All events: exported
+//! - All functions: exported
+//!
+//! ### Spec Shaking v2 (this feature)
+//!
+//! - Everything exported (types, events, functions, imports)
+//! - Unused entries shaken out using dead code / spec elimination
 //!
 //! A contract's spec (the `contractspecv0` custom section in the Wasm binary)
 //! contains entries for every function, type, and event defined by the contract.
