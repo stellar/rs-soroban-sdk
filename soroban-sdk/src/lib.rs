@@ -1104,7 +1104,7 @@ pub use env::FromVal;
 pub use env::IntoVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryFromVal;
-/// Used to do convers_ons between values in the Soroban environment.
+/// Used to do conversions between values in the Soroban environment.
 pub use env::TryIntoVal;
 
 // Used by generated code only.
