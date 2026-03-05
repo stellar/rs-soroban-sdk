@@ -9,6 +9,10 @@
 //! [Stellar]: https://stellar.org
 //! [Soroban]: https://stellar.org/soroban
 //!
+//! ### Features
+//!
+//! See [_features] for a list of all Cargo features and what they do.
+//!
 //! ### Migrating Major Versions
 //!
 //! See [_migrating] for a summary of how to migrate from one major version to another.
@@ -53,6 +57,7 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
+pub mod _features;
 pub mod _migrating;
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
@@ -112,6 +117,13 @@ const _: () = {
         key = "rssdkver",
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
+
+    // An indicator of the spec shaking version in use. Signals to the stellar-cli that the .wasm
+    // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
+    // The contractmeta! macro requires string literals, so we assert the literals match the
+    // constants defined in soroban_spec::shaking.
+    #[cfg(feature = "experimental_spec_shaking_v2")]
+    contractmeta!(key = "rssdk_spec_shaking", val = "2");
 };
 
 // Re-exports of dependencies used by macros.
@@ -167,7 +179,16 @@ pub use soroban_sdk_macros::symbol_short;
 /// - Enum variants must have a value convertible to u32.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
+/// for the type. By default, spec entries are only generated for `pub` types
+/// (or when `export = true` is explicitly set).
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, spec entries are generated for all types regardless of
+/// visibility, and markers are embedded that allow post-build tools to strip
+/// entries for types that are not used at a contract boundary. See
+/// [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -273,6 +294,16 @@ pub use soroban_sdk_macros::contracterror;
 /// - A `ContractClient` struct that has functions for each function in the
 /// contract.
 /// - Types for all contract types defined in the contract.
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, imported types are generated with `export = true` so
+/// they produce spec entries and markers in the importing contract. Post-build
+/// tools strip entries for imported types that are not used at the importing
+/// contract's boundary. Without this feature, imported types use
+/// `export = false` and do not produce spec entries. See [`_features`] for
+/// details.
 ///
 /// ### Examples
 ///
@@ -529,7 +560,16 @@ pub use soroban_sdk_macros::contractmeta;
 /// less in length.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
+/// for the type. By default, spec entries are only generated for `pub` types
+/// (or when `export = true` is explicitly set).
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, spec entries are generated for all types regardless of
+/// visibility, and markers are embedded that allow post-build tools to strip
+/// entries for types that are not used at a contract boundary. See
+/// [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -677,6 +717,13 @@ pub use soroban_sdk_macros::contracttype;
 ///
 /// Includes the event in the contract spec so that clients can generate bindings
 /// for the type and downstream systems can understand the meaning of the event.
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, markers are embedded that allow post-build tools to strip
+/// spec entries for events that are never published at a contract boundary. See
+/// [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -1076,6 +1123,17 @@ mod try_from_val_for_contract_fn;
 #[doc(hidden)]
 #[allow(deprecated)]
 pub use try_from_val_for_contract_fn::TryFromValForContractFn;
+
+mod into_val_for_contract_fn;
+#[doc(hidden)]
+#[allow(deprecated)]
+pub use into_val_for_contract_fn::IntoValForContractFn;
+
+#[cfg(feature = "experimental_spec_shaking_v2")]
+mod spec_shaking;
+#[cfg(feature = "experimental_spec_shaking_v2")]
+#[doc(hidden)]
+pub use spec_shaking::SpecShakingMarker;
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

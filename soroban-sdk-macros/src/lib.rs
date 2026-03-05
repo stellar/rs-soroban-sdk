@@ -18,6 +18,7 @@ mod derive_trait;
 mod doc;
 mod map_type;
 mod path;
+mod shaking;
 mod symbol;
 mod syn_ext;
 
@@ -50,7 +51,7 @@ use syn::{
 };
 use syn_ext::HasFnsItem;
 
-use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
+use soroban_spec_rust::{generate_from_wasm_with_options, GenerateFromFileError, GenerateOptions};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
@@ -421,9 +422,12 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
+    // exporting. If it does not have a value, export if the type is pub,
+    // or always export when spec shaking is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
+    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+        true
     } else {
         matches!(input.vis, Visibility::Public(_))
     };
@@ -492,9 +496,12 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
+    // exporting. If it does not have a value, export if the type is pub,
+    // or always export when spec shaking is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
+    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+        true
     } else {
         matches!(input.vis, Visibility::Public(_))
     };
@@ -679,8 +686,12 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate.
-    match generate_from_wasm(&wasm, &args.file, args.sha256.as_deref()) {
+    // Generate with options based on whether the experimental_spec_shaking_v2
+    // feature is enabled.
+    let opts = GenerateOptions {
+        export: cfg!(feature = "experimental_spec_shaking_v2"),
+    };
+    match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
             Error::new(args.sha256.span(), e.to_string()).into_compile_error()

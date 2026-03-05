@@ -1506,6 +1506,7 @@ version = "25.1.1"
 dependencies = [
  "base64",
  "pretty_assertions",
+ "sha2",
  "stellar-xdr",
  "thiserror",
  "wasmparser",
@@ -1920,6 +1921,39 @@ name = "test_mutability"
 version = "25.1.1"
 dependencies = [
  "soroban-sdk",
+]
+
+[[package]]
+name = "test_spec_import"
+version = "25.1.1"
+dependencies = [
+ "soroban-sdk",
+ "test_spec_lib",
+]
+
+[[package]]
+name = "test_spec_lib"
+version = "25.1.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_spec_shaking_v1"
+version = "25.1.1"
+dependencies = [
+ "soroban-sdk",
+ "soroban-spec",
+ "test_spec_lib",
+]
+
+[[package]]
+name = "test_spec_shaking_v2"
+version = "25.1.1"
+dependencies = [
+ "soroban-sdk",
+ "soroban-spec",
+ "test_spec_lib",
 ]
 
 [[package]]
