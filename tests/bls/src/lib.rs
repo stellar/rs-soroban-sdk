@@ -2,7 +2,7 @@
 use soroban_sdk::{
     contract, contractimpl, contracttype,
     crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381G2Affine, Fr},
-    log, Env,
+    log, Env, Vec,
 };
 
 #[derive(Clone)]
@@ -43,12 +43,16 @@ impl Contract {
         let vp2 = soroban_sdk::Vec::from_array(&env, [g2_mul]);
         env.crypto().bls12_381().pairing_check(vp1, vp2)
     }
+
+    pub fn fr_vec_get(_env: Env, values: Vec<Fr>, index: u32) -> Fr {
+        values.get(index).unwrap()
+    }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{bytesn, Env};
+    use soroban_sdk::{bytesn, vec, Env, IntoVal, Symbol, Val, U256};
 
     use crate::{Contract, ContractClient};
 
@@ -113,5 +117,42 @@ mod test {
         };
         let res = client.dummy_verify(&proof);
         assert!(!res); // The pairing of generator points multiplied by the same scalar should not be the identity
+    }
+
+    #[test]
+    fn test_fr_decode_reduces_unreduced_scalar_and_vec_elements() {
+        let env = Env::default();
+        let contract_id = env.register(Contract, ());
+
+        let modulus = U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+            )
+            .into(),
+        );
+        let two = U256::from_u32(&env, 2);
+        let nine = U256::from_u32(&env, 9);
+
+        let raw_vals: Vec<Val> = vec![
+            &env,
+            modulus.add(&two).into_val(&env),
+            modulus.add(&nine).into_val(&env),
+        ];
+
+        let first: Fr = env.invoke_contract(
+            &contract_id,
+            &Symbol::new(&env, "fr_vec_get"),
+            vec![&env, raw_vals.clone().into_val(&env), 0_u32.into_val(&env)],
+        );
+        let second: Fr = env.invoke_contract(
+            &contract_id,
+            &Symbol::new(&env, "fr_vec_get"),
+            vec![&env, raw_vals.into_val(&env), 1_u32.into_val(&env)],
+        );
+
+        assert_eq!(first, Fr::from_u256(two));
+        assert_eq!(second, Fr::from_u256(nine));
     }
 }
