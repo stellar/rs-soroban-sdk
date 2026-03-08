@@ -270,6 +270,10 @@ pub struct EnvTestConfig {
     /// JSON file to be written to disk when the Env is no longer referenced.
     /// Defaults to true.
     pub capture_snapshot_at_drop: bool,
+
+    // NOTE: Next time a field needs to be added to EnvTestConfig it will be a breaking change,
+    // take the opportunity to make the current field private, new fields private, and settable via
+    // functions. Why: So that it is the last time a breaking change is needed to the type.
 }
 
 #[cfg(any(test, feature = "testutils"))]
