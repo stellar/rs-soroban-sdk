@@ -2,7 +2,7 @@
 use crate::xdr::ScVal;
 use crate::{
     env::internal::{self, BytesObject, U256Val, U64Val},
-    impl_bytesn_repr,
+    impl_bytesn_repr_without_from_bytes,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
@@ -162,10 +162,55 @@ pub struct Fp2(BytesN<FP2_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Fr(U256);
 
-impl_bytesn_repr!(G1Affine, G1_SERIALIZED_SIZE);
-impl_bytesn_repr!(G2Affine, G2_SERIALIZED_SIZE);
-impl_bytesn_repr!(Fp, FP_SERIALIZED_SIZE);
-impl_bytesn_repr!(Fp2, FP2_SERIALIZED_SIZE);
+impl_bytesn_repr_without_from_bytes!(G1Affine, G1_SERIALIZED_SIZE);
+impl_bytesn_repr_without_from_bytes!(G2Affine, G2_SERIALIZED_SIZE);
+impl_bytesn_repr_without_from_bytes!(Fp, FP_SERIALIZED_SIZE);
+impl_bytesn_repr_without_from_bytes!(Fp2, FP2_SERIALIZED_SIZE);
+
+// BLS12-381 base field modulus p in big-endian bytes.
+// p = 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab
+const BLS12_381_FP_MODULUS_BE: [u8; FP_SERIALIZED_SIZE] = [
+    0x1a, 0x01, 0x11, 0xea, 0x39, 0x7f, 0xe6, 0x9a, 0x4b, 0x1b, 0xa7, 0xb6, 0x43, 0x4b, 0xac, 0xd7,
+    0x64, 0x77, 0x4b, 0x84, 0xf3, 0x85, 0x12, 0xbf, 0x67, 0x30, 0xd2, 0xa0, 0xf6, 0xb0, 0xf6, 0x24,
+    0x1e, 0xab, 0xff, 0xfe, 0xb1, 0x53, 0xff, 0xff, 0xb9, 0xfe, 0xff, 0xff, 0xff, 0xff, 0xaa, 0xab,
+];
+
+fn validate_fp(bytes: &[u8; FP_SERIALIZED_SIZE]) {
+    if bytes >= &BLS12_381_FP_MODULUS_BE {
+        sdk_panic!("Bls12-381: Invalid Fp");
+    }
+}
+
+fn validate_fp2(bytes: &[u8; FP2_SERIALIZED_SIZE]) {
+    validate_fp(bytes[0..FP_SERIALIZED_SIZE].try_into().unwrap());
+    validate_fp(bytes[FP_SERIALIZED_SIZE..].try_into().unwrap());
+}
+
+impl G1Affine {
+    pub fn from_bytes(bytes: BytesN<G1_SERIALIZED_SIZE>) -> Self {
+        Self(bytes)
+    }
+}
+
+impl G2Affine {
+    pub fn from_bytes(bytes: BytesN<G2_SERIALIZED_SIZE>) -> Self {
+        Self(bytes)
+    }
+}
+
+impl Fp {
+    pub fn from_bytes(bytes: BytesN<FP_SERIALIZED_SIZE>) -> Self {
+        validate_fp(&bytes.to_array());
+        Self(bytes)
+    }
+}
+
+impl Fp2 {
+    pub fn from_bytes(bytes: BytesN<FP2_SERIALIZED_SIZE>) -> Self {
+        validate_fp2(&bytes.to_array());
+        Self(bytes)
+    }
+}
 
 impl Fp {
     pub fn env(&self) -> &Env {
@@ -476,9 +521,28 @@ impl Fr {
     }
 }
 
+// BLS12-381 scalar field modulus r in big-endian bytes.
+// r = 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+const BLS12_381_FR_MODULUS_BE: [u8; 32] = [
+    0x73, 0xed, 0xa7, 0x53, 0x29, 0x9d, 0x7d, 0x48, 0x33, 0x39, 0xd8, 0x08, 0x09, 0xa1, 0xd8, 0x05,
+    0x53, 0xbd, 0xa4, 0x02, 0xff, 0xfe, 0x5b, 0xfe, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x01,
+];
+
+fn fr_modulus(env: &Env) -> U256 {
+    U256::from_be_bytes(env, &Bytes::from_array(env, &BLS12_381_FR_MODULUS_BE))
+}
+
 impl From<U256> for Fr {
     fn from(value: U256) -> Self {
-        Self(value)
+        // Keep all Fr construction paths canonical by reducing modulo r here.
+        // Skip the expensive rem_euclid when value is already canonical (< r),
+        // which is always the case for host-returned arithmetic results.
+        let modulus = fr_modulus(value.env());
+        if value >= modulus {
+            Self(value.rem_euclid(&modulus))
+        } else {
+            Self(value)
+        }
     }
 }
 
@@ -493,7 +557,7 @@ impl TryFromVal<Env, Val> for Fr {
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         let u = U256::try_from_val(env, val)?;
-        Ok(Fr(u))
+        Ok(u.into())
     }
 }
 
@@ -773,6 +837,7 @@ impl Bls12_381 {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::bytesn;
 
     #[test]
     fn test_g1affine_to_val() {
@@ -838,5 +903,174 @@ mod test {
         let rt: Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
+    }
+
+    #[test]
+    fn test_fr_eq_both_unreduced() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let a = Fr::from_u256(r.add(&one));
+        let b = Fr::from_u256(one.clone());
+        assert_eq!(a, b);
+
+        let two_r_plus_one = r.add(&r).add(&one);
+        let c = Fr::from_u256(two_r_plus_one);
+        assert_eq!(a, c);
+        assert_eq!(b, c);
+    }
+
+    #[test]
+    fn test_fr_eq_unreduced_vs_zero() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let zero = U256::from_u32(&env, 0);
+
+        let a = Fr::from_u256(r);
+        let b = Fr::from_u256(zero);
+        assert_eq!(a, b);
+    }
+
+    #[test]
+    fn test_fr_reduced_value_unchanged() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let val = r.sub(&U256::from_u32(&env, 1));
+
+        let fr = Fr::from_u256(val.clone());
+        assert_eq!(fr.to_u256(), val);
+
+        let fr42 = Fr::from_u256(U256::from_u32(&env, 42));
+        assert_eq!(fr42.to_u256(), U256::from_u32(&env, 42));
+    }
+
+    #[test]
+    fn test_fr_from_bytes_reduces() {
+        let env = Env::default();
+        let one_fr = Fr::from_u256(U256::from_u32(&env, 1));
+
+        // BLS12-381 r+1 as big-endian bytes
+        let fr_from_bytes = Fr::from_bytes(bytesn!(
+            &env,
+            0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000002
+        ));
+        assert_eq!(fr_from_bytes, one_fr);
+    }
+
+    #[test]
+    fn test_fr_try_from_val_reduces() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let unreduced_u256 = r.add(&one);
+        let val: Val = unreduced_u256.into_val(&env);
+        let fr_from_val: Fr = val.into_val(&env);
+        let fr_one = Fr::from_u256(one);
+        assert_eq!(fr_from_val, fr_one);
+    }
+
+    #[test]
+    fn test_fr_u256_into_reduces() {
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let fr: Fr = r.add(&one).into();
+        let fr_one: Fr = one.into();
+        assert_eq!(fr, fr_one);
+    }
+
+    #[test]
+    fn test_fr_eq_unreduced_vs_host_computed() {
+        let env = Env::default();
+        let bls = Bls12_381::new(&env);
+        let r = fr_modulus(&env);
+        let five = U256::from_u32(&env, 5);
+
+        let user_fr = Fr::from_u256(r.add(&five));
+        let host_fr = bls.fr_add(
+            &Fr::from_u256(U256::from_u32(&env, 2)),
+            &Fr::from_u256(U256::from_u32(&env, 3)),
+        );
+        assert_eq!(user_fr, host_fr);
+    }
+
+    // Fp validation tests
+
+    #[test]
+    fn test_fp_max_valid_accepted() {
+        let env = Env::default();
+        let mut p_minus_1 = BLS12_381_FP_MODULUS_BE;
+        p_minus_1[FP_SERIALIZED_SIZE - 1] -= 1;
+        let _ = Fp::from_array(&env, &p_minus_1);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
+    fn test_fp_at_modulus_panics() {
+        let env = Env::default();
+        let _ = Fp::from_array(&env, &BLS12_381_FP_MODULUS_BE);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
+    fn test_fp_above_modulus_panics() {
+        let env = Env::default();
+        let mut above = BLS12_381_FP_MODULUS_BE;
+        above[FP_SERIALIZED_SIZE - 1] += 1;
+        let _ = Fp::from_array(&env, &above);
+    }
+
+    #[test]
+    fn test_fp_from_bytes_validates() {
+        let env = Env::default();
+        let _ = Fp::from_bytes(BytesN::from_array(&env, &[0u8; FP_SERIALIZED_SIZE]));
+    }
+
+    #[test]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
+    fn test_fp_from_bytes_rejects_modulus() {
+        let env = Env::default();
+        let _ = Fp::from_bytes(BytesN::from_array(&env, &BLS12_381_FP_MODULUS_BE));
+    }
+
+    #[test]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
+    fn test_fp_try_from_val_rejects_modulus() {
+        let env = Env::default();
+        let bytes = BytesN::from_array(&env, &BLS12_381_FP_MODULUS_BE);
+        let val: Val = bytes.into_val(&env);
+        let _: Fp = val.into_val(&env);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
+    fn test_fp2_component_above_modulus_panics() {
+        let env = Env::default();
+        let mut fp2_bytes = [0u8; FP2_SERIALIZED_SIZE];
+        fp2_bytes[0..FP_SERIALIZED_SIZE].copy_from_slice(&BLS12_381_FP_MODULUS_BE);
+        let _ = Fp2::from_array(&env, &fp2_bytes);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bls12-381: Invalid Fp")]
+    fn test_fp2_second_component_above_modulus_panics() {
+        let env = Env::default();
+        let mut fp2_bytes = [0u8; FP2_SERIALIZED_SIZE];
+        fp2_bytes[FP_SERIALIZED_SIZE..].copy_from_slice(&BLS12_381_FP_MODULUS_BE);
+        let _ = Fp2::from_array(&env, &fp2_bytes);
+    }
+
+    #[test]
+    fn test_fp2_max_valid_accepted() {
+        let env = Env::default();
+        let mut p_minus_1 = BLS12_381_FP_MODULUS_BE;
+        p_minus_1[FP_SERIALIZED_SIZE - 1] -= 1;
+        let mut fp2_bytes = [0u8; FP2_SERIALIZED_SIZE];
+        fp2_bytes[0..FP_SERIALIZED_SIZE].copy_from_slice(&p_minus_1);
+        fp2_bytes[FP_SERIALIZED_SIZE..].copy_from_slice(&p_minus_1);
+        let _ = Fp2::from_array(&env, &fp2_bytes);
     }
 }
