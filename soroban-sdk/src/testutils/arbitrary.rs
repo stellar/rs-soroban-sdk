@@ -699,7 +699,11 @@ mod objects {
         type Error = ConversionError;
 
         fn try_from_val(env: &Env, v: &ArbitraryFp) -> Result<Self, Self::Error> {
-            Ok(Fp::from_array(env, &v.bytes))
+            let mut bytes = v.bytes;
+            // Ensure the value is strictly less than the BLS12-381 base field modulus
+            // p = 0x1a0111ea... by restricting the most significant byte.
+            bytes[0] %= 0x1a;
+            Ok(Fp::from_array(env, &bytes))
         }
     }
 
@@ -717,7 +721,11 @@ mod objects {
         type Error = ConversionError;
 
         fn try_from_val(env: &Env, v: &ArbitraryFp2) -> Result<Self, Self::Error> {
-            Ok(Fp2::from_array(env, &v.bytes))
+            let mut bytes = v.bytes;
+            // Ensure both Fp components are strictly less than the modulus
+            bytes[0] %= 0x1a;
+            bytes[FP_SERIALIZED_SIZE] %= 0x1a;
+            Ok(Fp2::from_array(env, &bytes))
         }
     }
 
