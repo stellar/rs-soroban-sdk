@@ -113,7 +113,11 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
             f
         })
         .collect();
-    output.extend(derive_fns_spec(&args.spec_name, &impl_fns_for_spec, spec_export));
+    output.extend(derive_fns_spec(
+        &args.spec_name,
+        &impl_fns_for_spec,
+        spec_export,
+    ));
 
     Ok(output)
 }
