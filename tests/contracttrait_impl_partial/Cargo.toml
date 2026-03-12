@@ -18,3 +18,4 @@ test_contracttrait_trait = {path = "../contracttrait_trait"}
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
 test_contracttrait_trait = {path = "../contracttrait_trait"}
+stellar-xdr.workspace = true

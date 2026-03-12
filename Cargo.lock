@@ -1978,6 +1978,7 @@ name = "test_contracttrait_impl_partial"
 version = "25.3.0"
 dependencies = [
  "soroban-sdk",
+ "stellar-xdr",
  "test_contracttrait_trait",
 ]
 
