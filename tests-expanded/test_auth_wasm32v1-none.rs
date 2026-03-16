@@ -91,16 +91,13 @@ impl ContractAArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractAClient::new(&env, &contract_id).fn1` instead")]
+#[allow(deprecated)]
 pub fn __ContractA__fn1__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<ContractA>::fn1(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <ContractA>::fn1(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -212,17 +209,14 @@ impl ContractBArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractBClient::new(&env, &contract_id).fn2` instead")]
+#[allow(deprecated)]
 pub fn __ContractB__fn2__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<ContractB>::fn2(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <ContractB>::fn2(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<

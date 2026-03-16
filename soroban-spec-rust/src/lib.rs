@@ -12,7 +12,11 @@ use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
 
-use types::{generate_enum, generate_error_enum, generate_event, generate_struct, generate_union};
+pub use types::GenerateOptions;
+use types::{
+    generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
+    generate_struct_with_options, generate_union_with_options,
+};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
 // streams as rustdocs, because rustdocs can contain Rust code, and that code
@@ -48,6 +52,15 @@ pub fn generate_from_wasm(
     file: &str,
     verify_sha256: Option<&str>,
 ) -> Result<TokenStream, GenerateFromFileError> {
+    generate_from_wasm_with_options(wasm, file, verify_sha256, &GenerateOptions::default())
+}
+
+pub fn generate_from_wasm_with_options(
+    wasm: &[u8],
+    file: &str,
+    verify_sha256: Option<&str>,
+    opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateFromFileError> {
     let sha256 = Sha256::digest(wasm);
     let sha256 = format!("{:x}", sha256);
     if let Some(verify_sha256) = verify_sha256 {
@@ -57,12 +70,21 @@ pub fn generate_from_wasm(
     }
 
     let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    let code = generate(&spec, file, &sha256);
+    let code = generate_with_options(&spec, file, &sha256, opts);
     Ok(code)
 }
 
 pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream {
-    let generated = generate_without_file(specs);
+    generate_with_options(specs, file, sha256, &GenerateOptions::default())
+}
+
+pub fn generate_with_options(
+    specs: &[ScSpecEntry],
+    file: &str,
+    sha256: &str,
+    opts: &GenerateOptions,
+) -> TokenStream {
+    let generated = generate_without_file_with_options(specs, opts);
     quote! {
         pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
         #generated
@@ -70,6 +92,13 @@ pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream 
 }
 
 pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
+    generate_without_file_with_options(specs, &GenerateOptions::default())
+}
+
+pub fn generate_without_file_with_options(
+    specs: &[ScSpecEntry],
+    opts: &GenerateOptions,
+) -> TokenStream {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
@@ -90,11 +119,21 @@ pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
     let trait_name = "Contract";
 
     let trait_ = r#trait::generate_trait(trait_name, &spec_fns);
-    let structs = spec_structs.iter().map(|s| generate_struct(s));
-    let unions = spec_unions.iter().map(|s| generate_union(s));
-    let enums = spec_enums.iter().map(|s| generate_enum(s));
-    let error_enums = spec_error_enums.iter().map(|s| generate_error_enum(s));
-    let events = spec_events.iter().map(|s| generate_event(s));
+    let structs = spec_structs
+        .iter()
+        .map(|s| generate_struct_with_options(s, opts));
+    let unions = spec_unions
+        .iter()
+        .map(|s| generate_union_with_options(s, opts));
+    let enums = spec_enums
+        .iter()
+        .map(|s| generate_enum_with_options(s, opts));
+    let error_enums = spec_error_enums
+        .iter()
+        .map(|s| generate_error_enum_with_options(s, opts));
+    let events = spec_events
+        .iter()
+        .map(|s| generate_event_with_options(s, opts));
 
     quote! {
         #[soroban_sdk::contractargs(name = "Args")]
