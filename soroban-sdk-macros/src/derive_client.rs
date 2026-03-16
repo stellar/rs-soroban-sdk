@@ -304,7 +304,11 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                                 self.env.mock_auths(mock_auths);
                             }
                             if self.mock_all_auths {
-                                self.env.mock_all_auths();
+                                if self.allow_non_root_auth {
+                                    self.env.mock_all_auths_allowing_non_root_auth();
+                                } else {
+                                    self.env.mock_all_auths();
+                                }
                             }
                         }
                         use #crate_path::{IntoVal,FromVal};

@@ -216,7 +216,11 @@ impl<'a> ContractAClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -1596,7 +1600,11 @@ impl<'a> ContractBClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
