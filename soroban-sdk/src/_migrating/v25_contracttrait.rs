@@ -56,19 +56,19 @@
 //! // Define a trait with default implementations
 //! #[contracttrait]
 //! pub trait Pausable {
+//!     fn require_admin_auth(env: &Env);
+//!
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().has(&PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-//!         admin.require_auth();
+//!         Self::require_admin_auth(env);
 //!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-//!         admin.require_auth();
+//!         Self::require_admin_auth(env);
 //!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
@@ -78,7 +78,12 @@
 //!
 //! // Implement the trait - default functions are automatically exported
 //! #[contractimpl(contracttrait)]
-//! impl Pausable for MyContract {}
+//! impl Pausable for MyContract {
+//!     fn require_admin_auth(env: &Env) {
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!     }
+//! }
 //!
 //! #[contractimpl]
 //! impl MyContract {
@@ -109,19 +114,19 @@
 //! // Define a trait with default implementations
 //! #[contracttrait]
 //! pub trait Pausable {
+//!     fn require_admin_auth(env: &Env);
+//!
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().has(&PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-//!         admin.require_auth();
+//!         Self::require_admin_auth(env);
 //!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-//!         admin.require_auth();
+//!         Self::require_admin_auth(env);
 //!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
@@ -132,6 +137,11 @@
 //! // Implement the trait - override default implementations as needed
 //! #[contractimpl(contracttrait)]
 //! impl Pausable for MyContract {
+//!     fn require_admin_auth(env: &Env) {
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!     }
+//!
 //!     // Override is_paused with custom logic that returns false when not set
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().get(&PAUSED).unwrap_or(false)
@@ -168,19 +178,19 @@
 //! // Define a trait with default implementations
 //! #[contracttrait]
 //! pub trait Pausable {
+//!     fn require_admin_auth(env: &Env);
+//!
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().has(&PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-//!         admin.require_auth();
+//!         Self::require_admin_auth(env);
 //!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-//!         admin.require_auth();
+//!         Self::require_admin_auth(env);
 //!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
@@ -190,7 +200,12 @@
 //!
 //! // Implement the trait - default functions are automatically exported
 //! #[contractimpl(contracttrait)]
-//! impl Pausable for MyContract {}
+//! impl Pausable for MyContract {
+//!     fn require_admin_auth(env: &Env) {
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!     }
+//! }
 //!
 //! #[contractimpl]
 //! impl MyContract {
