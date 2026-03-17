@@ -309,43 +309,71 @@ fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
 fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
     // TODO: Flatten associated consts used in functions.
     // Flatten associated types used in functions.
-    let associated_types = imp
+    let mut associated_types: HashMap<Ident, Type> = imp
         .items
         .iter()
         .filter_map(|item| match item {
             ImplItem::Type(i) => Some((i.ident.clone(), i.ty.clone())),
             _ => None,
         })
-        .collect::<HashMap<_, _>>();
-    let fn_input_types = imp
-        .items
-        .iter_mut()
-        .filter_map(|item| match item {
-            ImplItem::Fn(f) => Some(f.sig.inputs.iter_mut().filter_map(|input| match input {
-                FnArg::Typed(t) => Some(&mut t.ty),
-                _ => None,
-            })),
-            _ => None,
-        })
-        .flatten();
-    for t in fn_input_types {
-        if let Type::Path(TypePath { qself: None, path }) = t.as_mut() {
-            let segments = &path.segments;
-            if segments.len() == 2
-                && segments.first() == Some(&PathSegment::from(format_ident!("Self")))
-            {
-                if let Some(PathSegment {
-                    arguments: PathArguments::None,
-                    ident,
-                }) = segments.get(1)
-                {
-                    if let Some(resolved_ty) = associated_types.get(ident) {
-                        *t.as_mut() = resolved_ty.clone();
+        .collect();
+
+    // Recursively resolve chained aliases within the associated types map.
+    // Limit iterations to the number of entries to avoid infinite loops from
+    // (invalid) circular definitions.
+    let max_iters = associated_types.len();
+    for _ in 0..max_iters {
+        let replacements: Vec<(Ident, Type)> = associated_types
+            .iter()
+            .filter_map(|(key, ty)| {
+                resolve_self_type(ty, &associated_types).map(|resolved| (key.clone(), resolved))
+            })
+            .collect();
+        if replacements.is_empty() {
+            break;
+        }
+        for (key, resolved) in replacements {
+            associated_types.insert(key, resolved);
+        }
+    }
+
+    // Resolve Self::* in function input types and return types.
+    for item in imp.items.iter_mut() {
+        if let ImplItem::Fn(f) = item {
+            for input in f.sig.inputs.iter_mut() {
+                if let FnArg::Typed(t) = input {
+                    if let Some(resolved) = resolve_self_type(&t.ty, &associated_types) {
+                        *t.ty = resolved;
                     }
+                }
+            }
+            if let ReturnType::Type(_, ty) = &mut f.sig.output {
+                if let Some(resolved) = resolve_self_type(ty, &associated_types) {
+                    **ty = resolved;
                 }
             }
         }
     }
+}
+
+/// If the type is `Self::Ident` and `Ident` exists in `associated_types`,
+/// return the resolved type. Otherwise return `None`.
+fn resolve_self_type(ty: &Type, associated_types: &HashMap<Ident, Type>) -> Option<Type> {
+    if let Type::Path(TypePath { qself: None, path }) = ty {
+        let segments = &path.segments;
+        if segments.len() == 2
+            && segments.first() == Some(&PathSegment::from(format_ident!("Self")))
+        {
+            if let Some(PathSegment {
+                arguments: PathArguments::None,
+                ident,
+            }) = segments.get(1)
+            {
+                return associated_types.get(ident).cloned();
+            }
+        }
+    }
+    None
 }
 
 pub fn ty_to_safe_ident_str(ty: &Type) -> String {
