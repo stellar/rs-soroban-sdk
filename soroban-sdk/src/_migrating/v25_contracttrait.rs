@@ -48,21 +48,28 @@
 //! ## Example: Defining and Implementing a Trait
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, contracttrait, Env};
+//! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
+//!
+//! const ADMIN: &str = "admin";
+//! const PAUSED: &str = "paused";
 //!
 //! // Define a trait with default implementations
 //! #[contracttrait]
 //! pub trait Pausable {
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&"paused")
+//!         env.storage().instance().has(&PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         env.storage().instance().set(&"paused", &true);
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         env.storage().instance().remove(&"paused");
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
 //!
@@ -75,6 +82,10 @@
 //!
 //! #[contractimpl]
 //! impl MyContract {
+//!     pub fn __constructor(env: &Env, admin: Address) {
+//!         env.storage().instance().set(&ADMIN, &admin);
+//!     }
+//!
 //!     pub fn do_something(env: &Env) {
 //!         if Self::is_paused(env) {
 //!             panic!("contract is paused");
@@ -90,21 +101,28 @@
 //! Contracts can override specific functions while keeping the defaults for others:
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, contracttrait, Env};
+//! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
+//!
+//! const ADMIN: &str = "admin";
+//! const PAUSED: &str = "paused";
 //!
 //! // Define a trait with default implementations
 //! #[contracttrait]
 //! pub trait Pausable {
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&"paused")
+//!         env.storage().instance().has(&PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         env.storage().instance().set(&"paused", &true);
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         env.storage().instance().remove(&"paused");
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
 //!
@@ -116,13 +134,17 @@
 //! impl Pausable for MyContract {
 //!     // Override is_paused with custom logic that returns false when not set
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().get(&"paused").unwrap_or(false)
+//!         env.storage().instance().get(&PAUSED).unwrap_or(false)
 //!     }
 //!     // pause() and unpause() use the default implementations
 //! }
 //!
 //! #[contractimpl]
 //! impl MyContract {
+//!     pub fn __constructor(env: &Env, admin: Address) {
+//!         env.storage().instance().set(&ADMIN, &admin);
+//!     }
+//!
 //!     pub fn do_something(env: &Env) {
 //!         if Self::is_paused(env) {
 //!             panic!("contract is paused");
@@ -138,21 +160,28 @@
 //! The generated `{TraitName}Client` can be used to call any contract that implements the trait:
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, contracttrait, Env};
+//! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
+//!
+//! const ADMIN: &str = "admin";
+//! const PAUSED: &str = "paused";
 //!
 //! // Define a trait with default implementations
 //! #[contracttrait]
 //! pub trait Pausable {
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&"paused")
+//!         env.storage().instance().has(&PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         env.storage().instance().set(&"paused", &true);
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         env.storage().instance().remove(&"paused");
+//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         admin.require_auth();
+//!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
 //!
@@ -165,6 +194,10 @@
 //!
 //! #[contractimpl]
 //! impl MyContract {
+//!     pub fn __constructor(env: &Env, admin: Address) {
+//!         env.storage().instance().set(&ADMIN, &admin);
+//!     }
+//!
 //!     pub fn do_something(env: &Env) {
 //!         if Self::is_paused(env) {
 //!             panic!("contract is paused");
@@ -178,8 +211,11 @@
 //! # }
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
+//!     use soroban_sdk::testutils::Address as _;
 //!     let env = Env::default();
-//!     let contract_id = env.register(MyContract, ());
+//!     env.mock_all_auths();
+//!     let admin = Address::generate(&env);
+//!     let contract_id = env.register(MyContract, (&admin,));
 //!     let client = PausableClient::new(&env, &contract_id);
 //!
 //!     assert!(!client.is_paused());
