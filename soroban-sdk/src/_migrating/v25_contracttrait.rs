@@ -54,7 +54,7 @@
 //!
 //! // A regular trait for admin access control - not exported as contract functions
 //! pub trait RequireAdmin {
-//!     fn require_admin_auth(env: &Env);
+//!     fn require_admin(env: &Env);
 //! }
 //!
 //! // Define a contracttrait with default implementations that require RequireAdmin
@@ -65,12 +65,12 @@
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         Self::require_admin_auth(env);
+//!         Self::require_admin(env);
 //!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         Self::require_admin_auth(env);
+//!         Self::require_admin(env);
 //!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
@@ -81,7 +81,7 @@
 //! const ADMIN: &str = "admin";
 //!
 //! impl RequireAdmin for MyContract {
-//!     fn require_admin_auth(env: &Env) {
+//!     fn require_admin(env: &Env) {
 //!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
 //!         admin.require_auth();
 //!     }
@@ -118,7 +118,7 @@
 //!
 //! // A regular trait for admin access control - not exported as contract functions
 //! pub trait RequireAdmin {
-//!     fn require_admin_auth(env: &Env);
+//!     fn require_admin(env: &Env);
 //! }
 //!
 //! // Define a contracttrait with default implementations that require RequireAdmin
@@ -129,12 +129,12 @@
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         Self::require_admin_auth(env);
+//!         Self::require_admin(env);
 //!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         Self::require_admin_auth(env);
+//!         Self::require_admin(env);
 //!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
@@ -145,7 +145,7 @@
 //! const ADMIN: &str = "admin";
 //!
 //! impl RequireAdmin for MyContract {
-//!     fn require_admin_auth(env: &Env) {
+//!     fn require_admin(env: &Env) {
 //!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
 //!         admin.require_auth();
 //!     }
@@ -188,7 +188,7 @@
 //!
 //! // A regular trait for admin access control - not exported as contract functions
 //! pub trait RequireAdmin {
-//!     fn require_admin_auth(env: &Env);
+//!     fn require_admin(env: &Env);
 //! }
 //!
 //! // Define a contracttrait with default implementations that require RequireAdmin
@@ -199,12 +199,12 @@
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         Self::require_admin_auth(env);
+//!         Self::require_admin(env);
 //!         env.storage().instance().set(&PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         Self::require_admin_auth(env);
+//!         Self::require_admin(env);
 //!         env.storage().instance().remove(&PAUSED);
 //!     }
 //! }
@@ -215,7 +215,7 @@
 //! const ADMIN: &str = "admin";
 //!
 //! impl RequireAdmin for MyContract {
-//!     fn require_admin_auth(env: &Env) {
+//!     fn require_admin(env: &Env) {
 //!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
 //!         admin.require_auth();
 //!     }
