@@ -50,7 +50,6 @@
 //! ```
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
-//! const ADMIN: &str = "admin";
 //! const PAUSED: &str = "paused";
 //!
 //! // Define a trait with default implementations
@@ -75,6 +74,8 @@
 //!
 //! #[contract]
 //! pub struct MyContract;
+//!
+//! const ADMIN: &str = "admin";
 //!
 //! // Implement the trait - default functions are automatically exported
 //! #[contractimpl(contracttrait)]
@@ -108,7 +109,6 @@
 //! ```
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
-//! const ADMIN: &str = "admin";
 //! const PAUSED: &str = "paused";
 //!
 //! // Define a trait with default implementations
@@ -133,6 +133,8 @@
 //!
 //! #[contract]
 //! pub struct MyContract;
+//!
+//! const ADMIN: &str = "admin";
 //!
 //! // Implement the trait - override default implementations as needed
 //! #[contractimpl(contracttrait)]
@@ -172,7 +174,6 @@
 //! ```
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
-//! const ADMIN: &str = "admin";
 //! const PAUSED: &str = "paused";
 //!
 //! // Define a trait with default implementations
@@ -197,6 +198,8 @@
 //!
 //! #[contract]
 //! pub struct MyContract;
+//!
+//! const ADMIN: &str = "admin";
 //!
 //! // Implement the trait - default functions are automatically exported
 //! #[contractimpl(contracttrait)]
