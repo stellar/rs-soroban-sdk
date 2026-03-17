@@ -58,31 +58,27 @@
 //! // Define a contracttrait with default implementations that require RequireAdmin
 //! #[contracttrait]
 //! pub trait Pausable: RequireAdmin {
-//!     const PAUSED: &'static str = "paused";
-//!
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&Self::PAUSED)
+//!         env.storage().instance().has(&"paused")
 //!     }
 //!
 //!     fn pause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().set(&Self::PAUSED, &true);
+//!         env.storage().instance().set(&"paused", &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().remove(&Self::PAUSED);
+//!         env.storage().instance().remove(&"paused");
 //!     }
 //! }
 //!
 //! #[contract]
 //! pub struct MyContract;
 //!
-//! const ADMIN: &str = "admin";
-//!
 //! impl RequireAdmin for MyContract {
 //!     fn require_admin(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
 //!         admin.require_auth();
 //!     }
 //! }
@@ -94,7 +90,7 @@
 //! #[contractimpl]
 //! impl MyContract {
 //!     pub fn __constructor(env: &Env, admin: Address) {
-//!         env.storage().instance().set(&ADMIN, &admin);
+//!         env.storage().instance().set(&"admin", &admin);
 //!     }
 //!
 //!     pub fn do_something(env: &Env) {
@@ -122,31 +118,27 @@
 //! // Define a contracttrait with default implementations that require RequireAdmin
 //! #[contracttrait]
 //! pub trait Pausable: RequireAdmin {
-//!     const PAUSED: &'static str = "paused";
-//!
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&Self::PAUSED)
+//!         env.storage().instance().has(&"paused")
 //!     }
 //!
 //!     fn pause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().set(&Self::PAUSED, &true);
+//!         env.storage().instance().set(&"paused", &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().remove(&Self::PAUSED);
+//!         env.storage().instance().remove(&"paused");
 //!     }
 //! }
 //!
 //! #[contract]
 //! pub struct MyContract;
 //!
-//! const ADMIN: &str = "admin";
-//!
 //! impl RequireAdmin for MyContract {
 //!     fn require_admin(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
 //!         admin.require_auth();
 //!     }
 //! }
@@ -156,7 +148,7 @@
 //! impl Pausable for MyContract {
 //!     // Override is_paused with custom logic that returns false when not set
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().get(&Self::PAUSED).unwrap_or(false)
+//!         env.storage().instance().get(&"paused").unwrap_or(false)
 //!     }
 //!     // pause() and unpause() use the default implementations
 //! }
@@ -164,7 +156,7 @@
 //! #[contractimpl]
 //! impl MyContract {
 //!     pub fn __constructor(env: &Env, admin: Address) {
-//!         env.storage().instance().set(&ADMIN, &admin);
+//!         env.storage().instance().set(&"admin", &admin);
 //!     }
 //!
 //!     pub fn do_something(env: &Env) {
@@ -192,31 +184,27 @@
 //! // Define a contracttrait with default implementations that require RequireAdmin
 //! #[contracttrait]
 //! pub trait Pausable: RequireAdmin {
-//!     const PAUSED: &'static str = "paused";
-//!
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&Self::PAUSED)
+//!         env.storage().instance().has(&"paused")
 //!     }
 //!
 //!     fn pause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().set(&Self::PAUSED, &true);
+//!         env.storage().instance().set(&"paused", &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().remove(&Self::PAUSED);
+//!         env.storage().instance().remove(&"paused");
 //!     }
 //! }
 //!
 //! #[contract]
 //! pub struct MyContract;
 //!
-//! const ADMIN: &str = "admin";
-//!
 //! impl RequireAdmin for MyContract {
 //!     fn require_admin(env: &Env) {
-//!         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
+//!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
 //!         admin.require_auth();
 //!     }
 //! }
@@ -228,7 +216,7 @@
 //! #[contractimpl]
 //! impl MyContract {
 //!     pub fn __constructor(env: &Env, admin: Address) {
-//!         env.storage().instance().set(&ADMIN, &admin);
+//!         env.storage().instance().set(&"admin", &admin);
 //!     }
 //!
 //!     pub fn do_something(env: &Env) {
