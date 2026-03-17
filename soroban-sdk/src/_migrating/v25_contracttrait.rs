@@ -217,7 +217,8 @@
 //!     let contract_id = env.register(MyContract, (&admin,));
 //!     let client = PausableClient::new(&env, &contract_id);
 //!
-//!     let mock_admin = MockAuth {
+//!     assert!(!client.is_paused());
+//!     client.mock_auths(&[MockAuth {
 //!         address: &admin,
 //!         invoke: &MockAuthInvoke {
 //!             contract: &contract_id,
@@ -225,9 +226,7 @@
 //!             args: ().into_val(&env),
 //!             sub_invokes: &[],
 //!         },
-//!     };
-//!     assert!(!client.is_paused());
-//!     client.mock_auths(&[mock_admin]).pause();
+//!     }]).pause();
 //!     assert!(client.is_paused());
 //!     client.mock_auths(&[MockAuth {
 //!         address: &admin,
