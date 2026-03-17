@@ -50,8 +50,6 @@
 //! ```
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
-//! const PAUSED: &str = "paused";
-//!
 //! // A regular trait for admin access control - not exported as contract functions
 //! pub trait RequireAdmin {
 //!     fn require_admin(env: &Env);
@@ -60,18 +58,20 @@
 //! // Define a contracttrait with default implementations that require RequireAdmin
 //! #[contracttrait]
 //! pub trait Pausable: RequireAdmin {
+//!     const PAUSED: &'static str = "paused";
+//!
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&PAUSED)
+//!         env.storage().instance().has(&Self::PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().set(&PAUSED, &true);
+//!         env.storage().instance().set(&Self::PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().remove(&PAUSED);
+//!         env.storage().instance().remove(&Self::PAUSED);
 //!     }
 //! }
 //!
@@ -114,8 +114,6 @@
 //! ```
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
-//! const PAUSED: &str = "paused";
-//!
 //! // A regular trait for admin access control - not exported as contract functions
 //! pub trait RequireAdmin {
 //!     fn require_admin(env: &Env);
@@ -124,18 +122,20 @@
 //! // Define a contracttrait with default implementations that require RequireAdmin
 //! #[contracttrait]
 //! pub trait Pausable: RequireAdmin {
+//!     const PAUSED: &'static str = "paused";
+//!
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&PAUSED)
+//!         env.storage().instance().has(&Self::PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().set(&PAUSED, &true);
+//!         env.storage().instance().set(&Self::PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().remove(&PAUSED);
+//!         env.storage().instance().remove(&Self::PAUSED);
 //!     }
 //! }
 //!
@@ -156,7 +156,7 @@
 //! impl Pausable for MyContract {
 //!     // Override is_paused with custom logic that returns false when not set
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().get(&PAUSED).unwrap_or(false)
+//!         env.storage().instance().get(&Self::PAUSED).unwrap_or(false)
 //!     }
 //!     // pause() and unpause() use the default implementations
 //! }
@@ -184,8 +184,6 @@
 //! ```
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
-//! const PAUSED: &str = "paused";
-//!
 //! // A regular trait for admin access control - not exported as contract functions
 //! pub trait RequireAdmin {
 //!     fn require_admin(env: &Env);
@@ -194,18 +192,20 @@
 //! // Define a contracttrait with default implementations that require RequireAdmin
 //! #[contracttrait]
 //! pub trait Pausable: RequireAdmin {
+//!     const PAUSED: &'static str = "paused";
+//!
 //!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&PAUSED)
+//!         env.storage().instance().has(&Self::PAUSED)
 //!     }
 //!
 //!     fn pause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().set(&PAUSED, &true);
+//!         env.storage().instance().set(&Self::PAUSED, &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
 //!         Self::require_admin(env);
-//!         env.storage().instance().remove(&PAUSED);
+//!         env.storage().instance().remove(&Self::PAUSED);
 //!     }
 //! }
 //!
