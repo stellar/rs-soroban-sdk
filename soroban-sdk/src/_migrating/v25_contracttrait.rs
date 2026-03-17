@@ -100,6 +100,41 @@
 //!         // ... rest of the function
 //!     }
 //! }
+//!
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//!     use soroban_sdk::{testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+//!     let env = Env::default();
+//!     let admin = Address::generate(&env);
+//!     let contract_id = env.register(MyContract, (&admin,));
+//!     let client = PausableClient::new(&env, &contract_id);
+//!
+//!     assert!(!client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "pause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).pause();
+//!     assert!(client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "unpause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).unpause();
+//!     assert!(!client.is_paused());
+//! }
+//! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
 //!
@@ -166,6 +201,41 @@
 //!         // ... rest of the function
 //!     }
 //! }
+//!
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//!     use soroban_sdk::{testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+//!     let env = Env::default();
+//!     let admin = Address::generate(&env);
+//!     let contract_id = env.register(MyContract, (&admin,));
+//!     let client = PausableClient::new(&env, &contract_id);
+//!
+//!     assert!(!client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "pause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).pause();
+//!     assert!(client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "unpause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).unpause();
+//!     assert!(!client.is_paused());
+//! }
+//! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
 //!
