@@ -51,24 +51,24 @@
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
 //! // A regular trait for admin access control - not exported as contract functions
-//! pub trait RequireAdmin {
-//!     fn require_admin(env: &Env);
+//! pub trait RequireAuthForPause {
+//!     fn require_auth_for_pause(env: &Env);
 //! }
 //!
-//! // Define a contracttrait with default implementations that require RequireAdmin
+//! // Define a contracttrait with default implementations that require RequireAuthForPause
 //! #[contracttrait]
-//! pub trait Pausable: RequireAdmin {
+//! pub trait Pausable: RequireAuthForPause {
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().has(&"paused")
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         Self::require_admin(env);
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().set(&"paused", &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         Self::require_admin(env);
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().remove(&"paused");
 //!     }
 //! }
@@ -76,8 +76,8 @@
 //! #[contract]
 //! pub struct MyContract;
 //!
-//! impl RequireAdmin for MyContract {
-//!     fn require_admin(env: &Env) {
+//! impl RequireAuthForPause for MyContract {
+//!     fn require_auth_for_pause(env: &Env) {
 //!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
 //!         admin.require_auth();
 //!     }
@@ -146,24 +146,24 @@
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
 //! // A regular trait for admin access control - not exported as contract functions
-//! pub trait RequireAdmin {
-//!     fn require_admin(env: &Env);
+//! pub trait RequireAuthForPause {
+//!     fn require_auth_for_pause(env: &Env);
 //! }
 //!
-//! // Define a contracttrait with default implementations that require RequireAdmin
+//! // Define a contracttrait with default implementations that require RequireAuthForPause
 //! #[contracttrait]
-//! pub trait Pausable: RequireAdmin {
+//! pub trait Pausable: RequireAuthForPause {
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().has(&"paused")
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         Self::require_admin(env);
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().set(&"paused", &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         Self::require_admin(env);
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().remove(&"paused");
 //!     }
 //! }
@@ -171,8 +171,8 @@
 //! #[contract]
 //! pub struct MyContract;
 //!
-//! impl RequireAdmin for MyContract {
-//!     fn require_admin(env: &Env) {
+//! impl RequireAuthForPause for MyContract {
+//!     fn require_auth_for_pause(env: &Env) {
 //!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
 //!         admin.require_auth();
 //!     }
@@ -247,24 +247,24 @@
 //! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
 //! // A regular trait for admin access control - not exported as contract functions
-//! pub trait RequireAdmin {
-//!     fn require_admin(env: &Env);
+//! pub trait RequireAuthForPause {
+//!     fn require_auth_for_pause(env: &Env);
 //! }
 //!
-//! // Define a contracttrait with default implementations that require RequireAdmin
+//! // Define a contracttrait with default implementations that require RequireAuthForPause
 //! #[contracttrait]
-//! pub trait Pausable: RequireAdmin {
+//! pub trait Pausable: RequireAuthForPause {
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().has(&"paused")
 //!     }
 //!
 //!     fn pause(env: &Env) {
-//!         Self::require_admin(env);
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().set(&"paused", &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
-//!         Self::require_admin(env);
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().remove(&"paused");
 //!     }
 //! }
@@ -272,8 +272,8 @@
 //! #[contract]
 //! pub struct MyContract;
 //!
-//! impl RequireAdmin for MyContract {
-//!     fn require_admin(env: &Env) {
+//! impl RequireAuthForPause for MyContract {
+//!     fn require_auth_for_pause(env: &Env) {
 //!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
 //!         admin.require_auth();
 //!     }
