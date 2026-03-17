@@ -211,17 +211,33 @@
 //! # }
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
-//!     use soroban_sdk::testutils::Address as _;
+//!     use soroban_sdk::{testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
 //!     let env = Env::default();
-//!     env.mock_all_auths();
 //!     let admin = Address::generate(&env);
 //!     let contract_id = env.register(MyContract, (&admin,));
 //!     let client = PausableClient::new(&env, &contract_id);
 //!
+//!     let mock_admin = MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "pause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     };
 //!     assert!(!client.is_paused());
-//!     client.pause();
+//!     client.mock_auths(&[mock_admin]).pause();
 //!     assert!(client.is_paused());
-//!     client.unpause();
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "unpause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).unpause();
 //!     assert!(!client.is_paused());
 //! }
 //! # #[cfg(not(feature = "testutils"))]
