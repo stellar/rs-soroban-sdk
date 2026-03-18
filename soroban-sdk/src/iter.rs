@@ -1,4 +1,12 @@
 //! Iterators for use with collections like [Map], [Vec].
+//!
+//! Collections are not guaranteed to contain values of the expected type as
+//! they are stored on the host as [Val]s, so two iterators are provided:
+//!
+//! - **`try_iter()`** returns an iterator that yields `Result<T, E>` for each
+//!   element, allowing the caller to handle conversion errors.
+//! - **`iter()`** returns an iterator that unwraps each result,
+//!   panicking if any element cannot be converted to the declared type.
 #[cfg(doc)]
 use crate::{Map, Vec};
 
