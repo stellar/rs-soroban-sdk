@@ -5,6 +5,34 @@ pub fn main() {
     // hash.
     println!("cargo::rustc-check-cfg=cfg(soroban_sdk_internal_no_rssdkver_meta)");
 
+    // Probe whether overflow checks are enabled by attempting an overflowing
+    // operation at build-script run time. If the addition panics, overflow
+    // checks are on; if it wraps silently, they are off.
+    //
+    // This probe runs in the build script, which is compiled for the host, not
+    // the target. It reliably detects overflow-checks being disabled via:
+    //   - [profile.*] sections (e.g. [profile.release]).
+    //   - Per-package profile overrides ([profile.release.package.soroban-sdk]).
+    //   - RUSTFLAGS=-Coverflow-checks=no.
+    //
+    // Limitations: It may not detect overflow-checks being disabled in cross-compilation setups
+    // where the host and target profiles diverge or where the build-override profile is explicitly
+    // set to overflow-checks = true when the main profile is set to false. These are advanced
+    // configurations, and the check is primarily present to prevent developers using the default
+    // release profile that has checks off.
+    //
+    // This build.rs check can be removed once cfg(overflow_checks) is stabilized.
+    // Ref: https://github.com/rust-lang/rust/issues/111466
+    println!("cargo::rustc-check-cfg=cfg(soroban_sdk_internal_overflow_checks_enabled)");
+    let overflow_checks_enabled = std::panic::catch_unwind(|| {
+        let x = std::hint::black_box(255u8);
+        let _ = x + 1;
+    })
+    .is_err();
+    if overflow_checks_enabled {
+        println!("cargo::rustc-cfg=soroban_sdk_internal_overflow_checks_enabled");
+    }
+
     #[cfg(all(target_family = "wasm", target_os = "unknown"))]
     if let Ok(version) = rustc_version::version() {
         if version.major == 1 && version.minor >= 82 {
