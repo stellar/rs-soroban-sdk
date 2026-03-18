@@ -311,6 +311,58 @@ impl U256 {
             val,
         }
     }
+
+    /// Performs checked addition. Returns `None` if overflow occurred.
+    pub fn checked_add(&self, other: &U256) -> Option<U256> {
+        let val = self
+            .env
+            .u256_checked_add(self.val, other.val)
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+        }
+    }
+
+    /// Performs checked subtraction. Returns `None` if overflow occurred.
+    pub fn checked_sub(&self, other: &U256) -> Option<U256> {
+        let val = self
+            .env
+            .u256_checked_sub(self.val, other.val)
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+        }
+    }
+
+    /// Performs checked multiplication. Returns `None` if overflow occurred.
+    pub fn checked_mul(&self, other: &U256) -> Option<U256> {
+        let val = self
+            .env
+            .u256_checked_mul(self.val, other.val)
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+        }
+    }
+
+    /// Performs checked exponentiation. Returns `None` if overflow occurred.
+    pub fn checked_pow(&self, pow: u32) -> Option<U256> {
+        let val = self
+            .env
+            .u256_checked_pow(self.val, pow.into())
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+        }
+    }
 }
 
 /// I256 holds a 256-bit signed integer.
@@ -460,6 +512,58 @@ impl I256 {
         I256 {
             env: self.env.clone(),
             val,
+        }
+    }
+
+    /// Performs checked addition. Returns `None` if overflow occurred.
+    pub fn checked_add(&self, other: &I256) -> Option<I256> {
+        let val = self
+            .env
+            .i256_checked_add(self.val, other.val)
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
+        }
+    }
+
+    /// Performs checked subtraction. Returns `None` if overflow occurred.
+    pub fn checked_sub(&self, other: &I256) -> Option<I256> {
+        let val = self
+            .env
+            .i256_checked_sub(self.val, other.val)
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
+        }
+    }
+
+    /// Performs checked multiplication. Returns `None` if overflow occurred.
+    pub fn checked_mul(&self, other: &I256) -> Option<I256> {
+        let val = self
+            .env
+            .i256_checked_mul(self.val, other.val)
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
+        }
+    }
+
+    /// Performs checked exponentiation. Returns `None` if overflow occurred.
+    pub fn checked_pow(&self, pow: u32) -> Option<I256> {
+        let val = self
+            .env
+            .i256_checked_pow(self.val, pow.into())
+            .unwrap_infallible();
+        if val.is_void() {
+            None
+        } else {
+            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
         }
     }
 }
