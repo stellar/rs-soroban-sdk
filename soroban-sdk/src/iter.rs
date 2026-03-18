@@ -8,7 +8,7 @@
 //! - **`iter()`** returns an iterator that unwraps each result,
 //!   panicking if any element cannot be converted to the declared type.
 #[cfg(doc)]
-use crate::{Map, Vec};
+use crate::{Map, Val, Vec};
 
 use core::fmt::Debug;
 use core::iter::FusedIterator;

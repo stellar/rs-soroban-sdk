@@ -53,8 +53,8 @@ macro_rules! map {
 /// converted from [Val] back into their type.
 ///
 /// The pairs of keys and values in a Map are not guaranteed to be of type
-/// `K`/`V` and conversion will fail if they are not. Most functions on Map have 
-/// a try_ variation that returns a Result that will be Err if the conversion fails. 
+/// `K`/`V` and conversion will fail if they are not. Most functions on Map have
+/// a try_ variation that returns a Result that will be Err if the conversion fails.
 /// Functions that are not prefixed with try_ will panic if conversion fails."
 ///
 /// There are some cases where this lack of guarantee is important:
@@ -446,10 +446,11 @@ where
         self.obj = env.map_del(self.obj, k.into_val(env)).unwrap_infallible();
     }
 
-    /// Returns a [Vec] of all keys in the map.
+    /// Returns a [Vec] of all keys in the map, ordered in the map's key-sorted order.
     ///
-    /// This method does not guarantee that the keys are of type `K`. If a key
-    /// exists in the map that is not type `K`, it will be included in the result.
+    /// This method does not validate that the keys in the map are of type `K`. Since [Map]
+    /// keys are not guaranteed to be of type `K`, it is not guaranteed that all values
+    /// in the returned [Vec] will be of type `K`.
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
@@ -457,10 +458,11 @@ where
         Vec::<K>::try_from_val(env, &vec).unwrap()
     }
 
-    /// Returns a [Vec] of all values in the map.
+    /// Returns a [Vec] of all values in the map, ordered in the map's key-sorted order.
     ///
-    /// This method does not guarantee that the values are of type `V`. If a value
-    /// exists in the map that is not type `V`, it will be included in the result.
+    /// This method does not validate that the values in the map are of type `V`. Since [Map]
+    /// values are not guaranteed to be of type `V`, it is not guaranteed that all values
+    /// in the returned [Vec] will be of type `V`.
     #[inline(always)]
     pub fn values(&self) -> Vec<V> {
         let env = self.env();
