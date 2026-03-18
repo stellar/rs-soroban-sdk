@@ -5,10 +5,14 @@ pub fn main() {
     // hash.
     println!("cargo::rustc-check-cfg=cfg(soroban_sdk_internal_no_rssdkver_meta)");
 
-    #[cfg(all(target_family = "wasm", target_os = "unknown"))]
-    if let Ok(version) = rustc_version::version() {
-        if version.major == 1 && version.minor >= 82 {
-            panic!("Rust compiler 1.82+ with target 'wasm32-unknown-unknown' is unsupported by the Soroban Environment, because the 'wasm32-unknown-unknown' target in Rust 1.82+ has features enabled that are not yet supported and not easily disabled: reference-types, multi-value. Use Rust 1.81 to build for the 'wasm32-unknown-unknown' target.");
+    // Check if we're building for wasm32-unknown-unknown target (cross-compilation safe)
+    if std::env::var("CARGO_CFG_TARGET_FAMILY").as_deref() == Ok("wasm")
+        && std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("unknown")
+    {
+        if let Ok(version) = rustc_version::version() {
+            if version.major == 1 && version.minor >= 82 {
+                panic!("Rust compiler 1.82+ with target 'wasm32-unknown-unknown' is unsupported by the Soroban Environment, use 'wasm32v1-none' available with Rust 1.84+. The 'wasm32-unknown-unknown' target in Rust 1.82+ has features enabled that are not yet supported and not easily disabled: reference-types, multi-value. If you must build for the 'wasm32-unknown-unknown' use Rust 1.81 or earlier.");
+            }
         }
     }
 
