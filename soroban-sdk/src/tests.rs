@@ -43,6 +43,7 @@ mod crypto_sha256;
 mod env;
 mod max_ttl;
 mod muxed_address;
+mod num_checked_arith;
 mod prng;
 mod prng_range;
 mod proptest_scval_cmp;
