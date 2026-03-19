@@ -1916,6 +1916,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_associated_type_retval"
+version = "25.3.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_associated_types"
 version = "25.3.0"
 dependencies = [
