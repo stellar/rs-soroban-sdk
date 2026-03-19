@@ -330,10 +330,10 @@ fn test_try_as_contract_panic() {
 #[test]
 fn test_me_alias() {
     let env = Env::default();
-    
+
     let addr = Address::generate(&env);
     env.register_at(&addr, Contract, ());
-    
+
     env.as_contract(&addr, || {
         let current_addr = env.current_contract_address();
         let me_addr = env.me();
