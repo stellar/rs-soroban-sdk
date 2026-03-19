@@ -367,15 +367,11 @@ fn resolve_self_types(
     }
 
     match ty {
-        // Reject qualified Self paths like `<Self as Trait>::Foo`.
-        Type::Path(TypePath { qself: Some(qself), .. })
-            if matches!(qself.ty.as_ref(), Type::Path(TypePath { qself: None, path }) if path.is_ident("Self")) =>
-        {
-            Err(Error::new(
-                ty.span(),
-                "qualified associated types like `<Self as Trait>::Type` are not supported; use a concrete type instead",
-            ))
-        }
+        // Reject all qualified type paths like `<T as Trait>::Type`.
+        Type::Path(TypePath { qself: Some(_), .. }) => Err(Error::new(
+            ty.span(),
+            "qualified type paths like `<T as Trait>::Type` are not supported; use a concrete type instead",
+        )),
         // Recurse into generic arguments of path types.
         Type::Path(TypePath { path, .. }) => {
             for segment in path.segments.iter_mut() {
@@ -389,9 +385,14 @@ fn resolve_self_types(
             }
             Ok(())
         }
-        // Recurse into reference types like &Self::Val.
         Type::Reference(TypeReference { elem, .. }) => {
             resolve_self_types(elem, associated_types, depth - 1)
+        }
+        Type::Tuple(syn::TypeTuple { elems, .. }) => {
+            for elem in elems.iter_mut() {
+                resolve_self_types(elem, associated_types, depth - 1)?;
+            }
+            Ok(())
         }
         _ => Ok(()),
     }
@@ -616,7 +617,7 @@ mod test_fns_parse {
             panic!("expected error");
         };
         assert!(
-            err.to_string().contains("qualified associated types"),
+            err.to_string().contains("qualified type paths"),
             "unexpected error: {err}"
         );
     }
@@ -648,7 +649,7 @@ mod test_fns_parse {
             panic!("expected error");
         };
         assert!(
-            err.to_string().contains("qualified associated types"),
+            err.to_string().contains("qualified type paths"),
             "unexpected error: {err}"
         );
     }
@@ -677,6 +678,69 @@ mod test_fns_parse {
                 type A = Self::B;
                 type B = Self::A;
                 pub fn get(x: Self::A) {}
+            }
+        };
+        let Err(err) = parse_fns(input) else {
+            panic!("expected error");
+        };
+        assert!(
+            err.to_string().contains("depth limit exceeded"),
+            "unexpected error: {err}"
+        );
+    }
+
+    #[test]
+    fn test_reject_nested_self_in_qself() {
+        let input = quote! {
+            impl MyContract {
+                pub fn get(x: <Self::Assoc as Trait>::Type) {}
+            }
+        };
+        let Err(err) = parse_fns(input) else {
+            panic!("expected error");
+        };
+        assert!(
+            err.to_string().contains("qualified type paths"),
+            "unexpected error: {err}"
+        );
+    }
+
+    #[test]
+    fn test_resolve_in_tuple() {
+        let input = quote! {
+            impl MyContract {
+                type A = u64;
+                pub fn get(x: (Self::A, u32)) {}
+            }
+        };
+        let (inputs, _) = parsed_fn_sig(input, 0);
+        assert_eq!(inputs, vec!["x : (u64 , u32)"]);
+    }
+
+    #[test]
+    fn test_reject_unresolved_in_tuple() {
+        let input = quote! {
+            impl MyContract {
+                pub fn get(x: (Self::Missing, u32)) {}
+            }
+        };
+        let Err(err) = parse_fns(input) else {
+            panic!("expected error");
+        };
+        assert!(
+            err.to_string()
+                .contains("unresolved associated type `Self::Missing`"),
+            "unexpected error: {err}"
+        );
+    }
+
+    #[test]
+    fn test_reject_recursion_in_tuple() {
+        let input = quote! {
+            impl MyContract {
+                type B = Self::A;
+                type A = (Self::B, Self::B, Self::B);
+                pub fn get(x: (u32, u64, Self::A)) {}
             }
         };
         let Err(err) = parse_fns(input) else {

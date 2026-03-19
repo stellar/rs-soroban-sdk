@@ -13,7 +13,9 @@ pub trait AssociatedType {
     fn both(input: Self::Val) -> Self::Val;
     fn wrapped(input: Vec<Self::Val>) -> Result<Self::Val, Error>;
     fn double_wrapped(input: Option<Vec<Self::Val>>) -> Result<Vec<Self::Val>, Error>;
-    fn valval(env: Env, input: Self::ValVal) -> Option<Self::ValVal>;
+    fn valval(input: Self::ValVal) -> Option<Self::ValVal>;
+    fn tuple(input1: Self::Val) -> (Self::Val, Self::ValVal);
+    fn valref(input: &Self::Val) -> Self::Val;
 }
 
 #[contract]
@@ -55,8 +57,16 @@ impl AssociatedType for Contract {
         }
     }
 
-    fn valval(env: Env, input: Self::ValVal) -> Option<Self::ValVal> {
+    fn valval(input: Self::ValVal) -> Option<Self::ValVal> {
         Some(input)
+    }
+
+    fn tuple(input: Self::Val) -> (Self::Val, Self::Val) {
+        (input, input)
+    }
+
+    fn valref(input: &Self::Val) -> Self::Val {
+        input.clone()
     }
 }
 
@@ -89,5 +99,7 @@ mod test {
             Some(Ok(soroban_sdk::Error::from_contract_error(1)))
         );
         assert_eq!(client.valval(&42u64), Some(42u64));
+        assert_eq!(client.tuple(&42u64), (42u64, 42u64));
+        assert_eq!(client.valref(&42u64), 42u64);
     }
 }

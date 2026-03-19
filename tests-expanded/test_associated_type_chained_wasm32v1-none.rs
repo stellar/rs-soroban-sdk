@@ -14,7 +14,9 @@ pub trait AssociatedType {
     fn both(input: Self::Val) -> Self::Val;
     fn wrapped(input: Vec<Self::Val>) -> Result<Self::Val, Error>;
     fn double_wrapped(input: Option<Vec<Self::Val>>) -> Result<Vec<Self::Val>, Error>;
-    fn valval(env: Env, input: Self::ValVal) -> Option<Self::ValVal>;
+    fn valval(input: Self::ValVal) -> Option<Self::ValVal>;
+    fn tuple(input1: Self::Val) -> (Self::Val, Self::ValVal);
+    fn valref(input: &Self::Val) -> Self::Val;
 }
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -78,8 +80,14 @@ impl AssociatedType for Contract {
             None => Err(Error::from_contract_error(1)),
         }
     }
-    fn valval(env: Env, input: Self::ValVal) -> Option<Self::ValVal> {
+    fn valval(input: Self::ValVal) -> Option<Self::ValVal> {
         Some(input)
+    }
+    fn tuple(input: Self::Val) -> (Self::Val, Self::Val) {
+        (input, input)
+    }
+    fn valref(input: &Self::Val) -> Self::Val {
+        input.clone()
     }
 }
 #[doc(hidden)]
@@ -171,6 +179,36 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_valval() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06valval\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe8\0\0\0\x06"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__tuple__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_TUPLE: [u8; 64usize] = super::Contract::spec_xdr_tuple();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_tuple() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x05tuple\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\0\x06\0\0\0\x06"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__valref__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_VALREF: [u8; 52usize] = super::Contract::spec_xdr_valref();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_valref() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06valref\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -369,6 +407,75 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn tuple(&self, input: &u64) -> (u64, u64) {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("tuple");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_tuple(
+        &self,
+        input: &u64,
+    ) -> Result<
+        Result<
+            (u64, u64),
+            <(u64, u64) as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("tuple");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn valref(&self, input: &u64) -> u64 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valref");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_valref(
+        &self,
+        input: &u64,
+    ) -> Result<
+        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valref");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -399,6 +506,16 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn valval<'i>(input: &'i u64) -> (&'i u64,) {
+        (input,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn tuple<'i>(input: &'i u64) -> (&'i u64,) {
+        (input,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn valref<'i>(input: &'i u64) -> (&'i u64,) {
         (input,)
     }
 }
@@ -549,7 +666,6 @@ pub fn __Contract__valval__invoke_raw(
 ) -> soroban_sdk::Val {
     soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
         <Contract as AssociatedType>::valval(
-            env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -569,4 +685,64 @@ pub extern "C" fn __Contract__valval__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__valval__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple` instead")]
+#[allow(deprecated)]
+pub fn __Contract__tuple__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AssociatedType>::tuple(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple` instead")]
+#[export_name = "tuple"]
+pub extern "C" fn __Contract__tuple__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__tuple__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).valref` instead")]
+#[allow(deprecated)]
+pub fn __Contract__valref__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AssociatedType>::valref(
+            &<_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).valref` instead")]
+#[export_name = "valref"]
+pub extern "C" fn __Contract__valref__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__valref__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
