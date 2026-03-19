@@ -195,7 +195,7 @@ impl Parse for HasFnsItem {
             Ok(HasFnsItem::Trait(t))
         } else if lookahead.peek(Token![impl]) {
             let mut imp = input.parse()?;
-            flatten_associated_items_in_impl_fns(&mut imp);
+            flatten_associated_items_in_impl_fns(&mut imp)?;
             Ok(HasFnsItem::Impl(imp))
         } else {
             Err(lookahead.error())
@@ -306,46 +306,95 @@ fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
     }
 }
 
-fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) {
+fn flatten_associated_items_in_impl_fns(imp: &mut ItemImpl) -> Result<(), Error> {
     // TODO: Flatten associated consts used in functions.
     // Flatten associated types used in functions.
-    let associated_types = imp
+    let associated_types: HashMap<Ident, Type> = imp
         .items
         .iter()
         .filter_map(|item| match item {
             ImplItem::Type(i) => Some((i.ident.clone(), i.ty.clone())),
             _ => None,
         })
-        .collect::<HashMap<_, _>>();
-    let fn_input_types = imp
-        .items
-        .iter_mut()
-        .filter_map(|item| match item {
-            ImplItem::Fn(f) => Some(f.sig.inputs.iter_mut().filter_map(|input| match input {
-                FnArg::Typed(t) => Some(&mut t.ty),
-                _ => None,
-            })),
-            _ => None,
-        })
-        .flatten();
-    for t in fn_input_types {
-        if let Type::Path(TypePath { qself: None, path }) = t.as_mut() {
-            let segments = &path.segments;
-            if segments.len() == 2
-                && segments.first() == Some(&PathSegment::from(format_ident!("Self")))
-            {
-                if let Some(PathSegment {
-                    arguments: PathArguments::None,
-                    ident,
-                }) = segments.get(1)
-                {
-                    if let Some(resolved_ty) = associated_types.get(ident) {
-                        *t.as_mut() = resolved_ty.clone();
+        .collect();
+
+    // Resolve Self::* in function input types and return types.
+    for item in imp.items.iter_mut() {
+        if let ImplItem::Fn(f) = item {
+            for input in f.sig.inputs.iter_mut() {
+                if let FnArg::Typed(t) = input {
+                    if let Some(resolved) = resolve_self_type(&t.ty, &associated_types) {
+                        *t.ty = resolved;
                     }
+                }
+            }
+            if let ReturnType::Type(_, ty) = &mut f.sig.output {
+                if let Some(resolved) = resolve_self_type(ty, &associated_types) {
+                    **ty = resolved;
                 }
             }
         }
     }
+
+    // Check for any remaining unresolved Self::* types in fn signatures.
+    for item in imp.items.iter() {
+        if let ImplItem::Fn(f) = item {
+            for input in f.sig.inputs.iter() {
+                if let FnArg::Typed(t) = input {
+                    if let Some(ident) = self_type_ident(&t.ty) {
+                        return Err(Error::new(
+                            t.ty.span(),
+                            format!(
+                                "unresolved associated type `Self::{ident}` in function \
+                                 parameter; use a concrete type instead"
+                            ),
+                        ));
+                    }
+                }
+            }
+            if let ReturnType::Type(_, ty) = &f.sig.output {
+                if let Some(ident) = self_type_ident(ty) {
+                    return Err(Error::new(
+                        ty.span(),
+                        format!(
+                            "unresolved associated type `Self::{ident}` in return type; \
+                             use a concrete type instead"
+                        ),
+                    ));
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// If the type is `Self::Ident` and `Ident` exists in `associated_types`,
+/// return the resolved type. Otherwise return `None`.
+fn resolve_self_type(ty: &Type, associated_types: &HashMap<Ident, Type>) -> Option<Type> {
+    match self_type_ident(ty) {
+        Some(ident) => associated_types.get(ident).cloned(),
+        None => None,
+    }
+}
+
+/// If the type is `Self::Ident`, return the `Ident`. Otherwise return `None`.
+fn self_type_ident(ty: &Type) -> Option<&Ident> {
+    if let Type::Path(TypePath { qself: None, path }) = ty {
+        let segments = &path.segments;
+        if segments.len() == 2
+            && segments.first() == Some(&PathSegment::from(format_ident!("Self")))
+        {
+            if let Some(PathSegment {
+                arguments: PathArguments::None,
+                ident,
+            }) = segments.get(1)
+            {
+                return Some(ident);
+            }
+        }
+    }
+    None
 }
 
 pub fn ty_to_safe_ident_str(ty: &Type) -> String {
