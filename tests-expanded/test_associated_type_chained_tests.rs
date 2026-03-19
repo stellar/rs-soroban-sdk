@@ -1442,18 +1442,18 @@ mod test {
     use soroban_sdk::{vec, Env};
     extern crate test;
     #[cfg(test)]
-    #[rustc_test_marker = "test::test_associated_type_retval"]
+    #[rustc_test_marker = "test::test_associated_type_chained"]
     #[doc(hidden)]
-    pub const test_associated_type_retval: test::TestDescAndFn = test::TestDescAndFn {
+    pub const test_associated_type_chained: test::TestDescAndFn = test::TestDescAndFn {
         desc: test::TestDesc {
-            name: test::StaticTestName("test::test_associated_type_retval"),
+            name: test::StaticTestName("test::test_associated_type_chained"),
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/associated_type_chained/src/lib.rs",
             start_line: 80usize,
             start_col: 8usize,
             end_line: 80usize,
-            end_col: 35usize,
+            end_col: 36usize,
             compile_fail: false,
             no_run: false,
             should_panic: test::ShouldPanic::No,
@@ -1461,10 +1461,10 @@ mod test {
         },
         testfn: test::StaticTestFn(
             #[coverage(off)]
-            || test::assert_test_result(test_associated_type_retval()),
+            || test::assert_test_result(test_associated_type_chained()),
         ),
     };
-    fn test_associated_type_retval() {
+    fn test_associated_type_chained() {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
@@ -1605,5 +1605,5 @@ mod test {
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_associated_type_retval])
+    test::test_main_static(&[&test_associated_type_chained])
 }

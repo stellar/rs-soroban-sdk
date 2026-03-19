@@ -77,7 +77,7 @@ mod test {
     use crate::{Contract, ContractClient};
 
     #[test]
-    fn test_associated_type_retval() {
+    fn test_associated_type_chained() {
         let e = Env::default();
         let contract_id = e.register(Contract, ());
         let client = ContractClient::new(&e, &contract_id);
