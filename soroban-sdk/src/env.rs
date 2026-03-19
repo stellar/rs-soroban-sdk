@@ -355,9 +355,20 @@ impl Env {
     }
 
     /// Get the Address object corresponding to the current executing contract.
+    ///
+    /// See also: [`me()`](#method.me), which is an alias for this function.
     pub fn current_contract_address(&self) -> Address {
         let address = internal::Env::get_current_contract_address(self).unwrap_infallible();
         unsafe { Address::unchecked_new(self.clone(), address) }
+    }
+
+    /// Get the Address object corresponding to the current executing contract.
+    ///
+    /// This is an alias for [`current_contract_address()`](#method.current_contract_address),
+    /// provided as a convenience for shorter, more readable code.
+    #[inline(always)]
+    pub fn me(&self) -> Address {
+        self.current_contract_address()
     }
 
     #[doc(hidden)]
