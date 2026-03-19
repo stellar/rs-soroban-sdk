@@ -5,12 +5,16 @@ use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
 extern crate compiler_builtins as _;
-use soroban_sdk::{contract, contractimpl, symbol_short, Env};
+use soroban_sdk::{contract, contractimpl, symbol_short, Env, Error, Vec};
 pub trait AssociatedType {
     type Val;
+    type ValVal;
     fn set_val(env: Env, input: Self::Val);
     fn get_val(env: Env) -> Self::Val;
     fn both(input: Self::Val) -> Self::Val;
+    fn wrapped(input: Vec<Self::Val>) -> Result<Self::Val, Error>;
+    fn double_wrapped(input: Option<Vec<Self::Val>>) -> Result<Vec<Self::Val>, Error>;
+    fn valval(env: Env, input: Self::ValVal) -> Option<Self::ValVal>;
 }
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -145,6 +149,7 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
 }
 impl AssociatedType for Contract {
     type Val = u64;
+    type ValVal = Self::Val;
     fn set_val(env: Env, input: Self::Val) {
         env.storage().instance().set(
             &{
@@ -167,6 +172,26 @@ impl AssociatedType for Contract {
     }
     fn both(input: Self::Val) -> Self::Val {
         input + 1
+    }
+    fn wrapped(input: Vec<Self::Val>) -> Result<Self::Val, Error> {
+        if input.is_empty() {
+            Err(Error::from_contract_error(0))
+        } else {
+            let mut sum = 0;
+            for val in input {
+                sum += val;
+            }
+            Ok(sum)
+        }
+    }
+    fn double_wrapped(input: Option<Vec<Self::Val>>) -> Result<Vec<Self::Val>, Error> {
+        match input {
+            Some(v) => Ok(v),
+            None => Err(Error::from_contract_error(1)),
+        }
+    }
+    fn valval(env: Env, input: Self::ValVal) -> Option<Self::ValVal> {
+        Some(input)
     }
 }
 #[doc(hidden)]
@@ -209,6 +234,49 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_both() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04both\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__wrapped__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_WRAPPED: [u8; 64usize] = super::Contract::spec_xdr_wrapped();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_wrapped() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x07wrapped\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\x03\xea\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\0\x03"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__double_wrapped__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_DOUBLE_WRAPPED: [u8; 80usize] =
+        super::Contract::spec_xdr_double_wrapped();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_double_wrapped() -> [u8; 80usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0edouble_wrapped\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\x03\xe8\0\0\x03\xea\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\x03\xea\0\0\0\x06\0\0\0\x03"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__valval__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_VALVAL: [u8; 56usize] = super::Contract::spec_xdr_valval();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_valval() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x06valval\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe8\0\0\0\x06"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -451,6 +519,244 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    pub fn wrapped(&self, input: &Vec<u64>) -> u64 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("wrapped");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_wrapped(
+        &self,
+        input: &Vec<u64>,
+    ) -> Result<
+        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("wrapped");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn double_wrapped(&self, input: &Option<Vec<u64>>) -> Vec<u64> {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "double_wrapped") },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_double_wrapped(
+        &self,
+        input: &Option<Vec<u64>>,
+    ) -> Result<
+        Result<
+            Vec<u64>,
+            <Vec<u64> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "double_wrapped") },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn valval(&self, input: &u64) -> Option<u64> {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valval");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_valval(
+        &self,
+        input: &u64,
+    ) -> Result<
+        Result<
+            Option<u64>,
+            <Option<u64> as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("valval");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [input.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -466,6 +772,21 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn both<'i>(input: &'i u64) -> (&'i u64,) {
+        (input,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn wrapped<'i>(input: &'i Vec<u64>) -> (&'i Vec<u64>,) {
+        (input,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn double_wrapped<'i>(input: &'i Option<Vec<u64>>) -> (&'i Option<Vec<u64>>,) {
+        (input,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn valval<'i>(input: &'i u64) -> (&'i u64,) {
         (input,)
     }
 }
@@ -602,8 +923,153 @@ pub extern "C" fn __Contract__both__invoke_raw_extern(arg_0: soroban_sdk::Val) -
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrapped` instead")]
+#[allow(deprecated)]
+pub fn __Contract__wrapped__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AssociatedType>::wrapped(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrapped` instead")]
+pub fn __Contract__wrapped__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__wrapped__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrapped` instead")]
+pub extern "C" fn __Contract__wrapped__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__wrapped__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).double_wrapped` instead")]
+#[allow(deprecated)]
+pub fn __Contract__double_wrapped__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AssociatedType>::double_wrapped(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).double_wrapped` instead")]
+pub fn __Contract__double_wrapped__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__double_wrapped__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).double_wrapped` instead")]
+pub extern "C" fn __Contract__double_wrapped__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__double_wrapped__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).valval` instead")]
+#[allow(deprecated)]
+pub fn __Contract__valval__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AssociatedType>::valval(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).valval` instead")]
+pub fn __Contract__valval__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__valval__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).valval` instead")]
+pub extern "C" fn __Contract__valval__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__valval__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AssociatedType__6f7a376527b92e0817f52e2a5f4b637e424247f4904ffdd849317c3aa1132c6d_ctor(
+fn __Contract__AssociatedType__26c41a70edb11149e3b0fc3e4fde24088c97d4fc99d71a1ba93e75e04c598353_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -616,7 +1082,7 @@ fn __Contract__AssociatedType__6f7a376527b92e0817f52e2a5f4b637e424247f4904ffdd84
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AssociatedType__6f7a376527b92e0817f52e2a5f4b637e424247f4904ffdd849317c3aa1132c6d_ctor();
+                    __Contract__AssociatedType__26c41a70edb11149e3b0fc3e4fde24088c97d4fc99d71a1ba93e75e04c598353_ctor();
                 };
                 core::default::Default::default()
             }
@@ -639,12 +1105,27 @@ fn __Contract__AssociatedType__6f7a376527b92e0817f52e2a5f4b637e424247f4904ffdd84
             #[allow(deprecated)]
             &__Contract__both__invoke_raw_slice,
         );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "wrapped",
+            #[allow(deprecated)]
+            &__Contract__wrapped__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "double_wrapped",
+            #[allow(deprecated)]
+            &__Contract__double_wrapped__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "valval",
+            #[allow(deprecated)]
+            &__Contract__valval__invoke_raw_slice,
+        );
     }
 }
 #[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient};
-    use soroban_sdk::Env;
+    use soroban_sdk::{vec, Env};
     extern crate test;
     #[cfg(test)]
     #[rustc_test_marker = "test::test_associated_type_retval"]
@@ -654,10 +1135,10 @@ mod test {
             name: test::StaticTestName("test::test_associated_type_retval"),
             ignore: false,
             ignore_message: ::core::option::Option::None,
-            source_file: "tests/associated_type_retval/src/lib.rs",
-            start_line: 42usize,
+            source_file: "tests/associated_type_chained/src/lib.rs",
+            start_line: 70usize,
             start_col: 8usize,
-            end_line: 42usize,
+            end_line: 70usize,
             end_col: 35usize,
             compile_fail: false,
             no_run: false,
@@ -688,6 +1169,83 @@ mod test {
             }
         };
         match (&client.both(&42u64), &43u64) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (
+            &client.wrapped(&::soroban_sdk::Vec::from_array(&e, [1u64, 2u64, 3u64])),
+            &6u64,
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (
+            &client.try_wrapped(&::soroban_sdk::Vec::new(&e)).err(),
+            &Some(Ok(soroban_sdk::Error::from_contract_error(0))),
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (
+            &client.double_wrapped(&Some(::soroban_sdk::Vec::from_array(&e, [4u64, 5u64]))),
+            &::soroban_sdk::Vec::from_array(&e, [4u64, 5u64]),
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (
+            &client.try_double_wrapped(&None).err(),
+            &Some(Ok(soroban_sdk::Error::from_contract_error(1))),
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&client.valval(&42u64), &Some(42u64)) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;

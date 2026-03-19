@@ -1,5 +1,5 @@
 [package]
-name = "test_associated_type_retval"
+name = "test_associated_type_chained"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
