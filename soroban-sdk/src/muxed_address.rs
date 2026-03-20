@@ -354,6 +354,25 @@ impl MuxedAddress {
 }
 
 #[cfg(not(target_family = "wasm"))]
+impl From<&MuxedAddress> for ScVal {
+    fn from(v: &MuxedAddress) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.to_val()).unwrap()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<MuxedAddress> for ScVal {
+    fn from(v: MuxedAddress) -> Self {
+        (&v).into()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
 impl TryFromVal<Env, ScVal> for MuxedAddress {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
