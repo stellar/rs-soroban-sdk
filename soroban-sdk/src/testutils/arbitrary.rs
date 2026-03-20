@@ -328,7 +328,8 @@ mod objects {
             Fp, Fp2, Fr, G1Affine, G2Affine, FP2_SERIALIZED_SIZE, FP_SERIALIZED_SIZE,
             G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
         },
-        Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
+        Address, Bytes, BytesN, Duration, Map, MuxedAddress, String, Symbol, Timepoint, Val, Vec,
+        I256, U256,
     };
 
     use std::string::String as RustString;
@@ -647,6 +648,39 @@ mod objects {
             use crate::env::xdr::{ContractId, Hash, ScAddress};
 
             let sc_addr = ScVal::Address(ScAddress::Contract(ContractId(Hash(v.inner))));
+            Ok(sc_addr.into_val(env))
+        }
+    }
+
+    //////////////////////////////////
+
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub enum ArbitraryMuxedAddress {
+        Address(ArbitraryAddress),
+        Muxed { ed25519: [u8; 32], id: u64 },
+    }
+
+    impl SorobanArbitrary for MuxedAddress {
+        type Prototype = ArbitraryMuxedAddress;
+    }
+
+    impl TryFromVal<Env, ArbitraryMuxedAddress> for MuxedAddress {
+        type Error = ConversionError;
+        fn try_from_val(env: &Env, v: &ArbitraryMuxedAddress) -> Result<Self, Self::Error> {
+            use crate::env::xdr::{MuxedEd25519Account, ScAddress, Uint256};
+
+            let sc_addr = match v {
+                ArbitraryMuxedAddress::Address(v) => {
+                    let address = Address::try_from_val(env, v)?;
+                    return Ok(address.into());
+                }
+                ArbitraryMuxedAddress::Muxed { ed25519, id } => {
+                    ScVal::Address(ScAddress::MuxedAccount(MuxedEd25519Account {
+                        ed25519: Uint256(*ed25519),
+                        id: *id,
+                    }))
+                }
+            };
             Ok(sc_addr.into_val(env))
         }
     }
