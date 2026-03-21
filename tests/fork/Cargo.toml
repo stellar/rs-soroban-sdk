@@ -1,0 +1,31 @@
+[package]
+name = "test_fork"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+
+[dev-dependencies]
+soroban-ledger-snapshot-source-tx = {path = "../../soroban-ledger-snapshot-source-tx"}
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+url = "2"
+bytes-lit = "0.0.5"
+serde_json = "1"
+hex = "0.4"
+stellar-xdr = { workspace = true, features = ["std", "curr"] }
+stellar-strkey = { workspace = true }
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+sha2 = "0.10"
+stellar-rpc-client = "25"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+rand = "0.8"
+reqwest = "0.12"

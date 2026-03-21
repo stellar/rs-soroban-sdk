@@ -1,0 +1,136 @@
+{
+  "generators": {
+    "address": 0,
+    "nonce": 0,
+    "mux_id": 0
+  },
+  "auth": [
+    []
+  ],
+  "ledger": {
+    "protocol_version": 25,
+    "sequence_number": 0,
+    "timestamp": 0,
+    "network_id": "0000000000000000000000000000000000000000000000000000000000000000",
+    "base_reserve": 0,
+    "min_persistent_entry_ttl": 4096,
+    "min_temp_entry_ttl": 16,
+    "max_entry_ttl": 6312000,
+    "ledger_entries": [
+      {
+        "entry": {
+          "last_modified_ledger_seq": 61292163,
+          "data": {
+            "account": {
+              "account_id": "GBLKX4UPDM7CC4UUG2FXBLOCXOTQ6ARHOQYVL4RD6A4AQVB6TPTLIUYN",
+              "balance": "24112182156",
+              "seq_num": "233832081317167159",
+              "num_sub_entries": 50,
+              "inflation_dest": "GDCHDRSDOBRMSUDKRE2C4U4KDLNEATJPIHHR2ORFL5BSD56G4DQXL4VW",
+              "flags": 0,
+              "home_domain": "lobstr.co",
+              "thresholds": "01000000",
+              "signers": [],
+              "ext": {
+                "v1": {
+                  "liabilities": {
+                    "buying": "0",
+                    "selling": "5471826409"
+                  },
+                  "ext": {
+                    "v2": {
+                      "num_sponsored": 0,
+                      "num_sponsoring": 0,
+                      "signer_sponsoring_i_ds": [],
+                      "ext": {
+                        "v3": {
+                          "ext": "v0",
+                          "seq_ledger": 61292152,
+                          "seq_time": "1771441174"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "ext": "v0"
+        },
+        "live_until": null
+      },
+      {
+        "entry": {
+          "last_modified_ledger_seq": 50463386,
+          "data": {
+            "contract_data": {
+              "ext": "v0",
+              "contract": "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA",
+              "key": "ledger_key_contract_instance",
+              "durability": "persistent",
+              "val": {
+                "contract_instance": {
+                  "executable": "stellar_asset",
+                  "storage": [
+                    {
+                      "key": {
+                        "symbol": "METADATA"
+                      },
+                      "val": {
+                        "map": [
+                          {
+                            "key": {
+                              "symbol": "decimal"
+                            },
+                            "val": {
+                              "u32": 7
+                            }
+                          },
+                          {
+                            "key": {
+                              "symbol": "name"
+                            },
+                            "val": {
+                              "string": "native"
+                            }
+                          },
+                          {
+                            "key": {
+                              "symbol": "symbol"
+                            },
+                            "val": {
+                              "string": "native"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "key": {
+                        "vec": [
+                          {
+                            "symbol": "AssetInfo"
+                          }
+                        ]
+                      },
+                      "val": {
+                        "vec": [
+                          {
+                            "symbol": "Native"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "ext": "v0"
+        },
+        "live_until": 4294967295
+      }
+    ]
+  },
+  "events": []
+}
