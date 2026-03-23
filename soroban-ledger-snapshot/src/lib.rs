@@ -42,7 +42,7 @@ pub struct LedgerSnapshot {
     ledger_entries: LedgerEntries,
 }
 
-/// Extended ledger entry that includes the live util ledger sequence. Provides a more compact
+/// Extended ledger entry that includes the live until ledger sequence. Provides a more compact
 /// form of the entry storage, to reduce the size of the snapshot when serialized to JSON.
 #[derive(Debug, Clone, serde::Deserialize)]
 struct LedgerEntryExt {
@@ -50,7 +50,7 @@ struct LedgerEntryExt {
     live_until: Option<u32>,
 }
 
-/// Extended ledger entry that includes the live util ledger sequence, and the entry by reference.
+/// Extended ledger entry that includes the live until ledger sequence, and the entry by reference.
 /// Used to reduce memory usage during serialization.
 #[derive(serde::Serialize)]
 struct LedgerEntryExtRef<'a> {

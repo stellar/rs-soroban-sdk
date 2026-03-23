@@ -100,12 +100,12 @@ fn test_set_and_update_entries() {
         // Update existing with new live_until
         (
             Rc::new((**entries[0].0).clone()),
-            Some((Rc::new((*entries[0].1 .0).clone()), Some(99))),
+            Some((Rc::new((*entries[0].1.0).clone()), Some(99))),
         ),
         // Add new entry
         (
             Rc::new((**entries[2].0).clone()),
-            Some((Rc::new((*entries[2].1 .0).clone()), entries[2].1 .1)),
+            Some((Rc::new((*entries[2].1.0).clone()), entries[2].1.1)),
         ),
     ];
     snapshot.update_entries(&updates);
