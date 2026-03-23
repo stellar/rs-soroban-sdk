@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
     crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
@@ -138,31 +137,28 @@ impl TryFrom<&MockProof> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &MockProof) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
-            #[rustc_box]
-            ::alloc::boxed::Box::new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "g1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.g1)
-                        .try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "g1".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "g2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.g2)
-                        .try_into()
+                )
+                .into(),
+                val: (&val.g1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "g2".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ]),
-        ))
+                )
+                .into(),
+                val: (&val.g2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<MockProof> for soroban_sdk::xdr::ScMap {
@@ -1224,7 +1220,6 @@ fn __Contract____791f30cbe20fdd8dd82fcdc2b6465e800581173658019a4bee49e2305925f4e
         );
     }
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::{bytesn, vec, Env, IntoVal, Symbol, Val, U256};
@@ -1277,7 +1272,6 @@ mod test {
         (g1_points, g2_points)
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_add_and_mul"]
     #[doc(hidden)]
     pub const test_add_and_mul: test::TestDescAndFn = test::TestDescAndFn {
@@ -1347,7 +1341,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_pairing"]
     #[doc(hidden)]
     pub const test_pairing: test::TestDescAndFn = test::TestDescAndFn {
@@ -1399,7 +1392,6 @@ mod test {
         }
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_g1_negation"]
     #[doc(hidden)]
     pub const test_g1_negation: test::TestDescAndFn = test::TestDescAndFn {
@@ -1458,7 +1450,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_fr_decode_reduces_unreduced_scalar_and_vec_elements"]
     #[doc(hidden)]
     pub const test_fr_decode_reduces_unreduced_scalar_and_vec_elements: test::TestDescAndFn =

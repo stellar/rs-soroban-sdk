@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env};
 pub struct SelfPathTraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -523,11 +522,9 @@ fn __ContractSelfPath__self_SelfPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae4
     }
     {}
 }
-#[cfg(test)]
 mod test {
     use super::*;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_self_path"]
     #[doc(hidden)]
     pub const test_self_path: test::TestDescAndFn = test::TestDescAndFn {
