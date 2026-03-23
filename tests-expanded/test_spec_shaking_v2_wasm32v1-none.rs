@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contracterror, contractevent, contractimpl, contracttype, Env, Map, Symbol, Vec,
 };
@@ -87,7 +86,6 @@ impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -213,7 +211,6 @@ impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xe7\xcf\x9b1n\x15\x13\xfe";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -355,7 +352,6 @@ impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xc2\xf4N\xbf\xebqvp";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -456,7 +452,6 @@ impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -624,7 +619,6 @@ impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x84\x08Y\xae\xa0\xf128";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -726,7 +720,6 @@ impl soroban_sdk::SpecShakingMarker for UsedVecElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xe2\x01y\xc9\x9a\xf8\xedt";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -832,7 +825,6 @@ impl soroban_sdk::SpecShakingMarker for UsedMapKey {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbc";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -927,7 +919,6 @@ impl soroban_sdk::SpecShakingMarker for UsedMapVal {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xaaX8\xde\xef\xbb6%";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1032,7 +1023,6 @@ impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xb3/\x97\xd5\x06\xbd3B";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1132,7 +1122,6 @@ impl soroban_sdk::SpecShakingMarker for UsedResultOk {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1k\xe4zxB\xd1+\x02";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1227,7 +1216,7 @@ impl ::core::marker::StructuralPartialEq for UsedEventSimple {}
 impl ::core::cmp::PartialEq for UsedEventSimple {
     #[inline]
     fn eq(&self, other: &UsedEventSimple) -> bool {
-        self.kind == other.kind && self.amount == other.amount
+        self.amount == other.amount && self.kind == other.kind
     }
 }
 #[link_section = "contractspecv0"]
@@ -1243,7 +1232,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1v1\x0eP\xa9C\xc7*";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1329,7 +1317,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1421,7 +1408,7 @@ impl ::core::marker::StructuralPartialEq for UsedEventWithTopicType {}
 impl ::core::cmp::PartialEq for UsedEventWithTopicType {
     #[inline]
     fn eq(&self, other: &UsedEventWithTopicType) -> bool {
-        self.kind == other.kind && self.amount == other.amount
+        self.amount == other.amount && self.kind == other.kind
     }
 }
 #[link_section = "contractspecv0"]
@@ -1438,7 +1425,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
     fn spec_shaking_marker() {
         <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1q^\xe2&\x9di\x9d\x0e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1531,7 +1517,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xc2 \x1b\xdc\xc8gxZ";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1649,7 +1634,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1q\xa3z;6\xa6R\x01";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1737,7 +1721,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
     #[inline(always)]
     fn spec_shaking_marker() {
         <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x94\xc7w/_\xebXc";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1846,7 +1829,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV16\x83?\xf0\xcdW\xb1/";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1943,7 +1925,7 @@ impl ::core::marker::StructuralPartialEq for UsedEventWithNestedTopic {}
 impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
     #[inline]
     fn eq(&self, other: &UsedEventWithNestedTopic) -> bool {
-        self.info == other.info && self.amount == other.amount
+        self.amount == other.amount && self.info == other.info
     }
 }
 #[link_section = "contractspecv0"]
@@ -1960,7 +1942,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
     fn spec_shaking_marker() {
         <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2048,7 +2029,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
     #[inline(always)]
     fn spec_shaking_marker() {
         <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2157,7 +2137,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2271,7 +2250,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2360,7 +2338,6 @@ impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1@\xb9LO\xf9\xd1\xe8\xe2";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2460,7 +2437,6 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
     #[inline(always)]
     fn spec_shaking_marker() {
         <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1'\xbd_A\r\x9a\x89\x02";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2562,7 +2538,6 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1K\xdf'8m/\xe8\x1d";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2673,7 +2648,6 @@ impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
     fn spec_shaking_marker() {
         <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1[Q+\xe9\xde\xd5\xf2>";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2756,7 +2730,6 @@ impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xde\x1dMa\x01\xec\xb0A";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2862,7 +2835,6 @@ impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1Y\xa66\xb3\xecxE\x13";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2964,7 +2936,6 @@ impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1p\x8c\x0fN!\x082\xd8";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3061,7 +3032,6 @@ impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3172,14 +3142,14 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedNonPubError> for soroban_sdk
     }
 }
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00`\x02\x7f\x7f\x01~`\x00\x01~\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01m\x019\x00\x01\x01v\x01g\x00\x00\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x00\x03\x00\x04\x04\x05\x06\x06\x02\x00\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\x0bfn_struct_a\x00\x06\x11fn_struct_tuple_a\x00\x08\tfn_enum_a\x00\x0c\rfn_enum_int_a\x00\r\nfn_error_a\x00\x0e\nfn_event_a\x00\x0f\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\nz\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01 \x01\xa7A\xff\x01q\"\x03A\x00GA\x01t \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x89\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x89\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8a\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8a\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x8a\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x02@\x02@\x02@\x03@ \x02E\r\x01A\x01!\x03\x02@ \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x00\x02@ \x04APjA\xff\x01qA\nI\r\x00\x02@ \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x00 \x04A\x9f\x7fjA\xff\x01qA\x19K\r\x05 \x04AEj!\x03\x0c\x02\x0b \x04AKj!\x03\x0c\x01\x0b \x04ARj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0c\x01\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x8b\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x87\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.84.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
     pub trait Contract {
-        fn fn_struct_a(env: soroban_sdk::Env, f1: u32, f2: bool) -> StructA;
-        fn fn_struct_tuple_a(env: soroban_sdk::Env, f1: i64, f2: i64) -> StructTupleA;
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
-        fn fn_enum_int_a(env: soroban_sdk::Env) -> EnumIntA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
         fn fn_event_a(env: soroban_sdk::Env, f1: soroban_sdk::Address, f2: soroban_sdk::String);
+        fn fn_struct_a(env: soroban_sdk::Env, f1: u32, f2: bool) -> StructA;
+        fn fn_enum_int_a(env: soroban_sdk::Env) -> EnumIntA;
+        fn fn_struct_tuple_a(env: soroban_sdk::Env, f1: i64, f2: i64) -> StructTupleA;
     }
     ///Client is a client for calling the contract defined in "Contract".
     pub struct Client<'a> {
@@ -3198,79 +3168,6 @@ mod wasm_imported {
         }
     }
     impl<'a> Client<'a> {
-        pub fn fn_struct_a(&self, f1: &u32, f2: &bool) -> StructA {
-            use core::ops::Not;
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
-        pub fn try_fn_struct_a(
-            &self,
-            f1: &u32,
-            f2: &bool,
-        ) -> Result<
-            Result<
-                StructA,
-                <StructA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-            >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        > {
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.try_invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
-        pub fn fn_struct_tuple_a(&self, f1: &i64, f2: &i64) -> StructTupleA {
-            use core::ops::Not;
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
-        pub fn try_fn_struct_tuple_a(
-            &self,
-            f1: &i64,
-            f2: &i64,
-        ) -> Result<
-            Result<
-                StructTupleA,
-                <StructTupleA as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        >{
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.try_invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
         pub fn fn_enum_a(&self) -> EnumA {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -3302,33 +3199,6 @@ mod wasm_imported {
                     const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("fn_enum_a");
                     SYMBOL
                 },
-                ::soroban_sdk::Vec::new(&self.env),
-            );
-            res
-        }
-        pub fn fn_enum_int_a(&self) -> EnumIntA {
-            use core::ops::Not;
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
-                ::soroban_sdk::Vec::new(&self.env),
-            );
-            res
-        }
-        pub fn try_fn_enum_int_a(
-            &self,
-        ) -> Result<
-            Result<
-                EnumIntA,
-                <EnumIntA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-            >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        > {
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.try_invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
                 ::soroban_sdk::Vec::new(&self.env),
             );
             res
@@ -3393,28 +3263,113 @@ mod wasm_imported {
             );
             res
         }
+        pub fn fn_struct_a(&self, f1: &u32, f2: &bool) -> StructA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_fn_struct_a(
+            &self,
+            f1: &u32,
+            f2: &bool,
+        ) -> Result<
+            Result<
+                StructA,
+                <StructA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn fn_enum_int_a(&self) -> EnumIntA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn try_fn_enum_int_a(
+            &self,
+        ) -> Result<
+            Result<
+                EnumIntA,
+                <EnumIntA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn fn_struct_tuple_a(&self, f1: &i64, f2: &i64) -> StructTupleA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_fn_struct_tuple_a(
+            &self,
+            f1: &i64,
+            f2: &i64,
+        ) -> Result<
+            Result<
+                StructTupleA,
+                <StructTupleA as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        >{
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
     }
     ///Args is a type for building arg lists for functions defined in "Contract".
     pub struct Args;
     impl Args {
         #[inline(always)]
         #[allow(clippy::unused_unit)]
-        pub fn fn_struct_a<'i>(f1: &'i u32, f2: &'i bool) -> (&'i u32, &'i bool) {
-            (f1, f2)
-        }
-        #[inline(always)]
-        #[allow(clippy::unused_unit)]
-        pub fn fn_struct_tuple_a<'i>(f1: &'i i64, f2: &'i i64) -> (&'i i64, &'i i64) {
-            (f1, f2)
-        }
-        #[inline(always)]
-        #[allow(clippy::unused_unit)]
         pub fn fn_enum_a<'i>() -> () {
-            ()
-        }
-        #[inline(always)]
-        #[allow(clippy::unused_unit)]
-        pub fn fn_enum_int_a<'i>() -> () {
             ()
         }
         #[inline(always)]
@@ -3428,6 +3383,21 @@ mod wasm_imported {
             f1: &'i soroban_sdk::Address,
             f2: &'i soroban_sdk::String,
         ) -> (&'i soroban_sdk::Address, &'i soroban_sdk::String) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn fn_struct_a<'i>(f1: &'i u32, f2: &'i bool) -> (&'i u32, &'i bool) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn fn_enum_int_a<'i>() -> () {
+            ()
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn fn_struct_tuple_a<'i>(f1: &'i i64, f2: &'i i64) -> (&'i i64, &'i i64) {
             (f1, f2)
         }
     }
@@ -3508,7 +3478,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xb6\x1c\xfd\xdfhY-d";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3642,7 +3611,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3776,7 +3744,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3907,7 +3874,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xcf)\x97]S\xb2\xfd)";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4034,7 +4000,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4121,7 +4086,7 @@ mod wasm_imported {
     impl ::core::cmp::PartialEq for StructTupleC {
         #[inline]
         fn eq(&self, other: &StructTupleC) -> bool {
-            self.0 == other.0 && self.1 == other.1
+            self.1 == other.1 && self.0 == other.0
         }
     }
     #[automatically_derived]
@@ -4162,7 +4127,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4292,7 +4256,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xa2=N\xc1p\x95\x90\xb2";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4499,7 +4462,6 @@ mod wasm_imported {
         #[inline(always)]
         fn spec_shaking_marker() {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1'\x1b\0DSH^\xcc";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4709,7 +4671,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4883,7 +4844,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1V]\x80\\~\x1a\x08/";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5006,7 +4966,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1,\x9c\xc0_\xed_)\x85";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5129,7 +5088,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1`\xca\xda\x19\xb9c\xf0/";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5252,7 +5210,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5445,7 +5402,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5638,7 +5594,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5833,7 +5788,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5913,7 +5867,7 @@ mod wasm_imported {
     impl ::core::cmp::PartialEq for EventB {
         #[inline]
         fn eq(&self, other: &EventB) -> bool {
-            self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+            self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
         }
     }
     #[automatically_derived]
@@ -5960,7 +5914,6 @@ mod wasm_imported {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xaa\xefz\x17i$\x15";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6043,7 +5996,7 @@ mod wasm_imported {
     impl ::core::cmp::PartialEq for EventC {
         #[inline]
         fn eq(&self, other: &EventC) -> bool {
-            self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+            self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
         }
     }
     #[automatically_derived]
@@ -6090,7 +6043,6 @@ mod wasm_imported {
             <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6178,7 +6130,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1|\x9c\t\x1e\xf5\xa8\x19\xa0";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6291,7 +6242,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedEnum {
     #[inline(always)]
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1/\x82\x9a0\xbe@\x0eZ";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6427,7 +6377,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xdd\xee~,\x83\xe4\x9c";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6517,7 +6466,7 @@ impl ::core::marker::StructuralPartialEq for UnusedEvent {}
 impl ::core::cmp::PartialEq for UnusedEvent {
     #[inline]
     fn eq(&self, other: &UnusedEvent) -> bool {
-        self.kind == other.kind && self.data == other.data
+        self.data == other.data && self.kind == other.kind
     }
 }
 #[link_section = "contractspecv0"]
@@ -6533,7 +6482,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedEvent {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x10\xe8\xf6\xcc\xea\xc3Sb";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6619,7 +6567,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6727,7 +6674,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x7fe\x1c\n\x87g\x1d\xc0";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6829,7 +6775,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xa8;,%}]PA";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6928,7 +6873,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xd9_\x99\"=\xc6FM";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };

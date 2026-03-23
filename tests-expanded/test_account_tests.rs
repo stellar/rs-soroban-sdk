@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     auth::Context, auth::CustomAccountInterface, contract, contracterror, contractimpl,
     crypto::Hash, Env, Vec,
@@ -433,7 +432,6 @@ fn __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910
         );
     }
 }
-#[cfg(test)]
 mod test {
     use crate::Contract;
     use soroban_sdk::{
@@ -573,7 +571,6 @@ mod test {
         }
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test"]
     #[doc(hidden)]
     pub const test: test::TestDescAndFn = test::TestDescAndFn {
