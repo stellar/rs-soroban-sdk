@@ -1,6 +1,6 @@
-use serde::Deserialize;
-use serde_with::{serde_as, DeserializeAs, SerializeAs};
+use serde_with::serde_as;
 use std::{
+    collections::{hash_map::Entry, HashMap},
     fs::{create_dir_all, File},
     io::{self, BufReader, Read, Write},
     path::Path,
@@ -39,13 +39,11 @@ pub struct LedgerSnapshot {
     pub min_persistent_entry_ttl: u32,
     pub min_temp_entry_ttl: u32,
     pub max_entry_ttl: u32,
-    #[serde_as(as = "LedgerEntryVec")]
-    pub ledger_entries: Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
+    ledger_entries: LedgerEntries,
 }
 
 /// Extended ledger entry that includes the live util ledger sequence. Provides a more compact
-/// form of the tuple used in [`LedgerSnapshot::ledger_entries`], to reduce the size of the snapshot
-/// when serialized to JSON.
+/// form of the entry storage, to reduce the size of the snapshot when serialized to JSON.
 #[derive(Debug, Clone, serde::Deserialize)]
 struct LedgerEntryExt {
     entry: Box<LedgerEntry>,
@@ -60,19 +58,72 @@ struct LedgerEntryExtRef<'a> {
     live_until: Option<u32>,
 }
 
-struct LedgerEntryVec;
+/// Storage for ledger entries. Uses a [`HashMap`] for O(1) keyed
+/// read/write access and a [`Vec`] of keys to preserve insertion order for serialization.
+/// Removed keys are left as tombstones in `keys` and filtered out during iteration.
+#[derive(Clone, Debug, Default, Eq)]
+pub struct LedgerEntries {
+    map: HashMap<Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>)>,
+    keys: Vec<Box<LedgerKey>>,
+}
 
-impl<'a> SerializeAs<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>> for LedgerEntryVec {
-    fn serialize_as<S>(
-        source: &Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
+impl PartialEq for LedgerEntries {
+    fn eq(&self, other: &Self) -> bool {
+        self.map == other.map
+            && self
+                .keys
+                .iter()
+                .filter(|k| self.map.contains_key(k.as_ref()))
+                .eq(other
+                    .keys
+                    .iter()
+                    .filter(|k| other.map.contains_key(k.as_ref())))
+    }
+}
+
+impl LedgerEntries {
+    /// Get the entry for a given key, if it exists.
+    fn get(&self, key: &LedgerKey) -> Option<&(Box<LedgerEntry>, Option<u32>)> {
+        self.map.get(key)
+    }
+
+    /// Insert or replace the entry for a given key.
+    fn insert(&mut self, key: Box<LedgerKey>, value: (Box<LedgerEntry>, Option<u32>)) {
+        match self.map.entry(key) {
+            Entry::Occupied(mut e) => {
+                e.insert(value);
+            }
+            Entry::Vacant(e) => {
+                self.keys.push(e.key().clone());
+                e.insert(value);
+            }
+        }
+    }
+
+    /// Remove the entry for a given key, if it exists.
+    fn remove(&mut self, key: &LedgerKey) {
+        self.map.remove(key);
+    }
+
+    /// Iterate over the entries in insertion order
+    fn iter(&self) -> impl Iterator<Item = (&Box<LedgerKey>, &(Box<LedgerEntry>, Option<u32>))> {
+        self.keys
+            .iter()
+            .filter_map(|k| self.map.get(k).map(|v| (k, v)))
+    }
+
+    /// Clear all entries from the storage.
+    fn clear(&mut self) {
+        self.keys.clear();
+        self.map.clear();
+    }
+}
+
+impl serde::Serialize for LedgerEntries {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeSeq;
-        let mut seq = serializer.serialize_seq(Some(source.len()))?;
-        for (_, (entry, live_until)) in source {
+        let mut seq = serializer.serialize_seq(Some(self.map.len()))?;
+        for (_, (entry, live_until)) in self.iter() {
             seq.serialize_element(&LedgerEntryExtRef {
                 entry,
                 live_until: *live_until,
@@ -82,32 +133,29 @@ impl<'a> SerializeAs<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>> for
     }
 }
 
-impl<'de> DeserializeAs<'de, Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>>
-    for LedgerEntryVec
-{
-    fn deserialize_as<D>(
-        deserializer: D,
-    ) -> Result<Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
+impl<'de> serde::Deserialize<'de> for LedgerEntries {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         #[derive(serde::Deserialize)]
         #[serde(untagged)]
         enum Format {
             V2(Vec<LedgerEntryExt>),
             V1(Vec<(Box<LedgerKey>, (Box<LedgerEntry>, Option<u32>))>),
         }
-
+        let mut entries = LedgerEntries::default();
         match Format::deserialize(deserializer)? {
-            Format::V2(entries) => Ok(entries
-                .into_iter()
-                .map(|LedgerEntryExt { entry, live_until }| {
+            Format::V2(raw) => {
+                for LedgerEntryExt { entry, live_until } in raw {
                     let key = Box::new(entry.to_key());
-                    (key, (entry, live_until))
-                })
-                .collect()),
-            Format::V1(entries) => Ok(entries),
+                    entries.insert(key, (entry, live_until));
+                }
+            }
+            Format::V1(raw) => {
+                for (key, value) in raw {
+                    entries.insert(key, value);
+                }
+            }
         }
+        Ok(entries)
     }
 }
 
@@ -164,11 +212,16 @@ impl LedgerSnapshot {
         self.max_entry_ttl = info.max_entry_ttl;
     }
 
-    /// Get the entries in the snapshot.
+    /// Count the number of entries in the snapshot.
+    pub fn count_entries(&self) -> usize {
+        self.ledger_entries.map.len()
+    }
+
+    /// Iterate over all the entries in the snapshot, in insertion order.
     pub fn entries(
         &self,
     ) -> impl IntoIterator<Item = (&Box<LedgerKey>, &(Box<LedgerEntry>, Option<u32>))> {
-        self.ledger_entries.iter().map(|(k, v)| (k, v))
+        self.ledger_entries.iter()
     }
 
     /// Replace the entries in the snapshot with the entries in the iterator.
@@ -178,7 +231,7 @@ impl LedgerSnapshot {
     ) {
         self.ledger_entries.clear();
         for (k, e) in entries {
-            self.ledger_entries.push((k.clone(), (e.0.clone(), e.1)));
+            self.ledger_entries.insert(k.clone(), (e.0.clone(), e.1));
         }
     }
 
@@ -190,19 +243,13 @@ impl LedgerSnapshot {
         entries: impl IntoIterator<Item = &'a (Rc<LedgerKey>, Option<(Rc<LedgerEntry>, Option<u32>)>)>,
     ) {
         for (k, e) in entries {
-            let i = self.ledger_entries.iter().position(|(ik, _)| **ik == **k);
             if let Some((entry, live_until_ledger)) = e {
-                let new = (
+                self.ledger_entries.insert(
                     Box::new((**k).clone()),
                     (Box::new((**entry).clone()), *live_until_ledger),
                 );
-                if let Some(i) = i {
-                    self.ledger_entries[i] = new;
-                } else {
-                    self.ledger_entries.push(new);
-                }
-            } else if let Some(i) = i {
-                self.ledger_entries.swap_remove(i);
+            } else {
+                self.ledger_entries.remove(k);
             }
         }
     }
@@ -245,7 +292,7 @@ impl Default for LedgerSnapshot {
             timestamp: Default::default(),
             network_id: Default::default(),
             base_reserve: Default::default(),
-            ledger_entries: Vec::default(),
+            ledger_entries: LedgerEntries::default(),
             min_persistent_entry_ttl: Default::default(),
             min_temp_entry_ttl: Default::default(),
             max_entry_ttl: Default::default(),
@@ -258,8 +305,8 @@ impl SnapshotSource for &LedgerSnapshot {
         &self,
         key: &Rc<LedgerKey>,
     ) -> Result<Option<(Rc<LedgerEntry>, Option<u32>)>, HostError> {
-        match self.ledger_entries.iter().find(|(k, _)| **k == **key) {
-            Some((_, v)) => Ok(Some((Rc::new(*v.0.clone()), v.1))),
+        match self.ledger_entries.get(key) {
+            Some(v) => Ok(Some((Rc::new(*v.0.clone()), v.1))),
             None => Ok(None),
         }
     }
