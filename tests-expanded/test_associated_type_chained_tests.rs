@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, symbol_short, Env, Error, Vec};
 pub trait AssociatedType {
     type Val;
@@ -1436,12 +1435,10 @@ fn __Contract__AssociatedType__43ee96751c899ff0e1a286858793b710aeacd1f5d72c11890
         );
     }
 }
-#[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::{vec, Env};
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_associated_type_chained"]
     #[doc(hidden)]
     pub const test_associated_type_chained: test::TestDescAndFn = test::TestDescAndFn {
