@@ -21,6 +21,57 @@ pub const BN254_FP_SERIALIZED_SIZE: u32 = 32;
 pub const BN254_G1_SERIALIZED_SIZE: u32 = BN254_FP_SERIALIZED_SIZE * 2; // 64
 pub const BN254_G2_SERIALIZED_SIZE: u32 = BN254_G1_SERIALIZED_SIZE * 2; // 128
 
+/// Returns true if `name` matches a built-in Soroban type that is
+/// recognized by `map_type`. Types with these names cannot be used as
+/// `#[contracttype]` names because `map_type` would silently classify them
+/// as built-in types instead of user-defined types in the contract spec.
+pub fn is_reserved_type_name(name: &str) -> bool {
+    matches!(
+        name,
+        // Non-generic built-in types
+        "Val"
+            | "u64"
+            | "i64"
+            | "u32"
+            | "i32"
+            | "u128"
+            | "i128"
+            | "U256"
+            | "I256"
+            | "bool"
+            | "Symbol"
+            | "String"
+            | "Error"
+            | "Bytes"
+            | "Address"
+            | "MuxedAddress"
+            | "Timepoint"
+            | "Duration"
+            // BLS12-381 types (unprefixed)
+            | "Fp"
+            | "Fp2"
+            | "G1Affine"
+            | "G2Affine"
+            | "Fr"
+            // BLS12-381 types (prefixed)
+            | "Bls12381Fp"
+            | "Bls12381Fp2"
+            | "Bls12381G1Affine"
+            | "Bls12381G2Affine"
+            // BN254 types
+            | "Bn254Fp"
+            | "Bn254G1Affine"
+            | "Bn254G2Affine"
+            // Generic built-in types
+            | "Result"
+            | "Option"
+            | "Vec"
+            | "Map"
+            | "BytesN"
+            | "Hash"
+    )
+}
+
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
     match t {
@@ -298,5 +349,60 @@ mod test {
                     .unwrap(),
             }))
         );
+    }
+
+    #[test]
+    fn test_is_reserved_type_name() {
+        // Non-generic built-in types
+        assert!(is_reserved_type_name("Val"));
+        assert!(is_reserved_type_name("u64"));
+        assert!(is_reserved_type_name("i64"));
+        assert!(is_reserved_type_name("u32"));
+        assert!(is_reserved_type_name("i32"));
+        assert!(is_reserved_type_name("u128"));
+        assert!(is_reserved_type_name("i128"));
+        assert!(is_reserved_type_name("U256"));
+        assert!(is_reserved_type_name("I256"));
+        assert!(is_reserved_type_name("bool"));
+        assert!(is_reserved_type_name("Symbol"));
+        assert!(is_reserved_type_name("String"));
+        assert!(is_reserved_type_name("Error"));
+        assert!(is_reserved_type_name("Bytes"));
+        assert!(is_reserved_type_name("Address"));
+        assert!(is_reserved_type_name("MuxedAddress"));
+        assert!(is_reserved_type_name("Timepoint"));
+        assert!(is_reserved_type_name("Duration"));
+
+        // BLS12-381 types (unprefixed)
+        assert!(is_reserved_type_name("Fp"));
+        assert!(is_reserved_type_name("Fp2"));
+        assert!(is_reserved_type_name("G1Affine"));
+        assert!(is_reserved_type_name("G2Affine"));
+        assert!(is_reserved_type_name("Fr"));
+
+        // BLS12-381 types (prefixed)
+        assert!(is_reserved_type_name("Bls12381Fp"));
+        assert!(is_reserved_type_name("Bls12381Fp2"));
+        assert!(is_reserved_type_name("Bls12381G1Affine"));
+        assert!(is_reserved_type_name("Bls12381G2Affine"));
+
+        // BN254 types
+        assert!(is_reserved_type_name("Bn254Fp"));
+        assert!(is_reserved_type_name("Bn254G1Affine"));
+        assert!(is_reserved_type_name("Bn254G2Affine"));
+
+        // Generic built-in types
+        assert!(is_reserved_type_name("Result"));
+        assert!(is_reserved_type_name("Option"));
+        assert!(is_reserved_type_name("Vec"));
+        assert!(is_reserved_type_name("Map"));
+        assert!(is_reserved_type_name("BytesN"));
+        assert!(is_reserved_type_name("Hash"));
+
+        // Non-reserved names
+        assert!(!is_reserved_type_name("MyStruct"));
+        assert!(!is_reserved_type_name("Token"));
+        assert!(!is_reserved_type_name("MyAddress"));
+        assert!(!is_reserved_type_name("address"));
     }
 }
