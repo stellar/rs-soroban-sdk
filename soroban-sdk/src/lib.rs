@@ -308,9 +308,10 @@ pub use soroban_sdk_macros::contracterror;
 /// ### SHA-256 Verification
 ///
 /// An optional `sha256` parameter can be provided to verify the integrity of
-/// the WASM file at compile time. When provided, The macro computes the 
-/// SHA-256 hash of the WASM file at compile time and produces a compile error 
-/// if it does not match the provided value.
+/// the WASM file at compile time. When provided, the macro computes the
+/// SHA-256 hash of the WASM file at compile time and produces a compile error
+/// if it does not match the provided value. The `sha256` argument must
+/// be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
 ///
 /// ```ignore
 /// mod contract_a {
@@ -1030,6 +1031,7 @@ pub use soroban_sdk_macros::contractspecfn;
 /// Unlike [`contractimport`], `contractfile` **requires** a `sha256`
 /// parameter. The macro computes the SHA-256 hash of the WASM file at compile
 /// time and produces a compile error if it does not match the provided value.
+/// The `sha256` argument must be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
 ///
 /// ```ignore
 /// soroban_sdk::contractfile!(
