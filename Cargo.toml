@@ -48,7 +48,7 @@ version = "=25.0.1"
 version = "=0.0.16"
 
 [workspace.dependencies.stellar-xdr]
-version = "=25.0.0"
+version = "=26.0.0"
 default-features = false
 features = ["curr"]
 
