@@ -42,14 +42,14 @@ pub fn is_input_type_spec_safe(ident: &Ident, generics: &Generics) -> Result<(),
     let ty: Type = syn::parse_str(&ident.to_string()).map_err(|e| {
         Error::new(
             ident.span(),
-            format!("type name {:?} cannot be used in XDR spec: {}", ident, e),
+            format!("type name {} cannot be used in XDR spec: {}", ident, e),
         )
     })?;
     match map_type(&ty, false, false) {
         Ok(ScSpecTypeDef::Udt(_)) => Ok(()),
         _ => Err(Error::new(
             ident.span(),
-            format!("type name `{}` conflicts with a soroban_sdk type", ident,),
+            format!("type name `{}` conflicts with a soroban_sdk type", ident),
         )),
     }
 }
@@ -91,7 +91,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
-                    // Check if types that require generics are being used without any
+                    // Check if types that require generics are being used without any path arguments
                     "Result" | "Option" | "Vec" | "Map" | "BytesN" | "Hash" => Err(Error::new(
                         ident.span(),
                         format!("type {} requires generic arguments", ident),
