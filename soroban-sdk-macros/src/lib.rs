@@ -40,7 +40,7 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, FromMeta};
 use macro_string::MacroString;
-use map_type::is_reserved_type_name;
+use map_type::is_input_type_spec_safe;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
@@ -422,16 +422,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
-    if is_reserved_type_name(&ident.to_string()) {
-        return Error::new(
-            ident.span(),
-            format!(
-                "type name `{}` conflicts with a Soroban type and cannot be used as a contract type name",
-                ident,
-            ),
-        )
-        .to_compile_error()
-        .into();
+    match is_input_type_spec_safe(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
     }
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,

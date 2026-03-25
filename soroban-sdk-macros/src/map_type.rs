@@ -3,11 +3,11 @@ use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
     ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
-use syn::TypeReference;
 use syn::{
-    spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
-    Type, TypePath, TypeTuple,
+    spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Ident, Lit, Path, PathArguments,
+    PathSegment, Type, TypePath, TypeTuple,
 };
+use syn::{Generics, TypeReference};
 
 // These constants' values must match the definitions of the constants with the
 // same names in soroban_sdk::crypto::bls12_381.
@@ -21,55 +21,37 @@ pub const BN254_FP_SERIALIZED_SIZE: u32 = 32;
 pub const BN254_G1_SERIALIZED_SIZE: u32 = BN254_FP_SERIALIZED_SIZE * 2; // 64
 pub const BN254_G2_SERIALIZED_SIZE: u32 = BN254_G1_SERIALIZED_SIZE * 2; // 128
 
-/// Returns true if `name` matches a built-in Soroban type that is
-/// recognized by `map_type`. Types with these names cannot be used as
-/// `#[contracttype]` names because `map_type` would silently classify them
-/// as built-in types instead of user-defined types in the contract spec.
-pub fn is_reserved_type_name(name: &str) -> bool {
-    matches!(
-        name,
-        // Non-generic built-in types
-        "Val"
-            | "u64"
-            | "i64"
-            | "u32"
-            | "i32"
-            | "u128"
-            | "i128"
-            | "U256"
-            | "I256"
-            | "bool"
-            | "Symbol"
-            | "String"
-            | "Error"
-            | "Bytes"
-            | "Address"
-            | "MuxedAddress"
-            | "Timepoint"
-            | "Duration"
-            // BLS12-381 types (unprefixed)
-            | "Fp"
-            | "Fp2"
-            | "G1Affine"
-            | "G2Affine"
-            | "Fr"
-            // BLS12-381 types (prefixed)
-            | "Bls12381Fp"
-            | "Bls12381Fp2"
-            | "Bls12381G1Affine"
-            | "Bls12381G2Affine"
-            // BN254 types
-            | "Bn254Fp"
-            | "Bn254G1Affine"
-            | "Bn254G2Affine"
-            // Generic built-in types
-            | "Result"
-            | "Option"
-            | "Vec"
-            | "Map"
-            | "BytesN"
-            | "Hash"
-    )
+/// Checks if a type corresponds to a user-defined type (UDT) that can be used in the XDR spec safely.
+/// Returns without error if the type is OK to use as a UDT spec name.
+///
+/// This function is used to check if a user-defined type input maps to a UDT. Otherwise,
+/// the identifier risks collision with a built-in spec type of the same name.
+///
+/// ### Errors
+/// - If `generics` has any parameters, as UDTs don't support generics
+/// - If `ident` cannot be parsed as a Rust type
+/// - If `ident` cannot be mapped to a type with `map_type`
+/// - If the type mapped from `ident` is not a UDT
+pub fn is_input_type_spec_safe(ident: &Ident, generics: &Generics) -> Result<(), Error> {
+    if generics.params.len() > 0 {
+        return Err(Error::new(
+            ident.span(),
+            "generics unsupported on user-defined types",
+        ));
+    }
+    let ty: Type = syn::parse_str(&ident.to_string()).map_err(|e| {
+        Error::new(
+            ident.span(),
+            format!("type name {:?} cannot be used in XDR spec: {}", ident, e),
+        )
+    })?;
+    match map_type(&ty, false, false) {
+        Ok(ScSpecTypeDef::Udt(_)) => Ok(()),
+        _ => Err(Error::new(
+            ident.span(),
+            format!("type name `{}` conflicts with a soroban_sdk type", ident,),
+        )),
+    }
 }
 
 #[allow(clippy::too_many_lines)]
@@ -109,6 +91,11 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
+                    // Check if types that require generics are being used without any
+                    "Result" | "Option" | "Vec" | "Map" | "BytesN" | "Hash" => Err(Error::new(
+                        ident.span(),
+                        format!("type {} requires generic arguments", ident),
+                    )),
                     // The BLS and BN types defined below are represented in the contract's
                     // interface by their underlying data types, i.e.
                     // Fp/Fp2/G1Affine/G2Affine => BytesN<N>, Fr => U256. This approach
@@ -295,7 +282,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
 #[cfg(test)]
 mod test {
     use super::*;
-    use syn::parse_quote;
+    use syn::{parse_quote, DeriveInput};
 
     #[test]
     fn test_path() {
@@ -352,57 +339,93 @@ mod test {
     }
 
     #[test]
-    fn test_is_reserved_type_name() {
-        // Non-generic built-in types
-        assert!(is_reserved_type_name("Val"));
-        assert!(is_reserved_type_name("u64"));
-        assert!(is_reserved_type_name("i64"));
-        assert!(is_reserved_type_name("u32"));
-        assert!(is_reserved_type_name("i32"));
-        assert!(is_reserved_type_name("u128"));
-        assert!(is_reserved_type_name("i128"));
-        assert!(is_reserved_type_name("U256"));
-        assert!(is_reserved_type_name("I256"));
-        assert!(is_reserved_type_name("bool"));
-        assert!(is_reserved_type_name("Symbol"));
-        assert!(is_reserved_type_name("String"));
-        assert!(is_reserved_type_name("Error"));
-        assert!(is_reserved_type_name("Bytes"));
-        assert!(is_reserved_type_name("Address"));
-        assert!(is_reserved_type_name("MuxedAddress"));
-        assert!(is_reserved_type_name("Timepoint"));
-        assert!(is_reserved_type_name("Duration"));
+    fn test_generic_type() {
+        let ty: Type = parse_quote!(Vec<u32>);
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                element_type: Box::new(ScSpecTypeDef::U32),
+            }))
+        );
+    }
 
-        // BLS12-381 types (unprefixed)
-        assert!(is_reserved_type_name("Fp"));
-        assert!(is_reserved_type_name("Fp2"));
-        assert!(is_reserved_type_name("G1Affine"));
-        assert!(is_reserved_type_name("G2Affine"));
-        assert!(is_reserved_type_name("Fr"));
+    #[test]
+    fn test_generic_type_multiple_params() {
+        let ty: Type = parse_quote!(Result<u32, i64>);
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::U32),
+                error_type: Box::new(ScSpecTypeDef::I64),
+            }))
+        );
+    }
 
-        // BLS12-381 types (prefixed)
-        assert!(is_reserved_type_name("Bls12381Fp"));
-        assert!(is_reserved_type_name("Bls12381Fp2"));
-        assert!(is_reserved_type_name("Bls12381G1Affine"));
-        assert!(is_reserved_type_name("Bls12381G2Affine"));
+    #[test]
+    fn test_generic_type_without_params_errors() {
+        let ty: Type = parse_quote!(Vec);
+        assert!(map_type(&ty, false, false).is_err());
+    }
 
-        // BN254 types
-        assert!(is_reserved_type_name("Bn254Fp"));
-        assert!(is_reserved_type_name("Bn254G1Affine"));
-        assert!(is_reserved_type_name("Bn254G2Affine"));
+    #[test]
+    fn test_generic_type_incorrect_params_errors() {
+        let ty: Type = parse_quote!(Result<u32>);
+        assert!(map_type(&ty, false, false).is_err());
+    }
 
-        // Generic built-in types
-        assert!(is_reserved_type_name("Result"));
-        assert!(is_reserved_type_name("Option"));
-        assert!(is_reserved_type_name("Vec"));
-        assert!(is_reserved_type_name("Map"));
-        assert!(is_reserved_type_name("BytesN"));
-        assert!(is_reserved_type_name("Hash"));
+    #[test]
+    fn test_is_input_type_spec_safe_non_udt_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct Address {
+                pub key: [u8; 32],
+            }
+        );
+        is_input_type_spec_safe(&input.ident, &input.generics)
+            .expect_err("type name `Address` conflicts with a soroban_sdk type");
+    }
 
-        // Non-reserved names
-        assert!(!is_reserved_type_name("MyStruct"));
-        assert!(!is_reserved_type_name("Token"));
-        assert!(!is_reserved_type_name("MyAddress"));
-        assert!(!is_reserved_type_name("address"));
+    #[test]
+    fn test_is_input_type_spec_safe_unique_generic_type_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct GenericType<T> {
+                pub key: T,
+            }
+        );
+        is_input_type_spec_safe(&input.ident, &input.generics)
+            .expect_err("generics unsupported on user-defined types");
+    }
+
+    #[test]
+    fn test_is_input_type_spec_safe_generic_type_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct BytesN<T> {
+                pub key: T,
+            }
+        );
+        is_input_type_spec_safe(&input.ident, &input.generics)
+            .expect_err("generics unsupported on user-defined types");
+    }
+
+    #[test]
+    fn test_is_input_type_spec_safe_generic_no_params_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct BytesN {
+                pub key: [u8; 32],
+            }
+        );
+        is_input_type_spec_safe(&input.ident, &input.generics)
+            .expect_err("type name `BytesN` conflicts with a soroban_sdk type");
+    }
+
+    #[test]
+    fn test_is_input_type_spec_safe_unique_ok() {
+        let input: DeriveInput = parse_quote!(
+            struct MyType {
+                pub key: [u8; 32],
+            }
+        );
+        assert!(is_input_type_spec_safe(&input.ident, &input.generics).is_ok());
     }
 }
