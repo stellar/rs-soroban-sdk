@@ -153,7 +153,7 @@ impl Storage {
     pub fn max_ttl(&self) -> u32 {
         let seq = self.env.ledger().sequence();
         let max = self.env.ledger().max_live_until_ledger();
-        max - seq
+        max.saturating_sub(seq)
     }
 
     /// Returns if there is a value stored for the given key in the currently
