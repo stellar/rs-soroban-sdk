@@ -163,7 +163,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .collect::<Vec<_>>();
 
     // If errors have occurred, return them.
-    let errors = errors.checkpoint()?;
+    let mut errors = errors.checkpoint()?;
 
     // Generated code spec.
     let export = args.export.unwrap_or(true);
@@ -266,10 +266,17 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         DataFormat::SingleValue if data_params_count == 0 => quote! {
             #path::Val::VOID.to_val()
         },
-        DataFormat::SingleValue => quote! {
-            use #path::IntoVal;
-            #(self.#data_idents.into_val(env))*
-        },
+        DataFormat::SingleValue => {
+            if data_params_count > 1 {
+                errors.push(Error::custom(
+                    "data_format = \"single-value\" requires exactly 0 or 1 data fields, but found more",
+                ));
+            }
+            quote! {
+                use #path::IntoVal;
+                #(self.#data_idents.into_val(env))*
+            }
+        }
         DataFormat::Vec if data_params_count == 0 => quote! {
             use #path::IntoVal;
             #path::Vec::<#path::Val>::new(env).into_val(env)
