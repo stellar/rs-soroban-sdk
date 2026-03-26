@@ -231,6 +231,12 @@ impl LedgerSnapshot {
     /// If a file already exists at path `p`, it will be replaced.
     pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Error> {
         let p = p.as_ref();
+        if p.is_dir() {
+            return Err(Error::Io(std::io::Error::new(
+                std::io::ErrorKind::IsADirectory,
+                "destination path is a directory",
+            )));
+        }
         if let Some(dir) = p.parent() {
             if !dir.exists() {
                 create_dir_all(dir)?;
