@@ -243,9 +243,7 @@ impl LedgerSnapshot {
             }
         }
         // Write to a temp file to prevent loss if the write fails
-        let mut tmp_name = OsString::from(p);
-        tmp_name.push(".tmp");
-        let tmp = PathBuf::from(tmp_name);
+        let tmp = p.with_added_extension("tmp");
         match self.write(File::create(&tmp)?) {
             Ok(_) => {
                 rename(&tmp, p)?;
