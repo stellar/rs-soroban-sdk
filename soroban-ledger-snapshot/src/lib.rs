@@ -1,10 +1,9 @@
 use serde::Deserialize;
 use serde_with::{serde_as, DeserializeAs, SerializeAs};
 use std::{
-    ffi::OsString,
     fs::{create_dir_all, remove_file, rename, File},
     io::{self, BufReader, Read, Write},
-    path::{Path, PathBuf},
+    path::Path,
     rc::Rc,
 };
 
