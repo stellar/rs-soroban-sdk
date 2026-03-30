@@ -1098,7 +1098,6 @@ pub mod logs;
 mod map;
 pub mod prng;
 pub mod storage;
-pub use env::internal::ContractTtlExtension;
 pub mod token;
 mod vec;
 pub use address::{Address, Executable};

@@ -52,36 +52,6 @@ impl Contract {
     pub fn extend_ttl_instance(env: Env, extend_to: u32) {
         env.storage().instance().extend_ttl(extend_to, extend_to);
     }
-
-    pub fn extend_ttl_v2_persistent(
-        env: Env,
-        k: i32,
-        extend_to: u32,
-        min_extension: u32,
-        max_extension: u32,
-    ) {
-        env.storage().persistent().extend_ttl_v2(
-            &DataKey::Key(k),
-            extend_to,
-            min_extension,
-            max_extension,
-        );
-    }
-
-    pub fn extend_ttl_v2_temporary(
-        env: Env,
-        k: i32,
-        extend_to: u32,
-        min_extension: u32,
-        max_extension: u32,
-    ) {
-        env.storage().temporary().extend_ttl_v2(
-            &DataKey::Key(k),
-            extend_to,
-            min_extension,
-            max_extension,
-        );
-    }
 }
 
 #[test]
@@ -222,41 +192,4 @@ fn test_temp_storage_extension_past_max_ttl_panics() {
         e.storage().temporary().set(&DataKey::Key(11), &2222_i32);
     });
     client.extend_ttl_temporary(&11, &(e.storage().max_ttl() + 1));
-}
-
-#[test]
-fn test_storage_extend_ttl_v2() {
-    let e = Env::default();
-    e.ledger().set_min_persistent_entry_ttl(100);
-    e.ledger().set_min_temp_entry_ttl(50);
-    e.ledger().set_max_entry_ttl(20_000);
-
-    let contract_id = e.register(Contract, ());
-    let client = ContractClient::new(&e, &contract_id);
-
-    // Setup storage with some values.
-    e.as_contract(&contract_id, || {
-        e.storage().persistent().set(&DataKey::Key(11), &1111_i32);
-        e.storage().temporary().set(&DataKey::Key(11), &2222_i32);
-    });
-
-    // Persistent: extend_ttl_v2
-    client.extend_ttl_v2_persistent(&11, &10_000, &0, &10_000);
-    assert_eq!(
-        e.as_contract(&contract_id, || e
-            .storage()
-            .persistent()
-            .get_ttl(&DataKey::Key(11))),
-        10_000
-    );
-
-    // Temporary: extend_ttl_v2
-    client.extend_ttl_v2_temporary(&11, &5_000, &0, &5_000);
-    assert_eq!(
-        e.as_contract(&contract_id, || e
-            .storage()
-            .temporary()
-            .get_ttl(&DataKey::Key(11))),
-        5_000
-    );
 }
