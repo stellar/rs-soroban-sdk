@@ -64,6 +64,30 @@ fn test_g1_msm() {
 }
 
 #[test]
+#[should_panic(expected = "HostError: Error(Crypto, InvalidInput)")]
+fn test_g1_msm_mismatched_lengths() {
+    let env = Env::default();
+    let bn254 = Bn254::new(&env);
+    let one = Bn254G1Affine::from_bytes(bytesn!(
+        &env,
+        0x00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002
+    ));
+    let vp: Vec<Bn254G1Affine> = vec![&env, one.clone(), one.clone()];
+    let vs: Vec<Fr> = vec![&env, U256::from_u32(&env, 1).into()];
+    bn254.g1_msm(vp, vs);
+}
+
+#[test]
+#[should_panic(expected = "HostError: Error(Crypto, InvalidInput)")]
+fn test_g1_msm_empty_vectors() {
+    let env = Env::default();
+    let bn254 = Bn254::new(&env);
+    let vp: Vec<Bn254G1Affine> = vec![&env];
+    let vs: Vec<Fr> = vec![&env];
+    bn254.g1_msm(vp, vs);
+}
+
+#[test]
 fn test_fr_arithmetic() {
     let env = Env::default();
     let bn254 = Bn254::new(&env);
@@ -116,6 +140,14 @@ fn test_fr_arithmetic() {
         bn254.fr_mul(&inverse_13, &U256::from_u32(&env, 13).into()),
         U256::from_u32(&env, 1).into()
     );
+}
+
+#[test]
+#[should_panic(expected = "HostError: Error(Crypto, InvalidInput)")]
+fn test_fr_inv_zero() {
+    let env = Env::default();
+    let bn254 = Bn254::new(&env);
+    bn254.fr_inv(&U256::from_u32(&env, 0).into());
 }
 
 #[test]
