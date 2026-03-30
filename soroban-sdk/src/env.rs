@@ -1332,7 +1332,7 @@ impl Env {
     ///     // Verify that the expected authorization was required.
     ///     assert_eq!(
     ///         env.auths(),
-    ///         std::vec![(
+    ///         [(
     ///             addr.clone(),
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
@@ -1340,7 +1340,7 @@ impl Env {
     ///                     symbol_short!("hello"),
     ///                     (&addr,).into_val(&env),
     ///                 )),
-    ///                 sub_invocations: std::vec![],
+    ///                 sub_invocations: [].into(),
     ///             }
     ///         )]
     ///     );
@@ -1449,7 +1449,6 @@ impl Env {
     /// # }
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
-    ///     extern crate std;
     ///     let env = Env::default();
     ///     let contract_id = env.register(Contract, ());
     ///     let client = ContractClient::new(&env, &contract_id);
@@ -1458,7 +1457,7 @@ impl Env {
     ///     client.transfer(&address, &1000_i128);
     ///     assert_eq!(
     ///         env.auths(),
-    ///         std::vec![(
+    ///         [(
     ///             address.clone(),
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
@@ -1466,7 +1465,7 @@ impl Env {
     ///                     symbol_short!("transfer"),
     ///                     (&address, 1000_i128,).into_val(&env)
     ///                 )),
-    ///                 sub_invocations: std::vec![]
+    ///                 sub_invocations: [].into()
     ///             }
     ///         )]
     ///     );
@@ -1474,7 +1473,7 @@ impl Env {
     ///     client.transfer2(&address, &1000_i128);
     ///     assert_eq!(
     ///         env.auths(),
-    ///        std::vec![(
+    ///         [(
     ///             address.clone(),
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
@@ -1483,7 +1482,7 @@ impl Env {
     ///                     // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///                     (500_i128,).into_val(&env)
     ///                 )),
-    ///                 sub_invocations: std::vec![]
+    ///                 sub_invocations: [].into()
     ///             }
     ///         )]
     ///     );
