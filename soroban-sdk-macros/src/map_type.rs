@@ -1,3 +1,4 @@
+use quote::ToTokens;
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
@@ -21,36 +22,53 @@ pub const BN254_FP_SERIALIZED_SIZE: u32 = 32;
 pub const BN254_G1_SERIALIZED_SIZE: u32 = BN254_FP_SERIALIZED_SIZE * 2; // 64
 pub const BN254_G2_SERIALIZED_SIZE: u32 = BN254_G1_SERIALIZED_SIZE * 2; // 128
 
-/// Checks if a type corresponds to a user-defined type (UDT) that can be used in the XDR spec safely.
-/// Returns without error if the type is OK to use as a UDT spec name.
+/// Checks if an `ident` and `generics` input type maps to a user-defined type (UDT).
 ///
-/// This function is used to check if a user-defined type input maps to a UDT. Otherwise,
-/// the identifier risks collision with a built-in spec type of the same name.
+/// Returns Ok if the input will be parsed as a UDT, and returns an Err with a message if not.
+///
+/// When users defined types like with `#[contracttype]`, the type name must map to a UDT.
+/// Otherwise, the type might get mapped to a built-in soroban_sdk type instead.
 ///
 /// ### Errors
-/// - If `generics` has any parameters, as UDTs don't support generics
 /// - If `ident` cannot be parsed as a Rust type
-/// - If `ident` cannot be mapped to a type with `map_type`
+/// - If `ident` cannot be mapped to a type with [map_type]
 /// - If the type mapped from `ident` is not a UDT
-pub fn is_input_type_spec_safe(ident: &Ident, generics: &Generics) -> Result<(), Error> {
-    if generics.params.len() > 0 {
-        return Err(Error::new(
-            ident.span(),
-            "generics unsupported on user-defined types",
-        ));
-    }
-    let ty: Type = syn::parse_str(&ident.to_string()).map_err(|e| {
+/// - If `generics` has any parameters, as UDTs don't support generics
+pub fn is_mapped_type_udt(ident: &Ident, generics: &Generics) -> Result<(), Error> {
+    let name = ident.to_string();
+    let ty: Type = syn::parse_str(&name).map_err(|e| {
         Error::new(
             ident.span(),
-            format!("type name {} cannot be used in XDR spec: {}", ident, e),
+            format!("type `{}` cannot be used in XDR spec: {}", ident, e),
         )
     })?;
     match map_type(&ty, false, false) {
-        Ok(ScSpecTypeDef::Udt(_)) => Ok(()),
-        _ => Err(Error::new(
-            ident.span(),
-            format!("type name `{}` conflicts with a soroban_sdk type", ident),
-        )),
+        Ok(ScSpecTypeDef::Udt(_)) => {
+            // `ty` does not contain the generics, so check manually here
+            if generics.params.len() > 0 {
+                Err(Error::new(
+                    ident.span(),
+                    format!("type `{}` contains generics `{}`, which are not supported for user-defined types", ident, generics.params.to_token_stream()),
+                ))
+            } else {
+                Ok(())
+            }
+        }
+        _ => {
+            // Check if the error originated from the UDT-arm of `map_type`
+            let _ = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: name.try_into().map_err(|e| {
+                    Error::new(
+                        ident.span(),
+                        format!("type `{}` cannot be used in XDR spec: {}", ident, e),
+                    )
+                })?,
+            });
+            Err(Error::new(
+                ident.span(),
+                format!("type `{}` conflicts with a soroban_sdk type and cannot be used as a user-defined type", ident),
+            ))
+        }
     }
 }
 
@@ -157,7 +175,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                         name: s.try_into().map_err(|e| {
                             Error::new(
                                 t.span(),
-                                format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
+                                format!("type `{}` cannot be used in XDR spec: {}", s, e),
                             )
                         })?,
                     })),
@@ -376,56 +394,79 @@ mod test {
     }
 
     #[test]
-    fn test_is_input_type_spec_safe_non_udt_errors() {
+    fn test_is_mapped_type_udt_sdk_type_errors() {
         let input: DeriveInput = parse_quote!(
             struct Address {
                 pub key: [u8; 32],
             }
         );
-        is_input_type_spec_safe(&input.ident, &input.generics)
-            .expect_err("type name `Address` conflicts with a soroban_sdk type");
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `Address` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
+        );
     }
 
     #[test]
-    fn test_is_input_type_spec_safe_unique_generic_type_errors() {
+    fn test_is_mapped_type_udt_unique_generic_type_errors() {
         let input: DeriveInput = parse_quote!(
-            struct GenericType<T> {
+            struct GenericType<A, B> {
                 pub key: T,
             }
         );
-        is_input_type_spec_safe(&input.ident, &input.generics)
-            .expect_err("generics unsupported on user-defined types");
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(err.to_string(), "type `GenericType` contains generics `A , B`, which are not supported for user-defined types");
     }
 
     #[test]
-    fn test_is_input_type_spec_safe_generic_type_errors() {
+    fn test_is_mapped_type_udt_sdk_generic_type_errors() {
         let input: DeriveInput = parse_quote!(
             struct BytesN<T> {
                 pub key: T,
             }
         );
-        is_input_type_spec_safe(&input.ident, &input.generics)
-            .expect_err("generics unsupported on user-defined types");
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `BytesN` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
+        );
     }
 
     #[test]
-    fn test_is_input_type_spec_safe_generic_no_params_errors() {
+    fn test_is_mapped_type_udt_sdk_generic_no_params_errors() {
         let input: DeriveInput = parse_quote!(
             struct BytesN {
                 pub key: [u8; 32],
             }
         );
-        is_input_type_spec_safe(&input.ident, &input.generics)
-            .expect_err("type name `BytesN` conflicts with a soroban_sdk type");
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `BytesN` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
+        );
     }
 
     #[test]
-    fn test_is_input_type_spec_safe_unique_ok() {
+    fn test_is_mapped_type_udt_unique_xdr_error() {
+        let input: DeriveInput = parse_quote!(
+            struct MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat {
+                pub key: [u8; 32],
+            }
+        );
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat` cannot be used in XDR spec: xdr value max length exceeded"
+        );
+    }
+
+    #[test]
+    fn test_is_mapped_type_udt_unique_ok() {
         let input: DeriveInput = parse_quote!(
             struct MyType {
                 pub key: [u8; 32],
             }
         );
-        assert!(is_input_type_spec_safe(&input.ident, &input.generics).is_ok());
+        assert!(is_mapped_type_udt(&input.ident, &input.generics).is_ok());
     }
 }
