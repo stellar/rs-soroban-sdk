@@ -39,7 +39,7 @@ pub mod internal {
     // any `TestContract` frame in progress and then _panics_, unwinding back to
     // a panic-catcher it installed when invoking the `TestContract` frame, and
     // then extracting E from the frame and returning it to its caller. This
-    // simulates the "crash, but catching the error" behaviour of the WASM case.
+    // simulates the "crash, but catching the error" behavior of the WASM case.
     // This only works if we panic via `escalate_error_to_panic`.
     //
     // (The reason we don't just panic_any() here and let the panic-catcher do a
@@ -725,7 +725,7 @@ impl Env {
     /// Take the return value with a grain of salt. The returned resources mostly
     /// correspond only to the operations that have happened during the host
     /// invocation, i.e. this won't try to simulate the work that happens in
-    /// production scenarios (e.g. certain XDR rountrips). This also doesn't try
+    /// production scenarios (e.g. certain XDR roundtrips). This also doesn't try
     /// to model resources related to the transaction size.
     ///
     /// The returned value is as useful as the preceding setup, e.g. if a test
@@ -749,7 +749,7 @@ impl Env {
     ///
     /// Pass the arguments for the contract's constructor, or `()` if none. For
     /// contracts with a constructor, use the contract's generated `Args` type
-    /// to construct the arguments with the appropropriate types for invoking
+    /// to construct the arguments with the appropriate types for invoking
     /// the constructor during registration.
     ///
     /// Returns the address of the registered contract that is the same as the
@@ -1555,7 +1555,7 @@ impl Env {
     /// # fn main() {
     ///     let e: Env = Default::default();
     ///     let account_contract = NoopAccountContractClient::new(&e, &e.register(NoopAccountContract, ()));
-    ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
+    ///     // Non-successful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
     ///             &account_contract.address,
