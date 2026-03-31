@@ -76,6 +76,6 @@
 //! in a few narrow scenarios (such as direct transfer to an exchange).
 //!
 //! [`Events::publish`]: crate::events::Events::publish
-//! [`Address`]: crate::MuxedAddress
+//! [`Address`]: crate::Address
 //! [`MuxedAddress`]: crate::MuxedAddress
 //! [`contractevent`]: crate::contractevent
