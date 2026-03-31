@@ -1169,6 +1169,7 @@ impl Env {
     ) -> Address {
         let args_vec: std::vec::Vec<xdr::ScVal> =
             constructor_args.iter().map(|v| v.into_val(self)).collect();
+        let constructor_args = args_vec.try_into().unwrap();
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
@@ -1186,7 +1187,7 @@ impl Env {
                         },
                     ),
                     executable,
-                    constructor_args: args_vec.try_into().unwrap(),
+                    constructor_args,
                 },
             ));
 
