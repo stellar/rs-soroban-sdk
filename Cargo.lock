@@ -1789,13 +1789,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_checked_arith"
-version = "25.1.1"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "test_constructor"
 version = "25.1.1"
 dependencies = [
