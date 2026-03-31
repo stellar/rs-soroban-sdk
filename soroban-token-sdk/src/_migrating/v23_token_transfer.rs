@@ -75,7 +75,5 @@
 //! don't require any changes, because the [`MuxedAddress`] is only necessary
 //! in a few narrow scenarios (such as direct transfer to an exchange).
 //!
-//! [`Events::publish`]: crate::events::Events::publish
-//! [`Address`]: crate::Address
-//! [`MuxedAddress`]: crate::MuxedAddress
-//! [`contractevent`]: crate::contractevent
+//! [`Address`]: soroban_sdk::Address
+//! [`MuxedAddress`]: soroban_sdk::MuxedAddress
