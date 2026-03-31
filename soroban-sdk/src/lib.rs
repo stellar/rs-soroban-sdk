@@ -134,9 +134,9 @@ pub mod reexports_for_macros {
     pub use ctor;
 }
 
-/// Assert in contract asserts that the contract is currently executing within a
-/// contract. The macro maps to code when testutils are enabled or in tests,
-/// otherwise maps to nothing.
+/// `debug_assert_in_contract!` asserts that the contract is currently executing within a
+/// contract. The macro expands to an assertion when testutils are enabled or in tests,
+/// otherwise it expands to nothing.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! debug_assert_in_contract {
