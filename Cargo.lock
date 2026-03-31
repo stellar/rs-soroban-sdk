@@ -1378,8 +1378,8 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "26.0.0-rc.1"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=60398e4cf317eccc8ed32802104834bd1d994928#60398e4cf317eccc8ed32802104834bd1d994928"
+version = "26.0.1"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=f4d7b3299df8fc19e92769d0a26be2d032b78ccb#f4d7b3299df8fc19e92769d0a26be2d032b78ccb"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1389,8 +1389,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "26.0.0-rc.1"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=60398e4cf317eccc8ed32802104834bd1d994928#60398e4cf317eccc8ed32802104834bd1d994928"
+version = "26.0.1"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=f4d7b3299df8fc19e92769d0a26be2d032b78ccb#f4d7b3299df8fc19e92769d0a26be2d032b78ccb"
 dependencies = [
  "arbitrary",
  "crate-git-revision",
@@ -1401,14 +1401,14 @@ dependencies = [
  "soroban-env-macros",
  "soroban-wasmi",
  "static_assertions",
- "stellar-xdr",
+ "stellar-xdr 26.0.0",
  "wasmparser",
 ]
 
 [[package]]
 name = "soroban-env-guest"
-version = "26.0.0-rc.1"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=60398e4cf317eccc8ed32802104834bd1d994928#60398e4cf317eccc8ed32802104834bd1d994928"
+version = "26.0.1"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=f4d7b3299df8fc19e92769d0a26be2d032b78ccb#f4d7b3299df8fc19e92769d0a26be2d032b78ccb"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1416,8 +1416,8 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "26.0.0-rc.1"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=60398e4cf317eccc8ed32802104834bd1d994928#60398e4cf317eccc8ed32802104834bd1d994928"
+version = "26.0.1"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=f4d7b3299df8fc19e92769d0a26be2d032b78ccb#f4d7b3299df8fc19e92769d0a26be2d032b78ccb"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
@@ -1452,15 +1452,15 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "26.0.0-rc.1"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=60398e4cf317eccc8ed32802104834bd1d994928#60398e4cf317eccc8ed32802104834bd1d994928"
+version = "26.0.1"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=f4d7b3299df8fc19e92769d0a26be2d032b78ccb#f4d7b3299df8fc19e92769d0a26be2d032b78ccb"
 dependencies = [
  "itertools",
  "proc-macro2",
  "quote",
  "serde",
  "serde_json",
- "stellar-xdr",
+ "stellar-xdr 26.0.0",
  "syn",
 ]
 
@@ -1481,7 +1481,7 @@ dependencies = [
 name = "soroban-meta"
 version = "25.1.1"
 dependencies = [
- "stellar-xdr",
+ "stellar-xdr 25.0.0",
  "thiserror",
  "wasmparser",
 ]
@@ -1513,7 +1513,7 @@ dependencies = [
  "soroban-sdk-macros",
  "soroban-spec",
  "stellar-strkey 0.0.16",
- "stellar-xdr",
+ "stellar-xdr 25.0.0",
  "visibility",
 ]
 
@@ -1531,7 +1531,7 @@ dependencies = [
  "soroban-env-common",
  "soroban-spec",
  "soroban-spec-rust",
- "stellar-xdr",
+ "stellar-xdr 25.0.0",
  "syn",
 ]
 
@@ -1541,7 +1541,7 @@ version = "25.1.1"
 dependencies = [
  "base64",
  "pretty_assertions",
- "stellar-xdr",
+ "stellar-xdr 25.0.0",
  "thiserror",
  "wasmparser",
 ]
@@ -1556,7 +1556,7 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-spec",
- "stellar-xdr",
+ "stellar-xdr 25.0.0",
  "syn",
  "thiserror",
 ]
@@ -1650,6 +1650,23 @@ dependencies = [
 name = "stellar-xdr"
 version = "25.0.0"
 source = "git+https://github.com/stellar/rs-stellar-xdr?rev=c458ac6bb943c271332cb8cf274b492433cb763f#c458ac6bb943c271332cb8cf274b492433cb763f"
+dependencies = [
+ "cfg_eval",
+ "crate-git-revision",
+ "escape-bytes",
+ "ethnum",
+ "hex",
+ "serde",
+ "serde_with",
+ "sha2",
+ "stellar-strkey 0.0.13",
+]
+
+[[package]]
+name = "stellar-xdr"
+version = "26.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fea3195594b044ea3a5b05906f81d945480825f00db4e3ae7d77526bf546ff3a"
 dependencies = [
  "arbitrary",
  "base64",
@@ -1849,7 +1866,7 @@ name = "test_contracttrait_trait"
 version = "25.1.1"
 dependencies = [
  "soroban-sdk",
- "stellar-xdr",
+ "stellar-xdr 25.0.0",
 ]
 
 [[package]]
