@@ -1120,15 +1120,15 @@ impl Env {
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
-        self.invoke_contract::<()>(
+        let admin_result = self.try_invoke_contract::<(), Error>(
             &token_id,
             &soroban_sdk_macros::internal_symbol_short!("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        admin_result.unwrap().unwrap();
 
         let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
-
         StellarAssetContract::new(token_id, issuer, asset)
     }
 
@@ -1167,13 +1167,14 @@ impl Env {
         executable: xdr::ContractExecutable,
         constructor_args: Vec<Val>,
     ) -> Address {
+        let args_vec: std::vec::Vec<xdr::ScVal> =
+            constructor_args.iter().map(|v| v.into_val(self)).collect();
+        let constructor_args = args_vec.try_into().unwrap();
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
-        let args_vec: std::vec::Vec<xdr::ScVal> =
-            constructor_args.iter().map(|v| v.into_val(self)).collect();
-        let contract_id: Address = self
+        let create_result = self
             .env_impl
             .invoke_function(xdr::HostFunction::CreateContractV2(
                 xdr::CreateContractArgsV2 {
@@ -1186,16 +1187,13 @@ impl Env {
                         },
                     ),
                     executable,
-                    constructor_args: args_vec.try_into().unwrap(),
+                    constructor_args,
                 },
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap();
+            ));
 
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
-        contract_id
+        create_result.unwrap().try_into_val(self).unwrap()
     }
 
     /// Set authorizations and signatures in the environment which will be
