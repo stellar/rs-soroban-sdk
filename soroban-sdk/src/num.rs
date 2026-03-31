@@ -363,6 +363,38 @@ impl U256 {
             Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
         }
     }
+
+    /// Performs checked division. Returns `None` if `other` is zero.
+    pub fn checked_div(&self, other: &U256) -> Option<U256> {
+        if *other == U256::from_u32(&self.env, 0) {
+            return None;
+        }
+        Some(self.div(other))
+    }
+
+    /// Performs checked Euclidean remainder. Returns `None` if `other` is zero.
+    pub fn checked_rem_euclid(&self, other: &U256) -> Option<U256> {
+        if *other == U256::from_u32(&self.env, 0) {
+            return None;
+        }
+        Some(self.rem_euclid(other))
+    }
+
+    /// Performs checked left shift. Returns `None` if `bits >= 256`.
+    pub fn checked_shl(&self, bits: u32) -> Option<U256> {
+        if bits >= 256 {
+            return None;
+        }
+        Some(self.shl(bits))
+    }
+
+    /// Performs checked right shift. Returns `None` if `bits >= 256`.
+    pub fn checked_shr(&self, bits: u32) -> Option<U256> {
+        if bits >= 256 {
+            return None;
+        }
+        Some(self.shr(bits))
+    }
 }
 
 /// I256 holds a 256-bit signed integer.
@@ -565,6 +597,58 @@ impl I256 {
         } else {
             Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
         }
+    }
+
+    /// Returns `true` if dividing `self` by `other` would overflow or divide by zero.
+    /// This covers: `other == 0`, or `self == I256::MIN && other == -1`.
+    fn is_div_overflow(&self, other: &I256) -> bool {
+        let zero = I256::from_i32(&self.env, 0);
+        if *other == zero {
+            return true;
+        }
+        let neg_one = I256::from_i32(&self.env, -1);
+        if *other == neg_one {
+            let min = I256::from_parts(&self.env, i64::MIN, 0, 0, 0);
+            if *self == min {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Performs checked division. Returns `None` if `other` is zero, or if
+    /// `self` is `I256::MIN` and `other` is `-1` (overflow).
+    pub fn checked_div(&self, other: &I256) -> Option<I256> {
+        if self.is_div_overflow(other) {
+            return None;
+        }
+        Some(self.div(other))
+    }
+
+    /// Performs checked Euclidean remainder. Returns `None` if `other` is zero,
+    /// or if `self` is `I256::MIN` and `other` is `-1` (overflow in intermediate
+    /// division).
+    pub fn checked_rem_euclid(&self, other: &I256) -> Option<I256> {
+        if self.is_div_overflow(other) {
+            return None;
+        }
+        Some(self.rem_euclid(other))
+    }
+
+    /// Performs checked left shift. Returns `None` if `bits >= 256`.
+    pub fn checked_shl(&self, bits: u32) -> Option<I256> {
+        if bits >= 256 {
+            return None;
+        }
+        Some(self.shl(bits))
+    }
+
+    /// Performs checked right shift. Returns `None` if `bits >= 256`.
+    pub fn checked_shr(&self, bits: u32) -> Option<I256> {
+        if bits >= 256 {
+            return None;
+        }
+        Some(self.shr(bits))
     }
 }
 

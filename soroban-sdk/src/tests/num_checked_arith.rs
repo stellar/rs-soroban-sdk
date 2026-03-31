@@ -96,6 +96,121 @@ fn test_u256_checked_pow_overflow() {
     assert_eq!(base.checked_pow(256), None);
 }
 
+#[test]
+fn test_u256_checked_div_success() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 42);
+    let b = U256::from_u32(&env, 6);
+    assert_eq!(a.checked_div(&b), Some(U256::from_u32(&env, 7)));
+}
+
+#[test]
+fn test_u256_checked_div_by_one() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 42);
+    let one = U256::from_u32(&env, 1);
+    assert_eq!(a.checked_div(&one), Some(U256::from_u32(&env, 42)));
+}
+
+#[test]
+fn test_u256_checked_div_zero_dividend() {
+    let env = Env::default();
+    let zero = U256::from_u32(&env, 0);
+    let b = U256::from_u32(&env, 5);
+    assert_eq!(zero.checked_div(&b), Some(U256::from_u32(&env, 0)));
+}
+
+#[test]
+fn test_u256_checked_div_by_zero() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 42);
+    let zero = U256::from_u32(&env, 0);
+    assert_eq!(a.checked_div(&zero), None);
+}
+
+#[test]
+fn test_u256_checked_rem_euclid_success() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 10);
+    let b = U256::from_u32(&env, 3);
+    assert_eq!(a.checked_rem_euclid(&b), Some(U256::from_u32(&env, 1)));
+}
+
+#[test]
+fn test_u256_checked_rem_euclid_exact() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 9);
+    let b = U256::from_u32(&env, 3);
+    assert_eq!(a.checked_rem_euclid(&b), Some(U256::from_u32(&env, 0)));
+}
+
+#[test]
+fn test_u256_checked_rem_euclid_by_zero() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 10);
+    let zero = U256::from_u32(&env, 0);
+    assert_eq!(a.checked_rem_euclid(&zero), None);
+}
+
+#[test]
+fn test_u256_checked_shl_success() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 1);
+    assert_eq!(a.checked_shl(8), Some(U256::from_u32(&env, 256)));
+}
+
+#[test]
+fn test_u256_checked_shl_zero_shift() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 42);
+    assert_eq!(a.checked_shl(0), Some(U256::from_u32(&env, 42)));
+}
+
+#[test]
+fn test_u256_checked_shl_max_valid() {
+    let env = Env::default();
+    let one = U256::from_u32(&env, 1);
+    let result = one.checked_shl(255);
+    // 1 << 255 = high bit of hi_hi set
+    let expected = U256::from_parts(&env, 1u64 << 63, 0, 0, 0);
+    assert_eq!(result.unwrap(), expected);
+}
+
+#[test]
+fn test_u256_checked_shl_overflow_256() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 1);
+    assert_eq!(a.checked_shl(256), None);
+}
+
+#[test]
+fn test_u256_checked_shr_success() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 256);
+    assert_eq!(a.checked_shr(4), Some(U256::from_u32(&env, 16)));
+}
+
+#[test]
+fn test_u256_checked_shr_zero_shift() {
+    let env = Env::default();
+    let a = U256::from_u32(&env, 42);
+    assert_eq!(a.checked_shr(0), Some(U256::from_u32(&env, 42)));
+}
+
+#[test]
+fn test_u256_checked_shr_max_valid() {
+    let env = Env::default();
+    let max = U256::from_parts(&env, u64::MAX, u64::MAX, u64::MAX, u64::MAX);
+    assert_eq!(max.checked_shr(255), Some(U256::from_u32(&env, 1)));
+}
+
+#[test]
+fn test_u256_checked_shr_overflow_256() {
+    let env = Env::default();
+    let max = U256::from_parts(&env, u64::MAX, u64::MAX, u64::MAX, u64::MAX);
+    assert_eq!(max.checked_shr(256), None);
+}
+
 // ============================================================
 // I256 checked arithmetic
 // ============================================================
@@ -219,6 +334,146 @@ fn test_i256_checked_pow_overflow() {
     assert_eq!(base.checked_pow(256), None);
 }
 
+#[test]
+fn test_i256_checked_div_success() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, -42);
+    let b = I256::from_i32(&env, 6);
+    assert_eq!(a.checked_div(&b), Some(I256::from_i32(&env, -7)));
+}
+
+#[test]
+fn test_i256_checked_div_by_one() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, -42);
+    let one = I256::from_i32(&env, 1);
+    assert_eq!(a.checked_div(&one), Some(I256::from_i32(&env, -42)));
+}
+
+#[test]
+fn test_i256_checked_div_zero_dividend() {
+    let env = Env::default();
+    let zero = I256::from_i32(&env, 0);
+    let b = I256::from_i32(&env, 5);
+    assert_eq!(zero.checked_div(&b), Some(I256::from_i32(&env, 0)));
+}
+
+#[test]
+fn test_i256_checked_div_by_neg_one() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, 42);
+    let neg_one = I256::from_i32(&env, -1);
+    assert_eq!(a.checked_div(&neg_one), Some(I256::from_i32(&env, -42)));
+}
+
+#[test]
+fn test_i256_checked_div_by_zero() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, 42);
+    let zero = I256::from_i32(&env, 0);
+    assert_eq!(a.checked_div(&zero), None);
+}
+
+#[test]
+fn test_i256_checked_div_min_by_neg_one() {
+    let env = Env::default();
+    let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+    let neg_one = I256::from_i32(&env, -1);
+    assert_eq!(min.checked_div(&neg_one), None);
+}
+
+#[test]
+fn test_i256_checked_rem_euclid_success() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, -10);
+    let b = I256::from_i32(&env, 3);
+    // Euclidean remainder is always non-negative for positive divisor
+    assert_eq!(a.checked_rem_euclid(&b), Some(I256::from_i32(&env, 2)));
+}
+
+#[test]
+fn test_i256_checked_rem_euclid_exact() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, 9);
+    let b = I256::from_i32(&env, 3);
+    assert_eq!(a.checked_rem_euclid(&b), Some(I256::from_i32(&env, 0)));
+}
+
+#[test]
+fn test_i256_checked_rem_euclid_by_zero() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, 10);
+    let zero = I256::from_i32(&env, 0);
+    assert_eq!(a.checked_rem_euclid(&zero), None);
+}
+
+#[test]
+fn test_i256_checked_rem_euclid_min_by_neg_one() {
+    let env = Env::default();
+    // I256::MIN % -1 overflows because rem_euclid internally performs a division
+    let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+    let neg_one = I256::from_i32(&env, -1);
+    assert_eq!(min.checked_rem_euclid(&neg_one), None);
+}
+
+#[test]
+fn test_i256_checked_shl_success() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, 1);
+    assert_eq!(a.checked_shl(8), Some(I256::from_i32(&env, 256)));
+}
+
+#[test]
+fn test_i256_checked_shl_zero_shift() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, -42);
+    assert_eq!(a.checked_shl(0), Some(I256::from_i32(&env, -42)));
+}
+
+#[test]
+fn test_i256_checked_shl_overflow_256() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, 1);
+    assert_eq!(a.checked_shl(256), None);
+}
+
+#[test]
+fn test_i256_checked_shr_success() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, 256);
+    assert_eq!(a.checked_shr(4), Some(I256::from_i32(&env, 16)));
+}
+
+#[test]
+fn test_i256_checked_shr_zero_shift() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, -42);
+    assert_eq!(a.checked_shr(0), Some(I256::from_i32(&env, -42)));
+}
+
+#[test]
+fn test_i256_checked_shr_negative() {
+    let env = Env::default();
+    let a = I256::from_i32(&env, -256);
+    // Arithmetic right shift preserves sign
+    assert_eq!(a.checked_shr(4), Some(I256::from_i32(&env, -16)));
+}
+
+#[test]
+fn test_i256_checked_shr_max_valid() {
+    let env = Env::default();
+    // I256::MAX >> 255 == 0 (sign bit is 0, arithmetic shift fills with 0s)
+    let max = I256::from_parts(&env, i64::MAX, u64::MAX, u64::MAX, u64::MAX);
+    assert_eq!(max.checked_shr(255), Some(I256::from_i32(&env, 0)));
+}
+
+#[test]
+fn test_i256_checked_shr_overflow_256() {
+    let env = Env::default();
+    let max = I256::from_parts(&env, i64::MAX, u64::MAX, u64::MAX, u64::MAX);
+    assert_eq!(max.checked_shr(256), None);
+}
+
 // ============================================================
 // Consistency: checked vs unchecked produce same result on success
 // ============================================================
@@ -233,6 +488,10 @@ fn test_u256_checked_matches_unchecked() {
     assert_eq!(a.checked_sub(&b).unwrap(), a.sub(&b));
     assert_eq!(a.checked_mul(&b).unwrap(), a.mul(&b));
     assert_eq!(a.checked_pow(3).unwrap(), a.pow(3));
+    assert_eq!(a.checked_div(&b).unwrap(), a.div(&b));
+    assert_eq!(a.checked_rem_euclid(&b).unwrap(), a.rem_euclid(&b));
+    assert_eq!(a.checked_shl(3).unwrap(), a.shl(3));
+    assert_eq!(a.checked_shr(3).unwrap(), a.shr(3));
 }
 
 #[test]
@@ -245,4 +504,8 @@ fn test_i256_checked_matches_unchecked() {
     assert_eq!(a.checked_sub(&b).unwrap(), a.sub(&b));
     assert_eq!(a.checked_mul(&b).unwrap(), a.mul(&b));
     assert_eq!(a.checked_pow(2).unwrap(), a.pow(2));
+    assert_eq!(a.checked_div(&b).unwrap(), a.div(&b));
+    assert_eq!(a.checked_rem_euclid(&b).unwrap(), a.rem_euclid(&b));
+    assert_eq!(a.checked_shl(3).unwrap(), a.shl(3));
+    assert_eq!(a.checked_shr(3).unwrap(), a.shr(3));
 }
