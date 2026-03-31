@@ -187,11 +187,14 @@ mod test {
 
     #[test]
     fn test_spec_docs() {
-        use stellar_xdr::curr as stellar_xdr;
-        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry};
+        use soroban_sdk::xdr::{Limited, Limits, ReadXdr, ScSpecEntry};
 
         // Verify that doc strings from trait default functions appear in the spec
-        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_u32(), Limits::none()).unwrap();
+        let entry = ScSpecEntry::read_xdr(&mut Limited::new(
+            &mut &Contract::spec_xdr_test_u32()[..],
+            Limits::none(),
+        ))
+        .unwrap();
         let ScSpecEntry::FunctionV0(func) = entry else {
             panic!("expected FunctionV0");
         };
@@ -200,7 +203,11 @@ mod test {
             "Test u32 values.\nReturns the input unchanged."
         );
 
-        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_i32(), Limits::none()).unwrap();
+        let entry = ScSpecEntry::read_xdr(&mut Limited::new(
+            &mut &Contract::spec_xdr_test_i32()[..],
+            Limits::none(),
+        ))
+        .unwrap();
         let ScSpecEntry::FunctionV0(func) = entry else {
             panic!("expected FunctionV0");
         };
