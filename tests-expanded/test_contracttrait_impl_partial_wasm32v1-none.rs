@@ -35,6 +35,7 @@ impl AllTypes for Contract {
     fn test_string(v: String) -> String {
         v
     }
+    /// Custom env param docs.
     fn test_env_param(_env: &Env) -> u32 {
         100
     }
@@ -43,67 +44,6 @@ impl AllTypes for Contract {
             a: v.a * 2,
             b: v.b * 2,
         }
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_u32__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TEST_U32: [u8; 48usize] = super::Contract::spec_xdr_test_u32();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u32() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_string__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TEST_STRING: [u8; 52usize] = super::Contract::spec_xdr_test_string();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_string() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_env_param__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; 40usize] =
-        super::Contract::spec_xdr_test_env_param();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_struct__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] = super::Contract::spec_xdr_test_struct();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -168,6 +108,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Custom env param docs.
     pub fn test_env_param(&self) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -178,6 +119,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Custom env param docs.
     pub fn try_test_env_param(
         &self,
     ) -> Result<
@@ -304,6 +246,7 @@ pub extern "C" fn __Contract__test_string__invoke_raw_extern(
     __Contract__test_string__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
+/// Custom env param docs.
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_env_param` instead")]
 #[allow(deprecated)]
@@ -314,6 +257,7 @@ pub fn __Contract__test_env_param__invoke_raw(env: soroban_sdk::Env) -> soroban_
     )
 }
 #[doc(hidden)]
+/// Custom env param docs.
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_env_param` instead")]
 #[export_name = "test_env_param"]
@@ -1824,5 +1768,75 @@ impl ContractArgs {
     #[allow(clippy::unused_unit)]
     pub fn test_enum_variants<'i>(v: &'i MyEnumVariants) -> (&'i MyEnumVariants,) {
         (v,)
+    }
+}
+#[doc(hidden)]
+/// Test u32 values.
+/// Returns the input unchanged.
+#[allow(non_snake_case)]
+pub mod __Contract__test_u32__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_TEST_U32: [u8; 96usize] = super::Contract::spec_xdr_test_u32();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    pub const fn spec_xdr_test_u32() -> [u8; 96usize] {
+        *b"\0\0\0\0\0\0\0-Test u32 values.\nReturns the input unchanged.\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_string__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_TEST_STRING: [u8; 52usize] = super::Contract::spec_xdr_test_string();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_string() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
+    }
+}
+#[doc(hidden)]
+/// Custom env param docs.
+#[allow(non_snake_case)]
+pub mod __Contract__test_env_param__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    /// Custom env param docs.
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; 64usize] =
+        super::Contract::spec_xdr_test_env_param();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    /// Custom env param docs.
+    pub const fn spec_xdr_test_env_param() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\x16Custom env param docs.\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_struct__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] = super::Contract::spec_xdr_test_struct();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
     }
 }
