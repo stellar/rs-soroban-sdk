@@ -40,6 +40,7 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, FromMeta};
 use macro_string::MacroString;
+use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
@@ -433,6 +434,10 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
+    match is_mapped_type_udt(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
+    }
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
     // or always export when spec shaking is enabled.

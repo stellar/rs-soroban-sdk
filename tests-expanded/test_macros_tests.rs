@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use proc_macros::{check_fn_is_item_fn, parse_item_fn, parse_item_impl};
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
@@ -445,12 +444,10 @@ fn __Contract____3d3f4e42d091a0f5587b8b2342b95a9ce7a0f5074262f199c972d2b2f43f23c
         );
     }
 }
-#[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_empty"]
     #[doc(hidden)]
     pub const test_empty: test::TestDescAndFn = test::TestDescAndFn {
@@ -480,7 +477,6 @@ mod test {
         client.empty();
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_custom_attrs_are_not_copied_onto_generated_fns"]
     #[doc(hidden)]
     pub const test_custom_attrs_are_not_copied_onto_generated_fns: test::TestDescAndFn =

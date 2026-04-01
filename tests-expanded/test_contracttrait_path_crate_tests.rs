@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 pub mod traits {
     use soroban_sdk::{contracttrait, Env};
@@ -531,12 +530,10 @@ fn __ContractCratePath__crate_traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996
     }
     {}
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_crate_path"]
     #[doc(hidden)]
     pub const test_crate_path: test::TestDescAndFn = test::TestDescAndFn {

@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env, String};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -735,12 +734,10 @@ fn __Contract__TraitWithoutContractTrait__b85cb430838ad2be2940af63cd34aab7c962ea
         );
     }
 }
-#[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::{Env, String};
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_exec"]
     #[doc(hidden)]
     pub const test_exec: test::TestDescAndFn = test::TestDescAndFn {
@@ -795,14 +792,13 @@ mod test {
         };
     }
 }
-#[cfg(test)]
 mod test_with_wasm {
     use soroban_sdk::{Env, String};
     mod contract {
-        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x16\x04`\x02~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\x00\x00\x03\x05\x04\x01\x02\x03\x02\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x90\x80\xc0\x00\x0b\x078\x06\x06memory\x02\x00\x05exec2\x00\x02\x04exec\x00\x04\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\nO\x04\x04\x00 \x00\x0b\x16\x00A\x87\x80\xc0\x80\x00A\x08\x10\x83\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\x00\x0b\x16\x00A\x80\x80\xc0\x80\x00A\x07\x10\x83\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x0b\x0b\x18\x01\x00A\x80\x80\xc0\x00\x0b\x0fdefaultdefault2\x00K\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05exec2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04exec\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.84.0\x00\x00";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x11\x03`\x02~~\x01~`\x00\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\x00\x00\x03\x04\x03\x01\x02\x01\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x90\x80\xc0\x00\x0b\x078\x06\x06memory\x02\x00\x04exec\x00\x01\x05exec2\x00\x03\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n>\x03\x10\x00A\x80\x80\xc0\x80\x00A\x07\x10\x82\x80\x80\x80\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\x00\x0b\x10\x00A\x87\x80\xc0\x80\x00A\x08\x10\x82\x80\x80\x80\x00\x0b\x0b\x18\x01\x00A\x80\x80\xc0\x00\x0b\x0fdefaultdefault2\x00K\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04exec\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05exec2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
         pub trait Contract {
-            fn exec2(env: soroban_sdk::Env) -> soroban_sdk::String;
             fn exec(env: soroban_sdk::Env) -> soroban_sdk::String;
+            fn exec2(env: soroban_sdk::Env) -> soroban_sdk::String;
         }
         ///Client is a client for calling the contract defined in "Contract".
         pub struct Client<'a> {
@@ -904,91 +900,6 @@ mod test_with_wasm {
             }
         }
         impl<'a> Client<'a> {
-            pub fn exec2(&self) -> soroban_sdk::String {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
-                use soroban_sdk::{FromVal, IntoVal};
-                let res = self.env.invoke_contract(
-                    &self.address,
-                    &{
-                        #[allow(deprecated)]
-                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec2");
-                        SYMBOL
-                    },
-                    ::soroban_sdk::Vec::new(&self.env),
-                );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
-                res
-            }
-            pub fn try_exec2(
-                &self,
-            ) -> Result<
-                Result<
-                    soroban_sdk::String,
-                    <soroban_sdk::String as soroban_sdk::TryFromVal<
-                        soroban_sdk::Env,
-                        soroban_sdk::Val,
-                    >>::Error,
-                >,
-                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-            > {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
-                use soroban_sdk::{FromVal, IntoVal};
-                let res = self.env.try_invoke_contract(
-                    &self.address,
-                    &{
-                        #[allow(deprecated)]
-                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec2");
-                        SYMBOL
-                    },
-                    ::soroban_sdk::Vec::new(&self.env),
-                );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
-                res
-            }
             pub fn exec(&self) -> soroban_sdk::String {
                 use core::ops::Not;
                 let old_auth_manager = self
@@ -1074,24 +985,108 @@ mod test_with_wasm {
                 }
                 res
             }
+            pub fn exec2(&self) -> soroban_sdk::String {
+                use core::ops::Not;
+                let old_auth_manager = self
+                    .env
+                    .in_contract()
+                    .not()
+                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
+                {
+                    if let Some(set_auths) = self.set_auths {
+                        self.env.set_auths(set_auths);
+                    }
+                    if let Some(mock_auths) = self.mock_auths {
+                        self.env.mock_auths(mock_auths);
+                    }
+                    if self.mock_all_auths {
+                        if self.allow_non_root_auth {
+                            self.env.mock_all_auths_allowing_non_root_auth();
+                        } else {
+                            self.env.mock_all_auths();
+                        }
+                    }
+                }
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec2");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::new(&self.env),
+                );
+                if let Some(old_auth_manager) = old_auth_manager {
+                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
+                }
+                res
+            }
+            pub fn try_exec2(
+                &self,
+            ) -> Result<
+                Result<
+                    soroban_sdk::String,
+                    <soroban_sdk::String as soroban_sdk::TryFromVal<
+                        soroban_sdk::Env,
+                        soroban_sdk::Val,
+                    >>::Error,
+                >,
+                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            > {
+                use core::ops::Not;
+                let old_auth_manager = self
+                    .env
+                    .in_contract()
+                    .not()
+                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
+                {
+                    if let Some(set_auths) = self.set_auths {
+                        self.env.set_auths(set_auths);
+                    }
+                    if let Some(mock_auths) = self.mock_auths {
+                        self.env.mock_auths(mock_auths);
+                    }
+                    if self.mock_all_auths {
+                        if self.allow_non_root_auth {
+                            self.env.mock_all_auths_allowing_non_root_auth();
+                        } else {
+                            self.env.mock_all_auths();
+                        }
+                    }
+                }
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.try_invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("exec2");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::new(&self.env),
+                );
+                if let Some(old_auth_manager) = old_auth_manager {
+                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
+                }
+                res
+            }
         }
         ///Args is a type for building arg lists for functions defined in "Contract".
         pub struct Args;
         impl Args {
             #[inline(always)]
             #[allow(clippy::unused_unit)]
-            pub fn exec2<'i>() -> () {
+            pub fn exec<'i>() -> () {
                 ()
             }
             #[inline(always)]
             #[allow(clippy::unused_unit)]
-            pub fn exec<'i>() -> () {
+            pub fn exec2<'i>() -> () {
                 ()
             }
         }
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test_with_wasm::test_exec"]
     #[doc(hidden)]
     pub const test_exec: test::TestDescAndFn = test::TestDescAndFn {

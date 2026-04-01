@@ -305,6 +305,23 @@ pub use soroban_sdk_macros::contracterror;
 /// `export = false` and do not produce spec entries. See [`_features`] for
 /// details.
 ///
+/// ### SHA-256 Verification
+///
+/// An optional `sha256` parameter can be provided to verify the integrity of
+/// the WASM file at compile time. When provided, the macro computes the
+/// SHA-256 hash of the WASM file at compile time and produces a compile error
+/// if it does not match the provided value. The `sha256` argument must
+/// be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// mod contract_a {
+///     soroban_sdk::contractimport!(
+///         file = "contract_a.wasm",
+///         sha256 = "d5bc0a5b4...",
+///     );
+/// }
+/// ```
+///
 /// ### Examples
 ///
 /// ```ignore
@@ -394,6 +411,22 @@ pub use soroban_sdk_macros::contract;
 ///
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
+///
+/// ### Notes
+///
+/// Each public function's export name is derived from the function name alone,
+/// without any type prefix or namespace. This means:
+///
+/// - **Function names must be unique across all `#[contractimpl]` blocks in a
+///   crate.** If two impl blocks define a function with the same name, their
+///   Wasm exports will collide, producing build or linker errors.
+///
+/// - **Importing a crate that contains `#[contractimpl]` blocks will pull its
+///   exported functions into the importing crate's Wasm binary.** This is a
+///   limitation of Rust — any `#[export_name = "..."]` function in a dependency
+///   is included in the final binary. This can cause unexpected exports or name
+///   collisions that are hard to diagnose. For this reason it is usually
+///   inadvisable to import dependencies that use `#[contractimpl]`.
 ///
 /// ### Examples
 ///
@@ -1008,6 +1041,20 @@ pub use soroban_sdk_macros::contractspecfn;
 /// into a constant, and so it is usually unnecessary to use [`contractfile`]
 /// directly, unless you specifically want to only load the contract file
 /// without generating a client for it.
+///
+/// ### SHA-256 Verification
+///
+/// Unlike [`contractimport`], `contractfile` **requires** a `sha256`
+/// parameter. The macro computes the SHA-256 hash of the WASM file at compile
+/// time and produces a compile error if it does not match the provided value.
+/// The `sha256` argument must be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// soroban_sdk::contractfile!(
+///     file = "contract_a.wasm",
+///     sha256 = "d5bc0a5b4...",
+/// );
+/// ```
 pub use soroban_sdk_macros::contractfile;
 
 /// Panic with the given error.
