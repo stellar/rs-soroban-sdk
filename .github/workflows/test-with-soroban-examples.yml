@@ -42,6 +42,13 @@ jobs:
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
         experimental_spec_shaking_v2: [true, false]
+        # Exclude examples that have transitive crates.io dependencies on
+        # soroban-sdk (e.g. via soroban-poseidon). The sed-based patching only
+        # rewrites direct dependency declarations in local Cargo.toml files and
+        # cannot redirect the soroban-sdk dependency inside a crates.io package,
+        # causing duplicate lang item (panic_impl) errors.
+        exclude:
+        - working-directory: privacy-pools
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
@@ -91,15 +98,6 @@ jobs:
             sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
             sed -i 's|'"$crate"' = {.*version = "[^"]*"\(.*\)|'"$crate"' = { path = "'"$rel_path"'" \1|g' "$file"
           done
-        done
-
-        # Add [patch.crates-io] to workspace root to redirect transitive
-        # crates.io dependencies (e.g. soroban-poseidon -> soroban-sdk).
-        echo "" >> "$workspace_root/Cargo.toml"
-        echo "[patch.crates-io]" >> "$workspace_root/Cargo.toml"
-        for crate in $crates; do
-          rel_path=$(realpath --relative-to="$workspace_root" ${{ github.workspace }}/rs-soroban-sdk/$crate)
-          echo "$crate = { path = \"$rel_path\" }" >> "$workspace_root/Cargo.toml"
         done
 
     - name: Enable experimental_spec_shaking_v2 feature
