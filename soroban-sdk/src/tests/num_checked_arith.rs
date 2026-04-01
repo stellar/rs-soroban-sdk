@@ -377,9 +377,19 @@ fn test_i256_checked_div_by_zero() {
 #[test]
 fn test_i256_checked_div_min_by_neg_one() {
     let env = Env::default();
-    let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+    let min = I256::min_value(&env);
     let neg_one = I256::from_i32(&env, -1);
     assert_eq!(min.checked_div(&neg_one), None);
+}
+
+#[test]
+fn test_i256_min_value_matches_from_bytes() {
+    let env = Env::default();
+    // I256::MIN = -2^255 = 0x8000...0000 in two's complement big-endian
+    let mut min_bytes = [0u8; 32];
+    min_bytes[0] = 0x80;
+    let from_bytes = I256::from_be_bytes(&env, &crate::Bytes::from_array(&env, &min_bytes));
+    assert_eq!(I256::min_value(&env), from_bytes);
 }
 
 #[test]
@@ -411,7 +421,7 @@ fn test_i256_checked_rem_euclid_by_zero() {
 fn test_i256_checked_rem_euclid_min_by_neg_one() {
     let env = Env::default();
     // I256::MIN % -1 overflows because rem_euclid internally performs a division
-    let min = I256::from_parts(&env, i64::MIN, 0, 0, 0);
+    let min = I256::min_value(&env);
     let neg_one = I256::from_i32(&env, -1);
     assert_eq!(min.checked_rem_euclid(&neg_one), None);
 }

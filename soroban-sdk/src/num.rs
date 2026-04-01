@@ -151,6 +151,17 @@ macro_rules! impl_num_wrapping_val_type {
                 Self { env, val }
             }
 
+            /// Converts a `Val` known to be of this type into `Self` without
+            /// env-based conversion. The caller must guarantee the `Val` is of
+            /// the correct type; only a cheap tag check is performed.
+            #[inline(always)]
+            pub(crate) unsafe fn unchecked_from_val(env: Env, val: Val) -> Self {
+                Self {
+                    env,
+                    val: <$val>::try_from(val).unwrap_optimized(),
+                }
+            }
+
             #[inline(always)]
             pub fn env(&self) -> &Env {
                 &self.env
@@ -192,6 +203,13 @@ pub struct U256 {
 impl_num_wrapping_val_type!(U256, U256Val, U256Small);
 
 impl U256 {
+    pub const BITS: u32 = 256;
+
+    fn is_zero(&self) -> bool {
+        const ZERO: U256Val = U256Val::from_u32(0);
+        self.val.as_val().get_payload() == ZERO.as_val().get_payload()
+    }
+
     pub fn from_u32(env: &Env, u: u32) -> Self {
         U256 {
             env: env.clone(),
@@ -321,7 +339,7 @@ impl U256 {
         if val.is_void() {
             None
         } else {
-            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { U256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
@@ -334,7 +352,7 @@ impl U256 {
         if val.is_void() {
             None
         } else {
-            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { U256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
@@ -347,7 +365,7 @@ impl U256 {
         if val.is_void() {
             None
         } else {
-            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { U256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
@@ -360,13 +378,13 @@ impl U256 {
         if val.is_void() {
             None
         } else {
-            Some(U256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { U256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
     /// Performs checked division. Returns `None` if `other` is zero.
     pub fn checked_div(&self, other: &U256) -> Option<U256> {
-        if *other == U256::from_u32(&self.env, 0) {
+        if other.is_zero() {
             return None;
         }
         Some(self.div(other))
@@ -374,7 +392,7 @@ impl U256 {
 
     /// Performs checked Euclidean remainder. Returns `None` if `other` is zero.
     pub fn checked_rem_euclid(&self, other: &U256) -> Option<U256> {
-        if *other == U256::from_u32(&self.env, 0) {
+        if other.is_zero() {
             return None;
         }
         Some(self.rem_euclid(other))
@@ -382,7 +400,7 @@ impl U256 {
 
     /// Performs checked left shift. Returns `None` if `bits >= 256`.
     pub fn checked_shl(&self, bits: u32) -> Option<U256> {
-        if bits >= 256 {
+        if bits >= Self::BITS {
             return None;
         }
         Some(self.shl(bits))
@@ -390,7 +408,7 @@ impl U256 {
 
     /// Performs checked right shift. Returns `None` if `bits >= 256`.
     pub fn checked_shr(&self, bits: u32) -> Option<U256> {
-        if bits >= 256 {
+        if bits >= Self::BITS {
             return None;
         }
         Some(self.shr(bits))
@@ -419,6 +437,23 @@ pub struct I256 {
 impl_num_wrapping_val_type!(I256, I256Val, I256Small);
 
 impl I256 {
+    pub const BITS: u32 = 256;
+
+    fn is_zero(&self) -> bool {
+        const ZERO: I256Val = I256Val::from_i32(0);
+        self.val.as_val().get_payload() == ZERO.as_val().get_payload()
+    }
+
+    fn is_neg_one(&self) -> bool {
+        const NEG_ONE: I256Val = I256Val::from_i32(-1);
+        self.val.as_val().get_payload() == NEG_ONE.as_val().get_payload()
+    }
+
+    /// Returns the minimum value of I256 (-2^255).
+    pub fn min_value(env: &Env) -> Self {
+        I256::from_parts(env, i64::MIN, 0, 0, 0)
+    }
+
     pub fn from_i32(env: &Env, i: i32) -> Self {
         I256 {
             env: env.clone(),
@@ -556,7 +591,7 @@ impl I256 {
         if val.is_void() {
             None
         } else {
-            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { I256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
@@ -569,7 +604,7 @@ impl I256 {
         if val.is_void() {
             None
         } else {
-            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { I256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
@@ -582,7 +617,7 @@ impl I256 {
         if val.is_void() {
             None
         } else {
-            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { I256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
@@ -595,20 +630,18 @@ impl I256 {
         if val.is_void() {
             None
         } else {
-            Some(I256::try_from_val(&self.env, &val).unwrap_optimized())
+            Some(unsafe { I256::unchecked_from_val(self.env.clone(), val) })
         }
     }
 
     /// Returns `true` if dividing `self` by `other` would overflow or divide by zero.
     /// This covers: `other == 0`, or `self == I256::MIN && other == -1`.
     fn is_div_overflow(&self, other: &I256) -> bool {
-        let zero = I256::from_i32(&self.env, 0);
-        if *other == zero {
+        if other.is_zero() {
             return true;
         }
-        let neg_one = I256::from_i32(&self.env, -1);
-        if *other == neg_one {
-            let min = I256::from_parts(&self.env, i64::MIN, 0, 0, 0);
+        if other.is_neg_one() {
+            let min = I256::min_value(&self.env);
             if *self == min {
                 return true;
             }
@@ -637,7 +670,7 @@ impl I256 {
 
     /// Performs checked left shift. Returns `None` if `bits >= 256`.
     pub fn checked_shl(&self, bits: u32) -> Option<I256> {
-        if bits >= 256 {
+        if bits >= Self::BITS {
             return None;
         }
         Some(self.shl(bits))
@@ -645,7 +678,7 @@ impl I256 {
 
     /// Performs checked right shift. Returns `None` if `bits >= 256`.
     pub fn checked_shr(&self, bits: u32) -> Option<I256> {
-        if bits >= 256 {
+        if bits >= Self::BITS {
             return None;
         }
         Some(self.shr(bits))
