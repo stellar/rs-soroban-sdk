@@ -36,21 +36,12 @@ pub fn generate_trait(
 /// # Returns
 /// A `TokenStream` containing the generated function definition.
 pub fn generate_function(s: &ScSpecFunctionV0) -> Result<TokenStream, GenerateError> {
-    let fn_ident = str_to_ident(
-        &s.name
-            .to_utf8_string()
-            .map_err(|_| GenerateError::InvalidUtf8)?,
-    )?;
+    let fn_ident = str_to_ident(&s.name)?;
     let fn_inputs = s
         .inputs
         .iter()
         .map(|input| {
-            let name = str_to_ident(
-                &input
-                    .name
-                    .to_utf8_string()
-                    .map_err(|_| GenerateError::InvalidUtf8)?,
-            )?;
+            let name = str_to_ident(&input.name)?;
             let type_ident = generate_type_ident(&input.type_)?;
             Ok(quote! { #name: #type_ident })
         })

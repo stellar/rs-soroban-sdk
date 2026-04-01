@@ -42,20 +42,10 @@ pub fn generate_struct_with_options(
     spec: &ScSpecUdtStructV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = str_to_ident(
-        &spec
-            .name
-            .to_utf8_string()
-            .map_err(|_| GenerateError::InvalidUtf8)?,
-    )?;
+    let ident = str_to_ident(&spec.name)?;
 
     if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(
-            &spec
-                .lib
-                .to_utf8_string()
-                .map_err(|_| GenerateError::InvalidUtf8)?,
-        )?;
+        let lib_ident = str_to_ident(&spec.lib)?;
         Ok(quote! {
             type #ident = ::#lib_ident::#ident;
         })
@@ -91,11 +81,7 @@ pub fn generate_struct_with_options(
             .fields
             .iter()
             .map(|f| {
-                let f_ident = str_to_ident(
-                    &f.name
-                        .to_utf8_string()
-                        .map_err(|_| GenerateError::InvalidUtf8)?,
-                )?;
+                let f_ident = str_to_ident(&f.name)?;
                 let f_type = generate_type_ident(&f.type_)?;
                 Ok(quote! { pub #f_ident: #f_type })
             })
@@ -121,19 +107,9 @@ pub fn generate_union_with_options(
     spec: &ScSpecUdtUnionV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = str_to_ident(
-        &spec
-            .name
-            .to_utf8_string()
-            .map_err(|_| GenerateError::InvalidUtf8)?,
-    )?;
+    let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(
-            &spec
-                .lib
-                .to_utf8_string()
-                .map_err(|_| GenerateError::InvalidUtf8)?,
-        )?;
+        let lib_ident = str_to_ident(&spec.lib)?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -146,11 +122,7 @@ pub fn generate_union_with_options(
                     stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(v) => &v.name,
                     stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => &t.name,
                 };
-                let v_ident = str_to_ident(
-                    &name
-                        .to_utf8_string()
-                        .map_err(|_| GenerateError::InvalidUtf8)?,
-                )?;
+                let v_ident = str_to_ident(name)?;
                 match c {
                     stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => Ok(quote! { #v_ident }),
                     stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => {
@@ -185,19 +157,9 @@ pub fn generate_enum_with_options(
     spec: &ScSpecUdtEnumV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = str_to_ident(
-        &spec
-            .name
-            .to_utf8_string()
-            .map_err(|_| GenerateError::InvalidUtf8)?,
-    )?;
+    let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(
-            &spec
-                .lib
-                .to_utf8_string()
-                .map_err(|_| GenerateError::InvalidUtf8)?,
-        )?;
+        let lib_ident = str_to_ident(&spec.lib)?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -206,11 +168,7 @@ pub fn generate_enum_with_options(
             .cases
             .iter()
             .map(|c| {
-                let v_ident = str_to_ident(
-                    &c.name
-                        .to_utf8_string()
-                        .map_err(|_| GenerateError::InvalidUtf8)?,
-                )?;
+                let v_ident = str_to_ident(&c.name)?;
                 let v_value = Literal::u32_unsuffixed(c.value);
                 Ok(quote! { #v_ident = #v_value })
             })
@@ -236,19 +194,9 @@ pub fn generate_error_enum_with_options(
     spec: &ScSpecUdtErrorEnumV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = str_to_ident(
-        &spec
-            .name
-            .to_utf8_string()
-            .map_err(|_| GenerateError::InvalidUtf8)?,
-    )?;
+    let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(
-            &spec
-                .lib
-                .to_utf8_string()
-                .map_err(|_| GenerateError::InvalidUtf8)?,
-        )?;
+        let lib_ident = str_to_ident(&spec.lib)?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -257,11 +205,7 @@ pub fn generate_error_enum_with_options(
             .cases
             .iter()
             .map(|c| {
-                let v_ident = str_to_ident(
-                    &c.name
-                        .to_utf8_string()
-                        .map_err(|_| GenerateError::InvalidUtf8)?,
-                )?;
+                let v_ident = str_to_ident(&c.name)?;
                 let v_value = Literal::u32_unsuffixed(c.value);
                 Ok(quote! { #v_ident = #v_value })
             })
@@ -291,20 +235,10 @@ pub fn generate_event_with_options(
     spec: &ScSpecEventV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = str_to_ident(
-        &spec
-            .name
-            .to_utf8_string()
-            .map_err(|_| GenerateError::InvalidUtf8)?,
-    )?;
+    let ident = str_to_ident(&spec.name)?;
 
     if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(
-            &spec
-                .lib
-                .to_utf8_string()
-                .map_err(|_| GenerateError::InvalidUtf8)?,
-        )?;
+        let lib_ident = str_to_ident(&spec.lib)?;
         Ok(quote! {
             type #ident = ::#lib_ident::#ident;
         })
@@ -314,11 +248,7 @@ pub fn generate_event_with_options(
             .params
             .iter()
             .map(|p| {
-                let p_ident = str_to_ident(
-                    &p.name
-                        .to_utf8_string()
-                        .map_err(|_| GenerateError::InvalidUtf8)?,
-                )?;
+                let p_ident = str_to_ident(&p.name)?;
                 let p_type = generate_type_ident(&p.type_)?;
                 Ok(match p.location {
                     ScSpecEventParamLocationV0::TopicList => quote! {
@@ -401,11 +331,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, Generate
             Ok(quote! { soroban_sdk::BytesN<#n> })
         }
         ScSpecTypeDef::Udt(u) => {
-            let ident = str_to_ident(
-                &u.name
-                    .to_utf8_string()
-                    .map_err(|_| GenerateError::InvalidUtf8)?,
-            )?;
+            let ident = str_to_ident(&u.name)?;
             Ok(quote! { #ident })
         }
         ScSpecTypeDef::Void => Ok(quote! { () }),
