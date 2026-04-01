@@ -49,6 +49,7 @@ jobs:
         # different major version or does not match the semver compatibility
         # defined by the importer, causing two copies of soroban-sdk to be
         # compiled and duplicate lang item (panic_impl) errors.
+        # https://github.com/stellar/rs-soroban-sdk/issues/1723
         exclude:
         - working-directory: privacy-pools
     defaults:
