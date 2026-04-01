@@ -42,11 +42,11 @@ jobs:
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
         experimental_spec_shaking_v2: [true, false]
-        # Exclude examples that have transitive crates.io dependencies on
-        # soroban-sdk (e.g. via soroban-poseidon). The sed-based patching only
-        # rewrites direct dependency declarations in local Cargo.toml files and
-        # cannot redirect the soroban-sdk dependency inside a crates.io package,
-        # causing duplicate lang item (panic_impl) errors.
+        # Exclude examples that depend on crates.io packages that transitively
+        # depend on soroban-sdk (e.g. soroban-poseidon). Cargo does not provide
+        # a way to override the version of soroban-sdk required as a transitive
+        # dependency of another dependency, causing two copies of soroban-sdk to
+        # be compiled and duplicate lang item (panic_impl) errors.
         exclude:
         - working-directory: privacy-pools
     defaults:
