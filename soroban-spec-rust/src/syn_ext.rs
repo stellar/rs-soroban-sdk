@@ -9,8 +9,7 @@ pub trait IntoIdent {
 
 impl IntoIdent for str {
     fn into_ident(&self) -> Result<Ident, GenerateError> {
-        syn::parse_str::<Ident>(self)
-            .map_err(|_| GenerateError::InvalidIdent(self.to_string()))
+        syn::parse_str::<Ident>(self).map_err(|_| GenerateError::InvalidIdent(self.to_string()))
     }
 }
 
