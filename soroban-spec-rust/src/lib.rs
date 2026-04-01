@@ -1,5 +1,5 @@
-pub mod r#trait;
 pub mod syn_ext;
+pub mod r#trait;
 pub mod types;
 
 use std::{fs, io};
@@ -13,11 +13,11 @@ use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
 
-pub use types::{GenerateError, GenerateOptions};
 use types::{
     generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
     generate_struct_with_options, generate_union_with_options,
 };
+pub use types::{GenerateError, GenerateOptions};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
 // streams as rustdocs, because rustdocs can contain Rust code, and that code
@@ -73,8 +73,8 @@ pub fn generate_from_wasm_with_options(
     }
 
     let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    let code =
-        generate_with_options(&spec, file, &sha256, opts).map_err(GenerateFromFileError::Generate)?;
+    let code = generate_with_options(&spec, file, &sha256, opts)
+        .map_err(GenerateFromFileError::Generate)?;
     Ok(code)
 }
 
