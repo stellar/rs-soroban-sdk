@@ -45,8 +45,10 @@ jobs:
         # Exclude examples that depend on crates.io packages that transitively
         # depend on soroban-sdk (e.g. soroban-poseidon). Cargo does not provide
         # a way to override the version of soroban-sdk required as a transitive
-        # dependency of another dependency, causing two copies of soroban-sdk to
-        # be compiled and duplicate lang item (panic_impl) errors.
+        # dependency of another dependency where the version to override is a
+        # different major version or does not match the semver compatibility
+        # defined by the importer, causing two copies of soroban-sdk to be
+        # compiled and duplicate lang item (panic_impl) errors.
         exclude:
         - working-directory: privacy-pools
     defaults:
