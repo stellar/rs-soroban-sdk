@@ -161,10 +161,10 @@ impl Crypto {
         &self,
         message_digest: &Hash<32>,
         signature: &BytesN<64>,
-        recorvery_id: u32,
+        recovery_id: u32,
     ) -> BytesN<65> {
         let env = self.env();
-        CryptoHazmat::new(env).secp256k1_recover(&message_digest.0, signature, recorvery_id)
+        CryptoHazmat::new(env).secp256k1_recover(&message_digest.0, signature, recovery_id)
     }
 
     /// Verifies the ECDSA secp256r1 signature.
@@ -228,14 +228,14 @@ impl CryptoHazmat {
         &self,
         message_digest: &BytesN<32>,
         signature: &BytesN<64>,
-        recorvery_id: u32,
+        recovery_id: u32,
     ) -> BytesN<65> {
         let env = self.env();
         let bytes = internal::Env::recover_key_ecdsa_secp256k1(
             env,
             message_digest.to_object(),
             signature.to_object(),
-            recorvery_id.into(),
+            recovery_id.into(),
         )
         .unwrap_infallible();
         unsafe { BytesN::unchecked_new(env.clone(), bytes) }

@@ -431,6 +431,22 @@ pub use soroban_sdk_macros::contract;
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
 ///
+/// ### Notes
+///
+/// Each public function's export name is derived from the function name alone,
+/// without any type prefix or namespace. This means:
+///
+/// - **Function names must be unique across all `#[contractimpl]` blocks in a
+///   crate.** If two impl blocks define a function with the same name, their
+///   Wasm exports will collide, producing build or linker errors.
+///
+/// - **Importing a crate that contains `#[contractimpl]` blocks will pull its
+///   exported functions into the importing crate's Wasm binary.** This is a
+///   limitation of Rust — any `#[export_name = "..."]` function in a dependency
+///   is included in the final binary. This can cause unexpected exports or name
+///   collisions that are hard to diagnose. For this reason it is usually
+///   inadvisable to import dependencies that use `#[contractimpl]`.
+///
 /// ### Examples
 ///
 /// Define a contract with one function, `hello`, and call it from within a test

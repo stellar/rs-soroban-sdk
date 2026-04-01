@@ -39,7 +39,7 @@ pub mod internal {
     // any `TestContract` frame in progress and then _panics_, unwinding back to
     // a panic-catcher it installed when invoking the `TestContract` frame, and
     // then extracting E from the frame and returning it to its caller. This
-    // simulates the "crash, but catching the error" behaviour of the WASM case.
+    // simulates the "crash, but catching the error" behavior of the WASM case.
     // This only works if we panic via `escalate_error_to_panic`.
     //
     // (The reason we don't just panic_any() here and let the panic-catcher do a
@@ -725,7 +725,7 @@ impl Env {
     /// Take the return value with a grain of salt. The returned resources mostly
     /// correspond only to the operations that have happened during the host
     /// invocation, i.e. this won't try to simulate the work that happens in
-    /// production scenarios (e.g. certain XDR rountrips). This also doesn't try
+    /// production scenarios (e.g. certain XDR roundtrips). This also doesn't try
     /// to model resources related to the transaction size.
     ///
     /// The returned value is as useful as the preceding setup, e.g. if a test
@@ -749,7 +749,7 @@ impl Env {
     ///
     /// Pass the arguments for the contract's constructor, or `()` if none. For
     /// contracts with a constructor, use the contract's generated `Args` type
-    /// to construct the arguments with the appropropriate types for invoking
+    /// to construct the arguments with the appropriate types for invoking
     /// the constructor during registration.
     ///
     /// Returns the address of the registered contract that is the same as the
@@ -1120,15 +1120,15 @@ impl Env {
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
-        self.invoke_contract::<()>(
+        let admin_result = self.try_invoke_contract::<(), Error>(
             &token_id,
             &soroban_sdk_macros::internal_symbol_short!("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        admin_result.unwrap().unwrap();
 
         let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
-
         StellarAssetContract::new(token_id, issuer, asset)
     }
 
@@ -1167,13 +1167,14 @@ impl Env {
         executable: xdr::ContractExecutable,
         constructor_args: Vec<Val>,
     ) -> Address {
+        let args_vec: std::vec::Vec<xdr::ScVal> =
+            constructor_args.iter().map(|v| v.into_val(self)).collect();
+        let constructor_args = args_vec.try_into().unwrap();
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
-        let args_vec: std::vec::Vec<xdr::ScVal> =
-            constructor_args.iter().map(|v| v.into_val(self)).collect();
-        let contract_id: Address = self
+        let create_result = self
             .env_impl
             .invoke_function(xdr::HostFunction::CreateContractV2(
                 xdr::CreateContractArgsV2 {
@@ -1186,16 +1187,13 @@ impl Env {
                         },
                     ),
                     executable,
-                    constructor_args: args_vec.try_into().unwrap(),
+                    constructor_args,
                 },
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap();
+            ));
 
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
-        contract_id
+        create_result.unwrap().try_into_val(self).unwrap()
     }
 
     /// Set authorizations and signatures in the environment which will be
@@ -1555,7 +1553,7 @@ impl Env {
     /// # fn main() {
     ///     let e: Env = Default::default();
     ///     let account_contract = NoopAccountContractClient::new(&e, &e.register(NoopAccountContract, ()));
-    ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
+    ///     // Non-successful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
     ///             &account_contract.address,

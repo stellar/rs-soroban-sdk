@@ -14,7 +14,7 @@ use crate::{
 // configured for real. Some functions in Env have in the past or may now make
 // assumptions about a source account being set. This is something small we do
 // to make sure we don't accidentally introduce Env functionality that will
-// panick in SDK tests.
+// panic in SDK tests.
 fn default_has_source_account_configured_in_host() {
     let env = Env::default();
     assert!(env.host().source_account_address().unwrap().is_some());
@@ -42,6 +42,11 @@ impl Contract {
 #[derive(Debug, Eq, PartialEq)]
 enum ContractError {
     AnError = 1,
+}
+
+mod constructor_contract {
+    use crate as soroban_sdk;
+    soroban_sdk::contractimport!(file = "../target/wasm32v1-none/release/test_constructor.wasm");
 }
 
 #[test]
@@ -325,4 +330,29 @@ fn test_try_as_contract_panic() {
             ScErrorCode::InvalidAction
         )))
     );
+}
+
+#[test]
+fn test_register_restores_auth_before_panics() {
+    let env = Env::default();
+
+    let address = env.register(Contract, ());
+    let client = ContractClient::new(&env, &address);
+    let user = Address::generate(&env);
+
+    let pre_register = client.try_need_auth(&user);
+    assert!(pre_register.is_err());
+
+    // This is contrived to cause a panic inside register_contract_with_source.
+    // Don't actually do things like this!
+    let another_contract = env.register(Contract, ());
+    let register_result = env.try_as_contract::<_, Error>(&another_contract, || {
+        // This expects arguments for the constructor, but none are provided, so it will panic
+        env.register(constructor_contract::WASM, ());
+    });
+    assert!(register_result.is_err());
+
+    let post_register = client.try_need_auth(&user);
+    assert!(post_register.is_err());
+    assert_eq!(pre_register, post_register);
 }
