@@ -1,4 +1,5 @@
 pub mod r#trait;
+pub mod syn_ext;
 pub mod types;
 
 use std::{fs, io};

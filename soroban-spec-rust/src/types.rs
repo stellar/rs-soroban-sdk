@@ -1,10 +1,12 @@
-use proc_macro2::{Ident, Literal, TokenStream};
+use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0,
-    ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0, StringM,
+    ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
+
+use crate::syn_ext::str_to_ident;
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
 // streams as rustdocs, because rustdocs can contain Rust code, and that code
@@ -17,24 +19,6 @@ pub enum GenerateError {
     InvalidUtf8,
     #[error("invalid Rust identifier: {0:?}")]
     InvalidIdent(String),
-}
-
-/// Converts a spec string to a valid UTF-8 string, returning an error if it
-/// contains invalid UTF-8.
-fn to_utf8<const N: u32>(s: &StringM<N>) -> Result<String, GenerateError> {
-    s.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)
-}
-
-/// Creates a Rust identifier from a string, returning an error if it is not a
-/// valid identifier.
-pub(crate) fn to_ident(s: &str) -> Result<Ident, GenerateError> {
-    syn::parse_str::<Ident>(s).map_err(|_| GenerateError::InvalidIdent(s.to_string()))
-}
-
-/// Converts a spec string to a Rust identifier, returning an error if it
-/// contains invalid UTF-8 or is not a valid identifier.
-pub(crate) fn to_ident_from_spec<const N: u32>(s: &StringM<N>) -> Result<Ident, GenerateError> {
-    to_ident(&to_utf8(s)?)
 }
 
 /// Options for controlling code generation behavior.
@@ -58,17 +42,17 @@ pub fn generate_struct_with_options(
     spec: &ScSpecUdtStructV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = to_ident_from_spec(&spec.name)?;
+    let ident = str_to_ident(&spec.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
 
     if spec.lib.len() > 0 {
-        let lib_ident = to_ident_from_spec(&spec.lib)?;
+        let lib_ident = str_to_ident(&spec.lib.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
         Ok(quote! {
             type #ident = ::#lib_ident::#ident;
         })
     } else if spec
         .fields
         .iter()
-        .map(|f| to_utf8(&f.name).map(|n| n.parse::<usize>().is_ok()))
+        .map(|f| f.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8).map(|n| n.parse::<usize>().is_ok()))
         .collect::<Result<Vec<_>, _>>()?
         .iter()
         .all(|is_num| *is_num)
@@ -85,7 +69,7 @@ pub fn generate_struct_with_options(
         })
     } else {
         let fields = spec.fields.iter().map(|f| {
-            let f_ident = to_ident_from_spec(&f.name)?;
+            let f_ident = str_to_ident(&f.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
             let f_type = generate_type_ident(&f.type_)?;
             Ok(quote! { pub #f_ident: #f_type })
         }).collect::<Result<Vec<_>, GenerateError>>()?;
@@ -110,9 +94,9 @@ pub fn generate_union_with_options(
     spec: &ScSpecUdtUnionV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = to_ident_from_spec(&spec.name)?;
+    let ident = str_to_ident(&spec.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
     if spec.lib.len() > 0 {
-        let lib_ident = to_ident_from_spec(&spec.lib)?;
+        let lib_ident = str_to_ident(&spec.lib.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -125,7 +109,7 @@ pub fn generate_union_with_options(
                     stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(v) => &v.name,
                     stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => &t.name,
                 };
-                let v_ident = to_ident_from_spec(name)?;
+                let v_ident = str_to_ident(&name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
                 match c {
                     stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => Ok(quote! { #v_ident }),
                     stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => {
@@ -160,9 +144,9 @@ pub fn generate_enum_with_options(
     spec: &ScSpecUdtEnumV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = to_ident_from_spec(&spec.name)?;
+    let ident = str_to_ident(&spec.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
     if spec.lib.len() > 0 {
-        let lib_ident = to_ident_from_spec(&spec.lib)?;
+        let lib_ident = str_to_ident(&spec.lib.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -171,7 +155,7 @@ pub fn generate_enum_with_options(
             .cases
             .iter()
             .map(|c| {
-                let v_ident = to_ident_from_spec(&c.name)?;
+                let v_ident = str_to_ident(&c.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
                 let v_value = Literal::u32_unsuffixed(c.value);
                 Ok(quote! { #v_ident = #v_value })
             })
@@ -197,9 +181,9 @@ pub fn generate_error_enum_with_options(
     spec: &ScSpecUdtErrorEnumV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = to_ident_from_spec(&spec.name)?;
+    let ident = str_to_ident(&spec.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
     if spec.lib.len() > 0 {
-        let lib_ident = to_ident_from_spec(&spec.lib)?;
+        let lib_ident = str_to_ident(&spec.lib.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -208,7 +192,7 @@ pub fn generate_error_enum_with_options(
             .cases
             .iter()
             .map(|c| {
-                let v_ident = to_ident_from_spec(&c.name)?;
+                let v_ident = str_to_ident(&c.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
                 let v_value = Literal::u32_unsuffixed(c.value);
                 Ok(quote! { #v_ident = #v_value })
             })
@@ -238,10 +222,10 @@ pub fn generate_event_with_options(
     spec: &ScSpecEventV0,
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let ident = to_ident_from_spec(&spec.name)?;
+    let ident = str_to_ident(&spec.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
 
     if spec.lib.len() > 0 {
-        let lib_ident = to_ident_from_spec(&spec.lib)?;
+        let lib_ident = str_to_ident(&spec.lib.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
         Ok(quote! {
             type #ident = ::#lib_ident::#ident;
         })
@@ -251,7 +235,7 @@ pub fn generate_event_with_options(
             .params
             .iter()
             .map(|p| {
-                let p_ident = to_ident_from_spec(&p.name)?;
+                let p_ident = str_to_ident(&p.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
                 let p_type = generate_type_ident(&p.type_)?;
                 Ok(match p.location {
                     ScSpecEventParamLocationV0::TopicList => quote! {
@@ -334,7 +318,7 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, Generate
             Ok(quote! { soroban_sdk::BytesN<#n> })
         }
         ScSpecTypeDef::Udt(u) => {
-            let ident = to_ident_from_spec(&u.name)?;
+            let ident = str_to_ident(&u.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
             Ok(quote! { #ident })
         }
         ScSpecTypeDef::Void => Ok(quote! { () }),

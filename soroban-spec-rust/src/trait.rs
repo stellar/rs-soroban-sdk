@@ -3,7 +3,8 @@ use quote::quote;
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::ScSpecFunctionV0;
 
-use super::types::{generate_type_ident, to_ident, to_ident_from_spec, GenerateError};
+use super::syn_ext::str_to_ident;
+use super::types::{generate_type_ident, GenerateError};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
 // streams as rustdocs, because rustdocs can contain Rust code, and that code
@@ -16,7 +17,7 @@ pub fn generate_trait(
     name: &str,
     specs: &[&ScSpecFunctionV0],
 ) -> Result<TokenStream, GenerateError> {
-    let trait_ident = to_ident(name)?;
+    let trait_ident = str_to_ident(name)?;
     let fns = specs
         .iter()
         .map(|s| generate_function(s))
@@ -35,12 +36,18 @@ pub fn generate_trait(
 /// # Returns
 /// A `TokenStream` containing the generated function definition.
 pub fn generate_function(s: &ScSpecFunctionV0) -> Result<TokenStream, GenerateError> {
-    let fn_ident = to_ident_from_spec(&s.name)?;
+    let fn_ident =
+        str_to_ident(&s.name.to_utf8_string().map_err(|_| GenerateError::InvalidUtf8)?)?;
     let fn_inputs = s
         .inputs
         .iter()
         .map(|input| {
-            let name = to_ident_from_spec(&input.name)?;
+            let name = str_to_ident(
+                &input
+                    .name
+                    .to_utf8_string()
+                    .map_err(|_| GenerateError::InvalidUtf8)?,
+            )?;
             let type_ident = generate_type_ident(&input.type_)?;
             Ok(quote! { #name: #type_ident })
         })
