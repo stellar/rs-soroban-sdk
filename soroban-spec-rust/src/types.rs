@@ -15,7 +15,7 @@ use crate::syn_ext::str_to_ident;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateError {
-    #[error("invalid UTF-8 in spec entry name")]
+    #[error("invalid UTF-8 in contract spec string")]
     InvalidUtf8,
     #[error("invalid Rust identifier: {0:?}")]
     InvalidIdent(String),
