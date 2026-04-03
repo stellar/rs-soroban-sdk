@@ -278,7 +278,7 @@ impl CryptoHazmat {
     /// representations of field elements in the prime field specified by
     /// `field`. If a `U256` value exceeds the field modulus, it is **silently
     /// reduced mod the field order**. Two distinct `U256` inputs that reduce
-    /// to the same field element will produce the same hash, leading to
+    /// to the same field element will produce the same output, leading to
     /// unintended collisions. Callers must ensure inputs are already in the
     /// valid field range.
     ///
@@ -296,7 +296,7 @@ impl CryptoHazmat {
     ///
     /// # Panics
     ///
-    /// Traps if any dimension is inconsistent or if `field` is unsupported.
+    /// If any dimension is inconsistent or if `field` is unsupported.
     pub fn poseidon_permutation(
         &self,
         input: &Vec<U256>,
@@ -338,7 +338,7 @@ impl CryptoHazmat {
     /// are generic representations of field elements in the prime field
     /// specified by `field`. If a `U256` value exceeds the field modulus, it
     /// is **silently reduced mod the field order**. Two distinct `U256` inputs
-    /// that reduce to the same field element will produce the same hash,
+    /// that reduce to the same field element will produce the same output,
     /// leading to unintended collisions. Callers must ensure inputs are
     /// already in the valid field range.
     ///
@@ -346,7 +346,8 @@ impl CryptoHazmat {
     ///
     /// - `input`: state vector of `t` field elements.
     /// - `field`: the prime field (`"BLS12_381"` or `"BN254"`).
-    /// - `t`: state size (number of field elements).
+    /// - `t`: state size (number of field elements). Only
+    ///   `t` ∈ {2, 3, 4, 8, 12, 16, 20, 24} are supported.
     /// - `d`: S-box degree (5 for BLS12-381 and BN254).
     /// - `rounds_f`: number of full rounds (must be even).
     /// - `rounds_p`: number of partial rounds.
@@ -357,7 +358,7 @@ impl CryptoHazmat {
     ///
     /// # Panics
     ///
-    /// Traps if any dimension is inconsistent or if `field` is unsupported.
+    /// If any dimension is inconsistent or if `field` is unsupported.
     pub fn poseidon2_permutation(
         &self,
         input: &Vec<U256>,
