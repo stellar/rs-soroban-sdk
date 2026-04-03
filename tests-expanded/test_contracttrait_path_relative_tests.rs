@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 pub mod traits {
     use soroban_sdk::{contracttrait, Env};
@@ -167,7 +166,11 @@ pub mod traits {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -337,12 +340,12 @@ impl ContractRelativePathArgs {}
 #[deprecated(
     note = "use `ContractRelativePathClient::new(&env, &contract_id).relative_path_method` instead"
 )]
+#[allow(deprecated)]
 pub fn __ContractRelativePath__relative_path_method__invoke_raw(
     env: soroban_sdk::Env,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<ContractRelativePath as traits::RelativePathTrait>::relative_path_method(&env),
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <ContractRelativePath as traits::RelativePathTrait>::relative_path_method(&env),
         &env,
     )
 }
@@ -446,7 +449,11 @@ impl<'a> ContractRelativePathClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -524,12 +531,10 @@ fn __ContractRelativePath__traits_RelativePathTrait__e3b0c44298fc1c149afbf4c8996
     }
     {}
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_relative_path"]
     #[doc(hidden)]
     pub const test_relative_path: test::TestDescAndFn = test::TestDescAndFn {

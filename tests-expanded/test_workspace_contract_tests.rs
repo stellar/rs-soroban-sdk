@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 use test_workspace_lib::Value;
 pub struct Contract;
@@ -218,7 +217,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -247,12 +250,9 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).value` instead")]
+#[allow(deprecated)]
 pub fn __Contract__value__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::value(),
-        &env,
-    )
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::value(), &env)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -310,12 +310,10 @@ fn __Contract____cd42404d52ad55ccfa9aca4adc828aa5800ad9d385a0671fbcbf72411832061
         );
     }
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_add"]
     #[doc(hidden)]
     pub const test_add: test::TestDescAndFn = test::TestDescAndFn {

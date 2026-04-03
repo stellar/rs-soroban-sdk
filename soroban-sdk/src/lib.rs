@@ -9,6 +9,10 @@
 //! [Stellar]: https://stellar.org
 //! [Soroban]: https://stellar.org/soroban
 //!
+//! ### Features
+//!
+//! See [_features] for a list of all Cargo features and what they do.
+//!
 //! ### Migrating Major Versions
 //!
 //! See [_migrating] for a summary of how to migrate from one major version to another.
@@ -53,6 +57,7 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
+pub mod _features;
 pub mod _migrating;
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
@@ -112,6 +117,13 @@ const _: () = {
         key = "rssdkver",
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
+
+    // An indicator of the spec shaking version in use. Signals to the stellar-cli that the .wasm
+    // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
+    // The contractmeta! macro requires string literals, so we assert the literals match the
+    // constants defined in soroban_spec::shaking.
+    #[cfg(feature = "experimental_spec_shaking_v2")]
+    contractmeta!(key = "rssdk_spec_shaking", val = "2");
 };
 
 // Re-exports of dependencies used by macros.
@@ -167,7 +179,16 @@ pub use soroban_sdk_macros::symbol_short;
 /// - Enum variants must have a value convertible to u32.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
+/// for the type. By default, spec entries are only generated for `pub` types
+/// (or when `export = true` is explicitly set).
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, spec entries are generated for all types regardless of
+/// visibility, and markers are embedded that allow post-build tools to strip
+/// entries for types that are not used at a contract boundary. See
+/// [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -274,6 +295,33 @@ pub use soroban_sdk_macros::contracterror;
 /// contract.
 /// - Types for all contract types defined in the contract.
 ///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, imported types are generated with `export = true` so
+/// they produce spec entries and markers in the importing contract. Post-build
+/// tools strip entries for imported types that are not used at the importing
+/// contract's boundary. Without this feature, imported types use
+/// `export = false` and do not produce spec entries. See [`_features`] for
+/// details.
+///
+/// ### SHA-256 Verification
+///
+/// An optional `sha256` parameter can be provided to verify the integrity of
+/// the WASM file at compile time. When provided, the macro computes the
+/// SHA-256 hash of the WASM file at compile time and produces a compile error
+/// if it does not match the provided value. The `sha256` argument must
+/// be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// mod contract_a {
+///     soroban_sdk::contractimport!(
+///         file = "contract_a.wasm",
+///         sha256 = "d5bc0a5b4...",
+///     );
+/// }
+/// ```
+///
 /// ### Examples
 ///
 /// ```ignore
@@ -363,6 +411,22 @@ pub use soroban_sdk_macros::contract;
 ///
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
+///
+/// ### Notes
+///
+/// Each public function's export name is derived from the function name alone,
+/// without any type prefix or namespace. This means:
+///
+/// - **Function names must be unique across all `#[contractimpl]` blocks in a
+///   crate.** If two impl blocks define a function with the same name, their
+///   Wasm exports will collide, producing build or linker errors.
+///
+/// - **Importing a crate that contains `#[contractimpl]` blocks will pull its
+///   exported functions into the importing crate's Wasm binary.** This is a
+///   limitation of Rust — any `#[export_name = "..."]` function in a dependency
+///   is included in the final binary. This can cause unexpected exports or name
+///   collisions that are hard to diagnose. For this reason it is usually
+///   inadvisable to import dependencies that use `#[contractimpl]`.
 ///
 /// ### Examples
 ///
@@ -529,7 +593,16 @@ pub use soroban_sdk_macros::contractmeta;
 /// less in length.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
+/// for the type. By default, spec entries are only generated for `pub` types
+/// (or when `export = true` is explicitly set).
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, spec entries are generated for all types regardless of
+/// visibility, and markers are embedded that allow post-build tools to strip
+/// entries for types that are not used at a contract boundary. See
+/// [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -677,6 +750,13 @@ pub use soroban_sdk_macros::contracttype;
 ///
 /// Includes the event in the contract spec so that clients can generate bindings
 /// for the type and downstream systems can understand the meaning of the event.
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, markers are embedded that allow post-build tools to strip
+/// spec entries for events that are never published at a contract boundary. See
+/// [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -961,6 +1041,20 @@ pub use soroban_sdk_macros::contractspecfn;
 /// into a constant, and so it is usually unnecessary to use [`contractfile`]
 /// directly, unless you specifically want to only load the contract file
 /// without generating a client for it.
+///
+/// ### SHA-256 Verification
+///
+/// Unlike [`contractimport`], `contractfile` **requires** a `sha256`
+/// parameter. The macro computes the SHA-256 hash of the WASM file at compile
+/// time and produces a compile error if it does not match the provided value.
+/// The `sha256` argument must be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// soroban_sdk::contractfile!(
+///     file = "contract_a.wasm",
+///     sha256 = "d5bc0a5b4...",
+/// );
+/// ```
 pub use soroban_sdk_macros::contractfile;
 
 /// Panic with the given error.
@@ -1076,6 +1170,17 @@ mod try_from_val_for_contract_fn;
 #[doc(hidden)]
 #[allow(deprecated)]
 pub use try_from_val_for_contract_fn::TryFromValForContractFn;
+
+mod into_val_for_contract_fn;
+#[doc(hidden)]
+#[allow(deprecated)]
+pub use into_val_for_contract_fn::IntoValForContractFn;
+
+#[cfg(feature = "experimental_spec_shaking_v2")]
+mod spec_shaking;
+#[cfg(feature = "experimental_spec_shaking_v2")]
+#[doc(hidden)]
+pub use spec_shaking::SpecShakingMarker;
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

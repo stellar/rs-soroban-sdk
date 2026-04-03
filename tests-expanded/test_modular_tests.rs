@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 mod feat1 {
     use crate::Contract;
@@ -91,7 +90,11 @@ mod feat1 {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -120,12 +123,9 @@ mod feat1 {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).one` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__one__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract>::one(),
-            &env,
-        )
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::one(), &env)
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -268,7 +268,11 @@ mod feat2 {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -297,12 +301,9 @@ mod feat2 {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).two` instead")]
+    #[allow(deprecated)]
     pub fn __super__Contract__two__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<super::Contract>::two(),
-            &env,
-        )
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<super::Contract>::two(), &env)
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -363,11 +364,9 @@ mod feat2 {
     }
 }
 mod test {
-    #![cfg(test)]
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test"]
     #[doc(hidden)]
     pub const test: test::TestDescAndFn = test::TestDescAndFn {
@@ -643,7 +642,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -672,12 +675,9 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).zero` instead")]
+#[allow(deprecated)]
 pub fn __Contract__zero__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::zero(),
-        &env,
-    )
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::zero(), &env)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

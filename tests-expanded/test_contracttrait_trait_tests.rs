@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contracttrait, contracttype, Address, Bytes, BytesN, Duration, Env, Map, String, Symbol,
     Timepoint, Vec, I256, U256,
@@ -174,31 +173,28 @@ impl TryFrom<&MyStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &MyStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
-            #[rustc_box]
-            ::alloc::boxed::Box::new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "a".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.a)
-                        .try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "a".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "b".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.b)
-                        .try_into()
+                )
+                .into(),
+                val: (&val.a)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "b".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ]),
-        ))
+                )
+                .into(),
+                val: (&val.b)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<MyStruct> for soroban_sdk::xdr::ScMap {
@@ -1546,7 +1542,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -1624,7 +1624,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -1700,7 +1704,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -1776,7 +1784,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -1852,7 +1864,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -1928,7 +1944,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2004,7 +2024,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2079,7 +2103,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2150,7 +2178,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2221,7 +2253,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2292,7 +2328,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2363,7 +2403,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2438,7 +2482,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2517,7 +2565,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2592,7 +2644,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2663,7 +2719,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2735,7 +2795,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2811,7 +2875,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2882,7 +2950,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -2953,7 +3025,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -3024,7 +3100,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -3095,7 +3175,11 @@ impl<'a> AllTypesClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -3359,7 +3443,6 @@ impl AllTypesSpec {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
     }
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::{
@@ -3504,13 +3587,13 @@ mod test {
     /// Returns the input unchanged.
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u32` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_u32__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_u32(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_u32(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3557,13 +3640,13 @@ mod test {
     /// Test i32 values.
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i32` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_i32__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_i32(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_i32(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3607,13 +3690,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u64` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_u64__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_u64(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_u64(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3655,13 +3738,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i64` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_i64__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_i64(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_i64(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3703,13 +3786,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u128` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_u128__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_u128(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_u128(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3751,13 +3834,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i128` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_i128__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_i128(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_i128(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3799,13 +3882,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bool` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_bool__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_bool(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_bool(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3847,13 +3930,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_address` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_address__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_address(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_address(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3895,13 +3978,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bytes` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_bytes__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_bytes(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_bytes(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3943,13 +4026,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_bytes_n` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_bytes_n__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_bytes_n(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_bytes_n(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -3991,13 +4074,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_string` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_string__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_string(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_string(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4039,13 +4122,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_symbol` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_symbol__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_symbol(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_symbol(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4087,13 +4170,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_vec` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_vec__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_vec(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_vec(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4135,13 +4218,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_map` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_map__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_map(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_map(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4183,13 +4266,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_duration` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_duration__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_duration(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_duration(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4231,13 +4314,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_timepoint` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_timepoint__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_timepoint(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_timepoint(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4279,13 +4362,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_i256` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_i256__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_i256(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_i256(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4327,13 +4410,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_u256` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_u256__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_u256(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_u256(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4375,10 +4458,10 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_env_param` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_env_param__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_env_param(&env),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_env_param(&env),
             &env,
         )
     }
@@ -4411,13 +4494,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_struct` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_struct__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_struct(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_struct(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4459,13 +4542,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_enum_unit` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_enum_unit__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_enum_unit(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_enum_unit(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4507,13 +4590,13 @@ mod test {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_enum_variants` instead")]
+    #[allow(deprecated)]
     pub fn __Contract__test_enum_variants__invoke_raw(
         env: soroban_sdk::Env,
         arg_0: soroban_sdk::Val,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<Contract as AllTypes>::test_enum_variants(
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <Contract as AllTypes>::test_enum_variants(
                 <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                     <_ as soroban_sdk::TryFromValForContractFn<
                         soroban_sdk::Env,
@@ -4945,7 +5028,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5026,7 +5113,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5105,7 +5196,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5184,7 +5279,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5263,7 +5362,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5342,7 +5445,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5421,7 +5528,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5496,7 +5607,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5567,7 +5682,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5638,7 +5757,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5709,7 +5832,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5780,7 +5907,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5855,7 +5986,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -5937,7 +6072,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6012,7 +6151,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6083,7 +6226,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6158,7 +6305,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6237,7 +6388,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6311,7 +6466,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6382,7 +6541,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6453,7 +6616,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6527,7 +6694,11 @@ mod test {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -6816,7 +6987,6 @@ mod test {
         {}
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_types"]
     #[doc(hidden)]
     pub const test_types: test::TestDescAndFn = test::TestDescAndFn {
@@ -7148,7 +7318,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_spec_docs"]
     #[doc(hidden)]
     pub const test_spec_docs: test::TestDescAndFn = test::TestDescAndFn {

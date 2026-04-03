@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{serde_as, DeserializeAs, SerializeAs};
 use std::{
-    fs::{create_dir_all, File},
+    fs::{create_dir_all, remove_file, rename, File},
     io::{self, BufReader, Read, Write},
     path::Path,
     rc::Rc,
@@ -226,14 +226,34 @@ impl LedgerSnapshot {
     }
 
     /// Write a [`LedgerSnapshot`] to file.
+    ///
+    /// If a file already exists at path `p`, it will be replaced.
     pub fn write_file(&self, p: impl AsRef<Path>) -> Result<(), Error> {
         let p = p.as_ref();
+        if p.is_dir() {
+            return Err(Error::Io(std::io::Error::new(
+                std::io::ErrorKind::IsADirectory,
+                "destination path is a directory",
+            )));
+        }
         if let Some(dir) = p.parent() {
             if !dir.exists() {
                 create_dir_all(dir)?;
             }
         }
-        self.write(File::create(p)?)
+        // Write to a temp file to prevent loss if the write fails
+        let tmp = p.with_added_extension("tmp");
+        match self.write(File::create(&tmp)?) {
+            Ok(_) => {
+                rename(&tmp, p)?;
+                Ok(())
+            }
+            Err(e) => {
+                // allow original error to propagate if cleanup fails
+                let _ = remove_file(&tmp);
+                Err(e)
+            }
+        }
     }
 }
 

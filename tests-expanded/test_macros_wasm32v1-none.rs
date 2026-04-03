@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use proc_macros::{check_fn_is_item_fn, parse_item_fn, parse_item_impl};
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
@@ -143,12 +142,9 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty` instead")]
+#[allow(deprecated)]
 pub fn __Contract__empty__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::empty(),
-        &env,
-    )
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::empty(), &env)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -161,12 +157,9 @@ pub extern "C" fn __Contract__empty__invoke_raw_extern() -> soroban_sdk::Val {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).empty2` instead")]
+#[allow(deprecated)]
 pub fn __Contract__empty2__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::empty2(),
-        &env,
-    )
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(<Contract>::empty2(), &env)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
