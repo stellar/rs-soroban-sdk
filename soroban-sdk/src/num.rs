@@ -1,5 +1,4 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
-use std::u64;
 
 use super::{
     env::internal::{
@@ -208,7 +207,7 @@ impl U256 {
 
     /// Returns the smallest value that can be represented by this type (0).
     pub fn min_value(env: &Env) -> Self {
-        Self::from_parts(env, 0, 0, 0, 0)
+        Self::from_u32(env, 0)
     }
 
     /// Returns the largest value that can be represented by this type (2^256 - 1).
@@ -450,7 +449,7 @@ impl_num_wrapping_val_type!(I256, I256Val, I256Small);
 impl I256 {
     pub const BITS: u32 = 256;
 
-    /// Returns the smallest value that can be represented by this type (−2^255).
+    /// Returns the smallest value that can be represented by this type (-2^255).
     pub fn min_value(env: &Env) -> Self {
         Self::from_parts(env, i64::MIN, 0, 0, 0)
     }
