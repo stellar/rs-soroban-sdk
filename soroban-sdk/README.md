@@ -9,6 +9,10 @@ See [developers.stellar.org] for documentation about building smart contracts fo
 [Stellar]: https://stellar.org
 [Soroban]: https://stellar.org/soroban
 
+### Features
+
+See [_features] for a list of all Cargo features and what they do.
+
 ### Migrating Major Versions
 
 See [_migrating] for a summary of how to migrate from one major version to another.

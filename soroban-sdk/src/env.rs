@@ -39,7 +39,7 @@ pub mod internal {
     // any `TestContract` frame in progress and then _panics_, unwinding back to
     // a panic-catcher it installed when invoking the `TestContract` frame, and
     // then extracting E from the frame and returning it to its caller. This
-    // simulates the "crash, but catching the error" behaviour of the WASM case.
+    // simulates the "crash, but catching the error" behavior of the WASM case.
     // This only works if we panic via `escalate_error_to_panic`.
     //
     // (The reason we don't just panic_any() here and let the panic-catcher do a
@@ -271,6 +271,9 @@ pub struct EnvTestConfig {
     /// JSON file to be written to disk when the Env is no longer referenced.
     /// Defaults to true.
     pub capture_snapshot_at_drop: bool,
+    // NOTE: Next time a field needs to be added to EnvTestConfig it will be a breaking change,
+    // take the opportunity to make the current field private, new fields private, and settable via
+    // functions. Why: So that it is the last time a breaking change is needed to the type.
 }
 
 #[cfg(any(test, feature = "testutils"))]
@@ -443,7 +446,88 @@ impl Env {
     /// calls contract B again, then `authorize_as_current_contract` has to be
     /// called again with the respective entries.
     ///
+    /// When testing a contract call that uses `authorize_as_current_contract`, avoid
+    /// using [`mock_all_auths_allowing_non_root_auth`][Self::mock_all_auths_allowing_non_root_auth].
+    /// A test that uses this mock will not fail if a missing or incorrect
+    /// `authorize_as_current_contract` call is present. It is recommended to use other
+    /// authorization mocking functions like [`mock_auths`][Self::mock_auths]
+    /// or [`set_auths`][Self::set_auths] if needed.
     ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{
+    ///     auth::{ContractContext, InvokerContractAuthEntry, SubContractInvocation},
+    ///     contract, contractimpl, vec, Address, Env, IntoVal, Symbol,
+    /// };
+    ///
+    /// // Contract C performs authorization for addr
+    /// #[contract]
+    /// pub struct ContractC;
+    ///
+    /// #[contractimpl]
+    /// impl ContractC {
+    ///     pub fn do_auth(_env: Env, addr: Address, amount: i128) -> i128 {
+    ///         addr.require_auth();
+    ///         amount
+    ///     }
+    /// }
+    ///
+    /// // Contract B performs authorization for `addr` and invokes Contract C with
+    /// // `addr` and `amount` as arguments.
+    /// #[contract]
+    /// pub struct ContractB;
+    ///
+    /// #[contractimpl]
+    /// impl ContractB {
+    ///     pub fn call_c(env: Env, addr: Address, contract_c: Address, amount: i128) -> i128 {
+    ///         addr.require_auth();
+    ///         ContractCClient::new(&env, &contract_c).do_auth(&addr, &amount)
+    ///     }
+    /// }
+    ///
+    /// // Contract A authorizes Contract B to call Contract C on its behalf with `addr` and
+    /// // `amount` as arguments.
+    /// #[contract]
+    /// pub struct ContractA;
+    ///
+    /// #[contractimpl]
+    /// impl ContractA {
+    ///     pub fn call_b(env: Env, contract_b: Address, contract_c: Address, amount: i128) -> i128 {
+    ///         let curr_contract = env.current_contract_address();
+    ///         // Authorize the sub-call Contract B makes to Contract C
+    ///         env.authorize_as_current_contract(vec![
+    ///             &env,
+    ///             InvokerContractAuthEntry::Contract(SubContractInvocation {
+    ///                 context: ContractContext {
+    ///                     contract: contract_c.clone(),
+    ///                     fn_name: Symbol::new(&env, "do_auth"),
+    ///                     args: vec![&env, curr_contract.into_val(&env), amount.into_val(&env)],
+    ///                 },
+    ///                 sub_invocations: vec![&env],
+    ///             }),
+    ///         ]);
+    ///         ContractBClient::new(&env, &contract_b).call_c(&curr_contract, &contract_c, &amount)
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_a = env.register(ContractA, ());
+    ///     let contract_b = env.register(ContractB, ());
+    ///     let contract_c = env.register(ContractC, ());
+    ///
+    ///     // Auths are not mocked to ensure `authorize_as_current_contract`
+    ///     // is working as intended. If Contract A includes additional auths, consider
+    ///     // using `mock_auths` or `set_auths` for those authorizations.
+    ///
+    ///     let client = ContractAClient::new(&env, &contract_a);
+    ///     let result = client.call_b(&contract_b, &contract_c, &100);
+    ///     assert_eq!(result, 100);
+    /// }
+    /// ```
     pub fn authorize_as_current_contract(&self, auth_entries: Vec<InvokerContractAuthEntry>) {
         internal::Env::authorize_as_curr_contract(self, auth_entries.to_object())
             .unwrap_infallible();
@@ -642,7 +726,7 @@ impl Env {
     /// Take the return value with a grain of salt. The returned resources mostly
     /// correspond only to the operations that have happened during the host
     /// invocation, i.e. this won't try to simulate the work that happens in
-    /// production scenarios (e.g. certain XDR rountrips). This also doesn't try
+    /// production scenarios (e.g. certain XDR roundtrips). This also doesn't try
     /// to model resources related to the transaction size.
     ///
     /// The returned value is as useful as the preceding setup, e.g. if a test
@@ -666,7 +750,7 @@ impl Env {
     ///
     /// Pass the arguments for the contract's constructor, or `()` if none. For
     /// contracts with a constructor, use the contract's generated `Args` type
-    /// to construct the arguments with the appropropriate types for invoking
+    /// to construct the arguments with the appropriate types for invoking
     /// the constructor during registration.
     ///
     /// Returns the address of the registered contract that is the same as the
@@ -1037,15 +1121,15 @@ impl Env {
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
-        self.invoke_contract::<()>(
+        let admin_result = self.try_invoke_contract::<(), Error>(
             &token_id,
             &soroban_sdk_macros::internal_symbol_short!("set_admin"),
             (admin,).try_into_val(self).unwrap(),
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        admin_result.unwrap().unwrap();
 
         let issuer = StellarAssetIssuer::new(self.clone(), issuer_id);
-
         StellarAssetContract::new(token_id, issuer, asset)
     }
 
@@ -1084,13 +1168,14 @@ impl Env {
         executable: xdr::ContractExecutable,
         constructor_args: Vec<Val>,
     ) -> Address {
+        let args_vec: std::vec::Vec<xdr::ScVal> =
+            constructor_args.iter().map(|v| v.into_val(self)).collect();
+        let constructor_args = args_vec.try_into().unwrap();
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
-        let args_vec: std::vec::Vec<xdr::ScVal> =
-            constructor_args.iter().map(|v| v.into_val(self)).collect();
-        let contract_id: Address = self
+        let create_result = self
             .env_impl
             .invoke_function(xdr::HostFunction::CreateContractV2(
                 xdr::CreateContractArgsV2 {
@@ -1103,16 +1188,13 @@ impl Env {
                         },
                     ),
                     executable,
-                    constructor_args: args_vec.try_into().unwrap(),
+                    constructor_args,
                 },
-            ))
-            .unwrap()
-            .try_into_val(self)
-            .unwrap();
+            ));
 
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
 
-        contract_id
+        create_result.unwrap().try_into_val(self).unwrap()
     }
 
     /// Set authorizations and signatures in the environment which will be
@@ -1212,9 +1294,15 @@ impl Env {
     ///
     /// It is not currently possible to mock a subset of auths.
     ///
+    /// A test that uses `mock_all_auths` without verifying the resulting
+    /// authorization tree via [`auths`][Self::auths] can pass even when a contract
+    /// is missing a `require_auth` check. Use [`auths`][Self::auths] after
+    /// the contract call to assert that the expected authorizations were required.
+    ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contract, contractimpl, Env, Address, testutils::Address as _};
+    /// use soroban_sdk::{contract, contractimpl, Env, Address, IntoVal, symbol_short};
+    /// use soroban_sdk::testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation};
     ///
     /// #[contract]
     /// pub struct HelloContract;
@@ -1239,19 +1327,35 @@ impl Env {
     ///     let client = HelloContractClient::new(&env, &contract_id);
     ///     let addr = Address::generate(&env);
     ///     client.hello(&addr);
+    ///
+    ///     // Verify that the expected authorization was required.
+    ///     assert_eq!(
+    ///         env.auths(),
+    ///         [(
+    ///             addr.clone(),
+    ///             AuthorizedInvocation {
+    ///                 function: AuthorizedFunction::Contract((
+    ///                     contract_id,
+    ///                     symbol_short!("hello"),
+    ///                     (&addr,).into_val(&env),
+    ///                 )),
+    ///                 sub_invocations: [].into(),
+    ///             }
+    ///         )]
+    ///     );
     /// }
     /// ```
     pub fn mock_all_auths(&self) {
         self.env_impl.switch_to_recording_auth(true).unwrap();
     }
 
-    /// A version of `mock_all_auths` that allows authorizations that are not
+    /// A version of [`mock_all_auths`][Self::mock_all_auths] that allows authorizations that are not
     /// present in the root invocation.
     ///
-    /// Refer to `mock_all_auths` documentation for general information and
-    /// prefer using `mock_all_auths` unless non-root authorization is required.
+    /// Refer to [`mock_all_auths`][Self::mock_all_auths] documentation for general information and
+    /// prefer using [`mock_all_auths`][Self::mock_all_auths] unless non-root authorization is required.
     ///
-    /// The only difference from `mock_all_auths` is that this won't return an
+    /// The only difference from [`mock_all_auths`][Self::mock_all_auths] is that this won't return an
     /// error when `require_auth` hasn't been called in the root invocation for
     /// any given address. This is useful to test contracts that bundle calls to
     /// another contract without atomicity requirements (i.e. any contract call
@@ -1344,7 +1448,6 @@ impl Env {
     /// # }
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
-    ///     extern crate std;
     ///     let env = Env::default();
     ///     let contract_id = env.register(Contract, ());
     ///     let client = ContractClient::new(&env, &contract_id);
@@ -1353,7 +1456,7 @@ impl Env {
     ///     client.transfer(&address, &1000_i128);
     ///     assert_eq!(
     ///         env.auths(),
-    ///         std::vec![(
+    ///         [(
     ///             address.clone(),
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
@@ -1361,7 +1464,7 @@ impl Env {
     ///                     symbol_short!("transfer"),
     ///                     (&address, 1000_i128,).into_val(&env)
     ///                 )),
-    ///                 sub_invocations: std::vec![]
+    ///                 sub_invocations: [].into()
     ///             }
     ///         )]
     ///     );
@@ -1369,7 +1472,7 @@ impl Env {
     ///     client.transfer2(&address, &1000_i128);
     ///     assert_eq!(
     ///         env.auths(),
-    ///        std::vec![(
+    ///         [(
     ///             address.clone(),
     ///             AuthorizedInvocation {
     ///                 function: AuthorizedFunction::Contract((
@@ -1378,7 +1481,7 @@ impl Env {
     ///                     // `transfer2` requires auth for (amount / 2) == (1000 / 2) == 500.
     ///                     (500_i128,).into_val(&env)
     ///                 )),
-    ///                 sub_invocations: std::vec![]
+    ///                 sub_invocations: [].into()
     ///             }
     ///         )]
     ///     );
@@ -1451,7 +1554,7 @@ impl Env {
     /// # fn main() {
     ///     let e: Env = Default::default();
     ///     let account_contract = NoopAccountContractClient::new(&e, &e.register(NoopAccountContract, ()));
-    ///     // Non-succesful call of `__check_auth` with a `contracterror` error.
+    ///     // Non-successful call of `__check_auth` with a `contracterror` error.
     ///     assert_eq!(
     ///         e.try_invoke_contract_check_auth::<NoopAccountError>(
     ///             &account_contract.address,

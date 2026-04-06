@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env};
 pub struct SelfPathTraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -99,10 +98,10 @@ impl ContractSelfPathArgs {}
 #[deprecated(
     note = "use `ContractSelfPathClient::new(&env, &contract_id).self_path_method` instead"
 )]
+#[allow(deprecated)]
 pub fn __ContractSelfPath__self_path_method__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<ContractSelfPath as self::SelfPathTrait>::self_path_method(&env),
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <ContractSelfPath as self::SelfPathTrait>::self_path_method(&env),
         &env,
     )
 }

@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     auth::Context, auth::CustomAccountInterface, contract, contracterror, contractimpl,
     crypto::Hash, Env, Vec,
@@ -338,18 +337,15 @@ impl ContractArgs {
 #[allow(non_snake_case)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+#[allow(deprecated)]
 pub fn __Contract____check_auth__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract as CustomAccountInterface>::__check_auth(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as CustomAccountInterface>::__check_auth(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -436,7 +432,6 @@ fn __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910
         );
     }
 }
-#[cfg(test)]
 mod test {
     use crate::Contract;
     use soroban_sdk::{
@@ -576,7 +571,6 @@ mod test {
         }
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test"]
     #[doc(hidden)]
     pub const test: test::TestDescAndFn = test::TestDescAndFn {

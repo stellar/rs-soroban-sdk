@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env};
 pub struct SelfPathTraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -162,7 +161,11 @@ impl<'a> SelfPathTraitClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -331,10 +334,10 @@ impl ContractSelfPathArgs {}
 #[deprecated(
     note = "use `ContractSelfPathClient::new(&env, &contract_id).self_path_method` instead"
 )]
+#[allow(deprecated)]
 pub fn __ContractSelfPath__self_path_method__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<ContractSelfPath as self::SelfPathTrait>::self_path_method(&env),
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <ContractSelfPath as self::SelfPathTrait>::self_path_method(&env),
         &env,
     )
 }
@@ -437,7 +440,11 @@ impl<'a> ContractSelfPathClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -515,11 +522,9 @@ fn __ContractSelfPath__self_SelfPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae4
     }
     {}
 }
-#[cfg(test)]
 mod test {
     use super::*;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_self_path"]
     #[doc(hidden)]
     pub const test_self_path: test::TestDescAndFn = test::TestDescAndFn {

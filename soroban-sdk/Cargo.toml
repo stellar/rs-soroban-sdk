@@ -59,10 +59,14 @@ proptest-arbitrary-interop = "0.1.0"
 libfuzzer-sys = "0.4.7"
 expect-test = "1.4.1"
 sha2 = "0.10.7"
+ark-bn254 = { version = "0.5", default-features = false, features = ["curve"] }
+ark-bls12-381 = { version = "0.5", default-features = false, features = ["curve"] }
+ark-ff = { version = "0.5", default-features = false }
 
 [features]
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
+experimental_spec_shaking_v2 = ["soroban-sdk-macros/experimental_spec_shaking_v2"]
 docs = []
 
 # Umbrella feature that enables all hazmat sub-features (backwards compatible)

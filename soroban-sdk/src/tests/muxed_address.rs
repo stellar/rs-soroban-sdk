@@ -1,4 +1,4 @@
-use soroban_sdk_macros::{contract, contractimpl};
+use soroban_sdk_macros::{contract, contractimpl, contracttype};
 
 use crate::testutils::{Address as _, MuxedAddress as _};
 use crate::{self as soroban_sdk, Bytes, String};
@@ -6,6 +6,13 @@ use crate::{
     env::xdr::{AccountId, ScAddress, Uint256},
     Address, Env, MuxedAddress, TryFromVal,
 };
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+#[contracttype]
+pub struct Udt {
+    pub address: MuxedAddress,
+    pub amount: i128,
+}
 
 #[contract]
 pub struct MuxedAddressContract;
@@ -18,6 +25,10 @@ impl MuxedAddressContract {
         b: soroban_sdk::MuxedAddress,
     ) -> (Option<u64>, Option<u64>) {
         (a.id(), b.id())
+    }
+
+    pub fn echo_udt(_e: Env, udt: Udt) -> Udt {
+        udt
     }
 }
 
@@ -107,6 +118,32 @@ fn test_accept_muxed_address_argument_in_contract() {
         client.get_muxed_ids(non_muxed_address, muxed_address2),
         (None, Some(2))
     );
+}
+
+#[test]
+fn test_contracttype_struct_with_address_backed_muxed_address() {
+    let env = Env::default();
+    let contract_id = env.register(MuxedAddressContract, ());
+    let client = MuxedAddressContractClient::new(&env, &contract_id);
+
+    let udt = Udt {
+        address: Address::generate(&env).into(),
+        amount: 42,
+    };
+    assert_eq!(client.echo_udt(&udt), udt.clone());
+}
+
+#[test]
+fn test_contracttype_struct_with_muxed_address() {
+    let env = Env::default();
+    let contract_id = env.register(MuxedAddressContract, ());
+    let client = MuxedAddressContractClient::new(&env, &contract_id);
+
+    let udt = Udt {
+        address: MuxedAddress::generate(&env),
+        amount: 42,
+    };
+    assert_eq!(client.echo_udt(&udt), udt.clone());
 }
 
 #[test]

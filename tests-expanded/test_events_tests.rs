@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, MuxedAddress};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -304,7 +303,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -392,7 +395,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -437,18 +444,15 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).transfer` instead")]
+#[allow(deprecated)]
 pub fn __Contract__transfer__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::transfer(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::transfer(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -505,18 +509,15 @@ pub extern "C" fn __Contract__transfer__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).failed_transfer` instead")]
+#[allow(deprecated)]
 pub fn __Contract__failed_transfer__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::failed_transfer(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::failed_transfer(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -605,7 +606,6 @@ fn __Contract____a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b30
         );
     }
 }
-#[cfg(test)]
 mod test {
     extern crate alloc;
     extern crate std;
@@ -616,7 +616,6 @@ mod test {
         vec, Address, Env, Event, IntoVal, MuxedAddress, Symbol, Val,
     };
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_event"]
     #[doc(hidden)]
     pub const test_event: test::TestDescAndFn = test::TestDescAndFn {
@@ -649,16 +648,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &<[_]>::into_vec(
-                #[rustc_box]
-                ::alloc::boxed::Box::new([Transfer {
-                    from: from.clone(),
-                    to: to.address(),
-                    amount,
-                    to_muxed_id: to.id(),
-                }
-                .to_xdr(&env, &contract_id)]),
-            ),
+            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+                from: from.clone(),
+                to: to.address(),
+                amount,
+                to_muxed_id: to.id(),
+            }
+            .to_xdr(&env, &contract_id)])),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -715,7 +711,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_event_with_option_none"]
     #[doc(hidden)]
     pub const test_event_with_option_none: test::TestDescAndFn = test::TestDescAndFn {
@@ -748,16 +743,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &<[_]>::into_vec(
-                #[rustc_box]
-                ::alloc::boxed::Box::new([Transfer {
-                    from: from.clone(),
-                    to: to.clone(),
-                    amount,
-                    to_muxed_id: None,
-                }
-                .to_xdr(&env, &contract_id)]),
-            ),
+            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+                from: from.clone(),
+                to: to.clone(),
+                amount,
+                to_muxed_id: None,
+            }
+            .to_xdr(&env, &contract_id)])),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -811,7 +803,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_no_events_recorded_for_failed_call"]
     #[doc(hidden)]
     pub const test_no_events_recorded_for_failed_call: test::TestDescAndFn = test::TestDescAndFn {

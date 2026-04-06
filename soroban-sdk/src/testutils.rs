@@ -336,7 +336,7 @@ pub mod budget {
 
     /// Budget that tracks the resources consumed for the environment.
     ///
-    /// The budget consistents of two cost dimensions:
+    /// The budget consists of two cost dimensions:
     ///  - CPU instructions
     ///  - Memory
     ///

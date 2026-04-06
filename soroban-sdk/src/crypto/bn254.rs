@@ -3,7 +3,7 @@ use crate::xdr::ScVal;
 use crate::{
     crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val, U64Val},
-    impl_bytesn_repr,
+    impl_bytesn_repr_without_from_bytes,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
@@ -74,9 +74,41 @@ pub struct Fr(U256);
 #[repr(transparent)]
 pub struct Bn254Fp(BytesN<BN254_FP_SERIALIZED_SIZE>);
 
-impl_bytesn_repr!(Bn254G1Affine, BN254_G1_SERIALIZED_SIZE);
-impl_bytesn_repr!(Bn254G2Affine, BN254_G2_SERIALIZED_SIZE);
-impl_bytesn_repr!(Bn254Fp, BN254_FP_SERIALIZED_SIZE);
+impl_bytesn_repr_without_from_bytes!(Bn254G1Affine, BN254_G1_SERIALIZED_SIZE);
+impl_bytesn_repr_without_from_bytes!(Bn254G2Affine, BN254_G2_SERIALIZED_SIZE);
+impl_bytesn_repr_without_from_bytes!(Bn254Fp, BN254_FP_SERIALIZED_SIZE);
+
+// BN254 base field modulus p in big-endian bytes.
+// p = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47
+const BN254_FP_MODULUS_BE: [u8; BN254_FP_SERIALIZED_SIZE] = [
+    0x30, 0x64, 0x4e, 0x72, 0xe1, 0x31, 0xa0, 0x29, 0xb8, 0x50, 0x45, 0xb6, 0x81, 0x81, 0x58, 0x5d,
+    0x97, 0x81, 0x6a, 0x91, 0x68, 0x71, 0xca, 0x8d, 0x3c, 0x20, 0x8c, 0x16, 0xd8, 0x7c, 0xfd, 0x47,
+];
+
+fn validate_bn254_fp(bytes: &[u8; BN254_FP_SERIALIZED_SIZE]) {
+    if bytes >= &BN254_FP_MODULUS_BE {
+        sdk_panic!("Bn254: Invalid Fp");
+    }
+}
+
+impl Bn254G1Affine {
+    pub fn from_bytes(bytes: BytesN<BN254_G1_SERIALIZED_SIZE>) -> Self {
+        Self(bytes)
+    }
+}
+
+impl Bn254G2Affine {
+    pub fn from_bytes(bytes: BytesN<BN254_G2_SERIALIZED_SIZE>) -> Self {
+        Self(bytes)
+    }
+}
+
+impl Bn254Fp {
+    pub fn from_bytes(bytes: BytesN<BN254_FP_SERIALIZED_SIZE>) -> Self {
+        validate_bn254_fp(&bytes.to_array());
+        Self(bytes)
+    }
+}
 
 impl Bn254G1Affine {
     pub fn env(&self) -> &Env {
@@ -256,9 +288,29 @@ impl Mul for Fr {
     }
 }
 
+// BN254 scalar field modulus r in big-endian bytes.
+// r = 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001
+const BN254_FR_MODULUS_BE: [u8; 32] = [
+    0x30, 0x64, 0x4e, 0x72, 0xe1, 0x31, 0xa0, 0x29, 0xb8, 0x50, 0x45, 0xb6, 0x81, 0x81, 0x58, 0x5d,
+    0x28, 0x33, 0xe8, 0x48, 0x79, 0xb9, 0x70, 0x91, 0x43, 0xe1, 0xf5, 0x93, 0xf0, 0x00, 0x00, 0x01,
+];
+
+fn fr_modulus(env: &Env) -> U256 {
+    U256::from_be_bytes(env, &Bytes::from_array(env, &BN254_FR_MODULUS_BE))
+}
+
 impl From<U256> for Fr {
     fn from(value: U256) -> Self {
-        Self(value)
+        // Keep all Fr construction paths canonical by reducing modulo r here.
+        // Constructors and deserialization paths should route through this impl.
+        // Skip the expensive rem_euclid when value is already canonical (< r),
+        // which is always the case for host-returned arithmetic results.
+        let modulus = fr_modulus(value.env());
+        if value >= modulus {
+            Self(value.rem_euclid(&modulus))
+        } else {
+            Self(value)
+        }
     }
 }
 
@@ -273,7 +325,7 @@ impl TryFromVal<Env, Val> for Fr {
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
         let u = U256::try_from_val(env, val)?;
-        Ok(Fr(u))
+        Ok(u.into())
     }
 }
 
@@ -424,6 +476,7 @@ impl Bn254 {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::bytesn;
 
     #[test]
     fn test_g1affine_to_val() {
@@ -489,5 +542,167 @@ mod test {
         let rt: Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
+    }
+
+    #[test]
+    fn test_fr_eq_both_unreduced() {
+        // Both inputs are user-provided unreduced values representing the same field element
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let a = Fr::from_u256(r.add(&one)); // r+1 ≡ 1 (mod r)
+        let b = Fr::from_u256(one.clone()); // 1
+        assert_eq!(a, b);
+
+        // Both unreduced by different multiples of r
+        let two_r_plus_one = r.add(&r).add(&one);
+        let c = Fr::from_u256(two_r_plus_one); // 2r+1 ≡ 1 (mod r)
+        assert_eq!(a, c);
+        assert_eq!(b, c);
+    }
+
+    #[test]
+    fn test_fr_eq_unreduced_vs_zero() {
+        // value == r should reduce to 0
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let zero = U256::from_u32(&env, 0);
+
+        let a = Fr::from_u256(r);
+        let b = Fr::from_u256(zero);
+        assert_eq!(a, b);
+    }
+
+    #[test]
+    fn test_fr_reduced_value_unchanged() {
+        // value < r should be preserved as-is
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let val = r.sub(&U256::from_u32(&env, 1)); // r-1
+
+        let fr = Fr::from_u256(val.clone());
+        assert_eq!(fr.to_u256(), val);
+
+        // small values
+        let fr42 = Fr::from_u256(U256::from_u32(&env, 42));
+        assert_eq!(fr42.to_u256(), U256::from_u32(&env, 42));
+    }
+
+    #[test]
+    fn test_fr_from_bytes_reduces() {
+        // from_bytes should also reduce since it goes through From<U256>
+        let env = Env::default();
+        let one_fr = Fr::from_u256(U256::from_u32(&env, 1));
+
+        // BN254 r+1 as big-endian bytes
+        let fr_from_bytes = Fr::from_bytes(bytesn!(
+            &env,
+            0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000002
+        ));
+        assert_eq!(fr_from_bytes, one_fr);
+    }
+
+    #[test]
+    fn test_fr_try_from_val_reduces() {
+        // TryFromVal<Env, Val> path must also reduce
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        // Create an unreduced U256 value (r+1), convert to Val, then to Fr
+        let unreduced_u256 = r.add(&one);
+        let val: Val = unreduced_u256.into_val(&env);
+        let fr_from_val: Fr = val.into_val(&env);
+        let fr_one = Fr::from_u256(one);
+        assert_eq!(fr_from_val, fr_one);
+    }
+
+    #[test]
+    fn test_fr_u256_into_reduces() {
+        // Direct From<U256>::from / .into() path must reduce
+        let env = Env::default();
+        let r = fr_modulus(&env);
+        let one = U256::from_u32(&env, 1);
+
+        let fr: Fr = r.add(&one).into(); // r+1 via .into()
+        let fr_one: Fr = one.into();
+        assert_eq!(fr, fr_one);
+    }
+
+    // Bn254Fp validation tests
+
+    #[test]
+    fn test_bn254_fp_max_valid_accepted() {
+        let env = Env::default();
+        // p - 1 (last byte 0x46 instead of 0x47)
+        let mut p_minus_1 = BN254_FP_MODULUS_BE;
+        p_minus_1[BN254_FP_SERIALIZED_SIZE - 1] -= 1;
+        let _ = Bn254Fp::from_array(&env, &p_minus_1);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254: Invalid Fp")]
+    fn test_bn254_fp_at_modulus_panics() {
+        let env = Env::default();
+        let _ = Bn254Fp::from_array(&env, &BN254_FP_MODULUS_BE);
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254: Invalid Fp")]
+    fn test_bn254_fp_above_modulus_panics() {
+        let env = Env::default();
+        let mut above = BN254_FP_MODULUS_BE;
+        above[BN254_FP_SERIALIZED_SIZE - 1] += 1; // p + 1
+        let _ = Bn254Fp::from_array(&env, &above);
+    }
+
+    #[test]
+    fn test_bn254_fp_from_bytes_validates() {
+        let env = Env::default();
+        // Zero should be valid
+        let _ = Bn254Fp::from_bytes(BytesN::from_array(&env, &[0u8; BN254_FP_SERIALIZED_SIZE]));
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254: Invalid Fp")]
+    fn test_bn254_fp_from_bytes_rejects_modulus() {
+        let env = Env::default();
+        let _ = Bn254Fp::from_bytes(BytesN::from_array(&env, &BN254_FP_MODULUS_BE));
+    }
+
+    #[test]
+    #[should_panic(expected = "Bn254: Invalid Fp")]
+    fn test_bn254_fp_try_from_val_rejects_modulus() {
+        let env = Env::default();
+        let bytes = BytesN::from_array(&env, &BN254_FP_MODULUS_BE);
+        let val: Val = bytes.into_val(&env);
+        let _: Bn254Fp = val.into_val(&env);
+    }
+
+    #[test]
+    fn test_bn254_fp_modulus_matches_arkworks() {
+        use ark_bn254::Fq;
+        use ark_ff::{BigInteger, PrimeField};
+
+        let be_bytes = Fq::MODULUS.to_bytes_be();
+        assert_eq!(
+            be_bytes.as_slice(),
+            &BN254_FP_MODULUS_BE,
+            "BN254 Fp modulus does not match arkworks"
+        );
+    }
+
+    #[test]
+    fn test_bn254_fr_modulus_matches_arkworks() {
+        use ark_bn254::Fr as ArkFr;
+        use ark_ff::{BigInteger, PrimeField};
+
+        let be_bytes = ArkFr::MODULUS.to_bytes_be();
+        assert_eq!(
+            be_bytes.as_slice(),
+            &BN254_FR_MODULUS_BE,
+            "BN254 Fr modulus does not match arkworks"
+        );
     }
 }

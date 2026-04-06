@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -247,7 +246,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -326,7 +329,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -405,7 +412,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -444,16 +455,13 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).void_fn` instead")]
+#[allow(deprecated)]
 pub fn __Contract__void_fn__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::void_fn(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::void_fn(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -495,16 +503,13 @@ pub extern "C" fn __Contract__void_fn__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple1` instead")]
+#[allow(deprecated)]
 pub fn __Contract__tuple1__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::tuple1(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::tuple1(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -546,16 +551,13 @@ pub extern "C" fn __Contract__tuple1__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple2` instead")]
+#[allow(deprecated)]
 pub fn __Contract__tuple2__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::tuple2(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::tuple2(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -634,16 +636,15 @@ fn __Contract____69e94e814d1599c21b8ac3d759295183311eaabe224b3ad8865aaa5d01729db
         );
     }
 }
-#[cfg(test)]
 mod test {
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     mod wasm {
-        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x03~\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02\x19\x04\x01i\x012\x00\x00\x01i\x011\x00\x00\x01v\x01g\x00\x01\x01v\x01h\x00\x02\x03\x06\x05\x00\x00\x03\x04\x00\x05\x03\x01\x00\x10\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x07E\x07\x06memory\x02\x00\x07void_fn\x00\x04\x06tuple1\x00\x05\x06tuple2\x00\x08\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xc8\x03\x05\x13\x00\x02@ \x00B\xff\x01\x83B\x02Q\r\x00\x00\x0bB\x02\x0bx\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x01B\x027\x03\x08 \x00 \x01A\x08jA\x01\x10\x86\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x01A\x08jA\x01\x10\x87\x80\x80\x80\x00!\x00 \x01A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\x1d\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x1a\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\xff\x01\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x02\x10\x86\x80\x80\x80\x00 \x01)\x03\x00\"\x03B\xff\x01\x83B\x04R\r\x00 \x01)\x03\x08\"\x00\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x01 \x02A\x07G\r\x00 \x00B\x08\x87!\x00\x0c\x02\x0b\x00\x0b \x00\x10\x80\x80\x80\x80\x00!\x00\x0b\x02@\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00B\x08\x86B\x07\x84!\x00\x0c\x01\x0b \x00\x10\x81\x80\x80\x80\x00!\x00\x0b \x01 \x007\x03\x08 \x01 \x03B\x84\x80\x80\x80p\x837\x03\x00 \x01A\x02\x10\x87\x80\x80\x80\x00!\x00 \x01A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\x0b\t\x01\x00A\x80\x80\xc0\x00\x0b\x00\x00\xcb\x01\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07void_fn\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08void_arg\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06tuple1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03arg\x00\x00\x00\x03\xed\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06tuple2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03arg\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x07\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.84.0\x00\x00";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x01~\x01~`\x02~~\x01~`\x03~~~\x01~`\x03~\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02\x19\x04\x01i\x012\x00\x00\x01i\x011\x00\x00\x01v\x01g\x00\x01\x01v\x01h\x00\x02\x03\x06\x05\x00\x03\x04\x00\x00\x05\x03\x01\x00\x10\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x7f\x00A\x80\x80\xc0\x00\x0b\x07E\x07\x06memory\x02\x00\x06tuple1\x00\x04\x06tuple2\x00\x07\x07void_fn\x00\x08\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xc8\x03\x05x\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x01B\x027\x03\x08 \x00 \x01A\x08jA\x01\x10\x85\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x01A\x08jA\x01\x10\x86\x80\x80\x80\x00!\x00 \x01A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\x1d\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x1a\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\xff\x01\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x02\x10\x85\x80\x80\x80\x00 \x01)\x03\x00\"\x03B\xff\x01\x83B\x04R\r\x00 \x01)\x03\x08\"\x00\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x01 \x02A\x07G\r\x00 \x00B\x08\x87!\x00\x0c\x02\x0b\x00\x0b \x00\x10\x80\x80\x80\x80\x00!\x00\x0b\x02@\x02@ \x00B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x00B\x08\x86B\x07\x84!\x00\x0c\x01\x0b \x00\x10\x81\x80\x80\x80\x00!\x00\x0b \x01 \x007\x03\x08 \x01 \x03B\x84\x80\x80\x80p\x837\x03\x00 \x01A\x02\x10\x86\x80\x80\x80\x00!\x00 \x01A\x10j$\x80\x80\x80\x80\x00 \x00\x0b\x13\x00\x02@ \x00B\xff\x01\x83B\x02Q\r\x00\x00\x0bB\x02\x0b\x0b\t\x01\x00A\x80\x80\xc0\x00\x0b\x00\x00\xcb\x01\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06tuple1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03arg\x00\x00\x00\x03\xed\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06tuple2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03arg\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07void_fn\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08void_arg\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
         pub trait Contract {
-            fn void_fn(env: soroban_sdk::Env, void_arg: ()) -> ();
             fn tuple1(env: soroban_sdk::Env, arg: (u32,)) -> (u32,);
             fn tuple2(env: soroban_sdk::Env, arg: (u32, i64)) -> (u32, i64);
+            fn void_fn(env: soroban_sdk::Env, void_arg: ()) -> ();
         }
         ///Client is a client for calling the contract defined in "Contract".
         pub struct Client<'a> {
@@ -745,85 +746,6 @@ mod test {
             }
         }
         impl<'a> Client<'a> {
-            pub fn void_fn(&self, void_arg: &()) -> () {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        if self.allow_non_root_auth {
-                            self.env.mock_all_auths_allowing_non_root_auth();
-                        } else {
-                            self.env.mock_all_auths();
-                        }
-                    }
-                }
-                use soroban_sdk::{FromVal, IntoVal};
-                let res = self.env.invoke_contract(
-                    &self.address,
-                    &{
-                        #[allow(deprecated)]
-                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("void_fn");
-                        SYMBOL
-                    },
-                    ::soroban_sdk::Vec::from_array(&self.env, [void_arg.into_val(&self.env)]),
-                );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
-                res
-            }
-            pub fn try_void_fn(
-                &self,
-                void_arg: &(),
-            ) -> Result<
-                Result<
-                    (),
-                    <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-                >,
-                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-            > {
-                use core::ops::Not;
-                let old_auth_manager = self
-                    .env
-                    .in_contract()
-                    .not()
-                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
-                {
-                    if let Some(set_auths) = self.set_auths {
-                        self.env.set_auths(set_auths);
-                    }
-                    if let Some(mock_auths) = self.mock_auths {
-                        self.env.mock_auths(mock_auths);
-                    }
-                    if self.mock_all_auths {
-                        self.env.mock_all_auths();
-                    }
-                }
-                use soroban_sdk::{FromVal, IntoVal};
-                let res = self.env.try_invoke_contract(
-                    &self.address,
-                    &{
-                        #[allow(deprecated)]
-                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("void_fn");
-                        SYMBOL
-                    },
-                    ::soroban_sdk::Vec::from_array(&self.env, [void_arg.into_val(&self.env)]),
-                );
-                if let Some(old_auth_manager) = old_auth_manager {
-                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                }
-                res
-            }
             pub fn tuple1(&self, arg: &(u32,)) -> (u32,) {
                 use core::ops::Not;
                 let old_auth_manager = self
@@ -885,7 +807,11 @@ mod test {
                         self.env.mock_auths(mock_auths);
                     }
                     if self.mock_all_auths {
-                        self.env.mock_all_auths();
+                        if self.allow_non_root_auth {
+                            self.env.mock_all_auths_allowing_non_root_auth();
+                        } else {
+                            self.env.mock_all_auths();
+                        }
                     }
                 }
                 use soroban_sdk::{FromVal, IntoVal};
@@ -970,7 +896,11 @@ mod test {
                         self.env.mock_auths(mock_auths);
                     }
                     if self.mock_all_auths {
-                        self.env.mock_all_auths();
+                        if self.allow_non_root_auth {
+                            self.env.mock_all_auths_allowing_non_root_auth();
+                        } else {
+                            self.env.mock_all_auths();
+                        }
                     }
                 }
                 use soroban_sdk::{FromVal, IntoVal};
@@ -988,15 +918,93 @@ mod test {
                 }
                 res
             }
+            pub fn void_fn(&self, void_arg: &()) -> () {
+                use core::ops::Not;
+                let old_auth_manager = self
+                    .env
+                    .in_contract()
+                    .not()
+                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
+                {
+                    if let Some(set_auths) = self.set_auths {
+                        self.env.set_auths(set_auths);
+                    }
+                    if let Some(mock_auths) = self.mock_auths {
+                        self.env.mock_auths(mock_auths);
+                    }
+                    if self.mock_all_auths {
+                        if self.allow_non_root_auth {
+                            self.env.mock_all_auths_allowing_non_root_auth();
+                        } else {
+                            self.env.mock_all_auths();
+                        }
+                    }
+                }
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("void_fn");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(&self.env, [void_arg.into_val(&self.env)]),
+                );
+                if let Some(old_auth_manager) = old_auth_manager {
+                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
+                }
+                res
+            }
+            pub fn try_void_fn(
+                &self,
+                void_arg: &(),
+            ) -> Result<
+                Result<
+                    (),
+                    <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+                >,
+                Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+            > {
+                use core::ops::Not;
+                let old_auth_manager = self
+                    .env
+                    .in_contract()
+                    .not()
+                    .then(|| self.env.host().snapshot_auth_manager().unwrap());
+                {
+                    if let Some(set_auths) = self.set_auths {
+                        self.env.set_auths(set_auths);
+                    }
+                    if let Some(mock_auths) = self.mock_auths {
+                        self.env.mock_auths(mock_auths);
+                    }
+                    if self.mock_all_auths {
+                        if self.allow_non_root_auth {
+                            self.env.mock_all_auths_allowing_non_root_auth();
+                        } else {
+                            self.env.mock_all_auths();
+                        }
+                    }
+                }
+                use soroban_sdk::{FromVal, IntoVal};
+                let res = self.env.try_invoke_contract(
+                    &self.address,
+                    &{
+                        #[allow(deprecated)]
+                        const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("void_fn");
+                        SYMBOL
+                    },
+                    ::soroban_sdk::Vec::from_array(&self.env, [void_arg.into_val(&self.env)]),
+                );
+                if let Some(old_auth_manager) = old_auth_manager {
+                    self.env.host().set_auth_manager(old_auth_manager).unwrap();
+                }
+                res
+            }
         }
         ///Args is a type for building arg lists for functions defined in "Contract".
         pub struct Args;
         impl Args {
-            #[inline(always)]
-            #[allow(clippy::unused_unit)]
-            pub fn void_fn<'i>(void_arg: &'i ()) -> (&'i (),) {
-                (void_arg,)
-            }
             #[inline(always)]
             #[allow(clippy::unused_unit)]
             pub fn tuple1<'i>(arg: &'i (u32,)) -> (&'i (u32,),) {
@@ -1007,10 +1015,14 @@ mod test {
             pub fn tuple2<'i>(arg: &'i (u32, i64)) -> (&'i (u32, i64),) {
                 (arg,)
             }
+            #[inline(always)]
+            #[allow(clippy::unused_unit)]
+            pub fn void_fn<'i>(void_arg: &'i ()) -> (&'i (),) {
+                (void_arg,)
+            }
         }
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_native_void"]
     #[doc(hidden)]
     pub const test_native_void: test::TestDescAndFn = test::TestDescAndFn {
@@ -1040,7 +1052,6 @@ mod test {
         client.void_fn(&());
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_native_tuple1"]
     #[doc(hidden)]
     pub const test_native_tuple1: test::TestDescAndFn = test::TestDescAndFn {
@@ -1083,7 +1094,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_native_tuple2"]
     #[doc(hidden)]
     pub const test_native_tuple2: test::TestDescAndFn = test::TestDescAndFn {
@@ -1126,7 +1136,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_wasm_void"]
     #[doc(hidden)]
     pub const test_wasm_void: test::TestDescAndFn = test::TestDescAndFn {
@@ -1156,7 +1165,6 @@ mod test {
         client.void_fn(&());
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_wasm_tuple1"]
     #[doc(hidden)]
     pub const test_wasm_tuple1: test::TestDescAndFn = test::TestDescAndFn {
@@ -1199,7 +1207,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_wasm_tuple2"]
     #[doc(hidden)]
     pub const test_wasm_tuple2: test::TestDescAndFn = test::TestDescAndFn {

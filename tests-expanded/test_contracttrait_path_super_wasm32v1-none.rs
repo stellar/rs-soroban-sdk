@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contracttrait, Env};
 pub struct SuperPathTraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -101,12 +100,12 @@ pub mod submodule {
     #[deprecated(
         note = "use `ContractSuperPathClient::new(&env, &contract_id).super_path_method` instead"
     )]
+    #[allow(deprecated)]
     pub fn __ContractSuperPath__super_path_method__invoke_raw(
         env: soroban_sdk::Env,
     ) -> soroban_sdk::Val {
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<ContractSuperPath as super::SuperPathTrait>::super_path_method(&env),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <ContractSuperPath as super::SuperPathTrait>::super_path_method(&env),
             &env,
         )
     }

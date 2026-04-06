@@ -48,26 +48,40 @@
 //! ## Example: Defining and Implementing a Trait
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, contracttrait, Env};
+//! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
 //!
-//! // Define a trait with default implementations
+//! // A regular trait for admin access control - not exported as contract functions
+//! pub trait RequireAuthForPause {
+//!     fn require_auth_for_pause(env: &Env);
+//! }
+//!
+//! // Define a contracttrait with default implementations that require RequireAuthForPause
 //! #[contracttrait]
-//! pub trait Pausable {
+//! pub trait Pausable: RequireAuthForPause {
 //!     fn is_paused(env: &Env) -> bool {
 //!         env.storage().instance().has(&"paused")
 //!     }
 //!
 //!     fn pause(env: &Env) {
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().set(&"paused", &true);
 //!     }
 //!
 //!     fn unpause(env: &Env) {
+//!         Self::require_auth_for_pause(env);
 //!         env.storage().instance().remove(&"paused");
 //!     }
 //! }
 //!
 //! #[contract]
 //! pub struct MyContract;
+//!
+//! impl RequireAuthForPause for MyContract {
+//!     fn require_auth_for_pause(env: &Env) {
+//!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
+//!         admin.require_auth();
+//!     }
+//! }
 //!
 //! // Implement the trait - default functions are automatically exported
 //! #[contractimpl(contracttrait)]
@@ -75,96 +89,10 @@
 //!
 //! #[contractimpl]
 //! impl MyContract {
-//!     pub fn do_something(env: &Env) {
-//!         if Self::is_paused(env) {
-//!             panic!("contract is paused");
-//!         }
-//!         // ... rest of the function
-//!     }
-//! }
-//! # fn main() { }
-//! ```
-//!
-//! ## Example: Overriding Default Implementations
-//!
-//! Contracts can override specific functions while keeping the defaults for others:
-//!
-//! ```
-//! use soroban_sdk::{contract, contractimpl, contracttrait, Env};
-//!
-//! // Define a trait with default implementations
-//! #[contracttrait]
-//! pub trait Pausable {
-//!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&"paused")
+//!     pub fn __constructor(env: &Env, admin: Address) {
+//!         env.storage().instance().set(&"admin", &admin);
 //!     }
 //!
-//!     fn pause(env: &Env) {
-//!         env.storage().instance().set(&"paused", &true);
-//!     }
-//!
-//!     fn unpause(env: &Env) {
-//!         env.storage().instance().remove(&"paused");
-//!     }
-//! }
-//!
-//! #[contract]
-//! pub struct MyContract;
-//!
-//! // Implement the trait - override default implementations as needed
-//! #[contractimpl(contracttrait)]
-//! impl Pausable for MyContract {
-//!     // Override is_paused with custom logic that returns false when not set
-//!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().get(&"paused").unwrap_or(false)
-//!     }
-//!     // pause() and unpause() use the default implementations
-//! }
-//!
-//! #[contractimpl]
-//! impl MyContract {
-//!     pub fn do_something(env: &Env) {
-//!         if Self::is_paused(env) {
-//!             panic!("contract is paused");
-//!         }
-//!         // ... rest of the function
-//!     }
-//! }
-//! # fn main() { }
-//! ```
-//!
-//! ## Example: Using the Generated Client
-//!
-//! The generated `{TraitName}Client` can be used to call any contract that implements the trait:
-//!
-//! ```
-//! use soroban_sdk::{contract, contractimpl, contracttrait, Env};
-//!
-//! // Define a trait with default implementations
-//! #[contracttrait]
-//! pub trait Pausable {
-//!     fn is_paused(env: &Env) -> bool {
-//!         env.storage().instance().has(&"paused")
-//!     }
-//!
-//!     fn pause(env: &Env) {
-//!         env.storage().instance().set(&"paused", &true);
-//!     }
-//!
-//!     fn unpause(env: &Env) {
-//!         env.storage().instance().remove(&"paused");
-//!     }
-//! }
-//!
-//! #[contract]
-//! pub struct MyContract;
-//!
-//! // Implement the trait - default functions are automatically exported
-//! #[contractimpl(contracttrait)]
-//! impl Pausable for MyContract {}
-//!
-//! #[contractimpl]
-//! impl MyContract {
 //!     pub fn do_something(env: &Env) {
 //!         if Self::is_paused(env) {
 //!             panic!("contract is paused");
@@ -178,14 +106,228 @@
 //! # }
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
+//!     use soroban_sdk::{testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
 //!     let env = Env::default();
-//!     let contract_id = env.register(MyContract, ());
+//!     let admin = Address::generate(&env);
+//!     let contract_id = env.register(MyContract, (&admin,));
 //!     let client = PausableClient::new(&env, &contract_id);
 //!
 //!     assert!(!client.is_paused());
-//!     client.pause();
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "pause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).pause();
 //!     assert!(client.is_paused());
-//!     client.unpause();
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "unpause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).unpause();
+//!     assert!(!client.is_paused());
+//! }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
+//! ```
+//!
+//! ## Example: Overriding Default Implementations
+//!
+//! Contracts can override specific functions while keeping the defaults for others:
+//!
+//! ```
+//! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
+//!
+//! // A regular trait for admin access control - not exported as contract functions
+//! pub trait RequireAuthForPause {
+//!     fn require_auth_for_pause(env: &Env);
+//! }
+//!
+//! // Define a contracttrait with default implementations that require RequireAuthForPause
+//! #[contracttrait]
+//! pub trait Pausable: RequireAuthForPause {
+//!     fn is_paused(env: &Env) -> bool {
+//!         env.storage().instance().has(&"paused")
+//!     }
+//!
+//!     fn pause(env: &Env) {
+//!         Self::require_auth_for_pause(env);
+//!         env.storage().instance().set(&"paused", &true);
+//!     }
+//!
+//!     fn unpause(env: &Env) {
+//!         Self::require_auth_for_pause(env);
+//!         env.storage().instance().remove(&"paused");
+//!     }
+//! }
+//!
+//! #[contract]
+//! pub struct MyContract;
+//!
+//! impl RequireAuthForPause for MyContract {
+//!     fn require_auth_for_pause(env: &Env) {
+//!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
+//!         admin.require_auth();
+//!     }
+//! }
+//!
+//! // Implement the trait - override default implementations as needed
+//! #[contractimpl(contracttrait)]
+//! impl Pausable for MyContract {
+//!     // Override is_paused with custom logic that returns false when not set
+//!     fn is_paused(env: &Env) -> bool {
+//!         env.storage().instance().get(&"paused").unwrap_or(false)
+//!     }
+//!     // pause() and unpause() use the default implementations
+//! }
+//!
+//! #[contractimpl]
+//! impl MyContract {
+//!     pub fn __constructor(env: &Env, admin: Address) {
+//!         env.storage().instance().set(&"admin", &admin);
+//!     }
+//!
+//!     pub fn do_something(env: &Env) {
+//!         if Self::is_paused(env) {
+//!             panic!("contract is paused");
+//!         }
+//!         // ... rest of the function
+//!     }
+//! }
+//!
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//!     use soroban_sdk::{testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+//!     let env = Env::default();
+//!     let admin = Address::generate(&env);
+//!     let contract_id = env.register(MyContract, (&admin,));
+//!     let client = PausableClient::new(&env, &contract_id);
+//!
+//!     assert!(!client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "pause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).pause();
+//!     assert!(client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "unpause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).unpause();
+//!     assert!(!client.is_paused());
+//! }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
+//! ```
+//!
+//! ## Example: Using the Generated Client
+//!
+//! The generated `{TraitName}Client` can be used to call any contract that implements the trait:
+//!
+//! ```
+//! use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
+//!
+//! // A regular trait for admin access control - not exported as contract functions
+//! pub trait RequireAuthForPause {
+//!     fn require_auth_for_pause(env: &Env);
+//! }
+//!
+//! // Define a contracttrait with default implementations that require RequireAuthForPause
+//! #[contracttrait]
+//! pub trait Pausable: RequireAuthForPause {
+//!     fn is_paused(env: &Env) -> bool {
+//!         env.storage().instance().has(&"paused")
+//!     }
+//!
+//!     fn pause(env: &Env) {
+//!         Self::require_auth_for_pause(env);
+//!         env.storage().instance().set(&"paused", &true);
+//!     }
+//!
+//!     fn unpause(env: &Env) {
+//!         Self::require_auth_for_pause(env);
+//!         env.storage().instance().remove(&"paused");
+//!     }
+//! }
+//!
+//! #[contract]
+//! pub struct MyContract;
+//!
+//! impl RequireAuthForPause for MyContract {
+//!     fn require_auth_for_pause(env: &Env) {
+//!         let admin: Address = env.storage().instance().get(&"admin").unwrap();
+//!         admin.require_auth();
+//!     }
+//! }
+//!
+//! // Implement the trait - default functions are automatically exported
+//! #[contractimpl(contracttrait)]
+//! impl Pausable for MyContract {}
+//!
+//! #[contractimpl]
+//! impl MyContract {
+//!     pub fn __constructor(env: &Env, admin: Address) {
+//!         env.storage().instance().set(&"admin", &admin);
+//!     }
+//!
+//!     pub fn do_something(env: &Env) {
+//!         if Self::is_paused(env) {
+//!             panic!("contract is paused");
+//!         }
+//!         // ... rest of the function
+//!     }
+//! }
+//!
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//!     use soroban_sdk::{testutils::{Address as _, MockAuth, MockAuthInvoke}, IntoVal};
+//!     let env = Env::default();
+//!     let admin = Address::generate(&env);
+//!     let contract_id = env.register(MyContract, (&admin,));
+//!     let client = PausableClient::new(&env, &contract_id);
+//!
+//!     assert!(!client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "pause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).pause();
+//!     assert!(client.is_paused());
+//!     client.mock_auths(&[MockAuth {
+//!         address: &admin,
+//!         invoke: &MockAuthInvoke {
+//!             contract: &contract_id,
+//!             fn_name: "unpause",
+//!             args: ().into_val(&env),
+//!             sub_invokes: &[],
+//!         },
+//!     }]).unpause();
 //!     assert!(!client.is_paused());
 //! }
 //! # #[cfg(not(feature = "testutils"))]
