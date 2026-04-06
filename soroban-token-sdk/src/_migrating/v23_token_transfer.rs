@@ -16,9 +16,11 @@
 //! the exchange deposits for the token contracts, but is necessary for that.
 //!
 //! The necessary token modification is very minimal. Consider the following
-//! `transfer` implementation that still uses `Address` destination:
+//! `transfer` implementation that still uses `Address` destination. Note that
+//! this example will only compile pre-v26. If you are using v26 or later, you
+//! will need to use the updated implementation shown in the next code snippet.
 //!
-//! ```
+//! ```compile_fail
 //! use soroban_sdk::{Env, Address};
 //! use soroban_token_sdk::TokenUtils;
 //! // ... inside some token contract ...
