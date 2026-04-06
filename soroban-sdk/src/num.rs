@@ -1,4 +1,5 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
+use std::u64;
 
 use super::{
     env::internal::{
@@ -204,6 +205,16 @@ impl_num_wrapping_val_type!(U256, U256Val, U256Small);
 
 impl U256 {
     pub const BITS: u32 = 256;
+
+    /// Returns the smallest value that can be represented by this type (0).
+    pub fn min_value(env: &Env) -> Self {
+        Self::from_parts(env, 0, 0, 0, 0)
+    }
+
+    /// Returns the largest value that can be represented by this type (2^256 - 1).
+    pub fn max_value(env: &Env) -> Self {
+        Self::from_parts(env, u64::MAX, u64::MAX, u64::MAX, u64::MAX)
+    }
 
     fn is_zero(&self) -> bool {
         const ZERO: U256Val = U256Val::from_u32(0);
@@ -439,6 +450,16 @@ impl_num_wrapping_val_type!(I256, I256Val, I256Small);
 impl I256 {
     pub const BITS: u32 = 256;
 
+    /// Returns the smallest value that can be represented by this type (−2^255).
+    pub fn min_value(env: &Env) -> Self {
+        Self::from_parts(env, i64::MIN, 0, 0, 0)
+    }
+
+    /// Returns the largest value that can be represented by this type (2^255 - 1).
+    pub fn max_value(env: &Env) -> Self {
+        Self::from_parts(env, i64::MAX, u64::MAX, u64::MAX, u64::MAX)
+    }
+
     fn is_zero(&self) -> bool {
         const ZERO: I256Val = I256Val::from_i32(0);
         self.val.as_val().get_payload() == ZERO.as_val().get_payload()
@@ -447,11 +468,6 @@ impl I256 {
     fn is_neg_one(&self) -> bool {
         const NEG_ONE: I256Val = I256Val::from_i32(-1);
         self.val.as_val().get_payload() == NEG_ONE.as_val().get_payload()
-    }
-
-    /// Returns the minimum value of I256 (-2^255).
-    pub fn min_value(env: &Env) -> Self {
-        I256::from_parts(env, i64::MIN, 0, 0, 0)
     }
 
     pub fn from_i32(env: &Env, i: i32) -> Self {
@@ -867,5 +883,68 @@ mod test {
         let u3 = I256::from_i32(&env, -7);
         let u4 = I256::from_i32(&env, 4);
         assert_eq!(u3.rem_euclid(&u4), I256::from_i32(&env, 1));
+    }
+
+    #[test]
+    fn test_u256_min() {
+        let env = Env::default();
+
+        let min = U256::min_value(&env);
+        assert_eq!(min, U256::from_u32(&env, 0));
+
+        let one = U256::from_u32(&env, 1);
+        assert_eq!(min.checked_sub(&one), None);
+        assert!(min.checked_add(&one).is_some());
+    }
+
+    #[test]
+    fn test_u256_max() {
+        let env = Env::default();
+
+        let max = U256::max_value(&env);
+        assert_eq!(
+            max,
+            U256::from_parts(&env, u64::MAX, u64::MAX, u64::MAX, u64::MAX)
+        );
+
+        let u128_max = U256::from_u128(&env, u128::MAX);
+        assert!(max > u128_max);
+
+        let one = U256::from_u32(&env, 1);
+        assert_eq!(max.checked_add(&one), None);
+        assert!(max.checked_sub(&one).is_some());
+    }
+
+    #[test]
+    fn test_i256_min() {
+        let env = Env::default();
+
+        let min = I256::min_value(&env);
+        assert_eq!(min, I256::from_parts(&env, i64::MIN, 0, 0, 0));
+
+        let i128_min = I256::from_i128(&env, i128::MIN);
+        assert!(min < i128_min);
+
+        let one = I256::from_i32(&env, 1);
+        assert_eq!(min.checked_sub(&one), None);
+        assert!(min.checked_add(&one).is_some());
+    }
+
+    #[test]
+    fn test_i256_max() {
+        let env = Env::default();
+
+        let max = I256::max_value(&env);
+        assert_eq!(
+            max,
+            I256::from_parts(&env, i64::MAX, u64::MAX, u64::MAX, u64::MAX)
+        );
+
+        let i128_max = I256::from_i128(&env, i128::MAX);
+        assert!(max > i128_max);
+
+        let one = I256::from_i32(&env, 1);
+        assert_eq!(max.checked_add(&one), None);
+        assert!(max.checked_sub(&one).is_some());
     }
 }
