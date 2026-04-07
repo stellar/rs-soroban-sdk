@@ -1190,6 +1190,7 @@ pub mod data {
     pub use super::storage::Storage as Data;
 }
 pub mod auth;
+#[macro_use]
 mod bytes;
 pub mod crypto;
 pub mod deploy;
