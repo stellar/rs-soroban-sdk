@@ -3,7 +3,6 @@ use crate::xdr::ScVal;
 use crate::{
     crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val, U64Val},
-    impl_bytesn_repr_without_from_bytes,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
@@ -74,9 +73,9 @@ pub struct Fr(U256);
 #[repr(transparent)]
 pub struct Bn254Fp(BytesN<BN254_FP_SERIALIZED_SIZE>);
 
-impl_bytesn_repr_without_from_bytes!(Bn254G1Affine, BN254_G1_SERIALIZED_SIZE);
-impl_bytesn_repr_without_from_bytes!(Bn254G2Affine, BN254_G2_SERIALIZED_SIZE);
-impl_bytesn_repr_without_from_bytes!(Bn254Fp, BN254_FP_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bn254G1Affine, BN254_G1_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bn254G2Affine, BN254_G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bn254Fp, BN254_FP_SERIALIZED_SIZE);
 
 // BN254 base field modulus p in big-endian bytes.
 // p = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47
