@@ -1,3 +1,40 @@
+//! # Migrating from v25 to v26
+//!
+//! 1. Add support for [CAP-78: Host functions for performing limited TTL extensions](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0078.md).
+//!    New `extend_ttl_with_limits` methods on [`Persistent`], [`Instance`], and
+//!    [`Deployer`] provide bounded control over TTL extensions with `min_extension` and
+//!    `max_extension` parameters.
+//!
+//! 2. Add support for [CAP-82: Checked 256-bit integer arithmetic host functions](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0082.md).
+//!    New `checked_*` methods on [`U256`] and [`I256`] (`checked_add`, `checked_sub`,
+//!    `checked_mul`, `checked_div`, `checked_pow`, `checked_rem_euclid`, `checked_shl`,
+//!    `checked_shr`) return `Option` instead of panicking on overflow. Also adds
+//!    `min_value` and `max_value` methods on [`U256`] and [`I256`] to fetch the
+//!    value bounds of each type.
+//!
+//! 3. Add support for [CAP-80: Host functions for efficient ZK BN254 use cases](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0080.md).
+//!    [`BN254`] gains scalar field arithmetic (`Fr` `Add`/`Sub`/`Mul` traits, `pow`, `inv`),
+//!    multi-scalar multiplication (`g1_msm`), and curve validation (`g1_is_on_curve`).
+//!    [`BLS12381`] gains `g1_is_on_curve` and `g2_is_on_curve`.
+//!
+//! 4. Add support for [CAP-79: Host functions for muxed address strkey conversions](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0079.md).
+//!    New method [`MuxedAddress::to_strkey`] converts muxed addresses to Stellar strkey format.
+//!
+//! 5. Add support for [CAP-73: Allow SAC to create G-account balances](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0073.md).
+//!    Update the [`StellarAssetInterface`] to include the new method [`StellarAssetInterface::trust`]. This method creates
+//!    an unlimited trustline for the contract's asset, if applicable.
+//!
+//! [`Persistent`]: crate::storage::Persistent
+//! [`Instance`]: crate::storage::Instance
+//! [`Deployer`]: crate::deploy::Deployer
+//! [`U256`]: crate::U256
+//! [`I256`]: crate::I256
+//! [`MuxedAddress::to_strkey`]: crate::MuxedAddress::to_strkey
+//! [`StellarAssetInterface`]: crate::token::StellarAssetInterface
+//! [`StellarAssetInterface::trust`]: crate::token::StellarAssetInterface::trust
+//! [`BN254`]: crate::crypto::bn254
+//! [`BLS12381`]: crate::crypto::bls12_381
+//!
 //! # Migrating from v23 to v25
 //!
 //! 1. [`Events::all()` return type changed from `Vec<(Address, Vec<Val>, Val)>` to `ContractEvents`][v25_event_testing].
