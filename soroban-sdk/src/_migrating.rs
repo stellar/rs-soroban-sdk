@@ -8,7 +8,9 @@
 //! 2. Add support for [CAP-82: Checked 256-bit integer arithmetic host functions](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0082.md).
 //!    New `checked_*` methods on [`U256`] and [`I256`] (`checked_add`, `checked_sub`,
 //!    `checked_mul`, `checked_div`, `checked_pow`, `checked_rem_euclid`, `checked_shl`,
-//!    `checked_shr`) return `Option` instead of panicking on overflow.
+//!    `checked_shr`) return `Option` instead of panicking on overflow. Also adds
+//!    `min_value` and `max_value` methods on [`U256`] and [`I256`] to fetch the
+//!    value bounds of each type.
 //!
 //! 3. Add support for [CAP-80: Host functions for efficient ZK BN254 use cases](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0080.md).
 //!    [`BN254`] gains scalar field arithmetic (`Fr` `Add`/`Sub`/`Mul` traits, `pow`, `inv`),
