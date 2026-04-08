@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk, Bytes, BytesN};
-use crate::{bytes, vec, Env, Vec};
+use crate::{vec, Env, Vec};
 use soroban_sdk::contract;
 
 #[contract]

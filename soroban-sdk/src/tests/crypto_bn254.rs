@@ -1,6 +1,5 @@
 use crate::{self as soroban_sdk};
 use soroban_sdk::{
-    bytes, bytesn,
     crypto::bn254::{Bn254, Bn254G1Affine, Fr},
     vec, Env, Vec, U256,
 };
