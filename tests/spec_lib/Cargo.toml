@@ -12,7 +12,7 @@ crate-type = ["rlib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = {path = "../../soroban-sdk"}
+soroban-sdk = {path = "../../soroban-sdk", default-features = false}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}

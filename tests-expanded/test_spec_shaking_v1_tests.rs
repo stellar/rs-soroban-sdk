@@ -191,6 +191,14 @@ impl UsedParamStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedParamStruct\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x12UsedNestedInStruct\0\0"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -616,6 +624,14 @@ pub static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; 84usize] = UsedReturnEnum::spec_
 impl UsedReturnEnum {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eUsedReturnEnum\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedReturnEnum {
@@ -1126,6 +1142,11 @@ impl UsedParamIntEnum {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedParamIntEnum\0\0\0\x02\0\0\0\0\0\0\0\x01X\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01Y\0\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamIntEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1452,6 +1473,11 @@ impl UsedErrorEnum {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\rUsedErrorEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08NotFound\0\0\0\x01\0\0\0\0\0\0\0\x07Invalid\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
+}
 impl TryFrom<soroban_sdk::Error> for UsedErrorEnum {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -1605,6 +1631,13 @@ pub static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; 56usize] = UsedNestedInStruc
 impl UsedNestedInStruct {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedNestedInStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x07"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedInStruct {
@@ -1962,6 +1995,13 @@ pub static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; 52usize] = UsedVecElement::spec_
 impl UsedVecElement {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0eUsedVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedVecElement {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElement {
@@ -2326,6 +2366,11 @@ impl UsedMapKey {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nUsedMapKey\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02K1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02K2\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedMapKey {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapKey {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -2641,6 +2686,13 @@ pub static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; 48usize] = UsedMapVal::spec_xdr();
 impl UsedMapVal {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nUsedMapVal\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedMapVal {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapVal {
@@ -2999,6 +3051,13 @@ impl UsedOptionElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedOptionElement {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -3352,6 +3411,13 @@ pub static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; 48usize] = UsedResultOk::spec_xdr(
 impl UsedResultOk {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUsedResultOk\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedResultOk {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedResultOk {
@@ -3717,6 +3783,14 @@ impl UsedEventSimple {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0fUsedEventSimple\0\0\0\0\x01\0\0\0\x11used_event_simple\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::Event for UsedEventSimple {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -3737,6 +3811,7 @@ impl soroban_sdk::Event for UsedEventSimple {
 }
 impl UsedEventSimple {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -3789,6 +3864,11 @@ impl UsedEventTopicType {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\0\0\0\0\x04Mint\0\0\0\x02"
     }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicType {
     type Error = soroban_sdk::ConversionError;
@@ -4122,6 +4202,14 @@ impl UsedEventWithTopicType {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x16UsedEventWithTopicType\0\0\0\0\0\x01\0\0\0\x1aused_event_with_topic_type\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::Event for UsedEventWithTopicType {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -4145,6 +4233,7 @@ impl soroban_sdk::Event for UsedEventWithTopicType {
 }
 impl UsedEventWithTopicType {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -4198,6 +4287,14 @@ pub static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; 72usize] = UsedEventDataType:
 impl UsedEventDataType {
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01y\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataType {
@@ -4616,6 +4713,14 @@ impl UsedEventWithDataType {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x15UsedEventWithDataType\0\0\0\0\0\0\x01\0\0\0\x19used_event_with_data_type\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::Event for UsedEventWithDataType {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -4639,6 +4744,7 @@ impl soroban_sdk::Event for UsedEventWithDataType {
 }
 impl UsedEventWithDataType {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -4688,6 +4794,13 @@ pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; 84usize] = UsedEventTopicOu
 impl UsedEventTopicOuter {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedEventTopicInner\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicOuter {
@@ -5055,6 +5168,13 @@ pub static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; 56usize] = UsedEventTopicIn
 impl UsedEventTopicInner {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicInner\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicInner {
@@ -5427,6 +5547,14 @@ impl UsedEventWithNestedTopic {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x18UsedEventWithNestedTopic\0\0\0\x01\0\0\0\x1cused_event_with_nested_topic\0\0\0\x02\0\0\0\0\0\0\0\x04info\0\0\x07\xd0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::Event for UsedEventWithNestedTopic {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -5450,6 +5578,7 @@ impl soroban_sdk::Event for UsedEventWithNestedTopic {
 }
 impl UsedEventWithNestedTopic {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -5499,6 +5628,13 @@ pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; 84usize] = UsedEventDataOute
 impl UsedEventDataOuter {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x12UsedEventDataInner\0\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataOuter {
@@ -5864,6 +6000,13 @@ pub static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; 56usize] = UsedEventDataInne
 impl UsedEventDataInner {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataInner\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataInner {
@@ -6234,6 +6377,14 @@ impl UsedEventWithNestedData {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x17UsedEventWithNestedData\0\0\0\0\x01\0\0\0\x1bused_event_with_nested_data\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::Event for UsedEventWithNestedData {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -6257,6 +6408,7 @@ impl soroban_sdk::Event for UsedEventWithNestedData {
 }
 impl UsedEventWithNestedData {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -6309,6 +6461,11 @@ impl UsedRefTopicType {
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefTopicType\0\0\0\x02\0\0\0\0\0\0\0\x04Send\0\0\0\x01\0\0\0\0\0\0\0\x04Recv\0\0\0\x02"
     }
+}
+impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefTopicType {
     type Error = soroban_sdk::ConversionError;
@@ -6632,6 +6789,13 @@ pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; 76usize] = UsedRefDataType::spe
 impl UsedRefDataType {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedRefDataType\0\0\0\0\x01\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x10UsedRefDataInner"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataType {
@@ -6990,6 +7154,13 @@ pub static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; 52usize] = UsedRefDataInner::s
 impl UsedRefDataInner {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefDataInner\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataInner {
@@ -7357,6 +7528,14 @@ impl<'a> UsedEventWithRefs<'a> {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventWithRefs\0\0\0\0\0\0\x01\0\0\0\x14used_event_with_refs\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x10UsedRefTopicType\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x0fUsedRefDataType\0\0\0\0\0\0\0\0\x02"
     }
 }
+impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl<'a> soroban_sdk::Event for UsedEventWithRefs<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -7380,6 +7559,7 @@ impl<'a> soroban_sdk::Event for UsedEventWithRefs<'a> {
 }
 impl<'a> UsedEventWithRefs<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -7424,6 +7604,13 @@ pub static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; 52usize] = UsedTupleElement::s
 impl UsedTupleElement {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedTupleElement\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleElement {
@@ -7787,6 +7974,13 @@ impl UsedTupleReturnElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleReturnElement {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -8140,6 +8334,19 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
         self.val == other.val
     }
 }
+pub static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; 52usize] = UsedNonPubStruct::spec_xdr();
+impl UsedNonPubStruct {
+    pub const fn spec_xdr() -> [u8; 52usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedNonPubStruct\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNonPubStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -8486,6 +8693,17 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
     fn eq(&self, other: &UsedNonPubError) -> bool {
         true
     }
+}
+pub static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; 52usize] = UsedNonPubError::spec_xdr();
+impl UsedNonPubError {
+    pub const fn spec_xdr() -> [u8; 52usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0fUsedNonPubError\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
 }
 impl TryFrom<soroban_sdk::Error> for UsedNonPubError {
     type Error = soroban_sdk::Error;
@@ -9273,6 +9491,20 @@ mod wasm_imported {
             }
         }
     }
+    pub static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
+    impl StructA {
+        pub const fn spec_xdr() -> [u8; 60usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for StructA {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
@@ -9699,6 +9931,20 @@ mod wasm_imported {
             }
         }
     }
+    pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
+    impl StructB {
+        pub const fn spec_xdr() -> [u8; 60usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for StructB {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
         type Error = soroban_sdk::ConversionError;
         fn try_from_val(
@@ -10123,6 +10369,20 @@ mod wasm_imported {
                 }
                 cmp => cmp,
             }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
+    impl StructC {
+        pub const fn spec_xdr() -> [u8; 64usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for StructC {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
@@ -10554,6 +10814,20 @@ mod wasm_imported {
             }
         }
     }
+    pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
+    impl StructTupleA {
+        pub const fn spec_xdr() -> [u8; 64usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for StructTupleA {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -10943,6 +11217,20 @@ mod wasm_imported {
                 }
                 cmp => cmp,
             }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
+    impl StructTupleB {
+        pub const fn spec_xdr() -> [u8; 64usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for StructTupleB {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
@@ -11335,6 +11623,20 @@ mod wasm_imported {
                 }
                 cmp => cmp,
             }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
+    impl StructTupleC {
+        pub const fn spec_xdr() -> [u8; 64usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for StructTupleC {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
@@ -11732,6 +12034,17 @@ mod wasm_imported {
             let __arg1_discr = ::core::intrinsics::discriminant_value(other);
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
+    }
+    pub static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
+    impl EnumA {
+        pub const fn spec_xdr() -> [u8; 76usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for EnumA {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {}
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
         type Error = soroban_sdk::ConversionError;
@@ -12242,6 +12555,19 @@ mod wasm_imported {
                 }
                 _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
             }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
+    impl EnumB {
+        pub const fn spec_xdr() -> [u8; 96usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for EnumB {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -12871,6 +13197,20 @@ mod wasm_imported {
             }
         }
     }
+    pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
+    impl EnumC {
+        pub const fn spec_xdr() -> [u8; 120usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for EnumC {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -13426,6 +13766,17 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
+    impl EnumIntA {
+        pub const fn spec_xdr() -> [u8; 76usize] {
+            *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for EnumIntA {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {}
+    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -13779,6 +14130,17 @@ mod wasm_imported {
             let __arg1_discr = ::core::intrinsics::discriminant_value(other);
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
+    }
+    pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
+    impl EnumIntB {
+        pub const fn spec_xdr() -> [u8; 76usize] {
+            *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for EnumIntB {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {}
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
         type Error = soroban_sdk::ConversionError;
@@ -14134,6 +14496,17 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
+    impl EnumIntC {
+        pub const fn spec_xdr() -> [u8; 76usize] {
+            *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for EnumIntC {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {}
+    }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
         type Error = soroban_sdk::ConversionError;
         #[inline(always)]
@@ -14488,6 +14861,17 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    pub static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
+    impl ErrorA {
+        pub const fn spec_xdr() -> [u8; 76usize] {
+            *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ErrorA {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {}
+    }
     impl TryFrom<soroban_sdk::Error> for ErrorA {
         type Error = soroban_sdk::Error;
         #[inline(always)]
@@ -14663,6 +15047,17 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    pub static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
+    impl ErrorB {
+        pub const fn spec_xdr() -> [u8; 76usize] {
+            *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ErrorB {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {}
+    }
     impl TryFrom<soroban_sdk::Error> for ErrorB {
         type Error = soroban_sdk::Error;
         #[inline(always)]
@@ -14837,6 +15232,17 @@ mod wasm_imported {
             let __arg1_discr = ::core::intrinsics::discriminant_value(other);
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
+    }
+    pub static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
+    impl ErrorC {
+        pub const fn spec_xdr() -> [u8; 76usize] {
+            *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ErrorC {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {}
     }
     impl TryFrom<soroban_sdk::Error> for ErrorC {
         type Error = soroban_sdk::Error;
@@ -15019,6 +15425,14 @@ mod wasm_imported {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
         }
     }
+    impl soroban_sdk::SpecShakingMarker for EventA {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
     impl soroban_sdk::Event for EventA {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
             use soroban_sdk::IntoVal;
@@ -15046,6 +15460,7 @@ mod wasm_imported {
     }
     impl EventA {
         pub fn publish(&self, env: &soroban_sdk::Env) {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -15130,6 +15545,15 @@ mod wasm_imported {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
         }
     }
+    impl soroban_sdk::SpecShakingMarker for EventB {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
     impl soroban_sdk::Event for EventB {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
             use soroban_sdk::IntoVal;
@@ -15161,6 +15585,7 @@ mod wasm_imported {
     }
     impl EventB {
         pub fn publish(&self, env: &soroban_sdk::Env) {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -15244,6 +15669,15 @@ mod wasm_imported {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
         }
     }
+    impl soroban_sdk::SpecShakingMarker for EventC {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
     impl soroban_sdk::Event for EventC {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
             use soroban_sdk::IntoVal;
@@ -15271,6 +15705,7 @@ mod wasm_imported {
     }
     impl EventC {
         pub fn publish(&self, env: &soroban_sdk::Env) {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -15316,6 +15751,13 @@ pub static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; 48usize] = UnusedStruct::spec_xdr(
 impl UnusedStruct {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUnusedStruct\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedStruct {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedStruct {
@@ -15680,6 +16122,13 @@ pub static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; 72usize] = UnusedEnum::spec_xdr();
 impl UnusedEnum {
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nUnusedEnum\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEnum {
@@ -16145,6 +16594,11 @@ impl UnusedIntEnum {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\rUnusedIntEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02U1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02U2\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedIntEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -16474,6 +16928,14 @@ impl UnusedEvent {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0bUnusedEvent\0\0\0\0\x01\0\0\0\x0cunused_event\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04\0\0\0\0\0\0\0\x02"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UnusedEvent {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::Event for UnusedEvent {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -16494,6 +16956,7 @@ impl soroban_sdk::Event for UnusedEvent {
 }
 impl UnusedEvent {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -16544,6 +17007,13 @@ pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; 60usize] =
 impl UnusedNonContractFnParam {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x18UnusedNonContractFnParam\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnParam {
@@ -16913,6 +17383,13 @@ impl UnusedNonContractFnReturn {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x19UnusedNonContractFnReturn\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnReturn {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -17268,6 +17745,19 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
         self.x == other.x
     }
 }
+pub static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; 56usize] = UnusedNonPubStruct::spec_xdr();
+impl UnusedNonPubStruct {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UnusedNonPubStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonPubStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -17614,6 +18104,17 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
     fn eq(&self, other: &UnusedNonPubError) -> bool {
         true
     }
+}
+pub static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; 56usize] = UnusedNonPubError::spec_xdr();
+impl UnusedNonPubError {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x11UnusedNonPubError\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
 }
 impl TryFrom<soroban_sdk::Error> for UnusedNonPubError {
     type Error = soroban_sdk::Error;

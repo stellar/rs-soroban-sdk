@@ -1,5 +1,5 @@
 use crate::crypto::CryptoHazmat;
-use crate::{bytesn, vec, Env, Symbol, U256};
+use crate::{vec, Env, Symbol, U256};
 
 // This test uses dummy MDS matrix and round constants with a minimal number of
 // rounds (t=2, rounds_f=2, rounds_p=1) as a sanity check against the
