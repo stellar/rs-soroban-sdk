@@ -4,7 +4,30 @@
     "nonce": 0,
     "mux_id": 0
   },
-  "auth": [],
+  "auth": [
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+        {
+          "function": {
+            "create_contract_v2_host_fn": {
+              "contract_id_preimage": {
+                "address": {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                  "salt": "0000000000000000000000000000000000000000000000000000000000000000"
+                }
+              },
+              "executable": {
+                "wasm": "082ef6678547237e331161a8487a2eb11aa037114fde60f36dae3455ad72b4d3"
+              },
+              "constructor_args": []
+            }
+          },
+          "sub_invocations": []
+        }
+      ]
+    ]
+  ],
   "ledger": {
     "protocol_version": 26,
     "sequence_number": 0,

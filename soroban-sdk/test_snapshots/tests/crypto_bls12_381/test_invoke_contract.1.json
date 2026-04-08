@@ -5,6 +5,28 @@
     "mux_id": 0
   },
   "auth": [
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+        {
+          "function": {
+            "create_contract_v2_host_fn": {
+              "contract_id_preimage": {
+                "address": {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                  "salt": "0000000000000000000000000000000000000000000000000000000000000000"
+                }
+              },
+              "executable": {
+                "wasm": "1d9f19d20f3d2932f1753ac486e0126db2ca1df4d58ed6ac0c26be6793dc018d"
+              },
+              "constructor_args": []
+            }
+          },
+          "sub_invocations": []
+        }
+      ]
+    ],
     [],
     [],
     []
