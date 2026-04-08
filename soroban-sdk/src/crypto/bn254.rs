@@ -475,7 +475,6 @@ impl Bn254 {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::bytesn;
 
     #[test]
     fn test_g1affine_to_val() {
