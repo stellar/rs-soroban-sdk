@@ -17,8 +17,9 @@
 //!
 //! The necessary token modification is very minimal. Consider the following
 //! `transfer` implementation that still uses `Address` destination. Note that
-//! this example will only compile pre-v26. If you are using v26 or later, you
-//! will need to use the updated implementation shown in the next code snippet.
+//! this example will only compile pre-v26 because the old event publishing
+//! helper used below is no longer available. If you are using v26 or later,
+//! use the updated implementation shown in the next code snippet.
 //!
 //! ```compile_fail
 //! use soroban_sdk::{Env, Address};
@@ -29,7 +30,8 @@
 //!    from.require_auth();
 //!    // Token-specific implementation of balance movement.
 //!    token_impl::move_balance(&env, &from, &to, amount);
-//!    // Publish the event.
+//!    // Publish the event using the pre-v26 helper API.
+//!    // In v26+, use the event type from `soroban_token_sdk::events` instead.
 //!    TokenUtils::new(&env).events().transfer(from, to, amount);
 //! }
 //!
