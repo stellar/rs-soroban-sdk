@@ -41,7 +41,6 @@ jobs:
       fail-fast: false
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
-        experimental_spec_shaking_v2: [true, false]
         # Exclude examples that depend on crates.io packages that transitively
         # depend on soroban-sdk (e.g. soroban-poseidon). Cargo does not provide
         # a way to override the version of soroban-sdk required as a transitive
@@ -103,17 +102,6 @@ jobs:
           done
         done
 
-    - name: Enable experimental_spec_shaking_v2 feature
-      if: matrix.experimental_spec_shaking_v2
-      working-directory: soroban-examples
-      run: |
-        find . -name Cargo.toml | while read -r file; do
-          # Add feature to path-patched entries with existing features
-          sed -i '/soroban-sdk = {.*path = /s|features = \[|features = ["experimental_spec_shaking_v2", |' "$file"
-          # Add features field to path-patched entries without features
-          sed -i '/soroban-sdk = {.*path = /{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' "$file"
-        done
-
     - name: Diff
       run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
 
@@ -125,7 +113,7 @@ jobs:
 
     - name: Set artifact name
       id: artifact-name
-      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')${{ matrix.experimental_spec_shaking_v2 && '-spec-shaking-v2' || '' }}" | tee -a $GITHUB_OUTPUT
+      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
       uses: actions/upload-artifact@v4
