@@ -134,9 +134,28 @@ pub mod reexports_for_macros {
     pub use ctor;
 }
 
+/// `debug_assert_in_contract!` asserts that the contract is currently executing within a
+/// contract. The macro expands to an assertion when testutils are enabled or in tests,
+/// otherwise it expands to nothing.
+macro_rules! debug_assert_in_contract {
+    ($env:expr $(,)?) => {{
+        {
+            #[cfg(any(test, feature = "testutils"))]
+            assert!(
+                ($env).in_contract(),
+                "this function is not accessible outside of a contract, wrap \
+                the call with `env.as_contract()` to access it from a \
+                particular contract"
+            );
+        }
+    }};
+}
+
+// For internal use, use `debug_assert_in_contract!` instead.
 /// Assert in contract asserts that the contract is currently executing within a
 /// contract. The macro maps to code when testutils are enabled or in tests,
 /// otherwise maps to nothing.
+#[deprecated(note = "this macro is deprecated and will be removed in a future release")]
 #[macro_export]
 macro_rules! assert_in_contract {
     ($env:expr $(,)?) => {{
@@ -1190,6 +1209,7 @@ pub mod data {
     pub use super::storage::Storage as Data;
 }
 pub mod auth;
+#[macro_use]
 mod bytes;
 pub mod crypto;
 pub mod deploy;

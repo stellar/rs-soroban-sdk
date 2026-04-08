@@ -26,12 +26,19 @@
 //! [`Address::from_payload`][crate::Address::from_payload]) that are easy to
 //! misuse. Use with care.
 //!
-//! ## `experimental_spec_shaking_v2`
+//! ## `experimental_spec_shaking_v2` (default)
 //!
 //! Enables v2 spec shaking, an improved mechanism for controlling which type,
-//! event, and function definitions appear in a contract's spec.
+//! event, and function definitions appear in a contract's spec. This feature is
+//! enabled by default.
 //!
-//! ### Spec Shaking v1 (default, no feature flag)
+//! This feature is no longer experimental. It was previously introduced as an
+//! experimental opt-in feature and is now being rolled out as the default. The
+//! original feature name `experimental_spec_shaking_v2` is preserved for
+//! backwards compatibility. The feature is expected to be removed in v27, at
+//! which point spec shaking v2 will be always on.
+//!
+//! ### Spec Shaking v1 (disabled by default, use `default-features = false`)
 //!
 //! - Lib imports (via `contractimport!`): exported
 //! - Wasm imports (via `contractimport!`): not exported
@@ -40,7 +47,7 @@
 //! - All events: exported
 //! - All functions: exported
 //!
-//! ### Spec Shaking v2 (this feature)
+//! ### Spec Shaking v2 (default)
 //!
 //! - Everything exported (types, events, functions, imports)
 //! - Unused entries shaken out using dead code / spec elimination
