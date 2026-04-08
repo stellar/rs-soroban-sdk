@@ -86,7 +86,7 @@ impl Storage {
     /// This should be used for data that requires persistency, such as token
     /// balances, user properties etc.
     pub fn persistent(&self) -> Persistent {
-        assert_in_contract!(self.env);
+        debug_assert_in_contract!(self.env);
 
         Persistent {
             storage: self.clone(),
@@ -105,7 +105,7 @@ impl Storage {
     /// This should be used for data that needs to only exist for a limited
     /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
-        assert_in_contract!(self.env);
+        debug_assert_in_contract!(self.env);
 
         Temporary {
             storage: self.clone(),
@@ -138,7 +138,7 @@ impl Storage {
     /// operates on etc. Do not use this with any data that can scale in
     /// unbounded fashion (such as user balances).
     pub fn instance(&self) -> Instance {
-        assert_in_contract!(self.env);
+        debug_assert_in_contract!(self.env);
 
         Instance {
             storage: self.clone(),
