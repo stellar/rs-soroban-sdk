@@ -267,8 +267,36 @@ impl CryptoHazmat {
 
     /// Performs a Poseidon permutation on the input state vector.
     ///
-    /// WARNING: This is a low-level permutation function. Most users should use
-    /// the higher-level `poseidon_hash` function instead.
+    /// This is a **low-level** permutation primitive. For safe, user-friendly
+    /// hash functions, use
+    /// [`rs-soroban-poseidon`](https://github.com/stellar/rs-soroban-poseidon)
+    /// instead, which provides input validation and standard hash constructions.
+    ///
+    /// # Field elements and `U256`
+    ///
+    /// All `U256` values (`input`, `mds`, `round_constants`) are generic
+    /// representations of field elements in the prime field specified by
+    /// `field`. If a `U256` value exceeds the field modulus, it is **silently
+    /// reduced mod the field order**. Two distinct `U256` inputs that reduce
+    /// to the same field element will produce the same output, leading to
+    /// unintended collisions. Callers must ensure inputs are already in the
+    /// valid field range.
+    ///
+    /// # Parameters
+    ///
+    /// - `input`: state vector of `t` field elements.
+    /// - `field`: the prime field (`"BLS12_381"` or `"BN254"`).
+    /// - `t`: state size (number of field elements).
+    /// - `d`: S-box degree (5 for BLS12-381 and BN254).
+    /// - `rounds_f`: number of full rounds (must be even).
+    /// - `rounds_p`: number of partial rounds.
+    /// - `mds`: `t`-by-`t` MDS matrix as `Vec<Vec<U256>>`.
+    /// - `round_constants`: `(rounds_f + rounds_p)`-by-`t` matrix of round
+    ///   constants as `Vec<Vec<U256>>`.
+    ///
+    /// # Panics
+    ///
+    /// If any dimension is inconsistent or if `field` is unsupported.
     pub fn poseidon_permutation(
         &self,
         input: &Vec<U256>,
@@ -299,8 +327,38 @@ impl CryptoHazmat {
 
     /// Performs a Poseidon2 permutation on the input state vector.
     ///
-    /// WARNING: This is a low-level permutation function. Most users should use
-    /// the higher-level `poseidon2_hash` function instead.
+    /// This is a **low-level** permutation primitive. For safe, user-friendly
+    /// hash functions, use
+    /// [`rs-soroban-poseidon`](https://github.com/stellar/rs-soroban-poseidon)
+    /// instead, which provides input validation and standard hash constructions.
+    ///
+    /// # Field elements and `U256`
+    ///
+    /// All `U256` values (`input`, `mat_internal_diag_m_1`, `round_constants`)
+    /// are generic representations of field elements in the prime field
+    /// specified by `field`. If a `U256` value exceeds the field modulus, it
+    /// is **silently reduced mod the field order**. Two distinct `U256` inputs
+    /// that reduce to the same field element will produce the same output,
+    /// leading to unintended collisions. Callers must ensure inputs are
+    /// already in the valid field range.
+    ///
+    /// # Parameters
+    ///
+    /// - `input`: state vector of `t` field elements.
+    /// - `field`: the prime field (`"BLS12_381"` or `"BN254"`).
+    /// - `t`: state size (number of field elements). Only
+    ///   `t` ∈ {2, 3, 4, 8, 12, 16, 20, 24} are supported.
+    /// - `d`: S-box degree (5 for BLS12-381 and BN254).
+    /// - `rounds_f`: number of full rounds (must be even).
+    /// - `rounds_p`: number of partial rounds.
+    /// - `mat_internal_diag_m_1`: diagonal of the internal matrix minus the
+    ///   identity, as `Vec<U256>` of length `t`.
+    /// - `round_constants`: `(rounds_f + rounds_p)`-by-`t` matrix of round
+    ///   constants as `Vec<Vec<U256>>`.
+    ///
+    /// # Panics
+    ///
+    /// If any dimension is inconsistent or if `field` is unsupported.
     pub fn poseidon2_permutation(
         &self,
         input: &Vec<U256>,
