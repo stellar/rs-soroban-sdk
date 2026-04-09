@@ -20683,10 +20683,12 @@ mod test {
         let markers = soroban_spec::shaking::find_all(WASM_NO_ENV);
         if !markers.is_empty() {
             {
-                ::core::panicking::panic_fmt(format_args!(
-                    "no markers should be present without experimental_spec_shaking_v2, found {0}",
-                    markers.len(),
-                ));
+                ::core::panicking::panic_fmt(
+                    format_args!(
+                        "no markers should be present when experimental_spec_shaking_v2 is disabled due to missing env var, found {0}",
+                        markers.len(),
+                    ),
+                );
             }
         }
         let all_names: HashSet<std::string::String> =

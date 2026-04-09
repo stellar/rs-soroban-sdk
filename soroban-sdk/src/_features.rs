@@ -142,7 +142,7 @@
 //!
 //! When the `experimental_spec_shaking_v2` feature is enabled but the env var
 //! is not set, the SDK falls back to spec shaking v1 behavior and emits a
-//! compiler warning on wasm targets. This allows contracts to build with plain
+//! build warning on wasm targets. This allows contracts to build with plain
 //! `cargo build` without errors, while still benefiting from v2 when built
 //! with compatible tooling.
 //!

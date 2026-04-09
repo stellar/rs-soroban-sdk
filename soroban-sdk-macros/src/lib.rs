@@ -86,7 +86,7 @@ pub(crate) fn default_crate_path() -> Path {
 /// at the time the macro expands (i.e. when the consumer crate is compiled).
 fn spec_shaking_v2_enabled() -> bool {
     cfg!(feature = "experimental_spec_shaking_v2")
-        && std::env::var("SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2").is_ok()
+        && option_env!("SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2").is_some()
 }
 
 #[derive(Debug, FromMeta)]

@@ -7,7 +7,7 @@ use std::vec::Vec;
 const WASM: &[u8] =
     include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v2.wasm");
 
-// This crate is built twice during `make build-test-wasm`. The first time, it is built separately
+// This crate is built twice during `make build-test-wasms`. The first time, it is built separately
 // without the spec shaking v2 env variable set, and renamed to test_spec_shaking_v2_no_env.wasm.
 const WASM_NO_ENV: &[u8] =
     include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v2_no_env.wasm");
@@ -178,7 +178,7 @@ fn test_spec_shaking_v2_no_env_fallback_to_v1() {
     let markers = soroban_spec::shaking::find_all(WASM_NO_ENV);
     assert!(
         markers.is_empty(),
-        "no markers should be present without experimental_spec_shaking_v2, found {}",
+        "no markers should be present when experimental_spec_shaking_v2 is disabled due to missing env var, found {}",
         markers.len()
     );
 
