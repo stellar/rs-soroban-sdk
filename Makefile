@@ -30,9 +30,21 @@ build: build-libs build-test-wasms
 build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
+# First, build crate used as WASM deps to other test crates.
+# Then, build `test_spec_shaking_v2` without the spec shaking v2 env var to verify
+# that it falls back to spec_shaking_v1 behaviour.
+# Then, build the test wasms with MSRV by default, with some meta disabled for
+# binary stability for tests.
 build-test-wasms: fmt
-	# Build the test wasms with MSRV by default, with some meta disabled for
-	# binary stability for tests.
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+		cargo build --release --target wasm32v1-none --package test_spec_import
+	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+		cargo build --release --target wasm32v1-none --package test_spec_shaking_v2
+	cp target/wasm32v1-none/release/test_spec_shaking_v2.wasm \
+		target/wasm32v1-none/release/test_spec_shaking_v2_no_env.wasm
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
