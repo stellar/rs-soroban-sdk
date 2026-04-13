@@ -105,14 +105,8 @@ macro_rules! bytesn {
 /// Internal macro that generates all `BytesN` wrapper methods and trait impls
 /// *except* `from_bytes`. Types using this macro must provide their own
 /// `from_bytes(BytesN<$size>) -> Self` (e.g. to add validation).
-///
-/// This macro exists for backward compatibility: `impl_bytesn_repr` was
-/// accidentally exported via `#[macro_export]` and cannot be changed until the
-/// next protocol boundary. Once we remove the `#[macro_export]` from
-/// `impl_bytesn_repr`, this macro should be consolidated back into it.
 #[doc(hidden)]
-#[macro_export]
-macro_rules! impl_bytesn_repr_without_from_bytes {
+macro_rules! impl_bytesn_repr {
     ($elem: ident, $size: expr) => {
         impl $elem {
             pub fn into_bytes(self) -> BytesN<$size> {
@@ -228,25 +222,6 @@ macro_rules! impl_bytesn_repr_without_from_bytes {
                 write!(f, "{}({:?})", stringify!($elem), self.to_array())
             }
         }
-    };
-}
-
-/// Generates all `BytesN` wrapper methods and trait impls including a default
-/// `from_bytes` that wraps the bytes without validation.
-///
-/// NOTE: This macro was not intended to be exported. Remove the
-/// `#[macro_export]` at the next protocol boundary, and consolidate
-/// `impl_bytesn_repr_without_from_bytes` back into this macro.
-#[macro_export]
-macro_rules! impl_bytesn_repr {
-    ($elem: ident, $size: expr) => {
-        impl $elem {
-            pub fn from_bytes(bytes: BytesN<$size>) -> Self {
-                Self(bytes)
-            }
-        }
-
-        impl_bytesn_repr_without_from_bytes!($elem, $size);
     };
 }
 

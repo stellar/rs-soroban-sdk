@@ -1,4 +1,4 @@
-use crate::{bytesn, crypto::Hash, Env};
+use crate::{crypto::Hash, Env};
 
 #[test]
 fn test_recover_key_ecdsa_secp256k1() {

@@ -26,12 +26,19 @@
 //! [`Address::from_payload`][crate::Address::from_payload]) that are easy to
 //! misuse. Use with care.
 //!
-//! ## `experimental_spec_shaking_v2`
+//! ## `experimental_spec_shaking_v2` (default)
 //!
 //! Enables v2 spec shaking, an improved mechanism for controlling which type,
-//! event, and function definitions appear in a contract's spec.
+//! event, and function definitions appear in a contract's spec. This feature is
+//! enabled by default.
 //!
-//! ### Spec Shaking v1 (default, no feature flag)
+//! This feature is no longer experimental. It was previously introduced as an
+//! experimental opt-in feature and is now being rolled out as the default. The
+//! original feature name `experimental_spec_shaking_v2` is preserved for
+//! backwards compatibility. The feature is expected to be removed in v27, at
+//! which point spec shaking v2 will be always on.
+//!
+//! ### Spec Shaking v1 (disabled by default, use `default-features = false`)
 //!
 //! - Lib imports (via `contractimport!`): exported
 //! - Wasm imports (via `contractimport!`): not exported
@@ -40,7 +47,7 @@
 //! - All events: exported
 //! - All functions: exported
 //!
-//! ### Spec Shaking v2 (this feature)
+//! ### Spec Shaking v2 (default)
 //!
 //! - Everything exported (types, events, functions, imports)
 //! - Unused entries shaken out using dead code / spec elimination
@@ -128,11 +135,16 @@
 //!
 //! ### Build Requirements
 //!
-//! This feature requires building with `stellar contract build` from
-//! `stellar-cli` v25.2.0 or newer. Building directly with `cargo build` will
-//! produce a build error unless the
-//! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable is
-//! set.
+//! Spec shaking v2 requires the
+//! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable to
+//! be set at build time. This is automatically set by `stellar contract build`
+//! from `stellar-cli` v25.2.0 or newer.
+//!
+//! When the `experimental_spec_shaking_v2` feature is enabled but the env var
+//! is not set, the SDK falls back to spec shaking v1 behavior and emits a
+//! build warning on wasm targets. This allows contracts to build with plain
+//! `cargo build` without errors, while still benefiting from v2 when built
+//! with compatible tooling.
 //!
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror

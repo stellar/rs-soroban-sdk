@@ -3,7 +3,6 @@ use crate::xdr::ScVal;
 use crate::{
     crypto::utils::BigInt,
     env::internal::{self, BytesObject, U256Val, U64Val},
-    impl_bytesn_repr_without_from_bytes,
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
@@ -116,10 +115,10 @@ pub type Fp2 = Bls12381Fp2;
 #[repr(transparent)]
 pub struct Fr(U256);
 
-impl_bytesn_repr_without_from_bytes!(Bls12381G1Affine, G1_SERIALIZED_SIZE);
-impl_bytesn_repr_without_from_bytes!(Bls12381G2Affine, G2_SERIALIZED_SIZE);
-impl_bytesn_repr_without_from_bytes!(Bls12381Fp, FP_SERIALIZED_SIZE);
-impl_bytesn_repr_without_from_bytes!(Bls12381Fp2, FP2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381G1Affine, G1_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381G2Affine, G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381Fp, FP_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bls12381Fp2, FP2_SERIALIZED_SIZE);
 
 // BLS12-381 base field modulus p in big-endian bytes.
 // p = 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab
@@ -603,6 +602,14 @@ impl Bls12_381 {
         res.into()
     }
 
+    /// Checks if a G1 point is on the BLS12-381 curve (no subgroup check).
+    pub fn g1_is_on_curve(&self, point: &G1Affine) -> bool {
+        let env = self.env();
+        internal::Env::bls12_381_g1_is_on_curve(env, point.to_object())
+            .unwrap_infallible()
+            .into()
+    }
+
     /// Adds two points `p0` and `p1` in G1.
     pub fn g1_add(&self, p0: &G1Affine, p1: &G1Affine) -> G1Affine {
         let env = self.env();
@@ -669,6 +676,14 @@ impl Bls12_381 {
         let res = internal::Env::bls12_381_check_g2_is_in_subgroup(env, p.to_object())
             .unwrap_infallible();
         res.into()
+    }
+
+    /// Checks if a G2 point is on the BLS12-381 curve (no subgroup check).
+    pub fn g2_is_on_curve(&self, point: &G2Affine) -> bool {
+        let env = self.env();
+        internal::Env::bls12_381_g2_is_on_curve(env, point.to_object())
+            .unwrap_infallible()
+            .into()
     }
 
     /// Adds two points `p0` and `p1` in G2.
@@ -792,7 +807,6 @@ impl Bls12_381 {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::bytesn;
 
     #[test]
     fn test_g1affine_to_val() {

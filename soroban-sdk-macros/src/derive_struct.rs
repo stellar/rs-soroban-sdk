@@ -8,7 +8,10 @@ use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs, map_type::map_type, shaking, spec_shaking_v2_enabled,
+    DEFAULT_XDR_RW_LIMITS,
+};
 
 // TODO: Add field attribute for including/excluding fields in types.
 // TODO: Better handling of partial types and types without all their fields and
@@ -107,9 +110,9 @@ pub fn derive_type_struct(
         None
     };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+    // SpecShakingMarker impl - only generated when spec is true and
+    // spec shaking v2 is enabled.
+    let spec_shaking_impl = if spec_shaking_v2_enabled() {
         spec_xdr.as_ref().map(|spec_xdr| {
             shaking::generate_marker_impl(
                 path,

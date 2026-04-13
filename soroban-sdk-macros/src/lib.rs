@@ -80,6 +80,15 @@ pub(crate) fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
 }
 
+/// Returns true if spec shaking v2 should be used. Requires both the
+/// `experimental_spec_shaking_v2` feature to be enabled on the macro crate AND
+/// the `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` env var to be set
+/// at the time the macro expands (i.e. when the consumer crate is compiled).
+fn spec_shaking_v2_enabled() -> bool {
+    cfg!(feature = "experimental_spec_shaking_v2")
+        && option_env!("SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2").is_some()
+}
+
 #[derive(Debug, FromMeta)]
 struct ContractSpecArgs {
     name: Type,
@@ -440,10 +449,10 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
-    // or always export when spec shaking is enabled.
+    // or always export when spec shaking v2 is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
-    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+    } else if spec_shaking_v2_enabled() {
         true
     } else {
         matches!(input.vis, Visibility::Public(_))
@@ -514,10 +523,10 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
-    // or always export when spec shaking is enabled.
+    // or always export when spec shaking v2 is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
-    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+    } else if spec_shaking_v2_enabled() {
         true
     } else {
         matches!(input.vis, Visibility::Public(_))
@@ -703,10 +712,9 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate with options based on whether the experimental_spec_shaking_v2
-    // feature is enabled.
+    // Generate with options based on whether spec shaking v2 is enabled
     let opts = GenerateOptions {
-        export: cfg!(feature = "experimental_spec_shaking_v2"),
+        export: spec_shaking_v2_enabled(),
     };
     match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },
