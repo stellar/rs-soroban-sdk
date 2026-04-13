@@ -76,6 +76,7 @@ pub mod internal {
 }
 
 pub use internal::xdr;
+pub use internal::ContractTtlExtension;
 pub use internal::ConversionError;
 pub use internal::EnvBase;
 pub use internal::Error;
@@ -571,7 +572,7 @@ use crate::{
 #[cfg(any(test, feature = "testutils"))]
 use core::{cell::RefCell, cell::RefMut};
 #[cfg(any(test, feature = "testutils"))]
-use internal::{ContractInvocationEvent, InvocationResourceLimits};
+use internal::{InvocationEvent, InvocationResourceLimits};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
@@ -679,10 +680,10 @@ impl Env {
         let auth_snapshot = Rc::new(RefCell::new(AuthSnapshot::default()));
         let auth_snapshot_in_hook = auth_snapshot.clone();
         env_impl
-            .set_top_contract_invocation_hook(Some(Rc::new(move |host, event| {
+            .set_invocation_hook(Some(Rc::new(move |host, event| {
                 match event {
-                    ContractInvocationEvent::Start => {}
-                    ContractInvocationEvent::Finish => {
+                    InvocationEvent::Start => {}
+                    InvocationEvent::Finish => {
                         let new_auths = host
                             .get_authenticated_authorizations()
                             // If an error occurs getting the authenticated authorizations

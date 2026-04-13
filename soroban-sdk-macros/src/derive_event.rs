@@ -1,6 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, shaking, spec_shaking_v2_enabled, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -197,7 +197,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
-    let spec_shaking_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
+    let spec_shaking_call = if export && spec_shaking_v2_enabled() {
         Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
     } else {
         None
@@ -215,9 +215,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
     };
 
-    // SpecShakingMarker impl - only generated when export is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
+    // SpecShakingMarker impl - only generated when export is true and
+    // spec shaking v2 is enabled.
+    let spec_shaking_impl = if export && spec_shaking_v2_enabled() {
         Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),
