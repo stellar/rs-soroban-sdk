@@ -6,7 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381Fr, Bls12381G2Affine},
+    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine},
     log, Env, Vec,
 };
 pub struct DummyProof {
@@ -247,7 +247,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_g1_mul(
         &self,
         p: &Bls12381G1Affine,
-        s: &Fr,
+        s: &Bls12381Fr,
     ) -> Result<
         Result<
             Bls12381G1Affine,
@@ -293,7 +293,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_g2_mul(
         &self,
         p: &Bls12381G2Affine,
-        s: &Fr,
+        s: &Bls12381Fr,
     ) -> Result<
         Result<
             Bls12381G2Affine,
@@ -344,7 +344,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn fr_vec_get(&self, values: &Vec<Bls12381Fr>, index: &u32) -> Fr {
+    pub fn fr_vec_get(&self, values: &Vec<Bls12381Fr>, index: &u32) -> Bls12381Fr {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -362,7 +362,10 @@ impl<'a> ContractClient<'a> {
         values: &Vec<Bls12381Fr>,
         index: &u32,
     ) -> Result<
-        Result<Fr, <Bls12381Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            Bls12381Fr,
+            <Bls12381Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use soroban_sdk::{FromVal, IntoVal};
@@ -380,12 +383,18 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i Bls12381G1Affine, s: &'i Fr) -> (&'i Bls12381G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(
+        p: &'i Bls12381G1Affine,
+        s: &'i Bls12381Fr,
+    ) -> (&'i Bls12381G1Affine, &'i Bls12381Fr) {
         (p, s)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g2_mul<'i>(p: &'i Bls12381G2Affine, s: &'i Fr) -> (&'i Bls12381G2Affine, &'i Fr) {
+    pub fn g2_mul<'i>(
+        p: &'i Bls12381G2Affine,
+        s: &'i Bls12381Fr,
+    ) -> (&'i Bls12381G2Affine, &'i Bls12381Fr) {
         (p, s)
     }
     #[inline(always)]
@@ -395,7 +404,10 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn fr_vec_get<'i>(values: &'i Vec<Bls12381Fr>, index: &'i u32) -> (&'i Vec<Bls12381Fr>, &'i u32) {
+    pub fn fr_vec_get<'i>(
+        values: &'i Vec<Bls12381Fr>,
+        index: &'i u32,
+    ) -> (&'i Vec<Bls12381Fr>, &'i u32) {
         (values, index)
     }
 }

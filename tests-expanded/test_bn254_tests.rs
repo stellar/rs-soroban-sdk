@@ -6,7 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Bn254G1Affine, Bn254Fr, Bn254G2Affine},
+    crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
     Env, Vec,
 };
 pub struct MockProof {
@@ -805,7 +805,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_g1_mul(
         &self,
         p: &Bn254G1Affine,
-        s: &Fr,
+        s: &Bn254Fr,
     ) -> Result<
         Result<
             Bn254G1Affine,
@@ -852,7 +852,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn fr_vec_get(&self, values: &Vec<Bn254Fr>, index: &u32) -> Fr {
+    pub fn fr_vec_get(&self, values: &Vec<Bn254Fr>, index: &u32) -> Bn254Fr {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -893,7 +893,10 @@ impl<'a> ContractClient<'a> {
         values: &Vec<Bn254Fr>,
         index: &u32,
     ) -> Result<
-        Result<Fr, <Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            Bn254Fr,
+            <Bn254Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use core::ops::Not;
@@ -948,7 +951,7 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Fr) -> (&'i Bn254G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Bn254Fr) -> (&'i Bn254G1Affine, &'i Bn254Fr) {
         (p, s)
     }
     #[inline(always)]
@@ -1322,7 +1325,7 @@ mod test {
                 }
             }
         };
-        let scalar: Fr = U256::from_u32(&env, 2).into();
+        let scalar: Bn254Fr = U256::from_u32(&env, 2).into();
         match (
             &client.g1_add(&x_bn254, &x_bn254),
             &client.g1_mul(&x_bn254, &scalar),
@@ -1503,7 +1506,7 @@ mod test {
                 modulus.add(&seven).into_val(&env),
             ],
         );
-        let first: Fr = env.invoke_contract(
+        let first: Bn254Fr = env.invoke_contract(
             &contract_id,
             &Symbol::new(&env, "fr_vec_get"),
             ::soroban_sdk::Vec::from_array(
@@ -1511,12 +1514,12 @@ mod test {
                 [raw_vals.clone().into_val(&env), 0_u32.into_val(&env)],
             ),
         );
-        let second: Fr = env.invoke_contract(
+        let second: Bn254Fr = env.invoke_contract(
             &contract_id,
             &Symbol::new(&env, "fr_vec_get"),
             ::soroban_sdk::Vec::from_array(&env, [raw_vals.into_val(&env), 1_u32.into_val(&env)]),
         );
-        match (&first, &Fr::from_u256(three)) {
+        match (&first, &Bn254Fr::from_u256(three)) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
@@ -1529,7 +1532,7 @@ mod test {
                 }
             }
         };
-        match (&second, &Fr::from_u256(seven)) {
+        match (&second, &Bn254Fr::from_u256(seven)) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
