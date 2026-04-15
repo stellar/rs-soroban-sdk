@@ -224,6 +224,33 @@ enum UsedNonPubError {
     Fail = 1,
 }
 
+// --- Recursive types: nested type with recursive reference safely includes all markers ---
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveRoot {
+    pub val: UsedRecursiveNode,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UsedRecursiveNode {
+    NotRecursive(UsedLeaf),
+    Recursive(UsedRecursiveLeaf),
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveLeaf {
+    pub val: Vec<UsedRecursiveRoot>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedLeaf {
+    pub val: u32,
+}
+
 // --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
 // Only StructC is used in a contract fn; other spec_lib types have spec entries
 // but no markers.
@@ -313,6 +340,8 @@ impl Contract {
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
         Ok(UsedResultOk { data: 1 })
     }
+
+    pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
 
     pub fn publish_simple(env: Env) {
         UsedEventSimple {

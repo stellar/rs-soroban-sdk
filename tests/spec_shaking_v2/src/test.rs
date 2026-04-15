@@ -45,6 +45,7 @@ fn test_spec_shaking_v2() {
         "with_error",
         "with_vec",
         "with_map",
+        "with_recursion",
         "publish_simple",
         "publish_topic_type",
         "publish_data_type",
@@ -114,6 +115,11 @@ fn test_spec_shaking_v2() {
         "StructC",
         // wasm-imported type used as fn param
         "StructA",
+        // recursive type used as fn param
+        "UsedRecursiveRoot",
+        "UsedRecursiveNode",
+        "UsedRecursiveLeaf",
+        "UsedLeaf",
     ];
     for name in used {
         assert!(
@@ -121,6 +127,7 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
+    assert_eq!(markers.len(), used.len());
 
     // Unused types/events should exist in unfiltered entries (they have spec entries, just no markers).
     let unused = [
@@ -167,6 +174,7 @@ fn test_spec_shaking_v2() {
             "unused type/event {name} should be absent from filtered entries, but was found"
         );
     }
+    assert_eq!(all_names.len() - filtered_names.len(), unused.len());
 }
 
 #[test]
@@ -201,6 +209,7 @@ fn test_spec_shaking_v2_no_env_fallback_to_v1() {
         "with_error",
         "with_vec",
         "with_map",
+        "with_recursion",
         "publish_simple",
         "publish_topic_type",
         "publish_data_type",
@@ -251,6 +260,10 @@ fn test_spec_shaking_v2_no_env_fallback_to_v1() {
         "UsedResultOk",
         "UsedTupleElement",
         "UsedTupleReturnElement",
+        "UsedRecursiveRoot",
+        "UsedRecursiveNode",
+        "UsedRecursiveLeaf",
+        "UsedLeaf",
         "UnusedNonContractFnParam",
         "UnusedNonContractFnReturn",
         "UnusedStruct",
