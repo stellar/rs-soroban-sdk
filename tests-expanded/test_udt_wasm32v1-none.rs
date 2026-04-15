@@ -4,7 +4,7 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl, contracttype, Vec};
+use soroban_sdk::{contract, contractimpl, contracttype, Error, Map, Symbol, Vec};
 pub enum UdtEnum2 {
     A = 10,
     B = 15,
@@ -524,6 +524,384 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UdtStruct> for soroban_sdk::Val 
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UdtStruct>>::try_from_val(env, *val)
     }
 }
+pub struct UdtRecursive {
+    pub a: Symbol,
+    pub b: Vec<UdtRecursive>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UdtRecursive {
+    #[inline]
+    fn clone(&self) -> UdtRecursive {
+        UdtRecursive {
+            a: ::core::clone::Clone::clone(&self.a),
+            b: ::core::clone::Clone::clone(&self.b),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UdtRecursive {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field2_finish(
+            f,
+            "UdtRecursive",
+            "a",
+            &self.a,
+            "b",
+            &&self.b,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UdtRecursive {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<Symbol>;
+        let _: ::core::cmp::AssertParamIsEq<Vec<UdtRecursive>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UdtRecursive {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UdtRecursive {
+    #[inline]
+    fn eq(&self, other: &UdtRecursive) -> bool {
+        self.a == other.a && self.b == other.b
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+impl UdtRecursive {
+    pub const fn spec_xdr() -> [u8; 84usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UdtRecursive {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xc8\x12\x91\xfe\xd7\x13\xf5\x9c";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 2usize] = ["a", "b"];
+        let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            a: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            b: vals[1]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtRecursive> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UdtRecursive,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 2usize] = ["a", "b"];
+        let vals: [Val; 2usize] = [
+            (&val.a).try_into_val(env).map_err(|_| ConversionError)?,
+            (&val.b).try_into_val(env).map_err(|_| ConversionError)?,
+        ];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UdtRecursive> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UdtRecursive,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UdtRecursive>>::try_from_val(env, *val)
+    }
+}
+pub struct RecursiveToEnum {
+    pub a: Symbol,
+    pub b: Map<u32, RecursiveEnum>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for RecursiveToEnum {
+    #[inline]
+    fn clone(&self) -> RecursiveToEnum {
+        RecursiveToEnum {
+            a: ::core::clone::Clone::clone(&self.a),
+            b: ::core::clone::Clone::clone(&self.b),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for RecursiveToEnum {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field2_finish(
+            f,
+            "RecursiveToEnum",
+            "a",
+            &self.a,
+            "b",
+            &&self.b,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for RecursiveToEnum {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<Symbol>;
+        let _: ::core::cmp::AssertParamIsEq<Map<u32, RecursiveEnum>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for RecursiveToEnum {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for RecursiveToEnum {
+    #[inline]
+    fn eq(&self, other: &RecursiveToEnum) -> bool {
+        self.a == other.a && self.b == other.b
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+impl RecursiveToEnum {
+    pub const fn spec_xdr() -> [u8; 96usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe1oU\xdb\xd47\x98\x14";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 2usize] = ["a", "b"];
+        let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            a: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            b: vals[1]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveToEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &RecursiveToEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 2usize] = ["a", "b"];
+        let vals: [Val; 2usize] = [
+            (&val.a).try_into_val(env).map_err(|_| ConversionError)?,
+            (&val.b).try_into_val(env).map_err(|_| ConversionError)?,
+        ];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &RecursiveToEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&RecursiveToEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveToEnum>>::try_from_val(env, *val)
+    }
+}
+pub enum RecursiveEnum {
+    NotRecursive,
+    Recursive(RecursiveToEnum),
+}
+#[automatically_derived]
+impl ::core::clone::Clone for RecursiveEnum {
+    #[inline]
+    fn clone(&self) -> RecursiveEnum {
+        match self {
+            RecursiveEnum::NotRecursive => RecursiveEnum::NotRecursive,
+            RecursiveEnum::Recursive(__self_0) => {
+                RecursiveEnum::Recursive(::core::clone::Clone::clone(__self_0))
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for RecursiveEnum {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        match self {
+            RecursiveEnum::NotRecursive => ::core::fmt::Formatter::write_str(f, "NotRecursive"),
+            RecursiveEnum::Recursive(__self_0) => {
+                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Recursive", &__self_0)
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for RecursiveEnum {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<RecursiveToEnum>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for RecursiveEnum {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for RecursiveEnum {
+    #[inline]
+    fn eq(&self, other: &RecursiveEnum) -> bool {
+        let __self_discr = ::core::intrinsics::discriminant_value(self);
+        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+        __self_discr == __arg1_discr
+            && match (self, other) {
+                (RecursiveEnum::Recursive(__self_0), RecursiveEnum::Recursive(__arg1_0)) => {
+                    __self_0 == __arg1_0
+                }
+                _ => true,
+            }
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+impl RecursiveEnum {
+    pub const fn spec_xdr() -> [u8; 112usize] {
+        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xff{V \xab\r\xdcd";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+        const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
+        let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+        let mut iter = vec.try_iter();
+        let discriminant: soroban_sdk::Symbol = iter
+            .next()
+            .ok_or(soroban_sdk::ConversionError)??
+            .try_into_val(env)
+            .map_err(|_| soroban_sdk::ConversionError)?;
+        Ok(
+            match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize
+            {
+                0 => {
+                    if iter.len() > 0 {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::NotRecursive
+                }
+                1 => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::Recursive(
+                        iter.next()
+                            .ok_or(soroban_sdk::ConversionError)??
+                            .try_into_val(env)?,
+                    )
+                }
+                _ => Err(soroban_sdk::ConversionError {})?,
+            },
+        )
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &RecursiveEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{TryFromVal, TryIntoVal};
+        match val {
+            RecursiveEnum::NotRecursive => {
+                let tup: (soroban_sdk::Val,) =
+                    (soroban_sdk::Symbol::try_from_val(env, &"NotRecursive")?.to_val(),);
+                tup.try_into_val(env).map_err(Into::into)
+            }
+            RecursiveEnum::Recursive(ref value0) => {
+                let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                    soroban_sdk::Symbol::try_from_val(env, &"Recursive")?.to_val(),
+                    value0.try_into_val(env)?,
+                );
+                tup.try_into_val(env).map_err(Into::into)
+            }
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &RecursiveEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&RecursiveEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveEnum>>::try_from_val(env, *val)
+    }
+}
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -559,6 +937,19 @@ impl Contract {
         };
         a + b
     }
+    pub fn recursive(a: UdtRecursive) -> Option<UdtRecursive> {
+        if a.b.is_empty() {
+            None
+        } else {
+            Some(a.b.first_unchecked())
+        }
+    }
+    pub fn recursive_enum(a: RecursiveEnum, key: u32) -> Result<Option<RecursiveEnum>, Error> {
+        match a {
+            RecursiveEnum::NotRecursive => Ok(None),
+            RecursiveEnum::Recursive(router) => Ok(router.b.get(key)),
+        }
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -573,6 +964,37 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_add() -> [u8; 84usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\x01\0\0\0\x07"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__recursive__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_recursive() -> [u8; 88usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\trecursive\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x0cUdtRecursive\0\0\0\x01\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__recursive_enum__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
+        super::Contract::spec_xdr_recursive_enum();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_recursive_enum() -> [u8; 124usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0erecursive_enum\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\0\0\0\0\x03key\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\x03\xe8\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x03"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -616,12 +1038,98 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("recursive");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_recursive(
+        &self,
+        a: &UdtRecursive,
+    ) -> Result<
+        Result<
+            Option<UdtRecursive>,
+            <Option<
+                UdtRecursive,
+            > as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    >{
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("recursive");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(&self.env, [a.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "recursive_enum") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [a.into_val(&self.env), key.into_val(&self.env)],
+            ),
+        );
+        res
+    }
+    pub fn try_recursive_enum(
+        &self,
+        a: &RecursiveEnum,
+        key: &u32,
+    ) -> Result<
+        Result<
+            Option<RecursiveEnum>,
+            <Option<RecursiveEnum> as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                soroban_sdk::Val,
+            >>::Error,
+        >,
+        Result<Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "recursive_enum") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [a.into_val(&self.env), key.into_val(&self.env)],
+            ),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn add<'i>(a: &'i UdtEnum, b: &'i UdtEnum) -> (&'i UdtEnum, &'i UdtEnum) {
         (a, b)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn recursive<'i>(a: &'i UdtRecursive) -> (&'i UdtRecursive,) {
+        (a,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn recursive_enum<'i>(a: &'i RecursiveEnum, key: &'i u32) -> (&'i RecursiveEnum, &'i u32) {
+        (a, key)
     }
 }
 #[doc(hidden)]
@@ -661,4 +1169,72 @@ pub extern "C" fn __Contract__add__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__add__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).recursive` instead")]
+#[allow(deprecated)]
+pub fn __Contract__recursive__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::recursive(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).recursive` instead")]
+#[export_name = "recursive"]
+pub extern "C" fn __Contract__recursive__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__recursive__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).recursive_enum` instead")]
+#[allow(deprecated)]
+pub fn __Contract__recursive_enum__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::recursive_enum(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).recursive_enum` instead")]
+#[export_name = "recursive_enum"]
+pub extern "C" fn __Contract__recursive_enum__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__recursive_enum__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
 }
