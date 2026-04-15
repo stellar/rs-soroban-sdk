@@ -6,7 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381G2Affine, Fr},
+    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381Fr, Bls12381G2Affine},
     log, Env, Vec,
 };
 pub struct DummyProof {
@@ -14,7 +14,7 @@ pub struct DummyProof {
     pub fp2: Bls12381Fp2,
     pub g1: Bls12381G1Affine,
     pub g2: Bls12381G2Affine,
-    pub fr: Fr,
+    pub fr: Bls12381Fr,
 }
 pub static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; 128usize] = DummyProof::spec_xdr();
 impl DummyProof {
@@ -282,7 +282,7 @@ const _: () = {
         fp2: <Bls12381Fp2 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
         g1: <Bls12381G1Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
         g2: <Bls12381G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
-        fr: <Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        fr: <Bls12381Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
     }
     #[automatically_derived]
     impl ::core::fmt::Debug for ArbitraryDummyProof {
@@ -336,7 +336,7 @@ const _: () = {
                 <Bls12381G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
             let _: ::core::cmp::AssertParamIsEq<
-                <Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                <Bls12381Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
         }
     }
@@ -521,7 +521,7 @@ const _: () = {
                             <<Bls12381G2Affine as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
-                            <<Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                            <<Bls12381Fr as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
                                 depth,
                             ),
                         ],
@@ -694,10 +694,10 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
     }
 }
 impl Contract {
-    pub fn g1_mul(env: Env, p: Bls12381G1Affine, s: Fr) -> Bls12381G1Affine {
+    pub fn g1_mul(env: Env, p: Bls12381G1Affine, s: Bls12381Fr) -> Bls12381G1Affine {
         env.crypto().bls12_381().g1_mul(&p, &s)
     }
-    pub fn g2_mul(env: Env, p: Bls12381G2Affine, s: Fr) -> Bls12381G2Affine {
+    pub fn g2_mul(env: Env, p: Bls12381G2Affine, s: Bls12381Fr) -> Bls12381G2Affine {
         env.crypto().bls12_381().g2_mul(&p, &s)
     }
     pub fn dummy_verify(env: Env, proof: DummyProof) -> bool {
@@ -723,7 +723,7 @@ impl Contract {
         let vp2 = soroban_sdk::Vec::from_array(&env, [g2_mul]);
         env.crypto().bls12_381().pairing_check(vp1, vp2)
     }
-    pub fn fr_vec_get(_env: Env, values: Vec<Fr>, index: u32) -> Fr {
+    pub fn fr_vec_get(_env: Env, values: Vec<Bls12381Fr>, index: u32) -> Bls12381Fr {
         values.get(index).unwrap()
     }
 }
@@ -784,7 +784,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
-    pub fn g1_mul(&self, p: &Bls12381G1Affine, s: &Fr) -> Bls12381G1Affine {
+    pub fn g1_mul(&self, p: &Bls12381G1Affine, s: &Bls12381Fr) -> Bls12381G1Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -877,7 +877,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn g2_mul(&self, p: &Bls12381G2Affine, s: &Fr) -> Bls12381G2Affine {
+    pub fn g2_mul(&self, p: &Bls12381G2Affine, s: &Bls12381Fr) -> Bls12381G2Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -1042,7 +1042,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn fr_vec_get(&self, values: &Vec<Fr>, index: &u32) -> Fr {
+    pub fn fr_vec_get(&self, values: &Vec<Bls12381Fr>, index: &u32) -> Fr {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -1080,10 +1080,10 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_fr_vec_get(
         &self,
-        values: &Vec<Fr>,
+        values: &Vec<Bls12381Fr>,
         index: &u32,
     ) -> Result<
-        Result<Fr, <Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<Fr, <Bls12381Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use core::ops::Not;
@@ -1140,7 +1140,7 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn fr_vec_get<'i>(values: &'i Vec<Fr>, index: &'i u32) -> (&'i Vec<Fr>, &'i u32) {
+    pub fn fr_vec_get<'i>(values: &'i Vec<Bls12381Fr>, index: &'i u32) -> (&'i Vec<Bls12381Fr>, &'i u32) {
         (values, index)
     }
 }

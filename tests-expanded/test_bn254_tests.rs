@@ -6,7 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
+    crypto::bn254::{Bn254G1Affine, Bn254Fr, Bn254G2Affine},
     Env, Vec,
 };
 pub struct MockProof {
@@ -535,10 +535,10 @@ impl Contract {
     pub fn g1_add(a: Bn254G1Affine, b: Bn254G1Affine) -> Bn254G1Affine {
         a + b
     }
-    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Bn254Fr) -> Bn254G1Affine {
         p * s
     }
-    pub fn fr_vec_get(_env: Env, values: Vec<Fr>, index: u32) -> Fr {
+    pub fn fr_vec_get(_env: Env, values: Vec<Bn254Fr>, index: u32) -> Bn254Fr {
         values.get(index).unwrap()
     }
 }
@@ -762,7 +762,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Fr) -> Bn254G1Affine {
+    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Bn254Fr) -> Bn254G1Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -852,7 +852,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn fr_vec_get(&self, values: &Vec<Fr>, index: &u32) -> Fr {
+    pub fn fr_vec_get(&self, values: &Vec<Bn254Fr>, index: &u32) -> Fr {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -890,7 +890,7 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_fr_vec_get(
         &self,
-        values: &Vec<Fr>,
+        values: &Vec<Bn254Fr>,
         index: &u32,
     ) -> Result<
         Result<Fr, <Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
@@ -953,7 +953,7 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn fr_vec_get<'i>(values: &'i Vec<Fr>, index: &'i u32) -> (&'i Vec<Fr>, &'i u32) {
+    pub fn fr_vec_get<'i>(values: &'i Vec<Bn254Fr>, index: &'i u32) -> (&'i Vec<Bn254Fr>, &'i u32) {
         (values, index)
     }
 }
