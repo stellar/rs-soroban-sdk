@@ -725,18 +725,18 @@ mod objects {
 
     // For Bls12381Fp (48 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryFp {
+    pub struct ArbitraryBls12381Fp {
         bytes: [u8; FP_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381Fp {
-        type Prototype = ArbitraryFp;
+        type Prototype = ArbitraryBls12381Fp;
     }
 
-    impl TryFromVal<Env, ArbitraryFp> for Bls12381Fp {
+    impl TryFromVal<Env, ArbitraryBls12381Fp> for Bls12381Fp {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryFp) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381Fp) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
             // Ensure the value is strictly less than the BLS12-381 base field modulus
             // p = 0x1a0111ea... by restricting the most significant byte.
@@ -747,18 +747,18 @@ mod objects {
 
     // For Bls12381Fp2 (96 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryFp2 {
+    pub struct ArbitraryBls12381Fp2 {
         bytes: [u8; FP2_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381Fp2 {
-        type Prototype = ArbitraryFp2;
+        type Prototype = ArbitraryBls12381Fp2;
     }
 
-    impl TryFromVal<Env, ArbitraryFp2> for Bls12381Fp2 {
+    impl TryFromVal<Env, ArbitraryBls12381Fp2> for Bls12381Fp2 {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryFp2) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381Fp2) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
             // Ensure both Fp components are strictly less than the modulus
             bytes[0] %= 0x1a;
@@ -769,18 +769,18 @@ mod objects {
 
     // For Bls12381G1Affine (96 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryG1Affine {
+    pub struct ArbitraryBls12381G1Affine {
         bytes: [u8; G1_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381G1Affine {
-        type Prototype = ArbitraryG1Affine;
+        type Prototype = ArbitraryBls12381G1Affine;
     }
 
-    impl TryFromVal<Env, ArbitraryG1Affine> for Bls12381G1Affine {
+    impl TryFromVal<Env, ArbitraryBls12381G1Affine> for Bls12381G1Affine {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryG1Affine) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381G1Affine) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
             // the top 3 bits in a G1 point are reserved for flags:
             // compression_flag (bit 0), infinity_flag (bit 1) and sort_flag
@@ -804,18 +804,18 @@ mod objects {
 
     // For Bls12381G2Affine (192 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryG2Affine {
+    pub struct ArbitraryBls12381G2Affine {
         bytes: [u8; G2_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381G2Affine {
-        type Prototype = ArbitraryG2Affine;
+        type Prototype = ArbitraryBls12381G2Affine;
     }
 
-    impl TryFromVal<Env, ArbitraryG2Affine> for Bls12381G2Affine {
+    impl TryFromVal<Env, ArbitraryBls12381G2Affine> for Bls12381G2Affine {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryG2Affine) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381G2Affine) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
             // the top 3 bits in a G1 point are reserved for flags:
             // compression_flag (bit 0), infinity_flag (bit 1) and sort_flag
@@ -838,18 +838,18 @@ mod objects {
     }
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryFr {
+    pub struct ArbitraryBls12381Fr {
         bytes: [u8; 32],
     }
 
     impl SorobanArbitrary for Bls12381Fr {
-        type Prototype = ArbitraryFr;
+        type Prototype = ArbitraryBls12381Fr;
     }
 
-    impl TryFromVal<Env, ArbitraryFr> for Bls12381Fr {
+    impl TryFromVal<Env, ArbitraryBls12381Fr> for Bls12381Fr {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryFr) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381Fr) -> Result<Self, Self::Error> {
             // Convert bytes to Bls12381Fr via U256
             Ok(Bls12381Fr::from_bytes(BytesN::from_array(env, &v.bytes)))
         }
@@ -907,7 +907,11 @@ mod objects {
         type Error = ConversionError;
 
         fn try_from_val(env: &Env, v: &ArbitraryBn254Fp) -> Result<Self, Self::Error> {
-            Ok(Bn254Fp::from_array(env, &v.bytes))
+            let mut bytes = v.bytes;
+            // Ensure the value is strictly less than the BN254 base field modulus
+            // p = 0x30644e72... by restricting the most significant byte.
+            bytes[0] %= 0x30;
+            Ok(Bn254Fp::from_array(env, &bytes))
         }
     }
 

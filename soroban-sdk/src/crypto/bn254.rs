@@ -192,7 +192,7 @@ impl Mul<Bn254Fr> for Bn254G1Affine {
     }
 }
 
-// Bn254G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Bn254Fr
+// Bn254G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Bn254Fp
 // Negation of (X, Y) is defined as (X, -Y)
 impl Neg for &Bn254G1Affine {
     type Output = Bn254G1Affine;

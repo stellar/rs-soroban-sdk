@@ -177,6 +177,8 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                         n: BN254_G2_SERIALIZED_SIZE,
                     })),
                     "Bn254Fr" => Ok(ScSpecTypeDef::U256),
+                    // Deprecated alias for Bn254Fr
+                    "BnScalar" => Ok(ScSpecTypeDef::U256),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                         name: s.try_into().map_err(|e| {
                             Error::new(
