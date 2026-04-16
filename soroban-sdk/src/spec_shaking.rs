@@ -410,15 +410,15 @@ impl<K: SpecShakingMarker, V: SpecShakingMarker> SpecShakingMarker for crate::Ma
 // Additional SDK types
 impl SpecShakingMarker for crate::MuxedAddress {}
 impl<const N: usize> SpecShakingMarker for crate::crypto::Hash<N> {}
-impl SpecShakingMarker for crate::crypto::bls12_381::G1Affine {}
-impl SpecShakingMarker for crate::crypto::bls12_381::G2Affine {}
-impl SpecShakingMarker for crate::crypto::bls12_381::Fp {}
-impl SpecShakingMarker for crate::crypto::bls12_381::Fp2 {}
-impl SpecShakingMarker for crate::crypto::bls12_381::Fr {}
+impl SpecShakingMarker for crate::crypto::bls12_381::Bls12381G1Affine {}
+impl SpecShakingMarker for crate::crypto::bls12_381::Bls12381G2Affine {}
+impl SpecShakingMarker for crate::crypto::bls12_381::Bls12381Fp {}
+impl SpecShakingMarker for crate::crypto::bls12_381::Bls12381Fp2 {}
+impl SpecShakingMarker for crate::crypto::bls12_381::Bls12381Fr {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254G1Affine {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254G2Affine {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254Fp {}
-impl SpecShakingMarker for crate::crypto::bn254::Fr {}
+impl SpecShakingMarker for crate::crypto::bn254::Bn254Fr {}
 
 // Auth types - these have export=false but are legitimately used at external
 // boundaries (as inputs to __check_auth in custom account contracts).

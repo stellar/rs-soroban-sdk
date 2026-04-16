@@ -1,6 +1,6 @@
 use crate::{self as soroban_sdk};
 use soroban_sdk::{
-    crypto::bn254::{Bn254, Bn254G1Affine, Fr},
+    crypto::bn254::{Bn254, Bn254Fr, Bn254G1Affine},
     vec, Env, Vec, U256,
 };
 
@@ -43,7 +43,7 @@ fn test_g1_msm() {
 
     // 1*G + 0*G = G
     let vp: Vec<Bn254G1Affine> = vec![&env, one.clone(), one.clone()];
-    let vs: Vec<Fr> = vec![
+    let vs: Vec<Bn254Fr> = vec![
         &env,
         U256::from_u32(&env, 1).into(),
         U256::from_u32(&env, 0).into(),
@@ -53,7 +53,7 @@ fn test_g1_msm() {
 
     // 0*G + 0*G = 0
     let vp: Vec<Bn254G1Affine> = vec![&env, one.clone(), one.clone()];
-    let vs: Vec<Fr> = vec![
+    let vs: Vec<Bn254Fr> = vec![
         &env,
         U256::from_u32(&env, 0).into(),
         U256::from_u32(&env, 0).into(),
@@ -72,7 +72,7 @@ fn test_g1_msm_mismatched_lengths() {
         0x00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002
     ));
     let vp: Vec<Bn254G1Affine> = vec![&env, one.clone(), one.clone()];
-    let vs: Vec<Fr> = vec![&env, U256::from_u32(&env, 1).into()];
+    let vs: Vec<Bn254Fr> = vec![&env, U256::from_u32(&env, 1).into()];
     bn254.g1_msm(vp, vs);
 }
 
@@ -82,7 +82,7 @@ fn test_g1_msm_empty_vectors() {
     let env = Env::default();
     let bn254 = Bn254::new(&env);
     let vp: Vec<Bn254G1Affine> = vec![&env];
-    let vs: Vec<Fr> = vec![&env];
+    let vs: Vec<Bn254Fr> = vec![&env];
     bn254.g1_msm(vp, vs);
 }
 
@@ -153,8 +153,8 @@ fn test_fr_inv_zero() {
 fn test_fr_operator_traits() {
     let env = Env::default();
 
-    let a: Fr = U256::from_u32(&env, 10).into();
-    let b: Fr = U256::from_u32(&env, 3).into();
+    let a: Bn254Fr = U256::from_u32(&env, 10).into();
+    let b: Bn254Fr = U256::from_u32(&env, 3).into();
 
     // Add
     assert_eq!(a.clone() + b.clone(), U256::from_u32(&env, 13).into());
