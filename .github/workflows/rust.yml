@@ -118,10 +118,10 @@ jobs:
       run: |
         rustc --version
         cargo --version
-    - uses: stellar/binaries@v51
+    - uses: stellar/binaries@v55
       with:
         name: cargo-semver-checks
-        version: 0.45.0
+        version: 0.46.0
     - run: >
         cargo semver-checks
         --exclude soroban-meta

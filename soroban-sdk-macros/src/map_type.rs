@@ -116,16 +116,18 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     )),
                     // The BLS and BN types defined below are represented in the contract's
                     // interface by their underlying data types, i.e.
-                    // Fp/Fp2/G1Affine/G2Affine => BytesN<N>, Fr => U256. This approach
-                    // simplifies integration with contract development tooling, as it
-                    // avoids introducing new spec types for these constructs.
+                    // Bls12381Fp/Bls12381Fp2/Bls12381G1Affine/Bls12381G2Affine => BytesN<N>,
+                    // Bls12381Fr/Bn254Fr => U256. This approach simplifies integration with
+                    // contract development tooling, as it avoids introducing new spec types
+                    // for these constructs.
                     //
                     // While this is functionally sound because the types are
                     // essentially newtypes over their inner representations, it means
-                    // that the specific semantic meaning of `G1Affine`, `G2Affine`, or
-                    // `Fr` is not directly visible in the compiled WASM interface. For
-                    // example, a contract function expecting a `G1Affine` will appear
-                    // in the WASM interface as expecting a `BytesN<96>`.
+                    // that the specific semantic meaning of `Bls12381G1Affine`,
+                    // `Bls12381G2Affine`, `Bls12381Fr`, or `Bn254Fr` is not directly visible
+                    // in the compiled WASM interface. For example, a contract function
+                    // expecting a `Bls12381G1Affine` will appear in the WASM interface as
+                    // expecting a `BytesN<96>`.
                     //
                     // Future enhancements might allow the macro to automatically deduce
                     // and utilize the inner types for types defined using the New Type
@@ -133,8 +135,8 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     // type aliases:
                     // https://github.com/stellar/rs-soroban-sdk/issues/1063
 
-                    // These BLS12-381 unprefixed type names
-                    // will be removed in a future release.
+                    // These BLS12-381 unprefixed type names are deprecated.
+                    // Use the Bls12381-prefixed names instead.
                     "Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: FP_SERIALIZED_SIZE,
                     })),
@@ -147,6 +149,8 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: G2_SERIALIZED_SIZE,
                     })),
+                    // Deprecated: `Fr` maps to BLS12-381 Fr for backward compat.
+                    // Use `Bls12381Fr` or `Bn254Fr` instead.
                     "Fr" => Ok(ScSpecTypeDef::U256),
                     // BLS12-381 prefixed type names
                     "Bls12381Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
@@ -161,6 +165,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "Bls12381G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: G2_SERIALIZED_SIZE,
                     })),
+                    "Bls12381Fr" => Ok(ScSpecTypeDef::U256),
                     // BN254 prefixed type names
                     "Bn254Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: BN254_FP_SERIALIZED_SIZE,
@@ -171,6 +176,9 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "Bn254G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: BN254_G2_SERIALIZED_SIZE,
                     })),
+                    "Bn254Fr" => Ok(ScSpecTypeDef::U256),
+                    // Deprecated alias for Bn254Fr
+                    "BnScalar" => Ok(ScSpecTypeDef::U256),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                         name: s.try_into().map_err(|e| {
                             Error::new(
