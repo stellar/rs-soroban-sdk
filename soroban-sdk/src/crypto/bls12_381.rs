@@ -24,7 +24,13 @@ pub struct Bls12_381 {
 }
 
 /// `Bls12381G1Affine` is a point in the G1 group (subgroup defined over the base field
-///  `Fq`) of the BLS12-381 elliptic curve
+///  `Fq`) of the BLS12-381 elliptic curve.
+///
+/// This type is a thin wrapper around `BytesN<96>`. The [`from_bytes`](Self::from_bytes)
+/// constructor does **not** validate the contents — it accepts any 96 bytes.
+/// The serialization requirements below are enforced by the Soroban host when
+/// the value is passed to a host function (e.g. `g1_add`, `g1_mul`, `pairing`).
+/// Invalid bytes will cause the host call to trap, not construction.
 ///
 /// # Serialization:
 /// - The 96 bytes represent the **uncompressed encoding** of a point in G1. The
@@ -59,7 +65,13 @@ pub struct Bls12381G1Affine(BytesN<G1_SERIALIZED_SIZE>);
 pub type G1Affine = Bls12381G1Affine;
 
 /// `Bls12381G2Affine` is a point in the G2 group (subgroup defined over the quadratic
-/// extension field `Fq2`) of the BLS12-381 elliptic curve
+/// extension field `Fq2`) of the BLS12-381 elliptic curve.
+///
+/// This type is a thin wrapper around `BytesN<192>`. The [`from_bytes`](Self::from_bytes)
+/// constructor does **not** validate the contents — it accepts any 192 bytes.
+/// The serialization requirements below are enforced by the Soroban host when
+/// the value is passed to a host function (e.g. `g2_add`, `g2_mul`, `pairing`).
+/// Invalid bytes will cause the host call to trap, not construction.
 ///
 /// # Serialization:
 /// - The 192 bytes represent the **uncompressed encoding** of a point in G2.
@@ -153,12 +165,16 @@ fn validate_fp2(bytes: &[u8; FP2_SERIALIZED_SIZE]) {
 }
 
 impl Bls12381G1Affine {
+    /// Wraps raw bytes as a G1 point without validation.
+    /// See [`Bls12381G1Affine`] for serialization requirements enforced by the host.
     pub fn from_bytes(bytes: BytesN<G1_SERIALIZED_SIZE>) -> Self {
         Self(bytes)
     }
 }
 
 impl Bls12381G2Affine {
+    /// Wraps raw bytes as a G2 point without validation.
+    /// See [`Bls12381G2Affine`] for serialization requirements enforced by the host.
     pub fn from_bytes(bytes: BytesN<G2_SERIALIZED_SIZE>) -> Self {
         Self(bytes)
     }

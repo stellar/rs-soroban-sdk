@@ -25,7 +25,13 @@ pub struct Bn254 {
 /// `Bn254G1Affine` is a point in the G1 group (subgroup defined over the base field
 /// `Fq` with prime order `q =
 /// 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47`) of the
-/// BN254 elliptic curve
+/// BN254 elliptic curve.
+///
+/// This type is a thin wrapper around `BytesN<64>`. The [`from_bytes`](Self::from_bytes)
+/// constructor does **not** validate the contents — it accepts any 64 bytes.
+/// The serialization requirements below are enforced by the Soroban host when
+/// the value is passed to a host function (e.g. `g1_add`, `g1_mul`, `pairing`).
+/// Invalid bytes will cause the host call to trap, not construction.
 ///
 /// # Serialization (Ethereum-compatible format):
 /// - The 64 bytes represent the **uncompressed encoding** of a point in G1
@@ -39,7 +45,13 @@ pub struct Bn254 {
 pub struct Bn254G1Affine(BytesN<BN254_G1_SERIALIZED_SIZE>);
 
 /// `Bn254G2Affine` is a point in the G2 group (subgroup defined over the quadratic
-/// extension field `Fq2`) of the BN254 elliptic curve
+/// extension field `Fq2`) of the BN254 elliptic curve.
+///
+/// This type is a thin wrapper around `BytesN<128>`. The [`from_bytes`](Self::from_bytes)
+/// constructor does **not** validate the contents — it accepts any 128 bytes.
+/// The serialization requirements below are enforced by the Soroban host when
+/// the value is passed to a host function (e.g. `g2_add`, `g2_mul`, `pairing`).
+/// Invalid bytes will cause the host call to trap, not construction.
 ///
 /// # Serialization (Ethereum-compatible format):
 /// - The 128 bytes represent the **uncompressed encoding** of a point in G2
@@ -96,12 +108,16 @@ fn validate_bn254_fp(bytes: &[u8; BN254_FP_SERIALIZED_SIZE]) {
 }
 
 impl Bn254G1Affine {
+    /// Wraps raw bytes as a G1 point without validation.
+    /// See [`Bn254G1Affine`] for serialization requirements enforced by the host.
     pub fn from_bytes(bytes: BytesN<BN254_G1_SERIALIZED_SIZE>) -> Self {
         Self(bytes)
     }
 }
 
 impl Bn254G2Affine {
+    /// Wraps raw bytes as a G2 point without validation.
+    /// See [`Bn254G2Affine`] for serialization requirements enforced by the host.
     pub fn from_bytes(bytes: BytesN<BN254_G2_SERIALIZED_SIZE>) -> Self {
         Self(bytes)
     }
