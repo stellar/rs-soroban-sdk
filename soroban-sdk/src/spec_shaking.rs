@@ -14,12 +14,14 @@
 //! contractevent, and contracterror macros implement this trait to include their
 //! spec XDR in the WASM's contractspecv0 section.
 //!
-//! Container types — `Vec<T>`, `Option<T>`, `Map<K, V>`, `Result<T, E>`,
-//! tuples, and references — need their inner types' specs to be kept too.
-//! They propagate reachability via [`keep_reachable`], which references the
-//! inner marker function without calling it. Doing this by reference rather
-//! than by call avoids a runtime recursion when a type reaches itself
-//! transitively through a container (e.g. `struct MyType { x: Vec<MyType> }`).
+//! Types whose layout includes their inner types inline (`Option<T>`,
+//! `Result<T, E>`, tuples) call `T::spec_shaking_marker()` directly for
+//! each inner type.
+//!
+//! Types whose size is independent of their inner types (`Vec<T>`,
+//! `Map<K, V>`, `&T`, `&mut T`) use [`keep_reachable`] to reference each
+//! inner type's marker without calling it. Recursive definitions are
+//! possible through these types, so a direct call would risk a runtime cycle.
 
 /// Trait for types that may include their spec in the WASM binary.
 ///
@@ -41,13 +43,10 @@ pub trait SpecShakingMarker {
     fn spec_shaking_marker() {}
 }
 
-/// Keeps `f`'s symbol alive through the linker's dead-code-elimination pass
-/// without invoking `f` at runtime. Used by the generic container impls
-/// below to propagate spec reachability to their inner types.
-///
-/// Same volatile-read technique the macro-generated marker bodies use to
-/// keep their `MARKER` byte statics alive (see `soroban-sdk-macros/src/shaking.rs`),
-/// applied to a function pointer instead of a data pointer.
+/// Keeps `f`'s symbol alive through the linker's dead-code-elimination
+/// pass without invoking `f` at runtime. Takes `f` as a function pointer
+/// and volatile-reads it. The same technique is used to keep the `MARKER`
+/// byte statics alive (see `soroban-sdk-macros/src/shaking.rs`).
 #[doc(hidden)]
 #[inline(always)]
 fn keep_reachable(f: fn()) {
@@ -64,7 +63,11 @@ impl SpecShakingMarker for i64 {}
 impl SpecShakingMarker for u128 {}
 impl SpecShakingMarker for i128 {}
 
-// Reference implementations
+// Reference implementations — use `keep_reachable` because &T is
+// pointer-sized independent of T, so recursive definitions through
+// references could be possible. Currently, limitations of generics
+// within `map_type` prevent this from working, so this is done
+// out of caution.
 impl<T: SpecShakingMarker> SpecShakingMarker for &T {
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -83,7 +86,7 @@ impl<T: SpecShakingMarker> SpecShakingMarker for &mut T {
 impl<T: SpecShakingMarker> SpecShakingMarker for Option<T> {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T::spec_shaking_marker);
+        T::spec_shaking_marker();
     }
 }
 
@@ -91,8 +94,8 @@ impl<T: SpecShakingMarker> SpecShakingMarker for Option<T> {
 impl<T: SpecShakingMarker, E: SpecShakingMarker> SpecShakingMarker for Result<T, E> {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T::spec_shaking_marker);
-        keep_reachable(E::spec_shaking_marker);
+        T::spec_shaking_marker();
+        E::spec_shaking_marker();
     }
 }
 
@@ -100,15 +103,15 @@ impl<T: SpecShakingMarker, E: SpecShakingMarker> SpecShakingMarker for Result<T,
 impl<T0: SpecShakingMarker> SpecShakingMarker for (T0,) {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
+        T0::spec_shaking_marker();
     }
 }
 
 impl<T0: SpecShakingMarker, T1: SpecShakingMarker> SpecShakingMarker for (T0, T1) {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
     }
 }
 
@@ -117,9 +120,9 @@ impl<T0: SpecShakingMarker, T1: SpecShakingMarker, T2: SpecShakingMarker> SpecSh
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
     }
 }
 
@@ -132,10 +135,10 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
     }
 }
 
@@ -149,11 +152,11 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
     }
 }
 
@@ -168,12 +171,12 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
     }
 }
 
@@ -189,13 +192,13 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
-        keep_reachable(T6::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
+        T6::spec_shaking_marker();
     }
 }
 
@@ -212,14 +215,14 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
-        keep_reachable(T6::spec_shaking_marker);
-        keep_reachable(T7::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
+        T6::spec_shaking_marker();
+        T7::spec_shaking_marker();
     }
 }
 
@@ -237,15 +240,15 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
-        keep_reachable(T6::spec_shaking_marker);
-        keep_reachable(T7::spec_shaking_marker);
-        keep_reachable(T8::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
+        T6::spec_shaking_marker();
+        T7::spec_shaking_marker();
+        T8::spec_shaking_marker();
     }
 }
 
@@ -264,16 +267,16 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
-        keep_reachable(T6::spec_shaking_marker);
-        keep_reachable(T7::spec_shaking_marker);
-        keep_reachable(T8::spec_shaking_marker);
-        keep_reachable(T9::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
+        T6::spec_shaking_marker();
+        T7::spec_shaking_marker();
+        T8::spec_shaking_marker();
+        T9::spec_shaking_marker();
     }
 }
 
@@ -293,17 +296,17 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
-        keep_reachable(T6::spec_shaking_marker);
-        keep_reachable(T7::spec_shaking_marker);
-        keep_reachable(T8::spec_shaking_marker);
-        keep_reachable(T9::spec_shaking_marker);
-        keep_reachable(T10::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
+        T6::spec_shaking_marker();
+        T7::spec_shaking_marker();
+        T8::spec_shaking_marker();
+        T9::spec_shaking_marker();
+        T10::spec_shaking_marker();
     }
 }
 
@@ -324,18 +327,18 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
-        keep_reachable(T6::spec_shaking_marker);
-        keep_reachable(T7::spec_shaking_marker);
-        keep_reachable(T8::spec_shaking_marker);
-        keep_reachable(T9::spec_shaking_marker);
-        keep_reachable(T10::spec_shaking_marker);
-        keep_reachable(T11::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
+        T6::spec_shaking_marker();
+        T7::spec_shaking_marker();
+        T8::spec_shaking_marker();
+        T9::spec_shaking_marker();
+        T10::spec_shaking_marker();
+        T11::spec_shaking_marker();
     }
 }
 
@@ -357,19 +360,19 @@ impl<
 {
     #[inline(always)]
     fn spec_shaking_marker() {
-        keep_reachable(T0::spec_shaking_marker);
-        keep_reachable(T1::spec_shaking_marker);
-        keep_reachable(T2::spec_shaking_marker);
-        keep_reachable(T3::spec_shaking_marker);
-        keep_reachable(T4::spec_shaking_marker);
-        keep_reachable(T5::spec_shaking_marker);
-        keep_reachable(T6::spec_shaking_marker);
-        keep_reachable(T7::spec_shaking_marker);
-        keep_reachable(T8::spec_shaking_marker);
-        keep_reachable(T9::spec_shaking_marker);
-        keep_reachable(T10::spec_shaking_marker);
-        keep_reachable(T11::spec_shaking_marker);
-        keep_reachable(T12::spec_shaking_marker);
+        T0::spec_shaking_marker();
+        T1::spec_shaking_marker();
+        T2::spec_shaking_marker();
+        T3::spec_shaking_marker();
+        T4::spec_shaking_marker();
+        T5::spec_shaking_marker();
+        T6::spec_shaking_marker();
+        T7::spec_shaking_marker();
+        T8::spec_shaking_marker();
+        T9::spec_shaking_marker();
+        T10::spec_shaking_marker();
+        T11::spec_shaking_marker();
+        T12::spec_shaking_marker();
     }
 }
 
@@ -388,7 +391,7 @@ impl SpecShakingMarker for crate::Duration {}
 impl SpecShakingMarker for crate::Val {}
 impl SpecShakingMarker for crate::Error {}
 
-// Container types - propagate to inner types
+// SDK Container types - Vec and Map use `keep_reachable` to allow for recursive definitions.
 impl<T: SpecShakingMarker> SpecShakingMarker for crate::Vec<T> {
     #[inline(always)]
     fn spec_shaking_marker() {
