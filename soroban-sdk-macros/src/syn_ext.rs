@@ -49,6 +49,27 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
     ))
 }
 
+/// Extension methods on `syn::Ident` used across the derive macros.
+pub trait IdentExt {
+    /// Returns the identifier's name for use in generated Soroban-facing names
+    /// (spec XDR entries, runtime `Symbol`s, map keys, discriminants, and the
+    /// internal static idents derived from them).
+    ///
+    /// Raw identifiers like `r#type` return the unraw form (`"type"`). `Symbol`'s
+    /// charset (`[_0-9A-Za-z]`) does not permit the `#` character.
+    ///
+    /// Call sites that emit Rust tokens referring back to the original field or
+    /// variant must still use the original `Ident` so that raw identifiers remain
+    /// valid Rust.
+    fn soroban_name(&self) -> String;
+}
+
+impl IdentExt for Ident {
+    fn soroban_name(&self) -> String {
+        syn::ext::IdentExt::unraw(self).to_string()
+    }
+}
+
 /// Validate that the function argument type is not a mutable reference.
 ///
 /// Returns an error indicating that contract functions arguments cannot be a mutable reference.

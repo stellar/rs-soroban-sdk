@@ -10,7 +10,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs, map_type::map_type, shaking, spec_shaking_v2_enabled,
-    DEFAULT_XDR_RW_LIMITS,
+    syn_ext::IdentExt as _, DEFAULT_XDR_RW_LIMITS,
 };
 
 pub fn derive_type_struct_tuple(
@@ -72,7 +72,7 @@ pub fn derive_type_struct_tuple(
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: ident.to_string().try_into().unwrap(),
+            name: ident.soroban_name().try_into().unwrap(),
             fields: field_specs.try_into().unwrap(),
         });
         Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
@@ -84,7 +84,7 @@ pub fn derive_type_struct_tuple(
     let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", ident.to_string().to_uppercase());
+        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", ident.soroban_name().to_uppercase());
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
