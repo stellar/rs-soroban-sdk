@@ -31,6 +31,10 @@ pub struct TestEvent {
 #[derive(Debug)]
 pub struct TestType {
     pub r#type: u32,
+    // `rank` is intentionally non-raw and starts with `r` so that its sort
+    // position differs between the raw form (`r#type`,`r#value`,`raw`) and
+    // unraw form (`raw`,`type`,`value`) of the other fields.
+    pub rank: u32,
     pub r#value: u32,
 }
 
@@ -52,6 +56,7 @@ impl Contract {
 
         match a {
             TestEnum::r#Enum => Ok(TestType {
+                rank: 7,
                 r#type: a as u32,
                 r#value: 42,
             }),
@@ -67,6 +72,7 @@ fn test_functional() {
     let client = ContractClient::new(&env, &contract_id);
 
     let res = client.r#type(&TestEnum::r#Enum);
+    assert_eq!(res.rank, 7);
     assert_eq!(res.r#type, 0);
     assert_eq!(res.value, 42);
 
@@ -120,6 +126,11 @@ fn test_spec() {
             lib: "".try_into().unwrap(),
             name: "TestType".try_into().unwrap(),
             fields: [
+                ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "rank".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                },
                 ScSpecUdtStructFieldV0 {
                     doc: "".try_into().unwrap(),
                     name: "type".try_into().unwrap(),
