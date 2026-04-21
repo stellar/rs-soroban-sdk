@@ -1,5 +1,4 @@
 use itertools::Itertools;
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::StringM;
 use syn::{Attribute, Expr, ExprLit, Lit, Meta, MetaNameValue};
 

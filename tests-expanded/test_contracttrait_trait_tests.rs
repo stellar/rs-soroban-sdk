@@ -7341,7 +7341,6 @@ mod test {
         ),
     };
     fn test_spec_docs() {
-        use stellar_xdr::curr as stellar_xdr;
         use stellar_xdr::{Limits, ReadXdr, ScSpecEntry};
         let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_u32(), Limits::none()).unwrap();
         let ScSpecEntry::FunctionV0(func) = entry else {

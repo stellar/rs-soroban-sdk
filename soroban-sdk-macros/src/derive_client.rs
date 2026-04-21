@@ -1,12 +1,10 @@
 use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
+use stellar_xdr::ScSpecTypeDef;
 use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
-use crate::{
-    attribute::pass_through_attr_to_gen_code, map_type::map_type, stellar_xdr::ScSpecTypeDef,
-    symbol, syn_ext,
-};
+use crate::{attribute::pass_through_attr_to_gen_code, map_type::map_type, symbol, syn_ext};
 
 fn is_muxed_address_type(arg: &FnArg) -> bool {
     if let FnArg::Typed(pat_type) = arg {
