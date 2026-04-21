@@ -4,7 +4,7 @@ use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -98,7 +98,7 @@ pub fn generate_call_to_contractimpl_for_trait(
     args_ident: &str,
     spec_ident: &str,
 ) -> TokenStream2 {
-    let impl_fn_idents = pub_methods.iter().map(|f| f.sig.ident.to_string());
+    let impl_fn_idents = pub_methods.iter().map(|f| f.sig.ident.unraw().to_string());
     quote! {
         #trait_ident!(
             #trait_ident,
@@ -112,6 +112,6 @@ pub fn generate_call_to_contractimpl_for_trait(
 }
 
 fn macro_ident(trait_ident: &Ident) -> Ident {
-    let lower = trait_ident.to_string().to_snake_case();
+    let lower = trait_ident.unraw().to_string().to_snake_case();
     format_ident!("__contractimpl_for_{lower}")
 }

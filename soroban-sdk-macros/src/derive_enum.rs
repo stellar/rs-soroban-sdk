@@ -1,7 +1,10 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path, Visibility};
+use syn::{
+    ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path,
+    Visibility,
+};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
@@ -11,7 +14,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs, map_type::map_type, shaking, spec_shaking_v2_enabled,
-    syn_ext::IdentExt as _, DEFAULT_XDR_RW_LIMITS,
+    DEFAULT_XDR_RW_LIMITS,
 };
 
 pub fn derive_type_enum(
@@ -48,7 +51,7 @@ pub fn derive_type_enum(
             // TODO: Choose discriminant type based on repr type of enum.
             // TODO: Use attributes tagged on variant to control whether field is included.
             let case_ident = &variant.ident;
-            let case_name = &case_ident.soroban_name();
+            let case_name = &case_ident.unraw().to_string();
             let case_name_str_lit = Literal::string(case_name);
             let case_num_lit = Literal::usize_unsuffixed(case_num);
             if case_name.len() > SCSYMBOL_LIMIT as usize {
@@ -151,7 +154,7 @@ pub fn derive_type_enum(
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.soroban_name().try_into().unwrap(),
+            name: enum_ident.unraw().to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
         Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
@@ -165,7 +168,7 @@ pub fn derive_type_enum(
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
-            enum_ident.soroban_name().to_uppercase()
+            enum_ident.unraw().to_string().to_uppercase()
         );
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]

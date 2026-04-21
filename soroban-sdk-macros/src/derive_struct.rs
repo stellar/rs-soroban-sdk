@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
+use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
@@ -10,7 +10,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs, map_type::map_type, shaking, spec_shaking_v2_enabled,
-    syn_ext::IdentExt as _, DEFAULT_XDR_RW_LIMITS,
+    DEFAULT_XDR_RW_LIMITS,
 };
 
 // TODO: Add field attribute for including/excluding fields in types.
@@ -32,11 +32,11 @@ pub fn derive_type_struct(
     let field_count_usize: usize = fields.len();
     let (spec_fields, field_idents, field_names, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
-        .sorted_by_key(|field| field.ident.as_ref().unwrap().soroban_name())
+        .sorted_by_key(|field| field.ident.as_ref().unwrap().unraw().to_string())
         .enumerate()
         .map(|(field_num, field)| {
             let field_ident = field.ident.as_ref().unwrap();
-            let field_name = field_ident.soroban_name();
+            let field_name = field_ident.unraw().to_string();
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
             let field_type = &field.ty;
             let spec_field = ScSpecUdtStructFieldV0 {
@@ -83,7 +83,7 @@ pub fn derive_type_struct(
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: ident.soroban_name().try_into().unwrap(),
+            name: ident.unraw().to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
         });
         Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
@@ -95,7 +95,10 @@ pub fn derive_type_struct(
     let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", ident.soroban_name().to_uppercase());
+        let spec_ident = format_ident!(
+            "__SPEC_XDR_TYPE_{}",
+            ident.unraw().to_string().to_uppercase()
+        );
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();

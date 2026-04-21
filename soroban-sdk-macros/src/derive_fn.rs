@@ -1,13 +1,14 @@
 use crate::{
     attribute::pass_through_attr_to_gen_code,
     map_type::map_type,
-    syn_ext::{self, fn_arg_type_validate_no_mut, ty_to_safe_ident_str, IdentExt as _},
+    syn_ext::{self, fn_arg_type_validate_no_mut, ty_to_safe_ident_str},
 };
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use sha2::{Digest, Sha256};
 use syn::{
+    ext::IdentExt as _,
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
@@ -93,7 +94,7 @@ pub fn derive_pub_fn(
                 // the Soroban-facing name so a raw-identifier spelling like
                 // `r#__check_auth` can't bypass this special-case and then still export
                 // as `__check_auth`.
-                let allow_hash = ident.soroban_name() == "__check_auth" && i == 0;
+                let allow_hash = ident.unraw().to_string() == "__check_auth" && i == 0;
 
                 // Error if the type of the fn arg is mutable.
                 if let Err(e) = fn_arg_type_validate_no_mut(&pat_ty.ty) {
@@ -144,7 +145,7 @@ pub fn derive_pub_fn(
 
     // Generated code parameters.
     let impl_ty_safe_str = ty_to_safe_ident_str(impl_ty);
-    let fn_name = ident.soroban_name();
+    let fn_name = ident.unraw().to_string();
     let wrap_export_name = &fn_name;
     let invoke_fn_prefix = format_ident!("__{}__{}", impl_ty_safe_str, fn_name);
     let invoke_raw = format_ident!("{}__invoke_raw", invoke_fn_prefix);
@@ -246,7 +247,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
     let ty_str = ty_to_safe_ident_str(ty);
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
         .map(|ident| {
-            let ident_str = ident.soroban_name();
+            let ident_str = ident.unraw().to_string();
             let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
             (ident_str, wrap_ident)
         })
@@ -256,7 +257,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
         .map(|p| {
             p.segments
                 .iter()
-                .map(|s| s.ident.soroban_name())
+                .map(|s| s.ident.unraw().to_string())
                 .collect::<Vec<_>>()
                 .join("_")
         })

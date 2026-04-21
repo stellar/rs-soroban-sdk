@@ -1,7 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, shaking, spec_shaking_v2_enabled, symbol, syn_ext::IdentExt as _,
-    DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, shaking, spec_shaking_v2_enabled, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -12,7 +11,7 @@ use stellar_xdr::curr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
     ScSpecEventV0, ScSymbol, StringM, WriteXdr,
 };
-use syn::{parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
+use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
 
 #[derive(Debug, FromMeta)]
 struct ContractEventArgs {
@@ -88,7 +87,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // Check event name length
     const EVENT_NAME_LENGTH: u32 = 32;
-    let event_name = input.ident.soroban_name();
+    let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
     let event_name: StringM<EVENT_NAME_LENGTH> = errors
         .handle(event_name.try_into().map_err(|_| {
@@ -102,7 +101,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let prefix_topics = if let Some(prefix_topics) = &args.topics {
         prefix_topics.iter().map(|t| t.value()).collect()
     } else {
-        vec![input.ident.soroban_name().to_snake_case()]
+        vec![input.ident.unraw().to_string().to_snake_case()]
     };
 
     let fields =
@@ -143,7 +142,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             };
             let doc = docs_from_attrs(&field.attrs);
             const NAME_LENGTH: u32 = 30;
-            let name = ident.soroban_name();
+            let name = ident.unraw().to_string();
             let name_len = name.len();
             let name: StringM<NAME_LENGTH> = errors
                 .handle(name.try_into().map_err(|_| {
@@ -201,7 +200,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!(
         "__SPEC_XDR_EVENT_{}",
-        input.ident.soroban_name().to_uppercase()
+        input.ident.unraw().to_string().to_uppercase()
     );
     let spec_shaking_call = if export && spec_shaking_v2_enabled() {
         Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })

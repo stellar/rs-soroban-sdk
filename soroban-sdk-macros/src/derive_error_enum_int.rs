@@ -3,12 +3,11 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM, WriteXdr};
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path};
-
-use crate::{
-    doc::docs_from_attrs, shaking, spec_shaking_v2_enabled, syn_ext::IdentExt as _,
-    DEFAULT_XDR_RW_LIMITS,
+use syn::{
+    ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path,
 };
+
+use crate::{doc::docs_from_attrs, shaking, spec_shaking_v2_enabled, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_error_enum_int(
     path: &Path,
@@ -26,7 +25,7 @@ pub fn derive_type_error_enum_int(
         .iter()
         .map(|v| {
             let ident = &v.ident;
-            let name = &ident.soroban_name();
+            let name = &ident.unraw().to_string();
             let discriminant: u32 = if let syn::Expr::Lit(ExprLit {
                 lit: Lit::Int(ref lit_int),
                 ..
@@ -71,7 +70,7 @@ pub fn derive_type_error_enum_int(
         let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.soroban_name().try_into().unwrap(),
+            name: enum_ident.unraw().to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
         Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
@@ -85,7 +84,7 @@ pub fn derive_type_error_enum_int(
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
-            enum_ident.soroban_name().to_uppercase()
+            enum_ident.unraw().to_string().to_uppercase()
         );
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]

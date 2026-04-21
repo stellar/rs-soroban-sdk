@@ -38,11 +38,17 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let input: ItemTrait = parse2(input)?;
 
     let path = &args.crate_path;
-    let spec_name = args.spec_name.unwrap_or(format!("{}Spec", input.ident));
+    let spec_name = args
+        .spec_name
+        .unwrap_or_else(|| format_ident!("{}Spec", input.ident).to_string());
     let spec_ident = format_ident!("{spec_name}");
     let spec_export = args.spec_export;
-    let args_name = args.args_name.unwrap_or(format!("{}Args", input.ident));
-    let client_name = args.client_name.unwrap_or(format!("{}Client", input.ident));
+    let args_name = args
+        .args_name
+        .unwrap_or_else(|| format_ident!("{}Args", input.ident).to_string());
+    let client_name = args
+        .client_name
+        .unwrap_or_else(|| format_ident!("{}Client", input.ident).to_string());
 
     Ok(quote! {
         pub struct #spec_ident;

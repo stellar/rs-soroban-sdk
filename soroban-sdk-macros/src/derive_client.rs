@@ -3,9 +3,11 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
+use syn::ext::IdentExt as _;
+
 use crate::{
     attribute::pass_through_attr_to_gen_code, map_type::map_type, stellar_xdr::ScSpecTypeDef,
-    symbol, syn_ext, syn_ext::IdentExt as _,
+    symbol, syn_ext,
 };
 
 fn is_muxed_address_type(arg: &FnArg) -> bool {
@@ -158,11 +160,11 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             // and hooks. Check the Soroban-facing name so a raw-identifier
             // spelling like `r#__check_auth` can't slip past this filter and then
             // still export as `__check_auth`.
-            !f.ident.soroban_name().starts_with("__")
+            !f.ident.unraw().to_string().starts_with("__")
         })
         .map(|f| {
             let fn_ident = &f.ident;
-            let fn_name = fn_ident.soroban_name();
+            let fn_name = fn_ident.unraw().to_string();
             let fn_try_ident = format_ident!("try_{}", &fn_name);
             let fn_name_symbol = symbol::short_or_long(
                 crate_path,

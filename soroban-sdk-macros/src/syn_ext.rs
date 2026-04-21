@@ -2,15 +2,16 @@ use proc_macro2::{Span, TokenStream};
 use quote::{format_ident, quote, ToTokens};
 use std::collections::HashMap;
 use syn::{
+    ext::IdentExt as _, spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn,
+    ItemImpl, ItemTrait, Lifetime, Pat, PatIdent, PatType, TraitItem, TraitItemFn, Type,
+    TypeReference, Visibility,
+};
+use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
     AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
     PathSegment, ReturnType, Signature, Token, TypePath,
-};
-use syn::{
-    spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
-    Lifetime, Pat, PatIdent, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
 };
 
 /// Gets methods from the implementation that have public visibility. For
@@ -47,27 +48,6 @@ pub fn fn_arg_ident(arg: &FnArg) -> Result<Ident, Error> {
         arg.span(),
         "argument in this form is not supported, use simple named arguments only",
     ))
-}
-
-/// Extension methods on `syn::Ident` used across the derive macros.
-pub trait IdentExt {
-    /// Returns the identifier's name for use in generated Soroban-facing names
-    /// (spec XDR entries, runtime `Symbol`s, map keys, discriminants, and the
-    /// internal static idents derived from them).
-    ///
-    /// Raw identifiers like `r#type` return the unraw form (`"type"`). `Symbol`'s
-    /// charset (`[_0-9A-Za-z]`) does not permit the `#` character.
-    ///
-    /// Call sites that emit Rust tokens referring back to the original field or
-    /// variant must still use the original `Ident` so that raw identifiers remain
-    /// valid Rust.
-    fn soroban_name(&self) -> String;
-}
-
-impl IdentExt for Ident {
-    fn soroban_name(&self) -> String {
-        syn::ext::IdentExt::unraw(self).to_string()
-    }
 }
 
 /// Validate that the function argument type is not a mutable reference.
@@ -175,7 +155,7 @@ pub enum HasFnsItem {
 impl HasFnsItem {
     pub fn name(&'_ self) -> String {
         match self {
-            HasFnsItem::Trait(t) => t.ident.to_string(),
+            HasFnsItem::Trait(t) => t.ident.unraw().to_string(),
             HasFnsItem::Impl(i) => {
                 let ty = &i.self_ty;
                 quote!(#ty).to_string()
@@ -313,7 +293,7 @@ fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
             }) = path.segments.last()
             {
                 let args = args.iter().collect::<Vec<_>>();
-                match (&ident.to_string()[..], args.as_slice()) {
+                match (&ident.unraw().to_string()[..], args.as_slice()) {
                     ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
                         Some((t.clone(), e.clone()))
                     }
@@ -444,7 +424,11 @@ fn self_type_ident(ty: &Type) -> Result<Option<&Ident>, Error> {
 }
 
 pub fn ty_to_safe_ident_str(ty: &Type) -> String {
-    quote!(#ty).to_string().replace(' ', "").replace(':', "_")
+    quote!(#ty)
+        .to_string()
+        .replace(' ', "")
+        .replace(':', "_")
+        .replace("r#", "")
 }
 
 pub fn ident_to_type(ident: Ident) -> Type {
