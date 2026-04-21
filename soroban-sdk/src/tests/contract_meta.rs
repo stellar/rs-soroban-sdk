@@ -1,6 +1,5 @@
 use crate as soroban_sdk;
 use soroban_sdk::contractmeta;
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ReadXdr, ScMetaEntry, ScMetaV0};
 
 #[test]

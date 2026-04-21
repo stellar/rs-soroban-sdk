@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 68bd874f3f90bf15df5bde5940652f0d8083c7f73c425b99ce00950fa69d7d31 # shrinks to scval_1 = Bool(false), scval_2 = Bool(false)
