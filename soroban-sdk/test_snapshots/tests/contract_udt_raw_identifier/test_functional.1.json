@@ -7,6 +7,7 @@
   "auth": [
     [],
     [],
+    [],
     []
   ],
   "ledger": {
@@ -58,38 +59,5 @@
       }
     ]
   },
-  "events": [
-    {
-      "event": {
-        "ext": "v0",
-        "contract_id": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-        "type_": "contract",
-        "body": {
-          "v0": {
-            "topics": [
-              {
-                "symbol": "test_event"
-              },
-              {
-                "u32": 1
-              }
-            ],
-            "data": {
-              "map": [
-                {
-                  "key": {
-                    "symbol": "fn"
-                  },
-                  "val": {
-                    "u32": 1
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      "failed_call": true
-    }
-  ]
+  "events": []
 }
