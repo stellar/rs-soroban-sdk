@@ -44,6 +44,7 @@ fn test_spec_shaking_v2() {
         "with_return",
         "with_error",
         "with_vec",
+        "with_vec_nested",
         "with_map",
         "with_recursion",
         "publish_simple",
@@ -80,6 +81,10 @@ fn test_spec_shaking_v2() {
         "UsedVecElement",
         "UsedMapKey",
         "UsedMapVal",
+        // vec element with nested custom types in data
+        "UsedVecInnerVecElement",
+        "UsedVecInnerElement",
+        "UsedVecElementNested",
         // Option element type in fn param
         "UsedOptionElement",
         // Result Ok type in fn return
