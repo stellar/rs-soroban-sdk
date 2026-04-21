@@ -1,4 +1,4 @@
-pub mod syn_ext;
+mod syn_ext;
 pub mod r#trait;
 pub mod types;
 
