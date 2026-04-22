@@ -147,6 +147,7 @@ impl AllTypes for Contract {
     fn test_string(v: String) -> String {
         v
     }
+    /// Custom env param docs.
     fn test_env_param(_env: &Env) -> u32 {
         100
     }
@@ -155,63 +156,6 @@ impl AllTypes for Contract {
             a: v.a * 2,
             b: v.b * 2,
         }
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_u32__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_U32: [u8; 48usize] = super::Contract::spec_xdr_test_u32();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u32() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_string__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_STRING: [u8; 52usize] = super::Contract::spec_xdr_test_string();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_string() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_env_param__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; 40usize] =
-        super::Contract::spec_xdr_test_env_param();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__test_struct__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] = super::Contract::spec_xdr_test_struct();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -370,6 +314,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    /// Custom env param docs.
     pub fn test_env_param(&self) -> u32 {
         use core::ops::Not;
         let old_auth_manager = self
@@ -403,6 +348,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    /// Custom env param docs.
     pub fn try_test_env_param(
         &self,
     ) -> Result<
@@ -636,6 +582,7 @@ pub extern "C" fn __Contract__test_string__invoke_raw_extern(
     __Contract__test_string__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
+/// Custom env param docs.
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_env_param` instead")]
 #[allow(deprecated)]
@@ -646,6 +593,7 @@ pub fn __Contract__test_env_param__invoke_raw(env: soroban_sdk::Env) -> soroban_
     )
 }
 #[doc(hidden)]
+/// Custom env param docs.
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_env_param` instead")]
 pub fn __Contract__test_env_param__invoke_raw_slice(
@@ -665,6 +613,7 @@ pub fn __Contract__test_env_param__invoke_raw_slice(
     __Contract__test_env_param__invoke_raw(env)
 }
 #[doc(hidden)]
+/// Custom env param docs.
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).test_env_param` instead")]
 pub extern "C" fn __Contract__test_env_param__invoke_raw_extern() -> soroban_sdk::Val {
@@ -3463,6 +3412,72 @@ fn __Contract__AllTypes__447a3d427d821f62365afd21ac9b6fa9597c9d71324b5cba7631f73
     }
 }
 #[doc(hidden)]
+/// Test u32 values.
+/// Returns the input unchanged.
+#[allow(non_snake_case)]
+pub mod __Contract__test_u32__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    pub static __SPEC_XDR_FN_TEST_U32: [u8; 96usize] = super::Contract::spec_xdr_test_u32();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    pub const fn spec_xdr_test_u32() -> [u8; 96usize] {
+        *b"\0\0\0\0\0\0\0-Test u32 values.\nReturns the input unchanged.\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_string__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_STRING: [u8; 52usize] = super::Contract::spec_xdr_test_string();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_string() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
+    }
+}
+#[doc(hidden)]
+/// Custom env param docs.
+#[allow(non_snake_case)]
+pub mod __Contract__test_env_param__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    /// Custom env param docs.
+    pub static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; 64usize] =
+        super::Contract::spec_xdr_test_env_param();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    /// Custom env param docs.
+    pub const fn spec_xdr_test_env_param() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\x16Custom env param docs.\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__test_struct__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] = super::Contract::spec_xdr_test_struct();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+    }
+}
+#[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
 fn __Contract__AllTypes__1eb9a6a69c5f732bd78e03e0fa5ea9d0a5c925757f7a5e53cd10ccd57b3e027d_ctor() {
@@ -3511,6 +3526,117 @@ mod test {
     use super::*;
     use soroban_sdk::{map, symbol_short, testutils::Address as _, vec, Env};
     extern crate test;
+    #[rustc_test_marker = "test::test_spec_docs_inherited_from_trait"]
+    #[doc(hidden)]
+    pub const test_spec_docs_inherited_from_trait: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::test_spec_docs_inherited_from_trait"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/contracttrait_impl_partial/src/lib.rs",
+            start_line: 42usize,
+            start_col: 8usize,
+            end_line: 42usize,
+            end_col: 43usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(test_spec_docs_inherited_from_trait()),
+        ),
+    };
+    fn test_spec_docs_inherited_from_trait() {
+        use stellar_xdr::curr as stellar_xdr;
+        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry};
+        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_u32(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            {
+                ::core::panicking::panic_fmt(format_args!("expected FunctionV0"));
+            };
+        };
+        match (
+            &func.doc.to_utf8_string().unwrap(),
+            &"Test u32 values.\nReturns the input unchanged.",
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_i32(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            {
+                ::core::panicking::panic_fmt(format_args!("expected FunctionV0"));
+            };
+        };
+        match (&func.doc.to_utf8_string().unwrap(), &"Test i32 values.") {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        let entry =
+            ScSpecEntry::from_xdr(Contract::spec_xdr_test_string(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            {
+                ::core::panicking::panic_fmt(format_args!("expected FunctionV0"));
+            };
+        };
+        match (&func.doc.to_utf8_string().unwrap(), &"") {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        let entry =
+            ScSpecEntry::from_xdr(Contract::spec_xdr_test_env_param(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            {
+                ::core::panicking::panic_fmt(format_args!("expected FunctionV0"));
+            };
+        };
+        match (
+            &func.doc.to_utf8_string().unwrap(),
+            &"Custom env param docs.",
+        ) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+    }
+    extern crate test;
     #[rustc_test_marker = "test::test_partial_override"]
     #[doc(hidden)]
     pub const test_partial_override: test::TestDescAndFn = test::TestDescAndFn {
@@ -3519,9 +3645,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/contracttrait_impl_partial/src/lib.rs",
-            start_line: 41usize,
+            start_line: 83usize,
             start_col: 8usize,
-            end_line: 41usize,
+            end_line: 83usize,
             end_col: 29usize,
             compile_fail: false,
             no_run: false,
@@ -3847,5 +3973,5 @@ mod test {
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_partial_override])
+    test::test_main_static(&[&test_partial_override, &test_spec_docs_inherited_from_trait])
 }

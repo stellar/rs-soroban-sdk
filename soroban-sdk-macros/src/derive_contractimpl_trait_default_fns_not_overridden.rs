@@ -1,4 +1,5 @@
 use crate::{
+    attribute::is_attr_doc,
     default_crate_path,
     derive_args::derive_args_impl,
     derive_client::derive_client_impl,
@@ -9,7 +10,7 @@ use crate::{
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::quote;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use syn::{LitStr, Path, Type};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
@@ -20,8 +21,10 @@ struct Args {
     crate_path: Path,
     trait_ident: Path,
     trait_default_fns: Vec<LitStr>,
+    trait_all_fns: Vec<LitStr>,
     impl_ident: Ident,
     impl_fns: Vec<LitStr>,
+    impl_fns_with_docs: Vec<LitStr>,
     client_name: String,
     args_name: String,
     spec_name: Type,
@@ -82,6 +85,38 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         &impl_ty,
         Some(trait_ident),
         fns.iter().map(|f| &f.ident),
+    ));
+
+    // Generate spec for overridden functions, inheriting trait docs for
+    // functions that lack their own doc comments.
+    let trait_all_fns = syn_ext::strs_to_fns(&args.trait_all_fns)?;
+    let trait_fn_docs: HashMap<String, Vec<syn::Attribute>> = trait_all_fns
+        .into_iter()
+        .map(|f| (f.ident.to_string(), f.attrs))
+        .collect();
+
+    let impl_fns_parsed = syn_ext::strs_to_fns(&args.impl_fns_with_docs)?;
+    let impl_fns_for_spec: Vec<syn_ext::Fn> = impl_fns_parsed
+        .into_iter()
+        .map(|f| {
+            let has_docs = f.attrs.iter().any(|a| is_attr_doc(a));
+            if !has_docs {
+                if let Some(trait_attrs) = trait_fn_docs.get(&f.ident.to_string()) {
+                    return syn_ext::Fn {
+                        ident: f.ident,
+                        attrs: trait_attrs.clone(),
+                        inputs: f.inputs,
+                        output: f.output,
+                    };
+                }
+            }
+            f
+        })
+        .collect();
+    output.extend(derive_fns_spec(
+        &args.spec_name,
+        &impl_fns_for_spec,
+        spec_export,
     ));
 
     Ok(output)

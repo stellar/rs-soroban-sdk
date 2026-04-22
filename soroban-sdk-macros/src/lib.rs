@@ -269,12 +269,24 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     match derived {
         Ok(derived_ok) => {
-            let mut output = quote! {
-                #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
-                #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
-                #[#crate_path::contractspecfn(name = #ty_str)]
-                #imp
-                #derived_ok
+            // When contracttrait is true, spec generation for overridden
+            // functions is handled by the macro bridge (so that trait docs can
+            // be used as fallback), so contractspecfn is not applied here.
+            let mut output = if args.contracttrait {
+                quote! {
+                    #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
+                    #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
+                    #imp
+                    #derived_ok
+                }
+            } else {
+                quote! {
+                    #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
+                    #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
+                    #[#crate_path::contractspecfn(name = #ty_str)]
+                    #imp
+                    #derived_ok
+                }
             };
 
             // See soroban-sdk/docs/contracttrait.md for documentation on how

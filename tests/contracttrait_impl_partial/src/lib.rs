@@ -20,6 +20,7 @@ impl AllTypes for Contract {
         v
     }
 
+    /// Custom env param docs.
     fn test_env_param(_env: &Env) -> u32 {
         100
     }
@@ -36,6 +37,47 @@ impl AllTypes for Contract {
 mod test {
     use super::*;
     use soroban_sdk::{map, symbol_short, testutils::Address as _, vec, Env};
+
+    #[test]
+    fn test_spec_docs_inherited_from_trait() {
+        use stellar_xdr::curr as stellar_xdr;
+        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry};
+
+        // An overridden function without its own docs should inherit trait docs.
+        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_u32(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            panic!("expected FunctionV0");
+        };
+        assert_eq!(
+            func.doc.to_utf8_string().unwrap(),
+            "Test u32 values.\nReturns the input unchanged."
+        );
+
+        // A non-overridden default function should also have trait docs.
+        let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_i32(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            panic!("expected FunctionV0");
+        };
+        assert_eq!(func.doc.to_utf8_string().unwrap(), "Test i32 values.");
+
+        // An overridden function without docs and a trait function without docs
+        // should have empty docs.
+        let entry =
+            ScSpecEntry::from_xdr(Contract::spec_xdr_test_string(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            panic!("expected FunctionV0");
+        };
+        assert_eq!(func.doc.to_utf8_string().unwrap(), "");
+
+        // An overridden function with its own docs should use its own docs,
+        // not the trait docs.
+        let entry =
+            ScSpecEntry::from_xdr(Contract::spec_xdr_test_env_param(), Limits::none()).unwrap();
+        let ScSpecEntry::FunctionV0(func) = entry else {
+            panic!("expected FunctionV0");
+        };
+        assert_eq!(func.doc.to_utf8_string().unwrap(), "Custom env param docs.");
+    }
 
     #[test]
     fn test_partial_override() {

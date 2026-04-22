@@ -1816,6 +1816,7 @@ name = "test_contracttrait_impl_partial"
 version = "26.0.0-rc.1"
 dependencies = [
  "soroban-sdk",
+ "stellar-xdr",
  "test_contracttrait_trait",
 ]
 

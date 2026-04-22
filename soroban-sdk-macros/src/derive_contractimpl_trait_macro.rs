@@ -56,6 +56,16 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
         _ => None,
     });
 
+    // Serialize all trait functions' docs+sigs (including non-default ones) so
+    // that overridden functions can inherit trait docs when they lack their own.
+    let all_fns = input.items.iter().filter_map(|i| match i {
+        TraitItem::Fn(TraitItemFn { sig, attrs, .. }) => {
+            let doc_attrs: Vec<_> = attrs.iter().filter(|a| is_attr_doc(a)).collect();
+            Some(quote!(#(#doc_attrs)* #sig).to_token_stream().to_string())
+        }
+        _ => None,
+    });
+
     let macro_ident = macro_ident(&input.ident);
 
     let output = quote! {
@@ -67,6 +77,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
                 $trait_ident:path,
                 $impl_ident:ty,
                 $impl_fns:expr,
+                $impl_fns_with_docs:expr,
                 $client_name:literal,
                 $args_name:literal,
                 $spec_name:literal $(,)?
@@ -74,8 +85,10 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
                 #path::contractimpl_trait_default_fns_not_overridden!(
                     trait_ident = $trait_ident,
                     trait_default_fns = [#(#fns),*],
+                    trait_all_fns = [#(#all_fns),*],
                     impl_ident = $impl_ident,
                     impl_fns = $impl_fns,
+                    impl_fns_with_docs = $impl_fns_with_docs,
                     client_name = $client_name,
                     args_name = $args_name,
                     spec_name = $spec_name,
@@ -99,11 +112,23 @@ pub fn generate_call_to_contractimpl_for_trait(
     spec_ident: &str,
 ) -> TokenStream2 {
     let impl_fn_idents = pub_methods.iter().map(|f| f.sig.ident.to_string());
+    // Serialize impl functions with their doc attrs so the macro bridge can
+    // generate spec entries, falling back to trait docs when the impl function
+    // lacks its own.
+    let impl_fn_strs: Vec<String> = pub_methods
+        .iter()
+        .map(|f| {
+            let doc_attrs: Vec<_> = f.attrs.iter().filter(|a| is_attr_doc(a)).collect();
+            let sig = &f.sig;
+            quote!(#(#doc_attrs)* #sig).to_token_stream().to_string()
+        })
+        .collect();
     quote! {
         #trait_ident!(
             #trait_ident,
             #impl_ident,
             [#(#impl_fn_idents),*],
+            [#(#impl_fn_strs),*],
             #client_ident,
             #args_ident,
             #spec_ident,
