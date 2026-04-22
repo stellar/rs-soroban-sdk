@@ -1,6 +1,5 @@
 use proc_macro2::TokenStream;
 use quote::quote;
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::ScSpecFunctionV0;
 
 use super::syn_ext::str_to_ident;
