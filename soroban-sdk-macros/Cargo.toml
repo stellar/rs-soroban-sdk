@@ -18,7 +18,7 @@ doctest = false
 soroban-spec = { workspace = true }
 soroban-spec-rust = { workspace = true }
 soroban-env-common = { workspace = true }
-stellar-xdr = { workspace = true, features = ["curr", "std"] }
+stellar-xdr = { workspace = true, features = ["std"] }
 syn = {version="2.0.77",features=["full"]}
 quote = "1.0"
 proc-macro2 = "1.0"
