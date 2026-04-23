@@ -154,11 +154,11 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ty = &item.ident;
     let ty_str = ty.unraw().to_string();
 
-    let client_ident = format_ident!("{}Client", ty).to_string();
+    let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
     let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
-    let args_ident = format_ident!("{}Args", ty).to_string();
+    let args_ident = format!("{ty_str}Args");
     let contract_args = derive_args_type(&ty_str, &args_ident);
     let mut output = quote! {
         #input2
@@ -239,7 +239,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format_ident!("{}Args", name.ident).to_string())
+            .map(|name| format!("{}Args", name.ident.unraw()))
     } else {
         None
     }
@@ -251,7 +251,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format_ident!("{}Client", name.ident).to_string())
+            .map(|name| format!("{}Client", name.ident.unraw()))
     } else {
         None
     }
