@@ -56,15 +56,16 @@ impl UdtEnum2 {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_AFF793BA9E4DDE9A: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9a",
+        children: &[],
+    };
 impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9a";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_AFF793BA9E4DDE9A;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
     type Error = soroban_sdk::ConversionError;
@@ -176,18 +177,20 @@ impl UdtEnum {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_F3B0AB40690D48B4: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xf3\xb0\xab@i\rH\xb4",
+        children: &[
+            <UdtStruct as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <UdtEnum2 as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <UdtTuple as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UdtEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UdtStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xb0\xab@i\rH\xb4";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_F3B0AB40690D48B4;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
     type Error = soroban_sdk::ConversionError;
@@ -341,17 +344,19 @@ impl UdtTuple {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_EB9F12269A76282A: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xeb\x9f\x12&\x9av(*",
+        children: &[
+            <i64 as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <Vec<i64> as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UdtTuple {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xeb\x9f\x12&\x9av(*";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_EB9F12269A76282A;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
@@ -457,18 +462,20 @@ impl UdtStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_16276438FFC9B1F8: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\x16'd8\xff\xc9\xb1\xf8",
+        children: &[
+            <i64 as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <i64 as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <Vec<i64> as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UdtStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x16'd8\xff\xc9\xb1\xf8";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_16276438FFC9B1F8;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
     type Error = soroban_sdk::ConversionError;
@@ -578,17 +585,19 @@ impl UdtRecursive {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_C81291FED713F59C: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xc8\x12\x91\xfe\xd7\x13\xf5\x9c",
+        children: &[
+            <Symbol as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UdtRecursive {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc8\x12\x91\xfe\xd7\x13\xf5\x9c";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_C81291FED713F59C;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
     type Error = soroban_sdk::ConversionError;
@@ -694,17 +703,19 @@ impl RecursiveToEnum {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_E16F55DBD4379814: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xe1oU\xdb\xd47\x98\x14",
+        children: &[
+            <Symbol as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe1oU\xdb\xd47\x98\x14";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_E16F55DBD4379814;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
     type Error = soroban_sdk::ConversionError;
@@ -817,16 +828,16 @@ impl RecursiveEnum {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_FF7B5620AB0DDC64: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xff{V \xab\r\xdcd",
+        children: &[<RecursiveToEnum as soroban_sdk::SpecShakingMarker>::MARKER_NODE],
+    };
 impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xff{V \xab\r\xdcd";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_FF7B5620AB0DDC64;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
     type Error = soroban_sdk::ConversionError;

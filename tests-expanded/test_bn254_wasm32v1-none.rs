@@ -20,17 +20,19 @@ impl MockProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_3A81A6A09EE7A71F: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f",
+        children: &[
+            <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for MockProof {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_3A81A6A09EE7A71F;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
     type Error = soroban_sdk::ConversionError;

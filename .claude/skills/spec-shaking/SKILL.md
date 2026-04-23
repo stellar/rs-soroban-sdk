@@ -267,3 +267,253 @@ dev/test builds also matters.
 | Post-build scan + filter | `soroban-spec/src/shaking.rs` |
 | Post-build wasm stripping (all-`keep_reachable` variant) | `soroban-spec/src/strip.rs` |
 | Test contracts | `tests/spec_shaking_v1/`, `tests/spec_shaking_v2/`, `tests/udt/` |
+
+## Alternative design: static `MarkerNode` graph (no fns, no `keep_reachable`)
+
+An alternative reachability mechanism replaces both the fn-based
+`spec_shaking_marker()` direct-call chain *and* `keep_reachable(fn)` with
+a pure static-pointer graph. Every type exposes one associated const
+pointing at a `MarkerNode` in the data section; the boundary wrapper
+does a single volatile read of that pointer; wasm-ld's section-GC walks
+the `children` relocations the rest of the way. No function pointers,
+no indirect-function-table surface, no DCE asymmetry between
+direct-call and `keep_reachable` paths.
+
+### The trait and the graph
+
+```rust
+#[repr(C)]
+pub struct MarkerNode {
+    pub marker: [u8; 14],                           // SpEcV1 + hash (or zeros)
+    pub children: &'static [*const MarkerNode],
+}
+unsafe impl Sync for MarkerNode {}                  // raw pointers aren't Sync by default
+
+pub static EMPTY_MARKER_NODE: MarkerNode = MarkerNode {
+    marker: [0u8; 14],
+    children: &[],
+};
+
+pub trait SpecShakingMarker {
+    const MARKER_NODE: *const MarkerNode;
+}
+```
+
+Every impl has the same shape: one associated const returning a
+`*const MarkerNode`. No `fn spec_shaking_marker()`, no `keep_reachable`.
+
+### Impl shapes
+
+| Category | RHS of `MARKER_NODE` | Where the node lives |
+|---|---|---|
+| Primitives (`u32`, `bool`, `Address`, `Symbol`, …) | `&raw const EMPTY_MARKER_NODE` | Shared single static in soroban-sdk |
+| Single-child containers (`Vec<T>`, `Option<T>`, `&T`, `&mut T`, `(T,)`) | `T::MARKER_NODE` (direct forward) | No new node |
+| Multi-child containers (`Map<K,V>`, `Result<T,E>`, tuples 2..=13) | `&MarkerNode { marker: [0;14], children: &[…] } as *const _` | Promoted anonymous static per monomorphization |
+| UDTs (macro-emitted) | `&raw const __SOROBAN_SDK_SPEC_MARKER_NODE_<hash>` | Named module-scope static per UDT |
+
+UDT macros emit one module-scope static plus a tiny impl:
+
+```rust
+#[doc(hidden)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_5803F674C7D00122: MarkerNode = MarkerNode {
+    marker: *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"",
+    children: &[
+        <u32 as SpecShakingMarker>::MARKER_NODE,
+        <UsedNestedInStruct as SpecShakingMarker>::MARKER_NODE,
+    ],
+};
+impl SpecShakingMarker for UsedParamStruct {
+    const MARKER_NODE: *const MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_5803F674C7D00122;
+}
+```
+
+### Why raw pointers, not `&'static MarkerNode`
+
+The graph needs to allow cycles (`struct S { v: Vec<S> }` →
+`S_NODE → Vec<S>_wrapper → S_NODE`). Rust allows static-to-static
+cycles through `&` at the value level, but a trait-associated
+`const MARKER_NODE: &'static MarkerNode` triggers rustc's
+const-evaluator cycle detector the moment a concrete monomorphization
+closes the loop:
+
+```
+note: ...which requires const-evaluating + checking
+       `<Vec<S> as SpecShakingMarker>::MARKER_NODE`
+note: ...which again requires evaluating initializer of static
+       `__SOROBAN_SDK_SPEC_MARKER_NODE_…`, completing the cycle
+```
+
+CTFE on a const expression of type `&'static T` walks into the
+referenced allocation's initializer. The cycle is unavoidable with
+associated-const references because the container's promoted static and
+the UDT's named static both have initializers that reference each
+other's values.
+
+Raw pointers dodge this. `&raw const STATIC` and `&expr as *const T`
+produce `*const T` at const time as opaque address values — CTFE does
+not walk into the target. Runtime behaviour is identical; addresses
+resolve at link time the same way. The `unsafe impl Sync` is needed
+because raw pointers aren't `Sync` by default; it's safe because the
+pointers are never dereferenced at runtime.
+
+### How the boundary wrapper roots the graph
+
+`TryFromValForContractFn` and `IntoValForContractFn` each contain one
+volatile read per boundary:
+
+```rust
+#[cfg(target_family = "wasm")]
+{
+    let _ = unsafe { core::ptr::read_volatile(&U::MARKER_NODE) };
+}
+```
+
+`U::MARKER_NODE` is a compile-time-known `*const MarkerNode` value.
+`&U::MARKER_NODE` puts it in a local stack slot; `read_volatile` reads
+the pointer value back. The volatile read is what LLVM can't optimise
+away — it forces the pointer immediate to be emitted in the caller's
+body, which tells wasm-ld "the `MarkerNode` at this address is live."
+
+`#[contractevent]` publishers emit the same call inline in the
+generated `publish` method (see `soroban-sdk-macros/src/derive_event.rs`).
+
+### Lifetime handling in the macro
+
+Module-scope statics can't see lifetime params declared on the impl
+(e.g. `<'a>` on `UsedEventWithRefs<'a>` — field types include
+`&'a UsedRefTopicType`). The macro substitutes `'static` for every
+lifetime in field types via `syn::visit_mut` before emitting the
+static. Sound because `&'a T: SpecShakingMarker` forwards to `T`, so
+the marker value is lifetime-independent.
+
+### What ends up in the WASM, per piece
+
+Assume wasm32. Addresses and pointers are 4 bytes.
+
+**Per UDT.** One `static __SOROBAN_SDK_SPEC_MARKER_NODE_<hash>: MarkerNode`:
+- 14 bytes `SpEcV1…` marker
+- 2 bytes padding (4-byte alignment from slice field)
+- 8 bytes slice header (ptr + len)
+- N × 4 bytes slice backing (one `*const MarkerNode` per field)
+- **= 24 + 4·N bytes per UDT**
+
+**Per multi-child container monomorphization.** Same shape, with
+`marker: [0; 14]`. 24 + 4·N bytes. wasm-ld's ICF can dedup identical
+wrappers across call sites.
+
+**Per single-child container monomorphization.** Zero bytes — forwards
+`T::MARKER_NODE` directly.
+
+**Per primitive.** Zero bytes per type; all primitives share
+`EMPTY_MARKER_NODE` (24 bytes amortised once across the binary).
+
+**Per boundary call site.** The `read_volatile(&T::MARKER_NODE)` inlines
+to roughly six instructions, one stack slot, **constant regardless of
+reachability depth**:
+
+```
+i32.const  <stack_base>
+i32.const  <marker_node_addr>
+i32.store  offset=<slot>        ;; store ptr to stack slot
+i32.const  <stack_base>
+i32.load   offset=<slot>        ;; volatile-load it back
+drop
+```
+
+This is the main runtime win over the fn-based design, which compounded
+an `i32.load8_u` per direct-call-reachable type plus a 6-instruction
+`keep_reachable` round trip per cycle-breaking container edge.
+
+### Post-build stripping in this variant
+
+`soroban-spec/src/strip.rs` becomes dramatically simpler. No marker
+functions exist, so no function deletion, no element-table surgery, no
+call-site rewriting. The pass runs a graph walk over the data section
+and a segment-compaction pass:
+
+1. Refuse non-v2 wasms (checks `rssdk_spec_shaking = "2"`).
+2. Scan data segments for `SpEcV1…` patterns. Collect (a) the marker
+   set (for spec filtering) and (b) the `(data_id, offset)` of each
+   occurrence — these are the UDT `MarkerNode`s (marker bytes live at
+   offset 0..14 of the 24-byte struct on wasm32).
+3. BFS the `MarkerNode` graph from those seeds: at each node, zero the
+   full 24-byte struct; resolve its `children` slice pointer to
+   `(data_id, offset)`; zero the `len * 4`-byte slice backing; follow
+   each child pointer into the next node. Container-wrapper nodes
+   (whose own marker is all-zero, invisible to the bare byte scan) are
+   reached this way via the pointers from UDT nodes that found them.
+4. Compact each active data segment by splitting it around any run of
+   zero bytes ≥ 16 bytes. Zeroing alone doesn't reduce the emitted
+   wasm — zero bytes still serialize — but because live code references
+   nothing inside the zeroed ranges, splitting lets those bytes
+   simply not be emitted. Each split produces new segments at the
+   original absolute memory addresses so surrounding code still
+   resolves. Threshold 16 covers the per-segment header cost (mode +
+   offset expr + length LEB128, ~5–10 bytes); below it, splitting
+   would cost more than it saves.
+5. Rewrite `contractspecv0` via `shaking::filter` to drop entries whose
+   marker wasn't seen.
+
+Safe because runtime code never reads through the graph — boundary
+wrappers read pointer *values* off the stack and drop them; `MarkerNode`
+fields (including pointer children between nodes) are never
+dereferenced at runtime. The split-around-zeros pass preserves every
+live byte's memory address; only the zeroed ranges stop being
+serialized.
+
+### Measured impact (test contracts, release wasm32v1-none)
+
+| Contract | v1 baseline | Static-graph pre-strip | Static-graph post-strip | Post-strip vs v1 |
+|---|---:|---:|---:|---:|
+| `test_spec_shaking_v2` | 10,424 | 13,816 | **9,000**  | **−1,424** |
+| `test_udt`             | 5,028* | 5,405  | **4,742**  | **−286** |
+
+\* `test_udt` has no non-boundary types; its v1-equivalent baseline is
+the post-strip size.
+
+The pre-strip cost (+3,392 bytes on v2) comes from the `MarkerNode`
+graph plus one boundary read-volatile per contract-fn boundary. Every
+byte of that overhead turns into savings post-strip: unused
+`contractspecv0` entries drop out, MARKER bytes zero out, and then the
+segment-compaction pass splits data segments around the zeroed node
+extents so those bytes stop being emitted. The final binary is
+**smaller than the v1 baseline by ~1.4 kB on `test_spec_shaking_v2`**
+because v1 ships every declared spec whether used or not, while v2
+drops the unused ones *and* removes its own metadata after scanning.
+Compared to the prior "all-`keep_reachable`" variant (per SKILL
+numbers ~9,324 post-strip on v2), this approach lands ~300 bytes
+smaller post-strip while also removing the entire fn-pointer surface
+and keeping the stripper to pure data-section edits.
+
+### Trade-offs vs the current mixed direct-call / `keep_reachable` design
+
+| | Current (mixed) | Static-graph |
+|---|---|---|
+| Reachability mechanism | fn-pointer + direct inlined fn call | static-pointer graph + one volatile read |
+| Cycles through heap indirection | handled by `keep_reachable` | handled natively via static cycle |
+| Per-boundary runtime cost | 3 insn per direct-reachable type + 6 insn per `keep_reachable` edge | 6 insn, constant |
+| Indirect-function-table surface | yes (one entry per standalone marker fn) | none |
+| Stripper needs fn/element surgery | yes (all-`keep_reachable` variant) | no — scan + graph-walk + segment split + spec rewrite |
+| `SpEcV1…` bytes strippable | no in mixed; yes in all-`keep_reachable` | yes, always; full `MarkerNode` extents also removed via segment compaction |
+| Pre-strip vs current mixed | baseline | +~1.9 kB on `test_spec_shaking_v2` |
+| Post-strip vs current mixed (all-`keep_reachable`) | ~9,324 bytes | **~9,000 bytes on `test_spec_shaking_v2`** |
+
+Post-strip the static-graph design comes in slightly smaller than
+all-`keep_reachable` while also dropping the indirect-function-table
+surface and simplifying the stripper to pure data-section edits.
+
+### Additional rules of thumb for the static-graph variant
+
+- **Keep the impl shape uniform.** Primitive, container, and UDT impls
+  all expose `const MARKER_NODE: *const MarkerNode`. Don't mix in an
+  occasional fn-based impl — the cycle story and strippability depend
+  on every impl behaving the same.
+- **Never use `&'static MarkerNode` in the trait or in `children`.**
+  The CTFE cycle detector will reject any recursive monomorphization.
+  `*const MarkerNode` (via `&raw const STATIC` or `&expr as *const _`)
+  is what makes recursive types compile.
+- **Single-child containers forward; multi-child containers wrap.**
+  Forwarding is zero-cost and handles all single-child cycles
+  automatically. A wrapper is needed only when the container carries
+  multiple distinct children.

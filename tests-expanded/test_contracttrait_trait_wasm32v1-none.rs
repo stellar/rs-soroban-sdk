@@ -56,17 +56,19 @@ impl MyStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_08D4A762AE317CDD: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd",
+        children: &[
+            <i64 as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <i64 as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for MyStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_08D4A762AE317CDD;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
     type Error = soroban_sdk::ConversionError;
@@ -169,15 +171,16 @@ impl MyEnumUnit {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_32451B341C83ABEB: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV12E\x1b4\x1c\x83\xab\xeb",
+        children: &[],
+    };
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV12E\x1b4\x1c\x83\xab\xeb";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_32451B341C83ABEB;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit {
     type Error = soroban_sdk::ConversionError;
@@ -290,17 +293,19 @@ impl MyEnumVariants {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_CE486FD46D70556D: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xceHo\xd4mpUm",
+        children: &[
+            <MyStruct as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+            <MyEnumUnit as soroban_sdk::SpecShakingMarker>::MARKER_NODE,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xceHo\xd4mpUm";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_CE486FD46D70556D;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVariants {
     type Error = soroban_sdk::ConversionError;

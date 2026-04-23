@@ -1199,7 +1199,7 @@ pub use into_val_for_contract_fn::IntoValForContractFn;
 mod spec_shaking;
 #[cfg(spec_shaking_v2)]
 #[doc(hidden)]
-pub use spec_shaking::SpecShakingMarker;
+pub use spec_shaking::{MarkerNode, SpecShakingMarker, EMPTY_MARKER_NODE};
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

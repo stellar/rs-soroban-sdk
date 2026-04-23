@@ -40,16 +40,16 @@ impl Value {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x05"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_82F874BE0904625C: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\x82\xf8t\xbe\t\x04b\\",
+        children: &[<i32 as soroban_sdk::SpecShakingMarker>::MARKER_NODE],
+    };
 impl soroban_sdk::SpecShakingMarker for Value {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x82\xf8t\xbe\t\x04b\\";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_82F874BE0904625C;
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
     type Error = soroban_sdk::ConversionError;

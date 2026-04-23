@@ -57,15 +57,16 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
 }
+#[doc(hidden)]
+#[allow(non_upper_case_globals)]
+static __SOROBAN_SDK_SPEC_MARKER_NODE_A81FC4239C8FEB88: soroban_sdk::MarkerNode =
+    soroban_sdk::MarkerNode {
+        marker: *b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88",
+        children: &[],
+    };
 impl soroban_sdk::SpecShakingMarker for Error {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+    const MARKER_NODE: *const soroban_sdk::MarkerNode =
+        &raw const __SOROBAN_SDK_SPEC_MARKER_NODE_A81FC4239C8FEB88;
 }
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;

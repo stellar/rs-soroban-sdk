@@ -6,9 +6,9 @@
 //! IntoVal<Env, Val>.
 //!
 //! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
-//! calls `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs
-//! are included in the WASM when types are used at external boundaries
-//! (function return values).
+//! roots the `SpecShakingMarker::MARKER_NODE` static graph via a volatile read
+//! so that the return type's spec (and any transitively-referenced types'
+//! specs) are kept in the WASM through linker dead-code elimination.
 
 use crate::{Env, IntoVal, Val};
 
@@ -28,7 +28,12 @@ where
     T: IntoVal<Env, Val> + crate::SpecShakingMarker,
 {
     fn into_val_for_contract_fn(self, env: &Env) -> Val {
-        T::spec_shaking_marker();
+        #[cfg(target_family = "wasm")]
+        {
+            // Volatile-read the root MARKER_NODE pointer to root the spec-
+            // shaking reachability graph. See soroban-sdk/src/spec_shaking.rs.
+            let _ = unsafe { core::ptr::read_volatile(&T::MARKER_NODE) };
+        }
         self.into_val(env)
     }
 }

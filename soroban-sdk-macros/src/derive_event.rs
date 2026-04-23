@@ -198,7 +198,16 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         input.ident.to_string().to_uppercase()
     );
     let spec_shaking_call = if export && spec_shaking_v2_enabled() {
-        Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
+        Some(quote! {
+            #[cfg(target_family = "wasm")]
+            {
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &<Self as #path::SpecShakingMarker>::MARKER_NODE,
+                    )
+                };
+            }
+        })
     } else {
         None
     };

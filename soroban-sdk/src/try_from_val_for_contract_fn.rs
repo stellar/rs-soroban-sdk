@@ -15,8 +15,9 @@
 //! part of contract function invocation, then this trait is appropriate.
 //!
 //! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
-//! calls `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs
-//! are included in the WASM when types are used at external boundaries.
+//! roots the `SpecShakingMarker::MARKER_NODE` static graph via a volatile read
+//! so that the conversion type's spec (and any transitively-referenced types'
+//! specs) are kept in the WASM through linker dead-code elimination.
 
 use crate::{env::internal::Env, Error, TryFromVal};
 use core::fmt::Debug;
@@ -39,7 +40,12 @@ where
 {
     type Error = U::Error;
     fn try_from_val_for_contract_fn(e: &E, v: &T) -> Result<Self, Self::Error> {
-        U::spec_shaking_marker();
+        #[cfg(target_family = "wasm")]
+        {
+            // Volatile-read the root MARKER_NODE pointer to root the spec-
+            // shaking reachability graph. See soroban-sdk/src/spec_shaking.rs.
+            let _ = unsafe { core::ptr::read_volatile(&U::MARKER_NODE) };
+        }
         U::try_from_val(e, v)
     }
 }
