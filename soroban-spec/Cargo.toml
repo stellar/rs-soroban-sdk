@@ -16,6 +16,7 @@ base64 = "0.22.1"
 thiserror = "1.0.32"
 wasmparser = "0.116.1"
 sha2 = "0.10.7"
+walrus = "0.26.1"
 
 [dev-dependencies]
 pretty_assertions = "1.2.1"
