@@ -1,13 +1,12 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
+    crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
     Env, Vec,
 };
 pub struct MockProof {
@@ -19,6 +18,18 @@ pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
 impl MockProof {
     pub const fn spec_xdr() -> [u8; 80usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for MockProof {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
@@ -107,8 +118,11 @@ impl Contract {
     pub fn g1_add(a: Bn254G1Affine, b: Bn254G1Affine) -> Bn254G1Affine {
         a + b
     }
-    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Bn254Fr) -> Bn254G1Affine {
         p * s
+    }
+    pub fn fr_vec_get(_env: Env, values: Vec<Bn254Fr>, index: u32) -> Bn254Fr {
+        values.get(index).unwrap()
     }
 }
 #[doc(hidden)]
@@ -155,6 +169,21 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_g1_mul() -> [u8; 72usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0@"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__fr_vec_get__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_FR_VEC_GET: [u8; 80usize] = super::Contract::spec_xdr_fr_vec_get();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_fr_vec_get() -> [u8; 80usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\nfr_vec_get\0\0\0\0\0\x02\0\0\0\0\0\0\0\x06values\0\0\0\0\x03\xea\0\0\0\x0c\0\0\0\0\0\0\0\x05index\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x0c"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -226,7 +255,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Fr) -> Bn254G1Affine {
+    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Bn254Fr) -> Bn254G1Affine {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
@@ -246,7 +275,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_g1_mul(
         &self,
         p: &Bn254G1Affine,
-        s: &Fr,
+        s: &Bn254Fr,
     ) -> Result<
         Result<
             Bn254G1Affine,
@@ -269,6 +298,41 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn fr_vec_get(&self, values: &Vec<Bn254Fr>, index: &u32) -> Bn254Fr {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "fr_vec_get") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [values.into_val(&self.env), index.into_val(&self.env)],
+            ),
+        );
+        res
+    }
+    pub fn try_fr_vec_get(
+        &self,
+        values: &Vec<Bn254Fr>,
+        index: &u32,
+    ) -> Result<
+        Result<
+            Bn254Fr,
+            <Bn254Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "fr_vec_get") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [values.into_val(&self.env), index.into_val(&self.env)],
+            ),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -286,23 +350,25 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Fr) -> (&'i Bn254G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Bn254Fr) -> (&'i Bn254G1Affine, &'i Bn254Fr) {
         (p, s)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn fr_vec_get<'i>(values: &'i Vec<Bn254Fr>, index: &'i u32) -> (&'i Vec<Bn254Fr>, &'i u32) {
+        (values, index)
     }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).verify_pairing` instead")]
+#[allow(deprecated)]
 pub fn __Contract__verify_pairing__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::verify_pairing(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::verify_pairing(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -327,17 +393,14 @@ pub extern "C" fn __Contract__verify_pairing__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).g1_add` instead")]
+#[allow(deprecated)]
 pub fn __Contract__g1_add__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::g1_add(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::g1_add(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -368,17 +431,14 @@ pub extern "C" fn __Contract__g1_add__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).g1_mul` instead")]
+#[allow(deprecated)]
 pub fn __Contract__g1_mul__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::g1_mul(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::g1_mul(
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
                     soroban_sdk::Env,
@@ -405,4 +465,43 @@ pub extern "C" fn __Contract__g1_mul__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__g1_mul__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).fr_vec_get` instead")]
+#[allow(deprecated)]
+pub fn __Contract__fr_vec_get__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::fr_vec_get(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).fr_vec_get` instead")]
+#[export_name = "fr_vec_get"]
+pub extern "C" fn __Contract__fr_vec_get__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__fr_vec_get__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
 }

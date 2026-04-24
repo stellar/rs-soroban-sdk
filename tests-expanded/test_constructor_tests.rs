@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -794,7 +793,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -828,17 +831,14 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__constructor` instead")]
+#[allow(deprecated)]
 pub fn __Contract____constructor__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::__constructor(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::__constructor(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -888,16 +888,13 @@ pub extern "C" fn __Contract____constructor__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).get_data` instead")]
+#[allow(deprecated)]
 pub fn __Contract__get_data__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::get_data(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::get_data(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -973,7 +970,6 @@ fn __Contract____99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb1359
     }
 }
 extern crate test;
-#[cfg(test)]
 #[rustc_test_marker = "test_constructor"]
 #[doc(hidden)]
 pub const test_constructor: test::TestDescAndFn = test::TestDescAndFn {
@@ -1080,7 +1076,6 @@ fn test_constructor() {
     }
 }
 extern crate test;
-#[cfg(test)]
 #[rustc_test_marker = "test_passing_no_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_passing_no_constructor_arguments_causes_panic: test::TestDescAndFn =
@@ -1112,7 +1107,6 @@ fn test_passing_no_constructor_arguments_causes_panic() {
     let _ = env.register(Contract, ());
 }
 extern crate test;
-#[cfg(test)]
 #[rustc_test_marker = "test_missing_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_missing_constructor_arguments_causes_panic: test::TestDescAndFn =
@@ -1144,7 +1138,6 @@ fn test_missing_constructor_arguments_causes_panic() {
     let _ = env.register(Contract, (100_u32,));
 }
 extern crate test;
-#[cfg(test)]
 #[rustc_test_marker = "test_passing_extra_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_passing_extra_constructor_arguments_causes_panic: test::TestDescAndFn =
@@ -1176,7 +1169,6 @@ fn test_passing_extra_constructor_arguments_causes_panic() {
     let _ = env.register(Contract, (100_u32, 1000_i64, 123_u32));
 }
 extern crate test;
-#[cfg(test)]
 #[rustc_test_marker = "test_passing_incorrectly_typed_constructor_arguments_causes_panic"]
 #[doc(hidden)]
 pub const test_passing_incorrectly_typed_constructor_arguments_causes_panic: test::TestDescAndFn =

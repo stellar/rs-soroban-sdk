@@ -1,8 +1,8 @@
 #![no_std]
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381G1Affine, Bls12381G2Affine, Fr},
-    log, Env,
+    crypto::bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine},
+    log, Env, Vec,
 };
 
 #[derive(Clone)]
@@ -12,7 +12,7 @@ pub struct DummyProof {
     pub fp2: Bls12381Fp2,
     pub g1: Bls12381G1Affine,
     pub g2: Bls12381G2Affine,
-    pub fr: Fr,
+    pub fr: Bls12381Fr,
 }
 
 #[contract]
@@ -20,11 +20,11 @@ pub struct Contract;
 
 #[contractimpl]
 impl Contract {
-    pub fn g1_mul(env: Env, p: Bls12381G1Affine, s: Fr) -> Bls12381G1Affine {
+    pub fn g1_mul(env: Env, p: Bls12381G1Affine, s: Bls12381Fr) -> Bls12381G1Affine {
         env.crypto().bls12_381().g1_mul(&p, &s)
     }
 
-    pub fn g2_mul(env: Env, p: Bls12381G2Affine, s: Fr) -> Bls12381G2Affine {
+    pub fn g2_mul(env: Env, p: Bls12381G2Affine, s: Bls12381Fr) -> Bls12381G2Affine {
         env.crypto().bls12_381().g2_mul(&p, &s)
     }
 
@@ -43,12 +43,16 @@ impl Contract {
         let vp2 = soroban_sdk::Vec::from_array(&env, [g2_mul]);
         env.crypto().bls12_381().pairing_check(vp1, vp2)
     }
+
+    pub fn fr_vec_get(_env: Env, values: Vec<Bls12381Fr>, index: u32) -> Bls12381Fr {
+        values.get(index).unwrap()
+    }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{bytesn, Env};
+    use soroban_sdk::{bytesn, vec, Env, IntoVal, Symbol, Val, U256};
 
     use crate::{Contract, ContractClient};
 
@@ -60,7 +64,7 @@ mod test {
 
         // G1 generator and zero scalar
         let g1 = Bls12381G1Affine::from_bytes(bytesn!(&env, 0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1));
-        let zero = Fr::from_bytes(bytesn!(
+        let zero = Bls12381Fr::from_bytes(bytesn!(
             &env,
             0x0000000000000000000000000000000000000000000000000000000000000000
         ));
@@ -77,7 +81,7 @@ mod test {
 
         // G2 generator and zero scalar
         let g2 = Bls12381G2Affine::from_bytes(bytesn!(&env, 0x13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801));
-        let zero = Fr::from_bytes(bytesn!(
+        let zero = Bls12381Fr::from_bytes(bytesn!(
             &env,
             0x0000000000000000000000000000000000000000000000000000000000000000
         ));
@@ -99,7 +103,7 @@ mod test {
         let g2 = Bls12381G2Affine::from_bytes(bytesn!(&env, 0x13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801));
 
         // Create a scalar value
-        let fr = Fr::from_bytes(bytesn!(
+        let fr = Bls12381Fr::from_bytes(bytesn!(
             &env,
             0x0000000000000000000000000000000000000000000000000000000000000001
         ));
@@ -113,5 +117,42 @@ mod test {
         };
         let res = client.dummy_verify(&proof);
         assert!(!res); // The pairing of generator points multiplied by the same scalar should not be the identity
+    }
+
+    #[test]
+    fn test_fr_decode_reduces_unreduced_scalar_and_vec_elements() {
+        let env = Env::default();
+        let contract_id = env.register(Contract, ());
+
+        let modulus = U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+            )
+            .into(),
+        );
+        let two = U256::from_u32(&env, 2);
+        let nine = U256::from_u32(&env, 9);
+
+        let raw_vals: Vec<Val> = vec![
+            &env,
+            modulus.add(&two).into_val(&env),
+            modulus.add(&nine).into_val(&env),
+        ];
+
+        let first: Bls12381Fr = env.invoke_contract(
+            &contract_id,
+            &Symbol::new(&env, "fr_vec_get"),
+            vec![&env, raw_vals.clone().into_val(&env), 0_u32.into_val(&env)],
+        );
+        let second: Bls12381Fr = env.invoke_contract(
+            &contract_id,
+            &Symbol::new(&env, "fr_vec_get"),
+            vec![&env, raw_vals.into_val(&env), 1_u32.into_val(&env)],
+        );
+
+        assert_eq!(first, Bls12381Fr::from_u256(two));
+        assert_eq!(second, Bls12381Fr::from_u256(nine));
     }
 }

@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
+    crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
     Env, Vec,
 };
 
@@ -25,15 +25,19 @@ impl Contract {
         a + b
     }
 
-    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Bn254Fr) -> Bn254G1Affine {
         p * s
+    }
+
+    pub fn fr_vec_get(_env: Env, values: Vec<Bn254Fr>, index: u32) -> Bn254Fr {
+        values.get(index).unwrap()
     }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{vec, Env, U256};
+    use soroban_sdk::{bytesn, vec, Env, IntoVal, Symbol, Val, U256};
     extern crate std;
 
     use crate::{Contract, ContractClient};
@@ -84,7 +88,7 @@ mod test {
             expected_x_plus_y.as_slice()
         );
 
-        let scalar: Fr = U256::from_u32(&env, 2).into();
+        let scalar: Bn254Fr = U256::from_u32(&env, 2).into();
 
         // G + G = 2G
         assert_eq!(
@@ -142,5 +146,42 @@ mod test {
         let g1_negated = Bn254G1Affine::from_array(&env, &g1_negaed_bytes);
 
         assert_eq!(-g1, g1_negated);
+    }
+
+    #[test]
+    fn test_fr_decode_reduces_unreduced_scalar_and_vec_elements() {
+        let env = Env::default();
+        let contract_id = env.register(Contract, ());
+
+        let modulus = U256::from_be_bytes(
+            &env,
+            &bytesn!(
+                &env,
+                0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001
+            )
+            .into(),
+        );
+        let three = U256::from_u32(&env, 3);
+        let seven = U256::from_u32(&env, 7);
+
+        let raw_vals: Vec<Val> = vec![
+            &env,
+            modulus.add(&three).into_val(&env),
+            modulus.add(&seven).into_val(&env),
+        ];
+
+        let first: Bn254Fr = env.invoke_contract(
+            &contract_id,
+            &Symbol::new(&env, "fr_vec_get"),
+            vec![&env, raw_vals.clone().into_val(&env), 0_u32.into_val(&env)],
+        );
+        let second: Bn254Fr = env.invoke_contract(
+            &contract_id,
+            &Symbol::new(&env, "fr_vec_get"),
+            vec![&env, raw_vals.into_val(&env), 1_u32.into_val(&env)],
+        );
+
+        assert_eq!(first, Bn254Fr::from_u256(three));
+        assert_eq!(second, Bn254Fr::from_u256(seven));
     }
 }

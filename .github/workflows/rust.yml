@@ -85,7 +85,7 @@ jobs:
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
     - uses: actions/checkout@v3
-    - uses: EmbarkStudios/cargo-deny-action@b01e7a8cfb1f496c52d77361e84c1840d8246393
+    - uses: EmbarkStudios/cargo-deny-action@3fd3802e88374d3fe9159b834c7714ec57d6c979
       with:
         command: check ${{ matrix.checks }}
 
@@ -118,10 +118,10 @@ jobs:
       run: |
         rustc --version
         cargo --version
-    - uses: stellar/binaries@v51
+    - uses: stellar/binaries@v55
       with:
         name: cargo-semver-checks
-        version: 0.45.0
+        version: 0.46.0
     - run: >
         cargo semver-checks
         --exclude soroban-meta
@@ -302,7 +302,7 @@ jobs:
         sys:
         - os: ubuntu-latest
           target: wasm32v1-none
-          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
+          cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std,experimental_spec_shaking_v2 --feature-powerset
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'

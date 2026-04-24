@@ -277,7 +277,7 @@ pub use crate::env::internal::LedgerInfo;
 /// Returns a default `LedgerInfo` suitable for testing.
 pub(crate) fn default_ledger_info() -> LedgerInfo {
     LedgerInfo {
-        protocol_version: 25,
+        protocol_version: 26,
         sequence_number: 0,
         timestamp: 0,
         network_id: [0; 32],
@@ -336,7 +336,7 @@ pub mod budget {
 
     /// Budget that tracks the resources consumed for the environment.
     ///
-    /// The budget consistents of two cost dimensions:
+    /// The budget consists of two cost dimensions:
     ///  - CPU instructions
     ///  - Memory
     ///

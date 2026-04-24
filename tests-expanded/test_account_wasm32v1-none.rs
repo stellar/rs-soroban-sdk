@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     auth::Context, auth::CustomAccountInterface, contract, contracterror, contractimpl,
     crypto::Hash, Env, Vec,
@@ -56,6 +55,16 @@ pub static __SPEC_XDR_TYPE_ERROR: [u8; 44usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 44usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for Error {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl TryFrom<soroban_sdk::Error> for Error {
@@ -228,19 +237,15 @@ impl ContractArgs {
 #[allow(non_snake_case)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+#[allow(deprecated)]
 pub fn __Contract____check_auth__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
     arg_1: soroban_sdk::Val,
     arg_2: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
-    use CustomAccountInterface;
-    <_ as soroban_sdk::IntoVal<
-        soroban_sdk::Env,
-        soroban_sdk::Val,
-    >>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::__check_auth(
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as CustomAccountInterface>::__check_auth(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<

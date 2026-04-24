@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env, String};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -117,11 +116,10 @@ impl ContractArgs {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec` instead")]
+#[allow(deprecated)]
 pub fn __Contract__exec__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    use Trait;
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::exec(&env),
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as Trait>::exec(&env),
         &env,
     )
 }
@@ -272,11 +270,10 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).exec2` instead")]
+#[allow(deprecated)]
 pub fn __Contract__exec2__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    use TraitWithoutContractTrait;
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<Contract>::exec2(&env),
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as TraitWithoutContractTrait>::exec2(&env),
         &env,
     )
 }

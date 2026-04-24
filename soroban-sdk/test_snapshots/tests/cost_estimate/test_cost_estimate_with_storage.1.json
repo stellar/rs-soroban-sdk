@@ -5,13 +5,35 @@
     "mux_id": 0
   },
   "auth": [
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+        {
+          "function": {
+            "create_contract_v2_host_fn": {
+              "contract_id_preimage": {
+                "address": {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                  "salt": "0000000000000000000000000000000000000000000000000000000000000000"
+                }
+              },
+              "executable": {
+                "wasm": "fd41d2f77920ca07b723e05f732a82db4c2f6459eb2be6b40c4f225434569550"
+              },
+              "constructor_args": []
+            }
+          },
+          "sub_invocations": []
+        }
+      ]
+    ],
     [],
     [],
     [],
     []
   ],
   "ledger": {
-    "protocol_version": 25,
+    "protocol_version": 26,
     "sequence_number": 0,
     "timestamp": 0,
     "network_id": "0000000000000000000000000000000000000000000000000000000000000000",

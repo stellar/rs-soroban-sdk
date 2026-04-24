@@ -53,8 +53,9 @@ macro_rules! map {
 /// converted from [Val] back into their type.
 ///
 /// The pairs of keys and values in a Map are not guaranteed to be of type
-/// `K`/`V` and conversion will fail if they are not. Most functions on Map
-/// return a `Result` due to this.
+/// `K`/`V` and conversion will fail if they are not. Most functions on Map have
+/// a try_ variation that returns a Result that will be Err if the conversion fails.
+/// Functions that are not prefixed with try_ will panic if conversion fails."
 ///
 /// There are some cases where this lack of guarantee is important:
 ///
@@ -445,7 +446,11 @@ where
         self.obj = env.map_del(self.obj, k.into_val(env)).unwrap_infallible();
     }
 
-    /// Returns a [Vec] of all keys in the map.
+    /// Returns a [Vec] of all keys in the map, ordered in the map's key-sorted order.
+    ///
+    /// This method does not validate that the keys in the map are of type `K`. Since [Map]
+    /// keys are not guaranteed to be of type `K`, it is not guaranteed that all values
+    /// in the returned [Vec] will be of type `K`.
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
@@ -453,7 +458,11 @@ where
         Vec::<K>::try_from_val(env, &vec).unwrap()
     }
 
-    /// Returns a [Vec] of all values in the map.
+    /// Returns a [Vec] of all values in the map, ordered in the map's key-sorted order.
+    ///
+    /// This method does not validate that the values in the map are of type `V`. Since [Map]
+    /// values are not guaranteed to be of type `V`, it is not guaranteed that all values
+    /// in the returned [Vec] will be of type `V`.
     #[inline(always)]
     pub fn values(&self) -> Vec<V> {
         let env = self.env();
@@ -495,6 +504,14 @@ where
     K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
+    /// Returns an iterator over the key-value pairs of the map.
+    ///
+    /// Each entry is converted from [Val] to `(K, V)` as it is yielded.
+    ///
+    /// ### Panics
+    ///
+    /// If any key or value cannot be converted to its declared type.
+    /// Use [`try_iter`](Map::try_iter) to handle conversion errors.
     #[inline(always)]
     pub fn iter(&self) -> UnwrappedIter<MapTryIter<K, V>, (K, V), ConversionError>
     where
@@ -504,6 +521,8 @@ where
         self.clone().into_iter()
     }
 
+    /// Returns an iterator over the key-value pairs of the map, yielding
+    /// `Result<(K, V), ConversionError>` for each entry.
     #[inline(always)]
     pub fn try_iter(&self) -> MapTryIter<K, V>
     where
@@ -519,7 +538,7 @@ where
         K: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         V: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
-        MapTryIter::new(self.clone())
+        MapTryIter::new(self)
     }
 }
 

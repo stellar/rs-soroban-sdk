@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contracttrait, Env};
 pub struct SuperPathTraitSpec;
 /// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
@@ -162,7 +161,11 @@ impl<'a> SuperPathTraitClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -333,13 +336,12 @@ pub mod submodule {
     #[deprecated(
         note = "use `ContractSuperPathClient::new(&env, &contract_id).super_path_method` instead"
     )]
+    #[allow(deprecated)]
     pub fn __ContractSuperPath__super_path_method__invoke_raw(
         env: soroban_sdk::Env,
     ) -> soroban_sdk::Val {
-        use super::SuperPathTrait;
-        <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-            #[allow(deprecated)]
-            &<ContractSuperPath>::super_path_method(&env),
+        soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+            <ContractSuperPath as super::SuperPathTrait>::super_path_method(&env),
             &env,
         )
     }
@@ -446,7 +448,11 @@ pub mod submodule {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -525,12 +531,10 @@ pub mod submodule {
         {}
     }
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_super_path"]
     #[doc(hidden)]
     pub const test_super_path: test::TestDescAndFn = test::TestDescAndFn {

@@ -18,6 +18,7 @@ mod derive_trait;
 mod doc;
 mod map_type;
 mod path;
+mod shaking;
 mod symbol;
 mod syn_ext;
 
@@ -39,6 +40,7 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, FromMeta};
 use macro_string::MacroString;
+use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
@@ -50,7 +52,7 @@ use syn::{
 };
 use syn_ext::HasFnsItem;
 
-use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
+use soroban_spec_rust::{generate_from_wasm_with_options, GenerateFromFileError, GenerateOptions};
 
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
@@ -76,6 +78,15 @@ pub fn symbol_short(input: TokenStream) -> TokenStream {
 
 pub(crate) fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
+}
+
+/// Returns true if spec shaking v2 should be used. Requires both the
+/// `experimental_spec_shaking_v2` feature to be enabled on the macro crate AND
+/// the `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` env var to be set
+/// at the time the macro expands (i.e. when the consumer crate is compiled).
+fn spec_shaking_v2_enabled() -> bool {
+    cfg!(feature = "experimental_spec_shaking_v2")
+        && option_env!("SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2").is_some()
 }
 
 #[derive(Debug, FromMeta)]
@@ -420,10 +431,17 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
+    match is_mapped_type_udt(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
+    }
     // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
+    // exporting. If it does not have a value, export if the type is pub,
+    // or always export when spec shaking v2 is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
+    } else if spec_shaking_v2_enabled() {
+        true
     } else {
         matches!(input.vis, Visibility::Public(_))
     };
@@ -492,9 +510,12 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
+    // exporting. If it does not have a value, export if the type is pub,
+    // or always export when spec shaking v2 is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
+    } else if spec_shaking_v2_enabled() {
+        true
     } else {
         matches!(input.vis, Visibility::Public(_))
     };
@@ -679,8 +700,11 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate.
-    match generate_from_wasm(&wasm, &args.file, args.sha256.as_deref()) {
+    // Generate with options based on whether spec shaking v2 is enabled
+    let opts = GenerateOptions {
+        export: spec_shaking_v2_enabled(),
+    };
+    match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
             Error::new(args.sha256.span(), e.to_string()).into_compile_error()

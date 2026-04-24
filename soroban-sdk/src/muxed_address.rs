@@ -4,7 +4,11 @@ use super::{
     env::internal::{AddressObject, Env as _, MuxedAddressObject, Tag},
     ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
-use crate::{env::internal, unwrap::UnwrapInfallible, Address, Bytes, String};
+use crate::{
+    env::internal,
+    unwrap::{UnwrapInfallible, UnwrapOptimized},
+    Address, Bytes, String,
+};
 
 #[cfg(not(target_family = "wasm"))]
 use crate::env::internal::xdr::{ScAddress, ScVal};
@@ -194,13 +198,8 @@ impl MuxedAddress {
     /// use this in special cases when addresses need to be shared between
     /// different environments (e.g. different chains).
     pub fn from_str(env: &Env, strkey: &str) -> MuxedAddress {
-        match strkey.as_bytes().first() {
-            Some(b'M') => MuxedAddress::from_muxed_strkey_bytes(
-                env,
-                &Bytes::from_slice(env, strkey.as_bytes()),
-            ),
-            _ => Address::from_str(env, strkey).into(),
-        }
+        let strkey_string = String::from_str(env, strkey);
+        MuxedAddress::from_string(&strkey_string)
     }
 
     /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey.
@@ -217,11 +216,8 @@ impl MuxedAddress {
     /// different environments (e.g. different chains).
     pub fn from_string(strkey: &String) -> Self {
         let env = strkey.env();
-        let strkey_bytes = strkey.to_bytes();
-        match strkey_bytes.first() {
-            Some(b'M') => MuxedAddress::from_muxed_strkey_bytes(env, &strkey_bytes),
-            _ => Address::from_string(strkey).into(),
-        }
+        let val = internal::Env::strkey_to_muxed_address(env, strkey.to_val()).unwrap_optimized();
+        MuxedAddress::try_from_val(env, &val).unwrap_optimized()
     }
 
     /// Creates a `MuxedAddress` corresponding to the provided Stellar strkey
@@ -239,43 +235,8 @@ impl MuxedAddress {
     /// different environments (e.g. different chains).
     pub fn from_string_bytes(strkey: &Bytes) -> Self {
         let env = strkey.env();
-        match strkey.first() {
-            Some(b'M') => MuxedAddress::from_muxed_strkey_bytes(env, strkey),
-            _ => Address::from_string_bytes(strkey).into(),
-        }
-    }
-
-    /// Internal: parses a muxed account strkey (M...) and builds MuxedAddress.
-    fn from_muxed_strkey_bytes(env: &Env, strkey: &Bytes) -> Self {
-        use crate::xdr::{FromXdr, ScAddressType, ScValType};
-        use stellar_strkey::ed25519::MuxedAccount;
-
-        // Copy strkey bytes into buffer for parsing.
-        const MAX_STRKEY_LEN: usize = 69;
-        let mut strkey_buf = [0u8; MAX_STRKEY_LEN];
-        let len = strkey.len() as usize;
-        if len > strkey_buf.len() {
-            sdk_panic!("unexpected strkey length");
-        }
-        strkey.copy_into_slice(&mut strkey_buf[..len]);
-
-        let muxed = MuxedAccount::from_slice(&strkey_buf[..len])
-            .unwrap_or_else(|_| sdk_panic!("muxed strkey invalid"));
-
-        // Build XDR bytes
-        // XDR layout for ScVal::Address(ScAddress::MuxedAccount(MuxedEd25519Account))
-        // MuxedEd25519Account: { id: uint64, ed25519: uint256 }
-        // Total: 48 bytes
-        const SCVAL_ADDRESS: i32 = ScValType::Address as i32;
-        const SCADDRESS_MUXED_ACCOUNT: i32 = ScAddressType::MuxedAccount as i32;
-        let mut buf = [0u8; 48];
-        buf[0..4].copy_from_slice(&SCVAL_ADDRESS.to_be_bytes());
-        buf[4..8].copy_from_slice(&SCADDRESS_MUXED_ACCOUNT.to_be_bytes());
-        buf[8..16].copy_from_slice(&muxed.id.to_be_bytes()); // 8-byte mux id (big-endian)
-        buf[16..48].copy_from_slice(&muxed.ed25519); // 32-byte ed25519 public key
-        let xdr_bytes = Bytes::from_slice(env, &buf);
-
-        MuxedAddress::from_xdr(env, &xdr_bytes).unwrap_or_else(|_| sdk_panic!("invalid xdr"))
+        let val = internal::Env::strkey_to_muxed_address(env, strkey.to_val()).unwrap_optimized();
+        MuxedAddress::try_from_val(env, &val).unwrap_optimized()
     }
 
     /// Returns the `Address` part of this multiplexed address.
@@ -350,6 +311,36 @@ impl MuxedAddress {
             AddressObjectWrapper::Address(o) => o.to_val(),
             AddressObjectWrapper::MuxedAddress(o) => o.to_val(),
         }
+    }
+
+    /// Converts this address to its Stellar strkey representation.
+    ///
+    /// Returns:
+    /// - `G...` for account addresses
+    /// - `M...` for muxed account addresses
+    /// - `C...` for contract addresses
+    pub fn to_strkey(&self) -> String {
+        let s = internal::Env::muxed_address_to_strkey(&self.env, self.to_val()).unwrap_optimized();
+        unsafe { String::unchecked_new(self.env.clone(), s) }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<&MuxedAddress> for ScVal {
+    fn from(v: &MuxedAddress) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.to_val()).unwrap()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<MuxedAddress> for ScVal {
+    fn from(v: MuxedAddress) -> Self {
+        (&v).into()
     }
 }
 

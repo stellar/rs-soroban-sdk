@@ -102,14 +102,13 @@ macro_rules! bytesn {
     };
 }
 
-#[macro_export]
+/// Internal macro that generates all `BytesN` wrapper methods and trait impls
+/// *except* `from_bytes`. Types using this macro must provide their own
+/// `from_bytes(BytesN<$size>) -> Self` (e.g. to add validation).
+#[doc(hidden)]
 macro_rules! impl_bytesn_repr {
     ($elem: ident, $size: expr) => {
         impl $elem {
-            pub fn from_bytes(bytes: BytesN<$size>) -> Self {
-                Self(bytes)
-            }
-
             pub fn into_bytes(self) -> BytesN<$size> {
                 self.0
             }
@@ -127,7 +126,7 @@ macro_rules! impl_bytesn_repr {
             }
 
             pub fn from_array(env: &Env, array: &[u8; $size]) -> Self {
-                Self(<BytesN<$size>>::from_array(env, array))
+                Self::from_bytes(BytesN::from_array(env, array))
             }
 
             pub fn as_val(&self) -> &Val {
@@ -151,8 +150,8 @@ macro_rules! impl_bytesn_repr {
             type Error = ConversionError;
 
             fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
-                let bytes = <BytesN<$size>>::try_from_val(env, val)?;
-                Ok($elem(bytes))
+                let bytes = BytesN::try_from_val(env, val)?;
+                Ok(Self::from_bytes(bytes))
             }
         }
 
@@ -1229,7 +1228,7 @@ impl<const N: usize> BytesN<N> {
     /// Returns true if the Bytes is empty and has a length of zero.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        false
+        N == 0
     }
 
     /// Returns the number of bytes are in the Bytes.

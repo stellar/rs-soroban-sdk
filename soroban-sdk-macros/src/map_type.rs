@@ -1,13 +1,14 @@
+use quote::ToTokens;
 use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
     ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
 };
-use syn::TypeReference;
 use syn::{
-    spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Lit, Path, PathArguments, PathSegment,
-    Type, TypePath, TypeTuple,
+    spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Ident, Lit, Path, PathArguments,
+    PathSegment, Type, TypePath, TypeTuple,
 };
+use syn::{Generics, TypeReference};
 
 // These constants' values must match the definitions of the constants with the
 // same names in soroban_sdk::crypto::bls12_381.
@@ -20,6 +21,56 @@ pub const G2_SERIALIZED_SIZE: u32 = FP2_SERIALIZED_SIZE * 2;
 pub const BN254_FP_SERIALIZED_SIZE: u32 = 32;
 pub const BN254_G1_SERIALIZED_SIZE: u32 = BN254_FP_SERIALIZED_SIZE * 2; // 64
 pub const BN254_G2_SERIALIZED_SIZE: u32 = BN254_G1_SERIALIZED_SIZE * 2; // 128
+
+/// Checks if an `ident` and `generics` input type maps to a user-defined type (UDT).
+///
+/// Returns Ok if the input will be parsed as a UDT, and returns an Err with a message if not.
+///
+/// When users defined types like with `#[contracttype]`, the type name must map to a UDT.
+/// Otherwise, the type might get mapped to a built-in soroban_sdk type instead.
+///
+/// ### Errors
+/// - If `ident` cannot be parsed as a Rust type
+/// - If `ident` cannot be mapped to a type with [map_type]
+/// - If the type mapped from `ident` is not a UDT
+/// - If `generics` has any parameters, as UDTs don't support generics
+pub fn is_mapped_type_udt(ident: &Ident, generics: &Generics) -> Result<(), Error> {
+    let name = ident.to_string();
+    let ty: Type = syn::parse_str(&name).map_err(|e| {
+        Error::new(
+            ident.span(),
+            format!("type `{}` cannot be used in XDR spec: {}", ident, e),
+        )
+    })?;
+    match map_type(&ty, false, false) {
+        Ok(ScSpecTypeDef::Udt(_)) => {
+            // `ty` does not contain the generics, so check manually here
+            if generics.params.len() > 0 {
+                Err(Error::new(
+                    ident.span(),
+                    format!("type `{}` contains generics `{}`, which are not supported for user-defined types", ident, generics.params.to_token_stream()),
+                ))
+            } else {
+                Ok(())
+            }
+        }
+        _ => {
+            // Check if the error originated from the UDT-arm of `map_type`
+            let _ = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: name.try_into().map_err(|e| {
+                    Error::new(
+                        ident.span(),
+                        format!("type `{}` cannot be used in XDR spec: {}", ident, e),
+                    )
+                })?,
+            });
+            Err(Error::new(
+                ident.span(),
+                format!("type `{}` conflicts with a soroban_sdk type and cannot be used as a user-defined type", ident),
+            ))
+        }
+    }
+}
 
 #[allow(clippy::too_many_lines)]
 pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTypeDef, Error> {
@@ -58,18 +109,25 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
+                    // Check if types that require generics are being used without any path arguments
+                    "Result" | "Option" | "Vec" | "Map" | "BytesN" | "Hash" => Err(Error::new(
+                        ident.span(),
+                        format!("type {} requires generic arguments", ident),
+                    )),
                     // The BLS and BN types defined below are represented in the contract's
                     // interface by their underlying data types, i.e.
-                    // Fp/Fp2/G1Affine/G2Affine => BytesN<N>, Fr => U256. This approach
-                    // simplifies integration with contract development tooling, as it
-                    // avoids introducing new spec types for these constructs.
+                    // Bls12381Fp/Bls12381Fp2/Bls12381G1Affine/Bls12381G2Affine => BytesN<N>,
+                    // Bls12381Fr/Bn254Fr => U256. This approach simplifies integration with
+                    // contract development tooling, as it avoids introducing new spec types
+                    // for these constructs.
                     //
                     // While this is functionally sound because the types are
                     // essentially newtypes over their inner representations, it means
-                    // that the specific semantic meaning of `G1Affine`, `G2Affine`, or
-                    // `Fr` is not directly visible in the compiled WASM interface. For
-                    // example, a contract function expecting a `G1Affine` will appear
-                    // in the WASM interface as expecting a `BytesN<96>`.
+                    // that the specific semantic meaning of `Bls12381G1Affine`,
+                    // `Bls12381G2Affine`, `Bls12381Fr`, or `Bn254Fr` is not directly visible
+                    // in the compiled WASM interface. For example, a contract function
+                    // expecting a `Bls12381G1Affine` will appear in the WASM interface as
+                    // expecting a `BytesN<96>`.
                     //
                     // Future enhancements might allow the macro to automatically deduce
                     // and utilize the inner types for types defined using the New Type
@@ -77,8 +135,8 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     // type aliases:
                     // https://github.com/stellar/rs-soroban-sdk/issues/1063
 
-                    // These BLS12-381 unprefixed type names
-                    // will be removed in a future release.
+                    // These BLS12-381 unprefixed type names are deprecated.
+                    // Use the Bls12381-prefixed names instead.
                     "Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: FP_SERIALIZED_SIZE,
                     })),
@@ -91,6 +149,8 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: G2_SERIALIZED_SIZE,
                     })),
+                    // Deprecated: `Fr` maps to BLS12-381 Fr for backward compat.
+                    // Use `Bls12381Fr` or `Bn254Fr` instead.
                     "Fr" => Ok(ScSpecTypeDef::U256),
                     // BLS12-381 prefixed type names
                     "Bls12381Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
@@ -105,6 +165,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "Bls12381G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: G2_SERIALIZED_SIZE,
                     })),
+                    "Bls12381Fr" => Ok(ScSpecTypeDef::U256),
                     // BN254 prefixed type names
                     "Bn254Fp" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: BN254_FP_SERIALIZED_SIZE,
@@ -115,11 +176,14 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "Bn254G2Affine" => Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN {
                         n: BN254_G2_SERIALIZED_SIZE,
                     })),
+                    "Bn254Fr" => Ok(ScSpecTypeDef::U256),
+                    // Deprecated alias for Bn254Fr
+                    "BnScalar" => Ok(ScSpecTypeDef::U256),
                     s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
                         name: s.try_into().map_err(|e| {
                             Error::new(
                                 t.span(),
-                                format!("Udt name {:?} cannot be used in XDR spec: {}", s, e),
+                                format!("type `{}` cannot be used in XDR spec: {}", s, e),
                             )
                         })?,
                     })),
@@ -244,7 +308,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
 #[cfg(test)]
 mod test {
     use super::*;
-    use syn::parse_quote;
+    use syn::{parse_quote, DeriveInput};
 
     #[test]
     fn test_path() {
@@ -298,5 +362,119 @@ mod test {
                     .unwrap(),
             }))
         );
+    }
+
+    #[test]
+    fn test_generic_type() {
+        let ty: Type = parse_quote!(Vec<u32>);
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                element_type: Box::new(ScSpecTypeDef::U32),
+            }))
+        );
+    }
+
+    #[test]
+    fn test_generic_type_multiple_params() {
+        let ty: Type = parse_quote!(Result<u32, i64>);
+        let res = map_type(&ty, false, false);
+        assert_eq!(
+            res.unwrap(),
+            ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::U32),
+                error_type: Box::new(ScSpecTypeDef::I64),
+            }))
+        );
+    }
+
+    #[test]
+    fn test_generic_type_without_params_errors() {
+        let ty: Type = parse_quote!(Vec);
+        assert!(map_type(&ty, false, false).is_err());
+    }
+
+    #[test]
+    fn test_generic_type_incorrect_params_errors() {
+        let ty: Type = parse_quote!(Result<u32>);
+        assert!(map_type(&ty, false, false).is_err());
+    }
+
+    #[test]
+    fn test_is_mapped_type_udt_sdk_type_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct Address {
+                pub key: [u8; 32],
+            }
+        );
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `Address` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
+        );
+    }
+
+    #[test]
+    fn test_is_mapped_type_udt_unique_generic_type_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct GenericType<A, B> {
+                pub key: T,
+            }
+        );
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(err.to_string(), "type `GenericType` contains generics `A , B`, which are not supported for user-defined types");
+    }
+
+    #[test]
+    fn test_is_mapped_type_udt_sdk_generic_type_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct BytesN<T> {
+                pub key: T,
+            }
+        );
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `BytesN` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
+        );
+    }
+
+    #[test]
+    fn test_is_mapped_type_udt_sdk_generic_no_params_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct BytesN {
+                pub key: [u8; 32],
+            }
+        );
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `BytesN` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
+        );
+    }
+
+    #[test]
+    fn test_is_mapped_type_udt_unique_xdr_error() {
+        let input: DeriveInput = parse_quote!(
+            struct MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat {
+                pub key: [u8; 32],
+            }
+        );
+        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat` cannot be used in XDR spec: xdr value max length exceeded"
+        );
+    }
+
+    #[test]
+    fn test_is_mapped_type_udt_unique_ok() {
+        let input: DeriveInput = parse_quote!(
+            struct MyType {
+                pub key: [u8; 32],
+            }
+        );
+        assert!(is_mapped_type_udt(&input.ident, &input.generics).is_ok());
     }
 }

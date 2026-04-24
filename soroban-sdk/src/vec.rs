@@ -961,6 +961,14 @@ impl<T> Vec<T>
 where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
+    /// Returns an iterator over the elements of the vec.
+    ///
+    /// Each element is converted from [Val] to `T` as it is yielded.
+    ///
+    /// ### Panics
+    ///
+    /// If any element cannot be converted to type `T`. Use
+    /// [`try_iter`](Vec::try_iter) to handle conversion errors.
     #[inline(always)]
     pub fn iter(&self) -> UnwrappedIter<VecTryIter<T>, T, T::Error>
     where
@@ -970,6 +978,8 @@ where
         self.try_iter().unwrapped()
     }
 
+    /// Returns an iterator over the elements of the vec, yielding
+    /// `Result<T, ConversionError>` for each element.
     #[inline(always)]
     pub fn try_iter(&self) -> VecTryIter<T>
     where
@@ -984,7 +994,7 @@ where
         T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
-        VecTryIter::new(self.clone())
+        VecTryIter::new(self)
     }
 }
 

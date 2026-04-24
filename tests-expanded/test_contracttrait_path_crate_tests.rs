@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 pub mod traits {
     use soroban_sdk::{contracttrait, Env};
@@ -167,7 +166,11 @@ pub mod traits {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -337,13 +340,12 @@ impl ContractCratePathArgs {}
 #[deprecated(
     note = "use `ContractCratePathClient::new(&env, &contract_id).crate_path_method` instead"
 )]
+#[allow(deprecated)]
 pub fn __ContractCratePath__crate_path_method__invoke_raw(
     env: soroban_sdk::Env,
 ) -> soroban_sdk::Val {
-    use crate::traits::CratePathTrait;
-    <_ as soroban_sdk::IntoVal<soroban_sdk::Env, soroban_sdk::Val>>::into_val(
-        #[allow(deprecated)]
-        &<ContractCratePath>::crate_path_method(&env),
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <ContractCratePath as crate::traits::CratePathTrait>::crate_path_method(&env),
         &env,
     )
 }
@@ -446,7 +448,11 @@ impl<'a> ContractCratePathClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -524,12 +530,10 @@ fn __ContractCratePath__crate_traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996
     }
     {}
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_crate_path"]
     #[doc(hidden)]
     pub const test_crate_path: test::TestDescAndFn = test::TestDescAndFn {

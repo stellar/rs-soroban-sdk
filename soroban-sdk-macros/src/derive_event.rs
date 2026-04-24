@@ -1,6 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, shaking, spec_shaking_v2_enabled, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -108,7 +108,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let fields =
         match &input.data {
             Data::Struct(struct_) => match &struct_.fields {
-                Fields::Named(fields) => fields.named.iter(),
+                Fields::Named(fields) => fields.named.iter().collect::<Vec<_>>(),
                 Fields::Unnamed(_) => Err(Error::custom(
                     "structs with unnamed fields are not supported as contract events",
                 )
@@ -124,8 +124,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .with_span(&input.span()))?,
         };
 
+    // Collect field types for SpecShakingMarker
+    let field_types: Vec<_> = fields.iter().map(|f| &f.ty).collect();
+
     // Map each field of the struct to a spec for a param.
     let params = fields
+        .iter()
         .map(|field| {
             let ident = field.ident.as_ref().unwrap();
             let is_topic = field.attrs.iter().any(|a| a.path().is_ident("topic"));
@@ -159,7 +163,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .collect::<Vec<_>>();
 
     // If errors have occurred, return them.
-    let errors = errors.checkpoint()?;
+    let mut errors = errors.checkpoint()?;
 
     // Generated code spec.
     let export = args.export.unwrap_or(true);
@@ -193,6 +197,13 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.to_string().to_uppercase()
     );
+    let spec_shaking_call = if export && spec_shaking_v2_enabled() {
+        Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
+    } else {
+        None
+    };
+
+    // Generated code spec.
     let spec_gen = quote! {
         #export_gen
         pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
@@ -202,6 +213,22 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 *#spec_xdr_lit
             }
         }
+    };
+
+    // SpecShakingMarker impl - only generated when export is true and
+    // spec shaking v2 is enabled.
+    let spec_shaking_impl = if export && spec_shaking_v2_enabled() {
+        Some(shaking::generate_marker_impl(
+            path,
+            quote!(#ident),
+            &spec_xdr,
+            field_types.iter().cloned(),
+            Some(quote!(#gen_impl)),
+            Some(quote!(#gen_types)),
+            Some(quote!(#gen_where)),
+        ))
+    } else {
+        None
     };
 
     // Prepare Topics Conversion to Vec<Val>.
@@ -239,10 +266,17 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         DataFormat::SingleValue if data_params_count == 0 => quote! {
             #path::Val::VOID.to_val()
         },
-        DataFormat::SingleValue => quote! {
-            use #path::IntoVal;
-            #(self.#data_idents.into_val(env))*
-        },
+        DataFormat::SingleValue => {
+            if data_params_count > 1 {
+                errors.push(Error::custom(
+                    "data_format = \"single-value\" requires exactly 0 or 1 data fields, but found more",
+                ));
+            }
+            quote! {
+                use #path::IntoVal;
+                #(self.#data_idents.into_val(env))*
+            }
+        }
         DataFormat::Vec if data_params_count == 0 => quote! {
             use #path::IntoVal;
             #path::Vec::<#path::Val>::new(env).into_val(env)
@@ -279,6 +313,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let output = quote! {
         #spec_gen
 
+        #spec_shaking_impl
+
         impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {
                 #topics_to_vec_val
@@ -290,6 +326,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
+                #spec_shaking_call
                 <_ as #path::Event>::publish(self, env);
             }
         }

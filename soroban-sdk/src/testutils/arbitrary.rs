@@ -335,16 +335,17 @@ mod objects {
     use crate::{Env, IntoVal, TryFromVal, TryIntoVal};
 
     use crate::crypto::bn254::{
-        Bn254G1Affine, Bn254G2Affine, Fr as Bn254Fr, BN254_G1_SERIALIZED_SIZE,
-        BN254_G2_SERIALIZED_SIZE,
+        Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine, BN254_FP_SERIALIZED_SIZE,
+        BN254_G1_SERIALIZED_SIZE, BN254_G2_SERIALIZED_SIZE,
     };
     use crate::xdr::{Int256Parts, ScVal, UInt256Parts};
     use crate::{
         crypto::bls12_381::{
-            Fp, Fp2, Fr, G1Affine, G2Affine, FP2_SERIALIZED_SIZE, FP_SERIALIZED_SIZE,
-            G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
+            Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine,
+            FP2_SERIALIZED_SIZE, FP_SERIALIZED_SIZE, G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
         },
-        Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Val, Vec, I256, U256,
+        Address, Bytes, BytesN, Duration, Map, MuxedAddress, String, Symbol, Timepoint, Val, Vec,
+        I256, U256,
     };
 
     use std::string::String as RustString;
@@ -670,6 +671,39 @@ mod objects {
     //////////////////////////////////
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub enum ArbitraryMuxedAddress {
+        Address(ArbitraryAddress),
+        Muxed { ed25519: [u8; 32], id: u64 },
+    }
+
+    impl SorobanArbitrary for MuxedAddress {
+        type Prototype = ArbitraryMuxedAddress;
+    }
+
+    impl TryFromVal<Env, ArbitraryMuxedAddress> for MuxedAddress {
+        type Error = ConversionError;
+        fn try_from_val(env: &Env, v: &ArbitraryMuxedAddress) -> Result<Self, Self::Error> {
+            use crate::env::xdr::{MuxedEd25519Account, ScAddress, Uint256};
+
+            let sc_addr = match v {
+                ArbitraryMuxedAddress::Address(v) => {
+                    let address = Address::try_from_val(env, v)?;
+                    return Ok(address.into());
+                }
+                ArbitraryMuxedAddress::Muxed { ed25519, id } => {
+                    ScVal::Address(ScAddress::MuxedAccount(MuxedEd25519Account {
+                        ed25519: Uint256(*ed25519),
+                        id: *id,
+                    }))
+                }
+            };
+            Ok(sc_addr.into_val(env))
+        }
+    }
+
+    //////////////////////////////////
+
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryTimepoint {
         inner: u64,
     }
@@ -705,56 +739,64 @@ mod objects {
         }
     }
 
-    // For Fp (48 bytes)
+    // For Bls12381Fp (48 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryFp {
+    pub struct ArbitraryBls12381Fp {
         bytes: [u8; FP_SERIALIZED_SIZE],
     }
 
-    impl SorobanArbitrary for Fp {
-        type Prototype = ArbitraryFp;
+    impl SorobanArbitrary for Bls12381Fp {
+        type Prototype = ArbitraryBls12381Fp;
     }
 
-    impl TryFromVal<Env, ArbitraryFp> for Fp {
+    impl TryFromVal<Env, ArbitraryBls12381Fp> for Bls12381Fp {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryFp) -> Result<Self, Self::Error> {
-            Ok(Fp::from_array(env, &v.bytes))
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381Fp) -> Result<Self, Self::Error> {
+            let mut bytes = v.bytes;
+            // Ensure the value is strictly less than the BLS12-381 base field modulus
+            // p = 0x1a0111ea... by restricting the most significant byte.
+            bytes[0] %= 0x1a;
+            Ok(Bls12381Fp::from_array(env, &bytes))
         }
     }
 
-    // For Fp2 (96 bytes)
+    // For Bls12381Fp2 (96 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryFp2 {
+    pub struct ArbitraryBls12381Fp2 {
         bytes: [u8; FP2_SERIALIZED_SIZE],
     }
 
-    impl SorobanArbitrary for Fp2 {
-        type Prototype = ArbitraryFp2;
+    impl SorobanArbitrary for Bls12381Fp2 {
+        type Prototype = ArbitraryBls12381Fp2;
     }
 
-    impl TryFromVal<Env, ArbitraryFp2> for Fp2 {
+    impl TryFromVal<Env, ArbitraryBls12381Fp2> for Bls12381Fp2 {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryFp2) -> Result<Self, Self::Error> {
-            Ok(Fp2::from_array(env, &v.bytes))
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381Fp2) -> Result<Self, Self::Error> {
+            let mut bytes = v.bytes;
+            // Ensure both Fp components are strictly less than the modulus
+            bytes[0] %= 0x1a;
+            bytes[FP_SERIALIZED_SIZE] %= 0x1a;
+            Ok(Bls12381Fp2::from_array(env, &bytes))
         }
     }
 
-    // For G1Affine (96 bytes)
+    // For Bls12381G1Affine (96 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryG1Affine {
+    pub struct ArbitraryBls12381G1Affine {
         bytes: [u8; G1_SERIALIZED_SIZE],
     }
 
-    impl SorobanArbitrary for G1Affine {
-        type Prototype = ArbitraryG1Affine;
+    impl SorobanArbitrary for Bls12381G1Affine {
+        type Prototype = ArbitraryBls12381G1Affine;
     }
 
-    impl TryFromVal<Env, ArbitraryG1Affine> for G1Affine {
+    impl TryFromVal<Env, ArbitraryBls12381G1Affine> for Bls12381G1Affine {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryG1Affine) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381G1Affine) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
             // the top 3 bits in a G1 point are reserved for flags:
             // compression_flag (bit 0), infinity_flag (bit 1) and sort_flag
@@ -772,24 +814,24 @@ mod objects {
                 // not an infinity point, we clear the flag bits
                 bytes[0] &= !FLAG_MASK
             }
-            Ok(G1Affine::from_array(env, &bytes))
+            Ok(Bls12381G1Affine::from_array(env, &bytes))
         }
     }
 
-    // For G2Affine (192 bytes)
+    // For Bls12381G2Affine (192 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryG2Affine {
+    pub struct ArbitraryBls12381G2Affine {
         bytes: [u8; G2_SERIALIZED_SIZE],
     }
 
-    impl SorobanArbitrary for G2Affine {
-        type Prototype = ArbitraryG2Affine;
+    impl SorobanArbitrary for Bls12381G2Affine {
+        type Prototype = ArbitraryBls12381G2Affine;
     }
 
-    impl TryFromVal<Env, ArbitraryG2Affine> for G2Affine {
+    impl TryFromVal<Env, ArbitraryBls12381G2Affine> for Bls12381G2Affine {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryG2Affine) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381G2Affine) -> Result<Self, Self::Error> {
             let mut bytes = v.bytes;
             // the top 3 bits in a G1 point are reserved for flags:
             // compression_flag (bit 0), infinity_flag (bit 1) and sort_flag
@@ -807,25 +849,25 @@ mod objects {
                 // not an infinity point, we clear the flag bits
                 bytes[0] &= !FLAG_MASK
             }
-            Ok(G2Affine::from_array(env, &bytes))
+            Ok(Bls12381G2Affine::from_array(env, &bytes))
         }
     }
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryFr {
+    pub struct ArbitraryBls12381Fr {
         bytes: [u8; 32],
     }
 
-    impl SorobanArbitrary for Fr {
-        type Prototype = ArbitraryFr;
+    impl SorobanArbitrary for Bls12381Fr {
+        type Prototype = ArbitraryBls12381Fr;
     }
 
-    impl TryFromVal<Env, ArbitraryFr> for Fr {
+    impl TryFromVal<Env, ArbitraryBls12381Fr> for Bls12381Fr {
         type Error = ConversionError;
 
-        fn try_from_val(env: &Env, v: &ArbitraryFr) -> Result<Self, Self::Error> {
-            // Convert bytes to Fr via U256
-            Ok(Fr::from_bytes(BytesN::from_array(env, &v.bytes)))
+        fn try_from_val(env: &Env, v: &ArbitraryBls12381Fr) -> Result<Self, Self::Error> {
+            // Convert bytes to Bls12381Fr via U256
+            Ok(Bls12381Fr::from_bytes(BytesN::from_array(env, &v.bytes)))
         }
     }
 
@@ -864,6 +906,28 @@ mod objects {
 
         fn try_from_val(env: &Env, v: &ArbitraryBn254G2Affine) -> Result<Self, Self::Error> {
             Ok(Bn254G2Affine::from_array(env, &v.bytes))
+        }
+    }
+
+    // For Bn254Fp (32 bytes)
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryBn254Fp {
+        bytes: [u8; BN254_FP_SERIALIZED_SIZE],
+    }
+
+    impl SorobanArbitrary for Bn254Fp {
+        type Prototype = ArbitraryBn254Fp;
+    }
+
+    impl TryFromVal<Env, ArbitraryBn254Fp> for Bn254Fp {
+        type Error = ConversionError;
+
+        fn try_from_val(env: &Env, v: &ArbitraryBn254Fp) -> Result<Self, Self::Error> {
+            let mut bytes = v.bytes;
+            // Ensure the value is strictly less than the BN254 base field modulus
+            // p = 0x30644e72... by restricting the most significant byte.
+            bytes[0] %= 0x30;
+            Ok(Bn254Fp::from_array(env, &bytes))
         }
     }
 

@@ -83,6 +83,7 @@ jobs:
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: cargo build --target wasm32v1-none --release
 
     - name: Set artifact name
@@ -100,6 +101,7 @@ jobs:
 
     - env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: cargo test
 
     - name: Diff
