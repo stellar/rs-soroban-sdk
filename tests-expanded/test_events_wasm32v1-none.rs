@@ -40,12 +40,22 @@ impl Transfer {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfTransfer {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfTransfer,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfTransfer {
     pub fields: [&'static [u8]; 4usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_TRANSFER: __SpecShakingMarkerOfTransfer =
     __SpecShakingMarkerOfTransfer {
         marker: *b"SpEcV1;\xc1i\xa0H>\x8d\xf1",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_TRANSFER,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_TRANSFER: __SpecShakingMarkerDepsOfTransfer =
+    __SpecShakingMarkerDepsOfTransfer {
         fields: [
             <Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,

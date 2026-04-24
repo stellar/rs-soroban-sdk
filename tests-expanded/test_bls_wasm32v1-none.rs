@@ -26,12 +26,22 @@ impl DummyProof {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfDummyProof {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfDummyProof,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfDummyProof {
     pub fields: [&'static [u8]; 5usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_DUMMYPROOF: __SpecShakingMarkerOfDummyProof =
     __SpecShakingMarkerOfDummyProof {
         marker: *b"SpEcV1\x85W\0A\xdc~\xb7\"",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_DUMMYPROOF,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_DUMMYPROOF: __SpecShakingMarkerDepsOfDummyProof =
+    __SpecShakingMarkerDepsOfDummyProof {
         fields: [
             <Bls12381Fp as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,

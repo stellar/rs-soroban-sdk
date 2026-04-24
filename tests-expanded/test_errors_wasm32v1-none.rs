@@ -55,13 +55,21 @@ impl Flag {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfFlag {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfFlag,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfFlag {
     pub fields: [&'static [u8]; 0usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_FLAG: __SpecShakingMarkerOfFlag = __SpecShakingMarkerOfFlag {
     marker: *b"SpEcV1g\x19\x8d\xc6\x8aP\xeb\xb7",
-    fields: [],
+    deps: &__SPEC_SHAKING_MARKER_DEPS_FLAG,
 };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_FLAG: __SpecShakingMarkerDepsOfFlag =
+    __SpecShakingMarkerDepsOfFlag { fields: [] };
 impl soroban_sdk::SpecShakingMarker for Flag {
     const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_FLAG.marker;
     #[doc(hidden)]
@@ -156,13 +164,21 @@ impl Error {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfError {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfError,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfError {
     pub fields: [&'static [u8]; 0usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_ERROR: __SpecShakingMarkerOfError = __SpecShakingMarkerOfError {
     marker: *b"SpEcV1\xbc\x04\x04\xea\xa4\x9e6(",
-    fields: [],
+    deps: &__SPEC_SHAKING_MARKER_DEPS_ERROR,
 };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_ERROR: __SpecShakingMarkerDepsOfError =
+    __SpecShakingMarkerDepsOfError { fields: [] };
 impl soroban_sdk::SpecShakingMarker for Error {
     const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERROR.marker;
     #[doc(hidden)]

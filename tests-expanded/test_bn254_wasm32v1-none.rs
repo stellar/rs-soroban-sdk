@@ -23,12 +23,22 @@ impl MockProof {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfMockProof {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfMockProof,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfMockProof {
     pub fields: [&'static [u8]; 2usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_MOCKPROOF: __SpecShakingMarkerOfMockProof =
     __SpecShakingMarkerOfMockProof {
         marker: *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_MOCKPROOF,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_MOCKPROOF: __SpecShakingMarkerDepsOfMockProof =
+    __SpecShakingMarkerDepsOfMockProof {
         fields: [
             <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,

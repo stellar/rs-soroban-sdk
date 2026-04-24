@@ -62,14 +62,22 @@ impl UdtEnum2 {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfUdtEnum2 {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfUdtEnum2,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfUdtEnum2 {
     pub fields: [&'static [u8]; 0usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_UDTENUM2: __SpecShakingMarkerOfUdtEnum2 =
     __SpecShakingMarkerOfUdtEnum2 {
         marker: *b"SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9a",
-        fields: [],
+        deps: &__SPEC_SHAKING_MARKER_DEPS_UDTENUM2,
     };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_UDTENUM2: __SpecShakingMarkerDepsOfUdtEnum2 =
+    __SpecShakingMarkerDepsOfUdtEnum2 { fields: [] };
 impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
     const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UDTENUM2.marker;
     #[doc(hidden)]
@@ -196,12 +204,22 @@ impl UdtEnum {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfUdtEnum {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfUdtEnum,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfUdtEnum {
     pub fields: [&'static [u8]; 3usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_UDTENUM: __SpecShakingMarkerOfUdtEnum =
     __SpecShakingMarkerOfUdtEnum {
         marker: *b"SpEcV1\xf3\xb0\xab@i\rH\xb4",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_UDTENUM,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_UDTENUM: __SpecShakingMarkerDepsOfUdtEnum =
+    __SpecShakingMarkerDepsOfUdtEnum {
         fields: [
             <UdtStruct as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <UdtEnum2 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
@@ -376,12 +394,22 @@ impl UdtTuple {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfUdtTuple {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfUdtTuple,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfUdtTuple {
     pub fields: [&'static [u8]; 2usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_UDTTUPLE: __SpecShakingMarkerOfUdtTuple =
     __SpecShakingMarkerOfUdtTuple {
         marker: *b"SpEcV1\xeb\x9f\x12&\x9av(*",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_UDTTUPLE,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_UDTTUPLE: __SpecShakingMarkerDepsOfUdtTuple =
+    __SpecShakingMarkerDepsOfUdtTuple {
         fields: [
             <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <Vec<i64> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
@@ -507,12 +535,22 @@ impl UdtStruct {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfUdtStruct {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfUdtStruct,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfUdtStruct {
     pub fields: [&'static [u8]; 3usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_UDTSTRUCT: __SpecShakingMarkerOfUdtStruct =
     __SpecShakingMarkerOfUdtStruct {
         marker: *b"SpEcV1\x16'd8\xff\xc9\xb1\xf8",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_UDTSTRUCT,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_UDTSTRUCT: __SpecShakingMarkerDepsOfUdtStruct =
+    __SpecShakingMarkerDepsOfUdtStruct {
         fields: [
             <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,

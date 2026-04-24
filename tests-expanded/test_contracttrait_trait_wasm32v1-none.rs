@@ -59,12 +59,22 @@ impl MyStruct {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfMyStruct {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfMyStruct,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfMyStruct {
     pub fields: [&'static [u8]; 2usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_MYSTRUCT: __SpecShakingMarkerOfMyStruct =
     __SpecShakingMarkerOfMyStruct {
         marker: *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_MYSTRUCT,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_MYSTRUCT: __SpecShakingMarkerDepsOfMyStruct =
+    __SpecShakingMarkerDepsOfMyStruct {
         fields: [
             <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
@@ -190,14 +200,22 @@ impl MyEnumUnit {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfMyEnumUnit {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfMyEnumUnit,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfMyEnumUnit {
     pub fields: [&'static [u8]; 0usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_MYENUMUNIT: __SpecShakingMarkerOfMyEnumUnit =
     __SpecShakingMarkerOfMyEnumUnit {
         marker: *b"SpEcV12E\x1b4\x1c\x83\xab\xeb",
-        fields: [],
+        deps: &__SPEC_SHAKING_MARKER_DEPS_MYENUMUNIT,
     };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_MYENUMUNIT: __SpecShakingMarkerDepsOfMyEnumUnit =
+    __SpecShakingMarkerDepsOfMyEnumUnit { fields: [] };
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
     const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_MYENUMUNIT.marker;
     #[doc(hidden)]
@@ -327,12 +345,22 @@ impl MyEnumVariants {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfMyEnumVariants {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfMyEnumVariants,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfMyEnumVariants {
     pub fields: [&'static [u8]; 2usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_MYENUMVARIANTS: __SpecShakingMarkerOfMyEnumVariants =
     __SpecShakingMarkerOfMyEnumVariants {
         marker: *b"SpEcV1\xceHo\xd4mpUm",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_MYENUMVARIANTS,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_MYENUMVARIANTS: __SpecShakingMarkerDepsOfMyEnumVariants =
+    __SpecShakingMarkerDepsOfMyEnumVariants {
         fields: [
             <MyStruct as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
             <MyEnumUnit as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,

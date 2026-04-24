@@ -39,12 +39,22 @@ impl DataKey {
 #[repr(packed)]
 pub struct __SpecShakingMarkerOfDataKey {
     pub marker: [u8; 14usize],
+    pub deps: &'static __SpecShakingMarkerDepsOfDataKey,
+}
+#[doc(hidden)]
+#[repr(packed)]
+pub struct __SpecShakingMarkerDepsOfDataKey {
     pub fields: [&'static [u8]; 1usize],
 }
 #[doc(hidden)]
 pub static __SPEC_SHAKING_MARKER_DATAKEY: __SpecShakingMarkerOfDataKey =
     __SpecShakingMarkerOfDataKey {
         marker: *b"SpEcV1\x14\x94}~\xec\x15\x94\x84",
+        deps: &__SPEC_SHAKING_MARKER_DEPS_DATAKEY,
+    };
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DEPS_DATAKEY: __SpecShakingMarkerDepsOfDataKey =
+    __SpecShakingMarkerDepsOfDataKey {
         fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
     };
 impl soroban_sdk::SpecShakingMarker for DataKey {

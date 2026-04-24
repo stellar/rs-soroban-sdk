@@ -4,17 +4,20 @@
 //! - 6 bytes: "SpEcV1" prefix
 //! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 //!
-//! The marker is embedded in a module-level `static` of a per-type
-//! `#[repr(packed)]` struct that lives next to the type. The struct's first
-//! field holds the marker bytes; subsequent fields are references to the
-//! marker refs of each field type (via the trait's `SPEC_SHAKING_MARKER_REF`
-//! associated constant). Keeping the static live therefore transitively
-//! keeps all reachable field markers live.
+//! Each type gets two module-level `#[repr(packed)]` statics next to the
+//! type: a `BYTES` static holding the marker bytes plus a back-ref to a
+//! `DEPS` static, and a `DEPS` static holding an array of references to
+//! each field type's marker (via the trait's `SPEC_SHAKING_MARKER_REF`
+//! associated constant). Keeping `BYTES` live transitively keeps `DEPS`
+//! live, which keeps each field type's marker live, and so on.
+//!
+//! Two statics are needed to support self-recursive contract types (e.g.
+//! `struct T { children: Vec<T> }`). See `generate_marker_impl` for more.
 //!
 //! The type's `spec_shaking_marker()` fn does a single volatile read through
-//! a pointer to the static — no recursive fn calls into field types are
-//! needed, because the static already references them. When the type is
-//! unused at a boundary, the fn is DCE'd, nothing references the static,
+//! a pointer to the `BYTES` static — no recursive fn calls into field types
+//! are needed, because the statics already reference them. When the type is
+//! unused at a boundary, the fn is DCE'd, nothing references the statics,
 //! and the linker strips the entire chain.
 //!
 //! Post-processing tools (e.g. stellar-cli) can:
@@ -86,8 +89,11 @@ where
     let marker_len = marker.len();
 
     let ident_str = ident.to_string();
-    let static_ident = format_ident!("__SPEC_SHAKING_MARKER_{}", ident_str.to_uppercase());
-    let struct_ident = format_ident!("__SpecShakingMarkerOf{}", ident_str);
+    let bytes_static_ident = format_ident!("__SPEC_SHAKING_MARKER_{}", ident_str.to_uppercase());
+    let deps_static_ident =
+        format_ident!("__SPEC_SHAKING_MARKER_DEPS_{}", ident_str.to_uppercase());
+    let bytes_struct_ident = format_ident!("__SpecShakingMarkerOf{}", ident_str);
+    let deps_struct_ident = format_ident!("__SpecShakingMarkerDepsOf{}", ident_str);
 
     let field_marker_refs: Vec<_> = field_types
         .map(|ty| {
@@ -102,22 +108,56 @@ where
     let gen_types = gen_types.unwrap_or_default();
     let gen_where = gen_where.unwrap_or_default();
 
+    // Why two statics?
+    //
+    // Naively we'd emit one `static` per type holding both the marker bytes
+    // and an array of refs to each field type's marker. But for self-
+    // recursive contract types (e.g. `struct T { children: Vec<T> }`), the
+    // array needs `<Vec<T> as SpecShakingMarker>::SPEC_SHAKING_MARKER_REF`,
+    // which resolves to `<T>::SPEC_SHAKING_MARKER_REF`, defined as a ref
+    // into the same static — a const-eval cycle.
+    //
+    // To support recursive types we always split into two statics with
+    // mutual references:
+    //
+    //   `BYTES`: marker bytes + back-ref to `DEPS`.
+    //   `DEPS`:  array of field marker refs.
+    //
+    // The assoc const is `&BYTES.marker`. When evaluating `DEPS`'s init,
+    // any inner `<T>::SPEC_SHAKING_MARKER_REF` resolves to a ref into
+    // `BYTES` (a different static), so no self-cycle.
+    //
+    // For DCE transitivity: another type's `DEPS` array contains
+    // `&BYTES.marker` for this type. Keeping that ref live keeps `BYTES`
+    // live; `BYTES`'s back-ref to `DEPS` keeps this type's own `DEPS` live;
+    // its array's refs keep the next layer's `BYTES` live; and so on.
     quote! {
         #[doc(hidden)]
         #[repr(packed)]
-        pub struct #struct_ident {
+        pub struct #bytes_struct_ident {
             pub marker: [u8; #marker_len],
+            pub deps: &'static #deps_struct_ident,
+        }
+
+        #[doc(hidden)]
+        #[repr(packed)]
+        pub struct #deps_struct_ident {
             pub fields: [&'static [u8]; #field_count],
         }
 
         #[doc(hidden)]
-        pub static #static_ident: #struct_ident = #struct_ident {
+        pub static #bytes_static_ident: #bytes_struct_ident = #bytes_struct_ident {
             marker: *#marker_lit,
+            deps: &#deps_static_ident,
+        };
+
+        #[doc(hidden)]
+        pub static #deps_static_ident: #deps_struct_ident = #deps_struct_ident {
             fields: [ #( #field_marker_refs, )* ],
         };
 
         impl #gen_impl #path::SpecShakingMarker for #ident #gen_types #gen_where {
-            const SPEC_SHAKING_MARKER_REF: &'static [u8] = &#static_ident.marker;
+            const SPEC_SHAKING_MARKER_REF: &'static [u8] = &#bytes_static_ident.marker;
 
             #[doc(hidden)]
             #[inline(always)]
@@ -125,11 +165,12 @@ where
                 #[cfg(target_family = "wasm")]
                 {
                     // Volatile read prevents DCE of this function and keeps
-                    // the marker static (and its transitively-referenced
-                    // markers) in the data section.
+                    // the bytes static live. The bytes static's `deps`
+                    // back-ref keeps the deps static live, which transitively
+                    // keeps every referenced field marker live.
                     let _ = unsafe {
                         ::core::ptr::read_volatile(
-                            &#static_ident as *const _ as *const u8,
+                            &#bytes_static_ident as *const _ as *const u8,
                         )
                     };
                 }
