@@ -122,7 +122,7 @@ const _: () = {
     // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
     // The contractmeta! macro requires string literals, so we assert the literals match the
     // constants defined in soroban_spec::shaking.
-    #[cfg(spec_shaking_v2)]
+    #[cfg(feature = "experimental_spec_shaking_v2")]
     contractmeta!(key = "rssdk_spec_shaking", val = "2");
 };
 
@@ -1195,9 +1195,9 @@ mod into_val_for_contract_fn;
 #[allow(deprecated)]
 pub use into_val_for_contract_fn::IntoValForContractFn;
 
-#[cfg(spec_shaking_v2)]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 mod spec_shaking;
-#[cfg(spec_shaking_v2)]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 #[doc(hidden)]
 pub use spec_shaking::SpecShakingMarker;
 

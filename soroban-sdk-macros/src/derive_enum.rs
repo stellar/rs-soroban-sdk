@@ -12,10 +12,7 @@ use stellar_xdr::{
     ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
-use crate::{
-    doc::docs_from_attrs, map_type::map_type, shaking, spec_shaking_v2_enabled,
-    DEFAULT_XDR_RW_LIMITS,
-};
+use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -184,9 +181,9 @@ pub fn derive_type_enum(
         None
     };
 
-    // SpecShakingMarker impl - only generated when spec is true and
-    // spec shaking v2 is enabled.
-    let spec_shaking_impl = if spec_shaking_v2_enabled() {
+    // SpecShakingMarker impl - only generated when spec is true and the
+    // experimental_spec_shaking_v2 feature is enabled.
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
             // Flatten all variant field types for shaking calls, deduplicating
             // to avoid redundant calls for types that appear in multiple variants.

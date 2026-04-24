@@ -30,7 +30,7 @@ pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
     fn try_from_val_for_contract_fn(env: &E, v: &V) -> Result<Self, Self::Error>;
 }
 
-#[cfg(spec_shaking_v2)]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
@@ -44,7 +44,7 @@ where
     }
 }
 
-#[cfg(not(spec_shaking_v2))]
+#[cfg(not(feature = "experimental_spec_shaking_v2"))]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
