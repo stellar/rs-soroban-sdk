@@ -228,6 +228,14 @@ enum UsedNonPubError {
 // Only StructC is used in a contract fn; other spec_lib types have spec entries
 // but no markers.
 
+// Recursive: references itself via a Vec field. Used as a fn param.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursive {
+    pub value: u32,
+    pub children: Vec<UsedRecursive>,
+}
+
 // --- WASM-imported types (contractimport!): only used ones should have markers ---
 
 mod wasm_imported {
@@ -367,6 +375,8 @@ impl Contract {
     pub fn with_non_pub_error(_env: Env) -> Result<u32, UsedNonPubError> {
         Ok(1)
     }
+
+    pub fn with_recursive(_env: Env, _r: UsedRecursive) {}
 
     pub fn with_tuple(_env: Env, _t: (UsedTupleElement, u32)) {}
 
