@@ -10,7 +10,7 @@ use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::quote;
 use std::collections::HashSet;
-use syn::{LitStr, Path, Type};
+use syn::{ext::IdentExt as _, LitStr, Path, Type};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -59,7 +59,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
     // overridden in the input fns.
     let fns = trait_default_fns
         .into_iter()
-        .filter(|f| !impl_fn_idents.contains(&f.ident.to_string()))
+        .filter(|f| !impl_fn_idents.contains(&f.ident.unraw().to_string()))
         .collect::<Vec<_>>();
 
     let mut output = quote! {};

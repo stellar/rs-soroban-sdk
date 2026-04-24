@@ -47,8 +47,8 @@ use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
 use syn::{
-    parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Expr, Fields,
-    ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
+    ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
+    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
@@ -152,7 +152,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as ItemStruct);
 
     let ty = &item.ident;
-    let ty_str = quote!(#ty).to_string();
+    let ty_str = ty.unraw().to_string();
 
     let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
@@ -239,7 +239,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format!("{}Args", name.ident))
+            .map(|name| format!("{}Args", name.ident.unraw()))
     } else {
         None
     }
@@ -251,7 +251,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format!("{}Client", name.ident))
+            .map(|name| format!("{}Client", name.ident.unraw()))
     } else {
         None
     }

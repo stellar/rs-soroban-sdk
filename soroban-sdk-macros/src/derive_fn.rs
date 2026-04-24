@@ -8,6 +8,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use sha2::{Digest, Sha256};
 use syn::{
+    ext::IdentExt as _,
     punctuated::Punctuated,
     spanned::Spanned,
     token::{Colon, Comma},
@@ -89,8 +90,11 @@ pub fn derive_pub_fn(
         .map(|(i, a)| match a {
             FnArg::Typed(pat_ty) => {
                 // If fn is a __check_auth implementation, allow the first argument,
-                // signature_payload of type Bytes (32 size), to be a Hash.
-                let allow_hash = ident == "__check_auth" && i == 0;
+                // signature_payload of type Bytes (32 size), to be a Hash. Compare on
+                // the Soroban-facing name so a raw-identifier spelling like
+                // `r#__check_auth` can't bypass this special-case and then still export
+                // as `__check_auth`.
+                let allow_hash = ident.unraw().to_string() == "__check_auth" && i == 0;
 
                 // Error if the type of the fn arg is mutable.
                 if let Err(e) = fn_arg_type_validate_no_mut(&pat_ty.ty) {
@@ -141,14 +145,15 @@ pub fn derive_pub_fn(
 
     // Generated code parameters.
     let impl_ty_safe_str = ty_to_safe_ident_str(impl_ty);
-    let wrap_export_name = &format!("{}", ident);
-    let invoke_fn_prefix = format_ident!("__{}__{}", impl_ty_safe_str, ident);
+    let fn_name = ident.unraw().to_string();
+    let wrap_export_name = &fn_name;
+    let invoke_fn_prefix = format_ident!("__{}__{}", impl_ty_safe_str, fn_name);
     let invoke_raw = format_ident!("{}__invoke_raw", invoke_fn_prefix);
     let invoke_raw_slice = format_ident!("{}__invoke_raw_slice", invoke_fn_prefix);
     let invoke_raw_extern = format_ident!("{}__invoke_raw_extern", invoke_fn_prefix);
     let deprecated_note = format!(
         "use `{}::new(&env, &contract_id).{}` instead",
-        client_ident, &ident
+        client_ident, &fn_name
     );
     let env_call = if let Some(is_ref) = env_input {
         if is_ref {
@@ -242,7 +247,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
     let ty_str = ty_to_safe_ident_str(ty);
     let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
         .map(|ident| {
-            let ident_str = format!("{}", ident);
+            let ident_str = ident.unraw().to_string();
             let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
             (ident_str, wrap_ident)
         })
@@ -252,7 +257,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
         .map(|p| {
             p.segments
                 .iter()
-                .map(|s| s.ident.to_string())
+                .map(|s| s.ident.unraw().to_string())
                 .collect::<Vec<_>>()
                 .join("_")
         })
