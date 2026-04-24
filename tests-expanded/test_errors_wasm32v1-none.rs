@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -52,13 +51,17 @@ impl Flag {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04Flag\0\0\0\x05\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01C\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01D\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01E\0\0\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_FLAG: ([u8; 14usize],) = (*b"SpEcV1g\x19\x8d\xc6\x8aP\xeb\xb7",);
 impl soroban_sdk::SpecShakingMarker for Flag {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_FLAG.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1g\x19\x8d\xc6\x8aP\xeb\xb7";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_FLAG as *const _ as *const u8)
+            };
         }
     }
 }
@@ -140,13 +143,17 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07AnError\0\0\0\0\x01"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_ERROR: ([u8; 14usize],) = (*b"SpEcV1\xbc\x04\x04\xea\xa4\x9e6(",);
 impl soroban_sdk::SpecShakingMarker for Error {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERROR.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xbc\x04\x04\xea\xa4\x9e6(";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_ERROR as *const _ as *const u8)
+            };
         }
     }
 }

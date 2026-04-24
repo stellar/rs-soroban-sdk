@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -40,14 +39,20 @@ impl Value {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x05"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_VALUE: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\x82\xf8t\xbe\t\x04b\\",
+    <i32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for Value {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_VALUE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <i32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x82\xf8t\xbe\t\x04b\\";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_VALUE as *const _ as *const u8)
+            };
         }
     }
 }

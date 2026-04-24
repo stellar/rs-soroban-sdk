@@ -190,7 +190,7 @@ pub fn derive_type_enum(
                 });
             shaking::generate_marker_impl(
                 path,
-                quote!(#enum_ident),
+                enum_ident,
                 spec_xdr,
                 all_field_types.cloned(),
                 None,

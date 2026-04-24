@@ -25,6 +25,16 @@
 /// a no-op implementation.
 #[doc(hidden)]
 pub trait SpecShakingMarker {
+    /// Reference to this type's spec-shaking marker in the data section.
+    ///
+    /// For primitive types and built-in SDK types, this is an empty slice.
+    /// For user-defined contract types, this is a reference into the static
+    /// tuple that holds the marker bytes. Placing this reference inside
+    /// another type's marker tuple ensures that when that outer type is used,
+    /// this type's marker (and everything it transitively references) is
+    /// preserved by the linker's dead-code elimination.
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &[];
+
     /// Include this type's spec in the WASM binary.
     ///
     /// For primitive types and built-in SDK types, this is a no-op.
@@ -46,6 +56,7 @@ impl SpecShakingMarker for i128 {}
 
 // Reference implementations
 impl<T: SpecShakingMarker> SpecShakingMarker for &T {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T::spec_shaking_marker();
@@ -53,6 +64,7 @@ impl<T: SpecShakingMarker> SpecShakingMarker for &T {
 }
 
 impl<T: SpecShakingMarker> SpecShakingMarker for &mut T {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T::spec_shaking_marker();
@@ -61,6 +73,7 @@ impl<T: SpecShakingMarker> SpecShakingMarker for &mut T {
 
 // Option implementation - includes inner type's spec
 impl<T: SpecShakingMarker> SpecShakingMarker for Option<T> {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T::spec_shaking_marker();
@@ -69,6 +82,10 @@ impl<T: SpecShakingMarker> SpecShakingMarker for Option<T> {
 
 // Result implementation - includes both types' specs
 impl<T: SpecShakingMarker, E: SpecShakingMarker> SpecShakingMarker for Result<T, E> {
+    // Only propagates T's marker ref. For multi-param containers, there's no
+    // single-slot way to expose both. V is only reached when Result itself
+    // is at a boundary and its spec_shaking_marker() fn is called.
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T::spec_shaking_marker();
@@ -77,7 +94,14 @@ impl<T: SpecShakingMarker, E: SpecShakingMarker> SpecShakingMarker for Result<T,
 }
 
 // Tuple implementations
+//
+// For tuples of arity > 1, the associated `SPEC_SHAKING_MARKER_REF` can only
+// propagate a single inner type's marker (we pick T0). Other inner types are
+// still reached via the `spec_shaking_marker()` fn when the tuple is called
+// directly at a boundary, but not transitively through a user type's static
+// tuple. Tuples as struct fields are uncommon.
 impl<T0: SpecShakingMarker> SpecShakingMarker for (T0,) {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -85,6 +109,7 @@ impl<T0: SpecShakingMarker> SpecShakingMarker for (T0,) {
 }
 
 impl<T0: SpecShakingMarker, T1: SpecShakingMarker> SpecShakingMarker for (T0, T1) {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -95,6 +120,7 @@ impl<T0: SpecShakingMarker, T1: SpecShakingMarker> SpecShakingMarker for (T0, T1
 impl<T0: SpecShakingMarker, T1: SpecShakingMarker, T2: SpecShakingMarker> SpecShakingMarker
     for (T0, T1, T2)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -110,6 +136,7 @@ impl<
         T3: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -127,6 +154,7 @@ impl<
         T4: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -146,6 +174,7 @@ impl<
         T5: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -167,6 +196,7 @@ impl<
         T6: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5, T6)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -190,6 +220,7 @@ impl<
         T7: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5, T6, T7)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -215,6 +246,7 @@ impl<
         T8: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -242,6 +274,7 @@ impl<
         T9: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -271,6 +304,7 @@ impl<
         T10: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -302,6 +336,7 @@ impl<
         T11: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -335,6 +370,7 @@ impl<
         T12: SpecShakingMarker,
     > SpecShakingMarker for (T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)
 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T0::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T0::spec_shaking_marker();
@@ -370,6 +406,7 @@ impl SpecShakingMarker for crate::Error {}
 
 // Container types - propagate to inner types
 impl<T: SpecShakingMarker> SpecShakingMarker for crate::Vec<T> {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = T::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         T::spec_shaking_marker();
@@ -377,6 +414,8 @@ impl<T: SpecShakingMarker> SpecShakingMarker for crate::Vec<T> {
 }
 
 impl<K: SpecShakingMarker, V: SpecShakingMarker> SpecShakingMarker for crate::Map<K, V> {
+    // Only propagates K's marker ref (multi-param limitation).
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = K::SPEC_SHAKING_MARKER_REF;
     #[inline(always)]
     fn spec_shaking_marker() {
         K::spec_shaking_marker();

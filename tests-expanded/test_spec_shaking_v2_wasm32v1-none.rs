@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -80,15 +79,23 @@ impl UsedParamStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedParamStruct\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x12UsedNestedInStruct\0\0"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDPARAMSTRUCT: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDPARAMSTRUCT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDPARAMSTRUCT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -205,15 +212,23 @@ impl UsedReturnEnum {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eUsedReturnEnum\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDRETURNENUM: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1\xe7\xcf\x9b1n\x15\x13\xfe",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDRETURNENUM.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe7\xcf\x9b1n\x15\x13\xfe";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDRETURNENUM as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -304,6 +319,9 @@ pub enum UsedParamIntEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedParamIntEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedParamIntEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedParamIntEnum {
     #[inline]
     fn clone(&self) -> UsedParamIntEnum {
@@ -348,13 +366,20 @@ impl UsedParamIntEnum {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedParamIntEnum\0\0\0\x02\0\0\0\0\0\0\0\x01X\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01Y\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDPARAMINTENUM: ([u8; 14usize],) =
+    (*b"SpEcV1\xc2\xf4N\xbf\xebqvp",);
 impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDPARAMINTENUM.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc2\xf4N\xbf\xebqvp";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDPARAMINTENUM as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -404,6 +429,9 @@ pub enum UsedErrorEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedErrorEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedErrorEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedErrorEnum {
     #[inline]
     fn clone(&self) -> UsedErrorEnum {
@@ -448,13 +476,20 @@ impl UsedErrorEnum {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\rUsedErrorEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08NotFound\0\0\0\x01\0\0\0\0\0\0\0\x07Invalid\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDERRORENUM: ([u8; 14usize],) =
+    (*b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r",);
 impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDERRORENUM.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDERRORENUM as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -614,14 +649,22 @@ impl UsedNestedInStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedNestedInStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDNESTEDINSTRUCT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\x84\x08Y\xae\xa0\xf128",
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNESTEDINSTRUCT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x84\x08Y\xae\xa0\xf128";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDNESTEDINSTRUCT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -715,14 +758,22 @@ impl UsedVecElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0eUsedVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDVECELEMENT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\xe2\x01y\xc9\x9a\xf8\xedt",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedVecElement {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDVECELEMENT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe2\x01y\xc9\x9a\xf8\xedt";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDVECELEMENT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -777,6 +828,9 @@ pub enum UsedMapKey {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedMapKey {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedMapKey {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedMapKey {
     #[inline]
     fn clone(&self) -> UsedMapKey {
@@ -821,13 +875,20 @@ impl UsedMapKey {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nUsedMapKey\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02K1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02K2\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDMAPKEY: ([u8; 14usize],) =
+    (*b"SpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbc",);
 impl soroban_sdk::SpecShakingMarker for UsedMapKey {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDMAPKEY.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbc";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDMAPKEY as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -914,14 +975,22 @@ impl UsedMapVal {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nUsedMapVal\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDMAPVAL: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\xaaX8\xde\xef\xbb6%",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedMapVal {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDMAPVAL.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xaaX8\xde\xef\xbb6%";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDMAPVAL as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1018,14 +1087,22 @@ impl UsedOptionElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDOPTIONELEMENT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\xb3/\x97\xd5\x06\xbd3B",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDOPTIONELEMENT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xb3/\x97\xd5\x06\xbd3B";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDOPTIONELEMENT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1117,14 +1194,22 @@ impl UsedResultOk {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUsedResultOk\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDRESULTOK: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1k\xe4zxB\xd1+\x02",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedResultOk {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDRESULTOK.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1k\xe4zxB\xd1+\x02";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDRESULTOK as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1226,15 +1311,23 @@ impl UsedEventSimple {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0fUsedEventSimple\0\0\0\0\x01\0\0\0\x11used_event_simple\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTSIMPLE: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1v1\x0eP\xa9C\xc7*",
+    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTSIMPLE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1v1\x0eP\xa9C\xc7*";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTSIMPLE as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1268,6 +1361,9 @@ pub enum UsedEventTopicType {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for UsedEventTopicType {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedEventTopicType {}
 #[automatically_derived]
 impl ::core::clone::Clone for UsedEventTopicType {
     #[inline]
@@ -1313,13 +1409,20 @@ impl UsedEventTopicType {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\0\0\0\0\x04Mint\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICTYPE: ([u8; 14usize],) =
+    (*b"SpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7",);
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTTOPICTYPE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTTOPICTYPE as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1419,15 +1522,27 @@ impl UsedEventWithTopicType {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x16UsedEventWithTopicType\0\0\0\0\0\x01\0\0\0\x1aused_event_with_topic_type\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHTOPICTYPE: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1q^\xe2&\x9di\x9d\x0e",
+    <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHTOPICTYPE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1q^\xe2&\x9di\x9d\x0e";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTWITHTOPICTYPE as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1511,15 +1626,23 @@ impl UsedEventDataType {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01y\0\0\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTDATATYPE: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1\xc2 \x1b\xdc\xc8gxZ",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATATYPE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc2 \x1b\xdc\xc8gxZ";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTDATATYPE as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1628,15 +1751,27 @@ impl UsedEventWithDataType {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x15UsedEventWithDataType\0\0\0\0\0\0\x01\0\0\0\x19used_event_with_data_type\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHDATATYPE: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1q\xa3z;6\xa6R\x01",
+    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <UsedEventDataType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHDATATYPE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1q\xa3z;6\xa6R\x01";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTWITHDATATYPE as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1716,14 +1851,22 @@ impl UsedEventTopicOuter {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedEventTopicInner\0"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICOUTER: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\x94\xc7w/_\xebXc",
+    <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTTOPICOUTER.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x94\xc7w/_\xebXc";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTTOPICOUTER as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1824,14 +1967,22 @@ impl UsedEventTopicInner {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicInner\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICINNER: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV16\x83?\xf0\xcdW\xb1/",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTTOPICINNER.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV16\x83?\xf0\xcdW\xb1/";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTTOPICINNER as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -1936,15 +2087,28 @@ impl UsedEventWithNestedTopic {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x18UsedEventWithNestedTopic\0\0\0\x01\0\0\0\x1cused_event_with_nested_topic\0\0\0\x02\0\0\0\0\0\0\0\x04info\0\0\x07\xd0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDTOPIC: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6",
+    <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDTOPIC.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDTOPIC as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2024,14 +2188,22 @@ impl UsedEventDataOuter {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x12UsedEventDataInner\0\0"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTDATAOUTER: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u",
+    <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATAOUTER.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTDATAOUTER as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2132,14 +2304,22 @@ impl UsedEventDataInner {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataInner\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTDATAINNER: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATAINNER.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTDATAINNER as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2244,15 +2424,27 @@ impl UsedEventWithNestedData {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x17UsedEventWithNestedData\0\0\0\0\x01\0\0\0\x1bused_event_with_nested_data\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDDATA: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4",
+    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDDATA.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDDATA as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2289,6 +2481,9 @@ pub enum UsedRefTopicType {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for UsedRefTopicType {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedRefTopicType {}
 #[automatically_derived]
 impl ::core::clone::Clone for UsedRefTopicType {
     #[inline]
@@ -2334,13 +2529,20 @@ impl UsedRefTopicType {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefTopicType\0\0\0\x02\0\0\0\0\0\0\0\x04Send\0\0\0\x01\0\0\0\0\0\0\0\x04Recv\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDREFTOPICTYPE: ([u8; 14usize],) =
+    (*b"SpEcV1@\xb9LO\xf9\xd1\xe8\xe2",);
 impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFTOPICTYPE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1@\xb9LO\xf9\xd1\xe8\xe2";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDREFTOPICTYPE as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2432,14 +2634,22 @@ impl UsedRefDataType {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedRefDataType\0\0\0\0\x01\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x10UsedRefDataInner"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDREFDATATYPE: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1'\xbd_A\r\x9a\x89\x02",
+    <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFDATATYPE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1'\xbd_A\r\x9a\x89\x02";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDREFDATATYPE as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2533,14 +2743,22 @@ impl UsedRefDataInner {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefDataInner\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDREFDATAINNER: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1K\xdf'8m/\xe8\x1d",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFDATAINNER.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1K\xdf'8m/\xe8\x1d";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDREFDATAINNER as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2642,15 +2860,23 @@ impl<'a> UsedEventWithRefs<'a> {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventWithRefs\0\0\0\0\0\0\x01\0\0\0\x14used_event_with_refs\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x10UsedRefTopicType\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x0fUsedRefDataType\0\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHREFS: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1[Q+\xe9\xde\xd5\xf2>",
+    <&'static UsedRefTopicType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <&'static UsedRefDataType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHREFS.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1[Q+\xe9\xde\xd5\xf2>";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDEVENTWITHREFS as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2725,14 +2951,22 @@ impl UsedTupleElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedTupleElement\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDTUPLEELEMENT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\xde\x1dMa\x01\xec\xb0A",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDTUPLEELEMENT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xde\x1dMa\x01\xec\xb0A";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDTUPLEELEMENT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2830,14 +3064,22 @@ impl UsedTupleReturnElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDTUPLERETURNELEMENT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1Y\xa66\xb3\xecxE\x13",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDTUPLERETURNELEMENT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1Y\xa66\xb3\xecxE\x13";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDTUPLERETURNELEMENT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2931,14 +3173,22 @@ impl UsedNonPubStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedNonPubStruct\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDNONPUBSTRUCT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1p\x8c\x0fN!\x082\xd8",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNONPUBSTRUCT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1p\x8c\x0fN!\x082\xd8";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDNONPUBSTRUCT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -2992,6 +3242,9 @@ enum UsedNonPubError {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedNonPubError {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedNonPubError {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedNonPubError {
     #[inline]
     fn clone(&self) -> UsedNonPubError {
@@ -3028,13 +3281,20 @@ impl UsedNonPubError {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0fUsedNonPubError\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDNONPUBERROR: ([u8; 14usize],) =
+    (*b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17",);
 impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNONPUBERROR.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_USEDNONPUBERROR as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -3142,7 +3402,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedNonPubError> for soroban_sdk
     }
 }
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.94.0\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
@@ -3472,15 +3732,23 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTA: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1\xb6\x1c\xfd\xdfhY-d",
+        <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <bool as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for StructA {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTA.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xb6\x1c\xfd\xdfhY-d";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_STRUCTA as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -3605,15 +3873,23 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTB: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18",
+        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for StructB {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTB.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_STRUCTB as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -3738,15 +4014,23 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTC: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11",
+        <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for StructC {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTC.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_STRUCTC as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -3868,15 +4152,23 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEA: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1\xcf)\x97]S\xb2\xfd)",
+        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for StructTupleA {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEA.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xcf)\x97]S\xb2\xfd)";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_STRUCTTUPLEA as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -3994,15 +4286,23 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEB: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c",
+        <u128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <u128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for StructTupleB {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEB.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_STRUCTTUPLEB as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -4121,15 +4421,23 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEC: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9",
+        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for StructTupleC {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEC.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_STRUCTTUPLEC as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -4252,13 +4560,19 @@ mod wasm_imported {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMA: ([u8; 14usize],) = (*b"SpEcV1\xa2=N\xc1p\x95\x90\xb2",);
     impl soroban_sdk::SpecShakingMarker for EnumA {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMA.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xa2=N\xc1p\x95\x90\xb2";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ENUMA as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -4457,14 +4771,22 @@ mod wasm_imported {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMB: ([u8; 14usize], &'static [u8]) = (
+        *b"SpEcV1'\x1b\0DSH^\xcc",
+        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for EnumB {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMB.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1'\x1b\0DSH^\xcc";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ENUMB as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -4665,15 +4987,23 @@ mod wasm_imported {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMC: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2",
+        <StructA as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <StructTupleA as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for EnumC {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMC.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ENUMC as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -4791,6 +5121,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for EnumIntA {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for EnumIntA {}
+    #[automatically_derived]
     impl ::core::clone::Clone for EnumIntA {
         #[inline]
         fn clone(&self) -> EnumIntA {
@@ -4840,13 +5173,19 @@ mod wasm_imported {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMINTA: ([u8; 14usize],) = (*b"SpEcV1V]\x80\\~\x1a\x08/",);
     impl soroban_sdk::SpecShakingMarker for EnumIntA {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTA.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1V]\x80\\~\x1a\x08/";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ENUMINTA as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -4913,6 +5252,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for EnumIntB {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for EnumIntB {}
+    #[automatically_derived]
     impl ::core::clone::Clone for EnumIntB {
         #[inline]
         fn clone(&self) -> EnumIntB {
@@ -4962,13 +5304,19 @@ mod wasm_imported {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMINTB: ([u8; 14usize],) = (*b"SpEcV1,\x9c\xc0_\xed_)\x85",);
     impl soroban_sdk::SpecShakingMarker for EnumIntB {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTB.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1,\x9c\xc0_\xed_)\x85";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ENUMINTB as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -5035,6 +5383,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for EnumIntC {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for EnumIntC {}
+    #[automatically_derived]
     impl ::core::clone::Clone for EnumIntC {
         #[inline]
         fn clone(&self) -> EnumIntC {
@@ -5084,13 +5435,20 @@ mod wasm_imported {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMINTC: ([u8; 14usize],) =
+        (*b"SpEcV1`\xca\xda\x19\xb9c\xf0/",);
     impl soroban_sdk::SpecShakingMarker for EnumIntC {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTC.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1`\xca\xda\x19\xb9c\xf0/";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ENUMINTC as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -5157,6 +5515,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for ErrorA {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for ErrorA {}
+    #[automatically_derived]
     impl ::core::clone::Clone for ErrorA {
         #[inline]
         fn clone(&self) -> ErrorA {
@@ -5206,13 +5567,20 @@ mod wasm_imported {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ERRORA: ([u8; 14usize],) =
+        (*b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3",);
     impl soroban_sdk::SpecShakingMarker for ErrorA {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORA.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ERRORA as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -5349,6 +5717,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for ErrorB {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for ErrorB {}
+    #[automatically_derived]
     impl ::core::clone::Clone for ErrorB {
         #[inline]
         fn clone(&self) -> ErrorB {
@@ -5398,13 +5769,20 @@ mod wasm_imported {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ERRORB: ([u8; 14usize],) =
+        (*b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3",);
     impl soroban_sdk::SpecShakingMarker for ErrorB {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORB.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ERRORB as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -5541,6 +5919,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for ErrorC {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for ErrorC {}
+    #[automatically_derived]
     impl ::core::clone::Clone for ErrorC {
         #[inline]
         fn clone(&self) -> ErrorC {
@@ -5590,13 +5971,20 @@ mod wasm_imported {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ERRORC: ([u8; 14usize],) =
+        (*b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r",);
     impl soroban_sdk::SpecShakingMarker for ErrorC {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORC.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_ERRORC as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -5782,15 +6170,23 @@ mod wasm_imported {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_EVENTA: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+        *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd",
+        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for EventA {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTA.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_EVENTA as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -5907,16 +6303,29 @@ mod wasm_imported {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_EVENTB: (
+        [u8; 14usize],
+        &'static [u8],
+        &'static [u8],
+        &'static [u8],
+    ) = (
+        *b"SpEcV1\xe6\xaa\xefz\x17i$\x15",
+        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for EventB {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTB.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xaa\xefz\x17i$\x15";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_EVENTB as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -6036,16 +6445,29 @@ mod wasm_imported {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
         }
     }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_EVENTC: (
+        [u8; 14usize],
+        &'static [u8],
+        &'static [u8],
+        &'static [u8],
+    ) = (
+        *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@",
+        <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    );
     impl soroban_sdk::SpecShakingMarker for EventC {
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTC.0;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+                let _ = unsafe {
+                    ::core::ptr::read_volatile(
+                        &__SPEC_SHAKING_MARKER_EVENTC as *const _ as *const u8,
+                    )
+                };
             }
         }
     }
@@ -6125,14 +6547,22 @@ impl UnusedStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUnusedStruct\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDSTRUCT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1|\x9c\t\x1e\xf5\xa8\x19\xa0",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UnusedStruct {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDSTRUCT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1|\x9c\t\x1e\xf5\xa8\x19\xa0";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDSTRUCT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -6237,14 +6667,22 @@ impl UnusedEnum {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nUnusedEnum\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDENUM: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1/\x82\x9a0\xbe@\x0eZ",
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UnusedEnum {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDENUM.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1/\x82\x9a0\xbe@\x0eZ";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDENUM as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -6329,6 +6767,9 @@ pub enum UnusedIntEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UnusedIntEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UnusedIntEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UnusedIntEnum {
     #[inline]
     fn clone(&self) -> UnusedIntEnum {
@@ -6373,13 +6814,20 @@ impl UnusedIntEnum {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\rUnusedIntEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02U1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02U2\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDINTENUM: ([u8; 14usize],) =
+    (*b"SpEcV1\x0c\xdd\xee~,\x83\xe4\x9c",);
 impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDINTENUM.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xdd\xee~,\x83\xe4\x9c";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDINTENUM as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -6476,15 +6924,23 @@ impl UnusedEvent {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0bUnusedEvent\0\0\0\0\x01\0\0\0\x0cunused_event\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDEVENT: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1\x10\xe8\xf6\xcc\xea\xc3Sb",
+    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UnusedEvent {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDEVENT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x10\xe8\xf6\xcc\xea\xc3Sb";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDEVENT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -6562,14 +7018,23 @@ impl UnusedNonContractFnParam {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x18UnusedNonContractFnParam\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNPARAM: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNPARAM.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNPARAM as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -6669,14 +7134,23 @@ impl UnusedNonContractFnReturn {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x19UnusedNonContractFnReturn\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNRETURN: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\x7fe\x1c\n\x87g\x1d\xc0",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNRETURN.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x7fe\x1c\n\x87g\x1d\xc0";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNRETURN as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -6770,14 +7244,22 @@ impl UnusedNonPubStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UnusedNonPubStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONPUBSTRUCT: ([u8; 14usize], &'static [u8]) = (
+    *b"SpEcV1\xa8;,%}]PA",
+    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDNONPUBSTRUCT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa8;,%}]PA";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDNONPUBSTRUCT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -6833,6 +7315,9 @@ enum UnusedNonPubError {
 #[automatically_derived]
 impl ::core::marker::Copy for UnusedNonPubError {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UnusedNonPubError {}
+#[automatically_derived]
 impl ::core::clone::Clone for UnusedNonPubError {
     #[inline]
     fn clone(&self) -> UnusedNonPubError {
@@ -6869,13 +7354,20 @@ impl UnusedNonPubError {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x11UnusedNonPubError\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONPUBERROR: ([u8; 14usize],) =
+    (*b"SpEcV1\xd9_\x99\"=\xc6FM",);
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDNONPUBERROR.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xd9_\x99\"=\xc6FM";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UNUSEDNONPUBERROR as *const _ as *const u8,
+                )
+            };
         }
     }
 }

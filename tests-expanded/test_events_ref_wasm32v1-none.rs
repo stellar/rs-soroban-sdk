@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -37,17 +36,29 @@ impl<'a> Transfer<'a> {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_TRANSFER: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1;\xc1i\xa0H>\x8d\xf1",
+    <&'static Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <&'static Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <&'static i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Option<&'static u64> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_TRANSFER.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1;\xc1i\xa0H>\x8d\xf1";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_TRANSFER as *const _ as *const u8)
+            };
         }
     }
 }

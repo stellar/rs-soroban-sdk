@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -20,15 +19,23 @@ impl MockProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_MOCKPROOF: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f",
+    <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for MockProof {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_MOCKPROOF.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_MOCKPROOF as *const _ as *const u8,
+                )
+            };
         }
     }
 }

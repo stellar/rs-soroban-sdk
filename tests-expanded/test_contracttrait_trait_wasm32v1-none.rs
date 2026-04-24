@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -56,15 +55,21 @@ impl MyStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_MYSTRUCT: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd",
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for MyStruct {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_MYSTRUCT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_MYSTRUCT as *const _ as *const u8)
+            };
         }
     }
 }
@@ -125,6 +130,9 @@ pub enum MyEnumUnit {
 #[automatically_derived]
 impl ::core::marker::Copy for MyEnumUnit {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for MyEnumUnit {}
+#[automatically_derived]
 impl ::core::clone::Clone for MyEnumUnit {
     #[inline]
     fn clone(&self) -> MyEnumUnit {
@@ -169,13 +177,20 @@ impl MyEnumUnit {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x02"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_MYENUMUNIT: ([u8; 14usize],) =
+    (*b"SpEcV12E\x1b4\x1c\x83\xab\xeb",);
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_MYENUMUNIT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV12E\x1b4\x1c\x83\xab\xeb";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_MYENUMUNIT as *const _ as *const u8,
+                )
+            };
         }
     }
 }
@@ -290,15 +305,23 @@ impl MyEnumVariants {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_MYENUMVARIANTS: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1\xceHo\xd4mpUm",
+    <MyStruct as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <MyEnumUnit as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_MYENUMVARIANTS.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xceHo\xd4mpUm";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_MYENUMVARIANTS as *const _ as *const u8,
+                )
+            };
         }
     }
 }

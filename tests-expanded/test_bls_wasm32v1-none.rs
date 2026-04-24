@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -23,18 +22,33 @@ impl DummyProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nDummyProof\0\0\0\0\0\x05\0\0\0\0\0\0\0\x02fp\0\0\0\0\x03\xee\0\0\00\0\0\0\0\0\0\0\x03fp2\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02fr\0\0\0\0\0\x0c\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xee\0\0\0\xc0"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DUMMYPROOF: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+    &'static [u8],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1\x85W\0A\xdc~\xb7\"",
+    <Bls12381Fp as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Bls12381Fr as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for DummyProof {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_DUMMYPROOF.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Bls12381Fp as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381Fr as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x85W\0A\xdc~\xb7\"";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_DUMMYPROOF as *const _ as *const u8,
+                )
+            };
         }
     }
 }

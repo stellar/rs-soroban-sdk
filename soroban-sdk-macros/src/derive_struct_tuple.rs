@@ -105,7 +105,7 @@ pub fn derive_type_struct_tuple(
         spec_xdr.as_ref().map(|spec_xdr| {
             shaking::generate_marker_impl(
                 path,
-                quote!(#ident),
+                ident,
                 spec_xdr,
                 field_types.iter().cloned(),
                 None,

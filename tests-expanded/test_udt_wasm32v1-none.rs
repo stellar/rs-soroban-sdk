@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -11,6 +10,9 @@ pub enum UdtEnum2 {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for UdtEnum2 {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UdtEnum2 {}
 #[automatically_derived]
 impl ::core::clone::Clone for UdtEnum2 {
     #[inline]
@@ -56,13 +58,18 @@ impl UdtEnum2 {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UDTENUM2: ([u8; 14usize],) =
+    (*b"SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9a",);
 impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UDTENUM2.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9a";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_UDTENUM2 as *const _ as *const u8)
+            };
         }
     }
 }
@@ -176,16 +183,27 @@ impl UdtEnum {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UDTENUM: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1\xf3\xb0\xab@i\rH\xb4",
+    <UdtStruct as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <UdtEnum2 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <UdtTuple as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UdtEnum {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UDTENUM.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UdtStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xb0\xab@i\rH\xb4";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_UDTENUM as *const _ as *const u8)
+            };
         }
     }
 }
@@ -341,15 +359,21 @@ impl UdtTuple {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UDTTUPLE: ([u8; 14usize], &'static [u8], &'static [u8]) = (
+    *b"SpEcV1\xeb\x9f\x12&\x9av(*",
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Vec<i64> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UdtTuple {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UDTTUPLE.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xeb\x9f\x12&\x9av(*";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_UDTTUPLE as *const _ as *const u8)
+            };
         }
     }
 }
@@ -457,16 +481,29 @@ impl UdtStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UDTSTRUCT: (
+    [u8; 14usize],
+    &'static [u8],
+    &'static [u8],
+    &'static [u8],
+) = (
+    *b"SpEcV1\x16'd8\xff\xc9\xb1\xf8",
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    <Vec<i64> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+);
 impl soroban_sdk::SpecShakingMarker for UdtStruct {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UDTSTRUCT.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x16'd8\xff\xc9\xb1\xf8";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(
+                    &__SPEC_SHAKING_MARKER_UDTSTRUCT as *const _ as *const u8,
+                )
+            };
         }
     }
 }

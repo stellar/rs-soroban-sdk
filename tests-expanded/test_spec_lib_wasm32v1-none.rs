@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -1030,6 +1029,9 @@ pub enum EnumIntA {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntA {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for EnumIntA {}
+#[automatically_derived]
 impl ::core::clone::Clone for EnumIntA {
     #[inline]
     fn clone(&self) -> EnumIntA {
@@ -1123,6 +1125,9 @@ pub enum EnumIntB {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntB {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for EnumIntB {}
 #[automatically_derived]
 impl ::core::clone::Clone for EnumIntB {
     #[inline]
@@ -1218,6 +1223,9 @@ pub enum EnumIntC {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntC {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for EnumIntC {}
+#[automatically_derived]
 impl ::core::clone::Clone for EnumIntC {
     #[inline]
     fn clone(&self) -> EnumIntC {
@@ -1311,6 +1319,9 @@ pub enum ErrorA {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorA {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for ErrorA {}
 #[automatically_derived]
 impl ::core::clone::Clone for ErrorA {
     #[inline]
@@ -1476,6 +1487,9 @@ pub enum ErrorB {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorB {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for ErrorB {}
+#[automatically_derived]
 impl ::core::clone::Clone for ErrorB {
     #[inline]
     fn clone(&self) -> ErrorB {
@@ -1639,6 +1653,9 @@ pub enum ErrorC {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorC {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for ErrorC {}
 #[automatically_derived]
 impl ::core::clone::Clone for ErrorC {
     #[inline]

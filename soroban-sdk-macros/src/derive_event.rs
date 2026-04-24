@@ -220,7 +220,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_shaking_impl = if export && spec_shaking_v2_enabled() {
         Some(shaking::generate_marker_impl(
             path,
-            quote!(#ident),
+            ident,
             &spec_xdr,
             field_types.iter().cloned(),
             Some(quote!(#gen_impl)),

@@ -101,7 +101,7 @@ pub fn derive_type_error_enum_int(
         spec_xdr.as_ref().map(|spec_xdr| {
             shaking::generate_marker_impl(
                 path,
-                quote!(#enum_ident),
+                enum_ident,
                 spec_xdr,
                 std::iter::empty(),
                 None,

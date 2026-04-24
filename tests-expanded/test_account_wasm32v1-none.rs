@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -13,6 +12,9 @@ pub enum Error {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for Error {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for Error {}
 #[automatically_derived]
 impl ::core::clone::Clone for Error {
     #[inline]
@@ -57,13 +59,18 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
 }
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_ERROR: ([u8; 14usize],) =
+    (*b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88",);
 impl soroban_sdk::SpecShakingMarker for Error {
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERROR.0;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            let _ = unsafe {
+                ::core::ptr::read_volatile(&__SPEC_SHAKING_MARKER_ERROR as *const _ as *const u8)
+            };
         }
     }
 }
