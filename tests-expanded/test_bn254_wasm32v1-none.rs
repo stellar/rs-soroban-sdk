@@ -20,13 +20,22 @@ impl MockProof {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_MOCKPROOF: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-    *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f",
-    <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfMockProof {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_MOCKPROOF: __SpecShakingMarkerOfMockProof =
+    __SpecShakingMarkerOfMockProof {
+        marker: *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f",
+        fields: [
+            <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for MockProof {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_MOCKPROOF.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_MOCKPROOF.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {

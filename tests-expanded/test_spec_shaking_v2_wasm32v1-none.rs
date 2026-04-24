@@ -80,13 +80,22 @@ impl UsedParamStruct {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDPARAMSTRUCT: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-    *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedParamStruct {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDPARAMSTRUCT: __SpecShakingMarkerOfUsedParamStruct =
+    __SpecShakingMarkerOfUsedParamStruct {
+        marker: *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"",
+        fields: [
+            <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDPARAMSTRUCT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDPARAMSTRUCT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -213,13 +222,22 @@ impl UsedReturnEnum {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDRETURNENUM: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-    *b"SpEcV1\xe7\xcf\x9b1n\x15\x13\xfe",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedReturnEnum {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDRETURNENUM: __SpecShakingMarkerOfUsedReturnEnum =
+    __SpecShakingMarkerOfUsedReturnEnum {
+        marker: *b"SpEcV1\xe7\xcf\x9b1n\x15\x13\xfe",
+        fields: [
+            <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDRETURNENUM.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDRETURNENUM.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -367,10 +385,19 @@ impl UsedParamIntEnum {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDPARAMINTENUM: ([u8; 14usize],) =
-    (*b"SpEcV1\xc2\xf4N\xbf\xebqvp",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedParamIntEnum {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDPARAMINTENUM: __SpecShakingMarkerOfUsedParamIntEnum =
+    __SpecShakingMarkerOfUsedParamIntEnum {
+        marker: *b"SpEcV1\xc2\xf4N\xbf\xebqvp",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDPARAMINTENUM.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDPARAMINTENUM.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -477,10 +504,19 @@ impl UsedErrorEnum {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDERRORENUM: ([u8; 14usize],) =
-    (*b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedErrorEnum {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDERRORENUM: __SpecShakingMarkerOfUsedErrorEnum =
+    __SpecShakingMarkerOfUsedErrorEnum {
+        marker: *b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDERRORENUM.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDERRORENUM.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -650,12 +686,19 @@ impl UsedNestedInStruct {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDNESTEDINSTRUCT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\x84\x08Y\xae\xa0\xf128",
-    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedNestedInStruct {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDNESTEDINSTRUCT: __SpecShakingMarkerOfUsedNestedInStruct =
+    __SpecShakingMarkerOfUsedNestedInStruct {
+        marker: *b"SpEcV1\x84\x08Y\xae\xa0\xf128",
+        fields: [<i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNESTEDINSTRUCT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNESTEDINSTRUCT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -759,12 +802,19 @@ impl UsedVecElement {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDVECELEMENT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\xe2\x01y\xc9\x9a\xf8\xedt",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedVecElement {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDVECELEMENT: __SpecShakingMarkerOfUsedVecElement =
+    __SpecShakingMarkerOfUsedVecElement {
+        marker: *b"SpEcV1\xe2\x01y\xc9\x9a\xf8\xedt",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedVecElement {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDVECELEMENT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDVECELEMENT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -876,10 +926,19 @@ impl UsedMapKey {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDMAPKEY: ([u8; 14usize],) =
-    (*b"SpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbc",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedMapKey {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDMAPKEY: __SpecShakingMarkerOfUsedMapKey =
+    __SpecShakingMarkerOfUsedMapKey {
+        marker: *b"SpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbc",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedMapKey {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDMAPKEY.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDMAPKEY.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -976,12 +1035,19 @@ impl UsedMapVal {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDMAPVAL: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\xaaX8\xde\xef\xbb6%",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedMapVal {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDMAPVAL: __SpecShakingMarkerOfUsedMapVal =
+    __SpecShakingMarkerOfUsedMapVal {
+        marker: *b"SpEcV1\xaaX8\xde\xef\xbb6%",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedMapVal {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDMAPVAL.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDMAPVAL.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1088,12 +1154,19 @@ impl UsedOptionElement {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDOPTIONELEMENT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\xb3/\x97\xd5\x06\xbd3B",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedOptionElement {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDOPTIONELEMENT: __SpecShakingMarkerOfUsedOptionElement =
+    __SpecShakingMarkerOfUsedOptionElement {
+        marker: *b"SpEcV1\xb3/\x97\xd5\x06\xbd3B",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDOPTIONELEMENT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDOPTIONELEMENT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1195,12 +1268,19 @@ impl UsedResultOk {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDRESULTOK: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1k\xe4zxB\xd1+\x02",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedResultOk {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDRESULTOK: __SpecShakingMarkerOfUsedResultOk =
+    __SpecShakingMarkerOfUsedResultOk {
+        marker: *b"SpEcV1k\xe4zxB\xd1+\x02",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedResultOk {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDRESULTOK.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDRESULTOK.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1312,13 +1392,22 @@ impl UsedEventSimple {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTSIMPLE: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-    *b"SpEcV1v1\x0eP\xa9C\xc7*",
-    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventSimple {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTSIMPLE: __SpecShakingMarkerOfUsedEventSimple =
+    __SpecShakingMarkerOfUsedEventSimple {
+        marker: *b"SpEcV1v1\x0eP\xa9C\xc7*",
+        fields: [
+            <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTSIMPLE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTSIMPLE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1410,10 +1499,19 @@ impl UsedEventTopicType {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICTYPE: ([u8; 14usize],) =
-    (*b"SpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventTopicType {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICTYPE: __SpecShakingMarkerOfUsedEventTopicType =
+    __SpecShakingMarkerOfUsedEventTopicType {
+        marker: *b"SpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTTOPICTYPE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTTOPICTYPE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1523,17 +1621,23 @@ impl UsedEventWithTopicType {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHTOPICTYPE: (
-    [u8; 14usize],
-    &'static [u8],
-    &'static [u8],
-) = (
-    *b"SpEcV1q^\xe2&\x9di\x9d\x0e",
-    <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventWithTopicType {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHTOPICTYPE:
+    __SpecShakingMarkerOfUsedEventWithTopicType = __SpecShakingMarkerOfUsedEventWithTopicType {
+    marker: *b"SpEcV1q^\xe2&\x9di\x9d\x0e",
+    fields: [
+        <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    ],
+};
 impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHTOPICTYPE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_USEDEVENTWITHTOPICTYPE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1627,13 +1731,22 @@ impl UsedEventDataType {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTDATATYPE: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-    *b"SpEcV1\xc2 \x1b\xdc\xc8gxZ",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventDataType {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTDATATYPE: __SpecShakingMarkerOfUsedEventDataType =
+    __SpecShakingMarkerOfUsedEventDataType {
+        marker: *b"SpEcV1\xc2 \x1b\xdc\xc8gxZ",
+        fields: [
+            <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATATYPE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATATYPE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1752,17 +1865,23 @@ impl UsedEventWithDataType {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHDATATYPE: (
-    [u8; 14usize],
-    &'static [u8],
-    &'static [u8],
-) = (
-    *b"SpEcV1q\xa3z;6\xa6R\x01",
-    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <UsedEventDataType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventWithDataType {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHDATATYPE: __SpecShakingMarkerOfUsedEventWithDataType =
+    __SpecShakingMarkerOfUsedEventWithDataType {
+        marker: *b"SpEcV1q\xa3z;6\xa6R\x01",
+        fields: [
+            <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <UsedEventDataType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHDATATYPE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_USEDEVENTWITHDATATYPE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1852,12 +1971,20 @@ impl UsedEventTopicOuter {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICOUTER: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\x94\xc7w/_\xebXc",
-    <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventTopicOuter {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICOUTER: __SpecShakingMarkerOfUsedEventTopicOuter =
+    __SpecShakingMarkerOfUsedEventTopicOuter {
+        marker: *b"SpEcV1\x94\xc7w/_\xebXc",
+        fields: [<UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTTOPICOUTER.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_USEDEVENTTOPICOUTER.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -1968,12 +2095,20 @@ impl UsedEventTopicInner {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICINNER: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV16\x83?\xf0\xcdW\xb1/",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventTopicInner {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTTOPICINNER: __SpecShakingMarkerOfUsedEventTopicInner =
+    __SpecShakingMarkerOfUsedEventTopicInner {
+        marker: *b"SpEcV16\x83?\xf0\xcdW\xb1/",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTTOPICINNER.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_USEDEVENTTOPICINNER.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2088,18 +2223,23 @@ impl UsedEventWithNestedTopic {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDTOPIC: (
-    [u8; 14usize],
-    &'static [u8],
-    &'static [u8],
-) = (
-    *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6",
-    <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventWithNestedTopic {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDTOPIC:
+    __SpecShakingMarkerOfUsedEventWithNestedTopic = __SpecShakingMarkerOfUsedEventWithNestedTopic {
+    marker: *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6",
+    fields: [
+        <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    ],
+};
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
     const SPEC_SHAKING_MARKER_REF: &'static [u8] =
-        &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDTOPIC.0;
+        &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDTOPIC.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2189,12 +2329,19 @@ impl UsedEventDataOuter {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTDATAOUTER: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u",
-    <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventDataOuter {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTDATAOUTER: __SpecShakingMarkerOfUsedEventDataOuter =
+    __SpecShakingMarkerOfUsedEventDataOuter {
+        marker: *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u",
+        fields: [<UsedEventDataInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATAOUTER.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATAOUTER.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2305,12 +2452,19 @@ impl UsedEventDataInner {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTDATAINNER: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventDataInner {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTDATAINNER: __SpecShakingMarkerOfUsedEventDataInner =
+    __SpecShakingMarkerOfUsedEventDataInner {
+        marker: *b"SpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATAINNER.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTDATAINNER.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2425,17 +2579,23 @@ impl UsedEventWithNestedData {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDDATA: (
-    [u8; 14usize],
-    &'static [u8],
-    &'static [u8],
-) = (
-    *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4",
-    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventWithNestedData {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDDATA:
+    __SpecShakingMarkerOfUsedEventWithNestedData = __SpecShakingMarkerOfUsedEventWithNestedData {
+    marker: *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4",
+    fields: [
+        <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+    ],
+};
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDDATA.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_USEDEVENTWITHNESTEDDATA.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2530,10 +2690,19 @@ impl UsedRefTopicType {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDREFTOPICTYPE: ([u8; 14usize],) =
-    (*b"SpEcV1@\xb9LO\xf9\xd1\xe8\xe2",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedRefTopicType {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDREFTOPICTYPE: __SpecShakingMarkerOfUsedRefTopicType =
+    __SpecShakingMarkerOfUsedRefTopicType {
+        marker: *b"SpEcV1@\xb9LO\xf9\xd1\xe8\xe2",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFTOPICTYPE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFTOPICTYPE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2635,12 +2804,19 @@ impl UsedRefDataType {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDREFDATATYPE: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1'\xbd_A\r\x9a\x89\x02",
-    <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedRefDataType {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDREFDATATYPE: __SpecShakingMarkerOfUsedRefDataType =
+    __SpecShakingMarkerOfUsedRefDataType {
+        marker: *b"SpEcV1'\xbd_A\r\x9a\x89\x02",
+        fields: [<UsedRefDataInner as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFDATATYPE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFDATATYPE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2744,12 +2920,19 @@ impl UsedRefDataInner {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDREFDATAINNER: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1K\xdf'8m/\xe8\x1d",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedRefDataInner {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDREFDATAINNER: __SpecShakingMarkerOfUsedRefDataInner =
+    __SpecShakingMarkerOfUsedRefDataInner {
+        marker: *b"SpEcV1K\xdf'8m/\xe8\x1d",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFDATAINNER.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDREFDATAINNER.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2861,13 +3044,22 @@ impl<'a> UsedEventWithRefs<'a> {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHREFS: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-    *b"SpEcV1[Q+\xe9\xde\xd5\xf2>",
-    <&'static UsedRefTopicType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <&'static UsedRefDataType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedEventWithRefs {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDEVENTWITHREFS: __SpecShakingMarkerOfUsedEventWithRefs =
+    __SpecShakingMarkerOfUsedEventWithRefs {
+        marker: *b"SpEcV1[Q+\xe9\xde\xd5\xf2>",
+        fields: [
+            <&'static UsedRefTopicType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <&'static UsedRefDataType as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHREFS.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDEVENTWITHREFS.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -2952,12 +3144,19 @@ impl UsedTupleElement {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDTUPLEELEMENT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\xde\x1dMa\x01\xec\xb0A",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedTupleElement {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDTUPLEELEMENT: __SpecShakingMarkerOfUsedTupleElement =
+    __SpecShakingMarkerOfUsedTupleElement {
+        marker: *b"SpEcV1\xde\x1dMa\x01\xec\xb0A",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDTUPLEELEMENT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDTUPLEELEMENT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -3065,12 +3264,20 @@ impl UsedTupleReturnElement {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDTUPLERETURNELEMENT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1Y\xa66\xb3\xecxE\x13",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedTupleReturnElement {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDTUPLERETURNELEMENT:
+    __SpecShakingMarkerOfUsedTupleReturnElement = __SpecShakingMarkerOfUsedTupleReturnElement {
+    marker: *b"SpEcV1Y\xa66\xb3\xecxE\x13",
+    fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+};
 impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDTUPLERETURNELEMENT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] =
+        &__SPEC_SHAKING_MARKER_USEDTUPLERETURNELEMENT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -3174,12 +3381,19 @@ impl UsedNonPubStruct {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDNONPUBSTRUCT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1p\x8c\x0fN!\x082\xd8",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedNonPubStruct {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDNONPUBSTRUCT: __SpecShakingMarkerOfUsedNonPubStruct =
+    __SpecShakingMarkerOfUsedNonPubStruct {
+        marker: *b"SpEcV1p\x8c\x0fN!\x082\xd8",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNONPUBSTRUCT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNONPUBSTRUCT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -3282,10 +3496,19 @@ impl UsedNonPubError {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_USEDNONPUBERROR: ([u8; 14usize],) =
-    (*b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUsedNonPubError {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_USEDNONPUBERROR: __SpecShakingMarkerOfUsedNonPubError =
+    __SpecShakingMarkerOfUsedNonPubError {
+        marker: *b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNONPUBERROR.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_USEDNONPUBERROR.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -3733,13 +3956,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_STRUCTA: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1\xb6\x1c\xfd\xdfhY-d",
-        <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <bool as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfStructA {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTA: __SpecShakingMarkerOfStructA =
+        __SpecShakingMarkerOfStructA {
+            marker: *b"SpEcV1\xb6\x1c\xfd\xdfhY-d",
+            fields: [
+                <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <bool as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for StructA {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTA.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTA.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -3874,13 +4106,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_STRUCTB: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18",
-        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfStructB {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTB: __SpecShakingMarkerOfStructB =
+        __SpecShakingMarkerOfStructB {
+            marker: *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18",
+            fields: [
+                <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for StructB {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTB.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTB.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -4015,13 +4256,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_STRUCTC: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11",
-        <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfStructC {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTC: __SpecShakingMarkerOfStructC =
+        __SpecShakingMarkerOfStructC {
+            marker: *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11",
+            fields: [
+                <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for StructC {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTC.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTC.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -4153,13 +4403,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEA: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1\xcf)\x97]S\xb2\xfd)",
-        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfStructTupleA {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEA: __SpecShakingMarkerOfStructTupleA =
+        __SpecShakingMarkerOfStructTupleA {
+            marker: *b"SpEcV1\xcf)\x97]S\xb2\xfd)",
+            fields: [
+                <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for StructTupleA {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEA.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEA.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -4287,13 +4546,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEB: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c",
-        <u128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <u128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfStructTupleB {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEB: __SpecShakingMarkerOfStructTupleB =
+        __SpecShakingMarkerOfStructTupleB {
+            marker: *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c",
+            fields: [
+                <u128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <u128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for StructTupleB {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEB.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEB.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -4422,13 +4690,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEC: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9",
-        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfStructTupleC {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_STRUCTTUPLEC: __SpecShakingMarkerOfStructTupleC =
+        __SpecShakingMarkerOfStructTupleC {
+            marker: *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9",
+            fields: [
+                <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for StructTupleC {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEC.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_STRUCTTUPLEC.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -4561,9 +4838,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ENUMA: ([u8; 14usize],) = (*b"SpEcV1\xa2=N\xc1p\x95\x90\xb2",);
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEnumA {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 0usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMA: __SpecShakingMarkerOfEnumA =
+        __SpecShakingMarkerOfEnumA {
+            marker: *b"SpEcV1\xa2=N\xc1p\x95\x90\xb2",
+            fields: [],
+        };
     impl soroban_sdk::SpecShakingMarker for EnumA {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMA.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMA.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -4772,12 +5059,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ENUMB: ([u8; 14usize], &'static [u8]) = (
-        *b"SpEcV1'\x1b\0DSH^\xcc",
-        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEnumB {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 1usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMB: __SpecShakingMarkerOfEnumB =
+        __SpecShakingMarkerOfEnumB {
+            marker: *b"SpEcV1'\x1b\0DSH^\xcc",
+            fields: [<i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+        };
     impl soroban_sdk::SpecShakingMarker for EnumB {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMB.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMB.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -4988,13 +5282,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ENUMC: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2",
-        <StructA as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <StructTupleA as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEnumC {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMC: __SpecShakingMarkerOfEnumC =
+        __SpecShakingMarkerOfEnumC {
+            marker: *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2",
+            fields: [
+                <StructA as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <StructTupleA as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for EnumC {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMC.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMC.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -5174,9 +5477,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ENUMINTA: ([u8; 14usize],) = (*b"SpEcV1V]\x80\\~\x1a\x08/",);
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEnumIntA {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 0usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMINTA: __SpecShakingMarkerOfEnumIntA =
+        __SpecShakingMarkerOfEnumIntA {
+            marker: *b"SpEcV1V]\x80\\~\x1a\x08/",
+            fields: [],
+        };
     impl soroban_sdk::SpecShakingMarker for EnumIntA {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTA.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTA.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -5305,9 +5618,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ENUMINTB: ([u8; 14usize],) = (*b"SpEcV1,\x9c\xc0_\xed_)\x85",);
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEnumIntB {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 0usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMINTB: __SpecShakingMarkerOfEnumIntB =
+        __SpecShakingMarkerOfEnumIntB {
+            marker: *b"SpEcV1,\x9c\xc0_\xed_)\x85",
+            fields: [],
+        };
     impl soroban_sdk::SpecShakingMarker for EnumIntB {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTB.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTB.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -5436,10 +5759,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ENUMINTC: ([u8; 14usize],) =
-        (*b"SpEcV1`\xca\xda\x19\xb9c\xf0/",);
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEnumIntC {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 0usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ENUMINTC: __SpecShakingMarkerOfEnumIntC =
+        __SpecShakingMarkerOfEnumIntC {
+            marker: *b"SpEcV1`\xca\xda\x19\xb9c\xf0/",
+            fields: [],
+        };
     impl soroban_sdk::SpecShakingMarker for EnumIntC {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTC.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ENUMINTC.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -5568,10 +5900,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ERRORA: ([u8; 14usize],) =
-        (*b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3",);
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfErrorA {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 0usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ERRORA: __SpecShakingMarkerOfErrorA =
+        __SpecShakingMarkerOfErrorA {
+            marker: *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3",
+            fields: [],
+        };
     impl soroban_sdk::SpecShakingMarker for ErrorA {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORA.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORA.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -5770,10 +6111,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ERRORB: ([u8; 14usize],) =
-        (*b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3",);
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfErrorB {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 0usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ERRORB: __SpecShakingMarkerOfErrorB =
+        __SpecShakingMarkerOfErrorB {
+            marker: *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3",
+            fields: [],
+        };
     impl soroban_sdk::SpecShakingMarker for ErrorB {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORB.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORB.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -5972,10 +6322,19 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_ERRORC: ([u8; 14usize],) =
-        (*b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r",);
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfErrorC {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 0usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_ERRORC: __SpecShakingMarkerOfErrorC =
+        __SpecShakingMarkerOfErrorC {
+            marker: *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r",
+            fields: [],
+        };
     impl soroban_sdk::SpecShakingMarker for ErrorC {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORC.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERRORC.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -6171,13 +6530,22 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_EVENTA: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-        *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd",
-        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEventA {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 2usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_EVENTA: __SpecShakingMarkerOfEventA =
+        __SpecShakingMarkerOfEventA {
+            marker: *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd",
+            fields: [
+                <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for EventA {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTA.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTA.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -6304,19 +6672,23 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_EVENTB: (
-        [u8; 14usize],
-        &'static [u8],
-        &'static [u8],
-        &'static [u8],
-    ) = (
-        *b"SpEcV1\xe6\xaa\xefz\x17i$\x15",
-        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEventB {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 3usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_EVENTB: __SpecShakingMarkerOfEventB =
+        __SpecShakingMarkerOfEventB {
+            marker: *b"SpEcV1\xe6\xaa\xefz\x17i$\x15",
+            fields: [
+                <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for EventB {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTB.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTB.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -6446,19 +6818,23 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
-    pub static __SPEC_SHAKING_MARKER_EVENTC: (
-        [u8; 14usize],
-        &'static [u8],
-        &'static [u8],
-        &'static [u8],
-    ) = (
-        *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@",
-        <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-        <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    );
+    #[repr(packed)]
+    pub struct __SpecShakingMarkerOfEventC {
+        pub marker: [u8; 14usize],
+        pub fields: [&'static [u8]; 3usize],
+    }
+    #[doc(hidden)]
+    pub static __SPEC_SHAKING_MARKER_EVENTC: __SpecShakingMarkerOfEventC =
+        __SpecShakingMarkerOfEventC {
+            marker: *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@",
+            fields: [
+                <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+                <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            ],
+        };
     impl soroban_sdk::SpecShakingMarker for EventC {
-        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTC.0;
+        const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_EVENTC.marker;
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
@@ -6548,12 +6924,19 @@ impl UnusedStruct {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDSTRUCT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1|\x9c\t\x1e\xf5\xa8\x19\xa0",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedStruct {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDSTRUCT: __SpecShakingMarkerOfUnusedStruct =
+    __SpecShakingMarkerOfUnusedStruct {
+        marker: *b"SpEcV1|\x9c\t\x1e\xf5\xa8\x19\xa0",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UnusedStruct {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDSTRUCT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDSTRUCT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -6668,12 +7051,19 @@ impl UnusedEnum {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDENUM: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1/\x82\x9a0\xbe@\x0eZ",
-    <i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedEnum {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDENUM: __SpecShakingMarkerOfUnusedEnum =
+    __SpecShakingMarkerOfUnusedEnum {
+        marker: *b"SpEcV1/\x82\x9a0\xbe@\x0eZ",
+        fields: [<i64 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UnusedEnum {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDENUM.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDENUM.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -6815,10 +7205,19 @@ impl UnusedIntEnum {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDINTENUM: ([u8; 14usize],) =
-    (*b"SpEcV1\x0c\xdd\xee~,\x83\xe4\x9c",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedIntEnum {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDINTENUM: __SpecShakingMarkerOfUnusedIntEnum =
+    __SpecShakingMarkerOfUnusedIntEnum {
+        marker: *b"SpEcV1\x0c\xdd\xee~,\x83\xe4\x9c",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDINTENUM.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDINTENUM.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -6925,13 +7324,22 @@ impl UnusedEvent {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDEVENT: ([u8; 14usize], &'static [u8], &'static [u8]) = (
-    *b"SpEcV1\x10\xe8\xf6\xcc\xea\xc3Sb",
-    <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedEvent {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 2usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDEVENT: __SpecShakingMarkerOfUnusedEvent =
+    __SpecShakingMarkerOfUnusedEvent {
+        marker: *b"SpEcV1\x10\xe8\xf6\xcc\xea\xc3Sb",
+        fields: [
+            <Symbol as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for UnusedEvent {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDEVENT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDEVENT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -7019,13 +7427,20 @@ impl UnusedNonContractFnParam {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNPARAM: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedNonContractFnParam {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNPARAM:
+    __SpecShakingMarkerOfUnusedNonContractFnParam = __SpecShakingMarkerOfUnusedNonContractFnParam {
+    marker: *b"SpEcV1\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5",
+    fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+};
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
     const SPEC_SHAKING_MARKER_REF: &'static [u8] =
-        &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNPARAM.0;
+        &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNPARAM.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -7135,13 +7550,21 @@ impl UnusedNonContractFnReturn {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNRETURN: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\x7fe\x1c\n\x87g\x1d\xc0",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedNonContractFnReturn {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNRETURN:
+    __SpecShakingMarkerOfUnusedNonContractFnReturn =
+    __SpecShakingMarkerOfUnusedNonContractFnReturn {
+        marker: *b"SpEcV1\x7fe\x1c\n\x87g\x1d\xc0",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
     const SPEC_SHAKING_MARKER_REF: &'static [u8] =
-        &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNRETURN.0;
+        &__SPEC_SHAKING_MARKER_UNUSEDNONCONTRACTFNRETURN.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -7245,12 +7668,19 @@ impl UnusedNonPubStruct {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDNONPUBSTRUCT: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\xa8;,%}]PA",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedNonPubStruct {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONPUBSTRUCT: __SpecShakingMarkerOfUnusedNonPubStruct =
+    __SpecShakingMarkerOfUnusedNonPubStruct {
+        marker: *b"SpEcV1\xa8;,%}]PA",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDNONPUBSTRUCT.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDNONPUBSTRUCT.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -7355,10 +7785,19 @@ impl UnusedNonPubError {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_UNUSEDNONPUBERROR: ([u8; 14usize],) =
-    (*b"SpEcV1\xd9_\x99\"=\xc6FM",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfUnusedNonPubError {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_UNUSEDNONPUBERROR: __SpecShakingMarkerOfUnusedNonPubError =
+    __SpecShakingMarkerOfUnusedNonPubError {
+        marker: *b"SpEcV1\xd9_\x99\"=\xc6FM",
+        fields: [],
+    };
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDNONPUBERROR.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_UNUSEDNONPUBERROR.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {

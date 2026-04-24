@@ -37,21 +37,24 @@ impl<'a> Transfer<'a> {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_TRANSFER: (
-    [u8; 14usize],
-    &'static [u8],
-    &'static [u8],
-    &'static [u8],
-    &'static [u8],
-) = (
-    *b"SpEcV1;\xc1i\xa0H>\x8d\xf1",
-    <&'static Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <&'static Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <&'static i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <Option<&'static u64> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfTransfer {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 4usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_TRANSFER: __SpecShakingMarkerOfTransfer =
+    __SpecShakingMarkerOfTransfer {
+        marker: *b"SpEcV1;\xc1i\xa0H>\x8d\xf1",
+        fields: [
+            <&'static Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <&'static Address as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <&'static i128 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <Option<&'static u64> as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_TRANSFER.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_TRANSFER.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {

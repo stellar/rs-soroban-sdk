@@ -23,23 +23,25 @@ impl DummyProof {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_DUMMYPROOF: (
-    [u8; 14usize],
-    &'static [u8],
-    &'static [u8],
-    &'static [u8],
-    &'static [u8],
-    &'static [u8],
-) = (
-    *b"SpEcV1\x85W\0A\xdc~\xb7\"",
-    <Bls12381Fp as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <Bls12381Fr as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-    <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfDummyProof {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 5usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DUMMYPROOF: __SpecShakingMarkerOfDummyProof =
+    __SpecShakingMarkerOfDummyProof {
+        marker: *b"SpEcV1\x85W\0A\xdc~\xb7\"",
+        fields: [
+            <Bls12381Fp as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <Bls12381Fr as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+            <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
+        ],
+    };
 impl soroban_sdk::SpecShakingMarker for DummyProof {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_DUMMYPROOF.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_DUMMYPROOF.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {

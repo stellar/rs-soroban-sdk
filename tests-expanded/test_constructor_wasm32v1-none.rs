@@ -36,12 +36,19 @@ impl DataKey {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_DATAKEY: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\x14\x94}~\xec\x15\x94\x84",
-    <u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfDataKey {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_DATAKEY: __SpecShakingMarkerOfDataKey =
+    __SpecShakingMarkerOfDataKey {
+        marker: *b"SpEcV1\x14\x94}~\xec\x15\x94\x84",
+        fields: [<u32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+    };
 impl soroban_sdk::SpecShakingMarker for DataKey {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_DATAKEY.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_DATAKEY.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {

@@ -40,12 +40,18 @@ impl Value {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_VALUE: ([u8; 14usize], &'static [u8]) = (
-    *b"SpEcV1\x82\xf8t\xbe\t\x04b\\",
-    <i32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF,
-);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfValue {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 1usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_VALUE: __SpecShakingMarkerOfValue = __SpecShakingMarkerOfValue {
+    marker: *b"SpEcV1\x82\xf8t\xbe\t\x04b\\",
+    fields: [<i32 as soroban_sdk::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF],
+};
 impl soroban_sdk::SpecShakingMarker for Value {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_VALUE.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_VALUE.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {

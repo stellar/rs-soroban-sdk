@@ -60,10 +60,18 @@ impl Error {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_SHAKING_MARKER_ERROR: ([u8; 14usize],) =
-    (*b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88",);
+#[repr(packed)]
+pub struct __SpecShakingMarkerOfError {
+    pub marker: [u8; 14usize],
+    pub fields: [&'static [u8]; 0usize],
+}
+#[doc(hidden)]
+pub static __SPEC_SHAKING_MARKER_ERROR: __SpecShakingMarkerOfError = __SpecShakingMarkerOfError {
+    marker: *b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88",
+    fields: [],
+};
 impl soroban_sdk::SpecShakingMarker for Error {
-    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERROR.0;
+    const SPEC_SHAKING_MARKER_REF: &'static [u8] = &__SPEC_SHAKING_MARKER_ERROR.marker;
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {

@@ -4,17 +4,18 @@
 //! - 6 bytes: "SpEcV1" prefix
 //! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 //!
-//! The marker is embedded in a module-level `static` tuple that lives next to
-//! the type. The first tuple element holds the marker bytes; the remaining
-//! elements are references to the marker refs of each field type (via the
-//! trait's `SPEC_SHAKING_MARKER_REF` associated constant). Keeping the tuple
-//! live therefore transitively keeps all reachable field markers live.
+//! The marker is embedded in a module-level `static` of a per-type
+//! `#[repr(packed)]` struct that lives next to the type. The struct's first
+//! field holds the marker bytes; subsequent fields are references to the
+//! marker refs of each field type (via the trait's `SPEC_SHAKING_MARKER_REF`
+//! associated constant). Keeping the static live therefore transitively
+//! keeps all reachable field markers live.
 //!
 //! The type's `spec_shaking_marker()` fn does a single volatile read through
-//! a pointer to the tuple — no recursive fn calls into field types are
-//! needed, because the tuple already references them. When the type is
-//! unused at a boundary, the fn is DCE'd, nothing references the tuple, and
-//! the linker strips the entire chain.
+//! a pointer to the static — no recursive fn calls into field types are
+//! needed, because the static already references them. When the type is
+//! unused at a boundary, the fn is DCE'd, nothing references the static,
+//! and the linker strips the entire chain.
 //!
 //! Post-processing tools (e.g. stellar-cli) can:
 //! 1. Scan the WASM data section for "SpEcV1" patterns
@@ -52,7 +53,7 @@ fn strip_lifetimes(ty: &Type) -> Type {
 }
 
 /// Generates the `SpecShakingMarker` impl for a type, along with its
-/// module-level marker static tuple.
+/// module-level marker static.
 ///
 /// # Arguments
 ///
@@ -66,8 +67,8 @@ fn strip_lifetimes(ty: &Type) -> Type {
 ///
 /// # Returns
 ///
-/// A `TokenStream2` containing the module-level marker static plus the
-/// `impl SpecShakingMarker for Type { ... }` block.
+/// A `TokenStream2` containing the marker struct type, the module-level
+/// marker static, and the `impl SpecShakingMarker for Type { ... }` block.
 pub fn generate_marker_impl<'a, I>(
     path: &Path,
     ident: &Ident,
@@ -84,7 +85,9 @@ where
     let marker_lit = proc_macro2::Literal::byte_string(&marker);
     let marker_len = marker.len();
 
-    let static_ident = format_ident!("__SPEC_SHAKING_MARKER_{}", ident.to_string().to_uppercase());
+    let ident_str = ident.to_string();
+    let static_ident = format_ident!("__SPEC_SHAKING_MARKER_{}", ident_str.to_uppercase());
+    let struct_ident = format_ident!("__SpecShakingMarkerOf{}", ident_str);
 
     let field_marker_refs: Vec<_> = field_types
         .map(|ty| {
@@ -93,7 +96,7 @@ where
         })
         .collect();
 
-    let field_marker_ref_types = field_marker_refs.iter().map(|_| quote!(&'static [u8]));
+    let field_count = field_marker_refs.len();
 
     let gen_impl = gen_impl.unwrap_or_default();
     let gen_types = gen_types.unwrap_or_default();
@@ -101,16 +104,20 @@ where
 
     quote! {
         #[doc(hidden)]
-        pub static #static_ident: (
-            [u8; #marker_len],
-            #( #field_marker_ref_types, )*
-        ) = (
-            *#marker_lit,
-            #( #field_marker_refs, )*
-        );
+        #[repr(packed)]
+        pub struct #struct_ident {
+            pub marker: [u8; #marker_len],
+            pub fields: [&'static [u8]; #field_count],
+        }
+
+        #[doc(hidden)]
+        pub static #static_ident: #struct_ident = #struct_ident {
+            marker: *#marker_lit,
+            fields: [ #( #field_marker_refs, )* ],
+        };
 
         impl #gen_impl #path::SpecShakingMarker for #ident #gen_types #gen_where {
-            const SPEC_SHAKING_MARKER_REF: &'static [u8] = &#static_ident.0;
+            const SPEC_SHAKING_MARKER_REF: &'static [u8] = &#static_ident.marker;
 
             #[doc(hidden)]
             #[inline(always)]
@@ -118,7 +125,7 @@ where
                 #[cfg(target_family = "wasm")]
                 {
                     // Volatile read prevents DCE of this function and keeps
-                    // the marker tuple (and its transitively-referenced
+                    // the marker static (and its transitively-referenced
                     // markers) in the data section.
                     let _ = unsafe {
                         ::core::ptr::read_volatile(
