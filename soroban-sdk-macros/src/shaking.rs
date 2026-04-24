@@ -25,7 +25,7 @@
 
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{visit::Visit, visit_mut::VisitMut, Ident, Lifetime, Path, Type, TypeReference};
+use syn::{visit_mut::VisitMut, Ident, Lifetime, Path, Type, TypeReference};
 
 /// Rewrites all lifetimes in a type to `'static`, including elided lifetimes
 /// on `&T` references. The resulting type is suitable for use at module scope
@@ -50,34 +50,6 @@ fn strip_lifetimes(ty: &Type) -> Type {
     let mut ty = ty.clone();
     LifetimesToStatic.visit_type_mut(&mut ty);
     ty
-}
-
-/// Returns true if any field type syntactically references `ident`. Catches
-/// direct self-recursion like `struct T { children: Vec<T> }`. Used to decide
-/// whether to emit the recursion-safe two-static layout for this type.
-fn has_self_reference<'a, I: IntoIterator<Item = &'a Type>>(ident: &Ident, field_types: I) -> bool {
-    struct RefSearch<'a> {
-        target: &'a Ident,
-        found: bool,
-    }
-    impl<'ast> Visit<'ast> for RefSearch<'_> {
-        fn visit_ident(&mut self, i: &'ast Ident) {
-            if i == self.target {
-                self.found = true;
-            }
-        }
-    }
-    let mut s = RefSearch {
-        target: ident,
-        found: false,
-    };
-    for ty in field_types {
-        s.visit_type(ty);
-        if s.found {
-            return true;
-        }
-    }
-    false
 }
 
 /// Generates the `SpecShakingMarker` impl for a type, along with its
@@ -117,13 +89,7 @@ where
     let static_ident = format_ident!("__SPEC_SHAKING_MARKER_{}", ident_str.to_uppercase());
     let struct_ident = format_ident!("__SpecShakingMarkerOf{}", ident_str);
 
-    // Materialize field types up-front so we can both detect self-reference
-    // and emit marker ref expressions without consuming the iterator twice.
-    let field_tys: Vec<Type> = field_types.cloned().collect();
-    let self_recursive = has_self_reference(ident, field_tys.iter());
-
-    let field_marker_refs: Vec<_> = field_tys
-        .iter()
+    let field_marker_refs: Vec<_> = field_types
         .map(|ty| {
             let stripped = strip_lifetimes(ty);
             quote! { <#stripped as #path::SpecShakingMarker>::SPEC_SHAKING_MARKER_REF }
@@ -136,105 +102,36 @@ where
     let gen_types = gen_types.unwrap_or_default();
     let gen_where = gen_where.unwrap_or_default();
 
-    // For non-recursive types we emit a single static per type:
-    //
-    //   ```
-    //   static MARKER = Struct { marker: [...], fields: [refs...] };
-    //   impl Trait for T { const REF = &MARKER.marker; }
-    //   ```
-    //
-    // For self-recursive types (e.g. `struct T { children: Vec<T> }`), the
-    // single-static form creates a const-eval cycle: evaluating the
-    // static's `fields` array needs `<Vec<T>>::SPEC_SHAKING_MARKER_REF`,
-    // which resolves to `<T>::SPEC_SHAKING_MARKER_REF`, which is defined
-    // as a ref into that same static. To break the cycle we split into
-    // two statics with mutual references:
-    //
-    //   `BYTES`: marker bytes + back-ref to `DEPS`.
-    //   `DEPS`:  the array of field marker refs.
-    //
-    // The assoc const is `&BYTES.marker`. When evaluating `DEPS`'s init,
-    // inner `<T>::SPEC_SHAKING_MARKER_REF` resolves to a ref into `BYTES`
-    // (a different static), so no self-cycle.
-    //
-    // The split costs an extra 4-byte back-ref + an extra static symbol
-    // per recursive type; most contract types are non-recursive and use
-    // the compact single-static form.
-    if self_recursive {
-        let deps_static_ident =
-            format_ident!("__SPEC_SHAKING_MARKER_DEPS_{}", ident_str.to_uppercase());
-        let deps_struct_ident = format_ident!("__SpecShakingMarkerDepsOf{}", ident_str);
-        quote! {
-            #[doc(hidden)]
-            #[repr(packed)]
-            pub struct #struct_ident {
-                pub marker: [u8; #marker_len],
-                pub deps: &'static #deps_struct_ident,
-            }
-
-            #[doc(hidden)]
-            #[repr(packed)]
-            pub struct #deps_struct_ident {
-                pub fields: [&'static [u8]; #field_count],
-            }
-
-            #[doc(hidden)]
-            pub static #static_ident: #struct_ident = #struct_ident {
-                marker: *#marker_lit,
-                deps: &#deps_static_ident,
-            };
-
-            #[doc(hidden)]
-            pub static #deps_static_ident: #deps_struct_ident = #deps_struct_ident {
-                fields: [ #( #field_marker_refs, )* ],
-            };
-
-            impl #gen_impl #path::SpecShakingMarker for #ident #gen_types #gen_where {
-                const SPEC_SHAKING_MARKER_REF: &'static [u8] = &#static_ident.marker;
-
-                #[doc(hidden)]
-                #[inline(always)]
-                fn spec_shaking_marker() {
-                    #[cfg(target_family = "wasm")]
-                    {
-                        let _ = unsafe {
-                            ::core::ptr::read_volatile(
-                                &#static_ident as *const _ as *const u8,
-                            )
-                        };
-                    }
-                }
-            }
+    quote! {
+        #[doc(hidden)]
+        #[repr(packed)]
+        pub struct #struct_ident {
+            pub marker: [u8; #marker_len],
+            pub fields: [&'static [u8]; #field_count],
         }
-    } else {
-        quote! {
-            #[doc(hidden)]
-            #[repr(packed)]
-            pub struct #struct_ident {
-                pub marker: [u8; #marker_len],
-                pub fields: [&'static [u8]; #field_count],
-            }
+
+        #[doc(hidden)]
+        pub static #static_ident: #struct_ident = #struct_ident {
+            marker: *#marker_lit,
+            fields: [ #( #field_marker_refs, )* ],
+        };
+
+        impl #gen_impl #path::SpecShakingMarker for #ident #gen_types #gen_where {
+            const SPEC_SHAKING_MARKER_REF: &'static [u8] = &#static_ident.marker;
 
             #[doc(hidden)]
-            pub static #static_ident: #struct_ident = #struct_ident {
-                marker: *#marker_lit,
-                fields: [ #( #field_marker_refs, )* ],
-            };
-
-            impl #gen_impl #path::SpecShakingMarker for #ident #gen_types #gen_where {
-                const SPEC_SHAKING_MARKER_REF: &'static [u8] = &#static_ident.marker;
-
-                #[doc(hidden)]
-                #[inline(always)]
-                fn spec_shaking_marker() {
-                    #[cfg(target_family = "wasm")]
-                    {
-                        let _ = unsafe {
-                            ::core::ptr::read_volatile(
-                                &#static_ident as *const _ as *const u8,
-                            )
-                        };
-                    }
+            #[inline(always)]
+            fn spec_shaking_marker() {
+                #[cfg(target_family = "wasm")]
+                {
+                    // Volatile read prevents DCE of this function and keeps
+                    // the marker static (and its transitively-referenced
+                    // markers) in the data section.
+                    let _ = unsafe {
+                        ::core::ptr::read_volatile(
+                            &#static_ident as *const _ as *const u8,
+                        )
+                    };
                 }
             }
         }

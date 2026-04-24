@@ -29,10 +29,10 @@ pub trait SpecShakingMarker {
     ///
     /// For primitive types and built-in SDK types, this is an empty slice.
     /// For user-defined contract types, this is a reference into the static
-    /// struct that holds the marker bytes. Placing this reference inside
-    /// another type's marker struct ensures that when that outer type is
-    /// used, this type's marker (and everything it transitively references)
-    /// is preserved by the linker's dead-code elimination.
+    /// tuple that holds the marker bytes. Placing this reference inside
+    /// another type's marker tuple ensures that when that outer type is used,
+    /// this type's marker (and everything it transitively references) is
+    /// preserved by the linker's dead-code elimination.
     const SPEC_SHAKING_MARKER_REF: &'static [u8] = &[];
 
     /// Include this type's spec in the WASM binary.
