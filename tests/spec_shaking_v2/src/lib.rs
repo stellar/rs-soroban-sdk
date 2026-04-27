@@ -208,6 +208,29 @@ pub struct UsedTupleReturnElement {
     pub val: u32,
 }
 
+// Used as nested type in Vec element in fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecInnerVecElement {
+    pub val: u32,
+}
+
+// Used as nested type in Vec element in fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecInnerElement {
+    pub val: u32,
+}
+
+// Used as type in Vec element in fn param containing custom types
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecElementNested {
+    pub val: u32,
+    pub inner: UsedVecInnerElement,
+    pub vec_inner: Vec<UsedVecInnerVecElement>,
+}
+
 // --- Non-pub used types: spec entries + markers expected with feature ---
 
 // Non-pub struct used as fn param
@@ -222,6 +245,33 @@ struct UsedNonPubStruct {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum UsedNonPubError {
     Fail = 1,
+}
+
+// --- Recursive types: nested type with recursive reference safely includes all markers ---
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveRoot {
+    pub val: UsedRecursiveNode,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UsedRecursiveNode {
+    NotRecursive(UsedLeaf),
+    Recursive(UsedRecursiveLeaf),
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveLeaf {
+    pub val: Vec<UsedRecursiveRoot>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedLeaf {
+    pub val: u32,
 }
 
 // --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
@@ -306,6 +356,8 @@ impl Contract {
 
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
 
+    pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
+
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
 
     pub fn with_option(_env: Env, _o: Option<UsedOptionElement>) {}
@@ -313,6 +365,8 @@ impl Contract {
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
         Ok(UsedResultOk { data: 1 })
     }
+
+    pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
 
     pub fn publish_simple(env: Env) {
         UsedEventSimple {

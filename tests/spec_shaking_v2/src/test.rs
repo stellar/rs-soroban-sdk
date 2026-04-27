@@ -39,7 +39,9 @@ fn test_spec_shaking_v2() {
         "with_return",
         "with_error",
         "with_vec",
+        "with_vec_nested",
         "with_map",
+        "with_recursion",
         "publish_simple",
         "publish_topic_type",
         "publish_data_type",
@@ -74,6 +76,10 @@ fn test_spec_shaking_v2() {
         "UsedVecElement",
         "UsedMapKey",
         "UsedMapVal",
+        // vec element with nested custom types in data
+        "UsedVecInnerVecElement",
+        "UsedVecInnerElement",
+        "UsedVecElementNested",
         // Option element type in fn param
         "UsedOptionElement",
         // Result Ok type in fn return
@@ -109,6 +115,11 @@ fn test_spec_shaking_v2() {
         "StructC",
         // wasm-imported type used as fn param
         "StructA",
+        // recursive type used as fn param
+        "UsedRecursiveRoot",
+        "UsedRecursiveNode",
+        "UsedRecursiveLeaf",
+        "UsedLeaf",
     ];
     for name in used {
         assert!(
@@ -116,6 +127,7 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
+    assert_eq!(markers.len(), used.len());
 
     // Unused types/events should exist in unfiltered entries (they have spec entries, just no markers).
     let unused = [
@@ -162,6 +174,7 @@ fn test_spec_shaking_v2() {
             "unused type/event {name} should be absent from filtered entries, but was found"
         );
     }
+    assert_eq!(all_names.len() - filtered_names.len(), unused.len());
 }
 
 /// Extract the name from a non-function spec entry.
