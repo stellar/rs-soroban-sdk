@@ -118,7 +118,7 @@ const _: () = {
         val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
     );
 
-    // An indicator of the spec shaking version in use. Signals to the post-build system that the .wasm
+    // An indicator of the spec shaking version in use. Signals to the stellar-cli that the .wasm
     // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
     // The contractmeta! macro requires string literals, so we assert the literals match the
     // constants defined in soroban_spec::shaking.
