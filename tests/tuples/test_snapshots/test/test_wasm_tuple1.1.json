@@ -18,7 +18,7 @@
                 }
               },
               "executable": {
-                "wasm": "410dc845492e2dda43b2653584a870cd877607a840671eb5b78279747b295a52"
+                "wasm": "158eb6314bed45b7a37db469348779866b3b33920288261662effbbeed2f8cd2"
               },
               "constructor_args": []
             }
