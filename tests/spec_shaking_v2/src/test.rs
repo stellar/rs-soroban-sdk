@@ -7,11 +7,6 @@ use std::vec::Vec;
 const WASM: &[u8] =
     include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v2.wasm");
 
-// This crate is built twice during `make build-test-wasms`. The first time, it is built separately
-// without the spec shaking v2 env variable set, and renamed to test_spec_shaking_v2_no_env.wasm.
-const WASM_NO_ENV: &[u8] =
-    include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v2_no_env.wasm");
-
 #[test]
 fn test_spec_shaking_v2() {
     // Read all spec entries from the WASM.

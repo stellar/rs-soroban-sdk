@@ -2,15 +2,16 @@ use proc_macro2::{Span, TokenStream};
 use quote::{format_ident, quote, ToTokens};
 use std::collections::HashMap;
 use syn::{
+    ext::IdentExt as _, spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn,
+    ItemImpl, ItemTrait, Lifetime, Pat, PatIdent, PatType, TraitItem, TraitItemFn, Type,
+    TypeReference, Visibility,
+};
+use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
     AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
     PathSegment, ReturnType, Signature, Token, TypePath,
-};
-use syn::{
-    spanned::Spanned, token::And, Error, FnArg, Ident, ImplItem, ImplItemFn, ItemImpl, ItemTrait,
-    Lifetime, Pat, PatIdent, PatType, TraitItem, TraitItemFn, Type, TypeReference, Visibility,
 };
 
 /// Gets methods from the implementation that have public visibility. For
@@ -154,7 +155,7 @@ pub enum HasFnsItem {
 impl HasFnsItem {
     pub fn name(&'_ self) -> String {
         match self {
-            HasFnsItem::Trait(t) => t.ident.to_string(),
+            HasFnsItem::Trait(t) => t.ident.unraw().to_string(),
             HasFnsItem::Impl(i) => {
                 let ty = &i.self_ty;
                 quote!(#ty).to_string()
@@ -292,7 +293,7 @@ fn unpack_result(typ: &Type) -> Option<(Type, Type)> {
             }) = path.segments.last()
             {
                 let args = args.iter().collect::<Vec<_>>();
-                match (&ident.to_string()[..], args.as_slice()) {
+                match (&ident.unraw().to_string()[..], args.as_slice()) {
                     ("Result", [GenericArgument::Type(t), GenericArgument::Type(e)]) => {
                         Some((t.clone(), e.clone()))
                     }
@@ -423,7 +424,11 @@ fn self_type_ident(ty: &Type) -> Result<Option<&Ident>, Error> {
 }
 
 pub fn ty_to_safe_ident_str(ty: &Type) -> String {
-    quote!(#ty).to_string().replace(' ', "").replace(':', "_")
+    quote!(#ty)
+        .to_string()
+        .replace(' ', "")
+        .replace(':', "_")
+        .replace("r#", "")
 }
 
 pub fn ident_to_type(ident: Ident) -> Type {

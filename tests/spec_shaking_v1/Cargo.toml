@@ -12,7 +12,7 @@ crate-type = ["cdylib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = {path = "../../soroban-sdk", default-features = false}
+soroban-sdk = {path = "../../soroban-sdk"}
 test_spec_lib = {path = "../spec_lib"}
 
 [dev-dependencies]

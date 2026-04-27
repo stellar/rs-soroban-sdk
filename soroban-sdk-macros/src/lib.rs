@@ -47,8 +47,8 @@ use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
 use syn::{
-    parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Expr, Fields,
-    ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
+    ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
+    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
@@ -78,15 +78,6 @@ pub fn symbol_short(input: TokenStream) -> TokenStream {
 
 pub(crate) fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
-}
-
-/// Returns true if spec shaking v2 should be used. Requires both the
-/// `experimental_spec_shaking_v2` feature to be enabled on the macro crate AND
-/// the `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` env var to be set
-/// at the time the macro expands (i.e. when the consumer crate is compiled).
-fn spec_shaking_v2_enabled() -> bool {
-    cfg!(feature = "experimental_spec_shaking_v2")
-        && option_env!("SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2").is_some()
 }
 
 #[derive(Debug, FromMeta)]
@@ -152,7 +143,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as ItemStruct);
 
     let ty = &item.ident;
-    let ty_str = quote!(#ty).to_string();
+    let ty_str = ty.unraw().to_string();
 
     let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
@@ -239,7 +230,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format!("{}Args", name.ident))
+            .map(|name| format!("{}Args", name.ident.unraw()))
     } else {
         None
     }
@@ -251,7 +242,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format!("{}Client", name.ident))
+            .map(|name| format!("{}Client", name.ident.unraw()))
     } else {
         None
     }
@@ -437,10 +428,10 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
-    // or always export when spec shaking v2 is enabled.
+    // or always export when spec shaking is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
-    } else if spec_shaking_v2_enabled() {
+    } else if cfg!(feature = "experimental_spec_shaking_v2") {
         true
     } else {
         matches!(input.vis, Visibility::Public(_))
@@ -511,10 +502,10 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let attrs = &input.attrs;
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
-    // or always export when spec shaking v2 is enabled.
+    // or always export when spec shaking is enabled.
     let gen_spec = if let Some(export) = args.export {
         export
-    } else if spec_shaking_v2_enabled() {
+    } else if cfg!(feature = "experimental_spec_shaking_v2") {
         true
     } else {
         matches!(input.vis, Visibility::Public(_))
@@ -700,9 +691,10 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate with options based on whether spec shaking v2 is enabled
+    // Generate with options based on whether the experimental_spec_shaking_v2
+    // feature is enabled.
     let opts = GenerateOptions {
-        export: spec_shaking_v2_enabled(),
+        export: cfg!(feature = "experimental_spec_shaking_v2"),
     };
     match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },

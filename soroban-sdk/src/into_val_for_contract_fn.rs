@@ -20,7 +20,7 @@ pub trait IntoValForContractFn {
     fn into_val_for_contract_fn(self, env: &Env) -> Val;
 }
 
-#[cfg(spec_shaking_v2)]
+#[cfg(feature = "experimental_spec_shaking_v2")]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T
@@ -33,7 +33,7 @@ where
     }
 }
 
-#[cfg(not(spec_shaking_v2))]
+#[cfg(not(feature = "experimental_spec_shaking_v2"))]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T

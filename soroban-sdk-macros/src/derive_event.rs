@@ -1,10 +1,9 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, shaking, spec_shaking_v2_enabled, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
-use itertools::Itertools as _;
 use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
@@ -12,7 +11,7 @@ use stellar_xdr::curr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
     ScSpecEventV0, ScSymbol, StringM, WriteXdr,
 };
-use syn::{parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
+use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
 
 #[derive(Debug, FromMeta)]
 struct ContractEventArgs {
@@ -88,7 +87,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // Check event name length
     const EVENT_NAME_LENGTH: u32 = 32;
-    let event_name = input.ident.to_string();
+    let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
     let event_name: StringM<EVENT_NAME_LENGTH> = errors
         .handle(event_name.try_into().map_err(|_| {
@@ -102,7 +101,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let prefix_topics = if let Some(prefix_topics) = &args.topics {
         prefix_topics.iter().map(|t| t.value()).collect()
     } else {
-        vec![input.ident.to_string().to_snake_case()]
+        vec![input.ident.unraw().to_string().to_snake_case()]
     };
 
     let fields =
@@ -127,8 +126,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Collect field types for SpecShakingMarker
     let field_types: Vec<_> = fields.iter().map(|f| &f.ty).collect();
 
-    // Map each field of the struct to a spec for a param.
-    let params = fields
+    // Map each field of the struct to a spec for a param, keeping the original Ident
+    // alongside so it can still be used for `self.#ident` field access in the generated
+    // code (raw identifiers like `r#type` need to stay raw for Rust, while the spec name
+    // is the unraw form).
+    let params_with_idents = fields
         .iter()
         .map(|field| {
             let ident = field.ident.as_ref().unwrap();
@@ -140,7 +142,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             };
             let doc = docs_from_attrs(&field.attrs);
             const NAME_LENGTH: u32 = 30;
-            let name = ident.to_string();
+            let name = ident.unraw().to_string();
             let name_len = name.len();
             let name: StringM<NAME_LENGTH> = errors
                 .handle(name.try_into().map_err(|_| {
@@ -153,12 +155,15 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             let type_ = errors
                 .handle_in(|| Ok(map_type(&field.ty, true, false)?))
                 .unwrap_or_default();
-            ScSpecEventParamV0 {
-                location,
-                doc,
-                name,
-                type_,
-            }
+            (
+                ident.clone(),
+                ScSpecEventParamV0 {
+                    location,
+                    doc,
+                    name,
+                    type_,
+                },
+            )
         })
         .collect::<Vec<_>>();
 
@@ -183,9 +188,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             .collect::<Vec<_>>()
             .try_into()
             .unwrap(),
-        params: params
+        params: params_with_idents
             .iter()
-            .map(|p| p.clone())
+            .map(|(_, p)| p.clone())
             .collect::<Vec<_>>()
             .try_into()
             .unwrap(),
@@ -195,9 +200,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_xdr_len = spec_xdr.len();
     let spec_ident = format_ident!(
         "__SPEC_XDR_EVENT_{}",
-        input.ident.to_string().to_uppercase()
+        input.ident.unraw().to_string().to_uppercase()
     );
-    let spec_shaking_call = if export && spec_shaking_v2_enabled() {
+    let spec_shaking_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
         Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
     } else {
         None
@@ -215,9 +220,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
     };
 
-    // SpecShakingMarker impl - only generated when export is true and
-    // spec shaking v2 is enabled.
-    let spec_shaking_impl = if export && spec_shaking_v2_enabled() {
+    // SpecShakingMarker impl - only generated when export is true and the
+    // experimental_spec_shaking_v2 feature is enabled.
+    let spec_shaking_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
         Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),
@@ -239,10 +244,10 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             &LitStr::new(&t, Span::call_site()),
         )
     });
-    let topic_idents = params
+    let topic_idents = params_with_idents
         .iter()
-        .filter(|p| p.location == ScSpecEventParamLocationV0::TopicList)
-        .map(|p| format_ident!("{}", p.name.to_string()))
+        .filter(|(_, p)| p.location == ScSpecEventParamLocationV0::TopicList)
+        .map(|(ident, _)| ident.clone())
         .collect::<Vec<_>>();
     let topics_to_vec_val = quote! {
         use #path::IntoVal;
@@ -253,14 +258,14 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Prepare Data Conversion to Val.
-    let data_params = params
+    let data_params = params_with_idents
         .iter()
-        .filter(|p| p.location == ScSpecEventParamLocationV0::Data)
+        .filter(|(_, p)| p.location == ScSpecEventParamLocationV0::Data)
         .collect::<Vec<_>>();
     let data_params_count = data_params.len();
     let data_idents = data_params
         .iter()
-        .map(|p| format_ident!("{}", p.name.to_string()))
+        .map(|(ident, _)| ident.clone())
         .collect::<Vec<_>>();
     let data_to_val = match args.data_format {
         DataFormat::SingleValue if data_params_count == 0 => quote! {
@@ -288,15 +293,18 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             ).into_val(env)
         },
         DataFormat::Map => {
-            // Must be sorted for map_new_from_slices
-            let data_idents_sorted = data_params
+            // Must be sorted for map_new_from_slices. Sort by the spec name (the
+            // Soroban-facing Symbol string), and carry the original Ident alongside so
+            // that `self.#ident` still uses the raw form where needed.
+            let mut data_params_sorted = data_params.clone();
+            data_params_sorted.sort_by_key(|(_, p)| p.name.to_string());
+            let data_idents_sorted = data_params_sorted
                 .iter()
-                .sorted_by_key(|p| p.name.to_string())
-                .map(|p| format_ident!("{}", p.name.to_string()))
+                .map(|(ident, _)| ident.clone())
                 .collect::<Vec<_>>();
-            let data_strs_sorted = data_idents_sorted
+            let data_strs_sorted = data_params_sorted
                 .iter()
-                .map(|i| i.to_string())
+                .map(|(_, p)| p.name.to_string())
                 .collect::<Vec<_>>();
             quote! {
                 use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};

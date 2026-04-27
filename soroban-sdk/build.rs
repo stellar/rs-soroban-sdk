@@ -21,23 +21,25 @@ pub fn main() {
     }
 
     // When the experimental_spec_shaking_v2 feature is enabled, check for an env var from the
-    // build system (like Stellar CLI) that indicates it supports spec optimization using markers.
-    // If the env var is set, enable spec_shaking_v2 cfg for the crate. If not, fall back to
-    // spec shaking v1 behavior and emit a warning on wasm targets.
-    println!("cargo::rustc-check-cfg=cfg(spec_shaking_v2)");
+    // build system (Stellar CLI) that indicates it supports spec optimization using markers.
     if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
         let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
         println!("cargo::rerun-if-env-changed={env_name}");
-        if std::env::var(env_name).is_ok() {
-            println!("cargo::rustc-cfg=spec_shaking_v2");
-        } else if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" {
-            println!(
-                "cargo::warning=soroban-sdk: feature 'experimental_spec_shaking_v2' was enabled but not used, \
-                 because this build was not started by a tool that supports spec shaking v2. \
-                 Falling back to spec shaking v1. To use v2, use a build tool that supports \
-                 spec shaking v2 such as stellar-cli v25.2.0+ with `stellar contract build`. \
-                 To manually use v2 without a supporting build tool, set the env var \
-                 SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2 before building."
+        if std::env::var(env_name).is_err()
+            && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
+        {
+            panic!(
+                "\
+\n\nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v25.2.0+\
+\n\
+\nThe soroban-sdk 'experimental_spec_shaking_v2' feature requires building\
+\nwith `stellar contract build` from stellar-cli v25.2.0 or newer.\
+\n\
+\nTo fix, either:\
+\n  - Build with `stellar contract build` using stellar-cli v25.2.0+\
+\n  - Disable the feature by removing 'experimental_spec_shaking_v2' from\
+\n    the soroban-sdk import features list in Cargo.toml.\
+\n"
             );
         }
     }

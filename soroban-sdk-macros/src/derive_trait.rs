@@ -2,7 +2,7 @@ use crate::default_crate_path;
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{parse2, ItemTrait, Path};
+use syn::{ext::IdentExt as _, parse2, ItemTrait, Path};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -38,11 +38,17 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let input: ItemTrait = parse2(input)?;
 
     let path = &args.crate_path;
-    let spec_name = args.spec_name.unwrap_or(format!("{}Spec", input.ident));
+    let spec_name = args
+        .spec_name
+        .unwrap_or_else(|| format!("{}Spec", input.ident.unraw()));
     let spec_ident = format_ident!("{spec_name}");
     let spec_export = args.spec_export;
-    let args_name = args.args_name.unwrap_or(format!("{}Args", input.ident));
-    let client_name = args.client_name.unwrap_or(format!("{}Client", input.ident));
+    let args_name = args
+        .args_name
+        .unwrap_or_else(|| format!("{}Args", input.ident.unraw()));
+    let client_name = args
+        .client_name
+        .unwrap_or_else(|| format!("{}Client", input.ident.unraw()));
 
     Ok(quote! {
         pub struct #spec_ident;

@@ -64,7 +64,6 @@ ark-bls12-381 = { version = "0.5", default-features = false, features = ["curve"
 ark-ff = { version = "0.5", default-features = false }
 
 [features]
-default = ["experimental_spec_shaking_v2"]
 alloc = []
 testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
 experimental_spec_shaking_v2 = ["soroban-sdk-macros/experimental_spec_shaking_v2"]

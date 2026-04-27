@@ -1,3 +1,4 @@
+mod syn_ext;
 pub mod r#trait;
 pub mod types;
 
@@ -12,11 +13,11 @@ use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
 
-pub use types::GenerateOptions;
 use types::{
     generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
     generate_struct_with_options, generate_union_with_options,
 };
+pub use types::{GenerateError, GenerateOptions};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
 // streams as rustdocs, because rustdocs can contain Rust code, and that code
@@ -33,6 +34,8 @@ pub enum GenerateFromFileError {
     Parse(stellar_xdr::Error),
     #[error("getting contract spec: {0}")]
     GetSpec(FromWasmError),
+    #[error("generating code: {0}")]
+    Generate(GenerateError),
 }
 
 pub fn generate_from_file(
@@ -70,11 +73,16 @@ pub fn generate_from_wasm_with_options(
     }
 
     let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    let code = generate_with_options(&spec, file, &sha256, opts);
+    let code = generate_with_options(&spec, file, &sha256, opts)
+        .map_err(GenerateFromFileError::Generate)?;
     Ok(code)
 }
 
-pub fn generate(specs: &[ScSpecEntry], file: &str, sha256: &str) -> TokenStream {
+pub fn generate(
+    specs: &[ScSpecEntry],
+    file: &str,
+    sha256: &str,
+) -> Result<TokenStream, GenerateError> {
     generate_with_options(specs, file, sha256, &GenerateOptions::default())
 }
 
@@ -83,22 +91,22 @@ pub fn generate_with_options(
     file: &str,
     sha256: &str,
     opts: &GenerateOptions,
-) -> TokenStream {
-    let generated = generate_without_file_with_options(specs, opts);
-    quote! {
+) -> Result<TokenStream, GenerateError> {
+    let generated = generate_without_file_with_options(specs, opts)?;
+    Ok(quote! {
         pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
         #generated
-    }
+    })
 }
 
-pub fn generate_without_file(specs: &[ScSpecEntry]) -> TokenStream {
+pub fn generate_without_file(specs: &[ScSpecEntry]) -> Result<TokenStream, GenerateError> {
     generate_without_file_with_options(specs, &GenerateOptions::default())
 }
 
 pub fn generate_without_file_with_options(
     specs: &[ScSpecEntry],
     opts: &GenerateOptions,
-) -> TokenStream {
+) -> Result<TokenStream, GenerateError> {
     let mut spec_fns = Vec::new();
     let mut spec_structs = Vec::new();
     let mut spec_unions = Vec::new();
@@ -118,24 +126,29 @@ pub fn generate_without_file_with_options(
 
     let trait_name = "Contract";
 
-    let trait_ = r#trait::generate_trait(trait_name, &spec_fns);
+    let trait_ = r#trait::generate_trait(trait_name, &spec_fns)?;
     let structs = spec_structs
         .iter()
-        .map(|s| generate_struct_with_options(s, opts));
+        .map(|s| generate_struct_with_options(s, opts))
+        .collect::<Result<Vec<_>, _>>()?;
     let unions = spec_unions
         .iter()
-        .map(|s| generate_union_with_options(s, opts));
+        .map(|s| generate_union_with_options(s, opts))
+        .collect::<Result<Vec<_>, _>>()?;
     let enums = spec_enums
         .iter()
-        .map(|s| generate_enum_with_options(s, opts));
+        .map(|s| generate_enum_with_options(s, opts))
+        .collect::<Result<Vec<_>, _>>()?;
     let error_enums = spec_error_enums
         .iter()
-        .map(|s| generate_error_enum_with_options(s, opts));
+        .map(|s| generate_error_enum_with_options(s, opts))
+        .collect::<Result<Vec<_>, _>>()?;
     let events = spec_events
         .iter()
-        .map(|s| generate_event_with_options(s, opts));
+        .map(|s| generate_event_with_options(s, opts))
+        .collect::<Result<Vec<_>, _>>()?;
 
-    quote! {
+    Ok(quote! {
         #[soroban_sdk::contractargs(name = "Args")]
         #[soroban_sdk::contractclient(name = "Client")]
         #trait_
@@ -145,7 +158,7 @@ pub fn generate_without_file_with_options(
         #(#enums)*
         #(#error_enums)*
         #(#events)*
-    }
+    })
 }
 
 /// Implemented by types that can be converted into pretty formatted Strings of
@@ -177,6 +190,7 @@ mod test {
     fn example() {
         let entries = from_wasm(EXAMPLE_WASM).unwrap();
         let rust = generate(&entries, "<file>", "<sha256>")
+            .unwrap()
             .to_formatted_string()
             .unwrap();
         assert_eq!(
