@@ -135,16 +135,11 @@
 //!
 //! ### Build Requirements
 //!
-//! Spec shaking v2 requires the
-//! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable to
-//! be set at build time. This is automatically set by `stellar contract build`
-//! from `stellar-cli` v25.2.0 or newer.
-//!
-//! When the `experimental_spec_shaking_v2` feature is enabled but the env var
-//! is not set, the SDK falls back to spec shaking v1 behavior and emits a
-//! build warning on wasm targets. This allows contracts to build with plain
-//! `cargo build` without errors, while still benefiting from v2 when built
-//! with compatible tooling.
+//! This feature requires building with `stellar contract build` from
+//! `stellar-cli` v25.2.0 or newer. Building directly with `cargo build` will
+//! produce a build error unless the
+//! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable is
+//! set.
 //!
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror

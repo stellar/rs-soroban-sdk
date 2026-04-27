@@ -7,7 +7,7 @@ use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path,
 };
 
-use crate::{doc::docs_from_attrs, shaking, spec_shaking_v2_enabled, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, shaking, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_error_enum_int(
     path: &Path,
@@ -100,9 +100,9 @@ pub fn derive_type_error_enum_int(
         None
     };
 
-    // SpecShakingMarker impl - only generated when spec is true and
-    // spec shaking v2 is enabled.
-    let spec_shaking_impl = if spec_shaking_v2_enabled() {
+    // SpecShakingMarker impl - only generated when spec is true and the
+    // experimental_spec_shaking_v2 feature is enabled.
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
             shaking::generate_marker_impl(
                 path,
