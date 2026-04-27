@@ -28,7 +28,7 @@ impl soroban_sdk::SpecShakingMarker for DummyProof {
     fn spec_shaking_marker() {
         <Bls12381Fp as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Fr as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Bls12381Fr as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
