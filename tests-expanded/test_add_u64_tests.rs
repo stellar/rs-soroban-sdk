@@ -4,7 +4,7 @@
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
-use soroban_sdk::{contract, contractimpl};
+use soroban_sdk::{contract, contracterror, contractimpl};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -136,9 +136,271 @@ impl soroban_sdk::testutils::ContractFunctionSet for Contract {
         __contract_fn_set_registry::call(func, env, args)
     }
 }
+pub enum Error {
+    Overflow = 1,
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for Error {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "Overflow")
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for Error {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for Error {
+    #[inline]
+    fn eq(&self, other: &Error) -> bool {
+        true
+    }
+}
+pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+impl Error {
+    pub const fn spec_xdr() -> [u8; 48usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
+    }
+}
+impl TryFrom<soroban_sdk::Error> for Error {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::Overflow,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for Error {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<Error> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: Error) -> soroban_sdk::Error {
+        <_ as From<&Error>>::from(&val)
+    }
+}
+impl From<&Error> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &Error) -> soroban_sdk::Error {
+        match val {
+            Error::Overflow => soroban_sdk::Error::from_contract_error(1u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for Error {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::Overflow,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for Error {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<Error> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: Error) -> soroban_sdk::InvokeError {
+        <_ as From<&Error>>::from(&val)
+    }
+}
+impl From<&Error> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &Error) -> soroban_sdk::InvokeError {
+        match val {
+            Error::Overflow => soroban_sdk::InvokeError::Contract(1u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Error {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, Error> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &Error,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Error> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&Error,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Error>>::try_from_val(env, *val)
+    }
+}
+pub enum MyError {
+    Overflow = 1,
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for MyError {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "Overflow")
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for MyError {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for MyError {
+    #[inline]
+    fn eq(&self, other: &MyError) -> bool {
+        true
+    }
+}
+pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
+impl MyError {
+    pub const fn spec_xdr() -> [u8; 48usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x07MyError\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
+    }
+}
+impl TryFrom<soroban_sdk::Error> for MyError {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::Overflow,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for MyError {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<MyError> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: MyError) -> soroban_sdk::Error {
+        <_ as From<&MyError>>::from(&val)
+    }
+}
+impl From<&MyError> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &MyError) -> soroban_sdk::Error {
+        match val {
+            MyError::Overflow => soroban_sdk::Error::from_contract_error(1u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for MyError {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::Overflow,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for MyError {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<MyError> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: MyError) -> soroban_sdk::InvokeError {
+        <_ as From<&MyError>>::from(&val)
+    }
+}
+impl From<&MyError> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &MyError) -> soroban_sdk::InvokeError {
+        match val {
+            MyError::Overflow => soroban_sdk::InvokeError::Contract(1u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyError {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyError> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &MyError,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &MyError> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&MyError,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, MyError>>::try_from_val(env, *val)
+    }
+}
 impl Contract {
     pub fn add(a: u64, b: u64) -> u64 {
         a + b
+    }
+    pub fn safe_add(a: u64, b: u64) -> Result<u64, Error> {
+        a.checked_add(b).ok_or(Error::Overflow)
+    }
+    pub fn safe_add_two(a: u64, b: u64) -> Result<u64, MyError> {
+        a.checked_add(b).ok_or(MyError::Overflow)
     }
 }
 #[doc(hidden)]
@@ -153,6 +415,34 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_add() -> [u8; 60usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__safe_add__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_SAFE_ADD: [u8; 72usize] = super::Contract::spec_xdr_safe_add();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_safe_add() -> [u8; 72usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x08safe_add\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\0\x03"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__safe_add_two__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; 88usize] = super::Contract::spec_xdr_safe_add_two();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_safe_add_two() -> [u8; 88usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0csafe_add_two\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\x07\xd0\0\0\0\x07MyError\0"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -243,11 +533,187 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    pub fn safe_add(&self, a: &u64, b: &u64) -> u64 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("safe_add");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [a.into_val(&self.env), b.into_val(&self.env)],
+            ),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_safe_add(
+        &self,
+        a: &u64,
+        b: &u64,
+    ) -> Result<
+        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("safe_add");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [a.into_val(&self.env), b.into_val(&self.env)],
+            ),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn safe_add_two(&self, a: &u64, b: &u64) -> u64 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "safe_add_two") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [a.into_val(&self.env), b.into_val(&self.env)],
+            ),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_safe_add_two(
+        &self,
+        a: &u64,
+        b: &u64,
+    ) -> Result<
+        Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<MyError, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "safe_add_two") },
+            ::soroban_sdk::Vec::from_array(
+                &self.env,
+                [a.into_val(&self.env), b.into_val(&self.env)],
+            ),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn add<'i>(a: &'i u64, b: &'i u64) -> (&'i u64, &'i u64) {
+        (a, b)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn safe_add<'i>(a: &'i u64, b: &'i u64) -> (&'i u64, &'i u64) {
+        (a, b)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn safe_add_two<'i>(a: &'i u64, b: &'i u64) -> (&'i u64, &'i u64) {
         (a, b)
     }
 }
@@ -309,8 +775,120 @@ pub extern "C" fn __Contract__add__invoke_raw_extern(
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).safe_add` instead")]
+#[allow(deprecated)]
+pub fn __Contract__safe_add__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::safe_add(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).safe_add` instead")]
+pub fn __Contract__safe_add__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 2usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                2usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__safe_add__invoke_raw(env, args[0usize], args[1usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).safe_add` instead")]
+pub extern "C" fn __Contract__safe_add__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__safe_add__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).safe_add_two` instead")]
+#[allow(deprecated)]
+pub fn __Contract__safe_add_two__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::safe_add_two(
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).safe_add_two` instead")]
+pub fn __Contract__safe_add_two__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 2usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                2usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__safe_add_two__invoke_raw(env, args[0usize], args[1usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).safe_add_two` instead")]
+pub extern "C" fn __Contract__safe_add_two__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__safe_add_two__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor() {
+fn __Contract____6ecf4b81a1826b186b96027a980a40b74ef0e4056b0b7fa44cfd522125765f33_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -322,7 +900,7 @@ fn __Contract____7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb476
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor();
+                    __Contract____6ecf4b81a1826b186b96027a980a40b74ef0e4056b0b7fa44cfd522125765f33_ctor();
                 };
                 core::default::Default::default()
             }
@@ -335,10 +913,21 @@ fn __Contract____7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb476
             #[allow(deprecated)]
             &__Contract__add__invoke_raw_slice,
         );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "safe_add",
+            #[allow(deprecated)]
+            &__Contract__safe_add__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "safe_add_two",
+            #[allow(deprecated)]
+            &__Contract__safe_add_two__invoke_raw_slice,
+        );
     }
 }
 mod test {
-    use crate::{Contract, ContractClient};
+    use crate::{Contract, ContractClient, Error};
+    use core::u64;
     use soroban_sdk::Env;
     extern crate test;
     #[rustc_test_marker = "test::test_add"]
@@ -349,9 +938,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/add_u64/src/lib.rs",
-            start_line: 21usize,
+            start_line: 41usize,
             start_col: 8usize,
-            end_line: 21usize,
+            end_line: 41usize,
             end_col: 16usize,
             compile_fail: false,
             no_run: false,
@@ -374,11 +963,55 @@ mod test {
             ::core::panicking::panic("assertion failed: z == 22")
         }
     }
+    extern crate test;
+    #[rustc_test_marker = "test::test_safe_add"]
+    #[doc(hidden)]
+    pub const test_safe_add: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::test_safe_add"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/add_u64/src/lib.rs",
+            start_line: 52usize,
+            start_col: 8usize,
+            end_line: 52usize,
+            end_col: 21usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(test_safe_add()),
+        ),
+    };
+    fn test_safe_add() {
+        let e = Env::default();
+        let contract_id = e.register(Contract, ());
+        let client = ContractClient::new(&e, &contract_id);
+        let x = u64::MAX;
+        let y = 1;
+        let z = client.try_safe_add(&x, &y);
+        match (&z, &Err(Ok(Error::Overflow))) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+    }
 }
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_add])
+    test::test_main_static(&[&test_add, &test_safe_add])
 }
