@@ -9,6 +9,20 @@ See [developers.stellar.org] for documentation about building smart contracts fo
 [Stellar]: https://stellar.org
 [Soroban]: https://stellar.org/soroban
 
+### Support
+
+Bug fixes are provided on top of the latest patch version of the latest
+major version.
+
+Security fixes are provided on top of the latest patch version of every
+major version including and since v22.
+
+All other versions are unsupported and do not receive bug or security
+fixes.
+
+This policy may change and this document in the latest version of the crate will be updated
+when it does.
+
 ### Features
 
 See [_features] for a list of all Cargo features and what they do.
