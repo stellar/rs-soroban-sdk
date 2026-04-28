@@ -38,6 +38,9 @@ fn test_spec_shaking_v2() {
         "with_param",
         "with_return",
         "with_error",
+        "with_panic_error",
+        "with_assert_error",
+        "with_panic_raw_error",
         "with_vec",
         "with_map",
         "publish_simple",
@@ -68,6 +71,9 @@ fn test_spec_shaking_v2() {
         "UsedReturnEnum",
         "UsedParamIntEnum",
         "UsedErrorEnum",
+        // error types used only via panic_with_error! / assert_with_error!
+        "UsedPanicErrorEnum",
+        "UsedAssertErrorEnum",
         // nested in fn param struct
         "UsedNestedInStruct",
         // container element types in fn params
@@ -123,6 +129,7 @@ fn test_spec_shaking_v2() {
         "UnusedEnum",
         "UnusedIntEnum",
         "UnusedEvent",
+        "UnusedPubError",
         // Types used only in non-contractimpl fns (not at contract boundary)
         "UnusedNonContractFnParam",
         "UnusedNonContractFnReturn",
