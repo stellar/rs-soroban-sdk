@@ -1,6 +1,7 @@
 #![no_std]
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, Env, Map, Symbol, Vec,
+    assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
+    panic_with_error, Env, Map, Symbol, Vec,
 };
 
 #[contract]
@@ -38,6 +39,20 @@ pub enum UsedParamIntEnum {
 pub enum UsedErrorEnum {
     NotFound = 1,
     Invalid = 2,
+}
+
+// Used only via panic_with_error! (never appears in a Result return).
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedPanicErrorEnum {
+    Boom = 1,
+}
+
+// Used only via assert_with_error! (never appears in a Result return).
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedAssertErrorEnum {
+    Bad = 1,
 }
 
 // Used as nested field of UsedParamStruct
@@ -264,6 +279,15 @@ pub struct UnusedEvent {
     pub data: u32,
 }
 
+// A pub #[contracterror] enum that is never referenced anywhere — neither in a
+// Result return type, nor in panic_with_error! / assert_with_error!. Confirms
+// that an error enum that is not actually used is shaken out of the spec.
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UnusedPubError {
+    Nope = 1,
+}
+
 // Used only in a non-contractimpl fn: spec entry exists but no marker
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -302,6 +326,25 @@ impl Contract {
 
     pub fn with_error(_env: Env) -> Result<u32, UsedErrorEnum> {
         Ok(42)
+    }
+
+    pub fn with_panic_error(env: Env, fail: bool) {
+        if fail {
+            panic_with_error!(&env, UsedPanicErrorEnum::Boom);
+        }
+    }
+
+    pub fn with_assert_error(env: Env, ok: bool) {
+        assert_with_error!(&env, ok, UsedAssertErrorEnum::Bad);
+    }
+
+    // Confirms that a raw soroban_sdk::Error still works as the argument to
+    // panic_with_error! after the SpecShakingMarker bound was added to
+    // Env::panic_with_error.
+    pub fn with_panic_raw_error(env: Env, fail: bool) {
+        if fail {
+            panic_with_error!(&env, soroban_sdk::Error::from_contract_error(7));
+        }
     }
 
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
