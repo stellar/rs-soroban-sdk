@@ -27,7 +27,7 @@ pub fn derive_type_struct(
     let mut errors = Vec::<Error>::new();
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
-    let (spec_fields, field_idents, field_names, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (spec_fields, field_idents, field_names, field_idx_lits, try_from_xdrs, try_into_xdrs, field_type_id_refs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .sorted_by_key(|field| field.ident.as_ref().unwrap().unraw().to_string())
         .enumerate()
@@ -35,7 +35,6 @@ pub fn derive_type_struct(
             let field_ident = field.ident.as_ref().unwrap();
             let field_name = field_ident.unraw().to_string();
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
-            let field_type = &field.ty;
             let spec_field = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
@@ -65,7 +64,8 @@ pub fn derive_type_struct(
                     val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };
-            (spec_field, field_ident, field_name, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
+            let field_type_id_refs = shaking::type_id_refs(path, &field.ty);
+            (spec_field, field_ident, field_name, field_idx_lit, try_from_xdr, try_into_xdr, field_type_id_refs)
         })
         .multiunzip();
 
@@ -96,6 +96,26 @@ pub fn derive_type_struct(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()
         );
+        let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
+            let graph_ident = format_ident!(
+                "__SPEC_GRAPH_TYPE_{}",
+                ident.unraw().to_string().to_uppercase()
+            );
+            let type_id_impl = shaking::generate_type_id_impl(path, ident, spec_xdr);
+            let graph_record = shaking::generate_graph_record(
+                path,
+                &graph_ident,
+                quote! { #path::spec_shaking::GRAPH_RECORD_KIND_UDT },
+                spec_xdr,
+                field_type_id_refs.into_iter().flatten().collect(),
+            );
+            Some(quote! {
+                #type_id_impl
+                #graph_record
+            })
+        } else {
+            None
+        };
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
@@ -105,24 +125,8 @@ pub fn derive_type_struct(
                     *#spec_xdr_lit
                 }
             }
-        })
-    } else {
-        None
-    };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            shaking::generate_marker_impl(
-                path,
-                quote!(#ident),
-                spec_xdr,
-                field_types.iter().cloned(),
-                None,
-                None,
-                None,
-            )
+            #spec_shaking_gen
         })
     } else {
         None
@@ -131,8 +135,6 @@ pub fn derive_type_struct(
     // Output.
     let mut output = quote! {
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;

@@ -70,7 +70,12 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         Some(trait_ident),
         &args.client_name,
     ));
-    output.extend(derive_fns_spec(&args.spec_name, &fns, spec_export));
+    output.extend(derive_fns_spec(
+        &args.crate_path,
+        &args.spec_name,
+        &fns,
+        spec_export,
+    ));
     output.extend(derive_client_impl(
         &args.crate_path,
         &args.client_name,
