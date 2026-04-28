@@ -290,9 +290,29 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
+    #[cfg(feature = "experimental_spec_shaking_v2")]
+    #[inline(always)]
+    pub fn panic_with_error<I>(&self, error: I) -> !
+    where
+        I: Into<internal::Error> + crate::SpecShakingMarker,
+    {
+        I::spec_shaking_marker();
+        self.panic_with_error_inner(error.into())
+    }
+
+    /// Panic with the given error.
+    ///
+    /// Equivalent to `panic!`, but with an error value instead of a string.
+    #[doc(hidden)]
+    #[cfg(not(feature = "experimental_spec_shaking_v2"))]
     #[inline(always)]
     pub fn panic_with_error(&self, error: impl Into<internal::Error>) -> ! {
-        _ = internal::Env::fail_with_error(self, error.into());
+        self.panic_with_error_inner(error.into())
+    }
+
+    #[inline(always)]
+    fn panic_with_error_inner(&self, error: internal::Error) -> ! {
+        _ = internal::Env::fail_with_error(self, error);
         #[cfg(target_family = "wasm")]
         core::arch::wasm32::unreachable();
         #[cfg(not(target_family = "wasm"))]
