@@ -23,6 +23,21 @@ impl DummyProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nDummyProof\0\0\0\0\0\x05\0\0\0\0\0\0\0\x02fp\0\0\0\0\x03\xee\0\0\00\0\0\0\0\0\0\0\x03fp2\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02fr\0\0\0\0\0\x0c\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xee\0\0\0\xc0"
     }
 }
+impl soroban_sdk::SpecShakingMarker for DummyProof {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Bls12381Fp as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Bls12381Fr as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x85W\0A\xdc~\xb7\"";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
